@@ -1,0 +1,741 @@
+schema_version: 1
+columns:
+- section
+- notebook_id
+- title
+- gt_tier
+- difficulty
+- importance
+- requires_gpu
+- metadata_source
+- fixture_provenance_source
+- visible_tests_source
+- report_source
+- gpu_evidence_requirement
+- toy_oracle_requirement
+- slow_fast_oracle_requirement
+- property_test_requirement
+- debug_mode_requirement
+- release_status
+- remaining_release_evidence
+hard_exercises:
+- section: '1.6'
+  notebook_id: 1_6_local_frontier_ml_infrastructure
+  title: Local Frontier ML Infrastructure
+  gt_tier: GT-1
+  difficulty: '3'
+  importance: '5'
+  requires_gpu: 'true'
+  metadata_source: chapter1_transformer_interp/exercises/part6_frontier_ml_infrastructure/artifacts.lock.yml:exercise_metadata
+  fixture_provenance_source: chapter1_transformer_interp/exercises/part6_frontier_ml_infrastructure/expected_outputs/README.md
+  visible_tests_source: chapter1_transformer_interp/exercises/part6_frontier_ml_infrastructure/tests.py
+  report_source: chapter1_transformer_interp/exercises/part6_frontier_ml_infrastructure/verification_report.json
+  gpu_evidence_requirement: cuda_section_metric required before chapter release
+  toy_oracle_requirement: required for every hard exercise
+  slow_fast_oracle_requirement: required where an optimized path exists
+  property_test_requirement: required for mathematical invariants
+  debug_mode_requirement: required for complex functions
+  release_status: released_with_cuda_section_metric
+  remaining_release_evidence: ''
+- section: '5.1'
+  notebook_id: 5_1_gemma_from_scratch
+  title: Gemma from Scratch
+  gt_tier: GT-0
+  difficulty: '4'
+  importance: '5'
+  requires_gpu: 'true'
+  metadata_source: chapter5_modern_architectures/exercises/part1_gemma_from_scratch/artifacts.lock.yml:exercise_metadata
+  fixture_provenance_source: chapter5_modern_architectures/exercises/part1_gemma_from_scratch/expected_outputs/README.md
+  visible_tests_source: chapter5_modern_architectures/exercises/part1_gemma_from_scratch/tests.py
+  report_source: chapter5_modern_architectures/exercises/part1_gemma_from_scratch/verification_report.json
+  gpu_evidence_requirement: cuda_section_metric required before chapter release
+  toy_oracle_requirement: required for every hard exercise
+  slow_fast_oracle_requirement: required where an optimized path exists
+  property_test_requirement: required for mathematical invariants
+  debug_mode_requirement: required for complex functions
+  release_status: released_with_cuda_section_metric
+  remaining_release_evidence: ''
+- section: '5.2'
+  notebook_id: 5_2_gemma_scope_and_feature_steering
+  title: Gemma Scope and Feature Steering
+  gt_tier: GT-3
+  difficulty: '3'
+  importance: '4'
+  requires_gpu: 'true'
+  metadata_source: chapter5_modern_architectures/exercises/part2_gemma_scope_feature_steering/artifacts.lock.yml:exercise_metadata
+  fixture_provenance_source: chapter5_modern_architectures/exercises/part2_gemma_scope_feature_steering/expected_outputs/README.md
+  visible_tests_source: chapter5_modern_architectures/exercises/part2_gemma_scope_feature_steering/tests.py
+  report_source: chapter5_modern_architectures/exercises/part2_gemma_scope_feature_steering/verification_report.json
+  gpu_evidence_requirement: cuda_section_metric required before chapter release
+  toy_oracle_requirement: required for every hard exercise
+  slow_fast_oracle_requirement: required where an optimized path exists
+  property_test_requirement: required for mathematical invariants
+  debug_mode_requirement: required for complex functions
+  release_status: released_with_cuda_section_metric
+  remaining_release_evidence: ''
+- section: '5.3'
+  notebook_id: 5_3_mamba_from_scratch
+  title: Mamba from Scratch
+  gt_tier: GT-1
+  difficulty: '4'
+  importance: '5'
+  requires_gpu: 'true'
+  metadata_source: chapter5_modern_architectures/exercises/part3_mamba_from_scratch/artifacts.lock.yml:exercise_metadata
+  fixture_provenance_source: chapter5_modern_architectures/exercises/part3_mamba_from_scratch/expected_outputs/README.md
+  visible_tests_source: chapter5_modern_architectures/exercises/part3_mamba_from_scratch/tests.py
+  report_source: chapter5_modern_architectures/exercises/part3_mamba_from_scratch/verification_report.json
+  gpu_evidence_requirement: cuda_section_metric required before chapter release
+  toy_oracle_requirement: required for every hard exercise
+  slow_fast_oracle_requirement: required where an optimized path exists
+  property_test_requirement: required for mathematical invariants
+  debug_mode_requirement: required for complex functions
+  release_status: released_with_cuda_section_metric
+  remaining_release_evidence: ''
+- section: '5.4'
+  notebook_id: 5_4_mamba_state_tracking
+  title: Mamba State Tracking
+  gt_tier: GT-1
+  difficulty: '4'
+  importance: '4'
+  requires_gpu: 'true'
+  metadata_source: chapter5_modern_architectures/exercises/part4_mamba_state_tracking/artifacts.lock.yml:exercise_metadata
+  fixture_provenance_source: chapter5_modern_architectures/exercises/part4_mamba_state_tracking/expected_outputs/README.md
+  visible_tests_source: chapter5_modern_architectures/exercises/part4_mamba_state_tracking/tests.py
+  report_source: chapter5_modern_architectures/exercises/part4_mamba_state_tracking/verification_report.json
+  gpu_evidence_requirement: cuda_section_metric required before chapter release
+  toy_oracle_requirement: required for every hard exercise
+  slow_fast_oracle_requirement: required where an optimized path exists
+  property_test_requirement: required for mathematical invariants
+  debug_mode_requirement: required for complex functions
+  release_status: released_with_cuda_section_metric
+  remaining_release_evidence: ''
+- section: '5.5'
+  notebook_id: 5_5_diffusion_language_models
+  title: Diffusion Language Models
+  gt_tier: GT-0
+  difficulty: '3'
+  importance: '4'
+  requires_gpu: 'true'
+  metadata_source: chapter5_modern_architectures/exercises/part5_diffusion_language_models/artifacts.lock.yml:exercise_metadata
+  fixture_provenance_source: chapter5_modern_architectures/exercises/part5_diffusion_language_models/expected_outputs/README.md
+  visible_tests_source: chapter5_modern_architectures/exercises/part5_diffusion_language_models/tests.py
+  report_source: chapter5_modern_architectures/exercises/part5_diffusion_language_models/verification_report.json
+  gpu_evidence_requirement: cuda_section_metric required before chapter release
+  toy_oracle_requirement: required for every hard exercise
+  slow_fast_oracle_requirement: required where an optimized path exists
+  property_test_requirement: required for mathematical invariants
+  debug_mode_requirement: required for complex functions
+  release_status: released_with_cuda_section_metric
+  remaining_release_evidence: ''
+- section: '5.6'
+  notebook_id: 5_6_multimodal_embedding_and_function_calling_models
+  title: Multimodal, Embedding, and Function-Calling Models
+  gt_tier: GT-1
+  difficulty: '4'
+  importance: '4'
+  requires_gpu: 'true'
+  metadata_source: chapter5_modern_architectures/exercises/part6_multimodal_embedding_function_models/artifacts.lock.yml:exercise_metadata
+  fixture_provenance_source: chapter5_modern_architectures/exercises/part6_multimodal_embedding_function_models/expected_outputs/README.md
+  visible_tests_source: chapter5_modern_architectures/exercises/part6_multimodal_embedding_function_models/tests.py
+  report_source: chapter5_modern_architectures/exercises/part6_multimodal_embedding_function_models/verification_report.json
+  gpu_evidence_requirement: cuda_section_metric required before chapter release
+  toy_oracle_requirement: required for every hard exercise
+  slow_fast_oracle_requirement: required where an optimized path exists
+  property_test_requirement: required for mathematical invariants
+  debug_mode_requirement: required for complex functions
+  release_status: released_with_cuda_section_metric
+  remaining_release_evidence: ''
+- section: '6.1'
+  notebook_id: 6_1_sae_variants
+  title: SAE Variants
+  gt_tier: GT-1
+  difficulty: '4'
+  importance: '5'
+  requires_gpu: 'true'
+  metadata_source: chapter6_sparse_feature_methods/exercises/part1_sae_variants/artifacts.lock.yml:exercise_metadata
+  fixture_provenance_source: chapter6_sparse_feature_methods/exercises/part1_sae_variants/expected_outputs/README.md
+  visible_tests_source: chapter6_sparse_feature_methods/exercises/part1_sae_variants/tests.py
+  report_source: chapter6_sparse_feature_methods/exercises/part1_sae_variants/verification_report.json
+  gpu_evidence_requirement: cuda_section_metric required before chapter release
+  toy_oracle_requirement: required for every hard exercise
+  slow_fast_oracle_requirement: required where an optimized path exists
+  property_test_requirement: required for mathematical invariants
+  debug_mode_requirement: required for complex functions
+  release_status: released_with_cuda_section_metric
+  remaining_release_evidence: ''
+- section: '6.2'
+  notebook_id: 6_2_gemma_scope_deep_dive
+  title: Gemma Scope Deep Dive
+  gt_tier: GT-1
+  difficulty: '4'
+  importance: '4'
+  requires_gpu: 'true'
+  metadata_source: chapter6_sparse_feature_methods/exercises/part2_gemma_scope_deep_dive/artifacts.lock.yml:exercise_metadata
+  fixture_provenance_source: chapter6_sparse_feature_methods/exercises/part2_gemma_scope_deep_dive/expected_outputs/README.md
+  visible_tests_source: chapter6_sparse_feature_methods/exercises/part2_gemma_scope_deep_dive/tests.py
+  report_source: chapter6_sparse_feature_methods/exercises/part2_gemma_scope_deep_dive/verification_report.json
+  gpu_evidence_requirement: cuda_section_metric required before chapter release
+  toy_oracle_requirement: required for every hard exercise
+  slow_fast_oracle_requirement: required where an optimized path exists
+  property_test_requirement: required for mathematical invariants
+  debug_mode_requirement: required for complex functions
+  release_status: released_with_cuda_section_metric
+  remaining_release_evidence: ''
+- section: '6.3'
+  notebook_id: 6_3_transcoders_and_attribution_graphs
+  title: Transcoders and Attribution Graphs
+  gt_tier: GT-0
+  difficulty: '3'
+  importance: '4'
+  requires_gpu: 'true'
+  metadata_source: chapter6_sparse_feature_methods/exercises/part3_transcoders_attribution_graphs/artifacts.lock.yml:exercise_metadata
+  fixture_provenance_source: chapter6_sparse_feature_methods/exercises/part3_transcoders_attribution_graphs/expected_outputs/README.md
+  visible_tests_source: chapter6_sparse_feature_methods/exercises/part3_transcoders_attribution_graphs/tests.py
+  report_source: chapter6_sparse_feature_methods/exercises/part3_transcoders_attribution_graphs/verification_report.json
+  gpu_evidence_requirement: cuda_section_metric required before chapter release
+  toy_oracle_requirement: required for every hard exercise
+  slow_fast_oracle_requirement: required where an optimized path exists
+  property_test_requirement: required for mathematical invariants
+  debug_mode_requirement: required for complex functions
+  release_status: released_with_cuda_section_metric
+  remaining_release_evidence: ''
+- section: '6.4'
+  notebook_id: 6_4_crosscoders_and_model_diffing
+  title: Crosscoders and Model Diffing
+  gt_tier: GT-3
+  difficulty: '3'
+  importance: '4'
+  requires_gpu: 'true'
+  metadata_source: chapter6_sparse_feature_methods/exercises/part4_crosscoders_model_diffing/artifacts.lock.yml:exercise_metadata
+  fixture_provenance_source: chapter6_sparse_feature_methods/exercises/part4_crosscoders_model_diffing/expected_outputs/README.md
+  visible_tests_source: chapter6_sparse_feature_methods/exercises/part4_crosscoders_model_diffing/tests.py
+  report_source: chapter6_sparse_feature_methods/exercises/part4_crosscoders_model_diffing/verification_report.json
+  gpu_evidence_requirement: cuda_section_metric required before chapter release
+  toy_oracle_requirement: required for every hard exercise
+  slow_fast_oracle_requirement: required where an optimized path exists
+  property_test_requirement: required for mathematical invariants
+  debug_mode_requirement: required for complex functions
+  release_status: released_with_cuda_section_metric
+  remaining_release_evidence: ''
+- section: '7.1'
+  notebook_id: 7_1_logit_lens_tuned_lens_and_patchscopes
+  title: Logit Lens, Tuned Lens, and Patchscopes
+  gt_tier: GT-1
+  difficulty: '4'
+  importance: '3'
+  requires_gpu: 'true'
+  metadata_source: chapter7_activation_to_language/exercises/part1_lenses_patchscopes/artifacts.lock.yml:exercise_metadata
+  fixture_provenance_source: chapter7_activation_to_language/exercises/part1_lenses_patchscopes/expected_outputs/README.md
+  visible_tests_source: chapter7_activation_to_language/exercises/part1_lenses_patchscopes/tests.py
+  report_source: chapter7_activation_to_language/exercises/part1_lenses_patchscopes/verification_report.json
+  gpu_evidence_requirement: cuda_section_metric required before chapter release
+  toy_oracle_requirement: required for every hard exercise
+  slow_fast_oracle_requirement: required where an optimized path exists
+  property_test_requirement: required for mathematical invariants
+  debug_mode_requirement: required for complex functions
+  release_status: released_with_cuda_section_metric
+  remaining_release_evidence: ''
+- section: '7.2'
+  notebook_id: 7_2_feature_verbalizers
+  title: Feature Verbalizers
+  gt_tier: GT-1
+  difficulty: '4'
+  importance: '3'
+  requires_gpu: 'true'
+  metadata_source: chapter7_activation_to_language/exercises/part2_feature_verbalizers/artifacts.lock.yml:exercise_metadata
+  fixture_provenance_source: chapter7_activation_to_language/exercises/part2_feature_verbalizers/expected_outputs/README.md
+  visible_tests_source: chapter7_activation_to_language/exercises/part2_feature_verbalizers/tests.py
+  report_source: chapter7_activation_to_language/exercises/part2_feature_verbalizers/verification_report.json
+  gpu_evidence_requirement: cuda_section_metric required before chapter release
+  toy_oracle_requirement: required for every hard exercise
+  slow_fast_oracle_requirement: required where an optimized path exists
+  property_test_requirement: required for mathematical invariants
+  debug_mode_requirement: required for complex functions
+  release_status: released_with_cuda_section_metric
+  remaining_release_evidence: ''
+- section: '7.3'
+  notebook_id: 7_3_mini_activation_oracles
+  title: Mini Activation Oracles
+  gt_tier: GT-1
+  difficulty: '4'
+  importance: '3'
+  requires_gpu: 'true'
+  metadata_source: chapter7_activation_to_language/exercises/part3_mini_activation_oracles/artifacts.lock.yml:exercise_metadata
+  fixture_provenance_source: chapter7_activation_to_language/exercises/part3_mini_activation_oracles/expected_outputs/README.md
+  visible_tests_source: chapter7_activation_to_language/exercises/part3_mini_activation_oracles/tests.py
+  report_source: chapter7_activation_to_language/exercises/part3_mini_activation_oracles/verification_report.json
+  gpu_evidence_requirement: cuda_section_metric required before chapter release
+  toy_oracle_requirement: required for every hard exercise
+  slow_fast_oracle_requirement: required where an optimized path exists
+  property_test_requirement: required for mathematical invariants
+  debug_mode_requirement: required for complex functions
+  release_status: released_with_cuda_section_metric
+  remaining_release_evidence: ''
+- section: '7.4'
+  notebook_id: 7_4_mini_natural_language_autoencoders
+  title: Mini Natural Language Autoencoders
+  gt_tier: GT-3
+  difficulty: '3'
+  importance: '3'
+  requires_gpu: 'true'
+  metadata_source: chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/artifacts.lock.yml:exercise_metadata
+  fixture_provenance_source: chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/expected_outputs/README.md
+  visible_tests_source: chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/tests.py
+  report_source: chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/verification_report.json
+  gpu_evidence_requirement: cuda_section_metric required before chapter release
+  toy_oracle_requirement: required for every hard exercise
+  slow_fast_oracle_requirement: required where an optimized path exists
+  property_test_requirement: required for mathematical invariants
+  debug_mode_requirement: required for complex functions
+  release_status: released_with_cuda_section_metric
+  remaining_release_evidence: ''
+- section: '7.5'
+  notebook_id: 7_5_predictive_concept_decoders
+  title: Predictive Concept Decoders
+  gt_tier: GT-3
+  difficulty: '3'
+  importance: '3'
+  requires_gpu: 'true'
+  metadata_source: chapter7_activation_to_language/exercises/part5_predictive_concept_decoders/artifacts.lock.yml:exercise_metadata
+  fixture_provenance_source: chapter7_activation_to_language/exercises/part5_predictive_concept_decoders/expected_outputs/README.md
+  visible_tests_source: chapter7_activation_to_language/exercises/part5_predictive_concept_decoders/tests.py
+  report_source: chapter7_activation_to_language/exercises/part5_predictive_concept_decoders/verification_report.json
+  gpu_evidence_requirement: cuda_section_metric required before chapter release
+  toy_oracle_requirement: required for every hard exercise
+  slow_fast_oracle_requirement: required where an optimized path exists
+  property_test_requirement: required for mathematical invariants
+  debug_mode_requirement: required for complex functions
+  release_status: released_with_cuda_section_metric
+  remaining_release_evidence: ''
+- section: '8.1'
+  notebook_id: 8_1_activation_patching_refresher
+  title: Activation Patching Refresher
+  gt_tier: GT-1
+  difficulty: '4'
+  importance: '5'
+  requires_gpu: 'true'
+  metadata_source: chapter8_automated_circuits/exercises/part1_activation_patching_refresher/artifacts.lock.yml:exercise_metadata
+  fixture_provenance_source: chapter8_automated_circuits/exercises/part1_activation_patching_refresher/expected_outputs/README.md
+  visible_tests_source: chapter8_automated_circuits/exercises/part1_activation_patching_refresher/tests.py
+  report_source: chapter8_automated_circuits/exercises/part1_activation_patching_refresher/verification_report.json
+  gpu_evidence_requirement: cuda_section_metric required before chapter release
+  toy_oracle_requirement: required for every hard exercise
+  slow_fast_oracle_requirement: required where an optimized path exists
+  property_test_requirement: required for mathematical invariants
+  debug_mode_requirement: required for complex functions
+  release_status: released_with_cuda_section_metric
+  remaining_release_evidence: ''
+- section: '8.2'
+  notebook_id: 8_2_attribution_patching_and_eap
+  title: Attribution Patching and EAP
+  gt_tier: GT-1
+  difficulty: '4'
+  importance: '5'
+  requires_gpu: 'true'
+  metadata_source: chapter8_automated_circuits/exercises/part2_attribution_patching_eap/artifacts.lock.yml:exercise_metadata
+  fixture_provenance_source: chapter8_automated_circuits/exercises/part2_attribution_patching_eap/expected_outputs/README.md
+  visible_tests_source: chapter8_automated_circuits/exercises/part2_attribution_patching_eap/tests.py
+  report_source: chapter8_automated_circuits/exercises/part2_attribution_patching_eap/verification_report.json
+  gpu_evidence_requirement: cuda_section_metric required before chapter release
+  toy_oracle_requirement: required for every hard exercise
+  slow_fast_oracle_requirement: required where an optimized path exists
+  property_test_requirement: required for mathematical invariants
+  debug_mode_requirement: required for complex functions
+  release_status: released_with_cuda_section_metric
+  remaining_release_evidence: ''
+- section: '8.3'
+  notebook_id: 8_3_acdc_and_circuit_metrics
+  title: ACDC and Circuit Metrics
+  gt_tier: GT-1
+  difficulty: '4'
+  importance: '4'
+  requires_gpu: 'true'
+  metadata_source: chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/artifacts.lock.yml:exercise_metadata
+  fixture_provenance_source: chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/expected_outputs/README.md
+  visible_tests_source: chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/tests.py
+  report_source: chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/verification_report.json
+  gpu_evidence_requirement: cuda_section_metric required before chapter release
+  toy_oracle_requirement: required for every hard exercise
+  slow_fast_oracle_requirement: required where an optimized path exists
+  property_test_requirement: required for mathematical invariants
+  debug_mode_requirement: required for complex functions
+  release_status: released_with_cuda_section_metric
+  remaining_release_evidence: ''
+- section: '8.4'
+  notebook_id: 8_4_circuit_tracing_with_attribution_graphs
+  title: Circuit Tracing with Attribution Graphs
+  gt_tier: GT-1
+  difficulty: '4'
+  importance: '4'
+  requires_gpu: 'true'
+  metadata_source: chapter8_automated_circuits/exercises/part4_circuit_tracing_attribution_graphs/artifacts.lock.yml:exercise_metadata
+  fixture_provenance_source: chapter8_automated_circuits/exercises/part4_circuit_tracing_attribution_graphs/expected_outputs/README.md
+  visible_tests_source: chapter8_automated_circuits/exercises/part4_circuit_tracing_attribution_graphs/tests.py
+  report_source: chapter8_automated_circuits/exercises/part4_circuit_tracing_attribution_graphs/verification_report.json
+  gpu_evidence_requirement: cuda_section_metric required before chapter release
+  toy_oracle_requirement: required for every hard exercise
+  slow_fast_oracle_requirement: required where an optimized path exists
+  property_test_requirement: required for mathematical invariants
+  debug_mode_requirement: required for complex functions
+  release_status: released_with_cuda_section_metric
+  remaining_release_evidence: ''
+- section: '8.5'
+  notebook_id: 8_5_sparse_feature_circuits
+  title: Sparse Feature Circuits
+  gt_tier: GT-0
+  difficulty: '4'
+  importance: '5'
+  requires_gpu: 'true'
+  metadata_source: chapter8_automated_circuits/exercises/part5_sparse_feature_circuits/artifacts.lock.yml:exercise_metadata
+  fixture_provenance_source: chapter8_automated_circuits/exercises/part5_sparse_feature_circuits/expected_outputs/README.md
+  visible_tests_source: chapter8_automated_circuits/exercises/part5_sparse_feature_circuits/tests.py
+  report_source: chapter8_automated_circuits/exercises/part5_sparse_feature_circuits/verification_report.json
+  gpu_evidence_requirement: cuda_section_metric required before chapter release
+  toy_oracle_requirement: required for every hard exercise
+  slow_fast_oracle_requirement: required where an optimized path exists
+  property_test_requirement: required for mathematical invariants
+  debug_mode_requirement: required for complex functions
+  release_status: released_with_cuda_section_metric
+  remaining_release_evidence: ''
+- section: '9.1'
+  notebook_id: 9_1_refusal_directions_and_safe_steering
+  title: Refusal Directions and Safe Steering
+  gt_tier: GT-3
+  difficulty: '3'
+  importance: '5'
+  requires_gpu: 'true'
+  metadata_source: chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/artifacts.lock.yml:exercise_metadata
+  fixture_provenance_source: chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/expected_outputs/README.md
+  visible_tests_source: chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/tests.py
+  report_source: chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/verification_report.json
+  gpu_evidence_requirement: cuda_section_metric required before chapter release
+  toy_oracle_requirement: required for every hard exercise
+  slow_fast_oracle_requirement: required where an optimized path exists
+  property_test_requirement: required for mathematical invariants
+  debug_mode_requirement: required for complex functions
+  release_status: released_with_cuda_section_metric
+  remaining_release_evidence: ''
+- section: '9.2'
+  notebook_id: 9_2_chain_of_thought_faithfulness
+  title: Chain-of-Thought Faithfulness
+  gt_tier: GT-3
+  difficulty: '3'
+  importance: '4'
+  requires_gpu: 'true'
+  metadata_source: chapter9_alignment_interpretability/exercises/part2_cot_faithfulness/artifacts.lock.yml:exercise_metadata
+  fixture_provenance_source: chapter9_alignment_interpretability/exercises/part2_cot_faithfulness/expected_outputs/README.md
+  visible_tests_source: chapter9_alignment_interpretability/exercises/part2_cot_faithfulness/tests.py
+  report_source: chapter9_alignment_interpretability/exercises/part2_cot_faithfulness/verification_report.json
+  gpu_evidence_requirement: cuda_section_metric required before chapter release
+  toy_oracle_requirement: required for every hard exercise
+  slow_fast_oracle_requirement: required where an optimized path exists
+  property_test_requirement: required for mathematical invariants
+  debug_mode_requirement: required for complex functions
+  release_status: released_with_cuda_section_metric
+  remaining_release_evidence: ''
+- section: '9.3'
+  notebook_id: 9_3_emergent_misalignment_detection
+  title: Emergent Misalignment Detection
+  gt_tier: GT-3
+  difficulty: '3'
+  importance: '4'
+  requires_gpu: 'true'
+  metadata_source: chapter9_alignment_interpretability/exercises/part3_emergent_misalignment_detection/artifacts.lock.yml:exercise_metadata
+  fixture_provenance_source: chapter9_alignment_interpretability/exercises/part3_emergent_misalignment_detection/expected_outputs/README.md
+  visible_tests_source: chapter9_alignment_interpretability/exercises/part3_emergent_misalignment_detection/tests.py
+  report_source: chapter9_alignment_interpretability/exercises/part3_emergent_misalignment_detection/verification_report.json
+  gpu_evidence_requirement: cuda_section_metric required before chapter release
+  toy_oracle_requirement: required for every hard exercise
+  slow_fast_oracle_requirement: required where an optimized path exists
+  property_test_requirement: required for mathematical invariants
+  debug_mode_requirement: required for complex functions
+  release_status: released_with_cuda_section_metric
+  remaining_release_evidence: ''
+- section: '9.4'
+  notebook_id: 9_4_white_box_evals_and_monitors
+  title: White-box Evals and Monitors
+  gt_tier: GT-3
+  difficulty: '3'
+  importance: '4'
+  requires_gpu: 'true'
+  metadata_source: chapter9_alignment_interpretability/exercises/part4_white_box_evals_monitors/artifacts.lock.yml:exercise_metadata
+  fixture_provenance_source: chapter9_alignment_interpretability/exercises/part4_white_box_evals_monitors/expected_outputs/README.md
+  visible_tests_source: chapter9_alignment_interpretability/exercises/part4_white_box_evals_monitors/tests.py
+  report_source: chapter9_alignment_interpretability/exercises/part4_white_box_evals_monitors/verification_report.json
+  gpu_evidence_requirement: cuda_section_metric required before chapter release
+  toy_oracle_requirement: required for every hard exercise
+  slow_fast_oracle_requirement: required where an optimized path exists
+  property_test_requirement: required for mathematical invariants
+  debug_mode_requirement: required for complex functions
+  release_status: released_with_cuda_section_metric
+  remaining_release_evidence: ''
+- section: '10.1'
+  notebook_id: 10_1_capstone_research_sprint
+  title: Capstone Research Sprint
+  gt_tier: GT-4
+  difficulty: '5'
+  importance: '3'
+  requires_gpu: 'true'
+  metadata_source: chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/artifacts.lock.yml:exercise_metadata
+  fixture_provenance_source: chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/expected_outputs/README.md
+  visible_tests_source: chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/tests.py
+  report_source: chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/verification_report.json
+  gpu_evidence_requirement: cuda_section_metric required before chapter release
+  toy_oracle_requirement: required for every hard exercise
+  slow_fast_oracle_requirement: required where an optimized path exists
+  property_test_requirement: required for mathematical invariants
+  debug_mode_requirement: required for complex functions
+  release_status: released_with_cuda_section_metric
+  remaining_release_evidence: ''
+- section: '11.1'
+  notebook_id: 11_1_pca_svd_and_geometry_controls
+  title: PCA, SVD, and Geometry Controls
+  gt_tier: GT-0
+  difficulty: '3'
+  importance: '3'
+  requires_gpu: 'true'
+  metadata_source: chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/artifacts.lock.yml:exercise_metadata
+  fixture_provenance_source: chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/expected_outputs/README.md
+  visible_tests_source: chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/tests.py
+  report_source: chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/verification_report.json
+  gpu_evidence_requirement: cuda_section_metric required before chapter release
+  toy_oracle_requirement: required for every hard exercise
+  slow_fast_oracle_requirement: required where an optimized path exists
+  property_test_requirement: required for mathematical invariants
+  debug_mode_requirement: required for complex functions
+  release_status: released_with_cuda_section_metric
+  remaining_release_evidence: ''
+- section: '12.1'
+  notebook_id: 12_1_clip_siglip_and_vlm_controls
+  title: CLIP, SigLIP, and VLM Controls
+  gt_tier: GT-1
+  difficulty: '4'
+  importance: '3'
+  requires_gpu: 'true'
+  metadata_source: chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls/artifacts.lock.yml:exercise_metadata
+  fixture_provenance_source: chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls/expected_outputs/README.md
+  visible_tests_source: chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls/tests.py
+  report_source: chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls/verification_report.json
+  gpu_evidence_requirement: cuda_section_metric required before chapter release
+  toy_oracle_requirement: required for every hard exercise
+  slow_fast_oracle_requirement: required where an optimized path exists
+  property_test_requirement: required for mathematical invariants
+  debug_mode_requirement: required for complex functions
+  release_status: released_with_cuda_section_metric
+  remaining_release_evidence: ''
+- section: '13.1'
+  notebook_id: 13_1_diffusion_and_image_generation_controls
+  title: Diffusion and Image-Generation Controls
+  gt_tier: GT-1
+  difficulty: '4'
+  importance: '3'
+  requires_gpu: 'true'
+  metadata_source: chapter13_image_generation_interpretability/exercises/part1_diffusion_image_controls/artifacts.lock.yml:exercise_metadata
+  fixture_provenance_source: chapter13_image_generation_interpretability/exercises/part1_diffusion_image_controls/expected_outputs/README.md
+  visible_tests_source: chapter13_image_generation_interpretability/exercises/part1_diffusion_image_controls/tests.py
+  report_source: chapter13_image_generation_interpretability/exercises/part1_diffusion_image_controls/verification_report.json
+  gpu_evidence_requirement: cuda_section_metric required before chapter release
+  toy_oracle_requirement: required for every hard exercise
+  slow_fast_oracle_requirement: required where an optimized path exists
+  property_test_requirement: required for mathematical invariants
+  debug_mode_requirement: required for complex functions
+  release_status: released_with_cuda_section_metric
+  remaining_release_evidence: ''
+- section: '14.1'
+  notebook_id: 14_1_jepa_and_world_model_controls
+  title: JEPA and World-Model Controls
+  gt_tier: GT-1
+  difficulty: '4'
+  importance: '3'
+  requires_gpu: 'true'
+  metadata_source: chapter14_jepa_world_models/exercises/part1_jepa_world_model_controls/artifacts.lock.yml:exercise_metadata
+  fixture_provenance_source: chapter14_jepa_world_models/exercises/part1_jepa_world_model_controls/expected_outputs/README.md
+  visible_tests_source: chapter14_jepa_world_models/exercises/part1_jepa_world_model_controls/tests.py
+  report_source: chapter14_jepa_world_models/exercises/part1_jepa_world_model_controls/verification_report.json
+  gpu_evidence_requirement: cuda_section_metric required before chapter release
+  toy_oracle_requirement: required for every hard exercise
+  slow_fast_oracle_requirement: required where an optimized path exists
+  property_test_requirement: required for mathematical invariants
+  debug_mode_requirement: required for complex functions
+  release_status: released_with_cuda_section_metric
+  remaining_release_evidence: ''
+- section: '15.1'
+  notebook_id: 15_1_lora_dora_and_adapter_controls
+  title: LoRA, DoRA, and Adapter Controls
+  gt_tier: GT-0
+  difficulty: '3'
+  importance: '3'
+  requires_gpu: 'true'
+  metadata_source: chapter15_peft_misalignment/exercises/part1_lora_dora_adapter_controls/artifacts.lock.yml:exercise_metadata
+  fixture_provenance_source: chapter15_peft_misalignment/exercises/part1_lora_dora_adapter_controls/expected_outputs/README.md
+  visible_tests_source: chapter15_peft_misalignment/exercises/part1_lora_dora_adapter_controls/tests.py
+  report_source: chapter15_peft_misalignment/exercises/part1_lora_dora_adapter_controls/verification_report.json
+  gpu_evidence_requirement: cuda_section_metric required before chapter release
+  toy_oracle_requirement: required for every hard exercise
+  slow_fast_oracle_requirement: required where an optimized path exists
+  property_test_requirement: required for mathematical invariants
+  debug_mode_requirement: required for complex functions
+  release_status: released_with_cuda_section_metric
+  remaining_release_evidence: ''
+- section: '16.1'
+  notebook_id: 16_1_exact_shapley_on_ground_truth_games
+  title: Exact Shapley on Ground-Truth Games
+  gt_tier: GT-0
+  difficulty: '4'
+  importance: '5'
+  requires_gpu: 'true'
+  metadata_source: chapter16_shapley_attribution_baselines/exercises/part1_exact_shapley_ground_truth_games/artifacts.lock.yml:exercise_metadata
+  fixture_provenance_source: chapter16_shapley_attribution_baselines/exercises/part1_exact_shapley_ground_truth_games/expected_outputs/README.md
+  visible_tests_source: chapter16_shapley_attribution_baselines/exercises/part1_exact_shapley_ground_truth_games/tests.py
+  report_source: chapter16_shapley_attribution_baselines/exercises/part1_exact_shapley_ground_truth_games/verification_report.json
+  gpu_evidence_requirement: cuda_section_metric required before chapter release
+  toy_oracle_requirement: required for every hard exercise
+  slow_fast_oracle_requirement: required where an optimized path exists
+  property_test_requirement: required for mathematical invariants
+  debug_mode_requirement: required for complex functions
+  release_status: released_with_cuda_section_metric
+  remaining_release_evidence: ''
+- section: '16.2'
+  notebook_id: 16_2_kernelshap_and_partitionshap_controls
+  title: KernelSHAP and PartitionSHAP Controls
+  gt_tier: GT-0
+  difficulty: '4'
+  importance: '4'
+  requires_gpu: 'true'
+  metadata_source: chapter16_shapley_attribution_baselines/exercises/part2_kernelshap_partition_shap_controls/artifacts.lock.yml:exercise_metadata
+  fixture_provenance_source: chapter16_shapley_attribution_baselines/exercises/part2_kernelshap_partition_shap_controls/expected_outputs/README.md
+  visible_tests_source: chapter16_shapley_attribution_baselines/exercises/part2_kernelshap_partition_shap_controls/tests.py
+  report_source: chapter16_shapley_attribution_baselines/exercises/part2_kernelshap_partition_shap_controls/verification_report.json
+  gpu_evidence_requirement: cuda_section_metric required before chapter release
+  toy_oracle_requirement: required for every hard exercise
+  slow_fast_oracle_requirement: required where an optimized path exists
+  property_test_requirement: required for mathematical invariants
+  debug_mode_requirement: required for complex functions
+  release_status: released_with_cuda_section_metric
+  remaining_release_evidence: ''
+- section: '16.3'
+  notebook_id: 16_3_shapley_interactions_with_shapiq
+  title: Shapley Interactions with shapiq
+  gt_tier: GT-0
+  difficulty: '4'
+  importance: '4'
+  requires_gpu: 'true'
+  metadata_source: chapter16_shapley_attribution_baselines/exercises/part3_shapley_interactions_shapiq/artifacts.lock.yml:exercise_metadata
+  fixture_provenance_source: chapter16_shapley_attribution_baselines/exercises/part3_shapley_interactions_shapiq/expected_outputs/README.md
+  visible_tests_source: chapter16_shapley_attribution_baselines/exercises/part3_shapley_interactions_shapiq/tests.py
+  report_source: chapter16_shapley_attribution_baselines/exercises/part3_shapley_interactions_shapiq/verification_report.json
+  gpu_evidence_requirement: cuda_section_metric required before chapter release
+  toy_oracle_requirement: required for every hard exercise
+  slow_fast_oracle_requirement: required where an optimized path exists
+  property_test_requirement: required for mathematical invariants
+  debug_mode_requirement: required for complex functions
+  release_status: released_with_cuda_section_metric
+  remaining_release_evidence: ''
+- section: '16.4'
+  notebook_id: 16_4_tokenshap_and_tokenshapley
+  title: TokenSHAP and TokenShapley
+  gt_tier: GT-0
+  difficulty: '3'
+  importance: '4'
+  requires_gpu: 'true'
+  metadata_source: chapter16_shapley_attribution_baselines/exercises/part4_tokenshap_token_shapley/artifacts.lock.yml:exercise_metadata
+  fixture_provenance_source: chapter16_shapley_attribution_baselines/exercises/part4_tokenshap_token_shapley/expected_outputs/README.md
+  visible_tests_source: chapter16_shapley_attribution_baselines/exercises/part4_tokenshap_token_shapley/tests.py
+  report_source: chapter16_shapley_attribution_baselines/exercises/part4_tokenshap_token_shapley/verification_report.json
+  gpu_evidence_requirement: cuda_section_metric required before chapter release
+  toy_oracle_requirement: required for every hard exercise
+  slow_fast_oracle_requirement: required where an optimized path exists
+  property_test_requirement: required for mathematical invariants
+  debug_mode_requirement: required for complex functions
+  release_status: released_with_cuda_section_metric
+  remaining_release_evidence: ''
+- section: '16.5'
+  notebook_id: 16_5_vlm_modality_and_region_shap
+  title: VLM Modality and Region SHAP
+  gt_tier: GT-0
+  difficulty: '3'
+  importance: '4'
+  requires_gpu: 'true'
+  metadata_source: chapter16_shapley_attribution_baselines/exercises/part5_vlm_modality_region_shap/artifacts.lock.yml:exercise_metadata
+  fixture_provenance_source: chapter16_shapley_attribution_baselines/exercises/part5_vlm_modality_region_shap/expected_outputs/README.md
+  visible_tests_source: chapter16_shapley_attribution_baselines/exercises/part5_vlm_modality_region_shap/tests.py
+  report_source: chapter16_shapley_attribution_baselines/exercises/part5_vlm_modality_region_shap/verification_report.json
+  gpu_evidence_requirement: cuda_section_metric required before chapter release
+  toy_oracle_requirement: required for every hard exercise
+  slow_fast_oracle_requirement: required where an optimized path exists
+  property_test_requirement: required for mathematical invariants
+  debug_mode_requirement: required for complex functions
+  release_status: released_with_cuda_section_metric
+  remaining_release_evidence: ''
+- section: '16.6'
+  notebook_id: 16_6_shap_vs_activation_patching
+  title: SHAP vs Activation Patching
+  gt_tier: GT-0
+  difficulty: '3'
+  importance: '4'
+  requires_gpu: 'true'
+  metadata_source: chapter16_shapley_attribution_baselines/exercises/part6_shap_vs_activation_patching/artifacts.lock.yml:exercise_metadata
+  fixture_provenance_source: chapter16_shapley_attribution_baselines/exercises/part6_shap_vs_activation_patching/expected_outputs/README.md
+  visible_tests_source: chapter16_shapley_attribution_baselines/exercises/part6_shap_vs_activation_patching/tests.py
+  report_source: chapter16_shapley_attribution_baselines/exercises/part6_shap_vs_activation_patching/verification_report.json
+  gpu_evidence_requirement: cuda_section_metric required before chapter release
+  toy_oracle_requirement: required for every hard exercise
+  slow_fast_oracle_requirement: required where an optimized path exists
+  property_test_requirement: required for mathematical invariants
+  debug_mode_requirement: required for complex functions
+  release_status: released_with_cuda_section_metric
+  remaining_release_evidence: ''
+- section: '16.7'
+  notebook_id: 16_7_data_shapley_in_one_training_run
+  title: Data Shapley in One Training Run
+  gt_tier: GT-0
+  difficulty: '4'
+  importance: '4'
+  requires_gpu: 'true'
+  metadata_source: chapter16_shapley_attribution_baselines/exercises/part7_data_shapley_in_one_training_run/artifacts.lock.yml:exercise_metadata
+  fixture_provenance_source: chapter16_shapley_attribution_baselines/exercises/part7_data_shapley_in_one_training_run/expected_outputs/README.md
+  visible_tests_source: chapter16_shapley_attribution_baselines/exercises/part7_data_shapley_in_one_training_run/tests.py
+  report_source: chapter16_shapley_attribution_baselines/exercises/part7_data_shapley_in_one_training_run/verification_report.json
+  gpu_evidence_requirement: cuda_section_metric required before chapter release
+  toy_oracle_requirement: required for every hard exercise
+  slow_fast_oracle_requirement: required where an optimized path exists
+  property_test_requirement: required for mathematical invariants
+  debug_mode_requirement: required for complex functions
+  release_status: released_with_cuda_section_metric
+  remaining_release_evidence: ''
+- section: '16.8'
+  notebook_id: 16_8_do_shapley_and_mechanistic_interpretability_agree
+  title: Do SHAPley and Mechanistic Interpretability Agree?
+  gt_tier: GT-0
+  difficulty: '4'
+  importance: '4'
+  requires_gpu: 'true'
+  metadata_source: chapter16_shapley_attribution_baselines/exercises/part8_shapley_mechinterp_agreement/artifacts.lock.yml:exercise_metadata
+  fixture_provenance_source: chapter16_shapley_attribution_baselines/exercises/part8_shapley_mechinterp_agreement/expected_outputs/README.md
+  visible_tests_source: chapter16_shapley_attribution_baselines/exercises/part8_shapley_mechinterp_agreement/tests.py
+  report_source: chapter16_shapley_attribution_baselines/exercises/part8_shapley_mechinterp_agreement/verification_report.json
+  gpu_evidence_requirement: cuda_section_metric required before chapter release
+  toy_oracle_requirement: required for every hard exercise
+  slow_fast_oracle_requirement: required where an optimized path exists
+  property_test_requirement: required for mathematical invariants
+  debug_mode_requirement: required for complex functions
+  release_status: released_with_cuda_section_metric
+  remaining_release_evidence: ''
+- section: '17.1'
+  notebook_id: 17_1_checkpoint_archaeology_and_mechanism_emergence
+  title: Checkpoint Archaeology and Mechanism Emergence
+  gt_tier: GT-0
+  difficulty: '4'
+  importance: '3'
+  requires_gpu: 'true'
+  metadata_source: chapter17_training_dynamics/exercises/part1_checkpoint_archaeology/artifacts.lock.yml:exercise_metadata
+  fixture_provenance_source: chapter17_training_dynamics/exercises/part1_checkpoint_archaeology/expected_outputs/README.md
+  visible_tests_source: chapter17_training_dynamics/exercises/part1_checkpoint_archaeology/tests.py
+  report_source: chapter17_training_dynamics/exercises/part1_checkpoint_archaeology/verification_report.json
+  gpu_evidence_requirement: cuda_section_metric required before chapter release
+  toy_oracle_requirement: required for every hard exercise
+  slow_fast_oracle_requirement: required where an optimized path exists
+  property_test_requirement: required for mathematical invariants
+  debug_mode_requirement: required for complex functions
+  release_status: released_with_cuda_section_metric
+  remaining_release_evidence: ''

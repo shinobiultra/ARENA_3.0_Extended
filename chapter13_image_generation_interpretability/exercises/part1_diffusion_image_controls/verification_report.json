@@ -1,0 +1,776 @@
+{
+  "accepted": true,
+  "baselines": {
+    "declared_controls": [
+      "baseline_or_reference_check",
+      "negative_control_where_applicable",
+      "shape_dtype_or_exact_value_check",
+      "attention_region_mass_control",
+      "denoising_ablation_random_control",
+      "latent_direction_random_control",
+      "prompt_token_ablation_control",
+      "pinned_sd_turbo_safetensors_generation",
+      "deterministic_safe_shape_prompt_pair",
+      "pinned_clip_prompt_alignment_scoring",
+      "pinned_sd_turbo_cross_attention_capture",
+      "target_token_vs_background_token_attention_control",
+      "generated_color_shape_region_mask_control",
+      "pinned_sd15_safetensors_generation",
+      "sd15_daam_cross_attention_capture",
+      "sd15_target_token_ablation_control",
+      "sd15_random_token_ablation_control",
+      "sd15_image_quality_metric",
+      "sd15_white_noise_control"
+    ],
+    "expected_metrics": {
+      "accepted": true,
+      "latent_direction_effect": true,
+      "max_allowed_gpu_gb": 24,
+      "region_selective": true,
+      "sd15_clip_image_to_text_accuracy": 1.0,
+      "sd15_clip_mean_positive_margin_min": 2.0,
+      "sd15_clip_text_to_image_accuracy": 1.0,
+      "sd15_cross_attention_maps_captured": true,
+      "sd15_daam_baseline_included": true,
+      "sd15_fixed_seed_generation_passed": true,
+      "sd15_image_quality_preserved": true,
+      "sd15_max_high_frequency_energy_max": 0.12,
+      "sd15_max_random_control_drop_max": 0.0,
+      "sd15_mean_target_control_attention_gap_min": 0.01,
+      "sd15_min_captured_cross_attention_map_count_min": 32,
+      "sd15_min_target_ablation_drop_min": 0.05,
+      "sd15_min_target_control_attention_gap_min": 0.005,
+      "sd15_min_target_lift_over_mask_fraction_min": 0.01,
+      "sd15_min_target_region_fraction_min": 0.02,
+      "sd15_min_white_noise_high_frequency_gap_min": 0.12,
+      "sd15_model_id": "stable-diffusion-v1-5/stable-diffusion-v1-5",
+      "sd15_peak_vram_gb_max": 8.0,
+      "sd15_random_token_ablation_weaker": true,
+      "sd15_revision": "451f4fe16113bff5a5d2269ed5ad43b0592e9a14",
+      "sd15_strict_experiment_passed": true,
+      "sd15_token_ablation_passed": true,
+      "sd15_white_noise_rejected": true,
+      "sd_turbo_attention_resolutions": [
+        8,
+        16,
+        32,
+        64
+      ],
+      "sd_turbo_cross_attention_localized": true,
+      "sd_turbo_image_to_text_accuracy": 1.0,
+      "sd_turbo_mean_positive_margin_min": 2.0,
+      "sd_turbo_mean_target_control_attention_gap_min": 0.03,
+      "sd_turbo_min_captured_cross_attention_map_count_min": 16,
+      "sd_turbo_min_target_control_attention_gap_min": 0.02,
+      "sd_turbo_min_target_lift_over_mask_fraction_min": 0.02,
+      "sd_turbo_peak_vram_gb_max": 8.0,
+      "sd_turbo_preflight_passed": true,
+      "sd_turbo_text_to_image_accuracy": 1.0,
+      "tests_passed": true
+    }
+  },
+  "claim_scope": "GT-1 toy diffusion/image-generation interpretability controls plus a required pinned safetensors Stable Diffusion 1.5 safe-shape preflight. The SD1.5 path captures DAAM-style cross-attention maps for color/shape tokens, verifies target-token attention over generated color regions against unrelated-token controls, ablates target prompt tokens over random/control-token ablations, preserves simple image-quality metrics, rejects white-noise controls, and scores generated images with pinned CLIP. A pinned SD-Turbo/CLIP attention preflight remains supplemental.",
+  "datasets": [
+    {
+      "id": "13_1_diffusion_and_image_generation_controls_toy_inputs",
+      "seed": 0,
+      "source": "generated"
+    },
+    {
+      "id": "course_generated_safe_shape_prompts_sd_turbo_v1",
+      "image_size": "512x512",
+      "prompt_count": 2,
+      "prompts": [
+        "red square icon on clean white background",
+        "blue circle icon on clean white background"
+      ],
+      "seed": 0,
+      "source": "generated_prompt_pair"
+    },
+    {
+      "id": "course_generated_safe_shape_prompts_sd15_v1",
+      "image_size": "512x512",
+      "prompt_count": 2,
+      "prompts": [
+        "single centered solid red square on plain white background",
+        "single centered solid blue circle on plain white background"
+      ],
+      "seed": "red_square=4;blue_circle=2",
+      "source": "generated_prompt_pair"
+    }
+  ],
+  "date_run": "2026-06-30T14:11:01+00:00",
+  "evidence_level": "toy_prompt_region_controls_plus_pinned_sd15_daam_token_ablation_quality_preflight",
+  "git_commit": "f9f034bd",
+  "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+  "gt_tier": "GT-1",
+  "known_failures": [],
+  "metrics": {
+    "gpu_evidence": {
+      "category": "cuda_section_metric",
+      "placeholder_only": false,
+      "section_specific_metric_keys": [
+        "has_directional_effect",
+        "latent_direction_effect",
+        "latent_observed_delta",
+        "latent_random_delta",
+        "region_mass",
+        "region_selective",
+        "sd15_attention_resolutions",
+        "sd15_case_reports",
+        "sd15_clip_image_to_text_accuracy",
+        "sd15_clip_mean_positive_margin",
+        "sd15_clip_text_to_image_accuracy",
+        "sd15_cross_attention_maps_captured",
+        "sd15_daam_baseline_included",
+        "sd15_fixed_seed_generation_passed",
+        "sd15_image_quality_preserved",
+        "sd15_max_high_frequency_energy",
+        "sd15_max_random_control_drop",
+        "sd15_mean_target_control_attention_gap",
+        "sd15_min_captured_cross_attention_map_count",
+        "sd15_min_target_ablation_drop",
+        "sd15_min_target_control_attention_gap",
+        "sd15_min_target_lift_over_mask_fraction",
+        "sd15_min_target_region_fraction",
+        "sd15_min_white_noise_high_frequency_gap",
+        "sd15_model_id",
+        "sd15_peak_vram_gb",
+        "sd15_preflight",
+        "sd15_random_token_ablation_weaker",
+        "sd15_revision",
+        "sd15_strict_experiment_passed",
+        "sd15_token_ablation_passed",
+        "sd15_white_noise_rejected",
+        "sd_turbo_attention_resolutions",
+        "sd_turbo_control_attention_region_masses",
+        "sd_turbo_cross_attention_localized",
+        "sd_turbo_image_to_text_accuracy",
+        "sd_turbo_mean_positive_margin",
+        "sd_turbo_mean_target_control_attention_gap",
+        "sd_turbo_min_captured_cross_attention_map_count",
+        "sd_turbo_min_target_control_attention_gap",
+        "sd_turbo_min_target_lift_over_mask_fraction",
+        "sd_turbo_peak_vram_gb",
+        "sd_turbo_preflight",
+        "sd_turbo_preflight_passed",
+        "sd_turbo_target_attention_region_masses",
+        "sd_turbo_text_to_image_accuracy"
+      ],
+      "uses_cuda": true
+    },
+    "gpu_test": {
+      "cuda_available": true,
+      "cuda_version": "13.2",
+      "device": "NVIDIA GeForce RTX 5090 Laptop GPU",
+      "full_path": "Validated diffusion attention region controls, latent-direction effects over random controls, pinned SD-Turbo safe-shape generation scored by real CLIP, SD-Turbo cross-attention localization, and pinned SD1.5 DAAM-style attention, target-token ablation, image-quality, and white-noise controls on deterministic safe shape prompts.",
+      "gpu_total_memory_gb": 23.45965576171875,
+      "has_directional_effect": true,
+      "latent_direction_effect": true,
+      "latent_observed_delta": 0.5999999940395355,
+      "latent_random_delta": 0.04999999701976776,
+      "peak_vram_gb": 3.126201629638672,
+      "region_mass": 0.6000000238418579,
+      "region_selective": true,
+      "sd15_attention_resolutions": [
+        8,
+        16,
+        32,
+        64
+      ],
+      "sd15_case_reports": [
+        {
+          "attention_resolutions": [
+            8,
+            16,
+            32,
+            64
+          ],
+          "captured_cross_attention_map_count": 1008,
+          "case_id": "red_square",
+          "control_ablated_prompt": "a single centered solid red square, plain white foreground, flat vector icon, minimal geometric shape",
+          "control_region_mass": 0.24278798699378967,
+          "control_region_score": 0.3306083679199219,
+          "control_terms": [
+            "geometric"
+          ],
+          "control_token_positions": [
+            17
+          ],
+          "daam_localized": true,
+          "high_frequency_energy": 0.009409384801983833,
+          "image_quality_preserved": true,
+          "mask_fraction": 0.199951171875,
+          "original_region_score": 0.19669342041015625,
+          "prompt": "a single centered solid red square, plain white background, flat vector icon, minimal geometric shape",
+          "random_control_drop": -0.13391494750976562,
+          "random_token_ablation_weaker": true,
+          "rgb_std": 0.19652694463729858,
+          "saturation_fraction": 0.016585031524300575,
+          "seed": 4,
+          "target_ablated_prompt": "a single centered solid square, plain white background, flat vector icon, minimal geometric shape",
+          "target_ablated_region_score": 0.000682830810546875,
+          "target_ablation_passed": true,
+          "target_color": "red",
+          "target_control_gap": 0.04503345489501953,
+          "target_drop": 0.19601058959960938,
+          "target_lift_over_mask_fraction": 0.0878702700138092,
+          "target_region_fraction": 0.19669342041015625,
+          "target_region_mass": 0.2878214418888092,
+          "target_terms": [
+            "red",
+            "square"
+          ],
+          "target_token_positions": [
+            5,
+            6
+          ],
+          "white_noise_high_frequency_energy": 0.33437636494636536,
+          "white_noise_rejected": true
+        },
+        {
+          "attention_resolutions": [
+            8,
+            16,
+            32,
+            64
+          ],
+          "captured_cross_attention_map_count": 1008,
+          "case_id": "blue_circle",
+          "control_ablated_prompt": "a single centered solid blue circle, plain white foreground, flat vector icon, minimal geometric shape",
+          "control_region_mass": 0.32033851742744446,
+          "control_region_score": 0.4163246154785156,
+          "control_terms": [
+            "geometric"
+          ],
+          "control_token_positions": [
+            17
+          ],
+          "daam_localized": true,
+          "high_frequency_energy": 0.052250295877456665,
+          "image_quality_preserved": true,
+          "mask_fraction": 0.31787109375,
+          "original_region_score": 0.153411865234375,
+          "prompt": "a single centered solid blue circle, plain white background, flat vector icon, minimal geometric shape",
+          "random_control_drop": -0.2629127502441406,
+          "random_token_ablation_weaker": true,
+          "rgb_std": 0.3649842143058777,
+          "saturation_fraction": 0.2794710695743561,
+          "seed": 2,
+          "target_ablated_prompt": "a single centered solid circle, plain white background, flat vector icon, minimal geometric shape",
+          "target_ablated_region_score": 0.000423431396484375,
+          "target_ablation_passed": true,
+          "target_color": "blue",
+          "target_control_gap": 0.015254825353622437,
+          "target_drop": 0.15298843383789062,
+          "target_lift_over_mask_fraction": 0.017722249031066895,
+          "target_region_fraction": 0.153411865234375,
+          "target_region_mass": 0.3355933427810669,
+          "target_terms": [
+            "blue",
+            "circle"
+          ],
+          "target_token_positions": [
+            5,
+            6
+          ],
+          "white_noise_high_frequency_energy": 0.33433663845062256,
+          "white_noise_rejected": true
+        }
+      ],
+      "sd15_clip_image_to_text_accuracy": 1.0,
+      "sd15_clip_mean_positive_margin": 5.22615909576416,
+      "sd15_clip_text_to_image_accuracy": 1.0,
+      "sd15_cross_attention_maps_captured": true,
+      "sd15_daam_baseline_included": true,
+      "sd15_fixed_seed_generation_passed": true,
+      "sd15_image_quality_preserved": true,
+      "sd15_max_high_frequency_energy": 0.052250295877456665,
+      "sd15_max_random_control_drop": -0.13391494750976562,
+      "sd15_mean_target_control_attention_gap": 0.030144140124320984,
+      "sd15_min_captured_cross_attention_map_count": 336,
+      "sd15_min_target_ablation_drop": 0.15298843383789062,
+      "sd15_min_target_control_attention_gap": 0.015254825353622437,
+      "sd15_min_target_lift_over_mask_fraction": 0.017722249031066895,
+      "sd15_min_target_region_fraction": 0.153411865234375,
+      "sd15_min_white_noise_high_frequency_gap": 0.2820863425731659,
+      "sd15_model_id": "stable-diffusion-v1-5/stable-diffusion-v1-5",
+      "sd15_peak_vram_gb": 3.126201629638672,
+      "sd15_preflight": {
+        "attention_resolutions": [
+          8,
+          16,
+          32,
+          64
+        ],
+        "case_reports": [
+          {
+            "attention_resolutions": [
+              8,
+              16,
+              32,
+              64
+            ],
+            "captured_cross_attention_map_count": 1008,
+            "case_id": "red_square",
+            "control_ablated_prompt": "a single centered solid red square, plain white foreground, flat vector icon, minimal geometric shape",
+            "control_region_mass": 0.24278798699378967,
+            "control_region_score": 0.3306083679199219,
+            "control_terms": [
+              "geometric"
+            ],
+            "control_token_positions": [
+              17
+            ],
+            "daam_localized": true,
+            "high_frequency_energy": 0.009409384801983833,
+            "image_quality_preserved": true,
+            "mask_fraction": 0.199951171875,
+            "original_region_score": 0.19669342041015625,
+            "prompt": "a single centered solid red square, plain white background, flat vector icon, minimal geometric shape",
+            "random_control_drop": -0.13391494750976562,
+            "random_token_ablation_weaker": true,
+            "rgb_std": 0.19652694463729858,
+            "saturation_fraction": 0.016585031524300575,
+            "seed": 4,
+            "target_ablated_prompt": "a single centered solid square, plain white background, flat vector icon, minimal geometric shape",
+            "target_ablated_region_score": 0.000682830810546875,
+            "target_ablation_passed": true,
+            "target_color": "red",
+            "target_control_gap": 0.04503345489501953,
+            "target_drop": 0.19601058959960938,
+            "target_lift_over_mask_fraction": 0.0878702700138092,
+            "target_region_fraction": 0.19669342041015625,
+            "target_region_mass": 0.2878214418888092,
+            "target_terms": [
+              "red",
+              "square"
+            ],
+            "target_token_positions": [
+              5,
+              6
+            ],
+            "white_noise_high_frequency_energy": 0.33437636494636536,
+            "white_noise_rejected": true
+          },
+          {
+            "attention_resolutions": [
+              8,
+              16,
+              32,
+              64
+            ],
+            "captured_cross_attention_map_count": 1008,
+            "case_id": "blue_circle",
+            "control_ablated_prompt": "a single centered solid blue circle, plain white foreground, flat vector icon, minimal geometric shape",
+            "control_region_mass": 0.32033851742744446,
+            "control_region_score": 0.4163246154785156,
+            "control_terms": [
+              "geometric"
+            ],
+            "control_token_positions": [
+              17
+            ],
+            "daam_localized": true,
+            "high_frequency_energy": 0.052250295877456665,
+            "image_quality_preserved": true,
+            "mask_fraction": 0.31787109375,
+            "original_region_score": 0.153411865234375,
+            "prompt": "a single centered solid blue circle, plain white background, flat vector icon, minimal geometric shape",
+            "random_control_drop": -0.2629127502441406,
+            "random_token_ablation_weaker": true,
+            "rgb_std": 0.3649842143058777,
+            "saturation_fraction": 0.2794710695743561,
+            "seed": 2,
+            "target_ablated_prompt": "a single centered solid circle, plain white background, flat vector icon, minimal geometric shape",
+            "target_ablated_region_score": 0.000423431396484375,
+            "target_ablation_passed": true,
+            "target_color": "blue",
+            "target_control_gap": 0.015254825353622437,
+            "target_drop": 0.15298843383789062,
+            "target_lift_over_mask_fraction": 0.017722249031066895,
+            "target_region_fraction": 0.153411865234375,
+            "target_region_mass": 0.3355933427810669,
+            "target_terms": [
+              "blue",
+              "circle"
+            ],
+            "target_token_positions": [
+              5,
+              6
+            ],
+            "white_noise_high_frequency_energy": 0.33433663845062256,
+            "white_noise_rejected": true
+          }
+        ],
+        "claim_scope": "pinned_sd15_safe_shape_generation_daam_style_attention_token_ablation_image_quality_and_white_noise_controls",
+        "clip_image_to_text_accuracy": 1.0,
+        "clip_logits": [
+          [
+            29.026762008666992,
+            28.046947479248047
+          ],
+          [
+            23.901477813720703,
+            33.37398147583008
+          ]
+        ],
+        "clip_mean_positive_margin": 5.22615909576416,
+        "clip_model_id": "openai/clip-vit-base-patch32",
+        "clip_revision": "3d74acf9a28c67741b2f4f2ea7635f0aaf6f0268",
+        "clip_text_to_image_accuracy": 1.0,
+        "cuda_available": true,
+        "daam_passed": true,
+        "guidance_scale": 9.0,
+        "image_count": 2,
+        "image_quality_preserved": true,
+        "image_size": [
+          512,
+          512
+        ],
+        "max_high_frequency_energy": 0.052250295877456665,
+        "max_random_control_drop": -0.13391494750976562,
+        "mean_target_control_attention_gap": 0.030144140124320984,
+        "min_captured_cross_attention_map_count": 336,
+        "min_target_ablation_drop": 0.15298843383789062,
+        "min_target_control_attention_gap": 0.015254825353622437,
+        "min_target_lift_over_mask_fraction": 0.017722249031066895,
+        "min_target_region_fraction": 0.153411865234375,
+        "min_white_noise_high_frequency_gap": 0.2820863425731659,
+        "model_id": "stable-diffusion-v1-5/stable-diffusion-v1-5",
+        "negative_prompt": "multiple objects, repeated pattern, tiled, grid, texture, text, letters, watermark, frame, border, shadow, clutter, photo, realistic, wood",
+        "num_inference_steps": 20,
+        "peak_vram_gb": 3.126201629638672,
+        "preflight_passed": true,
+        "prompt_count": 2,
+        "random_token_ablation_weaker": true,
+        "revision": "451f4fe16113bff5a5d2269ed5ad43b0592e9a14",
+        "seeds": [
+          4,
+          2
+        ],
+        "strict_experiment_passed": true,
+        "token_ablation_passed": true,
+        "white_noise_rejected": true,
+        "within_vram_budget": true
+      },
+      "sd15_random_token_ablation_weaker": true,
+      "sd15_revision": "451f4fe16113bff5a5d2269ed5ad43b0592e9a14",
+      "sd15_strict_experiment_passed": true,
+      "sd15_token_ablation_passed": true,
+      "sd15_white_noise_rejected": true,
+      "sd_turbo_attention_resolutions": [
+        8,
+        16,
+        32,
+        64
+      ],
+      "sd_turbo_control_attention_region_masses": [
+        0.594127357006073,
+        0.31150975823402405
+      ],
+      "sd_turbo_cross_attention_localized": true,
+      "sd_turbo_image_to_text_accuracy": 1.0,
+      "sd_turbo_mean_positive_margin": 4.321122169494629,
+      "sd_turbo_mean_target_control_attention_gap": 0.06104271113872528,
+      "sd_turbo_min_captured_cross_attention_map_count": 32,
+      "sd_turbo_min_target_control_attention_gap": 0.03312423825263977,
+      "sd_turbo_min_target_lift_over_mask_fraction": 0.02920430898666382,
+      "sd_turbo_peak_vram_gb": 3.0785984992980957,
+      "sd_turbo_preflight": {
+        "aligned": true,
+        "attention_reports": [
+          {
+            "captured_map_count": 32,
+            "control_region_mass": 0.594127357006073,
+            "control_terms": [
+              "white",
+              "background"
+            ],
+            "control_token_positions": [
+              10,
+              11
+            ],
+            "prompt": "a simple red square icon centered on a clean white background, flat vector art",
+            "region_kind": "red_square",
+            "region_mask_fraction": 0.641845703125,
+            "target_control_gap": 0.08896118402481079,
+            "target_lift_over_mask_fraction": 0.04124283790588379,
+            "target_region_mass": 0.6830885410308838,
+            "target_terms": [
+              "red",
+              "square"
+            ],
+            "target_token_positions": [
+              3,
+              4
+            ]
+          },
+          {
+            "captured_map_count": 32,
+            "control_region_mass": 0.31150975823402405,
+            "control_terms": [
+              "white",
+              "background"
+            ],
+            "control_token_positions": [
+              10,
+              11
+            ],
+            "prompt": "a simple blue circle icon centered on a clean white background, flat vector art",
+            "region_kind": "blue_circle",
+            "region_mask_fraction": 0.3154296875,
+            "target_control_gap": 0.03312423825263977,
+            "target_lift_over_mask_fraction": 0.02920430898666382,
+            "target_region_mass": 0.3446339964866638,
+            "target_terms": [
+              "blue",
+              "circle"
+            ],
+            "target_token_positions": [
+              3,
+              4
+            ]
+          }
+        ],
+        "attention_resolutions": [
+          8,
+          16,
+          32,
+          64
+        ],
+        "claim_scope": "pinned_sd_turbo_safe_shape_generation_clip_alignment_and_cross_attention_localization_preflight",
+        "clip_model_id": "openai/clip-vit-base-patch32",
+        "clip_revision": "3d74acf9a28c67741b2f4f2ea7635f0aaf6f0268",
+        "control_attention_region_masses": [
+          0.594127357006073,
+          0.31150975823402405
+        ],
+        "cross_attention_localized": true,
+        "cuda_available": true,
+        "guidance_scale": 0.0,
+        "image_count": 2,
+        "image_sizes": [
+          [
+            512,
+            512
+          ],
+          [
+            512,
+            512
+          ]
+        ],
+        "image_to_text_accuracy": 1.0,
+        "logits": [
+          [
+            27.16681671142578,
+            24.470155715942383
+          ],
+          [
+            23.626245498657227,
+            29.571828842163086
+          ]
+        ],
+        "mean_positive_margin": 4.321122169494629,
+        "mean_target_control_attention_gap": 0.06104271113872528,
+        "min_captured_cross_attention_map_count": 32,
+        "min_target_control_attention_gap": 0.03312423825263977,
+        "min_target_lift_over_mask_fraction": 0.02920430898666382,
+        "model_id": "stabilityai/sd-turbo",
+        "num_inference_steps": 2,
+        "peak_vram_gb": 3.0785984992980957,
+        "preflight_passed": true,
+        "prompt_count": 2,
+        "revision": "b261bac6fd2cf515557d5d0707481eafa0485ec2",
+        "seeds": [
+          0,
+          1
+        ],
+        "target_attention_region_masses": [
+          0.6830885410308838,
+          0.3446339964866638
+        ],
+        "text_to_image_accuracy": 1.0,
+        "within_vram_budget": true
+      },
+      "sd_turbo_preflight_passed": true,
+      "sd_turbo_target_attention_region_masses": [
+        0.6830885410308838,
+        0.3446339964866638
+      ],
+      "sd_turbo_text_to_image_accuracy": 1.0,
+      "torch_version": "2.12.1+cu132",
+      "within_vram_budget": true
+    },
+    "notebook_contract": {
+      "attention_region": {
+        "off_region_mass": 0.3999999761581421,
+        "region_mass": 0.6000000238418579,
+        "region_selective": true
+      },
+      "denoising_circuit": {
+        "ablated_loss": 0.7,
+        "ablation_delta": 0.49999999999999994,
+        "baseline_loss": 0.2,
+        "circuit_specific": true,
+        "random_control_loss": 0.35,
+        "random_delta": 0.14999999999999997
+      },
+      "latent_direction": {
+        "baseline_mean": 0.15000000596046448,
+        "has_directional_effect": true,
+        "observed_delta": 0.5999999940395355,
+        "random_control_mean": 0.20000000298023224,
+        "random_delta": 0.04999999701976776,
+        "steered_mean": 0.75
+      },
+      "prompt_region": {
+        "ablated_region_score": 0.3,
+        "control_drop": 0.15000000000000002,
+        "control_region_score": 0.75,
+        "original_region_score": 0.9,
+        "prompt_region_causal": true,
+        "target_drop": 0.6000000000000001
+      }
+    }
+  },
+  "models": [
+    {
+      "gated": false,
+      "id": "toy_or_generated_inputs",
+      "precision": "float32",
+      "revision": "seed_0",
+      "source": "generated"
+    },
+    {
+      "claim_scope": "safe_shape_generation_and_cross_attention_localization_preflight",
+      "gated": false,
+      "id": "stabilityai/sd-turbo",
+      "precision": "float16",
+      "revision": "b261bac6fd2cf515557d5d0707481eafa0485ec2",
+      "source": "huggingface"
+    },
+    {
+      "claim_scope": "sd15_safe_shape_daam_token_ablation_quality_and_noise_controls",
+      "gated": false,
+      "id": "stable-diffusion-v1-5/stable-diffusion-v1-5",
+      "precision": "float16",
+      "revision": "451f4fe16113bff5a5d2269ed5ad43b0592e9a14",
+      "source": "huggingface"
+    },
+    {
+      "claim_scope": "generated_image_prompt_alignment_scoring",
+      "gated": false,
+      "id": "openai/clip-vit-base-patch32",
+      "precision": "float32",
+      "revision": "3d74acf9a28c67741b2f4f2ea7635f0aaf6f0268",
+      "source": "huggingface"
+    }
+  ],
+  "negative_controls": {
+    "declared_controls": [
+      "negative_control_where_applicable",
+      "denoising_ablation_random_control",
+      "latent_direction_random_control",
+      "sd15_random_token_ablation_control"
+    ]
+  },
+  "notebook_id": "13_1_diffusion_and_image_generation_controls",
+  "ood_tests": {
+    "declared": "required_where_applicable"
+  },
+  "peak_vram_gb": 3.126202,
+  "report_inputs": {
+    "schema_version": 1,
+    "algorithm": "sha256",
+    "combined_sha256": "5c438527f6d7586a7b0d637dc8f2840fb475418ebe10fb3ac8b9b26ed89210b4",
+    "files": [
+      {
+        "path": "arena_ext/image_generation_interpretability.py",
+        "sha256": "ed4908eea4867ebb5f812090fcaa72e17aec28345aaa977f74656e2142595587",
+        "size_bytes": 14717
+      },
+      {
+        "path": "arena_ext/verification.py",
+        "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
+        "size_bytes": 9276
+      },
+      {
+        "path": "arena_ext/vlm_interpretability.py",
+        "sha256": "b84973d7e488e83eab49f0e9e495334331691da6ef06759c7e9d441435d0f8e7",
+        "size_bytes": 32189
+      },
+      {
+        "path": "chapter13_image_generation_interpretability/exercises/part1_diffusion_image_controls/13.1_Diffusion_and_Image_Generation_Controls_exercises.ipynb",
+        "sha256": "38fe64cb564b63771a820b0d8f461ed0207dd1848564e845977650881056a20a",
+        "size_bytes": 5111
+      },
+      {
+        "path": "chapter13_image_generation_interpretability/exercises/part1_diffusion_image_controls/13.1_Diffusion_and_Image_Generation_Controls_solutions.ipynb",
+        "sha256": "e3360de58c3ff906ec15d22185ac7c3ca6035c278a477ae31734b16dcb57b494",
+        "size_bytes": 4686
+      },
+      {
+        "path": "chapter13_image_generation_interpretability/exercises/part1_diffusion_image_controls/README.md",
+        "sha256": "6cf1bc5d0c74a06c8fa9e41fadb8cfdcb39167928550bb6108fdc7096bbd659d",
+        "size_bytes": 1066
+      },
+      {
+        "path": "chapter13_image_generation_interpretability/exercises/part1_diffusion_image_controls/artifacts.lock.yml",
+        "sha256": "553484989e403b1c95b2c4765a7a0c474c073587dbb03df9c7072df67f25f1c8",
+        "size_bytes": 5374
+      },
+      {
+        "path": "chapter13_image_generation_interpretability/exercises/part1_diffusion_image_controls/expected_outputs/README.md",
+        "sha256": "f8ba6e53a6e693efe630c1e0e9d150f361cf877d753b48b37bc62cad7a21ae2f",
+        "size_bytes": 1792
+      },
+      {
+        "path": "chapter13_image_generation_interpretability/exercises/part1_diffusion_image_controls/expected_outputs/reference_metrics.json",
+        "sha256": "ea254a51cdc435d478d1121492c41d2fdbe99a88b83f2c521d07ace2bb189306",
+        "size_bytes": 2115
+      },
+      {
+        "path": "chapter13_image_generation_interpretability/exercises/part1_diffusion_image_controls/expected_outputs/smoke_test.json",
+        "sha256": "75305533be2914bb2565863a64b818eb86719383135da131910ba282b0ffdab4",
+        "size_bytes": 319
+      },
+      {
+        "path": "chapter13_image_generation_interpretability/exercises/part1_diffusion_image_controls/solutions.py",
+        "sha256": "3f7619830076522445343c8c3501d8a737dc30ca75ed5b8ffd8dbd5b6c2bdfcb",
+        "size_bytes": 37432
+      },
+      {
+        "path": "chapter13_image_generation_interpretability/exercises/part1_diffusion_image_controls/tests.py",
+        "sha256": "b864d410aeb13ef28861dae1164abcd6924e0176bdee2d16d048389ece23f096",
+        "size_bytes": 9882
+      },
+      {
+        "path": "chapter13_image_generation_interpretability/exercises/part1_diffusion_image_controls/utils.py",
+        "sha256": "68adee841f2bbde2716681df4d068b7da3572e214224210d98670f3967664ad7",
+        "size_bytes": 371
+      },
+      {
+        "path": "chapter13_image_generation_interpretability/exercises/part1_diffusion_image_controls/verification_report.schema.json",
+        "sha256": "ecd833883885077ad5d7a0e239d984d01462255e94266212cf195ab4d4e27b3d",
+        "size_bytes": 2669
+      },
+      {
+        "path": "chapter13_image_generation_interpretability/instructions/pages/01_[13.1]_Diffusion_and_Image_Generation_Controls.md",
+        "sha256": "eba8768aaf76f946a45f3f629d4ac523e9424ea5167ced20e015c9bd8c537f2b",
+        "size_bytes": 16462
+      },
+      {
+        "path": "scripts/run_extension_verification_reports.py",
+        "sha256": "660040f459d07535deb9e0c34ffddb496c13b8770044ae380d3a8e45b0c8fb2b",
+        "size_bytes": 16080
+      }
+    ]
+  },
+  "safety_notes": [
+    "No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.",
+    "The real-model paths use safe generated shape prompts only. The required SD1.5 path captures cross-attention maps for color/shape token localization over unrelated-token controls, compares target-token ablation against random/control-token ablation, checks simple generated image-quality statistics, and rejects white-noise images. SD-Turbo remains a supplemental fast preflight, not the acceptance fallback."
+  ],
+  "tests_passed": true,
+  "wall_clock_seconds": 149.890478
+}

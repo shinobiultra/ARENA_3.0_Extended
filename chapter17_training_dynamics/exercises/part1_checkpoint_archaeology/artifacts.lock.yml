@@ -1,0 +1,103 @@
+notebook_id: 17_1_checkpoint_archaeology_and_mechanism_emergence
+section: '17.1'
+title: Checkpoint Archaeology and Mechanism Emergence
+exercise_metadata:
+  EXERCISE_ID: 17_1_checkpoint_archaeology_and_mechanism_emergence
+  GT_TIER: GT-0
+  DIFFICULTY: 4
+  IMPORTANCE: 3
+  EXPECTED_RUNTIME: seconds on toy contract; minutes on local real-model path
+  REQUIRES_GPU: true
+gt_tier: GT-0
+evidence_level: toy_trajectory_contract_plus_real_modular_addition_checkpoint_preflight
+claim_scope: 'GT-0 developmental-interpretability preflight: deterministic toy AR,
+  JEPA, diffusion, Mamba, and random-control trajectories are kept for learner exercises,
+  then a tiny modular-addition MLP is trained on CUDA on the complete mod-13 addition
+  table. The report saves and reloads real checkpoints, detects stable emergence and
+  a phase jump from the reloaded checkpoint accuracies, and rejects a random-label
+  checkpoint control evaluated against the true table. This proves the local checkpoint-archaeology
+  workflow on a finite model organism. The complete mod-13 input domain is exhausted
+  at evaluation time, so the generalization claim is finite-domain coverage rather
+  than OOD extrapolation; it is not a claim about large-model developmental mechanisms.'
+required_gpu_gb: 1
+max_allowed_gpu_gb: 24
+models:
+- id: toy_or_generated_inputs
+  source: generated
+  revision: seed_0
+  precision: float32
+  gated: false
+- id: course_tiny_modular_addition_mlp_v1
+  source: generated_training_run
+  revision: seed_0_mod13_embed32_hidden64_steps80
+  precision: float32
+  gated: false
+  claim_scope: trained_checkpoint_archaeology_preflight
+  optimizer: AdamW
+  learning_rate: 0.005
+datasets:
+- id: 17_1_checkpoint_archaeology_and_mechanism_emergence_toy_inputs
+  source: generated
+  seed: 0
+- id: complete_mod13_addition_table_v1
+  source: generated_finite_table
+  seed: 0
+  modulus: 13
+  example_count: 169
+  label_rule: (left + right) % 13
+  random_label_control: true
+  checkpoint_steps:
+  - 0
+  - 2
+  - 4
+  - 6
+  - 8
+  - 10
+  - 12
+  - 15
+  - 20
+  - 30
+  - 40
+  - 60
+  - 80
+expected_metrics:
+  tests_passed: true
+  accepted: true
+  max_allowed_gpu_gb: 24
+  preflight_passed: true
+  model_family: tiny_modular_addition_mlp
+  modulus: 13
+  table_example_count: 169
+  checkpoint_count: 26
+  first_crossing_step: 30
+  stable_from_step: 30
+  final_accuracy: 1.0
+  phase_transition_step: 30
+  phase_transition_jump_min: 0.2
+  random_control_peak_accuracy_max: 0.2
+  random_control_passed: true
+  real_checkpoints_reloaded: true
+  loss_drop_min: 2.0
+  peak_vram_gb_max: 0.2
+controls:
+- baseline_or_reference_check
+- random_label_checkpoint_control_required
+- shape_dtype_or_exact_value_check
+- toy_checkpoint_trajectory_contract
+- toy_phase_transition_contract
+- toy_random_control_contract
+- toy_family_timing_contract
+- real_cuda_training_run
+- real_checkpoint_save_and_reload
+- complete_modular_addition_table_accuracy
+- random_label_checkpoint_control
+- exhaustive_mod13_finite_domain_evaluation
+- no_ood_extrapolation_claimed
+- stable_threshold_emergence_check
+- phase_jump_check
+- large_model_checkpoint_archaeology_not_claimed
+safety_notes:
+- No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.
+- The real training path uses only a generated finite modular-addition table and a
+  random-label negative control. It does not use unsafe data, user data, adapters,
+  gated weights, or large persistent artifacts.

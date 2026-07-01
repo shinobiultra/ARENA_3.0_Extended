@@ -1,0 +1,10 @@
+{
+  "accepted": true,
+  "claim_scope": "Contract check; not a full real-model validation.",
+  "evidence_level": "notebook_contract",
+  "gt_tier": "GT-3",
+  "notebook_id": "7_5_predictive_concept_decoders",
+  "section": "7.5",
+  "tests_passed": true,
+  "title": "Predictive Concept Decoders"
+}

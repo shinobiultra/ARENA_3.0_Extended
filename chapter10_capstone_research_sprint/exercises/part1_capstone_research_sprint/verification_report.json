@@ -1,0 +1,445 @@
+{
+  "accepted": true,
+  "baselines": {
+    "declared_controls": [
+      "baseline_or_reference_check",
+      "negative_control_where_applicable",
+      "shape_dtype_or_exact_value_check",
+      "baseline_suite_completeness_check",
+      "causal_validation_suite_completeness_check",
+      "reproducibility_metadata_check",
+      "writeup_path_check",
+      "cuda_training_run_per_seed",
+      "text_only_question_prior_baseline",
+      "linear_probe_bank_baseline",
+      "heldout_template_ood_split",
+      "relevant_latent_dimension_ablation",
+      "counterfactual_latent_dimension_patching",
+      "random_dimension_patch_control",
+      "random_activation_accuracy_control",
+      "label_shuffle_negative_control"
+    ],
+    "expected_metrics": {
+      "ablation_drop_mean_min": 0.2,
+      "accepted": true,
+      "baseline_suite_complete": true,
+      "causal_controls_passed": true,
+      "causal_validation_complete": true,
+      "compositional_oracle_beats_linear_probe": true,
+      "counterfactual_patch_change_rate_mean_min": 0.7,
+      "counterfactual_patch_target_accuracy_mean_min": 0.9,
+      "dataset": "balanced_latent_bits_with_heldout_template_nuisance_v1",
+      "heldout_template_accuracy_mean_min": 0.9,
+      "heldout_template_example_count": 384,
+      "iid_example_count": 576,
+      "label_shuffle_accuracy_mean_max": 0.65,
+      "label_shuffle_control_passed": true,
+      "linear_probe_compositional_accuracy_mean_max": 0.75,
+      "live_training_executed": true,
+      "max_allowed_gpu_gb": 24,
+      "metrics_by_seed_file_valid": true,
+      "model_family": "question_conditioned_mlp_activation_oracle",
+      "ood_passed": true,
+      "oracle_accuracy_mean_min": 0.9,
+      "oracle_beats_linear_probe_bank": true,
+      "oracle_beats_text_only": true,
+      "oracle_compositional_accuracy_mean_min": 0.9,
+      "peak_vram_gb_max": 1.0,
+      "preflight_passed": true,
+      "random_activation_accuracy_mean_max": 0.65,
+      "random_activation_control_passed": true,
+      "random_patch_change_rate_mean_max": 0.15,
+      "ready": true,
+      "reproducible": true,
+      "seed_count": 3,
+      "tests_passed": true,
+      "text_only_accuracy_mean": 0.5,
+      "train_example_count": 576
+    }
+  },
+  "claim_scope": "GT-4 mini capstone sprint: the section keeps the capstone planning scaffold, then runs a real CUDA-trained question-conditioned activation oracle on a generated latent-state benchmark. The claim is scoped to this model-organism: the oracle beats text-only and linear-probe baselines, solves a nonlinear XOR question, generalizes to held-out templates, and passes ablation, counterfactual patching, random-patch, random-activation, and label-shuffle controls. It does not claim a released-model mechanistic discovery.",
+  "datasets": [
+    {
+      "id": "10_1_capstone_research_sprint_toy_inputs",
+      "seed": 0,
+      "source": "generated"
+    },
+    {
+      "d_model": 12,
+      "examples_per_template": 48,
+      "heldout_templates": [
+        3,
+        4
+      ],
+      "id": "activation_oracle_latent_questions_v1",
+      "label_rule": "color_bit, shape_bit, material_bit, and color_xor_shape",
+      "question_count": 4,
+      "seed_count": 3,
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "source": "generated",
+      "train_templates": [
+        0,
+        1,
+        2
+      ]
+    }
+  ],
+  "date_run": "2026-06-30T15:48:27+00:00",
+  "evidence_level": "cuda_trained_activation_oracle_capstone_with_controls",
+  "git_commit": "f9f034bd",
+  "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+  "gt_tier": "GT-4",
+  "known_failures": [],
+  "metrics": {
+    "gpu_evidence": {
+      "category": "cuda_section_metric",
+      "placeholder_only": false,
+      "section_specific_metric_keys": [
+        "ablation_drop_mean",
+        "artifact_paths_exist",
+        "baseline_suite_complete",
+        "benchmark",
+        "capstone_pipeline_executed",
+        "causal_controls_passed",
+        "causal_validation_complete",
+        "compositional_oracle_beats_linear_probe",
+        "counterfactual_patch_change_rate_mean",
+        "counterfactual_patch_target_accuracy_mean",
+        "d_model",
+        "dataset",
+        "failure_cases_file_exists",
+        "heldout_template_accuracy_mean",
+        "heldout_template_example_count",
+        "heldout_templates",
+        "iid_example_count",
+        "label_shuffle_accuracy_mean",
+        "label_shuffle_control_passed",
+        "linear_probe_bank_accuracy_mean",
+        "linear_probe_compositional_accuracy_mean",
+        "live_training_executed",
+        "max_allowed_gpu_gb",
+        "metrics_by_seed_file_valid",
+        "metrics_file_valid",
+        "model_family",
+        "n_questions",
+        "ood_passed",
+        "oracle_accuracy_mean",
+        "oracle_accuracy_min",
+        "oracle_beats_linear_probe_bank",
+        "oracle_beats_text_only",
+        "oracle_compositional_accuracy_mean",
+        "preflight_passed",
+        "question_names",
+        "random_activation_accuracy_mean",
+        "random_activation_control_passed",
+        "random_activation_mean_confidence_mean",
+        "random_patch_change_rate_mean",
+        "ready",
+        "reproducible",
+        "script_paths_exist",
+        "seed_count",
+        "seeds",
+        "text_only_accuracy_mean",
+        "train_example_count",
+        "train_templates",
+        "writeup_file_valid"
+      ],
+      "uses_cuda": true
+    },
+    "gpu_test": {
+      "ablation_drop_mean": 0.48032404979070026,
+      "artifact_paths_exist": true,
+      "baseline_suite_complete": true,
+      "benchmark": "synthetic_activation_oracle_latent_questions_v1",
+      "capstone_pipeline_executed": true,
+      "causal_controls_passed": true,
+      "causal_validation_complete": true,
+      "compositional_oracle_beats_linear_probe": true,
+      "counterfactual_patch_change_rate_mean": 1.0,
+      "counterfactual_patch_target_accuracy_mean": 1.0,
+      "cuda_available": true,
+      "cuda_version": "13.2",
+      "d_model": 12,
+      "dataset": "balanced_latent_bits_with_heldout_template_nuisance_v1",
+      "device": "NVIDIA GeForce RTX 5090 Laptop GPU",
+      "failure_cases_file_exists": true,
+      "full_path": "Train a question-conditioned activation oracle on CUDA, compare it against text-only and linear-probe baselines, then run OOD, ablation, counterfactual patching, random-patch, random-activation, and label-shuffle controls.",
+      "gpu_total_memory_gb": 23.45965576171875,
+      "heldout_template_accuracy_mean": 1.0,
+      "heldout_template_example_count": 384,
+      "heldout_templates": [
+        3,
+        4
+      ],
+      "iid_example_count": 576,
+      "label_shuffle_accuracy_mean": 0.48148147265116376,
+      "label_shuffle_control_passed": true,
+      "linear_probe_bank_accuracy_mean": 0.8784722288449606,
+      "linear_probe_compositional_accuracy_mean": 0.5138888955116272,
+      "live_training_executed": true,
+      "max_allowed_gpu_gb": 24.0,
+      "metrics_by_seed_file_valid": true,
+      "metrics_file_valid": true,
+      "model_family": "question_conditioned_mlp_activation_oracle",
+      "n_questions": 4,
+      "ood_passed": true,
+      "oracle_accuracy_mean": 1.0,
+      "oracle_accuracy_min": 1.0,
+      "oracle_beats_linear_probe_bank": true,
+      "oracle_beats_text_only": true,
+      "oracle_compositional_accuracy_mean": 1.0,
+      "peak_vram_gb": 0.0634922981262207,
+      "preflight_passed": true,
+      "question_names": [
+        "color_bit",
+        "shape_bit",
+        "material_bit",
+        "color_xor_shape"
+      ],
+      "random_activation_accuracy_mean": 0.4947916666666667,
+      "random_activation_control_passed": true,
+      "random_activation_mean_confidence_mean": 0.9181055227915446,
+      "random_patch_change_rate_mean": 0.0,
+      "ready": true,
+      "reproducible": true,
+      "script_paths_exist": true,
+      "seed_count": 3,
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "text_only_accuracy_mean": 0.5,
+      "torch_version": "2.12.1+cu132",
+      "train_example_count": 576,
+      "train_templates": [
+        0,
+        1,
+        2
+      ],
+      "within_vram_budget": true,
+      "writeup_file_valid": true
+    },
+    "notebook_contract": {
+      "baselines": {
+        "complete": true,
+        "missing_baselines": [],
+        "present_baselines": [
+          "probe",
+          "text_only",
+          "random_control"
+        ],
+        "required_baselines": [
+          "probe",
+          "text_only",
+          "random_control"
+        ]
+      },
+      "plan": {
+        "baselines": [
+          "probe",
+          "text_only",
+          "random_control"
+        ],
+        "benchmark": "held-out activation questions",
+        "causal_validations": [
+          "ablation",
+          "patching",
+          "random_control",
+          "ood"
+        ],
+        "mechanistic_claim": "question conditioning uses latent state features",
+        "reproducible_scripts": [
+          "scripts/run_capstone.py"
+        ],
+        "research_question": "Do mini Activation Oracles beat probes?",
+        "writeup_path": "reports/capstone.md"
+      },
+      "readiness": {
+        "baseline_suite_complete": true,
+        "causal_validation_complete": true,
+        "has_benchmark": true,
+        "has_mechanistic_claim": true,
+        "has_research_question": true,
+        "has_writeup_path": true,
+        "ready": true,
+        "reproducibility_complete": true
+      },
+      "reproducibility": {
+        "artifact_paths": [
+          "results/metrics.json"
+        ],
+        "reproducible": true,
+        "script_paths": [
+          "scripts/run_capstone.py"
+        ],
+        "seeds": [
+          0,
+          1,
+          2
+        ]
+      },
+      "validations": {
+        "complete": true,
+        "has_ablation": true,
+        "has_ood": true,
+        "has_patching": true,
+        "has_random_control": true,
+        "validations": [
+          "ablation",
+          "patching",
+          "random_control",
+          "ood"
+        ]
+      }
+    }
+  },
+  "models": [
+    {
+      "gated": false,
+      "id": "toy_or_generated_inputs",
+      "precision": "float32",
+      "revision": "seed_0",
+      "source": "generated"
+    },
+    {
+      "architecture": "2_layer_mlp_question_conditioned_binary_oracle",
+      "claim_scope": "generated_latent_state_model_organism_only",
+      "gated": false,
+      "id": "course_question_conditioned_activation_oracle_v1",
+      "precision": "float32",
+      "revision": "seeds_0_1_2",
+      "source": "generated_training_run"
+    }
+  ],
+  "negative_controls": {
+    "declared_controls": [
+      "negative_control_where_applicable",
+      "random_dimension_patch_control",
+      "random_activation_accuracy_control",
+      "label_shuffle_negative_control"
+    ]
+  },
+  "notebook_id": "10_1_capstone_research_sprint",
+  "ood_tests": {
+    "declared": "required_where_applicable"
+  },
+  "peak_vram_gb": 0.0634922981262207,
+  "report_inputs": {
+    "algorithm": "sha256",
+    "combined_sha256": "48e11dfc3a590c08d8eee0a3a5c70bf98586c0b5b105b59c30a68a0d4b523b9e",
+    "files": [
+      {
+        "path": "arena_ext/capstone.py",
+        "sha256": "2853f45f5aa9920824f3bc31e5d9635df358b6f646f9fd4bfe7775db350a4bf8",
+        "size_bytes": 30806
+      },
+      {
+        "path": "arena_ext/verification.py",
+        "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
+        "size_bytes": 9276
+      },
+      {
+        "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/10.1_Capstone_Research_Sprint_exercises.ipynb",
+        "sha256": "bc6690a004bf3a0d155850a38729568238b7bab320314ce981d3d60b1ac5dfe9",
+        "size_bytes": 15593
+      },
+      {
+        "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/10.1_Capstone_Research_Sprint_solutions.ipynb",
+        "sha256": "6fe47d4f062902f151d28e71d7c5b2e4689f47746fc759a88ba143cc51289919",
+        "size_bytes": 12268
+      },
+      {
+        "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/README.md",
+        "sha256": "8a0aa84172dc26e56141a2d9046670ef02b9f7fdd1815cdd53bd566562ccbcc1",
+        "size_bytes": 1492
+      },
+      {
+        "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/artifacts.lock.yml",
+        "sha256": "371162521f3d55b5cf5a3eb63d99c87ccf13f542b1074b037a5b0f48d6ed9c0b",
+        "size_bytes": 4395
+      },
+      {
+        "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/expected_outputs/README.md",
+        "sha256": "1554a67837354039ef3519bf127a3f030043cf97f8f557dce032ab3b49cfffd1",
+        "size_bytes": 1777
+      },
+      {
+        "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/expected_outputs/reference_metrics.json",
+        "sha256": "2e15ca245e8d4fd3c9034a2230b55b44b27a666b940c602120ed1f68fde0df7e",
+        "size_bytes": 1641
+      },
+      {
+        "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/expected_outputs/smoke_test.json",
+        "sha256": "6d97ded10c2756fc9829d679bad9963b6309e6b8748c9200141060fce4d089cd",
+        "size_bytes": 652
+      },
+      {
+        "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/reports/capstone.md",
+        "sha256": "f8c38fefd4eedf34dfc0520c41426b170091c9ac65a8fb01385946c699d6d523",
+        "size_bytes": 2334
+      },
+      {
+        "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/results/failure_cases.jsonl",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size_bytes": 0
+      },
+      {
+        "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/results/metrics.json",
+        "sha256": "36241b0981e6c2c1dc4dabd8d880638ad933630a581447e229eb0d48a7f1d0ba",
+        "size_bytes": 1648
+      },
+      {
+        "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/results/metrics_by_seed.json",
+        "sha256": "2d9c2946047319594509f2358d9da0f23593f43cfc43ef3b01d8fbeab101abf9",
+        "size_bytes": 4644
+      },
+      {
+        "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/scripts/run_capstone.py",
+        "sha256": "81eaf72a82d75112bcf1516dedf4904e6b3baaadb95577cbc019f7b7018211bd",
+        "size_bytes": 8847
+      },
+      {
+        "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/solutions.py",
+        "sha256": "e84dea51c5d02dd09af818a18d505188cbd984315b6badc57c01bd7cdec4839f",
+        "size_bytes": 14418
+      },
+      {
+        "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/tests.py",
+        "sha256": "37f7a9c8cc350f1b2455e2842d098cda01f7c847803856d749e0cec8fbe73021",
+        "size_bytes": 14709
+      },
+      {
+        "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/utils.py",
+        "sha256": "a5bec2672e23928e8bcaa644f51204eff3e4f7cc0055032c709f01e2fac54283",
+        "size_bytes": 356
+      },
+      {
+        "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/verification_report.schema.json",
+        "sha256": "ecd833883885077ad5d7a0e239d984d01462255e94266212cf195ab4d4e27b3d",
+        "size_bytes": 2669
+      },
+      {
+        "path": "chapter10_capstone_research_sprint/instructions/pages/01_[10.1]_Capstone_Research_Sprint.md",
+        "sha256": "4d29e4c9ee5a4851c3e0580d5cee222c45ff3e7df51ceef960fc29cd793ae0cc",
+        "size_bytes": 19887
+      },
+      {
+        "path": "scripts/run_extension_verification_reports.py",
+        "sha256": "660040f459d07535deb9e0c34ffddb496c13b8770044ae380d3a8e45b0c8fb2b",
+        "size_bytes": 16080
+      }
+    ],
+    "schema_version": 1
+  },
+  "safety_notes": [
+    "No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.",
+    "This section trains on generated numeric latent-state activations only. It does not use unsafe prompts, gated weights, model completions, external APIs, or user data. The report explicitly scopes the claim to the generated benchmark."
+  ],
+  "tests_passed": true,
+  "wall_clock_seconds": 3.458723
+}

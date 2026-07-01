@@ -1,0 +1,627 @@
+schema_version: 1
+columns:
+- method_name
+- paper
+- year
+- category
+- model_family
+- has_code
+- has_weights
+- local_24gb_status
+- implementation_status
+- verification_status
+- baseline_status
+- notes
+methods:
+- method_name: Fake-result diagnostics
+  paper: Course GT-0 controls
+  year: '2026'
+  category: verification
+  model_family: methodology
+  has_code: 'true'
+  has_weights: not_applicable
+  local_24gb_status: LOCAL_GREEN
+  implementation_status: REQUIRED_IMPLEMENT
+  verification_status: IMPLEMENTED_CUDA_DIAGNOSTIC_PREFLIGHT
+  baseline_status: HAS_LEAKAGE_CHERRYPICK_OVERFIT_AND_RANDOM_DIRECTION_CONTROLS
+  notes: Section 0.6; deterministic fake-result diagnostics plus a CUDA preflight
+    that measures label leakage, cherry-pick inflation, probe overfit, and random-direction
+    control rejection.
+- method_name: Local frontier ML harness
+  paper: Course infrastructure
+  year: '2026'
+  category: infrastructure
+  model_family: all
+  has_code: 'true'
+  has_weights: not_applicable
+  local_24gb_status: LOCAL_GREEN
+  implementation_status: REQUIRED_IMPLEMENT
+  verification_status: IMPLEMENTED_CONTRACT
+  baseline_status: HAS_BASELINES
+  notes: Section 1.6; environment, VRAM, parity, activation-store helpers.
+- method_name: Gemma-style decoder block
+  paper: Gemma
+  year: '2024'
+  category: architecture
+  model_family: transformer
+  has_code: 'true'
+  has_weights: 'true'
+  local_24gb_status: LOCAL_GREEN
+  implementation_status: REQUIRED_IMPLEMENT
+  verification_status: IMPLEMENTED_HF_REFERENCE_PARITY_PREFLIGHT
+  baseline_status: HAS_TRANSFORMERS_ARCHITECTURE_PARITY
+  notes: Section 5.1; local Gemma implementation now includes CUDA parity against
+    Hugging Face transformers.GemmaForCausalLM on a deterministic tiny matched-weight
+    config, including cache and top-k checks. Gated pretrained Gemma weights are not
+    claimed.
+- method_name: Gemma Scope feature steering
+  paper: Gemma Scope
+  year: '2024'
+  category: sparse_features
+  model_family: transformer
+  has_code: 'true'
+  has_weights: 'true'
+  local_24gb_status: LOCAL_YELLOW
+  implementation_status: REQUIRED_LOAD_WEIGHTS
+  verification_status: IMPLEMENTED_ARTIFACT_PREFLIGHT
+  baseline_status: HAS_PINNED_SAE_CONFIG_TENSOR_AND_FORWARD_CHECK
+  notes: Sections 5.2 and 6.2 now load a pinned Gemma Scope 2 1B-IT residual SAE artifact
+    on CUDA and verify config, tensor shapes, finiteness, and JumpReLU encode/decode.
+    Real Gemma activation feature validation remains gated and is not claimed.
+- method_name: Mamba selective scan
+  paper: Mamba
+  year: '2023'
+  category: architecture
+  model_family: state_space_model
+  has_code: 'true'
+  has_weights: 'true'
+  local_24gb_status: LOCAL_GREEN
+  implementation_status: REQUIRED_IMPLEMENT
+  verification_status: IMPLEMENTED_CONTRACT
+  baseline_status: HAS_EXACT_PARITY_AND_OFFICIAL_CHECKPOINT_PREFLIGHT
+  notes: Section 5.3; recurrent/parallel/chunked scan and cache parity are implemented,
+    and a pinned Mamba-130M-HF logits/generation CUDA preflight verifies official
+    checkpoint loading with fast kernels.
+- method_name: Mamba-3-style state tracking
+  paper: Mamba-3
+  year: '2026'
+  category: architecture
+  model_family: state_space_model
+  has_code: 'true'
+  has_weights: 'true'
+  local_24gb_status: LOCAL_GREEN
+  implementation_status: REQUIRED_IMPLEMENT
+  verification_status: IMPLEMENTED_TINY_MAMBA_TRANSFORMER_COMPARISON_AND_INTERVENTION
+  baseline_status: HAS_TRAINED_MAMBA_TRANSFORMER_COMPARISON_AND_OFFICIAL_HIDDEN_STATE_PREFLIGHT
+  notes: Section 5.4 now trains a tiny Mamba bracket-depth organism with longer-sequence
+    generalization and random-label controls, compares it against a trained tiny causal
+    Transformer baseline on the same generated task, performs learned-state interventions
+    on Mamba hidden states, and loads a pinned official Mamba-130M-HF hidden-state
+    extraction preflight.
+- method_name: Discrete diffusion language modeling
+  paper: Diffusion Language Models
+  year: '2022'
+  category: architecture
+  model_family: diffusion_lm
+  has_code: 'true'
+  has_weights: partial
+  local_24gb_status: LOCAL_GREEN
+  implementation_status: REQUIRED_IMPLEMENT
+  verification_status: IMPLEMENTED_CUDA_TRAINED_TINY_DIFFUSION_LM_AND_DIFFUSIONGEMMA_READINESS_PREFLIGHT
+  baseline_status: HAS_EXACT_CONTROLS_AND_NVFP4_GENERATION_PROOF
+  notes: Section 5.5; toy noising/denoising/remasking/sampler contracts plus a CUDA-trained
+    tiny conditional discrete diffusion LM on a generated copy-pair grammar, with
+    held-out masked accuracy, confidence-remasking sampler exact match, activation
+    trajectory checks, and shuffled-label control. It also checks pinned DiffusionGemma
+    config/processor/model-class support, exact BF16/NVFP4 revisions, shard readiness,
+    and a real isolated vLLM NVFP4 generation proof without accepting config-only
+    evidence as generation.
+- method_name: DiffusionGemma local inference
+  paper: DiffusionGemma
+  year: '2026'
+  category: architecture
+  model_family: diffusion_lm
+  has_code: 'true'
+  has_weights: 'true'
+  local_24gb_status: LOCAL_GREEN_ISOLATED_VLLM
+  implementation_status: REQUIRED_LOAD_WEIGHTS
+  verification_status: NVFP4_ISOLATED_VLLM_GENERATION_PROVEN
+  baseline_status: NEEDS_DIFFUSION_TIME_ACTIVATION_CAPTURE_AND_PATCHING
+  notes: Pinned Google BF16 and NVIDIA NVFP4 artifacts are checked by section 5.5.
+    Google BF16 direct local loading remains deferred for the 24GB tier, while the
+    NVIDIA NVFP4 checkpoint has a real isolated vLLM 0.24.0 generation proof on
+    the RTX 5090 Laptop GPU. Main uv remains torch 2.12.1+cu132 without vLLM.
+- method_name: Specialist and embedding model controls
+  paper: FunctionGemma and EmbeddingGemma docs
+  year: '2025'
+  category: architecture
+  model_family: specialist_models
+  has_code: 'true'
+  has_weights: 'true'
+  local_24gb_status: LOCAL_GREEN
+  implementation_status: REQUIRED_IMPLEMENT
+  verification_status: IMPLEMENTED_AUTHENTICATED_EMBEDDINGGEMMA_AND_FUNCTIONGEMMA_PREFLIGHTS
+  baseline_status: HAS_SYNTHETIC_BGE_EMBEDDINGGEMMA_FUNCTIONGEMMA_CONTROLS
+  notes: Section 5.6 now includes synthetic specialist-model controls, authenticated
+    Google EmbeddingGemma retrieval with permuted-pair controls, a pinned public BGE
+    embedding comparison, a pinned public FunctionGemma Mobile Actions generation
+    preflight on held-out dataset rows, and direct authenticated base FunctionGemma
+    CUDA loading on a benign forward pass.
+- method_name: SAE variants
+  paper: Sparse autoencoders
+  year: '2024'
+  category: sparse_features
+  model_family: transformer
+  has_code: 'true'
+  has_weights: not_applicable
+  local_24gb_status: LOCAL_GREEN
+  implementation_status: REQUIRED_IMPLEMENT
+  verification_status: IMPLEMENTED_REAL_MODEL_PREFLIGHT
+  baseline_status: HAS_TOY_AND_PINNED_PYTHIA_SAE_CONTROLS
+  notes: Section 6.1 keeps ReLU, TopK, Gated, and JumpReLU toy contracts, then trains
+    a tiny TopK SAE on pinned Pythia-70M hidden states with held-out reconstruction,
+    permuted-decoder, density, feature-AUC, and decoder-steering controls.
+- method_name: Transcoders and attribution graphs
+  paper: Transcoders Find Interpretable LLM Feature Circuits
+  year: '2024'
+  category: sparse_features
+  model_family: transformer
+  has_code: 'true'
+  has_weights: partial
+  local_24gb_status: LOCAL_GREEN
+  implementation_status: REQUIRED_IMPLEMENT
+  verification_status: IMPLEMENTED_TRANSFORMERLENS_MLP_FEATURE_GRAPH_PREFLIGHT
+  baseline_status: HAS_ORACLE_PARITY_TRAINED_TRANSCODER_AND_GRAPH_CONTROLS
+  notes: Section 6.3; toy transcoder contracts plus pinned TransformerLens GELU-1L
+    CUDA preflight checking exact MLP-feature oracle replacement, trained tiny ReLU
+    transcoder held-out reconstruction/top-token agreement, and feature-graph top-feature
+    versus low-effect controls. Full published artifact replication remains separate.
+- method_name: Crosscoders and model diffing
+  paper: Crosscoders
+  year: '2024'
+  category: sparse_features
+  model_family: paired_models
+  has_code: 'true'
+  has_weights: not_applicable
+  local_24gb_status: LOCAL_GREEN
+  implementation_status: REQUIRED_IMPLEMENT
+  verification_status: IMPLEMENTED_PAIRED_TRANSFORMERLENS_MODEL_DIFF_PREFLIGHT
+  baseline_status: HAS_REAL_PAIRED_MODEL_AND_RANDOM_DIRECTION_CONTROLS
+  notes: Section 6.4; toy paired-feature contracts plus pinned GELU-1L versus SoLU-1L
+    CUDA model-diffing preflight with exact shared-plus-delta reconstruction, SVD
+    delta direction, technical/everyday prompt separation, and orthogonal random-direction
+    ablation control. Full trained crosscoder replication remains separate.
+- method_name: Logit lens, tuned lens, and Patchscopes
+  paper: Patchscopes
+  year: '2024'
+  category: activation_to_language
+  model_family: transformer
+  has_code: 'true'
+  has_weights: not_applicable
+  local_24gb_status: LOCAL_GREEN_TOY
+  implementation_status: REQUIRED_IMPLEMENT
+  verification_status: IMPLEMENTED_CONTRACT
+  baseline_status: HAS_DECODING_BASELINES
+  notes: Section 7.1; lens and counterfactual activation contracts.
+- method_name: Feature verbalizers
+  paper: Automated feature explanation
+  year: '2024'
+  category: activation_to_language
+  model_family: transformer
+  has_code: 'true'
+  has_weights: not_applicable
+  local_24gb_status: LOCAL_GREEN_TOY
+  implementation_status: TOY_REPRO_ONLY
+  verification_status: IMPLEMENTED_CONTRACT
+  baseline_status: HAS_HELDOUT_BASELINES
+  notes: Section 7.2; explanation must predict held-out examples.
+- method_name: Mini Activation Oracles
+  paper: Activation Oracles
+  year: '2025'
+  category: activation_to_language
+  model_family: transformer
+  has_code: 'true'
+  has_weights: 'true'
+  local_24gb_status: LOCAL_GREEN
+  implementation_status: REQUIRED_IMPLEMENT
+  verification_status: IMPLEMENTED_CONTRACT_AND_REAL_MODEL_PREFLIGHT
+  baseline_status: HAS_ORACLE_BASELINES_OOD_RANDOM_AND_PATCHING_CONTROLS
+  notes: Section 7.3 now keeps the toy oracle contracts and adds a pinned TransformerLens
+    gelu-1l residual-direction mini-oracle CUDA preflight with text-only/probe baselines,
+    OOD splits, random abstention, and clean-to-corrupt activation patching. Full
+    LoRA/API Activation Oracle training remains outside the local claim.
+- method_name: Mini Natural Language Autoencoders
+  paper: Natural Language Autoencoders
+  year: '2026'
+  category: activation_to_language
+  model_family: transformer
+  has_code: 'true'
+  has_weights: 'true'
+  local_24gb_status: LOCAL_GREEN
+  implementation_status: REQUIRED_IMPLEMENT
+  verification_status: IMPLEMENTED_CONTRACT_AND_REAL_MODEL_PREFLIGHT
+  baseline_status: HAS_RECONSTRUCTION_TEXT_ONLY_LATENT_OOD_AND_SHUFFLE_CONTROLS
+  notes: Section 7.4 now keeps the toy reconstruction contracts and adds a pinned
+    TransformerLens gelu-1l phrase-bottleneck mini-NLA CUDA preflight with discrete
+    natural-language phrase explanations, phrase-to-residual prototype decoding, no
+    numeric payloads, activation reconstruction, text-only and prompt-label baselines,
+    latent/logit-diff preservation, OOD prompts, brevity, shuffled-text and blank-text
+    controls, and counterfactual explanation changes. Anthropic-scale NLA training
+    is not claimed.
+- method_name: Predictive Concept Decoders
+  paper: Predictive Concept Decoders
+  year: '2025'
+  category: activation_to_language
+  model_family: transformer
+  has_code: 'true'
+  has_weights: 'true'
+  local_24gb_status: LOCAL_GREEN
+  implementation_status: REQUIRED_IMPLEMENT
+  verification_status: IMPLEMENTED_CONTRACT_AND_REAL_MODEL_PREFLIGHT
+  baseline_status: HAS_QUESTION_CONDITIONED_CONCEPT_BASELINES_AND_REMOVAL_CONTROLS
+  notes: Section 7.5 now keeps the toy sparse-concept contracts and adds a pinned
+    TransformerLens gelu-1l sparse-concept PCD CUDA preflight with signed residual
+    concepts, a trained question-conditioned decoder over explicit concept-question
+    interaction features, trained non-interaction baselines, four behavioral questions,
+    OOD long-context prompts, question-shuffle control, multi-seed concept stability,
+    concept audit checks, and active top-vs-random concept-removal controls. This
+    is a local PCD mechanics preflight, not a broad PCD benchmark.
+- method_name: Activation patching
+  paper: Transformer Circuits and ARENA
+  year: '2022'
+  category: circuit_methods
+  model_family: transformer
+  has_code: 'true'
+  has_weights: not_applicable
+  local_24gb_status: LOCAL_GREEN
+  implementation_status: REQUIRED_IMPLEMENT
+  verification_status: IMPLEMENTED_CONTRACT
+  baseline_status: HAS_RANDOM_CONTROLS
+  notes: Section 8.1; reusable clean/corrupt patching metrics.
+- method_name: Attribution patching, EAP, and integrated effects
+  paper: EAP / EAP-IG
+  year: '2024'
+  category: circuit_methods
+  model_family: transformer
+  has_code: 'true'
+  has_weights: not_applicable
+  local_24gb_status: LOCAL_GREEN
+  implementation_status: REQUIRED_IMPLEMENT
+  verification_status: IMPLEMENTED_CONTRACT
+  baseline_status: HAS_EXACT_PATCHING_BASELINE
+  notes: Section 8.2; exact-vs-approx attribution controls.
+- method_name: ACDC and circuit metrics
+  paper: ACDC
+  year: '2023'
+  category: circuit_methods
+  model_family: transformer
+  has_code: 'true'
+  has_weights: not_applicable
+  local_24gb_status: LOCAL_GREEN_TOY
+  implementation_status: TOY_REPRO_ONLY
+  verification_status: IMPLEMENTED_CONTRACT
+  baseline_status: HAS_RANDOM_CIRCUIT_BASELINE
+  notes: Section 8.3; faithfulness, minimality, and completeness metrics.
+- method_name: Sparse Feature Circuits
+  paper: Sparse Feature Circuits
+  year: '2024'
+  category: circuit_methods
+  model_family: transformer
+  has_code: 'true'
+  has_weights: 'true'
+  local_24gb_status: LOCAL_GREEN
+  implementation_status: OFFICIAL_PYTHIA_SFC_REPLICATION
+  verification_status: IMPLEMENTED_100_EXAMPLE_GRAPH_AND_HELDOUT_FAITHFULNESS
+  baseline_status: HAS_TOY_BASELINES_OFFICIAL_SAE_AND_HELDOUT_FAITHFULNESS
+  notes: Section 8.5 implements the toy ladder plus a Pythia-70M-deduped residual-feature
+    subject/verb preflight, official artifact manifest check, and released SAE state-dict,
+    one-layer feature-attribution, a 100-example official-code sparse feature graph,
+    and held-out official faithfulness on 40 simple_test examples, plus safe generated-data
+    SHIFT-style sparse-feature editing.
+- method_name: Refusal directions
+  paper: Refusal is Mediated by a Single Direction
+  year: '2024'
+  category: alignment_interpretability
+  model_family: chat_transformer
+  has_code: 'true'
+  has_weights: not_applicable
+  local_24gb_status: LOCAL_YELLOW
+  implementation_status: REQUIRED_IMPLEMENT
+  verification_status: IMPLEMENTED_BROAD_SAFE_TEMPLATE_PREFLIGHT
+  baseline_status: HAS_SAFE_CONTROLS_REAL_LM_AND_INSTRUCTION_INTERVENTION_PREFLIGHT
+  notes: Section 9.1 now includes safe toy controls plus a pinned Pythia-70M-deduped
+    hidden-state category preflight across three sanitized prompt-template families
+    with held-out template checks, random-direction control, and label-shuffle control,
+    plus pinned Qwen2.5-0.5B-Instruct safe refusal-direction addition/projection-out
+    logit-score interventions against fixed random-direction controls on the same
+    broad prompt set without generated completions.
+- method_name: Chain-of-thought faithfulness probes
+  paper: CoT faithfulness
+  year: '2025'
+  category: alignment_interpretability
+  model_family: reasoning_models
+  has_code: 'true'
+  has_weights: 'true'
+  local_24gb_status: LOCAL_GREEN
+  implementation_status: REQUIRED_IMPLEMENT
+  verification_status: IMPLEMENTED_CONTRACT_AND_REAL_MODEL_PREFLIGHT
+  baseline_status: HAS_TEXT_ONLY_LABEL_SHUFFLE_AND_PATCHING_CONTROLS
+  notes: Section 9.2 now keeps the toy CoT-faithfulness contracts and adds a pinned
+    Pythia-70M-deduped hidden-state preflight on safe A/B private-answer prompts.
+    It trains a thresholded hidden-answer direction on template variants, evaluates
+    held-out hidden-answer prediction, compares against visible-rationale/text-only
+    and label-shuffled controls, patches the hidden answer state through the LM head,
+    and reports condition-level A/B logit accuracies without generated completions.
+- method_name: Safe proxy drift detection
+  paper: Emergent misalignment
+  year: '2025'
+  category: alignment_interpretability
+  model_family: finetuned_transformer
+  has_code: 'true'
+  has_weights: 'true'
+  local_24gb_status: LOCAL_GREEN
+  implementation_status: REQUIRED_IMPLEMENT
+  verification_status: IMPLEMENTED_CONTRACT_AND_REAL_MODEL_PREFLIGHT
+  baseline_status: HAS_SAFE_PROXY_LABEL_SHUFFLE_RANDOM_AND_MITIGATION_CONTROLS
+  notes: Section 9.3 keeps the benign toy drift contracts and adds a pinned Pythia-70M-deduped
+    hidden-state preflight on safe proxy-drift prompt pairs. It trains a thresholded
+    drift direction, evaluates held-out contexts across five benign proxy kinds, compares
+    label-shuffled and random-direction controls, aligns feature scores with a safe
+    next-token behavior proxy, and tests projection-style mitigation without generated
+    completions.
+- method_name: White-box eval monitors
+  paper: White-box monitors
+  year: '2026'
+  category: alignment_interpretability
+  model_family: transformer
+  has_code: 'true'
+  has_weights: 'true'
+  local_24gb_status: LOCAL_GREEN
+  implementation_status: REQUIRED_IMPLEMENT
+  verification_status: IMPLEMENTED_CONTRACT_AND_REAL_MODEL_PREFLIGHT
+  baseline_status: HAS_BLACK_BOX_LABEL_SHUFFLE_RANDOM_AND_FALSE_POSITIVE_CONTROLS
+  notes: Section 9.4 keeps the toy dashboard/calibration/false-positive contracts
+    and adds a pinned Pythia-70M-deduped hidden-state monitor preflight on safe generated
+    eval records. It calibrates held-out failure scores, compares against a real next-token
+    pass/fail black-box proxy, verifies white-box catches of black-box-missed failures,
+    validates explanation labels, and checks label-shuffled plus fixed random-direction
+    controls without generated completions.
+- method_name: Representation geometry controls
+  paper: Language Models Represent Space and Time
+  year: '2023'
+  category: representation_geometry
+  model_family: transformer_and_vlm
+  has_code: 'true'
+  has_weights: not_applicable
+  local_24gb_status: LOCAL_GREEN
+  implementation_status: REQUIRED_IMPLEMENT
+  verification_status: IMPLEMENTED_CALENDAR_GEOMETRY_PREFLIGHT
+  baseline_status: HAS_RANDOM_LABEL_CONTROLS_AND_REAL_LM_PREFLIGHT
+  notes: Section 11.1 now includes PCA/SVD metrics, white-noise controls, template-centering
+    controls, and a pinned Pythia-70M-deduped weekday/month calendar hidden-state
+    geometry preflight with raw-template failure, permuted-label controls, and white-noise
+    controls.
+- method_name: CLIP, SigLIP, and VLM controls
+  paper: CLIP / SigLIP / VLM interpretability
+  year: '2024'
+  category: multimodal_interpretability
+  model_family: vlm
+  has_code: 'true'
+  has_weights: 'true'
+  local_24gb_status: LOCAL_YELLOW
+  implementation_status: REQUIRED_LOAD_WEIGHTS
+  verification_status: IMPLEMENTED_CONTRACT_AND_HIDDEN_TOKEN_PREFLIGHT
+  baseline_status: HAS_SYNTHETIC_BASELINES_REAL_CLIP_SIGLIP_HIDDEN_PATCHING_AND_QWEN25_VL_PREFLIGHTS
+  notes: Section 12.1 now includes synthetic colored-shape scene schema checks, image-grounding
+    baselines, object-region patch controls, pinned real CLIP/SigLIP rendered-shape
+    retrieval plus object-region counterfactual patching, real hidden visual-token
+    activation patching with object/background/same-size random-token/full-sequence
+    controls, and a pinned Qwen2.5-VL 3B rendered-shape generation preflight.
+- method_name: Image-generation interpretability
+  paper: DAAM and diffusion concept directions
+  year: '2023'
+  category: image_generation_interpretability
+  model_family: diffusion_and_ar_image
+  has_code: 'true'
+  has_weights: 'true'
+  local_24gb_status: LOCAL_YELLOW
+  implementation_status: REQUIRED_LOAD_WEIGHTS
+  verification_status: IMPLEMENTED_SD15_DAAM_TOKEN_ABLATION_QUALITY_CONTROLS
+  baseline_status: HAS_PROMPT_REGION_SD_TURBO_SD15_CLIP_AND_NOISE_CONTROLS
+  notes: Section 13.1 now includes toy prompt-region controls, a supplemental pinned
+    SD-Turbo safe-shape generation preflight, and a required pinned SD1.5 safe-shape
+    path with DAAM-style color/shape token localization, target-token ablation over
+    random-token controls, CLIP alignment, image-quality preservation, and white-noise
+    rejection.
+- method_name: JEPA and world-model controls
+  paper: I-JEPA / V-JEPA 2
+  year: '2025'
+  category: world_models
+  model_family: jepa_video_world_model
+  has_code: 'true'
+  has_weights: 'true'
+  local_24gb_status: LOCAL_GREEN
+  implementation_status: REQUIRED_IMPLEMENT
+  verification_status: IMPLEMENTED_SYNTHETIC_OCCLUSION_VJEPA_PREFLIGHT
+  baseline_status: HAS_WORLD_STATE_BASELINES_AND_REAL_VJEPA2_PREFLIGHT
+  notes: Section 14.1 now includes toy JEPA/world-model controls plus a pinned V-JEPA
+    2 ViT-L synthetic-video feature-extraction preflight with same-object and synthetic
+    occlusion object-permanence contrasts; masked target prediction, real-video permanence
+    benchmarks, and action-conditioned rollouts remain outside this local preflight.
+- method_name: LoRA, DoRA, and adapter interpretability
+  paper: LoRA / DoRA
+  year: '2024'
+  category: peft_interpretability
+  model_family: finetuned_transformer
+  has_code: 'true'
+  has_weights: generated
+  local_24gb_status: LOCAL_GREEN
+  implementation_status: REQUIRED_IMPLEMENT
+  verification_status: IMPLEMENTED_MATCHED_LORA_DORA_FULL_FINETUNE_COMPARISON
+  baseline_status: HAS_TRAINED_SAFE_PROXY_LORA_DORA_FULL_FINETUNE_CONTROLS
+  notes: Section 15.1 now includes exact LoRA/DoRA tensor controls plus a trained
+    rank-1 safe proxy LoRA on generated target-direction data, merge/unmerge parity,
+    random-label control, same-norm random-adapter control, and a matched CUDA comparison
+    against rank-1 DoRA and full linear finetuning on the same safe generated task.
+- method_name: Exact Shapley values
+  paper: Shapley values
+  year: '1953'
+  category: attribution_baselines
+  model_family: ground_truth_games
+  has_code: 'true'
+  has_weights: not_applicable
+  local_24gb_status: LOCAL_GREEN
+  implementation_status: REQUIRED_IMPLEMENT
+  verification_status: IMPLEMENTED_CUDA_NEURAL_GAME_PREFLIGHT
+  baseline_status: HAS_EXACT_BASELINES_AND_SHUFFLED_LABEL_CONTROL
+  notes: Section 16.1; exact coalition tables, parity checks, and a CUDA-trained neural
+    coalition-game preflight whose real ablation Shapley values are checked against
+    analytic ground truth plus a shuffled-label control.
+- method_name: KernelSHAP and PartitionSHAP
+  paper: SHAP
+  year: '2017'
+  category: attribution_baselines
+  model_family: tabular_and_token_games
+  has_code: 'true'
+  has_weights: not_applicable
+  local_24gb_status: LOCAL_GREEN
+  implementation_status: REQUIRED_IMPLEMENT
+  verification_status: IMPLEMENTED_CUDA_NEURAL_GAME_PREFLIGHT
+  baseline_status: HAS_EXACT_BASELINES_AND_GROUPING_CONTROLS
+  notes: Section 16.2; full-table KernelSHAP and PartitionSHAP parity, plus a CUDA-trained
+    neural coalition-game preflight with singleton, aligned, mismatched grouping,
+    and shuffled-label controls.
+- method_name: Shapley interaction values
+  paper: shapiq
+  year: '2024'
+  category: attribution_baselines
+  model_family: interaction_games
+  has_code: 'true'
+  has_weights: not_applicable
+  local_24gb_status: LOCAL_GREEN
+  implementation_status: REQUIRED_IMPLEMENT
+  verification_status: IMPLEMENTED_CUDA_NEURAL_GAME_PREFLIGHT
+  baseline_status: HAS_INTERACTION_BASELINES_AND_SHUFFLED_LABEL_CONTROL
+  notes: Section 16.3; pairwise interaction and shapiq parity checks, plus a CUDA-trained
+    neural coalition-game preflight recovering planted positive and negative interactions
+    with off-target and shuffled-label controls.
+- method_name: TokenSHAP and TokenShapley
+  paper: TokenSHAP / TokenShapley
+  year: '2025'
+  category: attribution_baselines
+  model_family: language_model
+  has_code: 'true'
+  has_weights: not_applicable
+  local_24gb_status: LOCAL_GREEN
+  implementation_status: REQUIRED_IMPLEMENT
+  verification_status: IMPLEMENTED_CUDA_TOKEN_SCORER_PREFLIGHT
+  baseline_status: HAS_TOKEN_BASELINES_AND_SHUFFLED_LABEL_CONTROL
+  notes: Section 16.4; exact and sampled masked-token attribution, plus a CUDA-trained
+    token-position scorer preflight with analytic, efficiency, ranking, and shuffled-label
+    controls.
+- method_name: VLM modality and region SHAP
+  paper: MM-SHAP / PixelSHAP
+  year: '2025'
+  category: attribution_baselines
+  model_family: vlm
+  has_code: 'true'
+  has_weights: not_applicable
+  local_24gb_status: LOCAL_GREEN
+  implementation_status: REQUIRED_IMPLEMENT
+  verification_status: IMPLEMENTED_PINNED_CLIP_PREFLIGHT
+  baseline_status: HAS_REGION_CONTROLS_AND_RENDERED_CLIP_BASELINE
+  notes: Section 16.5; modality synergy and background controls, plus a pinned CLIP
+    rendered-shape preflight for modality and object/background/OCR region SHAP on
+    real logits.
+- method_name: SHAP vs activation patching
+  paper: Mechanistic attribution comparisons
+  year: '2026'
+  category: attribution_baselines
+  model_family: ground_truth_games
+  has_code: 'true'
+  has_weights: not_applicable
+  local_24gb_status: LOCAL_GREEN
+  implementation_status: REQUIRED_IMPLEMENT
+  verification_status: IMPLEMENTED_CUDA_MODEL_ORGANISM_PREFLIGHT
+  baseline_status: HAS_AGREEMENT_AND_DISAGREEMENT_CONTROLS
+  notes: Section 16.6; agreement and interaction-heavy disagreement cases, plus CUDA-trained
+    additive and nonlinear model organisms compared through exact Shapley and full-minus-ablated
+    patching effects.
+- method_name: Data Shapley in one training run
+  paper: Data Shapley
+  year: '2019'
+  category: training_data_attribution
+  model_family: small_training_problem
+  has_code: 'true'
+  has_weights: not_applicable
+  local_24gb_status: LOCAL_GREEN
+  implementation_status: REQUIRED_IMPLEMENT
+  verification_status: IMPLEMENTED_CUDA_ONE_STEP_TRAINING_PREFLIGHT
+  baseline_status: HAS_EXACT_MC_AND_IN_RUN_CONTROLS
+  notes: Section 16.7; exact, Monte Carlo, and in-run first-order checks, plus a CUDA
+    one-step linear training preflight with full coalition enumeration, autograd per-example
+    scores, and harmful-example deletion control.
+- method_name: SHAPley and mechanistic agreement matrix
+  paper: Course comparison protocol
+  year: '2026'
+  category: attribution_baselines
+  model_family: multi_method
+  has_code: 'true'
+  has_weights: not_applicable
+  local_24gb_status: LOCAL_GREEN
+  implementation_status: REQUIRED_IMPLEMENT
+  verification_status: IMPLEMENTED_CUDA_MECH_AGREEMENT_PREFLIGHT
+  baseline_status: HAS_AGREEMENT_INTERACTION_AND_SHUFFLED_CONTROLS
+  notes: Section 16.8; rank correlation, top-k, deletion, XOR checks, plus a CUDA-trained
+    nonlinear game comparing Shapley values to known mechanistic scores, pair interactions,
+    and a shuffled-label control.
+- method_name: Checkpoint archaeology
+  paper: Course developmental interpretability protocol
+  year: '2026'
+  category: training_dynamics
+  model_family: ar_jepa_diffusion_mamba
+  has_code: 'true'
+  has_weights: not_applicable
+  local_24gb_status: LOCAL_GREEN
+  implementation_status: REQUIRED_IMPLEMENT
+  verification_status: IMPLEMENTED_TRAINED_CHECKPOINT_PREFLIGHT
+  baseline_status: HAS_TOY_AND_RANDOM_LABEL_CHECKPOINT_CONTROLS
+  notes: Section 17.1 keeps deterministic toy family trajectories, then trains a tiny
+    modular-addition MLP on CUDA, saves and reloads real checkpoints, detects stable
+    emergence and a phase jump, and rejects a random-label checkpoint control.
+- method_name: Full-scale Activation Oracles
+  paper: Activation Oracles
+  year: '2025'
+  category: activation_to_language
+  model_family: frontier_scale
+  has_code: partial
+  has_weights: 'false'
+  local_24gb_status: READ_ONLY
+  implementation_status: READ_ONLY_TOO_EXPENSIVE
+  verification_status: EXPLAIN_LIMITS_ONLY
+  baseline_status: NOT_APPLICABLE
+  notes: Roadmap says use miniature local versions, not full-scale training.
+- method_name: Max-activating examples as standalone explanations
+  paper: Classic feature visualization
+  year: '2020'
+  category: deprecated_evidence
+  model_family: all
+  has_code: 'true'
+  has_weights: not_applicable
+  local_24gb_status: LOCAL_GREEN
+  implementation_status: DEPRECATED_BY_NEWER_METHOD
+  verification_status: HYPOTHESIS_GENERATOR_ONLY
+  baseline_status: NEEDS_HELDOUT_AND_CAUSAL_CONTROLS
+  notes: Allowed for exploration, never enough for a final interpretation.
+- method_name: V-JEPA 2.1 dense features
+  paper: V-JEPA 2.1
+  year: '2026'
+  category: world_models
+  model_family: video_jepa
+  has_code: unknown
+  has_weights: unknown
+  local_24gb_status: WAIT_FOR_STABLE_WEIGHTS
+  implementation_status: WAIT_FOR_WEIGHTS
+  verification_status: WATCHLIST
+  baseline_status: NEEDS_RELEASE_BASELINES
+  notes: Optional dense-feature chapter once stable weights/tooling exist.

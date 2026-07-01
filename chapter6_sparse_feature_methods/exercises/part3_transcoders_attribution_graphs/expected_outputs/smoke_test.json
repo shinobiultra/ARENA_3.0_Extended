@@ -1,0 +1,10 @@
+{
+  "accepted": true,
+  "claim_scope": "Contract check; not a full real-model validation.",
+  "evidence_level": "notebook_contract",
+  "gt_tier": "GT-0",
+  "notebook_id": "6_3_transcoders_and_attribution_graphs",
+  "section": "6.3",
+  "tests_passed": true,
+  "title": "Transcoders and Attribution Graphs"
+}

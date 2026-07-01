@@ -1,0 +1,90 @@
+notebook_id: 8_1_activation_patching_refresher
+section: '8.1'
+title: Activation Patching Refresher
+exercise_metadata:
+  EXERCISE_ID: 8_1_activation_patching_refresher
+  GT_TIER: GT-1
+  DIFFICULTY: 4
+  IMPORTANCE: 5
+  EXPECTED_RUNTIME: seconds on toy contract; minutes on local real-model path
+  REQUIRES_GPU: true
+gt_tier: GT-1
+evidence_level: toy_metric_contract_plus_pinned_transformerlens_residual_patch_preflight
+claim_scope: 'GT-1 activation-patching preflight: reusable toy metric contracts are
+  kept for learner exercises, then a pinned TransformerLens gelu-1l checkpoint is
+  loaded on CUDA. The report runs clean/corrupt prompts, caches blocks.0.hook_resid_post,
+  patches every sequence position into the corrupt run, and requires final-position
+  recovery to beat all non-final wrong-position controls. This is a residual-stream
+  patching mechanics preflight, not an IOI-scale circuit-discovery claim.'
+required_gpu_gb: 1
+max_allowed_gpu_gb: 24
+models:
+- id: toy_or_generated_inputs
+  source: generated
+  revision: seed_0
+  precision: float32
+  gated: false
+- id: NeelNanda/GELU_1L512W_C4_Code
+  source: huggingface_via_transformerlens
+  revision: bddc0e332f0ae84279e6a6a45d91b314899e1603
+  precision: float32
+  gated: false
+  claim_scope: residual_stream_activation_patching_preflight
+  transformerlens_model_name: gelu-1l
+  tokenizer_id: NeelNanda/gpt-neox-tokenizer-digits
+  tokenizer_revision: 0f6671571a20be9756b9991d978047c03b75e749
+datasets:
+- id: 8_1_activation_patching_refresher_toy_inputs
+  source: generated
+  seed: 0
+- id: course_safe_clean_corrupt_activation_patching_prompts_v1
+  source: generated_prompt_pair
+  seed: 0
+  clean_prompt: The cat sat on the
+  corrupt_prompt: The bird flew over the
+  positive_token: ' floor'
+  negative_token: ' top'
+  tokenizer: NeelNanda/gpt-neox-tokenizer-digits
+  sequence_length: 6
+expected_metrics:
+  tests_passed: true
+  accepted: true
+  max_allowed_gpu_gb: 24
+  preflight_passed: true
+  model_name: gelu-1l
+  hf_revision: bddc0e332f0ae84279e6a6a45d91b314899e1603
+  tokenizer_revision: 0f6671571a20be9756b9991d978047c03b75e749
+  bnb_cuda_override: '130'
+  hook_name: blocks.0.hook_resid_post
+  sequence_length: 6
+  target_position: 5
+  target_token: ' floor'
+  distractor_token: ' top'
+  clean_corrupt_gap_min: 6.0
+  target_recovered_fraction_min: 0.99
+  wrong_position_control_fraction_max: 0.0001
+  best_position: 5
+  best_score_min: 0.99
+  localizes_final_position: true
+  top_beats_wrong_position_control: true
+  max_abs_final_patch_logit_error_max: 1.0e-05
+  finite_logits: true
+  peak_vram_gb_max: 1.0
+controls:
+- baseline_or_reference_check
+- negative_control_where_applicable
+- shape_dtype_or_exact_value_check
+- toy_logit_diff_metric_contract
+- toy_activation_slice_patch_contract
+- toy_recovered_fraction_contract
+- toy_localization_and_random_control_contract
+- pinned_transformerlens_gelu1l_residual_stream_patch
+- same_hook_all_sequence_positions_sweep
+- non_final_position_wrong_patch_control
+- finite_logits_and_exact_final_patch_recovery
+- ioi_scale_circuit_discovery_not_claimed
+safety_notes:
+- No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.
+- The real-model path uses safe generic prompts and reads only next-token logits from
+  a small public TransformerLens checkpoint. It does not use unsafe prompts, gated
+  weights, or generated completions.

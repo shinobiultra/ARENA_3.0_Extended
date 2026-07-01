@@ -24,6 +24,11 @@ models/
 *data
 # Exception: Allow specific data directory
 !chapter1_transformer_interp/exercises/part32_function_vectors_and_model_steering/data
+# Exception: Allow generated, redacted course prompt fixtures used by tests
+!data/
+!data/generated/
+!data/generated/refusal_proxy_prompts_v1/
+!data/generated/refusal_proxy_prompts_v1/**
 
 # Logs & Monitoring
 *logs
@@ -38,6 +43,8 @@ talk-animation*
 
 # Generated & Temporary Files
 *generate_*.py
+!scripts/generate_extension_verification_assets.py
+!scripts/generate_gt2_ioi_path_patching_report.py
 *drafts
 *colab
 *chunk_*.txt
@@ -93,3 +100,9 @@ chapter1_transformer_interp/exercises/circuit-tracer
 # local scratch
 chapter2_rl/exercises/part5_mcts_alphazero/exercises.py
 student_*.py
+
+# Large local artifact caches for optional/real-model replication paths
+external/
+.arena_artifacts/
+dictionaries/
+dictionaries_*.zip

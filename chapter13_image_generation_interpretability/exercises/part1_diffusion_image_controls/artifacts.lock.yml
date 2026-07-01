@@ -1,0 +1,136 @@
+notebook_id: 13_1_diffusion_and_image_generation_controls
+section: '13.1'
+title: Diffusion and Image-Generation Controls
+exercise_metadata:
+  EXERCISE_ID: 13_1_diffusion_and_image_generation_controls
+  GT_TIER: GT-1
+  DIFFICULTY: 4
+  IMPORTANCE: 3
+  EXPECTED_RUNTIME: seconds on toy contract; minutes on local real-model path
+  REQUIRES_GPU: true
+gt_tier: GT-1
+evidence_level: toy_prompt_region_controls_plus_pinned_sd15_daam_token_ablation_quality_preflight
+claim_scope: GT-1 toy diffusion/image-generation interpretability controls plus a
+  required pinned safetensors Stable Diffusion 1.5 safe-shape preflight. The SD1.5
+  path captures DAAM-style cross-attention maps for color/shape tokens, verifies target-token
+  attention over generated color regions against unrelated-token controls, ablates
+  target prompt tokens over random/control-token ablations, preserves simple image-quality
+  metrics, rejects white-noise controls, and scores generated images with pinned CLIP.
+  A pinned SD-Turbo/CLIP attention preflight remains supplemental.
+required_gpu_gb: 8
+max_allowed_gpu_gb: 24
+models:
+- id: toy_or_generated_inputs
+  source: generated
+  revision: seed_0
+  precision: float32
+  gated: false
+- id: stabilityai/sd-turbo
+  source: huggingface
+  revision: b261bac6fd2cf515557d5d0707481eafa0485ec2
+  precision: float16
+  gated: false
+  claim_scope: safe_shape_generation_and_cross_attention_localization_preflight
+- id: stable-diffusion-v1-5/stable-diffusion-v1-5
+  source: huggingface
+  revision: 451f4fe16113bff5a5d2269ed5ad43b0592e9a14
+  precision: float16
+  gated: false
+  claim_scope: sd15_safe_shape_daam_token_ablation_quality_and_noise_controls
+- id: openai/clip-vit-base-patch32
+  source: huggingface
+  revision: 3d74acf9a28c67741b2f4f2ea7635f0aaf6f0268
+  precision: float32
+  gated: false
+  claim_scope: generated_image_prompt_alignment_scoring
+datasets:
+- id: 13_1_diffusion_and_image_generation_controls_toy_inputs
+  source: generated
+  seed: 0
+- id: course_generated_safe_shape_prompts_sd_turbo_v1
+  source: generated_prompt_pair
+  seed: 0
+  prompt_count: 2
+  image_size: 512x512
+  prompts:
+  - red square icon on clean white background
+  - blue circle icon on clean white background
+- id: course_generated_safe_shape_prompts_sd15_v1
+  source: generated_prompt_pair
+  seed: red_square=4;blue_circle=2
+  prompt_count: 2
+  image_size: 512x512
+  prompts:
+  - single centered solid red square on plain white background
+  - single centered solid blue circle on plain white background
+expected_metrics:
+  tests_passed: true
+  accepted: true
+  max_allowed_gpu_gb: 24
+  region_selective: true
+  latent_direction_effect: true
+  sd_turbo_preflight_passed: true
+  sd_turbo_image_to_text_accuracy: 1.0
+  sd_turbo_text_to_image_accuracy: 1.0
+  sd_turbo_mean_positive_margin_min: 2.0
+  sd_turbo_cross_attention_localized: true
+  sd_turbo_attention_resolutions:
+  - 8
+  - 16
+  - 32
+  - 64
+  sd_turbo_min_target_control_attention_gap_min: 0.02
+  sd_turbo_mean_target_control_attention_gap_min: 0.03
+  sd_turbo_min_target_lift_over_mask_fraction_min: 0.02
+  sd_turbo_min_captured_cross_attention_map_count_min: 16
+  sd_turbo_peak_vram_gb_max: 8.0
+  sd15_strict_experiment_passed: true
+  sd15_model_id: stable-diffusion-v1-5/stable-diffusion-v1-5
+  sd15_revision: 451f4fe16113bff5a5d2269ed5ad43b0592e9a14
+  sd15_fixed_seed_generation_passed: true
+  sd15_daam_baseline_included: true
+  sd15_cross_attention_maps_captured: true
+  sd15_token_ablation_passed: true
+  sd15_random_token_ablation_weaker: true
+  sd15_image_quality_preserved: true
+  sd15_white_noise_rejected: true
+  sd15_min_target_control_attention_gap_min: 0.005
+  sd15_mean_target_control_attention_gap_min: 0.01
+  sd15_min_target_lift_over_mask_fraction_min: 0.01
+  sd15_min_captured_cross_attention_map_count_min: 32
+  sd15_min_target_ablation_drop_min: 0.05
+  sd15_max_random_control_drop_max: 0.0
+  sd15_min_target_region_fraction_min: 0.02
+  sd15_max_high_frequency_energy_max: 0.12
+  sd15_min_white_noise_high_frequency_gap_min: 0.12
+  sd15_clip_image_to_text_accuracy: 1.0
+  sd15_clip_text_to_image_accuracy: 1.0
+  sd15_clip_mean_positive_margin_min: 2.0
+  sd15_peak_vram_gb_max: 8.0
+controls:
+- baseline_or_reference_check
+- negative_control_where_applicable
+- shape_dtype_or_exact_value_check
+- attention_region_mass_control
+- denoising_ablation_random_control
+- latent_direction_random_control
+- prompt_token_ablation_control
+- pinned_sd_turbo_safetensors_generation
+- deterministic_safe_shape_prompt_pair
+- pinned_clip_prompt_alignment_scoring
+- pinned_sd_turbo_cross_attention_capture
+- target_token_vs_background_token_attention_control
+- generated_color_shape_region_mask_control
+- pinned_sd15_safetensors_generation
+- sd15_daam_cross_attention_capture
+- sd15_target_token_ablation_control
+- sd15_random_token_ablation_control
+- sd15_image_quality_metric
+- sd15_white_noise_control
+safety_notes:
+- No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.
+- The real-model paths use safe generated shape prompts only. The required SD1.5 path
+  captures cross-attention maps for color/shape token localization over unrelated-token
+  controls, compares target-token ablation against random/control-token ablation,
+  checks simple generated image-quality statistics, and rejects white-noise images.
+  SD-Turbo remains a supplemental fast preflight, not the acceptance fallback.

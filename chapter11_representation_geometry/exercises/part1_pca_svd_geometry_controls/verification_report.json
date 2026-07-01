@@ -1,0 +1,767 @@
+{
+  "accepted": true,
+  "baselines": {
+    "declared_controls": [
+      "baseline_or_reference_check",
+      "negative_control_where_applicable",
+      "shape_dtype_or_exact_value_check",
+      "template_centering_control",
+      "raw_template_dominated_failure_check",
+      "weekday_train_heldout_prompt_template_split",
+      "month_train_heldout_prompt_template_split",
+      "permuted_label_control",
+      "white_noise_geometry_control",
+      "matched_pair_similarity_check",
+      "five_seed_umap_visualization_sweep",
+      "three_reducer_hyperparameter_settings",
+      "heldout_knn_visualization_metric",
+      "trustworthiness_metric",
+      "neighborhood_preservation_metric",
+      "visualization_random_label_negative_control",
+      "visualization_random_token_negative_control",
+      "no_generation_hidden_state_only",
+      "pythia_70m_deduped_revision_pinned"
+    ],
+    "expected_metrics": {
+      "accepted": true,
+      "max_allowed_gpu_gb": 24,
+      "pythia_calendar_preflight_passed": true,
+      "pythia_calendar_task_count": 2,
+      "pythia_month_centered_heldout_accuracy": 1.0,
+      "pythia_month_matched_pair_accuracy": 1.0,
+      "pythia_month_noise_accuracy_max": 0.1,
+      "pythia_month_permuted_label_accuracy": 0.0,
+      "pythia_month_raw_heldout_accuracy_max": 0.75,
+      "pythia_weekday_centered_heldout_accuracy": 1.0,
+      "pythia_weekday_generation_used": false,
+      "pythia_weekday_noise_accuracy_max": 0.2,
+      "pythia_weekday_permuted_label_accuracy": 0.0,
+      "pythia_weekday_preflight_passed": true,
+      "pythia_weekday_raw_heldout_accuracy_max": 0.2,
+      "template_centering_max_mean_abs": 0.0,
+      "tests_passed": true
+    }
+  },
+  "claim_scope": "GT-0 toy PCA/SVD, held-out prediction, white-noise, stability, and causal direction contracts plus a pinned Pythia-70M-deduped hidden-state calendar geometry preflight over weekdays and months. The real-LM path shows raw template-dominated transfer failures and template-centered calendar-label transfer with permuted-label, matched-pair, white-noise, five-seed UMAP visualization sweeps, three reducer hyperparameter settings, held-out kNN, trustworthiness/neighborhood preservation, random-label controls, and matched random-token controls.",
+  "datasets": [
+    {
+      "id": "11_1_pca_svd_and_geometry_controls_toy_inputs",
+      "seed": 0,
+      "source": "generated"
+    },
+    {
+      "heldout_template": "The calendar says {}",
+      "id": "course_generated_weekday_prompt_templates_v1",
+      "label_count": 7,
+      "seed": 0,
+      "source": "generated",
+      "train_template": "Today is {}"
+    },
+    {
+      "heldout_template": "The event happened during {}",
+      "id": "course_generated_month_prompt_templates_v1",
+      "label_count": 12,
+      "seed": 1,
+      "source": "generated",
+      "train_template": "The report was written in {}"
+    }
+  ],
+  "date_run": "2026-06-30T14:08:18+00:00",
+  "evidence_level": "gt0_toy_geometry_plus_real_lm_calendar_template_centering_and_umap_preflight",
+  "git_commit": "f9f034bd",
+  "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+  "gt_tier": "GT-0",
+  "known_failures": [],
+  "metrics": {
+    "gpu_evidence": {
+      "category": "cuda_section_metric",
+      "placeholder_only": false,
+      "section_specific_metric_keys": [
+        "explained_variance_ratio",
+        "heldout_accuracy",
+        "predicts_heldout_labels",
+        "pythia_calendar_preflight_passed",
+        "pythia_calendar_task_count",
+        "pythia_month_centered_heldout_accuracy",
+        "pythia_month_matched_pair_accuracy",
+        "pythia_month_noise_accuracy",
+        "pythia_month_permuted_label_accuracy",
+        "pythia_month_raw_heldout_accuracy",
+        "pythia_month_umap_mean_heldout_knn_accuracy",
+        "pythia_month_umap_min_heldout_knn_accuracy",
+        "pythia_month_umap_min_neighborhood_preservation",
+        "pythia_month_umap_min_trustworthiness",
+        "pythia_month_umap_random_label_accuracy_max",
+        "pythia_month_umap_random_token_accuracy_max",
+        "pythia_month_visualization_passed",
+        "pythia_month_white_noise_margin",
+        "pythia_visualization_seed_count",
+        "pythia_visualization_setting_count",
+        "pythia_weekday_centered_heldout_accuracy",
+        "pythia_weekday_generation_used",
+        "pythia_weekday_matched_pair_accuracy",
+        "pythia_weekday_noise_accuracy",
+        "pythia_weekday_peak_vram_gb",
+        "pythia_weekday_permuted_label_accuracy",
+        "pythia_weekday_preflight",
+        "pythia_weekday_preflight_passed",
+        "pythia_weekday_raw_heldout_accuracy",
+        "pythia_weekday_umap_mean_heldout_knn_accuracy",
+        "pythia_weekday_umap_min_heldout_knn_accuracy",
+        "pythia_weekday_umap_min_neighborhood_preservation",
+        "pythia_weekday_umap_min_trustworthiness",
+        "pythia_weekday_umap_random_label_accuracy_max",
+        "pythia_weekday_umap_random_token_accuracy_max",
+        "pythia_weekday_visualization_passed",
+        "pythia_weekday_white_noise_margin",
+        "template_centering_max_mean_abs"
+      ],
+      "uses_cuda": true
+    },
+    "gpu_test": {
+      "cuda_available": true,
+      "cuda_version": "13.2",
+      "device": "NVIDIA GeForce RTX 5090 Laptop GPU",
+      "explained_variance_ratio": 1.0,
+      "full_path": "Run PCA/SVD and geometry controls on cached model activations.",
+      "gpu_total_memory_gb": 23.45965576171875,
+      "heldout_accuracy": 1.0,
+      "peak_vram_gb": 0.3446516990661621,
+      "predicts_heldout_labels": true,
+      "pythia_calendar_preflight_passed": true,
+      "pythia_calendar_task_count": 2,
+      "pythia_month_centered_heldout_accuracy": 1.0,
+      "pythia_month_matched_pair_accuracy": 1.0,
+      "pythia_month_noise_accuracy": 0.0,
+      "pythia_month_permuted_label_accuracy": 0.0,
+      "pythia_month_raw_heldout_accuracy": 0.5,
+      "pythia_month_umap_mean_heldout_knn_accuracy": 1.0,
+      "pythia_month_umap_min_heldout_knn_accuracy": 1.0,
+      "pythia_month_umap_min_neighborhood_preservation": 0.6666666666666666,
+      "pythia_month_umap_min_trustworthiness": 0.9924952651515152,
+      "pythia_month_umap_random_label_accuracy_max": 0.3055555522441864,
+      "pythia_month_umap_random_token_accuracy_max": 0.0555555559694767,
+      "pythia_month_visualization_passed": true,
+      "pythia_month_white_noise_margin": 1.0,
+      "pythia_visualization_seed_count": 5,
+      "pythia_visualization_setting_count": 3,
+      "pythia_weekday_centered_heldout_accuracy": 1.0,
+      "pythia_weekday_generation_used": false,
+      "pythia_weekday_matched_pair_accuracy": 1.0,
+      "pythia_weekday_noise_accuracy": 0.1428571492433548,
+      "pythia_weekday_peak_vram_gb": 0.3446516990661621,
+      "pythia_weekday_permuted_label_accuracy": 0.0,
+      "pythia_weekday_preflight": {
+        "calendar_task_count": 2,
+        "centered_heldout_accuracy": 1.0,
+        "centered_predicts_heldout_labels": true,
+        "claim_scope": "template_centered_weekday_and_month_hidden_state_geometry_preflight",
+        "cuda_available": true,
+        "generation_used": false,
+        "heldout_template": "The calendar says {}",
+        "matched_pair_accuracy": 1.0,
+        "model_id": "EleutherAI/pythia-70m-deduped",
+        "month_count": 12,
+        "month_geometry": {
+          "centered_heldout_accuracy": 1.0,
+          "centered_predicts_heldout_labels": true,
+          "heldout_template": "The event happened during {}",
+          "label_count": 12,
+          "matched_pair_accuracy": 1.0,
+          "noise_accuracy": 0.0,
+          "pca_explained_variance_ratio": [
+            0.20902882516384125,
+            0.11243369430303574
+          ],
+          "permuted_label_accuracy": 0.0,
+          "raw_heldout_accuracy": 0.5,
+          "raw_predicts_heldout_labels": false,
+          "survives_white_noise_control": true,
+          "train_template": "The report was written in {}",
+          "white_noise_margin": 1.0
+        },
+        "month_visualization": {
+          "heldout_example_count": 36,
+          "passes_visualization_controls": true,
+          "random_token_train_example_count": 60,
+          "runs": [
+            {
+              "heldout_knn_accuracy": 1.0,
+              "min_dist": 0.0,
+              "n_neighbors": 3,
+              "neighborhood_preservation": 0.7333333333333334,
+              "random_label_accuracy": 0.0,
+              "random_token_accuracy": 0.02777777798473835,
+              "seed": 0,
+              "trustworthiness": 0.9949573863636364
+            },
+            {
+              "heldout_knn_accuracy": 1.0,
+              "min_dist": 0.1,
+              "n_neighbors": 5,
+              "neighborhood_preservation": 0.7229166666666668,
+              "random_label_accuracy": 0.0555555559694767,
+              "random_token_accuracy": 0.02777777798473835,
+              "seed": 0,
+              "trustworthiness": 0.9956439393939394
+            },
+            {
+              "heldout_knn_accuracy": 1.0,
+              "min_dist": 0.3,
+              "n_neighbors": 8,
+              "neighborhood_preservation": 0.68125,
+              "random_label_accuracy": 0.02777777798473835,
+              "random_token_accuracy": 0.02777777798473835,
+              "seed": 0,
+              "trustworthiness": 0.9935842803030303
+            },
+            {
+              "heldout_knn_accuracy": 1.0,
+              "min_dist": 0.0,
+              "n_neighbors": 3,
+              "neighborhood_preservation": 0.71875,
+              "random_label_accuracy": 0.2777777910232544,
+              "random_token_accuracy": 0.0555555559694767,
+              "seed": 1,
+              "trustworthiness": 0.99453125
+            },
+            {
+              "heldout_knn_accuracy": 1.0,
+              "min_dist": 0.1,
+              "n_neighbors": 5,
+              "neighborhood_preservation": 0.7166666666666667,
+              "random_label_accuracy": 0.2777777910232544,
+              "random_token_accuracy": 0.0555555559694767,
+              "seed": 1,
+              "trustworthiness": 0.9955965909090909
+            },
+            {
+              "heldout_knn_accuracy": 1.0,
+              "min_dist": 0.3,
+              "n_neighbors": 8,
+              "neighborhood_preservation": 0.6729166666666666,
+              "random_label_accuracy": 0.1944444477558136,
+              "random_token_accuracy": 0.02777777798473835,
+              "seed": 1,
+              "trustworthiness": 0.9925899621212121
+            },
+            {
+              "heldout_knn_accuracy": 1.0,
+              "min_dist": 0.0,
+              "n_neighbors": 3,
+              "neighborhood_preservation": 0.7083333333333334,
+              "random_label_accuracy": 0.1111111119389534,
+              "random_token_accuracy": 0.02777777798473835,
+              "seed": 2,
+              "trustworthiness": 0.994436553030303
+            },
+            {
+              "heldout_knn_accuracy": 1.0,
+              "min_dist": 0.1,
+              "n_neighbors": 5,
+              "neighborhood_preservation": 0.6916666666666668,
+              "random_label_accuracy": 0.3055555522441864,
+              "random_token_accuracy": 0.0555555559694767,
+              "seed": 2,
+              "trustworthiness": 0.9953125
+            },
+            {
+              "heldout_knn_accuracy": 1.0,
+              "min_dist": 0.3,
+              "n_neighbors": 8,
+              "neighborhood_preservation": 0.6895833333333333,
+              "random_label_accuracy": 0.1944444477558136,
+              "random_token_accuracy": 0.0555555559694767,
+              "seed": 2,
+              "trustworthiness": 0.9926373106060606
+            },
+            {
+              "heldout_knn_accuracy": 1.0,
+              "min_dist": 0.0,
+              "n_neighbors": 3,
+              "neighborhood_preservation": 0.71875,
+              "random_label_accuracy": 0.1111111119389534,
+              "random_token_accuracy": 0.02777777798473835,
+              "seed": 3,
+              "trustworthiness": 0.99453125
+            },
+            {
+              "heldout_knn_accuracy": 1.0,
+              "min_dist": 0.1,
+              "n_neighbors": 5,
+              "neighborhood_preservation": 0.6875,
+              "random_label_accuracy": 0.0555555559694767,
+              "random_token_accuracy": 0.02777777798473835,
+              "seed": 3,
+              "trustworthiness": 0.9947916666666666
+            },
+            {
+              "heldout_knn_accuracy": 1.0,
+              "min_dist": 0.3,
+              "n_neighbors": 8,
+              "neighborhood_preservation": 0.6666666666666666,
+              "random_label_accuracy": 0.0555555559694767,
+              "random_token_accuracy": 0.0555555559694767,
+              "seed": 3,
+              "trustworthiness": 0.9924952651515152
+            },
+            {
+              "heldout_knn_accuracy": 1.0,
+              "min_dist": 0.0,
+              "n_neighbors": 3,
+              "neighborhood_preservation": 0.7166666666666667,
+              "random_label_accuracy": 0.1111111119389534,
+              "random_token_accuracy": 0.0555555559694767,
+              "seed": 4,
+              "trustworthiness": 0.9950047348484848
+            },
+            {
+              "heldout_knn_accuracy": 1.0,
+              "min_dist": 0.1,
+              "n_neighbors": 5,
+              "neighborhood_preservation": 0.7041666666666666,
+              "random_label_accuracy": 0.0,
+              "random_token_accuracy": 0.02777777798473835,
+              "seed": 4,
+              "trustworthiness": 0.9954071969696969
+            },
+            {
+              "heldout_knn_accuracy": 1.0,
+              "min_dist": 0.3,
+              "n_neighbors": 8,
+              "neighborhood_preservation": 0.6666666666666666,
+              "random_label_accuracy": 0.02777777798473835,
+              "random_token_accuracy": 0.02777777798473835,
+              "seed": 4,
+              "trustworthiness": 0.9928030303030303
+            }
+          ],
+          "sweep": {
+            "mean_heldout_knn_accuracy": 1.0,
+            "mean_neighborhood_preservation": 0.6997222222222222,
+            "mean_trustworthiness": 0.9942881944444444,
+            "min_heldout_knn_accuracy": 1.0,
+            "min_neighborhood_preservation": 0.6666666666666666,
+            "min_trustworthiness": 0.9924952651515152,
+            "passes_visualization_controls": true,
+            "random_label_accuracy_max": 0.3055555522441864,
+            "random_token_accuracy_max": 0.0555555559694767,
+            "run_count": 15,
+            "seed_count": 5,
+            "setting_count": 3
+          },
+          "task_name": "month",
+          "train_example_count": 60
+        },
+        "month_visualization_passed": true,
+        "noise_accuracy": 0.1428571492433548,
+        "pca_explained_variance_ratio": [
+          0.29690292477607727,
+          0.16706226766109467
+        ],
+        "peak_vram_gb": 0.3446516990661621,
+        "permuted_label_accuracy": 0.0,
+        "preflight_passed": true,
+        "raw_heldout_accuracy": 0.1428571492433548,
+        "raw_predicts_heldout_labels": false,
+        "revision": "e93a9faa9c77e5d09219f6c868bfc7a1bd65593c",
+        "survives_white_noise_control": true,
+        "train_template": "Today is {}",
+        "visualization_seed_count": 5,
+        "visualization_setting_count": 3,
+        "weekday_count": 7,
+        "weekday_geometry": {
+          "centered_heldout_accuracy": 1.0,
+          "centered_predicts_heldout_labels": true,
+          "heldout_template": "The calendar says {}",
+          "label_count": 7,
+          "matched_pair_accuracy": 1.0,
+          "noise_accuracy": 0.1428571492433548,
+          "pca_explained_variance_ratio": [
+            0.29690292477607727,
+            0.16706226766109467
+          ],
+          "permuted_label_accuracy": 0.0,
+          "raw_heldout_accuracy": 0.1428571492433548,
+          "raw_predicts_heldout_labels": false,
+          "survives_white_noise_control": true,
+          "train_template": "Today is {}",
+          "white_noise_margin": 0.8571428507566452
+        },
+        "weekday_visualization": {
+          "heldout_example_count": 21,
+          "passes_visualization_controls": true,
+          "random_token_train_example_count": 35,
+          "runs": [
+            {
+              "heldout_knn_accuracy": 0.9523809552192688,
+              "min_dist": 0.0,
+              "n_neighbors": 3,
+              "neighborhood_preservation": 0.6821428571428572,
+              "random_label_accuracy": 0.095238097012043,
+              "random_token_accuracy": 0.095238097012043,
+              "seed": 0,
+              "trustworthiness": 0.9894345238095238
+            },
+            {
+              "heldout_knn_accuracy": 1.0,
+              "min_dist": 0.1,
+              "n_neighbors": 5,
+              "neighborhood_preservation": 0.6464285714285715,
+              "random_label_accuracy": 0.095238097012043,
+              "random_token_accuracy": 0.1428571492433548,
+              "seed": 0,
+              "trustworthiness": 0.986904761904762
+            },
+            {
+              "heldout_knn_accuracy": 0.9523809552192688,
+              "min_dist": 0.3,
+              "n_neighbors": 8,
+              "neighborhood_preservation": 0.6071428571428571,
+              "random_label_accuracy": 0.095238097012043,
+              "random_token_accuracy": 0.095238097012043,
+              "seed": 0,
+              "trustworthiness": 0.9769345238095238
+            },
+            {
+              "heldout_knn_accuracy": 0.9047619104385376,
+              "min_dist": 0.0,
+              "n_neighbors": 3,
+              "neighborhood_preservation": 0.6821428571428572,
+              "random_label_accuracy": 0.190476194024086,
+              "random_token_accuracy": 0.1428571492433548,
+              "seed": 1,
+              "trustworthiness": 0.9857886904761904
+            },
+            {
+              "heldout_knn_accuracy": 1.0,
+              "min_dist": 0.1,
+              "n_neighbors": 5,
+              "neighborhood_preservation": 0.6321428571428571,
+              "random_label_accuracy": 0.1428571492433548,
+              "random_token_accuracy": 0.095238097012043,
+              "seed": 1,
+              "trustworthiness": 0.9871279761904762
+            },
+            {
+              "heldout_knn_accuracy": 1.0,
+              "min_dist": 0.3,
+              "n_neighbors": 8,
+              "neighborhood_preservation": 0.625,
+              "random_label_accuracy": 0.2857142984867096,
+              "random_token_accuracy": 0.1428571492433548,
+              "seed": 1,
+              "trustworthiness": 0.9773809523809524
+            },
+            {
+              "heldout_knn_accuracy": 0.9047619104385376,
+              "min_dist": 0.0,
+              "n_neighbors": 3,
+              "neighborhood_preservation": 0.6785714285714286,
+              "random_label_accuracy": 0.095238097012043,
+              "random_token_accuracy": 0.1428571492433548,
+              "seed": 2,
+              "trustworthiness": 0.9866815476190476
+            },
+            {
+              "heldout_knn_accuracy": 1.0,
+              "min_dist": 0.1,
+              "n_neighbors": 5,
+              "neighborhood_preservation": 0.6357142857142858,
+              "random_label_accuracy": 0.095238097012043,
+              "random_token_accuracy": 0.095238097012043,
+              "seed": 2,
+              "trustworthiness": 0.9854166666666667
+            },
+            {
+              "heldout_knn_accuracy": 1.0,
+              "min_dist": 0.3,
+              "n_neighbors": 8,
+              "neighborhood_preservation": 0.6142857142857142,
+              "random_label_accuracy": 0.1428571492433548,
+              "random_token_accuracy": 0.095238097012043,
+              "seed": 2,
+              "trustworthiness": 0.976860119047619
+            },
+            {
+              "heldout_knn_accuracy": 0.9523809552192688,
+              "min_dist": 0.0,
+              "n_neighbors": 3,
+              "neighborhood_preservation": 0.6821428571428572,
+              "random_label_accuracy": 0.190476194024086,
+              "random_token_accuracy": 0.095238097012043,
+              "seed": 3,
+              "trustworthiness": 0.9910714285714286
+            },
+            {
+              "heldout_knn_accuracy": 1.0,
+              "min_dist": 0.1,
+              "n_neighbors": 5,
+              "neighborhood_preservation": 0.6571428571428573,
+              "random_label_accuracy": 0.2380952388048172,
+              "random_token_accuracy": 0.1428571492433548,
+              "seed": 3,
+              "trustworthiness": 0.9889880952380953
+            },
+            {
+              "heldout_knn_accuracy": 1.0,
+              "min_dist": 0.3,
+              "n_neighbors": 8,
+              "neighborhood_preservation": 0.6357142857142858,
+              "random_label_accuracy": 0.190476194024086,
+              "random_token_accuracy": 0.095238097012043,
+              "seed": 3,
+              "trustworthiness": 0.9799851190476191
+            },
+            {
+              "heldout_knn_accuracy": 0.8571428656578064,
+              "min_dist": 0.0,
+              "n_neighbors": 3,
+              "neighborhood_preservation": 0.6642857142857144,
+              "random_label_accuracy": 0.0476190485060215,
+              "random_token_accuracy": 0.190476194024086,
+              "seed": 4,
+              "trustworthiness": 0.965625
+            },
+            {
+              "heldout_knn_accuracy": 1.0,
+              "min_dist": 0.1,
+              "n_neighbors": 5,
+              "neighborhood_preservation": 0.6321428571428571,
+              "random_label_accuracy": 0.1428571492433548,
+              "random_token_accuracy": 0.095238097012043,
+              "seed": 4,
+              "trustworthiness": 0.9876488095238095
+            },
+            {
+              "heldout_knn_accuracy": 0.9523809552192688,
+              "min_dist": 0.3,
+              "n_neighbors": 8,
+              "neighborhood_preservation": 0.5785714285714285,
+              "random_label_accuracy": 0.190476194024086,
+              "random_token_accuracy": 0.1428571492433548,
+              "seed": 4,
+              "trustworthiness": 0.9789434523809524
+            }
+          ],
+          "sweep": {
+            "mean_heldout_knn_accuracy": 0.9650793671607971,
+            "mean_neighborhood_preservation": 0.6435714285714286,
+            "mean_trustworthiness": 0.9829861111111111,
+            "min_heldout_knn_accuracy": 0.8571428656578064,
+            "min_neighborhood_preservation": 0.5785714285714285,
+            "min_trustworthiness": 0.965625,
+            "passes_visualization_controls": true,
+            "random_label_accuracy_max": 0.2857142984867096,
+            "random_token_accuracy_max": 0.190476194024086,
+            "run_count": 15,
+            "seed_count": 5,
+            "setting_count": 3
+          },
+          "task_name": "weekday",
+          "train_example_count": 35
+        },
+        "weekday_visualization_passed": true,
+        "white_noise_margin": 0.8571428507566452,
+        "within_vram_budget": true
+      },
+      "pythia_weekday_preflight_passed": true,
+      "pythia_weekday_raw_heldout_accuracy": 0.1428571492433548,
+      "pythia_weekday_umap_mean_heldout_knn_accuracy": 0.9650793671607971,
+      "pythia_weekday_umap_min_heldout_knn_accuracy": 0.8571428656578064,
+      "pythia_weekday_umap_min_neighborhood_preservation": 0.5785714285714285,
+      "pythia_weekday_umap_min_trustworthiness": 0.965625,
+      "pythia_weekday_umap_random_label_accuracy_max": 0.2857142984867096,
+      "pythia_weekday_umap_random_token_accuracy_max": 0.190476194024086,
+      "pythia_weekday_visualization_passed": true,
+      "pythia_weekday_white_noise_margin": 0.8571428507566452,
+      "template_centering_max_mean_abs": 0.0,
+      "torch_version": "2.12.1+cu132",
+      "within_vram_budget": true
+    },
+    "notebook_contract": {
+      "causal_direction": {
+        "baseline_mean": 0.25,
+        "has_causal_effect": true,
+        "intervened_mean": 0.75,
+        "observed_delta": 0.5,
+        "random_control_mean": 0.30000001192092896,
+        "random_delta": 0.050000011920928955
+      },
+      "noise_control": {
+        "margin": 0.4,
+        "noise_accuracy": 0.5,
+        "real_accuracy": 0.9,
+        "survives_white_noise_control": true
+      },
+      "pca": {
+        "components_shape": [
+          1,
+          2
+        ],
+        "explained_variance_ratio": [
+          1.0
+        ],
+        "projected_shape": [
+          4,
+          1
+        ]
+      },
+      "prediction": {
+        "heldout_accuracy": 1.0,
+        "predicts_heldout_labels": true
+      },
+      "stability": {
+        "mean_pairwise_jaccard": 0.7777777777777777,
+        "neighbor_sets": [
+          [
+            1,
+            2,
+            3
+          ],
+          [
+            1,
+            2,
+            4
+          ],
+          [
+            1,
+            2,
+            3
+          ]
+        ],
+        "stable_across_seeds": true
+      },
+      "template_centering": {
+        "first_template_centered": [
+          [
+            -1.0,
+            -1.0
+          ],
+          [
+            1.0,
+            1.0
+          ]
+        ],
+        "max_template_mean_abs": 0.0,
+        "shape": [
+          2,
+          2,
+          2
+        ]
+      }
+    }
+  },
+  "models": [
+    {
+      "gated": false,
+      "id": "toy_or_generated_inputs",
+      "precision": "float32",
+      "revision": "seed_0",
+      "source": "generated"
+    },
+    {
+      "claim_scope": "weekday_month_template_centered_hidden_state_geometry_preflight",
+      "gated": false,
+      "id": "EleutherAI/pythia-70m-deduped",
+      "precision": "float32",
+      "revision": "e93a9faa9c77e5d09219f6c868bfc7a1bd65593c",
+      "source": "huggingface"
+    }
+  ],
+  "negative_controls": {
+    "declared_controls": [
+      "negative_control_where_applicable",
+      "visualization_random_label_negative_control",
+      "visualization_random_token_negative_control"
+    ]
+  },
+  "notebook_id": "11_1_pca_svd_and_geometry_controls",
+  "ood_tests": {
+    "declared": "required_where_applicable"
+  },
+  "peak_vram_gb": 0.344652,
+  "report_inputs": {
+    "schema_version": 1,
+    "algorithm": "sha256",
+    "combined_sha256": "62342115fdb2099ce37084b185fd020b99895399aacd2200c7d7666ed9d7d123",
+    "files": [
+      {
+        "path": "arena_ext/verification.py",
+        "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
+        "size_bytes": 9276
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/11.1_PCA_SVD_and_Geometry_Controls_exercises.ipynb",
+        "sha256": "d3d346d31ab526e43ede95546442fab02b5ce25400425075e7b6242cd6f5ae70",
+        "size_bytes": 15001
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/11.1_PCA_SVD_and_Geometry_Controls_solutions.ipynb",
+        "sha256": "70e8d721e464323cf5f7fc325d3f82ecd4c4255dd31d7e719a6656540c4a481d",
+        "size_bytes": 6336
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/README.md",
+        "sha256": "1151505629eb345e451b7db405c7211f428a6049c5c9216f1f90729d73c36548",
+        "size_bytes": 1017
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/artifacts.lock.yml",
+        "sha256": "ccbd49b065eab8f2848a0ae319a765ce80184b5e5a15da8db5dd2de150c6a802",
+        "size_bytes": 3478
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/expected_outputs/README.md",
+        "sha256": "93c87c58f98df6d71c32eb875d19140b2039ae3451d0aba48705065406a98830",
+        "size_bytes": 1784
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/expected_outputs/reference_metrics.json",
+        "sha256": "a13edf987cb47f7a1d482cd8e2f04c1fcb4e43d704d7ec99c2df87739858c41f",
+        "size_bytes": 987
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/expected_outputs/smoke_test.json",
+        "sha256": "fb84af0a6e67cbc832d8fdcf754af53d82413f3a811b28f9e1c2d37901ac37f8",
+        "size_bytes": 301
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/solutions.py",
+        "sha256": "063a99c681bcaf7214fad10744e99e9478107ad4594246a369b619786ac02ba7",
+        "size_bytes": 42286
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/tests.py",
+        "sha256": "9b7978539140521bffddbede9e80ea7337afbac4eef9df54b964ea38d18e935d",
+        "size_bytes": 20140
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/utils.py",
+        "sha256": "934445bc914649bde77c5c3d9b418a3d5cdeac982e10eecc670967d1de171692",
+        "size_bytes": 363
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/verification_report.schema.json",
+        "sha256": "ecd833883885077ad5d7a0e239d984d01462255e94266212cf195ab4d4e27b3d",
+        "size_bytes": 2669
+      },
+      {
+        "path": "chapter11_representation_geometry/instructions/pages/01_[11.1]_PCA_SVD_and_Geometry_Controls.md",
+        "sha256": "1a8138883f257dff364a25946b6ddd75082d926352783527343fb59ada6b093b",
+        "size_bytes": 23681
+      },
+      {
+        "path": "scripts/run_extension_verification_reports.py",
+        "sha256": "660040f459d07535deb9e0c34ffddb496c13b8770044ae380d3a8e45b0c8fb2b",
+        "size_bytes": 16080
+      }
+    ]
+  },
+  "safety_notes": [
+    "No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.",
+    "The real-LM geometry path uses generated weekday/month labels and hidden states only. It performs no generated completions and does not claim causal space/time intervention behavior."
+  ],
+  "tests_passed": true,
+  "wall_clock_seconds": 15.954568
+}

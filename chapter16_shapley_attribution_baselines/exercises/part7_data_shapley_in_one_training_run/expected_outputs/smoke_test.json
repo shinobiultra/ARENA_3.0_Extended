@@ -1,0 +1,10 @@
+{
+  "accepted": true,
+  "claim_scope": "Contract check; not a full real-model validation.",
+  "evidence_level": "notebook_contract",
+  "gt_tier": "GT-0",
+  "notebook_id": "16_7_data_shapley_in_one_training_run",
+  "section": "16.7",
+  "tests_passed": true,
+  "title": "Data Shapley in One Training Run"
+}

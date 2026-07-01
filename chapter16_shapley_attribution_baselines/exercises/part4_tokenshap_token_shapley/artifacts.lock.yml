@@ -1,0 +1,103 @@
+notebook_id: 16_4_tokenshap_and_tokenshapley
+section: '16.4'
+title: TokenSHAP and TokenShapley
+exercise_metadata:
+  EXERCISE_ID: 16_4_tokenshap_and_tokenshapley
+  GT_TIER: GT-0
+  DIFFICULTY: 3
+  IMPORTANCE: 4
+  EXPECTED_RUNTIME: seconds on toy contract; minutes on local real-model path
+  REQUIRES_GPU: true
+gt_tier: GT-0
+evidence_level: tokenshap_contract_plus_cuda_trained_token_scorer_preflight
+claim_scope: 'GT-0 TokenSHAP preflight: deterministic masked-token coalition, exact
+  TokenShapley, and sampled TokenSHAP contracts are kept for learner exercises, then
+  a CUDA embedding MLP is trained on the complete masked coalition table for the four-position
+  prompt ''The capital is Paris''. The report computes exact and sampled TokenSHAP
+  from real model outputs, checks them against the analytic token game, verifies efficiency
+  and top-token ranking, and rejects a shuffled-label token-scorer control. This proves
+  local token-position SHAP mechanics on a finite trained model organism; it is not
+  a claim about sampled TokenSHAP on a large language model.'
+required_gpu_gb: 1
+max_allowed_gpu_gb: 24
+models:
+- id: toy_or_generated_inputs
+  source: generated
+  revision: seed_0
+  precision: float32
+  gated: false
+- id: course_cuda_tiny_token_scorer_mlp_v1
+  source: generated_training_run
+  revision: seed_1640_prompt4_embed32_hidden96_steps1200
+  precision: float32
+  gated: false
+  claim_scope: trained_tokenshap_preflight
+  optimizer: AdamW
+  learning_rate: 0.02
+datasets:
+- id: 16_4_tokenshap_and_tokenshapley_toy_inputs
+  source: generated
+  seed: 0
+- id: complete_masked_token_coalition_table_v1
+  source: generated_finite_table
+  seed: 1640
+  tokens:
+  - The
+  - capital
+  - is
+  - Paris
+  mask_token: '[MASK]'
+  token_count: 4
+  coalition_count: 16
+  target_rule: score Paris +1 and capital/Paris interaction +2
+  analytic_token_shapley:
+  - 0.0
+  - 1.0
+  - 0.0
+  - 2.0
+  sampled_permutations: 512
+  shuffled_label_control: true
+expected_metrics:
+  tests_passed: true
+  accepted: true
+  max_allowed_gpu_gb: 24
+  preflight_passed: true
+  model_family: cuda_trained_tiny_token_scorer_mlp
+  token_count: 4
+  coalition_count: 16
+  training_example_count: 16
+  training_steps: 1200
+  fit_mse_max: 1.0e-10
+  fit_max_abs_error_max: 1.0e-05
+  exact_shapley_max_abs_error_max: 1.0e-05
+  sampled_max_abs_error_max: 0.1
+  sampled_rank_matches: true
+  top_token: Paris
+  sampled_top_token: Paris
+  baseline_efficiency_error_max: 1.0e-08
+  satisfies_efficiency: true
+  shuffled_control_error_min: 1.0
+  shuffled_control_rejected: true
+  peak_vram_gb_max: 1.0
+controls:
+- baseline_or_reference_check
+- negative_control_where_applicable
+- shape_dtype_or_exact_value_check
+- masked_token_coalition_contract
+- exact_token_shapley_contract
+- sampled_tokenshap_contract
+- real_cuda_training_run
+- complete_masked_token_table_fit
+- real_model_masked_token_coalition_values
+- exact_tokenshap_vs_analytic_ground_truth
+- sampled_tokenshap_vs_exact_model_values
+- top_token_rank_preservation
+- shapley_efficiency_check_on_trained_token_model
+- shuffled_label_trained_model_negative_control
+- large_language_model_tokenshap_not_claimed
+safety_notes:
+- No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.
+- The real training path uses only a generated finite masked-token table for a safe
+  four-token prompt and a shuffled-label negative control. It does not use unsafe
+  prompts, user data, external APIs, adapters, gated weights, or large persistent
+  artifacts.

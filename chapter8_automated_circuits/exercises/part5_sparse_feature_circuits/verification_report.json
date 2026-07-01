@@ -1,0 +1,622 @@
+{
+  "accepted": true,
+  "baselines": {
+    "declared_controls": [
+      "baseline_or_reference_check",
+      "negative_control_where_applicable",
+      "shape_dtype_or_exact_value_check",
+      "pythia_subject_verb_residual_preflight",
+      "same_size_random_residual_feature_control",
+      "official_feature_circuits_repo_manifest_check",
+      "official_pythia_sae_dictionary_manifest_check",
+      "official_resid5_sae_state_dict_shape_and_finiteness_smoke",
+      "one_layer_official_resid5_sae_feature_attribution_random_control",
+      "official_code_100_example_sparse_feature_graph_artifact",
+      "official_heldout_simple_test_faithfulness_evaluation",
+      "generated_shift_style_spurious_feature_editing",
+      "black_box_unedited_classifier_baseline",
+      "same_size_random_feature_edit_control"
+    ],
+    "expected_metrics": {
+      "accepted": true,
+      "max_allowed_gpu_gb": 24,
+      "official_artifact_expected_dictionary_count": 19,
+      "official_artifact_ready_for_gt2": true,
+      "official_artifact_remote_manifest_passed": true,
+      "official_sae_feature_attribution_passed": true,
+      "official_sae_state_dict_smoke_passed": true,
+      "official_sparse_feature_circuit_examples": 100,
+      "official_sparse_feature_circuit_faithfulness_min": 0.9,
+      "official_sparse_feature_circuit_faithfulness_passed": true,
+      "official_sparse_feature_circuit_replication_passed": true,
+      "real_model_linearization_error_max": 0.001,
+      "real_model_preflight_passed": true,
+      "real_model_random_control_fails": true,
+      "shift_editing_ood_improvement_min": 0.5,
+      "shift_editing_passed": true,
+      "shift_editing_random_edit_control_fails": true,
+      "shift_editing_target_accuracy_drop_max": 0.05,
+      "tests_passed": true
+    }
+  },
+  "claim_scope": "GT-0 toy sparse-feature contract plus Pythia-70M-deduped residual-feature subject/verb preflight, official artifact readiness, one released SAE state-dict check, one-layer SAE feature-attribution with random-feature control, a 100-example official-code sparse feature graph artifact, and held-out official faithfulness on 40 simple_test examples, plus a safe generated-data SHIFT-style editing organism that suppresses a spurious feature, preserves target accuracy, improves OOD accuracy, and beats a same-size random feature edit.",
+  "datasets": [
+    {
+      "id": "8_5_sparse_feature_circuits_toy_inputs",
+      "seed": 0,
+      "source": "generated"
+    },
+    {
+      "clean_prompt": "The cats",
+      "corrupt_prompt": "The cat",
+      "distractor_token": " is",
+      "id": "subject_verb_minimal_pair_cats_cat_are_is",
+      "seed": 0,
+      "source": "course_generated_prompt_pair",
+      "target_token": " are"
+    },
+    {
+      "id": "course_generated_shift_sparse_feature_editing_v1",
+      "seed": 0,
+      "source": "generated",
+      "splits": "train and OOD",
+      "spurious_feature": "train-correlated anti-correlated OOD feature",
+      "target_feature": "signed task label feature"
+    }
+  ],
+  "date_run": "2026-06-30T14:07:29+00:00",
+  "evidence_level": "toy_ladder_plus_real_pythia_official_sae_sfc_faithfulness_and_shift_editing",
+  "git_commit": "f9f034bd",
+  "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+  "gt_tier": "GT-0",
+  "known_failures": [],
+  "metrics": {
+    "gpu_evidence": {
+      "category": "cuda_section_metric",
+      "placeholder_only": false,
+      "section_specific_metric_keys": [
+        "eap_ig_error",
+        "eap_ig_improves",
+        "edge_recovered_fraction",
+        "node_recovered_fraction",
+        "official_artifact_expected_dictionary_count",
+        "official_artifact_hf_zip_size_gb",
+        "official_artifact_local_dictionaries_ready",
+        "official_artifact_missing_dictionary_count",
+        "official_artifact_readiness",
+        "official_artifact_ready_for_gt2",
+        "official_artifact_remote_manifest_passed",
+        "official_sae_feature_attribution",
+        "official_sae_feature_attribution_passed",
+        "official_sae_feature_attribution_random_fraction",
+        "official_sae_feature_attribution_recovered_fraction",
+        "official_sae_feature_l0",
+        "official_sae_relative_l2_error",
+        "official_sae_state_dict_smoke",
+        "official_sae_state_dict_smoke_passed",
+        "official_sparse_feature_circuit",
+        "official_sparse_feature_circuit_examples",
+        "official_sparse_feature_circuit_faithfulness",
+        "official_sparse_feature_circuit_faithfulness_passed",
+        "official_sparse_feature_circuit_faithfulness_report",
+        "official_sparse_feature_circuit_replication_passed",
+        "official_sparse_feature_circuit_thresholded_edges",
+        "official_sparse_feature_circuit_thresholded_nodes",
+        "pythia_subject_verb_preflight",
+        "random_graph_fails",
+        "real_model_claim_scope",
+        "real_model_linearization_error",
+        "real_model_peak_vram_gb",
+        "real_model_preflight_passed",
+        "real_model_random_control_fails",
+        "real_model_recovered_fraction",
+        "real_model_total_effect",
+        "shift_editing",
+        "shift_editing_ood_improvement",
+        "shift_editing_passed",
+        "shift_editing_random_edit_control_fails",
+        "shift_editing_spurious_reliance_after",
+        "shift_editing_spurious_reliance_before",
+        "shift_editing_target_accuracy_drop"
+      ],
+      "uses_cuda": true
+    },
+    "gpu_test": {
+      "cuda_available": true,
+      "cuda_version": "13.2",
+      "device": "NVIDIA GeForce RTX 5090 Laptop GPU",
+      "eap_ig_error": 0.009999995119869709,
+      "eap_ig_improves": true,
+      "edge_recovered_fraction": 0.800000011920929,
+      "full_path": "Validated toy sparse-feature circuits, Pythia-70M residual-feature preflight, official SAE state-dict checks, a 100-example official sparse-feature graph artifact, held-out official faithfulness, and safe generated-data SHIFT-style sparse-feature editing.",
+      "gpu_total_memory_gb": 23.45965576171875,
+      "node_recovered_fraction": 0.8999999761581421,
+      "official_artifact_expected_dictionary_count": 19,
+      "official_artifact_hf_zip_size_gb": 2.207133272662759,
+      "official_artifact_local_dictionaries_ready": true,
+      "official_artifact_missing_dictionary_count": 0,
+      "official_artifact_readiness": {
+        "cached_ready_for_gt2_replication": true,
+        "claim_scope": "artifact_manifest_readiness_not_sparse_feature_replication",
+        "dictionary_download_required": false,
+        "expected_dictionary_count": 19,
+        "hf_commit_hash": "50a434461d36ed78d1b0b901944e6edc829f1dce",
+        "hf_metadata_matches_pin": true,
+        "hf_repo": "saprmarks/pythia-70m-deduped-saes",
+        "hf_zip": "dictionaries_pythia-70m-deduped_10.zip",
+        "hf_zip_present": true,
+        "hf_zip_size_gb": 2.207133272662759,
+        "local_dictionaries_ready": true,
+        "metadata_source": "cached_prepare_sparse_feature_circuits_artifacts_report",
+        "missing_dictionary_count": 0,
+        "missing_dictionary_paths": [],
+        "missing_repo_files": [],
+        "official_repo": "https://github.com/saprmarks/feature-circuits",
+        "official_repo_commit": "7fbd82b895ae16294f4e6fc7bfc675d1d680d659",
+        "official_repo_pinned": true,
+        "ready_for_gt2_replication": true,
+        "remote_manifest_passed": true
+      },
+      "official_artifact_ready_for_gt2": true,
+      "official_artifact_remote_manifest_passed": true,
+      "official_sae_feature_attribution": {
+        "claim_scope": "one_layer_official_sae_feature_attribution_smoke_not_full_graph",
+        "clean_feature_l0": 35,
+        "clean_prompt": "The cats",
+        "clean_tokens": [
+          "The",
+          "\u0120cats"
+        ],
+        "corrupt_feature_l0": 42,
+        "corrupt_prompt": "The cat",
+        "corrupt_tokens": [
+          "The",
+          "\u0120cat"
+        ],
+        "cuda_available": true,
+        "decoded_feature_effect": 1.9323512315750122,
+        "dictionary_path": "/home/bitwise/Documents/ARENA_3.0_Extended/external/feature-circuits/dictionaries/pythia-70m-deduped/resid_out_layer5/10_32768/ae.pt",
+        "dictionary_relative_path": "resid_out_layer5/10_32768/ae.pt",
+        "distractor_token": " is",
+        "distractor_token_id": 310,
+        "model_id": "EleutherAI/pythia-70m-deduped",
+        "passes_smoke": true,
+        "peak_vram_gb": 0.45331239700317383,
+        "random_control_fails": true,
+        "random_effect": 0.0,
+        "random_feature_ids": [
+          3342,
+          1957,
+          28164,
+          29821,
+          15908,
+          32296,
+          24722,
+          18425,
+          21575,
+          23002,
+          12103,
+          17708,
+          7605,
+          20470,
+          15982,
+          11768
+        ],
+        "random_recovered_fraction": 0.0,
+        "recovered_fraction": 0.5829060482052949,
+        "sae_error_effect": 1.1695789098739624,
+        "selected_effect": 1.808133840560913,
+        "selected_feature_ids": [
+          25173,
+          18720,
+          4729,
+          19066,
+          9340,
+          7468,
+          295,
+          11839,
+          30181,
+          3036,
+          25174,
+          5151,
+          8907,
+          9681,
+          10906,
+          17381
+        ],
+        "target_token": " are",
+        "target_token_id": 403,
+        "top_k": 16,
+        "total_residual_effect": 3.1019301414489746,
+        "within_vram_budget": true
+      },
+      "official_sae_feature_attribution_passed": true,
+      "official_sae_feature_attribution_random_fraction": 0.0,
+      "official_sae_feature_attribution_recovered_fraction": 0.5829060482052949,
+      "official_sae_feature_l0": 35,
+      "official_sae_relative_l2_error": 0.07946157455444336,
+      "official_sae_state_dict_smoke": {
+        "activation_dim": 512,
+        "claim_scope": "official_sae_state_dict_shape_and_finiteness_smoke_only",
+        "cuda_available": true,
+        "dict_size": 32768,
+        "dictionary_path": "/home/bitwise/Documents/ARENA_3.0_Extended/external/feature-circuits/dictionaries/pythia-70m-deduped/resid_out_layer5/10_32768/ae.pt",
+        "dictionary_relative_path": "resid_out_layer5/10_32768/ae.pt",
+        "feature_l0": 35,
+        "feature_max": 1.9689345359802246,
+        "model_id": "EleutherAI/pythia-70m-deduped",
+        "passes_smoke": true,
+        "peak_vram_gb": 0.45179128646850586,
+        "prompt": "The cats",
+        "reconstruction_mse": 0.09268885850906372,
+        "relative_l2_error": 0.07946157455444336,
+        "shapes_match": true,
+        "state_dict_present": true,
+        "tensors_finite": true,
+        "tokens": [
+          "The",
+          "\u0120cats"
+        ],
+        "within_vram_budget": true
+      },
+      "official_sae_state_dict_smoke_passed": true,
+      "official_sparse_feature_circuit": {
+        "circuit_path": "/home/bitwise/Documents/ARENA_3.0_Extended/external/feature-circuits/official-runs/circuits/pythia-70m-deduped_simple_train_n100_aggsum_node0.2.pt",
+        "circuit_present": true,
+        "claim_scope": "official_code_100_example_sparse_feature_graph_replication_artifact",
+        "edge_group_count": 31,
+        "edge_threshold": 0.1,
+        "examples": 100,
+        "figure_path": "/home/bitwise/Documents/ARENA_3.0_Extended/external/feature-circuits/official-runs/figures/pythia-70m-deduped_simple_train_n100_aggsum_node0.2_edge0.1_n100_aggsum.png",
+        "figure_present": true,
+        "max_abs_edge_effect": 1.1806817054748535,
+        "max_abs_node_effect": 2.028385639190674,
+        "node_submodule_count": 19,
+        "node_threshold": 0.2,
+        "official_repo": "https://github.com/saprmarks/feature-circuits",
+        "official_repo_commit": "7fbd82b895ae16294f4e6fc7bfc675d1d680d659",
+        "passes_smoke": true,
+        "thresholded_edge_count": 59,
+        "thresholded_node_count": 37
+      },
+      "official_sparse_feature_circuit_examples": 100,
+      "official_sparse_feature_circuit_faithfulness": 1.0,
+      "official_sparse_feature_circuit_faithfulness_passed": true,
+      "official_sparse_feature_circuit_faithfulness_report": {
+        "circuit_path": "/home/bitwise/Documents/ARENA_3.0_Extended/external/feature-circuits/official-runs/circuits/pythia-70m-deduped_simple_train_n100_aggsum_node0.2.pt",
+        "claim_scope": "official_code_heldout_sparse_feature_circuit_faithfulness",
+        "cuda_available": true,
+        "f_circuit": 3.6235,
+        "f_empty": 0.0362,
+        "f_model": 3.6233,
+        "faithfulness": 1.0,
+        "heldout_dataset": "simple_test",
+        "heldout_examples": 40,
+        "node_threshold": 0.0,
+        "official_env_python": "/home/bitwise/Documents/ARENA_3.0_Extended/external/feature-circuits/.venv-official/bin/python",
+        "passes_faithfulness": true,
+        "peak_vram_gb": 0.45331239700317383,
+        "returncode": 0,
+        "start_layer": 2,
+        "within_vram_budget": true
+      },
+      "official_sparse_feature_circuit_replication_passed": true,
+      "official_sparse_feature_circuit_thresholded_edges": 59,
+      "official_sparse_feature_circuit_thresholded_nodes": 37,
+      "peak_vram_gb": 0.45331239700317383,
+      "pythia_subject_verb_preflight": {
+        "claim_scope": "real_model_residual_preflight_not_official_sae_replication",
+        "clean_logit_diff": 4.3443603515625,
+        "clean_prompt": "The cats",
+        "clean_tokens": [
+          "The",
+          "\u0120cats"
+        ],
+        "corrupt_logit_diff": -6.1197509765625,
+        "corrupt_prompt": "The cat",
+        "corrupt_tokens": [
+          "The",
+          "\u0120cat"
+        ],
+        "cuda_available": true,
+        "device": "NVIDIA GeForce RTX 5090 Laptop GPU",
+        "distractor_token": " is",
+        "distractor_token_id": 310,
+        "linearization_error": 0.0001392364501953125,
+        "model_id": "EleutherAI/pythia-70m-deduped",
+        "peak_vram_gb": 0.32666730880737305,
+        "preflight_passed": true,
+        "random_control_fails": true,
+        "random_feature_ids": [
+          196,
+          447,
+          157,
+          21,
+          184,
+          140,
+          155,
+          268,
+          454,
+          187,
+          86,
+          173,
+          264,
+          90,
+          281,
+          499
+        ],
+        "random_recovered_fraction": 0.030056678036997502,
+        "recovered_fraction": 0.37591454334214086,
+        "selected_feature_ids": [
+          481,
+          477,
+          178,
+          132,
+          210,
+          10,
+          238,
+          389,
+          19,
+          400,
+          24,
+          341,
+          23,
+          486,
+          224,
+          147
+        ],
+        "target_token": " are",
+        "target_token_id": 403,
+        "top_k": 16,
+        "total_effect": 10.464111328125,
+        "within_vram_budget": true
+      },
+      "random_graph_fails": true,
+      "real_model_claim_scope": "real_model_residual_preflight_not_official_sae_replication",
+      "real_model_linearization_error": 0.0001392364501953125,
+      "real_model_peak_vram_gb": 0.32666730880737305,
+      "real_model_preflight_passed": true,
+      "real_model_random_control_fails": true,
+      "real_model_recovered_fraction": 0.37591454334214086,
+      "real_model_total_effect": 10.464111328125,
+      "shift_editing": {
+        "baseline_ood_accuracy": 0.0,
+        "baseline_train_accuracy": 1.0,
+        "black_box_baseline_ood_accuracy": 0.0,
+        "edited_ood_accuracy": 1.0,
+        "edited_train_accuracy": 1.0,
+        "editing_passes": true,
+        "ood_generalization_improves": true,
+        "ood_improvement": 1.0,
+        "random_edit_control_fails": true,
+        "random_edit_improvement": 0.0,
+        "random_edit_ood_accuracy": 0.0,
+        "random_feature_ids": [
+          2
+        ],
+        "spurious_feature_ids": [
+          1
+        ],
+        "spurious_reliance_after": 0.0,
+        "spurious_reliance_before": 1.0,
+        "spurious_reliance_decreases": true,
+        "target_accuracy_drop": 0.0,
+        "target_feature_ids": [
+          0
+        ],
+        "target_reliance_after": 0.699999988079071,
+        "target_task_preserved": true
+      },
+      "shift_editing_ood_improvement": 1.0,
+      "shift_editing_passed": true,
+      "shift_editing_random_edit_control_fails": true,
+      "shift_editing_spurious_reliance_after": 0.0,
+      "shift_editing_spurious_reliance_before": 1.0,
+      "shift_editing_target_accuracy_drop": 0.0,
+      "torch_version": "2.12.1+cu132",
+      "within_vram_budget": true
+    },
+    "notebook_contract": {
+      "eap_ig": {
+        "eap_error": 0.09999999403953552,
+        "eap_ig_error": 0.009999995119869709,
+        "eap_ig_improves": true,
+        "eap_passes": false,
+        "exact_error": 0.0
+      },
+      "encode_decode": {
+        "feature_shape": [
+          2,
+          2
+        ],
+        "matches_input": true,
+        "reconstructed_shape": [
+          2,
+          2
+        ]
+      },
+      "exact_edge_patching": {
+        "full_edge_score": 1.0,
+        "graph_edge_score": 0.800000011920929,
+        "passes_recovery": true,
+        "recovered_fraction": 0.800000011920929,
+        "selected_edges": [
+          [
+            0,
+            1
+          ]
+        ]
+      },
+      "exact_node_patching": {
+        "full_logit_diff": 1.0,
+        "graph_logit_diff": 0.8999999761581421,
+        "passes_recovery": true,
+        "recovered_fraction": 0.8999999761581421,
+        "selected_feature_ids": [
+          0,
+          1
+        ]
+      },
+      "random_graph_control": {
+        "margin": 0.799999974668026,
+        "random_graph_fails": true,
+        "random_graph_logit_diff": 0.10000000149011612,
+        "random_recovered_fraction": 0.10000000149011612,
+        "target_graph_logit_diff": 0.8999999761581421,
+        "target_recovered_fraction": 0.8999999761581421
+      },
+      "shift_editing": {
+        "baseline_ood_accuracy": 0.0,
+        "baseline_train_accuracy": 1.0,
+        "black_box_baseline_ood_accuracy": 0.0,
+        "edited_ood_accuracy": 1.0,
+        "edited_train_accuracy": 1.0,
+        "editing_passes": true,
+        "ood_generalization_improves": true,
+        "ood_improvement": 1.0,
+        "random_edit_control_fails": true,
+        "random_edit_improvement": 0.0,
+        "random_edit_ood_accuracy": 0.0,
+        "random_feature_ids": [
+          2
+        ],
+        "spurious_feature_ids": [
+          1
+        ],
+        "spurious_reliance_after": 0.0,
+        "spurious_reliance_before": 1.0,
+        "spurious_reliance_decreases": true,
+        "target_accuracy_drop": 0.0,
+        "target_feature_ids": [
+          0
+        ],
+        "target_reliance_after": 0.699999988079071,
+        "target_task_preserved": true
+      },
+      "threshold_graph": {
+        "full_logit_diff": 1.0,
+        "graph_logit_diff": 0.8999999761581421,
+        "passes_threshold": true,
+        "recovered_fraction": 0.8999999761581421,
+        "selected_feature_ids": [
+          0,
+          1
+        ],
+        "threshold": 0.2
+      }
+    }
+  },
+  "models": [
+    {
+      "gated": false,
+      "id": "toy_or_generated_inputs",
+      "precision": "float32",
+      "revision": "seed_0",
+      "source": "generated"
+    },
+    {
+      "claim_scope": "residual_feature_preflight_only",
+      "gated": false,
+      "id": "EleutherAI/pythia-70m-deduped",
+      "precision": "float32",
+      "revision": "default_hf_revision",
+      "source": "huggingface"
+    }
+  ],
+  "negative_controls": {
+    "declared_controls": [
+      "negative_control_where_applicable",
+      "same_size_random_residual_feature_control",
+      "one_layer_official_resid5_sae_feature_attribution_random_control",
+      "same_size_random_feature_edit_control"
+    ]
+  },
+  "notebook_id": "8_5_sparse_feature_circuits",
+  "ood_tests": {
+    "declared": "required_where_applicable"
+  },
+  "peak_vram_gb": 0.453312,
+  "report_inputs": {
+    "schema_version": 1,
+    "algorithm": "sha256",
+    "combined_sha256": "d6f3c839f4a4702043e225c47c680f82d4dc8612eb3933e81a322488f00d878b",
+    "files": [
+      {
+        "path": "arena_ext/verification.py",
+        "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
+        "size_bytes": 9276
+      },
+      {
+        "path": "chapter8_automated_circuits/exercises/part5_sparse_feature_circuits/8.5_Sparse_Feature_Circuits_exercises.ipynb",
+        "sha256": "815d92cf26c9b70b1dab4a9bbc4686d5d1f0ab291a7443287fc0d482fbe2bf54",
+        "size_bytes": 12417
+      },
+      {
+        "path": "chapter8_automated_circuits/exercises/part5_sparse_feature_circuits/8.5_Sparse_Feature_Circuits_solutions.ipynb",
+        "sha256": "9a0ecbc3f4ab7e46d3e5b3dd1c3e63b21c3eb453d108295546109a52ee45d300",
+        "size_bytes": 5363
+      },
+      {
+        "path": "chapter8_automated_circuits/exercises/part5_sparse_feature_circuits/README.md",
+        "sha256": "5fbc86134258ac74819df8832a5c6d3d16a96b93a359617dbcbfaa2326c20ba4",
+        "size_bytes": 946
+      },
+      {
+        "path": "chapter8_automated_circuits/exercises/part5_sparse_feature_circuits/artifacts.lock.yml",
+        "sha256": "ebf02e141e6bc74b59d5ff1ba8d26039b8cc71c2698751bd4c4e35c8809d82ae",
+        "size_bytes": 3706
+      },
+      {
+        "path": "chapter8_automated_circuits/exercises/part5_sparse_feature_circuits/expected_outputs/README.md",
+        "sha256": "565166d4879181f53eccb9ddc84cf87b392af90264120866609e514546a0e0a4",
+        "size_bytes": 1775
+      },
+      {
+        "path": "chapter8_automated_circuits/exercises/part5_sparse_feature_circuits/expected_outputs/reference_metrics.json",
+        "sha256": "da66179e6da0f1506103ce25a6d7696be7dd9da99ef83eab4ff801b7a5b8817e",
+        "size_bytes": 1139
+      },
+      {
+        "path": "chapter8_automated_circuits/exercises/part5_sparse_feature_circuits/expected_outputs/smoke_test.json",
+        "sha256": "b6cb754a56b2b4afedf09512a9a98a288b364ef27b51b11572bc0afd60553019",
+        "size_bytes": 285
+      },
+      {
+        "path": "chapter8_automated_circuits/exercises/part5_sparse_feature_circuits/solutions.py",
+        "sha256": "329c5f860d0a3bc11849cc9f37bc87a19b7cd906d39a519b3c3df03e692266e6",
+        "size_bytes": 68438
+      },
+      {
+        "path": "chapter8_automated_circuits/exercises/part5_sparse_feature_circuits/tests.py",
+        "sha256": "42e0155e6a74955ea873c7ef5d92ceb6cf4f12adf4785b892c479891c9ba4591",
+        "size_bytes": 23162
+      },
+      {
+        "path": "chapter8_automated_circuits/exercises/part5_sparse_feature_circuits/utils.py",
+        "sha256": "9c95cb46e66acbd1ad894edf76ca957999eccba77d9df870048e17791dee64d5",
+        "size_bytes": 354
+      },
+      {
+        "path": "chapter8_automated_circuits/exercises/part5_sparse_feature_circuits/verification_report.schema.json",
+        "sha256": "ecd833883885077ad5d7a0e239d984d01462255e94266212cf195ab4d4e27b3d",
+        "size_bytes": 2669
+      },
+      {
+        "path": "chapter8_automated_circuits/instructions/pages/05_[8.5]_Sparse_Feature_Circuits.md",
+        "sha256": "f20ef67bcbfe0739eba0bf85762aef9bdfe52879647b620322d8078ea0d37571",
+        "size_bytes": 27741
+      },
+      {
+        "path": "scripts/run_extension_verification_reports.py",
+        "sha256": "660040f459d07535deb9e0c34ffddb496c13b8770044ae380d3a8e45b0c8fb2b",
+        "size_bytes": 16080
+      }
+    ]
+  },
+  "safety_notes": [
+    "No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.",
+    "The real Sparse Feature Circuits path uses the pinned official repo, downloaded Pythia-70M-deduped SAE dictionaries, generated safe subject-verb data from the official split, and held-out faithfulness. The SHIFT-style editing exercise uses generated sparse features only; it does not use Bias-in-Bios or sensitive demographic text."
+  ],
+  "tests_passed": true,
+  "wall_clock_seconds": 20.135039
+}

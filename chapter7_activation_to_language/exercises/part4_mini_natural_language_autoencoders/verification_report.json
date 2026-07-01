@@ -1,0 +1,452 @@
+{
+  "accepted": true,
+  "baselines": {
+    "declared_controls": [
+      "baseline_or_reference_check",
+      "negative_control_where_applicable",
+      "shape_dtype_or_exact_value_check",
+      "toy_nla_batch_contract",
+      "toy_activation_reconstruction_contract",
+      "toy_logit_diff_preservation_contract",
+      "toy_latent_preservation_contract",
+      "toy_brevity_contract",
+      "toy_counterfactual_explanation_contract",
+      "toy_trainable_discrete_nla_bottleneck_contract",
+      "pinned_transformerlens_gelu1l_live_trainable_phrase_bottleneck_reconstruction",
+      "no_activation_mean_reconstruction_baseline",
+      "prompt_label_text_only_reconstruction_baseline",
+      "direction_probe_logit_diff_preservation",
+      "long_context_ood_prompt_split",
+      "numeric_payload_rejection_control",
+      "shuffled_explanation_text_negative_control",
+      "blank_explanation_text_negative_control",
+      "counterfactual_anchor_explanation_change",
+      "anthropic_scale_nla_training_not_claimed"
+    ],
+    "expected_metrics": {
+      "accepted": true,
+      "activation_mse_max": 0.15,
+      "activation_shape": [
+        8,
+        512
+      ],
+      "beats_prompt_label_baseline": true,
+      "beats_text_only": true,
+      "blank_text_control_worse": true,
+      "blank_text_mse_min": 0.2,
+      "bnb_cuda_override": "130",
+      "compression_ratio_max": 0.7,
+      "counterfactual_activation_delta_min": 10.0,
+      "counterfactual_explanation_changed": true,
+      "eval_example_count": 8,
+      "explanation_count": 8,
+      "generated_word_count": 32,
+      "hf_revision": "bddc0e332f0ae84279e6a6a45d91b314899e1603",
+      "live_trainable_nla": true,
+      "max_allowed_gpu_gb": 24,
+      "mean_cosine_similarity_min": 0.93,
+      "model_name": "gelu-1l",
+      "negative_token": " top",
+      "nla_prediction_accuracy": 1.0,
+      "numeric_literal_count": 0,
+      "original_probe_accuracy": 1.0,
+      "original_word_count": 64,
+      "passes_ood": true,
+      "peak_vram_gb_max": 1.0,
+      "phrase_count": 12,
+      "phrase_vocabulary_size": 12,
+      "positive_token": " floor",
+      "prediction_agreement": 1.0,
+      "preflight_passed": true,
+      "preserves_latents": true,
+      "preserves_target_logit_diff": true,
+      "probe_logit_mean_abs_error_max": 2.0,
+      "prompt_label_baseline_mse_min": 0.16,
+      "reconstructed_probe_accuracy": 1.0,
+      "report_replay": false,
+      "shorter_than_original": true,
+      "shuffled_control_worse": true,
+      "shuffled_reconstruction_mse_min": 0.25,
+      "tests_passed": true,
+      "text_bottleneck": "discrete_natural_language_phrase_bottleneck",
+      "text_only_mse_min": 0.21,
+      "text_only_prediction_accuracy": 0.5,
+      "tokenizer_revision": "0f6671571a20be9756b9991d978047c03b75e749",
+      "train_example_count": 12,
+      "trainable_beats_blank_text": true,
+      "trainable_blank_text_mse_min": 0.2,
+      "trainable_decoder_final_mse_max": 0.01,
+      "trainable_decoder_parameter_count": 6144,
+      "trainable_decoder_type": "phrase_id_embedding_table_to_residual",
+      "trainable_encoder_final_loss_max": 0.01,
+      "trainable_encoder_parameter_count": 6156,
+      "trainable_encoder_train_accuracy": 1.0,
+      "trainable_encoder_type": "linear_residual_to_phrase_id",
+      "trainable_eval_phrase_accuracy_min": 0.75,
+      "trainable_phrase_count": 12,
+      "trainable_reconstruction_mse_max": 0.15,
+      "trainable_seed": 0,
+      "trainable_training_steps": 300
+    }
+  },
+  "claim_scope": "GT-3 mini Natural Language Autoencoder preflight: reusable toy activation-batch, reconstruction, logit-diff, latent-preservation, brevity, and counterfactual contracts are kept for learner exercises, then a pinned TransformerLens gelu-1l checkpoint is loaded on CUDA. The report trains a small linear residual-to-phrase-id encoder and trainable phrase-id-to-residual decoder table on real final-token residuals, transmits only short discrete natural-language phrase ids, and validates held-out activation MSE against blank-text and prompt-label baselines, direction-probe logit-diff preservation, latent preservation, OOD long-context prompts, brevity, no-numeric-payload checks, shuffled-text controls, and counterfactual explanation changes. This is a live local phrase-bottleneck mini-NLA preflight, not Anthropic-scale NLA training or a claim of faithful natural-language explanation of arbitrary activations.",
+  "datasets": [
+    {
+      "id": "7_4_mini_natural_language_autoencoders_toy_inputs",
+      "seed": 0,
+      "source": "generated"
+    },
+    {
+      "eval_example_count": 8,
+      "eval_split": "long_context_ood",
+      "hook": "blocks.0.hook_resid_post",
+      "id": "course_safe_residual_text_bottleneck_nla_prompts_v1",
+      "latent_labels": [
+        "surface",
+        "motion"
+      ],
+      "negative_anchor_prompt": "The bird flew over the",
+      "phrase_count": 12,
+      "positive_anchor_prompt": "The cat sat on the",
+      "seed": 0,
+      "source": "generated_prompt_sets",
+      "target_source": "manual_safe_prompt_labels_plus_trainable_phrase_bottleneck_reconstruction",
+      "text_bottleneck": "discrete_natural_language_phrase_bottleneck",
+      "tokenizer": "NeelNanda/gpt-neox-tokenizer-digits",
+      "train_example_count": 12
+    }
+  ],
+  "date_run": "2026-06-30T15:13:01+00:00",
+  "evidence_level": "toy_nla_contract_plus_live_trainable_transformerlens_phrase_bottleneck_preflight",
+  "git_commit": "f9f034bd",
+  "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+  "gt_tier": "GT-3",
+  "known_failures": [],
+  "metrics": {
+    "gpu_evidence": {
+      "category": "cuda_section_metric",
+      "placeholder_only": false,
+      "section_specific_metric_keys": [
+        "activation_mse",
+        "activation_shape",
+        "beats_prompt_label_baseline",
+        "beats_text_only",
+        "blank_text_control_worse",
+        "blank_text_mse",
+        "bnb_cuda_override",
+        "compression_ratio",
+        "counterfactual_activation_delta",
+        "counterfactual_explanation_changed",
+        "eval_example_count",
+        "example_generated_explanation",
+        "explanation_count",
+        "generated_word_count",
+        "hf_model_id",
+        "hf_revision",
+        "hook_name",
+        "live_trainable_nla",
+        "mean_cosine_similarity",
+        "model_name",
+        "negative_anchor_prompt",
+        "negative_token",
+        "nla_prediction_accuracy",
+        "numeric_literal_count",
+        "original_probe_accuracy",
+        "original_word_count",
+        "passes_ood",
+        "phrase_count",
+        "phrase_vocabulary_size",
+        "positive_anchor_prompt",
+        "positive_token",
+        "prediction_agreement",
+        "preflight_passed",
+        "preserves_latents",
+        "preserves_target_logit_diff",
+        "probe_logit_mean_abs_error",
+        "prompt_label_baseline_mse",
+        "reconstructed_probe_accuracy",
+        "report_replay",
+        "shorter_than_original",
+        "shuffled_control_worse",
+        "shuffled_reconstruction_mse",
+        "text_bottleneck",
+        "text_only_mse",
+        "text_only_prediction_accuracy",
+        "tokenizer_id",
+        "tokenizer_revision",
+        "train_example_count",
+        "trainable_beats_blank_text",
+        "trainable_blank_text_mse",
+        "trainable_decoder_final_mse",
+        "trainable_decoder_parameter_count",
+        "trainable_decoder_type",
+        "trainable_encoder_final_loss",
+        "trainable_encoder_parameter_count",
+        "trainable_encoder_train_accuracy",
+        "trainable_encoder_type",
+        "trainable_eval_phrase_accuracy",
+        "trainable_generated_explanation",
+        "trainable_phrase_count",
+        "trainable_reconstruction_mse",
+        "trainable_seed",
+        "trainable_training_steps"
+      ],
+      "uses_cuda": true
+    },
+    "gpu_test": {
+      "activation_mse": 0.12961874902248383,
+      "activation_shape": [
+        8,
+        512
+      ],
+      "beats_prompt_label_baseline": true,
+      "beats_text_only": true,
+      "blank_text_control_worse": true,
+      "blank_text_mse": 0.21584835648536682,
+      "bnb_cuda_override": "130",
+      "compression_ratio": 0.5,
+      "counterfactual_activation_delta": 14.842170715332031,
+      "counterfactual_explanation_changed": true,
+      "cuda_available": true,
+      "cuda_version": "13.2",
+      "device": "NVIDIA GeForce RTX 5090 Laptop GPU",
+      "eval_example_count": 8,
+      "example_generated_explanation": "blanket lying on support",
+      "explanation_count": 8,
+      "full_path": "Pinned TransformerLens gelu-1l residual text-bottleneck NLA preflight.",
+      "generated_word_count": 32,
+      "gpu_total_memory_gb": 23.45965576171875,
+      "hf_model_id": "NeelNanda/GELU_1L512W_C4_Code",
+      "hf_revision": "bddc0e332f0ae84279e6a6a45d91b314899e1603",
+      "hook_name": "blocks.0.hook_resid_post",
+      "live_trainable_nla": true,
+      "mean_cosine_similarity": 0.9397513270378113,
+      "model_name": "gelu-1l",
+      "negative_anchor_prompt": "The bird flew over the",
+      "negative_token": " top",
+      "nla_prediction_accuracy": 1.0,
+      "numeric_literal_count": 0,
+      "original_probe_accuracy": 1.0,
+      "original_word_count": 64,
+      "passes_ood": true,
+      "peak_vram_gb": 0.2618422508239746,
+      "phrase_count": 12,
+      "phrase_vocabulary_size": 12,
+      "positive_anchor_prompt": "The cat sat on the",
+      "positive_token": " floor",
+      "prediction_agreement": 1.0,
+      "preflight_passed": true,
+      "preserves_latents": true,
+      "preserves_target_logit_diff": true,
+      "probe_logit_mean_abs_error": 1.4513903856277466,
+      "prompt_label_baseline_mse": 0.16761058568954468,
+      "reconstructed_probe_accuracy": 1.0,
+      "report_replay": false,
+      "shorter_than_original": true,
+      "shuffled_control_worse": true,
+      "shuffled_reconstruction_mse": 0.35931625962257385,
+      "text_bottleneck": "discrete_natural_language_phrase_bottleneck",
+      "text_only_mse": 0.21584835648536682,
+      "text_only_prediction_accuracy": 0.5,
+      "tokenizer_id": "NeelNanda/gpt-neox-tokenizer-digits",
+      "tokenizer_revision": "0f6671571a20be9756b9991d978047c03b75e749",
+      "torch_version": "2.12.1+cu132",
+      "train_example_count": 12,
+      "trainable_beats_blank_text": true,
+      "trainable_blank_text_mse": 0.21584835648536682,
+      "trainable_decoder_final_mse": 0.0,
+      "trainable_decoder_parameter_count": 6144,
+      "trainable_decoder_type": "phrase_id_embedding_table_to_residual",
+      "trainable_encoder_final_loss": 0.0004432322457432747,
+      "trainable_encoder_parameter_count": 6156,
+      "trainable_encoder_train_accuracy": 1.0,
+      "trainable_encoder_type": "linear_residual_to_phrase_id",
+      "trainable_eval_phrase_accuracy": 0.75,
+      "trainable_generated_explanation": "blanket lying on support",
+      "trainable_phrase_count": 12,
+      "trainable_reconstruction_mse": 0.12961874902248383,
+      "trainable_seed": 0,
+      "trainable_training_steps": 300,
+      "within_vram_budget": true
+    },
+    "notebook_contract": {
+      "batch": {
+        "activation_shape": [
+          3,
+          3
+        ],
+        "generated_explanations": [
+          "indirect object is Bob",
+          "python function",
+          "stored capital fact"
+        ],
+        "latent_labels": [
+          "ioi",
+          "code",
+          "fact"
+        ]
+      },
+      "brevity": {
+        "compression_ratio": 0.2631578947368421,
+        "generated_word_count": 5,
+        "original_word_count": 19,
+        "shorter_than_original": true
+      },
+      "counterfactual": {
+        "activation_delta": 1.4142135381698608,
+        "counterfactual_explanation": "indirect object is Alice",
+        "explanation_changed": true,
+        "original_explanation": "indirect object is Bob"
+      },
+      "latent_preservation": {
+        "original_probe_accuracy": 1.0,
+        "prediction_agreement": 1.0,
+        "preserves_latents": true,
+        "reconstructed_probe_accuracy": 1.0
+      },
+      "logit_diff": {
+        "mean_abs_error": 0.14999991655349731,
+        "original_logit_diff": 2.0,
+        "preserves_target_logit_diff": true,
+        "reconstructed_logit_diff": 1.9500000476837158
+      },
+      "reconstruction": {
+        "activation_mse": 0.010000002570450306,
+        "beats_text_only": true,
+        "mean_cosine_similarity": 0.9938837289810181,
+        "text_only_mse": 0.5
+      },
+      "trainable_bottleneck": {
+        "beats_blank_text": true,
+        "blank_text_mse": 1.8049999475479126,
+        "decoder_final_mse": 0.006250002421438694,
+        "encoder_final_loss": 0.005493763368576765,
+        "encoder_train_accuracy": 1.0,
+        "eval_phrase_accuracy": 1.0,
+        "generated_explanations": [
+          "positive direction",
+          "negative direction"
+        ],
+        "phrase_count": 2,
+        "reconstruction_mse": 0.0012500000884756446,
+        "seed": 0,
+        "training_steps": 120
+      }
+    }
+  },
+  "models": [
+    {
+      "gated": false,
+      "id": "toy_or_generated_inputs",
+      "precision": "float32",
+      "revision": "seed_0",
+      "source": "generated"
+    },
+    {
+      "claim_scope": "residual_text_bottleneck_mini_nla_preflight",
+      "gated": false,
+      "id": "NeelNanda/GELU_1L512W_C4_Code",
+      "precision": "float32",
+      "revision": "bddc0e332f0ae84279e6a6a45d91b314899e1603",
+      "source": "huggingface_via_transformerlens",
+      "tokenizer_id": "NeelNanda/gpt-neox-tokenizer-digits",
+      "tokenizer_revision": "0f6671571a20be9756b9991d978047c03b75e749",
+      "transformerlens_model_name": "gelu-1l"
+    }
+  ],
+  "negative_controls": {
+    "declared_controls": [
+      "negative_control_where_applicable",
+      "shuffled_explanation_text_negative_control",
+      "blank_explanation_text_negative_control"
+    ]
+  },
+  "notebook_id": "7_4_mini_natural_language_autoencoders",
+  "ood_tests": {
+    "declared": "required_where_applicable"
+  },
+  "peak_vram_gb": 0.261842,
+  "report_inputs": {
+    "schema_version": 1,
+    "algorithm": "sha256",
+    "combined_sha256": "be8eb17189c240fd7d3e9494cb6a78092cbc6cd0e9cebd6d97c6d93a50b96f62",
+    "files": [
+      {
+        "path": "arena_ext/verification.py",
+        "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
+        "size_bytes": 9276
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/7.4_Mini_Natural_Language_Autoencoders_exercises.ipynb",
+        "sha256": "88c6eef524af5b149de56010c2b276dde7c52147041ac5b050e1c4cfb68e6b26",
+        "size_bytes": 12339
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/7.4_Mini_Natural_Language_Autoencoders_solutions.ipynb",
+        "sha256": "06dba5cbfe8f5a890206188c1ec25fa4a2075ac187042d0ca3a9676482526fc9",
+        "size_bytes": 6017
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/README.md",
+        "sha256": "08263eb3b471bb60bb8bc533567066d9cd4002542b4b3fd988657c9099f372a8",
+        "size_bytes": 1320
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/artifacts.lock.yml",
+        "sha256": "aecc73deeff942d3b53837961bddedc68989ba6ba55ee1419d415ad90f64100f",
+        "size_bytes": 5807
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/expected_outputs/README.md",
+        "sha256": "40f1d52cedb8d688defd8573905d91d0f60a4854fac5475ae5538913a297a8b2",
+        "size_bytes": 1786
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/expected_outputs/reference_metrics.json",
+        "sha256": "834160305e202f51dbb793e254d15a0724fa71559a0ef83ab7713ee9407a8138",
+        "size_bytes": 2561
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/expected_outputs/smoke_test.json",
+        "sha256": "fdedc50a94809e43cbdf66b9898657d988aa9ed6e602c67ec7b19fb3bc469c5d",
+        "size_bytes": 307
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/solutions.py",
+        "sha256": "a81310a9adf495a1db3cd382353813839084ce0cd22976d05e5358ab156eb87b",
+        "size_bytes": 35640
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/tests.py",
+        "sha256": "0947313b91e0052ed7812c7c9705391f59e798ca1dff0a9c3829b0f1734f28e6",
+        "size_bytes": 15689
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/utils.py",
+        "sha256": "1bc4b0f0bec5b81ec0b8471b0c52eaf7882c01f79b3862183daae56e4e3f296e",
+        "size_bytes": 365
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/verification_report.schema.json",
+        "sha256": "ecd833883885077ad5d7a0e239d984d01462255e94266212cf195ab4d4e27b3d",
+        "size_bytes": 2669
+      },
+      {
+        "path": "chapter7_activation_to_language/instructions/pages/04_[7.4]_Mini_Natural_Language_Autoencoders.md",
+        "sha256": "1afe82c4acedc476552c427a0c1964be351810bd326cd39ea085b4ceaf3f3c6a",
+        "size_bytes": 23586
+      },
+      {
+        "path": "scripts/run_extension_verification_reports.py",
+        "sha256": "660040f459d07535deb9e0c34ffddb496c13b8770044ae380d3a8e45b0c8fb2b",
+        "size_bytes": 16080
+      }
+    ]
+  },
+  "safety_notes": [
+    "No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.",
+    "The real-model path uses safe generic prompts and cached activations/logits from a small public TransformerLens checkpoint. It does not use unsafe prompts, gated weights, generated completions, adapter training, external API calls, or claims about arbitrary hidden thoughts."
+  ],
+  "tests_passed": true,
+  "wall_clock_seconds": 11.080895
+}

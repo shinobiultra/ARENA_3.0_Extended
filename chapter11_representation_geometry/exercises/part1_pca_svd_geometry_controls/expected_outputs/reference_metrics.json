@@ -1,0 +1,31 @@
+{
+  "baselines": {
+    "required": true
+  },
+  "metrics": {
+    "accepted": true,
+    "max_allowed_gpu_gb": 24,
+    "pythia_calendar_preflight_passed": true,
+    "pythia_calendar_task_count": 2,
+    "pythia_month_centered_heldout_accuracy": 1.0,
+    "pythia_month_matched_pair_accuracy": 1.0,
+    "pythia_month_noise_accuracy_max": 0.1,
+    "pythia_month_permuted_label_accuracy": 0.0,
+    "pythia_month_raw_heldout_accuracy_max": 0.75,
+    "pythia_weekday_centered_heldout_accuracy": 1.0,
+    "pythia_weekday_generation_used": false,
+    "pythia_weekday_noise_accuracy_max": 0.2,
+    "pythia_weekday_permuted_label_accuracy": 0.0,
+    "pythia_weekday_preflight_passed": true,
+    "pythia_weekday_raw_heldout_accuracy_max": 0.2,
+    "template_centering_max_mean_abs": 0.0,
+    "tests_passed": true
+  },
+  "negative_controls": {
+    "required_where_applicable": true
+  },
+  "notebook_id": "11_1_pca_svd_and_geometry_controls",
+  "ood_tests": {
+    "required_where_applicable": true
+  }
+}

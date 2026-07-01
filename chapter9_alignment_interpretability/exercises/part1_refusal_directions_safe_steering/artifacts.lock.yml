@@ -1,0 +1,111 @@
+notebook_id: 9_1_refusal_directions_and_safe_steering
+section: '9.1'
+title: Refusal Directions and Safe Steering
+exercise_metadata:
+  EXERCISE_ID: 9_1_refusal_directions_and_safe_steering
+  GT_TIER: GT-2
+  DIFFICULTY: 3
+  IMPORTANCE: 5
+  EXPECTED_RUNTIME: seconds on toy contract; minutes on local real-model path
+  REQUIRES_GPU: true
+gt_tier: GT-2
+evidence_level: safe_toy_contract_plus_gt2_public_refusal_direction_replication
+claim_scope: GT-2 refusal-direction replication path for "Refusal is Mediated by a
+  Single Direction" using a pinned Qwen2.5-0.5B-Instruct model and the public josephmayo/refusal-compliance-pairs
+  dataset. The report verifies mean-difference refusal direction separation, layer
+  and position controls, PCA/SVD structure, label-shuffle and random-direction negative
+  controls, addition/projection-out behavioral completion effects, and stores only
+  aggregate metrics plus prompt hashes. The earlier sanitized meta-prompt path remains
+  as a safe proxy ladder.
+required_gpu_gb: 2
+max_allowed_gpu_gb: 24
+models:
+- id: toy_or_generated_inputs
+  source: generated
+  revision: seed_0
+  precision: float32
+  gated: false
+- id: EleutherAI/pythia-70m-deduped
+  source: huggingface
+  revision: e93a9faa9c77e5d09219f6c868bfc7a1bd65593c
+  precision: float32
+  gated: false
+  claim_scope: safe_category_hidden_state_preflight
+- id: Qwen/Qwen2.5-0.5B-Instruct
+  source: huggingface
+  revision: 7ae557604adf67be50417f59c2c2f167def9a775
+  precision: bfloat16
+  gated: false
+  claim_scope: safe_instruction_model_refusal_direction_addition_projection_preflight
+datasets:
+- id: 9_1_refusal_directions_and_safe_steering_toy_inputs
+  source: generated
+  seed: 0
+- id: course_generated_safe_category_meta_prompts_v1
+  source: generated
+  seed: 0
+  prompt_count: 24
+  prompt_template_family_count: 3
+  train_prompt_count: 8
+  heldout_prompt_count: 16
+  prompt_safety: sanitized_meta_prompts_no_procedural_content
+  intervention_prompt_count: 24
+  generation_used: false
+expected_metrics:
+  tests_passed: true
+  accepted: true
+  max_allowed_gpu_gb: 24
+  label_shuffle_fails: true
+  real_lm_category_preflight_passed: true
+  real_lm_category_total_prompt_count: 24
+  real_lm_category_prompt_template_family_count: 3
+  real_lm_category_heldout_accuracy_min: 0.9
+  real_lm_category_min_template_accuracy_min: 0.85
+  real_lm_category_min_template_margin_min: 1.0
+  real_lm_category_label_shuffle_fails: true
+  real_lm_category_random_direction_fails: true
+  real_lm_category_generation_used: false
+  instruction_refusal_intervention_preflight_passed: true
+  instruction_refusal_prompt_count: 24
+  instruction_refusal_prompt_template_family_count: 3
+  instruction_refusal_generation_used: false
+  instruction_refusal_baseline_margin_min: 2.0
+  instruction_refusal_allowed_add_delta_min: 1.0
+  instruction_refusal_projection_delta_max: -1.0
+  instruction_refusal_target_beats_random_addition: true
+  instruction_refusal_target_beats_random_projection: true
+  instruction_refusal_peak_vram_gb_max: 4.0
+controls:
+- baseline_or_reference_check
+- negative_control_where_applicable
+- shape_dtype_or_exact_value_check
+- safe_category_train_heldout_split
+- three_sanitized_prompt_template_families
+- heldout_prompt_template_family_control
+- sanitized_meta_prompt_policy
+- label_shuffle_control
+- fixed_seed_random_direction_control
+- no_generation_hidden_state_only
+- pythia_70m_deduped_revision_pinned
+- pinned_qwen25_0_5b_instruction_model
+- safe_instruction_refusal_direction_addition
+- safe_instruction_refusal_direction_projection_out
+- fixed_seed_random_direction_addition_projection_control
+- no_completion_text_saved
+- safe_behavioral_completion_aggregate_only
+- completion_classifier_refusal_marker_rubric
+- public_refusal_compliance_pairs_dataset
+- gt2_mean_difference_refusal_direction
+- gt2_layer_sweep_control
+- gt2_position_sweep_control
+- gt2_pca_svd_pc1_control
+- gt2_label_shuffle_control
+- gt2_random_direction_control
+- gt2_behavioral_addition_projection_aggregate_completion_effect
+- gt2_no_raw_prompt_or_completion_text_saved
+safety_notes:
+- No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.
+- The real-model refusal paths use sanitized category descriptions, hidden states
+  or next-token logit scores, fixed random-direction controls, and aggregate metrics
+  without harmful procedural completions. SAE-feature comparisons are not claimed
+  by this local preflight.

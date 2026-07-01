@@ -1,0 +1,10 @@
+{
+  "accepted": true,
+  "claim_scope": "Contract check; not a full real-model validation.",
+  "evidence_level": "notebook_contract",
+  "gt_tier": "GT-3",
+  "notebook_id": "7_4_mini_natural_language_autoencoders",
+  "section": "7.4",
+  "tests_passed": true,
+  "title": "Mini Natural Language Autoencoders"
+}

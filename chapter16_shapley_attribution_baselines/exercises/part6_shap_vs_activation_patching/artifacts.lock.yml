@@ -1,0 +1,98 @@
+notebook_id: 16_6_shap_vs_activation_patching
+section: '16.6'
+title: SHAP vs Activation Patching
+exercise_metadata:
+  EXERCISE_ID: 16_6_shap_vs_activation_patching
+  GT_TIER: GT-0
+  DIFFICULTY: 3
+  IMPORTANCE: 4
+  EXPECTED_RUNTIME: seconds on toy contract; minutes on local real-model path
+  REQUIRES_GPU: true
+gt_tier: GT-0
+evidence_level: shap_vs_patching_contract_plus_cuda_model_organism_preflight
+claim_scope: 'GT-0 SHAP-vs-patching preflight: deterministic additive-agreement and
+  interaction-overcount contracts are kept for learner exercises, then two CUDA model
+  organisms are trained on complete binary feature tables. A linear additive model
+  verifies that exact Shapley and full-minus-ablated patching effects agree when the
+  learned function is additive. A nonlinear neural coalition game verifies that interaction-heavy
+  learned behavior makes patching effects disagree with Shapley and overcount absolute
+  credit. This proves the method comparison on real model outputs from finite trained
+  systems; it is not a claim about large transformer activation patching.'
+required_gpu_gb: 1
+max_allowed_gpu_gb: 24
+models:
+- id: toy_or_generated_inputs
+  source: generated
+  revision: seed_0
+  precision: float32
+  gated: false
+- id: course_cuda_linear_additive_model_v1
+  source: generated_training_run
+  revision: seed_1660_players4_steps1000
+  precision: float32
+  gated: false
+  claim_scope: additive_shapley_patching_agreement_preflight
+  optimizer: AdamW
+  learning_rate: 0.05
+- id: course_cuda_neural_coalition_game_mlp_v1
+  source: generated_training_run
+  revision: seed_1621_players4_hidden64_steps1200
+  precision: float32
+  gated: false
+  claim_scope: interaction_shapley_patching_disagreement_preflight
+  optimizer: AdamW
+  learning_rate: 0.05
+datasets:
+- id: 16_6_shap_vs_activation_patching_toy_inputs
+  source: generated
+  seed: 0
+- id: complete_binary_feature_games_additive_and_interaction_v1
+  source: generated_finite_table
+  seed: 1660_additive_1621_interaction
+  num_players: 4
+  example_count: 16
+  additive_target_rule: 0.25 + 1.2*x0 - 0.7*x1 + 1.6*x2 + 0.9*x3
+  interaction_target_rule: 0.25 + 1.2*x0 - 0.7*x1 + 1.6*x2 + 0.9*x3 + 2.2*x0*x2 -
+    1.5*x1*x3
+  patching_effect: full_output_minus_single_feature_ablated_output
+expected_metrics:
+  tests_passed: true
+  accepted: true
+  max_allowed_gpu_gb: 24
+  preflight_passed: true
+  additive_model_family: cuda_trained_linear_additive_model
+  additive_training_example_count: 16
+  additive_training_steps: 1000
+  additive_fit_mse_max: 1.0e-10
+  additive_fit_max_abs_error_max: 1.0e-05
+  additive_max_abs_error_max: 1.0e-05
+  additive_agrees_with_shapley: true
+  interaction_model_family: cuda_trained_neural_coalition_game_mlp
+  interaction_training_example_count: 16
+  interaction_training_steps: 1200
+  interaction_fit_mse_max: 1.0e-08
+  interaction_fit_max_abs_error_max: 0.0001
+  interaction_max_abs_error_min: 1.0
+  interaction_agrees_with_shapley: false
+  interaction_top_feature_agrees: true
+  interaction_abs_overcount_min: 2.0
+  peak_vram_gb_max: 1.0
+controls:
+- baseline_or_reference_check
+- negative_control_where_applicable
+- shape_dtype_or_exact_value_check
+- toy_additive_agreement_contract
+- toy_interaction_overcount_contract
+- real_cuda_additive_linear_training_run
+- real_cuda_interaction_mlp_training_run
+- complete_binary_feature_table_fit
+- exact_shapley_vs_full_minus_ablated_outputs
+- additive_agreement_positive_control
+- interaction_disagreement_negative_control
+- absolute_credit_overcount_check
+- large_transformer_activation_patching_not_claimed
+safety_notes:
+- No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.
+- The real training path uses only generated finite binary feature tables. It does
+  not use unsafe prompts, user data, external APIs, adapters, gated weights, or large
+  persistent artifacts.

@@ -1,0 +1,282 @@
+{
+  "accepted": true,
+  "baselines": {
+    "declared_controls": [
+      "baseline_or_reference_check",
+      "negative_control_where_applicable",
+      "shape_dtype_or_exact_value_check",
+      "toy_modality_shap_contract",
+      "toy_region_shap_contract",
+      "pinned_real_clip_rendered_shape_logits",
+      "image_text_modality_coalition_table",
+      "structured_object_background_ocr_region_coalition_table",
+      "target_vs_distractor_text_margin",
+      "object_region_over_background_and_ocr_margin",
+      "shapley_efficiency_checks_on_clip_tables",
+      "large_generative_vlm_and_real_image_benchmark_not_claimed"
+    ],
+    "expected_metrics": {
+      "accepted": true,
+      "claim_scope": "pinned_real_clip_rendered_vlm_shap_preflight",
+      "max_allowed_gpu_gb": 24,
+      "modality_satisfies_efficiency": true,
+      "modality_synergy_min": 2.0,
+      "model_id": "openai/clip-vit-base-patch32",
+      "object_margin_min": 1.0,
+      "peak_vram_gb_max": 2.0,
+      "preflight_passed": true,
+      "region_satisfies_efficiency": true,
+      "revision": "3d74acf9a28c67741b2f4f2ea7635f0aaf6f0268",
+      "target_distractor_margin_min": 2.0,
+      "tests_passed": true
+    }
+  },
+  "claim_scope": "GT-0 VLM SHAP preflight: deterministic modality and region SHAP contracts are kept for learner exercises, then a pinned CLIP ViT-B/32 checkpoint is run on safe rendered red-square and blue-circle controls. The report computes image/text modality SHAP and structured object/background/OCR-region SHAP from real CLIP logits, verifies modality synergy, object-region localization, efficiency, a target-vs-distractor text margin, and measured VRAM. This proves local VLM SHAP mechanics on deterministic rendered images; it is not a claim about large generative VLM attribution, pixel-level saliency, or real-image benchmark coverage.",
+  "datasets": [
+    {
+      "id": "16_5_vlm_modality_and_region_shap_toy_inputs",
+      "seed": 0,
+      "source": "generated"
+    },
+    {
+      "id": "course_rendered_clip_vlm_shap_shapes_v1",
+      "image_size": "224x224",
+      "modality_distractor": "blue circle image plus neutral text",
+      "modality_target": "red square image plus target text",
+      "region_names": [
+        "object",
+        "background",
+        "ocr_text"
+      ],
+      "region_target_text": "a red square",
+      "seed": 0,
+      "source": "generated_pil_images",
+      "target_region": "object",
+      "text_controls": [
+        "a photo",
+        "a red square",
+        "a blue circle"
+      ]
+    }
+  ],
+  "date_run": "2026-06-30T14:11:53+00:00",
+  "evidence_level": "vlm_shap_contract_plus_pinned_clip_rendered_shape_preflight",
+  "git_commit": "f9f034bd",
+  "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+  "gt_tier": "GT-0",
+  "known_failures": [],
+  "metrics": {
+    "gpu_evidence": {
+      "category": "cuda_section_metric",
+      "placeholder_only": false,
+      "section_specific_metric_keys": [
+        "claim_scope",
+        "local_snapshot",
+        "max_non_object_value",
+        "modality_players",
+        "modality_satisfies_efficiency",
+        "modality_scores",
+        "modality_synergy",
+        "modality_values",
+        "model_id",
+        "object_margin",
+        "object_value",
+        "preflight_passed",
+        "region_names",
+        "region_satisfies_efficiency",
+        "region_values",
+        "revision",
+        "target_distractor_margin"
+      ],
+      "uses_cuda": true
+    },
+    "gpu_test": {
+      "claim_scope": "pinned_real_clip_rendered_vlm_shap_preflight",
+      "cuda_available": true,
+      "cuda_version": "13.2",
+      "device": "NVIDIA GeForce RTX 5090 Laptop GPU",
+      "full_path": "Run modality and region SHAP on a pinned CLIP checkpoint with deterministic rendered image/text coalitions.",
+      "gpu_total_memory_gb": 23.45965576171875,
+      "local_snapshot": "/home/bitwise/.cache/huggingface/hub/models--openai--clip-vit-base-patch32/snapshots/3d74acf9a28c67741b2f4f2ea7635f0aaf6f0268",
+      "max_non_object_value": 4.225843747456868,
+      "modality_players": [
+        "image",
+        "text"
+      ],
+      "modality_satisfies_efficiency": true,
+      "modality_scores": {
+        "[0, 1]": 29.5628604888916,
+        "[0]": 23.031496047973633,
+        "[1]": 23.317432403564453,
+        "[]": 22.649566650390625
+      },
+      "modality_synergy": 5.863498687744141,
+      "modality_values": [
+        3.313678741455078,
+        3.5996150970458984
+      ],
+      "model_id": "openai/clip-vit-base-patch32",
+      "object_margin": 1.3806734085083008,
+      "object_value": 5.606517155965169,
+      "peak_vram_gb": 0.6518421173095703,
+      "preflight_passed": true,
+      "region_names": [
+        "object",
+        "background",
+        "ocr_text"
+      ],
+      "region_satisfies_efficiency": true,
+      "region_values": [
+        5.606517155965169,
+        -0.4127403895060221,
+        4.225843747456868
+      ],
+      "revision": "3d74acf9a28c67741b2f4f2ea7635f0aaf6f0268",
+      "target_distractor_margin": 3.3839378356933594,
+      "torch_version": "2.12.1+cu132",
+      "within_vram_budget": true
+    },
+    "notebook_contract": {
+      "modality": {
+        "baseline_score": 0.0,
+        "detects_synergy": true,
+        "full_score": 3.5,
+        "image_only_score": 1.0,
+        "modality_values": [
+          2.0,
+          1.5
+        ],
+        "satisfies_efficiency": true,
+        "synergy": 2.0,
+        "text_only_score": 0.5
+      },
+      "region": {
+        "localizes_target": true,
+        "max_background_value": 0.9999999999999999,
+        "region_names": [
+          "object",
+          "background",
+          "ocr_text"
+        ],
+        "region_values": [
+          2.25,
+          0.0,
+          0.9999999999999999
+        ],
+        "satisfies_efficiency": true,
+        "target_region": "object",
+        "target_value": 2.25
+      }
+    }
+  },
+  "models": [
+    {
+      "gated": false,
+      "id": "toy_or_generated_inputs",
+      "precision": "float32",
+      "revision": "seed_0",
+      "source": "generated"
+    },
+    {
+      "claim_scope": "rendered_shape_modality_and_region_shap_preflight",
+      "gated": false,
+      "id": "openai/clip-vit-base-patch32",
+      "precision": "float32",
+      "revision": "3d74acf9a28c67741b2f4f2ea7635f0aaf6f0268",
+      "source": "huggingface"
+    }
+  ],
+  "negative_controls": {
+    "declared_controls": [
+      "negative_control_where_applicable"
+    ]
+  },
+  "notebook_id": "16_5_vlm_modality_and_region_shap",
+  "ood_tests": {
+    "declared": "required_where_applicable"
+  },
+  "peak_vram_gb": 0.651842,
+  "report_inputs": {
+    "schema_version": 1,
+    "algorithm": "sha256",
+    "combined_sha256": "389c6e4b951fa1ff9cd5e54f7b482b2187ab2aa156845516d54e83d899c165fd",
+    "files": [
+      {
+        "path": "arena_ext/verification.py",
+        "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
+        "size_bytes": 9276
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part5_vlm_modality_region_shap/16.5_VLM_Modality_and_Region_SHAP_exercises.ipynb",
+        "sha256": "1ea94eda3888886c9085a6d3cbd94f9b9b28f01636ead9bad97473be284c010e",
+        "size_bytes": 9954
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part5_vlm_modality_region_shap/16.5_VLM_Modality_and_Region_SHAP_solutions.ipynb",
+        "sha256": "73ef824192de3323ff914008e32dda3004709f14bafba85b3ad1f93957a6a1b8",
+        "size_bytes": 3342
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part5_vlm_modality_region_shap/README.md",
+        "sha256": "aeca27e13d3cee917875e35d6ad1f8d622e7852f16c2f8129dc14e34eb37c3c6",
+        "size_bytes": 1073
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part5_vlm_modality_region_shap/artifacts.lock.yml",
+        "sha256": "eb6b4fba7a14d78295e30d85cc172bc4304bd29caefd509cedf133870418adb4",
+        "size_bytes": 3164
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part5_vlm_modality_region_shap/expected_outputs/README.md",
+        "sha256": "2fe7c275fc742bb0096d9b3f363f8ed54492da86ff46a085f9eb8c6df1eff4ac",
+        "size_bytes": 1781
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part5_vlm_modality_region_shap/expected_outputs/reference_metrics.json",
+        "sha256": "33bc27cd15d696375d019dd379e63b33fbd456172d5869f53508c64de57b5b96",
+        "size_bytes": 747
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part5_vlm_modality_region_shap/expected_outputs/smoke_test.json",
+        "sha256": "c9e974deb8e6edbf48df7d96f5fa55fb249d561329cb786e129c91aafe775b29",
+        "size_bytes": 297
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part5_vlm_modality_region_shap/solutions.py",
+        "sha256": "98e77c795d8f43368abecf1a250dface20d8b7f42136769e65adf4d5ae02ea2a",
+        "size_bytes": 15928
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part5_vlm_modality_region_shap/tests.py",
+        "sha256": "3a7cac4832df180761a47f105d93c2e86750ad714e3605ab0e93816e6d71aae2",
+        "size_bytes": 10419
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part5_vlm_modality_region_shap/utils.py",
+        "sha256": "31724e90fc6aa0a8d0345c2ca84358b4fe0afd6bf6b93e9f3aaa0a7ef46dba28",
+        "size_bytes": 141
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part5_vlm_modality_region_shap/verification_report.schema.json",
+        "sha256": "ecd833883885077ad5d7a0e239d984d01462255e94266212cf195ab4d4e27b3d",
+        "size_bytes": 2669
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/pages/05_[16.5]_VLM_Modality_and_Region_SHAP.md",
+        "sha256": "f6d1ff037187150d980353ef98b2ddf19a78c2de47a1c01232d5ab990507dbef",
+        "size_bytes": 19042
+      },
+      {
+        "path": "scripts/run_extension_verification_reports.py",
+        "sha256": "660040f459d07535deb9e0c34ffddb496c13b8770044ae380d3a8e45b0c8fb2b",
+        "size_bytes": 16080
+      }
+    ]
+  },
+  "safety_notes": [
+    "No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.",
+    "The real CLIP path uses generated safe rendered shape images and safe shape captions only. It does not use unsafe prompts, user images, external APIs, adapters, gated weights, or persistent real-image data."
+  ],
+  "tests_passed": true,
+  "wall_clock_seconds": 1.548763
+}

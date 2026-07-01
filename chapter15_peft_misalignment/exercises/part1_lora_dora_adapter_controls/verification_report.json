@@ -1,0 +1,379 @@
+{
+  "accepted": true,
+  "baselines": {
+    "declared_controls": [
+      "baseline_or_reference_check",
+      "negative_control_where_applicable",
+      "shape_dtype_or_exact_value_check",
+      "exact_lora_delta_contract",
+      "exact_dora_row_magnitude_contract",
+      "protected_direction_projection_contract",
+      "adapter_accuracy_and_mechanism_contract",
+      "trained_rank1_lora_safe_proxy_adapter",
+      "merge_unmerge_logit_parity",
+      "low_rank_update_constraint",
+      "planted_target_direction_alignment",
+      "random_label_training_control",
+      "same_norm_random_adapter_control",
+      "dora_on_learned_delta_norm_preservation",
+      "matched_rank1_lora_vs_rank1_dora_vs_full_finetune_comparison",
+      "matched_target_direction_alignment_floor",
+      "matched_distractor_direction_suppression_control"
+    ],
+    "expected_metrics": {
+      "accepted": true,
+      "adapter_nonzero_update": true,
+      "dora_norm_preserved": true,
+      "matched_accuracy_floor_min": 0.95,
+      "matched_dora_norm_preserved": true,
+      "matched_dora_trainable_parameters": 12,
+      "matched_full_finetune_trainable_parameters": 18,
+      "matched_lora_trainable_parameters": 10,
+      "matched_max_distractor_abs_cosine_max": 0.25,
+      "matched_peft_comparison_passed": true,
+      "matched_target_alignment_floor_min": 0.95,
+      "max_allowed_gpu_gb": 24,
+      "tests_passed": true,
+      "trained_lora_adapter_accuracy_min": 0.95,
+      "trained_lora_adapter_rank_max": 1,
+      "trained_lora_baseline_accuracy_max": 0.65,
+      "trained_lora_dora_norm_preserved": true,
+      "trained_lora_merge_max_abs_diff_max": 1e-05,
+      "trained_lora_peak_vram_gb_max": 1.0,
+      "trained_lora_preflight_passed": true,
+      "trained_lora_random_adapter_accuracy_max": 0.75,
+      "trained_lora_random_label_accuracy_max": 0.65,
+      "trained_lora_target_direction_cosine_min": 0.95
+    }
+  },
+  "claim_scope": "GT-0 exact LoRA/DoRA tensor controls plus a generated rank-1 safe proxy LoRA training preflight on a planted target-direction classification task. The report verifies merge/unmerge parity, rank constraint, monitored target-direction projection, random-label failure, same-norm random-adapter failure, and a matched generated-task comparison against rank-1 DoRA and full linear finetuning. The reported target-direction projection is a known-mechanism positive control, not a claim about a malicious adapter.",
+  "datasets": [
+    {
+      "id": "15_1_lora_dora_and_adapter_controls_toy_inputs",
+      "seed": 0,
+      "source": "generated"
+    },
+    {
+      "frozen_baseline_direction": "feature_1",
+      "id": "course_generated_lora_target_direction_proxy_v1",
+      "input_dim": 8,
+      "matched_lora_dora_full_finetune_comparison": true,
+      "random_label_control": true,
+      "same_norm_random_adapter_control": true,
+      "seed": 0,
+      "source": "generated_gaussian_binary_classification",
+      "target_direction": "feature_0"
+    }
+  ],
+  "date_run": "2026-06-30T14:11:33+00:00",
+  "evidence_level": "exact_lora_dora_controls_plus_matched_lora_dora_full_finetune_proxy_preflight",
+  "git_commit": "f9f034bd",
+  "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+  "gt_tier": "GT-0",
+  "known_failures": [],
+  "metrics": {
+    "gpu_evidence": {
+      "category": "cuda_section_metric",
+      "placeholder_only": false,
+      "section_specific_metric_keys": [
+        "adapter_nonzero_update",
+        "delta_norm",
+        "dora_norm_preserved",
+        "intruder_detected",
+        "matched_accuracy_floor",
+        "matched_dora_accuracy",
+        "matched_dora_norm_preserved",
+        "matched_dora_trainable_parameters",
+        "matched_full_finetune_accuracy",
+        "matched_full_finetune_trainable_parameters",
+        "matched_lora_accuracy",
+        "matched_lora_trainable_parameters",
+        "matched_max_distractor_abs_cosine",
+        "matched_peft_comparison_passed",
+        "matched_target_alignment_floor",
+        "trained_lora_accuracy_delta",
+        "trained_lora_adapter_accuracy",
+        "trained_lora_adapter_rank",
+        "trained_lora_baseline_accuracy",
+        "trained_lora_dora_norm_preserved",
+        "trained_lora_merge_max_abs_diff",
+        "trained_lora_peak_vram_gb",
+        "trained_lora_preflight",
+        "trained_lora_preflight_passed",
+        "trained_lora_random_adapter_accuracy",
+        "trained_lora_random_adapter_control_fails",
+        "trained_lora_random_label_accuracy",
+        "trained_lora_random_label_control_fails",
+        "trained_lora_target_direction_cosine"
+      ],
+      "uses_cuda": true
+    },
+    "gpu_test": {
+      "adapter_nonzero_update": true,
+      "cuda_available": true,
+      "cuda_version": "13.2",
+      "delta_norm": 22.360679626464844,
+      "device": "NVIDIA GeForce RTX 5090 Laptop GPU",
+      "dora_norm_preserved": true,
+      "full_path": "Validated exact LoRA/DoRA recomposition, protected-direction controls, generated rank-1 safe proxy LoRA training, and matched LoRA-vs-DoRA-vs-full-finetune comparison on CUDA.",
+      "gpu_total_memory_gb": 23.45965576171875,
+      "intruder_detected": true,
+      "matched_accuracy_floor": 0.9873046875,
+      "matched_dora_accuracy": 0.98974609375,
+      "matched_dora_norm_preserved": true,
+      "matched_dora_trainable_parameters": 12,
+      "matched_full_finetune_accuracy": 0.9931640625,
+      "matched_full_finetune_trainable_parameters": 18,
+      "matched_lora_accuracy": 0.9873046875,
+      "matched_lora_trainable_parameters": 10,
+      "matched_max_distractor_abs_cosine": 0.0053559173829853535,
+      "matched_peft_comparison_passed": true,
+      "matched_target_alignment_floor": 0.9991841316223145,
+      "peak_vram_gb": 0.06264543533325195,
+      "torch_version": "2.12.1+cu132",
+      "trained_lora_accuracy_delta": 0.47509765625,
+      "trained_lora_adapter_accuracy": 0.9873046875,
+      "trained_lora_adapter_rank": 1,
+      "trained_lora_baseline_accuracy": 0.51220703125,
+      "trained_lora_dora_norm_preserved": true,
+      "trained_lora_merge_max_abs_diff": 0.0,
+      "trained_lora_peak_vram_gb": 0.06264543533325195,
+      "trained_lora_preflight": {
+        "accuracy_delta": 0.47509765625,
+        "adapter_accuracy": 0.9873046875,
+        "adapter_mechanism_acceptable": true,
+        "adapter_rank": 1,
+        "adapter_update_norm": 32.476280212402344,
+        "alpha": 4.0,
+        "baseline_accuracy": 0.51220703125,
+        "claim_scope": "trained_rank1_lora_safe_proxy_adapter_preflight",
+        "cuda_available": true,
+        "dora_max_norm_error_on_learned_delta": 0.0,
+        "dora_norm_preserved_on_learned_delta": true,
+        "learned_final_loss": 0.0545210987329483,
+        "matched_comparison": {
+          "accuracy_floor": 0.9873046875,
+          "dora_accuracy": 0.98974609375,
+          "dora_distractor_abs_cosine": 0.0053559173829853535,
+          "dora_final_loss": 0.036911822855472565,
+          "dora_max_norm_error": 1.9073486328125e-06,
+          "dora_norm_preserved": true,
+          "dora_target_direction_cosine": 0.999281108379364,
+          "dora_trainable_parameters": 12,
+          "dora_update_norm": 27.003002166748047,
+          "dora_update_rank": 1,
+          "eval_seed": 12345,
+          "full_finetune_accuracy": 0.9931640625,
+          "full_finetune_distractor_abs_cosine": 0.0044058701023459435,
+          "full_finetune_final_loss": 0.10310491919517517,
+          "full_finetune_target_direction_cosine": 0.9997782111167908,
+          "full_finetune_trainable_parameters": 18,
+          "full_finetune_update_norm": 4.49098539352417,
+          "full_finetune_update_rank": 1,
+          "lora_accuracy": 0.9873046875,
+          "lora_distractor_abs_cosine": 0.003007802413776517,
+          "lora_target_direction_cosine": 0.9991841316223145,
+          "lora_trainable_parameters": 10,
+          "lora_update_norm": 32.476280212402344,
+          "lora_update_rank": 1,
+          "max_distractor_abs_cosine": 0.0053559173829853535,
+          "passed": true,
+          "target_alignment_floor": 0.9991841316223145
+        },
+        "matched_comparison_passed": true,
+        "mechanism_delta": 0.9981054663658142,
+        "merge_max_abs_diff": 0.0,
+        "merge_unmerge_parity_passed": true,
+        "peak_vram_gb": 0.06264543533325195,
+        "preflight_passed": true,
+        "random_adapter_accuracy": 0.5830078125,
+        "random_adapter_control_fails": true,
+        "random_label_adapter_accuracy": 0.4375,
+        "random_label_control_fails": true,
+        "random_label_final_loss": 0.69696044921875,
+        "rank": 1,
+        "target_direction_cosine": 0.9981054663658142,
+        "target_projection_detected": true,
+        "target_projection_fraction": 0.998105471076279,
+        "task": "generated_binary_target_direction_classification",
+        "train_batch": 256,
+        "train_steps": 160,
+        "within_vram_budget": true
+      },
+      "trained_lora_preflight_passed": true,
+      "trained_lora_random_adapter_accuracy": 0.5830078125,
+      "trained_lora_random_adapter_control_fails": true,
+      "trained_lora_random_label_accuracy": 0.4375,
+      "trained_lora_random_label_control_fails": true,
+      "trained_lora_target_direction_cosine": 0.9981054663658142,
+      "within_vram_budget": true
+    },
+    "notebook_contract": {
+      "dora": {
+        "max_norm_error": 0.0,
+        "norm_preserved": true,
+        "row_norms": [
+          10.0,
+          5.0
+        ]
+      },
+      "intruder": {
+        "intruder_detected": true,
+        "projection_fraction": 1.0
+      },
+      "lora": {
+        "delta": [
+          [
+            6.0,
+            12.0
+          ],
+          [
+            8.0,
+            16.0
+          ]
+        ],
+        "report": {
+          "alpha": 2.0,
+          "nonzero_update": true,
+          "rank": 1,
+          "update_norm": 22.360679626464844
+        }
+      },
+      "mechanism": {
+        "accuracy_delta": 0.20000000000000007,
+        "accuracy_improved": true,
+        "adapter_acceptable": true,
+        "mechanism_delta": 0.050000000000000044,
+        "mechanism_preserved": true
+      }
+    }
+  },
+  "models": [
+    {
+      "gated": false,
+      "id": "toy_or_generated_inputs",
+      "precision": "float32",
+      "revision": "seed_0",
+      "source": "generated"
+    },
+    {
+      "claim_scope": "trained_safe_proxy_lora_adapter",
+      "gated": false,
+      "id": "course_rank1_lora_safe_proxy_adapter_v1",
+      "precision": "float32",
+      "revision": "seed_0_steps_160_alpha_4_rank_1",
+      "source": "generated_training_run"
+    },
+    {
+      "claim_scope": "matched_safe_proxy_dora_adapter",
+      "gated": false,
+      "id": "course_rank1_dora_safe_proxy_adapter_v1",
+      "precision": "float32",
+      "revision": "init_seed_2_data_seed_0_steps_160_alpha_4_rank_1",
+      "source": "generated_training_run"
+    },
+    {
+      "claim_scope": "matched_safe_proxy_full_finetune_baseline",
+      "gated": false,
+      "id": "course_full_finetune_safe_proxy_classifier_v1",
+      "precision": "float32",
+      "revision": "init_seed_3_data_seed_0_steps_160",
+      "source": "generated_training_run"
+    }
+  ],
+  "negative_controls": {
+    "declared_controls": [
+      "negative_control_where_applicable",
+      "random_label_training_control",
+      "same_norm_random_adapter_control"
+    ]
+  },
+  "notebook_id": "15_1_lora_dora_and_adapter_controls",
+  "ood_tests": {
+    "declared": "required_where_applicable"
+  },
+  "peak_vram_gb": 0.062645,
+  "report_inputs": {
+    "schema_version": 1,
+    "algorithm": "sha256",
+    "combined_sha256": "86b0acfe157b294f29fc7d11ba398f80389f59653a6bb9a2baaa48ddfe68383f",
+    "files": [
+      {
+        "path": "arena_ext/verification.py",
+        "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
+        "size_bytes": 9276
+      },
+      {
+        "path": "chapter15_peft_misalignment/exercises/part1_lora_dora_adapter_controls/15.1_LoRA_DoRA_and_Adapter_Controls_exercises.ipynb",
+        "sha256": "7ea8367c702cde7100f70a88f06b91853b14051eef33df4e98598087a3328562",
+        "size_bytes": 7653
+      },
+      {
+        "path": "chapter15_peft_misalignment/exercises/part1_lora_dora_adapter_controls/15.1_LoRA_DoRA_and_Adapter_Controls_solutions.ipynb",
+        "sha256": "035ceb5fd9bb627bc71c7c94bd459fbcd0aa7c72d8983692cebca1b2d4f8b6f8",
+        "size_bytes": 6654
+      },
+      {
+        "path": "chapter15_peft_misalignment/exercises/part1_lora_dora_adapter_controls/README.md",
+        "sha256": "e8399c09f4628cc548b353ec79f21ee50fa1a7eb1c86c00a1388193466b2f9fd",
+        "size_bytes": 1355
+      },
+      {
+        "path": "chapter15_peft_misalignment/exercises/part1_lora_dora_adapter_controls/artifacts.lock.yml",
+        "sha256": "aa3279935f1cba4e2c66dff8087cddd30ca83b3c48c81e9dff60360335fc394e",
+        "size_bytes": 4123
+      },
+      {
+        "path": "chapter15_peft_misalignment/exercises/part1_lora_dora_adapter_controls/expected_outputs/README.md",
+        "sha256": "af0e1d3144d3c467dece8e24dcf50ed39b8d64cef5a0469ca28bb344424eb38a",
+        "size_bytes": 1785
+      },
+      {
+        "path": "chapter15_peft_misalignment/exercises/part1_lora_dora_adapter_controls/expected_outputs/reference_metrics.json",
+        "sha256": "b3504fe4f52f68a258304fac2b2c3e8f33f02d7fffe4ecc4e3571bcdf8c07f6b",
+        "size_bytes": 1240
+      },
+      {
+        "path": "chapter15_peft_misalignment/exercises/part1_lora_dora_adapter_controls/expected_outputs/smoke_test.json",
+        "sha256": "e272279adce3fa5e3a1d18ed9059bcdde6adc132c0744db0b1868bd0cec77a7f",
+        "size_bytes": 303
+      },
+      {
+        "path": "chapter15_peft_misalignment/exercises/part1_lora_dora_adapter_controls/solutions.py",
+        "sha256": "2711160489cdd072487007dcb23c5056ca34a3807574642efb3325845d3bdca8",
+        "size_bytes": 28249
+      },
+      {
+        "path": "chapter15_peft_misalignment/exercises/part1_lora_dora_adapter_controls/tests.py",
+        "sha256": "c9c9724b809209e727f9e13e0fb44138a4870373dec373c00a4d25e1ae208241",
+        "size_bytes": 16096
+      },
+      {
+        "path": "chapter15_peft_misalignment/exercises/part1_lora_dora_adapter_controls/utils.py",
+        "sha256": "33c07e9a23fc26ef528862f629186d85eeb23a57d298fb08da3578eebfcb3576",
+        "size_bytes": 364
+      },
+      {
+        "path": "chapter15_peft_misalignment/exercises/part1_lora_dora_adapter_controls/verification_report.schema.json",
+        "sha256": "ecd833883885077ad5d7a0e239d984d01462255e94266212cf195ab4d4e27b3d",
+        "size_bytes": 2669
+      },
+      {
+        "path": "chapter15_peft_misalignment/instructions/pages/01_[15.1]_LoRA_DoRA_and_Adapter_Controls.md",
+        "sha256": "c37856b23309021162f301d30fd375b96b51fd908902158f269dd9272898b38e",
+        "size_bytes": 17039
+      },
+      {
+        "path": "scripts/run_extension_verification_reports.py",
+        "sha256": "660040f459d07535deb9e0c34ffddb496c13b8770044ae380d3a8e45b0c8fb2b",
+        "size_bytes": 16080
+      }
+    ]
+  },
+  "safety_notes": [
+    "No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.",
+    "The trained adapter path uses generated Gaussian binary labels only. No unsafe adapters, refusal-suppression adapters, or user-facing harmful prompt completions are trained or distributed. The LoRA, DoRA, and full-finetune comparison is limited to the generated safe proxy task."
+  ],
+  "tests_passed": true,
+  "wall_clock_seconds": 1.400083
+}

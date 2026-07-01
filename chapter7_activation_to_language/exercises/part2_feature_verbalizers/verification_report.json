@@ -1,0 +1,351 @@
+{
+  "accepted": true,
+  "baselines": {
+    "declared_controls": [
+      "baseline_or_reference_check",
+      "negative_control_where_applicable",
+      "shape_dtype_or_exact_value_check",
+      "toy_example_selection_contract",
+      "toy_explanation_prediction_contract",
+      "toy_counterexample_revision_contract",
+      "toy_intervention_direction_contract",
+      "toy_brevity_contract",
+      "pinned_transformerlens_gelu1l_residual_direction_scores",
+      "heldout_keyword_prediction_against_safe_manual_labels",
+      "contrastive_near_threshold_prompt_control",
+      "train_heldout_prompt_disjointness_check",
+      "learned_terms_from_train_only_check",
+      "zero_counterexample_check",
+      "direction_addition_logit_delta_intervention",
+      "orthogonal_random_direction_intervention_control",
+      "api_llm_and_sae_feature_explanation_not_claimed"
+    ],
+    "expected_metrics": {
+      "accepted": true,
+      "baseline_accuracy": 0.5,
+      "bnb_cuda_override": "130",
+      "brevity_shorter_than_examples": true,
+      "contrastive_accuracy": 1.0,
+      "heldout_example_count": 8,
+      "hf_revision": "bddc0e332f0ae84279e6a6a45d91b314899e1603",
+      "intervention_delta_min": 0.5,
+      "learned_terms_from_train": true,
+      "matches_intervention_prediction": true,
+      "max_allowed_gpu_gb": 24,
+      "model_name": "gelu-1l",
+      "negative_token": " top",
+      "num_counterexamples": 0,
+      "passes_baseline": true,
+      "peak_vram_gb_max": 1.0,
+      "positive_token": " floor",
+      "prediction_accuracy": 1.0,
+      "preflight_passed": true,
+      "score_separation_min": 5.0,
+      "survives_contrastive": true,
+      "target_beats_random_intervention": true,
+      "tests_passed": true,
+      "tokenizer_revision": "0f6671571a20be9756b9991d978047c03b75e749",
+      "train_example_count": 8,
+      "train_heldout_overlap_count": 0
+    }
+  },
+  "claim_scope": "GT-1 feature-verbalizer preflight: reusable toy example-selection, keyword-prediction, counterexample, revision, intervention, and brevity contracts are kept for learner exercises, then a pinned TransformerLens gelu-1l checkpoint is loaded on CUDA. The report constructs a real residual direction from safe clean/corrupt final-token activations, scores safe prompt examples by projection onto that direction, validates a concise keyword explanation on held-out and contrastive examples, checks zero counterexamples, and verifies that adding the direction increases the predicted token logit difference. This is a local residual-direction verbalizer preflight, not an API-LLM or SAE-feature explanation claim.",
+  "datasets": [
+    {
+      "id": "7_2_feature_verbalizers_toy_inputs",
+      "seed": 0,
+      "source": "generated"
+    },
+    {
+      "explanation_terms": [
+        "sat",
+        "slept",
+        "rested"
+      ],
+      "heldout_example_count": 8,
+      "hook": "blocks.0.hook_resid_post",
+      "id": "course_safe_residual_direction_verbalizer_prompts_v1",
+      "negative_anchor_prompt": "The bird flew over the",
+      "positive_anchor_prompt": "The cat sat on the",
+      "seed": 0,
+      "source": "generated_prompt_sets",
+      "target_source": "manual_safe_prompt_labels_plus_real_residual_projection",
+      "tokenizer": "NeelNanda/gpt-neox-tokenizer-digits",
+      "train_example_count": 8
+    }
+  ],
+  "date_run": "2026-06-30T14:06:43+00:00",
+  "evidence_level": "toy_verbalizer_contract_plus_pinned_transformerlens_residual_direction_preflight",
+  "git_commit": "f9f034bd",
+  "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+  "gt_tier": "GT-1",
+  "known_failures": [],
+  "metrics": {
+    "gpu_evidence": {
+      "category": "cuda_section_metric",
+      "placeholder_only": false,
+      "section_specific_metric_keys": [
+        "baseline_accuracy",
+        "bnb_cuda_override",
+        "bottom_examples",
+        "brevity_shorter_than_examples",
+        "contrastive_accuracy",
+        "contrastive_examples",
+        "explanation",
+        "explanation_terms",
+        "heldout_example_count",
+        "heldout_only_learned_terms",
+        "hf_model_id",
+        "hf_revision",
+        "intervention_delta",
+        "learned_terms_from_train",
+        "matches_intervention_prediction",
+        "model_name",
+        "negative_mean_score",
+        "negative_prompt",
+        "negative_token",
+        "num_counterexamples",
+        "passes_baseline",
+        "positive_mean_score",
+        "positive_prompt",
+        "positive_token",
+        "prediction_accuracy",
+        "preflight_passed",
+        "random_direction_intervention_delta",
+        "revised_explanation",
+        "score_separation",
+        "survives_contrastive",
+        "target_beats_random_intervention",
+        "tokenizer_id",
+        "tokenizer_revision",
+        "top_examples",
+        "train_example_count",
+        "train_heldout_overlap_count"
+      ],
+      "uses_cuda": true
+    },
+    "gpu_test": {
+      "baseline_accuracy": 0.5,
+      "bnb_cuda_override": "130",
+      "bottom_examples": [
+        "The bird flew over the",
+        "The plane flew over the"
+      ],
+      "brevity_shorter_than_examples": true,
+      "contrastive_accuracy": 1.0,
+      "contrastive_examples": [
+        "The child sat beside the",
+        "The book rested near the"
+      ],
+      "cuda_available": true,
+      "cuda_version": "13.2",
+      "device": "NVIDIA GeForce RTX 5090 Laptop GPU",
+      "explanation": "Surface verbs: sat, slept, rested.",
+      "explanation_terms": [
+        "sat",
+        "slept",
+        "rested"
+      ],
+      "full_path": "Pinned TransformerLens gelu-1l residual-direction verbalizer preflight.",
+      "gpu_total_memory_gb": 23.45965576171875,
+      "heldout_example_count": 8,
+      "heldout_only_learned_terms": [],
+      "hf_model_id": "NeelNanda/GELU_1L512W_C4_Code",
+      "hf_revision": "bddc0e332f0ae84279e6a6a45d91b314899e1603",
+      "intervention_delta": 0.7724781036376953,
+      "learned_terms_from_train": true,
+      "matches_intervention_prediction": true,
+      "model_name": "gelu-1l",
+      "negative_mean_score": -4.954327583312988,
+      "negative_prompt": "The bird flew over the",
+      "negative_token": " top",
+      "num_counterexamples": 0,
+      "passes_baseline": true,
+      "peak_vram_gb": 0.26766014099121094,
+      "positive_mean_score": 1.6886990070343018,
+      "positive_prompt": "The cat sat on the",
+      "positive_token": " floor",
+      "prediction_accuracy": 1.0,
+      "preflight_passed": true,
+      "random_direction_intervention_delta": 0.2403661012649536,
+      "revised_explanation": "Surface verbs: sat, slept, rested.",
+      "score_separation": 6.64302659034729,
+      "survives_contrastive": true,
+      "target_beats_random_intervention": true,
+      "tokenizer_id": "NeelNanda/gpt-neox-tokenizer-digits",
+      "tokenizer_revision": "0f6671571a20be9756b9991d978047c03b75e749",
+      "top_examples": [
+        "The cat sat on the",
+        "The child sat beside the"
+      ],
+      "torch_version": "2.12.1+cu132",
+      "train_example_count": 8,
+      "train_heldout_overlap_count": 0,
+      "within_vram_budget": true
+    },
+    "notebook_contract": {
+      "brevity": {
+        "examples_word_count": 8,
+        "explanation_word_count": 4,
+        "shorter_than_examples": true
+      },
+      "counterexamples": {
+        "counterexamples": [
+          "plain story"
+        ],
+        "num_counterexamples": 1,
+        "revised": "Feature activates on code. Revision: Exclude ordinary stories."
+      },
+      "examples": {
+        "bottom": [
+          "quiet notes",
+          "plain story"
+        ],
+        "contrastive": [
+          "beta def",
+          "plain story"
+        ],
+        "random": [
+          "alpha code",
+          "beta def"
+        ],
+        "top": [
+          "alpha code",
+          "beta def"
+        ]
+      },
+      "intervention": {
+        "matches_prediction": true,
+        "observed_delta": 0.4000000059604645,
+        "predicted_direction": "increase"
+      },
+      "prediction": {
+        "accuracy": 1.0,
+        "baseline_accuracy": 0.5,
+        "contrastive_accuracy": 1.0,
+        "passes_baseline": true,
+        "predictions": [
+          true,
+          false,
+          true,
+          false
+        ],
+        "survives_contrastive": true
+      }
+    }
+  },
+  "models": [
+    {
+      "gated": false,
+      "id": "toy_or_generated_inputs",
+      "precision": "float32",
+      "revision": "seed_0",
+      "source": "generated"
+    },
+    {
+      "claim_scope": "residual_direction_verbalizer_preflight",
+      "gated": false,
+      "id": "NeelNanda/GELU_1L512W_C4_Code",
+      "precision": "float32",
+      "revision": "bddc0e332f0ae84279e6a6a45d91b314899e1603",
+      "source": "huggingface_via_transformerlens",
+      "tokenizer_id": "NeelNanda/gpt-neox-tokenizer-digits",
+      "tokenizer_revision": "0f6671571a20be9756b9991d978047c03b75e749",
+      "transformerlens_model_name": "gelu-1l"
+    }
+  ],
+  "negative_controls": {
+    "declared_controls": [
+      "negative_control_where_applicable",
+      "orthogonal_random_direction_intervention_control"
+    ]
+  },
+  "notebook_id": "7_2_feature_verbalizers",
+  "ood_tests": {
+    "declared": "required_where_applicable"
+  },
+  "peak_vram_gb": 0.26766,
+  "report_inputs": {
+    "schema_version": 1,
+    "algorithm": "sha256",
+    "combined_sha256": "5414cbe309c41d95899a2bae9ba359327e4dddcdb0f0b7cc8cf34a8e0f2db966",
+    "files": [
+      {
+        "path": "arena_ext/verification.py",
+        "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
+        "size_bytes": 9276
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part2_feature_verbalizers/7.2_Feature_Verbalizers_exercises.ipynb",
+        "sha256": "cdd33f7b44b265bcbea175b7c4287771d6ccd09bf3ffdd9a23d2325cd4a0a9c8",
+        "size_bytes": 11357
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part2_feature_verbalizers/7.2_Feature_Verbalizers_solutions.ipynb",
+        "sha256": "b61bfe54192dd008477e43ae957728d039b0082fade16f7ac1b06e07de4eec23",
+        "size_bytes": 6115
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part2_feature_verbalizers/README.md",
+        "sha256": "c5b29f6c45be0b1882ad028e5886ee4c2b132834fb88461a44f7205b5af69f29",
+        "size_bytes": 1126
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part2_feature_verbalizers/artifacts.lock.yml",
+        "sha256": "099ad2ddb0d5c937e07122d438b2d86682ad4a8412c99d47ef33447e8b863342",
+        "size_bytes": 4025
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part2_feature_verbalizers/expected_outputs/README.md",
+        "sha256": "54bf763cfac098caca298ad50b91dc601c9529da1875640459ccd5a843dcd043",
+        "size_bytes": 1771
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part2_feature_verbalizers/expected_outputs/reference_metrics.json",
+        "sha256": "dfbf4bd8a7754cff5e6a6b7aa3788b7d9c9526812eb20cdacae16d801fa6825a",
+        "size_bytes": 1158
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part2_feature_verbalizers/expected_outputs/smoke_test.json",
+        "sha256": "98e2b455eeaad49965215a711266236eea86cd8020ccfe980ed34c139e720ecd",
+        "size_bytes": 277
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part2_feature_verbalizers/solutions.py",
+        "sha256": "7d9fa7a55e8d10d57385c01df146c912862e301b11bd072ba74053ea2ee4aa70",
+        "size_bytes": 22514
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part2_feature_verbalizers/tests.py",
+        "sha256": "61ef2bfb1b660ac03055baea6224cedfe0c490d3302da226fb5aa2ecabd3ae5e",
+        "size_bytes": 10932
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part2_feature_verbalizers/utils.py",
+        "sha256": "fe8253c4b54e581adb9ba100f73931df62c2d4353f9143129acec63630bc95ae",
+        "size_bytes": 350
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part2_feature_verbalizers/verification_report.schema.json",
+        "sha256": "ecd833883885077ad5d7a0e239d984d01462255e94266212cf195ab4d4e27b3d",
+        "size_bytes": 2669
+      },
+      {
+        "path": "chapter7_activation_to_language/instructions/pages/02_[7.2]_Feature_Verbalizers.md",
+        "sha256": "94b82c4c781d8bd4308613affc7de123b271e0f1d7c23c96778a275d463ecd16",
+        "size_bytes": 18589
+      },
+      {
+        "path": "scripts/run_extension_verification_reports.py",
+        "sha256": "660040f459d07535deb9e0c34ffddb496c13b8770044ae380d3a8e45b0c8fb2b",
+        "size_bytes": 16080
+      }
+    ]
+  },
+  "safety_notes": [
+    "No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.",
+    "The real-model path uses safe generic prompts and reads cached activations and logits from a small public TransformerLens checkpoint. It does not use unsafe prompts, gated weights, generated completions, or external API calls."
+  ],
+  "tests_passed": true,
+  "wall_clock_seconds": 2.330469
+}

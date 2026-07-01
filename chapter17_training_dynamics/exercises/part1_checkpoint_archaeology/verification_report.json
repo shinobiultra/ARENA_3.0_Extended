@@ -1,0 +1,449 @@
+{
+  "accepted": true,
+  "baselines": {
+    "declared_controls": [
+      "baseline_or_reference_check",
+      "random_label_checkpoint_control_required",
+      "shape_dtype_or_exact_value_check",
+      "toy_checkpoint_trajectory_contract",
+      "toy_phase_transition_contract",
+      "toy_random_control_contract",
+      "toy_family_timing_contract",
+      "real_cuda_training_run",
+      "real_checkpoint_save_and_reload",
+      "complete_modular_addition_table_accuracy",
+      "random_label_checkpoint_control",
+      "exhaustive_mod13_finite_domain_evaluation",
+      "no_ood_extrapolation_claimed",
+      "stable_threshold_emergence_check",
+      "phase_jump_check",
+      "large_model_checkpoint_archaeology_not_claimed"
+    ],
+    "expected_metrics": {
+      "accepted": true,
+      "checkpoint_count": 26,
+      "final_accuracy": 1.0,
+      "first_crossing_step": 30,
+      "loss_drop_min": 2.0,
+      "max_allowed_gpu_gb": 24,
+      "model_family": "tiny_modular_addition_mlp",
+      "modulus": 13,
+      "peak_vram_gb_max": 0.2,
+      "phase_transition_jump_min": 0.2,
+      "phase_transition_step": 30,
+      "preflight_passed": true,
+      "random_control_passed": true,
+      "random_control_peak_accuracy_max": 0.2,
+      "real_checkpoints_reloaded": true,
+      "stable_from_step": 30,
+      "table_example_count": 169,
+      "tests_passed": true
+    }
+  },
+  "claim_scope": "GT-0 developmental-interpretability preflight: deterministic toy AR, JEPA, diffusion, Mamba, and random-control trajectories are kept for learner exercises, then a tiny modular-addition MLP is trained on CUDA on the complete mod-13 addition table. The report saves and reloads real checkpoints, detects stable emergence and a phase jump from the reloaded checkpoint accuracies, and rejects a random-label checkpoint control evaluated against the true table. This proves the local checkpoint-archaeology workflow on a finite model organism. The complete mod-13 input domain is exhausted at evaluation time, so the generalization claim is finite-domain coverage rather than OOD extrapolation; it is not a claim about large-model developmental mechanisms.",
+  "datasets": [
+    {
+      "id": "17_1_checkpoint_archaeology_and_mechanism_emergence_toy_inputs",
+      "seed": 0,
+      "source": "generated"
+    },
+    {
+      "checkpoint_steps": [
+        0,
+        2,
+        4,
+        6,
+        8,
+        10,
+        12,
+        15,
+        20,
+        30,
+        40,
+        60,
+        80
+      ],
+      "example_count": 169,
+      "id": "complete_mod13_addition_table_v1",
+      "label_rule": "(left + right) % 13",
+      "modulus": 13,
+      "random_label_control": true,
+      "seed": 0,
+      "source": "generated_finite_table"
+    }
+  ],
+  "date_run": "2026-06-30T14:12:15+00:00",
+  "evidence_level": "toy_trajectory_contract_plus_real_modular_addition_checkpoint_preflight",
+  "git_commit": "f9f034bd",
+  "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+  "gt_tier": "GT-0",
+  "known_failures": [],
+  "metrics": {
+    "gpu_evidence": {
+      "category": "cuda_section_metric",
+      "placeholder_only": false,
+      "section_specific_metric_keys": [
+        "accuracy_gain_from_training",
+        "checkpoint_count",
+        "checkpoint_steps",
+        "checkpoint_total_bytes",
+        "complete_finite_domain_evaluated",
+        "final_accuracy",
+        "first_crossing_step",
+        "generalization_scope",
+        "loss_drop",
+        "model_family",
+        "modulus",
+        "ood_generalization_claimed",
+        "peak_accuracy",
+        "peak_step",
+        "phase_transition_detected",
+        "phase_transition_jump",
+        "phase_transition_step",
+        "preflight_passed",
+        "random_control_accuracy_trajectory",
+        "random_control_passed",
+        "random_control_peak_accuracy",
+        "real_checkpoints_reloaded",
+        "stable_from_step",
+        "table_example_count",
+        "target_accuracy_trajectory",
+        "target_loss_trajectory"
+      ],
+      "uses_cuda": true
+    },
+    "gpu_test": {
+      "accuracy_gain_from_training": 0.9112426042556763,
+      "checkpoint_count": 26,
+      "checkpoint_steps": [
+        0,
+        2,
+        4,
+        6,
+        8,
+        10,
+        12,
+        15,
+        20,
+        30,
+        40,
+        60,
+        80
+      ],
+      "checkpoint_total_bytes": 636870,
+      "complete_finite_domain_evaluated": true,
+      "cuda_available": true,
+      "cuda_version": "13.2",
+      "device": "NVIDIA GeForce RTX 5090 Laptop GPU",
+      "final_accuracy": 1.0,
+      "first_crossing_step": 30,
+      "full_path": "Train a tiny modular-addition model organism on CUDA, save and reload real checkpoints, detect stable mechanism emergence, and reject a random-label checkpoint control. The finite-domain generalization claim is exhaustive coverage of all 169 mod-13 input pairs, not OOD extrapolation.",
+      "generalization_scope": "Complete finite mod-13 addition table (169/169 input pairs); no held-out OOD extrapolation is claimed.",
+      "gpu_total_memory_gb": 23.45965576171875,
+      "loss_drop": 2.5750808715820312,
+      "model_family": "tiny_modular_addition_mlp",
+      "modulus": 13,
+      "ood_generalization_claimed": false,
+      "peak_accuracy": 1.0,
+      "peak_step": 40,
+      "peak_vram_gb": 0.06275796890258789,
+      "phase_transition_detected": true,
+      "phase_transition_jump": 0.2781065106391907,
+      "phase_transition_step": 30,
+      "preflight_passed": true,
+      "random_control_accuracy_trajectory": [
+        0.08875739574432373,
+        0.10059171915054321,
+        0.10059171915054321,
+        0.07692307978868484,
+        0.07692307978868484,
+        0.06508875638246536,
+        0.0710059180855751,
+        0.07692307978868484,
+        0.09467455744743347,
+        0.08284023404121399,
+        0.09467455744743347,
+        0.09467455744743347,
+        0.09467455744743347
+      ],
+      "random_control_passed": true,
+      "random_control_peak_accuracy": 0.10059171915054321,
+      "real_checkpoints_reloaded": true,
+      "stable_from_step": 30,
+      "table_example_count": 169,
+      "target_accuracy_trajectory": [
+        0.08875739574432373,
+        0.16568046808242798,
+        0.2130177617073059,
+        0.2662721872329712,
+        0.3668639063835144,
+        0.4201183617115021,
+        0.44378697872161865,
+        0.5384615659713745,
+        0.6745561957359314,
+        0.9526627063751221,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "target_loss_trajectory": [
+        2.5815892219543457,
+        2.523226499557495,
+        2.4689443111419678,
+        2.407844305038452,
+        2.3343000411987305,
+        2.245819330215454,
+        2.141467571258545,
+        1.9558217525482178,
+        1.5833786725997925,
+        0.7552788853645325,
+        0.2093963623046875,
+        0.017652379348874092,
+        0.006508232560008764
+      ],
+      "torch_version": "2.12.1+cu132",
+      "within_vram_budget": true
+    },
+    "notebook_contract": {
+      "checkpoint_emergence": {
+        "emerged": true,
+        "first_crossing_step": 300,
+        "metric_name": "induction_probe_accuracy",
+        "monotonicity_violations": 0,
+        "peak_step": 500,
+        "peak_value": 0.8600000143051147,
+        "stable_from_step": 300,
+        "threshold": 0.6
+      },
+      "developmental_comparison": {
+        "all_non_control_emerged": true,
+        "earliest_family": "jepa",
+        "emergence_steps": {
+          "autoregressive": 300,
+          "diffusion": 400,
+          "jepa": 200,
+          "mamba": 300,
+          "random_control": null
+        },
+        "latest_family": "diffusion",
+        "random_control_passed": true,
+        "threshold": 0.6
+      },
+      "live_checkpoint_archaeology": {
+        "checkpoint_count": 26,
+        "checkpoint_files_written": 26,
+        "checkpoint_steps": [
+          0,
+          2,
+          4,
+          6,
+          8,
+          10,
+          12,
+          15,
+          20,
+          30,
+          40,
+          60,
+          80
+        ],
+        "checkpoint_total_bytes": 635206,
+        "complete_finite_domain_evaluated": true,
+        "device": "cpu",
+        "final_accuracy": 1.0,
+        "first_crossing_step": 30,
+        "generalization_scope": "Complete finite mod-13 addition table (169/169 input pairs); no held-out OOD extrapolation is claimed.",
+        "model_family": "tiny_modular_addition_mlp",
+        "modulus": 13,
+        "ood_generalization_claimed": false,
+        "phase_transition_detected": true,
+        "phase_transition_jump": 0.2781065106391907,
+        "phase_transition_step": 30,
+        "preflight_passed": true,
+        "random_control_accuracy_trajectory": [
+          0.08875739574432373,
+          0.07692307978868484,
+          0.06508875638246536,
+          0.08875739574432373,
+          0.09467455744743347,
+          0.08875739574432373,
+          0.08284023404121399,
+          0.08284023404121399,
+          0.07692307978868484,
+          0.08284023404121399,
+          0.07692307978868484,
+          0.07692307978868484,
+          0.07692307978868484
+        ],
+        "random_control_passed": true,
+        "random_control_peak_accuracy": 0.09467455744743347,
+        "real_checkpoints_reloaded": true,
+        "stable_from_step": 30,
+        "table_example_count": 169,
+        "target_accuracy_trajectory": [
+          0.08875739574432373,
+          0.16568046808242798,
+          0.21301774680614471,
+          0.2662721872329712,
+          0.3668639063835144,
+          0.4201183319091797,
+          0.44378697872161865,
+          0.5384615659713745,
+          0.6745561957359314,
+          0.9526627063751221,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "target_loss_trajectory": [
+          2.581589460372925,
+          2.523226737976074,
+          2.468944549560547,
+          2.407844066619873,
+          2.3342995643615723,
+          2.245819568634033,
+          2.1414670944213867,
+          1.9558218717575073,
+          1.5833786725997925,
+          0.755279004573822,
+          0.20939643681049347,
+          0.017652368173003197,
+          0.006508233491331339
+        ]
+      },
+      "phase_transition": {
+        "jump": 0.3799999952316284,
+        "metric_name": "induction_probe_accuracy",
+        "phase_transition_detected": true,
+        "post_value": 0.6800000071525574,
+        "pre_value": 0.30000001192092896,
+        "transition_step": 300
+      },
+      "random_control": {
+        "control_passed": true,
+        "max_allowed_value": 0.2,
+        "metric_name": "label_shuffled_probe",
+        "peak_value": 0.11999999731779099
+      }
+    }
+  },
+  "models": [
+    {
+      "gated": false,
+      "id": "toy_or_generated_inputs",
+      "precision": "float32",
+      "revision": "seed_0",
+      "source": "generated"
+    },
+    {
+      "claim_scope": "trained_checkpoint_archaeology_preflight",
+      "gated": false,
+      "id": "course_tiny_modular_addition_mlp_v1",
+      "learning_rate": 0.005,
+      "optimizer": "AdamW",
+      "precision": "float32",
+      "revision": "seed_0_mod13_embed32_hidden64_steps80",
+      "source": "generated_training_run"
+    }
+  ],
+  "negative_controls": {
+    "declared_controls": [
+      "random_label_checkpoint_control_required",
+      "toy_random_control_contract",
+      "random_label_checkpoint_control"
+    ]
+  },
+  "notebook_id": "17_1_checkpoint_archaeology_and_mechanism_emergence",
+  "ood_tests": {
+    "declared": "required_where_applicable"
+  },
+  "peak_vram_gb": 0.062758,
+  "report_inputs": {
+    "schema_version": 1,
+    "algorithm": "sha256",
+    "combined_sha256": "fb138f226cc603aef675432a07cc6923e5845b164752da470a596b8b1a103dfd",
+    "files": [
+      {
+        "path": "arena_ext/training_dynamics.py",
+        "sha256": "068146be6cb1782ce38d86b1e9db23781c7e84ac98a7b432d40e2ea28b943c59",
+        "size_bytes": 9097
+      },
+      {
+        "path": "arena_ext/verification.py",
+        "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
+        "size_bytes": 9276
+      },
+      {
+        "path": "chapter17_training_dynamics/exercises/part1_checkpoint_archaeology/17.1_Checkpoint_Archaeology_and_Mechanism_Emergence_exercises.ipynb",
+        "sha256": "e206f8b7f29532183b8e6f33d2f45bf953bbfb246a895274e4bdb2b0c2bacd3f",
+        "size_bytes": 15490
+      },
+      {
+        "path": "chapter17_training_dynamics/exercises/part1_checkpoint_archaeology/17.1_Checkpoint_Archaeology_and_Mechanism_Emergence_solutions.ipynb",
+        "sha256": "3f10648f64b32155d755f4c527045282de7b2cb4d7b100d3472835314b546ebb",
+        "size_bytes": 7701
+      },
+      {
+        "path": "chapter17_training_dynamics/exercises/part1_checkpoint_archaeology/README.md",
+        "sha256": "92a5530ffaa1e178ff4479ac8e77aecb835d9e895981e82bd41c008afcb1edea",
+        "size_bytes": 1316
+      },
+      {
+        "path": "chapter17_training_dynamics/exercises/part1_checkpoint_archaeology/artifacts.lock.yml",
+        "sha256": "77589e4bec23b0dad439e4f9852072b920fa90ddc5e721886b00a7ad5725da87",
+        "size_bytes": 3426
+      },
+      {
+        "path": "chapter17_training_dynamics/exercises/part1_checkpoint_archaeology/expected_outputs/README.md",
+        "sha256": "86ac4bb0e4bf3c1743e78f6c72cfd8c40445091cfaef425f7e63d5c8994179bd",
+        "size_bytes": 1799
+      },
+      {
+        "path": "chapter17_training_dynamics/exercises/part1_checkpoint_archaeology/expected_outputs/reference_metrics.json",
+        "sha256": "f4e0172008e49f7cf471d2dd7319fdd17c8e6333611cbd626a715f10d08f0258",
+        "size_bytes": 832
+      },
+      {
+        "path": "chapter17_training_dynamics/exercises/part1_checkpoint_archaeology/expected_outputs/smoke_test.json",
+        "sha256": "84b495a9113929d1d092cc48659f9cbac5dc8e57c49c0410d499f59f2a1ca634",
+        "size_bytes": 333
+      },
+      {
+        "path": "chapter17_training_dynamics/exercises/part1_checkpoint_archaeology/solutions.py",
+        "sha256": "ce2ef100518526e80e9d9a15c07f728c53a9095b515ee9781f01e69bf18898e2",
+        "size_bytes": 16104
+      },
+      {
+        "path": "chapter17_training_dynamics/exercises/part1_checkpoint_archaeology/tests.py",
+        "sha256": "b2704a4467d224a4c23ca2af7fb73758155b6c47c65a688a59fa4130c9007cfa",
+        "size_bytes": 16898
+      },
+      {
+        "path": "chapter17_training_dynamics/exercises/part1_checkpoint_archaeology/utils.py",
+        "sha256": "f02b7efb6adc7024b1f17d292e84d7039dee9f33a1a099aab63d1beefc517cab",
+        "size_bytes": 2331
+      },
+      {
+        "path": "chapter17_training_dynamics/exercises/part1_checkpoint_archaeology/verification_report.schema.json",
+        "sha256": "ecd833883885077ad5d7a0e239d984d01462255e94266212cf195ab4d4e27b3d",
+        "size_bytes": 2669
+      },
+      {
+        "path": "chapter17_training_dynamics/instructions/pages/01_[17.1]_Checkpoint_Archaeology_and_Mechanism_Emergence.md",
+        "sha256": "36cdd3005d921e934b90bc04f8b2bd1c697de6e0c39a1c26411595b01f59ce05",
+        "size_bytes": 32743
+      },
+      {
+        "path": "scripts/run_extension_verification_reports.py",
+        "sha256": "660040f459d07535deb9e0c34ffddb496c13b8770044ae380d3a8e45b0c8fb2b",
+        "size_bytes": 16080
+      }
+    ]
+  },
+  "safety_notes": [
+    "No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.",
+    "The real training path uses only a generated finite modular-addition table and a random-label negative control. It does not use unsafe data, user data, adapters, gated weights, or large persistent artifacts."
+  ],
+  "tests_passed": true,
+  "wall_clock_seconds": 9.493453
+}

@@ -1,0 +1,27 @@
+{
+  "baselines": {
+    "required": true
+  },
+  "metrics": {
+    "accepted": true,
+    "claim_scope": "pinned_real_clip_rendered_vlm_shap_preflight",
+    "max_allowed_gpu_gb": 24,
+    "modality_satisfies_efficiency": true,
+    "modality_synergy_min": 2.0,
+    "model_id": "openai/clip-vit-base-patch32",
+    "object_margin_min": 1.0,
+    "peak_vram_gb_max": 2.0,
+    "preflight_passed": true,
+    "region_satisfies_efficiency": true,
+    "revision": "3d74acf9a28c67741b2f4f2ea7635f0aaf6f0268",
+    "target_distractor_margin_min": 2.0,
+    "tests_passed": true
+  },
+  "negative_controls": {
+    "required_where_applicable": true
+  },
+  "notebook_id": "16_5_vlm_modality_and_region_shap",
+  "ood_tests": {
+    "required_where_applicable": true
+  }
+}

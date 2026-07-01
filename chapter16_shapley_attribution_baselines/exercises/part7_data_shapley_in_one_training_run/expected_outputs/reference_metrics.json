@@ -1,0 +1,34 @@
+{
+  "baselines": {
+    "required": true
+  },
+  "metrics": {
+    "accepted": true,
+    "actual_full_batch_one_step_utility": 0.75,
+    "coalition_count": 16,
+    "coalition_full_utility": 0.75,
+    "harmful_index": 3,
+    "harmful_removal_delta_min": 0.1,
+    "harmful_value_max": 0.0,
+    "identifies_harmful": true,
+    "identifies_helpful": true,
+    "learning_rate": 0.5,
+    "max_allowed_gpu_gb": 24,
+    "model_family": "cuda_one_step_linear_regression_data_shapley",
+    "monte_carlo_samples": 512,
+    "peak_vram_gb_max": 1.0,
+    "pearson_correlation_min": 0.99,
+    "preflight_passed": true,
+    "sampled_approximates_exact": true,
+    "sampled_max_abs_error_max": 0.08,
+    "tests_passed": true,
+    "training_example_count": 4
+  },
+  "negative_controls": {
+    "required_where_applicable": true
+  },
+  "notebook_id": "16_7_data_shapley_in_one_training_run",
+  "ood_tests": {
+    "required_where_applicable": true
+  }
+}

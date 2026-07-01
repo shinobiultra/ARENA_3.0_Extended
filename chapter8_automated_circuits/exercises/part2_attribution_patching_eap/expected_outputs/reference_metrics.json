@@ -1,0 +1,49 @@
+{
+  "baselines": {
+    "required": true
+  },
+  "metrics": {
+    "accepted": true,
+    "attribution_best_position": 5,
+    "attribution_final_recovery_min": 0.9,
+    "bnb_cuda_override": "130",
+    "clean_corrupt_gap_min": 6.0,
+    "distractor_token": " top",
+    "eap_edge_score_shape": [
+      6,
+      6
+    ],
+    "eap_top_edge_downstream_position": 5,
+    "eap_top_edge_score_abs_min": 6.0,
+    "eap_top_edge_upstream_position": 5,
+    "exact_attribution_correlation_min": 0.99,
+    "exact_attribution_top1_overlap": 1.0,
+    "exact_best_position": 5,
+    "exact_final_recovery_min": 0.99,
+    "exact_ig_correlation_min": 0.99,
+    "exact_ig_top1_overlap": 1.0,
+    "final_gradient_norm_min": 1.0,
+    "hf_revision": "bddc0e332f0ae84279e6a6a45d91b314899e1603",
+    "hook_name": "blocks.0.hook_resid_post",
+    "ig_best_position": 5,
+    "ig_final_recovery_min": 0.95,
+    "integrated_gradient_steps": 5,
+    "max_allowed_gpu_gb": 24,
+    "model_name": "gelu-1l",
+    "nonfinal_gradient_norm_max": 0.0,
+    "peak_vram_gb_max": 1.0,
+    "preflight_passed": true,
+    "sequence_length": 6,
+    "target_position": 5,
+    "target_token": " floor",
+    "tests_passed": true,
+    "tokenizer_revision": "0f6671571a20be9756b9991d978047c03b75e749"
+  },
+  "negative_controls": {
+    "required_where_applicable": true
+  },
+  "notebook_id": "8_2_attribution_patching_and_eap",
+  "ood_tests": {
+    "required_where_applicable": true
+  }
+}

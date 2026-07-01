@@ -1,0 +1,296 @@
+{
+  "accepted": true,
+  "baselines": {
+    "declared_controls": [
+      "baseline_or_reference_check",
+      "negative_control_where_applicable",
+      "shape_dtype_or_exact_value_check",
+      "recurrent_parallel_selective_scan_equivalence",
+      "chunked_scan_state_carry_equivalence",
+      "tiny_mamba_cache_parity",
+      "pinned_official_mamba_130m_hf_logits_generation",
+      "batched_vs_single_prompt_top_token_consistency",
+      "deterministic_generation_prefix_preservation",
+      "mamba_ssm_and_causal_conv1d_fast_kernels_required",
+      "full_weight_level_tiny_to_130m_parity_not_claimed"
+    ],
+    "expected_metrics": {
+      "accepted": true,
+      "cache_max_abs_diff_max": 1e-05,
+      "cache_passed": true,
+      "max_allowed_gpu_gb": 24,
+      "official_mamba_batched_single_top1_agreement": 1.0,
+      "official_mamba_fast_kernel_available": true,
+      "official_mamba_generated_shape": [
+        1,
+        8
+      ],
+      "official_mamba_generation_new_tokens": 4,
+      "official_mamba_generation_tokens_per_second_min": 1.0,
+      "official_mamba_logits_generation_preflight_passed": true,
+      "official_mamba_logits_shape": [
+        2,
+        4,
+        50280
+      ],
+      "official_mamba_logits_std_min": 1.0,
+      "official_mamba_peak_vram_gb_max": 2.0,
+      "official_mamba_prompt_prefix_preserved": true,
+      "scan_max_abs_diff_max": 1e-06,
+      "scan_passed": true,
+      "tests_passed": true
+    }
+  },
+  "claim_scope": "GT-1 Mamba implementation contract: recurrent, parallel, and chunked selective scans and tiny-cache parity are checked on generated tensors, then a pinned Mamba-130M-HF checkpoint is loaded on CUDA to verify finite logits, batched-vs-single top-token consistency, deterministic generation, and required Transformers Mamba fast kernels. This does not claim full weight-level parity between the tiny implementation and the released 130M checkpoint.",
+  "datasets": [
+    {
+      "id": "5_3_mamba_from_scratch_toy_inputs",
+      "seed": 0,
+      "source": "generated"
+    },
+    {
+      "generation_prompt": "Mamba models can",
+      "id": "course_generated_safe_mamba_prompts_v1",
+      "max_new_tokens": 4,
+      "prompt_count": 2,
+      "prompts": [
+        "Mamba models can",
+        "The cat sat on"
+      ],
+      "seed": 0,
+      "source": "generated_prompt_pair"
+    }
+  ],
+  "date_run": "2026-06-30T14:04:39+00:00",
+  "evidence_level": "selective_scan_contract_plus_official_mamba_logits_generation_preflight",
+  "git_commit": "f9f034bd",
+  "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+  "gt_tier": "GT-1",
+  "known_failures": [],
+  "metrics": {
+    "gpu_evidence": {
+      "category": "cuda_section_metric",
+      "placeholder_only": false,
+      "section_specific_metric_keys": [
+        "cache_max_abs_diff",
+        "cache_passed",
+        "official_mamba_batched_single_top1_agreement",
+        "official_mamba_fast_kernel_available",
+        "official_mamba_generated_shape",
+        "official_mamba_generation_new_tokens",
+        "official_mamba_generation_tokens_per_second",
+        "official_mamba_logits_generation_preflight_passed",
+        "official_mamba_logits_shape",
+        "official_mamba_logits_std",
+        "official_mamba_peak_vram_gb",
+        "official_mamba_preflight",
+        "official_mamba_prompt_prefix_preserved",
+        "scan_max_abs_diff",
+        "scan_passed"
+      ],
+      "uses_cuda": true
+    },
+    "gpu_test": {
+      "cache_max_abs_diff": 1.1920928955078125e-06,
+      "cache_passed": true,
+      "cuda_available": true,
+      "cuda_version": "13.2",
+      "device": "NVIDIA GeForce RTX 5090 Laptop GPU",
+      "full_path": "Validated selective-scan/cache parity plus pinned Mamba-130M-HF logits and deterministic generation on CUDA fast kernels.",
+      "gpu_total_memory_gb": 23.45965576171875,
+      "official_mamba_batched_single_top1_agreement": 1.0,
+      "official_mamba_fast_kernel_available": true,
+      "official_mamba_generated_shape": [
+        1,
+        8
+      ],
+      "official_mamba_generation_new_tokens": 4,
+      "official_mamba_generation_tokens_per_second": 11.25025200905266,
+      "official_mamba_logits_generation_preflight_passed": true,
+      "official_mamba_logits_shape": [
+        2,
+        4,
+        50280
+      ],
+      "official_mamba_logits_std": 52.729652404785156,
+      "official_mamba_peak_vram_gb": 0.2797737121582031,
+      "official_mamba_preflight": {
+        "batched_single_top1_agreement": 1.0,
+        "claim_scope": "official_mamba_130m_hf_logits_generation_preflight",
+        "cuda_available": true,
+        "fast_kernel_available": true,
+        "fast_path_components": {
+          "causal_conv1d_fn": true,
+          "causal_conv1d_update": true,
+          "mamba_inner_fn": true,
+          "selective_scan_fn": true,
+          "selective_state_update": true
+        },
+        "finite_logits": true,
+        "generated_new_token_count": 4,
+        "generated_shape": [
+          1,
+          8
+        ],
+        "generation_tokens_per_second": 11.25025200905266,
+        "logits_shape": [
+          2,
+          4,
+          50280
+        ],
+        "logits_std": 52.729652404785156,
+        "model_id": "state-spaces/mamba-130m-hf",
+        "peak_vram_gb": 0.2797737121582031,
+        "preflight_passed": true,
+        "prompt_count": 2,
+        "prompt_prefix_preserved": true,
+        "revision": "1e76775f628fbf1350fbe4dbb3d971ba64af25a1",
+        "within_vram_budget": true
+      },
+      "official_mamba_prompt_prefix_preserved": true,
+      "peak_vram_gb": 0.2797737121582031,
+      "scan_max_abs_diff": 4.76837158203125e-07,
+      "scan_passed": true,
+      "torch_version": "2.12.1+cu132",
+      "within_vram_budget": true
+    },
+    "notebook_contract": {
+      "block_step_equivalence": {
+        "max_abs_diff": 2.60770320892334e-08,
+        "passed": true
+      },
+      "chunked_scan_equivalence": {
+        "atol": 1e-06,
+        "max_abs_diff": 7.450580596923828e-09,
+        "mse": 9.912706020142797e-19,
+        "passed": true
+      },
+      "generation_shape": [
+        1,
+        7
+      ],
+      "lm_cache_parity": {
+        "atol": 1e-05,
+        "max_abs_diff": 1.6689300537109375e-06,
+        "mse": 1.302313698504573e-13,
+        "passed": true
+      },
+      "selective_scan_equivalence": {
+        "atol": 1e-05,
+        "max_abs_diff": 4.76837158203125e-07,
+        "mse": 4.259752832180873e-15,
+        "passed": true
+      }
+    }
+  },
+  "models": [
+    {
+      "gated": false,
+      "id": "toy_or_generated_inputs",
+      "precision": "float32",
+      "revision": "seed_0",
+      "source": "generated"
+    },
+    {
+      "claim_scope": "official_logits_generation_preflight",
+      "gated": false,
+      "id": "state-spaces/mamba-130m-hf",
+      "precision": "float16",
+      "revision": "1e76775f628fbf1350fbe4dbb3d971ba64af25a1",
+      "source": "huggingface"
+    }
+  ],
+  "negative_controls": {
+    "declared_controls": [
+      "negative_control_where_applicable"
+    ]
+  },
+  "notebook_id": "5_3_mamba_from_scratch",
+  "ood_tests": {
+    "declared": "required_where_applicable"
+  },
+  "peak_vram_gb": 0.279774,
+  "report_inputs": {
+    "schema_version": 1,
+    "algorithm": "sha256",
+    "combined_sha256": "05f12c5d7058cd0caf795a6046ebe3df45801b4c55c6e6f82c63bd7daca03639",
+    "files": [
+      {
+        "path": "arena_ext/verification.py",
+        "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
+        "size_bytes": 9276
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part3_mamba_from_scratch/5.3_Mamba_from_Scratch_exercises.ipynb",
+        "sha256": "5370ef2f9dd60ddaf146843df32c6ae81c7ebbfa1a8d854c044a91a9833011de",
+        "size_bytes": 5780
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part3_mamba_from_scratch/5.3_Mamba_from_Scratch_solutions.ipynb",
+        "sha256": "0c9afa4397cea37096aadb7a83a1be368cc66bc1a27e753d4c0b6198cce21b7e",
+        "size_bytes": 2231
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part3_mamba_from_scratch/README.md",
+        "sha256": "fca3b4d17ad3fbd74d67c502cdd3f5c677d6f50a97e952fe2e7e35fe9081d5ff",
+        "size_bytes": 887
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part3_mamba_from_scratch/artifacts.lock.yml",
+        "sha256": "c28bec919f27ea7dc090b38cf02405fd6ceb6a44cf2fc0e6c6bf085deeb7de67",
+        "size_bytes": 2924
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part3_mamba_from_scratch/expected_outputs/README.md",
+        "sha256": "54b8b3311bddda40eebf15bd0d9a6e581447518914a8d81e1497514ca740b497",
+        "size_bytes": 1770
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part3_mamba_from_scratch/expected_outputs/reference_metrics.json",
+        "sha256": "be2ec9cde4b4e456c02e41a3b52f68c31eeee6c5eb485d1a0ef2f06facb4c7e2",
+        "size_bytes": 991
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part3_mamba_from_scratch/expected_outputs/smoke_test.json",
+        "sha256": "3954f6ac2d1e8960dc163f07d365ac06ee84020bc6637cf2b48643f417d6ba6f",
+        "size_bytes": 275
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part3_mamba_from_scratch/solutions.py",
+        "sha256": "458b559450408f8ff460bec60a295b96242a9db984ab77c523537fb253d765c0",
+        "size_bytes": 26644
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part3_mamba_from_scratch/tests.py",
+        "sha256": "886c539ec7fc66803b765f98f1b769fbaecf0fb1abe77cbb8e5788a17646c06a",
+        "size_bytes": 8544
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part3_mamba_from_scratch/utils.py",
+        "sha256": "bfa1e1b8a78b71047b74b5ca5201d6803a1895cae6c00625b81dba51cce51b30",
+        "size_bytes": 349
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part3_mamba_from_scratch/verification_report.schema.json",
+        "sha256": "ecd833883885077ad5d7a0e239d984d01462255e94266212cf195ab4d4e27b3d",
+        "size_bytes": 2669
+      },
+      {
+        "path": "chapter5_modern_architectures/instructions/pages/03_[5.3]_Mamba_from_Scratch.md",
+        "sha256": "81d57485eaec11e26397265863139fd8340bfc998015bcec59d721da9c6d0f55",
+        "size_bytes": 16543
+      },
+      {
+        "path": "scripts/run_extension_verification_reports.py",
+        "sha256": "660040f459d07535deb9e0c34ffddb496c13b8770044ae380d3a8e45b0c8fb2b",
+        "size_bytes": 16080
+      }
+    ]
+  },
+  "safety_notes": [
+    "No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.",
+    "The official Mamba path uses safe generic prompts and deterministic generation only. Full weight-level parity between the didactic tiny implementation and Mamba-130M-HF is not claimed."
+  ],
+  "tests_passed": true,
+  "wall_clock_seconds": 3.929849
+}

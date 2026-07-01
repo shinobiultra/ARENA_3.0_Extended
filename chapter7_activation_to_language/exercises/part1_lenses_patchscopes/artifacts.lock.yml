@@ -1,0 +1,114 @@
+notebook_id: 7_1_logit_lens_tuned_lens_and_patchscopes
+section: '7.1'
+title: Logit Lens, Tuned Lens, and Patchscopes
+exercise_metadata:
+  EXERCISE_ID: 7_1_logit_lens_tuned_lens_and_patchscopes
+  GT_TIER: GT-1
+  DIFFICULTY: 4
+  IMPORTANCE: 3
+  EXPECTED_RUNTIME: seconds on toy contract; minutes on local real-model path
+  REQUIRES_GPU: true
+gt_tier: GT-1
+evidence_level: toy_lens_contract_plus_pinned_transformerlens_affine_lens_patchscope_preflight
+claim_scope: 'GT-1 activation-to-language preflight: reusable toy logit-lens, tuned-lens,
+  attention-lens, Patchscope, counterfactual, and random-activation contracts are
+  kept for learner exercises, then a pinned TransformerLens gelu-1l checkpoint is
+  loaded on CUDA. The report trains a ridge affine lens from hook_resid_pre to normalized
+  hook_resid_post on safe cached prompts, evaluates held-out next-token decoding against
+  the model''s own final predictions, runs an attention-lens diagnostic on a real
+  head, patches source hook_resid_post activations into neutral target prompts and
+  compares the decoded answers against unpatched text-only target prompts, and checks
+  counterfactual plus low-confidence random-activation controls. This is a local
+  lens/Patchscope mechanics preflight, not a released tuned lens benchmark.'
+required_gpu_gb: 1
+max_allowed_gpu_gb: 24
+models:
+- id: toy_or_generated_inputs
+  source: generated
+  revision: seed_0
+  precision: float32
+  gated: false
+- id: NeelNanda/GELU_1L512W_C4_Code
+  source: huggingface_via_transformerlens
+  revision: bddc0e332f0ae84279e6a6a45d91b314899e1603
+  precision: float32
+  gated: false
+  claim_scope: affine_lens_and_activation_conditioned_decode_preflight
+  transformerlens_model_name: gelu-1l
+  tokenizer_id: NeelNanda/gpt-neox-tokenizer-digits
+  tokenizer_revision: 0f6671571a20be9756b9991d978047c03b75e749
+datasets:
+- id: 7_1_logit_lens_tuned_lens_and_patchscopes_toy_inputs
+  source: generated
+  seed: 0
+- id: course_safe_lens_patchscope_prompts_v1
+  source: generated_prompt_sets
+  seed: 0
+  train_prompt_count: 16
+  heldout_prompt_count: 6
+  patchscope_pair_count: 6
+  target_source: model_final_logits_argmax
+  hooks:
+  - blocks.0.hook_resid_pre
+  - blocks.0.hook_resid_post
+  tokenizer: NeelNanda/gpt-neox-tokenizer-digits
+expected_metrics:
+  tests_passed: true
+  accepted: true
+  max_allowed_gpu_gb: 24
+  preflight_passed: true
+  model_name: gelu-1l
+  hf_revision: bddc0e332f0ae84279e6a6a45d91b314899e1603
+  tokenizer_revision: 0f6671571a20be9756b9991d978047c03b75e749
+  bnb_cuda_override: '130'
+  train_prompt_count: 16
+  heldout_prompt_count: 6
+  heldout_position_count: 40
+  logit_lens_accuracy_max: 0.2
+  tuned_lens_accuracy_min: 0.35
+  tuned_lens_improvement_min: 0.3
+  final_decode_max_abs_error_max: 0.0001
+  patchscope_pair_count: 6
+  patchscope_hook_name: blocks.0.hook_resid_post
+  patchscope_target_prompt_count: 6
+  patchscope_accuracy: 1.0
+  text_only_accuracy: 0.0
+  patchscope_beats_text_only: true
+  patchscope_min_patched_target_margin_min: 0.01
+  patchscope_max_text_only_target_margin_max: 0.0
+  counterfactual_changed: true
+  counterfactual_original_token: ' floor'
+  counterfactual_patched_token: ' top'
+  random_max_confidence_max: 0.1
+  random_passes_low_confidence: true
+  attention_lens_logits_shape:
+  - 1
+  - 6
+  - 48262
+  attention_lens_finite: true
+  attention_lens_prompt_final_token: ' floor'
+  peak_vram_gb_max: 1.0
+  tuned_lens_improves: true
+controls:
+- baseline_or_reference_check
+- negative_control_where_applicable
+- shape_dtype_or_exact_value_check
+- toy_logit_lens_contract
+- toy_tuned_lens_improvement_contract
+- toy_attention_lens_contract
+- toy_patchscope_template_contract
+- toy_counterfactual_activation_contract
+- toy_random_activation_confidence_contract
+- pinned_transformerlens_gelu1l_cached_activation_lens_training
+- heldout_next_token_decoding_against_final_model_predictions
+- real_attention_head_lens_finiteness_check
+- source_residual_inserted_into_neutral_patchscope_prompt
+- unpatched_neutral_prompt_text_only_baseline
+- counterfactual_clean_corrupt_residual_decode_change
+- small_random_activation_low_confidence_control
+- released_tuned_lens_benchmark_not_claimed
+safety_notes:
+- No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.
+- The real-model path uses safe generic prompts and reads cached activations, logits,
+  and attention values from a small public TransformerLens checkpoint. It does not
+  use unsafe prompts, gated weights, or generated completions.

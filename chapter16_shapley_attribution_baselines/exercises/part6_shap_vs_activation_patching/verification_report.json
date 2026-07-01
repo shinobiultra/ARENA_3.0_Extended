@@ -1,0 +1,314 @@
+{
+  "accepted": true,
+  "baselines": {
+    "declared_controls": [
+      "baseline_or_reference_check",
+      "negative_control_where_applicable",
+      "shape_dtype_or_exact_value_check",
+      "toy_additive_agreement_contract",
+      "toy_interaction_overcount_contract",
+      "real_cuda_additive_linear_training_run",
+      "real_cuda_interaction_mlp_training_run",
+      "complete_binary_feature_table_fit",
+      "exact_shapley_vs_full_minus_ablated_outputs",
+      "additive_agreement_positive_control",
+      "interaction_disagreement_negative_control",
+      "absolute_credit_overcount_check",
+      "large_transformer_activation_patching_not_claimed"
+    ],
+    "expected_metrics": {
+      "accepted": true,
+      "additive_agrees_with_shapley": true,
+      "additive_fit_max_abs_error_max": 1e-05,
+      "additive_fit_mse_max": 1e-10,
+      "additive_max_abs_error_max": 1e-05,
+      "additive_model_family": "cuda_trained_linear_additive_model",
+      "additive_training_example_count": 16,
+      "additive_training_steps": 1000,
+      "interaction_abs_overcount_min": 2.0,
+      "interaction_agrees_with_shapley": false,
+      "interaction_fit_max_abs_error_max": 0.0001,
+      "interaction_fit_mse_max": 1e-08,
+      "interaction_max_abs_error_min": 1.0,
+      "interaction_model_family": "cuda_trained_neural_coalition_game_mlp",
+      "interaction_top_feature_agrees": true,
+      "interaction_training_example_count": 16,
+      "interaction_training_steps": 1200,
+      "max_allowed_gpu_gb": 24,
+      "peak_vram_gb_max": 1.0,
+      "preflight_passed": true,
+      "tests_passed": true
+    }
+  },
+  "claim_scope": "GT-0 SHAP-vs-patching preflight: deterministic additive-agreement and interaction-overcount contracts are kept for learner exercises, then two CUDA model organisms are trained on complete binary feature tables. A linear additive model verifies that exact Shapley and full-minus-ablated patching effects agree when the learned function is additive. A nonlinear neural coalition game verifies that interaction-heavy learned behavior makes patching effects disagree with Shapley and overcount absolute credit. This proves the method comparison on real model outputs from finite trained systems; it is not a claim about large transformer activation patching.",
+  "datasets": [
+    {
+      "id": "16_6_shap_vs_activation_patching_toy_inputs",
+      "seed": 0,
+      "source": "generated"
+    },
+    {
+      "additive_target_rule": "0.25 + 1.2*x0 - 0.7*x1 + 1.6*x2 + 0.9*x3",
+      "example_count": 16,
+      "id": "complete_binary_feature_games_additive_and_interaction_v1",
+      "interaction_target_rule": "0.25 + 1.2*x0 - 0.7*x1 + 1.6*x2 + 0.9*x3 + 2.2*x0*x2 - 1.5*x1*x3",
+      "num_players": 4,
+      "patching_effect": "full_output_minus_single_feature_ablated_output",
+      "seed": "1660_additive_1621_interaction",
+      "source": "generated_finite_table"
+    }
+  ],
+  "date_run": "2026-06-30T14:11:57+00:00",
+  "evidence_level": "shap_vs_patching_contract_plus_cuda_model_organism_preflight",
+  "git_commit": "f9f034bd",
+  "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+  "gt_tier": "GT-0",
+  "known_failures": [],
+  "metrics": {
+    "gpu_evidence": {
+      "category": "cuda_section_metric",
+      "placeholder_only": false,
+      "section_specific_metric_keys": [
+        "additive_agrees_with_shapley",
+        "additive_fit_max_abs_error",
+        "additive_fit_mse",
+        "additive_max_abs_error",
+        "additive_model_family",
+        "additive_patching_effects",
+        "additive_shapley_values",
+        "additive_training_example_count",
+        "additive_training_steps",
+        "interaction_abs_overcount",
+        "interaction_agrees_with_shapley",
+        "interaction_fit_max_abs_error",
+        "interaction_fit_mse",
+        "interaction_max_abs_error",
+        "interaction_model_family",
+        "interaction_patching_effects",
+        "interaction_shapley_values",
+        "interaction_top_feature_agrees",
+        "interaction_training_example_count",
+        "interaction_training_steps",
+        "preflight_passed"
+      ],
+      "uses_cuda": true
+    },
+    "gpu_test": {
+      "additive_agrees_with_shapley": true,
+      "additive_fit_max_abs_error": 4.76837158203125e-07,
+      "additive_fit_mse": 5.190292640122607e-14,
+      "additive_max_abs_error": 2.7318795448039168e-08,
+      "additive_model_family": "cuda_trained_linear_additive_model",
+      "additive_patching_effects": [
+        1.1999998092651367,
+        -0.6999998092651367,
+        1.5999997854232788,
+        0.9000000953674316
+      ],
+      "additive_shapley_values": [
+        1.1999998167157173,
+        -0.6999998365839322,
+        1.5999998127420743,
+        0.9000001177191733
+      ],
+      "additive_training_example_count": 16,
+      "additive_training_steps": 1000,
+      "cuda_available": true,
+      "cuda_version": "13.2",
+      "device": "NVIDIA GeForce RTX 5090 Laptop GPU",
+      "full_path": "Train additive and interaction CUDA model organisms, then compare exact Shapley values with full-minus-ablated patching effects from real model outputs.",
+      "gpu_total_memory_gb": 23.45965576171875,
+      "interaction_abs_overcount": 3.4000007435679445,
+      "interaction_agrees_with_shapley": false,
+      "interaction_fit_max_abs_error": 2.384185791015625e-06,
+      "interaction_fit_mse": 1.1020073742429304e-12,
+      "interaction_max_abs_error": 1.0999997866650424,
+      "interaction_model_family": "cuda_trained_neural_coalition_game_mlp",
+      "interaction_patching_effects": [
+        3.4000003933906555,
+        -2.2000019550323486,
+        3.8000007420778275,
+        -0.6000001430511475
+      ],
+      "interaction_shapley_values": [
+        2.3000006563961506,
+        -1.450000535696745,
+        2.700000955412785,
+        0.15000034247835475
+      ],
+      "interaction_top_feature_agrees": true,
+      "interaction_training_example_count": 16,
+      "interaction_training_steps": 1200,
+      "peak_vram_gb": 0.06259441375732422,
+      "preflight_passed": true,
+      "torch_version": "2.12.1+cu132",
+      "within_vram_budget": true
+    },
+    "notebook_contract": {
+      "additive_agreement": {
+        "agrees_with_shapley": true,
+        "max_abs_error": 0.0,
+        "patching_effects": [
+          1.0,
+          2.0,
+          0.5
+        ],
+        "patching_top_feature": 1,
+        "shapley_top_feature": 1,
+        "shapley_values": [
+          1.0,
+          2.0,
+          0.5
+        ],
+        "top_feature_agrees": true
+      },
+      "interaction_failure": {
+        "documents_overcount": true,
+        "overcount": 1.0,
+        "patching_effects": [
+          1.0,
+          1.0
+        ],
+        "patching_total": 2.0,
+        "shapley_total": 1.0,
+        "shapley_values": [
+          0.5,
+          0.5
+        ]
+      }
+    }
+  },
+  "models": [
+    {
+      "gated": false,
+      "id": "toy_or_generated_inputs",
+      "precision": "float32",
+      "revision": "seed_0",
+      "source": "generated"
+    },
+    {
+      "claim_scope": "additive_shapley_patching_agreement_preflight",
+      "gated": false,
+      "id": "course_cuda_linear_additive_model_v1",
+      "learning_rate": 0.05,
+      "optimizer": "AdamW",
+      "precision": "float32",
+      "revision": "seed_1660_players4_steps1000",
+      "source": "generated_training_run"
+    },
+    {
+      "claim_scope": "interaction_shapley_patching_disagreement_preflight",
+      "gated": false,
+      "id": "course_cuda_neural_coalition_game_mlp_v1",
+      "learning_rate": 0.05,
+      "optimizer": "AdamW",
+      "precision": "float32",
+      "revision": "seed_1621_players4_hidden64_steps1200",
+      "source": "generated_training_run"
+    }
+  ],
+  "negative_controls": {
+    "declared_controls": [
+      "negative_control_where_applicable",
+      "interaction_disagreement_negative_control"
+    ]
+  },
+  "notebook_id": "16_6_shap_vs_activation_patching",
+  "ood_tests": {
+    "declared": "required_where_applicable"
+  },
+  "peak_vram_gb": 0.062594,
+  "report_inputs": {
+    "schema_version": 1,
+    "algorithm": "sha256",
+    "combined_sha256": "41ef22cfcda0ae060fc6074c4576b614fbda4db661d6e8a1106f6c6471f3a88a",
+    "files": [
+      {
+        "path": "arena_ext/shapley_attribution.py",
+        "sha256": "41933e8728654b42e33929346d136327b37d86e28bb884a45dd878dba096c418",
+        "size_bytes": 48062
+      },
+      {
+        "path": "arena_ext/shapley_neural_game.py",
+        "sha256": "09632900a7a6b31d46ec8ed8e39692b4e20618a81ce590369761f3687b9a19be",
+        "size_bytes": 4122
+      },
+      {
+        "path": "arena_ext/verification.py",
+        "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
+        "size_bytes": 9276
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part6_shap_vs_activation_patching/16.6_SHAP_vs_Activation_Patching_exercises.ipynb",
+        "sha256": "9b316f6974b2289dbe67da1d43faf490fcbed822ed40260e662d52e20ac0fc9f",
+        "size_bytes": 4736
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part6_shap_vs_activation_patching/16.6_SHAP_vs_Activation_Patching_solutions.ipynb",
+        "sha256": "b19f51394a0f6ddc02fbedf195b2a4a049dbc1cb1a0e9cd0970e28dad0017b58",
+        "size_bytes": 2931
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part6_shap_vs_activation_patching/README.md",
+        "sha256": "b4420f3c26ffc5739557e059c08a7101d4c006f0bda681683f74cf4c74ab4670",
+        "size_bytes": 985
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part6_shap_vs_activation_patching/artifacts.lock.yml",
+        "sha256": "b6a05ef4d4e7a0b3cc97e77fbb6111c6fb062d589b98e4ac7551032e922e1e52",
+        "size_bytes": 3849
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part6_shap_vs_activation_patching/expected_outputs/README.md",
+        "sha256": "269ecc2155e06d0f95b71533b9e473741f3b8722632ce3f993d4b4d9ae55fdd3",
+        "size_bytes": 1780
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part6_shap_vs_activation_patching/expected_outputs/reference_metrics.json",
+        "sha256": "35baeef067cf8a56b2186388ff0e2b518f9a0542426db938db6f3be027913cfe",
+        "size_bytes": 1114
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part6_shap_vs_activation_patching/expected_outputs/smoke_test.json",
+        "sha256": "d828e63241f1d8f965d9f5e02d010882287b46d7aa93f8f933dc541c49575ba1",
+        "size_bytes": 295
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part6_shap_vs_activation_patching/solutions.py",
+        "sha256": "2e3c6bc849f5becf00f8d689a62263d6693bb928f77b0829c409ffc629d75545",
+        "size_bytes": 7046
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part6_shap_vs_activation_patching/tests.py",
+        "sha256": "9861681bb7344f1a784f3fb1740b27b4bbb6e065d6e596c741421c694720c2b5",
+        "size_bytes": 2634
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part6_shap_vs_activation_patching/utils.py",
+        "sha256": "31724e90fc6aa0a8d0345c2ca84358b4fe0afd6bf6b93e9f3aaa0a7ef46dba28",
+        "size_bytes": 141
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part6_shap_vs_activation_patching/verification_report.schema.json",
+        "sha256": "ecd833883885077ad5d7a0e239d984d01462255e94266212cf195ab4d4e27b3d",
+        "size_bytes": 2669
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/pages/06_[16.6]_SHAP_vs_Activation_Patching.md",
+        "sha256": "52b60532030e4c79bfffe38557029015c17088acd0d538f439750fb556512b93",
+        "size_bytes": 9277
+      },
+      {
+        "path": "scripts/run_extension_verification_reports.py",
+        "sha256": "660040f459d07535deb9e0c34ffddb496c13b8770044ae380d3a8e45b0c8fb2b",
+        "size_bytes": 16080
+      }
+    ]
+  },
+  "safety_notes": [
+    "No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.",
+    "The real training path uses only generated finite binary feature tables. It does not use unsafe prompts, user data, external APIs, adapters, gated weights, or large persistent artifacts."
+  ],
+  "tests_passed": true,
+  "wall_clock_seconds": 3.049715
+}

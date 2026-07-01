@@ -1,0 +1,1249 @@
+{
+  "accepted": true,
+  "baselines": {
+    "declared_controls": [
+      "baseline_or_reference_check",
+      "negative_control_where_applicable",
+      "shape_dtype_or_exact_value_check",
+      "synthetic_colored_shape_counterfactual_schema",
+      "synthetic_clothing_garment_color_style_schema",
+      "clothing_text_prior_corruption_control",
+      "clothing_random_label_control",
+      "text_only_prior_failure_baseline",
+      "image_only_grounding_baseline",
+      "object_region_patch",
+      "background_region_patch_control",
+      "same_size_random_region_patch_control",
+      "non_overlapping_random_region_patch_control",
+      "pinned_real_clip_rendered_shape_retrieval",
+      "pinned_real_clip_object_region_counterfactual_patch",
+      "pinned_real_clip_hidden_visual_token_activation_patch",
+      "real_clip_hidden_background_token_activation_patch_control",
+      "real_clip_hidden_same_size_random_token_activation_patch_control",
+      "real_clip_full_visual_sequence_activation_patch_control",
+      "real_clip_local_snapshot_load_no_remote_conversion_thread",
+      "pinned_real_siglip_safetensors_rendered_shape_retrieval",
+      "pinned_real_siglip_object_region_counterfactual_patch",
+      "pinned_real_siglip_hidden_visual_token_activation_patch",
+      "real_siglip_hidden_background_token_activation_patch_control",
+      "real_siglip_hidden_same_size_random_token_activation_patch_control",
+      "real_siglip_full_visual_sequence_activation_patch_control",
+      "pinned_real_qwen25_vl_rendered_shape_generation",
+      "qwen25_vl_red_square_blue_circle_counterfactual_control"
+    ],
+    "expected_metrics": {
+      "accepted": true,
+      "joint_beats_text_only": true,
+      "max_allowed_gpu_gb": 24,
+      "object_beats_background": true,
+      "object_beats_random": true,
+      "object_patch_flips_answer": true,
+      "real_clip_activation_patch_background_preserves_answer": true,
+      "real_clip_activation_patch_full_sequence_flips_answer": true,
+      "real_clip_activation_patch_full_sequence_matches_corrupt": true,
+      "real_clip_activation_patch_full_sequence_max_abs_margin_error_max": 0.001,
+      "real_clip_activation_patch_hook_point": "vision_model.embeddings",
+      "real_clip_activation_patch_min_object_gap_over_background_min": 4.0,
+      "real_clip_activation_patch_min_object_gap_over_random_min": 4.0,
+      "real_clip_activation_patch_object_flips_answer": true,
+      "real_clip_activation_patch_object_token_count": 9,
+      "real_clip_activation_patch_random_control_overlaps_object": false,
+      "real_clip_activation_patch_random_control_same_size": true,
+      "real_clip_activation_patch_random_preserves_answer": true,
+      "real_clip_activation_patch_random_token_count": 9,
+      "real_clip_background_patch_preserves_answer": true,
+      "real_clip_image_to_text_accuracy": 1.0,
+      "real_clip_mean_positive_margin_min": 2.0,
+      "real_clip_object_beats_background": true,
+      "real_clip_object_beats_random": true,
+      "real_clip_object_patch_flips_answer": true,
+      "real_clip_random_patch_overlap_area": 0,
+      "real_clip_random_patch_overlaps_object": false,
+      "real_clip_random_patch_same_size_as_object": true,
+      "real_clip_rendered_shape_preflight_passed": true,
+      "real_clip_text_to_image_accuracy": 1.0,
+      "real_clip_visual_token_activation_patching_preflight_passed": true,
+      "real_qwen25_vl_accuracy": 1.0,
+      "real_qwen25_vl_expected_answers": [
+        "red square",
+        "blue circle"
+      ],
+      "real_qwen25_vl_generation_preflight_passed": true,
+      "real_qwen25_vl_peak_vram_gb_max": 12.0,
+      "real_siglip_activation_patch_background_preserves_answer": true,
+      "real_siglip_activation_patch_full_sequence_flips_answer": true,
+      "real_siglip_activation_patch_full_sequence_matches_corrupt": true,
+      "real_siglip_activation_patch_full_sequence_max_abs_margin_error_max": 0.001,
+      "real_siglip_activation_patch_hook_point": "vision_model.embeddings",
+      "real_siglip_activation_patch_min_object_gap_over_background_min": 10.0,
+      "real_siglip_activation_patch_min_object_gap_over_random_min": 10.0,
+      "real_siglip_activation_patch_object_flips_answer": true,
+      "real_siglip_activation_patch_object_token_count": 36,
+      "real_siglip_activation_patch_random_control_overlaps_object": false,
+      "real_siglip_activation_patch_random_control_same_size": true,
+      "real_siglip_activation_patch_random_preserves_answer": true,
+      "real_siglip_activation_patch_random_token_count": 36,
+      "real_siglip_background_patch_preserves_answer": true,
+      "real_siglip_image_to_text_accuracy": 1.0,
+      "real_siglip_mean_positive_margin_min": 0.5,
+      "real_siglip_object_beats_background": true,
+      "real_siglip_object_beats_random": true,
+      "real_siglip_object_patch_flips_answer": true,
+      "real_siglip_random_patch_overlap_area": 0,
+      "real_siglip_random_patch_overlaps_object": false,
+      "real_siglip_random_patch_same_size_as_object": true,
+      "real_siglip_rendered_shape_preflight_passed": true,
+      "real_siglip_text_to_image_accuracy": 1.0,
+      "real_siglip_visual_token_activation_patching_preflight_passed": true,
+      "synthetic_scene_count": 4,
+      "tests_passed": true,
+      "text_only_fails_image_questions": true,
+      "visual_sequence_patch_full_sequence_matches_corrupt": true,
+      "visual_sequence_patch_object_flips_answer": true,
+      "visual_sequence_patch_passed": true
+    }
+  },
+  "claim_scope": "GT-1 pinned CLIP and SigLIP rendered-shape retrieval plus real object-region counterfactual patching, real hidden visual-token activation patching at the vision patch-embedding output with object/background/same-size random-token/full-sequence controls, a pinned Qwen2.5-VL 3B rendered-shape generation check, and a controlled synthetic VLM object/color/clothing-style ladder with counterfactual labels, joint/image-only baselines over text-only priors, and object-region patching against background and same-size random controls.",
+  "datasets": [
+    {
+      "id": "12_1_clip_siglip_and_vlm_controls_toy_inputs",
+      "seed": 0,
+      "source": "generated"
+    },
+    {
+      "id": "course_generated_colored_shapes_v1",
+      "schema": "object_color_bbox_question_answer_counterfactual",
+      "seed": 0,
+      "source": "generated"
+    },
+    {
+      "id": "rendered_red_square_blue_circle_clip_preflight_v1",
+      "image_count": 2,
+      "seed": 0,
+      "source": "generated_pil_shapes",
+      "text_count": 2
+    }
+  ],
+  "date_run": "2026-06-30T14:08:31+00:00",
+  "evidence_level": "synthetic_vlm_ladder_plus_real_clip_siglip_hidden_token_patching_and_qwen25_vl_generation",
+  "git_commit": "f9f034bd",
+  "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+  "gt_tier": "GT-1",
+  "known_failures": [],
+  "metrics": {
+    "gpu_evidence": {
+      "category": "cuda_section_metric",
+      "placeholder_only": false,
+      "section_specific_metric_keys": [
+        "aligned",
+        "background_patch_effect",
+        "clothing_color_accuracy",
+        "clothing_garment_accuracy",
+        "clothing_predicts_factors",
+        "clothing_random_color_agreement",
+        "clothing_random_labels_distinct_from_text_prior",
+        "clothing_random_labels_distinct_from_true_labels",
+        "clothing_rejects_random_labels",
+        "clothing_rejects_text_prior",
+        "clothing_scene_count",
+        "clothing_style_accuracy",
+        "clothing_text_prior_color_agreement",
+        "image_only_accuracy",
+        "image_to_text_accuracy",
+        "joint_accuracy",
+        "joint_beats_text_only",
+        "localized",
+        "mean_positive_margin",
+        "object_beats_background",
+        "object_beats_random",
+        "object_patch_effect",
+        "object_patch_flips_answer",
+        "random_patch_effect",
+        "random_patch_same_size",
+        "real_clip_activation_patch_background_preserves_answer",
+        "real_clip_activation_patch_full_sequence_flips_answer",
+        "real_clip_activation_patch_full_sequence_matches_corrupt",
+        "real_clip_activation_patch_full_sequence_max_abs_margin_error",
+        "real_clip_activation_patch_hook_point",
+        "real_clip_activation_patch_min_object_gap_over_background",
+        "real_clip_activation_patch_min_object_gap_over_random",
+        "real_clip_activation_patch_object_flips_answer",
+        "real_clip_activation_patch_object_token_count",
+        "real_clip_activation_patch_peak_vram_gb",
+        "real_clip_activation_patch_preflight",
+        "real_clip_activation_patch_random_control_overlaps_object",
+        "real_clip_activation_patch_random_control_same_size",
+        "real_clip_activation_patch_random_preserves_answer",
+        "real_clip_activation_patch_random_token_count",
+        "real_clip_background_patch_preserves_answer",
+        "real_clip_image_to_text_accuracy",
+        "real_clip_mean_positive_margin",
+        "real_clip_object_beats_background",
+        "real_clip_object_beats_random",
+        "real_clip_object_patch_flips_answer",
+        "real_clip_peak_vram_gb",
+        "real_clip_preflight",
+        "real_clip_random_patch_overlap_area",
+        "real_clip_random_patch_overlaps_object",
+        "real_clip_random_patch_preserves_answer",
+        "real_clip_random_patch_same_size_as_object",
+        "real_clip_rendered_shape_preflight_passed",
+        "real_clip_text_to_image_accuracy",
+        "real_clip_visual_token_activation_patching_preflight_passed",
+        "real_qwen25_vl_accuracy",
+        "real_qwen25_vl_answers",
+        "real_qwen25_vl_expected_answers",
+        "real_qwen25_vl_generation_preflight_passed",
+        "real_qwen25_vl_peak_vram_gb",
+        "real_qwen25_vl_preflight",
+        "real_siglip_activation_patch_background_preserves_answer",
+        "real_siglip_activation_patch_full_sequence_flips_answer",
+        "real_siglip_activation_patch_full_sequence_matches_corrupt",
+        "real_siglip_activation_patch_full_sequence_max_abs_margin_error",
+        "real_siglip_activation_patch_hook_point",
+        "real_siglip_activation_patch_min_object_gap_over_background",
+        "real_siglip_activation_patch_min_object_gap_over_random",
+        "real_siglip_activation_patch_object_flips_answer",
+        "real_siglip_activation_patch_object_token_count",
+        "real_siglip_activation_patch_peak_vram_gb",
+        "real_siglip_activation_patch_preflight",
+        "real_siglip_activation_patch_random_control_overlaps_object",
+        "real_siglip_activation_patch_random_control_same_size",
+        "real_siglip_activation_patch_random_preserves_answer",
+        "real_siglip_activation_patch_random_token_count",
+        "real_siglip_background_patch_preserves_answer",
+        "real_siglip_image_to_text_accuracy",
+        "real_siglip_mean_positive_margin",
+        "real_siglip_object_beats_background",
+        "real_siglip_object_beats_random",
+        "real_siglip_object_patch_flips_answer",
+        "real_siglip_peak_vram_gb",
+        "real_siglip_preflight",
+        "real_siglip_random_patch_overlap_area",
+        "real_siglip_random_patch_overlaps_object",
+        "real_siglip_random_patch_preserves_answer",
+        "real_siglip_random_patch_same_size_as_object",
+        "real_siglip_rendered_shape_preflight_passed",
+        "real_siglip_text_to_image_accuracy",
+        "real_siglip_visual_token_activation_patching_preflight_passed",
+        "synthetic_scene_count",
+        "text_only_accuracy",
+        "text_only_fails_image_questions",
+        "text_to_image_accuracy",
+        "top_token_mass",
+        "visual_sequence_patch_full_sequence_matches_corrupt",
+        "visual_sequence_patch_object_flips_answer",
+        "visual_sequence_patch_passed"
+      ],
+      "uses_cuda": true
+    },
+    "gpu_test": {
+      "aligned": true,
+      "background_patch_effect": 0.0,
+      "clothing_color_accuracy": 1.0,
+      "clothing_garment_accuracy": 1.0,
+      "clothing_predicts_factors": true,
+      "clothing_random_color_agreement": 0.5,
+      "clothing_random_labels_distinct_from_text_prior": true,
+      "clothing_random_labels_distinct_from_true_labels": true,
+      "clothing_rejects_random_labels": true,
+      "clothing_rejects_text_prior": true,
+      "clothing_scene_count": 8,
+      "clothing_style_accuracy": 1.0,
+      "clothing_text_prior_color_agreement": 0.0,
+      "cuda_available": true,
+      "cuda_version": "13.2",
+      "device": "NVIDIA GeForce RTX 5090 Laptop GPU",
+      "full_path": "Pinned CLIP, SigLIP, and Qwen2.5-VL controls pass on rendered shape retrieval, object-region patching, hidden visual-token and full visual-sequence activation patching against background and same-size random-token controls, grounding, and generation evidence, plus controlled clothing factor geometry.",
+      "gpu_total_memory_gb": 23.45965576171875,
+      "image_only_accuracy": 1.0,
+      "image_to_text_accuracy": 1.0,
+      "joint_accuracy": 1.0,
+      "joint_beats_text_only": true,
+      "localized": true,
+      "mean_positive_margin": 5.0,
+      "object_beats_background": true,
+      "object_beats_random": true,
+      "object_patch_effect": 9.0,
+      "object_patch_flips_answer": true,
+      "peak_vram_gb": 7.081995487213135,
+      "random_patch_effect": 0.0,
+      "random_patch_same_size": true,
+      "real_clip_activation_patch_background_preserves_answer": true,
+      "real_clip_activation_patch_full_sequence_flips_answer": true,
+      "real_clip_activation_patch_full_sequence_matches_corrupt": true,
+      "real_clip_activation_patch_full_sequence_max_abs_margin_error": 0.0,
+      "real_clip_activation_patch_hook_point": "vision_model.embeddings",
+      "real_clip_activation_patch_min_object_gap_over_background": 14.93039321899414,
+      "real_clip_activation_patch_min_object_gap_over_random": 14.93039321899414,
+      "real_clip_activation_patch_object_flips_answer": true,
+      "real_clip_activation_patch_object_token_count": 9,
+      "real_clip_activation_patch_peak_vram_gb": 0.6413159370422363,
+      "real_clip_activation_patch_preflight": {
+        "background_patch_effects": [
+          0.0,
+          0.0
+        ],
+        "background_patch_logits": [
+          [
+            35.05231857299805,
+            28.002155303955078
+          ],
+          [
+            28.902233123779297,
+            36.78246307373047
+          ]
+        ],
+        "background_patch_margins": [
+          7.050163269042969,
+          7.880229949951172
+        ],
+        "background_patch_preserves_answer": true,
+        "background_token_count": 4,
+        "background_token_indices": [
+          1,
+          2,
+          8,
+          9
+        ],
+        "claim_scope": "pinned_real_contrastive_vlm_visual_token_activation_patching",
+        "clean_logits": [
+          [
+            35.05231857299805,
+            28.002155303955078
+          ],
+          [
+            28.902233123779297,
+            36.78246307373047
+          ]
+        ],
+        "clean_margins": [
+          7.050163269042969,
+          7.880229949951172
+        ],
+        "corrupt_logits": [
+          [
+            28.902233123779297,
+            36.78246307373047
+          ],
+          [
+            35.05231857299805,
+            28.002155303955078
+          ]
+        ],
+        "corrupt_margins": [
+          -7.880229949951172,
+          -7.050163269042969
+        ],
+        "cuda_available": true,
+        "full_sequence_patch_effects": [
+          14.93039321899414,
+          14.93039321899414
+        ],
+        "full_sequence_patch_flips_answer": true,
+        "full_sequence_patch_logits": [
+          [
+            28.902233123779297,
+            36.78246307373047
+          ],
+          [
+            35.05231857299805,
+            28.002155303955078
+          ]
+        ],
+        "full_sequence_patch_margins": [
+          -7.880229949951172,
+          -7.050163269042969
+        ],
+        "full_sequence_patch_matches_corrupt": true,
+        "full_sequence_patch_max_abs_margin_error": 0.0,
+        "full_sequence_token_count": 49,
+        "has_cls_token": true,
+        "hook_point": "vision_model.embeddings",
+        "local_snapshot": "/home/bitwise/.cache/huggingface/hub/models--openai--clip-vit-base-patch32/snapshots/3d74acf9a28c67741b2f4f2ea7635f0aaf6f0268",
+        "min_object_gap_over_background": 14.93039321899414,
+        "min_object_gap_over_random": 14.93039321899414,
+        "model_id": "openai/clip-vit-base-patch32",
+        "num_visual_tokens": 50,
+        "object_beats_background": true,
+        "object_beats_random": true,
+        "object_patch_effects": [
+          14.93039321899414,
+          14.93039321899414
+        ],
+        "object_patch_flips_answer": true,
+        "object_patch_logits": [
+          [
+            28.902233123779297,
+            36.78246307373047
+          ],
+          [
+            35.05231857299805,
+            28.002155303955078
+          ]
+        ],
+        "object_patch_margins": [
+          -7.880229949951172,
+          -7.050163269042969
+        ],
+        "object_token_count": 9,
+        "object_token_indices": [
+          17,
+          18,
+          19,
+          24,
+          25,
+          26,
+          31,
+          32,
+          33
+        ],
+        "passes_activation_patching_controls": true,
+        "patch_size": 32,
+        "peak_vram_gb": 0.6413159370422363,
+        "preflight_passed": true,
+        "random_control_overlaps_object": false,
+        "random_control_same_size": true,
+        "random_patch_effects": [
+          0.0,
+          0.0
+        ],
+        "random_patch_logits": [
+          [
+            35.05231857299805,
+            28.002155303955078
+          ],
+          [
+            28.902233123779297,
+            36.78246307373047
+          ]
+        ],
+        "random_patch_margins": [
+          7.050163269042969,
+          7.880229949951172
+        ],
+        "random_patch_preserves_answer": true,
+        "random_token_count": 9,
+        "random_token_indices": [
+          13,
+          39,
+          45,
+          11,
+          12,
+          42,
+          21,
+          29,
+          47
+        ],
+        "revision": "3d74acf9a28c67741b2f4f2ea7635f0aaf6f0268",
+        "within_vram_budget": true
+      },
+      "real_clip_activation_patch_random_control_overlaps_object": false,
+      "real_clip_activation_patch_random_control_same_size": true,
+      "real_clip_activation_patch_random_preserves_answer": true,
+      "real_clip_activation_patch_random_token_count": 9,
+      "real_clip_background_patch_preserves_answer": true,
+      "real_clip_image_to_text_accuracy": 1.0,
+      "real_clip_mean_positive_margin": 7.465198516845703,
+      "real_clip_object_beats_background": true,
+      "real_clip_object_beats_random": true,
+      "real_clip_object_patch_flips_answer": true,
+      "real_clip_peak_vram_gb": 0.6518454551696777,
+      "real_clip_preflight": {
+        "aligned": true,
+        "background_patch_bbox": [
+          0,
+          0,
+          40,
+          40
+        ],
+        "background_patch_preserves_answer": true,
+        "claim_scope": "pinned_real_clip_rendered_shape_retrieval_and_region_patching",
+        "cuda_available": true,
+        "image_count": 2,
+        "image_to_text_accuracy": 1.0,
+        "local_snapshot": "/home/bitwise/.cache/huggingface/hub/models--openai--clip-vit-base-patch32/snapshots/3d74acf9a28c67741b2f4f2ea7635f0aaf6f0268",
+        "logits": [
+          [
+            35.05232620239258,
+            28.00216293334961
+          ],
+          [
+            28.90222930908203,
+            36.78246307373047
+          ]
+        ],
+        "mean_positive_margin": 7.465198516845703,
+        "model_id": "openai/clip-vit-base-patch32",
+        "object_beats_background": true,
+        "object_beats_random": true,
+        "object_patch_bbox": [
+          76,
+          76,
+          148,
+          148
+        ],
+        "object_patch_flips_answer": true,
+        "patched_image_count": 6,
+        "peak_vram_gb": 0.6518454551696777,
+        "preflight_passed": true,
+        "random_patch_bbox": [
+          0,
+          0,
+          72,
+          72
+        ],
+        "random_patch_overlap_area": 0,
+        "random_patch_overlaps_object": false,
+        "random_patch_preserves_answer": true,
+        "random_patch_same_size_as_object": true,
+        "random_patch_seed": 0,
+        "region_patch": {
+          "background_patch_effects": [
+            0.0,
+            0.0
+          ],
+          "background_patch_margins": [
+            7.050163269042969,
+            7.8802337646484375
+          ],
+          "background_patch_preserves_answer": true,
+          "clean_margins": [
+            7.050163269042969,
+            7.8802337646484375
+          ],
+          "min_object_gap_over_background": 13.12605094909668,
+          "min_object_gap_over_random": 13.12605094909668,
+          "object_beats_background": true,
+          "object_beats_random": true,
+          "object_patch_effects": [
+            13.12605094909668,
+            13.478967666625977
+          ],
+          "object_patch_flips_answer": true,
+          "object_patch_margins": [
+            -6.075887680053711,
+            -5.598733901977539
+          ],
+          "random_patch_effects": [
+            0.0,
+            0.0
+          ],
+          "random_patch_margins": [
+            7.050163269042969,
+            7.8802337646484375
+          ],
+          "random_patch_preserves_answer": true
+        },
+        "revision": "3d74acf9a28c67741b2f4f2ea7635f0aaf6f0268",
+        "text_count": 2,
+        "text_to_image_accuracy": 1.0,
+        "within_vram_budget": true
+      },
+      "real_clip_random_patch_overlap_area": 0,
+      "real_clip_random_patch_overlaps_object": false,
+      "real_clip_random_patch_preserves_answer": true,
+      "real_clip_random_patch_same_size_as_object": true,
+      "real_clip_rendered_shape_preflight_passed": true,
+      "real_clip_text_to_image_accuracy": 1.0,
+      "real_clip_visual_token_activation_patching_preflight_passed": true,
+      "real_qwen25_vl_accuracy": 1.0,
+      "real_qwen25_vl_answers": [
+        "red square",
+        "blue circle"
+      ],
+      "real_qwen25_vl_expected_answers": [
+        "red square",
+        "blue circle"
+      ],
+      "real_qwen25_vl_generation_preflight_passed": true,
+      "real_qwen25_vl_peak_vram_gb": 7.081995487213135,
+      "real_qwen25_vl_preflight": {
+        "accuracy": 1.0,
+        "answers": [
+          "red square",
+          "blue circle"
+        ],
+        "claim_scope": "pinned_real_qwen25_vl_rendered_shape_generation_preflight",
+        "cuda_available": true,
+        "expected_answers": [
+          "red square",
+          "blue circle"
+        ],
+        "image_count": 2,
+        "model_id": "Qwen/Qwen2.5-VL-3B-Instruct",
+        "peak_vram_gb": 7.081995487213135,
+        "per_example_correct": [
+          true,
+          true
+        ],
+        "preflight_passed": true,
+        "prompt_count": 2,
+        "revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+        "within_vram_budget": true
+      },
+      "real_siglip_activation_patch_background_preserves_answer": true,
+      "real_siglip_activation_patch_full_sequence_flips_answer": true,
+      "real_siglip_activation_patch_full_sequence_matches_corrupt": true,
+      "real_siglip_activation_patch_full_sequence_max_abs_margin_error": 0.0,
+      "real_siglip_activation_patch_hook_point": "vision_model.embeddings",
+      "real_siglip_activation_patch_min_object_gap_over_background": 31.4453125,
+      "real_siglip_activation_patch_min_object_gap_over_random": 31.4453125,
+      "real_siglip_activation_patch_object_flips_answer": true,
+      "real_siglip_activation_patch_object_token_count": 36,
+      "real_siglip_activation_patch_peak_vram_gb": 0.46553611755371094,
+      "real_siglip_activation_patch_preflight": {
+        "background_patch_effects": [
+          0.0,
+          0.0
+        ],
+        "background_patch_logits": [
+          [
+            4.7421875,
+            -16.046875
+          ],
+          [
+            -9.875,
+            0.78125
+          ]
+        ],
+        "background_patch_margins": [
+          20.7890625,
+          10.65625
+        ],
+        "background_patch_preserves_answer": true,
+        "background_token_count": 9,
+        "background_token_indices": [
+          0,
+          1,
+          2,
+          14,
+          15,
+          16,
+          28,
+          29,
+          30
+        ],
+        "claim_scope": "pinned_real_contrastive_vlm_visual_token_activation_patching",
+        "clean_logits": [
+          [
+            4.7421875,
+            -16.046875
+          ],
+          [
+            -9.875,
+            0.78125
+          ]
+        ],
+        "clean_margins": [
+          20.7890625,
+          10.65625
+        ],
+        "corrupt_logits": [
+          [
+            -9.875,
+            0.78125
+          ],
+          [
+            4.7421875,
+            -16.046875
+          ]
+        ],
+        "corrupt_margins": [
+          -10.65625,
+          -20.7890625
+        ],
+        "cuda_available": true,
+        "full_sequence_patch_effects": [
+          31.4453125,
+          31.4453125
+        ],
+        "full_sequence_patch_flips_answer": true,
+        "full_sequence_patch_logits": [
+          [
+            -9.875,
+            0.78125
+          ],
+          [
+            4.7421875,
+            -16.046875
+          ]
+        ],
+        "full_sequence_patch_margins": [
+          -10.65625,
+          -20.7890625
+        ],
+        "full_sequence_patch_matches_corrupt": true,
+        "full_sequence_patch_max_abs_margin_error": 0.0,
+        "full_sequence_token_count": 196,
+        "has_cls_token": false,
+        "hook_point": "vision_model.embeddings",
+        "local_snapshot": "/home/bitwise/.cache/huggingface/hub/models--google--siglip-base-patch16-224/snapshots/7fd15f0689c79d79e38b1c2e2e2370a7bf2761ed",
+        "min_object_gap_over_background": 31.4453125,
+        "min_object_gap_over_random": 31.4453125,
+        "model_id": "google/siglip-base-patch16-224",
+        "num_visual_tokens": 196,
+        "object_beats_background": true,
+        "object_beats_random": true,
+        "object_patch_effects": [
+          31.4453125,
+          31.4453125
+        ],
+        "object_patch_flips_answer": true,
+        "object_patch_logits": [
+          [
+            -9.875,
+            0.78125
+          ],
+          [
+            4.7421875,
+            -16.046875
+          ]
+        ],
+        "object_patch_margins": [
+          -10.65625,
+          -20.7890625
+        ],
+        "object_token_count": 36,
+        "object_token_indices": [
+          60,
+          61,
+          62,
+          63,
+          64,
+          65,
+          74,
+          75,
+          76,
+          77,
+          78,
+          79,
+          88,
+          89,
+          90,
+          91,
+          92,
+          93,
+          102,
+          103,
+          104,
+          105,
+          106,
+          107,
+          116,
+          117,
+          118,
+          119,
+          120,
+          121,
+          130,
+          131,
+          132,
+          133,
+          134,
+          135
+        ],
+        "passes_activation_patching_controls": true,
+        "patch_size": 16,
+        "peak_vram_gb": 0.46553611755371094,
+        "preflight_passed": true,
+        "random_control_overlaps_object": false,
+        "random_control_same_size": true,
+        "random_patch_effects": [
+          0.0,
+          0.0
+        ],
+        "random_patch_logits": [
+          [
+            4.7421875,
+            -16.046875
+          ],
+          [
+            -9.875,
+            0.78125
+          ]
+        ],
+        "random_patch_margins": [
+          20.7890625,
+          10.65625
+        ],
+        "random_patch_preserves_answer": true,
+        "random_token_count": 36,
+        "random_token_indices": [
+          99,
+          49,
+          98,
+          112,
+          95,
+          115,
+          138,
+          83,
+          34,
+          127,
+          54,
+          182,
+          21,
+          31,
+          4,
+          48,
+          187,
+          42,
+          45,
+          20,
+          167,
+          185,
+          174,
+          96,
+          155,
+          165,
+          13,
+          161,
+          181,
+          168,
+          124,
+          52,
+          11,
+          38,
+          143,
+          37
+        ],
+        "revision": "7fd15f0689c79d79e38b1c2e2e2370a7bf2761ed",
+        "within_vram_budget": true
+      },
+      "real_siglip_activation_patch_random_control_overlaps_object": false,
+      "real_siglip_activation_patch_random_control_same_size": true,
+      "real_siglip_activation_patch_random_preserves_answer": true,
+      "real_siglip_activation_patch_random_token_count": 36,
+      "real_siglip_background_patch_preserves_answer": true,
+      "real_siglip_image_to_text_accuracy": 1.0,
+      "real_siglip_mean_positive_margin": 15.72265625,
+      "real_siglip_object_beats_background": true,
+      "real_siglip_object_beats_random": true,
+      "real_siglip_object_patch_flips_answer": true,
+      "real_siglip_peak_vram_gb": 0.4868440628051758,
+      "real_siglip_preflight": {
+        "aligned": true,
+        "background_patch_bbox": [
+          0,
+          0,
+          40,
+          40
+        ],
+        "background_patch_preserves_answer": true,
+        "claim_scope": "pinned_real_siglip_rendered_shape_retrieval_and_region_patching",
+        "cuda_available": true,
+        "image_count": 2,
+        "image_to_text_accuracy": 1.0,
+        "local_snapshot": "/home/bitwise/.cache/huggingface/hub/models--google--siglip-base-patch16-224/snapshots/7fd15f0689c79d79e38b1c2e2e2370a7bf2761ed",
+        "logits": [
+          [
+            4.7421875,
+            -16.046875
+          ],
+          [
+            -9.875,
+            0.78125
+          ]
+        ],
+        "mean_positive_margin": 15.72265625,
+        "model_id": "google/siglip-base-patch16-224",
+        "object_beats_background": true,
+        "object_beats_random": true,
+        "object_patch_bbox": [
+          76,
+          76,
+          148,
+          148
+        ],
+        "object_patch_flips_answer": true,
+        "patched_image_count": 6,
+        "peak_vram_gb": 0.4868440628051758,
+        "preflight_passed": true,
+        "random_patch_bbox": [
+          0,
+          0,
+          72,
+          72
+        ],
+        "random_patch_overlap_area": 0,
+        "random_patch_overlaps_object": false,
+        "random_patch_preserves_answer": true,
+        "random_patch_same_size_as_object": true,
+        "random_patch_seed": 0,
+        "region_patch": {
+          "background_patch_effects": [
+            0.0,
+            0.0
+          ],
+          "background_patch_margins": [
+            20.7890625,
+            10.65625
+          ],
+          "background_patch_preserves_answer": true,
+          "clean_margins": [
+            20.7890625,
+            10.65625
+          ],
+          "min_object_gap_over_background": 27.8359375,
+          "min_object_gap_over_random": 27.8359375,
+          "object_beats_background": true,
+          "object_beats_random": true,
+          "object_patch_effects": [
+            27.8359375,
+            28.4453125
+          ],
+          "object_patch_flips_answer": true,
+          "object_patch_margins": [
+            -7.046875,
+            -17.7890625
+          ],
+          "random_patch_effects": [
+            0.0,
+            0.0
+          ],
+          "random_patch_margins": [
+            20.7890625,
+            10.65625
+          ],
+          "random_patch_preserves_answer": true
+        },
+        "revision": "7fd15f0689c79d79e38b1c2e2e2370a7bf2761ed",
+        "text_count": 2,
+        "text_to_image_accuracy": 1.0,
+        "within_vram_budget": true
+      },
+      "real_siglip_random_patch_overlap_area": 0,
+      "real_siglip_random_patch_overlaps_object": false,
+      "real_siglip_random_patch_preserves_answer": true,
+      "real_siglip_random_patch_same_size_as_object": true,
+      "real_siglip_rendered_shape_preflight_passed": true,
+      "real_siglip_text_to_image_accuracy": 1.0,
+      "real_siglip_visual_token_activation_patching_preflight_passed": true,
+      "synthetic_scene_count": 4,
+      "text_only_accuracy": 0.5,
+      "text_only_fails_image_questions": true,
+      "text_to_image_accuracy": 1.0,
+      "top_token_mass": 1.0,
+      "torch_version": "2.12.1+cu132",
+      "visual_sequence_patch_full_sequence_matches_corrupt": true,
+      "visual_sequence_patch_object_flips_answer": true,
+      "visual_sequence_patch_passed": true,
+      "within_vram_budget": true
+    },
+    "notebook_contract": {
+      "arbitration": {
+        "text_prior_choice_score": 0.20000000298023224,
+        "trusts_visual_evidence": true,
+        "visual_choice_score": 0.800000011920929,
+        "visual_margin": 0.6000000089406967
+      },
+      "clothing_geometry": {
+        "color_accuracy": 1.0,
+        "first_scene": {
+          "answer": "red",
+          "bbox": [
+            0.08,
+            0.12,
+            0.38,
+            0.5
+          ],
+          "color": "red",
+          "counterfactual_answer": "blue",
+          "garment_type": "shirt",
+          "image_id": "heldout_formal_red_shirt",
+          "question": "What color is the formal shirt?",
+          "split": "heldout",
+          "spurious_text": "blue",
+          "style": "formal"
+        },
+        "garment_accuracy": 1.0,
+        "has_spurious_text_control": true,
+        "predicts_clothing_factors": true,
+        "random_color_agreement": 0.5,
+        "random_color_labels": [
+          0,
+          1,
+          1,
+          0
+        ],
+        "random_label_seed": 0,
+        "random_labels_distinct_from_text_prior": true,
+        "random_labels_distinct_from_true_labels": true,
+        "rejects_random_labels": true,
+        "rejects_text_prior": true,
+        "scene_count": 8,
+        "style_accuracy": 1.0,
+        "text_prior_color_agreement": 0.0,
+        "text_prior_color_labels": [
+          1,
+          0,
+          1,
+          0
+        ]
+      },
+      "contrastive": {
+        "aligned": true,
+        "image_to_text_accuracy": 1.0,
+        "mean_positive_margin": 5.0,
+        "text_to_image_accuracy": 1.0
+      },
+      "controlled_baselines": {
+        "image_only_accuracy": 1.0,
+        "joint_accuracy": 1.0,
+        "joint_beats_text_only": true,
+        "text_only_accuracy": 0.5,
+        "text_only_fails_image_questions": true
+      },
+      "hallucination": {
+        "flags_hallucination": true,
+        "object_score": 0.9,
+        "text_prior_gap": 0.6000000000000001,
+        "text_prior_score": 0.8,
+        "visual_evidence_score": 0.2
+      },
+      "siglip": {
+        "loss": 0.03336863964796066
+      },
+      "synthetic_scene_schema": {
+        "first_scene": {
+          "answer": "red",
+          "bbox": [
+            0.1,
+            0.2,
+            0.35,
+            0.45
+          ],
+          "color": "red",
+          "counterfactual_answer": "blue",
+          "image_id": "train_cube_red",
+          "question": "What color is the cube?",
+          "shape": "cube",
+          "split": "train",
+          "spurious_text": "blue"
+        },
+        "has_counterfactual_answers": true,
+        "has_spurious_text_control": true,
+        "num_scenes": 4
+      },
+      "token_attribution": {
+        "localized": true,
+        "token_scores": [
+          0.0,
+          3.0,
+          2.0,
+          0.0
+        ],
+        "top_token_indices": [
+          1,
+          2
+        ],
+        "top_token_mass": 1.0
+      },
+      "visual_region_patch": {
+        "background_patch_effect": 0.0,
+        "background_patch_margin": 4.5,
+        "background_token_count": 1,
+        "clean_margin": 4.5,
+        "flips_answer": true,
+        "object_beats_background": true,
+        "object_beats_random": true,
+        "object_patch_effect": 9.0,
+        "object_patch_margin": -4.5,
+        "object_token_count": 2,
+        "random_control_same_size": true,
+        "random_patch_effect": 0.0,
+        "random_patch_margin": 4.5,
+        "random_token_count": 2
+      },
+      "visual_sequence_patch": {
+        "background_patch_effects": [
+          0.20000004768371582,
+          0.20000004768371582
+        ],
+        "background_patch_margins": [
+          3.799999952316284,
+          3.799999952316284
+        ],
+        "background_patch_preserves_answer": true,
+        "clean_margins": [
+          4.0,
+          4.0
+        ],
+        "corrupt_margins": [
+          -4.0,
+          -4.0
+        ],
+        "full_sequence_patch_effects": [
+          8.0,
+          8.0
+        ],
+        "full_sequence_patch_flips_answer": true,
+        "full_sequence_patch_margins": [
+          -4.0,
+          -4.0
+        ],
+        "full_sequence_patch_matches_corrupt": true,
+        "full_sequence_patch_max_abs_margin_error": 0.0,
+        "min_object_gap_over_background": 7.799999952316284,
+        "min_object_gap_over_random": 7.700000047683716,
+        "object_beats_background": true,
+        "object_beats_random": true,
+        "object_patch_effects": [
+          8.0,
+          8.0
+        ],
+        "object_patch_flips_answer": true,
+        "object_patch_margins": [
+          -4.0,
+          -4.0
+        ],
+        "passes_activation_patching_controls": true,
+        "random_patch_effects": [
+          0.2999999523162842,
+          0.2999999523162842
+        ],
+        "random_patch_margins": [
+          3.700000047683716,
+          3.700000047683716
+        ],
+        "random_patch_preserves_answer": true
+      }
+    }
+  },
+  "models": [
+    {
+      "gated": false,
+      "id": "toy_or_generated_inputs",
+      "precision": "float32",
+      "revision": "seed_0",
+      "source": "generated"
+    },
+    {
+      "claim_scope": "rendered_shape_retrieval_region_patching_and_hidden_visual_token_activation_patching",
+      "gated": false,
+      "id": "openai/clip-vit-base-patch32",
+      "precision": "float32",
+      "revision": "3d74acf9a28c67741b2f4f2ea7635f0aaf6f0268",
+      "source": "huggingface"
+    },
+    {
+      "claim_scope": "rendered_shape_retrieval_region_patching_and_hidden_visual_token_activation_patching",
+      "gated": false,
+      "id": "google/siglip-base-patch16-224",
+      "precision": "float16",
+      "revision": "7fd15f0689c79d79e38b1c2e2e2370a7bf2761ed",
+      "source": "huggingface"
+    },
+    {
+      "claim_scope": "rendered_shape_generation_preflight",
+      "gated": false,
+      "id": "Qwen/Qwen2.5-VL-3B-Instruct",
+      "precision": "bfloat16",
+      "revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+      "source": "huggingface"
+    }
+  ],
+  "negative_controls": {
+    "declared_controls": [
+      "negative_control_where_applicable",
+      "clothing_random_label_control",
+      "same_size_random_region_patch_control",
+      "non_overlapping_random_region_patch_control",
+      "real_clip_hidden_same_size_random_token_activation_patch_control",
+      "real_siglip_hidden_same_size_random_token_activation_patch_control"
+    ]
+  },
+  "notebook_id": "12_1_clip_siglip_and_vlm_controls",
+  "ood_tests": {
+    "declared": "required_where_applicable"
+  },
+  "peak_vram_gb": 7.081995,
+  "report_inputs": {
+    "schema_version": 1,
+    "algorithm": "sha256",
+    "combined_sha256": "5eb27278b5ca080fb37555773401c4c5a869d0e26d711b7bb1c6b14636766433",
+    "files": [
+      {
+        "path": "arena_ext/verification.py",
+        "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
+        "size_bytes": 9276
+      },
+      {
+        "path": "arena_ext/vlm_interpretability.py",
+        "sha256": "b84973d7e488e83eab49f0e9e495334331691da6ef06759c7e9d441435d0f8e7",
+        "size_bytes": 32189
+      },
+      {
+        "path": "chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls/12.1_CLIP_SigLIP_and_VLM_Controls_exercises.ipynb",
+        "sha256": "edf5509bf0164d6c22848bdc158516e4c356453c4998752507a466e4ce5b0f22",
+        "size_bytes": 23180
+      },
+      {
+        "path": "chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls/12.1_CLIP_SigLIP_and_VLM_Controls_solutions.ipynb",
+        "sha256": "ed05fac0021b09ac73f8eca227b4df6d7d130345c75e4aed956211c9728da562",
+        "size_bytes": 5942
+      },
+      {
+        "path": "chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls/README.md",
+        "sha256": "bd417213339992bf7c3e7442d7f2f01d2f5f79c1fd906b5c2d8058364ede4c38",
+        "size_bytes": 1572
+      },
+      {
+        "path": "chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls/artifacts.lock.yml",
+        "sha256": "9cbb05a7cf96ba979bf3f1897939793a7aeaad165e9c34a961e9ec8cf89137f6",
+        "size_bytes": 7621
+      },
+      {
+        "path": "chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls/expected_outputs/README.md",
+        "sha256": "cf17cae7cc3d7c08a328db8e3709d806ff8b57a2ec87cee738177c7de7dacf7a",
+        "size_bytes": 1783
+      },
+      {
+        "path": "chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls/expected_outputs/reference_metrics.json",
+        "sha256": "e6819568bef7241b1190514198676c466720e6de2a0e27e244d3af213b0e0a92",
+        "size_bytes": 3967
+      },
+      {
+        "path": "chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls/expected_outputs/smoke_test.json",
+        "sha256": "e263ded09cd8d5862560f37eff76a82fb83d69b2ae4159d2058fa688ee0cc01e",
+        "size_bytes": 299
+      },
+      {
+        "path": "chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls/solutions.py",
+        "sha256": "7d69458a311b39bda68827a0d220a4b3007beec66e28d83a1903e77bee9744cc",
+        "size_bytes": 51843
+      },
+      {
+        "path": "chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls/tests.py",
+        "sha256": "da0fbecaa543c1bdfa9daccc8f523bca56b9df90896b9a20d14e6f3c6000b349",
+        "size_bytes": 20836
+      },
+      {
+        "path": "chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls/utils.py",
+        "sha256": "9287687c1bc5bca4a8e13d004db3a89480d5e574d375fde17349d71e78beb8b2",
+        "size_bytes": 362
+      },
+      {
+        "path": "chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls/verification_report.schema.json",
+        "sha256": "ecd833883885077ad5d7a0e239d984d01462255e94266212cf195ab4d4e27b3d",
+        "size_bytes": 2669
+      },
+      {
+        "path": "chapter12_vlm_interpretability/instructions/pages/01_[12.1]_CLIP_SigLIP_and_VLM_Controls.md",
+        "sha256": "e1a99ce517011bac8f3f2dfe637604f71644d71748137476826fbb44456e257f",
+        "size_bytes": 45585
+      },
+      {
+        "path": "scripts/run_extension_verification_reports.py",
+        "sha256": "660040f459d07535deb9e0c34ffddb496c13b8770044ae380d3a8e45b0c8fb2b",
+        "size_bytes": 16080
+      }
+    ]
+  },
+  "safety_notes": [
+    "No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.",
+    "The real generative VLM path uses safe generated shape images only. The CLIP and SigLIP region-patching path uses deterministic rendered shape images with object, background, and same-size non-overlapping random-region patch controls. The hidden-token path patches real CLIP/SigLIP visual-token activations at `vision_model.embeddings` and requires object tokens to flip the contrastive answer while background, same-size random-token, and full visual-sequence controls behave as expected. The Qwen2.5-VL path verifies grounded generation on the same safe rendered objects."
+  ],
+  "tests_passed": true,
+  "wall_clock_seconds": 12.1616
+}

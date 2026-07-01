@@ -1,0 +1,10 @@
+{
+  "accepted": true,
+  "claim_scope": "Contract check; not a full real-model validation.",
+  "evidence_level": "notebook_contract",
+  "gt_tier": "GT-1",
+  "notebook_id": "8_2_attribution_patching_and_eap",
+  "section": "8.2",
+  "tests_passed": true,
+  "title": "Attribution Patching and EAP"
+}

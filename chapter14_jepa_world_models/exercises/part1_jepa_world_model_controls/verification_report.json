@@ -1,0 +1,456 @@
+{
+  "accepted": true,
+  "baselines": {
+    "declared_controls": [
+      "baseline_or_reference_check",
+      "negative_control_where_applicable",
+      "shape_dtype_or_exact_value_check",
+      "toy_target_embedding_prediction",
+      "toy_world_state_probe",
+      "toy_action_transition_consistency",
+      "toy_object_permanence_absent_control",
+      "pinned_vjepa2_vitl_safetensors_feature_extraction",
+      "deterministic_synthetic_video_control",
+      "same_object_vs_different_object_similarity_control",
+      "synthetic_late_occlusion_object_permanence_control",
+      "same_occluder_absent_object_negative_control",
+      "different_object_occlusion_negative_control",
+      "frozen_vjepa2_masked_latent_prediction_head",
+      "heldout_state_probe_shuffled_label_negative_control",
+      "action_conditioned_latent_rollout_head",
+      "copy_next_state_baseline",
+      "shuffled_action_negative_control",
+      "real_latent_occluded_vs_absent_object_permanence",
+      "causal_latent_token_patching_control",
+      "same_size_random_token_patch_negative_control"
+    ],
+    "expected_metrics": {
+      "accepted": true,
+      "jepa_predicts_target": true,
+      "max_allowed_gpu_gb": 24,
+      "tests_passed": true,
+      "transition_consistent": true,
+      "vjepa2_feature_shape": [
+        5,
+        144,
+        1024
+      ],
+      "vjepa2_feature_std_min": 0.1,
+      "vjepa2_occluded_vs_absent_gap_min": 0.2,
+      "vjepa2_occluded_vs_blue_gap_min": 0.03,
+      "vjepa2_peak_vram_gb_max": 4.0,
+      "vjepa2_preflight_passed": true,
+      "vjepa2_same_object_margin_min": 0.03,
+      "vjepa2_synthetic_occlusion_permanence_passed": true
+    }
+  },
+  "claim_scope": "GT-1 toy JEPA/world-model controls plus pinned V-JEPA 2 ViT-L frozen-latent world-model controls on deterministic generated videos. The real model path verifies finite non-collapsed video features, trains a masked latent predictor from occluded to visible states, probes held-out object state above a shuffled-label baseline, trains an action-conditioned latent rollout head that beats copy and shuffled-action baselines, tests occluded-vs-absent object permanence, and performs causal latent-token patching against same-size random-token patches. It does not fine-tune V-JEPA or claim a real-video benchmark replication.",
+  "datasets": [
+    {
+      "id": "14_1_jepa_and_world_model_controls_toy_inputs",
+      "seed": 0,
+      "source": "generated"
+    },
+    {
+      "frames_per_video": 8,
+      "id": "course_generated_synthetic_vjepa_videos_v1",
+      "input_size": "96x96",
+      "seed": 0,
+      "source": "generated_tensor_video",
+      "video_count": 5,
+      "video_kinds": [
+        "red_square",
+        "red_square_shifted",
+        "blue_circle",
+        "red_square_late_occluded",
+        "red_square_absent_occluder"
+      ]
+    }
+  ],
+  "date_run": "2026-06-30T14:11:31+00:00",
+  "evidence_level": "toy_world_model_controls_plus_real_vjepa2_frozen_latent_world_model_preflight",
+  "git_commit": "f9f034bd",
+  "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+  "gt_tier": "GT-1",
+  "known_failures": [],
+  "metrics": {
+    "gpu_evidence": {
+      "category": "cuda_section_metric",
+      "placeholder_only": false,
+      "section_specific_metric_keys": [
+        "causal_latent_patch_effect",
+        "causal_latent_patch_random_gap",
+        "causal_latent_patching_passed",
+        "causal_latent_random_patch_effect",
+        "jepa_predicts_target",
+        "latent_rollout_copy_baseline_loss",
+        "latent_rollout_final_loss",
+        "latent_rollout_passed",
+        "latent_rollout_shuffled_action_loss",
+        "masked_prediction_copy_baseline_loss",
+        "masked_prediction_final_loss",
+        "masked_prediction_loss_reduction",
+        "masked_prediction_passed",
+        "mean_cosine",
+        "position_probe_accuracy",
+        "prediction_mse",
+        "predicts_target",
+        "real_latent_object_permanence_passed",
+        "shuffled_action_baseline_failed",
+        "state_probe_accuracy",
+        "state_probe_beats_random_baseline",
+        "state_probe_knn_accuracy",
+        "state_probe_margin_over_random",
+        "state_probe_shuffled_knn_accuracy",
+        "transition_consistent",
+        "vjepa2_absent_occluder_cosine",
+        "vjepa2_different_object_cosine",
+        "vjepa2_feature_shape",
+        "vjepa2_feature_std",
+        "vjepa2_late_occluded_cosine",
+        "vjepa2_non_collapsed",
+        "vjepa2_occluded_vs_absent_gap",
+        "vjepa2_occluded_vs_blue_gap",
+        "vjepa2_peak_vram_gb",
+        "vjepa2_preflight",
+        "vjepa2_preflight_passed",
+        "vjepa2_same_object_beats_different_object",
+        "vjepa2_same_object_cosine",
+        "vjepa2_same_object_margin",
+        "vjepa2_synthetic_occlusion_permanence_passed",
+        "vjepa2_token_feature_shape",
+        "vjepa2_world_controls",
+        "vjepa2_world_controls_peak_vram_gb",
+        "vjepa2_world_feature_shape",
+        "vjepa2_world_model_controls_passed"
+      ],
+      "uses_cuda": true
+    },
+    "gpu_test": {
+      "causal_latent_patch_effect": 0.9999781847000122,
+      "causal_latent_patch_random_gap": 0.9999695393416914,
+      "causal_latent_patching_passed": true,
+      "causal_latent_random_patch_effect": 8.645358320791274e-06,
+      "cuda_available": true,
+      "cuda_version": "13.2",
+      "device": "NVIDIA GeForce RTX 5090 Laptop GPU",
+      "full_path": "Validated JEPA target prediction, transition consistency, pinned V-JEPA 2 ViT-L synthetic-video feature extraction, frozen-latent masked prediction, held-out state probes, action-conditioned rollout, object-permanence controls, and causal latent-token patching.",
+      "gpu_total_memory_gb": 23.45965576171875,
+      "jepa_predicts_target": true,
+      "latent_rollout_copy_baseline_loss": 3.573438880266622e-05,
+      "latent_rollout_final_loss": 1.4155679309624247e-05,
+      "latent_rollout_passed": true,
+      "latent_rollout_shuffled_action_loss": 3.5021439543925226e-05,
+      "masked_prediction_copy_baseline_loss": 7.017730240477249e-05,
+      "masked_prediction_final_loss": 1.8101461591868429e-06,
+      "masked_prediction_loss_reduction": 0.9991992501680198,
+      "masked_prediction_passed": true,
+      "mean_cosine": 1.0,
+      "peak_vram_gb": 0.7404966354370117,
+      "position_probe_accuracy": 1.0,
+      "prediction_mse": 0.0,
+      "predicts_target": true,
+      "real_latent_object_permanence_passed": true,
+      "shuffled_action_baseline_failed": true,
+      "state_probe_accuracy": 1.0,
+      "state_probe_beats_random_baseline": true,
+      "state_probe_knn_accuracy": 1.0,
+      "state_probe_margin_over_random": 0.5400000214576721,
+      "state_probe_shuffled_knn_accuracy": 0.4599999785423279,
+      "torch_version": "2.12.1+cu132",
+      "transition_consistent": true,
+      "vjepa2_absent_occluder_cosine": 0.7437694668769836,
+      "vjepa2_different_object_cosine": 0.9395451545715332,
+      "vjepa2_feature_shape": [
+        5,
+        144,
+        1024
+      ],
+      "vjepa2_feature_std": 2.623905658721924,
+      "vjepa2_late_occluded_cosine": 0.9667373299598694,
+      "vjepa2_non_collapsed": true,
+      "vjepa2_occluded_vs_absent_gap": 0.22296786308288574,
+      "vjepa2_occluded_vs_blue_gap": 0.048720359802246094,
+      "vjepa2_peak_vram_gb": 0.6926450729370117,
+      "vjepa2_preflight": {
+        "absent_occluder_cosine": 0.7437694668769836,
+        "claim_scope": "pinned_vjepa2_vitl_synthetic_video_feature_extraction_preflight",
+        "cuda_available": true,
+        "different_object_cosine": 0.9395451545715332,
+        "feature_shape": [
+          5,
+          144,
+          1024
+        ],
+        "feature_std": 2.623905658721924,
+        "finite_features": true,
+        "frames_per_video": 8,
+        "hidden_size": 1024,
+        "input_size": 96,
+        "late_occluded_cosine": 0.9667373299598694,
+        "local_snapshot": "/home/bitwise/.cache/huggingface/hub/models--facebook--vjepa2-vitl-fpc64-256/snapshots/b3c1679b7c34d3255ef3547f27c7b226aefab26f",
+        "model_id": "facebook/vjepa2-vitl-fpc64-256",
+        "occluded_vs_absent_gap": 0.22296786308288574,
+        "occluded_vs_blue_gap": 0.048720359802246094,
+        "peak_vram_gb": 0.6926450729370117,
+        "preflight_passed": true,
+        "revision": "b3c1679b7c34d3255ef3547f27c7b226aefab26f",
+        "same_object_beats_different_object": true,
+        "same_object_cosine": 0.9883682727813721,
+        "same_object_margin": 0.04882311820983887,
+        "synthetic_occlusion_permanence": {
+          "absent_mean": 0.7437694668769836,
+          "occluded_absent_gap": 0.22296786308288574,
+          "occluded_mean": 0.9667373299598694,
+          "preserves_occluded_object": true,
+          "visible_mean": 0.9883682727813721
+        },
+        "synthetic_occlusion_permanence_passed": true,
+        "tokens_per_video": 144,
+        "video_count": 5,
+        "video_kinds": [
+          "red_square",
+          "red_square_shifted",
+          "blue_circle",
+          "red_square_late_occluded",
+          "red_square_absent_occluder"
+        ],
+        "within_vram_budget": true
+      },
+      "vjepa2_preflight_passed": true,
+      "vjepa2_same_object_beats_different_object": true,
+      "vjepa2_same_object_cosine": 0.9883682727813721,
+      "vjepa2_same_object_margin": 0.04882311820983887,
+      "vjepa2_synthetic_occlusion_permanence_passed": true,
+      "vjepa2_token_feature_shape": [
+        200,
+        144,
+        1024
+      ],
+      "vjepa2_world_controls": {
+        "causal_latent_patching": {
+          "causal_patch_passes": true,
+          "object_patch_effect": 0.9999781847000122,
+          "patch_random_gap": 0.9999695393416914,
+          "random_patch_effect": 8.645358320791274e-06
+        },
+        "causal_latent_patching_passed": true,
+        "claim_scope": "pinned_vjepa2_vitl_frozen_latent_world_model_controls",
+        "collapse_diagnostics": {
+          "effective_rank": 1.8634834289550781,
+          "feature_std": 1.8870118856430054,
+          "finite_features": true,
+          "non_collapsed": true
+        },
+        "cuda_available": true,
+        "feature_shape": [
+          200,
+          1024
+        ],
+        "frames_per_video": 8,
+        "input_size": 96,
+        "latent_rollout": {
+          "beats_copy_baseline": true,
+          "copy_baseline_loss": 3.573438880266622e-05,
+          "rollout_loss": 1.4155679309624247e-05,
+          "rollout_passes": true,
+          "shuffled_action_fails": true,
+          "shuffled_action_loss": 3.5021439543925226e-05
+        },
+        "latent_rollout_copy_baseline_loss": 3.573438880266622e-05,
+        "latent_rollout_final_loss": 1.4155679309624247e-05,
+        "latent_rollout_initial_loss": 0.0023116017691791058,
+        "latent_rollout_passed": true,
+        "latent_rollout_shuffled_action_loss": 3.5021439543925226e-05,
+        "masked_prediction": {
+          "baseline_loss": 7.017730240477249e-05,
+          "beats_baseline": true,
+          "final_loss": 1.8101461591868429e-06,
+          "initial_loss": 0.0022605638951063156,
+          "loss_decreases": true,
+          "relative_reduction": 0.9991992501680198
+        },
+        "masked_prediction_copy_baseline_loss": 7.017730240477249e-05,
+        "masked_prediction_final_loss": 1.8101461591868429e-06,
+        "masked_prediction_loss_reduction": 0.9991992501680198,
+        "masked_prediction_passed": true,
+        "model_id": "facebook/vjepa2-vitl-fpc64-256",
+        "object_permanence": {
+          "absent_mean": 0.8809902667999268,
+          "occluded_absent_gap": 0.08124840259552002,
+          "occluded_mean": 0.9622386693954468,
+          "preserves_occluded_object": true,
+          "visible_mean": 1.0
+        },
+        "peak_vram_gb": 0.7404966354370117,
+        "position_probe_accuracy": 1.0,
+        "preflight_passed": true,
+        "real_latent_object_permanence_passed": true,
+        "revision": "b3c1679b7c34d3255ef3547f27c7b226aefab26f",
+        "shuffled_action_baseline_failed": true,
+        "state_probe_accuracy": 1.0,
+        "state_probe_beats_random_baseline": true,
+        "state_probe_knn_accuracy": 1.0,
+        "state_probe_margin_over_random": 0.5400000214576721,
+        "state_probe_shuffled_knn_accuracy": 0.4599999785423279,
+        "token_feature_shape": [
+          200,
+          144,
+          1024
+        ],
+        "video_count": 200,
+        "vjepa2_non_collapsed": true,
+        "within_vram_budget": true
+      },
+      "vjepa2_world_controls_peak_vram_gb": 0.7404966354370117,
+      "vjepa2_world_feature_shape": [
+        200,
+        1024
+      ],
+      "vjepa2_world_model_controls_passed": true,
+      "within_vram_budget": true
+    },
+    "notebook_contract": {
+      "jepa_prediction": {
+        "mean_cosine": 1.0,
+        "mse": 0.0,
+        "predicts_target": true
+      },
+      "object_permanence": {
+        "absent_mean": 0.15000000596046448,
+        "occluded_absent_gap": 0.5750000178813934,
+        "occluded_mean": 0.7250000238418579,
+        "preserves_occluded_object": true,
+        "visible_mean": 0.8500000238418579
+      },
+      "state_probe": {
+        "accuracy": 1.0,
+        "predicts_state": true
+      },
+      "transition": {
+        "mean_cosine": 1.0,
+        "transition_consistent": true
+      }
+    }
+  },
+  "models": [
+    {
+      "gated": false,
+      "id": "toy_or_generated_inputs",
+      "precision": "float32",
+      "revision": "seed_0",
+      "source": "generated"
+    },
+    {
+      "claim_scope": "synthetic_video_feature_extraction_preflight",
+      "gated": false,
+      "id": "facebook/vjepa2-vitl-fpc64-256",
+      "precision": "float16",
+      "revision": "b3c1679b7c34d3255ef3547f27c7b226aefab26f",
+      "source": "huggingface"
+    }
+  ],
+  "negative_controls": {
+    "declared_controls": [
+      "negative_control_where_applicable",
+      "same_occluder_absent_object_negative_control",
+      "different_object_occlusion_negative_control",
+      "heldout_state_probe_shuffled_label_negative_control",
+      "shuffled_action_negative_control",
+      "same_size_random_token_patch_negative_control"
+    ]
+  },
+  "notebook_id": "14_1_jepa_and_world_model_controls",
+  "ood_tests": {
+    "declared": "required_where_applicable"
+  },
+  "peak_vram_gb": 0.740497,
+  "report_inputs": {
+    "schema_version": 1,
+    "algorithm": "sha256",
+    "combined_sha256": "8892136390e9b540554a5ce02e918a84d04647d06cee0a467c7f2b01b534437f",
+    "files": [
+      {
+        "path": "arena_ext/jepa_world_models.py",
+        "sha256": "0eda2044f99cc9b54de87a8a41b80ce3956054b16253ed9ff241e3afab92e8d4",
+        "size_bytes": 8884
+      },
+      {
+        "path": "arena_ext/verification.py",
+        "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
+        "size_bytes": 9276
+      },
+      {
+        "path": "chapter14_jepa_world_models/exercises/part1_jepa_world_model_controls/14.1_JEPA_and_World_Model_Controls_exercises.ipynb",
+        "sha256": "6a273083e2d7f3b7a88f7ad0f112dab132c2b55b8211237fb2af175e1cde98ab",
+        "size_bytes": 4754
+      },
+      {
+        "path": "chapter14_jepa_world_models/exercises/part1_jepa_world_model_controls/14.1_JEPA_and_World_Model_Controls_solutions.ipynb",
+        "sha256": "b4e5c10ef507e23a769cf41582e910ea1aea4f35a2e8ca4ba7d40f35f177fd35",
+        "size_bytes": 3214
+      },
+      {
+        "path": "chapter14_jepa_world_models/exercises/part1_jepa_world_model_controls/README.md",
+        "sha256": "6c376a212ea946fe2250fdc02b2c8ab8d21082223b3ce842c8407f7e5daea6ba",
+        "size_bytes": 1055
+      },
+      {
+        "path": "chapter14_jepa_world_models/exercises/part1_jepa_world_model_controls/artifacts.lock.yml",
+        "sha256": "17732e4c1da7d407fc72b14e6cafa77285b2f1d6bf104a4825e090367daee98c",
+        "size_bytes": 3477
+      },
+      {
+        "path": "chapter14_jepa_world_models/exercises/part1_jepa_world_model_controls/expected_outputs/README.md",
+        "sha256": "8cd9c9c4a206cf5a7d5bbb647803a7285cc915daa910c4ed6f8b2105541f692d",
+        "size_bytes": 1782
+      },
+      {
+        "path": "chapter14_jepa_world_models/exercises/part1_jepa_world_model_controls/expected_outputs/reference_metrics.json",
+        "sha256": "32f41e388385a85599f9cfba9c569bc550f8537e4659240d8e833c13657eb3e5",
+        "size_bytes": 763
+      },
+      {
+        "path": "chapter14_jepa_world_models/exercises/part1_jepa_world_model_controls/expected_outputs/smoke_test.json",
+        "sha256": "6c747eb559a84ee4f920251f6f2a0ff9b078b08b8a56f2415c0a968c1d15a8d0",
+        "size_bytes": 299
+      },
+      {
+        "path": "chapter14_jepa_world_models/exercises/part1_jepa_world_model_controls/solutions.py",
+        "sha256": "ef8517cdd27389db746c8d2414f3feff463a92a9f4616bc178e603cebdb6c81d",
+        "size_bytes": 33829
+      },
+      {
+        "path": "chapter14_jepa_world_models/exercises/part1_jepa_world_model_controls/tests.py",
+        "sha256": "e28629f591c7f6a98b5eb06fee42ce23aaa28e3ab5f115bbf8b8a4f205b61a4a",
+        "size_bytes": 6395
+      },
+      {
+        "path": "chapter14_jepa_world_models/exercises/part1_jepa_world_model_controls/utils.py",
+        "sha256": "2838299c2ced93875b91fdf42cbdff2c464cf6edb87484798974b44925ca0e19",
+        "size_bytes": 361
+      },
+      {
+        "path": "chapter14_jepa_world_models/exercises/part1_jepa_world_model_controls/verification_report.schema.json",
+        "sha256": "ecd833883885077ad5d7a0e239d984d01462255e94266212cf195ab4d4e27b3d",
+        "size_bytes": 2669
+      },
+      {
+        "path": "chapter14_jepa_world_models/instructions/pages/01_[14.1]_JEPA_and_World_Model_Controls.md",
+        "sha256": "3771a135c65106e1090d51a788bd46a84107b8c6ae8622461f16c612faf25f40",
+        "size_bytes": 14963
+      },
+      {
+        "path": "scripts/run_extension_verification_reports.py",
+        "sha256": "660040f459d07535deb9e0c34ffddb496c13b8770044ae380d3a8e45b0c8fb2b",
+        "size_bytes": 16080
+      }
+    ]
+  },
+  "safety_notes": [
+    "No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.",
+    "The real-model path uses generated shape videos only. The occlusion contrast is a deterministic synthetic-video control and does not claim real-video object permanence, masked target prediction, or action-conditioned rollout replication."
+  ],
+  "tests_passed": true,
+  "wall_clock_seconds": 29.072414
+}

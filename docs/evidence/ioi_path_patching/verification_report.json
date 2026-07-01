@@ -1,0 +1,332 @@
+{
+  "accepted": true,
+  "baselines": {
+    "declared_controls": [
+      "original_arena_ioi_material_present",
+      "original_arena_ioi_dataset_generation",
+      "abc_counterfactual_corrupt_dataset_generation",
+      "appendix_b_freeze_all_heads_patch_one_sender_path_to_final_resid",
+      "published_name_mover_heads_selected",
+      "published_negative_name_mover_heads_sign_control",
+      "published_s2_inhibition_heads_included_for_context",
+      "same_size_random_head_negative_control",
+      "clean_vs_corrupt_logit_diff_gap_check",
+      "no_full_heatmap_claim"
+    ],
+    "expected_metrics": {
+      "accepted": true,
+      "bnb_cuda_override": "130",
+      "clean_corrupt_gap_min": 1.0,
+      "dataset_size": 12,
+      "hf_revision": "607a30d783dfa663caf39e06633721c8d4cfcd7e",
+      "known_to_random_control_ratio_min": 10.0,
+      "max_allowed_gpu_gb": 24,
+      "model_name": "gpt2-small",
+      "name_mover_9_6_damage_min": 0.2,
+      "name_mover_9_9_damage_min": 0.1,
+      "name_mover_mean_damage_min": 0.15,
+      "negative_name_mover_sign_control_passed": true,
+      "peak_vram_gb_max": 2.0,
+      "preflight_passed": true,
+      "published_heads_beat_random_controls": true,
+      "random_control_abs_mean_damage_max": 0.02,
+      "random_controls_passed": true,
+      "selected_head_count": 13,
+      "tests_passed": true
+    }
+  },
+  "claim_scope": "GT-2 IOI/path-patching evidence: the original ARENA IOI material is preserved, and this report loads a pinned GPT-2 small checkpoint on CUDA, builds generated IOI and ABC counterfactual prompt pairs with the original IOIDataset, freezes all attention-head z outputs to clean-cache values, patches one selected sender head from the ABC cache, and verifies that published name-mover heads have a much larger absolute path-patching effect on the final IOI logit-diff metric than same-size random head controls. This is a lightweight selected-head replication-style check, not a full all-head IOI heatmap or complete paper reproduction.",
+  "datasets": [
+    {
+      "id": "original_arena_ioi_dataset_generated_mixed_seed1_n12",
+      "prompt_type": "mixed",
+      "seed": 1,
+      "size": 12,
+      "source": "generated_by_original_arena_ioi_dataset"
+    },
+    {
+      "flip": "ABB->XYZ, BAB->XYZ",
+      "id": "original_arena_abc_counterfactual_dataset_seed1_n12",
+      "seed": 1,
+      "size": 12,
+      "source": "IOIDataset.gen_flipped_prompts"
+    }
+  ],
+  "date_run": "2026-06-30T14:56:02+00:00",
+  "evidence_level": "lightweight_published_replication_style_ioi_path_patching",
+  "git_commit": "f9f034bd",
+  "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+  "gt_tier": "GT-2",
+  "known_failures": [],
+  "metrics": {
+    "gpu_evidence": {
+      "category": "cuda_section_metric",
+      "placeholder_only": false,
+      "section_specific_metric_keys": [
+        "bnb_cuda_override",
+        "clean_corrupt_gap",
+        "clean_logit_diff",
+        "clean_prompt_type",
+        "corrupt_logit_diff",
+        "corrupt_prompt_type",
+        "dataset_size",
+        "hf_model_id",
+        "hf_revision",
+        "known_to_random_control_ratio",
+        "model_name",
+        "name_mover_9_6_damage",
+        "name_mover_9_9_damage",
+        "name_mover_mean_damage",
+        "name_mover_signed_mean_damage",
+        "negative_name_mover_mean_damage",
+        "negative_name_mover_sign_control_passed",
+        "preflight_passed",
+        "published_heads_beat_random_controls",
+        "random_control_abs_mean_damage",
+        "random_controls_passed",
+        "selected_head_count",
+        "selected_path_patch_results",
+        "transformerlens_model_name"
+      ],
+      "uses_cuda": true
+    },
+    "gpu_test": {
+      "bnb_cuda_override": "130",
+      "clean_corrupt_gap": 3.781311511993408,
+      "clean_logit_diff": 2.6379752159118652,
+      "clean_prompt_type": "mixed IOI",
+      "corrupt_logit_diff": -1.143336296081543,
+      "corrupt_prompt_type": "ABC counterfactual via ABB->XYZ, BAB->XYZ",
+      "cuda_available": true,
+      "cuda_version": "13.2",
+      "dataset_size": 12,
+      "device": "NVIDIA GeForce RTX 5090 Laptop GPU",
+      "full_path": "GPT-2 small IOI selected-head Appendix-B-style z activation path-patching check with published heads and low-effect random controls.",
+      "gpu_total_memory_gb": 23.45965576171875,
+      "hf_model_id": "gpt2",
+      "hf_revision": "607a30d783dfa663caf39e06633721c8d4cfcd7e",
+      "known_to_random_control_ratio": 79.8442180257143,
+      "model_name": "gpt2-small",
+      "name_mover_9_6_damage": 0.3878245040816597,
+      "name_mover_9_9_damage": 0.43441541818805457,
+      "name_mover_mean_damage": 0.3135074551423069,
+      "name_mover_signed_mean_damage": 0.3135074551423069,
+      "negative_name_mover_mean_damage": -0.2097870929137949,
+      "negative_name_mover_sign_control_passed": true,
+      "peak_vram_gb": 0.8487725257873535,
+      "preflight_passed": true,
+      "published_heads_beat_random_controls": true,
+      "random_control_abs_mean_damage": 0.003926489142161051,
+      "random_controls_passed": true,
+      "selected_head_count": 13,
+      "selected_path_patch_results": {
+        "name_mover_10_0": {
+          "abs_damage_fraction": 0.11828244315720647,
+          "damage_fraction": 0.11828244315720647,
+          "head": [
+            10,
+            0
+          ],
+          "ioi_metric": -0.11828244315720647,
+          "patched_logit_diff": 2.1907124519348145
+        },
+        "name_mover_9_6": {
+          "abs_damage_fraction": 0.3878245040816597,
+          "damage_fraction": 0.3878245040816597,
+          "head": [
+            9,
+            6
+          ],
+          "ioi_metric": -0.3878245040816597,
+          "patched_logit_diff": 1.171489953994751
+        },
+        "name_mover_9_9": {
+          "abs_damage_fraction": 0.43441541818805457,
+          "damage_fraction": 0.43441541818805457,
+          "head": [
+            9,
+            9
+          ],
+          "ioi_metric": -0.43441541818805457,
+          "patched_logit_diff": 0.9953151941299438
+        },
+        "negative_name_mover_10_7": {
+          "abs_damage_fraction": 0.28209548946183377,
+          "damage_fraction": -0.28209548946183377,
+          "head": [
+            10,
+            7
+          ],
+          "ioi_metric": 0.28209548946183377,
+          "patched_logit_diff": 3.7046661376953125
+        },
+        "negative_name_mover_11_10": {
+          "abs_damage_fraction": 0.13747869636575605,
+          "damage_fraction": -0.13747869636575605,
+          "head": [
+            11,
+            10
+          ],
+          "ioi_metric": 0.13747869636575605,
+          "patched_logit_diff": 3.157824993133545
+        },
+        "random_control_0_0": {
+          "abs_damage_fraction": 0.00019035344959668902,
+          "damage_fraction": -0.00019035344959668902,
+          "head": [
+            0,
+            0
+          ],
+          "ioi_metric": 0.00019035344959668902,
+          "patched_logit_diff": 2.638695001602173
+        },
+        "random_control_1_1": {
+          "abs_damage_fraction": 0.0007042257961395892,
+          "damage_fraction": -0.0007042257961395892,
+          "head": [
+            1,
+            1
+          ],
+          "ioi_metric": 0.0007042257961395892,
+          "patched_logit_diff": 2.6406381130218506
+        },
+        "random_control_8_8": {
+          "abs_damage_fraction": 0.010884888180746875,
+          "damage_fraction": -0.010884888180746875,
+          "head": [
+            8,
+            8
+          ],
+          "ioi_metric": 0.010884888180746875,
+          "patched_logit_diff": 2.6791343688964844
+        },
+        "s2_inhibition_5_5": {
+          "abs_damage_fraction": 0.0002104669807067731,
+          "damage_fraction": 0.0002104669807067731,
+          "head": [
+            5,
+            5
+          ],
+          "ioi_metric": -0.0002104669807067731,
+          "patched_logit_diff": 2.637179374694824
+        },
+        "s2_inhibition_7_3": {
+          "abs_damage_fraction": 0.01392095949740132,
+          "damage_fraction": 0.01392095949740132,
+          "head": [
+            7,
+            3
+          ],
+          "ioi_metric": -0.01392095949740132,
+          "patched_logit_diff": 2.5853357315063477
+        },
+        "s2_inhibition_7_9": {
+          "abs_damage_fraction": 0.056864546402042374,
+          "damage_fraction": 0.056864546402042374,
+          "head": [
+            7,
+            9
+          ],
+          "ioi_metric": -0.056864546402042374,
+          "patched_logit_diff": 2.422952651977539
+        },
+        "s2_inhibition_8_10": {
+          "abs_damage_fraction": 0.08872570376867044,
+          "damage_fraction": 0.08872570376867044,
+          "head": [
+            8,
+            10
+          ],
+          "ioi_metric": -0.08872570376867044,
+          "patched_logit_diff": 2.302475690841675
+        },
+        "s2_inhibition_8_6": {
+          "abs_damage_fraction": 0.019033264249554066,
+          "damage_fraction": 0.019033264249554066,
+          "head": [
+            8,
+            6
+          ],
+          "ioi_metric": -0.019033264249554066,
+          "patched_logit_diff": 2.566004514694214
+        }
+      },
+      "torch_version": "2.12.1+cu132",
+      "transformerlens_model_name": "gpt2-small",
+      "within_vram_budget": true
+    },
+    "notebook_contract": {
+      "full_heatmap_claimed": false,
+      "known_published_head_count": 10,
+      "random_control_count": 3,
+      "selected_head_count": 13,
+      "uses_appendix_b_freeze_all_heads_patch_one_sender": true,
+      "uses_original_arena_ioi_dataset": true
+    }
+  },
+  "models": [
+    {
+      "claim_scope": "gpt2-small_ioi_path_patching_selected_heads",
+      "gated": false,
+      "id": "gpt2",
+      "precision": "float32",
+      "revision": "607a30d783dfa663caf39e06633721c8d4cfcd7e",
+      "source": "huggingface_via_transformerlens",
+      "transformerlens_model_name": "gpt2-small"
+    }
+  ],
+  "negative_controls": {
+    "declared_controls": [
+      "published_negative_name_mover_heads_sign_control",
+      "same_size_random_head_negative_control"
+    ]
+  },
+  "notebook_id": "1_4_1_gt2_ioi_path_patching",
+  "ood_tests": {
+    "declared": "not_required_for_this_lightweight_gt2_path_patch_smoke"
+  },
+  "peak_vram_gb": 0.848773,
+  "report_inputs": {
+    "schema_version": 1,
+    "algorithm": "sha256",
+    "combined_sha256": "92313ea28e3a8a6dc54d42593567314973a518639226e1188c5f7525f3aab6c6",
+    "files": [
+      {
+        "path": "arena_ext/verification.py",
+        "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
+        "size_bytes": 9276
+      },
+      {
+        "path": "chapter1_transformer_interp/exercises/part41_indirect_object_identification/ioi_dataset.py",
+        "sha256": "9785645143e4e36c2a3a1368c680a28e4599d5ac1194d80abc8146c4a3bb8d9d",
+        "size_bytes": 24851
+      },
+      {
+        "path": "docs/evidence/ioi_path_patching/artifacts.lock.yml",
+        "sha256": "87f049faa31657025848c30228cf0addeebb29c127aa4249bea1baf9c90eae47",
+        "size_bytes": 3005
+      },
+      {
+        "path": "docs/evidence/ioi_path_patching/verification_report.schema.json",
+        "sha256": "ecd833883885077ad5d7a0e239d984d01462255e94266212cf195ab4d4e27b3d",
+        "size_bytes": 2669
+      },
+      {
+        "path": "scripts/generate_gt2_ioi_path_patching_report.py",
+        "sha256": "7fc6b7ab42ddb151301ca9e5e8297020157e7486b64514649f879969773b04ce",
+        "size_bytes": 14120
+      },
+      {
+        "path": "scripts/run_extension_verification_reports.py",
+        "sha256": "660040f459d07535deb9e0c34ffddb496c13b8770044ae380d3a8e45b0c8fb2b",
+        "size_bytes": 16080
+      }
+    ]
+  },
+  "safety_notes": [
+    "No unsafe prompts, generated completions, gated weights, or large data artifacts.",
+    "The evidence path uses synthetic IOI names/objects/places from the original ARENA exercise and reads only logit-difference metrics from GPT-2 small."
+  ],
+  "tests_passed": true,
+  "wall_clock_seconds": 83.793972
+}

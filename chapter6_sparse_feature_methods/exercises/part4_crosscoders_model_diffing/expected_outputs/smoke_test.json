@@ -1,0 +1,10 @@
+{
+  "accepted": true,
+  "claim_scope": "Contract check; not a full real-model validation.",
+  "evidence_level": "notebook_contract",
+  "gt_tier": "GT-3",
+  "notebook_id": "6_4_crosscoders_and_model_diffing",
+  "section": "6.4",
+  "tests_passed": true,
+  "title": "Crosscoders and Model Diffing"
+}

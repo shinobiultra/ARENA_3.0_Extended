@@ -1,0 +1,462 @@
+{
+  "accepted": true,
+  "baselines": {
+    "declared_controls": [
+      "baseline_or_reference_check",
+      "negative_control_where_applicable",
+      "shape_dtype_or_exact_value_check",
+      "local_rmsnorm_formula_contract",
+      "local_rope_norm_contract",
+      "local_kv_cache_parity_contract",
+      "local_clone_parity_contract",
+      "huggingface_gemma_reference_architecture_logits_parity",
+      "state_dict_key_count_match",
+      "topk_agreement_check",
+      "reference_cache_parity_check",
+      "embedding_scale_normalizer_check",
+      "gated_pretrained_gemma_weights_not_claimed"
+    ],
+    "expected_metrics": {
+      "accepted": true,
+      "cache_max_abs_diff_max": 1e-05,
+      "cache_passed": true,
+      "fits_budget": true,
+      "max_allowed_gpu_gb": 24,
+      "peak_vram_gb_max": 1.0,
+      "preflight_passed": true,
+      "reference_cache_max_abs_diff_max": 1e-05,
+      "reference_cache_passed": true,
+      "reference_loaded_key_count": 21,
+      "reference_logits_max_abs_diff_max": 0.0005,
+      "reference_logits_mse_max": 1e-07,
+      "reference_logits_topk_agreement": 1.0,
+      "reference_model_family": "transformers.GemmaForCausalLM",
+      "reference_parity_passed": true,
+      "reference_transformers_tiny_config": true,
+      "reference_weight_key_count": 21,
+      "rope_norm_error_max": 1e-06,
+      "tests_passed": true
+    }
+  },
+  "claim_scope": "GT-0 Gemma-from-scratch architecture preflight: deterministic local RMSNorm, RoPE, grouped-query attention, sliding-mask, SwiGLU, and KV-cache contracts are kept for learner exercises, then the local implementation is compared on CUDA against Hugging Face's real transformers.GemmaForCausalLM reference architecture with a deterministic tiny config and matched random weights. The report requires all reference state-dict keys to load, close logit parity, top-k agreement, cache parity, the Gemma embedding normalizer, and measured VRAM. This proves architecture parity; it does not claim validation on gated pretrained Gemma weights.",
+  "datasets": [
+    {
+      "id": "5_1_gemma_from_scratch_toy_inputs",
+      "seed": 0,
+      "source": "generated"
+    },
+    {
+      "attention_heads": 4,
+      "head_dim": 4,
+      "hidden_size": 16,
+      "id": "tiny_gemma_reference_input_ids_v1",
+      "input_ids": [
+        [
+          1,
+          5,
+          8,
+          13,
+          2
+        ]
+      ],
+      "kv_heads": 2,
+      "layers": 2,
+      "seed": 5101,
+      "source": "generated_token_ids",
+      "vocab_size": 31
+    }
+  ],
+  "date_run": "2026-07-01T05:26:33+00:00",
+  "evidence_level": "gemma_from_scratch_contract_plus_hf_reference_architecture_parity",
+  "git_commit": "f9f034bd",
+  "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+  "gt_tier": "GT-0",
+  "known_failures": [],
+  "metrics": {
+    "gpu_evidence": {
+      "category": "cuda_section_metric",
+      "placeholder_only": false,
+      "section_specific_metric_keys": [
+        "cache_max_abs_diff",
+        "cache_passed",
+        "estimated_total_gb",
+        "fits_budget",
+        "preflight_passed",
+        "reference_cache_max_abs_diff",
+        "reference_cache_passed",
+        "reference_loaded_key_count",
+        "reference_logits_kl_divergence",
+        "reference_logits_max_abs_diff",
+        "reference_logits_mse",
+        "reference_logits_topk_agreement",
+        "reference_model_family",
+        "reference_parity_passed",
+        "reference_transformers_tiny_config",
+        "reference_weight_key_count",
+        "rope_norm_error"
+      ],
+      "uses_cuda": true
+    },
+    "gpu_test": {
+      "cache_max_abs_diff": 1.9073486328125e-06,
+      "cache_passed": true,
+      "cuda_available": true,
+      "cuda_version": "13.2",
+      "device": "NVIDIA GeForce RTX 5090 Laptop GPU",
+      "estimated_total_gb": 3.659520149230957,
+      "fits_budget": true,
+      "full_path": "Compare the local Gemma-from-scratch implementation against Hugging Face's Gemma reference architecture on CUDA with matched deterministic tiny weights.",
+      "gpu_total_memory_gb": 23.45965576171875,
+      "peak_vram_gb": 0.03133535385131836,
+      "preflight_passed": true,
+      "reference_cache_max_abs_diff": 4.470348358154297e-08,
+      "reference_cache_passed": true,
+      "reference_loaded_key_count": 21,
+      "reference_logits_kl_divergence": 1.4669575776338206e-08,
+      "reference_logits_max_abs_diff": 6.876885890960693e-05,
+      "reference_logits_mse": 5.34747413016845e-10,
+      "reference_logits_topk_agreement": 1.0,
+      "reference_model_family": "transformers.GemmaForCausalLM",
+      "reference_parity_passed": true,
+      "reference_transformers_tiny_config": true,
+      "reference_weight_key_count": 21,
+      "rope_norm_error": 2.384185791015625e-07,
+      "torch_version": "2.12.1+cu132",
+      "within_vram_budget": true
+    },
+    "notebook_contract": {
+      "cache_parity": {
+        "atol": 1e-05,
+        "max_abs_diff": 1.9073486328125e-06,
+        "passed": true
+      },
+      "clone_parity": {
+        "kl_divergence": 0.0,
+        "max_abs_diff": 0.0,
+        "mse": 0.0,
+        "topk_agreement": 1.0
+      },
+      "memory_budget": {
+        "activation_gb": 0.015625,
+        "kv_cache_gb": 0.28125,
+        "optimizer_gb": 0.0,
+        "overhead_gb": 1.5,
+        "parameter_gb": 1.862645149230957,
+        "total_gb": 3.659520149230957
+      },
+      "rms_norm_passed": true,
+      "rope_norm_passed": true
+    }
+  },
+  "models": [
+    {
+      "gated": false,
+      "id": "toy_or_generated_inputs",
+      "precision": "float32",
+      "revision": "seed_0",
+      "source": "generated"
+    },
+    {
+      "claim_scope": "reference_architecture_parity_no_pretrained_weights",
+      "gated": false,
+      "id": "transformers.GemmaForCausalLM",
+      "precision": "float32",
+      "revision": "deterministic_tiny_config_seed_5101",
+      "source": "local_transformers_reference_implementation",
+      "weight_key_count": 21
+    }
+  ],
+  "negative_controls": {
+    "declared_controls": [
+      "negative_control_where_applicable"
+    ]
+  },
+  "notebook_id": "5_1_gemma_from_scratch",
+  "ood_tests": {
+    "declared": "required_where_applicable"
+  },
+  "peak_vram_gb": 0.03133535385131836,
+  "report_inputs": {
+    "algorithm": "sha256",
+    "combined_sha256": "ed1225c9c456414b404b290bed047c94744b0be39088a723da78fed631cea63c",
+    "files": [
+      {
+        "path": "arena_ext/__init__.py",
+        "sha256": "1c2a3f9d3ec1a53c9b05903c1f93f8d431b915788a252d908d8654ef1f369b1c",
+        "size_bytes": 33123
+      },
+      {
+        "path": "arena_ext/activation_language.py",
+        "sha256": "2373758b1feae1f94163052f83c674355935d7659ae9bd5b43294887f314c598",
+        "size_bytes": 7016
+      },
+      {
+        "path": "arena_ext/activation_oracles.py",
+        "sha256": "b1db3d7fcc5581643fa1638f5746a41301b344c0e43a64a99da98dc6ea2266cc",
+        "size_bytes": 7635
+      },
+      {
+        "path": "arena_ext/activation_patching.py",
+        "sha256": "e4789e85bb84f00afe15ad4fc8460ad024f78420aa82b0295d4ca90fa18501af",
+        "size_bytes": 6653
+      },
+      {
+        "path": "arena_ext/activation_store.py",
+        "sha256": "574fd258a518800b31771fb6805b347c083a165a328bd1a6769632f5690bf23b",
+        "size_bytes": 3530
+      },
+      {
+        "path": "arena_ext/attribution_patching.py",
+        "sha256": "08de3b291cb0dab5ee6dde2af109de0e20ae41df736b5f1996869f18516e13fc",
+        "size_bytes": 6606
+      },
+      {
+        "path": "arena_ext/capstone.py",
+        "sha256": "2853f45f5aa9920824f3bc31e5d9635df358b6f646f9fd4bfe7775db350a4bf8",
+        "size_bytes": 30806
+      },
+      {
+        "path": "arena_ext/circuit_metrics.py",
+        "sha256": "961ba09dacf509e6724e77bb802797f4b406b8c61337550706e7e3aacec73c2e",
+        "size_bytes": 8942
+      },
+      {
+        "path": "arena_ext/circuit_tracing.py",
+        "sha256": "2f33c9d3bd0c1a7dad89d25498e876e9ea9c6bb32670a0ac5012f8d5c4d5529d",
+        "size_bytes": 7530
+      },
+      {
+        "path": "arena_ext/cot_faithfulness.py",
+        "sha256": "79bfffe4618b360cd8122ac54036d83915011aede69954abb2983efdbf2dd6c4",
+        "size_bytes": 5618
+      },
+      {
+        "path": "arena_ext/crosscoders.py",
+        "sha256": "7404cf0b94b93edaa7dc44a80e9a3863781d9eeb0437b3d92277cf49ef965389",
+        "size_bytes": 8318
+      },
+      {
+        "path": "arena_ext/data_contracts.py",
+        "sha256": "c3a9d60b117f348cad16db23e14908c970da854b6c1bb7a4ad0fd2a2364509a2",
+        "size_bytes": 6833
+      },
+      {
+        "path": "arena_ext/diffusion_lm.py",
+        "sha256": "65ef7024c82b204517dd0bb0e0570ec8107838dd04c1cf979ffd96260026fe88",
+        "size_bytes": 30399
+      },
+      {
+        "path": "arena_ext/environment.py",
+        "sha256": "bf8c93a4a23411b1a56b5576f21d8b3111e0fba8d4a46c903a350c297f4b4fac",
+        "size_bytes": 3519
+      },
+      {
+        "path": "arena_ext/fake_interpretability.py",
+        "sha256": "10a1e47665272485840f8893d7505cfc1f9bd29abc039171fc1121f851a5e88a",
+        "size_bytes": 5941
+      },
+      {
+        "path": "arena_ext/feature_verbalizers.py",
+        "sha256": "9384175d5f569bd1ce4a2b522b0721c491a89bb9b4c597c09f6292886503939d",
+        "size_bytes": 9009
+      },
+      {
+        "path": "arena_ext/features.py",
+        "sha256": "174023a8232b6ed60bc97c2894046485c79ff1d27136ee4e57dfc837dcb6e948",
+        "size_bytes": 11262
+      },
+      {
+        "path": "arena_ext/gated_artifacts.py",
+        "sha256": "ebe80c850c95c3e625559eb99b65186736baa0a094bb2ac77e745a1ed82b7f4a",
+        "size_bytes": 8860
+      },
+      {
+        "path": "arena_ext/gemma.py",
+        "sha256": "c8e955400341571b33792c2b89b4785bde8bbbb99a404ee1c59ecb0483218a29",
+        "size_bytes": 16169
+      },
+      {
+        "path": "arena_ext/gemma_scope.py",
+        "sha256": "2678245dac629f29a231423cfa80846485cdb4ddd3bfba493861484d349501f7",
+        "size_bytes": 29535
+      },
+      {
+        "path": "arena_ext/hf_parity.py",
+        "sha256": "5c48555bdafbcb849cc83263a0e2743d0950f105fb21ffd2ffdebf585d01b829",
+        "size_bytes": 3865
+      },
+      {
+        "path": "arena_ext/image_generation_interpretability.py",
+        "sha256": "ed4908eea4867ebb5f812090fcaa72e17aec28345aaa977f74656e2142595587",
+        "size_bytes": 14717
+      },
+      {
+        "path": "arena_ext/jepa_world_models.py",
+        "sha256": "0eda2044f99cc9b54de87a8a41b80ce3956054b16253ed9ff241e3afab92e8d4",
+        "size_bytes": 8884
+      },
+      {
+        "path": "arena_ext/mamba.py",
+        "sha256": "765279bd314b97920844b150c36282d948dfefa2535b3282d46de435da122249",
+        "size_bytes": 15615
+      },
+      {
+        "path": "arena_ext/memory_budget.py",
+        "sha256": "1a118a19a12a494cf738605fca99abfbbe82ec7e31f4bf517e1e923a59caa802",
+        "size_bytes": 3672
+      },
+      {
+        "path": "arena_ext/natural_language_autoencoders.py",
+        "sha256": "be0c81bcbd7bd03a0ee61d07505f7b6157046cb11e6c282ab13549500bdd2ee4",
+        "size_bytes": 14120
+      },
+      {
+        "path": "arena_ext/peft_interpretability.py",
+        "sha256": "bd2cca2176a86b41ebed38ff2c855dd075ea39e7d37fb33c9dae56498cda0f32",
+        "size_bytes": 5170
+      },
+      {
+        "path": "arena_ext/predictive_concept_decoders.py",
+        "sha256": "0dc4aabb2ba5e4d06728ab5ea7f9de2968486ffe1c708b43d596d6f36be9d927",
+        "size_bytes": 14097
+      },
+      {
+        "path": "arena_ext/proxy_drift_detection.py",
+        "sha256": "86294bfa434aef2a6141662f5e456d1af7abc879500f7c07afd4fb76cc0942f0",
+        "size_bytes": 4875
+      },
+      {
+        "path": "arena_ext/refusal_steering.py",
+        "sha256": "0e0f2b42864604b2e7411b617992b04a2bf9f22d924ccce3d00eecd5c462a623",
+        "size_bytes": 9411
+      },
+      {
+        "path": "arena_ext/representation_geometry.py",
+        "sha256": "74b4a47bc8855f6a77db11178e924a4875dfdb0903ef4ad31f25f86b9a8e657f",
+        "size_bytes": 14500
+      },
+      {
+        "path": "arena_ext/sae_variants.py",
+        "sha256": "4781a7c85548e8a33e4b53058dc126248693768c91b688f22bfcfc4817a4b0b7",
+        "size_bytes": 7317
+      },
+      {
+        "path": "arena_ext/shapley_attribution.py",
+        "sha256": "41933e8728654b42e33929346d136327b37d86e28bb884a45dd878dba096c418",
+        "size_bytes": 48062
+      },
+      {
+        "path": "arena_ext/sparse_feature_circuits.py",
+        "sha256": "43aef57517aa29c62277ad87d2cb62b7af5836c76ac0ba2dc0482a78d849724a",
+        "size_bytes": 36704
+      },
+      {
+        "path": "arena_ext/specialist_models.py",
+        "sha256": "5373671cdfa4ca7ee5baece1000e5fd24cff3d704ed92d86bdaa60bc248c9cde",
+        "size_bytes": 8334
+      },
+      {
+        "path": "arena_ext/state_tracking.py",
+        "sha256": "78e0ef85399c35df1d134310be7bd7469b9b97f02a51a67d1d3b80cd815246ff",
+        "size_bytes": 8475
+      },
+      {
+        "path": "arena_ext/training_dynamics.py",
+        "sha256": "068146be6cb1782ce38d86b1e9db23781c7e84ac98a7b432d40e2ea28b943c59",
+        "size_bytes": 9097
+      },
+      {
+        "path": "arena_ext/transcoders.py",
+        "sha256": "ae029daaa8dbd04d46faf315bd8e587c30c62871cb242237818cc65ff8303fa7",
+        "size_bytes": 9259
+      },
+      {
+        "path": "arena_ext/verification.py",
+        "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
+        "size_bytes": 9276
+      },
+      {
+        "path": "arena_ext/vlm_interpretability.py",
+        "sha256": "b84973d7e488e83eab49f0e9e495334331691da6ef06759c7e9d441435d0f8e7",
+        "size_bytes": 32189
+      },
+      {
+        "path": "arena_ext/white_box_monitors.py",
+        "sha256": "b563c7154c773a151b3cb3d226289d7ed478f68dfecef65362f972556dcc6c9b",
+        "size_bytes": 5127
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part1_gemma_from_scratch/5.1_Gemma_from_Scratch_exercises.ipynb",
+        "sha256": "f754a8aafee37a223756116762053f9304278909495c45ff4b596ed61d10af72",
+        "size_bytes": 16072
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part1_gemma_from_scratch/5.1_Gemma_from_Scratch_solutions.ipynb",
+        "sha256": "37739b6fa0739f06092ff73dcdaff1ff01e282ae49cfcd8c42750d2c06d5cc5a",
+        "size_bytes": 20359
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part1_gemma_from_scratch/README.md",
+        "sha256": "7b29e1f30bb9933ba700ec6218ea2b830691019d48808fb157bce50f76ce77ec",
+        "size_bytes": 1331
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part1_gemma_from_scratch/artifacts.lock.yml",
+        "sha256": "b83e925cdbb4cf6dfd8b3ff3e28c99d02c32b937fcf5250f934a54f076cd0795",
+        "size_bytes": 3164
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part1_gemma_from_scratch/expected_outputs/README.md",
+        "sha256": "7021cab6f29444aa478d4ca33b39f833da3bc7faf8d27c018c49233a03ce4ba9",
+        "size_bytes": 1770
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part1_gemma_from_scratch/expected_outputs/reference_metrics.json",
+        "sha256": "061f8d75e5ca85d83c94ea49470245a73078331c6f78de9bccef2f942359f57c",
+        "size_bytes": 1557
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part1_gemma_from_scratch/expected_outputs/smoke_test.json",
+        "sha256": "a59b0b7f14106dbf1adf6bf8aaf10d275da74119205e84eb893559b45a099e39",
+        "size_bytes": 830
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part1_gemma_from_scratch/solutions.py",
+        "sha256": "6dbbea77bbb115fcd8ce044d6d0f154e2b1a77ed84d8be2246dbdf4df76dd412",
+        "size_bytes": 22021
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part1_gemma_from_scratch/tests.py",
+        "sha256": "cb04fff922f03a4ecdb94788d6fee3acd131f73955ac7ae1c6b5cdc09be3f2fc",
+        "size_bytes": 14299
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part1_gemma_from_scratch/utils.py",
+        "sha256": "d1202ddb38af774b77937216170678bdfe9b9e587d650edf89a848e54fcbfc4e",
+        "size_bytes": 349
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part1_gemma_from_scratch/verification_report.schema.json",
+        "sha256": "ecd833883885077ad5d7a0e239d984d01462255e94266212cf195ab4d4e27b3d",
+        "size_bytes": 2669
+      },
+      {
+        "path": "chapter5_modern_architectures/instructions/pages/01_[5.1]_Gemma_from_Scratch.md",
+        "sha256": "af3b8a70f88b42ce9692f92b4b23369f5efba3bc258cc3817fd7f039ed351dcd",
+        "size_bytes": 22305
+      },
+      {
+        "path": "scripts/run_extension_verification_reports.py",
+        "sha256": "660040f459d07535deb9e0c34ffddb496c13b8770044ae380d3a8e45b0c8fb2b",
+        "size_bytes": 16080
+      }
+    ],
+    "schema_version": 1
+  },
+  "safety_notes": [
+    "No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.",
+    "The reference parity path uses deterministic random tiny weights and generated token IDs only. It does not download gated pretrained Gemma weights, use unsafe prompts, user data, adapters, or external APIs."
+  ],
+  "tests_passed": true,
+  "wall_clock_seconds": 1.53499
+}

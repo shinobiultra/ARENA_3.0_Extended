@@ -1,0 +1,70 @@
+notebook_id: 0_6_how_to_know_when_an_interpretability_result_is_fake
+section: '0.6'
+title: How to Know When an Interpretability Result Is Fake
+exercise_metadata:
+  EXERCISE_ID: 0_6_how_to_know_when_an_interpretability_result_is_fake
+  GT_TIER: GT-0
+  DIFFICULTY: 2
+  IMPORTANCE: 3
+  EXPECTED_RUNTIME: seconds on toy contract; minutes on local real-model path
+  REQUIRES_GPU: true
+gt_tier: GT-0
+evidence_level: cuda_fake_result_diagnostic_controls_preflight
+claim_scope: 'GT-0 fake-result diagnostics ladder: the notebook keeps deterministic
+  toy reports for label leakage, cherry-picked effects, probe overfit, and random-direction
+  controls, then runs the same diagnostic quantities on CUDA with explicit pass/fail
+  metrics. This is a methodology section, not a real-model interpretability claim.'
+required_gpu_gb: 1
+max_allowed_gpu_gb: 24
+models:
+- id: toy_or_generated_inputs
+  source: generated
+  revision: seed_0
+  precision: float32
+  gated: false
+- id: course_fake_result_diagnostic_tensors_v1
+  source: generated_cuda_tensors
+  revision: seed_606
+  precision: float32
+  gated: false
+  claim_scope: diagnostic_control_model_organism
+datasets:
+- id: 0_6_how_to_know_when_an_interpretability_result_is_fake_toy_inputs
+  source: generated
+  seed: 0
+- id: course_fake_interpretability_failures_v1
+  source: generated
+  seed: 606
+  failure_modes:
+  - label_leakage
+  - cherry_picking
+  - probe_overfit
+  - random_direction_failure
+expected_metrics:
+  tests_passed: true
+  accepted: true
+  max_allowed_gpu_gb: 24
+  preflight_passed: true
+  leaked_feature_accuracy: 1.0
+  shifted_no_leak_accuracy: 0.0
+  leakage_gap_min: 0.5
+  cherry_pick_inflation_min: 3.0
+  probe_train_accuracy: 1.0
+  probe_heldout_accuracy: 0.5
+  probe_overfit_gap_min: 0.35
+  random_direction_control_rejects_claim: true
+  all_bogus_results_flagged: true
+  peak_vram_gb_max: 1.0
+controls:
+- baseline_or_reference_check
+- negative_control_where_applicable
+- shape_dtype_or_exact_value_check
+- direct_label_leakage_control
+- shifted_no_leak_negative_control
+- population_vs_selected_effect_control
+- train_vs_heldout_probe_gap_control
+- random_direction_p95_control
+safety_notes:
+- No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.
+- This section uses generated numeric tensors only. It does not use real model completions,
+  unsafe prompts, gated weights, or user data.

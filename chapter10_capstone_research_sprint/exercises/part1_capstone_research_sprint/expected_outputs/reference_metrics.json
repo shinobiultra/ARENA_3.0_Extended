@@ -1,0 +1,49 @@
+{
+  "baselines": {
+    "required": true
+  },
+  "metrics": {
+    "ablation_drop_mean_min": 0.2,
+    "accepted": true,
+    "baseline_suite_complete": true,
+    "causal_controls_passed": true,
+    "causal_validation_complete": true,
+    "compositional_oracle_beats_linear_probe": true,
+    "counterfactual_patch_change_rate_mean_min": 0.7,
+    "counterfactual_patch_target_accuracy_mean_min": 0.9,
+    "dataset": "balanced_latent_bits_with_heldout_template_nuisance_v1",
+    "heldout_template_accuracy_mean_min": 0.9,
+    "heldout_template_example_count": 384,
+    "iid_example_count": 576,
+    "label_shuffle_accuracy_mean_max": 0.65,
+    "label_shuffle_control_passed": true,
+    "linear_probe_compositional_accuracy_mean_max": 0.75,
+    "live_training_executed": true,
+    "max_allowed_gpu_gb": 24,
+    "metrics_by_seed_file_valid": true,
+    "model_family": "question_conditioned_mlp_activation_oracle",
+    "ood_passed": true,
+    "oracle_accuracy_mean_min": 0.9,
+    "oracle_beats_linear_probe_bank": true,
+    "oracle_beats_text_only": true,
+    "oracle_compositional_accuracy_mean_min": 0.9,
+    "peak_vram_gb_max": 1.0,
+    "preflight_passed": true,
+    "random_activation_accuracy_mean_max": 0.65,
+    "random_activation_control_passed": true,
+    "random_patch_change_rate_mean_max": 0.15,
+    "ready": true,
+    "reproducible": true,
+    "seed_count": 3,
+    "tests_passed": true,
+    "text_only_accuracy_mean": 0.5,
+    "train_example_count": 576
+  },
+  "negative_controls": {
+    "required_where_applicable": true
+  },
+  "notebook_id": "10_1_capstone_research_sprint",
+  "ood_tests": {
+    "required_where_applicable": true
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "accepted": true,
+  "claim_scope": "Contract check; not a full real-model validation.",
+  "evidence_level": "notebook_contract",
+  "gt_tier": "GT-1",
+  "notebook_id": "5_6_multimodal_embedding_and_function_calling_models",
+  "section": "5.6",
+  "tests_passed": true,
+  "title": "Multimodal, Embedding, and Function-Calling Models"
+}

@@ -1,0 +1,102 @@
+notebook_id: 8_4_circuit_tracing_with_attribution_graphs
+section: '8.4'
+title: Circuit Tracing with Attribution Graphs
+exercise_metadata:
+  EXERCISE_ID: 8_4_circuit_tracing_with_attribution_graphs
+  GT_TIER: GT-1
+  DIFFICULTY: 4
+  IMPORTANCE: 4
+  EXPECTED_RUNTIME: seconds on toy contract; minutes on local real-model path
+  REQUIRES_GPU: true
+gt_tier: GT-1
+evidence_level: toy_graph_contract_plus_pinned_transformerlens_eap_position_graph_preflight
+claim_scope: 'GT-1 attribution-graph preflight: reusable toy local-graph, graph-metric,
+  path-perturbation, alternative-baseline, and counterfactual-summary contracts are
+  kept for learner exercises, then a pinned TransformerLens gelu-1l checkpoint is
+  loaded on CUDA. The report builds a top-1 local attribution graph from the real
+  EAP position-edge matrix at blocks.0.hook_resid_post, requires the final-position
+  self-edge to be the graph edge, and validates target-metric explanation, top-path
+  perturbation, same-size alternative baseline failure, and a decrease counterfactual.
+  This is a mechanics preflight, not a full sparse-feature or transcoder circuit-tracing
+  replication.'
+required_gpu_gb: 1
+max_allowed_gpu_gb: 24
+models:
+- id: toy_or_generated_inputs
+  source: generated
+  revision: seed_0
+  precision: float32
+  gated: false
+- id: NeelNanda/GELU_1L512W_C4_Code
+  source: huggingface_via_transformerlens
+  revision: bddc0e332f0ae84279e6a6a45d91b314899e1603
+  precision: float32
+  gated: false
+  claim_scope: eap_position_graph_preflight
+  transformerlens_model_name: gelu-1l
+  tokenizer_id: NeelNanda/gpt-neox-tokenizer-digits
+  tokenizer_revision: 0f6671571a20be9756b9991d978047c03b75e749
+datasets:
+- id: 8_4_circuit_tracing_with_attribution_graphs_toy_inputs
+  source: generated
+  seed: 0
+- id: course_safe_clean_corrupt_position_graph_prompts_v1
+  source: generated_prompt_pair
+  seed: 0
+  clean_prompt: The cat sat on the
+  corrupt_prompt: The bird flew over the
+  positive_token: ' floor'
+  negative_token: ' top'
+  tokenizer: NeelNanda/gpt-neox-tokenizer-digits
+  sequence_length: 6
+expected_metrics:
+  tests_passed: true
+  accepted: true
+  max_allowed_gpu_gb: 24
+  preflight_passed: true
+  model_name: gelu-1l
+  hf_revision: bddc0e332f0ae84279e6a6a45d91b314899e1603
+  tokenizer_revision: 0f6671571a20be9756b9991d978047c03b75e749
+  bnb_cuda_override: '130'
+  hook_name: blocks.0.hook_resid_post
+  sequence_length: 6
+  target_position: 5
+  target_token: ' floor'
+  distractor_token: ' top'
+  graph_node_count: 6
+  alternative_baseline_fails: true
+  clean_corrupt_gap_min: 6.0
+  explained_fraction_min: 0.99
+  explains_target_metric: true
+  num_graph_edges: 1
+  graph_edge_source: position_5
+  graph_edge_target: position_5
+  graph_edge_score_min: 6.0
+  top_edge_score_abs_min: 6.0
+  path_metric_drop_min: 1.0
+  top_path_survives_test: true
+  alternative_baseline_margin_min: 1.0
+  counterfactual_predicted_direction: decrease
+  counterfactual_observed_delta_max: -1.0
+  predicts_counterfactual: true
+  peak_vram_gb_max: 1.0
+controls:
+- baseline_or_reference_check
+- negative_control_where_applicable
+- shape_dtype_or_exact_value_check
+- toy_local_attribution_graph_contract
+- toy_graph_metric_contract
+- toy_path_perturbation_contract
+- toy_alternative_graph_baseline_contract
+- toy_counterfactual_summary_contract
+- pinned_transformerlens_gelu1l_eap_position_edge_matrix
+- top1_final_position_self_edge_graph_check
+- top_path_perturbation_to_corrupt_metric
+- same_size_wrong_position_alternative_graph_baseline
+- summary_predicted_decrease_counterfactual
+- full_sparse_feature_circuit_tracing_not_claimed
+safety_notes:
+- No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.
+- The real-model path uses safe generic prompts and reads logits and gradients from
+  a small public TransformerLens checkpoint. It does not use unsafe prompts, gated
+  weights, or generated completions.

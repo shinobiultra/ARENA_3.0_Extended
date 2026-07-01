@@ -1,0 +1,150 @@
+notebook_id: 7_4_mini_natural_language_autoencoders
+section: '7.4'
+title: Mini Natural Language Autoencoders
+exercise_metadata:
+  EXERCISE_ID: 7_4_mini_natural_language_autoencoders
+  GT_TIER: GT-3
+  DIFFICULTY: 3
+  IMPORTANCE: 3
+  EXPECTED_RUNTIME: seconds on toy contract; minutes on live trainable local real-model path
+  REQUIRES_GPU: true
+gt_tier: GT-3
+evidence_level: toy_nla_contract_plus_live_trainable_transformerlens_phrase_bottleneck_preflight
+claim_scope: 'GT-3 mini Natural Language Autoencoder preflight: reusable toy activation-batch,
+  reconstruction, logit-diff, latent-preservation, brevity, and counterfactual contracts
+  are kept for learner exercises, then a pinned TransformerLens gelu-1l checkpoint
+  is loaded on CUDA. The report trains a small linear residual-to-phrase-id encoder
+  and trainable phrase-id-to-residual decoder table on real final-token residuals,
+  transmits only short discrete natural-language phrase ids, and validates held-out
+  activation MSE against blank-text and prompt-label baselines, direction-probe logit-diff
+  preservation, latent preservation, OOD long-context prompts, brevity, no-numeric-payload
+  checks, shuffled-text controls, and counterfactual explanation changes. This is a
+  live local phrase-bottleneck mini-NLA preflight, not Anthropic-scale NLA training
+  or a claim of faithful natural-language explanation of arbitrary activations.'
+required_gpu_gb: 1
+max_allowed_gpu_gb: 24
+models:
+- id: toy_or_generated_inputs
+  source: generated
+  revision: seed_0
+  precision: float32
+  gated: false
+- id: NeelNanda/GELU_1L512W_C4_Code
+  source: huggingface_via_transformerlens
+  revision: bddc0e332f0ae84279e6a6a45d91b314899e1603
+  precision: float32
+  gated: false
+  claim_scope: residual_text_bottleneck_mini_nla_preflight
+  transformerlens_model_name: gelu-1l
+  tokenizer_id: NeelNanda/gpt-neox-tokenizer-digits
+  tokenizer_revision: 0f6671571a20be9756b9991d978047c03b75e749
+datasets:
+- id: 7_4_mini_natural_language_autoencoders_toy_inputs
+  source: generated
+  seed: 0
+- id: course_safe_residual_text_bottleneck_nla_prompts_v1
+  source: generated_prompt_sets
+  seed: 0
+  positive_anchor_prompt: The cat sat on the
+  negative_anchor_prompt: The bird flew over the
+  train_example_count: 12
+  eval_example_count: 8
+  eval_split: long_context_ood
+  latent_labels:
+  - surface
+  - motion
+  text_bottleneck: discrete_natural_language_phrase_bottleneck
+  phrase_count: 12
+  target_source: manual_safe_prompt_labels_plus_trainable_phrase_bottleneck_reconstruction
+  hook: blocks.0.hook_resid_post
+  tokenizer: NeelNanda/gpt-neox-tokenizer-digits
+expected_metrics:
+  tests_passed: true
+  accepted: true
+  max_allowed_gpu_gb: 24
+  preflight_passed: true
+  model_name: gelu-1l
+  hf_revision: bddc0e332f0ae84279e6a6a45d91b314899e1603
+  tokenizer_revision: 0f6671571a20be9756b9991d978047c03b75e749
+  bnb_cuda_override: '130'
+  positive_token: ' floor'
+  negative_token: ' top'
+  phrase_count: 12
+  phrase_vocabulary_size: 12
+  text_bottleneck: discrete_natural_language_phrase_bottleneck
+  live_trainable_nla: true
+  report_replay: false
+  trainable_encoder_type: linear_residual_to_phrase_id
+  trainable_decoder_type: phrase_id_embedding_table_to_residual
+  trainable_encoder_parameter_count: 6156
+  trainable_decoder_parameter_count: 6144
+  trainable_encoder_train_accuracy: 1.0
+  trainable_eval_phrase_accuracy_min: 0.75
+  trainable_encoder_final_loss_max: 0.01
+  trainable_decoder_final_mse_max: 0.01
+  trainable_reconstruction_mse_max: 0.15
+  trainable_blank_text_mse_min: 0.2
+  trainable_beats_blank_text: true
+  trainable_phrase_count: 12
+  trainable_training_steps: 300
+  trainable_seed: 0
+  train_example_count: 12
+  eval_example_count: 8
+  activation_shape:
+  - 8
+  - 512
+  explanation_count: 8
+  numeric_literal_count: 0
+  activation_mse_max: 0.15
+  text_only_mse_min: 0.21
+  prompt_label_baseline_mse_min: 0.16
+  mean_cosine_similarity_min: 0.93
+  beats_text_only: true
+  beats_prompt_label_baseline: true
+  probe_logit_mean_abs_error_max: 2.0
+  preserves_latents: true
+  preserves_target_logit_diff: true
+  original_probe_accuracy: 1.0
+  reconstructed_probe_accuracy: 1.0
+  prediction_agreement: 1.0
+  text_only_prediction_accuracy: 0.5
+  nla_prediction_accuracy: 1.0
+  passes_ood: true
+  generated_word_count: 32
+  original_word_count: 64
+  compression_ratio_max: 0.7
+  shorter_than_original: true
+  counterfactual_activation_delta_min: 10.0
+  counterfactual_explanation_changed: true
+  shuffled_reconstruction_mse_min: 0.25
+  shuffled_control_worse: true
+  blank_text_mse_min: 0.2
+  blank_text_control_worse: true
+  peak_vram_gb_max: 1.0
+controls:
+- baseline_or_reference_check
+- negative_control_where_applicable
+- shape_dtype_or_exact_value_check
+- toy_nla_batch_contract
+- toy_activation_reconstruction_contract
+- toy_logit_diff_preservation_contract
+- toy_latent_preservation_contract
+- toy_brevity_contract
+- toy_counterfactual_explanation_contract
+- toy_trainable_discrete_nla_bottleneck_contract
+- pinned_transformerlens_gelu1l_live_trainable_phrase_bottleneck_reconstruction
+- no_activation_mean_reconstruction_baseline
+- prompt_label_text_only_reconstruction_baseline
+- direction_probe_logit_diff_preservation
+- long_context_ood_prompt_split
+- numeric_payload_rejection_control
+- shuffled_explanation_text_negative_control
+- blank_explanation_text_negative_control
+- counterfactual_anchor_explanation_change
+- anthropic_scale_nla_training_not_claimed
+safety_notes:
+- No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.
+- The real-model path uses safe generic prompts and cached activations/logits from
+  a small public TransformerLens checkpoint. It does not use unsafe prompts, gated
+  weights, generated completions, adapter training, external API calls, or claims
+  about arbitrary hidden thoughts.

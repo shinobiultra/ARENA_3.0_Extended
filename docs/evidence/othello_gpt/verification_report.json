@@ -1,0 +1,220 @@
+{
+  "accepted": true,
+  "baselines": {
+    "declared_controls": [
+      "expected_sample_legal_move_top3",
+      "random_legal_move_baseline",
+      "swapped_player_parity_probe_negative_control",
+      "bundled_linear_probe_reference"
+    ],
+    "expected_metrics": {
+      "board_probe_accuracy_min": 0.95,
+      "legal_top1_accuracy_min": 0.99,
+      "max_allowed_gpu_gb": 8.0,
+      "sample_first_top3": [
+        21,
+        33,
+        19
+      ],
+      "swapped_parity_probe_accuracy_max": 0.6
+    }
+  },
+  "claim_scope": "GT-2 Othello-GPT world-model smoke replication using the pinned NeelNanda/Othello-GPT-Transformer-Lens synthetic checkpoint, the existing ARENA board-sequence fixture, and the bundled linear probe. The report verifies real CUDA model loading, legal-move prediction, and linear board-state decoding; it does not claim new SAE/circuit discovery or a fresh probe-training replication.",
+  "datasets": [
+    {
+      "games_used": 64,
+      "id": "board_seqs_id_small.npy",
+      "moves_per_game": 59,
+      "source": "bundled_arena_othello_fixture"
+    },
+    {
+      "games_used": 64,
+      "id": "board_seqs_square_small.npy",
+      "moves_per_game": 59,
+      "source": "bundled_arena_othello_fixture"
+    }
+  ],
+  "date_run": "2026-06-30T23:49:17+09:00",
+  "evidence_level": "pinned_othello_gpt_cuda_legal_move_and_board_probe_smoke",
+  "git_commit": "f9f034bd",
+  "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+  "gt_tier": "GT-2",
+  "known_failures": [],
+  "metrics": {
+    "gpu_evidence": {
+      "category": "cuda_section_metric",
+      "placeholder_only": false,
+      "section_specific_metric_keys": [
+        "board_probe_accuracy",
+        "board_probe_accuracy_threshold",
+        "board_probe_empty_accuracy",
+        "board_probe_layer",
+        "board_probe_occupied_accuracy",
+        "full_probe_shape",
+        "games_checked",
+        "legal_top1_accuracy",
+        "legal_top1_accuracy_threshold",
+        "model_id",
+        "model_loaded",
+        "positions_checked",
+        "random_legal_top1_baseline",
+        "relative_probe_shape",
+        "revision",
+        "sample_first_top3",
+        "sample_first_top3_matches_expected",
+        "sample_shape",
+        "swapped_parity_negative_control_threshold",
+        "swapped_parity_probe_accuracy"
+      ],
+      "uses_cuda": true
+    },
+    "gpu_test": {
+      "board_probe_accuracy": 0.9790287613868713,
+      "board_probe_accuracy_threshold": 0.95,
+      "board_probe_empty_accuracy": 0.968352735042572,
+      "board_probe_layer": 6,
+      "board_probe_occupied_accuracy": 0.9884487390518188,
+      "cuda_available": true,
+      "cuda_version": "13.2",
+      "device": "NVIDIA GeForce RTX 5090 Laptop GPU",
+      "full_path": "Loaded the pinned Othello-GPT synthetic TransformerLens checkpoint, ran legal-move prediction and bundled linear board-state probe on 64 games x 59 positions.",
+      "full_probe_shape": [
+        3,
+        512,
+        8,
+        8,
+        3
+      ],
+      "games_checked": 64,
+      "gpu_total_memory_gb": 23.45965576171875,
+      "legal_top1_accuracy": 0.9989407062530518,
+      "legal_top1_accuracy_threshold": 0.99,
+      "model_id": "NeelNanda/Othello-GPT-Transformer-Lens",
+      "model_loaded": true,
+      "peak_vram_gb": 1.40977408,
+      "positions_checked": 3776,
+      "random_legal_top1_baseline": 0.14268720149993896,
+      "relative_probe_shape": [
+        512,
+        8,
+        8,
+        3
+      ],
+      "revision": "905ca1a68b9f7dff77adc56af1962e5f6fcac274",
+      "sample_first_top3": [
+        21,
+        33,
+        19
+      ],
+      "sample_first_top3_matches_expected": true,
+      "sample_shape": [
+        1,
+        10,
+        61
+      ],
+      "swapped_parity_negative_control_threshold": 0.6,
+      "swapped_parity_probe_accuracy": 0.4586905837059021,
+      "torch_version": "2.12.1+cu132",
+      "within_vram_budget": true
+    },
+    "notebook_contract": {
+      "checks": {
+        "board_probe_accuracy_min": true,
+        "board_probe_empty_accuracy_min": true,
+        "board_probe_occupied_accuracy_min": true,
+        "cuda_available": true,
+        "legal_top1_accuracy_min": true,
+        "sample_first_top3_matches_expected": true,
+        "swapped_parity_negative_control_max": true,
+        "within_vram_budget": true
+      },
+      "tests_passed": true
+    }
+  },
+  "models": [
+    {
+      "gated": false,
+      "id": "NeelNanda/Othello-GPT-Transformer-Lens",
+      "precision": "float32",
+      "revision": "905ca1a68b9f7dff77adc56af1962e5f6fcac274",
+      "source": "huggingface",
+      "weights_file": "synthetic_model.pth"
+    },
+    {
+      "gated": false,
+      "id": "main_linear_probe.pth",
+      "precision": "float32",
+      "revision": "bundled_arena_probe",
+      "source": "local_fixture"
+    }
+  ],
+  "negative_controls": {
+    "declared_controls": [
+      "random_legal_move_baseline",
+      "swapped_player_parity_probe_negative_control"
+    ]
+  },
+  "notebook_id": "1_5_3_othellogpt",
+  "ood_tests": {
+    "declared": "held-out games from the bundled small fixture; no broader OOD board distribution is claimed by this smoke report"
+  },
+  "peak_vram_gb": 1.409774,
+  "report_inputs": {
+    "schema_version": 1,
+    "algorithm": "sha256",
+    "combined_sha256": "3f5011bfd123c827308b174685cdd37a4702db57c16c6168e5ea89445eccdb58",
+    "files": [
+      {
+        "path": "arena_ext/verification.py",
+        "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
+        "size_bytes": 9276
+      },
+      {
+        "path": "chapter1_transformer_interp/exercises/part53_othellogpt/board_seqs_id_small.npy",
+        "sha256": "fb11a862c50f933e029e0708d5266e838fcc3dad8021cbc6d9ec964dfedb2f77",
+        "size_bytes": 6000128
+      },
+      {
+        "path": "chapter1_transformer_interp/exercises/part53_othellogpt/board_seqs_square_small.npy",
+        "sha256": "99565a9962ed79064f0e114224325c81599a8f03e5e6b8ea6cecdb0df687aa37",
+        "size_bytes": 6000128
+      },
+      {
+        "path": "chapter1_transformer_interp/exercises/part53_othellogpt/main_linear_probe.pth",
+        "sha256": "eb8ab01a70e63305661c97a211a1321decc16451baff909481cde3b615a7fb16",
+        "size_bytes": 1180395
+      },
+      {
+        "path": "chapter1_transformer_interp/exercises/part53_othellogpt/utils.py",
+        "sha256": "2a364084b9cc9bc3fa5c30b26d82ee2d896c65756af871eeba38a6221ef82008",
+        "size_bytes": 25091
+      },
+      {
+        "path": "docs/evidence/othello_gpt/artifacts.lock.yml",
+        "sha256": "554b439742d18c7cdbf90c6fb5b5e5de478d56107bd1560e2f79b4d4b47ce613",
+        "size_bytes": 2217
+      },
+      {
+        "path": "docs/evidence/othello_gpt/verification_report.schema.json",
+        "sha256": "ecd833883885077ad5d7a0e239d984d01462255e94266212cf195ab4d4e27b3d",
+        "size_bytes": 2669
+      },
+      {
+        "path": "docs/evidence/othello_gpt/verify_othello_gpt_report.py",
+        "sha256": "329443db42e6add1afa6b8f39df8619d8cf1ea8487f97eb8776bc4eebf6f88d2",
+        "size_bytes": 15648
+      },
+      {
+        "path": "scripts/run_extension_verification_reports.py",
+        "sha256": "660040f459d07535deb9e0c34ffddb496c13b8770044ae380d3a8e45b0c8fb2b",
+        "size_bytes": 16080
+      }
+    ]
+  },
+  "safety_notes": [
+    "Othello-GPT is a board-game model; no unsafe prompts or personal data are used.",
+    "No raw model weights are added to the repository; the checkpoint is loaded from the pinned Hugging Face revision."
+  ],
+  "tests_passed": true,
+  "wall_clock_seconds": 0.807782
+}

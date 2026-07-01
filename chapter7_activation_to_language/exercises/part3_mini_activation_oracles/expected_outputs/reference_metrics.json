@@ -1,0 +1,55 @@
+{
+  "baselines": {
+    "required": true
+  },
+  "metrics": {
+    "accepted": true,
+    "activation_only_probe_accuracy_max_max": 0.75,
+    "activation_shape": [
+      16,
+      512
+    ],
+    "adversarial_accuracy": 1.0,
+    "beats_or_matches_probe": true,
+    "beats_text_only": true,
+    "bnb_cuda_override": "130",
+    "eval_example_count": 8,
+    "heldout_template_accuracy": 1.0,
+    "hf_revision": "bddc0e332f0ae84279e6a6a45d91b314899e1603",
+    "linear_probe_accuracy": 0.5,
+    "long_context_accuracy": 1.0,
+    "max_allowed_gpu_gb": 24,
+    "mlp_probe_accuracy": 0.5,
+    "model_name": "gelu-1l",
+    "negative_token": " top",
+    "new_name_accuracy": 1.0,
+    "oracle_accuracy": 1.0,
+    "original_answer": 1,
+    "passes_ood": true,
+    "patched_answer": 0,
+    "patching_changed_answer": true,
+    "peak_vram_gb_max": 1.0,
+    "positive_token": " floor",
+    "preflight_passed": true,
+    "question_conditioned_row_count": 16,
+    "question_conditioned_train_loss_max": 0.01,
+    "question_count": 2,
+    "question_id_changes_predictions": 1.0,
+    "random_abstention_rate": 1.0,
+    "random_graceful_failure": true,
+    "random_mean_confidence_max": 0.4,
+    "sae_classifier_accuracy": 0.5,
+    "tests_passed": true,
+    "text_only_accuracy": 0.5,
+    "tokenizer_revision": "0f6671571a20be9756b9991d978047c03b75e749",
+    "train_accuracy": 1.0,
+    "train_example_count": 8
+  },
+  "negative_controls": {
+    "required_where_applicable": true
+  },
+  "notebook_id": "7_3_mini_activation_oracles",
+  "ood_tests": {
+    "required_where_applicable": true
+  }
+}

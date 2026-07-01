@@ -1,0 +1,168 @@
+notebook_id: 7_5_predictive_concept_decoders
+section: '7.5'
+title: Predictive Concept Decoders
+exercise_metadata:
+  EXERCISE_ID: 7_5_predictive_concept_decoders
+  GT_TIER: GT-3
+  DIFFICULTY: 3
+  IMPORTANCE: 3
+  EXPECTED_RUNTIME: seconds on toy contract; minutes on local real-model path
+  REQUIRES_GPU: true
+gt_tier: GT-3
+evidence_level: toy_pcd_contract_plus_pinned_transformerlens_trained_sparse_concept_decoder_preflight
+claim_scope: 'GT-3 Predictive Concept Decoder preflight: reusable toy question-batch,
+  sparse encoding, question-conditioned decoder, baseline comparison, stability, removal,
+  and concept-audit contracts are kept for learner exercises, then a pinned TransformerLens
+  gelu-1l checkpoint is loaded on CUDA. The report builds signed sparse residual concepts
+  from safe final-token activations, expands them into explicit concept-question interaction
+  features, trains a tiny question-conditioned decoder on the train split, and evaluates
+  four behavioral questions on held-out long-context prompts. It compares against trained
+  question-agnostic sparse-concept, trained single-concept, and trained non-interaction
+  activation+question baselines. It also checks concept sparsity, question-shuffle degradation,
+  multi-seed top-concept stability, auditable top concept names, and active top-concept
+  removal against a low-margin active-control removal. Legacy metric names still
+  use random_removal for compatibility. This is a local PCD mechanics preflight,
+  not a broad PCD benchmark or a full Activation Oracle comparison.'
+required_gpu_gb: 1
+max_allowed_gpu_gb: 24
+models:
+- id: toy_or_generated_inputs
+  source: generated
+  revision: seed_0
+  precision: float32
+  gated: false
+- id: NeelNanda/GELU_1L512W_C4_Code
+  source: huggingface_via_transformerlens
+  revision: bddc0e332f0ae84279e6a6a45d91b314899e1603
+  precision: float32
+  gated: false
+  claim_scope: sparse_concept_question_conditioned_decoder_preflight
+  transformerlens_model_name: gelu-1l
+  tokenizer_id: NeelNanda/gpt-neox-tokenizer-digits
+  tokenizer_revision: 0f6671571a20be9756b9991d978047c03b75e749
+datasets:
+- id: 7_5_predictive_concept_decoders_toy_inputs
+  source: generated
+  seed: 0
+- id: course_safe_sparse_concept_pcd_prompts_v1
+  source: generated_prompt_sets
+  seed: 0
+  positive_anchor_prompt: The cat sat on the
+  negative_anchor_prompt: The bird flew over the
+  train_example_count: 12
+  eval_example_count: 8
+  eval_split: long_context_ood
+  question_count: 4
+  pcd_row_count: 32
+  train_pcd_row_count: 48
+  latent_labels:
+  - surface
+  - motion
+  concepts:
+  - surface_direction
+  - motion_direction
+  - pc1_positive
+  - pc1_negative
+  - pc2_positive
+  - pc2_negative
+  - pc3_positive
+  - pc3_negative
+  concept_top_k: 4
+  target_source: manual_safe_prompt_labels_plus_trained_concept_question_decoder
+  hook: blocks.0.hook_resid_post
+  tokenizer: NeelNanda/gpt-neox-tokenizer-digits
+expected_metrics:
+  tests_passed: true
+  accepted: true
+  max_allowed_gpu_gb: 24
+  preflight_passed: true
+  model_name: gelu-1l
+  hf_revision: bddc0e332f0ae84279e6a6a45d91b314899e1603
+  tokenizer_revision: 0f6671571a20be9756b9991d978047c03b75e749
+  bnb_cuda_override: '130'
+  positive_token: ' floor'
+  negative_token: ' top'
+  train_example_count: 12
+  eval_example_count: 8
+  activation_shape:
+  - 8
+  - 512
+  concept_shape:
+  - 8
+  - 8
+  row_concept_shape:
+  - 32
+  - 8
+  conditioned_concept_shape:
+  - 32
+  - 32
+  question_count: 4
+  pcd_row_count: 32
+  train_pcd_row_count: 48
+  concept_direction_count: 8
+  concept_top_k: 4
+  concept_mean_l0: 4.0
+  beats_best_baseline: true
+  beats_probe: true
+  concept_density: 0.5
+  passes_sparsity: true
+  pcd_accuracy: 1.0
+  probe_accuracy: 0.5
+  sae_classifier_accuracy: 0.5
+  non_interaction_baseline_accuracy: 0.5
+  best_baseline_accuracy: 0.5
+  pcd_decoder_train_accuracy: 1.0
+  pcd_decoder_train_loss_max: 0.001
+  pcd_decoder_training_steps: 700
+  probe_train_accuracy: 0.5
+  sae_classifier_train_accuracy: 0.5
+  non_interaction_train_accuracy: 0.5
+  question_shuffle_accuracy_max: 0.25
+  pcd_seed_count: 3
+  pcd_seed_min_accuracy: 1.0
+  passes_ood: true
+  random_removal_does_less: true
+  random_removal_changed: false
+  top_removal_changed: true
+  top_removal_delta_min: 4.0
+  random_removal_delta_max: 1.0
+  random_removed_concept_active: true
+  selected_concept_ids:
+  - 0
+  - 1
+  selected_concept_names:
+  - surface_direction
+  - motion_direction
+  names_expected_cluster: true
+  mean_pairwise_jaccard: 1.0
+  stable: true
+  peak_vram_gb_max: 1.0
+controls:
+- baseline_or_reference_check
+- negative_control_where_applicable
+- shape_dtype_or_exact_value_check
+- toy_pcd_question_batch_contract
+- toy_sparse_concept_encoding_contract
+- toy_question_conditioned_decoder_contract
+- toy_pcd_baseline_comparison_contract
+- toy_concept_stability_contract
+- toy_concept_removal_contract
+- toy_concept_audit_contract
+- pinned_transformerlens_gelu1l_sparse_signed_residual_concepts
+- trained_question_conditioned_decoder
+- concept_question_interaction_feature_map
+- trained_question_agnostic_sparse_probe_baseline
+- trained_single_concept_classifier_baseline
+- trained_non_interaction_activation_question_baseline
+- question_shuffle_negative_control
+- long_context_ood_prompt_split
+- multi_seed_decoder_stability
+- top_concept_removal_control
+- active_random_concept_removal_negative_control
+- full_activation_oracle_and_broad_pcd_benchmark_not_claimed
+safety_notes:
+- No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.
+- The real-model path uses safe generic prompts and cached activations/logits from
+  a small public TransformerLens checkpoint. It does not use unsafe prompts, gated
+  weights, generated completions, adapter training, external API calls, or full Activation
+  Oracle comparisons.

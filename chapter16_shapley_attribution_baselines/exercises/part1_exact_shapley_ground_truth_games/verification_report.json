@@ -1,0 +1,309 @@
+{
+  "accepted": true,
+  "baselines": {
+    "declared_controls": [
+      "baseline_or_reference_check",
+      "negative_control_where_applicable",
+      "shape_dtype_or_exact_value_check",
+      "exact_additive_shapley_contract",
+      "exact_conjunction_efficiency_contract",
+      "permutation_parity_contract",
+      "leave_one_out_interaction_overcount_contract",
+      "real_cuda_training_run",
+      "complete_binary_feature_table_fit",
+      "real_model_ablation_coalition_table",
+      "analytic_shapley_ground_truth_check",
+      "efficiency_axiom_check_on_trained_model",
+      "shuffled_label_trained_model_negative_control",
+      "kernelshap_partitionshap_tokenshap_and_large_model_attribution_not_claimed"
+    ],
+    "expected_metrics": {
+      "accepted": true,
+      "coalition_count": 16,
+      "efficiency_error_max": 1e-08,
+      "fit_max_abs_error_max": 0.0001,
+      "fit_mse_max": 1e-08,
+      "max_allowed_gpu_gb": 24,
+      "model_family": "cuda_trained_neural_coalition_game_mlp",
+      "neural_shapley_max_abs_error_max": 0.0001,
+      "num_players": 4,
+      "peak_vram_gb_max": 1.0,
+      "preflight_passed": true,
+      "satisfies_efficiency": true,
+      "shuffled_control_cosine_max": 0.25,
+      "shuffled_control_error_min": 1.0,
+      "shuffled_control_rejected": true,
+      "tests_passed": true,
+      "training_example_count": 16,
+      "training_steps": 1200
+    }
+  },
+  "claim_scope": "GT-0 exact Shapley preflight: deterministic additive, conjunction, permutation-parity, and leave-one-out interaction contracts are kept for learner exercises, then a CUDA MLP is trained on the complete binary feature table for a known nonlinear coalition game. The report computes exact Shapley values from real model ablations, checks them against the analytic data-generating game, verifies efficiency, and rejects a shuffled-label model that fits its shuffled table but fails the true attribution vector. This proves exact Shapley on a finite trained model organism; it is not a claim about approximate SHAP on large models.",
+  "datasets": [
+    {
+      "id": "16_1_exact_shapley_on_ground_truth_games_toy_inputs",
+      "seed": 0,
+      "source": "generated"
+    },
+    {
+      "analytic_shapley": [
+        2.3,
+        -1.45,
+        2.7,
+        0.15
+      ],
+      "baseline_input": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "coalition_count": 16,
+      "example_count": 16,
+      "id": "complete_binary_feature_game_table_v1",
+      "num_players": 4,
+      "seed": 1621,
+      "shuffled_label_control": true,
+      "source": "generated_finite_table",
+      "target_input": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "target_rule": "0.25 + 1.2*x0 - 0.7*x1 + 1.6*x2 + 0.9*x3 + 2.2*x0*x2 - 1.5*x1*x3"
+    }
+  ],
+  "date_run": "2026-06-30T14:11:38+00:00",
+  "evidence_level": "exact_shapley_contract_plus_cuda_trained_neural_game_preflight",
+  "git_commit": "f9f034bd",
+  "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+  "gt_tier": "GT-0",
+  "known_failures": [],
+  "metrics": {
+    "gpu_evidence": {
+      "category": "cuda_section_metric",
+      "placeholder_only": false,
+      "section_specific_metric_keys": [
+        "coalition_count",
+        "efficiency_error",
+        "fit_max_abs_error",
+        "fit_mse",
+        "model_family",
+        "model_shapley",
+        "neural_shapley_max_abs_error",
+        "num_players",
+        "preflight_passed",
+        "satisfies_efficiency",
+        "shuffled_control_cosine",
+        "shuffled_control_error",
+        "shuffled_control_fit_mse",
+        "shuffled_control_rejected",
+        "shuffled_control_shapley",
+        "training_example_count",
+        "training_steps",
+        "true_shapley"
+      ],
+      "uses_cuda": true
+    },
+    "gpu_test": {
+      "coalition_count": 16,
+      "cuda_available": true,
+      "cuda_version": "13.2",
+      "device": "NVIDIA GeForce RTX 5090 Laptop GPU",
+      "efficiency_error": 0.0,
+      "fit_max_abs_error": 2.384185791015625e-06,
+      "fit_mse": 1.1020073742429304e-12,
+      "full_path": "Train a CUDA MLP on a complete binary feature game, compute exact Shapley values from real model ablations, and reject a shuffled-label control.",
+      "gpu_total_memory_gb": 23.45965576171875,
+      "model_family": "cuda_trained_neural_coalition_game_mlp",
+      "model_shapley": [
+        2.3000006563961506,
+        -1.450000535696745,
+        2.700000955412785,
+        0.15000034247835475
+      ],
+      "neural_shapley_max_abs_error": 9.37531391631552e-07,
+      "num_players": 4,
+      "peak_vram_gb": 0.06262922286987305,
+      "preflight_passed": true,
+      "satisfies_efficiency": true,
+      "shuffled_control_cosine": -0.7645876407623291,
+      "shuffled_control_error": 4.633333171407381,
+      "shuffled_control_fit_mse": 1.6053824936079764e-13,
+      "shuffled_control_rejected": true,
+      "shuffled_control_shapley": [
+        -2.3333331992228823,
+        -0.10000026722749078,
+        -0.8333336760600409,
+        -0.7333332747220993
+      ],
+      "torch_version": "2.12.1+cu132",
+      "training_example_count": 16,
+      "training_steps": 1200,
+      "true_shapley": [
+        2.299999972184499,
+        -1.4500001271565754,
+        2.7000000178813934,
+        0.14999994635581965
+      ],
+      "within_vram_budget": true
+    },
+    "notebook_contract": {
+      "additive": {
+        "efficiency": {
+          "efficiency_error": 0.0,
+          "satisfies_efficiency": true,
+          "shapley_sum": 2.5,
+          "total_value_delta": 2.5
+        },
+        "shapley": [
+          1.0,
+          2.0,
+          -0.5
+        ]
+      },
+      "conjunction": {
+        "efficiency": {
+          "efficiency_error": 0.0,
+          "satisfies_efficiency": true,
+          "shapley_sum": 1.0,
+          "total_value_delta": 1.0
+        },
+        "shapley": [
+          0.3333333333333333,
+          0.3333333333333333,
+          0.3333333333333333
+        ]
+      },
+      "interaction_failure": {
+        "detects_interaction_overcount": true,
+        "leave_one_out_total": 2.0,
+        "overcount": 1.0,
+        "shapley_total": 1.0
+      },
+      "permutation_parity": {
+        "matches_exact": true,
+        "max_abs_error": 0.0
+      }
+    }
+  },
+  "models": [
+    {
+      "gated": false,
+      "id": "toy_or_generated_inputs",
+      "precision": "float32",
+      "revision": "seed_0",
+      "source": "generated"
+    },
+    {
+      "claim_scope": "trained_exact_shapley_neural_game_preflight",
+      "gated": false,
+      "id": "course_cuda_neural_coalition_game_mlp_v1",
+      "learning_rate": 0.05,
+      "optimizer": "AdamW",
+      "precision": "float32",
+      "revision": "seed_1621_players4_hidden64_steps1200",
+      "source": "generated_training_run"
+    }
+  ],
+  "negative_controls": {
+    "declared_controls": [
+      "negative_control_where_applicable",
+      "shuffled_label_trained_model_negative_control"
+    ]
+  },
+  "notebook_id": "16_1_exact_shapley_on_ground_truth_games",
+  "ood_tests": {
+    "declared": "required_where_applicable"
+  },
+  "peak_vram_gb": 0.062629,
+  "report_inputs": {
+    "schema_version": 1,
+    "algorithm": "sha256",
+    "combined_sha256": "d47711a33a6bc866bde248710a7dc12ef522223d4079da539539fe8cecba4c98",
+    "files": [
+      {
+        "path": "arena_ext/shapley_neural_game.py",
+        "sha256": "09632900a7a6b31d46ec8ed8e39692b4e20618a81ce590369761f3687b9a19be",
+        "size_bytes": 4122
+      },
+      {
+        "path": "arena_ext/verification.py",
+        "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
+        "size_bytes": 9276
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part1_exact_shapley_ground_truth_games/16.1_Exact_Shapley_on_Ground_Truth_Games_exercises.ipynb",
+        "sha256": "520aecfcb9f1c2cdc28358b438f26e5ec183147ea9a7ea96535837d5de03342f",
+        "size_bytes": 11631
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part1_exact_shapley_ground_truth_games/16.1_Exact_Shapley_on_Ground_Truth_Games_solutions.ipynb",
+        "sha256": "34e87bc55b1e70a75fb2ebe6ed34b0c3aca3d49689fe7ff44c35176414baa8dc",
+        "size_bytes": 6362
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part1_exact_shapley_ground_truth_games/README.md",
+        "sha256": "a2c943bcabfd34beb1bfd4129b4efe0a212f62de3132f2a6098e8f35976615d7",
+        "size_bytes": 1005
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part1_exact_shapley_ground_truth_games/artifacts.lock.yml",
+        "sha256": "22ed8fbf9a8d4824d1aab466724fc2b2b6731562b524985cd3996c31d0f086c6",
+        "size_bytes": 3434
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part1_exact_shapley_ground_truth_games/expected_outputs/README.md",
+        "sha256": "f417de072b371cd9c1ddccaa90fde92452bbc84d0db74d3bbe73e00e33594e8d",
+        "size_bytes": 1788
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part1_exact_shapley_ground_truth_games/expected_outputs/reference_metrics.json",
+        "sha256": "ee1e6123f1e0de8bd6db3b9ceb01cd1a54b6b1149f2762d2f72825a355244c30",
+        "size_bytes": 863
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part1_exact_shapley_ground_truth_games/expected_outputs/smoke_test.json",
+        "sha256": "1cfde23834f648dee6c88e66b65fbf7f04815fd255c42c8d116663b3f0c0a36e",
+        "size_bytes": 311
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part1_exact_shapley_ground_truth_games/solutions.py",
+        "sha256": "babf607e6cbba40a14fe941a887dd79721f8fb249c00223cffc2884e8b25161c",
+        "size_bytes": 12308
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part1_exact_shapley_ground_truth_games/tests.py",
+        "sha256": "c2ec7b2975731c664ebdb96ec78c9359fede0114874a3f9d57ddae4f8708035d",
+        "size_bytes": 10842
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part1_exact_shapley_ground_truth_games/utils.py",
+        "sha256": "31724e90fc6aa0a8d0345c2ca84358b4fe0afd6bf6b93e9f3aaa0a7ef46dba28",
+        "size_bytes": 141
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part1_exact_shapley_ground_truth_games/verification_report.schema.json",
+        "sha256": "ecd833883885077ad5d7a0e239d984d01462255e94266212cf195ab4d4e27b3d",
+        "size_bytes": 2669
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/pages/01_[16.1]_Exact_Shapley_on_Ground_Truth_Games.md",
+        "sha256": "cdf49298fde02b8102869bf67a5037ab537627dbb60572d5ac5e7a4a5b1d0f9a",
+        "size_bytes": 20758
+      },
+      {
+        "path": "scripts/run_extension_verification_reports.py",
+        "sha256": "660040f459d07535deb9e0c34ffddb496c13b8770044ae380d3a8e45b0c8fb2b",
+        "size_bytes": 16080
+      }
+    ]
+  },
+  "safety_notes": [
+    "No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.",
+    "The real training path uses only a generated finite binary feature table and a shuffled-label negative control. It does not use unsafe prompts, user data, external APIs, adapters, gated weights, or large persistent artifacts."
+  ],
+  "tests_passed": true,
+  "wall_clock_seconds": 4.462569
+}

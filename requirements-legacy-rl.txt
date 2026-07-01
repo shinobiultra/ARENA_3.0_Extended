@@ -1,0 +1,12 @@
+# Optional legacy Chapter 2 PPO/Brax/EnvPool stack.
+#
+# Do not install this into the default Python 3.14 + CUDA 13.2 uv environment.
+# It is kept separate because the pinned JAX/Brax CUDA12 stack conflicts with
+# the current PyTorch/CUDA13 environment and with circuitsvis' NumPy constraint.
+
+pygame
+gymnasium[atari, accept-rom-license, other, mujoco-py]==0.29.0
+mujoco
+jax[cuda12]==0.10.1
+brax==0.14.2
+envpool==1.2.5

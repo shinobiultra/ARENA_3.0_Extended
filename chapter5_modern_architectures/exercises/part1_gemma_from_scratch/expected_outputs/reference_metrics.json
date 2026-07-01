@@ -1,0 +1,50 @@
+{
+  "baselines": {
+    "declared_controls": [
+      "local_rmsnorm_formula_contract",
+      "local_rope_norm_contract",
+      "local_kv_cache_parity_contract",
+      "huggingface_gemma_reference_architecture_logits_parity",
+      "state_dict_key_count_match",
+      "reference_cache_parity_check",
+      "gated_pretrained_gemma_weights_not_claimed"
+    ]
+  },
+  "metrics": {
+    "accepted": true,
+    "cache_max_abs_diff_max": 1e-05,
+    "cache_passed": true,
+    "fits_budget": true,
+    "max_allowed_gpu_gb": 24,
+    "peak_vram_gb_max": 1.0,
+    "preflight_passed": true,
+    "reference_cache_max_abs_diff_max": 1e-05,
+    "reference_cache_passed": true,
+    "reference_loaded_key_count": 21,
+    "reference_logits_max_abs_diff_max": 0.0005,
+    "reference_logits_mse_max": 1e-07,
+    "reference_logits_topk_agreement": 1.0,
+    "reference_model_family": "transformers.GemmaForCausalLM",
+    "reference_parity_passed": true,
+    "reference_transformers_tiny_config": true,
+    "reference_weight_key_count": 21,
+    "rope_norm_error_max": 1e-06,
+    "tests_passed": true
+  },
+  "models": [
+    {
+      "claim_scope": "reference_architecture_parity_no_pretrained_weights",
+      "id": "transformers.GemmaForCausalLM",
+      "revision": "deterministic_tiny_config_seed_5101"
+    }
+  ],
+  "negative_controls": {
+    "declared_controls": [
+      "gated_pretrained_gemma_weights_not_claimed"
+    ]
+  },
+  "notebook_id": "5_1_gemma_from_scratch",
+  "ood_tests": {
+    "declared": "shape/cache/reference-parity checks cover this GT-0 architecture contract"
+  }
+}

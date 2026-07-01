@@ -1,0 +1,10 @@
+{
+  "accepted": true,
+  "claim_scope": "Contract check; not a full real-model validation.",
+  "evidence_level": "notebook_contract",
+  "gt_tier": "GT-3",
+  "notebook_id": "9_4_white_box_evals_and_monitors",
+  "section": "9.4",
+  "tests_passed": true,
+  "title": "White-box Evals and Monitors"
+}

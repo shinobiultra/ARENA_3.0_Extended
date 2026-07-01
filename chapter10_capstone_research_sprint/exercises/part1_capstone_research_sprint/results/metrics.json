@@ -1,0 +1,56 @@
+{
+  "ablation_drop_mean": 0.48032404979070026,
+  "benchmark": "synthetic_activation_oracle_latent_questions_v1",
+  "causal_controls_passed": true,
+  "compositional_oracle_beats_linear_probe": true,
+  "counterfactual_patch_change_rate_mean": 1.0,
+  "counterfactual_patch_target_accuracy_mean": 1.0,
+  "d_model": 12,
+  "dataset": "balanced_latent_bits_with_heldout_template_nuisance_v1",
+  "heldout_template_accuracy_mean": 1.0,
+  "heldout_template_example_count": 384,
+  "heldout_templates": [
+    3,
+    4
+  ],
+  "iid_example_count": 576,
+  "label_shuffle_accuracy_mean": 0.48148147265116376,
+  "label_shuffle_control_passed": true,
+  "linear_probe_bank_accuracy_mean": 0.8784722288449606,
+  "linear_probe_compositional_accuracy_mean": 0.5138888955116272,
+  "max_allowed_gpu_gb": 24.0,
+  "model_family": "question_conditioned_mlp_activation_oracle",
+  "n_questions": 4,
+  "ood_passed": true,
+  "oracle_accuracy_mean": 1.0,
+  "oracle_accuracy_min": 1.0,
+  "oracle_beats_linear_probe_bank": true,
+  "oracle_beats_text_only": true,
+  "oracle_compositional_accuracy_mean": 1.0,
+  "peak_vram_gb": 0.0634922981262207,
+  "preflight_passed": true,
+  "question_names": [
+    "color_bit",
+    "shape_bit",
+    "material_bit",
+    "color_xor_shape"
+  ],
+  "random_activation_accuracy_mean": 0.4947916666666667,
+  "random_activation_control_passed": true,
+  "random_activation_mean_confidence_mean": 0.9181055227915446,
+  "random_patch_change_rate_mean": 0.0,
+  "seed_count": 3,
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "text_only_accuracy_mean": 0.5,
+  "train_example_count": 576,
+  "train_templates": [
+    0,
+    1,
+    2
+  ],
+  "within_vram_budget": true
+}

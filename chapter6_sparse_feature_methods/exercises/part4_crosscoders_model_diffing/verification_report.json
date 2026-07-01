@@ -1,0 +1,340 @@
+{
+  "accepted": true,
+  "baselines": {
+    "declared_controls": [
+      "baseline_or_reference_check",
+      "negative_control_where_applicable",
+      "shape_dtype_or_exact_value_check",
+      "toy_exact_crosscoder_reconstruction_contract",
+      "toy_feature_specificity_contract",
+      "toy_behavior_delta_auc_contract",
+      "toy_model_specific_ablation_control",
+      "pinned_gelu1l_vs_solu1l_paired_residuals",
+      "exact_shared_plus_delta_reconstruction",
+      "svd_model_diff_direction_auc",
+      "top_direction_delta_ablation",
+      "orthogonal_random_direction_ablation_control",
+      "full_trained_crosscoder_paper_replication_not_claimed"
+    ],
+    "expected_metrics": {
+      "ablation_passes_control": true,
+      "accepted": true,
+      "activation_shape": [
+        16,
+        512
+      ],
+      "behavior_delta_auc": 1.0,
+      "delta_reduction_min": 1.0,
+      "floor_top_delta_abs_mean_min": 0.1,
+      "max_allowed_gpu_gb": 24,
+      "model_a_mse_max": 1e-08,
+      "model_a_name": "gelu-1l",
+      "model_a_revision": "bddc0e332f0ae84279e6a6a45d91b314899e1603",
+      "model_b_mse_max": 1e-08,
+      "model_b_name": "solu-1l",
+      "model_b_revision": "a4ce32db5e35f13e5f09333888bd2d42660f77ce",
+      "peak_vram_gb_max": 1.0,
+      "preflight_passed": true,
+      "random_reduction_max": 0.1,
+      "shared_reconstructs_both": true,
+      "tests_passed": true,
+      "top_variance_fraction_min": 0.25
+    }
+  },
+  "claim_scope": "GT-3 paired-model diffing ladder: toy crosscoder helpers remain exact, then pinned GELU-1L and SoLU-1L TransformerLens checkpoints are loaded on CUDA. The report checks exact shared-plus-delta reconstruction, an SVD model-diff direction separating generated technical versus everyday prompts, and top-direction ablation against an orthogonal random-direction control. This is a real paired-checkpoint model-diffing preflight, not a full trained crosscoder paper replication.",
+  "datasets": [
+    {
+      "id": "6_4_crosscoders_and_model_diffing_toy_inputs",
+      "seed": 0,
+      "source": "generated"
+    },
+    {
+      "everyday_prompt_count": 8,
+      "id": "course_generated_gelu_solu_model_diff_prompts_v1",
+      "label_classes": [
+        "technical_prompt",
+        "everyday_prompt"
+      ],
+      "seed": 6404,
+      "source": "generated_safe_prompt_categories",
+      "target_hook": "blocks.0.hook_resid_post",
+      "technical_prompt_count": 8
+    }
+  ],
+  "date_run": "2026-06-30T14:06:38+00:00",
+  "evidence_level": "toy_crosscoder_contract_plus_paired_transformerlens_model_diff_preflight",
+  "git_commit": "f9f034bd",
+  "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+  "gt_tier": "GT-3",
+  "known_failures": [],
+  "metrics": {
+    "gpu_evidence": {
+      "category": "cuda_section_metric",
+      "placeholder_only": false,
+      "section_specific_metric_keys": [
+        "ablation_passes_control",
+        "activation_shape",
+        "baseline_delta_norm",
+        "behavior_delta_auc",
+        "behavior_delta_negative_mean",
+        "behavior_delta_positive_mean",
+        "delta_reduction",
+        "everyday_prompt_count",
+        "floor_top_delta_abs_mean",
+        "floor_top_delta_mean",
+        "model_a_mse",
+        "model_a_name",
+        "model_a_revision",
+        "model_b_mse",
+        "model_b_name",
+        "model_b_revision",
+        "preflight_passed",
+        "prompt_count",
+        "random_direction_ablated_delta_norm",
+        "random_reduction",
+        "shared_active_fraction",
+        "shared_reconstructs_both",
+        "technical_prompt_count",
+        "tokenizer_id",
+        "tokenizer_revision",
+        "top_direction_ablated_delta_norm",
+        "top_singular_value",
+        "top_variance_fraction"
+      ],
+      "uses_cuda": true
+    },
+    "gpu_test": {
+      "ablation_passes_control": true,
+      "activation_shape": [
+        16,
+        512
+      ],
+      "baseline_delta_norm": 28.658447265625,
+      "behavior_delta_auc": 1.0,
+      "behavior_delta_negative_mean": 21.172061920166016,
+      "behavior_delta_positive_mean": 29.693614959716797,
+      "cuda_available": true,
+      "cuda_version": "13.2",
+      "delta_reduction": 16.084497451782227,
+      "device": "NVIDIA GeForce RTX 5090 Laptop GPU",
+      "everyday_prompt_count": 8,
+      "floor_top_delta_abs_mean": 1.0159178972244263,
+      "floor_top_delta_mean": 0.3927539885044098,
+      "full_path": "Pinned paired TransformerLens GELU-1L vs SoLU-1L CUDA preflight: exact shared-plus-delta reconstruction, SVD model-diff direction, technical-vs-everyday prompt separation, and top-direction ablation against an orthogonal random-direction control.",
+      "gpu_total_memory_gb": 23.45965576171875,
+      "model_a_mse": 0.0,
+      "model_a_name": "gelu-1l",
+      "model_a_revision": "bddc0e332f0ae84279e6a6a45d91b314899e1603",
+      "model_b_mse": 1.2413493364533978e-15,
+      "model_b_name": "solu-1l",
+      "model_b_revision": "a4ce32db5e35f13e5f09333888bd2d42660f77ce",
+      "peak_vram_gb": 0.5445585250854492,
+      "preflight_passed": true,
+      "prompt_count": 16,
+      "random_direction_ablated_delta_norm": 28.653396606445312,
+      "random_reduction": 0.0050506591796875,
+      "shared_active_fraction": 0.486572265625,
+      "shared_reconstructs_both": true,
+      "technical_prompt_count": 8,
+      "tokenizer_id": "NeelNanda/gpt-neox-tokenizer-digits",
+      "tokenizer_revision": "0f6671571a20be9756b9991d978047c03b75e749",
+      "top_direction_ablated_delta_norm": 12.573949813842773,
+      "top_singular_value": 103.62394714355469,
+      "top_variance_fraction": 0.8050758838653564,
+      "torch_version": "2.12.1+cu132",
+      "within_vram_budget": true
+    },
+    "notebook_contract": {
+      "ablation": {
+        "ablated_delta": 0.25,
+        "baseline_delta": 1.0,
+        "delta_reduction": 0.75,
+        "passes_control": true,
+        "random_ablated_delta": 0.8500000238418579,
+        "random_reduction": 0.1499999761581421
+      },
+      "behavior_delta": {
+        "auc": 1.0,
+        "feature_id": 7,
+        "negative_mean": 0.15000000596046448,
+        "passes_threshold": true,
+        "positive_mean": 0.949999988079071
+      },
+      "delta_scores": {
+        "behavior_deltas": [
+          0.5,
+          -0.25
+        ]
+      },
+      "reconstruction": {
+        "reconstructed_model_a": [
+          [
+            3.0,
+            0.0
+          ],
+          [
+            3.0,
+            1.0
+          ]
+        ],
+        "reconstructed_model_b": [
+          [
+            1.0,
+            4.0
+          ],
+          [
+            0.0,
+            6.0
+          ]
+        ],
+        "report": {
+          "model_a_mse": 0.0,
+          "model_a_passes": true,
+          "model_b_mse": 0.0,
+          "model_b_passes": true,
+          "shared_active_fraction": 0.5,
+          "shared_reconstructs_both": true
+        }
+      },
+      "specificity": {
+        "feature_2": {
+          "feature_id": 2,
+          "model_a_mean": 0.15000000596046448,
+          "model_b_mean": 4.5,
+          "owner": "model_b",
+          "specificity": 4.3499999940395355
+        },
+        "owners": [
+          "shared",
+          "model_a",
+          "model_b"
+        ]
+      }
+    }
+  },
+  "models": [
+    {
+      "gated": false,
+      "id": "toy_or_generated_inputs",
+      "precision": "float32",
+      "revision": "seed_0",
+      "source": "generated"
+    },
+    {
+      "alias": "gelu-1l",
+      "claim_scope": "model_a_residual_stream",
+      "gated": false,
+      "id": "NeelNanda/GELU_1L512W_C4_Code",
+      "precision": "float32",
+      "revision": "bddc0e332f0ae84279e6a6a45d91b314899e1603",
+      "source": "huggingface_transformerlens",
+      "tokenizer": "NeelNanda/gpt-neox-tokenizer-digits",
+      "tokenizer_revision": "0f6671571a20be9756b9991d978047c03b75e749"
+    },
+    {
+      "alias": "solu-1l",
+      "claim_scope": "model_b_residual_stream",
+      "gated": false,
+      "id": "NeelNanda/SoLU_1L512W_C4_Code",
+      "precision": "float32",
+      "revision": "a4ce32db5e35f13e5f09333888bd2d42660f77ce",
+      "source": "huggingface_transformerlens",
+      "tokenizer": "NeelNanda/gpt-neox-tokenizer-digits",
+      "tokenizer_revision": "0f6671571a20be9756b9991d978047c03b75e749"
+    }
+  ],
+  "negative_controls": {
+    "declared_controls": [
+      "negative_control_where_applicable",
+      "orthogonal_random_direction_ablation_control"
+    ]
+  },
+  "notebook_id": "6_4_crosscoders_and_model_diffing",
+  "ood_tests": {
+    "declared": "required_where_applicable"
+  },
+  "peak_vram_gb": 0.544559,
+  "report_inputs": {
+    "schema_version": 1,
+    "algorithm": "sha256",
+    "combined_sha256": "6ddeaed1513a4b3f4b318c0bffc55f912894817eba8d22265f488ca050fee46f",
+    "files": [
+      {
+        "path": "arena_ext/verification.py",
+        "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
+        "size_bytes": 9276
+      },
+      {
+        "path": "chapter6_sparse_feature_methods/exercises/part4_crosscoders_model_diffing/6.4_Crosscoders_and_Model_Diffing_exercises.ipynb",
+        "sha256": "ef6772e6020b6e56da0daad5e8195d2d57360605e43f4f79279c7210e0725f42",
+        "size_bytes": 11581
+      },
+      {
+        "path": "chapter6_sparse_feature_methods/exercises/part4_crosscoders_model_diffing/6.4_Crosscoders_and_Model_Diffing_solutions.ipynb",
+        "sha256": "67f6e1dbba7c2ceffb3ec4702bd5b41433d761dcf70b15e12e7a8738e5bfd525",
+        "size_bytes": 5961
+      },
+      {
+        "path": "chapter6_sparse_feature_methods/exercises/part4_crosscoders_model_diffing/README.md",
+        "sha256": "c543de9ac302a776e831567c4e25cc25dccf66894c70e03e219e1b872931e24b",
+        "size_bytes": 1213
+      },
+      {
+        "path": "chapter6_sparse_feature_methods/exercises/part4_crosscoders_model_diffing/artifacts.lock.yml",
+        "sha256": "85c7e975d10accf5c3932781b8b688ab111f869e5a3e52e80fe678bf7340b140",
+        "size_bytes": 3488
+      },
+      {
+        "path": "chapter6_sparse_feature_methods/exercises/part4_crosscoders_model_diffing/expected_outputs/README.md",
+        "sha256": "01f0ecdc267b77c998978c275e19d948c854a6be38a970efc769a18189d7b3cd",
+        "size_bytes": 1781
+      },
+      {
+        "path": "chapter6_sparse_feature_methods/exercises/part4_crosscoders_model_diffing/expected_outputs/reference_metrics.json",
+        "sha256": "a7a6655bffe3866c023674cd1c9503d4874640c7a958d6c3a96a0d31f583c1f9",
+        "size_bytes": 946
+      },
+      {
+        "path": "chapter6_sparse_feature_methods/exercises/part4_crosscoders_model_diffing/expected_outputs/smoke_test.json",
+        "sha256": "6b24f715e2b8b5196e69a64ff1f8dca492ac6ce0446084ca2bf8db23a16cff87",
+        "size_bytes": 297
+      },
+      {
+        "path": "chapter6_sparse_feature_methods/exercises/part4_crosscoders_model_diffing/solutions.py",
+        "sha256": "13bec023e4dc64d623dc20a017d0fab467023c8a8ad2609c552e059963fffeb6",
+        "size_bytes": 20275
+      },
+      {
+        "path": "chapter6_sparse_feature_methods/exercises/part4_crosscoders_model_diffing/tests.py",
+        "sha256": "4c20e06a889807c193505ee46c1346e437fb989ed88a877bdaef7686cbdc25b0",
+        "size_bytes": 9205
+      },
+      {
+        "path": "chapter6_sparse_feature_methods/exercises/part4_crosscoders_model_diffing/utils.py",
+        "sha256": "c3b2b7fe8266a5fa8c12e0fd8acfd1a06652c8b458a3fd7fd692979cdab8db52",
+        "size_bytes": 360
+      },
+      {
+        "path": "chapter6_sparse_feature_methods/exercises/part4_crosscoders_model_diffing/verification_report.schema.json",
+        "sha256": "ecd833883885077ad5d7a0e239d984d01462255e94266212cf195ab4d4e27b3d",
+        "size_bytes": 2669
+      },
+      {
+        "path": "chapter6_sparse_feature_methods/instructions/pages/04_[6.4]_Crosscoders_and_Model_Diffing.md",
+        "sha256": "286da5623c2d6181b8a1d93cc3984847c5a9794284451c332456d4b9c70b8626",
+        "size_bytes": 20837
+      },
+      {
+        "path": "scripts/run_extension_verification_reports.py",
+        "sha256": "660040f459d07535deb9e0c34ffddb496c13b8770044ae380d3a8e45b0c8fb2b",
+        "size_bytes": 16080
+      }
+    ]
+  },
+  "safety_notes": [
+    "No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.",
+    "The paired-model path uses safe generic prompts and small public TransformerLens checkpoints. It does not use unsafe prompts, gated weights, generated completions, or user data."
+  ],
+  "tests_passed": true,
+  "wall_clock_seconds": 4.213759
+}

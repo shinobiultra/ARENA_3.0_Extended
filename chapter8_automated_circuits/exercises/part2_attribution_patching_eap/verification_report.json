@@ -1,0 +1,360 @@
+{
+  "accepted": true,
+  "baselines": {
+    "declared_controls": [
+      "baseline_or_reference_check",
+      "negative_control_where_applicable",
+      "shape_dtype_or_exact_value_check",
+      "toy_attribution_dot_gradient_contract",
+      "toy_integrated_gradient_contract",
+      "toy_eap_edge_score_contract",
+      "toy_exact_vs_approx_correlation_contract",
+      "toy_false_negative_documentation_contract",
+      "pinned_transformerlens_gelu1l_exact_patch_scores",
+      "corrupt_run_gradient_attribution_scores",
+      "same_hook_integrated_gradient_path_scores",
+      "eap_position_edge_matrix_top_edge_check",
+      "non_final_position_zero_gradient_control",
+      "ioi_scale_eap_replication_not_claimed"
+    ],
+    "expected_metrics": {
+      "accepted": true,
+      "attribution_best_position": 5,
+      "attribution_final_recovery_min": 0.9,
+      "bnb_cuda_override": "130",
+      "clean_corrupt_gap_min": 6.0,
+      "distractor_token": " top",
+      "eap_edge_score_shape": [
+        6,
+        6
+      ],
+      "eap_top_edge_downstream_position": 5,
+      "eap_top_edge_score_abs_min": 6.0,
+      "eap_top_edge_upstream_position": 5,
+      "exact_attribution_correlation_min": 0.99,
+      "exact_attribution_top1_overlap": 1.0,
+      "exact_best_position": 5,
+      "exact_final_recovery_min": 0.99,
+      "exact_ig_correlation_min": 0.99,
+      "exact_ig_top1_overlap": 1.0,
+      "final_gradient_norm_min": 1.0,
+      "hf_revision": "bddc0e332f0ae84279e6a6a45d91b314899e1603",
+      "hook_name": "blocks.0.hook_resid_post",
+      "ig_best_position": 5,
+      "ig_final_recovery_min": 0.95,
+      "integrated_gradient_steps": 5,
+      "max_allowed_gpu_gb": 24,
+      "model_name": "gelu-1l",
+      "nonfinal_gradient_norm_max": 0.0,
+      "peak_vram_gb_max": 1.0,
+      "preflight_passed": true,
+      "sequence_length": 6,
+      "target_position": 5,
+      "target_token": " floor",
+      "tests_passed": true,
+      "tokenizer_revision": "0f6671571a20be9756b9991d978047c03b75e749"
+    }
+  },
+  "claim_scope": "GT-1 attribution-patching preflight: reusable toy attribution, EAP, integrated-gradient, runtime, top-k, and false-negative contracts are kept for learner exercises, then a pinned TransformerLens gelu-1l checkpoint is loaded on CUDA. The report compares exact residual-stream patching scores against corrupt-run gradient attribution, integrated gradient attribution, and an EAP-style position-by-position edge matrix on the same clean/corrupt prompt pair. It requires top-1 agreement, high correlation, final-position recovery, and zero non-final gradient controls. This is a mechanics preflight, not an IOI-scale EAP circuit replication.",
+  "datasets": [
+    {
+      "id": "8_2_attribution_patching_and_eap_toy_inputs",
+      "seed": 0,
+      "source": "generated"
+    },
+    {
+      "clean_prompt": "The cat sat on the",
+      "corrupt_prompt": "The bird flew over the",
+      "id": "course_safe_clean_corrupt_activation_patching_prompts_v1",
+      "integrated_gradient_steps": 5,
+      "negative_token": " top",
+      "positive_token": " floor",
+      "seed": 0,
+      "sequence_length": 6,
+      "source": "generated_prompt_pair",
+      "tokenizer": "NeelNanda/gpt-neox-tokenizer-digits"
+    }
+  ],
+  "date_run": "2026-06-30T14:07:03+00:00",
+  "evidence_level": "toy_attribution_contract_plus_pinned_transformerlens_gradient_preflight",
+  "git_commit": "f9f034bd",
+  "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+  "gt_tier": "GT-1",
+  "known_failures": [],
+  "metrics": {
+    "gpu_evidence": {
+      "category": "cuda_section_metric",
+      "placeholder_only": false,
+      "section_specific_metric_keys": [
+        "attribution_best_position",
+        "attribution_final_recovery",
+        "attribution_scores_by_position",
+        "bnb_cuda_override",
+        "clean_corrupt_gap",
+        "clean_prompt",
+        "corrupt_prompt",
+        "distractor_token",
+        "eap_edge_score_shape",
+        "eap_top_edge_downstream_position",
+        "eap_top_edge_score_abs",
+        "eap_top_edge_upstream_position",
+        "exact_attribution_correlation",
+        "exact_attribution_top1_overlap",
+        "exact_best_position",
+        "exact_final_recovery",
+        "exact_ig_correlation",
+        "exact_ig_top1_overlap",
+        "exact_patch_scores_by_position",
+        "final_gradient_norm",
+        "hf_model_id",
+        "hf_revision",
+        "hook_name",
+        "ig_best_position",
+        "ig_final_recovery",
+        "ig_scores_by_position",
+        "integrated_gradient_steps",
+        "model_name",
+        "nonfinal_gradient_norm_max",
+        "preflight_passed",
+        "sequence_length",
+        "target_position",
+        "target_token",
+        "tokenizer_id",
+        "tokenizer_revision"
+      ],
+      "uses_cuda": true
+    },
+    "gpu_test": {
+      "attribution_best_position": 5,
+      "attribution_final_recovery": 0.9608495235443115,
+      "attribution_scores_by_position": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.9608495235443115
+      ],
+      "bnb_cuda_override": "130",
+      "clean_corrupt_gap": 6.27708625793457,
+      "clean_prompt": "The cat sat on the",
+      "corrupt_prompt": "The bird flew over the",
+      "cuda_available": true,
+      "cuda_version": "13.2",
+      "device": "NVIDIA GeForce RTX 5090 Laptop GPU",
+      "distractor_token": " top",
+      "eap_edge_score_shape": [
+        6,
+        6
+      ],
+      "eap_top_edge_downstream_position": 5,
+      "eap_top_edge_score_abs": 6.03133487701416,
+      "eap_top_edge_upstream_position": 5,
+      "exact_attribution_correlation": 1.0,
+      "exact_attribution_top1_overlap": 1.0,
+      "exact_best_position": 5,
+      "exact_final_recovery": 1.0,
+      "exact_ig_correlation": 1.0000001192092896,
+      "exact_ig_top1_overlap": 1.0,
+      "exact_patch_scores_by_position": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "final_gradient_norm": 3.2387843132019043,
+      "full_path": "Pinned TransformerLens gelu-1l exact-vs-attribution patching preflight.",
+      "gpu_total_memory_gb": 23.45965576171875,
+      "hf_model_id": "NeelNanda/GELU_1L512W_C4_Code",
+      "hf_revision": "bddc0e332f0ae84279e6a6a45d91b314899e1603",
+      "hook_name": "blocks.0.hook_resid_post",
+      "ig_best_position": 5,
+      "ig_final_recovery": 0.9732165932655334,
+      "ig_scores_by_position": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.9732165932655334
+      ],
+      "integrated_gradient_steps": 5,
+      "model_name": "gelu-1l",
+      "nonfinal_gradient_norm_max": 0.0,
+      "peak_vram_gb": 0.46827173233032227,
+      "preflight_passed": true,
+      "sequence_length": 6,
+      "target_position": 5,
+      "target_token": " floor",
+      "tokenizer_id": "NeelNanda/gpt-neox-tokenizer-digits",
+      "tokenizer_revision": "0f6671571a20be9756b9991d978047c03b75e749",
+      "torch_version": "2.12.1+cu132",
+      "within_vram_budget": true
+    },
+    "notebook_contract": {
+      "attribution_scores": [
+        1.0,
+        3.0
+      ],
+      "correlation": {
+        "correlation": 0.9965673089027405,
+        "passes_threshold": true
+      },
+      "edge_scores": [
+        [
+          3.0,
+          0.0
+        ],
+        [
+          0.0,
+          8.0
+        ]
+      ],
+      "false_negative": {
+        "documented": true,
+        "false_negative_indices": [
+          1
+        ],
+        "num_false_negatives": 1
+      },
+      "integrated_gradients": [
+        1.0,
+        3.0
+      ],
+      "runtime": {
+        "approx_runtime_s": 2.0,
+        "exact_runtime_s": 10.0,
+        "passes_speedup": true,
+        "speedup": 5.0
+      },
+      "topk_overlap": {
+        "approx_top_indices": [
+          1,
+          2
+        ],
+        "exact_top_indices": [
+          1,
+          2
+        ],
+        "passes_threshold": true,
+        "topk_overlap": 1.0
+      }
+    }
+  },
+  "models": [
+    {
+      "gated": false,
+      "id": "toy_or_generated_inputs",
+      "precision": "float32",
+      "revision": "seed_0",
+      "source": "generated"
+    },
+    {
+      "claim_scope": "exact_vs_gradient_activation_patching_preflight",
+      "gated": false,
+      "id": "NeelNanda/GELU_1L512W_C4_Code",
+      "precision": "float32",
+      "revision": "bddc0e332f0ae84279e6a6a45d91b314899e1603",
+      "source": "huggingface_via_transformerlens",
+      "tokenizer_id": "NeelNanda/gpt-neox-tokenizer-digits",
+      "tokenizer_revision": "0f6671571a20be9756b9991d978047c03b75e749",
+      "transformerlens_model_name": "gelu-1l"
+    }
+  ],
+  "negative_controls": {
+    "declared_controls": [
+      "negative_control_where_applicable",
+      "toy_false_negative_documentation_contract"
+    ]
+  },
+  "notebook_id": "8_2_attribution_patching_and_eap",
+  "ood_tests": {
+    "declared": "required_where_applicable"
+  },
+  "peak_vram_gb": 0.468272,
+  "report_inputs": {
+    "schema_version": 1,
+    "algorithm": "sha256",
+    "combined_sha256": "636f40b36fd59a1258e93b943ffb6d6f99aed0ec5126359c978953a9640b1918",
+    "files": [
+      {
+        "path": "arena_ext/verification.py",
+        "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
+        "size_bytes": 9276
+      },
+      {
+        "path": "chapter8_automated_circuits/exercises/part2_attribution_patching_eap/8.2_Attribution_Patching_and_EAP_exercises.ipynb",
+        "sha256": "48584583a954f8fe243096654e6c150a5e78b99ebc3a9a05984100212e798681",
+        "size_bytes": 9126
+      },
+      {
+        "path": "chapter8_automated_circuits/exercises/part2_attribution_patching_eap/8.2_Attribution_Patching_and_EAP_solutions.ipynb",
+        "sha256": "33bd475ec1f5696b316aaea5a4a79eac7afa6731a228c07fbed1000c2ed932ee",
+        "size_bytes": 4813
+      },
+      {
+        "path": "chapter8_automated_circuits/exercises/part2_attribution_patching_eap/README.md",
+        "sha256": "1f07549ab5322528372f073d1b9af9a9433a3db381ea7e995226d660bd2d31dd",
+        "size_bytes": 983
+      },
+      {
+        "path": "chapter8_automated_circuits/exercises/part2_attribution_patching_eap/artifacts.lock.yml",
+        "sha256": "e62fe4caf98c742dc5d98423d023201ba6007277d6cb2d794876e1fdf9c49ce1",
+        "size_bytes": 3928
+      },
+      {
+        "path": "chapter8_automated_circuits/exercises/part2_attribution_patching_eap/expected_outputs/README.md",
+        "sha256": "398234c5ac7c8a27353a0c8940187a20bc2dce165186054d9ddef7a5e5f9b41b",
+        "size_bytes": 1780
+      },
+      {
+        "path": "chapter8_automated_circuits/exercises/part2_attribution_patching_eap/expected_outputs/reference_metrics.json",
+        "sha256": "48e8eb3b769b325fe346648998c5e14b50cae93560697e079f75dbf48188bfb8",
+        "size_bytes": 1429
+      },
+      {
+        "path": "chapter8_automated_circuits/exercises/part2_attribution_patching_eap/expected_outputs/smoke_test.json",
+        "sha256": "64df803992fed5711a36c7576150da2d295805b083c800ee835b9e3a6233e339",
+        "size_bytes": 295
+      },
+      {
+        "path": "chapter8_automated_circuits/exercises/part2_attribution_patching_eap/solutions.py",
+        "sha256": "cffe7ac1f101ef8c1b61e58df5d3c2eab3c292d79c27c1d1d8c2b4406f024d10",
+        "size_bytes": 21768
+      },
+      {
+        "path": "chapter8_automated_circuits/exercises/part2_attribution_patching_eap/tests.py",
+        "sha256": "e23630ddfd1a8c36c2a9523def6b6c8fdd889e9ab5a289199a8ab69fe4de902b",
+        "size_bytes": 10961
+      },
+      {
+        "path": "chapter8_automated_circuits/exercises/part2_attribution_patching_eap/utils.py",
+        "sha256": "18424196435b5b69cf39eab31b9fe66303daa6ccdf602a80875b67d953befce8",
+        "size_bytes": 359
+      },
+      {
+        "path": "chapter8_automated_circuits/exercises/part2_attribution_patching_eap/verification_report.schema.json",
+        "sha256": "ecd833883885077ad5d7a0e239d984d01462255e94266212cf195ab4d4e27b3d",
+        "size_bytes": 2669
+      },
+      {
+        "path": "chapter8_automated_circuits/instructions/pages/02_[8.2]_Attribution_Patching_and_EAP.md",
+        "sha256": "f5c2781a7b96da9a352d28b018575e5e484072b7f14062830dd207770b6084f3",
+        "size_bytes": 19129
+      },
+      {
+        "path": "scripts/run_extension_verification_reports.py",
+        "sha256": "660040f459d07535deb9e0c34ffddb496c13b8770044ae380d3a8e45b0c8fb2b",
+        "size_bytes": 16080
+      }
+    ]
+  },
+  "safety_notes": [
+    "No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.",
+    "The real-model path uses safe generic prompts and reads logits and gradients from a small public TransformerLens checkpoint. It does not use unsafe prompts, gated weights, or generated completions."
+  ],
+  "tests_passed": true,
+  "wall_clock_seconds": 2.069022
+}
