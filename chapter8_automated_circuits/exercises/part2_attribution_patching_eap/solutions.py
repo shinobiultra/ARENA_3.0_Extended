@@ -65,6 +65,16 @@ class FalseNegativeReport:
     documented: bool
 
 
+def _require_finite_tensor(tensor: t.Tensor, name: str) -> None:
+    if not t.isfinite(tensor).all():
+        raise ValueError(f"{name} must be finite.")
+
+
+def _require_finite_scalar(value: float, name: str) -> None:
+    if not t.isfinite(t.tensor(value)).item():
+        raise ValueError(f"{name} must be finite.")
+
+
 def answer_logit_diff(
     logits: t.Tensor,
     *,
@@ -73,11 +83,18 @@ def answer_logit_diff(
 ) -> float:
     """Return mean positive-minus-negative logit difference."""
 
+    if logits.ndim < 1:
+        raise ValueError("logits must have a vocabulary dimension.")
     vocab_size = logits.shape[-1]
+    if vocab_size == 0:
+        raise ValueError("logits vocabulary dimension must be nonempty.")
+    if positive_token_id == negative_token_id:
+        raise ValueError("positive_token_id and negative_token_id must differ.")
     if not 0 <= positive_token_id < vocab_size:
         raise ValueError("positive_token_id is out of range.")
     if not 0 <= negative_token_id < vocab_size:
         raise ValueError("negative_token_id is out of range.")
+    _require_finite_tensor(logits, "logits")
     diff = logits[..., positive_token_id] - logits[..., negative_token_id]
     return diff.float().mean().item()
 
@@ -91,8 +108,19 @@ def activation_patching_sweep(
     """Convert per-component patched metrics into recovery scores."""
 
     denominator = clean_metric - corrupt_metric
+    metrics_are_finite = all(
+        t.isfinite(t.tensor(value)).item()
+        for value in (clean_metric, corrupt_metric)
+    )
+    if not metrics_are_finite:
+        raise ValueError("clean_metric and corrupt_metric must be finite.")
     if denominator == 0:
         raise ValueError("clean_metric and corrupt_metric must differ.")
+    if patched_metrics.ndim != 1:
+        raise ValueError("patched_metrics must be rank-1.")
+    if patched_metrics.numel() == 0:
+        raise ValueError("patched_metrics must be nonempty.")
+    _require_finite_tensor(patched_metrics, "patched_metrics")
     patch_scores = (patched_metrics.float() - corrupt_metric) / denominator
     best_index = int(patch_scores.argmax().item())
     return ActivationPatchingSweep(
@@ -117,6 +145,9 @@ def attribution_patch_scores(
         raise ValueError("gradients must match activation shape.")
     if not 0 <= component_dim < clean_activations.ndim:
         raise ValueError("component_dim is out of range.")
+    _require_finite_tensor(clean_activations, "clean_activations")
+    _require_finite_tensor(corrupt_activations, "corrupt_activations")
+    _require_finite_tensor(corrupt_gradients, "corrupt_gradients")
     contribution = clean_activations.float() - corrupt_activations.float()
     contribution = contribution * corrupt_gradients.float()
     reduce_dims = tuple(dim for dim in range(contribution.ndim) if dim != component_dim)
@@ -134,8 +165,11 @@ def integrated_gradient_patch_scores(
 
     if path_gradients.ndim != clean_activations.ndim + 1:
         raise ValueError("path_gradients must have shape (steps, *activation_shape).")
+    if path_gradients.shape[0] == 0:
+        raise ValueError("path_gradients must contain at least one step.")
     if path_gradients.shape[1:] != clean_activations.shape:
         raise ValueError("path gradient activation dimensions must match activations.")
+    _require_finite_tensor(path_gradients, "path_gradients")
     mean_gradient = path_gradients.float().mean(dim=0)
     return attribution_patch_scores(
         clean_activations,
@@ -153,8 +187,14 @@ def edge_attribution_scores(
 
     if upstream_activation_delta.ndim != 2 or downstream_gradients.ndim != 2:
         raise ValueError("inputs must have shape (components, d_model).")
+    if upstream_activation_delta.shape[0] == 0 or downstream_gradients.shape[0] == 0:
+        raise ValueError("inputs must contain at least one component.")
+    if upstream_activation_delta.shape[-1] == 0:
+        raise ValueError("hidden dimension must be nonempty.")
     if upstream_activation_delta.shape[-1] != downstream_gradients.shape[-1]:
         raise ValueError("upstream and downstream hidden dimensions must match.")
+    _require_finite_tensor(upstream_activation_delta, "upstream_activation_delta")
+    _require_finite_tensor(downstream_gradients, "downstream_gradients")
     return upstream_activation_delta.float() @ downstream_gradients.float().T
 
 
@@ -168,10 +208,14 @@ def score_correlation_report(
 
     exact = exact_scores.flatten().float()
     approx = approx_scores.flatten().float()
+    if not -1.0 <= min_correlation <= 1.0:
+        raise ValueError("min_correlation must be between -1 and 1.")
     if exact.shape != approx.shape:
         raise ValueError("exact_scores and approx_scores must have matching shape.")
     if exact.numel() < 2:
         raise ValueError("at least two scores are required for correlation.")
+    _require_finite_tensor(exact, "exact_scores")
+    _require_finite_tensor(approx, "approx_scores")
     exact_centered = exact - exact.mean()
     approx_centered = approx - approx.mean()
     denominator = exact_centered.norm() * approx_centered.norm()
@@ -198,8 +242,14 @@ def topk_overlap_report(
     approx = approx_scores.flatten().float()
     if exact.shape != approx.shape:
         raise ValueError("exact_scores and approx_scores must have matching shape.")
+    if exact.numel() == 0:
+        raise ValueError("score tensors must be nonempty.")
+    _require_finite_tensor(exact, "exact_scores")
+    _require_finite_tensor(approx, "approx_scores")
     if top_k <= 0:
         raise ValueError("top_k must be positive.")
+    if not 0.0 <= min_overlap <= 1.0:
+        raise ValueError("min_overlap must be between 0 and 1.")
     k = min(top_k, exact.numel())
     exact_top = tuple(int(index) for index in exact.topk(k=k).indices.tolist())
     approx_top = tuple(int(index) for index in approx.topk(k=k).indices.tolist())
@@ -220,8 +270,13 @@ def runtime_improvement_report(
 ) -> RuntimeImprovementReport:
     """Report exact-patching runtime divided by approximate-patching runtime."""
 
+    _require_finite_scalar(exact_runtime_s, "exact_runtime_s")
+    _require_finite_scalar(approx_runtime_s, "approx_runtime_s")
+    _require_finite_scalar(min_speedup, "min_speedup")
     if exact_runtime_s <= 0 or approx_runtime_s <= 0:
         raise ValueError("runtimes must be positive.")
+    if min_speedup <= 0:
+        raise ValueError("min_speedup must be positive.")
     speedup = exact_runtime_s / approx_runtime_s
     return RuntimeImprovementReport(
         exact_runtime_s=exact_runtime_s,
@@ -245,6 +300,10 @@ def false_negative_report(
     approx = approx_scores.flatten().float()
     if exact.shape != approx.shape:
         raise ValueError("exact_scores and approx_scores must have matching shape.")
+    _require_finite_tensor(exact, "exact_scores")
+    _require_finite_tensor(approx, "approx_scores")
+    _require_finite_scalar(exact_threshold, "exact_threshold")
+    _require_finite_scalar(approx_threshold, "approx_threshold")
     important = exact >= exact_threshold
     missed = approx < approx_threshold
     false_negative_indices = (important & missed).nonzero(as_tuple=False).flatten()
@@ -332,12 +391,18 @@ def _load_gelu1l_model_on_cuda():
     os.environ.setdefault("BNB_CUDA_VERSION", TL_BNB_CUDA_OVERRIDE)
     logging.getLogger("bitsandbytes.cextension").setLevel(logging.ERROR)
     from transformer_lens import HookedTransformer
+    from transformers import AutoTokenizer
 
+    tokenizer = AutoTokenizer.from_pretrained(
+        TL_GELU1L_TOKENIZER_ID,
+        revision=TL_GELU1L_TOKENIZER_REVISION,
+    )
     return HookedTransformer.from_pretrained(
         TL_GELU1L_MODEL_NAME,
         device="cuda",
         dtype="float32",
         revision=TL_GELU1L_REVISION,
+        tokenizer=tokenizer,
     )
 
 
@@ -546,6 +611,8 @@ def run_transformerlens_attribution_patching_preflight(max_vram_gb: float = 24.0
     return {
         "cuda_available": True,
         "device": t.cuda.get_device_name(0),
+        "torch_version": t.__version__,
+        "cuda_version": t.version.cuda,
         "preflight_passed": preflight_passed,
         "model_name": TL_GELU1L_MODEL_NAME,
         "hf_model_id": TL_GELU1L_HF_ID,

@@ -29,6 +29,15 @@ def test_attribution_patch_scores_sum_component_contributions():
     assert scores.tolist() == [1.0, 3.0]
 
 
+def test_attribution_patch_scores_reject_nonfinite_inputs():
+    clean = t.tensor([[2.0, 0.0], [0.0, 3.0]])
+    corrupt = t.zeros_like(clean)
+    gradients = t.tensor([[float("nan"), 0.5], [1.0, 1.0]])
+
+    with pytest.raises(ValueError, match="finite"):
+        attribution_patch_scores(clean, corrupt, gradients)
+
+
 def test_integrated_gradient_patch_scores_average_path_gradients():
     clean = t.tensor([[2.0, 0.0], [0.0, 3.0]])
     corrupt = t.zeros_like(clean)
@@ -44,6 +53,14 @@ def test_integrated_gradient_patch_scores_average_path_gradients():
     assert scores.tolist() == [1.0, 3.0]
 
 
+def test_integrated_gradient_patch_scores_reject_empty_paths():
+    clean = t.tensor([[2.0, 0.0], [0.0, 3.0]])
+    corrupt = t.zeros_like(clean)
+
+    with pytest.raises(ValueError, match="at least one step"):
+        integrated_gradient_patch_scores(clean, corrupt, t.empty(0, 2, 2))
+
+
 def test_edge_attribution_scores_returns_upstream_downstream_matrix():
     upstream_delta = t.tensor([[1.0, 0.0], [0.0, 2.0]])
     downstream_gradients = t.tensor([[3.0, 0.0], [0.0, 4.0]])
@@ -51,6 +68,11 @@ def test_edge_attribution_scores_returns_upstream_downstream_matrix():
     scores = edge_attribution_scores(upstream_delta, downstream_gradients)
 
     assert scores.tolist() == [[3.0, 0.0], [0.0, 8.0]]
+
+
+def test_edge_attribution_scores_reject_empty_components():
+    with pytest.raises(ValueError, match="at least one component"):
+        edge_attribution_scores(t.empty(0, 2), t.ones(1, 2))
 
 
 def test_score_correlation_report_passes_for_matching_rankings():
@@ -61,6 +83,14 @@ def test_score_correlation_report_passes_for_matching_rankings():
 
     assert report.correlation > 0.95
     assert report.passes_threshold
+
+
+def test_score_correlation_report_rejects_invalid_thresholds():
+    exact = t.tensor([0.1, 0.9, 0.8, 0.0])
+    approx = t.tensor([0.2, 0.85, 0.7, 0.1])
+
+    with pytest.raises(ValueError, match="between -1 and 1"):
+        score_correlation_report(exact, approx, min_correlation=1.5)
 
 
 def test_topk_overlap_report_finds_shared_top_components():
@@ -75,6 +105,14 @@ def test_topk_overlap_report_finds_shared_top_components():
     assert report.passes_threshold
 
 
+def test_topk_overlap_report_rejects_bad_overlap_threshold():
+    exact = t.tensor([0.1, 0.9, 0.8, 0.0])
+    approx = t.tensor([0.2, 0.85, 0.7, 0.1])
+
+    with pytest.raises(ValueError, match="between 0 and 1"):
+        topk_overlap_report(exact, approx, min_overlap=-0.1)
+
+
 def test_runtime_improvement_report_measures_speedup():
     report = runtime_improvement_report(
         exact_runtime_s=10.0,
@@ -84,6 +122,15 @@ def test_runtime_improvement_report_measures_speedup():
 
     assert report.speedup == 5.0
     assert report.passes_speedup
+
+
+def test_runtime_improvement_report_rejects_bad_speedup_threshold():
+    with pytest.raises(ValueError, match="positive"):
+        runtime_improvement_report(
+            exact_runtime_s=10.0,
+            approx_runtime_s=2.0,
+            min_speedup=0.0,
+        )
 
 
 def test_false_negative_report_requires_documentation():
@@ -101,3 +148,13 @@ def test_false_negative_report_requires_documentation():
     assert report.false_negative_indices == (1,)
     assert report.num_false_negatives == 1
     assert report.documented
+
+
+def test_false_negative_report_rejects_nonfinite_scores():
+    with pytest.raises(ValueError, match="finite"):
+        false_negative_report(
+            t.tensor([0.1, float("nan")]),
+            t.tensor([0.1, 0.2]),
+            exact_threshold=0.75,
+            approx_threshold=0.5,
+        )

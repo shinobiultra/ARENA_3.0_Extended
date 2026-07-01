@@ -63,6 +63,32 @@ def test_attribution_patch_scores_sums_non_component_dims(
     print("All tests in `test_attribution_patch_scores_sums_non_component_dims` passed!")
 
 
+def test_attribution_patch_scores_rejects_degenerate_inputs(
+    attribution_patch_scores: Callable | None = None,
+):
+    attribution_patch_scores = attribution_patch_scores or _solutions().attribution_patch_scores
+    clean = t.tensor([[2.0, 0.0], [0.0, 3.0]])
+    corrupt = t.zeros_like(clean)
+    gradients = t.tensor([[0.5, 0.5], [1.0, 1.0]])
+    try:
+        attribution_patch_scores(clean, corrupt, gradients, component_dim=2)
+    except ValueError as exc:
+        assert "component_dim" in str(exc), "component_dim should index an activation axis."
+    else:
+        raise AssertionError("Out-of-range component_dim should raise ValueError.")
+    try:
+        attribution_patch_scores(
+            clean,
+            corrupt,
+            t.tensor([[float("nan"), 0.5], [1.0, 1.0]]),
+        )
+    except ValueError as exc:
+        assert "finite" in str(exc), "Non-finite gradients should fail clearly."
+    else:
+        raise AssertionError("Non-finite gradients should raise ValueError.")
+    print("All tests in `test_attribution_patch_scores_rejects_degenerate_inputs` passed!")
+
+
 def test_integrated_gradient_patch_scores_average_path_gradients(
     integrated_gradient_patch_scores: Callable | None = None,
 ):
@@ -95,6 +121,33 @@ def test_integrated_gradient_patch_scores_average_path_gradients(
     )
 
 
+def test_integrated_gradient_patch_scores_rejects_empty_or_nonfinite_paths(
+    integrated_gradient_patch_scores: Callable | None = None,
+):
+    integrated_gradient_patch_scores = (
+        integrated_gradient_patch_scores or _solutions().integrated_gradient_patch_scores
+    )
+    clean = t.tensor([[2.0, 0.0], [0.0, 3.0]])
+    corrupt = t.zeros_like(clean)
+    try:
+        integrated_gradient_patch_scores(clean, corrupt, t.empty(0, 2, 2))
+    except ValueError as exc:
+        assert "at least one step" in str(exc), "IG path should contain gradients."
+    else:
+        raise AssertionError("Empty path_gradients should raise ValueError.")
+    bad_path = t.ones(2, 2, 2)
+    bad_path[0, 0, 0] = float("inf")
+    try:
+        integrated_gradient_patch_scores(clean, corrupt, bad_path)
+    except ValueError as exc:
+        assert "finite" in str(exc), "IG path gradients should be finite."
+    else:
+        raise AssertionError("Non-finite path_gradients should raise ValueError.")
+    print(
+        "All tests in `test_integrated_gradient_patch_scores_rejects_empty_or_nonfinite_paths` passed!"
+    )
+
+
 def test_edge_attribution_scores_forms_upstream_downstream_matrix(
     edge_attribution_scores: Callable | None = None,
 ):
@@ -115,6 +168,31 @@ def test_edge_attribution_scores_forms_upstream_downstream_matrix(
     else:
         raise AssertionError("Mismatched hidden dimensions should raise ValueError.")
     print("All tests in `test_edge_attribution_scores_forms_upstream_downstream_matrix` passed!")
+
+
+def test_edge_attribution_scores_rejects_empty_or_nonfinite_inputs(
+    edge_attribution_scores: Callable | None = None,
+):
+    edge_attribution_scores = edge_attribution_scores or _solutions().edge_attribution_scores
+    try:
+        edge_attribution_scores(t.empty(0, 2), t.ones(1, 2))
+    except ValueError as exc:
+        assert "at least one component" in str(exc), "EAP matrices need components."
+    else:
+        raise AssertionError("Empty upstream components should raise ValueError.")
+    try:
+        edge_attribution_scores(t.empty(1, 0), t.empty(1, 0))
+    except ValueError as exc:
+        assert "hidden dimension" in str(exc), "EAP hidden dimension should be nonempty."
+    else:
+        raise AssertionError("Empty hidden dimensions should raise ValueError.")
+    try:
+        edge_attribution_scores(t.tensor([[float("nan"), 0.0]]), t.ones(1, 2))
+    except ValueError as exc:
+        assert "finite" in str(exc), "EAP score inputs should be finite."
+    else:
+        raise AssertionError("Non-finite EAP inputs should raise ValueError.")
+    print("All tests in `test_edge_attribution_scores_rejects_empty_or_nonfinite_inputs` passed!")
 
 
 def test_exact_vs_approx_reports_measure_correlation_and_topk_overlap(
@@ -170,6 +248,44 @@ def test_exact_vs_approx_reports_measure_correlation_and_topk_overlap(
     )
     print(
         "All tests in `test_exact_vs_approx_reports_measure_correlation_and_topk_overlap` passed!"
+    )
+
+
+def test_exact_vs_approx_reports_reject_bad_thresholds_and_scores(
+    score_correlation_report: Callable | None = None,
+    topk_overlap_report: Callable | None = None,
+):
+    solutions = _solutions()
+    score_correlation_report = score_correlation_report or solutions.score_correlation_report
+    topk_overlap_report = topk_overlap_report or solutions.topk_overlap_report
+    exact = t.tensor([0.1, 0.9, 0.8, 0.0])
+    approx = t.tensor([0.2, 0.85, 0.7, 0.1])
+    try:
+        score_correlation_report(exact, approx, min_correlation=1.5)
+    except ValueError as exc:
+        assert "between -1 and 1" in str(exc), "Correlation thresholds should be valid."
+    else:
+        raise AssertionError("Invalid min_correlation should raise ValueError.")
+    try:
+        score_correlation_report(exact, t.tensor([0.2, float("nan"), 0.7, 0.1]))
+    except ValueError as exc:
+        assert "finite" in str(exc), "Correlation inputs should reject NaNs."
+    else:
+        raise AssertionError("Non-finite approximate scores should raise ValueError.")
+    try:
+        topk_overlap_report(t.empty(0), t.empty(0), top_k=1)
+    except ValueError as exc:
+        assert "nonempty" in str(exc), "Top-k overlap needs at least one score."
+    else:
+        raise AssertionError("Empty top-k inputs should raise ValueError.")
+    try:
+        topk_overlap_report(exact, approx, min_overlap=-0.1)
+    except ValueError as exc:
+        assert "between 0 and 1" in str(exc), "Overlap thresholds should be probabilities."
+    else:
+        raise AssertionError("Invalid min_overlap should raise ValueError.")
+    print(
+        "All tests in `test_exact_vs_approx_reports_reject_bad_thresholds_and_scores` passed!"
     )
 
 
@@ -242,6 +358,60 @@ def test_runtime_and_false_negative_reports_enforce_accountability(
     )
     print(
         "All tests in `test_runtime_and_false_negative_reports_enforce_accountability` passed!"
+    )
+
+
+def test_runtime_and_false_negative_reports_reject_nonfinite_inputs(
+    runtime_improvement_report: Callable | None = None,
+    false_negative_report: Callable | None = None,
+):
+    solutions = _solutions()
+    runtime_improvement_report = runtime_improvement_report or solutions.runtime_improvement_report
+    false_negative_report = false_negative_report or solutions.false_negative_report
+    try:
+        runtime_improvement_report(
+            exact_runtime_s=10.0,
+            approx_runtime_s=2.0,
+            min_speedup=float("inf"),
+        )
+    except ValueError as exc:
+        assert "finite" in str(exc), "Runtime thresholds should be finite."
+    else:
+        raise AssertionError("Non-finite min_speedup should raise ValueError.")
+    try:
+        runtime_improvement_report(
+            exact_runtime_s=10.0,
+            approx_runtime_s=2.0,
+            min_speedup=0.0,
+        )
+    except ValueError as exc:
+        assert "positive" in str(exc), "Speedup threshold should be positive."
+    else:
+        raise AssertionError("Non-positive min_speedup should raise ValueError.")
+    try:
+        false_negative_report(
+            t.tensor([0.1, float("nan")]),
+            t.tensor([0.1, 0.2]),
+            exact_threshold=0.75,
+            approx_threshold=0.5,
+        )
+    except ValueError as exc:
+        assert "finite" in str(exc), "False-negative reports should reject NaNs."
+    else:
+        raise AssertionError("Non-finite exact scores should raise ValueError.")
+    try:
+        false_negative_report(
+            t.tensor([0.1, 0.9]),
+            t.tensor([0.1, 0.2]),
+            exact_threshold=float("nan"),
+            approx_threshold=0.5,
+        )
+    except ValueError as exc:
+        assert "finite" in str(exc), "False-negative thresholds should be finite."
+    else:
+        raise AssertionError("Non-finite false-negative thresholds should raise ValueError.")
+    print(
+        "All tests in `test_runtime_and_false_negative_reports_reject_nonfinite_inputs` passed!"
     )
 
 

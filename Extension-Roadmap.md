@@ -15,8 +15,9 @@ Scope Deep Dive**, **[6.3] Transcoders and Attribution Graphs**,
 **[6.4] Crosscoders and Model Diffing**, **[7.1] Logit Lens,
 Tuned Lens, and Patchscopes**, **[7.2] Feature Verbalizers**,
 **[7.3] Mini Activation Oracles**, **[7.4] Mini Natural Language
-Autoencoders**, **[7.5] Predictive Concept Decoders**, and **[8.1]
-Activation Patching Refresher**.
+Autoencoders**, **[7.5] Predictive Concept Decoders**, **[8.1]
+Activation Patching Refresher**, and **[8.2] Attribution Patching and
+EAP**.
 They now have ARENA-style learner pages, local
 diagrams, help/interpretation dropdowns, expected-output blocks, paired
 exercise/solution notebooks, CUDA-backed signature result tables, and explicit
