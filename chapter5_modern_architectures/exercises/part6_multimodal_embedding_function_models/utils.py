@@ -1,4 +1,4 @@
-"""Helpers for [5.6] Multimodal, Embedding, and Function-Calling Models."""
+"""Helpers for [5.6] Embedding Retrieval and Function-Calling Controls."""
 
 from __future__ import annotations
 

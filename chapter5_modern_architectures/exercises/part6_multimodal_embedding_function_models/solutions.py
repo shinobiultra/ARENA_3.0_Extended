@@ -1,5 +1,5 @@
 # %%
-"""Reference solutions for [5.6] Multimodal, Embedding, and Function-Calling Models."""
+"""Reference solutions for [5.6] Embedding Retrieval and Function-Calling Controls."""
 
 import json
 import re

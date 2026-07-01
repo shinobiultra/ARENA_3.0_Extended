@@ -1,4 +1,4 @@
-# [5.6] Multimodal, Embedding, and Function-Calling Models Expected Outputs
+# [5.6] Embedding Retrieval and Function-Calling Controls Expected Outputs
 
 This directory contains frozen fixtures for the learner-facing notebook contract. These fixtures are intentionally small where possible: they protect visible exercise behavior. Real-model evidence, when claimed by a section, is pinned in `artifacts.lock.yml` and measured in `verification_report.json`.
 

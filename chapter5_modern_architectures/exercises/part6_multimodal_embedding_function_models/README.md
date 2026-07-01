@@ -1,4 +1,4 @@
-# [5.6] Multimodal, Embedding, and Function-Calling Models Verification Assets
+# [5.6] Embedding Retrieval and Function-Calling Controls Verification Assets
 
 Generated support files for the roadmap verification contract.
 

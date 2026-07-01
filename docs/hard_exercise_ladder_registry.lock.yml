@@ -129,7 +129,7 @@ hard_exercises:
   remaining_release_evidence: ''
 - section: '5.6'
   notebook_id: 5_6_multimodal_embedding_and_function_calling_models
-  title: Multimodal, Embedding, and Function-Calling Models
+  title: Embedding Retrieval and Function-Calling Controls
   gt_tier: GT-1
   difficulty: '4'
   importance: '4'

@@ -229,7 +229,7 @@ chapters:
       streamlit_description_short: Build and verify toy discrete diffusion LM mechanics.
     - id: 6_multimodal_embedding_function_models
       number: '5.6'
-      title: Multimodal, Embedding, and Function-Calling Models
+      title: Embedding Retrieval and Function-Calling Controls
       exercise_dir: part6_multimodal_embedding_function_models
       page_file: 06_[5.6]_Multimodal_Embedding_and_Function_Calling_Models.md
       header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png

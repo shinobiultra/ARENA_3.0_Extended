@@ -72,9 +72,9 @@
       "split": "eval"
     }
   ],
-  "date_run": "2026-07-01T09:07:36+00:00",
+  "date_run": "2026-07-01T10:02:00+00:00",
   "evidence_level": "toy_specialist_controls_plus_authenticated_embeddinggemma_and_functiongemma_preflights",
-  "git_commit": "acd346eb",
+  "git_commit": "24a161d1",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-1",
   "known_failures": [],
@@ -686,19 +686,19 @@
       "source": "huggingface"
     },
     {
-      "claim_scope": "roadmap_target_pending_not_claimed",
+      "claim_scope": "authenticated_embedding_retrieval_preflight",
       "gated": "manual",
       "id": "google/embeddinggemma-300m",
-      "local_status": "gated_unavailable_without_authenticated_access",
+      "local_status": "authenticated_local_access_verified",
       "precision": "float32",
       "revision": "57c266a740f537b4dc058e1b0cda161fd15afa75",
       "source": "huggingface"
     },
     {
-      "claim_scope": "base_model_for_public_derivative_not_directly_claimed",
+      "claim_scope": "authenticated_base_model_cuda_forward_preflight",
       "gated": "manual",
       "id": "google/functiongemma-270m-it",
-      "local_status": "gated_parent_model_not_loaded_directly",
+      "local_status": "authenticated_local_access_verified",
       "precision": "float32",
       "revision": "39eccb091651513a5dfb56892d3714c1b5b8276c",
       "source": "huggingface"
@@ -716,7 +716,7 @@
   "peak_vram_gb": 1.1864995956420898,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "11f2cae95fbe42fb6af56371347b25dd2748950d2245e4edf300530f0406a95a",
+    "combined_sha256": "b5a81a19d8a66ecb155ffd330107fdfac20bcbda75e1a084010ccc5bf2105dbb",
     "files": [
       {
         "path": "arena_ext/gated_artifacts.py",
@@ -730,28 +730,28 @@
       },
       {
         "path": "chapter5_modern_architectures/exercises/part6_multimodal_embedding_function_models/5.6_Multimodal_Embedding_and_Function_Calling_Models_exercises.ipynb",
-        "sha256": "71e0f3fa2e2e829c355ff2f397eab3a48c8e747164e91abd1e672dc27f612ba0",
-        "size_bytes": 11235
+        "sha256": "a254a2c4608ac6c8f557d78356e312da7f96f17d7ffc47f18f332195cb3d499d",
+        "size_bytes": 23060
       },
       {
         "path": "chapter5_modern_architectures/exercises/part6_multimodal_embedding_function_models/5.6_Multimodal_Embedding_and_Function_Calling_Models_solutions.ipynb",
-        "sha256": "37b2300cbe927ab8f6c67f0515d365afcb1299bd0e3040017aa3c26f3ea7745f",
-        "size_bytes": 5411
+        "sha256": "bddb585472e0bccbb08595779377ac73340126d97e0b2c99d9edc4f85ebef853",
+        "size_bytes": 8097
       },
       {
         "path": "chapter5_modern_architectures/exercises/part6_multimodal_embedding_function_models/README.md",
-        "sha256": "8e11999ff3eccc59c3d7f2897c22506cbc4d63742b1686000701fabcacb9aa80",
-        "size_bytes": 1288
+        "sha256": "c88520d9d4c2c52f376d1f81956143c2ede77d9e4be6649c4d18bcb6a751cfd8",
+        "size_bytes": 1287
       },
       {
         "path": "chapter5_modern_architectures/exercises/part6_multimodal_embedding_function_models/artifacts.lock.yml",
-        "sha256": "83c4c136e18da3231556a435073ee5b3449b59e70a9fa331b0858da0d0f5b275",
-        "size_bytes": 4433
+        "sha256": "0482310fe694de6215bf10a2a64d15121b63ff9806f1975ce98eac7751a97c83",
+        "size_bytes": 4444
       },
       {
         "path": "chapter5_modern_architectures/exercises/part6_multimodal_embedding_function_models/expected_outputs/README.md",
-        "sha256": "92fe2fe8082ed4f02924ad25ffa9f3c7b64ee3e28ff5b120b8b0d78f544198e1",
-        "size_bytes": 1802
+        "sha256": "45cae31cfa4bf5924bb9443a74518d8d7e360c381cf577c69cde9f3ec6dd09d9",
+        "size_bytes": 1801
       },
       {
         "path": "chapter5_modern_architectures/exercises/part6_multimodal_embedding_function_models/expected_outputs/reference_metrics.json",
@@ -760,13 +760,13 @@
       },
       {
         "path": "chapter5_modern_architectures/exercises/part6_multimodal_embedding_function_models/expected_outputs/smoke_test.json",
-        "sha256": "726cb78f418303c9123d89bbad7bd08db733d59c6067938b321ee747e632aab6",
-        "size_bytes": 337
+        "sha256": "979c2e65acfb6ac3c6068b7dad48baaf7e1c190e975392ea4bfd36eb89a73864",
+        "size_bytes": 336
       },
       {
         "path": "chapter5_modern_architectures/exercises/part6_multimodal_embedding_function_models/solutions.py",
-        "sha256": "bb903360fc0dca95a81df7e4592892777cc111c9bf10bd262bed660e282174fb",
-        "size_bytes": 35829
+        "sha256": "c00fac9f25cf9d8d1339c32f2816d16097bc35ea182dc4477834419ab7a8a066",
+        "size_bytes": 35828
       },
       {
         "path": "chapter5_modern_architectures/exercises/part6_multimodal_embedding_function_models/tests.py",
@@ -775,8 +775,8 @@
       },
       {
         "path": "chapter5_modern_architectures/exercises/part6_multimodal_embedding_function_models/utils.py",
-        "sha256": "fdf9b91269a396e440698594cece8f638552527e15a326c4b806c1d9e85deaf8",
-        "size_bytes": 381
+        "sha256": "2a4b952af436d57af954dff80c9e5561ef025e3040e3316a89517f9055b43a9d",
+        "size_bytes": 380
       },
       {
         "path": "chapter5_modern_architectures/exercises/part6_multimodal_embedding_function_models/verification_report.schema.json",
@@ -785,8 +785,8 @@
       },
       {
         "path": "chapter5_modern_architectures/instructions/pages/06_[5.6]_Multimodal_Embedding_and_Function_Calling_Models.md",
-        "sha256": "105bad0c16ad405d6e68ea3a71746b7a39f2b5492659b187bab26e4a99a9b12d",
-        "size_bytes": 22526
+        "sha256": "dd111518f6d94fc277124fcb0956a684efdd86214ae1a5eb9ae4a980f42cb672",
+        "size_bytes": 28974
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
@@ -798,8 +798,8 @@
   },
   "safety_notes": [
     "No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.",
-    "The function-calling preflight uses public Mobile Actions eval rows and benign mobile-tool schemas only. Google EmbeddingGemma and the base google/functiongemma-270m-it repo are gated without authenticated access; the direct function-calling evidence is the public FunctionGemma Mobile Actions safetensors checkpoint."
+    "The function-calling preflight uses public Mobile Actions eval rows and benign mobile-tool schemas only. Google EmbeddingGemma and the base google/functiongemma-270m-it repo are manual-gated artifacts with authenticated local access in the current report; the public FunctionGemma Mobile Actions checkpoint remains the behavioral eval path."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 23.96944
+  "wall_clock_seconds": 27.817745
 }
