@@ -260,9 +260,9 @@ chapters:
       exercise_dir: part2_gemma_scope_deep_dive
       page_file: 02_[6.2]_Gemma_Scope_Deep_Dive.md
       header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png
-      status: Synthetic Gemma Scope artifact validation harness added
-      streamlit_description: Validate Gemma Scope-style SAE and transcoder artifacts with metadata checks, tagged feature selection, held-out AUC controls, base-vs-instruction deltas, ablation, steering safety, and direct logit attribution.
-      streamlit_description_short: Build and verify released sparse-feature artifact validation tools.
+      status: ARENA-style Gemma Scope artifact and activation validation section added
+      streamlit_description: Validate a pinned Gemma Scope residual SAE artifact with metadata checks, prompt-score reductions, held-out AUC controls, base-vs-instruction deltas, ablation, steering safety, direct logit attribution, and authenticated Gemma 3 activation evidence.
+      streamlit_description_short: Validate released Gemma Scope features with held-out controls and real Gemma activations.
     - id: 3_transcoders_attribution_graphs
       number: '6.3'
       title: Transcoders and Attribution Graphs

@@ -31,7 +31,7 @@ models:
   gated: true
   claim_scope: released_sae_artifact_config_tensor_and_forward_preflight
   base_model: google/gemma-3-1b-it
-  base_model_access: gated_unavailable_without_authenticated_access
+  base_model_access: authenticated_local_and_remote_access_verified
 datasets:
 - id: 6_2_gemma_scope_deep_dive_toy_inputs
   source: generated

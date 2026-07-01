@@ -38,9 +38,9 @@ sections:
     page: chapter6_sparse_feature_methods/instructions/pages/01_[6.1]_SAE_Variants.md
     notes: ARENA-style rewrite with SAE-variant validation ladder diagram, sparse-rule/reconstruction/planted-feature/AUC/steering progression, help/interpretation dropdowns, signature result, limitations, and paired notebook surfaces.
   '6.2':
-    status: prototype
+    status: course_ready
     page: chapter6_sparse_feature_methods/instructions/pages/02_[6.2]_Gemma_Scope_Deep_Dive.md
-    notes: Prototype scaffold retained for implementation evidence; requires ARENA-style rewrite before course-ready release.
+    notes: ARENA-style rewrite with Gemma Scope validation ladder diagram, metadata/score/AUC/delta/ablation/steering/DLA progression, help/interpretation dropdowns, signature result, limitations, and paired notebook surfaces.
   '6.3':
     status: prototype
     page: chapter6_sparse_feature_methods/instructions/pages/03_[6.3]_Transcoders_and_Attribution_Graphs.md
