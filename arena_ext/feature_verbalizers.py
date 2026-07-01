@@ -134,7 +134,7 @@ def keyword_explanation_predictions(
 ) -> t.Tensor:
     """Turn a simple keyword-style explanation into activation predictions."""
 
-    normalized_terms = [term.lower() for term in explanation_terms if term]
+    normalized_terms = [term.strip().lower() for term in explanation_terms if term.strip()]
     if not normalized_terms:
         raise ValueError("explanation_terms must include at least one nonempty term.")
     predictions = []

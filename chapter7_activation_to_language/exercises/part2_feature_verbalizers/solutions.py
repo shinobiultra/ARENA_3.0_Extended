@@ -175,7 +175,7 @@ def keyword_explanation_predictions(
 ) -> t.Tensor:
     """Turn a keyword-style explanation into activation predictions."""
 
-    normalized_terms = [term.lower() for term in explanation_terms if term]
+    normalized_terms = [term.strip().lower() for term in explanation_terms if term.strip()]
     if not normalized_terms:
         raise ValueError("explanation_terms must include at least one nonempty term.")
     return t.tensor(
@@ -500,6 +500,19 @@ def run_transformerlens_feature_verbalizer_preflight(max_vram_gb: float = 24.0) 
         baseline,
         contrastive_mask,
     )
+    heldout_contrastive_indices = contrastive_mask.nonzero(as_tuple=False).flatten().tolist()
+    heldout_contrastive_examples = [
+        heldout_texts[int(index)] for index in heldout_contrastive_indices
+    ]
+    heldout_contrastive_labels = [
+        bool(heldout_labels[int(index)].item()) for index in heldout_contrastive_indices
+    ]
+    heldout_contrastive_scores = [
+        float(heldout_scores[int(index)].item()) for index in heldout_contrastive_indices
+    ]
+    heldout_contrastive_has_both_labels = (
+        bool(any(heldout_contrastive_labels)) and not all(heldout_contrastive_labels)
+    )
     counterexamples = find_counterexamples(heldout_texts, predictions, heldout_labels)
     revised_explanation = revise_explanation(
         explanation,
@@ -602,6 +615,11 @@ def run_transformerlens_feature_verbalizer_preflight(max_vram_gb: float = 24.0) 
         "prediction_accuracy": prediction_report.accuracy,
         "baseline_accuracy": prediction_report.baseline_accuracy,
         "contrastive_accuracy": prediction_report.contrastive_accuracy,
+        "heldout_contrastive_count": len(heldout_contrastive_examples),
+        "heldout_contrastive_examples": heldout_contrastive_examples,
+        "heldout_contrastive_labels": heldout_contrastive_labels,
+        "heldout_contrastive_scores": heldout_contrastive_scores,
+        "heldout_contrastive_has_both_labels": heldout_contrastive_has_both_labels,
         "passes_baseline": prediction_report.passes_baseline,
         "survives_contrastive": prediction_report.survives_contrastive,
         "num_counterexamples": counterexamples.num_counterexamples,

@@ -13,7 +13,7 @@ Local DiffusionGemma Proof**, **[5.6] Embedding Retrieval and
 Function-Calling Controls**, **[6.1] SAE Variants**, **[6.2] Gemma
 Scope Deep Dive**, **[6.3] Transcoders and Attribution Graphs**, and
 **[6.4] Crosscoders and Model Diffing**, and **[7.1] Logit Lens,
-Tuned Lens, and Patchscopes**.
+Tuned Lens, and Patchscopes**, and **[7.2] Feature Verbalizers**.
 They now have ARENA-style learner pages, local
 diagrams, help/interpretation dropdowns, expected-output blocks, paired
 exercise/solution notebooks, CUDA-backed signature result tables, and explicit

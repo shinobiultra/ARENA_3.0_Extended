@@ -305,9 +305,9 @@ chapters:
       exercise_dir: part2_feature_verbalizers
       page_file: 02_[7.2]_Feature_Verbalizers.md
       header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-14-1.png
-      status: Toy feature-verbalizer validation harness added
-      streamlit_description: Build and verify a feature verbalizer loop with top, bottom, random, and contrastive examples, explanation-derived held-out predictions, counterexamples, revisions, intervention-direction checks, and brevity controls.
-      streamlit_description_short: Build and verify feature verbalizer validation controls.
+      status: ARENA-style feature-verbalizer validation section added
+      streamlit_description: Build a feature-verbalizer loop with top, bottom, random, and contrastive examples, train-only explanation terms, held-out predictions, counterexamples, revisions, intervention-direction checks, brevity controls, and a pinned GELU-1L residual-direction CUDA preflight.
+      streamlit_description_short: Validate feature verbalizers with held-out and intervention controls.
     - id: 3_mini_activation_oracles
       number: '7.3'
       title: Mini Activation Oracles

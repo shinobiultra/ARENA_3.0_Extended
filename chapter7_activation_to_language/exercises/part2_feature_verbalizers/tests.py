@@ -66,6 +66,29 @@ def test_gather_verbalizer_examples_covers_top_bottom_random_contrastive(
     )
 
 
+def test_gather_verbalizer_examples_rejects_bad_shapes_and_k(
+    gather_verbalizer_examples: Callable | None = None,
+):
+    solutions = _solutions()
+    gather_verbalizer_examples = gather_verbalizer_examples or solutions.gather_verbalizer_examples
+    texts = ["alpha code", "beta def"]
+    scores = t.tensor([0.9, 0.8])
+    labels = t.tensor([1, 1], dtype=t.bool)
+    try:
+        gather_verbalizer_examples(texts, scores, labels, k=0)
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("k <= 0 should be rejected.")
+    try:
+        gather_verbalizer_examples(texts[:1], scores, labels, k=1)
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("Mismatched texts, scores, and labels should be rejected.")
+    print("All tests in `test_gather_verbalizer_examples_rejects_bad_shapes_and_k` passed!")
+
+
 def test_keyword_predictions_and_explanation_report_use_baseline_and_contrastives(
     keyword_explanation_predictions: Callable | None = None,
     explanation_prediction_report: Callable | None = None,
@@ -107,6 +130,22 @@ def test_keyword_predictions_and_explanation_report_use_baseline_and_contrastive
     )
 
 
+def test_keyword_predictions_reject_empty_explanation_terms(
+    keyword_explanation_predictions: Callable | None = None,
+):
+    solutions = _solutions()
+    keyword_explanation_predictions = (
+        keyword_explanation_predictions or solutions.keyword_explanation_predictions
+    )
+    try:
+        keyword_explanation_predictions(["write code"], ["", " "])
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("Empty explanation terms should be rejected.")
+    print("All tests in `test_keyword_predictions_reject_empty_explanation_terms` passed!")
+
+
 def test_keyword_predictions_do_not_match_substrings(
     keyword_explanation_predictions: Callable | None = None,
 ):
@@ -124,6 +163,27 @@ def test_keyword_predictions_do_not_match_substrings(
         msg="Keyword explanations should match whole tokens, not substrings.",
     )
     print("All tests in `test_keyword_predictions_do_not_match_substrings` passed!")
+
+
+def test_explanation_prediction_report_rejects_shape_mismatch(
+    explanation_prediction_report: Callable | None = None,
+):
+    solutions = _solutions()
+    explanation_prediction_report = (
+        explanation_prediction_report or solutions.explanation_prediction_report
+    )
+    try:
+        explanation_prediction_report(
+            t.tensor([True, False]),
+            t.tensor([True]),
+            t.tensor([False, False]),
+            t.tensor([True, True]),
+        )
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("Mismatched prediction, label, and mask shapes should fail.")
+    print("All tests in `test_explanation_prediction_report_rejects_shape_mismatch` passed!")
 
 
 def test_learned_verbalizer_terms_do_not_use_heldout_only_words(
@@ -148,6 +208,26 @@ def test_learned_verbalizer_terms_do_not_use_heldout_only_words(
     print(
         "All tests in `test_learned_verbalizer_terms_do_not_use_heldout_only_words` passed!"
     )
+
+
+def test_learned_verbalizer_terms_reject_bad_inputs(
+    learn_verbalizer_terms: Callable | None = None,
+):
+    solutions = _solutions()
+    learn_verbalizer_terms = learn_verbalizer_terms or solutions.learn_verbalizer_terms
+    try:
+        learn_verbalizer_terms(["The cat sat"], t.tensor([True]), top_k=0)
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("top_k <= 0 should be rejected.")
+    try:
+        learn_verbalizer_terms(["The cat sat", "The bird flew"], t.tensor([True]), top_k=1)
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("Mismatched texts and labels should be rejected.")
+    print("All tests in `test_learned_verbalizer_terms_reject_bad_inputs` passed!")
 
 
 def test_counterexamples_and_revision_are_grounded_in_failures(
@@ -178,6 +258,26 @@ def test_counterexamples_and_revision_are_grounded_in_failures(
         "Feature activates on code."
     ), "Revision should leave the explanation unchanged when there are no counterexamples."
     print("All tests in `test_counterexamples_and_revision_are_grounded_in_failures` passed!")
+
+
+def test_counterexamples_reject_bad_inputs(
+    find_counterexamples: Callable | None = None,
+):
+    solutions = _solutions()
+    find_counterexamples = find_counterexamples or solutions.find_counterexamples
+    try:
+        find_counterexamples(["write code"], t.tensor([True, False]), t.tensor([True, False]))
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("Mismatched texts, predictions, and labels should be rejected.")
+    try:
+        find_counterexamples(["write code"], t.tensor([True]), t.tensor([False]), max_examples=0)
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("max_examples <= 0 should be rejected.")
+    print("All tests in `test_counterexamples_reject_bad_inputs` passed!")
 
 
 def test_intervention_prediction_checks_signed_direction(
@@ -212,6 +312,26 @@ def test_intervention_prediction_checks_signed_direction(
         "Intervention report should fail when the observed sign contradicts the prediction."
     )
     print("All tests in `test_intervention_prediction_checks_signed_direction` passed!")
+
+
+def test_intervention_prediction_rejects_invalid_direction(
+    intervention_prediction_report: Callable | None = None,
+):
+    solutions = _solutions()
+    intervention_prediction_report = (
+        intervention_prediction_report or solutions.intervention_prediction_report
+    )
+    try:
+        intervention_prediction_report(
+            t.tensor([0.1, 0.2]),
+            t.tensor([0.5, 0.6]),
+            predicted_direction="sideways",
+        )
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("Invalid predicted_direction should be rejected.")
+    print("All tests in `test_intervention_prediction_rejects_invalid_direction` passed!")
 
 
 def test_explanation_brevity_compares_against_examples_only_baseline(

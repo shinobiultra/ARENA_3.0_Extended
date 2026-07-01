@@ -74,9 +74,9 @@
       "train_example_count": 8
     }
   ],
-  "date_run": "2026-07-01T06:34:58+00:00",
+  "date_run": "2026-07-01T11:22:38+00:00",
   "evidence_level": "toy_verbalizer_contract_plus_pinned_transformerlens_residual_direction_preflight",
-  "git_commit": "3f277125",
+  "git_commit": "15c2cdaf",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-1",
   "known_failures": [],
@@ -93,6 +93,11 @@
         "contrastive_examples",
         "explanation",
         "explanation_terms",
+        "heldout_contrastive_count",
+        "heldout_contrastive_examples",
+        "heldout_contrastive_has_both_labels",
+        "heldout_contrastive_labels",
+        "heldout_contrastive_scores",
         "heldout_example_count",
         "heldout_only_learned_terms",
         "hf_model_id",
@@ -148,6 +153,26 @@
       ],
       "full_path": "Pinned TransformerLens gelu-1l residual-direction verbalizer preflight.",
       "gpu_total_memory_gb": 23.45965576171875,
+      "heldout_contrastive_count": 4,
+      "heldout_contrastive_examples": [
+        "The blanket slept near the",
+        "The lamp rested beside the",
+        "The pillow sat near the",
+        "The dog ran through the"
+      ],
+      "heldout_contrastive_has_both_labels": true,
+      "heldout_contrastive_labels": [
+        true,
+        true,
+        true,
+        false
+      ],
+      "heldout_contrastive_scores": [
+        -1.0097063779830933,
+        0.3966093063354492,
+        1.2726600170135498,
+        -0.306819349527359
+      ],
       "heldout_example_count": 8,
       "heldout_only_learned_terms": [],
       "hf_model_id": "NeelNanda/GELU_1L512W_C4_Code",
@@ -161,7 +186,7 @@
       "negative_token": " top",
       "num_counterexamples": 0,
       "passes_baseline": true,
-      "peak_vram_gb": 0.26766014099121094,
+      "peak_vram_gb": 0.23641014099121094,
       "positive_mean_score": 1.6886990070343018,
       "positive_prompt": "The cat sat on the",
       "positive_token": " floor",
@@ -264,10 +289,10 @@
   "ood_tests": {
     "declared": "required_where_applicable"
   },
-  "peak_vram_gb": 0.26766014099121094,
+  "peak_vram_gb": 0.23641014099121094,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "5414cbe309c41d95899a2bae9ba359327e4dddcdb0f0b7cc8cf34a8e0f2db966",
+    "combined_sha256": "0ea8fbc54de5ca735e135a14d550108c420b4ae1280df321ebea44183542c0b5",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -276,13 +301,13 @@
       },
       {
         "path": "chapter7_activation_to_language/exercises/part2_feature_verbalizers/7.2_Feature_Verbalizers_exercises.ipynb",
-        "sha256": "cdd33f7b44b265bcbea175b7c4287771d6ccd09bf3ffdd9a23d2325cd4a0a9c8",
-        "size_bytes": 11357
+        "sha256": "a87e2c2e937fb14a83ef4fe9f531c357c4a4d7a93ac9a4834adc1b64e3b068e9",
+        "size_bytes": 17981
       },
       {
         "path": "chapter7_activation_to_language/exercises/part2_feature_verbalizers/7.2_Feature_Verbalizers_solutions.ipynb",
-        "sha256": "b61bfe54192dd008477e43ae957728d039b0082fade16f7ac1b06e07de4eec23",
-        "size_bytes": 6115
+        "sha256": "685dcde0eff3bd6d87933a538376b751bb7940f2b6a7cde4382350182a76a3ec",
+        "size_bytes": 8808
       },
       {
         "path": "chapter7_activation_to_language/exercises/part2_feature_verbalizers/README.md",
@@ -311,13 +336,13 @@
       },
       {
         "path": "chapter7_activation_to_language/exercises/part2_feature_verbalizers/solutions.py",
-        "sha256": "7d9fa7a55e8d10d57385c01df146c912862e301b11bd072ba74053ea2ee4aa70",
-        "size_bytes": 22514
+        "sha256": "700e6c98584055e72dc5b797213a29131b4cc2d9f648d06cd93e8d9263173705",
+        "size_bytes": 23497
       },
       {
         "path": "chapter7_activation_to_language/exercises/part2_feature_verbalizers/tests.py",
-        "sha256": "61ef2bfb1b660ac03055baea6224cedfe0c490d3302da226fb5aa2ecabd3ae5e",
-        "size_bytes": 10932
+        "sha256": "2f72216440b7d8da73fd98a89f6de93baf37e96c6cf759fb440bcdf8ad521972",
+        "size_bytes": 15223
       },
       {
         "path": "chapter7_activation_to_language/exercises/part2_feature_verbalizers/utils.py",
@@ -331,8 +356,8 @@
       },
       {
         "path": "chapter7_activation_to_language/instructions/pages/02_[7.2]_Feature_Verbalizers.md",
-        "sha256": "94b82c4c781d8bd4308613affc7de123b271e0f1d7c23c96778a275d463ecd16",
-        "size_bytes": 18589
+        "sha256": "ff6d5fefd61092363740502dd725e5b5ed167981ec3c6556f12205dbb2a359ac",
+        "size_bytes": 29587
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
@@ -347,5 +372,5 @@
     "The real-model path uses safe generic prompts and reads cached activations and logits from a small public TransformerLens checkpoint. It does not use unsafe prompts, gated weights, generated completions, or external API calls."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 2.585096
+  "wall_clock_seconds": 8.570077
 }
