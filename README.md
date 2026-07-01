@@ -97,10 +97,11 @@ Coming soon!
 
 This fork is being rewritten into a local-first frontier-model extension while
 keeping the original ARENA structure intact. The current PR contains a large
-prototype implementation surface plus three polished ARENA-style sections:
+prototype implementation surface plus four polished ARENA-style sections:
 [5.1 Gemma from Scratch](chapter5_modern_architectures/instructions/pages/01_%5B5.1%5D_Gemma_from_Scratch.md),
 [5.2 Gemma Scope and Feature Steering](chapter5_modern_architectures/instructions/pages/02_%5B5.2%5D_Gemma_Scope_and_Feature_Steering.md),
-and [5.3 Mamba from Scratch](chapter5_modern_architectures/instructions/pages/03_%5B5.3%5D_Mamba_from_Scratch.md).
+[5.3 Mamba from Scratch](chapter5_modern_architectures/instructions/pages/03_%5B5.3%5D_Mamba_from_Scratch.md),
+and [5.4 Mamba State Tracking](chapter5_modern_architectures/instructions/pages/04_%5B5.4%5D_Mamba_State_Tracking.md).
 The remaining extension pages are tracked as prototype scaffolds until they are
 rewritten with original-ARENA pacing, diagrams, help/interpretation dropdowns,
 visible signature results, and notebook surfaces. See
