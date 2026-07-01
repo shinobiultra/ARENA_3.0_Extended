@@ -35,7 +35,9 @@ class PatchingLocalizationReport:
 class RandomPatchControlReport:
     top_patch_score: float
     random_patch_score: float
+    max_random_patch_score: float
     top_beats_random: bool
+    top_beats_max_random: bool
 
 
 def answer_logit_diff(
@@ -46,11 +48,19 @@ def answer_logit_diff(
 ) -> float:
     """Return mean positive-minus-negative logit difference."""
 
+    if logits.ndim < 1:
+        raise ValueError("logits must have a vocabulary dimension.")
     vocab_size = logits.shape[-1]
+    if vocab_size == 0:
+        raise ValueError("logits vocabulary dimension must be nonempty.")
+    if positive_token_id == negative_token_id:
+        raise ValueError("positive_token_id and negative_token_id must differ.")
     if not 0 <= positive_token_id < vocab_size:
         raise ValueError("positive_token_id is out of range.")
     if not 0 <= negative_token_id < vocab_size:
         raise ValueError("negative_token_id is out of range.")
+    if not t.isfinite(logits).all():
+        raise ValueError("logits must be finite.")
     diff = logits[..., positive_token_id] - logits[..., negative_token_id]
     return diff.float().mean().item()
 
@@ -87,6 +97,12 @@ def recovery_fraction(
     """Return how much of the clean-corrupt gap a patch recovers."""
 
     denominator = clean_metric - corrupt_metric
+    metrics_are_finite = all(
+        t.isfinite(t.tensor(value)).item()
+        for value in (clean_metric, corrupt_metric, patched_metric)
+    )
+    if not metrics_are_finite:
+        raise ValueError("clean, corrupt, and patched metrics must be finite.")
     if denominator == 0:
         raise ValueError("clean_metric and corrupt_metric must differ.")
     return (patched_metric - corrupt_metric) / denominator
@@ -103,6 +119,8 @@ def patching_recovery_report(
 ) -> PatchingRecoveryReport:
     """Measure logit-diff recovery after patching clean activations."""
 
+    if not 0.0 <= min_recovered_fraction <= 1.0:
+        raise ValueError("min_recovered_fraction must be between 0 and 1.")
     clean_metric = answer_logit_diff(
         clean_logits,
         positive_token_id=positive_token_id,
@@ -140,7 +158,19 @@ def activation_patching_sweep(
 ) -> ActivationPatchingSweep:
     """Convert per-component patched metrics into recovery scores."""
 
+    if patched_metrics.ndim != 1:
+        raise ValueError("patched_metrics must be rank-1.")
+    if patched_metrics.numel() == 0:
+        raise ValueError("patched_metrics must be nonempty.")
+    if not t.isfinite(patched_metrics).all():
+        raise ValueError("patched_metrics must be finite.")
     denominator = clean_metric - corrupt_metric
+    metrics_are_finite = all(
+        t.isfinite(t.tensor(value)).item()
+        for value in (clean_metric, corrupt_metric)
+    )
+    if not metrics_are_finite:
+        raise ValueError("clean_metric and corrupt_metric must be finite.")
     if denominator == 0:
         raise ValueError("clean_metric and corrupt_metric must differ.")
     patch_scores = (patched_metrics.float() - corrupt_metric) / denominator
@@ -163,10 +193,19 @@ def patching_localization_report(
 
     if patch_scores.ndim != 1:
         raise ValueError("patch_scores must be rank-1.")
+    if patch_scores.numel() == 0:
+        raise ValueError("patch_scores must be nonempty.")
+    if not t.isfinite(patch_scores).all():
+        raise ValueError("patch_scores must be finite.")
     if top_k <= 0:
         raise ValueError("top_k must be positive.")
+    if not 0.0 <= min_overlap <= 1.0:
+        raise ValueError("min_overlap must be between 0 and 1.")
     if len(target_indices) == 0:
         raise ValueError("target_indices must be nonempty.")
+    target_tensor = t.tensor(target_indices, dtype=t.long, device=patch_scores.device)
+    if target_tensor.min().item() < 0 or target_tensor.max().item() >= patch_scores.numel():
+        raise ValueError("target index is out of range.")
 
     k = min(top_k, patch_scores.numel())
     top_indices = tuple(int(index) for index in patch_scores.topk(k=k).indices.tolist())
@@ -193,6 +232,10 @@ def random_patch_control_report(
 
     if patch_scores.ndim != 1:
         raise ValueError("patch_scores must be rank-1.")
+    if patch_scores.numel() == 0:
+        raise ValueError("patch_scores must be nonempty.")
+    if not t.isfinite(patch_scores).all():
+        raise ValueError("patch_scores must be finite.")
     if top_k <= 0:
         raise ValueError("top_k must be positive.")
     if len(random_indices) == 0:
@@ -203,9 +246,13 @@ def random_patch_control_report(
     random_tensor = t.tensor(random_indices, dtype=t.long, device=patch_scores.device)
     if random_tensor.min().item() < 0 or random_tensor.max().item() >= patch_scores.numel():
         raise ValueError("random index is out of range.")
-    random_patch_score = patch_scores[random_tensor].float().mean().item()
+    random_scores = patch_scores[random_tensor].float()
+    random_patch_score = random_scores.mean().item()
+    max_random_patch_score = random_scores.max().item()
     return RandomPatchControlReport(
         top_patch_score=top_patch_score,
         random_patch_score=random_patch_score,
+        max_random_patch_score=max_random_patch_score,
         top_beats_random=top_patch_score > random_patch_score,
+        top_beats_max_random=top_patch_score > max_random_patch_score,
     )

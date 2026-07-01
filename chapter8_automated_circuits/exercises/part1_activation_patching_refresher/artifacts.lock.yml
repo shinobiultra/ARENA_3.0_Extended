@@ -63,10 +63,12 @@ expected_metrics:
   clean_corrupt_gap_min: 6.0
   target_recovered_fraction_min: 0.99
   wrong_position_control_fraction_max: 0.0001
+  max_wrong_position_control_fraction_max: 0.0001
   best_position: 5
   best_score_min: 0.99
   localizes_final_position: true
   top_beats_wrong_position_control: true
+  top_beats_max_wrong_position_control: true
   max_abs_final_patch_logit_error_max: 1.0e-05
   finite_logits: true
   peak_vram_gb_max: 1.0

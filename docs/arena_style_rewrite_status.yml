@@ -70,9 +70,9 @@ sections:
     page: chapter7_activation_to_language/instructions/pages/05_[7.5]_Predictive_Concept_Decoders.md
     notes: ARENA-style rewrite with predictive-concept-decoder validation diagrams, sparse concept/question-conditioned decoder training progression, baseline/shuffle/stability/removal controls, help/interpretation dropdowns, signature result, limitations, and paired notebook surfaces.
   '8.1':
-    status: prototype
+    status: course_ready
     page: chapter8_automated_circuits/instructions/pages/01_[8.1]_Activation_Patching_Refresher.md
-    notes: Prototype scaffold retained for implementation evidence; requires ARENA-style rewrite before course-ready release.
+    notes: ARENA-style rewrite with activation-patching validation diagrams, clean/corrupt metric and patching progression, recovery/localization/control contracts, help/interpretation dropdowns, signature result, limitations, and paired notebook surfaces.
   '8.2':
     status: prototype
     page: chapter8_automated_circuits/instructions/pages/02_[8.2]_Attribution_Patching_and_EAP.md

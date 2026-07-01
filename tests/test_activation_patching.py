@@ -102,4 +102,6 @@ def test_random_patch_control_report_requires_top_to_win():
 
     assert report.top_patch_score == pytest.approx(0.85)
     assert report.random_patch_score == pytest.approx(0.15)
+    assert report.max_random_patch_score == pytest.approx(0.2)
     assert report.top_beats_random
+    assert report.top_beats_max_random

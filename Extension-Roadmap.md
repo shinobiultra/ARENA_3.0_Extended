@@ -15,12 +15,13 @@ Scope Deep Dive**, **[6.3] Transcoders and Attribution Graphs**,
 **[6.4] Crosscoders and Model Diffing**, **[7.1] Logit Lens,
 Tuned Lens, and Patchscopes**, **[7.2] Feature Verbalizers**,
 **[7.3] Mini Activation Oracles**, **[7.4] Mini Natural Language
-Autoencoders**, and **[7.5] Predictive Concept Decoders**.
+Autoencoders**, **[7.5] Predictive Concept Decoders**, and **[8.1]
+Activation Patching Refresher**.
 They now have ARENA-style learner pages, local
 diagrams, help/interpretation dropdowns, expected-output blocks, paired
 exercise/solution notebooks, CUDA-backed signature result tables, and explicit
 claim boundaries.
-The other extension sections are prototype scaffolds: useful
+The remaining non-`course_ready` extension sections are prototype scaffolds: useful
 implementation and verification evidence, but still requiring the
 original-ARENA rewrite pass described in `guidance_2-0.md`.
 

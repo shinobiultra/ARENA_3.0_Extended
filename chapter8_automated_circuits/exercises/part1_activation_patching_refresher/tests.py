@@ -56,6 +56,31 @@ def test_answer_logit_diff_validates_token_ids(
     print("All tests in `test_answer_logit_diff_validates_token_ids` passed!")
 
 
+def test_answer_logit_diff_rejects_degenerate_metrics(
+    answer_logit_diff: Callable | None = None,
+):
+    answer_logit_diff = answer_logit_diff or _solutions().answer_logit_diff
+    try:
+        answer_logit_diff(t.empty(0), positive_token_id=0, negative_token_id=1)
+    except ValueError as exc:
+        assert "nonempty" in str(exc), "Empty vocab dimensions should fail clearly."
+    else:
+        raise AssertionError("Empty vocab dimensions should raise ValueError.")
+    try:
+        answer_logit_diff(t.tensor([1.0, 2.0]), positive_token_id=0, negative_token_id=0)
+    except ValueError as exc:
+        assert "must differ" in str(exc), "Same-token metrics are not meaningful."
+    else:
+        raise AssertionError("Same positive/negative token ids should raise ValueError.")
+    try:
+        answer_logit_diff(t.tensor([float("nan"), 2.0]), positive_token_id=0, negative_token_id=1)
+    except ValueError as exc:
+        assert "finite" in str(exc), "NaN logits should not produce a patching metric."
+    else:
+        raise AssertionError("Non-finite logits should raise ValueError.")
+    print("All tests in `test_answer_logit_diff_rejects_degenerate_metrics` passed!")
+
+
 def test_patch_activation_slice_replaces_one_component_without_mutating_inputs(
     patch_activation_slice: Callable | None = None,
 ):
@@ -162,6 +187,59 @@ def test_patching_recovery_report_and_sweep_normalize_by_clean_corrupt_gap(
     )
 
 
+def test_recovery_and_sweep_reject_degenerate_inputs(
+    patching_recovery_report: Callable | None = None,
+    activation_patching_sweep: Callable | None = None,
+):
+    solutions = _solutions()
+    patching_recovery_report = patching_recovery_report or solutions.patching_recovery_report
+    activation_patching_sweep = activation_patching_sweep or solutions.activation_patching_sweep
+    try:
+        patching_recovery_report(
+            t.tensor([2.0, 0.0]),
+            t.tensor([0.0, 2.0]),
+            t.tensor([1.0, 1.0]),
+            positive_token_id=0,
+            negative_token_id=1,
+            min_recovered_fraction=1.5,
+        )
+    except ValueError as exc:
+        assert "between 0 and 1" in str(exc), "Recovery thresholds should be probabilities."
+    else:
+        raise AssertionError("Invalid min_recovered_fraction should raise ValueError.")
+    try:
+        activation_patching_sweep(
+            clean_metric=2.0,
+            corrupt_metric=0.0,
+            patched_metrics=t.empty(0),
+        )
+    except ValueError as exc:
+        assert "nonempty" in str(exc), "Empty patch sweeps should fail clearly."
+    else:
+        raise AssertionError("Empty patched_metrics should raise ValueError.")
+    try:
+        activation_patching_sweep(
+            clean_metric=2.0,
+            corrupt_metric=0.0,
+            patched_metrics=t.ones(2, 2),
+        )
+    except ValueError as exc:
+        assert "rank-1" in str(exc), "Patch sweeps should be one score per component."
+    else:
+        raise AssertionError("Rank-2 patched_metrics should raise ValueError.")
+    try:
+        activation_patching_sweep(
+            clean_metric=2.0,
+            corrupt_metric=0.0,
+            patched_metrics=t.tensor([float("inf")]),
+        )
+    except ValueError as exc:
+        assert "finite" in str(exc), "Patch sweeps should reject infinite scores."
+    else:
+        raise AssertionError("Non-finite patched_metrics should raise ValueError.")
+    print("All tests in `test_recovery_and_sweep_reject_degenerate_inputs` passed!")
+
+
 def test_localization_and_random_controls_require_top_components_to_win(
     patching_localization_report: Callable | None = None,
     random_patch_control_report: Callable | None = None,
@@ -221,6 +299,9 @@ def test_localization_and_random_controls_require_top_components_to_win(
     assert abs(control.random_patch_score - 0.15) < 1e-6 and control.top_beats_random, (
         "Top patches should beat the same-size random control."
     )
+    assert abs(control.max_random_patch_score - 0.2) < 1e-6 and control.top_beats_max_random, (
+        "Top patches should also beat the largest individual wrong-control patch."
+    )
     losing_control = random_patch_control_report(
         patch_scores,
         random_indices=[1, 2],
@@ -229,8 +310,73 @@ def test_localization_and_random_controls_require_top_components_to_win(
     assert not losing_control.top_beats_random, (
         "A random set equal to the top set should not count as top beating random."
     )
+    hidden_bad_control = random_patch_control_report(
+        t.tensor([1.0, 0.9, 0.0, 0.0]),
+        random_indices=[1, 2, 3],
+        top_k=1,
+    )
+    assert hidden_bad_control.top_beats_random and hidden_bad_control.top_beats_max_random, (
+        "The max-control check should pass only when the top patch beats every wrong position."
+    )
+    exposed_bad_control = random_patch_control_report(
+        t.tensor([1.0, 1.0, 0.0, 0.0]),
+        random_indices=[1, 2, 3],
+        top_k=1,
+    )
+    assert exposed_bad_control.top_beats_random and not exposed_bad_control.top_beats_max_random, (
+        "A high individual wrong-position patch should fail the max-control check even if the average passes."
+    )
     print(
         "All tests in `test_localization_and_random_controls_require_top_components_to_win` passed!"
+    )
+
+
+def test_localization_and_random_controls_reject_bad_indices(
+    patching_localization_report: Callable | None = None,
+    random_patch_control_report: Callable | None = None,
+):
+    solutions = _solutions()
+    patching_localization_report = (
+        patching_localization_report or solutions.patching_localization_report
+    )
+    random_patch_control_report = (
+        random_patch_control_report or solutions.random_patch_control_report
+    )
+    patch_scores = t.tensor([0.2, 0.9, 0.8, 0.1])
+    try:
+        patching_localization_report(
+            patch_scores,
+            target_indices=[4],
+            top_k=1,
+        )
+    except ValueError as exc:
+        assert "out of range" in str(exc), "Target indices should index patch scores."
+    else:
+        raise AssertionError("Out-of-range target indices should raise ValueError.")
+    try:
+        patching_localization_report(
+            patch_scores,
+            target_indices=[1],
+            min_overlap=-0.1,
+        )
+    except ValueError as exc:
+        assert "between 0 and 1" in str(exc), "Overlap thresholds should be probabilities."
+    else:
+        raise AssertionError("Invalid min_overlap should raise ValueError.")
+    try:
+        random_patch_control_report(t.empty(0), random_indices=[0])
+    except ValueError as exc:
+        assert "nonempty" in str(exc), "Empty random-control score vectors should fail."
+    else:
+        raise AssertionError("Empty patch_scores should raise ValueError.")
+    try:
+        random_patch_control_report(t.tensor([0.1, float("nan")]), random_indices=[0])
+    except ValueError as exc:
+        assert "finite" in str(exc), "Random controls should reject non-finite score vectors."
+    else:
+        raise AssertionError("Non-finite patch_scores should raise ValueError.")
+    print(
+        "All tests in `test_localization_and_random_controls_reject_bad_indices` passed!"
     )
 
 
