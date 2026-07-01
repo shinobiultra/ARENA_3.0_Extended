@@ -78,6 +78,45 @@ def test_build_activation_question_batch_validates_shapes_and_questions(
     )
 
 
+def test_build_activation_question_batch_rejects_out_of_range_question_ids(
+    build_activation_question_batch: Callable | None = None,
+):
+    solutions = _solutions()
+    build_activation_question_batch = (
+        build_activation_question_batch or solutions.build_activation_question_batch
+    )
+    activations = t.eye(2)
+    answer_ids = t.tensor([1, 0])
+    template_ids = t.tensor([0, 1])
+    try:
+        build_activation_question_batch(
+            activations,
+            t.tensor([0, 3]),
+            answer_ids,
+            template_ids,
+            questions=("question zero", "question one"),
+        )
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("question_ids outside the question bank should be rejected.")
+    try:
+        build_activation_question_batch(
+            activations,
+            t.tensor([0, 1]),
+            answer_ids,
+            template_ids,
+            questions=(),
+        )
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("Empty question banks should be rejected.")
+    print(
+        "All tests in `test_build_activation_question_batch_rejects_out_of_range_question_ids` passed!"
+    )
+
+
 def test_question_conditioned_oracle_uses_question_ids_not_copied_probe_logits(
     make_question_conditioned_rows: Callable | None = None,
     train_question_conditioned_oracle: Callable | None = None,
@@ -212,6 +251,34 @@ def test_template_split_and_ood_reports_expose_generalization_failures(
     )
 
 
+def test_ood_generalization_report_rejects_invalid_threshold(
+    ood_generalization_report: Callable | None = None,
+):
+    solutions = _solutions()
+    ood_generalization_report = ood_generalization_report or solutions.ood_generalization_report
+    logits = t.tensor([[2.0, 0.0], [0.0, 2.0]])
+    answers = t.tensor([0, 1])
+    try:
+        ood_generalization_report(
+            heldout_template_logits=logits,
+            heldout_template_answers=answers,
+            new_name_logits=logits,
+            new_name_answers=answers,
+            long_context_logits=logits,
+            long_context_answers=answers,
+            adversarial_logits=logits,
+            adversarial_answers=answers,
+            min_accuracy=1.1,
+        )
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("min_accuracy outside [0, 1] should be rejected.")
+    print(
+        "All tests in `test_ood_generalization_report_rejects_invalid_threshold` passed!"
+    )
+
+
 def test_random_activation_report_requires_abstention_or_low_confidence(
     random_activation_oracle_report: Callable | None = None,
 ):
@@ -249,6 +316,33 @@ def test_random_activation_report_requires_abstention_or_low_confidence(
     )
 
 
+def test_random_activation_report_rejects_bad_rank_and_thresholds(
+    random_activation_oracle_report: Callable | None = None,
+):
+    random_activation_oracle_report = (
+        random_activation_oracle_report or _solutions().random_activation_oracle_report
+    )
+    try:
+        random_activation_oracle_report(t.tensor([0.0, 0.1]), abstain_answer_id=1)
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("Rank-1 random logits should be rejected.")
+    try:
+        random_activation_oracle_report(
+            t.tensor([[0.0, 0.1]]),
+            abstain_answer_id=1,
+            min_abstention_rate=-0.1,
+        )
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("Invalid abstention threshold should be rejected.")
+    print(
+        "All tests in `test_random_activation_report_rejects_bad_rank_and_thresholds` passed!"
+    )
+
+
 def test_activation_patching_report_checks_answer_change(
     activation_patching_oracle_report: Callable | None = None,
 ):
@@ -268,6 +362,29 @@ def test_activation_patching_report_checks_answer_change(
         "Patching report should not claim causal evidence when the answer is unchanged."
     )
     print("All tests in `test_activation_patching_report_checks_answer_change` passed!")
+
+
+def test_activation_patching_report_rejects_incompatible_logits(
+    activation_patching_oracle_report: Callable | None = None,
+):
+    activation_patching_oracle_report = (
+        activation_patching_oracle_report or _solutions().activation_patching_oracle_report
+    )
+    try:
+        activation_patching_oracle_report(t.tensor([[2.0, 0.0]]), t.tensor([0.0, 3.0]))
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("Rank-2 logits should be rejected for a single patching row.")
+    try:
+        activation_patching_oracle_report(t.tensor([2.0, 0.0]), t.tensor([0.0, 3.0, 0.0]))
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("Original and patched logits must have matching answer classes.")
+    print(
+        "All tests in `test_activation_patching_report_rejects_incompatible_logits` passed!"
+    )
 
 
 def test_notebook_contract(run_smoke_test: Callable | None = None):

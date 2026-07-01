@@ -314,9 +314,9 @@ chapters:
       exercise_dir: part3_mini_activation_oracles
       page_file: 03_[7.3]_Mini_Activation_Oracles.md
       header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-14-1.png
-      status: Toy mini Activation Oracle validation harness added
-      streamlit_description: Build and verify activation-question datasets, oracle-vs-baseline comparisons, template split accuracy, OOD reports, random-activation graceful failure, and activation-patching answer changes.
-      streamlit_description_short: Build and verify mini Activation Oracle evaluation controls.
+      status: ARENA-style mini Activation Oracle validation section added
+      streamlit_description: Build question-conditioned activation rows, train a tiny mini Activation Oracle, compare against text-only and activation-only baselines, report held-out/OOD splits, test random-activation abstention and clean-to-corrupt activation substitution, and inspect a pinned GELU-1L CUDA preflight.
+      streamlit_description_short: Validate mini Activation Oracles with question-conditioned GELU-1L controls.
     - id: 4_mini_natural_language_autoencoders
       number: '7.4'
       title: Mini Natural Language Autoencoders

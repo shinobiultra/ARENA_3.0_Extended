@@ -99,11 +99,21 @@ def build_activation_question_batch(
         raise ValueError("template_ids must have shape (examples,).")
     if questions is None:
         questions = default_activation_questions()
+    if len(questions) == 0:
+        raise ValueError("questions must include at least one question.")
+    question_ids = question_ids.long()
+    answer_ids = answer_ids.long()
+    template_ids = template_ids.long()
+    if question_ids.numel() and (
+        int(question_ids.min().item()) < 0
+        or int(question_ids.max().item()) >= len(questions)
+    ):
+        raise ValueError("question_ids must index into the questions tuple.")
     return ActivationQuestionBatch(
         activations=activations,
-        question_ids=question_ids.long(),
-        answer_ids=answer_ids.long(),
-        template_ids=template_ids.long(),
+        question_ids=question_ids,
+        answer_ids=answer_ids,
+        template_ids=template_ids,
         questions=questions,
     )
 
@@ -165,6 +175,8 @@ def ood_generalization_report(
 ) -> OODGeneralizationReport:
     """Evaluate Activation Oracle accuracy on OOD-style splits."""
 
+    if not 0 <= min_accuracy <= 1:
+        raise ValueError("min_accuracy must lie between 0 and 1.")
     heldout_template_accuracy = prediction_accuracy(
         heldout_template_logits,
         heldout_template_answers,
@@ -199,6 +211,12 @@ def random_activation_oracle_report(
 ) -> RandomActivationOracleReport:
     """Check that the oracle fails gracefully on random activations."""
 
+    if random_logits.ndim < 2:
+        raise ValueError("random_logits must have shape (..., answer_classes).")
+    if not 0 <= min_abstention_rate <= 1:
+        raise ValueError("min_abstention_rate must lie between 0 and 1.")
+    if not 0 <= max_mean_confidence <= 1:
+        raise ValueError("max_mean_confidence must lie between 0 and 1.")
     if not 0 <= abstain_answer_id < random_logits.shape[-1]:
         raise ValueError("abstain_answer_id is out of range.")
     probs = F.softmax(random_logits.float(), dim=-1)
@@ -223,6 +241,8 @@ def activation_patching_oracle_report(
 
     if original_logits.ndim != 1 or patched_logits.ndim != 1:
         raise ValueError("original_logits and patched_logits must be rank-1 tensors.")
+    if original_logits.shape != patched_logits.shape:
+        raise ValueError("original_logits and patched_logits must have matching shape.")
     original_answer = int(original_logits.argmax().item())
     patched_answer = int(patched_logits.argmax().item())
     return ActivationPatchingOracleReport(

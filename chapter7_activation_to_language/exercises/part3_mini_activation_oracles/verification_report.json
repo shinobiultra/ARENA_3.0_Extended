@@ -95,9 +95,9 @@
       "train_example_count": 8
     }
   ],
-  "date_run": "2026-07-01T06:35:01+00:00",
+  "date_run": "2026-07-01T11:35:58+00:00",
   "evidence_level": "toy_oracle_contract_plus_pinned_transformerlens_question_conditioned_oracle_preflight",
-  "git_commit": "3f277125",
+  "git_commit": "423eb98f",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-1",
   "known_failures": [],
@@ -296,7 +296,7 @@
   "peak_vram_gb": 0.26896047592163086,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "526c782293809ae42f04db56488c3453724257d7f1b49323f7bfd7fabe3e81ae",
+    "combined_sha256": "05bb90086aec74d266dd4a006f1dc2c6970597e4ba09ca2e79d29c05e02d3ee8",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -305,13 +305,13 @@
       },
       {
         "path": "chapter7_activation_to_language/exercises/part3_mini_activation_oracles/7.3_Mini_Activation_Oracles_exercises.ipynb",
-        "sha256": "92cab4c49b50bab2b6ab5d7f195f11f98055e116e28c4d92dbf498451cf5eaca",
-        "size_bytes": 13237
+        "sha256": "470867fd8e7cb42ef8e91d5d9d1b6e251a9bf0a0bc1bdb0db08b9e42ecc93665",
+        "size_bytes": 19405
       },
       {
         "path": "chapter7_activation_to_language/exercises/part3_mini_activation_oracles/7.3_Mini_Activation_Oracles_solutions.ipynb",
-        "sha256": "d3af1febe0af5c35ae06248c6a5b8d9a4aee8c55d4edf24724cd4fcdeb2e4aa3",
-        "size_bytes": 4290
+        "sha256": "1975ce616ec819b259e72539eb91dc4214f86faeb564e87fe05ba64cbb9c29fc",
+        "size_bytes": 8776
       },
       {
         "path": "chapter7_activation_to_language/exercises/part3_mini_activation_oracles/README.md",
@@ -340,13 +340,13 @@
       },
       {
         "path": "chapter7_activation_to_language/exercises/part3_mini_activation_oracles/solutions.py",
-        "sha256": "3f10d6a694d5623d74b75883ebc19dfaa554ab539bc146eda6f56e4d647b0ada",
-        "size_bytes": 31497
+        "sha256": "56178c8983dbfe17c134a7b48c60cb4c2f82a151f60bb2394730bbd26538bd44",
+        "size_bytes": 32502
       },
       {
         "path": "chapter7_activation_to_language/exercises/part3_mini_activation_oracles/tests.py",
-        "sha256": "d7bb311aaed77fa5e781a842fad45c9ec3223577dad3945242618c62aee9f0ea",
-        "size_bytes": 11971
+        "sha256": "80e9817bae2b5975409ddb47d25573ae7d3c973ea288ed2e2958ae0f93a0302c",
+        "size_bytes": 15873
       },
       {
         "path": "chapter7_activation_to_language/exercises/part3_mini_activation_oracles/utils.py",
@@ -360,8 +360,8 @@
       },
       {
         "path": "chapter7_activation_to_language/instructions/pages/03_[7.3]_Mini_Activation_Oracles.md",
-        "sha256": "404a1a9cbda82f4266a4a2d9f8a20856b99ad9b347d747548fed31fff8dc7e1f",
-        "size_bytes": 18729
+        "sha256": "42b549dce74d8ee4b06652dea415c0794e68ccc0c257181a922ba19c11d90b4b",
+        "size_bytes": 27315
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
@@ -376,5 +376,5 @@
     "The real-model path uses safe generic prompts and cached activations/logits from a small public TransformerLens checkpoint. It does not use unsafe prompts, gated weights, generated completions, adapter training, or external API calls."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 3.126378
+  "wall_clock_seconds": 6.089096
 }
