@@ -50,9 +50,9 @@ sections:
     page: chapter6_sparse_feature_methods/instructions/pages/04_[6.4]_Crosscoders_and_Model_Diffing.md
     notes: ARENA-style rewrite with crosscoder/model-diffing validation ladder diagrams, reconstruction/specificity/behavior-delta/direction-control progression, help/interpretation dropdowns, signature result, limitations, and paired notebook surfaces.
   '7.1':
-    status: prototype
+    status: course_ready
     page: chapter7_activation_to_language/instructions/pages/01_[7.1]_Logit_Lens_Tuned_Lens_and_Patchscopes.md
-    notes: Prototype scaffold retained for implementation evidence; requires ARENA-style rewrite before course-ready release.
+    notes: ARENA-style rewrite with activation-to-language validation ladder diagrams, logit/tuned/attention/Patchscope/control progression, help/interpretation dropdowns, signature result, limitations, and paired notebook surfaces.
   '7.2':
     status: prototype
     page: chapter7_activation_to_language/instructions/pages/02_[7.2]_Feature_Verbalizers.md

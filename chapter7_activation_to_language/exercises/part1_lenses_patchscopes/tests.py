@@ -60,6 +60,19 @@ def test_logit_lens_and_top_tokens_match_reference(
     print("All tests in `test_logit_lens_and_top_tokens_match_reference` passed!")
 
 
+def test_top_tokens_rejects_invalid_k(top_tokens: Callable | None = None):
+    solutions = _solutions()
+    top_tokens = top_tokens or solutions.top_tokens
+    logits = t.zeros(2, 3)
+    for bad_k in (0, 4):
+        try:
+            top_tokens(logits, k=bad_k)
+        except ValueError:
+            continue
+        raise AssertionError(f"top_tokens should reject k={bad_k}.")
+    print("All tests in `test_top_tokens_rejects_invalid_k` passed!")
+
+
 def test_tuned_lens_improves_over_logit_lens_on_toy_targets(
     logit_lens: Callable | None = None,
     tuned_lens: Callable | None = None,
@@ -92,6 +105,44 @@ def test_tuned_lens_improves_over_logit_lens_on_toy_targets(
     print("All tests in `test_tuned_lens_improves_over_logit_lens_on_toy_targets` passed!")
 
 
+def test_tuned_lens_uses_bias_and_leading_dims(
+    tuned_lens: Callable | None = None,
+    prediction_accuracy: Callable | None = None,
+):
+    solutions = _solutions()
+    tuned_lens = tuned_lens or solutions.tuned_lens
+    prediction_accuracy = prediction_accuracy or solutions.prediction_accuracy
+    residual = t.tensor([[[1.0, 0.0], [0.0, 1.0]], [[2.0, 1.0], [1.0, 2.0]]])
+    lens_weight = t.eye(2)
+    lens_bias = t.tensor([0.5, -0.25])
+    unembedding = t.tensor([[1.0, 0.0, 1.0], [0.0, 1.0, -1.0]])
+    actual = tuned_lens(residual, lens_weight, lens_bias, unembedding)
+    expected = reference.tuned_lens(residual, lens_weight, lens_bias, unembedding)
+    t.testing.assert_close(
+        actual,
+        expected,
+        msg="Tuned lens should broadcast bias across leading dimensions before unembedding.",
+    )
+    targets = actual.argmax(dim=-1)
+    assert prediction_accuracy(actual, targets) == 1.0, (
+        "prediction_accuracy should handle leading dimensions matching target ids."
+    )
+    print("All tests in `test_tuned_lens_uses_bias_and_leading_dims` passed!")
+
+
+def test_prediction_accuracy_rejects_shape_mismatch(
+    prediction_accuracy: Callable | None = None,
+):
+    solutions = _solutions()
+    prediction_accuracy = prediction_accuracy or solutions.prediction_accuracy
+    try:
+        prediction_accuracy(t.zeros(2, 3), t.zeros(2, 1, dtype=t.long))
+    except ValueError:
+        print("All tests in `test_prediction_accuracy_rejects_shape_mismatch` passed!")
+        return
+    raise AssertionError("prediction_accuracy should reject target shapes that do not match logits leading dimensions.")
+
+
 def test_attention_lens_decodes_attention_weighted_values(
     attention_lens: Callable | None = None,
 ):
@@ -109,6 +160,24 @@ def test_attention_lens_decodes_attention_weighted_values(
     )
     t.testing.assert_close(logits, t.tensor([[[1.0, 0.0], [0.25, 1.5]]]))
     print("All tests in `test_attention_lens_decodes_attention_weighted_values` passed!")
+
+
+def test_attention_lens_rejects_rank_or_key_mismatch(
+    attention_lens: Callable | None = None,
+):
+    solutions = _solutions()
+    attention_lens = attention_lens or solutions.attention_lens
+    bad_cases = [
+        (t.zeros(2, 2), t.zeros(1, 2, 2), t.eye(2)),
+        (t.zeros(1, 2, 3), t.zeros(1, 2, 2), t.eye(2)),
+    ]
+    for attention, values, unembedding in bad_cases:
+        try:
+            attention_lens(attention, values, unembedding)
+        except ValueError:
+            continue
+        raise AssertionError("attention_lens should reject invalid rank or key/value shapes.")
+    print("All tests in `test_attention_lens_rejects_rank_or_key_mismatch` passed!")
 
 
 def test_patchscope_templates_and_accuracy_report(
@@ -166,6 +235,28 @@ def test_patchscope_templates_and_accuracy_report(
         "Earlier target-prompt positions should be left unchanged."
     )
     print("All tests in `test_patchscope_templates_and_accuracy_report` passed!")
+
+
+def test_replace_final_position_activation_rejects_bad_shapes(
+    replace_final_position_activation: Callable | None = None,
+):
+    solutions = _solutions()
+    replace_final_position_activation = (
+        replace_final_position_activation or solutions.replace_final_position_activation
+    )
+    bad_cases = [
+        (t.zeros(3, 2), t.zeros(2)),
+        (t.zeros(2, 3, 2), t.zeros(2)),
+        (t.zeros(1, 3, 2), t.zeros(2, 1)),
+        (t.zeros(1, 3, 2), t.zeros(3)),
+    ]
+    for activations, source_activation in bad_cases:
+        try:
+            replace_final_position_activation(activations, source_activation)
+        except ValueError:
+            continue
+        raise AssertionError("replace_final_position_activation should reject invalid shapes.")
+    print("All tests in `test_replace_final_position_activation_rejects_bad_shapes` passed!")
 
 
 def test_counterfactual_and_random_activation_controls(
