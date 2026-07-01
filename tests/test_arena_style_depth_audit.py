@@ -104,3 +104,62 @@ def test_page_metadata_consistency_blockers_flag_page_lock_drift(tmp_path, monke
     assert any("page EXERCISE_ID='stale.id'" in blocker for blocker in blockers), (
         "The style audit should reject exercise-id drift between learner page and lockfile."
     )
+
+
+def test_notebook_setup_contract_flags_undefined_section_dir(tmp_path, monkeypatch):
+    notebook_dir = tmp_path / "chapter5_modern_architectures/exercises/part1_fake"
+    notebook_dir.mkdir(parents=True)
+    (notebook_dir / "fake_exercises.ipynb").write_text(
+        """
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "metadata": {},
+   "outputs": [],
+   "source": ["report = (section_dir / \\"verification_report.json\\").read_text()\\n"]
+  }
+ ],
+ "metadata": {},
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
+"""
+    )
+
+    monkeypatch.setattr(audit, "ROOT", tmp_path)
+
+    blockers = audit.notebook_setup_contract_blockers()
+
+    assert any("references section_dir without defining it" in blocker for blocker in blockers)
+
+
+def test_notebook_setup_contract_accepts_defined_section_dir(tmp_path, monkeypatch):
+    notebook_dir = tmp_path / "chapter5_modern_architectures/exercises/part1_fake"
+    notebook_dir.mkdir(parents=True)
+    (notebook_dir / "fake_exercises.ipynb").write_text(
+        """
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "section = \\"part1_fake\\"\\n",
+    "exercises_dir = root_dir / chapter / \\"exercises\\"\\n",
+    "section_dir = exercises_dir / section\\n",
+    "report = (section_dir / \\"verification_report.json\\").read_text()\\n"
+   ]
+  }
+ ],
+ "metadata": {},
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
+"""
+    )
+
+    monkeypatch.setattr(audit, "ROOT", tmp_path)
+
+    assert audit.notebook_setup_contract_blockers() == []

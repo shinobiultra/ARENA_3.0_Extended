@@ -14,9 +14,9 @@ sections:
     page: chapter5_modern_architectures/instructions/pages/01_[5.1]_Gemma_from_Scratch.md
     notes: Polished pilot section with diagrams, help dropdowns, signature result, and updated notebooks.
   '5.2':
-    status: prototype
+    status: course_ready
     page: chapter5_modern_architectures/instructions/pages/02_[5.2]_Gemma_Scope_and_Feature_Steering.md
-    notes: Prototype scaffold retained for implementation evidence; requires ARENA-style rewrite before course-ready release.
+    notes: ARENA-style rewrite with validation-ladder diagram, help/interpretation dropdowns, signature result, limitations, and paired notebook surfaces.
   '5.3':
     status: prototype
     page: chapter5_modern_architectures/instructions/pages/03_[5.3]_Mamba_from_Scratch.md

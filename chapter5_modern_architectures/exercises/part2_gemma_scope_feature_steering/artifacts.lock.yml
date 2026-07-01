@@ -78,6 +78,7 @@ controls:
 - real_gemma_activation_label_shuffle_control
 safety_notes:
 - No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.
-- Gemma Scope artifact loading is verified on CUDA. Because Gemma 3 1B IT weights
-  are gated in this environment, semantic feature validation and feature steering
-  on real Gemma activations are pending and not claimed.
+- Gemma Scope artifact loading and authenticated Gemma 3 1B IT layer-13 activation
+  capture are verified on CUDA in this environment. The claim remains limited to
+  the benign technical-vs-narrative semantic split and does not claim broad Gemma
+  Scope coverage or safety-relevant steering behavior.

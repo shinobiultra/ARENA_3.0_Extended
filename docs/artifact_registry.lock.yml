@@ -274,8 +274,9 @@ artifacts:
   max_vram_gb: '2'
   used_in_notebooks: 5.2;6.2
   gt_tier: GT-1
-  notes: Pinned 1B-IT layer-13 residual JumpReLU SAE preflight. Semantic feature validation
-    on Gemma 3 activations still requires gated model access.
+  notes: Pinned 1B-IT layer-13 residual JumpReLU SAE preflight plus authenticated
+    Gemma 3 layer-13 activation validation on a narrow benign semantic split with
+    random-feature and label-shuffle controls.
 - name: Mamba 130M
   type: sequence_model
   provider: Hugging Face

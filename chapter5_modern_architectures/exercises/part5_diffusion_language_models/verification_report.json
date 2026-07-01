@@ -92,9 +92,9 @@
       "vocab_size": 11
     }
   ],
-  "date_run": "2026-07-01T06:34:15+00:00",
+  "date_run": "2026-07-01T09:07:11+00:00",
   "evidence_level": "toy_diffusion_contract_plus_cuda_trained_conditional_diffusion_lm_and_diffusiongemma_readiness_preflight",
-  "git_commit": "3f277125",
+  "git_commit": "acd346eb",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-0",
   "known_failures": [],
@@ -409,7 +409,7 @@
   "peak_vram_gb": 0.07370853424072266,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "ea7378c31d178f39c00eb0e5361b3ab66766bf2bb8c9edadda6300da1ba44109",
+    "combined_sha256": "61cd966dae52c4dc4a0d7b29bee6e106c554e7fe76a74a1e6ca3c8abe42e79a7",
     "files": [
       {
         "path": "arena_ext/diffusion_lm.py",
@@ -428,8 +428,8 @@
       },
       {
         "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/5.5_Diffusion_Language_Models_exercises.ipynb",
-        "sha256": "f6440ffe250434da87ab31380a234c5fbb0b435074768160449ec06387003471",
-        "size_bytes": 16160
+        "sha256": "e683a768d997959e458e0e4aafd60f56cb252ca81665e855ef600e0376c2d32f",
+        "size_bytes": 14910
       },
       {
         "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/5.5_Diffusion_Language_Models_solutions.ipynb",
@@ -509,5 +509,5 @@
     "The trained diffusion LM path uses generated integer-token copy-pair data only. DiffusionGemma readiness checks use public open-weight metadata and exact pinned revisions. The Google BF16 path is deferred for direct 24GB loading, while the NVIDIA NVFP4 claim is limited to the isolated vLLM proof artifact and does not install vLLM into the main torch 2.12/CUDA 13.2 uv environment."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 10.153993
+  "wall_clock_seconds": 11.390309
 }

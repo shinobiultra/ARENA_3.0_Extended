@@ -66,8 +66,9 @@ methods:
   verification_status: IMPLEMENTED_ARTIFACT_PREFLIGHT
   baseline_status: HAS_PINNED_SAE_CONFIG_TENSOR_AND_FORWARD_CHECK
   notes: Sections 5.2 and 6.2 now load a pinned Gemma Scope 2 1B-IT residual SAE artifact
-    on CUDA and verify config, tensor shapes, finiteness, and JumpReLU encode/decode.
-    Real Gemma activation feature validation remains gated and is not claimed.
+    on CUDA, verify config, tensor shapes, finiteness, and JumpReLU encode/decode,
+    and validate authenticated Gemma 3 layer-13 activations on a narrow benign semantic
+    split with random-feature and label-shuffle controls.
 - method_name: Mamba selective scan
   paper: Mamba
   year: '2023'

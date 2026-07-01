@@ -6,13 +6,13 @@ ARENA chapters remain the canonical base. Extension material must earn
 `course_ready` status in [docs/arena_style_rewrite_status.yml](docs/arena_style_rewrite_status.yml)
 before it should be treated as part of the finished student-facing course.
 
-The current polished pilot is **[5.1] Gemma from Scratch**. It now has an
-ARENA-style learner page, local diagrams, help/interpretation dropdowns,
-expected-output blocks, paired exercise/solution notebooks, a CUDA-backed
-signature result table, and explicit GT-0 claim boundaries. The other extension
-sections are prototype scaffolds: useful implementation and verification
-evidence, but still requiring the original-ARENA rewrite pass described in
-`guidance_2-0.md`.
+The current polished sections are **[5.1] Gemma from Scratch** and **[5.2]
+Gemma Scope and Feature Steering**. They now have ARENA-style learner pages,
+local diagrams, help/interpretation dropdowns, expected-output blocks, paired
+exercise/solution notebooks, CUDA-backed signature result tables, and explicit
+claim boundaries. The other extension sections are prototype scaffolds: useful
+implementation and verification evidence, but still requiring the
+original-ARENA rewrite pass described in `guidance_2-0.md`.
 
 The extension goal is a local-first “ARENA Frontier Lab” rather than a pile of
 topic demos. It should keep the existing ARENA transformer/mech-interp spine

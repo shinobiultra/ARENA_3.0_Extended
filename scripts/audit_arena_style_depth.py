@@ -147,6 +147,23 @@ def _notebook_text(path: Path) -> str:
     )
 
 
+def notebook_setup_contract_blockers() -> list[str]:
+    """Catch notebook report cells that reference setup variables never defined."""
+
+    blockers: list[str] = []
+    for notebook_path in sorted(ROOT.glob("chapter*/exercises/part*/*.ipynb")):
+        text = _notebook_text(notebook_path)
+        if "section_dir" in text and "section_dir =" not in text:
+            blockers.append(
+                f"{notebook_path.relative_to(ROOT)} references section_dir without defining it"
+            )
+        if "section_dir = exercises_dir / section" in text and "section =" not in text:
+            blockers.append(
+                f"{notebook_path.relative_to(ROOT)} defines section_dir from undefined section"
+            )
+    return blockers
+
+
 def _notebook_course_ready_blockers(number: str, page_path: Path) -> list[str]:
     blockers: list[str] = []
     section_dir = page_path.parents[2] / "exercises"
@@ -292,6 +309,7 @@ def style_depth_blockers(config: dict[str, Any] | None = None) -> list[str]:
         + page_metadata_consistency_blockers(config)
         + hard_registry_depth_blockers()
         + bare_assertion_blockers()
+        + notebook_setup_contract_blockers()
     )
 
 

@@ -57,9 +57,9 @@
       "source": "deterministic_from_sae_encoder_columns"
     }
   ],
-  "date_run": "2026-07-01T06:33:59+00:00",
+  "date_run": "2026-07-01T09:11:56+00:00",
   "evidence_level": "toy_feature_controls_plus_real_gemma_scope_sae_activation_validation",
-  "git_commit": "3f277125",
+  "git_commit": "acd346eb",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-3",
   "known_failures": [],
@@ -180,7 +180,7 @@
       "gemma_scope_forward_passed": true,
       "gemma_scope_hook_point": "model.layers.13.output",
       "gemma_scope_model_name": "google/gemma-3-1b-it",
-      "gemma_scope_peak_vram_gb": 0.30487680435180664,
+      "gemma_scope_peak_vram_gb": 0.27362680435180664,
       "gemma_scope_real_activation_auc_margin": 0.5,
       "gemma_scope_real_activation_baseline_auc": 0.5,
       "gemma_scope_real_activation_feature_auc": 1.0,
@@ -193,7 +193,7 @@
       "gemma_scope_real_activation_label_shuffle_control_passed": true,
       "gemma_scope_real_activation_layer": 13,
       "gemma_scope_real_activation_model_id": "google/gemma-3-1b-it",
-      "gemma_scope_real_activation_peak_vram_gb": 2.236203193664551,
+      "gemma_scope_real_activation_peak_vram_gb": 2.236264228820801,
       "gemma_scope_real_activation_preflight": {
         "active_features_per_prompt_token": 1627.8597412109375,
         "artifact_path": "resid_post/layer_13_width_16k_l0_small",
@@ -244,7 +244,7 @@
         "narrative_prompt_count": 8,
         "negative_mean": 102.71952819824219,
         "passes_random_feature_baseline": true,
-        "peak_vram_gb": 2.236203193664551,
+        "peak_vram_gb": 2.236264228820801,
         "positive_mean": 240.3575439453125,
         "preflight_passed": true,
         "prompt_count": 16,
@@ -289,7 +289,7 @@
       "gemma_scope_width": 16384,
       "gpu_total_memory_gb": 23.45965576171875,
       "l0": 1.5,
-      "peak_vram_gb": 2.236203193664551,
+      "peak_vram_gb": 2.236264228820801,
       "reconstruction_mse": 9.999985923059285e-05,
       "steering_passes_control": true,
       "torch_version": "2.12.1+cu132",
@@ -374,10 +374,10 @@
   "ood_tests": {
     "declared": "required_where_applicable"
   },
-  "peak_vram_gb": 2.236203193664551,
+  "peak_vram_gb": 2.236264228820801,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "f9cf4107ebd00f7f80d52e4ec96ba90b078876d4d7dbe93369a5946734f528c9",
+    "combined_sha256": "0dad76e7a32070846e6e0183efea4c97a2f5d0096efb526f770fa7f85c454556",
     "files": [
       {
         "path": "arena_ext/features.py",
@@ -396,13 +396,13 @@
       },
       {
         "path": "chapter5_modern_architectures/exercises/part2_gemma_scope_feature_steering/5.2_Gemma_Scope_and_Feature_Steering_exercises.ipynb",
-        "sha256": "c17d538e374379991f5479da0de4c83798500f473e2f7232e6c9b06e92ca6fb7",
-        "size_bytes": 14088
+        "sha256": "a401399ede5aff252599f95e92e5bdc15b706f68b34b7f0e64170415e072a060",
+        "size_bytes": 22411
       },
       {
         "path": "chapter5_modern_architectures/exercises/part2_gemma_scope_feature_steering/5.2_Gemma_Scope_and_Feature_Steering_solutions.ipynb",
-        "sha256": "96ca04e336939bb96978edff35268143094f40295e9b0c89a63bdcb7821e92e4",
-        "size_bytes": 3585
+        "sha256": "e329d746535202a29dc53eb5fb70b9706dfd64b75075d9dc68d03c4e5f9dd60e",
+        "size_bytes": 10878
       },
       {
         "path": "chapter5_modern_architectures/exercises/part2_gemma_scope_feature_steering/README.md",
@@ -411,8 +411,8 @@
       },
       {
         "path": "chapter5_modern_architectures/exercises/part2_gemma_scope_feature_steering/artifacts.lock.yml",
-        "sha256": "728e57ba954d1fb675fe2abbf4774ea159fd74975f273c19ab014f1d34b97204",
-        "size_bytes": 3124
+        "sha256": "ad57616d55115c724dbf56c57e6bc56c092c79e53e1c6ffbaecf477934d985a5",
+        "size_bytes": 3204
       },
       {
         "path": "chapter5_modern_architectures/exercises/part2_gemma_scope_feature_steering/expected_outputs/README.md",
@@ -451,8 +451,8 @@
       },
       {
         "path": "chapter5_modern_architectures/instructions/pages/02_[5.2]_Gemma_Scope_and_Feature_Steering.md",
-        "sha256": "58635af1c1acc61b6ad53f962e4f17f886568d33c434b79011faa65d31a5cc87",
-        "size_bytes": 22839
+        "sha256": "d25ed94ce619209e3ec8d32b3d20aeb1fcd5dee0ff8ad1abdf8e55a926e8a948",
+        "size_bytes": 27011
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
@@ -464,8 +464,8 @@
   },
   "safety_notes": [
     "No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.",
-    "Gemma Scope artifact loading is verified on CUDA. Because Gemma 3 1B IT weights are gated in this environment, semantic feature validation and feature steering on real Gemma activations are pending and not claimed."
+    "Gemma Scope artifact loading and authenticated Gemma 3 1B IT layer-13 activation capture are verified on CUDA in this environment. The claim remains limited to the benign technical-vs-narrative semantic split and does not claim broad Gemma Scope coverage or safety-relevant steering behavior."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 3.030946
+  "wall_clock_seconds": 8.857354
 }

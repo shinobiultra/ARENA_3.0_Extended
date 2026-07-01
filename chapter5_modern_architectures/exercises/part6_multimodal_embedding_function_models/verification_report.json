@@ -72,9 +72,9 @@
       "split": "eval"
     }
   ],
-  "date_run": "2026-07-01T06:34:38+00:00",
+  "date_run": "2026-07-01T09:07:36+00:00",
   "evidence_level": "toy_specialist_controls_plus_authenticated_embeddinggemma_and_functiongemma_preflights",
-  "git_commit": "3f277125",
+  "git_commit": "acd346eb",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-1",
   "known_failures": [],
@@ -154,7 +154,7 @@
     "gpu_test": {
       "bge_mean_margin": 0.18294523656368256,
       "bge_mean_reciprocal_rank": 1.0,
-      "bge_peak_vram_gb": 0.18824481964111328,
+      "bge_peak_vram_gb": 0.15699481964111328,
       "bge_permuted_control_fails": true,
       "bge_permuted_top1_accuracy": 0.0,
       "bge_preflight": {
@@ -167,7 +167,7 @@
         "mean_positive_similarity": 0.8226691484451294,
         "mean_reciprocal_rank": 1.0,
         "model_id": "BAAI/bge-small-en-v1.5",
-        "peak_vram_gb": 0.18824481964111328,
+        "peak_vram_gb": 0.15699481964111328,
         "permuted_control_fails": true,
         "permuted_mean_margin": -0.2344277948141098,
         "permuted_top1_accuracy": 0.0,
@@ -236,7 +236,7 @@
       "embeddinggemma_missing_local_patterns": [],
       "embeddinggemma_missing_remote_patterns": [],
       "embeddinggemma_model_id": "google/embeddinggemma-300m",
-      "embeddinggemma_peak_vram_gb": 1.2177495956420898,
+      "embeddinggemma_peak_vram_gb": 1.1864995956420898,
       "embeddinggemma_permuted_control_fails": true,
       "embeddinggemma_permuted_top1_accuracy": 0.0,
       "embeddinggemma_preflight": {
@@ -287,7 +287,7 @@
         "mean_positive_similarity": 0.581369936466217,
         "mean_reciprocal_rank": 1.0,
         "model_id": "google/embeddinggemma-300m",
-        "peak_vram_gb": 1.2177495956420898,
+        "peak_vram_gb": 1.1864995956420898,
         "permuted_control_fails": true,
         "permuted_mean_margin": -0.252977192401886,
         "permuted_top1_accuracy": 0.0,
@@ -351,7 +351,7 @@
       "functiongemma_base_local_non_ref_file_count": 20,
       "functiongemma_base_missing_local_patterns": [],
       "functiongemma_base_missing_remote_patterns": [],
-      "functiongemma_base_peak_vram_gb": 0.5691256523132324,
+      "functiongemma_base_peak_vram_gb": 0.5378756523132324,
       "functiongemma_base_preflight": {
         "access_report": {
           "access_error": null,
@@ -390,7 +390,7 @@
         "cuda_available": true,
         "forward_passed": true,
         "model_id": "google/functiongemma-270m-it",
-        "peak_vram_gb": 0.5691256523132324,
+        "peak_vram_gb": 0.5378756523132324,
         "preflight_passed": true,
         "prompt_token_count": 14,
         "revision": "39eccb091651513a5dfb56892d3714c1b5b8276c",
@@ -417,7 +417,7 @@
       "functiongemma_mean_prompt_tokens": 600.40625,
       "functiongemma_model_id": "litert-community/FunctionGemma_270M_Mobile_Actions",
       "functiongemma_parse_accuracy": 1.0,
-      "functiongemma_peak_vram_gb": 1.211754322052002,
+      "functiongemma_peak_vram_gb": 1.180504322052002,
       "functiongemma_preflight": {
         "base_model": "google/functiongemma-270m-it",
         "cuda_available": true,
@@ -580,7 +580,7 @@
         "mean_prompt_tokens": 600.40625,
         "model_id": "litert-community/FunctionGemma_270M_Mobile_Actions",
         "parse_accuracy": 1.0,
-        "peak_vram_gb": 1.211754322052002,
+        "peak_vram_gb": 1.180504322052002,
         "preflight_passed": true,
         "required_argument_accuracy": 0.875,
         "revision": "e2226c1def35c5443942ebdb90a1da2a9eda836a",
@@ -591,7 +591,7 @@
       "functiongemma_revision": "e2226c1def35c5443942ebdb90a1da2a9eda836a",
       "gpu_total_memory_gb": 23.45965576171875,
       "masked_disallowed": true,
-      "peak_vram_gb": 1.2177495956420898,
+      "peak_vram_gb": 1.1864995956420898,
       "retrieval_mean_margin": 1.0,
       "retrieval_top1_accuracy": 1.0,
       "synthetic_retrieval_top1_accuracy": 1.0,
@@ -713,10 +713,10 @@
   "ood_tests": {
     "declared": "required_where_applicable"
   },
-  "peak_vram_gb": 1.2177495956420898,
+  "peak_vram_gb": 1.1864995956420898,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "c03b323a75c897e6c03a27422ecd5ce72d3e55d31ccbb7a03daf00e314455504",
+    "combined_sha256": "11f2cae95fbe42fb6af56371347b25dd2748950d2245e4edf300530f0406a95a",
     "files": [
       {
         "path": "arena_ext/gated_artifacts.py",
@@ -730,8 +730,8 @@
       },
       {
         "path": "chapter5_modern_architectures/exercises/part6_multimodal_embedding_function_models/5.6_Multimodal_Embedding_and_Function_Calling_Models_exercises.ipynb",
-        "sha256": "25da0b126a81fc6e75ddcadcb9a704142beef36e49ba2cf6e3b8e98c8f5dd33d",
-        "size_bytes": 11188
+        "sha256": "71e0f3fa2e2e829c355ff2f397eab3a48c8e747164e91abd1e672dc27f612ba0",
+        "size_bytes": 11235
       },
       {
         "path": "chapter5_modern_architectures/exercises/part6_multimodal_embedding_function_models/5.6_Multimodal_Embedding_and_Function_Calling_Models_solutions.ipynb",
@@ -801,5 +801,5 @@
     "The function-calling preflight uses public Mobile Actions eval rows and benign mobile-tool schemas only. Google EmbeddingGemma and the base google/functiongemma-270m-it repo are gated without authenticated access; the direct function-calling evidence is the public FunctionGemma Mobile Actions safetensors checkpoint."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 22.751247
+  "wall_clock_seconds": 23.96944
 }

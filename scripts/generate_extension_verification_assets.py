@@ -1171,8 +1171,9 @@ REGISTRY_ROWS: list[dict[str, str]] = [
         "used_in_notebooks": "5.2;6.2",
         "gt_tier": "GT-1",
         "notes": (
-            "Pinned 1B-IT layer-13 residual JumpReLU SAE preflight. Semantic feature "
-            "validation on Gemma 3 activations still requires gated model access."
+            "Pinned 1B-IT layer-13 residual JumpReLU SAE preflight plus authenticated "
+            "Gemma 3 layer-13 activation validation on a narrow benign semantic split "
+            "with random-feature and label-shuffle controls."
         ),
     },
     {
@@ -3403,13 +3404,17 @@ def lock_for(record: dict[str, Any]) -> dict[str, Any]:
                 "pinned_gemma_scope_jumprelu_cuda_encode_decode",
                 "exact_gemma3_1b_it_base_model_access_gate",
                 "no_unofficial_base_model_substitution",
-                "gated_gemma3_activation_semantic_validation_declared_pending_not_claimed",
+                "real_gemma3_layer13_activation_capture",
+                "heldout_real_gemma_activation_semantic_feature_auc",
+                "real_gemma_activation_random_feature_control",
+                "real_gemma_activation_label_shuffle_control",
             ]
         )
         lock["safety_notes"][-1] = (
-            "Gemma Scope artifact loading is verified on CUDA. Because Gemma 3 1B IT "
-            "weights are gated in this environment, semantic feature validation and "
-            "feature steering on real Gemma activations are pending and not claimed."
+            "Gemma Scope artifact loading and authenticated Gemma 3 1B IT layer-13 "
+            "activation capture are verified on CUDA in this environment. The claim "
+            "remains limited to the benign technical-vs-narrative semantic split and "
+            "does not claim broad Gemma Scope coverage or safety-relevant steering behavior."
         )
     if record["number"] == "6.1":
         lock["evidence_level"] = "toy_sae_contract_plus_pinned_pythia_hidden_state_topk_sae_preflight"
@@ -3548,13 +3553,17 @@ def lock_for(record: dict[str, Any]) -> dict[str, Any]:
                 "pinned_gemma_scope_jumprelu_cuda_encode_decode",
                 "exact_gemma3_1b_it_base_model_access_gate",
                 "no_unofficial_base_model_substitution",
-                "gated_gemma3_activation_semantic_validation_declared_pending_not_claimed",
+                "real_gemma3_layer13_activation_capture",
+                "heldout_real_gemma_activation_semantic_feature_auc",
+                "real_gemma_activation_random_feature_control",
+                "real_gemma_activation_label_shuffle_control",
             ]
         )
         lock["safety_notes"][-1] = (
-            "Gemma Scope artifact loading is verified on CUDA. Because Gemma 3 1B IT "
-            "weights are gated in this environment, held-out semantic feature analysis "
-            "on real model activations is pending and not claimed."
+            "Gemma Scope artifact loading and authenticated Gemma 3 1B IT layer-13 "
+            "activation capture are verified on CUDA in this environment. The claim "
+            "remains limited to the benign technical-vs-narrative semantic split and "
+            "does not claim broad Gemma Scope coverage or safety-relevant steering behavior."
         )
     if record["number"] == "6.3":
         lock["evidence_level"] = "toy_transcoder_contract_plus_pinned_transformerlens_mlp_feature_graph_preflight"

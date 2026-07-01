@@ -89,9 +89,9 @@
       "train_prompt_count": 64
     }
   ],
-  "date_run": "2026-07-01T06:34:39+00:00",
+  "date_run": "2026-07-01T09:07:41+00:00",
   "evidence_level": "toy_sae_contract_plus_pinned_pythia_hidden_state_topk_sae_preflight",
-  "git_commit": "3f277125",
+  "git_commit": "acd346eb",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-1",
   "known_failures": [],
@@ -161,7 +161,7 @@
       "hidden_layer": -1,
       "model_id": "EleutherAI/pythia-70m-deduped",
       "passes_decoder_steering_control": true,
-      "peak_vram_gb": 0.42262840270996094,
+      "peak_vram_gb": 0.39137840270996094,
       "permuted_decoder_mse": 1.6290857791900635,
       "preflight_passed": true,
       "random_decoder_control_passed": true,
@@ -291,10 +291,10 @@
   "ood_tests": {
     "declared": "required_where_applicable"
   },
-  "peak_vram_gb": 0.42262840270996094,
+  "peak_vram_gb": 0.39137840270996094,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "79d2f5a3b2ba89b7e214db5f2dcd273312019b429f0eba37f86dfdc890b0488c",
+    "combined_sha256": "202c76c04f334a22cf0035383c4f11bd9b81517046d271ca7ee88adaf7d1ae04",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -303,8 +303,8 @@
       },
       {
         "path": "chapter6_sparse_feature_methods/exercises/part1_sae_variants/6.1_SAE_Variants_exercises.ipynb",
-        "sha256": "3ca2d94432b660c946cd92da53997bf7816d32b51996b2d713720bd741ac8b9f",
-        "size_bytes": 13400
+        "sha256": "e1fe2eb0d9e60968eb84322cf8ce0a05433f017f23e8f9615fa8b8788a26c809",
+        "size_bytes": 13447
       },
       {
         "path": "chapter6_sparse_feature_methods/exercises/part1_sae_variants/6.1_SAE_Variants_solutions.ipynb",
@@ -374,5 +374,5 @@
     "The real-model path uses safe generated topic prompts and hidden-state extraction from a small public Pythia checkpoint. It does not use unsafe prompts, gated weights, generated completions, user data, or raw large activation artifacts."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 1.449825
+  "wall_clock_seconds": 3.946393
 }
