@@ -922,9 +922,9 @@ chapters:
         exercise_dir: "part5_sparse_feature_circuits"
         page_file: "05_[8.5]_Sparse_Feature_Circuits.md"
         header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png"
-        status: "Sparse Feature Circuit toy-oracle ladder added"
-        streamlit_description: "Build and verify a Sparse Feature Circuit ladder with exact node patching, exact edge patching, EAP-vs-EAP-IG comparison, graph thresholding, and same-size random graph controls."
-        streamlit_description_short: "Build and verify Sparse Feature Circuit toy oracles."
+        status: "Sparse Feature Circuit validation ladder and official artifact evidence added"
+        streamlit_description: "Build and verify a Sparse Feature Circuit ladder with exact node/edge patching, EAP-vs-EAP-IG comparison, graph thresholding, same-size random controls, generated SHIFT-style editing, released SAE smoke checks, official saved-graph evidence, and held-out faithfulness report inspection."
+        streamlit_description_short: "Build and verify Sparse Feature Circuit validation controls."
 
   chapter9_alignment_interpretability:
     title: "Chapter 9: Alignment Interpretability"

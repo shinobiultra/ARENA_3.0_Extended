@@ -18,7 +18,8 @@ Tuned Lens, and Patchscopes**, **[7.2] Feature Verbalizers**,
 Autoencoders**, **[7.5] Predictive Concept Decoders**, **[8.1]
 Activation Patching Refresher**, **[8.2] Attribution Patching and
 EAP**, **[8.3] ACDC and Circuit Metrics**, and **[8.4] Circuit
-Tracing with Attribution Graphs**.
+Tracing with Attribution Graphs**, and **[8.5] Sparse Feature
+Circuits**.
 They now have ARENA-style learner pages, local
 diagrams, help/interpretation dropdowns, expected-output blocks, paired
 exercise/solution notebooks, CUDA-backed signature result tables, and explicit

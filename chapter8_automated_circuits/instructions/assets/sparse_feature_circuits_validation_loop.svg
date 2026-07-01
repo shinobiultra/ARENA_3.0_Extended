@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="430" viewBox="0 0 960 430" role="img" aria-labelledby="title desc">
+  <title id="title">8.5 sparse feature circuits validation loop</title>
+  <desc id="desc">A staged validation loop from exact toy sparse feature oracles through real-model preflight, released SAE checks, official artifact checks, held-out faithfulness, and editing controls.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#334155"/>
+    </marker>
+    <filter id="shadow" x="-12%" y="-12%" width="124%" height="124%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#0f172a" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+  <rect width="960" height="430" rx="20" fill="#f8fafc"/>
+  <rect x="28" y="28" width="904" height="352" rx="18" fill="#ffffff" filter="url(#shadow)"/>
+  <text x="58" y="68" font-family="Inter, Arial, sans-serif" font-size="25" font-weight="700" fill="#0f172a">Sparse feature circuit validation ladder</text>
+  <text x="58" y="97" font-family="Inter, Arial, sans-serif" font-size="14" fill="#475569">Do not trust an interpretable feature graph until it preserves the metric and beats controls.</text>
+
+  <g font-family="Inter, Arial, sans-serif">
+    <rect x="62" y="136" width="126" height="112" rx="14" fill="#eff6ff" stroke="#bfdbfe"/>
+    <text x="82" y="165" font-size="14" font-weight="700" fill="#1e3a8a">Toy oracle</text>
+    <text x="82" y="193" font-size="12.5" fill="#334155">exact node</text>
+    <text x="82" y="214" font-size="12.5" fill="#334155">exact edge</text>
+    <text x="82" y="235" font-size="12.5" fill="#334155">known answer</text>
+
+    <path d="M190 192 L238 192" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
+    <rect x="246" y="136" width="126" height="112" rx="14" fill="#f0fdf4" stroke="#bbf7d0"/>
+    <text x="266" y="165" font-size="14" font-weight="700" fill="#166534">Attribution</text>
+    <text x="266" y="193" font-size="12.5" fill="#334155">EAP vs exact</text>
+    <text x="266" y="214" font-size="12.5" fill="#334155">EAP-IG</text>
+    <text x="266" y="235" font-size="12.5" fill="#334155">error gate</text>
+
+    <path d="M374 192 L422 192" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
+    <rect x="430" y="136" width="126" height="112" rx="14" fill="#fff7ed" stroke="#fed7aa"/>
+    <text x="450" y="165" font-size="14" font-weight="700" fill="#9a3412">Graph gate</text>
+    <text x="450" y="193" font-size="12.5" fill="#334155">threshold</text>
+    <text x="450" y="214" font-size="12.5" fill="#334155">same-size</text>
+    <text x="450" y="235" font-size="12.5" fill="#334155">random control</text>
+
+    <path d="M558 192 L606 192" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
+    <rect x="614" y="136" width="126" height="112" rx="14" fill="#fdf2f8" stroke="#fbcfe8"/>
+    <text x="634" y="165" font-size="14" font-weight="700" fill="#9d174d">Real model</text>
+    <text x="634" y="193" font-size="12.5" fill="#334155">Pythia-70M</text>
+    <text x="634" y="214" font-size="12.5" fill="#334155">residual</text>
+    <text x="634" y="235" font-size="12.5" fill="#334155">preflight</text>
+
+    <path d="M742 192 L790 192" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
+    <rect x="798" y="136" width="96" height="112" rx="14" fill="#f5f3ff" stroke="#ddd6fe"/>
+    <text x="816" y="165" font-size="14" font-weight="700" fill="#5b21b6">SAEs</text>
+    <text x="816" y="193" font-size="12.5" fill="#334155">shape</text>
+    <text x="816" y="214" font-size="12.5" fill="#334155">finite</text>
+    <text x="816" y="235" font-size="12.5" fill="#334155">attrib.</text>
+
+    <path d="M846 250 C846 302 762 315 705 315" stroke="#334155" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+    <rect x="520" y="284" width="178" height="84" rx="14" fill="#ecfeff" stroke="#a5f3fc"/>
+    <text x="544" y="315" font-size="14" font-weight="700" fill="#155e75">Official artifact</text>
+    <text x="544" y="341" font-size="12.5" fill="#334155">100 examples + held-out faithfulness</text>
+
+    <path d="M520 326 L434 326" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
+    <rect x="260" y="284" width="166" height="84" rx="14" fill="#fefce8" stroke="#fde68a"/>
+    <text x="286" y="315" font-size="14" font-weight="700" fill="#854d0e">Editing check</text>
+    <text x="286" y="341" font-size="12.5" fill="#334155">spurious feature down, target task intact</text>
+  </g>
+
+  <rect x="58" y="392" width="844" height="22" rx="11" fill="#fff7ed"/>
+  <text x="76" y="408" font-family="Inter, Arial, sans-serif" font-size="12.5" fill="#9a3412">Scope: the student builds the validation ladder; the official-code path is report-backed evidence, not a full paper replication claim.</text>
+</svg>

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import math
 from pathlib import Path
 import sys
 
@@ -161,6 +162,33 @@ def _index_tensor(indices: t.Tensor | list[int] | tuple[int, ...], *, device: t.
     return t.tensor(list(indices), device=device, dtype=t.long)
 
 
+def _require_finite_tensor(name: str, tensor: t.Tensor) -> t.Tensor:
+    if tensor.numel() == 0:
+        raise ValueError(f"{name} must be non-empty.")
+    if not t.isfinite(tensor.float()).all():
+        raise ValueError(f"{name} must contain only finite values.")
+    return tensor
+
+
+def _require_finite_nonnegative(name: str, value: float) -> float:
+    value_float = float(value)
+    if not math.isfinite(value_float):
+        raise ValueError(f"{name} must be finite.")
+    if value_float < 0:
+        raise ValueError(f"{name} must be non-negative.")
+    return value_float
+
+
+def _validate_index_tensor(ids: t.Tensor, *, name: str, upper_bound: int) -> t.Tensor:
+    if ids.numel() == 0:
+        raise ValueError(f"at least one {name} id is required.")
+    if ids.min().item() < 0 or ids.max().item() >= upper_bound:
+        raise ValueError(f"{name} id is out of range.")
+    if ids.unique().numel() != ids.numel():
+        raise ValueError(f"{name} ids must be unique.")
+    return ids
+
+
 def _fraction(numerator: float, denominator: float) -> float:
     if denominator == 0:
         raise ValueError("reference score must be nonzero.")
@@ -191,6 +219,7 @@ def _count_thresholded(tensors: list[t.Tensor], threshold: float) -> tuple[int, 
     values = t.cat([tensor.abs() for tensor in tensors if tensor.numel() > 0])
     if values.numel() == 0:
         return 0, 0.0
+    values = _require_finite_tensor("effect values", values)
     return int(values.gt(threshold).sum().item()), float(values.max().item())
 
 
@@ -283,11 +312,20 @@ def sparse_autoencoder_state_dict_smoke_report(
     if missing:
         raise ValueError(f"autoencoder state dict is missing keys: {sorted(missing)}")
 
-    x = activation.flatten().float()
-    bias = state_dict["bias"].float()
-    encoder_weight = state_dict["encoder.weight"].float()
-    encoder_bias = state_dict["encoder.bias"].float()
-    decoder_weight = state_dict["decoder.weight"].float()
+    x = _require_finite_tensor("activation", activation.flatten().float())
+    bias = _require_finite_tensor("bias", state_dict["bias"].float())
+    encoder_weight = _require_finite_tensor(
+        "encoder.weight",
+        state_dict["encoder.weight"].float(),
+    )
+    encoder_bias = _require_finite_tensor(
+        "encoder.bias",
+        state_dict["encoder.bias"].float(),
+    )
+    decoder_weight = _require_finite_tensor(
+        "decoder.weight",
+        state_dict["decoder.weight"].float(),
+    )
     dict_size, activation_dim = encoder_weight.shape
     shapes_match = (
         x.shape == (activation_dim,)
@@ -337,9 +375,13 @@ def sparse_feature_attribution_smoke_report(
 ) -> SparseFeatureAttributionSmokeReport:
     """Attribute a real residual-stream contrast through one SAE dictionary."""
 
-    clean = clean_activation.flatten().float()
-    corrupt = corrupt_activation.flatten().float()
-    weights = unembedding.float()
+    min_random_margin = _require_finite_nonnegative(
+        "min_random_margin",
+        min_random_margin,
+    )
+    clean = _require_finite_tensor("clean_activation", clean_activation.flatten().float())
+    corrupt = _require_finite_tensor("corrupt_activation", corrupt_activation.flatten().float())
+    weights = _require_finite_tensor("unembedding", unembedding.float())
     if clean.shape != corrupt.shape:
         raise ValueError("clean_activation and corrupt_activation must have matching shapes.")
     if weights.ndim != 2 or weights.shape[1] != clean.numel():
@@ -348,15 +390,26 @@ def sparse_feature_attribution_smoke_report(
         raise ValueError("target token id is out of range.")
     if not 0 <= distractor_token_id < weights.shape[0]:
         raise ValueError("distractor token id is out of range.")
+    if target_token_id == distractor_token_id:
+        raise ValueError("target and distractor token ids must be distinct.")
 
     smoke = sparse_autoencoder_state_dict_smoke_report(state_dict, clean)
     if top_k <= 0 or top_k >= smoke.dict_size:
         raise ValueError("top_k must be positive and smaller than the dictionary size.")
 
-    bias = state_dict["bias"].float()
-    encoder_weight = state_dict["encoder.weight"].float()
-    encoder_bias = state_dict["encoder.bias"].float()
-    decoder_weight = state_dict["decoder.weight"].float()
+    bias = _require_finite_tensor("bias", state_dict["bias"].float())
+    encoder_weight = _require_finite_tensor(
+        "encoder.weight",
+        state_dict["encoder.weight"].float(),
+    )
+    encoder_bias = _require_finite_tensor(
+        "encoder.bias",
+        state_dict["encoder.bias"].float(),
+    )
+    decoder_weight = _require_finite_tensor(
+        "decoder.weight",
+        state_dict["decoder.weight"].float(),
+    )
     clean_features = t.relu((clean - bias) @ encoder_weight.T + encoder_bias)
     corrupt_features = t.relu((corrupt - bias) @ encoder_weight.T + encoder_bias)
 
@@ -436,6 +489,12 @@ def summarize_official_sparse_feature_circuit_artifact(
     paper-level faithfulness/completeness/minimality replication.
     """
 
+    node_threshold = _require_finite_nonnegative("node_threshold", node_threshold)
+    edge_threshold = _require_finite_nonnegative("edge_threshold", edge_threshold)
+    if min_examples <= 0:
+        raise ValueError("min_examples must be positive.")
+    if expected_node_submodule_count <= 0:
+        raise ValueError("expected_node_submodule_count must be positive.")
     nodes = artifact.get("nodes", {})
     edges = artifact.get("edges", {})
     examples = artifact.get("examples", [])
@@ -554,12 +613,19 @@ def exact_feature_node_patching_report(
 ) -> FeatureNodePatchingReport:
     """Treat feature contributions as an exact node-patching oracle."""
 
-    contributions = feature_contributions.flatten().float()
-    ids = _index_tensor(feature_ids, device=contributions.device)
-    if ids.numel() == 0:
-        raise ValueError("at least one feature id is required.")
-    if ids.min().item() < 0 or ids.max().item() >= contributions.numel():
-        raise ValueError("feature id is out of range.")
+    min_recovered_fraction = _require_finite_nonnegative(
+        "min_recovered_fraction",
+        min_recovered_fraction,
+    )
+    contributions = _require_finite_tensor(
+        "feature_contributions",
+        feature_contributions.flatten().float(),
+    )
+    ids = _validate_index_tensor(
+        _index_tensor(feature_ids, device=contributions.device),
+        name="feature",
+        upper_bound=contributions.numel(),
+    )
 
     full_logit_diff = contributions.sum().item()
     graph_logit_diff = contributions[ids].sum().item()
@@ -581,12 +647,17 @@ def exact_feature_edge_patching_report(
 ) -> FeatureEdgePatchingReport:
     """Treat absolute edge scores as an exact edge-patching oracle."""
 
+    min_recovered_fraction = _require_finite_nonnegative(
+        "min_recovered_fraction",
+        min_recovered_fraction,
+    )
     if edge_scores.ndim != 2:
         raise ValueError("edge_scores must have shape (sources, features).")
+    edge_scores = _require_finite_tensor("edge_scores", edge_scores.float())
     if not selected_edges:
         raise ValueError("at least one edge is required.")
 
-    edge_magnitudes = edge_scores.float().abs()
+    edge_magnitudes = edge_scores.abs()
     selected_score = 0.0
     normalized_edges = []
     for source_id, feature_id in selected_edges:
@@ -596,6 +667,8 @@ def exact_feature_edge_patching_report(
             raise ValueError("feature id is out of range.")
         selected_score += edge_magnitudes[source_id, feature_id].item()
         normalized_edges.append((int(source_id), int(feature_id)))
+    if len(set(normalized_edges)) != len(normalized_edges):
+        raise ValueError("selected edges must be unique.")
 
     full_score = edge_magnitudes.sum().item()
     recovered_fraction = _fraction(selected_score, full_score)
@@ -617,11 +690,17 @@ def eap_ig_comparison_report(
 ) -> EAPIGComparisonReport:
     """Compare EAP and EAP-IG approximations against exact patching scores."""
 
+    max_eap_ig_error = _require_finite_nonnegative(
+        "max_eap_ig_error",
+        max_eap_ig_error,
+    )
     if exact_scores.shape != eap_scores.shape or exact_scores.shape != eap_ig_scores.shape:
         raise ValueError("exact, EAP, and EAP-IG scores must have matching shapes.")
-    exact = exact_scores.float()
-    eap_error = (exact - eap_scores.float()).abs().mean().item()
-    eap_ig_error = (exact - eap_ig_scores.float()).abs().mean().item()
+    exact = _require_finite_tensor("exact_scores", exact_scores.float())
+    eap = _require_finite_tensor("eap_scores", eap_scores.float())
+    eap_ig = _require_finite_tensor("eap_ig_scores", eap_ig_scores.float())
+    eap_error = (exact - eap).abs().mean().item()
+    eap_ig_error = (exact - eap_ig).abs().mean().item()
     return EAPIGComparisonReport(
         exact_error=0.0,
         eap_error=eap_error,
@@ -639,9 +718,15 @@ def threshold_feature_graph_report(
 ) -> FeatureGraphThresholdReport:
     """Select features above a contribution threshold and check preservation."""
 
-    if threshold < 0:
-        raise ValueError("threshold must be nonnegative.")
-    contributions = feature_contributions.flatten().float()
+    threshold = _require_finite_nonnegative("threshold", threshold)
+    min_recovered_fraction = _require_finite_nonnegative(
+        "min_recovered_fraction",
+        min_recovered_fraction,
+    )
+    contributions = _require_finite_tensor(
+        "feature_contributions",
+        feature_contributions.flatten().float(),
+    )
     selected = contributions.abs().ge(threshold).nonzero(as_tuple=False).flatten()
     if selected.numel() == 0:
         raise ValueError("threshold selected no features.")
@@ -669,9 +754,27 @@ def random_feature_graph_control_report(
 ) -> RandomFeatureGraphControlReport:
     """Check that the target sparse-feature graph beats a random graph."""
 
-    contributions = feature_contributions.flatten().float()
-    target = exact_feature_node_patching_report(contributions, target_feature_ids)
-    random = exact_feature_node_patching_report(contributions, random_feature_ids)
+    min_margin = _require_finite_nonnegative("min_margin", min_margin)
+    contributions = _require_finite_tensor(
+        "feature_contributions",
+        feature_contributions.flatten().float(),
+    )
+    target_ids = _validate_index_tensor(
+        _index_tensor(target_feature_ids, device=contributions.device),
+        name="target feature",
+        upper_bound=contributions.numel(),
+    )
+    random_ids = _validate_index_tensor(
+        _index_tensor(random_feature_ids, device=contributions.device),
+        name="random feature",
+        upper_bound=contributions.numel(),
+    )
+    if target_ids.numel() != random_ids.numel():
+        raise ValueError("target and random graphs must have the same number of features.")
+    if set(target_ids.tolist()) & set(random_ids.tolist()):
+        raise ValueError("random graph control must not overlap target features.")
+    target = exact_feature_node_patching_report(contributions, target_ids)
+    random = exact_feature_node_patching_report(contributions, random_ids)
     margin = target.recovered_fraction - random.recovered_fraction
     return RandomFeatureGraphControlReport(
         target_graph_logit_diff=target.graph_logit_diff,
@@ -711,13 +814,29 @@ def shift_style_sparse_feature_editing_report(
     edit is a same-size negative control.
     """
 
-    if suppression < 0 or suppression > 1:
+    suppression = float(suppression)
+    if not math.isfinite(suppression) or suppression < 0 or suppression > 1:
         raise ValueError("suppression must be between 0 and 1.")
-    train = train_features.float()
-    ood = ood_features.float()
-    labels_train = train_labels.flatten().float()
-    labels_ood = ood_labels.flatten().float()
-    weights = classifier_weights.flatten().float()
+    max_target_accuracy_drop = _require_finite_nonnegative(
+        "max_target_accuracy_drop",
+        max_target_accuracy_drop,
+    )
+    min_ood_improvement = _require_finite_nonnegative(
+        "min_ood_improvement",
+        min_ood_improvement,
+    )
+    min_random_edit_gap = _require_finite_nonnegative(
+        "min_random_edit_gap",
+        min_random_edit_gap,
+    )
+    train = _require_finite_tensor("train_features", train_features.float())
+    ood = _require_finite_tensor("ood_features", ood_features.float())
+    labels_train = _require_finite_tensor("train_labels", train_labels.flatten().float())
+    labels_ood = _require_finite_tensor("ood_labels", ood_labels.flatten().float())
+    weights = _require_finite_tensor(
+        "classifier_weights",
+        classifier_weights.flatten().float(),
+    )
     if train.ndim != 2 or ood.ndim != 2:
         raise ValueError("train_features and ood_features must have shape [batch, features].")
     if train.shape[1] != weights.numel() or ood.shape[1] != weights.numel():
@@ -728,20 +847,23 @@ def shift_style_sparse_feature_editing_report(
         raise ValueError("labels must be encoded as -1 or +1.")
 
     device = weights.device
-    target_ids = _index_tensor(target_feature_ids, device=device)
-    spurious_ids = _index_tensor(spurious_feature_ids, device=device)
-    random_ids = _index_tensor(random_feature_ids, device=device)
-    if spurious_ids.numel() == 0:
-        raise ValueError("at least one spurious feature is required.")
-    for name, ids in {
-        "target": target_ids,
-        "spurious": spurious_ids,
-        "random": random_ids,
-    }.items():
-        if ids.numel() == 0:
-            raise ValueError(f"at least one {name} feature is required.")
-        if ids.min().item() < 0 or ids.max().item() >= weights.numel():
-            raise ValueError(f"{name} feature id is out of range.")
+    target_ids = _validate_index_tensor(
+        _index_tensor(target_feature_ids, device=device),
+        name="target feature",
+        upper_bound=weights.numel(),
+    )
+    spurious_ids = _validate_index_tensor(
+        _index_tensor(spurious_feature_ids, device=device),
+        name="spurious feature",
+        upper_bound=weights.numel(),
+    )
+    random_ids = _validate_index_tensor(
+        _index_tensor(random_feature_ids, device=device),
+        name="random feature",
+        upper_bound=weights.numel(),
+    )
+    if spurious_ids.numel() != random_ids.numel():
+        raise ValueError("random edit control must edit the same number of features.")
     if set(spurious_ids.tolist()) & set(random_ids.tolist()):
         raise ValueError("random edit control must not edit the spurious features.")
     if set(target_ids.tolist()) & set(spurious_ids.tolist()):
@@ -847,9 +969,17 @@ def residual_feature_preflight_report(
     official sparse-feature artifact path.
     """
 
-    clean = clean_hidden.flatten().float()
-    corrupt = corrupt_hidden.flatten().float()
-    weights = unembedding.float()
+    min_recovered_fraction = _require_finite_nonnegative(
+        "min_recovered_fraction",
+        min_recovered_fraction,
+    )
+    min_random_margin = _require_finite_nonnegative(
+        "min_random_margin",
+        min_random_margin,
+    )
+    clean = _require_finite_tensor("clean_hidden", clean_hidden.flatten().float())
+    corrupt = _require_finite_tensor("corrupt_hidden", corrupt_hidden.flatten().float())
+    weights = _require_finite_tensor("unembedding", unembedding.float())
     if clean.shape != corrupt.shape:
         raise ValueError("clean_hidden and corrupt_hidden must have matching shapes.")
     if weights.ndim != 2 or weights.shape[1] != clean.numel():
@@ -858,6 +988,8 @@ def residual_feature_preflight_report(
         raise ValueError("target token id is out of range.")
     if not 0 <= distractor_token_id < weights.shape[0]:
         raise ValueError("distractor token id is out of range.")
+    if target_token_id == distractor_token_id:
+        raise ValueError("target and distractor token ids must be distinct.")
     if top_k <= 0:
         raise ValueError("top_k must be positive.")
     if top_k >= clean.numel():
@@ -897,11 +1029,17 @@ def residual_feature_preflight_report(
     random_recovered_fraction = _fraction(random_effect, total_effect)
 
     if clean_logits is not None and corrupt_logits is not None:
+        clean_logits = _require_finite_tensor("clean_logits", clean_logits.flatten().float())
+        corrupt_logits = _require_finite_tensor("corrupt_logits", corrupt_logits.flatten().float())
+        if target_token_id >= clean_logits.numel() or target_token_id >= corrupt_logits.numel():
+            raise ValueError("target token id is out of range for logits.")
+        if distractor_token_id >= clean_logits.numel() or distractor_token_id >= corrupt_logits.numel():
+            raise ValueError("distractor token id is out of range for logits.")
         clean_logit_diff = (
-            clean_logits.flatten()[target_token_id] - clean_logits.flatten()[distractor_token_id]
+            clean_logits[target_token_id] - clean_logits[distractor_token_id]
         ).float()
         corrupt_logit_diff = (
-            corrupt_logits.flatten()[target_token_id] - corrupt_logits.flatten()[distractor_token_id]
+            corrupt_logits[target_token_id] - corrupt_logits[distractor_token_id]
         ).float()
         logit_delta = clean_logit_diff - corrupt_logit_diff
         linearization_error = (logit_delta - total_effect_tensor).abs().item()

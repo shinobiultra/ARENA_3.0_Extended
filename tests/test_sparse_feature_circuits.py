@@ -83,6 +83,27 @@ def test_random_feature_graph_control_fails_on_low_value_features():
     assert report.random_graph_fails
 
 
+def test_sparse_feature_graph_helpers_reject_degenerate_inputs():
+    contributions = t.tensor([0.7, 0.2, 0.05, 0.05])
+
+    with pytest.raises(ValueError, match="finite values"):
+        exact_feature_node_patching_report(t.tensor([0.7, float("nan")]), [0])
+    with pytest.raises(ValueError, match="unique"):
+        exact_feature_node_patching_report(contributions, [0, 0])
+    with pytest.raises(ValueError, match="unique"):
+        exact_feature_edge_patching_report(t.eye(2), [(0, 1), (0, 1)])
+    with pytest.raises(ValueError, match="non-negative"):
+        threshold_feature_graph_report(contributions, threshold=-0.1)
+    with pytest.raises(ValueError, match="matching shapes"):
+        eap_ig_comparison_report(t.ones(2), t.ones(3), t.ones(2))
+    with pytest.raises(ValueError, match="finite values"):
+        eap_ig_comparison_report(t.ones(2), t.tensor([1.0, float("inf")]), t.ones(2))
+    with pytest.raises(ValueError, match="same number"):
+        random_feature_graph_control_report(contributions, [0, 1], [2])
+    with pytest.raises(ValueError, match="must not overlap target features"):
+        random_feature_graph_control_report(contributions, [0, 1], [1, 2])
+
+
 def test_shift_style_sparse_feature_editing_removes_spurious_reliance():
     fixture = toy_shift_sparse_feature_editing_fixture()
 
@@ -111,6 +132,36 @@ def test_shift_style_sparse_feature_editing_removes_spurious_reliance():
     assert report.ood_improvement == pytest.approx(1.0)
     assert report.random_edit_control_fails
     assert report.editing_passes
+
+
+def test_shift_style_sparse_feature_editing_rejects_bad_controls_and_nan_labels():
+    fixture = toy_shift_sparse_feature_editing_fixture()
+
+    with pytest.raises(ValueError, match="same number"):
+        shift_style_sparse_feature_editing_report(
+            fixture["train_features"],
+            fixture["train_labels"],
+            fixture["ood_features"],
+            fixture["ood_labels"],
+            fixture["classifier_weights"],
+            target_feature_ids=[0],
+            spurious_feature_ids=[1],
+            random_feature_ids=[2, 3],
+        )
+
+    train_labels = fixture["train_labels"].clone()
+    train_labels[0] = float("nan")
+    with pytest.raises(ValueError, match="finite values"):
+        shift_style_sparse_feature_editing_report(
+            fixture["train_features"],
+            train_labels,
+            fixture["ood_features"],
+            fixture["ood_labels"],
+            fixture["classifier_weights"],
+            target_feature_ids=[0],
+            spurious_feature_ids=[1],
+            random_feature_ids=[2],
+        )
 
 
 def test_residual_feature_preflight_decomposes_real_model_bridge_metric():
@@ -146,6 +197,30 @@ def test_residual_feature_preflight_decomposes_real_model_bridge_metric():
     assert report.selected_feature_ids == (0, 1)
     assert report.recovered_fraction == pytest.approx(1.2)
     assert report.random_control_fails
+
+
+def test_residual_feature_preflight_rejects_invalid_token_contrast():
+    clean_hidden = t.tensor([2.0, 1.0, 0.5, 0.0])
+    corrupt_hidden = t.zeros(4)
+    unembedding = t.tensor(
+        [
+            [1.0, 1.0, 0.0, 0.0],
+            [0.0, 0.0, 1.0, 0.0],
+        ]
+    )
+    clean_logits = unembedding @ clean_hidden
+    corrupt_logits = unembedding @ corrupt_hidden
+
+    with pytest.raises(ValueError, match="distinct"):
+        residual_feature_preflight_report(
+            clean_hidden,
+            corrupt_hidden,
+            unembedding,
+            target_token_id=0,
+            distractor_token_id=0,
+            clean_logits=clean_logits,
+            corrupt_logits=corrupt_logits,
+        )
 
 
 def test_expected_pythia_sfc_dictionary_paths_cover_all_submodules():
@@ -245,6 +320,18 @@ def test_sparse_autoencoder_state_dict_smoke_report_encodes_and_decodes():
     assert report.passes_smoke
 
 
+def test_sparse_autoencoder_state_dict_smoke_rejects_nonfinite_tensors():
+    state_dict = {
+        "bias": t.zeros(2),
+        "encoder.weight": t.eye(2),
+        "encoder.bias": t.tensor([0.0, float("nan")]),
+        "decoder.weight": t.eye(2),
+    }
+
+    with pytest.raises(ValueError, match="finite values"):
+        sparse_autoencoder_state_dict_smoke_report(state_dict, t.tensor([1.0, 2.0]))
+
+
 def test_sparse_feature_attribution_smoke_report_uses_decoder_contributions():
     state_dict = {
         "bias": t.zeros(4),
@@ -279,6 +366,26 @@ def test_sparse_feature_attribution_smoke_report_uses_decoder_contributions():
     assert report.recovered_fraction == pytest.approx(1.2)
     assert report.random_control_fails
     assert report.passes_smoke
+
+
+def test_sparse_feature_attribution_smoke_rejects_self_contrast():
+    state_dict = {
+        "bias": t.zeros(4),
+        "encoder.weight": t.eye(4),
+        "encoder.bias": t.zeros(4),
+        "decoder.weight": t.eye(4),
+    }
+    unembedding = t.eye(4)
+
+    with pytest.raises(ValueError, match="distinct"):
+        sparse_feature_attribution_smoke_report(
+            t.tensor([2.0, 1.0, 0.5, 0.0]),
+            t.zeros(4),
+            state_dict,
+            unembedding,
+            target_token_id=0,
+            distractor_token_id=0,
+        )
 
 
 def test_summarize_official_sparse_feature_circuit_artifact_counts_saved_graph_values():

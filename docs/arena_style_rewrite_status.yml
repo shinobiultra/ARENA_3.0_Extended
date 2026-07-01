@@ -86,9 +86,9 @@ sections:
     page: chapter8_automated_circuits/instructions/pages/04_[8.4]_Circuit_Tracing_with_Attribution_Graphs.md
     notes: ARENA-style rewrite with circuit-tracing attribution-graph validation, EAP edge-score/top-k graph/target-metric/path-perturbation/alternative-baseline/counterfactual-summary progression, signature result, limitations, and paired notebook surfaces.
   '8.5':
-    status: prototype
+    status: course_ready
     page: chapter8_automated_circuits/instructions/pages/05_[8.5]_Sparse_Feature_Circuits.md
-    notes: Prototype scaffold retained for implementation evidence; requires ARENA-style rewrite before course-ready release.
+    notes: ARENA-style rewrite with sparse-feature circuit validation ladder, exact node/edge patching, EAP/EAP-IG comparison, graph threshold/random controls, SHIFT-style editing, released SAE smoke checks, official artifact/faithfulness signature result, limitations, and paired notebook surfaces.
   '9.1':
     status: prototype
     page: chapter9_alignment_interpretability/instructions/pages/01_[9.1]_Refusal_Directions_and_Safe_Steering.md

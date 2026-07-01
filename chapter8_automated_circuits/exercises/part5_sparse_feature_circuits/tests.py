@@ -1,10 +1,17 @@
 from collections.abc import Callable
+import importlib.util
 import json
 from pathlib import Path
 
-import torch as t
+import pytest
 
-from arena_ext import sparse_feature_circuits as reference
+TORCH_AVAILABLE = importlib.util.find_spec("torch") is not None
+pytestmark = pytest.mark.skipif(not TORCH_AVAILABLE, reason="torch is not installed")
+
+if TORCH_AVAILABLE:
+    import torch as t
+
+    from arena_ext import sparse_feature_circuits as reference
 
 
 def _solutions():
@@ -221,15 +228,19 @@ def test_random_feature_graph_control_report_rejects_random_graph(
     assert report.random_graph_fails, (
         "The same-size random graph should fail by the required margin."
     )
-    weak = random_feature_graph_control_report(
-        contributions,
-        target_feature_ids=[0, 1],
-        random_feature_ids=[0, 2],
-        min_margin=0.5,
-    )
-    assert not weak.random_graph_fails, (
-        "The control should fail if the random graph recovers too much effect."
-    )
+    try:
+        random_feature_graph_control_report(
+            contributions,
+            target_feature_ids=[0, 1],
+            random_feature_ids=[0, 2],
+            min_margin=0.5,
+        )
+    except ValueError as exc:
+        assert "must not overlap target features" in str(exc), (
+            "Random graph controls should be disjoint from the claimed target graph."
+        )
+    else:
+        raise AssertionError("Overlapping target/random feature ids should raise ValueError.")
     print("All tests in `test_random_feature_graph_control_report_rejects_random_graph` passed!")
 
 

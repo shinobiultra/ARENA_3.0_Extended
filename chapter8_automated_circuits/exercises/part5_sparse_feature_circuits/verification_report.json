@@ -64,9 +64,9 @@
       "target_feature": "signed task label feature"
     }
   ],
-  "date_run": "2026-07-01T06:35:43+00:00",
+  "date_run": "2026-07-01T15:16:05+00:00",
   "evidence_level": "toy_ladder_plus_real_pythia_official_sae_sfc_faithfulness_and_shift_editing",
-  "git_commit": "3f277125",
+  "git_commit": "8d516f82",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-0",
   "known_failures": [],
@@ -181,7 +181,7 @@
         "distractor_token_id": 310,
         "model_id": "EleutherAI/pythia-70m-deduped",
         "passes_smoke": true,
-        "peak_vram_gb": 0.45331287384033203,
+        "peak_vram_gb": 0.5876307487487793,
         "random_control_fails": true,
         "random_effect": 0.0,
         "random_feature_ids": [
@@ -246,7 +246,7 @@
         "feature_max": 1.9689345359802246,
         "model_id": "EleutherAI/pythia-70m-deduped",
         "passes_smoke": true,
-        "peak_vram_gb": 0.45179176330566406,
+        "peak_vram_gb": 0.529515266418457,
         "prompt": "The cats",
         "reconstruction_mse": 0.09268885850906372,
         "relative_l2_error": 0.07946157455444336,
@@ -295,7 +295,7 @@
         "node_threshold": 0.0,
         "official_env_python": "/home/bitwise/Documents/ARENA_3.0_Extended/external/feature-circuits/.venv-official/bin/python",
         "passes_faithfulness": true,
-        "peak_vram_gb": 0.45331287384033203,
+        "peak_vram_gb": 0.5876307487487793,
         "returncode": 0,
         "start_layer": 2,
         "within_vram_budget": true
@@ -303,7 +303,7 @@
       "official_sparse_feature_circuit_replication_passed": true,
       "official_sparse_feature_circuit_thresholded_edges": 59,
       "official_sparse_feature_circuit_thresholded_nodes": 37,
-      "peak_vram_gb": 0.45331287384033203,
+      "peak_vram_gb": 0.5876307487487793,
       "pythia_subject_verb_preflight": {
         "claim_scope": "real_model_residual_preflight_not_official_sae_replication",
         "clean_logit_diff": 4.3443603515625,
@@ -324,7 +324,7 @@
         "distractor_token_id": 310,
         "linearization_error": 0.0001392364501953125,
         "model_id": "EleutherAI/pythia-70m-deduped",
-        "peak_vram_gb": 0.32666778564453125,
+        "peak_vram_gb": 0.4632563591003418,
         "preflight_passed": true,
         "random_control_fails": true,
         "random_feature_ids": [
@@ -374,7 +374,7 @@
       "random_graph_fails": true,
       "real_model_claim_scope": "real_model_residual_preflight_not_official_sae_replication",
       "real_model_linearization_error": 0.0001392364501953125,
-      "real_model_peak_vram_gb": 0.32666778564453125,
+      "real_model_peak_vram_gb": 0.4632563591003418,
       "real_model_preflight_passed": true,
       "real_model_random_control_fails": true,
       "real_model_recovered_fraction": 0.37591454334214086,
@@ -535,10 +535,10 @@
   "ood_tests": {
     "declared": "required_where_applicable"
   },
-  "peak_vram_gb": 0.45331287384033203,
+  "peak_vram_gb": 0.5876307487487793,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "d6f3c839f4a4702043e225c47c680f82d4dc8612eb3933e81a322488f00d878b",
+    "combined_sha256": "d746e102aa2fc77be9c046d25786b4201560e2fa1467f46f9ffddca358d94ee1",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -547,18 +547,18 @@
       },
       {
         "path": "chapter8_automated_circuits/exercises/part5_sparse_feature_circuits/8.5_Sparse_Feature_Circuits_exercises.ipynb",
-        "sha256": "815d92cf26c9b70b1dab4a9bbc4686d5d1f0ab291a7443287fc0d482fbe2bf54",
-        "size_bytes": 12417
+        "sha256": "c099254c3776adc40d21062d17f285faa976f9c06e532311622f891b82e327a9",
+        "size_bytes": 19176
       },
       {
         "path": "chapter8_automated_circuits/exercises/part5_sparse_feature_circuits/8.5_Sparse_Feature_Circuits_solutions.ipynb",
-        "sha256": "9a0ecbc3f4ab7e46d3e5b3dd1c3e63b21c3eb453d108295546109a52ee45d300",
-        "size_bytes": 5363
+        "sha256": "10add52b276dd3b26f2409c89210c1f937d823198248e326e119c2a31527b97d",
+        "size_bytes": 10734
       },
       {
         "path": "chapter8_automated_circuits/exercises/part5_sparse_feature_circuits/README.md",
-        "sha256": "5fbc86134258ac74819df8832a5c6d3d16a96b93a359617dbcbfaa2326c20ba4",
-        "size_bytes": 946
+        "sha256": "2f8529e0ef3c10db4e8ba6d940e0fbd78a1e86d26fb775bbcfc6c1c723cc52bf",
+        "size_bytes": 1338
       },
       {
         "path": "chapter8_automated_circuits/exercises/part5_sparse_feature_circuits/artifacts.lock.yml",
@@ -582,13 +582,13 @@
       },
       {
         "path": "chapter8_automated_circuits/exercises/part5_sparse_feature_circuits/solutions.py",
-        "sha256": "329c5f860d0a3bc11849cc9f37bc87a19b7cd906d39a519b3c3df03e692266e6",
-        "size_bytes": 68438
+        "sha256": "3b7c321c27aa3bc8441bed105d6fc83aa96c8a403bf7f13cebe84f45d9bbf72a",
+        "size_bytes": 74303
       },
       {
         "path": "chapter8_automated_circuits/exercises/part5_sparse_feature_circuits/tests.py",
-        "sha256": "42e0155e6a74955ea873c7ef5d92ceb6cf4f12adf4785b892c479891c9ba4591",
-        "size_bytes": 23162
+        "sha256": "4b4c3f1b6322dac05002418a79d581ea1a2b60edd223362d77efba3619bb7d93",
+        "size_bytes": 23572
       },
       {
         "path": "chapter8_automated_circuits/exercises/part5_sparse_feature_circuits/utils.py",
@@ -602,8 +602,8 @@
       },
       {
         "path": "chapter8_automated_circuits/instructions/pages/05_[8.5]_Sparse_Feature_Circuits.md",
-        "sha256": "f20ef67bcbfe0739eba0bf85762aef9bdfe52879647b620322d8078ea0d37571",
-        "size_bytes": 27741
+        "sha256": "42a24fb564eff62f25182f3db593ea6f134ef45cbec9eb549bf8d114298d7270",
+        "size_bytes": 35428
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
@@ -618,5 +618,5 @@
     "The real Sparse Feature Circuits path uses the pinned official repo, downloaded Pythia-70M-deduped SAE dictionaries, generated safe subject-verb data from the official split, and held-out faithfulness. The SHIFT-style editing exercise uses generated sparse features only; it does not use Bias-in-Bios or sensitive demographic text."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 23.563718
+  "wall_clock_seconds": 21.70429
 }
