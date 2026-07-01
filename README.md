@@ -97,13 +97,14 @@ Coming soon!
 
 This fork is being rewritten into a local-first frontier-model extension while
 keeping the original ARENA structure intact. The current PR contains a large
-prototype implementation surface plus six polished ARENA-style sections:
+prototype implementation surface plus seven polished ARENA-style sections:
 [5.1 Gemma from Scratch](chapter5_modern_architectures/instructions/pages/01_%5B5.1%5D_Gemma_from_Scratch.md),
 [5.2 Gemma Scope and Feature Steering](chapter5_modern_architectures/instructions/pages/02_%5B5.2%5D_Gemma_Scope_and_Feature_Steering.md),
 [5.3 Mamba from Scratch](chapter5_modern_architectures/instructions/pages/03_%5B5.3%5D_Mamba_from_Scratch.md),
 [5.4 Mamba State Tracking](chapter5_modern_architectures/instructions/pages/04_%5B5.4%5D_Mamba_State_Tracking.md),
 [5.5 Toy Discrete Diffusion Language Models and Local DiffusionGemma Proof](chapter5_modern_architectures/instructions/pages/05_%5B5.5%5D_Diffusion_Language_Models.md),
-and [5.6 Embedding Retrieval and Function-Calling Controls](chapter5_modern_architectures/instructions/pages/06_%5B5.6%5D_Multimodal_Embedding_and_Function_Calling_Models.md).
+[5.6 Embedding Retrieval and Function-Calling Controls](chapter5_modern_architectures/instructions/pages/06_%5B5.6%5D_Multimodal_Embedding_and_Function_Calling_Models.md),
+and [6.1 SAE Variants](chapter6_sparse_feature_methods/instructions/pages/01_%5B6.1%5D_SAE_Variants.md).
 The remaining extension pages are tracked as prototype scaffolds until they are
 rewritten with original-ARENA pacing, diagrams, help/interpretation dropdowns,
 visible signature results, and notebook surfaces. See

@@ -89,9 +89,9 @@
       "train_prompt_count": 64
     }
   ],
-  "date_run": "2026-07-01T09:07:41+00:00",
+  "date_run": "2026-07-01T10:13:56+00:00",
   "evidence_level": "toy_sae_contract_plus_pinned_pythia_hidden_state_topk_sae_preflight",
-  "git_commit": "acd346eb",
+  "git_commit": "c62655d1",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-1",
   "known_failures": [],
@@ -294,7 +294,7 @@
   "peak_vram_gb": 0.39137840270996094,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "202c76c04f334a22cf0035383c4f11bd9b81517046d271ca7ee88adaf7d1ae04",
+    "combined_sha256": "9fa1b34522d1ddf5efab0102b4c9a2c24e71d4f010f06aeacd696f737ca539fa",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -303,13 +303,13 @@
       },
       {
         "path": "chapter6_sparse_feature_methods/exercises/part1_sae_variants/6.1_SAE_Variants_exercises.ipynb",
-        "sha256": "e1fe2eb0d9e60968eb84322cf8ce0a05433f017f23e8f9615fa8b8788a26c809",
-        "size_bytes": 13447
+        "sha256": "deeb43838af6556f87a9be0dfdeef791dbea69ad34f7489e70c28f4effdadd66",
+        "size_bytes": 20211
       },
       {
         "path": "chapter6_sparse_feature_methods/exercises/part1_sae_variants/6.1_SAE_Variants_solutions.ipynb",
-        "sha256": "7fe244b73e22a98254cd6fec7fe3de6e83d0b909ab024b1be10233d08bd425ec",
-        "size_bytes": 5279
+        "sha256": "3893fd80083ba46500edf6cd00ef0a63649d13d75554b2a84e118036fb8054ad",
+        "size_bytes": 9300
       },
       {
         "path": "chapter6_sparse_feature_methods/exercises/part1_sae_variants/README.md",
@@ -358,8 +358,8 @@
       },
       {
         "path": "chapter6_sparse_feature_methods/instructions/pages/01_[6.1]_SAE_Variants.md",
-        "sha256": "d2e8994ff5fcfd8cf4bd6cfa291e0fc9d5a6a30444f8010143f30f353817fefb",
-        "size_bytes": 24804
+        "sha256": "cd569f4d4e99cbc30c19568b637b0346eb1c5f354e5f9de29d32a59c863941b6",
+        "size_bytes": 30510
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
@@ -374,5 +374,5 @@
     "The real-model path uses safe generated topic prompts and hidden-state extraction from a small public Pythia checkpoint. It does not use unsafe prompts, gated weights, generated completions, user data, or raw large activation artifacts."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 3.946393
+  "wall_clock_seconds": 7.147771
 }

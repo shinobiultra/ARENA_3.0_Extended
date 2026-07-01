@@ -10,7 +10,7 @@ The current polished sections are **[5.1] Gemma from Scratch**, **[5.2]
 Gemma Scope and Feature Steering**, **[5.3] Mamba from Scratch**, **[5.4]
 Mamba State Tracking**, **[5.5] Toy Discrete Diffusion Language Models and
 Local DiffusionGemma Proof**, and **[5.6] Embedding Retrieval and
-Function-Calling Controls**. They now have ARENA-style learner pages, local
+Function-Calling Controls**, and **[6.1] SAE Variants**. They now have ARENA-style learner pages, local
 diagrams, help/interpretation dropdowns, expected-output blocks, paired
 exercise/solution notebooks, CUDA-backed signature result tables, and explicit
 claim boundaries.

@@ -34,9 +34,9 @@ sections:
     page: chapter5_modern_architectures/instructions/pages/06_[5.6]_Multimodal_Embedding_and_Function_Calling_Models.md
     notes: ARENA-style rewrite with embedding/function-calling evidence-ladder diagram, retrieval/tool-validation/parser/schema progression, help/interpretation dropdowns, signature result, limitations, and paired notebook surfaces.
   '6.1':
-    status: prototype
+    status: course_ready
     page: chapter6_sparse_feature_methods/instructions/pages/01_[6.1]_SAE_Variants.md
-    notes: Prototype scaffold retained for implementation evidence; requires ARENA-style rewrite before course-ready release.
+    notes: ARENA-style rewrite with SAE-variant validation ladder diagram, sparse-rule/reconstruction/planted-feature/AUC/steering progression, help/interpretation dropdowns, signature result, limitations, and paired notebook surfaces.
   '6.2':
     status: prototype
     page: chapter6_sparse_feature_methods/instructions/pages/02_[6.2]_Gemma_Scope_Deep_Dive.md
