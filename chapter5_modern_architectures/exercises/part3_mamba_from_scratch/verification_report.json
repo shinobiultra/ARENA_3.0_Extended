@@ -61,9 +61,9 @@
       "source": "generated_prompt_pair"
     }
   ],
-  "date_run": "2026-07-01T09:06:51+00:00",
+  "date_run": "2026-07-01T09:22:22+00:00",
   "evidence_level": "selective_scan_contract_plus_official_mamba_logits_generation_preflight",
-  "git_commit": "acd346eb",
+  "git_commit": "dc708ce2",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-1",
   "known_failures": [],
@@ -105,7 +105,7 @@
         8
       ],
       "official_mamba_generation_new_tokens": 4,
-      "official_mamba_generation_tokens_per_second": 10.61792441923059,
+      "official_mamba_generation_tokens_per_second": 19.803578797792408,
       "official_mamba_logits_generation_preflight_passed": true,
       "official_mamba_logits_shape": [
         2,
@@ -133,7 +133,7 @@
           1,
           8
         ],
-        "generation_tokens_per_second": 10.61792441923059,
+        "generation_tokens_per_second": 19.803578797792408,
         "logits_shape": [
           2,
           4,
@@ -213,7 +213,7 @@
   "peak_vram_gb": 0.2786750793457031,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "5895ee93b3024e43c305e6dc6d536bd01ba5ad72169115db8f9d550633b80818",
+    "combined_sha256": "74eefc27b4fa0df0f4022e271529afaec5be657ba4609551ac081155d611c3c8",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -222,13 +222,13 @@
       },
       {
         "path": "chapter5_modern_architectures/exercises/part3_mamba_from_scratch/5.3_Mamba_from_Scratch_exercises.ipynb",
-        "sha256": "818f2ba39761cd64b6cb52d3e43bd185fa0af3d7fb313c5a19a99ce03840ba33",
-        "size_bytes": 5875
+        "sha256": "ea4f9c39bf183a91c01c63db6f5817cd1cdc5382f46f59076584775500675eef",
+        "size_bytes": 26196
       },
       {
         "path": "chapter5_modern_architectures/exercises/part3_mamba_from_scratch/5.3_Mamba_from_Scratch_solutions.ipynb",
-        "sha256": "0c9afa4397cea37096aadb7a83a1be368cc66bc1a27e753d4c0b6198cce21b7e",
-        "size_bytes": 2231
+        "sha256": "13d5910cbb1173928b13db3385447ce7271b964c60d528c5386dc9c91a57c9ad",
+        "size_bytes": 8987
       },
       {
         "path": "chapter5_modern_architectures/exercises/part3_mamba_from_scratch/README.md",
@@ -277,8 +277,8 @@
       },
       {
         "path": "chapter5_modern_architectures/instructions/pages/03_[5.3]_Mamba_from_Scratch.md",
-        "sha256": "ce231ef3d4631b060ff21b73e62a7bc670225d47ed5c94193bb4d78eb631cc4f",
-        "size_bytes": 16543
+        "sha256": "bb5f5b98a8f118030fc937e508d5d04e83c7398ba6433223b9f0e9dab279379a",
+        "size_bytes": 20227
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
@@ -293,5 +293,5 @@
     "The official Mamba path uses safe generic prompts and deterministic generation only. Full weight-level parity between the didactic tiny implementation and Mamba-130M-HF is not claimed."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 5.233365
+  "wall_clock_seconds": 4.998877
 }

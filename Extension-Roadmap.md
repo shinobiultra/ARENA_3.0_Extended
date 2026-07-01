@@ -6,11 +6,11 @@ ARENA chapters remain the canonical base. Extension material must earn
 `course_ready` status in [docs/arena_style_rewrite_status.yml](docs/arena_style_rewrite_status.yml)
 before it should be treated as part of the finished student-facing course.
 
-The current polished sections are **[5.1] Gemma from Scratch** and **[5.2]
-Gemma Scope and Feature Steering**. They now have ARENA-style learner pages,
-local diagrams, help/interpretation dropdowns, expected-output blocks, paired
-exercise/solution notebooks, CUDA-backed signature result tables, and explicit
-claim boundaries. The other extension sections are prototype scaffolds: useful
+The current polished sections are **[5.1] Gemma from Scratch**, **[5.2]
+Gemma Scope and Feature Steering**, and **[5.3] Mamba from Scratch**. They now
+have ARENA-style learner pages, local diagrams, help/interpretation dropdowns,
+expected-output blocks, paired exercise/solution notebooks, CUDA-backed
+signature result tables, and explicit claim boundaries. The other extension sections are prototype scaffolds: useful
 implementation and verification evidence, but still requiring the
 original-ARENA rewrite pass described in `guidance_2-0.md`.
 
