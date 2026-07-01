@@ -171,9 +171,24 @@ artifacts:
   local_status: REQUIRED
   max_vram_gb: '4'
   used_in_notebooks: '9.1'
-  gt_tier: GT-3
-  notes: Pinned safe instruction-model refusal-direction addition/projection-out preflight
-    on sanitized meta-prompts; no completions are generated.
+  gt_tier: GT-2
+  notes: Pinned instruction-model target for 9.1 sanitized no-generation addition/projection-out
+    checks plus the public refusal/compliance GT-2 aggregate completion path with
+    raw prompt and completion text omitted from artifacts.
+- name: Refusal compliance pairs
+  type: dataset
+  provider: Hugging Face
+  repo_or_source_id: josephmayo/refusal-compliance-pairs
+  license: unknown
+  gated: 'false'
+  revision: b6ed3432f1d4a695e13be1c373bf7fb5af43f376
+  local_status: REQUIRED
+  max_vram_gb: '0'
+  used_in_notebooks: '9.1'
+  gt_tier: GT-2
+  notes: Public refusal/compliance prompt-pair dataset used by 9.1 for held-out direction
+    separation, layer/position/PCA controls, and aggregate-only behavioral completion
+    effects; raw prompt text is not saved in course artifacts.
 - name: TinyStories
   type: dataset_and_model_family
   provider: Hugging Face
@@ -260,7 +275,7 @@ artifacts:
   revision: dcc83ea841ab6100d6b47a070329e1ba4cf78752
   local_status: REQUIRED
   max_vram_gb: '24'
-  used_in_notebooks: 5.1;5.2;6.2;9.1
+  used_in_notebooks: 5.1;5.2;6.2
   gt_tier: GT-1
   notes: Modern transformer target; use quantization if needed.
 - name: Gemma Scope 2

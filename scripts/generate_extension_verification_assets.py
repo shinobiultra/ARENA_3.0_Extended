@@ -1044,10 +1044,31 @@ REGISTRY_ROWS: list[dict[str, str]] = [
         "local_status": "REQUIRED",
         "max_vram_gb": "4",
         "used_in_notebooks": "9.1",
-        "gt_tier": "GT-3",
+        "gt_tier": "GT-2",
         "notes": (
-            "Pinned safe instruction-model refusal-direction addition/projection-out "
-            "preflight on sanitized meta-prompts; no completions are generated."
+            "Pinned instruction-model target for 9.1 sanitized no-generation "
+            "addition/projection-out checks plus the public refusal/compliance "
+            "GT-2 aggregate completion path with raw prompt and completion text "
+            "omitted from artifacts."
+        ),
+    },
+    {
+        "name": "Refusal compliance pairs",
+        "type": "dataset",
+        "provider": "Hugging Face",
+        "repo_or_source_id": "josephmayo/refusal-compliance-pairs",
+        "license": "unknown",
+        "gated": "false",
+        "revision": "b6ed3432f1d4a695e13be1c373bf7fb5af43f376",
+        "local_status": "REQUIRED",
+        "max_vram_gb": "0",
+        "used_in_notebooks": "9.1",
+        "gt_tier": "GT-2",
+        "notes": (
+            "Public refusal/compliance prompt-pair dataset used by 9.1 for "
+            "held-out direction separation, layer/position/PCA controls, and "
+            "aggregate-only behavioral completion effects; raw prompt text is "
+            "not saved in course artifacts."
         ),
     },
     {
@@ -1154,7 +1175,7 @@ REGISTRY_ROWS: list[dict[str, str]] = [
         "revision": "dcc83ea841ab6100d6b47a070329e1ba4cf78752",
         "local_status": "REQUIRED",
         "max_vram_gb": "24",
-        "used_in_notebooks": "5.1;5.2;6.2;9.1",
+        "used_in_notebooks": "5.1;5.2;6.2",
         "gt_tier": "GT-1",
         "notes": "Modern transformer target; use quantization if needed.",
     },
@@ -1756,18 +1777,19 @@ METHOD_ROWS: list[dict[str, str]] = [
         "model_family": "chat_transformer",
         "has_code": "true",
         "has_weights": "not_applicable",
-        "local_24gb_status": "LOCAL_YELLOW",
+        "local_24gb_status": "LOCAL_GREEN",
         "implementation_status": "REQUIRED_IMPLEMENT",
-        "verification_status": "IMPLEMENTED_BROAD_SAFE_TEMPLATE_PREFLIGHT",
-        "baseline_status": "HAS_SAFE_CONTROLS_REAL_LM_AND_INSTRUCTION_INTERVENTION_PREFLIGHT",
+        "verification_status": "IMPLEMENTED_GT2_PUBLIC_REFUSAL_DIRECTION_REPLICATION",
+        "baseline_status": "HAS_PUBLIC_DATASET_LAYER_POSITION_PCA_RANDOM_AND_LABEL_CONTROLS",
         "notes": (
-            "Section 9.1 now includes safe toy controls plus a pinned Pythia-70M-deduped "
+            "Section 9.1 now includes safe toy controls, a pinned Pythia-70M-deduped "
             "hidden-state category preflight across three sanitized prompt-template "
-            "families with held-out template checks, random-direction control, and "
-            "label-shuffle control, plus pinned Qwen2.5-0.5B-Instruct safe "
-            "refusal-direction addition/projection-out logit-score interventions "
-            "against fixed random-direction controls on the same broad prompt set "
-            "without generated completions."
+            "families, pinned Qwen2.5-0.5B-Instruct no-generation addition/projection-out "
+            "logit interventions, and a scoped GT-2 public josephmayo/refusal-compliance-pairs "
+            "aggregate replication path with held-out direction separation, layer and "
+            "position sweeps, PCA/SVD structure, random-direction and label-shuffle "
+            "negative controls, aggregate-only behavioral completion metrics, and no "
+            "raw prompt/completion text saved."
         ),
     },
     {
@@ -2185,7 +2207,7 @@ def gt_tier_for(number: str) -> str:
         "8.3": "GT-1",
         "8.4": "GT-1",
         "8.5": "GT-0",
-        "9.1": "GT-3",
+        "9.1": "GT-2",
         "9.2": "GT-3",
         "9.3": "GT-3",
         "9.4": "GT-3",
@@ -5934,12 +5956,13 @@ def write_method_registry() -> None:
 def hard_exercise_ladder_rows(records: list[dict[str, Any]]) -> list[dict[str, str]]:
     rows: list[dict[str, str]] = []
     for record in records:
-        metadata = record["exercise_metadata"]
+        exercise_dir = record["exercise_dir"]
+        metadata_path = exercise_dir / "artifacts.lock.yml"
+        lock = yaml.safe_load(metadata_path.read_text()) if metadata_path.exists() else {}
+        metadata = lock.get("exercise_metadata", record["exercise_metadata"])
         if metadata["DIFFICULTY"] < 3:
             continue
 
-        exercise_dir = record["exercise_dir"]
-        metadata_path = exercise_dir / "artifacts.lock.yml"
         fixture_path = exercise_dir / "expected_outputs" / "README.md"
         tests_path = exercise_dir / "tests.py"
         report_path = exercise_dir / "verification_report.json"
@@ -5970,9 +5993,9 @@ def hard_exercise_ladder_rows(records: list[dict[str, Any]]) -> list[dict[str, s
         rows.append(
             {
                 "section": record["number"],
-                "notebook_id": record["notebook_id"],
-                "title": record["title"],
-                "gt_tier": record["gt_tier"],
+                "notebook_id": lock.get("notebook_id", record["notebook_id"]),
+                "title": lock.get("title", record["title"]),
+                "gt_tier": lock.get("gt_tier", record["gt_tier"]),
                 "difficulty": str(metadata["DIFFICULTY"]),
                 "importance": str(metadata["IMPORTANCE"]),
                 "requires_gpu": str(metadata["REQUIRES_GPU"]).lower(),

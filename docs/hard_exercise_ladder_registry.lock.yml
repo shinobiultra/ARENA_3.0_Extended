@@ -400,8 +400,8 @@ hard_exercises:
 - section: '9.1'
   notebook_id: 9_1_refusal_directions_and_safe_steering
   title: Refusal Directions and Safe Steering
-  gt_tier: GT-3
-  difficulty: '3'
+  gt_tier: GT-2
+  difficulty: '4'
   importance: '5'
   requires_gpu: 'true'
   metadata_source: chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/artifacts.lock.yml:exercise_metadata

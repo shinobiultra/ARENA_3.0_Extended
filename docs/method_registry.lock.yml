@@ -66,9 +66,8 @@ methods:
   verification_status: IMPLEMENTED_ARTIFACT_PREFLIGHT
   baseline_status: HAS_PINNED_SAE_CONFIG_TENSOR_AND_FORWARD_CHECK
   notes: Sections 5.2 and 6.2 now load a pinned Gemma Scope 2 1B-IT residual SAE artifact
-    on CUDA, verify config, tensor shapes, finiteness, and JumpReLU encode/decode,
-    and validate authenticated Gemma 3 layer-13 activations on a narrow benign semantic
-    split with random-feature and label-shuffle controls.
+    on CUDA and verify config, tensor shapes, finiteness, and JumpReLU encode/decode.
+    Real Gemma activation feature validation remains gated and is not claimed.
 - method_name: Mamba selective scan
   paper: Mamba
   year: '2023'
@@ -130,8 +129,8 @@ methods:
   baseline_status: NEEDS_DIFFUSION_TIME_ACTIVATION_CAPTURE_AND_PATCHING
   notes: Pinned Google BF16 and NVIDIA NVFP4 artifacts are checked by section 5.5.
     Google BF16 direct local loading remains deferred for the 24GB tier, while the
-    NVIDIA NVFP4 checkpoint has a real isolated vLLM 0.24.0 generation proof on
-    the RTX 5090 Laptop GPU. Main uv remains torch 2.12.1+cu132 without vLLM.
+    NVIDIA NVFP4 checkpoint has a real isolated vLLM 0.24.0 generation proof on the
+    RTX 5090 Laptop GPU. Main uv remains torch 2.12.1+cu132 without vLLM.
 - method_name: Specialist and embedding model controls
   paper: FunctionGemma and EmbeddingGemma docs
   year: '2025'
@@ -326,16 +325,17 @@ methods:
   model_family: chat_transformer
   has_code: 'true'
   has_weights: not_applicable
-  local_24gb_status: LOCAL_YELLOW
+  local_24gb_status: LOCAL_GREEN
   implementation_status: REQUIRED_IMPLEMENT
-  verification_status: IMPLEMENTED_BROAD_SAFE_TEMPLATE_PREFLIGHT
-  baseline_status: HAS_SAFE_CONTROLS_REAL_LM_AND_INSTRUCTION_INTERVENTION_PREFLIGHT
-  notes: Section 9.1 now includes safe toy controls plus a pinned Pythia-70M-deduped
-    hidden-state category preflight across three sanitized prompt-template families
-    with held-out template checks, random-direction control, and label-shuffle control,
-    plus pinned Qwen2.5-0.5B-Instruct safe refusal-direction addition/projection-out
-    logit-score interventions against fixed random-direction controls on the same
-    broad prompt set without generated completions.
+  verification_status: IMPLEMENTED_GT2_PUBLIC_REFUSAL_DIRECTION_REPLICATION
+  baseline_status: HAS_PUBLIC_DATASET_LAYER_POSITION_PCA_RANDOM_AND_LABEL_CONTROLS
+  notes: Section 9.1 now includes safe toy controls, a pinned Pythia-70M-deduped hidden-state
+    category preflight across three sanitized prompt-template families, pinned Qwen2.5-0.5B-Instruct
+    no-generation addition/projection-out logit interventions, and a scoped GT-2 public
+    josephmayo/refusal-compliance-pairs aggregate replication path with held-out direction
+    separation, layer and position sweeps, PCA/SVD structure, random-direction and
+    label-shuffle negative controls, aggregate-only behavioral completion metrics,
+    and no raw prompt/completion text saved.
 - method_name: Chain-of-thought faithfulness probes
   paper: CoT faithfulness
   year: '2025'

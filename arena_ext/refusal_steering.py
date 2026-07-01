@@ -6,7 +6,6 @@ from dataclasses import dataclass
 from typing import Literal
 
 import torch as t
-import torch.nn.functional as F
 
 
 SteeringDirection = Literal["increase", "decrease"]
@@ -82,6 +81,38 @@ class DirectionComparisonReport:
     best_score: float
 
 
+def _require_finite_tensor(name: str, tensor: t.Tensor) -> None:
+    if tensor.numel() == 0:
+        raise ValueError(f"{name} must be nonempty.")
+    if not t.isfinite(tensor.float()).all():
+        raise ValueError(f"{name} must contain only finite values.")
+
+
+def _require_finite_scalar(name: str, value: float) -> float:
+    scalar = float(value)
+    if not t.isfinite(t.tensor(scalar)).item():
+        raise ValueError(f"{name} must be finite.")
+    return scalar
+
+
+def _require_binary_labels(labels: t.Tensor) -> t.Tensor:
+    _require_finite_tensor("labels", labels)
+    flattened = labels.flatten()
+    if flattened.dtype == t.bool:
+        return flattened
+    if not flattened.eq(0).logical_or(flattened.eq(1)).all():
+        raise ValueError("labels must be boolean or binary 0/1 values.")
+    return flattened.bool()
+
+
+def _require_nonzero_direction(direction: t.Tensor) -> t.Tensor:
+    _require_finite_tensor("direction", direction)
+    norm = direction.float().norm()
+    if norm.item() == 0:
+        raise ValueError("direction has zero norm.")
+    return direction.float() / norm
+
+
 def mean_difference_direction(
     refusal_activations: t.Tensor,
     non_refusal_activations: t.Tensor,
@@ -92,12 +123,14 @@ def mean_difference_direction(
         raise ValueError("activation tensors must have shape (examples, d_model).")
     if refusal_activations.shape[-1] != non_refusal_activations.shape[-1]:
         raise ValueError("activation dimensions must match.")
+    _require_finite_tensor("refusal_activations", refusal_activations)
+    _require_finite_tensor("non_refusal_activations", non_refusal_activations)
     direction = refusal_activations.float().mean(dim=0)
     direction = direction - non_refusal_activations.float().mean(dim=0)
-    norm = direction.norm()
-    if norm.item() == 0:
-        raise ValueError("mean-difference direction has zero norm.")
-    return direction / norm
+    try:
+        return _require_nonzero_direction(direction)
+    except ValueError as exc:
+        raise ValueError("mean-difference direction has zero norm.") from exc
 
 
 def refusal_direction_scores(
@@ -110,7 +143,9 @@ def refusal_direction_scores(
         raise ValueError("activations must have shape (examples, d_model).")
     if direction.shape != (activations.shape[-1],):
         raise ValueError("direction must have shape (d_model,).")
-    return activations.float() @ F.normalize(direction.float(), dim=0)
+    _require_finite_tensor("activations", activations)
+    unit_direction = _require_nonzero_direction(direction)
+    return activations.float() @ unit_direction
 
 
 def refusal_separation_report(
@@ -122,9 +157,10 @@ def refusal_separation_report(
 ) -> RefusalSeparationReport:
     """Check whether a direction separates refusal from non-refusal examples."""
 
-    labels = refusal_labels.flatten().bool()
+    labels = _require_binary_labels(refusal_labels)
     if activations.shape[0] != labels.numel():
         raise ValueError("labels must have one entry per activation.")
+    min_accuracy = _require_finite_scalar("min_accuracy", min_accuracy)
     scores = refusal_direction_scores(activations, direction)
     refusal_scores = scores[labels]
     non_refusal_scores = scores[~labels]
@@ -157,6 +193,10 @@ def steering_effect_report(
 
     if baseline_refusal_scores.shape != steered_refusal_scores.shape:
         raise ValueError("baseline and steered scores must have matching shape.")
+    _require_finite_tensor("baseline_refusal_scores", baseline_refusal_scores)
+    _require_finite_tensor("steered_refusal_scores", steered_refusal_scores)
+    threshold = _require_finite_scalar("threshold", threshold)
+    min_rate_delta = _require_finite_scalar("min_rate_delta", min_rate_delta)
     baseline_rate = baseline_refusal_scores.float().ge(threshold).float().mean().item()
     steered_rate = steered_refusal_scores.float().ge(threshold).float().mean().item()
     rate_delta = steered_rate - baseline_rate
@@ -184,6 +224,9 @@ def capability_degradation_report(
 
     if baseline_capability_scores.shape != steered_capability_scores.shape:
         raise ValueError("baseline and steered capability scores must match.")
+    _require_finite_tensor("baseline_capability_scores", baseline_capability_scores)
+    _require_finite_tensor("steered_capability_scores", steered_capability_scores)
+    max_degradation = _require_finite_scalar("max_degradation", max_degradation)
     baseline = baseline_capability_scores.float().mean().item()
     steered = steered_capability_scores.float().mean().item()
     degradation = baseline - steered
@@ -200,10 +243,25 @@ def random_direction_control_report(
     target_direction_delta: float,
     random_direction_delta: float,
     min_margin: float = 0.2,
+    expected_direction: SteeringDirection | None = None,
 ) -> RandomDirectionControlReport:
     """Check that the refusal direction beats a random direction control."""
 
-    margin = abs(target_direction_delta) - abs(random_direction_delta)
+    target_direction_delta = _require_finite_scalar(
+        "target_direction_delta", target_direction_delta
+    )
+    random_direction_delta = _require_finite_scalar(
+        "random_direction_delta", random_direction_delta
+    )
+    min_margin = _require_finite_scalar("min_margin", min_margin)
+    if expected_direction == "increase":
+        margin = target_direction_delta - max(random_direction_delta, 0.0)
+    elif expected_direction == "decrease":
+        margin = -target_direction_delta - max(-random_direction_delta, 0.0)
+    elif expected_direction is None:
+        margin = abs(target_direction_delta) - abs(random_direction_delta)
+    else:
+        raise ValueError("expected_direction must be 'increase', 'decrease', or None.")
     return RandomDirectionControlReport(
         target_direction_delta=target_direction_delta,
         random_direction_delta=random_direction_delta,
@@ -220,11 +278,13 @@ def label_shuffle_control_report(
 ) -> LabelShuffleControlReport:
     """Check that shuffled labels do not recover the same refusal direction."""
 
-    labels = refusal_labels.flatten().bool()
+    labels = _require_binary_labels(refusal_labels)
     if activations.ndim != 2:
         raise ValueError("activations must have shape (examples, d_model).")
     if activations.shape[0] != labels.numel():
         raise ValueError("labels must have one entry per activation.")
+    _require_finite_tensor("activations", activations)
+    min_accuracy_gap = _require_finite_scalar("min_accuracy_gap", min_accuracy_gap)
     if labels.sum().item() == 0 or (~labels).sum().item() == 0:
         raise ValueError("both refusal and non-refusal examples are required.")
 
@@ -262,6 +322,8 @@ def direction_comparison_report(
 
     if not method_scores:
         raise ValueError("method_scores must be nonempty.")
+    for method, score in method_scores.items():
+        _require_finite_scalar(f"method_scores[{method!r}]", score)
     best_method = max(method_scores, key=method_scores.__getitem__)
     return DirectionComparisonReport(
         method_scores=dict(method_scores),

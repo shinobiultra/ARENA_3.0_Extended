@@ -4,7 +4,7 @@ title: Refusal Directions and Safe Steering
 exercise_metadata:
   EXERCISE_ID: 9_1_refusal_directions_and_safe_steering
   GT_TIER: GT-2
-  DIFFICULTY: 3
+  DIFFICULTY: 4
   IMPORTANCE: 5
   EXPECTED_RUNTIME: seconds on toy contract; minutes on local real-model path
   REQUIRES_GPU: true
@@ -36,7 +36,7 @@ models:
   revision: 7ae557604adf67be50417f59c2c2f167def9a775
   precision: bfloat16
   gated: false
-  claim_scope: safe_instruction_model_refusal_direction_addition_projection_preflight
+  claim_scope: safe_instruction_model_refusal_direction_addition_projection_preflight_plus_gt2_public_dataset_path
 datasets:
 - id: 9_1_refusal_directions_and_safe_steering_toy_inputs
   source: generated
@@ -51,6 +51,15 @@ datasets:
   prompt_safety: sanitized_meta_prompts_no_procedural_content
   intervention_prompt_count: 24
   generation_used: false
+- id: josephmayo/refusal-compliance-pairs
+  source: huggingface
+  revision: b6ed3432f1d4a695e13be1c373bf7fb5af43f376
+  file: data/train-00000-of-00001.parquet
+  train_prompt_count: 32
+  heldout_prompt_count: 32
+  prompt_text_saved: false
+  completion_text_saved: false
+  aggregate_metrics_only: true
 expected_metrics:
   tests_passed: true
   accepted: true
@@ -75,6 +84,23 @@ expected_metrics:
   instruction_refusal_target_beats_random_addition: true
   instruction_refusal_target_beats_random_projection: true
   instruction_refusal_peak_vram_gb_max: 4.0
+  gt2_refusal_direction_preflight_passed: true
+  gt2_refusal_direction_gt2_ready: true
+  gt2_refusal_direction_dataset_id: josephmayo/refusal-compliance-pairs
+  gt2_refusal_direction_train_prompt_count: 32
+  gt2_refusal_direction_heldout_prompt_count: 32
+  gt2_refusal_direction_heldout_accuracy_min: 0.9
+  gt2_refusal_direction_layer_sweep_best_accuracy_min: 0.9
+  gt2_refusal_direction_position_sweep_final_beats_first: true
+  gt2_refusal_direction_pc1_variance_fraction_min: 0.0
+  gt2_refusal_direction_label_shuffle_fails: true
+  gt2_refusal_direction_random_direction_fails: true
+  gt2_refusal_direction_target_beats_random_addition: true
+  gt2_refusal_direction_target_beats_random_projection: true
+  gt2_refusal_direction_raw_prompt_text_saved: false
+  gt2_refusal_direction_completion_text_saved: false
+  gt2_refusal_direction_aggregate_metrics_only: true
+  gt2_refusal_direction_paper_equivalent_behavioral_completion_evidence: true
 controls:
 - baseline_or_reference_check
 - negative_control_where_applicable

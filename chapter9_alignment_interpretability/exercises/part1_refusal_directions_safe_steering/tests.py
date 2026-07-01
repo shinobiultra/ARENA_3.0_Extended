@@ -1,6 +1,13 @@
 from collections.abc import Callable
+import importlib.util
 import json
 from pathlib import Path
+
+import pytest
+
+
+TORCH_AVAILABLE = importlib.util.find_spec("torch") is not None
+pytestmark = pytest.mark.skipif(not TORCH_AVAILABLE, reason="torch is not installed")
 
 
 def _section_dir() -> Path:
