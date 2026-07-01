@@ -812,9 +812,9 @@ chapters:
         exercise_dir: "part4_crosscoders_model_diffing"
         page_file: "04_[6.4]_Crosscoders_and_Model_Diffing.md"
         header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png"
-        status: "Toy crosscoder and model-diffing harness added"
-        streamlit_description: "Build and verify toy crosscoders for paired model activations, shared/model-specific feature classification, behavior-delta prediction, paired score deltas, and model-specific ablation controls against random matched features."
-        streamlit_description_short: "Build and verify toy crosscoders and model-diffing controls."
+        status: "ARENA-style crosscoder and model-diffing validation section added"
+        streamlit_description: "Build shared/model-specific crosscoder reconstructions, classify feature ownership, validate behavior-delta prediction, test paired score deltas and direction-removal controls, and inspect a pinned GELU-1L vs SoLU-1L CUDA preflight."
+        streamlit_description_short: "Validate crosscoder model-diffing features with paired GELU/SoLU controls."
 
   chapter7_activation_to_language:
     title: "Chapter 7: Activation to Language"

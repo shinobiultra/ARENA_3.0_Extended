@@ -11,7 +11,8 @@ Gemma Scope and Feature Steering**, **[5.3] Mamba from Scratch**, **[5.4]
 Mamba State Tracking**, **[5.5] Toy Discrete Diffusion Language Models and
 Local DiffusionGemma Proof**, **[5.6] Embedding Retrieval and
 Function-Calling Controls**, **[6.1] SAE Variants**, **[6.2] Gemma
-Scope Deep Dive**, and **[6.3] Transcoders and Attribution Graphs**.
+Scope Deep Dive**, **[6.3] Transcoders and Attribution Graphs**, and
+**[6.4] Crosscoders and Model Diffing**.
 They now have ARENA-style learner pages, local
 diagrams, help/interpretation dropdowns, expected-output blocks, paired
 exercise/solution notebooks, CUDA-backed signature result tables, and explicit
