@@ -83,9 +83,9 @@
       "target_rule": "0.25 + 1.2*x0 - 0.7*x1 + 1.6*x2 + 0.9*x3 + 2.2*x0*x2 - 1.5*x1*x3"
     }
   ],
-  "date_run": "2026-06-30T14:11:47+00:00",
+  "date_run": "2026-07-01T06:36:49+00:00",
   "evidence_level": "shapley_interaction_contract_plus_cuda_trained_neural_game_preflight",
-  "git_commit": "f9f034bd",
+  "git_commit": "3f277125",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-0",
   "known_failures": [],
@@ -281,9 +281,8 @@
   "ood_tests": {
     "declared": "required_where_applicable"
   },
-  "peak_vram_gb": 0.062629,
+  "peak_vram_gb": 0.06262922286987305,
   "report_inputs": {
-    "schema_version": 1,
     "algorithm": "sha256",
     "combined_sha256": "2567db760f9fd10947a555d3dcf67ada448f6db0cb401ccc208919151f9a245b",
     "files": [
@@ -357,12 +356,13 @@
         "sha256": "660040f459d07535deb9e0c34ffddb496c13b8770044ae380d3a8e45b0c8fb2b",
         "size_bytes": 16080
       }
-    ]
+    ],
+    "schema_version": 1
   },
   "safety_notes": [
     "No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.",
     "The real training path uses only a generated finite binary feature table and a shuffled-label negative control. It does not use unsafe prompts, user data, external APIs, adapters, gated weights, or large persistent artifacts."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 3.631329
+  "wall_clock_seconds": 1.666447
 }

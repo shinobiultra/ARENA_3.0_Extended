@@ -23,6 +23,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: astral-sh/setup-uv@v6
       - name: Prepare minimal audit environment
         run: |
@@ -40,6 +42,8 @@ jobs:
       BNB_CUDA_VERSION: "130"
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: astral-sh/setup-uv@v6
       - name: Prepare CUDA 13.2 uv environment
         run: |

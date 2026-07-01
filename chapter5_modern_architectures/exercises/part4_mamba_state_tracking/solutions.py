@@ -287,18 +287,39 @@ def _transformers_mamba_fast_path_status() -> tuple[bool, dict[str, bool]]:
     """Check whether Transformers can see the compiled Mamba fast-path kernels."""
 
     from transformers.models.mamba import modeling_mamba
+    from transformers.models.mamba.configuration_mamba import (
+        MambaConfig as TransformersMambaConfig,
+    )
+
+    components: dict[str, bool] = {}
+    try:
+        tiny_config = TransformersMambaConfig(
+            vocab_size=8,
+            hidden_size=16,
+            intermediate_size=32,
+            state_size=4,
+            conv_kernel=3,
+            num_hidden_layers=1,
+        )
+        modeling_mamba.MambaMixer(
+            tiny_config,
+            layer_idx=0,
+            initialize_mixer_weights=False,
+        )
+        components["transformers_mamba_mixer_constructed"] = True
+    except Exception:
+        components["transformers_mamba_mixer_constructed"] = False
 
     component_names = (
         "selective_state_update",
         "selective_scan_fn",
         "mamba_inner_fn",
+        "causal_conv1d_fn",
+        "causal_conv1d_update",
     )
-    components = {
-        name: getattr(modeling_mamba, name, None) is not None for name in component_names
-    }
-    causal_conv1d_update, causal_conv1d_fn = modeling_mamba._lazy_load_causal_conv1d()
-    components["causal_conv1d_fn"] = causal_conv1d_fn is not None
-    components["causal_conv1d_update"] = causal_conv1d_update is not None
+    components.update(
+        {name: getattr(modeling_mamba, name, None) is not None for name in component_names}
+    )
     return all(components.values()), components
 
 

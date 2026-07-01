@@ -573,7 +573,12 @@ def run_cuda_data_shapley_preflight(max_vram_gb: float = 24.0) -> dict:
         "runtime_overhead_reported": runtime_metrics["runtime_overhead_reported"],
         "peak_vram_gb": peak_vram_gb,
         "within_vram_budget": peak_vram_gb <= max_vram_gb,
-        "full_path": "Enumerate Data Shapley coalitions on CUDA, run an actual one-step linear training update, compare exact, Monte Carlo, and in-run autograd gradient-dot scores, run random-data and label-shuffle failure controls, and measure runtime overhead.",
+        "full_path": (
+            "Enumerate Data Shapley coalitions on CUDA, run an actual one-step "
+            "linear training update, compare exact, Monte Carlo, and in-run "
+            "autograd gradient-dot scores, run random-data and label-shuffle "
+            "failure controls, and measure runtime overhead."
+        ),
     }
 
 

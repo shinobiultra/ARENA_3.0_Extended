@@ -14,9 +14,12 @@ lesson content.
 | `.gitignore` | Cache, model-weight, and generated-artifact hygiene for the extension. |
 | `.python-version` | uv-managed Python version pin for the CUDA 13 environment. |
 | `Extension-Roadmap.md` | User-authored extension specification. |
+| `guidance_2-0.md` | Reviewer guidance for the ARENA-style rewrite. |
 | `install.sh` | Original installer redirected to the pinned original requirements split. |
 | `README.md` | Entrypoint documentation for the extended course. |
-| `infrastructure/core/config.yaml` | Append-only registration of extension chapters and sections. |
+| `infrastructure/core/config.yaml` | Generated merged config for the original course plus extension overlay. |
+| `infrastructure/core/config_original.yaml` | Frozen upstream ARENA config snapshot from the pinned base commit. |
+| `infrastructure/core/config_extension.yaml` | Extension-only chapter and section metadata overlay. |
 | `pyproject.toml` | Project metadata, pytest import mode, and CI marker registration. |
 | `requirements-ci-cpu.txt` | Minimal hosted-CI dependencies for audit tests. |
 | `requirements-legacy-rl.txt` | Isolated legacy RL dependency stack kept out of the CUDA 13 env. |
@@ -49,8 +52,14 @@ Release-preservation check:
 
 ```bash
 uv run python scripts/audit_original_arena_preservation.py
+uv run python scripts/build_merged_config.py --check
 ```
 
 That audit compares original chapter files and original config entries against
 the pinned upstream commit, while permitting only documented extension paths and
 the compatibility files listed above.
+
+The checked-in `infrastructure/core/config.yaml` remains available for the
+existing ARENA build code, but it is not the hand-edited source of truth for
+extension metadata. It must stay semantically equal to
+`config_original.yaml + config_extension.yaml`.

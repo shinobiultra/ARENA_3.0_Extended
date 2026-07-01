@@ -61,9 +61,9 @@
       "source": "generated_prompt_pair"
     }
   ],
-  "date_run": "2026-06-30T14:04:39+00:00",
+  "date_run": "2026-07-01T06:34:02+00:00",
   "evidence_level": "selective_scan_contract_plus_official_mamba_logits_generation_preflight",
-  "git_commit": "f9f034bd",
+  "git_commit": "3f277125",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-1",
   "known_failures": [],
@@ -105,15 +105,15 @@
         8
       ],
       "official_mamba_generation_new_tokens": 4,
-      "official_mamba_generation_tokens_per_second": 11.25025200905266,
+      "official_mamba_generation_tokens_per_second": 17.545319604424275,
       "official_mamba_logits_generation_preflight_passed": true,
       "official_mamba_logits_shape": [
         2,
         4,
         50280
       ],
-      "official_mamba_logits_std": 52.729652404785156,
-      "official_mamba_peak_vram_gb": 0.2797737121582031,
+      "official_mamba_logits_std": 52.72896194458008,
+      "official_mamba_peak_vram_gb": 0.2786750793457031,
       "official_mamba_preflight": {
         "batched_single_top1_agreement": 1.0,
         "claim_scope": "official_mamba_130m_hf_logits_generation_preflight",
@@ -124,7 +124,8 @@
           "causal_conv1d_update": true,
           "mamba_inner_fn": true,
           "selective_scan_fn": true,
-          "selective_state_update": true
+          "selective_state_update": true,
+          "transformers_mamba_mixer_constructed": true
         },
         "finite_logits": true,
         "generated_new_token_count": 4,
@@ -132,15 +133,15 @@
           1,
           8
         ],
-        "generation_tokens_per_second": 11.25025200905266,
+        "generation_tokens_per_second": 17.545319604424275,
         "logits_shape": [
           2,
           4,
           50280
         ],
-        "logits_std": 52.729652404785156,
+        "logits_std": 52.72896194458008,
         "model_id": "state-spaces/mamba-130m-hf",
-        "peak_vram_gb": 0.2797737121582031,
+        "peak_vram_gb": 0.2786750793457031,
         "preflight_passed": true,
         "prompt_count": 2,
         "prompt_prefix_preserved": true,
@@ -148,7 +149,7 @@
         "within_vram_budget": true
       },
       "official_mamba_prompt_prefix_preserved": true,
-      "peak_vram_gb": 0.2797737121582031,
+      "peak_vram_gb": 0.2786750793457031,
       "scan_max_abs_diff": 4.76837158203125e-07,
       "scan_passed": true,
       "torch_version": "2.12.1+cu132",
@@ -209,11 +210,10 @@
   "ood_tests": {
     "declared": "required_where_applicable"
   },
-  "peak_vram_gb": 0.279774,
+  "peak_vram_gb": 0.2786750793457031,
   "report_inputs": {
-    "schema_version": 1,
     "algorithm": "sha256",
-    "combined_sha256": "05f12c5d7058cd0caf795a6046ebe3df45801b4c55c6e6f82c63bd7daca03639",
+    "combined_sha256": "852d81ffd7640f39b8cac1f6ab9cc24a6bf85e5e4819832336366c1ad861797b",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -257,8 +257,8 @@
       },
       {
         "path": "chapter5_modern_architectures/exercises/part3_mamba_from_scratch/solutions.py",
-        "sha256": "458b559450408f8ff460bec60a295b96242a9db984ab77c523537fb253d765c0",
-        "size_bytes": 26644
+        "sha256": "33e6ba97de6097b0876b13005e6f06a5372cc10845b3f5ce9e6cda42910ebb0d",
+        "size_bytes": 27173
       },
       {
         "path": "chapter5_modern_architectures/exercises/part3_mamba_from_scratch/tests.py",
@@ -277,7 +277,7 @@
       },
       {
         "path": "chapter5_modern_architectures/instructions/pages/03_[5.3]_Mamba_from_Scratch.md",
-        "sha256": "81d57485eaec11e26397265863139fd8340bfc998015bcec59d721da9c6d0f55",
+        "sha256": "ce231ef3d4631b060ff21b73e62a7bc670225d47ed5c94193bb4d78eb631cc4f",
         "size_bytes": 16543
       },
       {
@@ -285,12 +285,13 @@
         "sha256": "660040f459d07535deb9e0c34ffddb496c13b8770044ae380d3a8e45b0c8fb2b",
         "size_bytes": 16080
       }
-    ]
+    ],
+    "schema_version": 1
   },
   "safety_notes": [
     "No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.",
     "The official Mamba path uses safe generic prompts and deterministic generation only. Full weight-level parity between the didactic tiny implementation and Mamba-130M-HF is not claimed."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 3.929849
+  "wall_clock_seconds": 2.424866
 }

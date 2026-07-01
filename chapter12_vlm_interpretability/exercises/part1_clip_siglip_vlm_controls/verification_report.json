@@ -124,9 +124,9 @@
       "text_count": 2
     }
   ],
-  "date_run": "2026-06-30T14:08:31+00:00",
+  "date_run": "2026-07-01T06:36:20+00:00",
   "evidence_level": "synthetic_vlm_ladder_plus_real_clip_siglip_hidden_token_patching_and_qwen25_vl_generation",
-  "git_commit": "f9f034bd",
+  "git_commit": "3f277125",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-1",
   "known_failures": [],
@@ -266,7 +266,7 @@
       "object_beats_random": true,
       "object_patch_effect": 9.0,
       "object_patch_flips_answer": true,
-      "peak_vram_gb": 7.081995487213135,
+      "peak_vram_gb": 7.081986904144287,
       "random_patch_effect": 0.0,
       "random_patch_same_size": true,
       "real_clip_activation_patch_background_preserves_answer": true,
@@ -274,8 +274,8 @@
       "real_clip_activation_patch_full_sequence_matches_corrupt": true,
       "real_clip_activation_patch_full_sequence_max_abs_margin_error": 0.0,
       "real_clip_activation_patch_hook_point": "vision_model.embeddings",
-      "real_clip_activation_patch_min_object_gap_over_background": 14.93039321899414,
-      "real_clip_activation_patch_min_object_gap_over_random": 14.93039321899414,
+      "real_clip_activation_patch_min_object_gap_over_background": 14.930391311645508,
+      "real_clip_activation_patch_min_object_gap_over_random": 14.930391311645508,
       "real_clip_activation_patch_object_flips_answer": true,
       "real_clip_activation_patch_object_token_count": 9,
       "real_clip_activation_patch_peak_vram_gb": 0.6413159370422363,
@@ -287,7 +287,7 @@
         "background_patch_logits": [
           [
             35.05231857299805,
-            28.002155303955078
+            28.00215721130371
           ],
           [
             28.902233123779297,
@@ -295,7 +295,7 @@
           ]
         ],
         "background_patch_margins": [
-          7.050163269042969,
+          7.050161361694336,
           7.880229949951172
         ],
         "background_patch_preserves_answer": true,
@@ -310,7 +310,7 @@
         "clean_logits": [
           [
             35.05231857299805,
-            28.002155303955078
+            28.00215721130371
           ],
           [
             28.902233123779297,
@@ -318,7 +318,7 @@
           ]
         ],
         "clean_margins": [
-          7.050163269042969,
+          7.050161361694336,
           7.880229949951172
         ],
         "corrupt_logits": [
@@ -328,17 +328,17 @@
           ],
           [
             35.05231857299805,
-            28.002155303955078
+            28.00215721130371
           ]
         ],
         "corrupt_margins": [
           -7.880229949951172,
-          -7.050163269042969
+          -7.050161361694336
         ],
         "cuda_available": true,
         "full_sequence_patch_effects": [
-          14.93039321899414,
-          14.93039321899414
+          14.930391311645508,
+          14.930391311645508
         ],
         "full_sequence_patch_flips_answer": true,
         "full_sequence_patch_logits": [
@@ -348,12 +348,12 @@
           ],
           [
             35.05231857299805,
-            28.002155303955078
+            28.00215721130371
           ]
         ],
         "full_sequence_patch_margins": [
           -7.880229949951172,
-          -7.050163269042969
+          -7.050161361694336
         ],
         "full_sequence_patch_matches_corrupt": true,
         "full_sequence_patch_max_abs_margin_error": 0.0,
@@ -361,15 +361,15 @@
         "has_cls_token": true,
         "hook_point": "vision_model.embeddings",
         "local_snapshot": "/home/bitwise/.cache/huggingface/hub/models--openai--clip-vit-base-patch32/snapshots/3d74acf9a28c67741b2f4f2ea7635f0aaf6f0268",
-        "min_object_gap_over_background": 14.93039321899414,
-        "min_object_gap_over_random": 14.93039321899414,
+        "min_object_gap_over_background": 14.930391311645508,
+        "min_object_gap_over_random": 14.930391311645508,
         "model_id": "openai/clip-vit-base-patch32",
         "num_visual_tokens": 50,
         "object_beats_background": true,
         "object_beats_random": true,
         "object_patch_effects": [
-          14.93039321899414,
-          14.93039321899414
+          14.930391311645508,
+          14.930391311645508
         ],
         "object_patch_flips_answer": true,
         "object_patch_logits": [
@@ -379,12 +379,12 @@
           ],
           [
             35.05231857299805,
-            28.002155303955078
+            28.00215721130371
           ]
         ],
         "object_patch_margins": [
           -7.880229949951172,
-          -7.050163269042969
+          -7.050161361694336
         ],
         "object_token_count": 9,
         "object_token_indices": [
@@ -411,7 +411,7 @@
         "random_patch_logits": [
           [
             35.05231857299805,
-            28.002155303955078
+            28.00215721130371
           ],
           [
             28.902233123779297,
@@ -419,7 +419,7 @@
           ]
         ],
         "random_patch_margins": [
-          7.050163269042969,
+          7.050161361694336,
           7.880229949951172
         ],
         "random_patch_preserves_answer": true,
@@ -444,7 +444,7 @@
       "real_clip_activation_patch_random_token_count": 9,
       "real_clip_background_patch_preserves_answer": true,
       "real_clip_image_to_text_accuracy": 1.0,
-      "real_clip_mean_positive_margin": 7.465198516845703,
+      "real_clip_mean_positive_margin": 7.465193748474121,
       "real_clip_object_beats_background": true,
       "real_clip_object_beats_random": true,
       "real_clip_object_patch_flips_answer": true,
@@ -465,15 +465,15 @@
         "local_snapshot": "/home/bitwise/.cache/huggingface/hub/models--openai--clip-vit-base-patch32/snapshots/3d74acf9a28c67741b2f4f2ea7635f0aaf6f0268",
         "logits": [
           [
-            35.05232620239258,
+            35.05232238769531,
             28.00216293334961
           ],
           [
-            28.90222930908203,
+            28.90223503112793,
             36.78246307373047
           ]
         ],
-        "mean_positive_margin": 7.465198516845703,
+        "mean_positive_margin": 7.465193748474121,
         "model_id": "openai/clip-vit-base-patch32",
         "object_beats_background": true,
         "object_beats_random": true,
@@ -504,34 +504,34 @@
             0.0
           ],
           "background_patch_margins": [
-            7.050163269042969,
-            7.8802337646484375
+            7.050159454345703,
+            7.880228042602539
           ],
           "background_patch_preserves_answer": true,
           "clean_margins": [
-            7.050163269042969,
-            7.8802337646484375
+            7.050159454345703,
+            7.880228042602539
           ],
-          "min_object_gap_over_background": 13.12605094909668,
-          "min_object_gap_over_random": 13.12605094909668,
+          "min_object_gap_over_background": 13.126043319702148,
+          "min_object_gap_over_random": 13.126043319702148,
           "object_beats_background": true,
           "object_beats_random": true,
           "object_patch_effects": [
-            13.12605094909668,
-            13.478967666625977
+            13.126043319702148,
+            13.478963851928711
           ],
           "object_patch_flips_answer": true,
           "object_patch_margins": [
-            -6.075887680053711,
-            -5.598733901977539
+            -6.075883865356445,
+            -5.598735809326172
           ],
           "random_patch_effects": [
             0.0,
             0.0
           ],
           "random_patch_margins": [
-            7.050163269042969,
-            7.8802337646484375
+            7.050159454345703,
+            7.880228042602539
           ],
           "random_patch_preserves_answer": true
         },
@@ -557,7 +557,7 @@
         "blue circle"
       ],
       "real_qwen25_vl_generation_preflight_passed": true,
-      "real_qwen25_vl_peak_vram_gb": 7.081995487213135,
+      "real_qwen25_vl_peak_vram_gb": 7.081986904144287,
       "real_qwen25_vl_preflight": {
         "accuracy": 1.0,
         "answers": [
@@ -572,7 +572,7 @@
         ],
         "image_count": 2,
         "model_id": "Qwen/Qwen2.5-VL-3B-Instruct",
-        "peak_vram_gb": 7.081995487213135,
+        "peak_vram_gb": 7.081986904144287,
         "per_example_correct": [
           true,
           true
@@ -1157,9 +1157,8 @@
   "ood_tests": {
     "declared": "required_where_applicable"
   },
-  "peak_vram_gb": 7.081995,
+  "peak_vram_gb": 7.081986904144287,
   "report_inputs": {
-    "schema_version": 1,
     "algorithm": "sha256",
     "combined_sha256": "5eb27278b5ca080fb37555773401c4c5a869d0e26d711b7bb1c6b14636766433",
     "files": [
@@ -1238,12 +1237,13 @@
         "sha256": "660040f459d07535deb9e0c34ffddb496c13b8770044ae380d3a8e45b0c8fb2b",
         "size_bytes": 16080
       }
-    ]
+    ],
+    "schema_version": 1
   },
   "safety_notes": [
     "No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.",
     "The real generative VLM path uses safe generated shape images only. The CLIP and SigLIP region-patching path uses deterministic rendered shape images with object, background, and same-size non-overlapping random-region patch controls. The hidden-token path patches real CLIP/SigLIP visual-token activations at `vision_model.embeddings` and requires object tokens to flip the contrastive answer while background, same-size random-token, and full visual-sequence controls behave as expected. The Qwen2.5-VL path verifies grounded generation on the same safe rendered objects."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 12.1616
+  "wall_clock_seconds": 10.38323
 }

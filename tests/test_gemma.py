@@ -1,10 +1,13 @@
 import importlib.util
+import json
+from pathlib import Path
 
 import pytest
 
 TORCH_AVAILABLE = importlib.util.find_spec("torch") is not None
 TRANSFORMERS_AVAILABLE = importlib.util.find_spec("transformers") is not None
 pytestmark = pytest.mark.skipif(not TORCH_AVAILABLE, reason="torch is not installed")
+ROOT = Path(__file__).resolve().parents[1]
 
 if TORCH_AVAILABLE:
     import torch as t
@@ -103,6 +106,25 @@ def test_gemma_forward_shape_and_cache_parity():
     assert report["passed"], report
 
 
+def test_tiny_gemma_greedy_generation_uses_cache():
+    t.manual_seed(5101)
+    model = GemmaForCausalLM(_tiny_config(sliding_window=None)).eval()
+    prompt = t.tensor([[1, 5, 8, 13]])
+
+    generated = model.greedy_generate(prompt, max_new_tokens=4)
+    expected = prompt.clone()
+    with t.inference_mode():
+        for _ in range(4):
+            next_token = model(expected, use_cache=False).logits[:, -1].argmax(
+                dim=-1,
+                keepdim=True,
+            )
+            expected = t.cat([expected, next_token], dim=-1)
+
+    assert t.equal(generated, expected)
+    assert generated.shape == (1, 8)
+
+
 def test_load_matching_state_dict_reports_shape_mismatches():
     source = GemmaForCausalLM(_tiny_config())
     target = GemmaForCausalLM(_tiny_config())
@@ -158,3 +180,49 @@ def test_tiny_gemma_matches_huggingface_reference_logits():
         ).logits
 
     assert (local_logits - reference_logits).abs().max().item() < 5e-4
+
+
+@pytest.mark.skipif(not TRANSFORMERS_AVAILABLE, reason="transformers is not installed")
+def test_tiny_gemma_matches_huggingface_reference_generation():
+    from chapter5_modern_architectures.exercises.part1_gemma_from_scratch.solutions import (
+        run_hf_tiny_gemma_reference_parity,
+    )
+
+    result = run_hf_tiny_gemma_reference_parity(device=t.device("cpu"))
+
+    assert result["generation_prompt"] == [1, 5, 8, 13]
+    assert result["local_greedy_tokens"] == result["reference_greedy_tokens"]
+    assert result["generation_matches_reference"]
+
+
+def test_gemma_report_exposes_signature_result_fields():
+    report_path = (
+        ROOT
+        / "chapter5_modern_architectures/exercises/part1_gemma_from_scratch"
+        / "verification_report.json"
+    )
+    report = json.loads(report_path.read_text())
+    gpu = report["metrics"]["gpu_test"]
+    notebook = report["metrics"]["notebook_contract"]
+
+    for key in [
+        "reference_logits_max_abs_diff",
+        "reference_logits_mse",
+        "reference_logits_kl_divergence",
+        "reference_logits_topk_agreement",
+        "cache_max_abs_diff",
+        "reference_cache_max_abs_diff",
+        "generation_prompt",
+        "local_greedy_tokens",
+        "reference_greedy_tokens",
+        "generation_matches_reference",
+        "peak_vram_gb",
+    ]:
+        assert key in gpu
+
+    for key in ["parameter_gb", "kv_cache_gb", "activation_gb", "overhead_gb", "total_gb"]:
+        assert key in notebook["memory_budget"]
+
+    assert gpu["generation_prompt"] == [1, 5, 8, 13]
+    assert gpu["local_greedy_tokens"] == gpu["reference_greedy_tokens"]
+    assert gpu["generation_matches_reference"]

@@ -70,6 +70,7 @@ expected_metrics:
   reference_logits_topk_agreement: 1.0
   reference_cache_max_abs_diff_max: 1.0e-05
   reference_cache_passed: true
+  generation_matches_reference: true
   reference_parity_passed: true
   peak_vram_gb_max: 1.0
 controls:

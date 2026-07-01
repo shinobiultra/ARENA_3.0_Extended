@@ -573,6 +573,15 @@ def run_hf_tiny_gemma_reference_parity(device: t.device) -> dict:
         ).logits
     parity = compare_logits(local_logits, reference_logits, k=5)
     cache_report = cache_parity_report(local, input_ids, atol=1e-5)
+    generation_prompt = t.tensor([[1, 5, 8, 13]], device=device)
+    local_generated = local.greedy_generate(generation_prompt, max_new_tokens=4)
+    reference_generated = generation_prompt.clone()
+    with t.inference_mode():
+        for _ in range(4):
+            reference_output = reference(input_ids=reference_generated, use_cache=False)
+            next_token = reference_output.logits[:, -1].argmax(dim=-1, keepdim=True)
+            reference_generated = t.cat([reference_generated, next_token], dim=-1)
+    generation_matches_reference = t.equal(local_generated, reference_generated)
     return {
         "reference_model_family": "transformers.GemmaForCausalLM",
         "reference_transformers_tiny_config": True,
@@ -584,11 +593,16 @@ def run_hf_tiny_gemma_reference_parity(device: t.device) -> dict:
         "reference_logits_topk_agreement": parity.topk_agreement,
         "reference_cache_max_abs_diff": cache_report["max_abs_diff"],
         "reference_cache_passed": cache_report["passed"],
+        "generation_prompt": generation_prompt.squeeze(0).tolist(),
+        "local_greedy_tokens": local_generated.squeeze(0).tolist(),
+        "reference_greedy_tokens": reference_generated.squeeze(0).tolist(),
+        "generation_matches_reference": generation_matches_reference,
         "reference_parity_passed": (
             parity.max_abs_diff <= HF_GEMMA_REFERENCE_MAX_ABS_ERROR
             and parity.mse <= HF_GEMMA_REFERENCE_MSE_MAX
             and parity.topk_agreement == 1.0
             and cache_report["passed"]
+            and generation_matches_reference
         ),
     }
 

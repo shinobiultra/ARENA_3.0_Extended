@@ -16,7 +16,12 @@ The generated artifact lock uses `seed: 0` for toy/generated inputs unless a sec
 
 ## Allowed tolerances
 
-Integer, token, boolean, revision, model-type, and schema-contract checks require exact equality. Float32 toy checks should use `rtol=1e-5` and `atol=1e-6` unless the section file documents a stricter tolerance. The current DiffusionGemma contract checks exact public metadata, shard counts, runtime readiness, and the pinned isolated vLLM NVFP4 generation proof artifact. Google BF16 direct local loading remains deferred for the 24GB tier.
+Integer, token, boolean, revision, model-type, and schema-contract checks require exact
+equality. Float32 toy checks should use `rtol=1e-5` and `atol=1e-6` unless the section
+file documents a stricter tolerance. The current DiffusionGemma contract checks exact
+public metadata, shard counts, runtime readiness, and the pinned isolated vLLM NVFP4
+generation proof artifact. Google BF16 direct local loading remains deferred for the
+24GB tier.
 
 ## When to regenerate
 

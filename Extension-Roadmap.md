@@ -1,4 +1,25 @@
-Here’s how I’d do it: **fork ARENA_3.0 into a local-first “ARENA Frontier Lab”** rather than merely adding a few notebooks. Keep the existing ARENA transformer/mech-interp spine intact, then add a new sequence of runnable, testable notebooks that teach: modern architectures, pretrained-weight loading, local inference, local finetuning, SAEs/transcoders/crosscoders, activation-to-language methods, automated circuits, and alignment interpretability.
+# ARENA Frontier Lab Extension Roadmap
+
+This roadmap is the target for extending ARENA 3.0, not a claim that every
+prototype page in this branch is already polished course material. The original
+ARENA chapters remain the canonical base. Extension material must earn
+`course_ready` status in [docs/arena_style_rewrite_status.yml](docs/arena_style_rewrite_status.yml)
+before it should be treated as part of the finished student-facing course.
+
+The current polished pilot is **[5.1] Gemma from Scratch**. It now has an
+ARENA-style learner page, local diagrams, help/interpretation dropdowns,
+expected-output blocks, paired exercise/solution notebooks, a CUDA-backed
+signature result table, and explicit GT-0 claim boundaries. The other extension
+sections are prototype scaffolds: useful implementation and verification
+evidence, but still requiring the original-ARENA rewrite pass described in
+`guidance_2-0.md`.
+
+The extension goal is a local-first “ARENA Frontier Lab” rather than a pile of
+topic demos. It should keep the existing ARENA transformer/mech-interp spine
+intact, then add a sequence of runnable, testable notebooks that teach modern
+architectures, pretrained-weight loading, local inference, local finetuning,
+SAEs/transcoders/crosscoders, activation-to-language methods, automated
+circuits, and alignment interpretability.
 
 The key design rule: **every notebook must end with a verification block**. Not “I implemented Gemma/Mamba and it seems to run,” but “my implementation matches Hugging Face logits within tolerance,” “parallel and recurrent Mamba scans are numerically equivalent,” “a quantized DiffusionGemma checkpoint runs under the VRAM budget,” “my SAE recovers loss and has expected sparsity,” “my verbalizer beats text-only and probe baselines on held-out counterfactuals,” etc.
 

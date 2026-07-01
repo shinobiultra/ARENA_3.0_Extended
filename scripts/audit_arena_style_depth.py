@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import ast
 import csv
+import json
 import re
 import sys
 from pathlib import Path
@@ -43,6 +44,24 @@ UNRESOLVED_LADDER_EVIDENCE = {
     "ongoing_visible_notebook_cell_spot_audit",
     "debug_cache_for_complex_functions_where_needed",
     "periodic_real_model_revision_refresh",
+}
+STYLE_STATUS_PATH = ROOT / "docs/arena_style_rewrite_status.yml"
+COURSE_READY_STATUSES = {"course_ready"}
+REQUIRED_COURSE_READY_PAGE_PATTERNS = {
+    "expected output dropdown": re.compile(
+        r"<details>\s*<summary>\s*expected output",
+        re.IGNORECASE,
+    ),
+    "solution dropdown": re.compile(
+        r"<details>\s*<summary>\s*solution",
+        re.IGNORECASE,
+    ),
+    "help or interpretation dropdown": re.compile(
+        r"<details>\s*<summary>\s*(help|interpreting)",
+        re.IGNORECASE,
+    ),
+    "signature result": re.compile(r"signature result", re.IGNORECASE),
+    "limitations": re.compile(r"limitations", re.IGNORECASE),
 }
 PAGE_METADATA_PATTERNS = {
     "GT_TIER": re.compile(r"GT_TIER\s*=\s*[\"']([^\"']+)[\"']"),
@@ -80,6 +99,107 @@ def page_style_depth_blockers(config: dict[str, Any] | None = None) -> list[str]
                 f"{number}: page lacks roadmap style elements {missing} "
                 f"({page_path.relative_to(ROOT)})"
             )
+    return blockers
+
+
+def load_style_status(path: Path = STYLE_STATUS_PATH) -> dict[str, Any]:
+    if not path.exists():
+        return {"sections": {}}
+    status = yaml.safe_load(path.read_text())
+    if not isinstance(status, dict) or not isinstance(status.get("sections"), dict):
+        raise ValueError(f"{path.relative_to(ROOT)} must contain a sections mapping")
+    return status
+
+
+def style_status_blockers(config: dict[str, Any] | None = None) -> list[str]:
+    blockers: list[str] = []
+    status = load_style_status()
+    sections = status["sections"]
+    for number, page_path in extension_page_paths(config):
+        entry = sections.get(number)
+        if not isinstance(entry, dict):
+            blockers.append(f"{number}: missing docs/arena_style_rewrite_status.yml entry")
+            continue
+        if entry.get("page") != page_path.relative_to(ROOT).as_posix():
+            blockers.append(f"{number}: style-status page path does not match config")
+        if entry.get("status") not in {"prototype", "course_ready"}:
+            blockers.append(f"{number}: unknown style status {entry.get('status')!r}")
+    return blockers
+
+
+def _page_course_ready_blockers(number: str, page_path: Path) -> list[str]:
+    text = page_path.read_text()
+    blockers: list[str] = []
+    for label, pattern in REQUIRED_COURSE_READY_PAGE_PATTERNS.items():
+        if pattern.search(text) is None:
+            blockers.append(f"{number}: course-ready page lacks {label}")
+    if "<img" not in text and "|" not in text:
+        blockers.append(f"{number}: course-ready page lacks visible figure or table")
+    return blockers
+
+
+def _notebook_text(path: Path) -> str:
+    notebook = json.loads(path.read_text())
+    return "\n".join(
+        "".join(cell.get("source", []))
+        for cell in notebook.get("cells", [])
+        if isinstance(cell, dict)
+    )
+
+
+def _notebook_course_ready_blockers(number: str, page_path: Path) -> list[str]:
+    blockers: list[str] = []
+    section_dir = page_path.parents[2] / "exercises"
+    exercise_dirs = [
+        path
+        for path in section_dir.glob("part*")
+        if any(path.glob("*_exercises.ipynb")) and any(path.glob("*_solutions.ipynb"))
+    ]
+    matching_dirs = [
+        path for path in exercise_dirs if page_path.stem.split("]_", maxsplit=1)[-1] in " ".join(p.name for p in path.glob("*.ipynb"))
+    ]
+    if not matching_dirs:
+        # Fall back to artifact locks, which carry the section number exactly.
+        matching_dirs = [
+            path
+            for path in exercise_dirs
+            if (path / "artifacts.lock.yml").exists()
+            and str(yaml.safe_load((path / "artifacts.lock.yml").read_text()).get("section")) == number
+        ]
+    if not matching_dirs:
+        blockers.append(f"{number}: could not locate paired notebooks for course-ready section")
+        return blockers
+    for notebook_dir in matching_dirs[:1]:
+        for notebook_path in sorted(notebook_dir.glob("*.ipynb")):
+            text = _notebook_text(notebook_path).lower()
+            required = {
+                "expected output": "expected-output content",
+                "<details>": "dropdown content",
+                "help -": "help dropdown",
+                "signature result": "signature result",
+                "limitations": "limitations",
+            }
+            missing = [label for term, label in required.items() if term not in text]
+            if missing:
+                blockers.append(
+                    f"{number}: {notebook_path.relative_to(ROOT)} lacks {missing}"
+                )
+    return blockers
+
+
+def course_ready_depth_blockers(config: dict[str, Any] | None = None) -> list[str]:
+    status = load_style_status()
+    sections = status["sections"]
+    blockers: list[str] = []
+    for number, page_path in extension_page_paths(config):
+        entry = sections.get(number, {})
+        if entry.get("status") not in COURSE_READY_STATUSES:
+            continue
+        if not page_path.exists():
+            blockers.append(f"{number}: missing course-ready page {page_path.relative_to(ROOT)}")
+            continue
+        blockers.extend(_page_course_ready_blockers(number, page_path))
+        blockers.extend(_notebook_course_ready_blockers(number, page_path))
     return blockers
 
 
@@ -167,6 +287,8 @@ def bare_assertion_blockers(
 def style_depth_blockers(config: dict[str, Any] | None = None) -> list[str]:
     return (
         page_style_depth_blockers(config)
+        + style_status_blockers(config)
+        + course_ready_depth_blockers(config)
         + page_metadata_consistency_blockers(config)
         + hard_registry_depth_blockers()
         + bare_assertion_blockers()

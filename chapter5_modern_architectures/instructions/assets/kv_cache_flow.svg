@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="700" height="220" viewBox="0 0 700 220" role="img" aria-labelledby="title desc">
+  <title id="title">KV-cache parity flow</title>
+  <desc id="desc">Full-context generation and one-token cached generation should produce the same logits.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#334155" />
+    </marker>
+    <style>
+      .box { fill: #f8fafc; stroke: #334155; stroke-width: 1.5; rx: 8; }
+      .cache { fill: #ecfdf5; stroke: #047857; }
+      .logit { fill: #eef2ff; stroke: #4338ca; }
+      .line { stroke: #334155; stroke-width: 1.5; fill: none; marker-end: url(#arrow); }
+      .text { font: 14px sans-serif; fill: #0f172a; text-anchor: middle; dominant-baseline: middle; }
+      .small { font: 12px sans-serif; fill: #475569; text-anchor: middle; dominant-baseline: middle; }
+    </style>
+  </defs>
+  <rect x="35" y="48" width="130" height="46" class="box" /><text x="100" y="71" class="text">[1,2,3,4,5]</text>
+  <rect x="220" y="48" width="130" height="46" class="box" /><text x="285" y="71" class="text">full forward</text>
+  <rect x="405" y="48" width="130" height="46" class="logit" /><text x="470" y="71" class="text">full logits</text>
+  <path d="M165 71 H220" class="line" />
+  <path d="M350 71 H405" class="line" />
+  <rect x="35" y="132" width="80" height="46" class="box" /><text x="75" y="155" class="text">[1]</text>
+  <rect x="145" y="132" width="88" height="46" class="cache" /><text x="189" y="155" class="text">cache K/V</text>
+  <rect x="263" y="132" width="80" height="46" class="box" /><text x="303" y="155" class="text">[2]</text>
+  <rect x="373" y="132" width="88" height="46" class="cache" /><text x="417" y="155" class="text">append</text>
+  <rect x="491" y="132" width="120" height="46" class="logit" /><text x="551" y="155" class="text">cached logits</text>
+  <path d="M115 155 H145" class="line" />
+  <path d="M233 155 H263" class="line" />
+  <path d="M343 155 H373" class="line" />
+  <path d="M461 155 H491" class="line" />
+  <text x="350" y="205" class="small">Parity target: concatenate one-token cached logits and compare to full logits.</text>
+</svg>

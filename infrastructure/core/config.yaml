@@ -520,6 +520,15 @@ chapters:
         status: "All exercises complete and verified"
         streamlit_description: "Superposition is the phenomena observed in which models represent more features than they have parameters. In this section you'll learn about the mathematical underpinnings of superposition, by replicating the key results from Anthropic's Toy Models of Superposition paper. You'll also build the sparse autoencoder (SAE) architecture and train it to recover features."
         streamlit_description_short: "Replicate Anthropic's superposition paper and train SAEs to recover features."
+      # Special section: Monthly Algorithmic Problems (not a numbered section)
+      - id: "monthly_algorithmic"
+        title: "Monthly Algorithmic Problems"
+        is_special: true
+        page_file: "39_[1.5.X]_Monthly_Algorithmic_Problems.md"
+        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/alg-combined.png"
+        streamlit_img_url: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/alg-combined.png"
+        streamlit_description: "At the end of this section, we have a series of 7 algorithmic problems, a series which ran periodically between mid 2023 and late 2024. These are designed to test some of the skills and tools you'll have gathered during the rest of this section. Note that these are better thought of as fun challenges / hackathon-type problems, as opposed to opportunities to learn about specific topics or tools, so we recommend not attempting them while you're working through the ARENA material during any kind of structured program (except as a hackathon)."
+        streamlit_description_short: "7 algorithmic challenges to test your interpretability skills in hackathon format."
 
       - id: "40_frontier_infra"
         number: "1.6"
@@ -530,16 +539,6 @@ chapters:
         status: "Infrastructure harness added"
         streamlit_description: "Build the local-first verification harness for frontier-extension notebooks: environment checks, VRAM estimates, HF parity metrics, generation parity, activation storage, and smoke-test contracts."
         streamlit_description_short: "Reusable verification harness for local frontier-model notebooks."
-
-      # Special section: Monthly Algorithmic Problems (not a numbered section)
-      - id: "monthly_algorithmic"
-        title: "Monthly Algorithmic Problems"
-        is_special: true
-        page_file: "39_[1.5.X]_Monthly_Algorithmic_Problems.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/alg-combined.png"
-        streamlit_img_url: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/alg-combined.png"
-        streamlit_description: "At the end of this section, we have a series of 7 algorithmic problems, a series which ran periodically between mid 2023 and late 2024. These are designed to test some of the skills and tools you'll have gathered during the rest of this section. Note that these are better thought of as fun challenges / hackathon-type problems, as opposed to opportunities to learn about specific topics or tools, so we recommend not attempting them while you're working through the ARENA material during any kind of structured program (except as a hackathon)."
-        streamlit_description_short: "7 algorithmic challenges to test your interpretability skills in hackathon format."
 
   chapter2_rl:
     title: "Chapter 2: Reinforcement Learning"

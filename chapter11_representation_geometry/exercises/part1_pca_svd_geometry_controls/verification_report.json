@@ -66,9 +66,9 @@
       "train_template": "The report was written in {}"
     }
   ],
-  "date_run": "2026-06-30T14:08:18+00:00",
+  "date_run": "2026-07-01T06:36:10+00:00",
   "evidence_level": "gt0_toy_geometry_plus_real_lm_calendar_template_centering_and_umap_preflight",
-  "git_commit": "f9f034bd",
+  "git_commit": "3f277125",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-0",
   "known_failures": [],
@@ -126,7 +126,7 @@
       "full_path": "Run PCA/SVD and geometry controls on cached model activations.",
       "gpu_total_memory_gb": 23.45965576171875,
       "heldout_accuracy": 1.0,
-      "peak_vram_gb": 0.3446516990661621,
+      "peak_vram_gb": 0.3446521759033203,
       "predicts_heldout_labels": true,
       "pythia_calendar_preflight_passed": true,
       "pythia_calendar_task_count": 2,
@@ -149,7 +149,7 @@
       "pythia_weekday_generation_used": false,
       "pythia_weekday_matched_pair_accuracy": 1.0,
       "pythia_weekday_noise_accuracy": 0.1428571492433548,
-      "pythia_weekday_peak_vram_gb": 0.3446516990661621,
+      "pythia_weekday_peak_vram_gb": 0.3446521759033203,
       "pythia_weekday_permuted_label_accuracy": 0.0,
       "pythia_weekday_preflight": {
         "calendar_task_count": 2,
@@ -191,7 +191,7 @@
               "n_neighbors": 3,
               "neighborhood_preservation": 0.7333333333333334,
               "random_label_accuracy": 0.0,
-              "random_token_accuracy": 0.02777777798473835,
+              "random_token_accuracy": 0.0555555559694767,
               "seed": 0,
               "trustworthiness": 0.9949573863636364
             },
@@ -221,7 +221,7 @@
               "n_neighbors": 3,
               "neighborhood_preservation": 0.71875,
               "random_label_accuracy": 0.2777777910232544,
-              "random_token_accuracy": 0.0555555559694767,
+              "random_token_accuracy": 0.02777777798473835,
               "seed": 1,
               "trustworthiness": 0.99453125
             },
@@ -359,7 +359,7 @@
           0.29690292477607727,
           0.16706226766109467
         ],
-        "peak_vram_gb": 0.3446516990661621,
+        "peak_vram_gb": 0.3446521759033203,
         "permuted_label_accuracy": 0.0,
         "preflight_passed": true,
         "raw_heldout_accuracy": 0.1428571492433548,
@@ -680,9 +680,8 @@
   "ood_tests": {
     "declared": "required_where_applicable"
   },
-  "peak_vram_gb": 0.344652,
+  "peak_vram_gb": 0.3446521759033203,
   "report_inputs": {
-    "schema_version": 1,
     "algorithm": "sha256",
     "combined_sha256": "62342115fdb2099ce37084b185fd020b99895399aacd2200c7d7666ed9d7d123",
     "files": [
@@ -756,12 +755,13 @@
         "sha256": "660040f459d07535deb9e0c34ffddb496c13b8770044ae380d3a8e45b0c8fb2b",
         "size_bytes": 16080
       }
-    ]
+    ],
+    "schema_version": 1
   },
   "safety_notes": [
     "No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.",
     "The real-LM geometry path uses generated weekday/month labels and hidden states only. It performs no generated completions and does not claim causal space/time intervention behavior."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 15.954568
+  "wall_clock_seconds": 12.877785
 }

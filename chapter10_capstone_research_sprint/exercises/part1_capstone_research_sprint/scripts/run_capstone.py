@@ -147,15 +147,12 @@ def _write_markdown_report(
             "",
             "## Limitations",
             "",
-            (
-                "This is a generated model-organism sprint, not evidence about a "
-                "released transformer. Random activations are scored by accuracy, "
-                "not abstention, because the binary oracle can be confidently wrong "
-                "off distribution. The high random-activation confidence is recorded "
-                "as a calibration limitation for the next iteration. Random-patch "
-                "controls sample non-latent dimensions, so they show that unrelated "
-                "control coordinates do less than targeted latent patches."
-            ),
+            "This is a generated model-organism sprint, not evidence about a released transformer.",
+            "Random activations are scored by accuracy, not abstention, because the binary",
+            "oracle can be confidently wrong off distribution. The high random-activation",
+            "confidence is recorded as a calibration limitation for the next iteration.",
+            "Random-patch controls sample non-latent dimensions, so they show that unrelated",
+            "control coordinates do less than targeted latent patches.",
             "",
             "## Failure Cases",
             "",

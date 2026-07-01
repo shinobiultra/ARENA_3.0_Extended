@@ -5,6 +5,7 @@ from scripts.audit_original_arena_preservation import (
     is_allowed_preservation_change,
     original_preservation_blockers,
     preservation_blockers,
+    split_config_blockers,
 )
 
 
@@ -31,6 +32,8 @@ def test_preservation_audit_allows_extension_chapters_and_compatibility_files():
     assert is_allowed_preservation_change("chapter16_shapley_attribution_baselines/README.md")
     assert is_allowed_preservation_change("arena_ext/gated_artifacts.py")
     assert is_allowed_preservation_change(".github/workflows/extension-quality.yml")
+    assert is_allowed_preservation_change("infrastructure/core/config_original.yaml")
+    assert is_allowed_preservation_change("infrastructure/core/config_extension.yaml")
     assert is_allowed_preservation_change("requirements-ci-cpu.txt")
     assert is_allowed_preservation_change("requirements.txt")
     assert is_allowed_preservation_change("uv.lock")
@@ -56,3 +59,7 @@ def test_current_worktree_preserves_original_arena_surface():
     blockers = original_preservation_blockers()
 
     assert blockers == []
+
+
+def test_split_config_is_current_and_generated_equivalent():
+    assert split_config_blockers() == []

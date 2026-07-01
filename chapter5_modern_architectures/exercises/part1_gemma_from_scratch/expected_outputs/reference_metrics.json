@@ -20,6 +20,7 @@
     "preflight_passed": true,
     "reference_cache_max_abs_diff_max": 1e-05,
     "reference_cache_passed": true,
+    "generation_matches_reference": true,
     "reference_loaded_key_count": 21,
     "reference_logits_max_abs_diff_max": 0.0005,
     "reference_logits_mse_max": 1e-07,

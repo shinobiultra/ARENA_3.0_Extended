@@ -8,6 +8,7 @@
     "reference_logits_max_abs_diff_max": 0.0005,
     "reference_logits_mse_max": 1e-07,
     "reference_logits_topk_agreement": 1.0,
+    "generation_matches_reference": true,
     "reference_model_family": "transformers.GemmaForCausalLM",
     "reference_weight_key_count": 21
   },

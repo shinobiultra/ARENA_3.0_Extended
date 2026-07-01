@@ -1,6 +1,56 @@
 import scripts.audit_arena_style_depth as audit
 
 
+def test_course_ready_page_rejects_keyword_stuffing(tmp_path):
+    page = tmp_path / "page.md"
+    page.write_text(
+        """
+# Fake page
+
+expected output solution common bug difficulty importance signature result limitations
+This page says all the old keywords but has no real dropdowns.
+"""
+    )
+
+    blockers = audit._page_course_ready_blockers("5.1", page)
+
+    assert any("expected output dropdown" in blocker for blocker in blockers)
+    assert any("solution dropdown" in blocker for blocker in blockers)
+    assert any("help or interpretation dropdown" in blocker for blocker in blockers)
+
+
+def test_course_ready_page_accepts_real_dropdowns_and_result_table(tmp_path):
+    page = tmp_path / "page.md"
+    page.write_text(
+        """
+# Real page
+
+<details><summary>Expected output</summary>
+ok
+</details>
+
+<details><summary>Solution</summary>
+hidden
+</details>
+
+<details><summary>Help - why did this fail?</summary>
+interpretation
+</details>
+
+## Signature result
+
+| Check | Observed |
+| --- | --- |
+| parity | pass |
+
+## Limitations
+This proves only the scoped claim.
+"""
+    )
+
+    assert audit._page_course_ready_blockers("5.1", page) == []
+
+
 def test_page_metadata_consistency_blockers_flag_page_lock_drift(tmp_path, monkeypatch):
     page_dir = tmp_path / "chapter5_modern_architectures/instructions/pages"
     page_dir.mkdir(parents=True)

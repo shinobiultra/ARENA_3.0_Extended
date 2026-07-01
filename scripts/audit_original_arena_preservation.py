@@ -8,6 +8,7 @@ checks the current git working tree against that contract.
 from __future__ import annotations
 
 import subprocess
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -15,15 +16,20 @@ import yaml
 
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 COMPATIBILITY_PATCH_RATIONALES = {
     ".github/workflows/extension-quality.yml": "real CI gates for extension audits and GPU reports",
     ".gitignore": "cache, model-weight, and generated-artifact hygiene for the extension",
     ".python-version": "uv-managed Python version pin for the CUDA 13 environment",
     "Extension-Roadmap.md": "user-authored extension specification",
+    "guidance_2-0.md": "review guidance for the ARENA-style rewrite",
     "README.md": "entrypoint documentation for the extended course",
     "install.sh": "original installer redirected to the pinned original requirements split",
     "infrastructure/core/config.yaml": "append-only registration of extension chapters and sections",
+    "infrastructure/core/config_original.yaml": "frozen upstream ARENA config snapshot",
+    "infrastructure/core/config_extension.yaml": "extension-only config overlay",
     "pyproject.toml": "project metadata, pytest import mode, and CI marker registration",
     "requirements-ci-cpu.txt": "minimal hosted-CI dependencies for audit tests",
     "requirements-legacy-rl.txt": "isolated legacy RL dependency stack kept out of the CUDA 13 env",
@@ -245,6 +251,48 @@ def requirements_split_blockers(revision: str | None = None) -> list[str]:
     return []
 
 
+def split_config_blockers(revision: str | None = None) -> list[str]:
+    """Require config.yaml to be generated-equivalent to original + extension config."""
+
+    revision = revision or original_base_revision()
+    blockers: list[str] = []
+    original_config_path = ROOT / "infrastructure/core/config_original.yaml"
+    extension_config_path = ROOT / "infrastructure/core/config_extension.yaml"
+    merged_config_path = ROOT / "infrastructure/core/config.yaml"
+
+    if not original_config_path.exists():
+        blockers.append("infrastructure/core/config_original.yaml: missing")
+    elif original_config_path.read_text() != _base_text(
+        revision,
+        "infrastructure/core/config.yaml",
+    ):
+        blockers.append(
+            "infrastructure/core/config_original.yaml: differs from pinned original config"
+        )
+
+    if not extension_config_path.exists():
+        blockers.append("infrastructure/core/config_extension.yaml: missing")
+    if blockers:
+        return blockers
+
+    from scripts.build_merged_config import load_yaml, merge_config
+
+    try:
+        expected = merge_config(
+            load_yaml(original_config_path),
+            load_yaml(extension_config_path),
+        )
+    except Exception as exc:
+        return [f"infrastructure/core/config_extension.yaml: invalid overlay ({exc})"]
+
+    current = yaml.safe_load(merged_config_path.read_text())
+    if current != expected:
+        blockers.append(
+            "infrastructure/core/config.yaml: differs from config_original + config_extension"
+        )
+    return blockers
+
+
 def original_preservation_blockers() -> list[str]:
     """Return all blockers for the original-course preservation contract."""
 
@@ -255,6 +303,7 @@ def original_preservation_blockers() -> list[str]:
         + original_chapter_file_blockers(revision)
         + config_append_only_blockers(revision)
         + requirements_split_blockers(revision)
+        + split_config_blockers(revision)
     )
 
 

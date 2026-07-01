@@ -23,7 +23,10 @@ HOSTED_CPU_PYTEST_TARGETS = [
     "tests/test_hard_exercise_ladder_audit.py",
     "tests/test_report_evidence_contract_audit.py",
     "tests/test_extension_artifact_hygiene.py",
+    "tests/test_no_minified_files_audit.py",
     "tests/test_extension_verification_assets.py",
+    "tests/test_build_merged_config.py",
+    "tests/test_arena_style_depth_audit.py",
     "tests/test_strict_completion_audit.py",
 ]
 
@@ -45,12 +48,14 @@ def run_whitespace_gate() -> None:
 def run_hosted_cpu() -> None:
     run_whitespace_gate()
     run([sys.executable, "-m", "pytest", "-q", *HOSTED_CPU_PYTEST_TARGETS])
+    run(python_command("scripts/build_merged_config.py", "--check"))
     run(python_command("scripts/audit_original_arena_preservation.py"))
     run(python_command("scripts/audit_course_surface.py"))
     run(python_command("scripts/audit_arena_style_depth.py"))
     run(python_command("scripts/audit_hard_exercise_ladders.py"))
     run(python_command("scripts/audit_report_evidence_contracts.py"))
     run(python_command("scripts/audit_extension_artifact_hygiene.py"))
+    run(python_command("scripts/audit_no_minified_files.py"))
     run(
         python_command(
             "scripts/audit_gpu_verification_reports.py",
