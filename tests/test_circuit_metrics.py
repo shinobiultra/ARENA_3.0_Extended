@@ -30,6 +30,17 @@ def test_acdc_pruning_report_keeps_edges_above_threshold():
     assert report.num_kept == 2
 
 
+def test_acdc_pruning_report_rejects_invalid_inputs():
+    with pytest.raises(ValueError, match="nonempty"):
+        acdc_pruning_report(t.empty(0), [], threshold=0.5)
+    with pytest.raises(ValueError, match="edge_names"):
+        acdc_pruning_report(t.tensor([0.9]), [""], threshold=0.5)
+    with pytest.raises(ValueError, match="finite"):
+        acdc_pruning_report(t.tensor([float("nan")]), ["name-mover"], threshold=0.5)
+    with pytest.raises(ValueError, match="finite"):
+        acdc_pruning_report(t.tensor([0.9]), ["name-mover"], threshold=float("nan"))
+
+
 def test_circuit_faithfulness_report_measures_preserved_fraction():
     report = circuit_faithfulness_report(
         full_metric=3.0,
@@ -40,6 +51,34 @@ def test_circuit_faithfulness_report_measures_preserved_fraction():
 
     assert report.preserved_fraction == pytest.approx(0.8)
     assert report.passes_faithfulness
+
+
+def test_circuit_metric_reports_reject_invalid_thresholds():
+    with pytest.raises(ValueError, match="nonnegative"):
+        circuit_faithfulness_report(
+            full_metric=3.0,
+            corrupt_metric=-1.0,
+            circuit_metric=2.2,
+            min_preserved_fraction=-0.1,
+        )
+    with pytest.raises(ValueError, match="finite"):
+        circuit_minimality_report(
+            circuit_metric=2.2,
+            ablated_metric=0.5,
+            min_metric_damage=float("nan"),
+        )
+    with pytest.raises(ValueError, match="nonnegative"):
+        circuit_completeness_report(
+            circuit_metric=2.2,
+            expanded_metric=2.35,
+            max_omitted_node_gain=-0.1,
+        )
+    with pytest.raises(ValueError, match="finite"):
+        random_circuit_baseline_report(
+            circuit_metric=2.2,
+            random_metric=float("inf"),
+            min_margin=1.0,
+        )
 
 
 def test_circuit_minimality_report_requires_damage_from_ablation():
@@ -94,6 +133,21 @@ def test_ood_template_report_requires_every_template_to_pass():
     assert report.passes_ood
 
 
+def test_ood_template_report_rejects_degenerate_inputs():
+    logits = t.tensor([[2.0, 0.0], [0.0, 2.0]])
+    answer_ids = t.tensor([0, 1])
+    template_ids = t.tensor([0, 1])
+
+    with pytest.raises(ValueError, match="between 0 and 1"):
+        ood_template_report(logits, answer_ids, template_ids, min_accuracy=1.2)
+    with pytest.raises(ValueError, match="valid vocabulary"):
+        ood_template_report(logits, t.tensor([0, 2]), template_ids)
+    bad_logits = logits.clone()
+    bad_logits[0, 0] = float("inf")
+    with pytest.raises(ValueError, match="finite"):
+        ood_template_report(bad_logits, answer_ids, template_ids)
+
+
 def test_circuit_method_comparison_report_compares_approximate_methods_to_exact():
     exact = t.tensor([0.95, 0.8, 0.15, 0.05])
     eap_ig = t.tensor([0.9, 0.7, 0.2, 0.1])
@@ -118,3 +172,26 @@ def test_circuit_method_comparison_report_compares_approximate_methods_to_exact(
     assert report.circuit_sizes == {"exact": 2, "eap_ig": 2, "weak_eap": 2}
     assert report.best_matching_method == "eap_ig"
     assert not report.passes_comparison
+
+
+def test_circuit_method_comparison_report_rejects_bad_inputs():
+    exact = t.tensor([0.95, 0.8, 0.15, 0.05])
+    eap_ig = t.tensor([0.9, 0.7, 0.2, 0.1])
+    names = ["name-mover", "backup-name-mover", "mlp-noise", "wrong-position"]
+
+    with pytest.raises(ValueError, match="top_k"):
+        circuit_method_comparison_report(exact, {"eap_ig": eap_ig}, names, top_k=0)
+    with pytest.raises(ValueError, match="between 0 and 1"):
+        circuit_method_comparison_report(
+            exact,
+            {"eap_ig": eap_ig},
+            names,
+            top_k=2,
+            min_topk_overlap=1.2,
+        )
+    bad_exact = exact.clone()
+    bad_exact[0] = float("nan")
+    with pytest.raises(ValueError, match="finite"):
+        circuit_method_comparison_report(bad_exact, {"eap_ig": eap_ig}, names, top_k=2)
+    with pytest.raises(ValueError, match="match exact_scores shape"):
+        circuit_method_comparison_report(exact, {"eap_ig": t.empty(0)}, names, top_k=2)

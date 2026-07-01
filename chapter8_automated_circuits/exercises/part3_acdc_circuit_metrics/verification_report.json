@@ -45,9 +45,10 @@
       "sequence_length": 6,
       "target_position": 5,
       "target_token": " floor",
-      "template_count": 4,
+      "template_count": 3,
       "tests_passed": true,
-      "tokenizer_revision": "0f6671571a20be9756b9991d978047c03b75e749"
+      "tokenizer_revision": "0f6671571a20be9756b9991d978047c03b75e749",
+      "top_omitted_position_min": 0
     }
   },
   "claim_scope": "GT-1 circuit-metric preflight: reusable toy ACDC pruning, faithfulness, minimality, completeness, random-baseline, and OOD-template contracts are kept for learner exercises, then a pinned TransformerLens gelu-1l checkpoint is loaded on CUDA. The report uses exact residual-stream patch scores to prune a position circuit, requires the final residual position to be the only kept edge, verifies faithfulness, minimality, completeness, and a same-size wrong-position baseline on the primary prompt pair, and checks the same final-position localization on held-out safe prompt templates. This is a mechanics preflight, not a full ACDC IOI or greater-than circuit discovery replication.",
@@ -59,18 +60,16 @@
     },
     {
       "heldout_clean_prompts": [
-        "The cat sat on the",
         "To make tea, boil the",
         "The recipe calls for sugar and",
         "The chef cooked a"
       ],
       "heldout_corrupt_prompts": [
-        "The bird flew over the",
         "To make bread, bake the",
         "The recipe calls for salt and",
         "The teacher taught a"
       ],
-      "heldout_pair_count": 4,
+      "heldout_pair_count": 3,
       "id": "course_safe_clean_corrupt_position_circuit_prompts_v1",
       "primary_clean_prompt": "The cat sat on the",
       "primary_corrupt_prompt": "The bird flew over the",
@@ -79,9 +78,9 @@
       "tokenizer": "NeelNanda/gpt-neox-tokenizer-digits"
     }
   ],
-  "date_run": "2026-07-01T06:35:17+00:00",
+  "date_run": "2026-07-01T14:20:52+00:00",
   "evidence_level": "toy_circuit_metric_contract_plus_pinned_transformerlens_position_circuit_preflight",
-  "git_commit": "3f277125",
+  "git_commit": "e017f7e8",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-1",
   "known_failures": [],
@@ -123,7 +122,9 @@
         "template_recoveries",
         "template_target_positions",
         "tokenizer_id",
-        "tokenizer_revision"
+        "tokenizer_revision",
+        "top_omitted_metric",
+        "top_omitted_position"
       ],
       "uses_cuda": true
     },
@@ -163,7 +164,7 @@
         0.0,
         1.0
       ],
-      "peak_vram_gb": 0.26613473892211914,
+      "peak_vram_gb": 0.23518753051757812,
       "preflight_passed": true,
       "preserved_fraction": 1.0,
       "random_baseline_margin": 6.27708625793457,
@@ -171,14 +172,12 @@
       "target_position": 5,
       "target_token": " floor",
       "template_best_positions": [
-        5,
         6,
         6,
         4
       ],
-      "template_count": 4,
+      "template_count": 3,
       "template_random_recoveries": [
-        0.0,
         0.0,
         0.0,
         0.0
@@ -186,17 +185,17 @@
       "template_recoveries": [
         1.0,
         1.0,
-        1.0,
         1.0
       ],
       "template_target_positions": [
-        5,
         6,
         6,
         4
       ],
       "tokenizer_id": "NeelNanda/gpt-neox-tokenizer-digits",
       "tokenizer_revision": "0f6671571a20be9756b9991d978047c03b75e749",
+      "top_omitted_metric": -3.7094573974609375,
+      "top_omitted_position": 0,
       "torch_version": "2.12.1+cu132",
       "within_vram_budget": true
     },
@@ -302,11 +301,16 @@
   "ood_tests": {
     "declared": "required_where_applicable"
   },
-  "peak_vram_gb": 0.26613473892211914,
+  "peak_vram_gb": 0.23518753051757812,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "ce9c8e268e5d964dac1ebfc9b069989e2d512361b4c7229d79f4c92006387c77",
+    "combined_sha256": "c632b0c66c58e310bdcd73aaaf1c8a546649823dccd5b57f0bb34a576f3387a0",
     "files": [
+      {
+        "path": "arena_ext/circuit_metrics.py",
+        "sha256": "db29beca4842bb20577655a2e6e7c6b2f74ebe299764a679c0bfc316d5703a55",
+        "size_bytes": 12113
+      },
       {
         "path": "arena_ext/verification.py",
         "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
@@ -314,13 +318,13 @@
       },
       {
         "path": "chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/8.3_ACDC_and_Circuit_Metrics_exercises.ipynb",
-        "sha256": "385f20bc60218186cedcb87f90a020c06654f7ed6774ee32d670d16e39702fb4",
-        "size_bytes": 11447
+        "sha256": "33cd8edd880fa734c79753efbf2c0c5b29ee07de840b6e7cb30ae72d55fecdda",
+        "size_bytes": 25097
       },
       {
         "path": "chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/8.3_ACDC_and_Circuit_Metrics_solutions.ipynb",
-        "sha256": "1925744a5e343df0e9d2496a3a937e0175c9cf4ad6ca5f1b30769844f91f7476",
-        "size_bytes": 4459
+        "sha256": "5ad868d4b18c9cd1bb0dea4af1e272e41e2eb9e34358a96e39b7e48fe3bd242c",
+        "size_bytes": 15181
       },
       {
         "path": "chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/README.md",
@@ -329,8 +333,8 @@
       },
       {
         "path": "chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/artifacts.lock.yml",
-        "sha256": "875d4af42f6bf2a0ca07663028dc0e096fab533fd5cbad62054b70db99ef9149",
-        "size_bytes": 3943
+        "sha256": "921ca56a0bebc14535dd0f65824accd0363f70995c33dcea42b9994784ae6a08",
+        "size_bytes": 3972
       },
       {
         "path": "chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/expected_outputs/README.md",
@@ -349,13 +353,13 @@
       },
       {
         "path": "chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/solutions.py",
-        "sha256": "f9792d66bfa98808c4994908b4cce539a97ce01fd96dbb61f69a272829b43975",
-        "size_bytes": 23575
+        "sha256": "85de36db34532e53a0b4647e1409bd37f75628573822a0514b66ca7138f788ae",
+        "size_bytes": 28301
       },
       {
         "path": "chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/tests.py",
-        "sha256": "54068dd43893194bcfed14ddac1960f9212f3b2712d6227e9c5d6dada7d2a21e",
-        "size_bytes": 14043
+        "sha256": "1768a29a785c38478ceb240d6ae4d148b20c5d5c995356577104f836885840af",
+        "size_bytes": 23132
       },
       {
         "path": "chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/utils.py",
@@ -369,8 +373,8 @@
       },
       {
         "path": "chapter8_automated_circuits/instructions/pages/03_[8.3]_ACDC_and_Circuit_Metrics.md",
-        "sha256": "871149cdc8f672bb36caec2168ef6bd71f05791b0fc381d3e958496fd27ee328",
-        "size_bytes": 19063
+        "sha256": "33762dd2f4f2621b1c2ae8233e48a52cacb6f82c0a0eb26874bec372bc2ebb04",
+        "size_bytes": 30915
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
@@ -385,5 +389,5 @@
     "The real-model path uses safe generic prompts and reads only next-token logits from a small public TransformerLens checkpoint. It does not use unsafe prompts, gated weights, or generated completions."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 2.087666
+  "wall_clock_seconds": 9.338549
 }

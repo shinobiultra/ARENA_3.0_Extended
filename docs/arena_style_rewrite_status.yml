@@ -78,9 +78,9 @@ sections:
     page: chapter8_automated_circuits/instructions/pages/02_[8.2]_Attribution_Patching_and_EAP.md
     notes: ARENA-style rewrite with attribution/EAP validation diagrams, exact-vs-approx patching progression, correlation/top-k/runtime/false-negative contracts, help/interpretation dropdowns, signature result, limitations, and paired notebook surfaces.
   '8.3':
-    status: prototype
+    status: course_ready
     page: chapter8_automated_circuits/instructions/pages/03_[8.3]_ACDC_and_Circuit_Metrics.md
-    notes: Prototype scaffold retained for implementation evidence; requires ARENA-style rewrite before course-ready release.
+    notes: ARENA-style rewrite with ACDC/circuit-metric validation diagrams, patch-score/pruning/faithfulness/minimality/completeness/OOD progression, help/interpretation dropdowns, signature result, limitations, and paired notebook surfaces.
   '8.4':
     status: prototype
     page: chapter8_automated_circuits/instructions/pages/04_[8.4]_Circuit_Tracing_with_Attribution_Graphs.md

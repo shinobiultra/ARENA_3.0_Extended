@@ -45,14 +45,12 @@ datasets:
   seed: 0
   primary_clean_prompt: The cat sat on the
   primary_corrupt_prompt: The bird flew over the
-  heldout_pair_count: 4
+  heldout_pair_count: 3
   heldout_clean_prompts:
-  - The cat sat on the
   - To make tea, boil the
   - The recipe calls for sugar and
   - The chef cooked a
   heldout_corrupt_prompts:
-  - The bird flew over the
   - To make bread, bake the
   - The recipe calls for salt and
   - The teacher taught a
@@ -83,10 +81,11 @@ expected_metrics:
   passes_ood: true
   preserved_fraction_min: 0.99
   minimality_metric_damage_min: 1.0
+  top_omitted_position_min: 0
   omitted_node_gain_max: 1.0e-05
   random_baseline_margin_min: 1.0
   circuit_beats_random: true
-  template_count: 4
+  template_count: 3
   peak_vram_gb_max: 1.0
 controls:
 - baseline_or_reference_check
@@ -102,6 +101,8 @@ controls:
 - top_omitted_position_completeness_check
 - heldout_prompt_template_final_position_localization
 - full_acdc_ioi_replication_not_claimed
+freshness_inputs:
+- arena_ext/circuit_metrics.py
 safety_notes:
 - No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.
 - The real-model path uses safe generic prompts and reads only next-token logits from
