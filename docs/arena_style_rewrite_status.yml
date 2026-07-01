@@ -42,9 +42,9 @@ sections:
     page: chapter6_sparse_feature_methods/instructions/pages/02_[6.2]_Gemma_Scope_Deep_Dive.md
     notes: ARENA-style rewrite with Gemma Scope validation ladder diagram, metadata/score/AUC/delta/ablation/steering/DLA progression, help/interpretation dropdowns, signature result, limitations, and paired notebook surfaces.
   '6.3':
-    status: prototype
+    status: course_ready
     page: chapter6_sparse_feature_methods/instructions/pages/03_[6.3]_Transcoders_and_Attribution_Graphs.md
-    notes: Prototype scaffold retained for implementation evidence; requires ARENA-style rewrite before course-ready release.
+    notes: ARENA-style rewrite with transcoder/attribution validation ladder diagram, replacement/KL/contribution/graph-control progression, help/interpretation dropdowns, signature result, limitations, and paired notebook surfaces.
   '6.4':
     status: prototype
     page: chapter6_sparse_feature_methods/instructions/pages/04_[6.4]_Crosscoders_and_Model_Diffing.md
