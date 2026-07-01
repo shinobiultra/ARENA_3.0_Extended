@@ -111,7 +111,7 @@ hard_exercises:
   remaining_release_evidence: ''
 - section: '5.5'
   notebook_id: 5_5_diffusion_language_models
-  title: Diffusion Language Models
+  title: Toy Discrete Diffusion Language Models and Local DiffusionGemma Proof
   gt_tier: GT-0
   difficulty: '3'
   importance: '4'

@@ -220,7 +220,7 @@ chapters:
       streamlit_description_short: Probe and intervene on synthetic state-tracking representations.
     - id: 5_diffusion_language_models
       number: '5.5'
-      title: Diffusion Language Models
+      title: Toy Discrete Diffusion Language Models and Local DiffusionGemma Proof
       exercise_dir: part5_diffusion_language_models
       page_file: 05_[5.5]_Diffusion_Language_Models.md
       header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-05.png

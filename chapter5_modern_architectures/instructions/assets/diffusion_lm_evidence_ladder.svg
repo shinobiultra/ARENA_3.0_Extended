@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="360" viewBox="0 0 920 360" role="img" aria-labelledby="title desc">
+  <title id="title">Discrete diffusion language model evidence ladder</title>
+  <desc id="desc">A left-to-right ladder from clean tokens through masking, denoising, controls, tiny CUDA training, and a scoped DiffusionGemma proof.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f7f7f2; }
+      .panel { fill: #ffffff; stroke: #222222; stroke-width: 2; rx: 8; }
+      .soft { fill: #eef6ff; stroke: #1f5f8b; stroke-width: 2; rx: 8; }
+      .warn { fill: #fff1dd; stroke: #a15d00; stroke-width: 2; rx: 8; }
+      .good { fill: #ecf7ef; stroke: #24733a; stroke-width: 2; rx: 8; }
+      .text { font: 16px sans-serif; fill: #111111; }
+      .small { font: 13px sans-serif; fill: #333333; }
+      .tiny { font: 12px sans-serif; fill: #444444; }
+      .mono { font: 13px monospace; fill: #111111; }
+      .arrow { stroke: #222222; stroke-width: 2.4; marker-end: url(#arrowhead); fill: none; }
+      .mask { fill: #222222; }
+      .tok { fill: #ffffff; stroke: #111111; stroke-width: 1.5; rx: 5; }
+    </style>
+    <marker id="arrowhead" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <polygon points="0 0, 9 3.5, 0 7" fill="#222222" />
+    </marker>
+  </defs>
+  <rect class="bg" x="0" y="0" width="920" height="360" />
+
+  <text class="text" x="34" y="38">Evidence ladder for [5.5] Diffusion Language Models</text>
+  <text class="small" x="34" y="61">A report is not the lesson: students should see noising, denoising, controls, and the exact released-checkpoint boundary.</text>
+
+  <rect class="panel" x="36" y="90" width="155" height="92" />
+  <text class="text" x="55" y="120">Clean tokens</text>
+  <rect class="tok" x="58" y="140" width="24" height="24" />
+  <rect class="tok" x="88" y="140" width="24" height="24" />
+  <rect class="tok" x="118" y="140" width="24" height="24" />
+  <rect class="tok" x="148" y="140" width="24" height="24" />
+  <text class="mono" x="63" y="157">a</text>
+  <text class="mono" x="93" y="157">b</text>
+  <text class="mono" x="123" y="157">a</text>
+  <text class="mono" x="153" y="157">b</text>
+
+  <path class="arrow" d="M198 136 H245" />
+  <rect class="soft" x="252" y="90" width="155" height="92" />
+  <text class="text" x="275" y="120">Forward noise</text>
+  <rect class="tok" x="274" y="140" width="24" height="24" />
+  <rect class="tok mask" x="304" y="140" width="24" height="24" />
+  <rect class="tok" x="334" y="140" width="24" height="24" />
+  <rect class="tok mask" x="364" y="140" width="24" height="24" />
+  <text class="mono" x="279" y="157">a</text>
+  <text class="mono" x="309" y="157" fill="#ffffff">M</text>
+  <text class="mono" x="339" y="157">a</text>
+  <text class="mono" x="369" y="157" fill="#ffffff">M</text>
+
+  <path class="arrow" d="M414 136 H461" />
+  <rect class="soft" x="468" y="90" width="170" height="92" />
+  <text class="text" x="492" y="120">Iterative denoise</text>
+  <text class="small" x="493" y="147">confidence remasking</text>
+  <text class="small" x="493" y="166">entropy + commitment</text>
+
+  <path class="arrow" d="M646 136 H693" />
+  <rect class="good" x="700" y="90" width="178" height="92" />
+  <text class="text" x="724" y="120">Tiny CUDA proof</text>
+  <text class="small" x="724" y="147">held-out accuracy</text>
+  <text class="small" x="724" y="166">shuffled-label failure</text>
+
+  <rect class="warn" x="75" y="235" width="350" height="82" />
+  <text class="text" x="100" y="265">Negative controls are part of the object</text>
+  <text class="small" x="100" y="290">Uniform remasking and shuffled labels should not explain the result.</text>
+
+  <rect class="warn" x="496" y="235" width="350" height="82" />
+  <text class="text" x="522" y="265">Released checkpoint boundary</text>
+  <text class="small" x="522" y="290">NVFP4 generation proof is real; diffusion-time interpretability is not yet claimed.</text>
+
+  <path class="arrow" d="M250 226 V189" />
+  <path class="arrow" d="M672 226 V189" />
+</svg>

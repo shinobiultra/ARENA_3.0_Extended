@@ -26,9 +26,9 @@ sections:
     page: chapter5_modern_architectures/instructions/pages/04_[5.4]_Mamba_State_Tracking.md
     notes: ARENA-style rewrite with state-tracking ladder diagram, probe/intervention/model-organism progression, help/interpretation dropdowns, signature result, limitations, and paired notebook surfaces.
   '5.5':
-    status: prototype
+    status: course_ready
     page: chapter5_modern_architectures/instructions/pages/05_[5.5]_Diffusion_Language_Models.md
-    notes: Prototype scaffold retained for implementation evidence; requires ARENA-style rewrite before course-ready release.
+    notes: ARENA-style rewrite with diffusion evidence-ladder diagram, noising/loss/remasking/sampler progression, help/interpretation dropdowns, signature result, limitations, and paired notebook surfaces.
   '5.6':
     status: prototype
     page: chapter5_modern_architectures/instructions/pages/06_[5.6]_Multimodal_Embedding_and_Function_Calling_Models.md

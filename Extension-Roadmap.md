@@ -7,10 +7,12 @@ ARENA chapters remain the canonical base. Extension material must earn
 before it should be treated as part of the finished student-facing course.
 
 The current polished sections are **[5.1] Gemma from Scratch**, **[5.2]
-Gemma Scope and Feature Steering**, **[5.3] Mamba from Scratch**, and **[5.4]
-Mamba State Tracking**. They now have ARENA-style learner pages, local diagrams,
-help/interpretation dropdowns, expected-output blocks, paired exercise/solution
-notebooks, CUDA-backed signature result tables, and explicit claim boundaries.
+Gemma Scope and Feature Steering**, **[5.3] Mamba from Scratch**, **[5.4]
+Mamba State Tracking**, and **[5.5] Toy Discrete Diffusion Language Models and
+Local DiffusionGemma Proof**. They now have ARENA-style learner pages, local
+diagrams, help/interpretation dropdowns, expected-output blocks, paired
+exercise/solution notebooks, CUDA-backed signature result tables, and explicit
+claim boundaries.
 The other extension sections are prototype scaffolds: useful
 implementation and verification evidence, but still requiring the
 original-ARENA rewrite pass described in `guidance_2-0.md`.

@@ -1,6 +1,6 @@
 notebook_id: 5_5_diffusion_language_models
 section: '5.5'
-title: Diffusion Language Models
+title: Toy Discrete Diffusion Language Models and Local DiffusionGemma Proof
 exercise_metadata:
   EXERCISE_ID: 5_5_diffusion_language_models
   GT_TIER: GT-0

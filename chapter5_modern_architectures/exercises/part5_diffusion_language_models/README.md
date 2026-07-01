@@ -1,4 +1,4 @@
-# [5.5] Diffusion Language Models Verification Assets
+# [5.5] Toy Discrete Diffusion Language Models and Local DiffusionGemma Proof Verification Assets
 
 Generated support files for the roadmap verification contract.
 

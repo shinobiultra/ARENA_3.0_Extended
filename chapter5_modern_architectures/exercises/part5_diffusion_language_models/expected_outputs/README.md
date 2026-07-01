@@ -1,4 +1,4 @@
-# [5.5] Diffusion Language Models Expected Outputs
+# [5.5] Toy Discrete Diffusion Language Models and Local DiffusionGemma Proof Expected Outputs
 
 This directory contains frozen fixtures for the learner-facing notebook contract. These fixtures are intentionally small where possible: they protect visible exercise behavior. Real-model evidence, when claimed by a section, is pinned in `artifacts.lock.yml` and measured in `verification_report.json`.
 

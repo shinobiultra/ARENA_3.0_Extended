@@ -92,9 +92,9 @@
       "vocab_size": 11
     }
   ],
-  "date_run": "2026-07-01T09:07:11+00:00",
+  "date_run": "2026-07-01T09:46:27+00:00",
   "evidence_level": "toy_diffusion_contract_plus_cuda_trained_conditional_diffusion_lm_and_diffusiongemma_readiness_preflight",
-  "git_commit": "acd346eb",
+  "git_commit": "a599d793",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-0",
   "known_failures": [],
@@ -409,7 +409,7 @@
   "peak_vram_gb": 0.07370853424072266,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "61cd966dae52c4dc4a0d7b29bee6e106c554e7fe76a74a1e6ca3c8abe42e79a7",
+    "combined_sha256": "8da04ea6bfff691ed84ddb15ac9cb159399957ccfe7d65a40513aa984e98da34",
     "files": [
       {
         "path": "arena_ext/diffusion_lm.py",
@@ -428,23 +428,23 @@
       },
       {
         "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/5.5_Diffusion_Language_Models_exercises.ipynb",
-        "sha256": "e683a768d997959e458e0e4aafd60f56cb252ca81665e855ef600e0376c2d32f",
-        "size_bytes": 14910
+        "sha256": "51aa5fabdbc2ee4529a640aa382646a7ccd11342124cff250c1f8c38c6d6fc70",
+        "size_bytes": 26560
       },
       {
         "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/5.5_Diffusion_Language_Models_solutions.ipynb",
-        "sha256": "57d5768b293239c60200b3f473baf00fca6c3f4546513f921eefa6292a2c8ecb",
-        "size_bytes": 3948
+        "sha256": "5198c1517ee31568f3873dd75ca2867b0b7d182c5329e4b402422923a31f8606",
+        "size_bytes": 8773
       },
       {
         "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/README.md",
-        "sha256": "edcccda03868f477aa1dde88045324aec1936b6c764281f7d91fe9c2a750e3a9",
-        "size_bytes": 2439
+        "sha256": "6af67899d3ee0251dab150fb8abb2c73a9e09d038aaa5291b58c884f13861f09",
+        "size_bytes": 2483
       },
       {
         "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/artifacts.lock.yml",
-        "sha256": "43cd68e6e36f8953df9956b1484c6cea4ecfa7ea7c7964fd0a4c356a7a5b2a5f",
-        "size_bytes": 6012
+        "sha256": "74c9603ffb7fb66a5315fda63ba84dcf9ea25c54580c54a937e4a8129b36de4d",
+        "size_bytes": 6056
       },
       {
         "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/artifacts/diffusiongemma_vllm_probe.json",
@@ -453,8 +453,8 @@
       },
       {
         "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/expected_outputs/README.md",
-        "sha256": "f5e37fd6958f57b94d45a5513d2da0a171350d8cd04d2e8df0127a77172e9d4a",
-        "size_bytes": 1907
+        "sha256": "28295a1a60c61a017cadaf3a6cbae8057f7d9fc3d84c35a9b844504ba68d6e50",
+        "size_bytes": 1951
       },
       {
         "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/expected_outputs/reference_metrics.json",
@@ -488,8 +488,8 @@
       },
       {
         "path": "chapter5_modern_architectures/instructions/pages/05_[5.5]_Diffusion_Language_Models.md",
-        "sha256": "7287006e94f9fe723febcb918e6a55cdba0a233b7d8aca56cbaf779d08d968ac",
-        "size_bytes": 22860
+        "sha256": "f82ce9b1f071b50a8f8faf57e61d03e13beaf32293f3a13456716415748da639",
+        "size_bytes": 28201
       },
       {
         "path": "scripts/run_diffusiongemma_vllm_probe.py",
@@ -509,5 +509,5 @@
     "The trained diffusion LM path uses generated integer-token copy-pair data only. DiffusionGemma readiness checks use public open-weight metadata and exact pinned revisions. The Google BF16 path is deferred for direct 24GB loading, while the NVIDIA NVFP4 claim is limited to the isolated vLLM proof artifact and does not install vLLM into the main torch 2.12/CUDA 13.2 uv environment."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 11.390309
+  "wall_clock_seconds": 15.615987
 }
