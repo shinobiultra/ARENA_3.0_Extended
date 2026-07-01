@@ -66,6 +66,20 @@ class AttributionPathReport:
     reaches_target: bool
 
 
+def _require_finite_tensor(name: str, value: t.Tensor) -> None:
+    if value.numel() == 0:
+        raise ValueError(f"{name} must be non-empty.")
+    if not t.isfinite(value).all():
+        raise ValueError(f"{name} must contain only finite values.")
+
+
+def _require_finite_scalar(name: str, value: float) -> float:
+    numeric = float(value)
+    if not t.isfinite(t.tensor(numeric)):
+        raise ValueError(f"{name} must be finite.")
+    return numeric
+
+
 def build_local_attribution_graph(
     edge_scores: t.Tensor,
     node_names: list[str],
@@ -76,8 +90,15 @@ def build_local_attribution_graph(
 
     if edge_scores.ndim != 2 or edge_scores.shape[0] != edge_scores.shape[1]:
         raise ValueError("edge_scores must be a square matrix.")
+    _require_finite_tensor("edge_scores", edge_scores)
     if edge_scores.shape[0] != len(node_names):
         raise ValueError("edge_scores and node_names must align.")
+    if not node_names:
+        raise ValueError("node_names must be non-empty.")
+    if any(not name.strip() for name in node_names):
+        raise ValueError("node_names must not contain blank names.")
+    if len(set(node_names)) != len(node_names):
+        raise ValueError("node_names must be unique.")
     if top_k <= 0:
         raise ValueError("top_k must be positive.")
 
@@ -113,6 +134,15 @@ def graph_metric_report(
 ) -> GraphMetricReport:
     """Check how much of a target metric an attribution graph explains."""
 
+    full_metric = _require_finite_scalar("full_metric", full_metric)
+    corrupt_metric = _require_finite_scalar("corrupt_metric", corrupt_metric)
+    graph_metric = _require_finite_scalar("graph_metric", graph_metric)
+    min_explained_fraction = _require_finite_scalar(
+        "min_explained_fraction",
+        min_explained_fraction,
+    )
+    if min_explained_fraction < 0:
+        raise ValueError("min_explained_fraction must be non-negative.")
     denominator = full_metric - corrupt_metric
     if denominator == 0:
         raise ValueError("full_metric and corrupt_metric must differ.")
@@ -134,6 +164,11 @@ def path_perturbation_report(
 ) -> PathPerturbationReport:
     """Check whether perturbing the top graph path damages the metric."""
 
+    original_metric = _require_finite_scalar("original_metric", original_metric)
+    perturbed_metric = _require_finite_scalar("perturbed_metric", perturbed_metric)
+    min_metric_drop = _require_finite_scalar("min_metric_drop", min_metric_drop)
+    if min_metric_drop < 0:
+        raise ValueError("min_metric_drop must be non-negative.")
     metric_drop = original_metric - perturbed_metric
     return PathPerturbationReport(
         original_metric=original_metric,
@@ -151,6 +186,11 @@ def alternative_graph_baseline_report(
 ) -> AlternativeGraphBaselineReport:
     """Check that an alternative graph baseline performs worse."""
 
+    graph_metric = _require_finite_scalar("graph_metric", graph_metric)
+    alternative_metric = _require_finite_scalar("alternative_metric", alternative_metric)
+    min_margin = _require_finite_scalar("min_margin", min_margin)
+    if min_margin < 0:
+        raise ValueError("min_margin must be non-negative.")
     margin = graph_metric - alternative_metric
     return AlternativeGraphBaselineReport(
         graph_metric=graph_metric,
@@ -168,6 +208,11 @@ def graph_summary_counterfactual_report(
 ) -> GraphSummaryCounterfactualReport:
     """Check whether a written graph summary predicts a counterfactual."""
 
+    baseline_metric = _require_finite_scalar("baseline_metric", baseline_metric)
+    counterfactual_metric = _require_finite_scalar(
+        "counterfactual_metric",
+        counterfactual_metric,
+    )
     observed_delta = counterfactual_metric - baseline_metric
     if predicted_direction == "increase":
         predicts_counterfactual = observed_delta > 0
@@ -197,6 +242,12 @@ def top_attribution_path(
 
     if max_depth <= 0:
         raise ValueError("max_depth must be positive.")
+    if not graph.nodes:
+        raise ValueError("graph must contain at least one node.")
+    if any(not node.strip() for node in graph.nodes):
+        raise ValueError("graph node names must not be blank.")
+    if len(set(graph.nodes)) != len(graph.nodes):
+        raise ValueError("graph node names must be unique.")
     if source not in graph.nodes:
         raise ValueError("source must be a graph node.")
     if target not in graph.nodes:
@@ -204,6 +255,9 @@ def top_attribution_path(
 
     adjacency: dict[str, list[CircuitTraceEdge]] = {node: [] for node in graph.nodes}
     for edge in graph.edges:
+        if edge.source not in graph.nodes or edge.target not in graph.nodes:
+            raise ValueError("graph edges must connect declared graph nodes.")
+        _require_finite_scalar("edge.score", edge.score)
         adjacency.setdefault(edge.source, []).append(edge)
     for edges in adjacency.values():
         edges.sort(key=lambda edge: abs(edge.score), reverse=True)

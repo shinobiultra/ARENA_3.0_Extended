@@ -62,6 +62,29 @@ def test_edge_attribution_scores_forms_position_edge_matrix(
     print("All tests in `test_edge_attribution_scores_forms_position_edge_matrix` passed!")
 
 
+def test_edge_attribution_scores_rejects_degenerate_inputs(
+    edge_attribution_scores: Callable | None = None,
+):
+    edge_attribution_scores = edge_attribution_scores or _solutions().edge_attribution_scores
+    try:
+        edge_attribution_scores(t.empty(0, 2), t.ones(1, 2))
+    except ValueError as exc:
+        assert "non-empty" in str(exc) or "component" in str(exc), (
+            "Empty EAP component tensors should raise a helpful non-empty/component error."
+        )
+    else:
+        raise AssertionError("Empty upstream components should raise ValueError.")
+    try:
+        edge_attribution_scores(t.tensor([[float("nan"), 0.0]]), t.ones(1, 2))
+    except ValueError as exc:
+        assert "finite" in str(exc), (
+            "Non-finite EAP activations should raise a helpful finite-value error."
+        )
+    else:
+        raise AssertionError("Non-finite upstream activations should raise ValueError.")
+    print("All tests in `test_edge_attribution_scores_rejects_degenerate_inputs` passed!")
+
+
 def test_build_local_attribution_graph_keeps_top_directed_edges(
     build_local_attribution_graph: Callable | None = None,
 ):
@@ -102,6 +125,29 @@ def test_build_local_attribution_graph_keeps_top_directed_edges(
     else:
         raise AssertionError("Non-square edge scores should raise ValueError.")
     print("All tests in `test_build_local_attribution_graph_keeps_top_directed_edges` passed!")
+
+
+def test_build_local_attribution_graph_rejects_bad_nodes_or_scores(
+    build_local_attribution_graph: Callable | None = None,
+):
+    build_local_attribution_graph = (
+        build_local_attribution_graph or _solutions().build_local_attribution_graph
+    )
+    bad_scores = t.tensor([[0.0, float("inf")], [0.0, 0.0]])
+    for scores, names, expected in [
+        (bad_scores, ["a", "b"], "finite"),
+        (t.zeros(2, 2), ["a", ""], "blank"),
+        (t.zeros(2, 2), ["a", "a"], "unique"),
+    ]:
+        try:
+            build_local_attribution_graph(scores, names, top_k=1)
+        except ValueError as exc:
+            assert expected in str(exc), (
+                f"Bad graph inputs should raise a helpful error containing {expected!r}."
+            )
+        else:
+            raise AssertionError(f"Expected ValueError containing {expected!r}.")
+    print("All tests in `test_build_local_attribution_graph_rejects_bad_nodes_or_scores` passed!")
 
 
 def test_graph_metric_report_measures_explained_fraction(
@@ -145,6 +191,65 @@ def test_graph_metric_report_measures_explained_fraction(
     else:
         raise AssertionError("Equal full/corrupt metrics should raise ValueError.")
     print("All tests in `test_graph_metric_report_measures_explained_fraction` passed!")
+
+
+def test_metric_reports_reject_nonfinite_or_negative_thresholds(
+    graph_metric_report: Callable | None = None,
+    path_perturbation_report: Callable | None = None,
+    alternative_graph_baseline_report: Callable | None = None,
+):
+    solutions = _solutions()
+    graph_metric_report = graph_metric_report or solutions.graph_metric_report
+    path_perturbation_report = (
+        path_perturbation_report or solutions.path_perturbation_report
+    )
+    alternative_graph_baseline_report = (
+        alternative_graph_baseline_report or solutions.alternative_graph_baseline_report
+    )
+    for call, expected in [
+        (
+            lambda: graph_metric_report(
+                full_metric=float("nan"),
+                corrupt_metric=0.0,
+                graph_metric=1.0,
+            ),
+            "finite",
+        ),
+        (
+            lambda: graph_metric_report(
+                full_metric=2.0,
+                corrupt_metric=0.0,
+                graph_metric=1.0,
+                min_explained_fraction=-0.1,
+            ),
+            "non-negative",
+        ),
+        (
+            lambda: path_perturbation_report(
+                original_metric=2.0,
+                perturbed_metric=1.0,
+                min_metric_drop=-1.0,
+            ),
+            "non-negative",
+        ),
+        (
+            lambda: alternative_graph_baseline_report(
+                graph_metric=2.0,
+                alternative_metric=1.0,
+                min_margin=-1.0,
+            ),
+            "non-negative",
+        ),
+    ]:
+        try:
+            call()
+        except ValueError as exc:
+            assert expected in str(exc), (
+                f"Metric report validators should raise an error containing {expected!r}."
+            )
+        else:
+            raise AssertionError(f"Expected ValueError containing {expected!r}.")
+    print("All tests in `test_metric_reports_reject_nonfinite_or_negative_thresholds` passed!")
 
 
 def test_path_perturbation_and_alternative_baseline_reports(
@@ -302,6 +407,43 @@ def test_top_attribution_path_recovers_multi_hop_chain(
         "The report should explicitly mark missing directed paths."
     )
     print("All tests in `test_top_attribution_path_recovers_multi_hop_chain` passed!")
+
+
+def test_top_attribution_path_rejects_invalid_graphs(
+    top_attribution_path: Callable | None = None,
+):
+    top_attribution_path = top_attribution_path or _solutions().top_attribution_path
+    solutions = _solutions()
+    cases = [
+        (
+            solutions.LocalAttributionGraph(
+                nodes=("a", "b"),
+                edges=(solutions.CircuitTraceEdge("a", "missing", 1.0),),
+            ),
+            "connect",
+        ),
+        (
+            solutions.LocalAttributionGraph(
+                nodes=("a", "b"),
+                edges=(solutions.CircuitTraceEdge("a", "b", float("nan")),),
+            ),
+            "finite",
+        ),
+        (
+            solutions.LocalAttributionGraph(nodes=("a", "a"), edges=()),
+            "unique",
+        ),
+    ]
+    for graph, expected in cases:
+        try:
+            top_attribution_path(graph, source="a", target="b")
+        except ValueError as exc:
+            assert expected in str(exc), (
+                f"Invalid attribution graphs should raise an error containing {expected!r}."
+            )
+        else:
+            raise AssertionError(f"Expected ValueError containing {expected!r}.")
+    print("All tests in `test_top_attribution_path_rejects_invalid_graphs` passed!")
 
 
 def test_notebook_contract(run_smoke_test: Callable | None = None):

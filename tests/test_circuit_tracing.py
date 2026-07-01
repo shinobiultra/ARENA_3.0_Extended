@@ -9,6 +9,8 @@ if TORCH_AVAILABLE:
     import torch as t
 
     from arena_ext.circuit_tracing import (
+        CircuitTraceEdge,
+        LocalAttributionGraph,
         alternative_graph_baseline_report,
         build_local_attribution_graph,
         graph_metric_report,
@@ -38,6 +40,19 @@ def test_build_local_attribution_graph_keeps_top_edges():
     assert [edge.score for edge in graph.edges] == [0.9, 0.8]
 
 
+def test_build_local_attribution_graph_rejects_degenerate_inputs():
+    with pytest.raises(ValueError, match="finite"):
+        build_local_attribution_graph(
+            t.tensor([[0.0, float("inf")], [0.0, 0.0]]),
+            ["a", "b"],
+            top_k=1,
+        )
+    with pytest.raises(ValueError, match="blank"):
+        build_local_attribution_graph(t.zeros(2, 2), ["a", ""], top_k=1)
+    with pytest.raises(ValueError, match="unique"):
+        build_local_attribution_graph(t.zeros(2, 2), ["a", "a"], top_k=1)
+
+
 def test_graph_metric_report_checks_explained_fraction():
     report = graph_metric_report(
         full_metric=3.0,
@@ -48,6 +63,34 @@ def test_graph_metric_report_checks_explained_fraction():
 
     assert report.explained_fraction == pytest.approx(0.8)
     assert report.explains_target_metric
+
+
+def test_metric_reports_reject_bad_scalars_or_thresholds():
+    with pytest.raises(ValueError, match="finite"):
+        graph_metric_report(
+            full_metric=float("nan"),
+            corrupt_metric=0.0,
+            graph_metric=1.0,
+        )
+    with pytest.raises(ValueError, match="non-negative"):
+        graph_metric_report(
+            full_metric=2.0,
+            corrupt_metric=0.0,
+            graph_metric=1.0,
+            min_explained_fraction=-0.1,
+        )
+    with pytest.raises(ValueError, match="non-negative"):
+        path_perturbation_report(
+            original_metric=2.0,
+            perturbed_metric=1.0,
+            min_metric_drop=-1.0,
+        )
+    with pytest.raises(ValueError, match="non-negative"):
+        alternative_graph_baseline_report(
+            graph_metric=2.0,
+            alternative_metric=1.0,
+            min_margin=-1.0,
+        )
 
 
 def test_path_perturbation_report_requires_metric_drop():
@@ -111,6 +154,33 @@ def test_top_attribution_path_recovers_multi_hop_causal_chain():
     )
     assert report.edge_scores == (0.8, 0.9, 0.7)
     assert report.path_score == pytest.approx(0.504)
+
+
+def test_top_attribution_path_rejects_invalid_graphs():
+    with pytest.raises(ValueError, match="connect"):
+        top_attribution_path(
+            LocalAttributionGraph(
+                nodes=("a", "b"),
+                edges=(CircuitTraceEdge("a", "missing", 1.0),),
+            ),
+            source="a",
+            target="b",
+        )
+    with pytest.raises(ValueError, match="finite"):
+        top_attribution_path(
+            LocalAttributionGraph(
+                nodes=("a", "b"),
+                edges=(CircuitTraceEdge("a", "b", float("nan")),),
+            ),
+            source="a",
+            target="b",
+        )
+    with pytest.raises(ValueError, match="unique"):
+        top_attribution_path(
+            LocalAttributionGraph(nodes=("a", "a"), edges=()),
+            source="a",
+            target="a",
+        )
 
 
 def test_top_attribution_path_reports_missing_target_path():

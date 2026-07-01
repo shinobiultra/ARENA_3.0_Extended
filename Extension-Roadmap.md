@@ -17,7 +17,8 @@ Tuned Lens, and Patchscopes**, **[7.2] Feature Verbalizers**,
 **[7.3] Mini Activation Oracles**, **[7.4] Mini Natural Language
 Autoencoders**, **[7.5] Predictive Concept Decoders**, **[8.1]
 Activation Patching Refresher**, **[8.2] Attribution Patching and
-EAP**, and **[8.3] ACDC and Circuit Metrics**.
+EAP**, **[8.3] ACDC and Circuit Metrics**, and **[8.4] Circuit
+Tracing with Attribution Graphs**.
 They now have ARENA-style learner pages, local
 diagrams, help/interpretation dropdowns, expected-output blocks, paired
 exercise/solution notebooks, CUDA-backed signature result tables, and explicit

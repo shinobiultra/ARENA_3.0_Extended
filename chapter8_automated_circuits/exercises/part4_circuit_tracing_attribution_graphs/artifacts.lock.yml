@@ -100,3 +100,5 @@ safety_notes:
 - The real-model path uses safe generic prompts and reads logits and gradients from
   a small public TransformerLens checkpoint. It does not use unsafe prompts, gated
   weights, or generated completions.
+freshness_inputs:
+- arena_ext/circuit_tracing.py

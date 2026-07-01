@@ -87,6 +87,20 @@ class AttributionPathReport:
     reaches_target: bool
 
 
+def _require_finite_tensor(name: str, value: t.Tensor) -> None:
+    if value.numel() == 0:
+        raise ValueError(f"{name} must be non-empty.")
+    if not t.isfinite(value).all():
+        raise ValueError(f"{name} must contain only finite values.")
+
+
+def _require_finite_scalar(name: str, value: float) -> float:
+    numeric = float(value)
+    if not t.isfinite(t.tensor(numeric)):
+        raise ValueError(f"{name} must be finite.")
+    return numeric
+
+
 def answer_logit_diff(
     logits: t.Tensor,
     *,
@@ -95,11 +109,16 @@ def answer_logit_diff(
 ) -> float:
     """Return mean positive-minus-negative logit difference."""
 
+    if logits.ndim == 0 or logits.shape[-1] == 0:
+        raise ValueError("logits must have a non-empty vocabulary dimension.")
+    _require_finite_tensor("logits", logits)
     vocab_size = logits.shape[-1]
     if not 0 <= positive_token_id < vocab_size:
         raise ValueError("positive_token_id is out of range.")
     if not 0 <= negative_token_id < vocab_size:
         raise ValueError("negative_token_id is out of range.")
+    if positive_token_id == negative_token_id:
+        raise ValueError("positive and negative token ids must differ.")
     diff = logits[..., positive_token_id] - logits[..., negative_token_id]
     return diff.float().mean().item()
 
@@ -112,6 +131,10 @@ def edge_attribution_scores(
 
     if upstream_activation_delta.ndim != 2 or downstream_gradients.ndim != 2:
         raise ValueError("inputs must have shape (components, d_model).")
+    _require_finite_tensor("upstream_activation_delta", upstream_activation_delta)
+    _require_finite_tensor("downstream_gradients", downstream_gradients)
+    if upstream_activation_delta.shape[0] == 0 or downstream_gradients.shape[0] == 0:
+        raise ValueError("inputs must include at least one component.")
     if upstream_activation_delta.shape[-1] != downstream_gradients.shape[-1]:
         raise ValueError("upstream and downstream hidden dimensions must match.")
     return upstream_activation_delta.float() @ downstream_gradients.float().T
@@ -127,8 +150,15 @@ def build_local_attribution_graph(
 
     if edge_scores.ndim != 2 or edge_scores.shape[0] != edge_scores.shape[1]:
         raise ValueError("edge_scores must be a square matrix.")
+    _require_finite_tensor("edge_scores", edge_scores)
     if edge_scores.shape[0] != len(node_names):
         raise ValueError("edge_scores and node_names must align.")
+    if not node_names:
+        raise ValueError("node_names must be non-empty.")
+    if any(not name.strip() for name in node_names):
+        raise ValueError("node_names must not contain blank names.")
+    if len(set(node_names)) != len(node_names):
+        raise ValueError("node_names must be unique.")
     if top_k <= 0:
         raise ValueError("top_k must be positive.")
 
@@ -164,6 +194,15 @@ def graph_metric_report(
 ) -> GraphMetricReport:
     """Check how much of a target metric an attribution graph explains."""
 
+    full_metric = _require_finite_scalar("full_metric", full_metric)
+    corrupt_metric = _require_finite_scalar("corrupt_metric", corrupt_metric)
+    graph_metric = _require_finite_scalar("graph_metric", graph_metric)
+    min_explained_fraction = _require_finite_scalar(
+        "min_explained_fraction",
+        min_explained_fraction,
+    )
+    if min_explained_fraction < 0:
+        raise ValueError("min_explained_fraction must be non-negative.")
     denominator = full_metric - corrupt_metric
     if denominator == 0:
         raise ValueError("full_metric and corrupt_metric must differ.")
@@ -185,6 +224,11 @@ def path_perturbation_report(
 ) -> PathPerturbationReport:
     """Check whether perturbing the top graph path damages the metric."""
 
+    original_metric = _require_finite_scalar("original_metric", original_metric)
+    perturbed_metric = _require_finite_scalar("perturbed_metric", perturbed_metric)
+    min_metric_drop = _require_finite_scalar("min_metric_drop", min_metric_drop)
+    if min_metric_drop < 0:
+        raise ValueError("min_metric_drop must be non-negative.")
     metric_drop = original_metric - perturbed_metric
     return PathPerturbationReport(
         original_metric=original_metric,
@@ -202,6 +246,11 @@ def alternative_graph_baseline_report(
 ) -> AlternativeGraphBaselineReport:
     """Check that an alternative graph baseline performs worse."""
 
+    graph_metric = _require_finite_scalar("graph_metric", graph_metric)
+    alternative_metric = _require_finite_scalar("alternative_metric", alternative_metric)
+    min_margin = _require_finite_scalar("min_margin", min_margin)
+    if min_margin < 0:
+        raise ValueError("min_margin must be non-negative.")
     margin = graph_metric - alternative_metric
     return AlternativeGraphBaselineReport(
         graph_metric=graph_metric,
@@ -219,6 +268,11 @@ def graph_summary_counterfactual_report(
 ) -> GraphSummaryCounterfactualReport:
     """Check whether a written graph summary predicts a counterfactual."""
 
+    baseline_metric = _require_finite_scalar("baseline_metric", baseline_metric)
+    counterfactual_metric = _require_finite_scalar(
+        "counterfactual_metric",
+        counterfactual_metric,
+    )
     observed_delta = counterfactual_metric - baseline_metric
     if predicted_direction == "increase":
         predicts_counterfactual = observed_delta > 0
@@ -244,6 +298,12 @@ def top_attribution_path(
 
     if max_depth <= 0:
         raise ValueError("max_depth must be positive.")
+    if not graph.nodes:
+        raise ValueError("graph must contain at least one node.")
+    if any(not node.strip() for node in graph.nodes):
+        raise ValueError("graph node names must not be blank.")
+    if len(set(graph.nodes)) != len(graph.nodes):
+        raise ValueError("graph node names must be unique.")
     if source not in graph.nodes:
         raise ValueError("source must be a graph node.")
     if target not in graph.nodes:
@@ -251,6 +311,9 @@ def top_attribution_path(
 
     adjacency: dict[str, list[CircuitTraceEdge]] = {node: [] for node in graph.nodes}
     for edge in graph.edges:
+        if edge.source not in graph.nodes or edge.target not in graph.nodes:
+            raise ValueError("graph edges must connect declared graph nodes.")
+        _require_finite_scalar("edge.score", edge.score)
         adjacency.setdefault(edge.source, []).append(edge)
     for edges in adjacency.values():
         edges.sort(key=lambda edge: abs(edge.score), reverse=True)
@@ -392,12 +455,19 @@ def _load_gelu1l_model_on_cuda():
     os.environ.setdefault("BNB_CUDA_VERSION", TL_BNB_CUDA_OVERRIDE)
     logging.getLogger("bitsandbytes.cextension").setLevel(logging.ERROR)
     from transformer_lens import HookedTransformer
+    from transformers import AutoTokenizer
+
+    tokenizer = AutoTokenizer.from_pretrained(
+        TL_GELU1L_TOKENIZER_ID,
+        revision=TL_GELU1L_TOKENIZER_REVISION,
+    )
 
     return HookedTransformer.from_pretrained(
         TL_GELU1L_MODEL_NAME,
         device="cuda",
         dtype="float32",
         revision=TL_GELU1L_REVISION,
+        tokenizer=tokenizer,
     )
 
 
@@ -410,6 +480,11 @@ def _patched_metric(
     positive_token_id: int,
     negative_token_id: int,
 ) -> float:
+    sequence_length = corrupt_tokens.shape[1]
+    for position in positions:
+        if not 0 <= position < sequence_length:
+            raise ValueError("patch positions must be valid token positions.")
+
     def patch_hook(activation: t.Tensor, hook) -> t.Tensor:
         patched = activation.clone()
         for position in positions:
@@ -564,6 +639,9 @@ def run_transformerlens_attribution_graph_preflight(max_vram_gb: float = 24.0) -
     )
     return {
         "cuda_available": True,
+        "torch_version": t.__version__,
+        "cuda_version": t.version.cuda,
+        "gpu_total_memory_gb": t.cuda.get_device_properties(0).total_memory / 1024**3,
         "device": t.cuda.get_device_name(0),
         "preflight_passed": preflight_passed,
         "model_name": TL_GELU1L_MODEL_NAME,
