@@ -332,9 +332,9 @@ chapters:
       exercise_dir: part5_predictive_concept_decoders
       page_file: 05_[7.5]_Predictive_Concept_Decoders.md
       header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-14-1.png
-      status: Toy Predictive Concept Decoder validation harness added
-      streamlit_description: Build and verify sparse concept encoders, question-conditioned decoders, PCD-vs-baseline accuracy comparisons, concept sparsity, seed stability, top-concept removal, random-removal controls, and concept naming audits.
-      streamlit_description_short: Build and verify mini PCD sparse-concept controls.
+      status: ARENA-style predictive concept decoder sparse-bottleneck validation section added
+      streamlit_description: Build aligned activation/question rows, sparse concept encoders, explicit concept-question interaction features, trained question-conditioned decoders, PCD-vs-baseline comparisons, question-shuffle controls, concept sparsity and seed stability checks, top-vs-low-margin active removal controls, concept naming audits, and a pinned GELU-1L CUDA sparse-concept PCD preflight.
+      streamlit_description_short: Validate mini PCD sparse-concept bottlenecks with GELU-1L question-conditioned controls.
   chapter8_automated_circuits:
     title: 'Chapter 8: Automated Circuits'
     short_title: Automated Circuits

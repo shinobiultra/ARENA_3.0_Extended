@@ -68,6 +68,32 @@ def test_build_pcd_question_batch_validates_shapes_and_questions(
     )
 
 
+def test_build_pcd_question_batch_rejects_empty_and_bad_question_ids(
+    build_pcd_question_batch: Callable | None = None,
+):
+    build_pcd_question_batch = build_pcd_question_batch or _solutions().build_pcd_question_batch
+    try:
+        build_pcd_question_batch(t.empty(0, 3), t.empty(0, dtype=t.long), t.empty(0, dtype=t.long))
+    except ValueError as exc:
+        assert "at least one example" in str(exc), (
+            "Empty PCD batches should fail before question-id reductions produce invalid results."
+        )
+    else:
+        raise AssertionError("Empty PCD batches should raise ValueError.")
+
+    try:
+        build_pcd_question_batch(t.eye(2), t.tensor([0, 99]), t.tensor([1, 0]))
+    except ValueError as exc:
+        assert "question_texts" in str(exc), (
+            "Out-of-range question ids should mention the question bank they index."
+        )
+    else:
+        raise AssertionError("Out-of-range question ids should raise ValueError.")
+    print(
+        "All tests in `test_build_pcd_question_batch_rejects_empty_and_bad_question_ids` passed!"
+    )
+
+
 def test_sparse_concept_encode_and_sparsity_controls(
     sparse_concept_encode: Callable | None = None,
     concept_sparsity_report: Callable | None = None,
@@ -112,6 +138,38 @@ def test_sparse_concept_encode_and_sparsity_controls(
     else:
         raise AssertionError("top_k=0 should be rejected with ValueError.")
     print("All tests in `test_sparse_concept_encode_and_sparsity_controls` passed!")
+
+
+def test_sparse_concept_encode_and_sparsity_reject_bad_controls(
+    sparse_concept_encode: Callable | None = None,
+    concept_sparsity_report: Callable | None = None,
+):
+    solutions = _solutions()
+    sparse_concept_encode = sparse_concept_encode or solutions.sparse_concept_encode
+    concept_sparsity_report = concept_sparsity_report or solutions.concept_sparsity_report
+    try:
+        sparse_concept_encode(t.empty(0, 3), t.eye(3))
+    except ValueError as exc:
+        assert "nonempty" in str(exc), "Empty activation batches should be rejected."
+    else:
+        raise AssertionError("Empty activation batches should raise ValueError.")
+    try:
+        sparse_concept_encode(t.eye(3), t.eye(3), threshold=-0.1)
+    except ValueError as exc:
+        assert "non-negative" in str(exc), "Negative thresholds should be rejected."
+    else:
+        raise AssertionError("Negative thresholds should raise ValueError.")
+    try:
+        concept_sparsity_report(t.eye(3), max_density=1.5)
+    except ValueError as exc:
+        assert "between 0 and 1" in str(exc), (
+            "Density thresholds should be validated as probabilities."
+        )
+    else:
+        raise AssertionError("Invalid max_density should raise ValueError.")
+    print(
+        "All tests in `test_sparse_concept_encode_and_sparsity_reject_bad_controls` passed!"
+    )
 
 
 def test_question_conditioned_decoder_uses_question_information(
@@ -210,6 +268,37 @@ def test_question_conditioned_decoder_respects_arbitrary_weight_and_bias(
     )
 
 
+def test_question_conditioned_features_and_decoder_reject_bad_shapes(
+    question_conditioned_concept_features: Callable | None = None,
+    question_conditioned_decoder_logits: Callable | None = None,
+):
+    solutions = _solutions()
+    question_conditioned_concept_features = (
+        question_conditioned_concept_features
+        or solutions.question_conditioned_concept_features
+    )
+    question_conditioned_decoder_logits = (
+        question_conditioned_decoder_logits
+        or solutions.question_conditioned_decoder_logits
+    )
+    try:
+        question_conditioned_concept_features(t.eye(2), t.tensor([0, 2]), question_count=2)
+    except ValueError as exc:
+        assert "question_ids" in str(exc), "Out-of-range question ids should fail."
+    else:
+        raise AssertionError("Out-of-range question ids should raise ValueError.")
+
+    try:
+        question_conditioned_decoder_logits(t.eye(2), t.eye(2), t.ones(4))
+    except ValueError as exc:
+        assert "decoder_weight" in str(exc), "Rank-1 decoder weights should be rejected."
+    else:
+        raise AssertionError("Rank-1 decoder weights should raise ValueError.")
+    print(
+        "All tests in `test_question_conditioned_features_and_decoder_reject_bad_shapes` passed!"
+    )
+
+
 def test_trained_question_conditioned_decoder_learns_concept_question_interaction(
     question_conditioned_concept_features: Callable | None = None,
     train_question_conditioned_decoder: Callable | None = None,
@@ -265,6 +354,41 @@ def test_trained_question_conditioned_decoder_learns_concept_question_interactio
     )
     print(
         "All tests in `test_trained_question_conditioned_decoder_learns_concept_question_interaction` passed!"
+    )
+
+
+def test_train_question_conditioned_decoder_rejects_empty_and_misaligned_batches(
+    train_question_conditioned_decoder: Callable | None = None,
+):
+    train_question_conditioned_decoder = (
+        train_question_conditioned_decoder
+        or _solutions().train_question_conditioned_decoder
+    )
+    try:
+        train_question_conditioned_decoder(
+            t.empty(0, 2),
+            t.empty(0, 2),
+            t.empty(0, dtype=t.long),
+        )
+    except ValueError as exc:
+        assert "nonempty" in str(exc), "Empty training batches should fail clearly."
+    else:
+        raise AssertionError("Empty training batches should raise ValueError.")
+
+    try:
+        train_question_conditioned_decoder(
+            t.eye(2),
+            t.eye(3),
+            t.tensor([0, 1]),
+        )
+    except ValueError as exc:
+        assert "same batch size" in str(exc), (
+            "Concept/question batch mismatch should be rejected before training."
+        )
+    else:
+        raise AssertionError("Misaligned concept/question batches should raise ValueError.")
+    print(
+        "All tests in `test_train_question_conditioned_decoder_rejects_empty_and_misaligned_batches` passed!"
     )
 
 
@@ -474,6 +598,46 @@ def test_concept_stability_removal_and_audit_controls(
     )
 
 
+def test_concept_audit_controls_reject_bad_inputs(
+    concept_stability_report: Callable | None = None,
+    concept_removal_report: Callable | None = None,
+    concept_audit_report: Callable | None = None,
+):
+    solutions = _solutions()
+    concept_stability_report = concept_stability_report or solutions.concept_stability_report
+    concept_removal_report = concept_removal_report or solutions.concept_removal_report
+    concept_audit_report = concept_audit_report or solutions.concept_audit_report
+
+    try:
+        concept_stability_report([t.tensor([1.0, 0.0])], min_jaccard=1.5)
+    except ValueError as exc:
+        assert "between 0 and 1" in str(exc), "Jaccard thresholds should be probabilities."
+    else:
+        raise AssertionError("Invalid min_jaccard should raise ValueError.")
+
+    try:
+        concept_removal_report(
+            t.tensor([1.0, 0.0]),
+            t.tensor([0.0, 1.0]),
+            t.tensor([0.5, 0.5]),
+            target_answer_id=5,
+        )
+    except ValueError as exc:
+        assert "out of range" in str(exc), "Bad target answer ids should be rejected."
+    else:
+        raise AssertionError("Out-of-range target_answer_id should raise ValueError.")
+
+    try:
+        concept_audit_report(t.tensor([]), [], ["surface"], top_k=1)
+    except ValueError as exc:
+        assert "nonempty" in str(exc), "Empty concept scores should fail clearly."
+    else:
+        raise AssertionError("Empty concept scores should raise ValueError.")
+    print(
+        "All tests in `test_concept_audit_controls_reject_bad_inputs` passed!"
+    )
+
+
 def test_notebook_contract(run_smoke_test: Callable | None = None):
     if run_smoke_test is None:
         run_smoke_test = _solutions().run_smoke_test
@@ -486,6 +650,15 @@ def test_notebook_contract(run_smoke_test: Callable | None = None):
     )
     assert result["decoder"] == [[3.0, 0.0], [0.0, 3.0]], (
         "Notebook contract should expose the question-conditioned decoder logits."
+    )
+    assert result["decoder_training"]["conditioned_shape"] == [4, 4], (
+        "Notebook contract should train on explicit concept-question interaction features."
+    )
+    assert result["decoder_training"]["train_accuracy"] == 1.0, (
+        "Notebook contract should prove the tiny question-conditioned decoder trains."
+    )
+    assert result["decoder_training"]["predictions"] == result["decoder_training"]["answer_ids"], (
+        "Notebook contract should expose the trained decoder predictions."
     )
     assert result["comparison"]["beats_probe"], (
         "Notebook contract should compare the PCD against a probe baseline."

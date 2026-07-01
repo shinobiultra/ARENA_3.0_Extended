@@ -138,9 +138,9 @@
       "train_pcd_row_count": 48
     }
   ],
-  "date_run": "2026-07-01T06:35:10+00:00",
+  "date_run": "2026-07-01T12:16:54+00:00",
   "evidence_level": "toy_pcd_contract_plus_pinned_transformerlens_trained_sparse_concept_decoder_preflight",
-  "git_commit": "3f277125",
+  "git_commit": "3aec7066",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-3",
   "known_failures": [],
@@ -257,7 +257,7 @@
       "pcd_row_count": 32,
       "pcd_seed_count": 3,
       "pcd_seed_min_accuracy": 1.0,
-      "peak_vram_gb": 0.33971214294433594,
+      "peak_vram_gb": 0.30846214294433594,
       "positive_anchor_prompt": "The cat sat on the",
       "positive_token": " floor",
       "preflight_passed": true,
@@ -341,6 +341,26 @@
           3.0
         ]
       ],
+      "decoder_training": {
+        "answer_ids": [
+          1,
+          0,
+          0,
+          1
+        ],
+        "conditioned_shape": [
+          4,
+          4
+        ],
+        "final_loss": 0.0005155664402991533,
+        "predictions": [
+          1,
+          0,
+          0,
+          1
+        ],
+        "train_accuracy": 1.0
+      },
       "removal": {
         "original_answer": 0,
         "random_removal_changed": false,
@@ -426,10 +446,10 @@
   "ood_tests": {
     "declared": "required_where_applicable"
   },
-  "peak_vram_gb": 0.33971214294433594,
+  "peak_vram_gb": 0.30846214294433594,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "2607c1dbbf253ca1ce36dde3b33f62801f7bf985e762b6f5f5454e79566601b3",
+    "combined_sha256": "e27d86d627bd7e4acc43a9c7c926ca2ccc567b044edd27f7ad1076783ee2f9db",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -438,13 +458,13 @@
       },
       {
         "path": "chapter7_activation_to_language/exercises/part5_predictive_concept_decoders/7.5_Predictive_Concept_Decoders_exercises.ipynb",
-        "sha256": "e1814e2e107264a650d3c16fad8b7aaf59e76cb90020eea6e307c5c23ea158bd",
-        "size_bytes": 11360
+        "sha256": "04588ae89e5aab6e6dc44a7bb3d465b0d82ce9775c1af986e2d18618e448046c",
+        "size_bytes": 21325
       },
       {
         "path": "chapter7_activation_to_language/exercises/part5_predictive_concept_decoders/7.5_Predictive_Concept_Decoders_solutions.ipynb",
-        "sha256": "00eb1de9106a0fb0d654b17591e433d7f3e1efefa82cfcd45052d13bb20d860a",
-        "size_bytes": 5696
+        "sha256": "57bbbe4a4627e4af007097c20345cebab33d10327d726e64f5b4f1914f999394",
+        "size_bytes": 11484
       },
       {
         "path": "chapter7_activation_to_language/exercises/part5_predictive_concept_decoders/README.md",
@@ -473,13 +493,13 @@
       },
       {
         "path": "chapter7_activation_to_language/exercises/part5_predictive_concept_decoders/solutions.py",
-        "sha256": "3e1f6dbeb0b49c9053120c5b2ea2d682f1fbfef841e5616ddc1c4962b32ba16e",
-        "size_bytes": 39160
+        "sha256": "2fdc6827a51aa78334f00f99cfc1fca8a97e44d6cf95c20cd88f07c17244054c",
+        "size_bytes": 42100
       },
       {
         "path": "chapter7_activation_to_language/exercises/part5_predictive_concept_decoders/tests.py",
-        "sha256": "e04bdb215aaf6a7400fc26191945996a69a4bd44fd7a899545ba56fa89aecd5a",
-        "size_bytes": 19649
+        "sha256": "1b128ceae2da969382f1bc01a24c19fb3aab6fbd423ba690d412af34b09955e9",
+        "size_bytes": 26629
       },
       {
         "path": "chapter7_activation_to_language/exercises/part5_predictive_concept_decoders/utils.py",
@@ -493,8 +513,8 @@
       },
       {
         "path": "chapter7_activation_to_language/instructions/pages/05_[7.5]_Predictive_Concept_Decoders.md",
-        "sha256": "f4c2425311a37637794fb8da0124a9504fe145bfd83f78e6e88af49bf1859323",
-        "size_bytes": 25732
+        "sha256": "c61039ddf11922fac27ee39ce61cb9285645c01a1b2d31b8a1cea3c8d9d8575c",
+        "size_bytes": 43630
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
@@ -509,5 +529,5 @@
     "The real-model path uses safe generic prompts and cached activations/logits from a small public TransformerLens checkpoint. It does not use unsafe prompts, gated weights, generated completions, adapter training, external API calls, or full Activation Oracle comparisons."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 4.225791
+  "wall_clock_seconds": 6.786952
 }

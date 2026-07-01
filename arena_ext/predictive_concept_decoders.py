@@ -92,6 +92,8 @@ def build_pcd_question_batch(
 
     if activations.ndim != 2:
         raise ValueError("activations must have shape (examples, d_model).")
+    if activations.shape[0] == 0:
+        raise ValueError("activations must contain at least one example.")
     expected_shape = (activations.shape[0],)
     if question_ids.shape != expected_shape:
         raise ValueError("question_ids must have shape (examples,).")
@@ -99,6 +101,10 @@ def build_pcd_question_batch(
         raise ValueError("answer_ids must have shape (examples,).")
     if question_texts is None:
         question_texts = default_pcd_questions()
+    if not question_texts:
+        raise ValueError("question_texts must be nonempty.")
+    if int(question_ids.min().item()) < 0 or int(question_ids.max().item()) >= len(question_texts):
+        raise ValueError("question_ids must index question_texts.")
     return PCDQuestionBatch(
         activations=activations,
         question_ids=question_ids.long(),
@@ -119,8 +125,12 @@ def sparse_concept_encode(
 
     if activations.ndim != 2 or concept_directions.ndim != 2:
         raise ValueError("activations and concept_directions must be rank-2 tensors.")
+    if activations.shape[0] == 0 or concept_directions.shape[1] == 0:
+        raise ValueError("activations and concept_directions must be nonempty.")
     if activations.shape[-1] != concept_directions.shape[0]:
         raise ValueError("activation dimension must match concept directions.")
+    if threshold < 0:
+        raise ValueError("threshold must be non-negative.")
     raw_scores = activations.float() @ concept_directions.float()
     if bias is not None:
         if bias.shape != (concept_directions.shape[1],):
@@ -148,6 +158,8 @@ def question_conditioned_concept_features(
 
     if concepts.ndim != 2:
         raise ValueError("concepts must have shape (examples, n_concepts).")
+    if concepts.shape[0] == 0 or concepts.shape[1] == 0:
+        raise ValueError("concepts must be nonempty.")
     if question_ids.shape != (concepts.shape[0],):
         raise ValueError("question_ids must have shape (examples,).")
     if question_count <= 0:
@@ -176,6 +188,8 @@ def question_conditioned_decoder_logits(
         raise ValueError("concepts and question_embeddings must be rank-2 tensors.")
     if concepts.shape[0] != question_embeddings.shape[0]:
         raise ValueError("concept and question batches must have the same size.")
+    if decoder_weight.ndim != 2:
+        raise ValueError("decoder_weight must be rank-2.")
     decoder_input = t.cat([concepts.float(), question_embeddings.float()], dim=-1)
     if decoder_input.shape[-1] != decoder_weight.shape[0]:
         raise ValueError("decoder_weight rows must match concatenated input width.")
@@ -199,6 +213,12 @@ def train_question_conditioned_decoder(
 ) -> tuple[t.Tensor, t.Tensor, DecoderTrainingReport]:
     """Fit a small question-conditioned linear decoder with cross-entropy."""
 
+    if concepts.ndim != 2 or question_embeddings.ndim != 2:
+        raise ValueError("concepts and question_embeddings must be rank-2 tensors.")
+    if concepts.shape[0] == 0:
+        raise ValueError("training batches must be nonempty.")
+    if concepts.shape[0] != question_embeddings.shape[0]:
+        raise ValueError("concepts and question_embeddings must have the same batch size.")
     if answer_ids.shape != (concepts.shape[0],):
         raise ValueError("answer_ids must have shape (examples,).")
     if steps <= 0:
@@ -284,6 +304,12 @@ def concept_sparsity_report(
 
     if concepts.ndim != 2:
         raise ValueError("concepts must have shape (examples, n_concepts).")
+    if concepts.shape[0] == 0 or concepts.shape[1] == 0:
+        raise ValueError("concepts must be nonempty.")
+    if active_threshold < 0:
+        raise ValueError("active_threshold must be non-negative.")
+    if not 0.0 <= max_density <= 1.0:
+        raise ValueError("max_density must be between 0 and 1.")
     active = concepts.abs() > active_threshold
     mean_l0 = active.sum(dim=-1).float().mean().item()
     density = active.float().mean().item()
@@ -306,6 +332,8 @@ def concept_stability_report(
         raise ValueError("concept_scores_by_seed must be nonempty.")
     if top_k <= 0:
         raise ValueError("top_k must be positive.")
+    if not 0.0 <= min_jaccard <= 1.0:
+        raise ValueError("min_jaccard must be between 0 and 1.")
 
     top_concepts: list[tuple[int, ...]] = []
     for scores in concept_scores_by_seed:
@@ -345,6 +373,8 @@ def concept_removal_report(
         raise ValueError("random_removed_logits must match original_logits.")
     if target_answer_id is None:
         target_answer_id = int(original_logits.argmax().item())
+    if not 0 <= target_answer_id < original_logits.shape[0]:
+        raise ValueError("target_answer_id is out of range.")
 
     original_answer = int(original_logits.argmax().item())
     top_removed_answer = int(top_removed_logits.argmax().item())
@@ -374,6 +404,8 @@ def concept_audit_report(
 
     if top_k <= 0:
         raise ValueError("top_k must be positive.")
+    if concept_scores.numel() == 0:
+        raise ValueError("concept_scores must be nonempty.")
     if concept_scores.numel() != len(concept_names):
         raise ValueError("concept_scores and concept_names must align.")
     if len(expected_cluster_terms) == 0:
