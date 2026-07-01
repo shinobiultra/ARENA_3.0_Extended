@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="280" viewBox="0 0 920 280" role="img" aria-labelledby="title desc">
+  <title id="title">Mini Natural Language Autoencoder validation loop</title>
+  <desc id="desc">A residual activation is encoded to a short phrase, decoded back to an activation, then checked against reconstruction, behavior, latent, and control tests.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#334155"/>
+    </marker>
+    <style>
+      .box { fill: #f8fafc; stroke: #334155; stroke-width: 2; rx: 8; }
+      .accent { fill: #e0f2fe; stroke: #0369a1; }
+      .control { fill: #fef3c7; stroke: #b45309; }
+      .text { font: 600 18px system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #0f172a; }
+      .small { font: 14px system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #334155; }
+      .arrow { stroke: #334155; stroke-width: 2.2; marker-end: url(#arrow); fill: none; }
+    </style>
+  </defs>
+  <rect x="28" y="82" width="150" height="94" class="box"/>
+  <text x="103" y="118" text-anchor="middle" class="text">Residual</text>
+  <text x="103" y="144" text-anchor="middle" class="small">gelu-1l hook</text>
+  <text x="103" y="164" text-anchor="middle" class="small">[examples, 512]</text>
+
+  <path d="M 180 128 H 250" class="arrow"/>
+  <rect x="258" y="62" width="160" height="134" class="box accent"/>
+  <text x="338" y="103" text-anchor="middle" class="text">Encode</text>
+  <text x="338" y="129" text-anchor="middle" class="small">activation -></text>
+  <text x="338" y="149" text-anchor="middle" class="small">phrase id</text>
+  <text x="338" y="171" text-anchor="middle" class="small">no numeric payload</text>
+
+  <path d="M 420 128 H 490" class="arrow"/>
+  <rect x="498" y="62" width="164" height="134" class="box accent"/>
+  <text x="580" y="103" text-anchor="middle" class="text">Decode</text>
+  <text x="580" y="129" text-anchor="middle" class="small">phrase id -></text>
+  <text x="580" y="149" text-anchor="middle" class="small">reconstructed</text>
+  <text x="580" y="169" text-anchor="middle" class="small">activation</text>
+
+  <path d="M 664 128 H 734" class="arrow"/>
+  <rect x="742" y="38" width="150" height="54" class="box"/>
+  <text x="817" y="70" text-anchor="middle" class="small">MSE & cosine</text>
+  <rect x="742" y="104" width="150" height="54" class="box"/>
+  <text x="817" y="136" text-anchor="middle" class="small">logit/probe checks</text>
+  <rect x="742" y="170" width="150" height="54" class="box control"/>
+  <text x="817" y="202" text-anchor="middle" class="small">blank/shuffled controls</text>
+
+  <path d="M 817 225 C 817 260 112 260 103 178" class="arrow"/>
+  <text x="466" y="252" text-anchor="middle" class="small">Only claim success if the phrase bottleneck beats baselines and controls fail.</text>
+</svg>

@@ -154,6 +154,8 @@ def build_nla_training_batch(
 
     if activations.ndim < 2:
         raise ValueError("activations must have at least shape (examples, d_model).")
+    if activations.shape[0] == 0:
+        raise ValueError("activations must contain at least one example.")
     expected_examples = activations.shape[0]
     lengths = {
         len(original_text_spans),
@@ -177,6 +179,10 @@ def activation_reconstruction_report(
 ) -> NLAReconstructionReport:
     """Compare activation-to-text-to-activation reconstruction to a baseline."""
 
+    if original_activations.ndim < 2:
+        raise ValueError("activations must have at least shape (examples, d_model).")
+    if original_activations.shape[0] == 0:
+        raise ValueError("activations must contain at least one example.")
     matching_shapes = (
         original_activations.shape
         == reconstructed_activations.shape
@@ -232,8 +238,12 @@ def logit_diff_preservation_report(
 ) -> LogitDiffPreservationReport:
     """Check whether reconstructed activations preserve a target logit diff."""
 
+    if original_logits.ndim < 2:
+        raise ValueError("logits must have shape (examples, vocab).")
     if original_logits.shape != reconstructed_logits.shape:
         raise ValueError("original_logits and reconstructed_logits must match.")
+    if max_mean_abs_error < 0:
+        raise ValueError("max_mean_abs_error must be non-negative.")
     original_diff = batch_target_logit_diff(
         original_logits.float(),
         positive_token_id=positive_token_id,
@@ -263,6 +273,10 @@ def latent_preservation_report(
 ) -> LatentPreservationReport:
     """Check whether reconstructed activations preserve probe-decoded latents."""
 
+    if not 0.0 <= min_accuracy <= 1.0:
+        raise ValueError("min_accuracy must be between 0 and 1.")
+    if not 0.0 <= min_agreement <= 1.0:
+        raise ValueError("min_agreement must be between 0 and 1.")
     if original_probe_logits.shape != reconstructed_probe_logits.shape:
         raise ValueError("probe logits must have matching shape.")
     original_accuracy = _prediction_accuracy(original_probe_logits, latent_ids)
@@ -289,6 +303,10 @@ def generated_text_brevity_report(
 
     if len(generated_explanations) != len(original_prompts):
         raise ValueError("generated_explanations and original_prompts must align.")
+    if not generated_explanations:
+        raise ValueError("generated_explanations must be nonempty.")
+    if any(not text.strip() for text in generated_explanations):
+        raise ValueError("generated explanations must contain text.")
     generated_word_count = sum(len(text.split()) for text in generated_explanations)
     original_word_count = sum(len(text.split()) for text in original_prompts)
     if original_word_count == 0:
@@ -312,6 +330,8 @@ def counterfactual_explanation_report(
 ) -> CounterfactualExplanationReport:
     """Check whether a counterfactual activation changes generated text."""
 
+    if min_activation_delta < 0:
+        raise ValueError("min_activation_delta must be non-negative.")
     if original_activation.shape != counterfactual_activation.shape:
         raise ValueError("activation tensors must have matching shape.")
     activation_delta = (
@@ -344,6 +364,8 @@ def train_discrete_nla_bottleneck(
 
     if train_activations.ndim != 2 or eval_activations.ndim != 2:
         raise ValueError("activations must have shape (examples, d_model).")
+    if train_activations.shape[0] == 0 or eval_activations.shape[0] == 0:
+        raise ValueError("train and eval activations must be nonempty.")
     if train_activations.shape[1] != eval_activations.shape[1]:
         raise ValueError("train and eval activations must share d_model.")
     if train_phrase_ids.shape != (train_activations.shape[0],):

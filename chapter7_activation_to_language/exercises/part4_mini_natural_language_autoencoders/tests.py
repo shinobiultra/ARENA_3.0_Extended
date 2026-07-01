@@ -76,6 +76,26 @@ def test_build_nla_training_batch_validates_alignment(
     print("All tests in `test_build_nla_training_batch_validates_alignment` passed!")
 
 
+def test_build_nla_training_batch_rejects_empty_batches(
+    build_nla_training_batch: Callable | None = None,
+):
+    build_nla_training_batch = build_nla_training_batch or _solutions().build_nla_training_batch
+    try:
+        build_nla_training_batch(
+            t.empty(0, 3),
+            [],
+            [],
+            [],
+        )
+    except ValueError as exc:
+        assert "at least one example" in str(exc), (
+            "Empty NLA batches should be rejected before downstream metrics produce NaNs."
+        )
+    else:
+        raise AssertionError("Empty NLA batches should raise ValueError.")
+    print("All tests in `test_build_nla_training_batch_rejects_empty_batches` passed!")
+
+
 def test_generated_explanations_do_not_hide_numeric_coefficients(
     numeric_literal_count: Callable | None = None,
 ):
@@ -135,6 +155,26 @@ def test_activation_reconstruction_report_beats_text_only_baseline(
     )
 
 
+def test_activation_reconstruction_report_rejects_empty_and_rank1_inputs(
+    activation_reconstruction_report: Callable | None = None,
+):
+    activation_reconstruction_report = (
+        activation_reconstruction_report or _solutions().activation_reconstruction_report
+    )
+    for bad in [t.empty(0, 2), t.ones(2)]:
+        try:
+            activation_reconstruction_report(bad, bad.clone(), bad.clone())
+        except ValueError as exc:
+            assert "activation" in str(exc), (
+                "Invalid activation tensors should fail before MSE/cosine summaries are computed."
+            )
+        else:
+            raise AssertionError("Invalid activation tensors should raise ValueError.")
+    print(
+        "All tests in `test_activation_reconstruction_report_rejects_empty_and_rank1_inputs` passed!"
+    )
+
+
 def test_logit_diff_preservation_report_checks_actual_logit_diff(
     logit_diff_preservation_report: Callable | None = None,
 ):
@@ -174,6 +214,41 @@ def test_logit_diff_preservation_report_checks_actual_logit_diff(
     )
     print(
         "All tests in `test_logit_diff_preservation_report_checks_actual_logit_diff` passed!"
+    )
+
+
+def test_logit_diff_preservation_report_rejects_bad_inputs(
+    logit_diff_preservation_report: Callable | None = None,
+):
+    logit_diff_preservation_report = (
+        logit_diff_preservation_report or _solutions().logit_diff_preservation_report
+    )
+    logits = t.tensor([[1.0, 0.0], [0.0, 1.0]])
+    try:
+        logit_diff_preservation_report(
+            t.tensor([1.0, 0.0]),
+            t.tensor([0.9, 0.1]),
+            positive_token_id=0,
+            negative_token_id=1,
+        )
+    except ValueError as exc:
+        assert "logits" in str(exc), "Rank-1 logits should be rejected as non-batched."
+    else:
+        raise AssertionError("Rank-1 logits should raise ValueError.")
+    try:
+        logit_diff_preservation_report(
+            logits,
+            logits,
+            positive_token_id=0,
+            negative_token_id=1,
+            max_mean_abs_error=-0.1,
+        )
+    except ValueError as exc:
+        assert "non-negative" in str(exc), "Negative tolerances should be rejected."
+    else:
+        raise AssertionError("Negative max_mean_abs_error should raise ValueError.")
+    print(
+        "All tests in `test_logit_diff_preservation_report_rejects_bad_inputs` passed!"
     )
 
 
@@ -220,6 +295,26 @@ def test_latent_preservation_report_requires_accuracy_and_agreement(
     )
     print(
         "All tests in `test_latent_preservation_report_requires_accuracy_and_agreement` passed!"
+    )
+
+
+def test_latent_preservation_report_rejects_invalid_thresholds(
+    latent_preservation_report: Callable | None = None,
+):
+    latent_preservation_report = latent_preservation_report or _solutions().latent_preservation_report
+    logits = t.eye(2)
+    labels = t.tensor([0, 1])
+    for kwargs in [{"min_accuracy": 1.1}, {"min_agreement": -0.1}]:
+        try:
+            latent_preservation_report(logits, logits, labels, **kwargs)
+        except ValueError as exc:
+            assert "between 0 and 1" in str(exc), (
+                "Threshold validators should explain the valid probability range."
+            )
+        else:
+            raise AssertionError("Invalid latent preservation thresholds should raise ValueError.")
+    print(
+        "All tests in `test_latent_preservation_report_rejects_invalid_thresholds` passed!"
     )
 
 
@@ -300,6 +395,42 @@ def test_brevity_and_counterfactual_reports_reject_prompt_copying(
     )
 
 
+def test_brevity_and_counterfactual_reports_reject_bad_controls(
+    generated_text_brevity_report: Callable | None = None,
+    counterfactual_explanation_report: Callable | None = None,
+):
+    solutions = _solutions()
+    generated_text_brevity_report = (
+        generated_text_brevity_report or solutions.generated_text_brevity_report
+    )
+    counterfactual_explanation_report = (
+        counterfactual_explanation_report or solutions.counterfactual_explanation_report
+    )
+    try:
+        generated_text_brevity_report([""], ["the original prompt has words"])
+    except ValueError as exc:
+        assert "contain text" in str(exc), (
+            "Empty explanations should not pass just because they are short."
+        )
+    else:
+        raise AssertionError("Empty generated explanations should raise ValueError.")
+    try:
+        counterfactual_explanation_report(
+            t.tensor([1.0, 0.0]),
+            t.tensor([0.0, 1.0]),
+            "surface phrase",
+            "motion phrase",
+            min_activation_delta=-1.0,
+        )
+    except ValueError as exc:
+        assert "non-negative" in str(exc), "Negative counterfactual thresholds should fail."
+    else:
+        raise AssertionError("Negative min_activation_delta should raise ValueError.")
+    print(
+        "All tests in `test_brevity_and_counterfactual_reports_reject_bad_controls` passed!"
+    )
+
+
 def test_trainable_discrete_bottleneck_learns_phrase_ids(
     train_discrete_nla_bottleneck: Callable | None = None,
 ):
@@ -354,6 +485,31 @@ def test_trainable_discrete_bottleneck_learns_phrase_ids(
         "The transmitted bottleneck should be phrase text, not numeric coordinates."
     )
     print("All tests in `test_trainable_discrete_bottleneck_learns_phrase_ids` passed!")
+
+
+def test_trainable_discrete_bottleneck_rejects_empty_splits(
+    train_discrete_nla_bottleneck: Callable | None = None,
+):
+    train_discrete_nla_bottleneck = (
+        train_discrete_nla_bottleneck or _solutions().train_discrete_nla_bottleneck
+    )
+    try:
+        train_discrete_nla_bottleneck(
+            t.empty(0, 2),
+            t.empty(0, dtype=t.long),
+            t.tensor([[1.0, 0.0]]),
+            t.tensor([0]),
+            ("positive direction",),
+        )
+    except ValueError as exc:
+        assert "nonempty" in str(exc), (
+            "Empty train/eval splits should be rejected before training starts."
+        )
+    else:
+        raise AssertionError("Empty train/eval splits should raise ValueError.")
+    print(
+        "All tests in `test_trainable_discrete_bottleneck_rejects_empty_splits` passed!"
+    )
 
 
 def test_notebook_contract(run_smoke_test: Callable | None = None):

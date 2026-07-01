@@ -14,7 +14,7 @@ Function-Calling Controls**, **[6.1] SAE Variants**, **[6.2] Gemma
 Scope Deep Dive**, **[6.3] Transcoders and Attribution Graphs**, and
 **[6.4] Crosscoders and Model Diffing**, and **[7.1] Logit Lens,
 Tuned Lens, and Patchscopes**, **[7.2] Feature Verbalizers**, and
-**[7.3] Mini Activation Oracles**.
+**[7.3] Mini Activation Oracles**, and **[7.4] Mini Natural Language Autoencoders**.
 They now have ARENA-style learner pages, local
 diagrams, help/interpretation dropdowns, expected-output blocks, paired
 exercise/solution notebooks, CUDA-backed signature result tables, and explicit

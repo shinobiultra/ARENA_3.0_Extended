@@ -62,9 +62,9 @@ sections:
     page: chapter7_activation_to_language/instructions/pages/03_[7.3]_Mini_Activation_Oracles.md
     notes: ARENA-style rewrite with mini Activation Oracle validation diagram, question-conditioned oracle training progression, baseline/OOD/random/patching controls, help/interpretation dropdowns, signature result, limitations, and paired notebook surfaces.
   '7.4':
-    status: prototype
+    status: course_ready
     page: chapter7_activation_to_language/instructions/pages/04_[7.4]_Mini_Natural_Language_Autoencoders.md
-    notes: Prototype scaffold retained for implementation evidence; requires ARENA-style rewrite before course-ready release.
+    notes: ARENA-style rewrite with mini NLA validation diagram, phrase-bottleneck training progression, reconstruction/logit/latent/control checks, help/interpretation dropdowns, signature result, limitations, and paired notebook surfaces.
   '7.5':
     status: prototype
     page: chapter7_activation_to_language/instructions/pages/05_[7.5]_Predictive_Concept_Decoders.md

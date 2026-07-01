@@ -116,9 +116,9 @@
       "train_example_count": 12
     }
   ],
-  "date_run": "2026-07-01T06:35:06+00:00",
+  "date_run": "2026-07-01T11:55:29+00:00",
   "evidence_level": "toy_nla_contract_plus_live_trainable_transformerlens_phrase_bottleneck_preflight",
-  "git_commit": "3f277125",
+  "git_commit": "83283293",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-3",
   "known_failures": [],
@@ -229,7 +229,7 @@
       "original_probe_accuracy": 1.0,
       "original_word_count": 64,
       "passes_ood": true,
-      "peak_vram_gb": 0.2648811340332031,
+      "peak_vram_gb": 0.2618422508239746,
       "phrase_count": 12,
       "phrase_vocabulary_size": 12,
       "positive_anchor_prompt": "The cat sat on the",
@@ -365,10 +365,10 @@
   "ood_tests": {
     "declared": "required_where_applicable"
   },
-  "peak_vram_gb": 0.2648811340332031,
+  "peak_vram_gb": 0.2618422508239746,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "be8eb17189c240fd7d3e9494cb6a78092cbc6cd0e9cebd6d97c6d93a50b96f62",
+    "combined_sha256": "61c98d9c67959c497f6a6213430db78762e751cf0dd143a27bd74caf38da5e7f",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -377,13 +377,13 @@
       },
       {
         "path": "chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/7.4_Mini_Natural_Language_Autoencoders_exercises.ipynb",
-        "sha256": "88c6eef524af5b149de56010c2b276dde7c52147041ac5b050e1c4cfb68e6b26",
-        "size_bytes": 12339
+        "sha256": "f703cdb4573bf216afc866b34de3cc55ebcef18744c1e9a7689c4c08688bb5c0",
+        "size_bytes": 22544
       },
       {
         "path": "chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/7.4_Mini_Natural_Language_Autoencoders_solutions.ipynb",
-        "sha256": "06dba5cbfe8f5a890206188c1ec25fa4a2075ac187042d0ca3a9676482526fc9",
-        "size_bytes": 6017
+        "sha256": "edcc50afb06a557043d0e8f8ab0f161347468bafa39321caca55e500f7fc029a",
+        "size_bytes": 10572
       },
       {
         "path": "chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/README.md",
@@ -412,13 +412,13 @@
       },
       {
         "path": "chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/solutions.py",
-        "sha256": "a81310a9adf495a1db3cd382353813839084ce0cd22976d05e5358ab156eb87b",
-        "size_bytes": 35640
+        "sha256": "888a99779daa109f6f5660f92f4971deb2b73206a49b408c70cf618beb2f0368",
+        "size_bytes": 36896
       },
       {
         "path": "chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/tests.py",
-        "sha256": "0947313b91e0052ed7812c7c9705391f59e798ca1dff0a9c3829b0f1734f28e6",
-        "size_bytes": 15689
+        "sha256": "9823ed3ea137ff63a7d127a9146c87df60c3a28d231aa39a8a250ade036f8851",
+        "size_bytes": 21488
       },
       {
         "path": "chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/utils.py",
@@ -432,8 +432,8 @@
       },
       {
         "path": "chapter7_activation_to_language/instructions/pages/04_[7.4]_Mini_Natural_Language_Autoencoders.md",
-        "sha256": "1afe82c4acedc476552c427a0c1964be351810bd326cd39ea085b4ceaf3f3c6a",
-        "size_bytes": 23586
+        "sha256": "9a76648d779f890f9a0de20afb5e351e001daa50c97643d3e798b8c6c945f5c4",
+        "size_bytes": 36374
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
@@ -448,5 +448,5 @@
     "The real-model path uses safe generic prompts and cached activations/logits from a small public TransformerLens checkpoint. It does not use unsafe prompts, gated weights, generated completions, adapter training, external API calls, or claims about arbitrary hidden thoughts."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 4.510157
+  "wall_clock_seconds": 8.953938
 }

@@ -97,7 +97,7 @@ Coming soon!
 
 This fork is being rewritten into a local-first frontier-model extension while
 keeping the original ARENA structure intact. The current PR contains a large
-prototype implementation surface plus thirteen polished ARENA-style sections:
+prototype implementation surface plus fourteen polished ARENA-style sections:
 [5.1 Gemma from Scratch](chapter5_modern_architectures/instructions/pages/01_%5B5.1%5D_Gemma_from_Scratch.md),
 [5.2 Gemma Scope and Feature Steering](chapter5_modern_architectures/instructions/pages/02_%5B5.2%5D_Gemma_Scope_and_Feature_Steering.md),
 [5.3 Mamba from Scratch](chapter5_modern_architectures/instructions/pages/03_%5B5.3%5D_Mamba_from_Scratch.md),
@@ -110,7 +110,8 @@ prototype implementation surface plus thirteen polished ARENA-style sections:
 [6.4 Crosscoders and Model Diffing](chapter6_sparse_feature_methods/instructions/pages/04_%5B6.4%5D_Crosscoders_and_Model_Diffing.md),
 [7.1 Logit Lens, Tuned Lens, and Patchscopes](chapter7_activation_to_language/instructions/pages/01_%5B7.1%5D_Logit_Lens_Tuned_Lens_and_Patchscopes.md),
 [7.2 Feature Verbalizers](chapter7_activation_to_language/instructions/pages/02_%5B7.2%5D_Feature_Verbalizers.md),
-and [7.3 Mini Activation Oracles](chapter7_activation_to_language/instructions/pages/03_%5B7.3%5D_Mini_Activation_Oracles.md).
+[7.3 Mini Activation Oracles](chapter7_activation_to_language/instructions/pages/03_%5B7.3%5D_Mini_Activation_Oracles.md),
+and [7.4 Mini Natural Language Autoencoders](chapter7_activation_to_language/instructions/pages/04_%5B7.4%5D_Mini_Natural_Language_Autoencoders.md).
 The remaining extension pages are tracked as prototype scaffolds until they are
 rewritten with original-ARENA pacing, diagrams, help/interpretation dropdowns,
 visible signature results, and notebook surfaces. See
