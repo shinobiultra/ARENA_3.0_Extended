@@ -97,7 +97,7 @@ Coming soon!
 
 This fork is being rewritten into a local-first frontier-model extension while
 keeping the original ARENA structure intact. The current PR contains a large
-prototype implementation surface plus twenty-six polished ARENA-style sections:
+prototype implementation surface plus twenty-seven polished ARENA-style sections:
 [5.1 Gemma from Scratch](chapter5_modern_architectures/instructions/pages/01_%5B5.1%5D_Gemma_from_Scratch.md),
 [5.2 Gemma Scope and Feature Steering](chapter5_modern_architectures/instructions/pages/02_%5B5.2%5D_Gemma_Scope_and_Feature_Steering.md),
 [5.3 Mamba from Scratch](chapter5_modern_architectures/instructions/pages/03_%5B5.3%5D_Mamba_from_Scratch.md),
@@ -123,7 +123,8 @@ prototype implementation surface plus twenty-six polished ARENA-style sections:
 [9.3 Emergent Misalignment Detection](chapter9_alignment_interpretability/instructions/pages/03_%5B9.3%5D_Emergent_Misalignment_Detection.md),
 [9.4 White-box Evals and Monitors](chapter9_alignment_interpretability/instructions/pages/04_%5B9.4%5D_White_box_Evals_and_Monitors.md),
 [10.1 Capstone Research Sprint](chapter10_capstone_research_sprint/instructions/pages/01_%5B10.1%5D_Capstone_Research_Sprint.md),
-and [11.1 PCA, SVD, and Geometry Controls](chapter11_representation_geometry/instructions/pages/01_%5B11.1%5D_PCA_SVD_and_Geometry_Controls.md).
+[11.1 PCA, SVD, and Geometry Controls](chapter11_representation_geometry/instructions/pages/01_%5B11.1%5D_PCA_SVD_and_Geometry_Controls.md),
+and [12.1 CLIP, SigLIP, and VLM Controls](chapter12_vlm_interpretability/instructions/pages/01_%5B12.1%5D_CLIP_SigLIP_and_VLM_Controls.md).
 The remaining non-course-ready extension pages are tracked as prototype scaffolds until they are
 rewritten with original-ARENA pacing, diagrams, help/interpretation dropdowns,
 visible signature results, and notebook surfaces. See
@@ -157,7 +158,7 @@ The capstone track contains polished [10.1 Capstone Research Sprint](chapter10_c
 
 The representation-geometry track begins with polished [11.1 PCA, SVD, and Geometry Controls](chapter11_representation_geometry/instructions/pages/01_%5B11.1%5D_PCA_SVD_and_Geometry_Controls.md), which adds centered PCA/SVD projections, held-out label prediction from geometry, white-noise controls, seed-stability checks, causal direction effects over random controls, template-centering checks, paired ARENA-style notebooks, local validation/signature diagrams, and a pinned Pythia-70M-deduped calendar hidden-state geometry preflight over weekday and month prompt splits with five-seed, three-setting UMAP sweeps, trustworthiness, neighborhood preservation, random-label controls, and random-token controls.
 
-The VLM interpretability track begins with [12.1 CLIP, SigLIP, and VLM Controls](chapter12_vlm_interpretability/instructions/pages/01_%5B12.1%5D_CLIP_SigLIP_and_VLM_Controls.md), which adds CLIP-style contrastive retrieval, SigLIP-style pairwise loss, visual-token attribution locality, synthetic colored-shape scene metadata, image-grounding baselines over text-only priors, object-region patch controls, hidden visual-token activation patching with object/background/same-size random-token/full-sequence controls, object hallucination probes, visual-vs-text modality arbitration, pinned real CLIP plus SigLIP rendered-shape retrieval and hidden-token patching, and a pinned Qwen2.5-VL 3B rendered-shape generation check.
+The VLM interpretability track begins with polished [12.1 CLIP, SigLIP, and VLM Controls](chapter12_vlm_interpretability/instructions/pages/01_%5B12.1%5D_CLIP_SigLIP_and_VLM_Controls.md), which narrows the first learner-facing section to normalized CLIP-style contrastive logits, bidirectional retrieval margins, SigLIP-style pairwise loss, controlled colored-shape counterfactual scenes, localized visual-token attribution, paired ARENA-style notebooks, local validation/signature diagrams, and a scoped CUDA report with pinned real CLIP/SigLIP rendered-shape retrieval, hidden visual-token activation-patching controls, and a pinned Qwen2.5-VL 3B rendered-shape generation preflight. Broader VLM feature geometry, mini VLMs, visual-token flow, hallucination/arbitration, multimodal SAEs, and VLM attribution baselines remain later-section work rather than being crammed into this first notebook.
 
 The image-generation interpretability track begins with [13.1 Diffusion and Image-Generation Controls](chapter13_image_generation_interpretability/instructions/pages/01_%5B13.1%5D_Diffusion_and_Image_Generation_Controls.md), which adds diffusion attention region maps, denoising-circuit ablation specificity, latent-direction effects over random controls, prompt-token-to-region causal drops, a supplemental pinned SD-Turbo safe-shape generation preflight, and a required pinned Stable Diffusion 1.5 safe-shape path with DAAM-style cross-attention localization, target-token ablation over random/control-token ablations, CLIP alignment, image-quality preservation, and white-noise rejection.
 

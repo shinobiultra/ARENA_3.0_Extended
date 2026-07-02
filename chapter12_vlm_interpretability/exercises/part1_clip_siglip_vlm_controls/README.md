@@ -5,10 +5,12 @@ Generated support files for the roadmap verification contract.
 - `artifacts.lock.yml` pins the current synthetic VLM ladder plus real CLIP,
   SigLIP, Qwen2.5-VL rendered-shape controls, hidden visual-token activation
   patching controls, and clothing-geometry controls.
-- `12.1_CLIP_SigLIP_and_VLM_Controls_exercises.ipynb` contains the learner
-  stubs and visible tests.
-- `12.1_CLIP_SigLIP_and_VLM_Controls_solutions.ipynb` runs the reference
-  solution checks and committed report assertions.
+- `12.1_CLIP_SigLIP_and_VLM_Controls_exercises.ipynb` contains the
+  ARENA-style learner path for CLIP/SigLIP logits, retrieval margins, controlled
+  counterfactual scenes, visual-token locality, and committed CUDA report
+  inspection.
+- `12.1_CLIP_SigLIP_and_VLM_Controls_solutions.ipynb` is the executed solved
+  version of the same path, with saved outputs.
 - `verification_report.schema.json` defines the required final report.
 - `expected_outputs/smoke_test.json` records the smoke-test contract.
 - `expected_outputs/reference_metrics.json` records concrete retrieval,

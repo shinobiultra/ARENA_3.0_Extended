@@ -114,9 +114,9 @@ sections:
     page: chapter11_representation_geometry/instructions/pages/01_[11.1]_PCA_SVD_and_Geometry_Controls.md
     notes: ARENA-style rewrite with geometry validation-loop and signature-result diagrams, centered PCA/SVD, held-out centroid/kNN prediction, white-noise and random-label/token controls, stability and template-centering exercises, Pythia calendar hidden-state signature result, limitations, and paired notebook surfaces.
   '12.1':
-    status: prototype
+    status: course_ready
     page: chapter12_vlm_interpretability/instructions/pages/01_[12.1]_CLIP_SigLIP_and_VLM_Controls.md
-    notes: Prototype scaffold retained for implementation evidence; requires ARENA-style rewrite before course-ready release.
+    notes: ARENA-style rewrite with CLIP/SigLIP validation-loop and signature-result diagrams, normalized contrastive logits, bidirectional retrieval margins, SigLIP pairwise loss, controlled colored-shape counterfactual scenes, localized visual-token attribution, scoped real CLIP/SigLIP/Qwen CUDA report evidence, limitations, and paired notebook surfaces.
   '13.1':
     status: prototype
     page: chapter13_image_generation_interpretability/instructions/pages/01_[13.1]_Diffusion_and_Image_Generation_Controls.md

@@ -4,8 +4,6 @@ from pathlib import Path
 
 import torch as t
 
-from arena_ext import vlm_interpretability as reference
-
 
 def _solutions():
     from chapter12_vlm_interpretability.exercises.part1_clip_siglip_vlm_controls import (
@@ -70,21 +68,16 @@ def test_contrastive_smoke_test(
         contrastive_smoke_test or _solutions().contrastive_smoke_test
     )
     result = contrastive_smoke_test()
-    expected = reference.contrastive_alignment_report(
-        reference.clip_contrastive_logits(t.eye(3), t.eye(3), logit_scale=5.0),
-        min_accuracy=1.0,
-        min_positive_margin=4.0,
-    )
-    assert result["image_to_text_accuracy"] == expected.image_to_text_accuracy, (
+    assert result["image_to_text_accuracy"] == 1.0, (
         "Identity image embeddings should retrieve their matching text embeddings."
     )
-    assert result["text_to_image_accuracy"] == expected.text_to_image_accuracy, (
+    assert result["text_to_image_accuracy"] == 1.0, (
         "Identity text embeddings should retrieve their matching image embeddings."
     )
     _assert_close(
         result["mean_positive_margin"],
-        expected.mean_positive_margin,
-        msg="The positive-pair margin should match the independent reference.",
+        5.0,
+        msg="The positive-pair margin should compare the diagonal to the strongest negative.",
     )
     assert result["aligned"], (
         "The report should pass only when both retrieval directions and the margin pass."
@@ -95,10 +88,8 @@ def test_contrastive_smoke_test(
 def test_siglip_smoke_test(siglip_smoke_test: Callable[[], dict] | None = None):
     siglip_smoke_test = siglip_smoke_test or _solutions().siglip_smoke_test
     result = siglip_smoke_test()
-    expected_loss = reference.siglip_pairwise_loss(
-        t.tensor([[4.0, -4.0], [-3.0, 3.0]]),
-        t.eye(2),
-    ).item()
+    signed_margins = t.tensor([4.0, 4.0, 3.0, 3.0])
+    expected_loss = t.nn.functional.softplus(-signed_margins).mean().item()
     _assert_close(
         result["loss"],
         expected_loss,
@@ -117,24 +108,60 @@ def test_token_attribution_smoke_test(
         token_attribution_smoke_test or _solutions().token_attribution_smoke_test
     )
     result = token_attribution_smoke_test()
-    expected = reference.visual_token_attribution_report(
-        t.tensor([[0.0, 0.0], [3.0, 0.0], [2.0, 0.0], [0.0, 1.0]]),
-        t.tensor([1.0, 0.0]),
-        top_k=2,
-        min_top_token_mass=0.8,
+    assert _as_list(result["token_scores"]) == [0.0, 3.0, 2.0, 0.0], (
+        "Attribution scores should be dot products against the normalized text direction."
     )
-    assert _as_list(result["top_token_indices"]) == expected.top_token_indices.tolist(), (
+    assert _as_list(result["top_token_indices"]) == [1, 2], (
         "The two visual tokens aligned with the text direction should be selected."
     )
     _assert_close(
         result["top_token_mass"],
-        expected.top_token_mass,
+        1.0,
         msg="Top-token mass should be computed over positive attribution mass.",
     )
     assert result["localized"], (
         "A localized object claim should put enough attribution mass on the top tokens."
     )
     print("All tests in `test_token_attribution_smoke_test` passed!")
+
+
+def test_contrastive_report_rejects_wrong_pairing():
+    solutions = _solutions()
+    logits = t.tensor(
+        [
+            [0.0, 4.0, 1.0],
+            [2.0, 0.0, 1.0],
+            [1.0, 0.0, 5.0],
+        ]
+    )
+    report = solutions.contrastive_alignment_report(
+        logits,
+        min_accuracy=1.0,
+        min_positive_margin=1.0,
+    )
+    assert report.image_to_text_accuracy < 1.0, (
+        "Image-to-text accuracy should drop when images prefer off-diagonal captions."
+    )
+    assert report.text_to_image_accuracy < 1.0, (
+        "Text-to-image accuracy should drop when captions prefer off-diagonal images."
+    )
+    assert not report.aligned, (
+        "The report must fail when the highest-scoring pairs are off diagonal."
+    )
+    print("All tests in `test_contrastive_report_rejects_wrong_pairing` passed!")
+
+
+def test_siglip_pairwise_loss_rejects_shape_mismatch():
+    solutions = _solutions()
+    try:
+        solutions.siglip_pairwise_loss(t.zeros(2, 2), t.zeros(2, 3))
+    except ValueError as exc:
+        assert "same shape" in str(exc), (
+            "The error should explain that SigLIP logits and labels need matching shapes."
+        )
+    else:
+        raise AssertionError("SigLIP loss should reject mismatched logits and labels.")
+    print("All tests in `test_siglip_pairwise_loss_rejects_shape_mismatch` passed!")
 
 
 def test_hallucination_smoke_test(
@@ -363,6 +390,29 @@ def test_notebook_contract(run_smoke_test: Callable[..., dict] | None = None):
         "The notebook contract should include hidden visual-token patch controls."
     )
     print("All tests in `test_notebook_contract` passed!")
+
+
+def test_clip_siglip_core_notebook_contract(
+    run_smoke_test: Callable[..., dict] | None = None,
+):
+    run_smoke_test = run_smoke_test or _solutions().run_smoke_test
+    result = run_smoke_test(cpu=True)
+    assert result["contrastive"]["aligned"], (
+        "The core lesson should include the contrastive alignment check."
+    )
+    assert result["siglip"]["loss"] < 0.05, (
+        "The core lesson should include the SigLIP pairwise-loss check."
+    )
+    assert result["synthetic_scene_schema"]["has_counterfactual_answers"], (
+        "The core lesson should expose counterfactual image-text labels."
+    )
+    assert result["synthetic_scene_schema"]["has_spurious_text_control"], (
+        "The core lesson should expose misleading text controls."
+    )
+    assert result["token_attribution"]["localized"], (
+        "The core lesson should include localized visual-token attribution."
+    )
+    print("All tests in `test_clip_siglip_core_notebook_contract` passed!")
 
 
 def test_exercise_notebook_declares_full_verification_contract():
