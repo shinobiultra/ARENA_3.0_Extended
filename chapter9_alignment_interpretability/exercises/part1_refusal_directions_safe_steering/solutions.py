@@ -164,9 +164,227 @@ def comparison_smoke_test() -> dict:
     ).__dict__
 
 
+def toy_refusal_activation_batch() -> dict:
+    """Return a deterministic safe toy refusal/compliance activation stack."""
+
+    labels = t.tensor([1] * 6 + [0] * 6, dtype=t.bool)
+    train_mask = t.tensor(
+        [1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0],
+        dtype=t.bool,
+    )
+    layer_strengths = t.tensor([0.02, 0.25, 0.55, 0.9, 1.4, 2.0])
+    base_offsets = t.tensor(
+        [-0.45, 0.20, -0.10, 0.35, -0.25, 0.10, 0.40, -0.15, 0.25, -0.35, 0.05, -0.20]
+    )
+    nuisance_1 = t.tensor([0.8, -0.4, 0.2, -0.1, 0.5, -0.3, -0.7, 0.1, -0.5, 0.4, -0.2, 0.3])
+    nuisance_2 = t.tensor([0.0, 0.4, -0.3, 0.2, -0.1, 0.3, 0.1, -0.2, 0.5, -0.4, 0.2, -0.1])
+    positions = t.linspace(-0.3, 0.3, labels.numel())
+    layers = []
+    signs = t.where(labels, 1.0, -1.0)
+    for layer_index, strength in enumerate(layer_strengths):
+        residual_noise = (1.0 - strength / 2.0).clamp_min(0.15)
+        refusal_axis = signs * strength + residual_noise * base_offsets
+        layers.append(
+            t.stack(
+                [
+                    refusal_axis,
+                    nuisance_1 * (0.7 - 0.08 * layer_index),
+                    nuisance_2 * (0.5 - 0.05 * layer_index),
+                    positions * (0.4 - 0.04 * layer_index),
+                ],
+                dim=1,
+            )
+        )
+    prompt_table = [
+        {"prompt_id": "R0", "split": "train", "label": "refusal", "description": "sanitized harmful-request category"},
+        {"prompt_id": "R1", "split": "train", "label": "refusal", "description": "sanitized credential-misuse category"},
+        {"prompt_id": "R2", "split": "train", "label": "refusal", "description": "sanitized safety-evasion category"},
+        {"prompt_id": "R3", "split": "heldout", "label": "refusal", "description": "sanitized risky-medical category"},
+        {"prompt_id": "R4", "split": "heldout", "label": "refusal", "description": "sanitized policy-violation category"},
+        {"prompt_id": "R5", "split": "heldout", "label": "refusal", "description": "sanitized unsafe-procedure category"},
+        {"prompt_id": "A0", "split": "train", "label": "allowed", "description": "benign biology explanation"},
+        {"prompt_id": "A1", "split": "train", "label": "allowed", "description": "benign cooking idea"},
+        {"prompt_id": "A2", "split": "train", "label": "allowed", "description": "benign study-skills request"},
+        {"prompt_id": "A3", "split": "heldout", "label": "allowed", "description": "benign programming example"},
+        {"prompt_id": "A4", "split": "heldout", "label": "allowed", "description": "benign birthday-message request"},
+        {"prompt_id": "A5", "split": "heldout", "label": "allowed", "description": "benign travel-planning request"},
+    ]
+    return {
+        "prompt_table": prompt_table,
+        "labels": labels,
+        "train_mask": train_mask,
+        "layer_names": [f"toy_layer_{index}" for index in range(len(layers))],
+        "activations_by_layer": t.stack(layers),
+    }
+
+
+def toy_layer_sweep() -> list[dict]:
+    batch = toy_refusal_activation_batch()
+    labels = batch["labels"]
+    train_mask = batch["train_mask"]
+    rows = []
+    for layer_index, activations in enumerate(batch["activations_by_layer"]):
+        direction = mean_difference_direction(
+            activations[train_mask & labels],
+            activations[train_mask & ~labels],
+        )
+        report = refusal_separation_report(
+            activations[~train_mask],
+            labels[~train_mask],
+            direction,
+            min_accuracy=0.0,
+        )
+        rows.append(
+            {
+                "layer": layer_index,
+                "heldout_accuracy": report.accuracy,
+                "heldout_margin": report.margin,
+                "refusal_mean_score": report.refusal_mean_score,
+                "allowed_mean_score": report.non_refusal_mean_score,
+            }
+        )
+    return rows
+
+
+def toy_steering_and_projection_curves() -> dict:
+    batch = toy_refusal_activation_batch()
+    labels = batch["labels"]
+    train_mask = batch["train_mask"]
+    final_activations = batch["activations_by_layer"][-1]
+    direction = mean_difference_direction(
+        final_activations[train_mask & labels],
+        final_activations[train_mask & ~labels],
+    )
+    heldout_activations = final_activations[~train_mask]
+    heldout_labels = labels[~train_mask]
+    heldout_scores = refusal_direction_scores(heldout_activations, direction)
+    addition_threshold = 0.0
+    projection_threshold = 1.0
+    allowed_scores = heldout_scores[~heldout_labels]
+    refusal_scores = heldout_scores[heldout_labels]
+    random_direction = t.tensor([0.0, 1.0, 0.0, 0.0])
+    random_direction = random_direction / random_direction.norm()
+    random_shift = float(t.dot(random_direction, direction).item())
+    random_projection_scores = (
+        heldout_activations[heldout_labels] @ random_direction
+    ) * random_shift
+
+    addition_curve = []
+    for alpha in [0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0]:
+        target_scores = allowed_scores + alpha
+        random_scores = allowed_scores + alpha * random_shift
+        addition_curve.append(
+            {
+                "alpha": alpha,
+                "target_refusal_rate": target_scores.ge(addition_threshold).float().mean().item(),
+                "random_refusal_rate": random_scores.ge(addition_threshold).float().mean().item(),
+                "target_mean_score": target_scores.mean().item(),
+                "random_mean_score": random_scores.mean().item(),
+            }
+        )
+
+    projection_curve = []
+    for fraction in [0.0, 0.25, 0.5, 0.75, 1.0]:
+        target_scores = refusal_scores * (1.0 - fraction)
+        random_scores = refusal_scores - fraction * random_projection_scores
+        projection_curve.append(
+            {
+                "projection_fraction": fraction,
+                "target_refusal_rate": target_scores.ge(projection_threshold).float().mean().item(),
+                "random_refusal_rate": random_scores.ge(projection_threshold).float().mean().item(),
+                "target_mean_score": target_scores.mean().item(),
+                "random_mean_score": random_scores.mean().item(),
+            }
+        )
+
+    return {
+        "addition_threshold": addition_threshold,
+        "projection_threshold": projection_threshold,
+        "addition_curve": addition_curve,
+        "projection_curve": projection_curve,
+    }
+
+
+def toy_refusal_signature_result() -> dict:
+    batch = toy_refusal_activation_batch()
+    labels = batch["labels"]
+    train_mask = batch["train_mask"]
+    final_activations = batch["activations_by_layer"][-1]
+    direction = mean_difference_direction(
+        final_activations[train_mask & labels],
+        final_activations[train_mask & ~labels],
+    )
+    heldout_report = refusal_separation_report(
+        final_activations[~train_mask],
+        labels[~train_mask],
+        direction,
+        min_accuracy=0.9,
+    )
+    label_shuffle = label_shuffle_control_report(
+        final_activations,
+        labels,
+        min_accuracy_gap=0.25,
+    )
+    random_direction = t.tensor([0.0, 1.0, 0.0, 0.0])
+    random_report = refusal_separation_report(
+        final_activations[~train_mask],
+        labels[~train_mask],
+        random_direction,
+        min_accuracy=0.0,
+    )
+    random_control = random_direction_control_report(
+        target_direction_delta=heldout_report.margin,
+        random_direction_delta=random_report.margin,
+        min_margin=0.5,
+    )
+    train_refusal = final_activations[train_mask & labels]
+    train_allowed = final_activations[train_mask & ~labels]
+    differences = train_refusal - train_allowed[: train_refusal.shape[0]]
+    centered = differences - differences.mean(dim=0, keepdim=True)
+    singular_values = t.linalg.svdvals(centered.float())
+    variance = singular_values.square()
+    pc1_variance_fraction = float((variance[0] / variance.sum().clamp_min(1e-8)).item())
+    steering_curves = toy_steering_and_projection_curves()
+    capability = capability_degradation_report(
+        t.tensor([0.90, 0.84, 0.88, 0.92]),
+        t.tensor([0.87, 0.81, 0.86, 0.89]),
+        max_degradation=0.1,
+    )
+    layer_sweep = toy_layer_sweep()
+    return {
+        "prompt_table": batch["prompt_table"],
+        "layer_sweep": layer_sweep,
+        "heldout_accuracy": heldout_report.accuracy,
+        "heldout_margin": heldout_report.margin,
+        "best_layer": max(layer_sweep, key=lambda row: (row["heldout_accuracy"], row["heldout_margin"]))["layer"],
+        "pc1_variance_fraction": pc1_variance_fraction,
+        "addition_curve": steering_curves["addition_curve"],
+        "projection_curve": steering_curves["projection_curve"],
+        "random_direction_margin": random_report.margin,
+        "random_direction_fails": random_control.random_direction_fails,
+        "label_shuffle_true_accuracy": label_shuffle.true_accuracy,
+        "label_shuffle_shuffled_accuracy": label_shuffle.shuffled_accuracy,
+        "label_shuffle_fails": label_shuffle.label_shuffle_fails,
+        "capability_degradation": capability.degradation,
+        "capability_degradation_small": capability.degradation_small,
+        "control_claim_passed": (
+            heldout_report.separates_refusal
+            and layer_sweep[-1]["heldout_margin"] > layer_sweep[0]["heldout_margin"]
+            and steering_curves["addition_curve"][-1]["target_refusal_rate"]
+            > steering_curves["addition_curve"][0]["target_refusal_rate"]
+            and steering_curves["projection_curve"][-1]["target_mean_score"]
+            < steering_curves["projection_curve"][0]["target_mean_score"]
+            and random_control.random_direction_fails
+            and label_shuffle.label_shuffle_fails
+            and capability.degradation_small
+        ),
+    }
+
+
 def run_smoke_test(cpu: bool = True) -> dict:
     _ = cpu
     return {
+        "toy_signature": toy_refusal_signature_result(),
         "direction": direction_smoke_test(),
         "scores": scores_smoke_test(),
         "separation": separation_smoke_test(),

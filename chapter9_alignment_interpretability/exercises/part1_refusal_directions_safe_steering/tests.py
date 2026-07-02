@@ -133,9 +133,74 @@ def test_comparison_smoke_test(comparison_smoke_test: Callable | None = None):
     print("All tests in `test_comparison_smoke_test` passed!")
 
 
+def test_toy_refusal_signature_result_has_visible_curves(
+    toy_refusal_signature_result: Callable | None = None,
+):
+    toy_refusal_signature_result = (
+        toy_refusal_signature_result or _solutions().toy_refusal_signature_result
+    )
+    result = toy_refusal_signature_result()
+    layer_sweep = result["layer_sweep"]
+    addition_curve = result["addition_curve"]
+    projection_curve = result["projection_curve"]
+
+    assert len(result["prompt_table"]) == 12, (
+        "The toy signature should expose concrete safe prompt categories."
+    )
+    assert len(layer_sweep) >= 6, (
+        "The signature result should include a layer sweep, not one chosen layer."
+    )
+    assert layer_sweep[0]["heldout_accuracy"] < layer_sweep[-1]["heldout_accuracy"], (
+        "The toy layer sweep should show the refusal direction becoming more separable."
+    )
+    assert layer_sweep[-1]["heldout_margin"] > 3.0, (
+        "The final toy layer should have a strong positive held-out margin."
+    )
+    assert result["best_layer"] == layer_sweep[-1]["layer"], (
+        "The strongest toy layer should be visible as the best layer."
+    )
+    assert result["heldout_accuracy"] == 1.0, (
+        "The final toy direction should separate held-out examples."
+    )
+    assert result["pc1_variance_fraction"] > 0.5, (
+        "The toy signature should include a meaningful PCA/SVD geometry check."
+    )
+    assert addition_curve[-1]["target_mean_score"] > addition_curve[0]["target_mean_score"], (
+        "Adding the target direction should increase allowed-prompt refusal evidence."
+    )
+    assert addition_curve[-1]["target_mean_score"] > addition_curve[-1]["random_mean_score"] + 1.0, (
+        "Target-direction addition should beat the random-direction control."
+    )
+    assert projection_curve[-1]["target_mean_score"] < projection_curve[0]["target_mean_score"], (
+        "Projection-out should reduce refusal-prompt evidence."
+    )
+    assert projection_curve[-1]["target_mean_score"] < projection_curve[-1]["random_mean_score"] - 1.0, (
+        "Target projection-out should beat random projection."
+    )
+    assert result["label_shuffle_true_accuracy"] == 1.0, (
+        "The true labels should be separable before the label-shuffle control."
+    )
+    assert result["label_shuffle_shuffled_accuracy"] <= 0.5, (
+        "The label-shuffled direction should not preserve the true-label signal."
+    )
+    assert result["random_direction_fails"], (
+        "The random-direction control should fail for the toy signature result."
+    )
+    assert result["capability_degradation_small"], (
+        "The toy signature should include a bounded capability side-effect check."
+    )
+    assert result["control_claim_passed"], (
+        "The signature result should require success plus failed controls."
+    )
+    print("All tests in `test_toy_refusal_signature_result_has_visible_curves` passed!")
+
+
 def test_notebook_contract(run_smoke_test: Callable | None = None):
     run_smoke_test = run_smoke_test or _solutions().run_smoke_test
     result = run_smoke_test(cpu=True)
+    assert result["toy_signature"]["control_claim_passed"], (
+        "The notebook contract should include a visible toy refusal-direction signature result."
+    )
     assert result["direction"] == [1.0, 0.0], (
         "The notebook contract should include the direction smoke-test result."
     )

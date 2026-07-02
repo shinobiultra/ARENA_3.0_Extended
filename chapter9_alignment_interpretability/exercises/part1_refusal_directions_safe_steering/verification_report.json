@@ -104,9 +104,9 @@
       "train_prompt_count": 32
     }
   ],
-  "date_run": "2026-07-02T12:43:47+00:00",
+  "date_run": "2026-07-02T14:32:17+00:00",
   "evidence_level": "safe_toy_contract_plus_gt2_public_refusal_direction_replication",
-  "git_commit": "3a539d48",
+  "git_commit": "f8930652",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-2",
   "known_failures": [],
@@ -220,7 +220,7 @@
       "gt2_refusal_direction_model_id": "Qwen/Qwen2.5-0.5B-Instruct",
       "gt2_refusal_direction_paper_equivalent_behavioral_completion_evidence": true,
       "gt2_refusal_direction_pc1_variance_fraction": 0.25265154242515564,
-      "gt2_refusal_direction_peak_vram_gb": 1.9344162940979004,
+      "gt2_refusal_direction_peak_vram_gb": 1.9031662940979004,
       "gt2_refusal_direction_position_sweep_final_beats_first": true,
       "gt2_refusal_direction_preflight": {
         "added_compliance_prompt_refusal_rate": 0.0625,
@@ -295,7 +295,7 @@
         "paper_equivalent_behavioral_completion_evidence": true,
         "pc1_direction_alignment": 0.2451234757900238,
         "pc1_variance_fraction": 0.25265154242515564,
-        "peak_vram_gb": 1.9344162940979004,
+        "peak_vram_gb": 1.9031662940979004,
         "position_sweep_final_accuracy": 1.0,
         "position_sweep_final_beats_first": true,
         "position_sweep_first_accuracy": 0.0,
@@ -420,7 +420,7 @@
         "intervention_scope": "prompt_final_token_prefill_only",
         "max_new_tokens": 16,
         "model_id": "Qwen/Qwen2.5-0.5B-Instruct",
-        "peak_vram_gb": 1.495046615600586,
+        "peak_vram_gb": 1.463796615600586,
         "projected_refusal_prompt_refusal_rate": 0.75,
         "projection_delta": 0.08333331346511841,
         "prompt_count": 24,
@@ -439,7 +439,7 @@
       "instruction_refusal_behavioral_completion_text_saved": false,
       "instruction_refusal_behavioral_generation_used": true,
       "instruction_refusal_behavioral_gt2_ready": false,
-      "instruction_refusal_behavioral_peak_vram_gb": 1.495046615600586,
+      "instruction_refusal_behavioral_peak_vram_gb": 1.463796615600586,
       "instruction_refusal_behavioral_projected_refusal_rate": 0.75,
       "instruction_refusal_behavioral_projection_delta": 0.08333331346511841,
       "instruction_refusal_behavioral_target_beats_random_addition": false,
@@ -447,7 +447,7 @@
       "instruction_refusal_generation_used": false,
       "instruction_refusal_intervention_preflight_passed": true,
       "instruction_refusal_model_id": "Qwen/Qwen2.5-0.5B-Instruct",
-      "instruction_refusal_peak_vram_gb": 1.8668537139892578,
+      "instruction_refusal_peak_vram_gb": 1.8356037139892578,
       "instruction_refusal_preflight": {
         "allowed_add_delta": 1.4752511978149414,
         "allowed_prompt_count": 12,
@@ -465,7 +465,7 @@
         "generation_used": false,
         "layer": 16,
         "model_id": "Qwen/Qwen2.5-0.5B-Instruct",
-        "peak_vram_gb": 1.8668537139892578,
+        "peak_vram_gb": 1.8356037139892578,
         "preflight_passed": true,
         "prompt_count": 24,
         "prompt_safety": "sanitized_meta_prompts_no_procedural_content",
@@ -492,14 +492,14 @@
       "instruction_refusal_target_beats_random_addition": true,
       "instruction_refusal_target_beats_random_projection": true,
       "label_shuffle_fails": true,
-      "peak_vram_gb": 1.9344162940979004,
+      "peak_vram_gb": 1.9031662940979004,
       "real_lm_category_generation_used": false,
       "real_lm_category_heldout_accuracy": 0.9375,
       "real_lm_category_heldout_margin": 4.329248428344727,
       "real_lm_category_label_shuffle_fails": true,
       "real_lm_category_min_template_accuracy": 0.875,
       "real_lm_category_min_template_margin": 2.021860122680664,
-      "real_lm_category_peak_vram_gb": 0.39337968826293945,
+      "real_lm_category_peak_vram_gb": 0.36212968826293945,
       "real_lm_category_preflight": {
         "claim_scope": "safe_real_lm_category_direction_preflight_not_instruction_refusal_replication",
         "cuda_available": true,
@@ -515,7 +515,7 @@
         "min_template_accuracy": 0.875,
         "min_template_margin": 2.021860122680664,
         "model_id": "EleutherAI/pythia-70m-deduped",
-        "peak_vram_gb": 0.39337968826293945,
+        "peak_vram_gb": 0.36212968826293945,
         "preflight_passed": true,
         "prompt_safety": "sanitized_meta_prompts_no_procedural_content",
         "prompt_template_family_count": 3,
@@ -603,6 +603,226 @@
         "changes_refusal_rate": true,
         "refusal_rate_delta": 0.3333333432674408,
         "steered_refusal_rate": 0.6666666865348816
+      },
+      "toy_signature": {
+        "addition_curve": [
+          {
+            "alpha": 0.0,
+            "random_mean_score": -2.0213255882263184,
+            "random_refusal_rate": 0.0,
+            "target_mean_score": -2.0213255882263184,
+            "target_refusal_rate": 0.0
+          },
+          {
+            "alpha": 0.5,
+            "random_mean_score": -1.9998706579208374,
+            "random_refusal_rate": 0.0,
+            "target_mean_score": -1.5213255882263184,
+            "target_refusal_rate": 0.0
+          },
+          {
+            "alpha": 1.0,
+            "random_mean_score": -1.9784154891967773,
+            "random_refusal_rate": 0.0,
+            "target_mean_score": -1.0213255882263184,
+            "target_refusal_rate": 0.0
+          },
+          {
+            "alpha": 1.5,
+            "random_mean_score": -1.9569603204727173,
+            "random_refusal_rate": 0.0,
+            "target_mean_score": -0.5213256478309631,
+            "target_refusal_rate": 0.0
+          },
+          {
+            "alpha": 2.0,
+            "random_mean_score": -1.9355053901672363,
+            "random_refusal_rate": 0.0,
+            "target_mean_score": -0.021325627341866493,
+            "target_refusal_rate": 0.3333333432674408
+          },
+          {
+            "alpha": 2.5,
+            "random_mean_score": -1.9140502214431763,
+            "random_refusal_rate": 0.0,
+            "target_mean_score": 0.47867438197135925,
+            "target_refusal_rate": 1.0
+          },
+          {
+            "alpha": 3.0,
+            "random_mean_score": -1.8925952911376953,
+            "random_refusal_rate": 0.0,
+            "target_mean_score": 0.9786744117736816,
+            "target_refusal_rate": 1.0
+          }
+        ],
+        "best_layer": 5,
+        "capability_degradation": 0.027500033378601074,
+        "capability_degradation_small": true,
+        "control_claim_passed": true,
+        "heldout_accuracy": 1.0,
+        "heldout_margin": 4.029649019241333,
+        "label_shuffle_fails": true,
+        "label_shuffle_shuffled_accuracy": 0.0,
+        "label_shuffle_true_accuracy": 1.0,
+        "layer_sweep": [
+          {
+            "allowed_mean_score": 0.16595131158828735,
+            "heldout_accuracy": 0.3333333432674408,
+            "heldout_margin": -0.1875708494335413,
+            "layer": 0,
+            "refusal_mean_score": -0.021619537845253944
+          },
+          {
+            "allowed_mean_score": -0.1595461517572403,
+            "heldout_accuracy": 1.0,
+            "heldout_margin": 0.34993499517440796,
+            "layer": 1,
+            "refusal_mean_score": 0.19038884341716766
+          },
+          {
+            "allowed_mean_score": -0.6083455681800842,
+            "heldout_accuracy": 1.0,
+            "heldout_margin": 1.1769612431526184,
+            "layer": 2,
+            "refusal_mean_score": 0.5686156749725342
+          },
+          {
+            "allowed_mean_score": -0.9687960743904114,
+            "heldout_accuracy": 1.0,
+            "heldout_margin": 1.8949828743934631,
+            "layer": 3,
+            "refusal_mean_score": 0.9261868000030518
+          },
+          {
+            "allowed_mean_score": -1.441135287284851,
+            "heldout_accuracy": 1.0,
+            "heldout_margin": 2.857142448425293,
+            "layer": 4,
+            "refusal_mean_score": 1.416007161140442
+          },
+          {
+            "allowed_mean_score": -2.0213255882263184,
+            "heldout_accuracy": 1.0,
+            "heldout_margin": 4.029649019241333,
+            "layer": 5,
+            "refusal_mean_score": 2.0083234310150146
+          }
+        ],
+        "pc1_variance_fraction": 0.8655287623405457,
+        "projection_curve": [
+          {
+            "projection_fraction": 0.0,
+            "random_mean_score": 2.0083234310150146,
+            "random_refusal_rate": 1.0,
+            "target_mean_score": 2.0083234310150146,
+            "target_refusal_rate": 1.0
+          },
+          {
+            "projection_fraction": 0.25,
+            "random_mean_score": 2.00821590423584,
+            "random_refusal_rate": 1.0,
+            "target_mean_score": 1.5062423944473267,
+            "target_refusal_rate": 1.0
+          },
+          {
+            "projection_fraction": 0.5,
+            "random_mean_score": 2.008108615875244,
+            "random_refusal_rate": 1.0,
+            "target_mean_score": 1.0041617155075073,
+            "target_refusal_rate": 0.6666666865348816
+          },
+          {
+            "projection_fraction": 0.75,
+            "random_mean_score": 2.0080015659332275,
+            "random_refusal_rate": 1.0,
+            "target_mean_score": 0.5020808577537537,
+            "target_refusal_rate": 0.0
+          },
+          {
+            "projection_fraction": 1.0,
+            "random_mean_score": 2.007894277572632,
+            "random_refusal_rate": 1.0,
+            "target_mean_score": 0.0,
+            "target_refusal_rate": 0.0
+          }
+        ],
+        "prompt_table": [
+          {
+            "description": "sanitized harmful-request category",
+            "label": "refusal",
+            "prompt_id": "R0",
+            "split": "train"
+          },
+          {
+            "description": "sanitized credential-misuse category",
+            "label": "refusal",
+            "prompt_id": "R1",
+            "split": "train"
+          },
+          {
+            "description": "sanitized safety-evasion category",
+            "label": "refusal",
+            "prompt_id": "R2",
+            "split": "train"
+          },
+          {
+            "description": "sanitized risky-medical category",
+            "label": "refusal",
+            "prompt_id": "R3",
+            "split": "heldout"
+          },
+          {
+            "description": "sanitized policy-violation category",
+            "label": "refusal",
+            "prompt_id": "R4",
+            "split": "heldout"
+          },
+          {
+            "description": "sanitized unsafe-procedure category",
+            "label": "refusal",
+            "prompt_id": "R5",
+            "split": "heldout"
+          },
+          {
+            "description": "benign biology explanation",
+            "label": "allowed",
+            "prompt_id": "A0",
+            "split": "train"
+          },
+          {
+            "description": "benign cooking idea",
+            "label": "allowed",
+            "prompt_id": "A1",
+            "split": "train"
+          },
+          {
+            "description": "benign study-skills request",
+            "label": "allowed",
+            "prompt_id": "A2",
+            "split": "train"
+          },
+          {
+            "description": "benign programming example",
+            "label": "allowed",
+            "prompt_id": "A3",
+            "split": "heldout"
+          },
+          {
+            "description": "benign birthday-message request",
+            "label": "allowed",
+            "prompt_id": "A4",
+            "split": "heldout"
+          },
+          {
+            "description": "benign travel-planning request",
+            "label": "allowed",
+            "prompt_id": "A5",
+            "split": "heldout"
+          }
+        ],
+        "random_direction_fails": true,
+        "random_direction_margin": -0.0400000000372529
       }
     }
   },
@@ -643,10 +863,10 @@
   "ood_tests": {
     "declared": "required_where_applicable"
   },
-  "peak_vram_gb": 1.9344162940979004,
+  "peak_vram_gb": 1.9031662940979004,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "712baf86ec53b30769a2f61f7a31f754aa01e24143b30fc6345baa4ecd07cada",
+    "combined_sha256": "73ac7cfbd64791c1f453aa1816bf3413d496a556dd9bf80aa62795a84b29ea26",
     "files": [
       {
         "path": "arena_ext/refusal_steering.py",
@@ -660,18 +880,18 @@
       },
       {
         "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/9.1_Refusal_Directions_and_Safe_Steering_exercises.ipynb",
-        "sha256": "d526f2f9c7d7a19780474e3dbafb84c753bf514c59e94061120c7e2769dbe884",
-        "size_bytes": 22060
+        "sha256": "f5fd93ef0698c115cf284cd3305bdfad05e64a2dc813f4f7fc1b714d7727c104",
+        "size_bytes": 33164
       },
       {
         "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/9.1_Refusal_Directions_and_Safe_Steering_solutions.ipynb",
-        "sha256": "022f1c88ca4481494bd6a1bec9a2a088ae51bcea8bbfbc99f36b9cd1e2cfd92a",
-        "size_bytes": 11900
+        "sha256": "c480bc8750713101cf8785aec5af486f6df1f632cf7d5912e03e86b6383fd068",
+        "size_bytes": 46699
       },
       {
         "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/README.md",
-        "sha256": "ea84e6f6045157fb647b8da8acad1e325d850192ed89b61c93e3a53bae231190",
-        "size_bytes": 1335
+        "sha256": "e7a3b04d8584e11cc992e58ed5b760a8ee85e181bdf014a189693f194e2c18ca",
+        "size_bytes": 1628
       },
       {
         "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/artifacts.lock.yml",
@@ -695,13 +915,13 @@
       },
       {
         "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/solutions.py",
-        "sha256": "1f1baaf9f4fd6812dd98970ba6184a05dad33dcc4532bd38d7ce6779de8fd94c",
-        "size_bytes": 61599
+        "sha256": "5c25a9204f3bf5524d6a3fb1a63aa8aeee2940c7bc4f7fbecd32fe01e4596098",
+        "size_bytes": 71450
       },
       {
         "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/tests.py",
-        "sha256": "9f27ab5f8f55c8536c47875c7ec65d9ce952b39626b417697627a6c3ca7f93cb",
-        "size_bytes": 11970
+        "sha256": "6623884135dfdc3f93e599589eb520fb13ba1d3c4afcd9aeb9fd7e13774543d4",
+        "size_bytes": 15042
       },
       {
         "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/utils.py",
@@ -715,8 +935,8 @@
       },
       {
         "path": "chapter9_alignment_interpretability/instructions/pages/01_[9.1]_Refusal_Directions_and_Safe_Steering.md",
-        "sha256": "b1f852eb4e1467dd4f23fc792812fe3548f75db8624c20ae85a31617a92db4e4",
-        "size_bytes": 29239
+        "sha256": "0880f7436364c34a744b1cf280736b293d9a417537208db802a7a210b590fb7d",
+        "size_bytes": 27780
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
@@ -731,5 +951,5 @@
     "The real-model refusal paths use sanitized category descriptions, hidden states or next-token logit scores, fixed random-direction controls, and aggregate metrics without harmful procedural completions. SAE-feature comparisons are not claimed by this local preflight."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 6.173105
+  "wall_clock_seconds": 12.022929
 }
