@@ -26,7 +26,8 @@ Tracing with Attribution Graphs**, **[8.5] Sparse Feature
 Circuits**, **[9.1] Refusal Directions and Safe Steering**,
 **[9.2] Chain-of-Thought Faithfulness**, **[9.3] Emergent
 Misalignment Detection**, **[9.4] White-box Evals and Monitors**,
-and **[10.1] Capstone Research Sprint**.
+**[10.1] Capstone Research Sprint**, and **[11.1] PCA, SVD,
+and Geometry Controls**.
 They now have ARENA-style learner pages, local
 diagrams, help/interpretation dropdowns, expected-output blocks, paired
 exercise/solution notebooks, CUDA-backed signature result tables, and explicit

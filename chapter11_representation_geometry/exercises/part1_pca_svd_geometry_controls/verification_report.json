@@ -66,9 +66,9 @@
       "train_template": "The report was written in {}"
     }
   ],
-  "date_run": "2026-07-01T06:36:10+00:00",
+  "date_run": "2026-07-02T05:21:15+00:00",
   "evidence_level": "gt0_toy_geometry_plus_real_lm_calendar_template_centering_and_umap_preflight",
-  "git_commit": "3f277125",
+  "git_commit": "0bec1022",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-0",
   "known_failures": [],
@@ -126,7 +126,7 @@
       "full_path": "Run PCA/SVD and geometry controls on cached model activations.",
       "gpu_total_memory_gb": 23.45965576171875,
       "heldout_accuracy": 1.0,
-      "peak_vram_gb": 0.3446521759033203,
+      "peak_vram_gb": 0.3134021759033203,
       "predicts_heldout_labels": true,
       "pythia_calendar_preflight_passed": true,
       "pythia_calendar_task_count": 2,
@@ -149,7 +149,7 @@
       "pythia_weekday_generation_used": false,
       "pythia_weekday_matched_pair_accuracy": 1.0,
       "pythia_weekday_noise_accuracy": 0.1428571492433548,
-      "pythia_weekday_peak_vram_gb": 0.3446521759033203,
+      "pythia_weekday_peak_vram_gb": 0.3134021759033203,
       "pythia_weekday_permuted_label_accuracy": 0.0,
       "pythia_weekday_preflight": {
         "calendar_task_count": 2,
@@ -191,7 +191,7 @@
               "n_neighbors": 3,
               "neighborhood_preservation": 0.7333333333333334,
               "random_label_accuracy": 0.0,
-              "random_token_accuracy": 0.0555555559694767,
+              "random_token_accuracy": 0.02777777798473835,
               "seed": 0,
               "trustworthiness": 0.9949573863636364
             },
@@ -251,7 +251,7 @@
               "n_neighbors": 3,
               "neighborhood_preservation": 0.7083333333333334,
               "random_label_accuracy": 0.1111111119389534,
-              "random_token_accuracy": 0.02777777798473835,
+              "random_token_accuracy": 0.0555555559694767,
               "seed": 2,
               "trustworthiness": 0.994436553030303
             },
@@ -359,7 +359,7 @@
           0.29690292477607727,
           0.16706226766109467
         ],
-        "peak_vram_gb": 0.3446521759033203,
+        "peak_vram_gb": 0.3134021759033203,
         "permuted_label_accuracy": 0.0,
         "preflight_passed": true,
         "raw_heldout_accuracy": 0.1428571492433548,
@@ -680,10 +680,10 @@
   "ood_tests": {
     "declared": "required_where_applicable"
   },
-  "peak_vram_gb": 0.3446521759033203,
+  "peak_vram_gb": 0.3134021759033203,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "62342115fdb2099ce37084b185fd020b99895399aacd2200c7d7666ed9d7d123",
+    "combined_sha256": "793b107b2972b2c5d6dd0d2ba91a910789af4a940ce1220178f3eb3cf53aa107",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -692,13 +692,13 @@
       },
       {
         "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/11.1_PCA_SVD_and_Geometry_Controls_exercises.ipynb",
-        "sha256": "d3d346d31ab526e43ede95546442fab02b5ce25400425075e7b6242cd6f5ae70",
-        "size_bytes": 15001
+        "sha256": "4eb6a1c428ed7f3d8644b8e3951e93edd133bd04d309de68dd185d12f8345f1e",
+        "size_bytes": 55106
       },
       {
         "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/11.1_PCA_SVD_and_Geometry_Controls_solutions.ipynb",
-        "sha256": "70e8d721e464323cf5f7fc325d3f82ecd4c4255dd31d7e719a6656540c4a481d",
-        "size_bytes": 6336
+        "sha256": "6e9100476720c9d6a1e3d4245c5a22916eecbe8153669c9be6d3da341f4d39ad",
+        "size_bytes": 72086
       },
       {
         "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/README.md",
@@ -732,8 +732,8 @@
       },
       {
         "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/tests.py",
-        "sha256": "9b7978539140521bffddbede9e80ea7337afbac4eef9df54b964ea38d18e935d",
-        "size_bytes": 20140
+        "sha256": "9a371aa4cc953e36bb70c739a5725fb2bb259a0213405803c61c86f6275a5d74",
+        "size_bytes": 19777
       },
       {
         "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/utils.py",
@@ -747,8 +747,8 @@
       },
       {
         "path": "chapter11_representation_geometry/instructions/pages/01_[11.1]_PCA_SVD_and_Geometry_Controls.md",
-        "sha256": "1a8138883f257dff364a25946b6ddd75082d926352783527343fb59ada6b093b",
-        "size_bytes": 23681
+        "sha256": "27331095ffec122b4b4e26a2db4cc87ba45048da92906160c61193bb51047cd2",
+        "size_bytes": 40991
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
@@ -763,5 +763,5 @@
     "The real-LM geometry path uses generated weekday/month labels and hidden states only. It performs no generated completions and does not claim causal space/time intervention behavior."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 12.877785
+  "wall_clock_seconds": 15.233235
 }

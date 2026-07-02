@@ -4,8 +4,6 @@ from pathlib import Path
 
 import torch as t
 
-from arena_ext import representation_geometry as reference
-
 
 def _solutions():
     from chapter11_representation_geometry.exercises.part1_pca_svd_geometry_controls import (
@@ -17,24 +15,6 @@ def _solutions():
 
 def _as_dict(report: object) -> dict:
     return report.__dict__
-
-
-def _assert_report_close(actual: object, expected: object, *, msg: str) -> None:
-    actual_dict = _as_dict(actual)
-    expected_dict = _as_dict(expected)
-    assert actual_dict.keys() == expected_dict.keys(), (
-        f"{msg} should expose the same fields as the independent reference."
-    )
-    for key, expected_value in expected_dict.items():
-        actual_value = actual_dict[key]
-        if isinstance(expected_value, float):
-            assert abs(actual_value - expected_value) < 1e-6, (
-                f"{msg} field {key!r} should be {expected_value}, got {actual_value}."
-            )
-        else:
-            assert actual_value == expected_value, (
-                f"{msg} field {key!r} should be {expected_value!r}, got {actual_value!r}."
-            )
 
 
 def test_pca_svd_projection_centers_and_reports_variance(
@@ -50,7 +30,6 @@ def test_pca_svd_projection_centers_and_reports_variance(
         ]
     )
     projection = pca_svd_projection(activations, n_components=1)
-    expected = reference.pca_svd_projection(activations, n_components=1)
 
     assert projection.projected.shape == (4, 1), (
         "PCA should return one projected coordinate per example."
@@ -60,7 +39,7 @@ def test_pca_svd_projection_centers_and_reports_variance(
     )
     assert t.allclose(
         projection.explained_variance_ratio,
-        expected.explained_variance_ratio,
+        t.tensor([1.0]),
         atol=1e-6,
     ), "Explained variance should be singular_value^2 divided by total variance."
     assert abs(float(projection.explained_variance_ratio[0]) - 1.0) < 1e-6, (
@@ -104,14 +83,10 @@ def test_geometry_label_prediction_report_uses_heldout_centroids(
         heldout_labels,
         min_accuracy=1.0,
     )
-    expected = reference.geometry_label_prediction_report(
-        train_points,
-        train_labels,
-        heldout_points,
-        heldout_labels,
-        min_accuracy=1.0,
-    )
-    _assert_report_close(report, expected, msg="Held-out label prediction report")
+    assert _as_dict(report) == {
+        "heldout_accuracy": 1.0,
+        "predicts_heldout_labels": True,
+    }, "Nearest-centroid geometry should report exact held-out accuracy and pass status."
     assert report.heldout_accuracy == 1.0 and report.predicts_heldout_labels, (
         "Nearest-centroid geometry should correctly classify both held-out points."
     )
@@ -154,12 +129,12 @@ def test_white_noise_control_report_requires_margin(
         noise_accuracy=0.5,
         min_margin=0.2,
     )
-    expected = reference.white_noise_control_report(
-        real_accuracy=0.9,
-        noise_accuracy=0.5,
-        min_margin=0.2,
-    )
-    _assert_report_close(report, expected, msg="White-noise control report")
+    assert _as_dict(report) == {
+        "real_accuracy": 0.9,
+        "noise_accuracy": 0.5,
+        "margin": 0.4,
+        "survives_white_noise_control": True,
+    }, "White-noise reports should expose real/noise accuracies, signed margin, and pass status."
     assert abs(report.margin - 0.4) < 1e-6 and report.survives_white_noise_control, (
         "Real geometry should pass when it beats white noise by the required margin."
     )
@@ -182,8 +157,12 @@ def test_geometry_stability_report_averages_pairwise_jaccard(
     )
     neighbor_sets = [[1, 2, 3], [1, 2, 4], [1, 2, 3]]
     report = geometry_stability_report(neighbor_sets, min_jaccard=0.5)
-    expected = reference.geometry_stability_report(neighbor_sets, min_jaccard=0.5)
-    _assert_report_close(report, expected, msg="Geometry stability report")
+    assert report.neighbor_sets == ((1, 2, 3), (1, 2, 4), (1, 2, 3)), (
+        "Stability should normalize neighbor sets into tuples."
+    )
+    assert report.stable_across_seeds, (
+        "The toy neighbor sets should pass a 0.5 mean-Jaccard threshold."
+    )
     assert abs(report.mean_pairwise_jaccard - (7 / 9)) < 1e-6, (
         "Stability should average all pairwise Jaccard overlaps."
     )
@@ -223,15 +202,11 @@ def test_knn_label_prediction_report_uses_heldout_points(
         k=3,
         min_accuracy=1.0,
     )
-    expected = reference.heldout_knn_accuracy_report(
-        train_points,
-        train_labels,
-        heldout_points,
-        heldout_labels,
-        k=3,
-        min_accuracy=1.0,
-    )
-    _assert_report_close(report, expected, msg="Held-out kNN prediction report")
+    assert _as_dict(report) == {
+        "k": 3,
+        "heldout_accuracy": 1.0,
+        "predicts_heldout_labels": True,
+    }, "Held-out kNN should report k, exact held-out accuracy, and pass status."
     assert report.predicts_heldout_labels, (
         "The kNN report should pass when held-out points are nearest to same-label train clusters."
     )
@@ -254,15 +229,18 @@ def test_neighborhood_preservation_report_compares_neighbor_sets(
     )
     low_dim = high_dim[:, :2]
     report = neighborhood_preservation_report(high_dim, low_dim, k=1, min_overlap=1.0)
-    expected = reference.neighborhood_preservation_report(
-        high_dim,
-        low_dim,
-        k=1,
-        min_overlap=1.0,
-    )
-    _assert_report_close(report, expected, msg="Neighborhood preservation report")
+    assert _as_dict(report) == {
+        "k": 1,
+        "mean_neighbor_overlap": 1.0,
+        "preserves_neighborhoods": True,
+    }, "Identical low-dimensional coordinates should preserve all nearest neighbors."
     assert report.preserves_neighborhoods, (
         "Identical high-dimensional and low-dimensional neighbor order should pass preservation."
+    )
+    scrambled = low_dim[t.tensor([0, 2, 1, 3])]
+    weak = neighborhood_preservation_report(high_dim, scrambled, k=1, min_overlap=1.0)
+    assert not weak.preserves_neighborhoods, (
+        "Scrambling the low-dimensional coordinates should break at least one nearest neighbor."
     )
     print("All tests in `test_neighborhood_preservation_report_compares_neighbor_sets` passed!")
 
@@ -282,16 +260,20 @@ def test_visualization_sweep_report_requires_controls(
         random_label_accuracies=[0.1, 0.2],
         random_token_accuracies=[0.0, 0.1],
     )
-    expected = reference.visualization_sweep_report(
-        seed_count=5,
-        setting_count=3,
-        heldout_knn_accuracies=[0.9, 0.85],
-        trustworthiness_scores=[0.95, 0.93],
-        neighborhood_preservation_scores=[0.7, 0.65],
-        random_label_accuracies=[0.1, 0.2],
-        random_token_accuracies=[0.0, 0.1],
-    )
-    _assert_report_close(report, expected, msg="Visualization sweep report")
+    assert _as_dict(report) == {
+        "seed_count": 5,
+        "setting_count": 3,
+        "run_count": 2,
+        "min_heldout_knn_accuracy": 0.85,
+        "mean_heldout_knn_accuracy": 0.875,
+        "min_trustworthiness": 0.93,
+        "mean_trustworthiness": 0.94,
+        "min_neighborhood_preservation": 0.65,
+        "mean_neighborhood_preservation": 0.675,
+        "random_label_accuracy_max": 0.2,
+        "random_token_accuracy_max": 0.1,
+        "passes_visualization_controls": True,
+    }, "Visualization sweeps should aggregate minima, means, control maxima, and pass status."
     assert report.passes_visualization_controls, (
         "A sweep with enough seeds/settings, accurate held-out kNN, and weak controls should pass."
     )
@@ -328,15 +310,14 @@ def test_direction_causal_effect_report_beats_random_control(
         min_effect=0.4,
         min_random_margin=0.2,
     )
-    expected = reference.direction_causal_effect_report(
-        baseline,
-        intervened,
-        random_control,
-        expected_direction="increase",
-        min_effect=0.4,
-        min_random_margin=0.2,
-    )
-    _assert_report_close(report, expected, msg="Causal direction report")
+    assert _as_dict(report) == {
+        "baseline_mean": 0.25,
+        "intervened_mean": 0.75,
+        "random_control_mean": 0.30000001192092896,
+        "observed_delta": 0.5,
+        "random_delta": 0.050000011920928955,
+        "has_causal_effect": True,
+    }, "Causal-direction reports should expose means, deltas, and random-control-gated pass status."
     assert abs(report.observed_delta - 0.5) < 1e-6 and report.has_causal_effect, (
         "The intervention should move the score in the expected direction and beat the random control."
     )
@@ -391,11 +372,14 @@ def test_template_center_activations_removes_each_template_mean(
         ]
     )
     centered = template_center_activations(activations)
-    expected = reference.template_center_activations(activations)
     assert centered.shape == activations.shape, (
         "Template centering should preserve the activation tensor shape."
     )
-    assert t.allclose(centered, expected, atol=1e-6), (
+    assert t.allclose(
+        centered,
+        t.tensor([[[-1.0, -1.0], [1.0, 1.0]], [[-2.0, -1.0], [2.0, 1.0]]]),
+        atol=1e-6,
+    ), (
         "Template centering should subtract each template's own example mean."
     )
     assert centered.mean(dim=1).abs().max().item() == 0.0, (
