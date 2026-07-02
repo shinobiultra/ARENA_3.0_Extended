@@ -1,6 +1,7 @@
 # [17.1] Checkpoint Archaeology and Mechanism Emergence Verification Assets
 
-Generated support files for the roadmap verification contract.
+ARENA-style learner path and verification assets for the checkpoint archaeology
+and mechanism-emergence section.
 
 - `17.1_Checkpoint_Archaeology_and_Mechanism_Emergence_exercises.ipynb` is the
   learner notebook with stubs and visible ARENA-style tests.
@@ -10,6 +11,10 @@ Generated support files for the roadmap verification contract.
 - `verification_report.schema.json` defines the required final report.
 - `expected_outputs/smoke_test.json` records the historical `run_smoke_test` contract hook.
 - `expected_outputs/reference_metrics.json` records baseline/control slots.
+- `../../instructions/assets/checkpoint_archaeology_validation_loop.svg` shows
+  the train/save/reload/control validation loop.
+- `../../instructions/assets/checkpoint_archaeology_signature_result.svg`
+  summarizes the scoped finite-table signature result.
 
 The learner-facing live path is `live_checkpoint_archaeology_smoke_test`: it
 trains a tiny mod-13 addition MLP on CPU, writes and reloads real checkpoints,

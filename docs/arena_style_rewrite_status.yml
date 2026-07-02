@@ -162,6 +162,6 @@ sections:
     page: chapter16_shapley_attribution_baselines/instructions/pages/08_[16.8]_Do_SHAPley_and_Mechanistic_Interpretability_Agree.md
     notes: Prototype scaffold retained for implementation evidence; requires ARENA-style rewrite before course-ready release.
   '17.1':
-    status: prototype
+    status: course_ready
     page: chapter17_training_dynamics/instructions/pages/01_[17.1]_Checkpoint_Archaeology_and_Mechanism_Emergence.md
-    notes: Prototype scaffold retained for implementation evidence; requires ARENA-style rewrite before course-ready release.
+    notes: ARENA-style rewrite with checkpoint-archaeology validation-loop and signature-result diagrams, first/stable crossing, phase-transition, random-control, developmental-comparison, live save/reload checkpoint progression, help/interpretation dropdowns, paired notebooks, limitations, and scoped CUDA finite-table evidence.

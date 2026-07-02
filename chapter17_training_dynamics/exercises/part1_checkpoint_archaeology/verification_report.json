@@ -72,9 +72,9 @@
       "source": "generated_finite_table"
     }
   ],
-  "date_run": "2026-07-01T06:37:05+00:00",
+  "date_run": "2026-07-02T06:45:19+00:00",
   "evidence_level": "toy_trajectory_contract_plus_real_modular_addition_checkpoint_preflight",
-  "git_commit": "3f277125",
+  "git_commit": "6fc31104",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-0",
   "known_failures": [],
@@ -360,7 +360,7 @@
   "peak_vram_gb": 0.06275796890258789,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "fb138f226cc603aef675432a07cc6923e5845b164752da470a596b8b1a103dfd",
+    "combined_sha256": "b593a4b2b9b62db6054369acf26f8dc8172e8d8e5dd63053de9e30f252e956cd",
     "files": [
       {
         "path": "arena_ext/training_dynamics.py",
@@ -374,18 +374,18 @@
       },
       {
         "path": "chapter17_training_dynamics/exercises/part1_checkpoint_archaeology/17.1_Checkpoint_Archaeology_and_Mechanism_Emergence_exercises.ipynb",
-        "sha256": "e206f8b7f29532183b8e6f33d2f45bf953bbfb246a895274e4bdb2b0c2bacd3f",
-        "size_bytes": 15490
+        "sha256": "d08bb39f99cab3a8b826bb0856248e6fac17b2418303186736fe9b0e6b8c1bfb",
+        "size_bytes": 20629
       },
       {
         "path": "chapter17_training_dynamics/exercises/part1_checkpoint_archaeology/17.1_Checkpoint_Archaeology_and_Mechanism_Emergence_solutions.ipynb",
-        "sha256": "3f10648f64b32155d755f4c527045282de7b2cb4d7b100d3472835314b546ebb",
-        "size_bytes": 7701
+        "sha256": "2def656c169ff615648fb90164f39e7f73c0d53ac5b1b8f301606d3439fba1bb",
+        "size_bytes": 40322
       },
       {
         "path": "chapter17_training_dynamics/exercises/part1_checkpoint_archaeology/README.md",
-        "sha256": "92a5530ffaa1e178ff4479ac8e77aecb835d9e895981e82bd41c008afcb1edea",
-        "size_bytes": 1316
+        "sha256": "a7a8841fd7546eb1f4c766ba5507772c1c0bac9d6f7714bbbd87832261557cd5",
+        "size_bytes": 1623
       },
       {
         "path": "chapter17_training_dynamics/exercises/part1_checkpoint_archaeology/artifacts.lock.yml",
@@ -429,8 +429,8 @@
       },
       {
         "path": "chapter17_training_dynamics/instructions/pages/01_[17.1]_Checkpoint_Archaeology_and_Mechanism_Emergence.md",
-        "sha256": "36cdd3005d921e934b90bc04f8b2bd1c697de6e0c39a1c26411595b01f59ce05",
-        "size_bytes": 32743
+        "sha256": "f06d885ac45d6050be72e16d14028ebc83f7894cddf8afd1da775dddce4991d3",
+        "size_bytes": 37337
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
@@ -445,5 +445,5 @@
     "The real training path uses only a generated finite modular-addition table and a random-label negative control. It does not use unsafe data, user data, adapters, gated weights, or large persistent artifacts."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 7.200143
+  "wall_clock_seconds": 8.61116
 }
