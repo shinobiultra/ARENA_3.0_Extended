@@ -5242,6 +5242,16 @@ def lock_for(record: dict[str, Any]) -> dict[str, Any]:
                 "kernelshap_partitionshap_tokenshap_and_large_model_attribution_not_claimed",
             ]
         )
+        lock["ood_tests"] = {
+            "declared": "complete_finite_domain_evaluation",
+            "complete_binary_feature_table_evaluated": True,
+            "ood_generalization_claimed": False,
+            "rationale": (
+                "The 16.1 CUDA evidence trains and evaluates the complete "
+                "four-feature binary table. Its scope is finite-domain exact "
+                "Shapley recovery, not extrapolation outside the enumerated game."
+            ),
+        }
         lock["safety_notes"][-1] = (
             "The real training path uses only a generated finite binary feature "
             "table and a shuffled-label negative control. It does not use unsafe "

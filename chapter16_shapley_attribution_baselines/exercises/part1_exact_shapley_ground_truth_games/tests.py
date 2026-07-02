@@ -1,4 +1,6 @@
 from collections.abc import Callable
+import json
+from pathlib import Path
 
 import torch as t
 
@@ -249,3 +251,66 @@ def test_notebook_contract(run_smoke_test: Callable | None = None):
         "The notebook contract should include the leave-one-out interaction failure check."
     )
     print("All tests in `test_notebook_contract` passed!")
+
+
+def test_committed_gpu_report_records_exact_shapley_preflight():
+    report_path = Path(__file__).with_name("verification_report.json")
+    report = json.loads(report_path.read_text())
+    gpu = report["metrics"]["gpu_test"]
+    claim_scope = report["claim_scope"].lower()
+
+    assert report["accepted"] and report["tests_passed"], (
+        "The committed 16.1 verification report should be accepted and test-backed."
+    )
+    assert report["known_failures"] == [], (
+        "Course-ready exact Shapley should not ship known report failures."
+    )
+    assert gpu["cuda_available"] and gpu["preflight_passed"], (
+        "The report should record a real CUDA preflight, not a CPU fallback."
+    )
+    assert gpu["model_family"] == "cuda_trained_neural_coalition_game_mlp", (
+        "The report should identify the trained neural coalition game."
+    )
+    assert gpu["num_players"] == 4 and gpu["coalition_count"] == 16, (
+        "16.1 should evaluate the complete four-feature binary coalition table."
+    )
+    assert gpu["complete_finite_domain_evaluated"] is True, (
+        "The CUDA report should document that all 16 binary feature-table inputs were evaluated."
+    )
+    assert gpu["ood_generalization_claimed"] is False, (
+        "16.1 should explicitly avoid claiming OOD generalization from a finite table."
+    )
+    assert gpu["generalization_scope"] == "complete_binary_feature_table", (
+        "The generated metrics should scope generalization to the complete finite table."
+    )
+    assert gpu["training_example_count"] == 16 and gpu["training_steps"] == 1200, (
+        "The report should pin the complete training table and training budget."
+    )
+    assert gpu["fit_mse"] <= 1e-8 and gpu["fit_max_abs_error"] <= 1e-4, (
+        "The neural game should fit the finite coalition table before attribution."
+    )
+    assert gpu["neural_shapley_max_abs_error"] <= 1e-4, (
+        "Model-ablation Shapley values should recover the analytic target."
+    )
+    assert gpu["satisfies_efficiency"] and gpu["efficiency_error"] <= 1e-8, (
+        "The trained-model Shapley vector should satisfy efficiency."
+    )
+    assert gpu["shuffled_control_rejected"], (
+        "The shuffled-label trained-model control should fail the true attribution vector."
+    )
+    assert gpu["shuffled_control_error"] >= 1.0, (
+        "The shuffled-label control should be far from the analytic Shapley vector."
+    )
+    assert gpu["shuffled_control_cosine"] <= 0.25, (
+        "The shuffled-label control should not align with the analytic Shapley vector."
+    )
+    assert gpu["within_vram_budget"] and gpu["peak_vram_gb"] <= 1.0, (
+        "The exact-Shapley neural preflight should fit comfortably within the local GPU budget."
+    )
+    assert "finite trained model organism" in claim_scope, (
+        "The report claim scope should identify the finite model-organism boundary."
+    )
+    assert "not a claim about approximate shap" in claim_scope, (
+        "The report claim scope should avoid overclaiming approximate SHAP behavior."
+    )
+    print("All tests in `test_committed_gpu_report_records_exact_shapley_preflight` passed!")

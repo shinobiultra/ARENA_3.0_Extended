@@ -317,6 +317,7 @@ def run_neural_exact_shapley_preflight(max_vram_gb: float = 24.0) -> dict:
         "model_family": "cuda_trained_neural_coalition_game_mlp",
         "num_players": NEURAL_GAME_NUM_PLAYERS,
         "coalition_count": 2**NEURAL_GAME_NUM_PLAYERS,
+        "complete_finite_domain_evaluated": True,
         "training_example_count": int(inputs.shape[0]),
         "training_steps": NEURAL_GAME_STEPS,
         "fit_mse": trained.fit_mse,
@@ -334,6 +335,8 @@ def run_neural_exact_shapley_preflight(max_vram_gb: float = 24.0) -> dict:
         and shuffled_cosine <= NEURAL_GAME_RANDOM_CONTROL_MAX_COSINE,
         "peak_vram_gb": peak_vram_gb,
         "within_vram_budget": peak_vram_gb <= max_vram_gb,
+        "ood_generalization_claimed": False,
+        "generalization_scope": "complete_binary_feature_table",
         "full_path": "Train a CUDA MLP on a complete binary feature game, compute exact Shapley values from real model ablations, and reject a shuffled-label control.",
     }
 

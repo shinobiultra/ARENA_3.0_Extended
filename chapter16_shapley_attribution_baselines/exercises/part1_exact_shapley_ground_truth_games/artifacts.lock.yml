@@ -69,6 +69,9 @@ expected_metrics:
   model_family: cuda_trained_neural_coalition_game_mlp
   num_players: 4
   coalition_count: 16
+  complete_finite_domain_evaluated: true
+  ood_generalization_claimed: false
+  generalization_scope: complete_binary_feature_table
   training_example_count: 16
   training_steps: 1200
   fit_mse_max: 1.0e-08
@@ -95,6 +98,13 @@ controls:
 - efficiency_axiom_check_on_trained_model
 - shuffled_label_trained_model_negative_control
 - kernelshap_partitionshap_tokenshap_and_large_model_attribution_not_claimed
+ood_tests:
+  declared: complete_finite_domain_evaluation
+  complete_binary_feature_table_evaluated: true
+  ood_generalization_claimed: false
+  rationale: The 16.1 CUDA evidence trains and evaluates the complete four-feature
+    binary table. Its scope is finite-domain exact Shapley recovery, not extrapolation
+    outside the enumerated game.
 safety_notes:
 - No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.
 - The real training path uses only a generated finite binary feature table and a shuffled-label
