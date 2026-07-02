@@ -126,9 +126,9 @@ sections:
     page: chapter14_jepa_world_models/instructions/pages/01_[14.1]_JEPA_and_World_Model_Controls.md
     notes: Prototype scaffold retained for implementation evidence; requires ARENA-style rewrite before course-ready release.
   '15.1':
-    status: prototype
+    status: course_ready
     page: chapter15_peft_misalignment/instructions/pages/01_[15.1]_LoRA_DoRA_and_Adapter_Controls.md
-    notes: Prototype scaffold retained for implementation evidence; requires ARENA-style rewrite before course-ready release.
+    notes: ARENA-style LoRA/DoRA mechanics lesson with validation-loop and signature-result diagrams, help/interpretation dropdowns, paired notebooks, exact rank/SVD and merge-parity tests, limitations, and scoped CUDA safe-proxy evidence.
   '16.1':
     status: prototype
     page: chapter16_shapley_attribution_baselines/instructions/pages/01_[16.1]_Exact_Shapley_on_Ground_Truth_Games.md

@@ -97,7 +97,7 @@ Coming soon!
 
 This fork is being rewritten into a local-first frontier-model extension while
 keeping the original ARENA structure intact. The current PR contains a large
-prototype implementation surface plus twenty-seven polished ARENA-style sections:
+prototype implementation surface plus twenty-eight polished ARENA-style sections:
 [5.1 Gemma from Scratch](chapter5_modern_architectures/instructions/pages/01_%5B5.1%5D_Gemma_from_Scratch.md),
 [5.2 Gemma Scope and Feature Steering](chapter5_modern_architectures/instructions/pages/02_%5B5.2%5D_Gemma_Scope_and_Feature_Steering.md),
 [5.3 Mamba from Scratch](chapter5_modern_architectures/instructions/pages/03_%5B5.3%5D_Mamba_from_Scratch.md),
@@ -124,7 +124,8 @@ prototype implementation surface plus twenty-seven polished ARENA-style sections
 [9.4 White-box Evals and Monitors](chapter9_alignment_interpretability/instructions/pages/04_%5B9.4%5D_White_box_Evals_and_Monitors.md),
 [10.1 Capstone Research Sprint](chapter10_capstone_research_sprint/instructions/pages/01_%5B10.1%5D_Capstone_Research_Sprint.md),
 [11.1 PCA, SVD, and Geometry Controls](chapter11_representation_geometry/instructions/pages/01_%5B11.1%5D_PCA_SVD_and_Geometry_Controls.md),
-and [12.1 CLIP, SigLIP, and VLM Controls](chapter12_vlm_interpretability/instructions/pages/01_%5B12.1%5D_CLIP_SigLIP_and_VLM_Controls.md).
+[12.1 CLIP, SigLIP, and VLM Controls](chapter12_vlm_interpretability/instructions/pages/01_%5B12.1%5D_CLIP_SigLIP_and_VLM_Controls.md),
+and [15.1 LoRA, DoRA, and Adapter Controls](chapter15_peft_misalignment/instructions/pages/01_%5B15.1%5D_LoRA_DoRA_and_Adapter_Controls.md).
 The remaining non-course-ready extension pages are tracked as prototype scaffolds until they are
 rewritten with original-ARENA pacing, diagrams, help/interpretation dropdowns,
 visible signature results, and notebook surfaces. See

@@ -70,6 +70,28 @@ def adapter_delta_report(
     )
 
 
+def lora_merge_max_abs_diff(
+    inputs: t.Tensor,
+    base_weight: t.Tensor,
+    lora_a: t.Tensor,
+    lora_b: t.Tensor,
+    *,
+    alpha: float = 1.0,
+) -> float:
+    """Compare separate-adapter logits to merged-weight logits."""
+
+    if inputs.ndim != 2 or base_weight.ndim != 2:
+        raise ValueError("inputs and base_weight must be matrices.")
+    delta = lora_delta(lora_a, lora_b, alpha=alpha)
+    if base_weight.shape != delta.shape:
+        raise ValueError("base_weight and LoRA delta must have the same shape.")
+    if inputs.shape[-1] != base_weight.shape[-1]:
+        raise ValueError("input dimension must match base_weight input features.")
+    unmerged_logits = inputs.float() @ base_weight.float().T + inputs.float() @ delta.T
+    merged_logits = inputs.float() @ (base_weight.float() + delta).T
+    return float((unmerged_logits - merged_logits).abs().max().item())
+
+
 def dora_recompose_weight(
     base_weight: t.Tensor,
     adapter_delta: t.Tensor,

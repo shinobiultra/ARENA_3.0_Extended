@@ -1071,7 +1071,7 @@ chapters:
     title: "Chapter 15: PEFT and Misalignment"
     short_title: "PEFT and Misalignment"
     short_description: "Local-first LoRA, DoRA, and adapter interpretability labs for low-rank deltas, magnitude controls, protected directions, and mechanism-preservation checks."
-    description: "This extension chapter turns PEFT and adapter-safety claims into testable contracts with exact low-rank math, DoRA recomposition checks, protected-direction controls, and accuracy-vs-mechanism comparisons."
+    description: "This extension chapter turns PEFT adapter-mechanics claims into testable contracts with exact low-rank math, DoRA recomposition checks, monitored-direction controls, generated safe-proxy checks, and accuracy-vs-mechanism comparisons."
     color: "#7C3AED"
     icon: "sliders"
     header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-15-3.png"

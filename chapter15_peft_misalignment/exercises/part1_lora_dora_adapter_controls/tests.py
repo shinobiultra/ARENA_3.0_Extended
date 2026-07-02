@@ -107,6 +107,98 @@ def test_adapter_delta_report_records_rank_alpha_and_nonzero_update(
     print("All tests in `test_adapter_delta_report_records_rank_alpha_and_nonzero_update` passed!")
 
 
+def test_lora_delta_rank_bound_and_svd_spectrum(lora_delta: Callable | None = None):
+    lora_delta = lora_delta or _solutions().lora_delta
+    lora_a = t.tensor(
+        [
+            [1.0, 0.0, 2.0],
+            [0.0, 3.0, -1.0],
+        ]
+    )
+    lora_b = t.tensor(
+        [
+            [2.0, 0.0],
+            [0.0, -1.0],
+            [1.0, 1.0],
+            [-2.0, 0.5],
+        ]
+    )
+    delta = lora_delta(lora_a, lora_b, alpha=4.0)
+    expected = (4.0 / 2) * (lora_b @ lora_a)
+    singular_values = t.linalg.svdvals(delta)
+
+    assert t.allclose(delta, expected), (
+        "The SVD fixture should still use the exact scaled B @ A update."
+    )
+    assert int(t.linalg.matrix_rank(delta, tol=1e-5).item()) <= lora_a.shape[0], (
+        "LoRA updates must have numerical rank no larger than the declared rank."
+    )
+    assert singular_values.numel() == min(delta.shape), (
+        "The SVD should be computed on the actual weight update, not on A or B."
+    )
+    assert singular_values[0] > singular_values[1] > 1e-5, (
+        "This rank-2 fixture should expose two nonzero singular values."
+    )
+    if singular_values.numel() > 2:
+        assert singular_values[2] <= 1e-5, (
+            "No third singular value should appear through a rank-2 bottleneck."
+        )
+
+    degenerate_b = t.tensor([[1.0, 2.0], [2.0, 4.0], [-1.0, -2.0]])
+    degenerate_delta = lora_delta(lora_a, degenerate_b, alpha=2.0)
+    assert int(t.linalg.matrix_rank(degenerate_delta, tol=1e-5).item()) == 1, (
+        "A declared rank-2 adapter can collapse to numerical rank 1, but not above 2."
+    )
+    print("All tests in `test_lora_delta_rank_bound_and_svd_spectrum` passed!")
+
+
+def test_lora_merge_unmerge_parity_is_independent_of_report(
+    lora_merge_max_abs_diff: Callable | None = None,
+):
+    lora_merge_max_abs_diff = (
+        lora_merge_max_abs_diff or _solutions().lora_merge_max_abs_diff
+    )
+    inputs = t.tensor(
+        [
+            [1.0, -1.0, 0.5],
+            [0.0, 2.0, -3.0],
+            [-2.0, 1.0, 1.5],
+        ]
+    )
+    base_weight = t.tensor(
+        [
+            [0.5, -1.0, 0.0],
+            [1.5, 0.25, -0.75],
+        ]
+    )
+    lora_a = t.tensor([[1.0, 2.0, -1.0]])
+    lora_b = t.tensor([[0.5], [-1.5]])
+
+    original_base = base_weight.clone()
+    max_diff = lora_merge_max_abs_diff(
+        inputs,
+        base_weight,
+        lora_a,
+        lora_b,
+        alpha=3.0,
+    )
+    assert max_diff <= 1e-6, (
+        "Merged and unmerged LoRA logits should agree to numerical precision."
+    )
+    assert t.equal(base_weight, original_base), (
+        "The merge-parity helper should not mutate the frozen base weight."
+    )
+    try:
+        lora_merge_max_abs_diff(inputs, base_weight[:1], lora_a, lora_b, alpha=3.0)
+    except ValueError as exc:
+        assert "same shape" in str(exc), (
+            "Bad merge shapes should raise an explicit base-weight shape error."
+        )
+    else:
+        raise AssertionError("merge parity should reject mismatched base/update shapes.")
+    print("All tests in `test_lora_merge_unmerge_parity_is_independent_of_report` passed!")
+
+
 def test_dora_recompose_weight_preserves_target_row_magnitudes(
     dora_recompose_weight: Callable | None = None,
     dora_weight_report: Callable | None = None,
@@ -145,6 +237,25 @@ def test_dora_recompose_weight_preserves_target_row_magnitudes(
     else:
         raise AssertionError("DoRA recomposition should reject mismatched magnitude shape.")
     print("All tests in `test_dora_recompose_weight_preserves_target_row_magnitudes` passed!")
+
+
+def test_dora_recomposition_handles_nonzero_delta_direction(
+    dora_recompose_weight: Callable | None = None,
+):
+    dora_recompose_weight = dora_recompose_weight or _solutions().dora_recompose_weight
+    base_weight = t.tensor([[3.0, 4.0, 0.0], [0.0, 2.0, 0.0]])
+    adapter_delta = t.tensor([[1.0, -2.0, 2.0], [2.0, 0.0, 1.0]])
+    magnitude = t.tensor([7.0, 3.0])
+    direction = base_weight + adapter_delta
+
+    recomposed = dora_recompose_weight(base_weight, adapter_delta, magnitude)
+    t.testing.assert_close(recomposed.norm(dim=-1), magnitude, atol=1e-6, rtol=0)
+    cosine = t.nn.functional.cosine_similarity(recomposed, direction, dim=-1)
+    t.testing.assert_close(cosine, t.ones_like(cosine), atol=1e-6, rtol=0)
+    assert not t.allclose(recomposed, direction * magnitude.unsqueeze(-1)), (
+        "DoRA should normalize each updated direction before applying magnitudes."
+    )
+    print("All tests in `test_dora_recomposition_handles_nonzero_delta_direction` passed!")
 
 
 def test_intruder_dimension_report_measures_projection_fraction(
