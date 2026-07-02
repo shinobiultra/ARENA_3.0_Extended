@@ -2020,10 +2020,11 @@ METHOD_ROWS: list[dict[str, str]] = [
         "baseline_status": "HAS_WORLD_STATE_BASELINES_AND_REAL_VJEPA2_PREFLIGHT",
         "notes": (
             "Section 14.1 now includes toy JEPA/world-model controls plus a pinned "
-            "V-JEPA 2 ViT-L synthetic-video feature-extraction preflight with same-object "
-            "and synthetic occlusion object-permanence contrasts; masked target "
-            "prediction, real-video permanence benchmarks, and action-conditioned "
-            "rollouts remain outside this local preflight."
+            "V-JEPA 2 ViT-L generated-video preflight with same-object, synthetic "
+            "occlusion, masked latent prediction, held-out state probes over shuffled "
+            "labels, action-conditioned rollout over copy and shuffled-action baselines, "
+            "object-permanence controls, and causal object-token patching. It does not "
+            "claim real-video permanence benchmark replication."
         ),
     },
     {
@@ -5079,9 +5080,9 @@ def lock_for(record: dict[str, Any]) -> dict[str, Any]:
         )
         lock["safety_notes"][-1] = (
             "The real-model path uses generated shape videos only. The occlusion "
-            "contrast is a deterministic synthetic-video control and does not claim "
-            "real-video object permanence, masked target prediction, or action-conditioned "
-            "rollout replication."
+            "contrast, masked latent prediction, and action-conditioned rollout are "
+            "deterministic synthetic-video controls and do not claim real-video benchmark "
+            "replication."
         )
     if record["number"] == "15.1":
         lock["evidence_level"] = (

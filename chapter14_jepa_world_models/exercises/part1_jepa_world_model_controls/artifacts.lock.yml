@@ -65,6 +65,23 @@ expected_metrics:
   vjepa2_occluded_vs_absent_gap_min: 0.2
   vjepa2_occluded_vs_blue_gap_min: 0.03
   vjepa2_peak_vram_gb_max: 4.0
+  vjepa2_world_model_controls_passed: true
+  vjepa2_world_feature_shape:
+  - 200
+  - 1024
+  vjepa2_token_feature_shape:
+  - 200
+  - 144
+  - 1024
+  masked_prediction_loss_reduction_min: 0.5
+  state_probe_accuracy_min: 0.8
+  state_probe_margin_over_random_min: 0.2
+  latent_rollout_passed: true
+  shuffled_action_baseline_failed: true
+  real_latent_object_permanence_passed: true
+  position_probe_accuracy_min: 0.7
+  causal_latent_patching_passed: true
+  causal_latent_patch_random_gap_min: 0.4
 controls:
 - baseline_or_reference_check
 - negative_control_where_applicable
@@ -89,6 +106,6 @@ controls:
 - same_size_random_token_patch_negative_control
 safety_notes:
 - No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.
-- The real-model path uses generated shape videos only. The occlusion contrast is
-  a deterministic synthetic-video control and does not claim real-video object permanence,
-  masked target prediction, or action-conditioned rollout replication.
+- The real-model path uses generated shape videos only. The occlusion contrast,
+  masked latent prediction, and action-conditioned rollout are deterministic synthetic-video
+  controls and do not claim real-video benchmark replication.

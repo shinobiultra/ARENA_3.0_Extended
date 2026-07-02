@@ -29,7 +29,8 @@ Misalignment Detection**, **[9.4] White-box Evals and Monitors**,
 **[10.1] Capstone Research Sprint**, **[11.1] PCA, SVD,
 and Geometry Controls**, **[12.1] CLIP, SigLIP, and VLM
 Controls**, **[13.1] Diffusion and Image-Generation Controls**,
-**[15.1] LoRA, DoRA, and Adapter Controls**, **[16.1]
+**[14.1] JEPA and World-Model Controls**, **[15.1] LoRA,
+DoRA, and Adapter Controls**, **[16.1]
 Exact Shapley on Ground-Truth Games**, **[16.2] KernelSHAP
 and PartitionSHAP Controls**, **[16.3] Shapley Interactions
 with shapiq**, **[16.4] TokenSHAP and TokenShapley**, **[16.5]
@@ -41,9 +42,9 @@ They now have ARENA-style learner pages, local
 diagrams, help/interpretation dropdowns, expected-output blocks, paired
 exercise/solution notebooks, CUDA-backed signature result tables, and explicit
 claim boundaries.
-The remaining non-`course_ready` extension sections are **[0.6]**, **[1.6]**,
-and **[14.1]**: useful implementation and verification evidence, but still
-requiring the original-ARENA rewrite pass described in `guidance_2-0.md`.
+The remaining non-`course_ready` extension sections are **[0.6]** and
+**[1.6]**: useful implementation and verification evidence, but still requiring
+the original-ARENA rewrite pass described in `guidance_2-0.md`.
 
 The extension goal is a local-first “ARENA Frontier Lab” rather than a pile of
 topic demos. It should keep the existing ARENA transformer/mech-interp spine

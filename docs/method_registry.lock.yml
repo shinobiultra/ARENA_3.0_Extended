@@ -463,9 +463,11 @@ methods:
   verification_status: IMPLEMENTED_SYNTHETIC_OCCLUSION_VJEPA_PREFLIGHT
   baseline_status: HAS_WORLD_STATE_BASELINES_AND_REAL_VJEPA2_PREFLIGHT
   notes: Section 14.1 now includes toy JEPA/world-model controls plus a pinned V-JEPA
-    2 ViT-L synthetic-video feature-extraction preflight with same-object and synthetic
-    occlusion object-permanence contrasts; masked target prediction, real-video permanence
-    benchmarks, and action-conditioned rollouts remain outside this local preflight.
+    2 ViT-L generated-video preflight with same-object, synthetic occlusion, masked
+    latent prediction, held-out state probes over shuffled labels, action-conditioned
+    rollout over copy and shuffled-action baselines, object-permanence controls, and
+    causal object-token patching. It does not claim real-video permanence benchmark
+    replication.
 - method_name: LoRA, DoRA, and adapter interpretability
   paper: LoRA / DoRA
   year: '2024'

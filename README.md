@@ -97,7 +97,7 @@ Coming soon!
 
 This fork is being rewritten into a local-first frontier-model extension while
 keeping the original ARENA structure intact. The current PR contains a large
-prototype implementation surface plus thirty-eight polished ARENA-style sections:
+prototype implementation surface plus thirty-nine polished ARENA-style sections:
 [5.1 Gemma from Scratch](chapter5_modern_architectures/instructions/pages/01_%5B5.1%5D_Gemma_from_Scratch.md),
 [5.2 Gemma Scope and Feature Steering](chapter5_modern_architectures/instructions/pages/02_%5B5.2%5D_Gemma_Scope_and_Feature_Steering.md),
 [5.3 Mamba from Scratch](chapter5_modern_architectures/instructions/pages/03_%5B5.3%5D_Mamba_from_Scratch.md),
@@ -126,6 +126,7 @@ prototype implementation surface plus thirty-eight polished ARENA-style sections
 [11.1 PCA, SVD, and Geometry Controls](chapter11_representation_geometry/instructions/pages/01_%5B11.1%5D_PCA_SVD_and_Geometry_Controls.md),
 [12.1 CLIP, SigLIP, and VLM Controls](chapter12_vlm_interpretability/instructions/pages/01_%5B12.1%5D_CLIP_SigLIP_and_VLM_Controls.md),
 [13.1 Diffusion and Image-Generation Controls](chapter13_image_generation_interpretability/instructions/pages/01_%5B13.1%5D_Diffusion_and_Image_Generation_Controls.md),
+[14.1 JEPA and World-Model Controls](chapter14_jepa_world_models/instructions/pages/01_%5B14.1%5D_JEPA_and_World_Model_Controls.md),
 [15.1 LoRA, DoRA, and Adapter Controls](chapter15_peft_misalignment/instructions/pages/01_%5B15.1%5D_LoRA_DoRA_and_Adapter_Controls.md),
 [16.1 Exact Shapley on Ground-Truth Games](chapter16_shapley_attribution_baselines/instructions/pages/01_%5B16.1%5D_Exact_Shapley_on_Ground_Truth_Games.md),
 [16.2 KernelSHAP and PartitionSHAP Controls](chapter16_shapley_attribution_baselines/instructions/pages/02_%5B16.2%5D_KernelSHAP_and_PartitionSHAP_Controls.md),
@@ -136,9 +137,10 @@ prototype implementation surface plus thirty-eight polished ARENA-style sections
 [16.7 Data Shapley in One Training Run](chapter16_shapley_attribution_baselines/instructions/pages/07_%5B16.7%5D_Data_Shapley_in_One_Training_Run.md),
 [16.8 Do SHAPley and Mechanistic Interpretability Agree?](chapter16_shapley_attribution_baselines/instructions/pages/08_%5B16.8%5D_Do_SHAPley_and_Mechanistic_Interpretability_Agree.md),
 and [17.1 Checkpoint Archaeology and Mechanism Emergence](chapter17_training_dynamics/instructions/pages/01_%5B17.1%5D_Checkpoint_Archaeology_and_Mechanism_Emergence.md).
-The remaining non-course-ready extension pages are tracked as prototype scaffolds until they are
-rewritten with original-ARENA pacing, diagrams, help/interpretation dropdowns,
-visible signature results, and notebook surfaces. See
+The remaining non-course-ready extension pages are [0.6] and [1.6]; they are
+tracked as prototype scaffolds until they are rewritten with original-ARENA
+pacing, diagrams, help/interpretation dropdowns, visible signature results, and
+notebook surfaces. See
 [ARENA style rewrite status](docs/arena_style_rewrite_status.yml).
 
 The first added fundamentals section is [0.6 How to Know When an Interpretability Result Is Fake](chapter0_fundamentals/instructions/pages/06_%5B0.6%5D_How_to_Know_When_an_Interpretability_Result_Is_Fake.md), a GT-0 skepticism lab for leakage, cherry-picking, probe overfitting, and random-direction controls. [1.6 Local Frontier ML Infrastructure](chapter1_transformer_interp/instructions/pages/40_%5B1.6%5D_Local_Frontier_ML_Infrastructure.md) introduces the reusable verification harness for later Gemma, Mamba, diffusion, SAE/transcoder, JEPA, world-model, attribution, and alignment-interpretability notebooks.
@@ -173,7 +175,7 @@ The VLM interpretability track begins with polished [12.1 CLIP, SigLIP, and VLM 
 
 The image-generation interpretability track begins with polished [13.1 Diffusion and Image-Generation Controls](chapter13_image_generation_interpretability/instructions/pages/01_%5B13.1%5D_Diffusion_and_Image_Generation_Controls.md), which adds diffusion attention region maps, denoising-circuit ablation specificity, latent-direction effects over random controls, prompt-token-to-region causal drops, local validation/signature diagrams, paired ARENA-style notebooks, a supplemental pinned SD-Turbo safe-shape generation preflight, and a required pinned Stable Diffusion 1.5 safe-shape path with DAAM-style cross-attention localization, target-token ablation over random/control-token ablations, CLIP alignment, image-quality preservation, and white-noise rejection.
 
-The JEPA and world-model track begins with [14.1 JEPA and World-Model Controls](chapter14_jepa_world_models/instructions/pages/01_%5B14.1%5D_JEPA_and_World_Model_Controls.md), which adds JEPA target-embedding prediction, held-out world-state probes, action-conditioned transition consistency, object permanence under occlusion over absent-object controls, and a pinned V-JEPA 2 ViT-L generated-video preflight with frozen-latent masked prediction, state probes, rollout heads, and causal token patching against random-token controls.
+The JEPA and world-model track begins with polished [14.1 JEPA and World-Model Controls](chapter14_jepa_world_models/instructions/pages/01_%5B14.1%5D_JEPA_and_World_Model_Controls.md), which adds paired cosine target checks, collapse diagnostics, held-out world-state probes over shuffled-label controls, action-conditioned transition and rollout controls over copy and shuffled-action baselines, object permanence under absent/different-object controls, local validation/signature diagrams, paired notebooks, and a pinned V-JEPA 2 ViT-L generated-video CUDA preflight with frozen-latent masked prediction, state probes, rollout heads, and causal token patching against random-token controls.
 
 The PEFT and misalignment track begins with [15.1 LoRA, DoRA, and Adapter Controls](chapter15_peft_misalignment/instructions/pages/01_%5B15.1%5D_LoRA_DoRA_and_Adapter_Controls.md), which adds exact LoRA delta checks, DoRA row-magnitude recomposition, protected-direction projection controls, accuracy-vs-mechanism adapter acceptance checks, and a generated safe proxy PEFT GPU preflight with rank-1 LoRA merge parity, target-direction alignment, random-label controls, same-norm random-adapter controls, and a matched LoRA-vs-DoRA-vs-full-finetune comparison on the same generated task.
 

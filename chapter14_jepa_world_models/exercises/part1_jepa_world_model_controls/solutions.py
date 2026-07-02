@@ -44,6 +44,20 @@ VJEPA2_ACTIONS = (
 )
 
 
+def paired_cosine(left: t.Tensor, right: t.Tensor, *, eps: float = 1e-8) -> t.Tensor:
+    """Return row-wise cosine similarities for two equally-shaped embedding batches."""
+
+    if left.shape != right.shape:
+        raise ValueError("left and right must have the same shape.")
+    if left.ndim < 2:
+        raise ValueError("left and right must have shape (..., d_model).")
+    left_float = left.float()
+    right_float = right.float()
+    numerator = (left_float * right_float).sum(dim=-1)
+    denominator = left_float.norm(dim=-1) * right_float.norm(dim=-1)
+    return numerator / denominator.clamp_min(eps)
+
+
 @dataclass(frozen=True)
 class SyntheticVJEPAWorldBatch:
     videos: t.Tensor
@@ -98,6 +112,113 @@ def object_permanence_smoke_test() -> dict:
         min_occluded_score=0.6,
         min_absent_gap=0.4,
     ).__dict__
+
+
+def collapse_diagnostics_smoke_test() -> dict:
+    structured_features = t.tensor(
+        [
+            [1.0, 0.0, 0.0, 0.0],
+            [0.0, 1.0, 0.0, 0.0],
+            [0.0, 0.0, 1.0, 0.0],
+            [0.0, 0.0, 0.0, 1.0],
+            [1.0, 1.0, 0.0, 0.0],
+            [0.0, 1.0, 1.0, 0.0],
+        ]
+    )
+    collapsed_features = t.ones(6, 4)
+    structured = collapse_diagnostics_report(
+        structured_features,
+        min_feature_std=0.1,
+        min_effective_rank=2.0,
+    )
+    collapsed = collapse_diagnostics_report(
+        collapsed_features,
+        min_feature_std=0.1,
+        min_effective_rank=2.0,
+    )
+    return {
+        "structured": structured.__dict__,
+        "collapsed": collapsed.__dict__,
+        "collapsed_control_rejected": not collapsed.non_collapsed,
+    }
+
+
+def state_probe_control_smoke_test() -> dict:
+    probe_logits = t.tensor(
+        [
+            [4.0, 0.0],
+            [3.0, 0.0],
+            [0.0, 4.0],
+            [0.0, 3.0],
+        ]
+    )
+    labels = t.tensor([0, 0, 1, 1])
+    shuffled_labels = t.tensor([1, 1, 0, 0])
+    probe = world_state_probe_report(probe_logits, labels, min_accuracy=0.9)
+    shuffled = world_state_probe_report(
+        probe_logits,
+        shuffled_labels,
+        min_accuracy=0.9,
+    )
+    return {
+        "probe": probe.__dict__,
+        "shuffled": shuffled.__dict__,
+        "shuffled_control_rejected": not shuffled.predicts_state,
+        "accuracy_margin": probe.accuracy - shuffled.accuracy,
+    }
+
+
+def rollout_control_smoke_test() -> dict:
+    rollout = latent_rollout_report(
+        rollout_loss=0.10,
+        copy_baseline_loss=1.00,
+        shuffled_action_loss=0.90,
+        max_rollout_to_copy=0.8,
+        max_rollout_to_shuffled=0.8,
+    )
+    failed = latent_rollout_report(
+        rollout_loss=0.75,
+        copy_baseline_loss=0.80,
+        shuffled_action_loss=0.70,
+        max_rollout_to_copy=0.8,
+        max_rollout_to_shuffled=0.8,
+    )
+    return {
+        "rollout": rollout.__dict__,
+        "failed_control": failed.__dict__,
+        "copy_and_shuffled_controls_rejected": not failed.rollout_passes,
+    }
+
+
+def object_permanence_control_smoke_test() -> dict:
+    preserved = object_permanence_report(
+        visible_scores=t.tensor([0.95, 0.9]),
+        occluded_scores=t.tensor([0.8, 0.75]),
+        absent_scores=t.tensor([0.15, 0.2]),
+        min_occluded_score=0.6,
+        min_absent_gap=0.4,
+    )
+    absent_like = object_permanence_report(
+        visible_scores=t.tensor([0.95, 0.9]),
+        occluded_scores=t.tensor([0.52, 0.48]),
+        absent_scores=t.tensor([0.46, 0.44]),
+        min_occluded_score=0.6,
+        min_absent_gap=0.4,
+    )
+    different_object = object_permanence_report(
+        visible_scores=t.tensor([0.95, 0.9]),
+        occluded_scores=t.tensor([0.78, 0.76]),
+        absent_scores=t.tensor([0.72, 0.7]),
+        min_occluded_score=0.6,
+        min_absent_gap=0.4,
+    )
+    return {
+        "preserved": preserved.__dict__,
+        "absent_like": absent_like.__dict__,
+        "different_object": different_object.__dict__,
+        "absent_like_rejected": not absent_like.preserves_occluded_object,
+        "different_object_rejected": not different_object.preserves_occluded_object,
+    }
 
 
 def _synthetic_vjepa_video(kind: str, *, frames: int = 8, size: int = 96) -> t.Tensor:
@@ -748,9 +869,13 @@ def run_smoke_test(cpu: bool = True) -> dict:
     _ = cpu
     return {
         "jepa_prediction": jepa_prediction_smoke_test(),
+        "collapse": collapse_diagnostics_smoke_test(),
         "state_probe": state_probe_smoke_test(),
+        "state_probe_control": state_probe_control_smoke_test(),
         "transition": transition_smoke_test(),
+        "rollout_control": rollout_control_smoke_test(),
         "object_permanence": object_permanence_smoke_test(),
+        "object_permanence_control": object_permanence_control_smoke_test(),
     }
 
 

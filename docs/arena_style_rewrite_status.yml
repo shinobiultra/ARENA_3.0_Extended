@@ -122,9 +122,9 @@ sections:
     page: chapter13_image_generation_interpretability/instructions/pages/01_[13.1]_Diffusion_and_Image_Generation_Controls.md
     notes: ARENA-style rewrite with diffusion image-control validation-loop and signature-result diagrams, attention-region/denoising/latent/prompt-token control progression, help/interpretation dropdowns, paired notebooks, strict pinned SD1.5 DAAM-style attention, target-token ablation, CLIP, image-quality, white-noise evidence, limitations, and scoped CUDA report evidence.
   '14.1':
-    status: prototype
+    status: course_ready
     page: chapter14_jepa_world_models/instructions/pages/01_[14.1]_JEPA_and_World_Model_Controls.md
-    notes: Prototype scaffold retained for implementation evidence; requires ARENA-style rewrite before course-ready release.
+    notes: ARENA-style JEPA/world-model controls lesson with validation-loop and signature-result diagrams, paired cosine target checks, collapse diagnostics, shuffled-label probe controls, copy and shuffled-action rollout controls, absent/different-object permanence controls, paired notebooks, limitations, and scoped pinned V-JEPA 2 generated-video CUDA evidence.
   '15.1':
     status: course_ready
     page: chapter15_peft_misalignment/instructions/pages/01_[15.1]_LoRA_DoRA_and_Adapter_Controls.md
