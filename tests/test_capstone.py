@@ -188,3 +188,33 @@ def test_capstone_summary_rejects_missing_controls():
     assert summary["oracle_beats_text_only"]
     assert not summary["causal_controls_passed"]
     assert not summary["preflight_passed"]
+
+
+def test_capstone_summary_requires_unique_seed_ids():
+    seed_report = {
+        "seed": 0,
+        "train_example_count": 128,
+        "iid_example_count": 128,
+        "heldout_template_example_count": 64,
+        "oracle_accuracy": 1.0,
+        "oracle_compositional_accuracy": 1.0,
+        "text_only_accuracy": 0.5,
+        "linear_probe_bank_accuracy": 0.75,
+        "linear_probe_compositional_accuracy": 0.5,
+        "heldout_template_accuracy": 1.0,
+        "ablation_drop": 0.5,
+        "counterfactual_patch_change_rate": 1.0,
+        "counterfactual_patch_target_accuracy": 1.0,
+        "random_patch_change_rate": 0.0,
+        "random_activation_mean_confidence": 0.5,
+        "random_activation_accuracy": 0.5,
+        "label_shuffle_accuracy": 0.5,
+    }
+
+    summary = summarize_activation_oracle_capstone([seed_report] * 3)
+
+    assert summary["seed_count"] == 3
+    assert summary["unique_seed_count"] == 1
+    assert not summary["preflight_passed"], (
+        "Duplicated seed reports should not count as independent multi-seed evidence."
+    )

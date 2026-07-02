@@ -120,14 +120,10 @@ def build_capstone_plan(
         baselines=tuple(baseline.strip() for baseline in baselines if baseline.strip()),
         mechanistic_claim=mechanistic_claim.strip(),
         causal_validations=tuple(
-            validation.strip()
-            for validation in causal_validations
-            if validation.strip()
+            validation.strip() for validation in causal_validations if validation.strip()
         ),
         reproducible_scripts=tuple(
-            script.strip()
-            for script in reproducible_scripts
-            if script.strip()
+            script.strip() for script in reproducible_scripts if script.strip()
         ),
         writeup_path=writeup_path.strip(),
     )
@@ -142,16 +138,15 @@ def baseline_suite_report(
 
     present = tuple(baseline.strip() for baseline in present_baselines if baseline.strip())
     present_set = set(present)
-    missing = tuple(
-        baseline
-        for baseline in required_baselines
-        if baseline not in present_set
-    )
+    required_set = set(required_baselines)
+    missing = tuple(baseline for baseline in required_baselines if baseline not in present_set)
+    has_duplicates = len(present_set) != len(present)
+    has_unknown = not present_set <= required_set
     return BaselineSuiteReport(
         required_baselines=required_baselines,
         present_baselines=present,
         missing_baselines=missing,
-        complete=len(missing) == 0,
+        complete=len(missing) == 0 and not has_duplicates and not has_unknown,
     )
 
 
@@ -160,7 +155,9 @@ def causal_validation_suite_report(
 ) -> CausalValidationSuiteReport:
     """Check whether a capstone has core causal and OOD validation types."""
 
-    normalized = tuple(validation.strip().lower() for validation in validations)
+    normalized = tuple(
+        validation.strip().lower() for validation in validations if validation.strip()
+    )
     validation_set = set(normalized)
     has_ablation = "ablation" in validation_set
     has_patching = "patching" in validation_set or "counterfactual_patching" in validation_set
@@ -188,15 +185,31 @@ def reproducibility_report(
 
     scripts = tuple(path.strip() for path in script_paths if path.strip())
     artifacts = tuple(path.strip() for path in artifact_paths if path.strip())
-    seed_tuple = tuple(int(seed) for seed in seeds)
+    seed_tuple = tuple(
+        seed for seed in seeds if isinstance(seed, int) and not isinstance(seed, bool)
+    )
+    seeds_valid = len(seed_tuple) == len(seeds) and len(set(seed_tuple)) == len(seed_tuple)
     root_path = Path.cwd() if root is None else Path(root)
-    scripts_exist = all((root_path / script).is_file() for script in scripts)
-    artifacts_exist = all((root_path / artifact).is_file() for artifact in artifacts)
+    paths_are_relative = all(
+        not Path(path).is_absolute() and ".." not in Path(path).parts
+        for path in (*scripts, *artifacts)
+    )
+    scripts_exist = paths_are_relative and all((root_path / script).is_file() for script in scripts)
+    artifacts_exist = paths_are_relative and all(
+        (root_path / artifact).is_file() for artifact in artifacts
+    )
     return ReproducibilityReport(
         script_paths=scripts,
         seeds=seed_tuple,
         artifact_paths=artifacts,
-        reproducible=bool(scripts and seed_tuple and artifacts and scripts_exist and artifacts_exist),
+        reproducible=bool(
+            scripts
+            and seed_tuple
+            and artifacts
+            and seeds_valid
+            and scripts_exist
+            and artifacts_exist
+        ),
     )
 
 
@@ -323,8 +336,7 @@ def build_activation_oracle_capstone_batch(
         activations[:, :3] = config.signal_scale * signs
         activations[:, 3] = 0.2 * signs.sum(dim=1)
         activations[:, 4:8] = (
-            config.template_scale
-            * template_vectors[int(template_id) % template_vectors.shape[0]]
+            config.template_scale * template_vectors[int(template_id) % template_vectors.shape[0]]
         )
         noise = t.randn(
             activations.shape,
@@ -485,7 +497,9 @@ def _probe_bank_logits(
     return logits
 
 
-def _accuracy_by_question(logits: t.Tensor, batch: ActivationOracleCapstoneBatch) -> dict[str, float]:
+def _accuracy_by_question(
+    logits: t.Tensor, batch: ActivationOracleCapstoneBatch
+) -> dict[str, float]:
     return {
         QUESTION_NAMES[int(question_id)]: _accuracy(
             logits[batch.question_ids.eq(question_id)],
@@ -679,8 +693,7 @@ def run_activation_oracle_capstone_seed(
         "oracle_final_loss": oracle_loss,
         "text_only_final_loss": text_only_loss,
         "probe_final_losses": {
-            QUESTION_NAMES[question_id]: float(loss)
-            for question_id, loss in probe_losses.items()
+            QUESTION_NAMES[question_id]: float(loss) for question_id, loss in probe_losses.items()
         },
         "label_shuffle_final_loss": shuffled_loss,
         "oracle_accuracy": oracle_accuracy,
@@ -749,9 +762,7 @@ def summarize_activation_oracle_capstone(
         "heldout_templates": list(config.heldout_templates),
         "train_example_count": int(seed_reports[0]["train_example_count"]),
         "iid_example_count": int(seed_reports[0]["iid_example_count"]),
-        "heldout_template_example_count": int(
-            seed_reports[0]["heldout_template_example_count"]
-        ),
+        "heldout_template_example_count": int(seed_reports[0]["heldout_template_example_count"]),
         "oracle_accuracy_mean": _mean(seed_reports, "oracle_accuracy"),
         "oracle_accuracy_min": min(float(report["oracle_accuracy"]) for report in seed_reports),
         "oracle_compositional_accuracy_mean": _mean(
@@ -800,8 +811,7 @@ def summarize_activation_oracle_capstone(
         summary["oracle_accuracy_mean"] >= summary["text_only_accuracy_mean"] + 0.25
     )
     summary["oracle_beats_linear_probe_bank"] = (
-        summary["oracle_accuracy_mean"]
-        >= summary["linear_probe_bank_accuracy_mean"] + 0.04
+        summary["oracle_accuracy_mean"] >= summary["linear_probe_bank_accuracy_mean"] + 0.04
     )
     summary["compositional_oracle_beats_linear_probe"] = (
         summary["oracle_compositional_accuracy_mean"]
@@ -814,15 +824,14 @@ def summarize_activation_oracle_capstone(
         and summary["random_patch_change_rate_mean"] <= 0.15
     )
     summary["ood_passed"] = summary["heldout_template_accuracy_mean"] >= 0.90
-    summary["random_activation_control_passed"] = (
-        summary["random_activation_accuracy_mean"] <= 0.65
-    )
-    summary["label_shuffle_control_passed"] = (
-        summary["label_shuffle_accuracy_mean"] <= 0.65
-    )
+    summary["random_activation_control_passed"] = summary["random_activation_accuracy_mean"] <= 0.65
+    summary["label_shuffle_control_passed"] = summary["label_shuffle_accuracy_mean"] <= 0.65
     summary["within_vram_budget"] = summary["peak_vram_gb"] <= float(max_vram_gb)
+    unique_seed_count = len(set(summary["seeds"]))
+    summary["unique_seed_count"] = unique_seed_count
     summary["preflight_passed"] = (
         summary["seed_count"] >= 3
+        and unique_seed_count == summary["seed_count"]
         and summary["oracle_accuracy_mean"] >= 0.90
         and summary["oracle_beats_text_only"]
         and summary["oracle_beats_linear_probe_bank"]
@@ -872,8 +881,6 @@ def run_activation_oracle_capstone_experiment(
         "summary": summary,
         "by_seed": seed_reports,
         "failure_cases": [
-            failure
-            for report in seed_reports
-            for failure in report.get("failure_cases", [])
+            failure for report in seed_reports for failure in report.get("failure_cases", [])
         ],
     }

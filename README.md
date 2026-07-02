@@ -97,7 +97,7 @@ Coming soon!
 
 This fork is being rewritten into a local-first frontier-model extension while
 keeping the original ARENA structure intact. The current PR contains a large
-prototype implementation surface plus twenty-four polished ARENA-style sections:
+prototype implementation surface plus twenty-five polished ARENA-style sections:
 [5.1 Gemma from Scratch](chapter5_modern_architectures/instructions/pages/01_%5B5.1%5D_Gemma_from_Scratch.md),
 [5.2 Gemma Scope and Feature Steering](chapter5_modern_architectures/instructions/pages/02_%5B5.2%5D_Gemma_Scope_and_Feature_Steering.md),
 [5.3 Mamba from Scratch](chapter5_modern_architectures/instructions/pages/03_%5B5.3%5D_Mamba_from_Scratch.md),
@@ -121,7 +121,8 @@ prototype implementation surface plus twenty-four polished ARENA-style sections:
 [9.1 Refusal Directions and Safe Steering](chapter9_alignment_interpretability/instructions/pages/01_%5B9.1%5D_Refusal_Directions_and_Safe_Steering.md),
 [9.2 Chain-of-Thought Faithfulness](chapter9_alignment_interpretability/instructions/pages/02_%5B9.2%5D_Chain_of_Thought_Faithfulness.md),
 [9.3 Emergent Misalignment Detection](chapter9_alignment_interpretability/instructions/pages/03_%5B9.3%5D_Emergent_Misalignment_Detection.md),
-and [9.4 White-box Evals and Monitors](chapter9_alignment_interpretability/instructions/pages/04_%5B9.4%5D_White_box_Evals_and_Monitors.md).
+[9.4 White-box Evals and Monitors](chapter9_alignment_interpretability/instructions/pages/04_%5B9.4%5D_White_box_Evals_and_Monitors.md),
+and [10.1 Capstone Research Sprint](chapter10_capstone_research_sprint/instructions/pages/01_%5B10.1%5D_Capstone_Research_Sprint.md).
 The remaining non-course-ready extension pages are tracked as prototype scaffolds until they are
 rewritten with original-ARENA pacing, diagrams, help/interpretation dropdowns,
 visible signature results, and notebook surfaces. See
@@ -133,6 +134,7 @@ Original ARENA is pinned at `f9f034bdb5b8748f44e8b4533b5c5bea68dc8bc0` and check
 
 Current local verification was run in the managed `uv` environment with Python
 3.14.6, PyTorch `2.12.1+cu132`, CUDA 13.2, `torchvision 0.27.1+cu132`,
+`torchao 0.17.0`,
 `transformers 5.12.1`, `bitsandbytes 0.49.2` using its current CUDA 13.0 binary
 override because the wheel does not ship `libbitsandbytes_cuda132.so`,
 `mamba-ssm 2.3.2.post1`, and an RTX 5090 Laptop GPU. The full extension report refresh wrote 41 extension
@@ -150,7 +152,7 @@ The automated-circuits track begins with polished [8.1 Activation Patching Refre
 
 The alignment-interpretability track begins with polished [9.1 Refusal Directions and Safe Steering](chapter9_alignment_interpretability/instructions/pages/01_%5B9.1%5D_Refusal_Directions_and_Safe_Steering.md), which adds safe prompt-pair handling, activation-cache framing, mean-difference refusal directions, projection scores, held-out separation, addition/projection-out steering reports, capability bounds, random-direction and label-shuffle controls, candidate-method comparisons, a pinned Pythia-70M-deduped hidden-state category preflight, a pinned Qwen2.5-0.5B-Instruct no-generation logit intervention preflight, and a scoped GT-2 public `josephmayo/refusal-compliance-pairs` aggregate replication path with layer/position/PCA controls and no raw prompt or completion text saved. Polished [9.2 Chain-of-Thought Faithfulness](chapter9_alignment_interpretability/instructions/pages/02_%5B9.2%5D_Chain_of_Thought_Faithfulness.md) adds hidden-answer probes before final tokens, narrow hidden-vector LM-head readout-patch checks, CoT text-only baseline comparisons, feature-level unfaithfulness detectors, no-CoT/faithful/biased/post-hoc condition reports, paired ARENA-style notebooks, and a pinned Pythia-70M-deduped hidden-answer preflight with visible-text, label-shuffle, and hidden-state readout controls. Polished [9.3 Emergent Misalignment Detection](chapter9_alignment_interpretability/instructions/pages/03_%5B9.3%5D_Emergent_Misalignment_Detection.md) adds a benign proxy-drift taxonomy, held-out white-box drift detection, signed feature-score alignment with behavior deltas, mitigation checks with capability-loss bounds, early white-box-vs-black-box timing, paired ARENA-style notebooks, and a pinned Pythia-70M-deduped benign proxy-drift hidden-state preflight with label-shuffle, random-direction, behavior-proxy, projection-mitigation, and no-generation controls. Polished [9.4 White-box Evals and Monitors](chapter9_alignment_interpretability/instructions/pages/04_%5B9.4%5D_White_box_Evals_and_Monitors.md) adds monitor dashboard rows, AUROC calibration, white-box catches of black-box missed failures, false-positive documentation, held-out feature-explanation validation, paired ARENA-style notebooks, and a pinned Pythia-70M-deduped white-box monitor preflight with next-token black-box proxy, label-shuffle, random-direction, false-positive documentation, and no-generation controls.
 
-The capstone track contains [10.1 Capstone Research Sprint](chapter10_capstone_research_sprint/instructions/pages/01_%5B10.1%5D_Capstone_Research_Sprint.md), which adds the paper-style project readiness contract and a live CUDA mini activation-oracle sprint: a question-conditioned oracle is trained on generated latent-state activations, compared against text-only and linear-probe baselines, and checked with held-out templates, ablation, counterfactual patching, random-patch, random-activation, and label-shuffle controls.
+The capstone track contains polished [10.1 Capstone Research Sprint](chapter10_capstone_research_sprint/instructions/pages/01_%5B10.1%5D_Capstone_Research_Sprint.md), which adds a paper-style project readiness contract, paired ARENA-style notebooks, local validation/signature diagrams, and a live CUDA mini activation-oracle sprint: a question-conditioned oracle is trained on generated latent-state activations, compared against text-only and linear-probe baselines, and checked with held-out templates, ablation, counterfactual patching, random-patch, random-activation, and label-shuffle controls.
 
 The representation-geometry track begins with [11.1 PCA, SVD, and Geometry Controls](chapter11_representation_geometry/instructions/pages/01_%5B11.1%5D_PCA_SVD_and_Geometry_Controls.md), which adds centered PCA/SVD projections, held-out label prediction from geometry, white-noise controls, seed-stability checks, causal direction effects over random controls, template-centering checks, and a pinned Pythia-70M-deduped calendar hidden-state geometry preflight over weekday and month prompt splits with five-seed, three-setting UMAP sweeps, trustworthiness, neighborhood preservation, random-label controls, and random-token controls.
 

@@ -28,15 +28,16 @@ artifacts:
 - name: Local PyTorch CUDA 13.2 runtime
   type: runtime
   provider: uv environment
-  repo_or_source_id: torch;torchvision;python
+  repo_or_source_id: torch;torchvision;torchao;python
   license: mixed
   gated: 'false'
-  revision: python 3.14.6; torch 2.12.1+cu132; torchvision 0.27.1+cu132
+  revision: python 3.14.6; torch 2.12.1+cu132; torchvision 0.27.1+cu132; torchao 0.17.0
   local_status: REQUIRED
   max_vram_gb: '24'
   used_in_notebooks: '1.6'
   gt_tier: GT-1
-  notes: Validated on RTX 5090 Laptop GPU with CUDA 13.2 and BF16 matmul.
+  notes: Validated on RTX 5090 Laptop GPU with CUDA 13.2, BF16 matmul, and torchao
+    import/CUDA-context checks.
 - name: Course fake-result diagnostics
   type: dataset
   provider: generated
@@ -425,6 +426,33 @@ artifacts:
   notes: Safe neutral and benign failure-policy monitor records used by 9.4 for held-out
     white-box monitor calibration, black-box proxy comparison, false-positive documentation
     controls, and no-generation CUDA evidence.
+- name: Generated activation-oracle latent questions
+  type: dataset
+  provider: generated
+  repo_or_source_id: activation_oracle_latent_questions_v1
+  license: course_generated
+  gated: 'false'
+  revision: seeds_0_1_2
+  local_status: GENERATED_BY_COURSE
+  max_vram_gb: '0'
+  used_in_notebooks: '10.1'
+  gt_tier: GT-4
+  notes: Balanced latent-bit benchmark for 10.1 with four questions, held-out templates,
+    and explicit scope to a generated model organism.
+- name: Course question-conditioned activation oracle
+  type: model_organism
+  provider: generated_training_run
+  repo_or_source_id: course_question_conditioned_activation_oracle_v1
+  license: course_generated
+  gated: 'false'
+  revision: seeds_0_1_2
+  local_status: GENERATED_BY_COURSE
+  max_vram_gb: '1'
+  used_in_notebooks: '10.1'
+  gt_tier: GT-4
+  notes: CUDA-trained 10.1 two-layer MLP activation oracle with text-only, linear-probe,
+    held-out-template, ablation, patching, random-patch, random-activation, and label-shuffle
+    controls. It is not a released-model claim.
 - name: Course LoRA adapters
   type: adapter
   provider: generated

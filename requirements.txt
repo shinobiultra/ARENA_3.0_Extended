@@ -10,6 +10,7 @@
 --extra-index-url https://pypi.org/simple
 torch==2.12.1+cu132
 torchvision==0.27.1+cu132
+torchao==0.17.0
 wheel==0.47.0
 
 # ML & DL

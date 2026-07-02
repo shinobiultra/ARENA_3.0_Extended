@@ -52,5 +52,6 @@
     1,
     2
   ],
+  "unique_seed_count": 3,
   "within_vram_budget": true
 }

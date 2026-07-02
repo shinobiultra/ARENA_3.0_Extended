@@ -83,14 +83,10 @@ def build_capstone_plan(
         baselines=tuple(baseline.strip() for baseline in baselines if baseline.strip()),
         mechanistic_claim=mechanistic_claim.strip(),
         causal_validations=tuple(
-            validation.strip()
-            for validation in causal_validations
-            if validation.strip()
+            validation.strip() for validation in causal_validations if validation.strip()
         ),
         reproducible_scripts=tuple(
-            script.strip()
-            for script in reproducible_scripts
-            if script.strip()
+            script.strip() for script in reproducible_scripts if script.strip()
         ),
         writeup_path=writeup_path.strip(),
     )
@@ -105,16 +101,15 @@ def baseline_suite_report(
 
     present = tuple(baseline.strip() for baseline in present_baselines if baseline.strip())
     present_set = set(present)
-    missing = tuple(
-        baseline
-        for baseline in required_baselines
-        if baseline not in present_set
-    )
+    required_set = set(required_baselines)
+    missing = tuple(baseline for baseline in required_baselines if baseline not in present_set)
+    has_duplicates = len(present_set) != len(present)
+    has_unknown = not present_set <= required_set
     return BaselineSuiteReport(
         required_baselines=required_baselines,
         present_baselines=present,
         missing_baselines=missing,
-        complete=len(missing) == 0,
+        complete=len(missing) == 0 and not has_duplicates and not has_unknown,
     )
 
 
@@ -123,7 +118,9 @@ def causal_validation_suite_report(
 ) -> CausalValidationSuiteReport:
     """Check whether causal, random-control, and OOD validations are present."""
 
-    normalized = tuple(validation.strip().lower() for validation in validations)
+    normalized = tuple(
+        validation.strip().lower() for validation in validations if validation.strip()
+    )
     validation_set = set(normalized)
     has_ablation = "ablation" in validation_set
     has_patching = "patching" in validation_set or "counterfactual_patching" in validation_set
@@ -151,15 +148,31 @@ def reproducibility_report(
 
     scripts = tuple(path.strip() for path in script_paths if path.strip())
     artifacts = tuple(path.strip() for path in artifact_paths if path.strip())
-    seed_tuple = tuple(int(seed) for seed in seeds)
+    seed_tuple = tuple(
+        seed for seed in seeds if isinstance(seed, int) and not isinstance(seed, bool)
+    )
+    seeds_valid = len(seed_tuple) == len(seeds) and len(set(seed_tuple)) == len(seed_tuple)
     root_path = Path.cwd() if root is None else Path(root)
-    scripts_exist = all((root_path / script).is_file() for script in scripts)
-    artifacts_exist = all((root_path / artifact).is_file() for artifact in artifacts)
+    paths_are_relative = all(
+        not Path(path).is_absolute() and ".." not in Path(path).parts
+        for path in (*scripts, *artifacts)
+    )
+    scripts_exist = paths_are_relative and all((root_path / script).is_file() for script in scripts)
+    artifacts_exist = paths_are_relative and all(
+        (root_path / artifact).is_file() for artifact in artifacts
+    )
     return ReproducibilityReport(
         script_paths=scripts,
         seeds=seed_tuple,
         artifact_paths=artifacts,
-        reproducible=bool(scripts and seed_tuple and artifacts and scripts_exist and artifacts_exist),
+        reproducible=bool(
+            scripts
+            and seed_tuple
+            and artifacts
+            and seeds_valid
+            and scripts_exist
+            and artifacts_exist
+        ),
     )
 
 
@@ -382,8 +395,7 @@ def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
             (CAPSTONE_DIR / script).is_file() for script in plan.reproducible_scripts
         ),
         "artifact_paths_exist": all(
-            (CAPSTONE_DIR / artifact).is_file()
-            for artifact in reproducibility.artifact_paths
+            (CAPSTONE_DIR / artifact).is_file() for artifact in reproducibility.artifact_paths
         )
         and by_seed_path.is_file()
         and failure_cases_exist

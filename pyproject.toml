@@ -66,6 +66,7 @@ dependencies = [
     "tabulate>=0.10.0",
     "tiktoken>=0.13.0",
     "torch==2.12.1+cu132",
+    "torchao==0.17.0",
     "torchinfo>=1.8.0",
     "torchtext>=0.6.0",
     "torchvision==0.27.1+cu132",

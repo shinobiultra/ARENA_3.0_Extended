@@ -106,9 +106,9 @@ sections:
     page: chapter9_alignment_interpretability/instructions/pages/04_[9.4]_White_box_Evals_and_Monitors.md
     notes: ARENA-style rewrite with safe white-box monitor validation loop, dashboard/calibration/black-box-miss/false-positive/explanation-validation progression, help and interpretation dropdowns, pinned Pythia-70M monitor signature result, limitations, and paired notebook surfaces.
   '10.1':
-    status: prototype
+    status: course_ready
     page: chapter10_capstone_research_sprint/instructions/pages/01_[10.1]_Capstone_Research_Sprint.md
-    notes: Prototype scaffold retained for implementation evidence; requires ARENA-style rewrite before course-ready release.
+    notes: ARENA-style rewrite with paper-style capstone validation loop, planning/baseline/causal/reproducibility/readiness progression, help and interpretation dropdowns, CUDA mini activation-oracle signature result, limitations, and paired notebook surfaces.
   '11.1':
     status: prototype
     page: chapter11_representation_geometry/instructions/pages/01_[11.1]_PCA_SVD_and_Geometry_Controls.md

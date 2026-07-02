@@ -2,8 +2,6 @@ from collections.abc import Callable
 import json
 from pathlib import Path
 
-from arena_ext import capstone as reference
-
 
 def _solutions():
     from chapter10_capstone_research_sprint.exercises.part1_capstone_research_sprint import (
@@ -22,16 +20,8 @@ def _gpu_report() -> dict:
     return report["metrics"]["gpu_test"]
 
 
-def _assert_report_matches_reference(actual: object, expected: object, *, msg: str) -> None:
-    actual_dict = actual.__dict__
-    expected_dict = expected.__dict__
-    assert actual_dict.keys() == expected_dict.keys(), (
-        f"{msg} should expose the same fields as the independent reference."
-    )
-    assert actual_dict == expected_dict, (
-        f"{msg} should match the independent reference exactly.\n"
-        f"Expected: {expected_dict}\nGot: {actual_dict}"
-    )
+def _asdict(report: object) -> dict:
+    return report.__dict__
 
 
 def test_build_capstone_plan_normalizes_blank_fields(
@@ -47,16 +37,15 @@ def test_build_capstone_plan_normalizes_blank_fields(
         reproducible_scripts=[" scripts/run_capstone.py ", ""],
         writeup_path=" reports/capstone.md ",
     )
-    expected = reference.build_capstone_plan(
-        research_question="  Do mini Activation Oracles beat probes?  ",
-        benchmark=" held-out activation questions ",
-        baselines=[" probe ", "", "text_only", "random_control"],
-        mechanistic_claim=" question conditioning uses latent state features ",
-        causal_validations=["ablation", "", "patching", "random_control", "ood"],
-        reproducible_scripts=[" scripts/run_capstone.py ", ""],
-        writeup_path=" reports/capstone.md ",
-    )
-    _assert_report_matches_reference(actual, expected, msg="Capstone plan")
+    assert _asdict(actual) == {
+        "research_question": "Do mini Activation Oracles beat probes?",
+        "benchmark": "held-out activation questions",
+        "baselines": ("probe", "text_only", "random_control"),
+        "mechanistic_claim": "question conditioning uses latent state features",
+        "causal_validations": ("ablation", "patching", "random_control", "ood"),
+        "reproducible_scripts": ("scripts/run_capstone.py",),
+        "writeup_path": "reports/capstone.md",
+    }, "The capstone plan should strip blanks, drop blank list entries, and preserve order."
     assert actual.baselines == ("probe", "text_only", "random_control"), (
         "Blank baselines should be dropped and nonblank baselines should be stripped."
     )
@@ -71,17 +60,27 @@ def test_baseline_suite_report_identifies_missing_required_baseline(
 ):
     baseline_suite_report = baseline_suite_report or _solutions().baseline_suite_report
     actual = baseline_suite_report(["probe", "random_control"])
-    expected = reference.baseline_suite_report(["probe", "random_control"])
-    _assert_report_matches_reference(actual, expected, msg="Baseline suite report")
+    assert _asdict(actual) == {
+        "required_baselines": ("probe", "text_only", "random_control"),
+        "present_baselines": ("probe", "random_control"),
+        "missing_baselines": ("text_only",),
+        "complete": False,
+    }, "The baseline report should name missing required baselines and fail completeness."
     assert actual.missing_baselines == ("text_only",), (
         "A capstone without the text-only baseline should not pass the baseline gate."
     )
     assert not actual.complete, (
         "Baseline completeness should be false until every required baseline is present."
     )
-    print(
-        "All tests in `test_baseline_suite_report_identifies_missing_required_baseline` passed!"
+    duplicate = baseline_suite_report(["probe", "probe", "text_only", "random_control"])
+    assert not duplicate.complete, (
+        "A duplicated baseline should not count as an exactly-once baseline suite."
     )
+    unknown = baseline_suite_report(["probe", "text_only", "random_control", "fancy_judge"])
+    assert not unknown.complete, (
+        "An undeclared extra baseline should not silently pass the fixed baseline contract."
+    )
+    print("All tests in `test_baseline_suite_report_identifies_missing_required_baseline` passed!")
 
 
 def test_baseline_smoke_test_has_required_controls(
@@ -109,12 +108,21 @@ def test_causal_validation_suite_report_accepts_equivalent_names(
         causal_validation_suite_report or _solutions().causal_validation_suite_report
     )
     actual = causal_validation_suite_report(
-        ["ablation", "counterfactual_patching", "random_control", "heldout_templates"],
+        ["ablation", "", "counterfactual_patching", "random_control", "heldout_templates"],
     )
-    expected = reference.causal_validation_suite_report(
-        ["ablation", "counterfactual_patching", "random_control", "heldout_templates"],
-    )
-    _assert_report_matches_reference(actual, expected, msg="Causal validation suite report")
+    assert _asdict(actual) == {
+        "validations": (
+            "ablation",
+            "counterfactual_patching",
+            "random_control",
+            "heldout_templates",
+        ),
+        "has_ablation": True,
+        "has_patching": True,
+        "has_random_control": True,
+        "has_ood": True,
+        "complete": True,
+    }, "Equivalent validation names should normalize into a complete causal/OOD suite."
     assert actual.has_patching and actual.has_ood and actual.complete, (
         "Counterfactual patching and held-out templates should satisfy the patching/OOD gates."
     )
@@ -122,9 +130,7 @@ def test_causal_validation_suite_report_accepts_equivalent_names(
     assert not missing_ood.complete and not missing_ood.has_ood, (
         "A causal validation suite without an OOD or held-out-template check should fail."
     )
-    print(
-        "All tests in `test_causal_validation_suite_report_accepts_equivalent_names` passed!"
-    )
+    print("All tests in `test_causal_validation_suite_report_accepts_equivalent_names` passed!")
 
 
 def test_reproducibility_report_requires_scripts_seeds_and_artifacts(
@@ -138,13 +144,12 @@ def test_reproducibility_report_requires_scripts_seeds_and_artifacts(
         artifact_paths=[" results/metrics.json "],
         root=root,
     )
-    expected = reference.reproducibility_report(
-        script_paths=[" scripts/run_capstone.py "],
-        seeds=[0, 1, 2],
-        artifact_paths=[" results/metrics.json "],
-        root=root,
-    )
-    _assert_report_matches_reference(actual, expected, msg="Reproducibility report")
+    assert _asdict(actual) == {
+        "script_paths": ("scripts/run_capstone.py",),
+        "seeds": (0, 1, 2),
+        "artifact_paths": ("results/metrics.json",),
+        "reproducible": True,
+    }, "Existing repo-relative scripts, unique integer seeds, and artifacts should pass."
     assert actual.reproducible, (
         "Scripts, seeds, and existing artifact paths should pass the reproducibility gate."
     )
@@ -166,9 +171,34 @@ def test_reproducibility_report_requires_scripts_seeds_and_artifacts(
     assert not missing_script.reproducible, (
         "A declared script path must exist; string metadata alone is not reproducibility."
     )
-    print(
-        "All tests in `test_reproducibility_report_requires_scripts_seeds_and_artifacts` passed!"
+    duplicate_seed = reproducibility_report(
+        script_paths=["scripts/run_capstone.py"],
+        seeds=[0, 0, 1],
+        artifact_paths=["results/metrics.json"],
+        root=root,
     )
+    assert not duplicate_seed.reproducible, (
+        "Three runs with a repeated seed should not count as independent multi-seed evidence."
+    )
+    invalid_seed = reproducibility_report(
+        script_paths=["scripts/run_capstone.py"],
+        seeds=[0, True],
+        artifact_paths=["results/metrics.json"],
+        root=root,
+    )
+    assert invalid_seed.seeds == (0,) and not invalid_seed.reproducible, (
+        "Boolean or coerced seed values should not be accepted as explicit integer seeds."
+    )
+    absolute_path = reproducibility_report(
+        script_paths=[str(root / "scripts" / "run_capstone.py")],
+        seeds=[0],
+        artifact_paths=["results/metrics.json"],
+        root=root,
+    )
+    assert not absolute_path.reproducible, (
+        "Reproducibility metadata should use repo-relative paths, not machine-specific paths."
+    )
+    print("All tests in `test_reproducibility_report_requires_scripts_seeds_and_artifacts` passed!")
 
 
 def test_capstone_readiness_report_requires_every_gate(
@@ -205,26 +235,16 @@ def test_capstone_readiness_report_requires_every_gate(
         root=_section_dir(),
     )
     actual = capstone_readiness_report(plan, baselines, validations, reproducibility)
-    expected = reference.capstone_readiness_report(
-        reference.build_capstone_plan(
-            research_question="Do mini Activation Oracles beat probes?",
-            benchmark="held-out activation questions",
-            baselines=["probe", "text_only", "random_control"],
-            mechanistic_claim="question conditioning uses latent state features",
-            causal_validations=["ablation", "patching", "random_control", "ood"],
-            reproducible_scripts=["scripts/run_capstone.py"],
-            writeup_path="reports/capstone.md",
-        ),
-        reference.baseline_suite_report(["probe", "text_only", "random_control"]),
-        reference.causal_validation_suite_report(["ablation", "patching", "random_control", "ood"]),
-        reference.reproducibility_report(
-            script_paths=["scripts/run_capstone.py"],
-            seeds=[0, 1, 2],
-            artifact_paths=["results/metrics.json"],
-            root=_section_dir(),
-        ),
-    )
-    _assert_report_matches_reference(actual, expected, msg="Capstone readiness report")
+    assert _asdict(actual) == {
+        "has_research_question": True,
+        "has_benchmark": True,
+        "has_mechanistic_claim": True,
+        "baseline_suite_complete": True,
+        "causal_validation_complete": True,
+        "reproducibility_complete": True,
+        "has_writeup_path": True,
+        "ready": True,
+    }, "The readiness report should expose every gate and pass only when all gates pass."
     assert actual.ready, "A complete plan should pass the capstone readiness gate."
 
     incomplete_baselines = baseline_suite_report(["probe", "random_control"])
@@ -285,6 +305,9 @@ def test_committed_gpu_report_matches_artifact_contract():
     )
     assert gpu["metrics_by_seed_file_valid"] and gpu["seed_count"] == 3, (
         "The CUDA report should record per-seed metrics for three seeds."
+    )
+    assert gpu.get("unique_seed_count", gpu["seed_count"]) == gpu["seed_count"], (
+        "The CUDA report should count independent seed ids, not duplicate seed reports."
     )
     assert gpu["oracle_accuracy_mean"] >= 0.9, (
         "The activation oracle should solve the IID held-out questions."

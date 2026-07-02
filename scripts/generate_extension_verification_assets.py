@@ -870,15 +870,21 @@ REGISTRY_ROWS: list[dict[str, str]] = [
         "name": "Local PyTorch CUDA 13.2 runtime",
         "type": "runtime",
         "provider": "uv environment",
-        "repo_or_source_id": "torch;torchvision;python",
+        "repo_or_source_id": "torch;torchvision;torchao;python",
         "license": "mixed",
         "gated": "false",
-        "revision": "python 3.14.6; torch 2.12.1+cu132; torchvision 0.27.1+cu132",
+        "revision": (
+            "python 3.14.6; torch 2.12.1+cu132; torchvision 0.27.1+cu132; "
+            "torchao 0.17.0"
+        ),
         "local_status": "REQUIRED",
         "max_vram_gb": "24",
         "used_in_notebooks": "1.6",
         "gt_tier": "GT-1",
-        "notes": "Validated on RTX 5090 Laptop GPU with CUDA 13.2 and BF16 matmul.",
+        "notes": (
+            "Validated on RTX 5090 Laptop GPU with CUDA 13.2, BF16 matmul, "
+            "and torchao import/CUDA-context checks."
+        ),
     },
     {
         "name": "Course fake-result diagnostics",
@@ -1370,6 +1376,41 @@ REGISTRY_ROWS: list[dict[str, str]] = [
         ),
     },
     {
+        "name": "Generated activation-oracle latent questions",
+        "type": "dataset",
+        "provider": "generated",
+        "repo_or_source_id": "activation_oracle_latent_questions_v1",
+        "license": "course_generated",
+        "gated": "false",
+        "revision": "seeds_0_1_2",
+        "local_status": "GENERATED_BY_COURSE",
+        "max_vram_gb": "0",
+        "used_in_notebooks": "10.1",
+        "gt_tier": "GT-4",
+        "notes": (
+            "Balanced latent-bit benchmark for 10.1 with four questions, "
+            "held-out templates, and explicit scope to a generated model organism."
+        ),
+    },
+    {
+        "name": "Course question-conditioned activation oracle",
+        "type": "model_organism",
+        "provider": "generated_training_run",
+        "repo_or_source_id": "course_question_conditioned_activation_oracle_v1",
+        "license": "course_generated",
+        "gated": "false",
+        "revision": "seeds_0_1_2",
+        "local_status": "GENERATED_BY_COURSE",
+        "max_vram_gb": "1",
+        "used_in_notebooks": "10.1",
+        "gt_tier": "GT-4",
+        "notes": (
+            "CUDA-trained 10.1 two-layer MLP activation oracle with text-only, "
+            "linear-probe, held-out-template, ablation, patching, random-patch, "
+            "random-activation, and label-shuffle controls. It is not a released-model claim."
+        ),
+    },
+    {
         "name": "Course LoRA adapters",
         "type": "adapter",
         "provider": "generated",
@@ -1683,6 +1724,27 @@ METHOD_ROWS: list[dict[str, str]] = [
             "with text-only/probe baselines, OOD splits, random abstention, and "
             "clean-to-corrupt activation patching. Full LoRA/API Activation Oracle "
             "training remains outside the local claim."
+        ),
+    },
+    {
+        "method_name": "Question-conditioned activation-oracle capstone",
+        "paper": "Course GT-4 capstone protocol",
+        "year": "2026",
+        "category": "activation_to_language",
+        "model_family": "generated_model_organism",
+        "has_code": "true",
+        "has_weights": "generated",
+        "local_24gb_status": "LOCAL_GREEN",
+        "implementation_status": "REQUIRED_IMPLEMENT",
+        "verification_status": "IMPLEMENTED_CUDA_MINI_CAPSTONE_PREFLIGHT",
+        "baseline_status": "HAS_TEXT_ONLY_LINEAR_PROBE_OOD_PATCHING_AND_SHUFFLE_CONTROLS",
+        "notes": (
+            "Section 10.1 now teaches a paper-style capstone readiness contract and "
+            "runs a CUDA-trained question-conditioned MLP activation-oracle model "
+            "organism on generated latent-state activations across seeds 0, 1, 2. "
+            "The report checks text-only and linear-probe baselines, XOR composition, "
+            "held-out templates, ablation, counterfactual patching, random-patch, "
+            "random-activation, label-shuffle controls, artifact hashes, and a bounded writeup."
         ),
     },
     {

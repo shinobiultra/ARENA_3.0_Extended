@@ -5,6 +5,10 @@ prototype page in this branch is already polished course material. The original
 ARENA chapters remain the canonical base. Extension material must earn
 `course_ready` status in [docs/arena_style_rewrite_status.yml](docs/arena_style_rewrite_status.yml)
 before it should be treated as part of the finished student-facing course.
+Older planning sketches later in this file preserve their original numbering
+where useful for provenance; the current release numbering is the one in
+`docs/arena_style_rewrite_status.yml` and the chapter `instructions/pages`
+paths.
 
 The current polished sections are **[5.1] Gemma from Scratch**, **[5.2]
 Gemma Scope and Feature Steering**, **[5.3] Mamba from Scratch**, **[5.4]
@@ -21,7 +25,8 @@ EAP**, **[8.3] ACDC and Circuit Metrics**, **[8.4] Circuit
 Tracing with Attribution Graphs**, **[8.5] Sparse Feature
 Circuits**, **[9.1] Refusal Directions and Safe Steering**,
 **[9.2] Chain-of-Thought Faithfulness**, **[9.3] Emergent
-Misalignment Detection**, and **[9.4] White-box Evals and Monitors**.
+Misalignment Detection**, **[9.4] White-box Evals and Monitors**,
+and **[10.1] Capstone Research Sprint**.
 They now have ARENA-style learner pages, local
 diagrams, help/interpretation dropdowns, expected-output blocks, paired
 exercise/solution notebooks, CUDA-backed signature result tables, and explicit

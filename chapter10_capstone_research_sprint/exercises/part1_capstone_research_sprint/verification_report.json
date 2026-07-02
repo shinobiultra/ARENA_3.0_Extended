@@ -88,9 +88,9 @@
       ]
     }
   ],
-  "date_run": "2026-07-01T06:35:57+00:00",
+  "date_run": "2026-07-02T05:01:49+00:00",
   "evidence_level": "cuda_trained_activation_oracle_capstone_with_controls",
-  "git_commit": "3f277125",
+  "git_commit": "1e0e8b1e",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-4",
   "known_failures": [],
@@ -146,6 +146,7 @@
         "text_only_accuracy_mean",
         "train_example_count",
         "train_templates",
+        "unique_seed_count",
         "writeup_file_valid"
       ],
       "uses_cuda": true
@@ -221,6 +222,7 @@
         1,
         2
       ],
+      "unique_seed_count": 3,
       "within_vram_budget": true,
       "writeup_file_valid": true
     },
@@ -331,12 +333,12 @@
   "peak_vram_gb": 0.0634922981262207,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "c3365f87fab611faf32d7ddf1317253942ef900cb62b77827ae3acf96a5fe3f4",
+    "combined_sha256": "4cfd5a79f9604518cede23e33351be7e5282b0006c7b157c912603afbb67bfa3",
     "files": [
       {
         "path": "arena_ext/capstone.py",
-        "sha256": "2853f45f5aa9920824f3bc31e5d9635df358b6f646f9fd4bfe7775db350a4bf8",
-        "size_bytes": 30806
+        "sha256": "ba33e2e8987dd43974df15ce025f8dcc73ca3ad5cadd83bf9f8d81e1bedef486",
+        "size_bytes": 31473
       },
       {
         "path": "arena_ext/verification.py",
@@ -345,13 +347,13 @@
       },
       {
         "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/10.1_Capstone_Research_Sprint_exercises.ipynb",
-        "sha256": "bc6690a004bf3a0d155850a38729568238b7bab320314ce981d3d60b1ac5dfe9",
-        "size_bytes": 15593
+        "sha256": "8ce597321eb92242ae7bf508eefbb8467fcc78e161029dbe11ae46fbf82d84c9",
+        "size_bytes": 41191
       },
       {
         "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/10.1_Capstone_Research_Sprint_solutions.ipynb",
-        "sha256": "6fe47d4f062902f151d28e71d7c5b2e4689f47746fc759a88ba143cc51289919",
-        "size_bytes": 12268
+        "sha256": "4cc4208acc897d85efb3b0ab5266bef95bb55d1f4ad4887fdf7d82e53aa07138",
+        "size_bytes": 52533
       },
       {
         "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/README.md",
@@ -390,8 +392,8 @@
       },
       {
         "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/results/metrics.json",
-        "sha256": "36241b0981e6c2c1dc4dabd8d880638ad933630a581447e229eb0d48a7f1d0ba",
-        "size_bytes": 1648
+        "sha256": "54ab1d526cee06550901609d6b55f55ba44d4009912dd61b16e39f1633811ce3",
+        "size_bytes": 1674
       },
       {
         "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/results/metrics_by_seed.json",
@@ -405,13 +407,13 @@
       },
       {
         "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/solutions.py",
-        "sha256": "e84dea51c5d02dd09af818a18d505188cbd984315b6badc57c01bd7cdec4839f",
-        "size_bytes": 14418
+        "sha256": "fd30d5eff4f32dbbbf263c3a5ab9829c2ecc80e77dc1dcd69eddfeba354c9eef",
+        "size_bytes": 15018
       },
       {
         "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/tests.py",
-        "sha256": "37f7a9c8cc350f1b2455e2842d098cda01f7c847803856d749e0cec8fbe73021",
-        "size_bytes": 14709
+        "sha256": "a178b02136adf46ed871975f73e790fd0a6ff7a444dde0123b6920a08294ece8",
+        "size_bytes": 15577
       },
       {
         "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/utils.py",
@@ -425,8 +427,8 @@
       },
       {
         "path": "chapter10_capstone_research_sprint/instructions/pages/01_[10.1]_Capstone_Research_Sprint.md",
-        "sha256": "4d29e4c9ee5a4851c3e0580d5cee222c45ff3e7df51ceef960fc29cd793ae0cc",
-        "size_bytes": 19887
+        "sha256": "c5e17661f42bfed18ab0d8b74e72409a38ea44d6dd7501b60fd342a65a24d441",
+        "size_bytes": 29313
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
@@ -441,5 +443,5 @@
     "This section trains on generated numeric latent-state activations only. It does not use unsafe prompts, gated weights, model completions, external APIs, or user data. The report explicitly scopes the claim to the generated benchmark."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 3.971523
+  "wall_clock_seconds": 5.267403
 }

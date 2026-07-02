@@ -230,6 +230,23 @@ methods:
     gelu-1l residual-direction mini-oracle CUDA preflight with text-only/probe baselines,
     OOD splits, random abstention, and clean-to-corrupt activation patching. Full
     LoRA/API Activation Oracle training remains outside the local claim.
+- method_name: Question-conditioned activation-oracle capstone
+  paper: Course GT-4 capstone protocol
+  year: '2026'
+  category: activation_to_language
+  model_family: generated_model_organism
+  has_code: 'true'
+  has_weights: generated
+  local_24gb_status: LOCAL_GREEN
+  implementation_status: REQUIRED_IMPLEMENT
+  verification_status: IMPLEMENTED_CUDA_MINI_CAPSTONE_PREFLIGHT
+  baseline_status: HAS_TEXT_ONLY_LINEAR_PROBE_OOD_PATCHING_AND_SHUFFLE_CONTROLS
+  notes: Section 10.1 now teaches a paper-style capstone readiness contract and runs
+    a CUDA-trained question-conditioned MLP activation-oracle model organism on generated
+    latent-state activations across seeds 0, 1, 2. The report checks text-only and
+    linear-probe baselines, XOR composition, held-out templates, ablation, counterfactual
+    patching, random-patch, random-activation, label-shuffle controls, artifact hashes,
+    and a bounded writeup.
 - method_name: Mini Natural Language Autoencoders
   paper: Natural Language Autoencoders
   year: '2026'
