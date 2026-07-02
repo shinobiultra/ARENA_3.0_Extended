@@ -134,9 +134,9 @@ sections:
     page: chapter16_shapley_attribution_baselines/instructions/pages/01_[16.1]_Exact_Shapley_on_Ground_Truth_Games.md
     notes: ARENA-style exact-Shapley lesson with finite coalition-table validation loop, signature-result diagram, help/interpretation dropdowns, paired notebooks, exact formula/permutation/efficiency/interaction exercises, limitations, and scoped CUDA trained-neural-game evidence with complete finite-domain claim boundaries.
   '16.2':
-    status: prototype
+    status: course_ready
     page: chapter16_shapley_attribution_baselines/instructions/pages/02_[16.2]_KernelSHAP_and_PartitionSHAP_Controls.md
-    notes: Prototype scaffold retained for implementation evidence; requires ARENA-style rewrite before course-ready release.
+    notes: ARENA-style KernelSHAP/PartitionSHAP lesson with full-table weighted regression, exact Owen-value grouping controls, cross-group shortcut anomaly hunting, local validation-loop and signature-result diagrams, help/interpretation dropdowns, paired notebooks, limitations, and scoped CUDA trained-neural-game evidence.
   '16.3':
     status: prototype
     page: chapter16_shapley_attribution_baselines/instructions/pages/03_[16.3]_Shapley_Interactions_with_shapiq.md

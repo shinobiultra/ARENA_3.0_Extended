@@ -108,9 +108,9 @@
       "target_rule": "0.25 + 1.2*x0 - 0.7*x1 + 1.6*x2 + 0.9*x3 + 2.2*x0*x2 - 1.5*x1*x3"
     }
   ],
-  "date_run": "2026-07-01T06:36:47+00:00",
+  "date_run": "2026-07-02T07:25:30+00:00",
   "evidence_level": "kernelshap_partition_contract_plus_cuda_trained_neural_game_preflight",
-  "git_commit": "3f277125",
+  "git_commit": "2bf7d47e",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-0",
   "known_failures": [],
@@ -333,7 +333,7 @@
   "peak_vram_gb": 0.06262922286987305,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "4b1d248b3c76e14f0aa18b8abbf4246ebd1207a7450ce2bbd374c3b5fa3bb58b",
+    "combined_sha256": "335f9f8fb37b82f39b1b7c4eee0078f3171bb5c3b625555b72bd71bcf6a733d0",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -342,13 +342,13 @@
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part2_kernelshap_partition_shap_controls/16.2_KernelSHAP_and_PartitionSHAP_Controls_exercises.ipynb",
-        "sha256": "77ba8d9256303d534f8ddd9f570ae65d1411a2fe71d4d1b8c01275f4695bde24",
-        "size_bytes": 12250
+        "sha256": "a3c75d0ddef9981f447168945391d6f4b150f41965e4a9898e09b6b875436589",
+        "size_bytes": 26297
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part2_kernelshap_partition_shap_controls/16.2_KernelSHAP_and_PartitionSHAP_Controls_solutions.ipynb",
-        "sha256": "1fa01d78ed7444045a35a30b298f98f871678f11bc4b1fae58f3ac71ff8fe7dc",
-        "size_bytes": 7010
+        "sha256": "496ef5676a15d8026c9aaa67425d30ca26a89d07e8204062a0c40e95e600c0f6",
+        "size_bytes": 38871
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part2_kernelshap_partition_shap_controls/README.md",
@@ -382,8 +382,8 @@
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part2_kernelshap_partition_shap_controls/tests.py",
-        "sha256": "876d6e7e207e8d54668066949235727b42071096af9cd49df66be885bf9f0dc1",
-        "size_bytes": 12685
+        "sha256": "7008f20d602e8ecb14da3ab1f90cf7de6801011455518db680f4003ab60fbccf",
+        "size_bytes": 13582
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part2_kernelshap_partition_shap_controls/utils.py",
@@ -397,8 +397,8 @@
       },
       {
         "path": "chapter16_shapley_attribution_baselines/instructions/pages/02_[16.2]_KernelSHAP_and_PartitionSHAP_Controls.md",
-        "sha256": "37f089c1ceae9d71cea14d3098d48adb92ec28534cabf4c7b6e6942935477f0a",
-        "size_bytes": 22531
+        "sha256": "da07fb4ee7cc6f2732e7de7707764c7de1337d044775b56e5289871ab31f8fe5",
+        "size_bytes": 30094
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
@@ -413,5 +413,5 @@
     "The real training path uses only a generated finite binary feature table and a shuffled-label negative control. It does not use unsafe prompts, user data, external APIs, adapters, gated weights, or large persistent artifacts."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 1.461363
+  "wall_clock_seconds": 2.59099
 }

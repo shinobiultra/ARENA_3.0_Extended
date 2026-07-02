@@ -143,6 +143,31 @@ def test_partition_shap_report_recovers_additive_groups(
     print("All tests in `test_partition_shap_report_recovers_additive_groups` passed!")
 
 
+def test_grouped_coalition_values_expand_groups_before_lookup(
+    grouped_coalition_values: Callable | None = None,
+    additive_game: Callable | None = None,
+):
+    solutions = _solutions()
+    grouped_coalition_values = (
+        grouped_coalition_values or solutions.grouped_coalition_values
+    )
+    additive_game = additive_game or solutions.additive_game
+    values = additive_game(t.tensor([1.0, 2.0, 3.0, 4.0]))
+
+    group_values = grouped_coalition_values(values, groups=((0, 1), (2, 3)))
+
+    expected = {
+        frozenset(): 0.0,
+        frozenset({0}): 3.0,
+        frozenset({1}): 7.0,
+        frozenset({0, 1}): 10.0,
+    }
+    assert group_values == expected, (
+        "Grouped coalitions should expand group indices to their original players before reading the value table."
+    )
+    print("All tests in `test_grouped_coalition_values_expand_groups_before_lookup` passed!")
+
+
 def test_partition_shap_report_splits_interaction_group_symmetrically(
     partition_shap_report: Callable | None = None,
     conjunction_game: Callable | None = None,
