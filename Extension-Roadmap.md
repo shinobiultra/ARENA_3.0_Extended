@@ -33,8 +33,9 @@ Controls**, **[13.1] Diffusion and Image-Generation Controls**,
 Exact Shapley on Ground-Truth Games**, **[16.2] KernelSHAP
 and PartitionSHAP Controls**, **[16.3] Shapley Interactions
 with shapiq**, **[16.4] TokenSHAP and TokenShapley**, **[16.5]
-VLM Modality and Region SHAP**, and **[17.1] Checkpoint
-Archaeology and Mechanism Emergence**.
+VLM Modality and Region SHAP**, **[16.6] SHAP vs Activation
+Patching**, and **[17.1] Checkpoint Archaeology and Mechanism
+Emergence**.
 They now have ARENA-style learner pages, local
 diagrams, help/interpretation dropdowns, expected-output blocks, paired
 exercise/solution notebooks, CUDA-backed signature result tables, and explicit

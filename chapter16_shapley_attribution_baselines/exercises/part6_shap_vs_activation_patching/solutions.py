@@ -1,7 +1,10 @@
 # %%
 """Reference solutions for [16.6] SHAP vs Activation Patching."""
 
+import itertools
+import math
 import sys
+from collections.abc import Mapping
 from pathlib import Path
 
 import torch as t
@@ -14,8 +17,7 @@ if str(root_dir) not in sys.path:
 from arena_ext.shapley_attribution import (
     additive_game,
     conjunction_game,
-    interaction_patching_failure_report,
-    shapley_patching_comparison_report,
+    shapley_patching_comparison_report as arena_shapley_patching_comparison_report,
 )
 from arena_ext.shapley_neural_game import (
     NEURAL_GAME_NUM_PLAYERS,
@@ -35,11 +37,125 @@ ADDITIVE_AGREEMENT_MAX_ERROR = 1e-5
 INTERACTION_DISAGREEMENT_MIN_ERROR = 1.0
 INTERACTION_ABS_OVERCOUNT_MIN = 2.0
 INTERACTION_FIT_MSE_MAX = 1e-8
+Coalition = frozenset[int]
 
 
 # %%
-def _tensor_report(report) -> dict:
-    result = report.__dict__.copy()
+def all_coalitions(num_players: int) -> tuple[Coalition, ...]:
+    """Return every coalition for `num_players` players."""
+
+    if num_players <= 0:
+        raise ValueError("num_players must be positive.")
+    players = range(num_players)
+    coalitions: list[Coalition] = []
+    for size in range(num_players + 1):
+        coalitions.extend(frozenset(group) for group in itertools.combinations(players, size))
+    return tuple(coalitions)
+
+
+def normalize_coalition_values(
+    coalition_values: Mapping[Coalition | tuple[int, ...], float],
+    *,
+    num_players: int,
+) -> dict[Coalition, float]:
+    """Normalize coalition keys and require a complete finite coalition table."""
+
+    values = {frozenset(key): float(value) for key, value in coalition_values.items()}
+    expected = set(all_coalitions(num_players))
+    missing = expected - set(values)
+    if missing:
+        raise ValueError(f"coalition value table is missing {len(missing)} coalitions.")
+    return values
+
+
+def exact_shapley_values(
+    coalition_values: Mapping[Coalition | tuple[int, ...], float],
+    *,
+    num_players: int,
+) -> t.Tensor:
+    """Compute exact Shapley values by summing weighted marginal effects."""
+
+    values = normalize_coalition_values(coalition_values, num_players=num_players)
+    shapley = t.zeros(num_players, dtype=t.float64)
+    denominator = math.factorial(num_players)
+    for player in range(num_players):
+        others = [candidate for candidate in range(num_players) if candidate != player]
+        for size in range(num_players):
+            weight = (
+                math.factorial(size)
+                * math.factorial(num_players - size - 1)
+                / denominator
+            )
+            for group in itertools.combinations(others, size):
+                coalition = frozenset(group)
+                shapley[player] += weight * (
+                    values[coalition | {player}] - values[coalition]
+                )
+    return shapley
+
+
+def activation_patching_effects(
+    coalition_values: Mapping[Coalition | tuple[int, ...], float],
+    *,
+    num_players: int,
+) -> t.Tensor:
+    """Compute full-minus-ablated patching effects from a coalition table."""
+
+    values = normalize_coalition_values(coalition_values, num_players=num_players)
+    full = frozenset(range(num_players))
+    effects = [values[full] - values[full - {player}] for player in range(num_players)]
+    return t.tensor(effects, dtype=t.float64)
+
+
+def shapley_patching_comparison_report(
+    coalition_values: Mapping[Coalition | tuple[int, ...], float],
+    *,
+    num_players: int,
+    tolerance: float = 1e-9,
+) -> dict:
+    """Compare exact Shapley values to full-minus-ablated patching effects."""
+
+    shapley = exact_shapley_values(coalition_values, num_players=num_players)
+    patching = activation_patching_effects(coalition_values, num_players=num_players)
+    max_abs_error = float((shapley - patching).abs().max().item())
+    shapley_top = int(shapley.argmax().item())
+    patching_top = int(patching.argmax().item())
+    return {
+        "shapley_values": shapley,
+        "patching_effects": patching,
+        "max_abs_error": max_abs_error,
+        "shapley_top_feature": shapley_top,
+        "patching_top_feature": patching_top,
+        "top_feature_agrees": shapley_top == patching_top,
+        "agrees_with_shapley": max_abs_error <= tolerance,
+    }
+
+
+def interaction_patching_failure_report(
+    coalition_values: Mapping[Coalition | tuple[int, ...], float],
+    *,
+    num_players: int,
+    min_overcount: float = 0.5,
+) -> dict:
+    """Document patching overcount on an interaction-heavy coalition game."""
+
+    shapley = exact_shapley_values(coalition_values, num_players=num_players)
+    patching = activation_patching_effects(coalition_values, num_players=num_players)
+    shapley_total = float(shapley.sum().item())
+    patching_total = float(patching.sum().item())
+    overcount = patching_total - shapley_total
+    return {
+        "shapley_values": shapley,
+        "patching_effects": patching,
+        "shapley_total": shapley_total,
+        "patching_total": patching_total,
+        "overcount": overcount,
+        "documents_overcount": overcount >= min_overcount,
+    }
+
+
+def _jsonable_report(report: dict) -> dict:
+    result = report.copy()
     for key, value in list(result.items()):
         if hasattr(value, "tolist"):
             result[key] = value.tolist()
@@ -48,12 +164,12 @@ def _tensor_report(report) -> dict:
 
 def additive_agreement_smoke_test() -> dict:
     values = additive_game(t.tensor([1.0, 2.0, 0.5]))
-    return _tensor_report(shapley_patching_comparison_report(values, num_players=3))
+    return _jsonable_report(shapley_patching_comparison_report(values, num_players=3))
 
 
 def interaction_failure_smoke_test() -> dict:
     values = conjunction_game(2)
-    return _tensor_report(interaction_patching_failure_report(values, num_players=2))
+    return _jsonable_report(interaction_patching_failure_report(values, num_players=2))
 
 
 def run_smoke_test(cpu: bool = True) -> dict:
@@ -117,16 +233,16 @@ def run_neural_shap_vs_patching_preflight(max_vram_gb: float = 24.0) -> dict:
     inputs = binary_feature_table(device)
     additive_model, additive_fit_mse, additive_fit_max_abs_error = _train_additive_linear_model(inputs)
     additive_values = coalition_table_from_model(additive_model, device)
-    additive_report = shapley_patching_comparison_report(
-        additive_values,
-        num_players=NEURAL_GAME_NUM_PLAYERS,
-        tolerance=ADDITIVE_AGREEMENT_MAX_ERROR,
-    )
 
     interaction_targets = true_neural_game_scores(inputs)
     interaction_model = train_neural_game(inputs, interaction_targets)
     interaction_values = coalition_table_from_model(interaction_model.model, device)
-    interaction_report = shapley_patching_comparison_report(
+    additive_report = arena_shapley_patching_comparison_report(
+        additive_values,
+        num_players=NEURAL_GAME_NUM_PLAYERS,
+        tolerance=ADDITIVE_AGREEMENT_MAX_ERROR,
+    )
+    interaction_report = arena_shapley_patching_comparison_report(
         interaction_values,
         num_players=NEURAL_GAME_NUM_PLAYERS,
         tolerance=ADDITIVE_AGREEMENT_MAX_ERROR,

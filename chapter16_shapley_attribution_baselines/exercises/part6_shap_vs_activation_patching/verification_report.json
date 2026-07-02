@@ -58,9 +58,9 @@
       "source": "generated_finite_table"
     }
   ],
-  "date_run": "2026-07-01T06:36:54+00:00",
+  "date_run": "2026-07-02T08:26:13+00:00",
   "evidence_level": "shap_vs_patching_contract_plus_cuda_model_organism_preflight",
-  "git_commit": "3f277125",
+  "git_commit": "12673145",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-0",
   "known_failures": [],
@@ -220,7 +220,7 @@
   "peak_vram_gb": 0.06259441375732422,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "41ef22cfcda0ae060fc6074c4576b614fbda4db661d6e8a1106f6c6471f3a88a",
+    "combined_sha256": "e461dfeffc305723f2ab3f22c4313e4597bd52883688b0f2eeb314f9db252e7c",
     "files": [
       {
         "path": "arena_ext/shapley_attribution.py",
@@ -239,13 +239,13 @@
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part6_shap_vs_activation_patching/16.6_SHAP_vs_Activation_Patching_exercises.ipynb",
-        "sha256": "9b316f6974b2289dbe67da1d43faf490fcbed822ed40260e662d52e20ac0fc9f",
-        "size_bytes": 4736
+        "sha256": "ad135af652855d2dce6b2c5033531f9c6f808441154e05bb4ab2cc86643cc736",
+        "size_bytes": 21887
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part6_shap_vs_activation_patching/16.6_SHAP_vs_Activation_Patching_solutions.ipynb",
-        "sha256": "b19f51394a0f6ddc02fbedf195b2a4a049dbc1cb1a0e9cd0970e28dad0017b58",
-        "size_bytes": 2931
+        "sha256": "d5ff7df40f35e327678c851faa43a1bd1c138ae62826c2a2b6428450b4efd6a9",
+        "size_bytes": 28073
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part6_shap_vs_activation_patching/README.md",
@@ -274,13 +274,13 @@
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part6_shap_vs_activation_patching/solutions.py",
-        "sha256": "2e3c6bc849f5becf00f8d689a62263d6693bb928f77b0829c409ffc629d75545",
-        "size_bytes": 7046
+        "sha256": "7196ab25d9c0ed52f9e47c2c4276e34c3a359dfe379de747c239dc4bbdbd5996",
+        "size_bytes": 11364
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part6_shap_vs_activation_patching/tests.py",
-        "sha256": "9861681bb7344f1a784f3fb1740b27b4bbb6e065d6e596c741421c694720c2b5",
-        "size_bytes": 2634
+        "sha256": "0f780c8ea7034568f18792adcd213080e728a627809ac93938007b29e8275300",
+        "size_bytes": 10808
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part6_shap_vs_activation_patching/utils.py",
@@ -294,8 +294,8 @@
       },
       {
         "path": "chapter16_shapley_attribution_baselines/instructions/pages/06_[16.6]_SHAP_vs_Activation_Patching.md",
-        "sha256": "52b60532030e4c79bfffe38557029015c17088acd0d538f439750fb556512b93",
-        "size_bytes": 9277
+        "sha256": "bb1d81b07cffd0795bb5e19f3729cbefcf50d24f533fb89022a4898b4dc1121c",
+        "size_bytes": 14729
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
@@ -310,5 +310,5 @@
     "The real training path uses only generated finite binary feature tables. It does not use unsafe prompts, user data, external APIs, adapters, gated weights, or large persistent artifacts."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 1.13488
+  "wall_clock_seconds": 2.296678
 }

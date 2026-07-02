@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="300" viewBox="0 0 960 300" role="img" aria-labelledby="title desc">
+  <title id="title">SHAP vs activation patching validation loop</title>
+  <desc id="desc">A four-step loop from exact coalition tables to Shapley values, patching effects, controls, and CUDA model-organism evidence.</desc>
+  <rect width="960" height="300" fill="#f7f7f2"/>
+  <style>
+    .box{fill:#ffffff;stroke:#243b53;stroke-width:2;rx:8}
+    .head{font:700 20px sans-serif;fill:#102a43}
+    .body{font:16px sans-serif;fill:#334e68}
+    .arrow{stroke:#0b7285;stroke-width:4;fill:none;marker-end:url(#arrow)}
+    .tag{font:700 14px sans-serif;fill:#0b7285}
+  </style>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#0b7285"/>
+    </marker>
+  </defs>
+  <text x="40" y="42" class="head">Validation loop: do not compare black-box scores before the toy oracle works</text>
+  <rect x="40" y="76" width="190" height="150" class="box"/>
+  <text x="64" y="112" class="head">1. Exact table</text>
+  <text x="64" y="146" class="body">Enumerate every</text>
+  <text x="64" y="170" class="body">coalition value.</text>
+  <text x="64" y="198" class="tag">GT-0 oracle</text>
+  <path d="M240 151 H300" class="arrow"/>
+  <rect x="310" y="76" width="190" height="150" class="box"/>
+  <text x="334" y="112" class="head">2. Two scores</text>
+  <text x="334" y="146" class="body">Compute Shapley</text>
+  <text x="334" y="170" class="body">and full-minus-</text>
+  <text x="334" y="194" class="body">ablated patching.</text>
+  <path d="M510 151 H570" class="arrow"/>
+  <rect x="580" y="76" width="170" height="150" class="box"/>
+  <text x="604" y="112" class="head">3. Controls</text>
+  <text x="604" y="146" class="body">Additive agrees.</text>
+  <text x="604" y="170" class="body">AND overcounts.</text>
+  <text x="604" y="198" class="tag">No white noise</text>
+  <path d="M760 151 H820" class="arrow"/>
+  <rect x="830" y="76" width="90" height="150" class="box"/>
+  <text x="846" y="112" class="head">4.</text>
+  <text x="846" y="144" class="body">CUDA</text>
+  <text x="846" y="168" class="body">model</text>
+  <text x="846" y="192" class="body">check</text>
+  <text x="40" y="264" class="body">Acceptance requires both a positive agreement control and a negative interaction-control failure mode.</text>
+</svg>
