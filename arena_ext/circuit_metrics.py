@@ -11,6 +11,13 @@ from arena_ext.activation_language import prediction_accuracy
 
 
 @dataclass(frozen=True)
+class ActivationPatchingSweep:
+    patch_scores: t.Tensor
+    best_index: int
+    best_score: float
+
+
+@dataclass(frozen=True)
 class ACDCPruningReport:
     kept_edges: tuple[str, ...]
     removed_edges: tuple[str, ...]
@@ -69,6 +76,22 @@ class CircuitMethodComparisonReport:
     passes_comparison: bool
 
 
+@dataclass(frozen=True)
+class ToyCircuitEvaluationReport:
+    ground_truth_edges: tuple[str, ...]
+    discovered_edges: tuple[str, ...]
+    exact_match: bool
+    full_metric: float
+    corrupt_metric: float
+    circuit_metric: float
+    random_metric: float
+    preserved_fraction: float
+    minimality_damage: float
+    completeness_gain: float
+    random_margin: float
+    passes: bool
+
+
 def _require_finite_tensor(tensor: t.Tensor, name: str) -> None:
     if not t.isfinite(tensor).all():
         raise ValueError(f"{name} must be finite.")
@@ -77,6 +100,240 @@ def _require_finite_tensor(tensor: t.Tensor, name: str) -> None:
 def _require_finite_scalar(value: float, name: str) -> None:
     if not t.isfinite(t.tensor(value)).item():
         raise ValueError(f"{name} must be finite.")
+
+
+def answer_logit_diff(
+    logits: t.Tensor,
+    *,
+    positive_token_id: int,
+    negative_token_id: int,
+) -> float:
+    """Return mean positive-minus-negative logit difference."""
+
+    if logits.ndim < 1:
+        raise ValueError("logits must have a vocabulary dimension.")
+    vocab_size = logits.shape[-1]
+    if vocab_size == 0:
+        raise ValueError("logits vocabulary dimension must be nonempty.")
+    if positive_token_id == negative_token_id:
+        raise ValueError("positive_token_id and negative_token_id must differ.")
+    if not 0 <= positive_token_id < vocab_size:
+        raise ValueError("positive_token_id is out of range.")
+    if not 0 <= negative_token_id < vocab_size:
+        raise ValueError("negative_token_id is out of range.")
+    _require_finite_tensor(logits, "logits")
+    diff = logits[..., positive_token_id] - logits[..., negative_token_id]
+    return diff.float().mean().item()
+
+
+def activation_patching_sweep(
+    *,
+    clean_metric: float,
+    corrupt_metric: float,
+    patched_metrics: t.Tensor,
+) -> ActivationPatchingSweep:
+    """Convert per-component patched metrics into normalized recovery scores."""
+
+    denominator = clean_metric - corrupt_metric
+    for name, value in {
+        "clean_metric": clean_metric,
+        "corrupt_metric": corrupt_metric,
+    }.items():
+        _require_finite_scalar(value, name)
+    if denominator == 0:
+        raise ValueError("clean_metric and corrupt_metric must differ.")
+    if patched_metrics.ndim != 1:
+        raise ValueError("patched_metrics must be rank-1.")
+    if patched_metrics.numel() == 0:
+        raise ValueError("patched_metrics must be nonempty.")
+    _require_finite_tensor(patched_metrics, "patched_metrics")
+    patch_scores = (patched_metrics.float() - corrupt_metric) / denominator
+    best_index = int(patch_scores.argmax().item())
+    return ActivationPatchingSweep(
+        patch_scores=patch_scores,
+        best_index=best_index,
+        best_score=float(patch_scores[best_index].item()),
+    )
+
+
+def toy_acdc_graph() -> dict[str, object]:
+    """Return a tiny graph with two true causal edges and two decoys."""
+
+    return {
+        "edge_names": [
+            "color_input -> answer_logit",
+            "shape_input -> answer_logit",
+            "background_input -> answer_logit",
+            "position_input -> answer_logit",
+        ],
+        "clean_edge_values": t.tensor([2.0, 1.5, 0.2, -0.1]),
+        "corrupt_edge_values": t.tensor([0.0, 0.0, 0.2, -0.1]),
+        "ground_truth_edges": (
+            "color_input -> answer_logit",
+            "shape_input -> answer_logit",
+        ),
+        "same_size_random_edges": (
+            "background_input -> answer_logit",
+            "position_input -> answer_logit",
+        ),
+        "threshold": 0.35,
+    }
+
+
+def _validate_edge_values(
+    clean_edge_values: t.Tensor,
+    corrupt_edge_values: t.Tensor,
+    edge_names: list[str],
+) -> tuple[t.Tensor, t.Tensor]:
+    clean = clean_edge_values.flatten().float()
+    corrupt = corrupt_edge_values.flatten().float()
+    if clean.numel() == 0:
+        raise ValueError("edge values must be nonempty.")
+    if clean.shape != corrupt.shape:
+        raise ValueError("clean and corrupt edge values must have the same shape.")
+    if clean.numel() != len(edge_names):
+        raise ValueError("edge values and edge_names must align.")
+    if any(not name for name in edge_names):
+        raise ValueError("edge_names must be nonempty strings.")
+    _require_finite_tensor(clean, "clean_edge_values")
+    _require_finite_tensor(corrupt, "corrupt_edge_values")
+    return clean, corrupt
+
+
+def patch_toy_graph_edges(
+    clean_edge_values: t.Tensor,
+    corrupt_edge_values: t.Tensor,
+    edge_names: list[str],
+    patched_edges: tuple[str, ...] | list[str],
+) -> float:
+    """Patch named clean edge contributions into a corrupt toy graph."""
+
+    clean, corrupt = _validate_edge_values(clean_edge_values, corrupt_edge_values, edge_names)
+    name_to_index = {name: index for index, name in enumerate(edge_names)}
+    patched = corrupt.clone()
+    for edge in patched_edges:
+        if edge not in name_to_index:
+            raise ValueError(f"unknown edge: {edge}")
+        index = name_to_index[edge]
+        patched[index] = clean[index]
+    return float(patched.sum().item())
+
+
+def exact_toy_edge_patch_scores(
+    clean_edge_values: t.Tensor,
+    corrupt_edge_values: t.Tensor,
+    edge_names: list[str],
+) -> ActivationPatchingSweep:
+    """Score each toy edge by exact single-edge patch recovery."""
+
+    clean, corrupt = _validate_edge_values(clean_edge_values, corrupt_edge_values, edge_names)
+    clean_metric = float(clean.sum().item())
+    corrupt_metric = float(corrupt.sum().item())
+    patched_metrics = t.tensor(
+        [
+            patch_toy_graph_edges(clean, corrupt, edge_names, [edge_name])
+            for edge_name in edge_names
+        ],
+        dtype=t.float32,
+    )
+    return activation_patching_sweep(
+        clean_metric=clean_metric,
+        corrupt_metric=corrupt_metric,
+        patched_metrics=patched_metrics,
+    )
+
+
+def evaluate_toy_circuit(
+    clean_edge_values: t.Tensor,
+    corrupt_edge_values: t.Tensor,
+    edge_names: list[str],
+    ground_truth_edges: tuple[str, ...],
+    random_edges: tuple[str, ...],
+    *,
+    threshold: float = 0.35,
+) -> ToyCircuitEvaluationReport:
+    """Recover and evaluate a known toy circuit from exact edge patch scores."""
+
+    clean, corrupt = _validate_edge_values(clean_edge_values, corrupt_edge_values, edge_names)
+    sweep = exact_toy_edge_patch_scores(clean, corrupt, edge_names)
+    pruning = acdc_pruning_report(sweep.patch_scores, edge_names, threshold=threshold)
+    discovered_edges = pruning.kept_edges
+    full_metric = float(clean.sum().item())
+    corrupt_metric = float(corrupt.sum().item())
+    circuit_metric = patch_toy_graph_edges(clean, corrupt, edge_names, discovered_edges)
+    random_metric = patch_toy_graph_edges(clean, corrupt, edge_names, random_edges)
+
+    if not discovered_edges:
+        ablated_metric = corrupt_metric
+    else:
+        ablated_metric = max(
+            patch_toy_graph_edges(
+                clean,
+                corrupt,
+                edge_names,
+                tuple(edge for edge in discovered_edges if edge != edge_to_remove),
+            )
+            for edge_to_remove in discovered_edges
+        )
+
+    omitted_edges = [edge for edge in edge_names if edge not in discovered_edges]
+    if omitted_edges:
+        top_omitted = max(
+            omitted_edges,
+            key=lambda edge: float(sweep.patch_scores[edge_names.index(edge)].item()),
+        )
+        expanded_metric = patch_toy_graph_edges(
+            clean,
+            corrupt,
+            edge_names,
+            (*discovered_edges, top_omitted),
+        )
+    else:
+        expanded_metric = circuit_metric
+
+    faithfulness = circuit_faithfulness_report(
+        full_metric=full_metric,
+        corrupt_metric=corrupt_metric,
+        circuit_metric=circuit_metric,
+        min_preserved_fraction=0.99,
+    )
+    minimality = circuit_minimality_report(
+        circuit_metric=circuit_metric,
+        ablated_metric=ablated_metric,
+        min_metric_damage=1.0,
+    )
+    completeness = circuit_completeness_report(
+        circuit_metric=circuit_metric,
+        expanded_metric=expanded_metric,
+        max_omitted_node_gain=1e-6,
+    )
+    random_baseline = random_circuit_baseline_report(
+        circuit_metric=circuit_metric,
+        random_metric=random_metric,
+        min_margin=1.0,
+    )
+    exact_match = set(discovered_edges) == set(ground_truth_edges)
+    passes = (
+        exact_match
+        and faithfulness.passes_faithfulness
+        and minimality.passes_minimality
+        and completeness.passes_completeness
+        and random_baseline.circuit_beats_random
+    )
+    return ToyCircuitEvaluationReport(
+        ground_truth_edges=tuple(ground_truth_edges),
+        discovered_edges=tuple(discovered_edges),
+        exact_match=exact_match,
+        full_metric=full_metric,
+        corrupt_metric=corrupt_metric,
+        circuit_metric=circuit_metric,
+        random_metric=random_metric,
+        preserved_fraction=faithfulness.preserved_fraction,
+        minimality_damage=minimality.metric_damage,
+        completeness_gain=completeness.omitted_node_gain,
+        random_margin=random_baseline.margin,
+        passes=passes,
+    )
 
 
 def acdc_pruning_report(

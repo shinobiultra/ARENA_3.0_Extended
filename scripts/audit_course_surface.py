@@ -35,6 +35,7 @@ REQUIRED_NOTEBOOK_EVIDENCE_SURFACES = (
     "verification_report.json",
     "run_gelu1l_signature_result",
     "prepare_gelu1l_state",
+    "run_transformerlens_acdc_preflight",
 )
 
 

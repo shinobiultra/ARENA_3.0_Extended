@@ -114,6 +114,109 @@ def test_position_patching_helpers_reject_degenerate_inputs(
     print("All tests in `test_position_patching_helpers_reject_degenerate_inputs` passed!")
 
 
+def test_toy_graph_exact_patching_recovers_known_circuit(
+    toy_acdc_graph: Callable | None = None,
+    exact_toy_edge_patch_scores: Callable | None = None,
+    evaluate_toy_circuit: Callable | None = None,
+):
+    solutions = _solutions()
+    toy_acdc_graph = toy_acdc_graph or solutions.toy_acdc_graph
+    exact_toy_edge_patch_scores = exact_toy_edge_patch_scores or solutions.exact_toy_edge_patch_scores
+    evaluate_toy_circuit = evaluate_toy_circuit or solutions.evaluate_toy_circuit
+    fixture = toy_acdc_graph()
+
+    sweep = exact_toy_edge_patch_scores(
+        fixture["clean_edge_values"],
+        fixture["corrupt_edge_values"],
+        fixture["edge_names"],
+    )
+    expected_sweep = reference.exact_toy_edge_patch_scores(
+        fixture["clean_edge_values"],
+        fixture["corrupt_edge_values"],
+        fixture["edge_names"],
+    )
+    t.testing.assert_close(sweep.patch_scores, expected_sweep.patch_scores)
+    assert sweep.best_index == 0 and sweep.best_score > 0.55, (
+        "The largest toy edge should be the color edge, but shape should also survive threshold."
+    )
+
+    report = evaluate_toy_circuit(
+        fixture["clean_edge_values"],
+        fixture["corrupt_edge_values"],
+        fixture["edge_names"],
+        fixture["ground_truth_edges"],
+        fixture["same_size_random_edges"],
+        threshold=fixture["threshold"],
+    )
+    expected = reference.evaluate_toy_circuit(
+        fixture["clean_edge_values"],
+        fixture["corrupt_edge_values"],
+        fixture["edge_names"],
+        fixture["ground_truth_edges"],
+        fixture["same_size_random_edges"],
+        threshold=fixture["threshold"],
+    )
+    _assert_report_close(report, expected, msg="Toy circuit evaluation")
+    assert report.exact_match and report.passes, (
+        "Exact edge patching should recover the known two-edge toy circuit."
+    )
+    assert report.discovered_edges == fixture["ground_truth_edges"], (
+        "The discovered toy circuit should be exactly the ground-truth color and shape edges."
+    )
+    assert report.random_margin > 3.0 and report.completeness_gain == 0.0, (
+        "The toy circuit should beat a same-size random circuit and gain nothing from decoys."
+    )
+    print("All tests in `test_toy_graph_exact_patching_recovers_known_circuit` passed!")
+
+
+def test_toy_graph_controls_fail_for_bad_circuits(
+    patch_toy_graph_edges: Callable | None = None,
+    evaluate_toy_circuit: Callable | None = None,
+):
+    solutions = _solutions()
+    fixture = solutions.toy_acdc_graph()
+    patch_toy_graph_edges = patch_toy_graph_edges or solutions.patch_toy_graph_edges
+    evaluate_toy_circuit = evaluate_toy_circuit or solutions.evaluate_toy_circuit
+
+    try:
+        patch_toy_graph_edges(
+            fixture["clean_edge_values"],
+            fixture["corrupt_edge_values"],
+            fixture["edge_names"],
+            ["missing -> edge"],
+        )
+    except ValueError as exc:
+        assert "unknown edge" in str(exc), "Toy patching should reject unknown edge names."
+    else:
+        raise AssertionError("Unknown toy edge names should raise ValueError.")
+
+    too_high_threshold = evaluate_toy_circuit(
+        fixture["clean_edge_values"],
+        fixture["corrupt_edge_values"],
+        fixture["edge_names"],
+        fixture["ground_truth_edges"],
+        fixture["same_size_random_edges"],
+        threshold=0.6,
+    )
+    assert not too_high_threshold.exact_match and not too_high_threshold.passes, (
+        "A threshold that keeps only one true edge should fail exact recovery."
+    )
+
+    bad_random_edges = fixture["ground_truth_edges"]
+    bad_random_control = evaluate_toy_circuit(
+        fixture["clean_edge_values"],
+        fixture["corrupt_edge_values"],
+        fixture["edge_names"],
+        fixture["ground_truth_edges"],
+        bad_random_edges,
+        threshold=fixture["threshold"],
+    )
+    assert bad_random_control.exact_match and not bad_random_control.passes, (
+        "If the random baseline is secretly the true circuit, the random-control margin should fail."
+    )
+    print("All tests in `test_toy_graph_controls_fail_for_bad_circuits` passed!")
+
+
 def test_acdc_pruning_report_keeps_threshold_edges(
     acdc_pruning_report: Callable | None = None,
 ):
@@ -577,6 +680,13 @@ def test_circuit_method_comparison_report_rejects_bad_inputs(
 def test_notebook_contract(run_smoke_test: Callable | None = None):
     run_smoke_test = run_smoke_test or _solutions().run_smoke_test
     result = run_smoke_test(cpu=True)
+    assert result["toy_circuit"]["exact_match"] and result["toy_circuit"]["passes"], (
+        "The notebook smoke contract should recover the known two-edge toy circuit."
+    )
+    assert result["toy_circuit"]["discovered_edges"] == (
+        "color_input -> answer_logit",
+        "shape_input -> answer_logit",
+    ), "The toy circuit should expose the discovered edge names."
     assert result["acdc"]["num_kept"] == 2, (
         "The notebook smoke contract should include the ACDC pruning result."
     )

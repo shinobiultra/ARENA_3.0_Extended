@@ -78,9 +78,9 @@
       "tokenizer": "NeelNanda/gpt-neox-tokenizer-digits"
     }
   ],
-  "date_run": "2026-07-02T12:43:22+00:00",
+  "date_run": "2026-07-02T13:56:17+00:00",
   "evidence_level": "toy_circuit_metric_contract_plus_pinned_transformerlens_position_circuit_preflight",
-  "git_commit": "3a539d48",
+  "git_commit": "bf90da6e",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-1",
   "known_failures": [],
@@ -164,7 +164,7 @@
         0.0,
         1.0
       ],
-      "peak_vram_gb": 0.2664375305175781,
+      "peak_vram_gb": 0.23518753051757812,
       "preflight_passed": true,
       "preserved_fraction": 1.0,
       "random_baseline_margin": 6.27708625793457,
@@ -267,6 +267,38 @@
         "circuit_metric": 2.2,
         "margin": 1.4000000000000001,
         "random_metric": 0.8
+      },
+      "toy_circuit": {
+        "circuit_metric": 3.6000001430511475,
+        "completeness_gain": 0.0,
+        "corrupt_metric": 0.10000000149011612,
+        "discovered_edges": [
+          "color_input -> answer_logit",
+          "shape_input -> answer_logit"
+        ],
+        "edge_names": [
+          "color_input -> answer_logit",
+          "shape_input -> answer_logit",
+          "background_input -> answer_logit",
+          "position_input -> answer_logit"
+        ],
+        "exact_match": true,
+        "full_metric": 3.6000001430511475,
+        "ground_truth_edges": [
+          "color_input -> answer_logit",
+          "shape_input -> answer_logit"
+        ],
+        "minimality_damage": 1.5,
+        "passes": true,
+        "patch_scores": [
+          0.5714285969734192,
+          0.4285714030265808,
+          0.0,
+          0.0
+        ],
+        "preserved_fraction": 1.0,
+        "random_margin": 3.5000001415610313,
+        "random_metric": 0.10000000149011612
       }
     }
   },
@@ -301,15 +333,15 @@
   "ood_tests": {
     "declared": "required_where_applicable"
   },
-  "peak_vram_gb": 0.2664375305175781,
+  "peak_vram_gb": 0.23518753051757812,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "c632b0c66c58e310bdcd73aaaf1c8a546649823dccd5b57f0bb34a576f3387a0",
+    "combined_sha256": "1b052170eff09ea660baf123fbd7a9cf82bb66a5f296d550cded874019c8590f",
     "files": [
       {
         "path": "arena_ext/circuit_metrics.py",
-        "sha256": "db29beca4842bb20577655a2e6e7c6b2f74ebe299764a679c0bfc316d5703a55",
-        "size_bytes": 12113
+        "sha256": "44e7ceb07309931e6d2b0563045460d6a2a15f5e269cb224f177b1518ae074b2",
+        "size_bytes": 21022
       },
       {
         "path": "arena_ext/verification.py",
@@ -318,13 +350,13 @@
       },
       {
         "path": "chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/8.3_ACDC_and_Circuit_Metrics_exercises.ipynb",
-        "sha256": "33cd8edd880fa734c79753efbf2c0c5b29ee07de840b6e7cb30ae72d55fecdda",
-        "size_bytes": 25097
+        "sha256": "99457a10cde0c342e04891a3e7358e07a1a753a243290c2790717d65766b3bd1",
+        "size_bytes": 54888
       },
       {
         "path": "chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/8.3_ACDC_and_Circuit_Metrics_solutions.ipynb",
-        "sha256": "5ad868d4b18c9cd1bb0dea4af1e272e41e2eb9e34358a96e39b7e48fe3bd242c",
-        "size_bytes": 15181
+        "sha256": "02c9a21dfc116f7d1e911780b120bbec87923740cb315efe5390e2a8689bb739",
+        "size_bytes": 67299
       },
       {
         "path": "chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/README.md",
@@ -353,13 +385,13 @@
       },
       {
         "path": "chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/solutions.py",
-        "sha256": "85de36db34532e53a0b4647e1409bd37f75628573822a0514b66ca7138f788ae",
-        "size_bytes": 28301
+        "sha256": "e81c1dc440e17dbe0f2ecd4bfb67d7a8eef9ee5780a49183260d1b092f78c6ff",
+        "size_bytes": 35789
       },
       {
         "path": "chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/tests.py",
-        "sha256": "1768a29a785c38478ceb240d6ae4d148b20c5d5c995356577104f836885840af",
-        "size_bytes": 23132
+        "sha256": "0d029c3631c14fb248ba9969ecc69d577d409cf75c0225a57e977a4a48add167",
+        "size_bytes": 27652
       },
       {
         "path": "chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/utils.py",
@@ -389,5 +421,5 @@
     "The real-model path uses safe generic prompts and reads only next-token logits from a small public TransformerLens checkpoint. It does not use unsafe prompts, gated weights, or generated completions."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 3.354706
+  "wall_clock_seconds": 10.456461
 }
