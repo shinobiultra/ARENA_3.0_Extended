@@ -128,8 +128,342 @@ class VisualSequencePatchReport:
     passes_activation_patching_controls: bool
 
 
+@dataclass(frozen=True)
+class ToyCLIPBatch:
+    scenes: tuple[SyntheticVLMScene, ...]
+    captions: tuple[str, ...]
+    image_tensors: t.Tensor
+    image_features: t.Tensor
+    text_features: t.Tensor
+    colors: tuple[str, ...]
+    shapes: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class ToyCLIPTrainingResult:
+    image_projection: t.Tensor
+    text_projection: t.Tensor
+    image_embeddings: t.Tensor
+    text_embeddings: t.Tensor
+    retrieval_logits: t.Tensor
+    train_losses: tuple[float, ...]
+    report: ContrastiveAlignmentReport
+
+
+_TOY_COLOR_RGB: dict[str, tuple[float, float, float]] = {
+    "red": (0.92, 0.08, 0.07),
+    "blue": (0.08, 0.20, 0.95),
+    "green": (0.06, 0.66, 0.22),
+    "yellow": (0.98, 0.80, 0.06),
+    "purple": (0.55, 0.22, 0.82),
+    "orange": (0.95, 0.46, 0.08),
+}
+
+
 def _l2_normalize(values: t.Tensor, *, eps: float = 1e-8) -> t.Tensor:
     return values.float() / values.float().norm(dim=-1, keepdim=True).clamp_min(eps)
+
+
+def render_toy_shape_image(
+    color: str,
+    shape: str,
+    *,
+    image_size: int = 48,
+    bbox: tuple[float, float, float, float] = (0.22, 0.22, 0.78, 0.78),
+) -> t.Tensor:
+    """Render a tiny colored-shape image as a tensor in ``[3, H, W]`` format."""
+
+    if image_size <= 0:
+        raise ValueError("image_size must be positive.")
+    if color not in _TOY_COLOR_RGB:
+        raise ValueError(f"unknown toy color {color!r}.")
+    if shape not in {"square", "circle", "triangle"}:
+        raise ValueError("shape must be one of: square, circle, triangle.")
+    x1, y1, x2, y2 = bbox
+    if not (0.0 <= x1 < x2 <= 1.0 and 0.0 <= y1 < y2 <= 1.0):
+        raise ValueError("bbox must lie in [0, 1] with positive area.")
+
+    coords = (t.arange(image_size, dtype=t.float32) + 0.5) / image_size
+    yy, xx = t.meshgrid(coords, coords, indexing="ij")
+    in_box = (xx >= x1) & (xx <= x2) & (yy >= y1) & (yy <= y2)
+    if shape == "square":
+        mask = in_box
+    elif shape == "circle":
+        cx = (x1 + x2) / 2
+        cy = (y1 + y2) / 2
+        rx = (x2 - x1) / 2
+        ry = (y2 - y1) / 2
+        mask = ((xx - cx) / rx).square() + ((yy - cy) / ry).square() <= 1.0
+    else:
+        cx = (x1 + x2) / 2
+        height = y2 - y1
+        half_width = (x2 - x1) / 2
+        local_y = ((yy - y1) / height).clamp(0.0, 1.0)
+        allowed_half_width = half_width * (1.0 - local_y)
+        mask = in_box & ((xx - cx).abs() <= allowed_half_width)
+
+    image = t.ones(3, image_size, image_size, dtype=t.float32)
+    rgb = t.tensor(_TOY_COLOR_RGB[color], dtype=t.float32)
+    image[:, mask] = rgb[:, None]
+    return image
+
+
+def toy_image_features(image_tensors: t.Tensor) -> t.Tensor:
+    """Extract simple pixel-derived color and shape statistics from toy images."""
+
+    if image_tensors.ndim != 4 or image_tensors.shape[1] != 3:
+        raise ValueError("image_tensors must have shape (batch, 3, height, width).")
+    images = image_tensors.float()
+    batch, _, height, width = images.shape
+    yy, xx = t.meshgrid(
+        t.linspace(0.0, 1.0, height, device=images.device),
+        t.linspace(0.0, 1.0, width, device=images.device),
+        indexing="ij",
+    )
+    rows = []
+    for index in range(batch):
+        image = images[index]
+        mask = (image < 0.98).any(dim=0)
+        if not mask.any():
+            raise ValueError("each toy image must contain a non-white object.")
+        mask_f = mask.float()
+        mass = mask_f.sum().clamp_min(1.0)
+        mean_rgb = (image * mask_f.unsqueeze(0)).sum(dim=(1, 2)) / mass
+        x_values = xx[mask]
+        y_values = yy[mask]
+        x_span = x_values.max() - x_values.min()
+        y_span = y_values.max() - y_values.min()
+        x_mean = x_values.mean()
+        y_mean = y_values.mean()
+        x_var = ((x_values - x_mean) ** 2).mean()
+        y_var = ((y_values - y_mean) ** 2).mean()
+        area = mass / (height * width)
+        rows.append(
+            t.stack(
+                [
+                    *mean_rgb,
+                    area,
+                    x_span,
+                    y_span,
+                    x_mean,
+                    y_mean,
+                    x_var,
+                    y_var,
+                    x_span / y_span.clamp_min(1e-6),
+                ]
+            )
+        )
+    return t.stack(rows)
+
+
+def toy_caption_features(
+    captions: tuple[str, ...] | list[str],
+    *,
+    colors: tuple[str, ...],
+    shapes: tuple[str, ...],
+) -> t.Tensor:
+    """Encode toy captions as color/shape bag-of-words features."""
+
+    if len(captions) == 0:
+        raise ValueError("captions must be nonempty.")
+    features = t.zeros(len(captions), len(colors) + len(shapes), dtype=t.float32)
+    for row, caption in enumerate(captions):
+        lowered = caption.lower()
+        matched_color = False
+        matched_shape = False
+        for color_index, color in enumerate(colors):
+            if color.lower() in lowered:
+                features[row, color_index] = 1.0
+                matched_color = True
+        for shape_index, shape in enumerate(shapes):
+            if shape.lower() in lowered:
+                features[row, len(colors) + shape_index] = 1.0
+                matched_shape = True
+        if not matched_color or not matched_shape:
+            raise ValueError(f"caption does not name exactly one known color and shape: {caption!r}")
+    return features
+
+
+def build_toy_clip_batch(
+    *,
+    colors: tuple[str, ...] = ("red", "blue", "green", "yellow"),
+    shapes: tuple[str, ...] = ("square", "circle", "triangle"),
+    image_size: int = 48,
+    split: str = "train",
+) -> ToyCLIPBatch:
+    """Build rendered colored-shape images and matching captions for toy CLIP."""
+
+    scenes = generate_synthetic_colored_shape_scenes(
+        colors=colors,
+        shapes=shapes,
+        split=split,
+        include_spurious_text=True,
+    )
+    captions = tuple(f"a {scene.color} {scene.shape}" for scene in scenes)
+    image_tensors = t.stack(
+        [
+            render_toy_shape_image(scene.color, scene.shape, image_size=image_size)
+            for scene in scenes
+        ]
+    )
+    return ToyCLIPBatch(
+        scenes=scenes,
+        captions=captions,
+        image_tensors=image_tensors,
+        image_features=toy_image_features(image_tensors),
+        text_features=toy_caption_features(captions, colors=colors, shapes=shapes),
+        colors=colors,
+        shapes=shapes,
+    )
+
+
+def train_toy_clip(
+    image_features: t.Tensor,
+    text_features: t.Tensor,
+    *,
+    embedding_dim: int = 8,
+    steps: int = 250,
+    lr: float = 0.05,
+    logit_scale: float = 10.0,
+    seed: int = 0,
+    device: str | t.device | None = None,
+) -> ToyCLIPTrainingResult:
+    """Train tiny linear CLIP projectors on controlled image/text features."""
+
+    if image_features.ndim != 2 or text_features.ndim != 2:
+        raise ValueError("image_features and text_features must be matrices.")
+    if image_features.shape[0] != text_features.shape[0]:
+        raise ValueError("image and text features need the same batch size.")
+    if image_features.shape[0] < 2:
+        raise ValueError("at least two paired examples are required.")
+    if embedding_dim <= 0:
+        raise ValueError("embedding_dim must be positive.")
+    if steps <= 0:
+        raise ValueError("steps must be positive.")
+
+    target_device = t.device(device) if device is not None else image_features.device
+    generator = t.Generator(device="cpu").manual_seed(seed)
+    image_features = image_features.float().to(target_device)
+    text_features = text_features.float().to(target_device)
+    image_projection = t.nn.Parameter(
+        t.randn(
+            image_features.shape[-1],
+            embedding_dim,
+            generator=generator,
+            dtype=t.float32,
+        ).to(target_device)
+        / image_features.shape[-1] ** 0.5
+    )
+    text_projection = t.nn.Parameter(
+        t.randn(
+            text_features.shape[-1],
+            embedding_dim,
+            generator=generator,
+            dtype=t.float32,
+        ).to(target_device)
+        / text_features.shape[-1] ** 0.5
+    )
+    optimizer = t.optim.Adam([image_projection, text_projection], lr=lr)
+    targets = t.arange(image_features.shape[0], device=target_device)
+    losses: list[float] = []
+    for _ in range(steps):
+        optimizer.zero_grad(set_to_none=True)
+        image_embeddings = image_features @ image_projection
+        text_embeddings = text_features @ text_projection
+        logits = clip_contrastive_logits(
+            image_embeddings,
+            text_embeddings,
+            logit_scale=logit_scale,
+        )
+        loss = (
+            F.cross_entropy(logits, targets)
+            + F.cross_entropy(logits.T, targets)
+        ) / 2
+        loss.backward()
+        optimizer.step()
+        losses.append(float(loss.detach().cpu()))
+
+    with t.no_grad():
+        image_embeddings = image_features @ image_projection
+        text_embeddings = text_features @ text_projection
+        logits = clip_contrastive_logits(
+            image_embeddings,
+            text_embeddings,
+            logit_scale=logit_scale,
+        )
+        report = contrastive_alignment_report(
+            logits,
+            min_accuracy=1.0,
+            min_positive_margin=1.0,
+        )
+    return ToyCLIPTrainingResult(
+        image_projection=image_projection.detach().cpu(),
+        text_projection=text_projection.detach().cpu(),
+        image_embeddings=image_embeddings.detach().cpu(),
+        text_embeddings=text_embeddings.detach().cpu(),
+        retrieval_logits=logits.detach().cpu(),
+        train_losses=tuple(losses),
+        report=report,
+    )
+
+
+def deterministic_derangement(num_items: int, *, seed: int = 0) -> t.Tensor:
+    """Return a seeded permutation with no item left in its original position."""
+
+    if num_items < 2:
+        raise ValueError("a derangement requires at least two items.")
+    for offset in range(64):
+        generator = t.Generator(device="cpu").manual_seed(seed + offset)
+        permutation = t.randperm(num_items, generator=generator)
+        if not permutation.eq(t.arange(num_items)).any():
+            return permutation
+    return t.roll(t.arange(num_items), shifts=1)
+
+
+def retrieval_accuracy(logits: t.Tensor) -> float:
+    """Return image-to-text top-1 retrieval accuracy for square paired logits."""
+
+    if logits.ndim != 2 or logits.shape[0] != logits.shape[1]:
+        raise ValueError("logits must be a square (batch, batch) matrix.")
+    targets = t.arange(logits.shape[0], device=logits.device)
+    return logits.argmax(dim=-1).eq(targets).float().mean().item()
+
+
+def retrieval_table(
+    logits: t.Tensor,
+    captions: tuple[str, ...] | list[str],
+    *,
+    image_ids: tuple[str, ...] | list[str] | None = None,
+) -> list[dict[str, float | int | str]]:
+    """Summarize top retrieved captions and target ranks for a retrieval matrix."""
+
+    if logits.ndim != 2 or logits.shape[0] != logits.shape[1]:
+        raise ValueError("logits must be a square (batch, batch) matrix.")
+    if len(captions) != logits.shape[1]:
+        raise ValueError("captions length must match logits width.")
+    if image_ids is None:
+        image_ids = tuple(f"image_{index}" for index in range(logits.shape[0]))
+    if len(image_ids) != logits.shape[0]:
+        raise ValueError("image_ids length must match logits height.")
+
+    rows: list[dict[str, float | int | str]] = []
+    ordered = logits.float().argsort(dim=-1, descending=True)
+    for image_index in range(logits.shape[0]):
+        target_rank = int(
+            (ordered[image_index] == image_index).nonzero(as_tuple=False)[0].item()
+        ) + 1
+        top_index = int(ordered[image_index, 0].item())
+        rows.append(
+            {
+                "image_id": str(image_ids[image_index]),
+                "target_caption": str(captions[image_index]),
+                "top_caption": str(captions[top_index]),
+                "target_rank": target_rank,
+                "target_logit": float(logits[image_index, image_index].item()),
+                "top_logit": float(logits[image_index, top_index].item()),
+            }
+        )
+    return rows
 
 
 def bbox_to_patch_indices(

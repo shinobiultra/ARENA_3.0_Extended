@@ -12,18 +12,24 @@ if str(root_dir) not in sys.path:
     sys.path.append(str(root_dir))
 
 from arena_ext.vlm_interpretability import (
+    build_toy_clip_batch,
     bbox_to_patch_indices,
     clip_contrastive_logits,
     clothing_geometry_report,
     contrastive_alignment_report,
     controlled_vlm_baseline_report,
+    deterministic_derangement,
     generate_synthetic_clothing_scenes,
     generate_synthetic_colored_shape_scenes,
     modality_arbitration_report,
     object_hallucination_report,
     patch_visual_token_activations,
+    retrieval_accuracy,
+    retrieval_table,
     same_size_non_overlapping_token_control,
     siglip_pairwise_loss,
+    toy_caption_features,
+    train_toy_clip,
     visual_region_patch_report,
     visual_sequence_patch_report,
     visual_token_attribution_report,
@@ -196,6 +202,103 @@ def synthetic_scene_schema_smoke_test() -> dict:
         "has_spurious_text_control": all(scene.spurious_text is not None for scene in scenes),
         "has_counterfactual_answers": all(
             scene.answer != scene.counterfactual_answer for scene in scenes
+        ),
+    }
+
+
+def toy_clip_signature_result(
+    *,
+    device: str | t.device = "cpu",
+    steps: int = 250,
+    seed: int = 0,
+) -> dict:
+    """Train a tiny CLIP on rendered colored shapes and return visible metrics."""
+
+    batch = build_toy_clip_batch(
+        colors=("red", "blue", "green", "yellow"),
+        shapes=("square", "circle", "triangle"),
+        image_size=48,
+    )
+    trained = train_toy_clip(
+        batch.image_features,
+        batch.text_features,
+        steps=steps,
+        seed=seed,
+        device=device,
+    )
+    image_ids = tuple(scene.image_id for scene in batch.scenes)
+    random_permutation = deterministic_derangement(len(batch.captions), seed=seed)
+    random_logits = trained.retrieval_logits[:, random_permutation]
+    random_report = contrastive_alignment_report(
+        random_logits,
+        min_accuracy=1.0,
+        min_positive_margin=1.0,
+    )
+
+    conflict_captions = tuple(
+        f"a {scene.counterfactual_answer} {scene.shape}" for scene in batch.scenes
+    )
+    conflict_features = toy_caption_features(
+        conflict_captions,
+        colors=batch.colors,
+        shapes=batch.shapes,
+    )
+    conflict_embeddings = conflict_features @ trained.text_projection
+    conflict_logits = clip_contrastive_logits(
+        trained.image_embeddings,
+        conflict_embeddings,
+    )
+    conflict_report = contrastive_alignment_report(
+        conflict_logits,
+        min_accuracy=1.0,
+        min_positive_margin=1.0,
+    )
+
+    random_caption_list = [batch.captions[index] for index in random_permutation.tolist()]
+    return {
+        "scene_count": len(batch.scenes),
+        "image_grid_shape": list(batch.image_tensors.shape),
+        "captions": list(batch.captions),
+        "image_ids": list(image_ids),
+        "loss_start": trained.train_losses[0],
+        "loss_end": trained.train_losses[-1],
+        "loss_drop": trained.train_losses[0] - trained.train_losses[-1],
+        "loss_curve": list(trained.train_losses),
+        "retrieval_logits": trained.retrieval_logits.tolist(),
+        "retrieval_rows": retrieval_table(
+            trained.retrieval_logits,
+            batch.captions,
+            image_ids=image_ids,
+        ),
+        "image_to_text_accuracy": trained.report.image_to_text_accuracy,
+        "text_to_image_accuracy": trained.report.text_to_image_accuracy,
+        "mean_positive_margin": trained.report.mean_positive_margin,
+        "aligned": trained.report.aligned,
+        "random_caption_permutation": random_permutation.tolist(),
+        "random_captions": random_caption_list,
+        "random_caption_logits": random_logits.tolist(),
+        "random_caption_accuracy": retrieval_accuracy(random_logits),
+        "random_caption_aligned": random_report.aligned,
+        "random_caption_rows": retrieval_table(
+            random_logits,
+            tuple(random_caption_list),
+            image_ids=image_ids,
+        ),
+        "conflict_captions": list(conflict_captions),
+        "conflict_caption_logits": conflict_logits.tolist(),
+        "conflict_caption_accuracy": retrieval_accuracy(conflict_logits),
+        "conflict_caption_aligned": conflict_report.aligned,
+        "conflict_caption_rows": retrieval_table(
+            conflict_logits,
+            conflict_captions,
+            image_ids=image_ids,
+        ),
+        "control_claim_passed": (
+            trained.report.aligned
+            and not random_report.aligned
+            and not conflict_report.aligned
+            and retrieval_accuracy(random_logits) <= 0.25
+            and retrieval_accuracy(conflict_logits) <= 0.25
         ),
     }
 
@@ -1088,6 +1191,7 @@ def real_siglip_rendered_shape_preflight(max_vram_gb: float = 24.0) -> dict:
 def run_smoke_test(cpu: bool = True) -> dict:
     _ = cpu
     return {
+        "toy_clip_signature": toy_clip_signature_result(device="cpu"),
         "contrastive": contrastive_smoke_test(),
         "siglip": siglip_smoke_test(),
         "token_attribution": token_attribution_smoke_test(),
@@ -1107,6 +1211,7 @@ def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
 
     device = t.device("cuda")
     t.cuda.reset_peak_memory_stats()
+    toy_clip = toy_clip_signature_result(device=device)
     image_embeddings = t.eye(3, device=device)
     text_embeddings = t.eye(3, device=device)
     logits = clip_contrastive_logits(
@@ -1166,6 +1271,20 @@ def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
     return {
         "cuda_available": True,
         "device": t.cuda.get_device_name(0),
+        "toy_clip_scene_count": toy_clip["scene_count"],
+        "toy_clip_loss_start": toy_clip["loss_start"],
+        "toy_clip_loss_end": toy_clip["loss_end"],
+        "toy_clip_loss_drop": toy_clip["loss_drop"],
+        "toy_clip_image_to_text_accuracy": toy_clip["image_to_text_accuracy"],
+        "toy_clip_text_to_image_accuracy": toy_clip["text_to_image_accuracy"],
+        "toy_clip_mean_positive_margin": toy_clip["mean_positive_margin"],
+        "toy_clip_aligned": toy_clip["aligned"],
+        "toy_clip_random_caption_accuracy": toy_clip["random_caption_accuracy"],
+        "toy_clip_random_caption_aligned": toy_clip["random_caption_aligned"],
+        "toy_clip_conflict_caption_accuracy": toy_clip["conflict_caption_accuracy"],
+        "toy_clip_conflict_caption_aligned": toy_clip["conflict_caption_aligned"],
+        "toy_clip_control_claim_passed": toy_clip["control_claim_passed"],
+        "toy_clip_signature": toy_clip,
         "image_to_text_accuracy": alignment.image_to_text_accuracy,
         "text_to_image_accuracy": alignment.text_to_image_accuracy,
         "mean_positive_margin": alignment.mean_positive_margin,
@@ -1365,7 +1484,9 @@ def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
             and real_qwen25_vl["within_vram_budget"]
         ),
         "full_path": (
-            "Pinned CLIP, SigLIP, and Qwen2.5-VL controls pass on rendered "
+            "A tiny trained CLIP retrieves rendered colored-shape captions while "
+            "random-caption and conflict controls fail; pinned CLIP, SigLIP, "
+            "and Qwen2.5-VL controls also pass on rendered "
             "shape retrieval, object-region patching, hidden visual-token and "
             "full visual-sequence activation patching against background and "
             "same-size random-token controls, grounding, and generation evidence, "

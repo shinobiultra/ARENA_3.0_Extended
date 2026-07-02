@@ -227,6 +227,72 @@ def test_synthetic_scene_schema_smoke_test(
     print("All tests in `test_synthetic_scene_schema_smoke_test` passed!")
 
 
+def test_toy_clip_rendered_batch_is_visible_and_nonblank():
+    solutions = _solutions()
+    batch = solutions.build_toy_clip_batch(
+        colors=("red", "blue"),
+        shapes=("square", "circle"),
+        image_size=48,
+    )
+    assert batch.image_tensors.shape == (4, 3, 48, 48), (
+        "The toy CLIP batch should produce a visible image grid, not just feature tensors."
+    )
+    nonwhite_pixels = batch.image_tensors.lt(0.98).any(dim=1).sum(dim=(1, 2))
+    assert nonwhite_pixels.min().item() > 200, (
+        "Each rendered image should contain a substantial colored object."
+    )
+    assert batch.captions[0] == "a red square", (
+        "Captions should be concrete image-text pairs the student can inspect."
+    )
+    assert batch.image_features.shape[0] == batch.text_features.shape[0] == 4, (
+        "Rendered images and captions should have paired feature rows."
+    )
+    print("All tests in `test_toy_clip_rendered_batch_is_visible_and_nonblank` passed!")
+
+
+def test_toy_clip_signature_result_has_controls(
+    toy_clip_signature_result: Callable[..., dict] | None = None,
+):
+    toy_clip_signature_result = (
+        toy_clip_signature_result or _solutions().toy_clip_signature_result
+    )
+    result = toy_clip_signature_result(device="cpu", steps=250, seed=0)
+    assert result["scene_count"] == 12, (
+        "The signature result should use a nontrivial colored-shape grid."
+    )
+    assert result["image_grid_shape"] == [12, 3, 48, 48], (
+        "The signature result should expose the image grid dimensions."
+    )
+    assert result["loss_end"] < 0.1 * result["loss_start"], (
+        "The tiny CLIP training loss should visibly fall."
+    )
+    assert result["image_to_text_accuracy"] == 1.0, (
+        "Trained toy CLIP should retrieve the correct caption for every image."
+    )
+    assert result["text_to_image_accuracy"] == 1.0, (
+        "Trained toy CLIP should retrieve the correct image for every caption."
+    )
+    assert result["mean_positive_margin"] > 1.0, (
+        "The paired retrieval diagonal should beat its strongest distractors."
+    )
+    assert all(row["target_rank"] == 1 for row in result["retrieval_rows"]), (
+        "Every visible retrieval row should put the target caption at rank 1."
+    )
+    assert result["random_caption_accuracy"] <= 0.25, (
+        "Deranged-caption retrieval should fail instead of looking like a pass."
+    )
+    assert not result["random_caption_aligned"], (
+        "The random-caption control should explicitly fail the alignment report."
+    )
+    assert result["conflict_caption_accuracy"] <= 0.25, (
+        "Counterfactual color captions should fail as a conflict control."
+    )
+    assert result["control_claim_passed"], (
+        "The learner-facing claim should require success plus failed controls."
+    )
+    print("All tests in `test_toy_clip_signature_result_has_controls` passed!")
+
+
 def test_clothing_geometry_smoke_test(
     clothing_geometry_smoke_test: Callable[..., dict] | None = None,
 ):
@@ -359,6 +425,9 @@ def test_visual_sequence_patch_smoke_test(
 def test_notebook_contract(run_smoke_test: Callable[..., dict] | None = None):
     run_smoke_test = run_smoke_test or _solutions().run_smoke_test
     result = run_smoke_test(cpu=True)
+    assert result["toy_clip_signature"]["control_claim_passed"], (
+        "The notebook contract should include the visible toy CLIP signature result."
+    )
     assert result["contrastive"]["aligned"], (
         "The notebook contract should include the contrastive alignment check."
     )
@@ -397,6 +466,9 @@ def test_clip_siglip_core_notebook_contract(
 ):
     run_smoke_test = run_smoke_test or _solutions().run_smoke_test
     result = run_smoke_test(cpu=True)
+    assert result["toy_clip_signature"]["control_claim_passed"], (
+        "The core lesson should be grounded in a visible toy CLIP result."
+    )
     assert result["contrastive"]["aligned"], (
         "The core lesson should include the contrastive alignment check."
     )
