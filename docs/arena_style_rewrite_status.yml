@@ -154,9 +154,9 @@ sections:
     page: chapter16_shapley_attribution_baselines/instructions/pages/06_[16.6]_SHAP_vs_Activation_Patching.md
     notes: ARENA-style SHAP-vs-patching lesson with exact coalition enumeration, weighted Shapley implementation, full-minus-ablated patching effects, additive agreement and AND-overcount controls, local validation-loop and signature-result diagrams, paired notebooks, limitations, and scoped CUDA additive/interaction model-organism evidence.
   '16.7':
-    status: prototype
+    status: course_ready
     page: chapter16_shapley_attribution_baselines/instructions/pages/07_[16.7]_Data_Shapley_in_One_Training_Run.md
-    notes: Prototype scaffold retained for implementation evidence; requires ARENA-style rewrite before course-ready release.
+    notes: ARENA-style Data Shapley lesson with one-step linear utility, complete coalition tables, exact Data Shapley, sampled permutation approximation, in-run first-order proxy, random-data and label-shuffle controls, local validation-loop and signature-result diagrams, paired notebooks, limitations, and scoped CUDA one-step training evidence.
   '16.8':
     status: prototype
     page: chapter16_shapley_attribution_baselines/instructions/pages/08_[16.8]_Do_SHAPley_and_Mechanistic_Interpretability_Agree.md

@@ -86,9 +86,9 @@
       ]
     }
   ],
-  "date_run": "2026-07-01T06:36:55+00:00",
+  "date_run": "2026-07-02T08:40:10+00:00",
   "evidence_level": "data_shapley_contract_plus_cuda_one_step_training_preflight",
-  "git_commit": "3f277125",
+  "git_commit": "6c3c766e",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-0",
   "known_failures": [],
@@ -226,13 +226,13 @@
       "random_data_in_run_signal_correlation": 0.21317629654669076,
       "random_data_max_abs_signal_correlation": 0.21317629654669076,
       "random_data_signal_correlation": 0.01479098203169305,
-      "runtime_exact_enumeration_seconds": 0.0015503164453178897,
-      "runtime_exact_vs_full_update_overhead_ratio": 3.410119922634064,
-      "runtime_full_update_seconds": 0.0004546222656358623,
+      "runtime_exact_enumeration_seconds": 0.001416295539058865,
+      "runtime_exact_vs_full_update_overhead_ratio": 4.160928107758822,
+      "runtime_full_update_seconds": 0.00034037971875022777,
       "runtime_in_run_faster_than_exact": true,
-      "runtime_in_run_scores_seconds": 0.0007675565312581512,
-      "runtime_in_run_vs_exact_ratio": 0.4950966840197357,
-      "runtime_in_run_vs_full_update_overhead_ratio": 1.688339065805763,
+      "runtime_in_run_scores_seconds": 0.0005638448515696837,
+      "runtime_in_run_vs_exact_ratio": 0.39811242499878324,
+      "runtime_in_run_vs_full_update_overhead_ratio": 1.6565171792254627,
       "runtime_measurement_repeats": 128,
       "runtime_overhead_reported": true,
       "sampled_approximates_exact": true,
@@ -367,12 +367,12 @@
         "signal_correlation": 0.014790982031693076
       },
       "runtime_overhead": {
-        "runtime_exact_enumeration_seconds": 0.00046940791406768767,
-        "runtime_exact_vs_full_update_overhead_ratio": 15.362712289143406,
-        "runtime_full_update_seconds": 3.055501562698737e-05,
-        "runtime_in_run_scores_seconds": 1.3726835931038295e-05,
-        "runtime_in_run_vs_exact_ratio": 0.02924287281841378,
-        "runtime_in_run_vs_full_update_overhead_ratio": 0.449249841617303,
+        "runtime_exact_enumeration_seconds": 0.00038991962500745103,
+        "runtime_exact_vs_full_update_overhead_ratio": 15.6858808101508,
+        "runtime_full_update_seconds": 2.485799998908078e-05,
+        "runtime_in_run_scores_seconds": 1.3144843762802338e-05,
+        "runtime_in_run_vs_exact_ratio": 0.03371167522678847,
+        "runtime_in_run_vs_full_update_overhead_ratio": 0.5287973195179174,
         "runtime_measurement_repeats": 128,
         "runtime_overhead_reported": true
       }
@@ -410,7 +410,7 @@
   "peak_vram_gb": 0.06251144409179688,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "aea6a747f70a2c2f53a3baf306ee42ff9e813138108438d0ef4cb5a3974d8e4d",
+    "combined_sha256": "ba4c82fa7dd9960ea83d43168fd7b627932719a1e325bcf6f52b25066cf6dd43",
     "files": [
       {
         "path": "arena_ext/shapley_attribution.py",
@@ -424,13 +424,13 @@
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part7_data_shapley_in_one_training_run/16.7_Data_Shapley_in_One_Training_Run_exercises.ipynb",
-        "sha256": "999c9dff221961778d5fffd0726e54c75e74916870dd0baadffcd6fc27dbe6c3",
-        "size_bytes": 6452
+        "sha256": "487f0202d5728a296f1b60b2428f9df2c7d6530114a23e33e707fd738717d742",
+        "size_bytes": 23298
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part7_data_shapley_in_one_training_run/16.7_Data_Shapley_in_One_Training_Run_solutions.ipynb",
-        "sha256": "327bf720ce5b9d5d394658811b0d073fd47c84aabe23542c386924c2b711e4d6",
-        "size_bytes": 4324
+        "sha256": "fa80b386331351b72e90cce9ad4992e1220a5f6ae4813a75f8819c1e115b7ad7",
+        "size_bytes": 41720
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part7_data_shapley_in_one_training_run/README.md",
@@ -464,8 +464,8 @@
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part7_data_shapley_in_one_training_run/tests.py",
-        "sha256": "2e7935a095edec75bdc085cf95fbb4c75237d8eff1e21005ec4663f8ebe93986",
-        "size_bytes": 7072
+        "sha256": "e4b44b5b4efd5acfc2cdce32e63e4a550bd481552eb1932efee480f848c42ac0",
+        "size_bytes": 14096
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part7_data_shapley_in_one_training_run/utils.py",
@@ -479,8 +479,8 @@
       },
       {
         "path": "chapter16_shapley_attribution_baselines/instructions/pages/07_[16.7]_Data_Shapley_in_One_Training_Run.md",
-        "sha256": "fcd057adaea6a397c22a38666de6cedaa6282864e7eca70586b234d562b2602c",
-        "size_bytes": 12129
+        "sha256": "a368d6593f808524e2da8eed1efa207841bdfce0086601ecaaa6a0b5960cb487",
+        "size_bytes": 12915
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
@@ -495,5 +495,5 @@
     "The real training path uses only a generated four-example regression problem with one flipped label. It does not use unsafe prompts, user data, external APIs, adapters, gated weights, or large persistent artifacts."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 0.826497
+  "wall_clock_seconds": 1.800027
 }

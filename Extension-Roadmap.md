@@ -34,15 +34,17 @@ Exact Shapley on Ground-Truth Games**, **[16.2] KernelSHAP
 and PartitionSHAP Controls**, **[16.3] Shapley Interactions
 with shapiq**, **[16.4] TokenSHAP and TokenShapley**, **[16.5]
 VLM Modality and Region SHAP**, **[16.6] SHAP vs Activation
-Patching**, and **[17.1] Checkpoint Archaeology and Mechanism
+Patching**, **[16.7] Data Shapley in One Training Run**, and
+**[17.1] Checkpoint Archaeology and Mechanism
 Emergence**.
 They now have ARENA-style learner pages, local
 diagrams, help/interpretation dropdowns, expected-output blocks, paired
 exercise/solution notebooks, CUDA-backed signature result tables, and explicit
 claim boundaries.
-The remaining non-`course_ready` extension sections are prototype scaffolds: useful
-implementation and verification evidence, but still requiring the
-original-ARENA rewrite pass described in `guidance_2-0.md`.
+The remaining non-`course_ready` extension sections are **[0.6]**, **[1.6]**,
+**[14.1]**, and **[16.8]**: useful implementation and verification evidence,
+but still requiring the original-ARENA rewrite pass described in
+`guidance_2-0.md`.
 
 The extension goal is a local-first “ARENA Frontier Lab” rather than a pile of
 topic demos. It should keep the existing ARENA transformer/mech-interp spine
