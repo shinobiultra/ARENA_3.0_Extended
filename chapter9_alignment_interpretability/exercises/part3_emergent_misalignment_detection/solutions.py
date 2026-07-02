@@ -52,6 +52,54 @@ class EarlyWarningReport:
     white_box_catches_earlier: bool
 
 
+def _require_finite_tensor(name: str, tensor: t.Tensor) -> None:
+    if tensor.numel() == 0:
+        raise ValueError(f"{name} must be non-empty.")
+    if not t.isfinite(tensor.float()).all():
+        raise ValueError(f"{name} must contain only finite values.")
+
+
+def _require_finite_scalar(name: str, value: float) -> None:
+    value_tensor = t.tensor(value, dtype=t.float32)
+    if not t.isfinite(value_tensor):
+        raise ValueError(f"{name} must be finite.")
+
+
+def _require_unit_interval(name: str, value: float) -> None:
+    _require_finite_scalar(name, value)
+    if not 0.0 <= value <= 1.0:
+        raise ValueError(f"{name} must be between 0 and 1.")
+
+
+def _require_correlation_threshold(name: str, value: float) -> None:
+    _require_finite_scalar(name, value)
+    if not -1.0 <= value <= 1.0:
+        raise ValueError(f"{name} must be between -1 and 1.")
+
+
+def _require_binary_detector_inputs(logits: t.Tensor, labels: t.Tensor) -> None:
+    if logits.ndim != 2 or logits.shape[-1] != 2:
+        raise ValueError("logits must have shape (batch, 2).")
+    if labels.shape != (logits.shape[0],):
+        raise ValueError("labels must have shape (batch,).")
+    label_values = labels.long()
+    if not labels.float().eq(label_values.float()).all():
+        raise ValueError("labels must contain integer class ids.")
+    if not label_values.ge(0).logical_and(label_values.le(1)).all():
+        raise ValueError("labels must contain only 0 or 1.")
+
+
+def _require_binary_labels(name: str, labels: t.Tensor, expected_shape: tuple[int, ...]) -> None:
+    _require_finite_tensor(name, labels)
+    if labels.shape != expected_shape:
+        raise ValueError(f"{name} must have shape {expected_shape}.")
+    label_values = labels.long()
+    if not labels.float().eq(label_values.float()).all():
+        raise ValueError(f"{name} must contain integer class ids.")
+    if not label_values.ge(0).logical_and(label_values.le(1)).all():
+        raise ValueError(f"{name} must contain only 0 or 1.")
+
+
 def safe_proxy_drift_kinds() -> tuple[ProxyDriftKind, ...]:
     """Return the benign proxy-drift categories used in this course section."""
 
@@ -65,10 +113,9 @@ def safe_proxy_drift_kinds() -> tuple[ProxyDriftKind, ...]:
 
 
 def _prediction_accuracy(logits: t.Tensor, labels: t.Tensor) -> float:
-    if logits.ndim != 2:
-        raise ValueError("logits must have shape (batch, classes).")
-    if labels.shape != (logits.shape[0],):
-        raise ValueError("labels must have shape (batch,).")
+    _require_finite_tensor("logits", logits)
+    _require_finite_tensor("labels", labels)
+    _require_binary_detector_inputs(logits, labels)
     return float(logits.argmax(dim=-1).eq(labels.long()).float().mean().item())
 
 
@@ -80,6 +127,7 @@ def drift_detector_report(
 ) -> DriftDetectorReport:
     """Check whether a white-box detector predicts held-out drift labels."""
 
+    _require_unit_interval("min_accuracy", min_accuracy)
     accuracy = _prediction_accuracy(detector_logits, drift_labels)
     return DriftDetectorReport(
         detector_accuracy=accuracy,
@@ -94,11 +142,13 @@ def _pearson_correlation(left: t.Tensor, right: t.Tensor) -> float:
         raise ValueError("correlation inputs must have matching shape.")
     if left.numel() < 2:
         raise ValueError("at least two values are required for correlation.")
+    _require_finite_tensor("left", left)
+    _require_finite_tensor("right", right)
     left_centered = left - left.mean()
     right_centered = right - right.mean()
     denominator = left_centered.norm() * right_centered.norm()
     if denominator.item() == 0:
-        return 0.0
+        raise ValueError("correlation is undefined for constant inputs.")
     return float((left_centered @ right_centered / denominator).item())
 
 
@@ -110,6 +160,7 @@ def crosscoder_drift_alignment_report(
 ) -> CrosscoderDriftAlignmentReport:
     """Check whether model-specific features align with behavior deltas."""
 
+    _require_correlation_threshold("min_correlation", min_correlation)
     correlation = _pearson_correlation(
         model_specific_feature_scores,
         behavior_delta_scores,
@@ -135,6 +186,12 @@ def drift_mitigation_report(
         raise ValueError("drift score tensors must match.")
     if baseline_capability_scores.shape != mitigated_capability_scores.shape:
         raise ValueError("capability score tensors must match.")
+    _require_finite_tensor("baseline_drift_scores", baseline_drift_scores)
+    _require_finite_tensor("mitigated_drift_scores", mitigated_drift_scores)
+    _require_finite_tensor("baseline_capability_scores", baseline_capability_scores)
+    _require_finite_tensor("mitigated_capability_scores", mitigated_capability_scores)
+    _require_finite_scalar("min_drift_reduction", min_drift_reduction)
+    _require_finite_scalar("max_capability_loss", max_capability_loss)
     baseline_drift = float(baseline_drift_scores.float().mean().item())
     mitigated_drift = float(mitigated_drift_scores.float().mean().item())
     drift_reduction = baseline_drift - mitigated_drift
@@ -292,15 +349,22 @@ def _build_pythia_proxy_drift_examples(contexts: list[str]) -> list[tuple[str, i
     return examples
 
 
+def _behavior_proxy_token_ids(tokenizer) -> list[int]:
+    token_ids: list[int] = []
+    for token in PYTHIA_BEHAVIOR_PROXY_TOKENS:
+        encoded = tokenizer.encode(token, add_special_tokens=False)
+        if len(encoded) != 1:
+            raise ValueError(f"behavior proxy token {token!r} must encode to one token.")
+        token_ids.append(encoded[0])
+    return token_ids
+
+
 def _pythia_proxy_drift_hidden_states_and_logits(tokenizer, model, examples):
     hidden_states = []
     behavior_logits = []
     labels = []
     kinds = []
-    behavior_token_ids = [
-        tokenizer.encode(token, add_special_tokens=False)[0]
-        for token in PYTHIA_BEHAVIOR_PROXY_TOKENS
-    ]
+    behavior_token_ids = _behavior_proxy_token_ids(tokenizer)
     with t.inference_mode():
         for prompt, label, kind in examples:
             inputs = tokenizer(prompt, return_tensors="pt").to("cuda")
@@ -327,10 +391,22 @@ def _thresholded_drift_direction(
     train_labels: t.Tensor,
     eval_hidden_states: t.Tensor,
 ) -> tuple[t.Tensor, t.Tensor, float]:
+    _require_finite_tensor("train_hidden_states", train_hidden_states)
+    _require_finite_tensor("eval_hidden_states", eval_hidden_states)
+    if train_hidden_states.ndim != 2 or eval_hidden_states.ndim != 2:
+        raise ValueError("hidden states must have shape (batch, d_model).")
+    if train_hidden_states.shape[-1] != eval_hidden_states.shape[-1]:
+        raise ValueError("train and eval hidden states must have matching d_model.")
+    _require_binary_labels("train_labels", train_labels, (train_hidden_states.shape[0],))
+    if not train_labels.eq(0).any() or not train_labels.eq(1).any():
+        raise ValueError("train_labels must contain both neutral and drift examples.")
     neutral_center = train_hidden_states[train_labels.eq(0)].mean(dim=0)
     drift_center = train_hidden_states[train_labels.eq(1)].mean(dim=0)
     direction = drift_center - neutral_center
-    direction = direction / direction.norm()
+    direction_norm = direction.norm()
+    if not t.isfinite(direction_norm) or direction_norm.item() == 0:
+        raise ValueError("drift direction must have nonzero finite norm.")
+    direction = direction / direction_norm
     train_scores = train_hidden_states @ direction
     threshold = (
         train_scores[train_labels.eq(0)].mean()

@@ -1029,12 +1029,13 @@ REGISTRY_ROWS: list[dict[str, str]] = [
         "revision": "e93a9faa9c77e5d09219f6c868bfc7a1bd65593c",
         "local_status": "REQUIRED",
         "max_vram_gb": "8",
-        "used_in_notebooks": "6.3;8.5;9.1;9.2;11.1",
+        "used_in_notebooks": "6.3;8.5;9.1;9.2;9.3;11.1",
         "gt_tier": "GT-2",
         "notes": (
             "Small real LM target matched to released Sparse Feature Circuits SAE "
             "artifacts, safe 9.1 category hidden-state preflight, 9.2 hidden-answer "
-            "CoT-faithfulness preflight, and 11.1 weekday geometry preflight."
+            "CoT-faithfulness preflight, 9.3 benign proxy-drift hidden-state "
+            "preflight, and 11.1 weekday geometry preflight."
         ),
     },
     {

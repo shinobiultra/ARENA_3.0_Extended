@@ -20,7 +20,8 @@ Activation Patching Refresher**, **[8.2] Attribution Patching and
 EAP**, **[8.3] ACDC and Circuit Metrics**, **[8.4] Circuit
 Tracing with Attribution Graphs**, **[8.5] Sparse Feature
 Circuits**, **[9.1] Refusal Directions and Safe Steering**,
-and **[9.2] Chain-of-Thought Faithfulness**.
+**[9.2] Chain-of-Thought Faithfulness**, and **[9.3] Emergent
+Misalignment Detection**.
 They now have ARENA-style learner pages, local
 diagrams, help/interpretation dropdowns, expected-output blocks, paired
 exercise/solution notebooks, CUDA-backed signature result tables, and explicit
@@ -4908,18 +4909,18 @@ If it only works on cherry-picked images, mark it as failure.
 Your P.S. is important. Add a full PEFT chapter:
 
 ```text
-[ch9] Finetuning, LoRA, DoRA, and Adapter Interpretability
-  [9.1] LoRA from scratch
-  [9.2] DoRA from scratch
-  [9.3] LoRA vs full finetuning: do they learn the same mechanism?
-  [9.4] Adapter SVD, rank, and intruder dimensions
-  [9.5] LoRA alignment and refusal directions
-  [9.6] LoRA emergent-misalignment model organisms
-  [9.7] VLM LoRA and visual-instruction tuning interpretability
-  [9.8] Diffusion LoRAs: style, identity, concept, and safety directions
+[ch15] Finetuning, LoRA, DoRA, and Adapter Interpretability
+  [15.1] LoRA from scratch
+  [15.2] DoRA from scratch
+  [15.3] LoRA vs full finetuning: do they learn the same mechanism?
+  [15.4] Adapter SVD, rank, and intruder dimensions
+  [15.5] LoRA alignment and refusal directions
+  [15.6] LoRA emergent-misalignment model organisms
+  [15.7] VLM LoRA and visual-instruction tuning interpretability
+  [15.8] Diffusion LoRAs: style, identity, concept, and safety directions
 ```
 
-## 9.1 LoRA from scratch
+## 15.1 LoRA from scratch
 
 Implement:
 
@@ -4949,7 +4950,7 @@ base model weights unchanged
 
 LoRA is worth including because it is now central to cheap model adaptation. It also creates a natural interpretability object: the low-rank update itself.
 
-## 9.2 DoRA from scratch
+## 15.2 DoRA from scratch
 
 DoRA should be included too. The DoRA paper decomposes pretrained weights into magnitude and direction components, using LoRA for directional updates, and reports improved learning capacity and stability over LoRA without extra inference overhead. ([arXiv][9]) The official repo describes the same magnitude/direction decomposition. ([GitHub][10])
 
@@ -4972,7 +4973,7 @@ DoRA trains at least as stably as LoRA on toy task
 rank and norm of updates are logged
 ```
 
-## 9.3 LoRA vs full finetuning interpretability
+## 15.3 LoRA vs full finetuning interpretability
 
 This is a cornerstone. The course should not assume LoRA and full finetuning are mechanistically equivalent.
 
@@ -6389,13 +6390,13 @@ white-noise outputs marked as failure
 Required notebooks:
 
 ```text
-[9.1] LoRA from Scratch
-[9.2] DoRA from Scratch
-[9.3] LoRA vs Full Finetuning
-[9.4] Adapter Geometry and SVD
-[9.5] Safe LoRA Misalignment Proxy
-[9.6] VLM LoRA Interpretability
-[9.7] Diffusion LoRA Interpretability
+[15.1] LoRA from Scratch
+[15.2] DoRA from Scratch
+[15.3] LoRA vs Full Finetuning
+[15.4] Adapter Geometry and SVD
+[15.5] Safe LoRA Misalignment Proxy
+[15.6] VLM LoRA Interpretability
+[15.7] Diffusion LoRA Interpretability
 ```
 
 LoRA and PEFT are supported by Hugging Face tooling, while DoRA decomposes pretrained weights into magnitude and direction and uses LoRA for directional updates. ([Hugging Face][7])

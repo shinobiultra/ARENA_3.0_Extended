@@ -81,6 +81,30 @@ def test_drift_detector_report_scores_heldout_logits(
     assert bad_report.detector_accuracy == 0.0 and not bad_report.predicts_heldout_drift, (
         "Flipping both logit columns should make this detector fail the held-out check."
     )
+    try:
+        drift_detector_report(t.empty(0, 2), t.empty(0, dtype=t.long))
+    except ValueError as exc:
+        assert "non-empty" in str(exc), "Empty detector batches should be rejected."
+    else:
+        raise AssertionError("Empty detector batches should raise ValueError.")
+    try:
+        drift_detector_report(t.tensor([[float("nan"), 0.0], [0.0, 1.0]]), labels)
+    except ValueError as exc:
+        assert "finite" in str(exc), "Non-finite detector logits should be rejected."
+    else:
+        raise AssertionError("Non-finite detector logits should raise ValueError.")
+    try:
+        drift_detector_report(t.ones(2, 1), labels)
+    except ValueError as exc:
+        assert "shape" in str(exc), "Detector logits should have shape (batch, 2)."
+    else:
+        raise AssertionError("One-class detector logits should raise ValueError.")
+    try:
+        drift_detector_report(t.ones(2, 2), t.tensor([0, 2]))
+    except ValueError as exc:
+        assert "0 or 1" in str(exc), "Drift labels should be binary."
+    else:
+        raise AssertionError("Out-of-range drift labels should raise ValueError.")
     print("All tests in `test_drift_detector_report_scores_heldout_logits` passed!")
 
 
@@ -120,6 +144,26 @@ def test_crosscoder_alignment_uses_pearson_correlation(
     assert anti_report.correlation < -0.95 and not anti_report.aligns_with_behavior_delta, (
         "An anti-correlated feature should be rejected even if its magnitude looks large."
     )
+    try:
+        crosscoder_drift_alignment_report(
+            feature_scores,
+            t.tensor([0.0, float("nan"), 0.75, 0.1]),
+            min_correlation=0.95,
+        )
+    except ValueError as exc:
+        assert "finite" in str(exc), "Non-finite behavior deltas should be rejected."
+    else:
+        raise AssertionError("Non-finite behavior deltas should raise ValueError.")
+    try:
+        crosscoder_drift_alignment_report(
+            t.ones(4),
+            behavior_delta,
+            min_correlation=0.95,
+        )
+    except ValueError as exc:
+        assert "undefined" in str(exc), "Constant feature scores make correlation undefined."
+    else:
+        raise AssertionError("Constant feature scores should raise ValueError.")
     print("All tests in `test_crosscoder_alignment_uses_pearson_correlation` passed!")
 
 
@@ -171,6 +215,19 @@ def test_mitigation_report_bounds_capability_loss(
     assert not damaging_report.mitigation_passes, (
         "A mitigation that damages capability beyond the configured bound should fail."
     )
+    try:
+        drift_mitigation_report(
+            baseline_drift,
+            t.tensor([0.3, float("inf")]),
+            baseline_capability,
+            mitigated_capability,
+            min_drift_reduction=0.3,
+            max_capability_loss=0.1,
+        )
+    except ValueError as exc:
+        assert "finite" in str(exc), "Non-finite mitigation scores should be rejected."
+    else:
+        raise AssertionError("Non-finite mitigation scores should raise ValueError.")
     print("All tests in `test_mitigation_report_bounds_capability_loss` passed!")
 
 
@@ -377,3 +434,77 @@ def test_exercise_notebook_declares_full_verification_contract():
         "The learner notebook should end by checking the committed proxy-drift report."
     )
     print("All tests in `test_exercise_notebook_declares_full_verification_contract` passed!")
+
+
+def test_pythia_direction_fit_rejects_invalid_internal_evidence():
+    solutions = _solutions()
+    train_hidden_states = t.tensor(
+        [[0.0, 0.0], [0.2, 0.0], [1.0, 0.0], [1.2, 0.0]]
+    )
+    train_labels = t.tensor([0, 0, 1, 1])
+    eval_hidden_states = t.tensor([[0.1, 0.0], [1.1, 0.0]])
+    logits, direction, threshold = solutions._thresholded_drift_direction(
+        train_hidden_states,
+        train_labels,
+        eval_hidden_states,
+    )
+    assert logits.shape == (2, 2), "The fitted direction should return binary detector logits."
+    assert t.isfinite(direction).all(), "The fitted direction should be finite."
+    assert t.isfinite(t.tensor(threshold)), "The fitted threshold should be finite."
+
+    try:
+        solutions._thresholded_drift_direction(
+            train_hidden_states,
+            t.ones(4, dtype=t.long),
+            eval_hidden_states,
+        )
+    except ValueError as exc:
+        assert "both neutral and drift" in str(exc), (
+            "Direction fitting should explain that both binary classes are required."
+        )
+    else:
+        raise AssertionError("Direction fitting should reject one-class labels.")
+
+    try:
+        solutions._thresholded_drift_direction(
+            train_hidden_states,
+            train_labels,
+            t.ones(2, 3),
+        )
+    except ValueError as exc:
+        assert "matching d_model" in str(exc), (
+            "Direction fitting should reject train/eval hidden-state width mismatch."
+        )
+    else:
+        raise AssertionError("Direction fitting should reject hidden-dimension mismatch.")
+
+    try:
+        solutions._thresholded_drift_direction(
+            t.zeros(4, 2),
+            train_labels,
+            eval_hidden_states,
+        )
+    except ValueError as exc:
+        assert "nonzero finite norm" in str(exc), (
+            "Direction fitting should reject zero-norm drift directions."
+        )
+    else:
+        raise AssertionError("Direction fitting should reject a zero drift direction.")
+    print("All tests in `test_pythia_direction_fit_rejects_invalid_internal_evidence` passed!")
+
+
+def test_behavior_proxy_tokens_must_be_single_tokens():
+    class BadTokenizer:
+        def encode(self, token: str, add_special_tokens: bool = False) -> list[int]:
+            _ = add_special_tokens
+            return [1, 2] if token == " helpful" else [3]
+
+    try:
+        _solutions()._behavior_proxy_token_ids(BadTokenizer())
+    except ValueError as exc:
+        assert "must encode to one token" in str(exc), (
+            "Behavior proxy token checks should fail if a proxy string splits."
+        )
+    else:
+        raise AssertionError("Behavior proxy tokens should be single-token checks.")
+    print("All tests in `test_behavior_proxy_tokens_must_be_single_tokens` passed!")

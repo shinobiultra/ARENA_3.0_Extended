@@ -89,9 +89,9 @@
       "train_prompt_count": 36
     }
   ],
-  "date_run": "2026-07-01T06:35:51+00:00",
+  "date_run": "2026-07-02T04:23:21+00:00",
   "evidence_level": "toy_proxy_drift_contract_plus_pinned_pythia_hidden_state_preflight",
-  "git_commit": "3f277125",
+  "git_commit": "a2c89bc6",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-3",
   "known_failures": [],
@@ -203,7 +203,7 @@
       "mitigation_neutral_delta_shift": 0.0,
       "mitigation_passes": true,
       "model_name": "EleutherAI/pythia-70m-deduped",
-      "peak_vram_gb": 0.3410787582397461,
+      "peak_vram_gb": 0.3098287582397461,
       "predicts_heldout_drift": true,
       "preflight_passed": true,
       "random_direction_accuracy": 0.375,
@@ -312,10 +312,10 @@
   "ood_tests": {
     "declared": "required_where_applicable"
   },
-  "peak_vram_gb": 0.3410787582397461,
+  "peak_vram_gb": 0.3098287582397461,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "7a33d037a7b40d8bb7fcecfdce5576220fa1a0e874e36c76dd21815b8c329864",
+    "combined_sha256": "4581cb3f46c622de24317892e5640893a1d57a2e1350dcf707f5d5911d74ff3c",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -324,13 +324,13 @@
       },
       {
         "path": "chapter9_alignment_interpretability/exercises/part3_emergent_misalignment_detection/9.3_Emergent_Misalignment_Detection_exercises.ipynb",
-        "sha256": "ba123df309d58b8dbbffdd1f25c6d5bc1aaf8d0745c92bab7c53bdb901f7296e",
-        "size_bytes": 10657
+        "sha256": "8dabac126a47f5bf433eb4f594dd19f1e51ee0df58a1102abd1d9774ea0e5066",
+        "size_bytes": 44054
       },
       {
         "path": "chapter9_alignment_interpretability/exercises/part3_emergent_misalignment_detection/9.3_Emergent_Misalignment_Detection_solutions.ipynb",
-        "sha256": "046e817ab59a8361b72f37de7ace0d37c9a8c68fd7bb16c76f4bce7fbeeec740",
-        "size_bytes": 5176
+        "sha256": "9502fe7cee2c0252e27b81b136b2897238ee971ba9a77db5cbd6572d7307913a",
+        "size_bytes": 12249
       },
       {
         "path": "chapter9_alignment_interpretability/exercises/part3_emergent_misalignment_detection/README.md",
@@ -359,13 +359,13 @@
       },
       {
         "path": "chapter9_alignment_interpretability/exercises/part3_emergent_misalignment_detection/solutions.py",
-        "sha256": "477c5c1d636cef22c6350ee6738d62125cf638304a34d15166832bcc5e777fac",
-        "size_bytes": 18495
+        "sha256": "df41f0af2b139f02c40d43164dd796468853fc955b17ef2909ac81bade6ff577",
+        "size_bytes": 22335
       },
       {
         "path": "chapter9_alignment_interpretability/exercises/part3_emergent_misalignment_detection/tests.py",
-        "sha256": "fa384fc6d842cee002f2634a31db6099d4e02a92f54c4d82a142999608d4a21c",
-        "size_bytes": 15974
+        "sha256": "1836d118095a11c05e775f931379ca7745b84d668d955ec14c7c35333ae963ef",
+        "size_bytes": 21117
       },
       {
         "path": "chapter9_alignment_interpretability/exercises/part3_emergent_misalignment_detection/utils.py",
@@ -379,8 +379,8 @@
       },
       {
         "path": "chapter9_alignment_interpretability/instructions/pages/03_[9.3]_Emergent_Misalignment_Detection.md",
-        "sha256": "4f7c158576b9144c8e5eb301ca84987abae346b207e253649b103f42ca57e448",
-        "size_bytes": 20893
+        "sha256": "b575ca90475bf6b5cbc791a72161ae38960aa88931f26638da710b42d4791ee8",
+        "size_bytes": 31554
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
@@ -395,5 +395,5 @@
     "The real-model proxy-drift path uses safe generated behavior-policy descriptions, hidden states, and next-token logits only. It performs no generated completions, trains no adapters, includes no harmful procedural content, and does not claim to reproduce emergent misalignment."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 0.95928
+  "wall_clock_seconds": 3.54579
 }
