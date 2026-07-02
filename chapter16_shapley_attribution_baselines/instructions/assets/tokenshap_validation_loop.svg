@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="940" height="260" viewBox="0 0 940 260" role="img" aria-labelledby="title desc">
+  <title id="title">TokenSHAP validation loop</title>
+  <desc id="desc">A four-step validation loop for exact token Shapley attribution before sampled and CUDA claims.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f7f8fb; }
+      .box { fill: #ffffff; stroke: #27364a; stroke-width: 2; rx: 8; }
+      .accent { fill: #e8f1ff; stroke: #1b5fa7; stroke-width: 2; rx: 8; }
+      .warn { fill: #fff3df; stroke: #a45b00; stroke-width: 2; rx: 8; }
+      .text { font-family: Inter, Arial, sans-serif; fill: #18212f; font-size: 18px; font-weight: 650; }
+      .small { font-family: Inter, Arial, sans-serif; fill: #344154; font-size: 14px; }
+      .arrow { stroke: #27364a; stroke-width: 3; fill: none; marker-end: url(#arrowhead); }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#27364a"/>
+    </marker>
+  </defs>
+  <rect class="bg" x="0" y="0" width="940" height="260" rx="12"/>
+  <rect class="box" x="32" y="52" width="185" height="132"/>
+  <text class="text" x="58" y="92">Masked prompt</text>
+  <text class="small" x="58" y="124">Players are positions</text>
+  <text class="small" x="58" y="148">not token strings</text>
+  <path class="arrow" d="M224 118 H290"/>
+  <rect class="accent" x="300" y="52" width="185" height="132"/>
+  <text class="text" x="323" y="92">Exact table</text>
+  <text class="small" x="323" y="124">All 16 coalitions</text>
+  <text class="small" x="323" y="148">empty baseline kept</text>
+  <path class="arrow" d="M492 118 H558"/>
+  <rect class="box" x="568" y="52" width="185" height="132"/>
+  <text class="text" x="593" y="92">Exact Shapley</text>
+  <text class="small" x="593" y="124">[0, 1, 0, 2]</text>
+  <text class="small" x="593" y="148">efficiency error 0</text>
+  <path class="arrow" d="M760 118 H826"/>
+  <rect class="warn" x="832" y="52" width="76" height="132"/>
+  <text class="text" x="850" y="92">GPU</text>
+  <text class="small" x="848" y="124">fit</text>
+  <text class="small" x="846" y="148">then</text>
+  <text class="small" x="842" y="172">reject</text>
+  <text class="small" x="838" y="196">shuffle</text>
+  <text class="small" x="132" y="224">Exact toy ground truth comes before sampled TokenSHAP or trained-model attribution claims.</text>
+</svg>

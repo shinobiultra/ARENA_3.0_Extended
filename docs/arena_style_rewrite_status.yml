@@ -142,9 +142,9 @@ sections:
     page: chapter16_shapley_attribution_baselines/instructions/pages/03_[16.3]_Shapley_Interactions_with_shapiq.md
     notes: ARENA-style pairwise Shapley interaction lesson with exact finite-table SII implementation, additive zero-interaction and off-target controls, shapiq parity, planted positive/negative interaction report evidence, local validation-loop and signature-result diagrams, paired notebooks, and scoped CUDA trained-neural-game evidence.
   '16.4':
-    status: prototype
+    status: course_ready
     page: chapter16_shapley_attribution_baselines/instructions/pages/04_[16.4]_TokenSHAP_and_TokenShapley.md
-    notes: Prototype scaffold retained for implementation evidence; requires ARENA-style rewrite before course-ready release.
+    notes: ARENA-style TokenSHAP lesson with complete masked-token coalition tables, exact token-position Shapley values, masked-baseline efficiency checks, sampled permutation TokenSHAP parity, shuffled-label rejection, local validation-loop and signature-result diagrams, paired notebooks, limitations, and scoped CUDA trained-token-scorer evidence.
   '16.5':
     status: prototype
     page: chapter16_shapley_attribution_baselines/instructions/pages/05_[16.5]_VLM_Modality_and_Region_SHAP.md

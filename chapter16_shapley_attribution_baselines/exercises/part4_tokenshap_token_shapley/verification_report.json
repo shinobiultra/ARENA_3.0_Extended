@@ -73,9 +73,9 @@
       ]
     }
   ],
-  "date_run": "2026-07-01T06:36:51+00:00",
+  "date_run": "2026-07-02T07:58:22+00:00",
   "evidence_level": "tokenshap_contract_plus_cuda_trained_token_scorer_preflight",
-  "git_commit": "3f277125",
+  "git_commit": "57f4e4af",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-0",
   "known_failures": [],
@@ -248,7 +248,7 @@
   "peak_vram_gb": 0.06308317184448242,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "a8eb2ab10ad19708da067e7f573ccb36e7fcc263ebea432f8bf452d6308202b8",
+    "combined_sha256": "3b49f7bff8fcf7dac4ded0f73e4f2fbe44f8f5bb7208536f40804358517aca7b",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -257,13 +257,13 @@
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part4_tokenshap_token_shapley/16.4_TokenSHAP_and_TokenShapley_exercises.ipynb",
-        "sha256": "0b15d9e7a97f84b748238e81781ddfa2a759b5bbf3bded8ee387bd03c97de1f4",
-        "size_bytes": 12132
+        "sha256": "5c3106c0ecd13b1319e7f9ce358cddddcbfe1bf61f3f1229d193fa753a01610e",
+        "size_bytes": 27031
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part4_tokenshap_token_shapley/16.4_TokenSHAP_and_TokenShapley_solutions.ipynb",
-        "sha256": "6d05db7cb37e99f22f11641eba5802c4839635eb4495727fd497757aabb4fe0c",
-        "size_bytes": 4952
+        "sha256": "9677f7e23ee376569c8e2ef34a38ca3cf44b79674263a3cfffccd3d32110e615",
+        "size_bytes": 35090
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part4_tokenshap_token_shapley/README.md",
@@ -312,8 +312,8 @@
       },
       {
         "path": "chapter16_shapley_attribution_baselines/instructions/pages/04_[16.4]_TokenSHAP_and_TokenShapley.md",
-        "sha256": "803ad1658a5dd1b7780c85deaa41812f99f8031da5007d72c934c1a9c2ef6743",
-        "size_bytes": 20140
+        "sha256": "394ecd22edf1883910fe95312e2f31cf419931ea185e31d9e085f352a9ca970a",
+        "size_bytes": 27986
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
@@ -328,5 +328,5 @@
     "The real training path uses only a generated finite masked-token table for a safe four-token prompt and a shuffled-label negative control. It does not use unsafe prompts, user data, external APIs, adapters, gated weights, or large persistent artifacts."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 1.655099
+  "wall_clock_seconds": 2.843478
 }

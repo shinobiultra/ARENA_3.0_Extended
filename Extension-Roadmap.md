@@ -32,7 +32,7 @@ Controls**, **[13.1] Diffusion and Image-Generation Controls**,
 **[15.1] LoRA, DoRA, and Adapter Controls**, **[16.1]
 Exact Shapley on Ground-Truth Games**, **[16.2] KernelSHAP
 and PartitionSHAP Controls**, **[16.3] Shapley Interactions
-with shapiq**, and **[17.1]
+with shapiq**, **[16.4] TokenSHAP and TokenShapley**, and **[17.1]
 Checkpoint Archaeology and Mechanism Emergence**.
 They now have ARENA-style learner pages, local
 diagrams, help/interpretation dropdowns, expected-output blocks, paired
