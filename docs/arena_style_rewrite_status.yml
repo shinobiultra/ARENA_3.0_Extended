@@ -138,9 +138,9 @@ sections:
     page: chapter16_shapley_attribution_baselines/instructions/pages/02_[16.2]_KernelSHAP_and_PartitionSHAP_Controls.md
     notes: ARENA-style KernelSHAP/PartitionSHAP lesson with full-table weighted regression, exact Owen-value grouping controls, cross-group shortcut anomaly hunting, local validation-loop and signature-result diagrams, help/interpretation dropdowns, paired notebooks, limitations, and scoped CUDA trained-neural-game evidence.
   '16.3':
-    status: prototype
+    status: course_ready
     page: chapter16_shapley_attribution_baselines/instructions/pages/03_[16.3]_Shapley_Interactions_with_shapiq.md
-    notes: Prototype scaffold retained for implementation evidence; requires ARENA-style rewrite before course-ready release.
+    notes: ARENA-style pairwise Shapley interaction lesson with exact finite-table SII implementation, additive zero-interaction and off-target controls, shapiq parity, planted positive/negative interaction report evidence, local validation-loop and signature-result diagrams, paired notebooks, and scoped CUDA trained-neural-game evidence.
   '16.4':
     status: prototype
     page: chapter16_shapley_attribution_baselines/instructions/pages/04_[16.4]_TokenSHAP_and_TokenShapley.md
