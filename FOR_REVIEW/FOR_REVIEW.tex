@@ -1,5 +1,5 @@
 \documentclass[11pt]{article}
-\usepackage[margin=1in]{geometry}
+\usepackage[margin=0.85in]{geometry}
 \usepackage{array}
 \usepackage{booktabs}
 \usepackage{enumitem}
@@ -12,340 +12,364 @@
 \usepackage{lmodern}
 
 \hypersetup{colorlinks=true, linkcolor=black, urlcolor=blue}
-\setlist[itemize]{leftmargin=1.2em, itemsep=0.2em, topsep=0.2em}
-\setlist[enumerate]{leftmargin=1.4em, itemsep=0.2em, topsep=0.2em}
+\setlist[itemize]{leftmargin=1.2em, itemsep=0.15em, topsep=0.15em}
+\setlist[enumerate]{leftmargin=1.4em, itemsep=0.15em, topsep=0.15em}
 \emergencystretch=3em
 \newcommand{\code}[1]{\texttt{#1}}
 \newcommand{\status}[1]{\textbf{\texttt{#1}}}
 \DefineVerbatimEnvironment{verbatim}{Verbatim}{breaklines=true,breakanywhere=true}
 
-\title{ARENA 3.0 Extended Review Packet: DiffusionGemma NVFP4 Proof and BF16 Deferral}
-\author{Local verification packet}
-\date{2026-07-01}
+\title{ARENA 3.0 Extended: Review Packet}
+\author{Local verification packet for the ARENA Frontier Lab extension}
+\date{2026-07-02}
 
 \begin{document}
 \maketitle
 
 \section*{Verdict}
-The section 5.5 diffusion-language-model exercises currently have a valid CUDA
-toy-model learning ladder, deterministic controls, and a strict claim boundary.
-They now also have a real released-checkpoint DiffusionGemma generation proof
-for the 24GB route: the pinned NVIDIA NVFP4 checkpoint generated a non-empty
-answer in an isolated vLLM 0.24.0 runtime on the local RTX 5090 Laptop GPU. The
-main uv environment remains the requested current stack, torch 2.12.1+cu132 with
-CUDA 13.2, and vLLM is not installed into it because public vLLM 0.24.0 resolves
-to torch 2.11.0+cu130. The full Google BF16 DiffusionGemma path remains
-\status{deferred} for direct local loading because the required weight shards
-alone are 51,647,701,024 bytes, or 48.10 GiB, while the machine reports 23.46
-GiB of GPU memory.
+This branch is now an append-only ARENA 3.0 extension with 41 sections marked
+\status{course\_ready}. The original ARENA material is preserved as the
+canonical base and is checked by an original-preservation audit. The extension
+adds modern architecture, sparse-feature, activation-to-language, automated
+circuit, alignment, representation-geometry, vision-language, image-generation,
+world-model, adapter, Shapley, and training-dynamics notebooks. The local
+release gate regenerated all 41 extension verification reports on the RTX 5090
+Laptop GPU, accepted all 41, and finished with \status{STRICT\_COMPLETION=PASS}.
 
-\section{Motivation and Research Question}
-The motivation is to keep the extension faithful to original ARENA standards:
-students should implement the core algorithm, test it against explicit
-references and controls, and only then connect it to a real modern model. The
-research question is: can this extension honestly claim an ARENA-style
-DiffusionGemma exercise on a single 24GB laptop GPU?
+The strongest honest statement is: the extension now follows the ARENA-style
+course contract defined for this fork, with real CUDA-backed evidence and no
+mock, fake, placeholder, or fallback-only claims counted as course-ready. It is
+still appropriate for a human reviewer to judge prose polish and pedagogical
+taste against original ARENA, because an audit can enforce structure and
+evidence but cannot fully replace editorial judgment.
 
-The current answer is narrower:
+\section{Motivation And Research Question}
+Can this fork extend ARENA 3.0 into a local-first frontier interpretability
+course without damaging the original course, diluting the exercise style into
+survey prose, or replacing real results with smoke tests and placeholder plots?
+
+The answer in this packet is scoped:
 \begin{itemize}
-  \item Yes for the pedagogical discrete-diffusion exercises: the implementation
-  has noising, denoising loss, remasking, sampler, activation-trajectory checks,
-  CUDA training, and a shuffled-label negative control.
-  \item Yes for released-checkpoint generation in the intended 24GB route:
-  NVIDIA NVFP4 has a pinned isolated-vLLM proof artifact with prompt, output,
-  runtime, and GPU metadata.
-  \item Deferred for direct Google BF16 local inference on this machine: the model
-  weights alone exceed the local VRAM target.
-  \item Still not claimed: DiffusionGemma denoising-step activation capture,
-  diffusion-time patching, quality evaluation, throughput benchmarking, or full
-  interpretability parity with original ARENA-style mechanistic investigations.
+  \item Original ARENA is preserved and remains first in the merged course
+  configuration.
+  \item New sections must start with toy or generated ground truth before
+  escalating to pretrained model claims.
+  \item Each course-ready section has one core question, one signature result,
+  expected outputs, solution/help/interpretation dropdowns, limitations, and
+  anomaly-hunting follow-ups.
+  \item Hard exercises must expose sub-function tests, toy or reference oracles,
+  controls, and a committed verification report.
+  \item Reports are evidence, not the course itself; notebooks and pages still
+  have to read as learner-facing ARENA material.
 \end{itemize}
 
-\section{Background}
-DiffusionGemma is a text diffusion language model. Unlike a standard
-autoregressive transformer that commits to one next token at a time, a discrete
-diffusion language model starts with masked or noisy tokens and iteratively
-denoises a block. The course exercise teaches this by first implementing a small
-block denoising model on generated integer-token data, then checking whether the
-released DiffusionGemma artifacts can be used locally.
-
-The local hardware target for this fork is a single 24GB CUDA GPU. The current
-machine reports:
+\section{Repository And Review Bundle}
+The core review artifacts are:
 \begin{itemize}
-  \item GPU: NVIDIA GeForce RTX 5090 Laptop GPU.
-  \item GPU memory reported by torch: 23.46 GiB.
-  \item uv-managed torch stack: torch 2.12.1+cu132, CUDA 13.2, torchvision
-  0.27.1+cu132.
-  \item ModelOpt: nvidia-modelopt 0.44.0 is installed.
-  \item Isolated vLLM proof runtime: vLLM 0.24.0, torch 2.11.0+cu130, CUDA 13.0.
+  \item \path{FOR_REVIEW/FOR_REVIEW.pdf}: this human review packet.
+  \item \path{FOR_REVIEW/FOR_REVIEW.tex}: LaTeX source for the packet.
+  \item \path{FOR_REVIEW/ARENA_core_chapters_exercises_solutions.tar.gz}: a
+  narrow course archive containing only chapter instruction pages and paired
+  exercise/solution notebooks.
 \end{itemize}
 
-\section{Dataset and Exercise Structure}
-The accepted part of section 5.5 uses a generated conditional copy-pair grammar.
-Each example contains two protected prefix tokens and four suffix tokens. The
-label rule is:
-\[
-  [a,b] \mapsto [a,a,b,b].
-\]
-For example, the protected prefix \([3,5]\) gives the full sequence
-\([3,5,3,3,5,5]\). The verification report records 80 training examples, 20
-held-out examples, vocabulary size 11, sequence length 6, mask token id 10, and a
-deterministic shuffled-label control.
+The archive intentionally excludes verification reports, tests, Python support
+files, caches, external model artifacts, Git metadata, environment files, and
+generated expected-output assets. Its purpose is quick pedagogical review of
+the core chapter and notebook surface, not reproduction of the whole repo.
 
-\section{Methodology}
-The toy exercise checks the following mathematical objects:
+\section{Dataset And Course Structure}
+This packet does not review a single tabular dataset. The review object is the
+course corpus itself: chapter instruction pages, paired exercise notebooks,
+paired solution notebooks, and their verification artifacts. The companion
+archive contains the human-facing subset of that corpus: 78 instruction pages,
+77 exercise notebooks, and 77 solution notebooks. The full repository remains
+the reproducibility source for tests, helper modules, expected outputs, and
+verification reports.
+
+\section{What Was Added}
+\begin{longtable}{@{}p{0.13\linewidth}p{0.29\linewidth}p{0.48\linewidth}@{}}
+\toprule
+Track & Sections & Signature learning progression \\
+\midrule
+\endhead
+Skepticism and infrastructure &
+0.6, 1.6 &
+Reject fake interpretability results with leakage, cherry-pick, probe-overfit,
+and random-direction controls; then prove the local uv, CUDA, VRAM, parity, and
+activation-store contracts before trusting later notebooks. \\
+\addlinespace
+Modern architectures &
+5.1--5.6 &
+Implement Gemma-style blocks, feature steering, Mamba scans and state tracking,
+toy diffusion language models, DiffusionGemma local-proof boundaries, embedding
+retrieval, and function-calling controls. \\
+\addlinespace
+Sparse feature methods &
+6.1--6.4 &
+Compare SAE variants, inspect released Gemma Scope artifacts, build transcoders
+and attribution graphs, and use crosscoders for paired-model diffing. \\
+\addlinespace
+Activation to language &
+7.1--7.5 &
+Move from logit/tuned/attention lenses to feature verbalizers, activation
+oracles, natural-language autoencoders, and predictive concept decoders with
+held-out and random-control checks. \\
+\addlinespace
+Automated circuits &
+8.1--8.5 &
+Rebuild activation patching, attribution patching, EAP, ACDC metrics, circuit
+tracing, and sparse feature circuits with completeness, faithfulness,
+minimality, and same-size random controls. \\
+\addlinespace
+Alignment interpretability &
+9.1--9.4 &
+Study refusal directions, chain-of-thought faithfulness, benign proxy drift,
+and white-box monitors using no-generation or aggregate-safe paths where
+appropriate. \\
+\addlinespace
+Capstone and geometry &
+10.1, 11.1 &
+Run a mini research sprint and geometry-control lab with held-out templates,
+ablation, counterfactual patching, PCA/SVD, UMAP, white-noise, and seed
+stability controls. \\
+\addlinespace
+Vision, images, and world models &
+12.1--14.1 &
+Teach CLIP/SigLIP/VLM controls, diffusion/image-generation attribution, and
+JEPA/world-model latent prediction using controlled scenes before real-model
+claims. \\
+\addlinespace
+Adapters and attribution baselines &
+15.1, 16.1--16.8 &
+Compare LoRA/DoRA/full finetuning on generated proxy tasks; build exact
+Shapley, KernelSHAP, PartitionSHAP, interaction, TokenSHAP, VLM-region SHAP,
+SHAP-vs-patching, Data Shapley, and agreement/disagreement labs. \\
+\addlinespace
+Training dynamics &
+17.1 &
+Save and reload checkpoints, detect stable mechanism emergence, compare
+phase-transition timing, and reject random-label checkpoint controls. \\
+\bottomrule
+\end{longtable}
+
+\section{Methodology: How Sections Are Graded And Tested}
+Course-ready status is not assigned from a passing notebook cell alone. The
+acceptance ladder is:
 \begin{enumerate}
-  \item A linear masking schedule \(p_t\) that controls how much of the suffix is
-  masked at denoising step \(t\).
-  \item A masked-token denoising objective:
-  \[
-    L = -\frac{1}{|M|}\sum_{i \in M}\log p_\theta(x_i \mid x_{\setminus M}, t),
-  \]
-  where \(M\) is the set of masked positions.
-  \item A confidence-remasking sampler that repeatedly predicts suffix tokens and
-  re-masks low-confidence positions.
-  \item A commitment-time trace that records when each suffix position becomes
-  stable during denoising.
+  \item \textbf{Student surface.} The instruction page and notebooks must state
+  one core question, give expected outputs, include help and interpretation
+  dropdowns, expose solution dropdowns, and end with limitations plus anomaly
+  hunting.
+  \item \textbf{Sub-function tests.} Hard implementation steps have tests for
+  individual functions before the final result is trusted.
+  \item \textbf{Toy or reference oracle.} New topics start from ground-truth
+  games, generated tasks, exact coalition tables, analytic rules, or reference
+  model parity before real-model claims.
+  \item \textbf{Controls.} Every plot or headline metric must include a control:
+  shuffled labels, random directions, random activations, text-only baselines,
+  same-size random patches, copy baselines, mismatched partitions, or
+  equivalent negative controls.
+  \item \textbf{Verification report.} Each section has a committed
+  \path{verification_report.json} recording accepted metrics, claim scope,
+  GPU evidence, known failures, and paths.
+  \item \textbf{Global audits.} The repo-level gates check course surface,
+  original ARENA preservation, style depth, hard-exercise ladders,
+  report-evidence contracts, artifact hygiene, no minified files, roadmap
+  completion, and strict completion.
 \end{enumerate}
-This tests the teaching mechanism, not the released checkpoint. The released
-checkpoint path is checked separately by exact repository revisions, required
-files, shard counts, runtime metadata, and an explicit boolean
-\code{diffusiongemma\_generation\_ready}.
 
 \subsection*{Pseudocode}
 \begin{verbatim}
-for batch in generated_copy_pair_examples:
-    t = sample_diffusion_step()
-    masked = apply_linear_suffix_mask(batch.tokens, t)
-    logits = denoiser(masked.tokens, t)
-    loss = cross_entropy(logits[masked.positions], batch.tokens[masked.positions])
-    update_model(loss)
+for section in extension_sections:
+    require original_arena_preserved()
+    require one_core_question(section)
+    require one_signature_result(section)
+    require expected_outputs_and_dropdowns(section.notebooks)
+    require hard_exercise_subfunction_tests(section)
+    require toy_or_reference_oracle_before_real_model_claim(section)
+    require negative_controls_for_plots_and_metrics(section)
+    require accepted_verification_report(section)
 
-for heldout_batch in heldout_examples:
-    sample = confidence_remasking_sampler(denoiser, heldout_batch.prefix)
-    record_exact_match_suffix_accuracy(sample, heldout_batch.target)
-    record_commitment_times_and_entropy(sample.trajectory)
-
-run_same_training_path_with_shuffled_suffix_labels()
-assert shuffled_label_accuracy_is_low()
-assert released_diffusiongemma_generation_ready
-assert nvfp4_generation_proof_runtime_is_isolated_from_main_uv
-assert bf16_direct_local_loading_is_deferred_for_24gb
+run hosted_cpu_gate()
+run full_cuda_release_gate(max_vram_gb=24)
+accept only if strict_completion_passes()
 \end{verbatim}
 
-\section{Metrics Primer and Results}
-The primary toy metrics are held-out masked-token accuracy, sampler exact-match
-rate, shuffled-label control accuracy, and measured peak VRAM. Held-out accuracy
-checks whether the denoiser learned the generated copy-pair rule. Sampler
-exact-match checks whether iterative denoising reconstructs the entire suffix.
-The shuffled-label control should fail, showing the model is not passing through
-an accidental shortcut. Matthews correlation coefficient (MCC) is not applicable
-because this is not a binary classification task.
+\section{Results: Representative Signature Results}
+\begin{longtable}{@{}p{0.16\linewidth}p{0.33\linewidth}p{0.41\linewidth}@{}}
+\toprule
+Section & Signature result & Why it is meaningful \\
+\midrule
+\endhead
+0.6 &
+All four bogus interpretability claims are rejected: label leakage,
+cherry-picking, probe overfit, and weak random-direction claims. &
+The detectors are input-driven and include positive controls, so the result is
+not a hard-coded default-fixture pass. \\
+\addlinespace
+1.6 &
+Local readiness checks pass: uv, CUDA, BF16, VRAM, parity, and activation-store
+metadata. &
+Later model claims are blocked unless the intended runtime and evidence path are
+actually present. \\
+\addlinespace
+5.1--5.4 &
+Gemma and Mamba implementations match reference/parity targets and expose cache,
+scan, state, and intervention controls. &
+Students implement the mechanism first, then verify against known behavior. \\
+\addlinespace
+8.1--8.5 &
+Patch, attribution, ACDC, graph, and sparse-feature circuit methods recover
+target positions or features while random/same-size controls fail. &
+Circuit claims are tied to causal or attribution evidence, not visually pleasing
+graphs alone. \\
+\addlinespace
+12.1--14.1 &
+Controlled images/videos produce localized retrieval, patching, diffusion, and
+world-model results before broader real-model claims. &
+The visual sections reject white-noise or generic pretty outputs by requiring
+localized metrics and controls. \\
+\addlinespace
+16.1--16.8 &
+Exact ground-truth Shapley and interaction games are recovered before sampling,
+VLM, activation-patching, or data-attribution comparisons are trusted. &
+Attribution methods are taught against mathematical objects where correctness is
+auditable. \\
+\bottomrule
+\end{longtable}
+
+\section{Qualitative Examples}
+The qualitative review target is not a single generated answer. It is whether
+the learner experience repeatedly follows the ARENA pattern: a concrete
+question, a small implementation, an immediate test, an expected output, a
+control, and an interpretation. Representative examples include:
+\begin{itemize}
+  \item Section 0.6 asks students to reject plausible-looking interpretability
+  claims, then shows why each claim fails under a targeted control.
+  \item Section 8.5 asks students to build sparse feature circuits only after
+  exact patching and same-size random graph controls are in place.
+  \item Section 16.1 asks students to compute exact Shapley values on a finite
+  game before trusting any sampled or model-based attribution shortcut.
+\end{itemize}
+
+\section{Metrics Primer}
+The primary metrics are course-readiness and evidence metrics, not a single
+classifier score. Accuracy, reconstruction error, logit-difference recovery,
+Shapley error, held-out probe performance, random-control margins, and peak
+VRAM appear in the section reports where appropriate. MCC is not a primary
+metric for this packet because the packet is not evaluating one binary
+classification dataset; individual sections use task-appropriate metrics and
+controls instead.
+
+\section{CUDA And Environment Evidence}
+The final local release run was:
+\begin{verbatim}
+BNB_CUDA_VERSION=130 uv run python scripts/ci_quality_gate.py --mode release
+\end{verbatim}
+It performed a real CUDA preflight with \code{nvidia-smi}, confirmed
+\code{torch.cuda.is\_available()}, regenerated all 41 extension reports with a
+24 GiB VRAM limit, accepted all 41, then ran the GPU-report, report-evidence,
+roadmap-final-completeness, and strict-completion audits. The final line was
+\status{STRICT\_COMPLETION=PASS}.
 
 \begin{center}
 \begin{tabular}{@{}ll@{}}
 \toprule
-Metric & Current observed value \\
+Item & Observed value \\
 \midrule
-Section 5.5 verification accepted & true \\
-Toy CUDA held-out masked accuracy & 1.0 \\
-Toy CUDA sampler exact match & 1.0 \\
-Shuffled-label control accuracy & 0.0714 \\
-Toy CUDA peak VRAM & 0.0737 GiB \\
-DiffusionGemma released-checkpoint generation ready & true \\
-NVFP4 isolated vLLM proof & true, vLLM 0.24.0 / torch 2.11.0+cu130 \\
-Main uv vLLM generation support & false, main uv stays torch 2.12.1+cu132 \\
-Google BF16 weight bytes required & 51,647,701,024 bytes, 48.10 GiB \\
-NVIDIA NVFP4 weight bytes required & 18,823,855,888 bytes, 17.53 GiB \\
+Python & 3.14.6 \\
+PyTorch & 2.12.1+cu132 \\
+torchvision & 0.27.1+cu132 \\
+PyTorch CUDA runtime & 13.2 \\
+Driver CUDA UMD reported by \code{nvidia-smi} & 13.3 \\
+GPU & NVIDIA GeForce RTX 5090 Laptop GPU \\
+Visible VRAM & 23.4597 GiB \\
+Extension reports regenerated & 41 \\
+Extension reports accepted & 41 \\
+CUDA-backed reports audited & 43 \\
 \bottomrule
 \end{tabular}
 \end{center}
 
-\section{Qualitative Examples}
-The toy qualitative example is a generated grammar row: prefix \([3,5]\) implies
-target suffix \([3,3,5,5]\), so the full sequence is \([3,5,3,3,5,5]\). Passing
-toy samples should reconstruct this suffix from masked states, while the
-shuffled-label control should not learn a stable rule.
+One package caveat remains: \code{bitsandbytes 0.49.2} does not ship
+\code{libbitsandbytes\_cuda132.so}. Local bitsandbytes CUDA paths therefore use
+\code{BNB\_CUDA\_VERSION=130} with the package's CUDA 13.0 binary. This is not
+represented as native CUDA 13.2 support for bitsandbytes.
 
-The released-checkpoint proof used this prompt:
-\begin{quote}
-\small In one concise sentence, explain why mechanistic interpretability
-experiments need negative controls.
-\end{quote}
-The pinned NVFP4 checkpoint generated:
-\begin{quote}
-\small Negative controls are necessary to ensure that observed model behaviors
-are causally linked to the specific mechanisms being tested rather than
-artifacts, chance correlations, or noise.
-\end{quote}
-This is a one-prompt runtime proof, not an output-quality benchmark.
-
-\section{Artifact Status}
-\begin{longtable}{@{}p{0.20\linewidth}p{0.17\linewidth}p{0.55\linewidth}@{}}
-\toprule
-Item & Status & Evidence and implication \\
-\midrule
-\endhead
-Google BF16 DiffusionGemma &
-\status{deferred} &
-\code{google/diffusiongemma-26B-A4B-it} at revision
-\code{0f28bc42f588fbd8f71e08102b1c3960298a1358}. The report requires 11
-safetensor shards totaling 48.10 GiB. Local shards are incomplete. This is too
-large for direct local loading on a 23.46 GiB GPU, before activations and runtime
-overhead. \\
-\addlinespace
-NVIDIA NVFP4 DiffusionGemma &
-\status{proven in isolated runtime} &
-\code{nvidia/diffusiongemma-26B-A4B-it-NVFP4} at revision
-\code{2ea837236295d617ac27f8c17d61228081932c40}. The two weight shards total
-17.53 GiB and are the intended 24GB path. The local shards are complete, the
-model path matches the pinned revision, and
-\path{artifacts/diffusiongemma_vllm_probe.json} records a real generation on the
-23.46 GiB RTX 5090 Laptop GPU. \\
-\addlinespace
-Transformers NVFP4 loading &
-\status{not the active proof path} &
-The checkpoint advertises \code{quant\_method: modelopt}. The current
-Transformers quantization registry rejects this with ``Unknown quantization type,
-got modelopt''. Config, tokenizer, processor, and model-class support remain
-useful preflight evidence, but the generation proof currently comes from vLLM,
-not Transformers direct loading. \\
-\addlinespace
-vLLM dependency path &
-\status{isolated} &
-\code{uv pip install --dry-run vllm --prerelease allow} resolves vLLM 0.24.0,
-but would replace torch 2.12.1+cu132 with torch 2.11.0 and replace CUDA 13.2
-packages with CUDA 13.0 packages. That conflicts with the requested latest
-cu132 torch stack, so vLLM was installed in \path{/tmp/arena-diffusiongemma-vllm}
-for the proof run instead of in the main uv environment. \\
-\bottomrule
-\end{longtable}
-
-\section{Supported and Unsupported Claims}
-\textbf{Supported now.} The course exercise has a working CUDA-trained tiny
-discrete diffusion language model, held-out testing, a sampler reconstruction
-metric, activation-trajectory checks, and a negative control that fails as
-expected. It also has real NVIDIA NVFP4 DiffusionGemma generation evidence in an
-isolated vLLM runtime under the 24GB GPU target.
-
-\textbf{Unsupported now.} The course must not claim BF16 direct local inference,
-DiffusionGemma denoising-step activation capture, diffusion-time patching,
-throughput, broad output quality, or full interpretability parity from this
-one-prompt proof. It also must not treat mock generations, fake outputs,
-config-only checks, or placeholder artifacts as substitutes for artifact-backed
-runs.
-
-\section{Implementation Pointers}
+\section{Archive Contents}
+The companion tarball is deliberately small in scope. It contains:
 \begin{itemize}
-  \item \path{chapter5_modern_architectures/exercises/part5_diffusion_language_models/verification_report.json}
-  contains the accepted toy CUDA metrics, BF16 deferral, and NVFP4 isolated-vLLM
-  generation proof fields.
-  \item \path{chapter5_modern_architectures/exercises/part5_diffusion_language_models/artifacts/diffusiongemma_vllm_probe.json}
-  is the compact proof artifact for the real NVFP4 generation run.
-  \item \path{arena_ext/diffusion_lm.py} computes the DiffusionGemma readiness
-  report and exposes the generation-ready boolean.
-  \item \path{arena_ext/gated_artifacts.py} pins the exact Google BF16 and NVIDIA
-  NVFP4 repository revisions and required files.
-  \item \path{scripts/prepare_diffusiongemma_artifacts.py} inspects or downloads
-  the pinned artifacts. The conservative command is:
-  \begin{verbatim}
-BNB_CUDA_VERSION=130 uv run python scripts/prepare_diffusiongemma_artifacts.py \
-  --artifact nvfp4 --download --require-local --max-workers 1
-  \end{verbatim}
-  \item \path{scripts/run_diffusiongemma_vllm_probe.py} runs the real generation
-  probe from an isolated vLLM Python executable.
-  \item \path{FOR_REVIEW/tables/diffusiongemma_readiness.csv} is the compact
-  evidence table for this packet.
+  \item 78 chapter instruction-page Markdown files from
+  \path{chapter*/instructions/pages/*.md}.
+  \item 77 exercise notebooks matching \path{chapter*/exercises/**/*_exercises.ipynb}.
+  \item 77 solution notebooks matching \path{chapter*/exercises/**/*_solutions.ipynb}.
+\end{itemize}
+It contains no verification reports, expected-output images, tests, Python
+support modules, hidden caches, downloaded models, LaTeX files, or Git metadata.
+This makes the archive suitable for quick review of the learner-facing course
+surface while keeping the full repo as the source of reproducibility evidence.
+
+\section{Limitations, Blockers, And Deferrals}
+\begin{itemize}
+  \item There are no remaining non-\status{course\_ready} extension pages tracked
+  in \path{docs/arena_style_rewrite_status.yml}.
+  \item Huge-model routes that exceed the 24 GiB local GPU remain deferred until
+  they can be validated honestly. They are not replaced with mock results.
+  \item GitHub hosted CI passes CPU audits, but the self-hosted CUDA job is
+  skipped unless a CUDA runner is attached. The CUDA evidence in this packet was
+  run locally.
+  \item Some sections intentionally make narrow claims, for example a
+  one-prompt local-generation proof or a controlled generated-scene result. The
+  claim boundary is part of the course material and should not be inflated into
+  broad model-quality or mechanism-generalization claims.
+  \item Automated checks can enforce structure, evidence, and known failure
+  modes. They cannot fully replace a human review of whether the writing has the
+  elegance, pacing, and taste of original ARENA.
 \end{itemize}
 
-\section{Validation Commands}
-\begin{verbatim}
-uv run python - <<'PY'
-import torch, torchvision, modelopt
-print(torch.__version__, torch.version.cuda)
-print(torch.cuda.get_device_name(0))
-props = torch.cuda.get_device_properties(0)
-print(round(props.total_memory / 1024**3, 2))
-print(torchvision.__version__)
-print(modelopt.__version__)
-PY
-
-BNB_CUDA_VERSION=130 uv run python -m pytest -q \
-  tests/test_diffusion_lm.py \
-  chapter5_modern_architectures/exercises/part5_diffusion_language_models/tests.py
-
-BNB_CUDA_VERSION=130 uv run python scripts/run_extension_verification_reports.py \
-  --section 1.6 --section 5.1 --section 5.5 --section 5.6 --max-vram-gb 24
-
-BNB_CUDA_VERSION=130 uv run python scripts/prepare_diffusiongemma_artifacts.py \
-  --artifact all --json
-
-/tmp/arena-diffusiongemma-vllm/bin/python scripts/run_diffusiongemma_vllm_probe.py \
-  --model /home/bitwise/.cache/huggingface/hub/models--nvidia--diffusiongemma-26B-A4B-it-NVFP4/snapshots/2ea837236295d617ac27f8c17d61228081932c40 \
-  --prompt 'In one concise sentence, explain why mechanistic interpretability experiments need negative controls.' \
-  --max-tokens 128 --max-model-len 4096 --max-num-seqs 1 \
-  --gpu-memory-utilization 0.85 --canvas-length 256 --use-chat-template \
-  --output-json chapter5_modern_architectures/exercises/part5_diffusion_language_models/artifacts/diffusiongemma_vllm_probe.json
-
-uv pip check
-uv pip install --dry-run vllm --prerelease allow
-tectonic FOR_REVIEW/FOR_REVIEW.tex --outdir FOR_REVIEW
-pdftotext FOR_REVIEW/FOR_REVIEW.pdf -
-CHECK=/home/bitwise/.codex/skills/for-review-pdf/scripts/check_for_review_pdf.py
-python "$CHECK" FOR_REVIEW/FOR_REVIEW.pdf --tex FOR_REVIEW/FOR_REVIEW.tex
-\end{verbatim}
-
-\section{Limitations and Blockers}
-\begin{itemize}
-  \item The BF16 model is intentionally deferred for local 24GB execution. That
-  deferral should be reviewed, but it does not block the intended 24GB NVFP4
-  route.
-  \item The installed Transformers stack still cannot directly consume the
-  NVIDIA ModelOpt NVFP4 quantization config; vLLM is the proven local runtime.
-  \item vLLM currently resolves to a stack change that downgrades torch and CUDA
-  packages, so it was not installed into the main uv environment. The proof uses
-  an isolated environment instead.
-  \item The NVFP4 proof is one deterministic prompt. It proves loading and
-  generation on this GPU, not output quality, throughput, or a prompt suite.
-  \item The exercise still needs released-checkpoint denoising-step
-  output/activation capture and a matched random-control diffusion-time patching
-  exercise before claiming mechanism-level parity.
-\end{itemize}
-
-\section{Questions for Expert Review}
+\section{Reviewer Questions}
 \begin{enumerate}
-  \item Is the \status{deferred} marker for direct BF16 local inference accepted
-  as a reasonable 24GB hardware deferral?
-  \item Is the isolated-vLLM split acceptable for the 24GB local route while the
-  main uv environment remains torch 2.12.1+cu132?
-  \item Should the next sprint prioritize a ModelOpt-aware Transformers path, a
-  documented isolated-vLLM workflow, or a containerized runtime?
-  \item What minimum evidence should be required after this one-prompt proof: a
-  prompt suite, throughput/VRAM measurements, denoising trajectories, or a
-  patching intervention?
-  \item What output-quality and reproducibility checks would make the notebook
-  feel closest to original ARENA quality rather than a thin model-loading demo?
+  \item Does the extension feel like original ARENA in progression: implement,
+  test, interpret, control, then escalate?
+  \item Are any sections still too survey-like despite having a core question and
+  signature result?
+  \item Are the toy ground-truth tasks strong enough bridges to the real-model
+  claims?
+  \item Which signature results are visually or pedagogically weak even if the
+  verification report passes?
+  \item Are any deferred huge-model paths too important to leave as optional
+  follow-up work for a 24 GiB local course?
 \end{enumerate}
 
 \appendix
 \section{Artifact Index}
 \begin{itemize}
-  \item \path{Extension-Roadmap.md}: roadmap requirement that quantized
-  DiffusionGemma run under the 24GB budget and that every notebook end with a
-  verification block.
-  \item \path{docs/local_gpu_setup.md}: local setup notes and DiffusionGemma
-  artifact preparation command.
-  \item \path{docs/method_registry.md}: method registry row marking
-  DiffusionGemma local inference as NVFP4-proven in an isolated vLLM runtime.
-  \item \path{chapter5_modern_architectures/exercises/part5_diffusion_language_models/artifacts.lock.yml}:
-  pinned claim scope, controls, revisions, and expected metrics.
-  \item \path{chapter5_modern_architectures/exercises/part5_diffusion_language_models/expected_outputs/reference_metrics.json}:
-  expected metric thresholds and current generation-ready flag.
-  \item \path{scripts/run_diffusiongemma_vllm_probe.py}: exact probe runner for
-  the isolated vLLM generation artifact.
-  \item \path{chapter5_modern_architectures/exercises/part5_diffusion_language_models/artifacts/diffusiongemma_vllm_probe.json}:
-  prompt, output, vLLM version, torch/CUDA version, GPU name, memory, and timing
-  for the real NVFP4 proof.
+  \item \path{Extension-Roadmap.md}: final roadmap and scope.
+  \item \path{README.md}: course overview and section list.
+  \item \path{docs/arena_style_rewrite_status.yml}: course-ready status ledger.
+  \item \path{scripts/ci_quality_gate.py}: hosted, GPU, and release gate wrapper.
+  \item \path{scripts/audit_extension_completion_strict.py}: strict completion
+  audit.
+  \item \path{scripts/audit_original_arena_preservation.py}: original ARENA
+  preservation audit.
+  \item \path{chapter*/exercises/*/verification_report.json}: per-section
+  evidence reports.
+  \item \path{FOR_REVIEW/ARENA_core_chapters_exercises_solutions.tar.gz}:
+  learner-facing chapter and notebook archive.
 \end{itemize}
+
+\section{Rebuild Commands}
+\begin{verbatim}
+tectonic FOR_REVIEW/FOR_REVIEW.tex --outdir FOR_REVIEW
+pdftotext FOR_REVIEW/FOR_REVIEW.pdf -
+
+find chapter* -path '*/instructions/pages/*.md' -type f -print
+find chapter* -path '*/exercises/*' -type f \
+  \( -name '*_exercises.ipynb' -o -name '*_solutions.ipynb' \) -print
+
+BNB_CUDA_VERSION=130 uv run python scripts/ci_quality_gate.py --mode hosted-cpu
+BNB_CUDA_VERSION=130 uv run python scripts/ci_quality_gate.py --mode release
+\end{verbatim}
 
 \end{document}
