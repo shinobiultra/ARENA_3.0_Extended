@@ -102,9 +102,9 @@ sections:
     page: chapter9_alignment_interpretability/instructions/pages/03_[9.3]_Emergent_Misalignment_Detection.md
     notes: ARENA-style rewrite with benign proxy-drift validation loop, held-out detector/proxy-alignment/mitigation/early-warning progression, help and interpretation dropdowns, pinned Pythia-70M proxy-drift signature result, limitations, and paired notebook surfaces.
   '9.4':
-    status: prototype
+    status: course_ready
     page: chapter9_alignment_interpretability/instructions/pages/04_[9.4]_White_box_Evals_and_Monitors.md
-    notes: Prototype scaffold retained for implementation evidence; requires ARENA-style rewrite before course-ready release.
+    notes: ARENA-style rewrite with safe white-box monitor validation loop, dashboard/calibration/black-box-miss/false-positive/explanation-validation progression, help and interpretation dropdowns, pinned Pythia-70M monitor signature result, limitations, and paired notebook surfaces.
   '10.1':
     status: prototype
     page: chapter10_capstone_research_sprint/instructions/pages/01_[10.1]_Capstone_Research_Sprint.md

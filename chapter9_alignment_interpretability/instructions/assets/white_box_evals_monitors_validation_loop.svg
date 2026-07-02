@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="330" viewBox="0 0 1100 330" role="img" aria-labelledby="title desc">
+  <title id="title">White-box monitor validation loop</title>
+  <desc id="desc">Safe monitor records flow through Pythia hidden states, a white-box direction, black-box proxy comparison, audit gates, and negative controls.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L9,3 L0,6 Z" fill="#34515e"/>
+    </marker>
+    <style>
+      .bg { fill: #f7faf8; }
+      .box { fill: #ffffff; stroke: #34515e; stroke-width: 2; rx: 8; }
+      .box2 { fill: #eef6ff; stroke: #2d5d7b; stroke-width: 2; rx: 8; }
+      .box3 { fill: #f5f1ff; stroke: #6b4fa3; stroke-width: 2; rx: 8; }
+      .box4 { fill: #fff6e8; stroke: #9a6a1f; stroke-width: 2; rx: 8; }
+      .title { font: 700 20px sans-serif; fill: #17323d; }
+      .text { font: 15px sans-serif; fill: #1e2e35; }
+      .small { font: 13px sans-serif; fill: #41545c; }
+      .arrow { stroke: #34515e; stroke-width: 2.4; fill: none; marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <rect class="bg" x="0" y="0" width="1100" height="330"/>
+  <text class="title" x="42" y="46">Safe white-box monitor preflight</text>
+  <text class="small" x="42" y="70">Hidden states and logits only; no generated completions.</text>
+
+  <rect class="box" x="42" y="112" width="165" height="112"/>
+  <text class="text" x="62" y="142">Safe monitor</text>
+  <text class="text" x="62" y="164">records</text>
+  <text class="small" x="62" y="194">clean + five benign</text>
+  <text class="small" x="62" y="212">failure-policy kinds</text>
+
+  <line class="arrow" x1="212" y1="168" x2="273" y2="168"/>
+  <rect class="box2" x="282" y="112" width="165" height="112"/>
+  <text class="text" x="302" y="142">Pythia-70M</text>
+  <text class="text" x="302" y="164">hidden states</text>
+  <text class="small" x="302" y="194">final token, layer -1</text>
+  <text class="small" x="302" y="212">held-out shape [24,512]</text>
+
+  <line class="arrow" x1="452" y1="168" x2="513" y2="168"/>
+  <rect class="box3" x="522" y="112" width="165" height="112"/>
+  <text class="text" x="542" y="142">White-box</text>
+  <text class="text" x="542" y="164">direction</text>
+  <text class="small" x="542" y="194">AUROC 1.000</text>
+  <text class="small" x="542" y="212">accuracy 1.000</text>
+
+  <line class="arrow" x1="692" y1="168" x2="753" y2="168"/>
+  <rect class="box4" x="762" y="112" width="165" height="112"/>
+  <text class="text" x="782" y="142">Black-box proxy</text>
+  <text class="text" x="782" y="164">comparison</text>
+  <text class="small" x="782" y="194">pass/fail logits</text>
+  <text class="small" x="782" y="212">3 missed failures caught</text>
+
+  <line class="arrow" x1="932" y1="168" x2="993" y2="168"/>
+  <rect class="box" x="1000" y="112" width="58" height="112"/>
+  <text class="text" transform="translate(1024 204) rotate(-90)">Audit</text>
+
+  <rect class="box2" x="250" y="258" width="192" height="42"/>
+  <text class="small" x="270" y="284">label-shuffled AUROC 0.388</text>
+  <line class="arrow" x1="604" y1="224" x2="442" y2="258"/>
+
+  <rect class="box2" x="482" y="258" width="205" height="42"/>
+  <text class="small" x="502" y="284">random-direction AUROC 0.088</text>
+  <line class="arrow" x1="604" y1="224" x2="584" y2="258"/>
+
+  <rect class="box2" x="728" y="258" width="250" height="42"/>
+  <text class="small" x="748" y="284">false-positive notes + held-out labels</text>
+  <line class="arrow" x1="845" y1="224" x2="853" y2="258"/>
+</svg>

@@ -91,6 +91,18 @@ def test_binary_auroc_counts_ties_and_validates_inputs(
         )
     else:
         raise AssertionError("One-class labels should raise ValueError.")
+    try:
+        binary_auroc(t.tensor([0.1, float("nan")]), t.tensor([0, 1]))
+    except ValueError as exc:
+        assert "finite" in str(exc), "Non-finite monitor scores should be rejected."
+    else:
+        raise AssertionError("Non-finite monitor scores should raise ValueError.")
+    try:
+        binary_auroc(t.tensor([0.1, 0.2]), t.tensor([0, 2]))
+    except ValueError as exc:
+        assert "binary" in str(exc), "Monitor labels should be restricted to 0/1."
+    else:
+        raise AssertionError("Non-binary monitor labels should raise ValueError.")
     print("All tests in `test_binary_auroc_counts_ties_and_validates_inputs` passed!")
 
 
@@ -112,6 +124,14 @@ def test_monitor_calibration_report_matches_reference(
     assert not weak.calibrated and weak.auroc == 0.0, (
         "A reversed monitor ranking should fail calibration, not pass by thresholding."
     )
+    try:
+        monitor_calibration_report(scores, labels, min_auroc=1.1)
+    except ValueError as exc:
+        assert "between 0 and 1" in str(exc), (
+            "Calibration thresholds should be explicit unit-interval values."
+        )
+    else:
+        raise AssertionError("Out-of-range min_auroc should raise ValueError.")
     print("All tests in `test_monitor_calibration_report_matches_reference` passed!")
 
 
@@ -136,6 +156,12 @@ def test_missed_failure_report_identifies_white_box_only_catches(
         )
     else:
         raise AssertionError("Mismatched prediction shapes should raise ValueError.")
+    try:
+        missed_failure_report(t.tensor([1, 2]), t.tensor([0, 0]), labels[:2])
+    except ValueError as exc:
+        assert "binary" in str(exc), "Predictions should be validated as binary."
+    else:
+        raise AssertionError("Non-binary predictions should raise ValueError.")
     print(
         "All tests in `test_missed_failure_report_identifies_white_box_only_catches` passed!"
     )
@@ -181,6 +207,12 @@ def test_false_positive_documentation_requires_notes(
     assert complete.documented and complete.num_false_positives == 2, (
         "The report should pass only when all false positives are documented."
     )
+    try:
+        false_positive_documentation_report(t.tensor([1, 0]), t.tensor([1, 3]))
+    except ValueError as exc:
+        assert "binary" in str(exc), "Failure labels should be validated as binary."
+    else:
+        raise AssertionError("Non-binary failure labels should raise ValueError.")
     print("All tests in `test_false_positive_documentation_requires_notes` passed!")
 
 
@@ -215,6 +247,14 @@ def test_feature_explanation_validation_uses_heldout_accuracy(
     assert not weak.explanations_validated and weak.heldout_accuracy == 0.0, (
         "Explanations should fail when they do not predict held-out labels."
     )
+    try:
+        feature_explanation_validation_report(predictions, labels, min_accuracy=-0.1)
+    except ValueError as exc:
+        assert "between 0 and 1" in str(exc), (
+            "Explanation validation thresholds should be unit-interval values."
+        )
+    else:
+        raise AssertionError("Out-of-range min_accuracy should raise ValueError.")
     print(
         "All tests in `test_feature_explanation_validation_uses_heldout_accuracy` passed!"
     )
@@ -290,6 +330,60 @@ def test_committed_gpu_report_matches_white_box_monitor_contract(result: dict | 
         "The Pythia-70M preflight should fit comfortably within the section VRAM budget."
     )
     print("All tests in `test_committed_gpu_report_matches_white_box_monitor_contract` passed!")
+
+
+def test_pythia_monitor_helpers_reject_invalid_internal_evidence():
+    solutions = _solutions()
+    train_hidden = t.zeros((4, 3))
+    eval_hidden = t.ones((2, 3))
+    labels = t.tensor([0, 0, 1, 1])
+
+    try:
+        solutions._thresholded_monitor_scores(train_hidden, labels, eval_hidden)
+    except ValueError as exc:
+        assert "nonzero finite norm" in str(exc), (
+            "A zero monitor direction should be rejected before producing scores."
+        )
+    else:
+        raise AssertionError("Zero monitor direction should raise ValueError.")
+
+    try:
+        solutions._thresholded_monitor_scores(t.randn(3, 4), t.tensor([1, 1, 1]), t.randn(2, 4))
+    except ValueError as exc:
+        assert "both clean and failure" in str(exc), (
+            "Direction fitting should require both clean and failure train labels."
+        )
+    else:
+        raise AssertionError("One-class train labels should raise ValueError.")
+
+    try:
+        solutions._black_box_fail_predictions(
+            t.randn(4, 3),
+            t.tensor([0, 0, 1, 1]),
+            t.randn(2, 3),
+        )
+    except ValueError as exc:
+        assert "exactly two columns" in str(exc), (
+            "The black-box proxy should be a binary pass/fail logit pair."
+        )
+    else:
+        raise AssertionError("Three-column proxy logits should raise ValueError.")
+
+    class BadTokenizer:
+        def encode(self, token: str, add_special_tokens: bool = False):
+            _ = token, add_special_tokens
+            return [1, 2]
+
+    try:
+        solutions._monitor_black_box_token_ids(BadTokenizer())
+    except ValueError as exc:
+        assert "exactly one token" in str(exc), (
+            "The pass/fail proxy should only use single-token labels."
+        )
+    else:
+        raise AssertionError("Multi-token black-box proxy labels should raise ValueError.")
+
+    print("All tests in `test_pythia_monitor_helpers_reject_invalid_internal_evidence` passed!")
 
 
 def test_exercise_notebook_declares_full_verification_contract():

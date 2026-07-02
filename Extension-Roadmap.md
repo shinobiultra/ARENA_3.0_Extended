@@ -20,8 +20,8 @@ Activation Patching Refresher**, **[8.2] Attribution Patching and
 EAP**, **[8.3] ACDC and Circuit Metrics**, **[8.4] Circuit
 Tracing with Attribution Graphs**, **[8.5] Sparse Feature
 Circuits**, **[9.1] Refusal Directions and Safe Steering**,
-**[9.2] Chain-of-Thought Faithfulness**, and **[9.3] Emergent
-Misalignment Detection**.
+**[9.2] Chain-of-Thought Faithfulness**, **[9.3] Emergent
+Misalignment Detection**, and **[9.4] White-box Evals and Monitors**.
 They now have ARENA-style learner pages, local
 diagrams, help/interpretation dropdowns, expected-output blocks, paired
 exercise/solution notebooks, CUDA-backed signature result tables, and explicit
@@ -137,11 +137,11 @@ ARENA_Frontier_Lab/
       5_2_attribution_patching_and_eap/
       5_3_acdc_and_circuit_metrics/
       5_4_circuit_tracing_with_transcoders/
-    ch6_alignment_interpretability/
-      6_1_refusal_directions_and_steering/
-      6_2_cot_faithfulness/
-      6_3_emergent_misalignment_detection/
-      6_4_white_box_evals_and_monitors/
+    ch9_alignment_interpretability/
+      9_1_refusal_directions_and_steering/
+      9_2_cot_faithfulness/
+      9_3_emergent_misalignment_detection/
+      9_4_white_box_evals_and_monitors/
     ch7_capstones/
   arena_ext/
     model_adapters/
@@ -966,7 +966,7 @@ crosscoder model-specific features align with behavior delta
 mitigation reduces drift without large capability loss
 ```
 
-### 6.4 White-box evals and monitors
+### 9.4 White-box evals and monitors
 
 Exercises:
 
@@ -5030,12 +5030,12 @@ crosscoder finds model-specific features
 random LoRA of same norm fails
 ```
 
-## 9.4 LoRA alignment and misalignment
+## 15.1 LoRA alignment and misalignment
 
 Add a safe alignment notebook:
 
 ```text
-[9.5] Alignment Changes as Low-Rank Updates
+[15.2] Alignment Changes as Low-Rank Updates
 ```
 
 Core question:

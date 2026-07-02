@@ -157,12 +157,12 @@ artifacts:
   revision: e93a9faa9c77e5d09219f6c868bfc7a1bd65593c
   local_status: REQUIRED
   max_vram_gb: '8'
-  used_in_notebooks: 6.3;8.5;9.1;9.2;9.3;11.1
+  used_in_notebooks: 6.3;8.5;9.1;9.2;9.3;9.4;11.1
   gt_tier: GT-2
   notes: Small real LM target matched to released Sparse Feature Circuits SAE artifacts,
-    safe 9.1 category hidden-state preflight, 9.2 hidden-answer CoT-faithfulness
-    preflight, 9.3 benign proxy-drift hidden-state preflight, and 11.1 weekday
-    geometry preflight.
+    safe 9.1 category hidden-state preflight, 9.2 hidden-answer CoT-faithfulness preflight,
+    9.3 benign proxy-drift hidden-state preflight, 9.4 safe white-box monitor preflight,
+    and 11.1 weekday geometry preflight.
 - name: Qwen2.5 0.5B Instruct
   type: instruction_model
   provider: Hugging Face
@@ -411,6 +411,20 @@ artifacts:
   used_in_notebooks: 9.1;15.1
   gt_tier: GT-3
   notes: Sanitized JSONL prompt pairs with redaction support.
+- name: Safe white-box monitor eval records
+  type: dataset
+  provider: generated
+  repo_or_source_id: course_safe_white_box_monitor_eval_records_v1
+  license: course_generated
+  gated: 'false'
+  revision: seed_0
+  local_status: GENERATED_BY_COURSE
+  max_vram_gb: '0'
+  used_in_notebooks: '9.4'
+  gt_tier: GT-3
+  notes: Safe neutral and benign failure-policy monitor records used by 9.4 for held-out
+    white-box monitor calibration, black-box proxy comparison, false-positive documentation
+    controls, and no-generation CUDA evidence.
 - name: Course LoRA adapters
   type: adapter
   provider: generated

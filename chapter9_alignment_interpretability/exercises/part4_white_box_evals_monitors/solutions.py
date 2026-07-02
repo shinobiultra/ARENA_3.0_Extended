@@ -82,6 +82,34 @@ class FeatureExplanationValidationReport:
     explanations_validated: bool
 
 
+def _require_finite_tensor(name: str, tensor: t.Tensor) -> None:
+    if tensor.numel() == 0:
+        raise ValueError(f"{name} must be non-empty.")
+    if not t.isfinite(tensor.float()).all():
+        raise ValueError(f"{name} must contain only finite values.")
+
+
+def _require_finite_scalar(name: str, value: float) -> None:
+    value_tensor = t.tensor(value, dtype=t.float32)
+    if not t.isfinite(value_tensor):
+        raise ValueError(f"{name} must be finite.")
+
+
+def _require_unit_interval(name: str, value: float) -> None:
+    _require_finite_scalar(name, value)
+    if not 0.0 <= value <= 1.0:
+        raise ValueError(f"{name} must be between 0 and 1.")
+
+
+def _require_binary_tensor(name: str, tensor: t.Tensor) -> None:
+    _require_finite_tensor(name, tensor)
+    if tensor.dtype == t.bool:
+        return
+    values_are_binary = tensor.eq(0) | tensor.eq(1)
+    if not values_are_binary.all():
+        raise ValueError(f"{name} must contain only binary 0/1 values.")
+
+
 def monitor_dashboard_row(
     *,
     prompt: str,
@@ -93,10 +121,24 @@ def monitor_dashboard_row(
 ) -> MonitorDashboardRow:
     """Bundle one white-box monitor dashboard row."""
 
+    if not prompt.strip():
+        raise ValueError("prompt must be non-empty.")
+    if not model_output.strip():
+        raise ValueError("model_output must be non-empty.")
+    active_features_tuple = tuple(active_features)
+    if not all(isinstance(feature, str) and feature.strip() for feature in active_features_tuple):
+        raise ValueError("active_features must contain non-empty feature names.")
+    for name, value in {
+        "refusal_score": refusal_score,
+        "hallucination_score": hallucination_score,
+        "cot_faithfulness_score": cot_faithfulness_score,
+    }.items():
+        _require_finite_scalar(name, value)
+
     return MonitorDashboardRow(
         prompt=prompt,
         model_output=model_output,
-        active_features=tuple(active_features),
+        active_features=active_features_tuple,
         refusal_score=refusal_score,
         hallucination_score=hallucination_score,
         cot_faithfulness_score=cot_faithfulness_score,
@@ -107,9 +149,12 @@ def binary_auroc(scores: t.Tensor, labels: t.Tensor) -> float:
     """Compute binary AUROC by pairwise positive-negative comparisons."""
 
     scores = scores.flatten().float()
-    labels = labels.flatten().bool()
+    labels = labels.flatten()
+    _require_finite_tensor("scores", scores)
+    _require_binary_tensor("labels", labels)
     if scores.shape != labels.shape:
         raise ValueError("scores and labels must have matching shape.")
+    labels = labels.bool()
     positive_scores = scores[labels]
     negative_scores = scores[~labels]
     if positive_scores.numel() == 0 or negative_scores.numel() == 0:
@@ -130,6 +175,7 @@ def monitor_calibration_report(
 ) -> MonitorCalibrationReport:
     """Check whether monitor scores separate failure labels."""
 
+    _require_unit_interval("min_auroc", min_auroc)
     auroc = binary_auroc(monitor_scores, failure_labels)
     return MonitorCalibrationReport(
         auroc=auroc,
@@ -144,11 +190,17 @@ def missed_failure_report(
 ) -> MissedFailureReport:
     """Find failures caught by the white-box monitor but missed by the baseline."""
 
-    white = white_box_predictions.flatten().bool()
-    black = black_box_predictions.flatten().bool()
-    labels = failure_labels.flatten().bool()
+    white = white_box_predictions.flatten()
+    black = black_box_predictions.flatten()
+    labels = failure_labels.flatten()
+    _require_binary_tensor("white_box_predictions", white)
+    _require_binary_tensor("black_box_predictions", black)
+    _require_binary_tensor("failure_labels", labels)
     if white.shape != black.shape or white.shape != labels.shape:
         raise ValueError("prediction and label tensors must have matching shape.")
+    white = white.bool()
+    black = black.bool()
+    labels = labels.bool()
 
     caught_mask = labels & white & ~black
     indices = tuple(int(index.item()) for index in caught_mask.nonzero().flatten())
@@ -166,10 +218,14 @@ def false_positive_documentation_report(
 ) -> FalsePositiveDocumentationReport:
     """Check whether monitor false positives have written reviewer notes."""
 
-    predictions = monitor_predictions.flatten().bool()
-    labels = failure_labels.flatten().bool()
+    predictions = monitor_predictions.flatten()
+    labels = failure_labels.flatten()
+    _require_binary_tensor("monitor_predictions", predictions)
+    _require_binary_tensor("failure_labels", labels)
     if predictions.shape != labels.shape:
         raise ValueError("predictions and labels must have matching shape.")
+    predictions = predictions.bool()
+    labels = labels.bool()
 
     false_positive_mask = predictions & ~labels
     indices = tuple(int(index.item()) for index in false_positive_mask.nonzero().flatten())
@@ -190,10 +246,15 @@ def feature_explanation_validation_report(
 ) -> FeatureExplanationValidationReport:
     """Validate feature explanations as held-out label predictors."""
 
-    predictions = explanation_predictions.flatten().bool()
-    labels = heldout_labels.flatten().bool()
+    _require_unit_interval("min_accuracy", min_accuracy)
+    predictions = explanation_predictions.flatten()
+    labels = heldout_labels.flatten()
+    _require_binary_tensor("explanation_predictions", predictions)
+    _require_binary_tensor("heldout_labels", labels)
     if predictions.shape != labels.shape:
         raise ValueError("predictions and labels must have matching shape.")
+    predictions = predictions.bool()
+    labels = labels.bool()
 
     accuracy = predictions.eq(labels).float().mean().item()
     return FeatureExplanationValidationReport(
@@ -297,15 +358,24 @@ def _build_pythia_monitor_examples(contexts: list[str]) -> list[tuple[str, int, 
     return examples
 
 
+def _monitor_black_box_token_ids(tokenizer) -> list[int]:
+    token_ids: list[int] = []
+    for token in PYTHIA_MONITOR_BLACK_BOX_TOKENS:
+        encoded = tokenizer.encode(token, add_special_tokens=False)
+        if len(encoded) != 1:
+            raise ValueError(
+                f"Black-box proxy token {token!r} must encode to exactly one token."
+            )
+        token_ids.append(int(encoded[0]))
+    return token_ids
+
+
 def _pythia_monitor_hidden_states_and_logits(tokenizer, model, examples):
     hidden_states = []
     black_box_logits = []
     labels = []
     kinds = []
-    black_box_token_ids = [
-        tokenizer.encode(token, add_special_tokens=False)[0]
-        for token in PYTHIA_MONITOR_BLACK_BOX_TOKENS
-    ]
+    black_box_token_ids = _monitor_black_box_token_ids(tokenizer)
     with t.inference_mode():
         for prompt, label, kind in examples:
             inputs = tokenizer(prompt, return_tensors="pt").to("cuda")
@@ -332,15 +402,34 @@ def _thresholded_monitor_scores(
     train_labels: t.Tensor,
     eval_hidden_states: t.Tensor,
 ) -> tuple[t.Tensor, t.Tensor, float]:
-    clean_center = train_hidden_states[train_labels.eq(0)].mean(dim=0)
-    failure_center = train_hidden_states[train_labels.eq(1)].mean(dim=0)
+    _require_finite_tensor("train_hidden_states", train_hidden_states)
+    _require_finite_tensor("eval_hidden_states", eval_hidden_states)
+    _require_binary_tensor("train_labels", train_labels)
+    if train_hidden_states.ndim != 2 or eval_hidden_states.ndim != 2:
+        raise ValueError("hidden states must be rank-2 tensors.")
+    labels = train_labels.flatten()
+    if labels.shape != (train_hidden_states.shape[0],):
+        raise ValueError("train_labels must match the train hidden-state batch.")
+    if train_hidden_states.shape[1] != eval_hidden_states.shape[1]:
+        raise ValueError("train and eval hidden states must have matching d_model.")
+    labels = labels.bool()
+    if labels.eq(0).sum() == 0 or labels.eq(1).sum() == 0:
+        raise ValueError("train_labels must contain both clean and failure examples.")
+
+    clean_center = train_hidden_states[labels.eq(0)].mean(dim=0)
+    failure_center = train_hidden_states[labels.eq(1)].mean(dim=0)
     direction = failure_center - clean_center
-    direction = direction / direction.norm()
+    direction_norm = direction.norm()
+    if not t.isfinite(direction_norm) or direction_norm.item() == 0:
+        raise ValueError("monitor direction must have a nonzero finite norm.")
+    direction = direction / direction_norm
     train_scores = train_hidden_states @ direction
     threshold = (
-        train_scores[train_labels.eq(0)].mean()
-        + train_scores[train_labels.eq(1)].mean()
+        train_scores[labels.eq(0)].mean()
+        + train_scores[labels.eq(1)].mean()
     ) / 2
+    if not t.isfinite(threshold):
+        raise ValueError("monitor threshold must be finite.")
     return eval_hidden_states @ direction - threshold, direction, float(threshold.item())
 
 
@@ -349,12 +438,28 @@ def _black_box_fail_predictions(
     train_labels: t.Tensor,
     eval_logits: t.Tensor,
 ) -> tuple[t.Tensor, t.Tensor, float]:
+    _require_finite_tensor("train_logits", train_logits)
+    _require_finite_tensor("eval_logits", eval_logits)
+    _require_binary_tensor("train_labels", train_labels)
+    if train_logits.ndim != 2 or eval_logits.ndim != 2:
+        raise ValueError("black-box proxy logits must be rank-2 tensors.")
+    if train_logits.shape[1] != 2 or eval_logits.shape[1] != 2:
+        raise ValueError("black-box proxy logits must have exactly two columns.")
+    labels = train_labels.flatten()
+    if labels.shape != (train_logits.shape[0],):
+        raise ValueError("train_labels must match the train logit batch.")
+    labels = labels.bool()
+    if labels.eq(0).sum() == 0 or labels.eq(1).sum() == 0:
+        raise ValueError("train_labels must contain both clean and failure examples.")
+
     train_delta = train_logits[:, 1] - train_logits[:, 0]
     eval_delta = eval_logits[:, 1] - eval_logits[:, 0]
     threshold = (
-        train_delta[train_labels.eq(0)].mean()
-        + train_delta[train_labels.eq(1)].mean()
+        train_delta[labels.eq(0)].mean()
+        + train_delta[labels.eq(1)].mean()
     ) / 2
+    if not t.isfinite(threshold):
+        raise ValueError("black-box proxy threshold must be finite.")
     return eval_delta > threshold, eval_delta, float(threshold.item())
 
 

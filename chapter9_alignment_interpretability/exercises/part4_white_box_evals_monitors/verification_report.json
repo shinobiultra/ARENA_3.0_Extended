@@ -90,9 +90,9 @@
       "train_prompt_count": 36
     }
   ],
-  "date_run": "2026-07-01T06:35:52+00:00",
+  "date_run": "2026-07-02T04:40:13+00:00",
   "evidence_level": "toy_monitor_contract_plus_pinned_pythia_white_box_monitor_preflight",
-  "git_commit": "3f277125",
+  "git_commit": "786d2d87",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-3",
   "known_failures": [],
@@ -225,7 +225,7 @@
       "monitor_auroc": 1.0,
       "monitor_score_margin": 10.251993179321289,
       "monitor_score_threshold": 14.246325492858887,
-      "peak_vram_gb": 0.34056854248046875,
+      "peak_vram_gb": 0.30931854248046875,
       "preflight_passed": true,
       "random_direction_monitor_auroc": 0.0875,
       "torch_version": "2.12.1+cu132",
@@ -340,10 +340,10 @@
   "ood_tests": {
     "declared": "required_where_applicable"
   },
-  "peak_vram_gb": 0.34056854248046875,
+  "peak_vram_gb": 0.30931854248046875,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "185d703011ff75bd362144c4e286ab40993535b9864f80cdcbe1f09a4b643dcc",
+    "combined_sha256": "bbea0bb719098bd04f11f8fb3a0b093b4c3bc4b122f2897d3436a40ee86f9b48",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -352,13 +352,13 @@
       },
       {
         "path": "chapter9_alignment_interpretability/exercises/part4_white_box_evals_monitors/9.4_White-box_Evals_and_Monitors_exercises.ipynb",
-        "sha256": "2a6790cdd3699a3d1914b76fd7a6fadbc40c54bbbaff017cca136d8f7031e03c",
-        "size_bytes": 9708
+        "sha256": "26a330b75e3419fdb4baee0d8505d0a77920bf305e58cc2699e7b2191755dee3",
+        "size_bytes": 37826
       },
       {
         "path": "chapter9_alignment_interpretability/exercises/part4_white_box_evals_monitors/9.4_White-box_Evals_and_Monitors_solutions.ipynb",
-        "sha256": "22a8ff923e7d47f763c8e524ad6575bb54200633c51db52062cf3b1c3bf6f8d7",
-        "size_bytes": 4686
+        "sha256": "576fca6f1c49d1926bf2af31624c82389a80bbce4ab4e895abb321f80c3f8959",
+        "size_bytes": 11196
       },
       {
         "path": "chapter9_alignment_interpretability/exercises/part4_white_box_evals_monitors/README.md",
@@ -387,13 +387,13 @@
       },
       {
         "path": "chapter9_alignment_interpretability/exercises/part4_white_box_evals_monitors/solutions.py",
-        "sha256": "55bc11ae8623f46d7c832a7e5b10e95b89e0a0f37693d3362b67f404f43bdf73",
-        "size_bytes": 20233
+        "sha256": "57e400b63c0deebd8b924844de973764a7c30cc1baedc2f982348095cd87420c",
+        "size_bytes": 24943
       },
       {
         "path": "chapter9_alignment_interpretability/exercises/part4_white_box_evals_monitors/tests.py",
-        "sha256": "9b39ebc1bda48a3e46fef9a4dc199d5eb60fdfc9c80d94ccedf43f2626fabec7",
-        "size_bytes": 13573
+        "sha256": "be5e93a8d23fb23dd0c339b9ecfdef197854373e5af0ceca166987dcb30caa85",
+        "size_bytes": 17360
       },
       {
         "path": "chapter9_alignment_interpretability/exercises/part4_white_box_evals_monitors/utils.py",
@@ -407,8 +407,8 @@
       },
       {
         "path": "chapter9_alignment_interpretability/instructions/pages/04_[9.4]_White_box_Evals_and_Monitors.md",
-        "sha256": "9a33ac043db344a3b2a45491dd1140a8aa1296cf8666ab5cf9a74cfda17dee3c",
-        "size_bytes": 16363
+        "sha256": "c2e6d39c18cbc4c27883bf94765007b67dbe5662c96a689d20dae8e2e5aef289",
+        "size_bytes": 26856
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
@@ -423,5 +423,5 @@
     "The real-model monitor path uses safe generated eval-record descriptions, hidden states, and next-token logits only. It performs no generated completions, includes no harmful procedural content, and does not claim a broad harmful-content or deployment monitor benchmark."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 1.003167
+  "wall_clock_seconds": 3.512805
 }
