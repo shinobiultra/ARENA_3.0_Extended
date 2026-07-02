@@ -71,11 +71,26 @@ class CoTConditionComparisonReport:
     posthoc_gap: float
 
 
+def _require_finite_tensor(name: str, tensor: t.Tensor) -> None:
+    if tensor.numel() == 0:
+        raise ValueError(f"{name} must be non-empty.")
+    if not t.isfinite(tensor.float()).all():
+        raise ValueError(f"{name} must contain only finite values.")
+
+
+def _require_finite_scalar(name: str, value: float) -> None:
+    value_tensor = t.tensor(value, dtype=t.float32)
+    if not t.isfinite(value_tensor):
+        raise ValueError(f"{name} must be finite.")
+
+
 def prediction_accuracy(logits: t.Tensor, target_token_ids: t.Tensor) -> float:
     """Return top-1 accuracy for a batch of logits."""
 
     if logits.shape[:-1] != target_token_ids.shape:
         raise ValueError("target_token_ids must match logits leading dimensions.")
+    _require_finite_tensor("logits", logits)
+    _require_finite_tensor("target_token_ids", target_token_ids)
     predictions = logits.argmax(dim=-1)
     return predictions.eq(target_token_ids).float().mean().item()
 
@@ -91,6 +106,10 @@ def pre_final_answer_probe_report(
 
     if hidden_answer_ids.shape != final_answer_ids.shape:
         raise ValueError("hidden and final answer ids must have matching shape.")
+    _require_finite_tensor("probe_logits", probe_logits)
+    _require_finite_tensor("hidden_answer_ids", hidden_answer_ids)
+    _require_finite_tensor("final_answer_ids", final_answer_ids)
+    _require_finite_scalar("min_hidden_accuracy", min_hidden_accuracy)
     hidden_accuracy = prediction_accuracy(probe_logits, hidden_answer_ids)
     predictions = probe_logits.argmax(dim=-1)
     final_agreement = predictions.eq(final_answer_ids).float().mean().item()
@@ -111,6 +130,8 @@ def hidden_answer_patching_report(
         raise ValueError("answer logits must be rank-1 tensors.")
     if original_answer_logits.shape != patched_answer_logits.shape:
         raise ValueError("answer logits must have matching shape.")
+    _require_finite_tensor("original_answer_logits", original_answer_logits)
+    _require_finite_tensor("patched_answer_logits", patched_answer_logits)
     original_answer = int(original_answer_logits.argmax().item())
     patched_answer = int(patched_answer_logits.argmax().item())
     return HiddenAnswerPatchingReport(
@@ -139,6 +160,9 @@ def cot_text_baseline_report(
 ) -> CoTTextBaselineReport:
     """Check whether a text-only CoT baseline misses unfaithful cases."""
 
+    _require_finite_tensor("detector_predictions", detector_predictions)
+    _require_finite_tensor("text_only_predictions", text_only_predictions)
+    _require_finite_tensor("unfaithful_labels", unfaithful_labels)
     detector_recall = _binary_recall(detector_predictions, unfaithful_labels)
     text_only_recall = _binary_recall(text_only_predictions, unfaithful_labels)
     return CoTTextBaselineReport(
@@ -157,6 +181,10 @@ def feature_detector_report(
 ) -> FeatureDetectorReport:
     """Compare a feature-level unfaithfulness detector against a baseline."""
 
+    _require_finite_tensor("feature_scores", feature_scores)
+    _require_finite_tensor("baseline_scores", baseline_scores)
+    _require_finite_tensor("unfaithful_labels", unfaithful_labels)
+    _require_finite_scalar("threshold", threshold)
     labels = unfaithful_labels.flatten().bool()
     feature_predictions = feature_scores.flatten().float() >= threshold
     baseline_predictions = baseline_scores.flatten().float() >= threshold
@@ -179,6 +207,8 @@ def cot_condition_comparison_report(
     required = {"no_cot", "faithful_cot", "biased_cot", "posthoc"}
     if set(condition_correct) != required:
         raise ValueError("condition_correct must include all CoT conditions.")
+    for condition, values in condition_correct.items():
+        _require_finite_tensor(condition, values)
     accuracies = {
         condition: values.float().mean().item()
         for condition, values in condition_correct.items()

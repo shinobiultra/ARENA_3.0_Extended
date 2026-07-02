@@ -95,9 +95,9 @@
       "unfaithful_case_count": 4
     }
   ],
-  "date_run": "2026-07-01T06:35:50+00:00",
+  "date_run": "2026-07-02T03:46:37+00:00",
   "evidence_level": "toy_cot_contract_plus_pinned_pythia_hidden_answer_preflight",
-  "git_commit": "3f277125",
+  "git_commit": "bc9310e8",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-3",
   "known_failures": [],
@@ -178,7 +178,7 @@
       "original_answer": 0,
       "patched_answer": 1,
       "patching_changed_output": true,
-      "peak_vram_gb": 0.33783864974975586,
+      "peak_vram_gb": 0.30658864974975586,
       "posthoc_gap": -0.5,
       "predicts_hidden_answer": true,
       "preflight_passed": true,
@@ -255,10 +255,10 @@
   "ood_tests": {
     "declared": "required_where_applicable"
   },
-  "peak_vram_gb": 0.33783864974975586,
+  "peak_vram_gb": 0.30658864974975586,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "530cc17b82be7032d4d4dc4e4ad721de3c88326d301b2aa7f5511d4d54084501",
+    "combined_sha256": "48a223a4463f6da04ea846aa2885890a5be7b970259ea606b8a885d2804b2ab5",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -267,13 +267,13 @@
       },
       {
         "path": "chapter9_alignment_interpretability/exercises/part2_cot_faithfulness/9.2_Chain_of_Thought_Faithfulness_exercises.ipynb",
-        "sha256": "d8aec50189a5e0a27dcff6cfc6f10712da123d882971fdfedff93c9d21cf3050",
-        "size_bytes": 10276
+        "sha256": "331a23b14ca9f71211b53fc69be6ae567ce1535f56be6b519c5bcf51c8117911",
+        "size_bytes": 24901
       },
       {
         "path": "chapter9_alignment_interpretability/exercises/part2_cot_faithfulness/9.2_Chain_of_Thought_Faithfulness_solutions.ipynb",
-        "sha256": "5f241c4873da2f1bc887bb528435f867aed0f4fb0d5d6d4afd128255fbbd47be",
-        "size_bytes": 4607
+        "sha256": "c829e35d9e8a17642a92bc75a980040d0dfae036e83d802db52dd86988513f35",
+        "size_bytes": 12054
       },
       {
         "path": "chapter9_alignment_interpretability/exercises/part2_cot_faithfulness/README.md",
@@ -302,13 +302,13 @@
       },
       {
         "path": "chapter9_alignment_interpretability/exercises/part2_cot_faithfulness/solutions.py",
-        "sha256": "6118f82b50abdcf614a7ed8fd8af7db25ca77e9657ca389cd32c77c994b6a20c",
-        "size_bytes": 19569
+        "sha256": "69416896faf8d6ad6bb81dcaa4cab6897663d391d5334dc188a7b181496f107e",
+        "size_bytes": 21122
       },
       {
         "path": "chapter9_alignment_interpretability/exercises/part2_cot_faithfulness/tests.py",
-        "sha256": "86c2cc7fcb98a5cf8ee2e90483000295d6e344329e040cad76c86a3cdf038d7a",
-        "size_bytes": 11970
+        "sha256": "3f8c44d7f13e255dc85c2070ecad393d1aedf6a77c8bdcb71993fdbd9225137c",
+        "size_bytes": 13998
       },
       {
         "path": "chapter9_alignment_interpretability/exercises/part2_cot_faithfulness/utils.py",
@@ -322,8 +322,8 @@
       },
       {
         "path": "chapter9_alignment_interpretability/instructions/pages/02_[9.2]_Chain_of_Thought_Faithfulness.md",
-        "sha256": "53be71eb5ea909fae0241e35809f6bd35b09d6463954e9e2149390497ed31b51",
-        "size_bytes": 22889
+        "sha256": "0c3b8b89e217427ec91df3528af9532c7554109f4b12ed6d8499e89ca98f5404",
+        "size_bytes": 32394
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
@@ -338,5 +338,5 @@
     "The real-model CoT-faithfulness path uses safe synthetic A/B prompts, hidden states, and answer-token logits only. It performs no generated completions, contains no harmful content, and does not claim results on arbitrary reasoning traces."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 0.937589
+  "wall_clock_seconds": 3.63212
 }

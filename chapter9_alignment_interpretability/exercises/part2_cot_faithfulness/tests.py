@@ -69,6 +69,12 @@ def test_prediction_accuracy_checks_top1_predictions(
         )
     else:
         raise AssertionError("prediction_accuracy should reject mismatched target shapes.")
+    try:
+        prediction_accuracy(t.tensor([[float("nan"), 0.0]]), t.tensor([0]))
+    except ValueError as exc:
+        assert "finite" in str(exc), "Non-finite logits should be rejected."
+    else:
+        raise AssertionError("prediction_accuracy should reject non-finite logits.")
     print("All tests in `test_prediction_accuracy_checks_top1_predictions` passed!")
 
 
@@ -103,6 +109,16 @@ def test_pre_final_answer_probe_report_predicts_hidden_answer(
     assert report.predicts_hidden_answer, (
         "The report should pass when hidden-answer accuracy clears the configured threshold."
     )
+    try:
+        pre_final_answer_probe_report(
+            t.empty(0, 2),
+            t.empty(0, dtype=t.long),
+            t.empty(0, dtype=t.long),
+        )
+    except ValueError as exc:
+        assert "non-empty" in str(exc), "Empty probe batches should be rejected."
+    else:
+        raise AssertionError("pre_final_answer_probe_report should reject empty batches.")
     print("All tests in `test_pre_final_answer_probe_report_predicts_hidden_answer` passed!")
 
 
@@ -123,6 +139,12 @@ def test_hidden_answer_patching_report_flags_answer_flip(
     assert report.changed_output, (
         "Patching should be marked causal only when the answer token changes."
     )
+    try:
+        hidden_answer_patching_report(t.tensor([float("inf"), 0.0]), t.tensor([0.0, 1.0]))
+    except ValueError as exc:
+        assert "finite" in str(exc), "Non-finite answer logits should be rejected."
+    else:
+        raise AssertionError("hidden_answer_patching_report should reject non-finite logits.")
     print("All tests in `test_hidden_answer_patching_report_flags_answer_flip` passed!")
 
 
@@ -147,6 +169,12 @@ def test_cot_text_baseline_report_keeps_recall_gap(
     assert report.text_only_misses_cases, (
         "The report should mark the text-only baseline as weaker than the detector."
     )
+    try:
+        cot_text_baseline_report(t.zeros(3), t.zeros(3), t.zeros(3))
+    except ValueError as exc:
+        assert "positive label" in str(exc), "Recall should reject an all-negative batch."
+    else:
+        raise AssertionError("cot_text_baseline_report should reject batches with no positives.")
     print("All tests in `test_cot_text_baseline_report_keeps_recall_gap` passed!")
 
 
@@ -179,6 +207,16 @@ def test_feature_detector_report_scores_thresholded_predictions(
     assert report.improves_detection, (
         "The feature detector should be accepted only if it beats the baseline."
     )
+    try:
+        feature_detector_report(
+            t.tensor([0.9, float("nan")]),
+            t.tensor([0.1, 0.2]),
+            t.tensor([1, 0], dtype=t.bool),
+        )
+    except ValueError as exc:
+        assert "finite" in str(exc), "Non-finite feature scores should be rejected."
+    else:
+        raise AssertionError("feature_detector_report should reject non-finite scores.")
     print("All tests in `test_feature_detector_report_scores_thresholded_predictions` passed!")
 
 
@@ -214,6 +252,13 @@ def test_cot_condition_comparison_report_tracks_gaps(
         )
     else:
         raise AssertionError("cot_condition_comparison_report should require all conditions.")
+    condition_correct["posthoc"] = t.tensor([float("nan")])
+    try:
+        cot_condition_comparison_report(condition_correct)
+    except ValueError as exc:
+        assert "finite" in str(exc), "Non-finite condition tensors should be rejected."
+    else:
+        raise AssertionError("cot_condition_comparison_report should reject non-finite tensors.")
     print("All tests in `test_cot_condition_comparison_report_tracks_gaps` passed!")
 
 

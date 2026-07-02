@@ -19,7 +19,8 @@ Autoencoders**, **[7.5] Predictive Concept Decoders**, **[8.1]
 Activation Patching Refresher**, **[8.2] Attribution Patching and
 EAP**, **[8.3] ACDC and Circuit Metrics**, **[8.4] Circuit
 Tracing with Attribution Graphs**, **[8.5] Sparse Feature
-Circuits**, and **[9.1] Refusal Directions and Safe Steering**.
+Circuits**, **[9.1] Refusal Directions and Safe Steering**,
+and **[9.2] Chain-of-Thought Faithfulness**.
 They now have ARENA-style learner pages, local
 diagrams, help/interpretation dropdowns, expected-output blocks, paired
 exercise/solution notebooks, CUDA-backed signature result tables, and explicit

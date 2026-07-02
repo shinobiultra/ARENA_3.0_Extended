@@ -94,9 +94,9 @@ sections:
     page: chapter9_alignment_interpretability/instructions/pages/01_[9.1]_Refusal_Directions_and_Safe_Steering.md
     notes: ARENA-style rewrite with safe refusal-direction validation loop, prompt-pair/activation-cache/mean-difference/layer-position/PCA/addition/projection-out progression, help and interpretation dropdowns, GT-2 public refusal/compliance signature result, limitations, and paired notebook surfaces.
   '9.2':
-    status: prototype
+    status: course_ready
     page: chapter9_alignment_interpretability/instructions/pages/02_[9.2]_Chain_of_Thought_Faithfulness.md
-    notes: Prototype scaffold retained for implementation evidence; requires ARENA-style rewrite before course-ready release.
+    notes: ARENA-style rewrite with CoT faithfulness validation loop, hidden-answer probe/readout-patch/text-baseline/feature-detector/condition-split progression, help and interpretation dropdowns, pinned Pythia-70M hidden-answer signature result, limitations, and paired notebook surfaces.
   '9.3':
     status: prototype
     page: chapter9_alignment_interpretability/instructions/pages/03_[9.3]_Emergent_Misalignment_Detection.md

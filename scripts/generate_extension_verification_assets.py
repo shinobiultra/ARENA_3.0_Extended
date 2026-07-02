@@ -566,9 +566,9 @@ NOTEBOOK_CONTRACT_EXPECTED_METRICS: dict[str, dict[str, Any]] = {
         "hidden_state_shape": [8, 512],
         "feature_detector_improves": True,
         "feature_detector_accuracy": 1.0,
-        "baseline_detector_accuracy": 0.5,
+        "baseline_detector_accuracy": 0.75,
         "detector_recall": 1.0,
-        "text_only_recall": 0.0,
+        "text_only_recall": 0.5,
         "text_only_misses_cases": True,
         "hidden_answer_accuracy": 1.0,
         "final_answer_agreement": 0.5,
@@ -1031,7 +1031,11 @@ REGISTRY_ROWS: list[dict[str, str]] = [
         "max_vram_gb": "8",
         "used_in_notebooks": "6.3;8.5;9.1;9.2;11.1",
         "gt_tier": "GT-2",
-        "notes": "Small real LM target matched to released Sparse Feature Circuits SAE artifacts, safe 9.1 category hidden-state preflight, and 11.1 weekday geometry preflight.",
+        "notes": (
+            "Small real LM target matched to released Sparse Feature Circuits SAE "
+            "artifacts, safe 9.1 category hidden-state preflight, 9.2 hidden-answer "
+            "CoT-faithfulness preflight, and 11.1 weekday geometry preflight."
+        ),
     },
     {
         "name": "Qwen2.5 0.5B Instruct",
