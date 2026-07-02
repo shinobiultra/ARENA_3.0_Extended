@@ -88,9 +88,9 @@
       ]
     }
   ],
-  "date_run": "2026-07-02T05:01:49+00:00",
+  "date_run": "2026-07-02T12:43:54+00:00",
   "evidence_level": "cuda_trained_activation_oracle_capstone_with_controls",
-  "git_commit": "1e0e8b1e",
+  "git_commit": "3a539d48",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-4",
   "known_failures": [],
@@ -443,5 +443,5 @@
     "This section trains on generated numeric latent-state activations only. It does not use unsafe prompts, gated weights, model completions, external APIs, or user data. The report explicitly scopes the claim to the generated benchmark."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 5.267403
+  "wall_clock_seconds": 3.59538
 }

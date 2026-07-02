@@ -64,9 +64,9 @@
       "target_hook": "blocks.0.hook_mlp_out"
     }
   ],
-  "date_run": "2026-07-01T10:39:12+00:00",
+  "date_run": "2026-07-02T12:42:53+00:00",
   "evidence_level": "toy_transcoder_contract_plus_pinned_transformerlens_mlp_feature_graph_preflight",
-  "git_commit": "91deb52a",
+  "git_commit": "3a539d48",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-0",
   "known_failures": [],
@@ -130,7 +130,7 @@
       "oracle_mlp_out_max_abs_error": 5.7220458984375e-06,
       "oracle_preserves_logit_diff": true,
       "oracle_replacement_kl": -2.075782035149132e-08,
-      "peak_vram_gb": 0.36870527267456055,
+      "peak_vram_gb": 0.39995527267456055,
       "preflight_passed": true,
       "preserves_logit_diff": true,
       "prompt_count": 16,
@@ -252,7 +252,7 @@
   "ood_tests": {
     "declared": "required_where_applicable"
   },
-  "peak_vram_gb": 0.36870527267456055,
+  "peak_vram_gb": 0.39995527267456055,
   "report_inputs": {
     "algorithm": "sha256",
     "combined_sha256": "6790947f6635c101bfdb315411b64131d158cf5ff4849ecbafc127e443f75a46",
@@ -335,5 +335,5 @@
     "The real-model path uses safe generic prompts and one small public TransformerLens checkpoint. It does not use unsafe prompts, gated weights, generated completions, or user data."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 9.123276
+  "wall_clock_seconds": 3.661252
 }

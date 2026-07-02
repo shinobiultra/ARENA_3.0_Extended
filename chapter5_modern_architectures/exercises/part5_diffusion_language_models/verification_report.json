@@ -92,9 +92,9 @@
       "vocab_size": 11
     }
   ],
-  "date_run": "2026-07-01T09:46:27+00:00",
+  "date_run": "2026-07-02T12:42:18+00:00",
   "evidence_level": "toy_diffusion_contract_plus_cuda_trained_conditional_diffusion_lm_and_diffusiongemma_readiness_preflight",
-  "git_commit": "a599d793",
+  "git_commit": "3a539d48",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-0",
   "known_failures": [],
@@ -509,5 +509,5 @@
     "The trained diffusion LM path uses generated integer-token copy-pair data only. DiffusionGemma readiness checks use public open-weight metadata and exact pinned revisions. The Google BF16 path is deferred for direct 24GB loading, while the NVIDIA NVFP4 claim is limited to the isolated vLLM proof artifact and does not install vLLM into the main torch 2.12/CUDA 13.2 uv environment."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 15.615987
+  "wall_clock_seconds": 8.955338
 }

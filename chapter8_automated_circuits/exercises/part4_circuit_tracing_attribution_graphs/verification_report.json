@@ -69,9 +69,9 @@
       "tokenizer": "NeelNanda/gpt-neox-tokenizer-digits"
     }
   ],
-  "date_run": "2026-07-01T14:46:57+00:00",
+  "date_run": "2026-07-02T12:43:25+00:00",
   "evidence_level": "toy_graph_contract_plus_pinned_transformerlens_eap_position_graph_preflight",
-  "git_commit": "ef925f18",
+  "git_commit": "3a539d48",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-1",
   "known_failures": [],
@@ -333,5 +333,5 @@
     "The real-model path uses safe generic prompts and reads logits and gradients from a small public TransformerLens checkpoint. It does not use unsafe prompts, gated weights, or generated completions."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 9.533645
+  "wall_clock_seconds": 2.988116
 }

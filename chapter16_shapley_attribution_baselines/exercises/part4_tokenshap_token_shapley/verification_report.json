@@ -73,9 +73,9 @@
       ]
     }
   ],
-  "date_run": "2026-07-02T07:58:22+00:00",
+  "date_run": "2026-07-02T12:45:02+00:00",
   "evidence_level": "tokenshap_contract_plus_cuda_trained_token_scorer_preflight",
-  "git_commit": "57f4e4af",
+  "git_commit": "3a539d48",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-0",
   "known_failures": [],
@@ -328,5 +328,5 @@
     "The real training path uses only a generated finite masked-token table for a safe four-token prompt and a shuffled-label negative control. It does not use unsafe prompts, user data, external APIs, adapters, gated weights, or large persistent artifacts."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 2.843478
+  "wall_clock_seconds": 2.157706
 }

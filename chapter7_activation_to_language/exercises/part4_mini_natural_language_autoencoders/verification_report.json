@@ -116,9 +116,9 @@
       "train_example_count": 12
     }
   ],
-  "date_run": "2026-07-01T11:55:29+00:00",
+  "date_run": "2026-07-02T12:43:07+00:00",
   "evidence_level": "toy_nla_contract_plus_live_trainable_transformerlens_phrase_bottleneck_preflight",
-  "git_commit": "83283293",
+  "git_commit": "3a539d48",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-3",
   "known_failures": [],
@@ -229,7 +229,7 @@
       "original_probe_accuracy": 1.0,
       "original_word_count": 64,
       "passes_ood": true,
-      "peak_vram_gb": 0.2618422508239746,
+      "peak_vram_gb": 0.2648811340332031,
       "phrase_count": 12,
       "phrase_vocabulary_size": 12,
       "positive_anchor_prompt": "The cat sat on the",
@@ -365,7 +365,7 @@
   "ood_tests": {
     "declared": "required_where_applicable"
   },
-  "peak_vram_gb": 0.2618422508239746,
+  "peak_vram_gb": 0.2648811340332031,
   "report_inputs": {
     "algorithm": "sha256",
     "combined_sha256": "61c98d9c67959c497f6a6213430db78762e751cf0dd143a27bd74caf38da5e7f",
@@ -448,5 +448,5 @@
     "The real-model path uses safe generic prompts and cached activations/logits from a small public TransformerLens checkpoint. It does not use unsafe prompts, gated weights, generated completions, adapter training, external API calls, or claims about arbitrary hidden thoughts."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 8.953938
+  "wall_clock_seconds": 2.144317
 }

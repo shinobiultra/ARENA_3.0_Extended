@@ -89,9 +89,9 @@
       "train_prompt_count": 36
     }
   ],
-  "date_run": "2026-07-02T04:23:21+00:00",
+  "date_run": "2026-07-02T12:43:49+00:00",
   "evidence_level": "toy_proxy_drift_contract_plus_pinned_pythia_hidden_state_preflight",
-  "git_commit": "a2c89bc6",
+  "git_commit": "3a539d48",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-3",
   "known_failures": [],
@@ -203,7 +203,7 @@
       "mitigation_neutral_delta_shift": 0.0,
       "mitigation_passes": true,
       "model_name": "EleutherAI/pythia-70m-deduped",
-      "peak_vram_gb": 0.3098287582397461,
+      "peak_vram_gb": 0.3410787582397461,
       "predicts_heldout_drift": true,
       "preflight_passed": true,
       "random_direction_accuracy": 0.375,
@@ -312,7 +312,7 @@
   "ood_tests": {
     "declared": "required_where_applicable"
   },
-  "peak_vram_gb": 0.3098287582397461,
+  "peak_vram_gb": 0.3410787582397461,
   "report_inputs": {
     "algorithm": "sha256",
     "combined_sha256": "4581cb3f46c622de24317892e5640893a1d57a2e1350dcf707f5d5911d74ff3c",
@@ -395,5 +395,5 @@
     "The real-model proxy-drift path uses safe generated behavior-policy descriptions, hidden states, and next-token logits only. It performs no generated completions, trains no adapters, includes no harmful procedural content, and does not claim to reproduce emergent misalignment."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 3.54579
+  "wall_clock_seconds": 0.969592
 }

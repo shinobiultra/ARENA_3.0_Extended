@@ -72,9 +72,9 @@
       "source": "generated_finite_table"
     }
   ],
-  "date_run": "2026-07-02T06:45:19+00:00",
+  "date_run": "2026-07-02T12:45:14+00:00",
   "evidence_level": "toy_trajectory_contract_plus_real_modular_addition_checkpoint_preflight",
-  "git_commit": "6fc31104",
+  "git_commit": "3a539d48",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-0",
   "known_failures": [],
@@ -445,5 +445,5 @@
     "The real training path uses only a generated finite modular-addition table and a random-label negative control. It does not use unsafe data, user data, adapters, gated weights, or large persistent artifacts."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 8.61116
+  "wall_clock_seconds": 5.567993
 }

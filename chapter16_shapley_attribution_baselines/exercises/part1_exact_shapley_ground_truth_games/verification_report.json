@@ -77,9 +77,9 @@
       "target_rule": "0.25 + 1.2*x0 - 0.7*x1 + 1.6*x2 + 0.9*x3 + 2.2*x0*x2 - 1.5*x1*x3"
     }
   ],
-  "date_run": "2026-07-02T07:08:40+00:00",
+  "date_run": "2026-07-02T12:44:55+00:00",
   "evidence_level": "exact_shapley_contract_plus_cuda_trained_neural_game_preflight",
-  "git_commit": "eb4fd8af",
+  "git_commit": "3a539d48",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-0",
   "known_failures": [],
@@ -314,5 +314,5 @@
     "The real training path uses only a generated finite binary feature table and a shuffled-label negative control. It does not use unsafe prompts, user data, external APIs, adapters, gated weights, or large persistent artifacts."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 2.60582
+  "wall_clock_seconds": 1.702794
 }

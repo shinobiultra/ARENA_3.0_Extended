@@ -99,9 +99,9 @@
       "source": "generated_prompt_pair"
     }
   ],
-  "date_run": "2026-07-02T06:29:02+00:00",
+  "date_run": "2026-07-02T12:44:45+00:00",
   "evidence_level": "toy_prompt_region_controls_plus_pinned_sd15_daam_token_ablation_quality_preflight",
-  "git_commit": "a9bb5365",
+  "git_commit": "3a539d48",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-1",
   "known_failures": [],
@@ -169,7 +169,7 @@
       "latent_direction_effect": true,
       "latent_observed_delta": 0.5999999940395355,
       "latent_random_delta": 0.04999999701976776,
-      "peak_vram_gb": 3.094951629638672,
+      "peak_vram_gb": 3.126201629638672,
       "region_mass": 0.6000000238418579,
       "region_selective": true,
       "sd15_attention_resolutions": [
@@ -295,7 +295,7 @@
       "sd15_min_target_region_fraction": 0.151092529296875,
       "sd15_min_white_noise_high_frequency_gap": 0.28182073310017586,
       "sd15_model_id": "stable-diffusion-v1-5/stable-diffusion-v1-5",
-      "sd15_peak_vram_gb": 3.094951629638672,
+      "sd15_peak_vram_gb": 3.126201629638672,
       "sd15_preflight": {
         "attention_resolutions": [
           8,
@@ -440,7 +440,7 @@
         "model_id": "stable-diffusion-v1-5/stable-diffusion-v1-5",
         "negative_prompt": "multiple objects, repeated pattern, tiled, grid, texture, text, letters, watermark, frame, border, shadow, clutter, photo, realistic, wood",
         "num_inference_steps": 20,
-        "peak_vram_gb": 3.094951629638672,
+        "peak_vram_gb": 3.126201629638672,
         "preflight_passed": true,
         "prompt_count": 2,
         "random_token_ablation_weaker": true,
@@ -476,7 +476,7 @@
       "sd_turbo_min_captured_cross_attention_map_count": 32,
       "sd_turbo_min_target_control_attention_gap": 0.03284493088722229,
       "sd_turbo_min_target_lift_over_mask_fraction": 0.029201865196228027,
-      "sd_turbo_peak_vram_gb": 3.0473484992980957,
+      "sd_turbo_peak_vram_gb": 3.0785984992980957,
       "sd_turbo_preflight": {
         "aligned": true,
         "attention_reports": [
@@ -578,7 +578,7 @@
         "min_target_lift_over_mask_fraction": 0.029201865196228027,
         "model_id": "stabilityai/sd-turbo",
         "num_inference_steps": 2,
-        "peak_vram_gb": 3.0473484992980957,
+        "peak_vram_gb": 3.0785984992980957,
         "preflight_passed": true,
         "prompt_count": 2,
         "revision": "b261bac6fd2cf515557d5d0707481eafa0485ec2",
@@ -679,7 +679,7 @@
   "ood_tests": {
     "declared": "required_where_applicable"
   },
-  "peak_vram_gb": 3.094951629638672,
+  "peak_vram_gb": 3.126201629638672,
   "report_inputs": {
     "algorithm": "sha256",
     "combined_sha256": "e133bc7dfc22625ad214f0c6f06b7b1cc49281fe5882001c2b7e67f02a9b1088",
@@ -772,5 +772,5 @@
     "The real-model paths use safe generated shape prompts only. The required SD1.5 path captures cross-attention maps for color/shape token localization over unrelated-token controls, compares target-token ablation against random/control-token ablation, checks simple generated image-quality statistics, and rejects white-noise images. SD-Turbo remains a supplemental fast preflight, not the acceptance fallback."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 15.078919
+  "wall_clock_seconds": 16.212125
 }

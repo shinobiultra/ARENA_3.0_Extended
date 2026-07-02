@@ -61,9 +61,9 @@
       "source": "generated_prompt_pair"
     }
   ],
-  "date_run": "2026-07-01T09:22:22+00:00",
+  "date_run": "2026-07-02T12:42:07+00:00",
   "evidence_level": "selective_scan_contract_plus_official_mamba_logits_generation_preflight",
-  "git_commit": "dc708ce2",
+  "git_commit": "3a539d48",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-1",
   "known_failures": [],
@@ -105,7 +105,7 @@
         8
       ],
       "official_mamba_generation_new_tokens": 4,
-      "official_mamba_generation_tokens_per_second": 19.803578797792408,
+      "official_mamba_generation_tokens_per_second": 4.47512143168267,
       "official_mamba_logits_generation_preflight_passed": true,
       "official_mamba_logits_shape": [
         2,
@@ -133,7 +133,7 @@
           1,
           8
         ],
-        "generation_tokens_per_second": 19.803578797792408,
+        "generation_tokens_per_second": 4.47512143168267,
         "logits_shape": [
           2,
           4,
@@ -293,5 +293,5 @@
     "The official Mamba path uses safe generic prompts and deterministic generation only. Full weight-level parity between the didactic tiny implementation and Mamba-130M-HF is not claimed."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 4.998877
+  "wall_clock_seconds": 3.216108
 }

@@ -78,9 +78,9 @@
       "tokenizer": "NeelNanda/gpt-neox-tokenizer-digits"
     }
   ],
-  "date_run": "2026-07-01T14:20:52+00:00",
+  "date_run": "2026-07-02T12:43:22+00:00",
   "evidence_level": "toy_circuit_metric_contract_plus_pinned_transformerlens_position_circuit_preflight",
-  "git_commit": "e017f7e8",
+  "git_commit": "3a539d48",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-1",
   "known_failures": [],
@@ -164,7 +164,7 @@
         0.0,
         1.0
       ],
-      "peak_vram_gb": 0.23518753051757812,
+      "peak_vram_gb": 0.2664375305175781,
       "preflight_passed": true,
       "preserved_fraction": 1.0,
       "random_baseline_margin": 6.27708625793457,
@@ -301,7 +301,7 @@
   "ood_tests": {
     "declared": "required_where_applicable"
   },
-  "peak_vram_gb": 0.23518753051757812,
+  "peak_vram_gb": 0.2664375305175781,
   "report_inputs": {
     "algorithm": "sha256",
     "combined_sha256": "c632b0c66c58e310bdcd73aaaf1c8a546649823dccd5b57f0bb34a576f3387a0",
@@ -389,5 +389,5 @@
     "The real-model path uses safe generic prompts and reads only next-token logits from a small public TransformerLens checkpoint. It does not use unsafe prompts, gated weights, or generated completions."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 9.338549
+  "wall_clock_seconds": 3.354706
 }

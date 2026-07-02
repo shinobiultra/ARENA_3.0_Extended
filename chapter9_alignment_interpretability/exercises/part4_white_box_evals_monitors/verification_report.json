@@ -90,9 +90,9 @@
       "train_prompt_count": 36
     }
   ],
-  "date_run": "2026-07-02T04:40:13+00:00",
+  "date_run": "2026-07-02T12:43:50+00:00",
   "evidence_level": "toy_monitor_contract_plus_pinned_pythia_white_box_monitor_preflight",
-  "git_commit": "786d2d87",
+  "git_commit": "3a539d48",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-3",
   "known_failures": [],
@@ -225,7 +225,7 @@
       "monitor_auroc": 1.0,
       "monitor_score_margin": 10.251993179321289,
       "monitor_score_threshold": 14.246325492858887,
-      "peak_vram_gb": 0.30931854248046875,
+      "peak_vram_gb": 0.34056854248046875,
       "preflight_passed": true,
       "random_direction_monitor_auroc": 0.0875,
       "torch_version": "2.12.1+cu132",
@@ -340,7 +340,7 @@
   "ood_tests": {
     "declared": "required_where_applicable"
   },
-  "peak_vram_gb": 0.30931854248046875,
+  "peak_vram_gb": 0.34056854248046875,
   "report_inputs": {
     "algorithm": "sha256",
     "combined_sha256": "bbea0bb719098bd04f11f8fb3a0b093b4c3bc4b122f2897d3436a40ee86f9b48",
@@ -423,5 +423,5 @@
     "The real-model monitor path uses safe generated eval-record descriptions, hidden states, and next-token logits only. It performs no generated completions, includes no harmful procedural content, and does not claim a broad harmful-content or deployment monitor benchmark."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 3.512805
+  "wall_clock_seconds": 0.986666
 }

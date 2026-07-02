@@ -52,9 +52,9 @@
       "source": "generated"
     }
   ],
-  "date_run": "2026-07-02T12:36:55+00:00",
+  "date_run": "2026-07-02T12:41:57+00:00",
   "evidence_level": "cuda_fake_result_diagnostic_controls_preflight",
-  "git_commit": "5fba65b2",
+  "git_commit": "3a539d48",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-0",
   "known_failures": [],
@@ -257,5 +257,5 @@
     "This section uses generated numeric tensors only. It does not use real model completions, unsafe prompts, gated weights, or user data."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 1.089271
+  "wall_clock_seconds": 1.038965
 }

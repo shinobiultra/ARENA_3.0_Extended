@@ -66,9 +66,9 @@
       "source": "torch.randn"
     }
   ],
-  "date_run": "2026-07-02T09:37:18+00:00",
+  "date_run": "2026-07-02T12:41:57+00:00",
   "evidence_level": "local_cuda132_pytorch_runtime_and_bf16_tensor_preflight",
-  "git_commit": "7922f09e",
+  "git_commit": "3a539d48",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-1",
   "known_failures": [],
@@ -138,7 +138,7 @@
           "mlp_out"
         ],
         "num_records": 2,
-        "root": "/tmp/tmpy3l9znsg",
+        "root": "/tmp/tmpoqa049vz",
         "total_values": 28
       },
       "budget": {
@@ -282,5 +282,5 @@
     "The runtime preflight allocates only deterministic synthetic tensors. No model weights, unsafe prompts, or user data are used in this check."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 1.279183
+  "wall_clock_seconds": 0.515172
 }

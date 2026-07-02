@@ -104,9 +104,9 @@
       "train_prompt_count": 32
     }
   ],
-  "date_run": "2026-07-01T15:43:14+00:00",
+  "date_run": "2026-07-02T12:43:47+00:00",
   "evidence_level": "safe_toy_contract_plus_gt2_public_refusal_direction_replication",
-  "git_commit": "cf3beafb",
+  "git_commit": "3a539d48",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-2",
   "known_failures": [],
@@ -220,7 +220,7 @@
       "gt2_refusal_direction_model_id": "Qwen/Qwen2.5-0.5B-Instruct",
       "gt2_refusal_direction_paper_equivalent_behavioral_completion_evidence": true,
       "gt2_refusal_direction_pc1_variance_fraction": 0.25265154242515564,
-      "gt2_refusal_direction_peak_vram_gb": 1.9031662940979004,
+      "gt2_refusal_direction_peak_vram_gb": 1.9344162940979004,
       "gt2_refusal_direction_position_sweep_final_beats_first": true,
       "gt2_refusal_direction_preflight": {
         "added_compliance_prompt_refusal_rate": 0.0625,
@@ -295,7 +295,7 @@
         "paper_equivalent_behavioral_completion_evidence": true,
         "pc1_direction_alignment": 0.2451234757900238,
         "pc1_variance_fraction": 0.25265154242515564,
-        "peak_vram_gb": 1.9031662940979004,
+        "peak_vram_gb": 1.9344162940979004,
         "position_sweep_final_accuracy": 1.0,
         "position_sweep_final_beats_first": true,
         "position_sweep_first_accuracy": 0.0,
@@ -420,7 +420,7 @@
         "intervention_scope": "prompt_final_token_prefill_only",
         "max_new_tokens": 16,
         "model_id": "Qwen/Qwen2.5-0.5B-Instruct",
-        "peak_vram_gb": 1.463796615600586,
+        "peak_vram_gb": 1.495046615600586,
         "projected_refusal_prompt_refusal_rate": 0.75,
         "projection_delta": 0.08333331346511841,
         "prompt_count": 24,
@@ -439,7 +439,7 @@
       "instruction_refusal_behavioral_completion_text_saved": false,
       "instruction_refusal_behavioral_generation_used": true,
       "instruction_refusal_behavioral_gt2_ready": false,
-      "instruction_refusal_behavioral_peak_vram_gb": 1.463796615600586,
+      "instruction_refusal_behavioral_peak_vram_gb": 1.495046615600586,
       "instruction_refusal_behavioral_projected_refusal_rate": 0.75,
       "instruction_refusal_behavioral_projection_delta": 0.08333331346511841,
       "instruction_refusal_behavioral_target_beats_random_addition": false,
@@ -447,7 +447,7 @@
       "instruction_refusal_generation_used": false,
       "instruction_refusal_intervention_preflight_passed": true,
       "instruction_refusal_model_id": "Qwen/Qwen2.5-0.5B-Instruct",
-      "instruction_refusal_peak_vram_gb": 1.8356037139892578,
+      "instruction_refusal_peak_vram_gb": 1.8668537139892578,
       "instruction_refusal_preflight": {
         "allowed_add_delta": 1.4752511978149414,
         "allowed_prompt_count": 12,
@@ -465,7 +465,7 @@
         "generation_used": false,
         "layer": 16,
         "model_id": "Qwen/Qwen2.5-0.5B-Instruct",
-        "peak_vram_gb": 1.8356037139892578,
+        "peak_vram_gb": 1.8668537139892578,
         "preflight_passed": true,
         "prompt_count": 24,
         "prompt_safety": "sanitized_meta_prompts_no_procedural_content",
@@ -492,14 +492,14 @@
       "instruction_refusal_target_beats_random_addition": true,
       "instruction_refusal_target_beats_random_projection": true,
       "label_shuffle_fails": true,
-      "peak_vram_gb": 1.9031662940979004,
+      "peak_vram_gb": 1.9344162940979004,
       "real_lm_category_generation_used": false,
       "real_lm_category_heldout_accuracy": 0.9375,
       "real_lm_category_heldout_margin": 4.329248428344727,
       "real_lm_category_label_shuffle_fails": true,
       "real_lm_category_min_template_accuracy": 0.875,
       "real_lm_category_min_template_margin": 2.021860122680664,
-      "real_lm_category_peak_vram_gb": 0.36212968826293945,
+      "real_lm_category_peak_vram_gb": 0.39337968826293945,
       "real_lm_category_preflight": {
         "claim_scope": "safe_real_lm_category_direction_preflight_not_instruction_refusal_replication",
         "cuda_available": true,
@@ -515,7 +515,7 @@
         "min_template_accuracy": 0.875,
         "min_template_margin": 2.021860122680664,
         "model_id": "EleutherAI/pythia-70m-deduped",
-        "peak_vram_gb": 0.36212968826293945,
+        "peak_vram_gb": 0.39337968826293945,
         "preflight_passed": true,
         "prompt_safety": "sanitized_meta_prompts_no_procedural_content",
         "prompt_template_family_count": 3,
@@ -643,7 +643,7 @@
   "ood_tests": {
     "declared": "required_where_applicable"
   },
-  "peak_vram_gb": 1.9031662940979004,
+  "peak_vram_gb": 1.9344162940979004,
   "report_inputs": {
     "algorithm": "sha256",
     "combined_sha256": "712baf86ec53b30769a2f61f7a31f754aa01e24143b30fc6345baa4ecd07cada",
@@ -731,5 +731,5 @@
     "The real-model refusal paths use sanitized category descriptions, hidden states or next-token logit scores, fixed random-direction controls, and aggregate metrics without harmful procedural completions. SAE-feature comparisons are not claimed by this local preflight."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 7.864483
+  "wall_clock_seconds": 6.173105
 }

@@ -138,9 +138,9 @@
       "train_pcd_row_count": 48
     }
   ],
-  "date_run": "2026-07-01T12:16:54+00:00",
+  "date_run": "2026-07-02T12:43:11+00:00",
   "evidence_level": "toy_pcd_contract_plus_pinned_transformerlens_trained_sparse_concept_decoder_preflight",
-  "git_commit": "3aec7066",
+  "git_commit": "3a539d48",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-3",
   "known_failures": [],
@@ -257,7 +257,7 @@
       "pcd_row_count": 32,
       "pcd_seed_count": 3,
       "pcd_seed_min_accuracy": 1.0,
-      "peak_vram_gb": 0.30846214294433594,
+      "peak_vram_gb": 0.33971214294433594,
       "positive_anchor_prompt": "The cat sat on the",
       "positive_token": " floor",
       "preflight_passed": true,
@@ -446,7 +446,7 @@
   "ood_tests": {
     "declared": "required_where_applicable"
   },
-  "peak_vram_gb": 0.30846214294433594,
+  "peak_vram_gb": 0.33971214294433594,
   "report_inputs": {
     "algorithm": "sha256",
     "combined_sha256": "e27d86d627bd7e4acc43a9c7c926ca2ccc567b044edd27f7ad1076783ee2f9db",
@@ -529,5 +529,5 @@
     "The real-model path uses safe generic prompts and cached activations/logits from a small public TransformerLens checkpoint. It does not use unsafe prompts, gated weights, generated completions, adapter training, external API calls, or full Activation Oracle comparisons."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 6.786952
+  "wall_clock_seconds": 3.803255
 }
