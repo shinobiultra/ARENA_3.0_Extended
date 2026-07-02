@@ -3,6 +3,7 @@
 
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 import torch as t
@@ -61,7 +62,12 @@ def hf_parity_smoke_test() -> bool:
     custom_logits = reference_logits + 1e-6 * t.randn_like(reference_logits)
     report = compare_logits(custom_logits, reference_logits, k=5)
     print(report)
-    return report.passed(max_abs_diff=1e-4, mse=1e-9, kl_divergence=1e-9, topk_agreement=1.0)
+    return report.passed(
+        max_abs_diff=1e-4,
+        mse=1e-9,
+        kl_divergence=1e-9,
+        topk_agreement=1.0,
+    )
 
 
 def generation_parity_smoke_test() -> bool:
@@ -120,11 +126,14 @@ def run_smoke_test(cpu: bool = True) -> dict:
 
     _ = cpu
     budget = estimate_gemma_1b_smoke_budget(context_length=128)
+    with tempfile.TemporaryDirectory() as tmpdir:
+        activation_store = activation_store_smoke_test(Path(tmpdir))
     return {
         "environment": run_environment_check(required_vram_gb=budget.total_gb).as_dict(),
         "budget": budget.as_dict(),
         "hf_parity_passed": hf_parity_smoke_test(),
         "generation_parity_passed": generation_parity_smoke_test(),
+        "activation_store": activation_store,
     }
 
 
@@ -134,6 +143,8 @@ def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
     report = get_environment_report()
     budget = estimate_gemma_1b_smoke_budget()
     package_check = uv_pip_check_report()
+    with tempfile.TemporaryDirectory() as tmpdir:
+        activation_store = activation_store_smoke_test(Path(tmpdir))
     if not report.cuda_available:
         return {
             "cuda_available": False,
@@ -152,6 +163,8 @@ def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
             "uv_pip_check_passed": package_check["passed"],
             "uv_pip_check_returncode": package_check["returncode"],
             "uv_pip_check_output": package_check["output"],
+            "activation_store_num_records": activation_store["num_records"],
+            "activation_store_names": activation_store["names"],
             "warnings": report.warnings(budget.total_gb),
         }
 
@@ -195,6 +208,8 @@ def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
         "uv_pip_check_passed": package_check["passed"],
         "uv_pip_check_returncode": package_check["returncode"],
         "uv_pip_check_output": package_check["output"],
+        "activation_store_num_records": activation_store["num_records"],
+        "activation_store_names": activation_store["names"],
         "warnings": report.warnings(budget.total_gb),
     }
 

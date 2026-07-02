@@ -97,7 +97,8 @@ Coming soon!
 
 This fork is being rewritten into a local-first frontier-model extension while
 keeping the original ARENA structure intact. The current PR contains a large
-prototype implementation surface plus thirty-nine polished ARENA-style sections:
+prototype implementation surface plus forty polished ARENA-style sections:
+[1.6 Local Frontier ML Infrastructure](chapter1_transformer_interp/instructions/pages/40_%5B1.6%5D_Local_Frontier_ML_Infrastructure.md),
 [5.1 Gemma from Scratch](chapter5_modern_architectures/instructions/pages/01_%5B5.1%5D_Gemma_from_Scratch.md),
 [5.2 Gemma Scope and Feature Steering](chapter5_modern_architectures/instructions/pages/02_%5B5.2%5D_Gemma_Scope_and_Feature_Steering.md),
 [5.3 Mamba from Scratch](chapter5_modern_architectures/instructions/pages/03_%5B5.3%5D_Mamba_from_Scratch.md),
@@ -137,13 +138,13 @@ prototype implementation surface plus thirty-nine polished ARENA-style sections:
 [16.7 Data Shapley in One Training Run](chapter16_shapley_attribution_baselines/instructions/pages/07_%5B16.7%5D_Data_Shapley_in_One_Training_Run.md),
 [16.8 Do SHAPley and Mechanistic Interpretability Agree?](chapter16_shapley_attribution_baselines/instructions/pages/08_%5B16.8%5D_Do_SHAPley_and_Mechanistic_Interpretability_Agree.md),
 and [17.1 Checkpoint Archaeology and Mechanism Emergence](chapter17_training_dynamics/instructions/pages/01_%5B17.1%5D_Checkpoint_Archaeology_and_Mechanism_Emergence.md).
-The remaining non-course-ready extension pages are [0.6] and [1.6]; they are
-tracked as prototype scaffolds until they are rewritten with original-ARENA
-pacing, diagrams, help/interpretation dropdowns, visible signature results, and
+The remaining non-course-ready extension page is [0.6]; it is tracked as a
+prototype scaffold until it is rewritten with original-ARENA pacing, diagrams,
+help/interpretation dropdowns, visible signature results, and
 notebook surfaces. See
 [ARENA style rewrite status](docs/arena_style_rewrite_status.yml).
 
-The first added fundamentals section is [0.6 How to Know When an Interpretability Result Is Fake](chapter0_fundamentals/instructions/pages/06_%5B0.6%5D_How_to_Know_When_an_Interpretability_Result_Is_Fake.md), a GT-0 skepticism lab for leakage, cherry-picking, probe overfitting, and random-direction controls. [1.6 Local Frontier ML Infrastructure](chapter1_transformer_interp/instructions/pages/40_%5B1.6%5D_Local_Frontier_ML_Infrastructure.md) introduces the reusable verification harness for later Gemma, Mamba, diffusion, SAE/transcoder, JEPA, world-model, attribution, and alignment-interpretability notebooks.
+The first added fundamentals section is [0.6 How to Know When an Interpretability Result Is Fake](chapter0_fundamentals/instructions/pages/06_%5B0.6%5D_How_to_Know_When_an_Interpretability_Result_Is_Fake.md), a GT-0 skepticism lab for leakage, cherry-picking, probe overfitting, and random-direction controls. Polished [1.6 Local Frontier ML Infrastructure](chapter1_transformer_interp/instructions/pages/40_%5B1.6%5D_Local_Frontier_ML_Infrastructure.md) introduces the reusable verification harness for later Gemma, Mamba, diffusion, SAE/transcoder, JEPA, world-model, attribution, and alignment-interpretability notebooks with environment, memory, parity, activation-store, and CUDA-runtime controls.
 
 Original ARENA is pinned at `f9f034bdb5b8748f44e8b4533b5c5bea68dc8bc0` and checked by [Original ARENA preservation contract](docs/original_preservation_contract.md). The upstream-style dependencies are preserved in `requirements-original.txt`; the extension default is the uv-locked Python 3.14 + PyTorch CUDA 13.2 stack in `pyproject.toml` / `uv.lock`, mirrored by `requirements.txt`; the old Chapter 2 JAX/Brax/EnvPool stack is isolated in `requirements-legacy-rl.txt`.
 

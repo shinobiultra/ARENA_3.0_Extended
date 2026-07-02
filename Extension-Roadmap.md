@@ -10,10 +10,10 @@ where useful for provenance; the current release numbering is the one in
 `docs/arena_style_rewrite_status.yml` and the chapter `instructions/pages`
 paths.
 
-The current polished sections are **[5.1] Gemma from Scratch**, **[5.2]
-Gemma Scope and Feature Steering**, **[5.3] Mamba from Scratch**, **[5.4]
-Mamba State Tracking**, **[5.5] Toy Discrete Diffusion Language Models and
-Local DiffusionGemma Proof**, **[5.6] Embedding Retrieval and
+The current polished sections are **[1.6] Local Frontier ML Infrastructure**,
+**[5.1] Gemma from Scratch**, **[5.2] Gemma Scope and Feature Steering**,
+**[5.3] Mamba from Scratch**, **[5.4] Mamba State Tracking**, **[5.5] Toy
+Discrete Diffusion Language Models and Local DiffusionGemma Proof**, **[5.6] Embedding Retrieval and
 Function-Calling Controls**, **[6.1] SAE Variants**, **[6.2] Gemma
 Scope Deep Dive**, **[6.3] Transcoders and Attribution Graphs**,
 **[6.4] Crosscoders and Model Diffing**, **[7.1] Logit Lens,
@@ -42,9 +42,9 @@ They now have ARENA-style learner pages, local
 diagrams, help/interpretation dropdowns, expected-output blocks, paired
 exercise/solution notebooks, CUDA-backed signature result tables, and explicit
 claim boundaries.
-The remaining non-`course_ready` extension sections are **[0.6]** and
-**[1.6]**: useful implementation and verification evidence, but still requiring
-the original-ARENA rewrite pass described in `guidance_2-0.md`.
+The remaining non-`course_ready` extension section is **[0.6]**: useful
+implementation and verification evidence, but still requiring the original-ARENA
+rewrite pass described in `guidance_2-0.md`.
 
 The extension goal is a local-first “ARENA Frontier Lab” rather than a pile of
 topic demos. It should keep the existing ARENA transformer/mech-interp spine

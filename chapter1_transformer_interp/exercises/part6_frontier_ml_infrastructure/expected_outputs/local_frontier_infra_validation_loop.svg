@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="340" viewBox="0 0 920 340" role="img" aria-labelledby="title desc">
+  <title id="title">Local frontier infrastructure validation loop</title>
+  <desc id="desc">A validation loop for local ARENA extension notebooks: environment, memory estimate, parity, activation store, CUDA report.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#30343f"/>
+    </marker>
+  </defs>
+  <rect width="920" height="340" fill="#f8fafc"/>
+  <text x="38" y="46" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700" fill="#172033">Keep frontier notebooks honest on one local GPU</text>
+  <text x="38" y="76" font-family="Inter, Arial, sans-serif" font-size="14" fill="#4c566a">Each later section should separate estimates from measured CUDA evidence and record exact environment metadata.</text>
+  <g font-family="Inter, Arial, sans-serif">
+    <rect x="48" y="122" width="132" height="92" rx="8" fill="#fff" stroke="#2f80ed" stroke-width="2"/>
+    <text x="72" y="153" font-size="15" font-weight="700" fill="#172033">Environment</text>
+    <text x="72" y="178" font-size="13" fill="#566070">Python, torch</text>
+    <text x="72" y="197" font-size="13" fill="#566070">CUDA, GPU</text>
+    <rect x="224" y="122" width="132" height="92" rx="8" fill="#fff" stroke="#00a676" stroke-width="2"/>
+    <text x="250" y="153" font-size="15" font-weight="700" fill="#172033">Estimate</text>
+    <text x="250" y="178" font-size="13" fill="#566070">params, KV</text>
+    <text x="250" y="197" font-size="13" fill="#566070">activations</text>
+    <rect x="400" y="122" width="132" height="92" rx="8" fill="#fff" stroke="#f2994a" stroke-width="2"/>
+    <text x="428" y="153" font-size="15" font-weight="700" fill="#172033">Parity</text>
+    <text x="428" y="178" font-size="13" fill="#566070">logits, tokens</text>
+    <text x="428" y="197" font-size="13" fill="#566070">drift control</text>
+    <rect x="576" y="122" width="132" height="92" rx="8" fill="#fff" stroke="#9b51e0" stroke-width="2"/>
+    <text x="602" y="153" font-size="15" font-weight="700" fill="#172033">Artifacts</text>
+    <text x="602" y="178" font-size="13" fill="#566070">safetensors</text>
+    <text x="602" y="197" font-size="13" fill="#566070">metadata index</text>
+    <rect x="752" y="122" width="132" height="92" rx="8" fill="#fff" stroke="#eb5757" stroke-width="2"/>
+    <text x="782" y="153" font-size="15" font-weight="700" fill="#172033">CUDA gate</text>
+    <text x="782" y="178" font-size="13" fill="#566070">BF16 matmul</text>
+    <text x="782" y="197" font-size="13" fill="#566070">peak VRAM</text>
+  </g>
+  <path d="M184 168 H214" stroke="#30343f" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M360 168 H390" stroke="#30343f" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M536 168 H566" stroke="#30343f" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M712 168 H742" stroke="#30343f" stroke-width="2" marker-end="url(#arrow)"/>
+  <rect x="178" y="258" width="564" height="48" rx="8" fill="#172033"/>
+  <text x="206" y="288" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff">Accepted claim: local uv/CUDA infrastructure works; not a model-quality benchmark.</text>
+</svg>

@@ -6,9 +6,9 @@ sections:
     page: chapter0_fundamentals/instructions/pages/06_[0.6]_How_to_Know_When_an_Interpretability_Result_Is_Fake.md
     notes: Prototype scaffold retained for implementation evidence; requires ARENA-style rewrite before course-ready release.
   '1.6':
-    status: prototype
+    status: course_ready
     page: chapter1_transformer_interp/instructions/pages/40_[1.6]_Local_Frontier_ML_Infrastructure.md
-    notes: Prototype scaffold retained for implementation evidence; requires ARENA-style rewrite before course-ready release.
+    notes: ARENA-style local infrastructure lesson with validation-loop and signature-result diagrams, environment metadata, memory estimates, logit/generation parity, activation-store roundtrip evidence, drift and oversized-budget negative controls, paired notebooks, limitations, and scoped CUDA 13.2 BF16 runtime evidence.
   '5.1':
     status: course_ready
     page: chapter5_modern_architectures/instructions/pages/01_[5.1]_Gemma_from_Scratch.md
