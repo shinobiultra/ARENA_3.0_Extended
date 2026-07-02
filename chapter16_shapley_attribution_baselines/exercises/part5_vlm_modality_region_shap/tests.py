@@ -221,6 +221,21 @@ def test_committed_gpu_report_records_real_clip_controls():
     assert gpu["model_id"] == "openai/clip-vit-base-patch32", (
         "The report should identify the pinned CLIP checkpoint used for real logits."
     )
+    assert gpu["revision"] == "3d74acf9a28c67741b2f4f2ea7635f0aaf6f0268", (
+        "The report should pin the CLIP revision used for the real-logit preflight."
+    )
+    assert gpu["claim_scope"] == "pinned_real_clip_rendered_vlm_shap_preflight", (
+        "The report should scope claims to deterministic rendered-image CLIP coalitions."
+    )
+    assert gpu["modality_satisfies_efficiency"], (
+        "The real CLIP modality Shapley values should satisfy efficiency."
+    )
+    assert gpu["region_names"] == ["object", "background", "ocr_text"], (
+        "The region report should keep object/background/OCR names aligned with values."
+    )
+    assert gpu["region_satisfies_efficiency"], (
+        "The real CLIP region Shapley values should satisfy efficiency."
+    )
     assert gpu["modality_synergy"] >= 2.0, (
         "Real CLIP modality coalitions should clear the configured synergy threshold."
     )
@@ -229,6 +244,9 @@ def test_committed_gpu_report_records_real_clip_controls():
     )
     assert gpu["target_distractor_margin"] >= 2.0, (
         "The rendered red-square image should score the target caption above the distractor."
+    )
+    assert gpu["peak_vram_gb"] < 1.0 and gpu["within_vram_budget"], (
+        "The pinned CLIP rendered-control preflight should stay inside the 24GB budget."
     )
     print("All tests in `test_committed_gpu_report_records_real_clip_controls` passed!")
 

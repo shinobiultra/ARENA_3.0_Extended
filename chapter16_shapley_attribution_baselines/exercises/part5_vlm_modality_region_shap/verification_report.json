@@ -59,9 +59,9 @@
       ]
     }
   ],
-  "date_run": "2026-07-01T06:36:52+00:00",
+  "date_run": "2026-07-02T08:09:36+00:00",
   "evidence_level": "vlm_shap_contract_plus_pinned_clip_rendered_shape_preflight",
-  "git_commit": "3f277125",
+  "git_commit": "e75a75bd",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-0",
   "known_failures": [],
@@ -118,7 +118,7 @@
       "model_id": "openai/clip-vit-base-patch32",
       "object_margin": 1.380671501159668,
       "object_value": 5.606516202290853,
-      "peak_vram_gb": 0.6518421173095703,
+      "peak_vram_gb": 0.6205921173095703,
       "preflight_passed": true,
       "region_names": [
         "object",
@@ -195,10 +195,10 @@
   "ood_tests": {
     "declared": "required_where_applicable"
   },
-  "peak_vram_gb": 0.6518421173095703,
+  "peak_vram_gb": 0.6205921173095703,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "389c6e4b951fa1ff9cd5e54f7b482b2187ab2aa156845516d54e83d899c165fd",
+    "combined_sha256": "15dd347b56cb54db410188ad60f9b70f31124468f7a2a977c9951bbb439f3d46",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -207,13 +207,13 @@
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part5_vlm_modality_region_shap/16.5_VLM_Modality_and_Region_SHAP_exercises.ipynb",
-        "sha256": "1ea94eda3888886c9085a6d3cbd94f9b9b28f01636ead9bad97473be284c010e",
-        "size_bytes": 9954
+        "sha256": "4b420f44539c819dc1d6b15581486f4ef884abfbf13315ac17e8a151cd53c22b",
+        "size_bytes": 20273
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part5_vlm_modality_region_shap/16.5_VLM_Modality_and_Region_SHAP_solutions.ipynb",
-        "sha256": "73ef824192de3323ff914008e32dda3004709f14bafba85b3ad1f93957a6a1b8",
-        "size_bytes": 3342
+        "sha256": "13da0afdf04792b0d63e01bd72f4195447a0f7482b86fbff3451e844244610f6",
+        "size_bytes": 28009
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part5_vlm_modality_region_shap/README.md",
@@ -247,8 +247,8 @@
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part5_vlm_modality_region_shap/tests.py",
-        "sha256": "3a7cac4832df180761a47f105d93c2e86750ad714e3605ab0e93816e6d71aae2",
-        "size_bytes": 10419
+        "sha256": "2d3bd648f6b37c5bbd4df15c37c6cad013a49305808b2712af41934679bda6d3",
+        "size_bytes": 11359
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part5_vlm_modality_region_shap/utils.py",
@@ -262,8 +262,8 @@
       },
       {
         "path": "chapter16_shapley_attribution_baselines/instructions/pages/05_[16.5]_VLM_Modality_and_Region_SHAP.md",
-        "sha256": "f6d1ff037187150d980353ef98b2ddf19a78c2de47a1c01232d5ab990507dbef",
-        "size_bytes": 19042
+        "sha256": "7449ebb206f0d3508715ba15c615020a102db94f774fb4fddac8f16001bd9f2a",
+        "size_bytes": 16566
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
@@ -278,5 +278,5 @@
     "The real CLIP path uses generated safe rendered shape images and safe shape captions only. It does not use unsafe prompts, user images, external APIs, adapters, gated weights, or persistent real-image data."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 0.824567
+  "wall_clock_seconds": 5.176552
 }
