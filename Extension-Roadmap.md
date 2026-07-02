@@ -28,7 +28,8 @@ Circuits**, **[9.1] Refusal Directions and Safe Steering**,
 Misalignment Detection**, **[9.4] White-box Evals and Monitors**,
 **[10.1] Capstone Research Sprint**, **[11.1] PCA, SVD,
 and Geometry Controls**, **[12.1] CLIP, SigLIP, and VLM
-Controls**, and **[15.1] LoRA, DoRA, and Adapter Controls**.
+Controls**, **[13.1] Diffusion and Image-Generation Controls**,
+and **[15.1] LoRA, DoRA, and Adapter Controls**.
 They now have ARENA-style learner pages, local
 diagrams, help/interpretation dropdowns, expected-output blocks, paired
 exercise/solution notebooks, CUDA-backed signature result tables, and explicit

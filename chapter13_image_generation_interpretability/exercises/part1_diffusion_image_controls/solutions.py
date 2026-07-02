@@ -726,8 +726,8 @@ def sd15_daam_token_ablation_experiment(max_vram_gb: float = 24.0) -> dict:
     logits = output.logits_per_image.detach().float().cpu()
     clip_report = contrastive_alignment_report(
         logits,
-        min_accuracy=0.5,
-        min_positive_margin=-5.0,
+        min_accuracy=1.0,
+        min_positive_margin=2.0,
     )
     t.cuda.synchronize()
     peak_vram_gb = t.cuda.max_memory_allocated() / 1024**3
@@ -796,7 +796,9 @@ def sd15_daam_token_ablation_experiment(max_vram_gb: float = 24.0) -> dict:
         "peak_vram_gb": peak_vram_gb,
         "within_vram_budget": peak_vram_gb <= max_vram_gb,
         "preflight_passed": (
-            strict_report.sd15_strict_experiment_passed and peak_vram_gb <= max_vram_gb
+            strict_report.sd15_strict_experiment_passed
+            and clip_report.aligned
+            and peak_vram_gb <= max_vram_gb
         ),
     }
 

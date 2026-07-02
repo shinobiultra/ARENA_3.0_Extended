@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="420" viewBox="0 0 920 420" role="img" aria-labelledby="title desc">
+  <title id="title">Diffusion image controls signature result</title>
+  <desc id="desc">A compact summary of the expected SD1.5 CUDA verification metrics.</desc>
+  <defs>
+    <style>
+      .bg { fill: #fbfbfd; }
+      .card { fill: #ffffff; stroke: #cad2df; stroke-width: 1.4; rx: 8; }
+      .pass { fill: #e9f8ef; stroke: #57a773; stroke-width: 1.4; rx: 8; }
+      .warn { fill: #fff7ed; stroke: #d97706; stroke-width: 1.4; rx: 8; }
+      .title { font: 700 18px Inter, Arial, sans-serif; fill: #111827; }
+      .label { font: 700 14px Inter, Arial, sans-serif; fill: #1f2937; }
+      .text { font: 13px Inter, Arial, sans-serif; fill: #374151; }
+      .metric { font: 700 26px Inter, Arial, sans-serif; fill: #0f172a; }
+      .tiny { font: 12px Inter, Arial, sans-serif; fill: #4b5563; }
+      .barBg { fill: #edf0f5; rx: 4; }
+      .bar { fill: #3b82f6; rx: 4; }
+      .bar2 { fill: #10b981; rx: 4; }
+      .bar3 { fill: #f59e0b; rx: 4; }
+    </style>
+  </defs>
+  <rect class="bg" width="920" height="420"/>
+  <text x="34" y="38" class="title">Signature result: pinned SD1.5 safe-shape controls</text>
+  <text x="34" y="64" class="text">The result is useful because the visualization, causal ablation, image quality, white-noise control, and CLIP retrieval all agree.</text>
+
+  <rect class="pass" x="34" y="92" width="198" height="102"/>
+  <text x="54" y="122" class="label">CLIP retrieval</text>
+  <text x="54" y="156" class="metric">1.0 / 1.0</text>
+  <text x="54" y="178" class="tiny">image-to-text and text-to-image</text>
+
+  <rect class="card" x="256" y="92" width="198" height="102"/>
+  <text x="276" y="122" class="label">Positive margin</text>
+  <text x="276" y="156" class="metric">5.90</text>
+  <text x="276" y="178" class="tiny">mean paired CLIP gap</text>
+
+  <rect class="card" x="478" y="92" width="198" height="102"/>
+  <text x="498" y="122" class="label">Target attention gap</text>
+  <text x="498" y="156" class="metric">0.0147</text>
+  <text x="498" y="178" class="tiny">target token over control token</text>
+
+  <rect class="card" x="700" y="92" width="186" height="102"/>
+  <text x="720" y="122" class="label">Peak VRAM</text>
+  <text x="720" y="156" class="metric">3.13 GB</text>
+  <text x="720" y="178" class="tiny">under 24 GB budget</text>
+
+  <rect class="card" x="34" y="228" width="408" height="128"/>
+  <text x="54" y="258" class="label">Causal token ablation</text>
+  <rect class="barBg" x="54" y="284" width="300" height="14"/>
+  <rect class="bar2" x="54" y="284" width="226" height="14"/>
+  <text x="366" y="297" class="tiny">target drop 0.1507</text>
+  <rect class="barBg" x="54" y="318" width="300" height="14"/>
+  <rect class="bar3" x="54" y="318" width="30" height="14"/>
+  <text x="366" y="331" class="tiny">random/control weaker</text>
+
+  <rect class="card" x="478" y="228" width="408" height="128"/>
+  <text x="498" y="258" class="label">Image quality and noise rejection</text>
+  <rect class="barBg" x="498" y="284" width="300" height="14"/>
+  <rect class="bar" x="498" y="284" width="132" height="14"/>
+  <text x="810" y="297" class="tiny">max HF 0.0525</text>
+  <rect class="barBg" x="498" y="318" width="300" height="14"/>
+  <rect class="bar3" x="498" y="318" width="282" height="14"/>
+  <text x="810" y="331" class="tiny">noise gap 0.2818</text>
+
+  <rect class="warn" x="34" y="376" width="852" height="26"/>
+  <text x="50" y="394" class="tiny">Scope: these numbers support the bounded red-square / blue-circle SD1.5 control claim, not broad diffusion interpretability.</text>
+</svg>
