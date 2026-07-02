@@ -158,9 +158,9 @@ sections:
     page: chapter16_shapley_attribution_baselines/instructions/pages/07_[16.7]_Data_Shapley_in_One_Training_Run.md
     notes: ARENA-style Data Shapley lesson with one-step linear utility, complete coalition tables, exact Data Shapley, sampled permutation approximation, in-run first-order proxy, random-data and label-shuffle controls, local validation-loop and signature-result diagrams, paired notebooks, limitations, and scoped CUDA one-step training evidence.
   '16.8':
-    status: prototype
+    status: course_ready
     page: chapter16_shapley_attribution_baselines/instructions/pages/08_[16.8]_Do_SHAPley_and_Mechanistic_Interpretability_Agree.md
-    notes: Prototype scaffold retained for implementation evidence; requires ARENA-style rewrite before course-ready release.
+    notes: ARENA-style SHAPley/mechanistic-agreement protocol with deterministic ranking, analytic finite-rule mechanism scores, deletion/insertion consequence curves, additive agreement, XOR interaction disagreement, agreement artifact bundle, local validation-loop and signature-result diagrams, paired notebooks, limitations, and scoped CUDA finite neural-game evidence with shuffled-label rejection.
   '17.1':
     status: course_ready
     page: chapter17_training_dynamics/instructions/pages/01_[17.1]_Checkpoint_Archaeology_and_Mechanism_Emergence.md

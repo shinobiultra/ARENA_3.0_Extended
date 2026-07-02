@@ -15,7 +15,6 @@ if str(root_dir) not in sys.path:
 from arena_ext.shapley_attribution import (
     additive_game,
     attribution_agreement_report,
-    exact_shapley_values,
     interaction_agreement_report,
     pairwise_shapley_interactions,
     topk_overlap_fraction,
@@ -48,6 +47,26 @@ def _tensor_report(report) -> dict:
         if hasattr(value, "tolist"):
             result[key] = value.tolist()
     return result
+
+
+def _artifact_display_path(path: Path) -> str:
+    try:
+        return str(path.relative_to(root_dir))
+    except ValueError:
+        return str(path)
+
+
+def analytic_neural_game_mechanistic_scores() -> t.Tensor:
+    """Return feature scores from the generated rule's known decomposition.
+
+    The target rule is
+    0.25 + 1.2*x0 - 0.7*x1 + 1.6*x2 + 0.9*x3 + 2.2*x0*x2 - 1.5*x1*x3.
+    For a feature-level agreement target, allocate each pair interaction
+    equally to its two features. This is an analytic mechanism score from the
+    data-generating rule, not a Shapley call over the learned model outputs.
+    """
+
+    return t.tensor([2.3, -1.45, 2.7, 0.15], dtype=t.float64)
 
 
 def _rank_desc(scores: t.Tensor) -> list[int]:
@@ -360,7 +379,7 @@ def write_agreement_artifacts(
         "insertion_curve_points": len(next(iter(insertion_curves.values()))),
         "topk_heatmap_rows": len(heatmap_rows),
         "topk_heatmap_cols": len(columns),
-        "agreement_artifact_paths": [str(path.relative_to(root_dir)) for path in paths],
+        "agreement_artifact_paths": [_artifact_display_path(path) for path in paths],
     }
 
 
@@ -404,7 +423,7 @@ def run_neural_mechanistic_agreement_preflight(max_vram_gb: float = 24.0) -> dic
     trained = train_neural_game(inputs, targets)
     model_values = coalition_table_from_model(trained.model, device)
     true_values = coalition_table_from_true_game(device)
-    true_mechanistic_scores = exact_shapley_values(true_values, num_players=NEURAL_GAME_NUM_PLAYERS)
+    true_mechanistic_scores = analytic_neural_game_mechanistic_scores()
     agreement = attribution_agreement_report(
         model_values,
         mechanistic_scores=true_mechanistic_scores,

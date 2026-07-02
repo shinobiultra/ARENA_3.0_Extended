@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="340" viewBox="0 0 920 340" role="img" aria-labelledby="title desc">
+  <title id="title">SHAPley and mechanistic agreement validation loop</title>
+  <desc id="desc">Toy ground truth first, then consequence tests, then CUDA finite model evidence with controls.</desc>
+  <defs>
+    <style>
+      .box { fill: #f8fafc; stroke: #334155; stroke-width: 2; rx: 10; }
+      .accent { fill: #ecfeff; stroke: #0891b2; stroke-width: 2; rx: 10; }
+      .warn { fill: #fff7ed; stroke: #ea580c; stroke-width: 2; rx: 10; }
+      .text { font: 600 18px Inter, Arial, sans-serif; fill: #0f172a; }
+      .small { font: 14px Inter, Arial, sans-serif; fill: #334155; }
+      .arrow { stroke: #475569; stroke-width: 2.4; marker-end: url(#arrow); fill: none; }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#475569" />
+    </marker>
+  </defs>
+  <rect x="20" y="24" width="880" height="292" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5" rx="14" />
+  <text x="44" y="62" class="text">Validation loop: agreement must survive consequences and controls</text>
+  <rect x="54" y="98" width="180" height="100" class="accent" />
+  <text x="78" y="132" class="text">1. Toy GT</text>
+  <text x="78" y="160" class="small">Additive game agrees</text>
+  <text x="78" y="180" class="small">XOR forces interactions</text>
+  <rect x="280" y="98" width="180" height="100" class="box" />
+  <text x="304" y="132" class="text">2. Rank tests</text>
+  <text x="304" y="160" class="small">Spearman and top-k</text>
+  <text x="304" y="180" class="small">Deletion beats baseline</text>
+  <rect x="506" y="98" width="180" height="100" class="box" />
+  <text x="530" y="132" class="text">3. Artifacts</text>
+  <text x="530" y="160" class="small">Matrix, curves, heatmap</text>
+  <text x="530" y="180" class="small">Disagreement examples</text>
+  <rect x="732" y="98" width="132" height="100" class="warn" />
+  <text x="756" y="132" class="text">4. CUDA</text>
+  <text x="756" y="160" class="small">Finite neural game</text>
+  <text x="756" y="180" class="small">Shuffled reject</text>
+  <path d="M234 148 H276" class="arrow" />
+  <path d="M460 148 H502" class="arrow" />
+  <path d="M686 148 H728" class="arrow" />
+  <text x="74" y="252" class="small">Acceptance requires one positive agreement case, one tested disagreement case, visible consequence metrics, and a negative control.</text>
+</svg>

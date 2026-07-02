@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="360" viewBox="0 0 920 360" role="img" aria-labelledby="title desc">
+  <title id="title">SHAPley and mechanistic agreement signature result</title>
+  <desc id="desc">A trained finite neural game agrees with analytic mechanistic scores while the shuffled control fails.</desc>
+  <defs>
+    <style>
+      .panel { fill: #ffffff; stroke: #cbd5e1; stroke-width: 1.5; rx: 12; }
+      .good { fill: #dcfce7; stroke: #16a34a; stroke-width: 2; rx: 10; }
+      .bad { fill: #fee2e2; stroke: #dc2626; stroke-width: 2; rx: 10; }
+      .neutral { fill: #eff6ff; stroke: #2563eb; stroke-width: 2; rx: 10; }
+      .head { font: 700 22px Inter, Arial, sans-serif; fill: #0f172a; }
+      .label { font: 600 16px Inter, Arial, sans-serif; fill: #0f172a; }
+      .small { font: 14px Inter, Arial, sans-serif; fill: #334155; }
+      .mono { font: 13px ui-monospace, SFMono-Regular, Menlo, monospace; fill: #0f172a; }
+    </style>
+  </defs>
+  <rect x="20" y="20" width="880" height="320" class="panel" />
+  <text x="44" y="58" class="head">Signature result: agreement is earned by consequences, not by pretty scores</text>
+  <rect x="54" y="92" width="250" height="176" class="good" />
+  <text x="78" y="126" class="label">Trained finite game</text>
+  <text x="78" y="156" class="mono">Spearman = 1.000</text>
+  <text x="78" y="180" class="mono">Top-2 overlap = 1.000</text>
+  <text x="78" y="204" class="mono">Deletion gap = 3.600</text>
+  <text x="78" y="232" class="small">Exact Shapley recovers the analytic mechanism.</text>
+  <rect x="334" y="92" width="250" height="176" class="neutral" />
+  <text x="358" y="126" class="label">Interaction check</text>
+  <text x="358" y="156" class="mono">Top pair = [0, 2]</text>
+  <text x="358" y="180" class="mono">Second pair = [1, 3]</text>
+  <text x="358" y="204" class="mono">Max error = 4.52e-7</text>
+  <text x="358" y="232" class="small">Pair interactions recover planted structure.</text>
+  <rect x="614" y="92" width="250" height="176" class="bad" />
+  <text x="638" y="126" class="label">Shuffled control</text>
+  <text x="638" y="156" class="mono">Spearman = -0.800</text>
+  <text x="638" y="180" class="mono">Top-2 overlap = 0.000</text>
+  <text x="638" y="204" class="mono">Rejected = true</text>
+  <text x="638" y="232" class="small">A fitted model can still fail the mechanism test.</text>
+  <text x="54" y="304" class="small">The artifact bundle contains the matrix, deletion/insertion curves, top-k heatmap, and disagreement examples from the same run.</text>
+</svg>
