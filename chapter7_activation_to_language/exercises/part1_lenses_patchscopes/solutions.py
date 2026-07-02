@@ -145,6 +145,52 @@ def top_tokens(logits: t.Tensor, *, k: int = 5) -> tuple[t.Tensor, t.Tensor]:
     return indices, values
 
 
+def top_token_table(
+    logits: t.Tensor,
+    id_to_token,
+    *,
+    k: int = 5,
+    target_token_ids: t.Tensor | None = None,
+    row_labels: list[str] | None = None,
+) -> list[dict[str, object]]:
+    """Build a learner-readable table of top decoded tokens for rank-2 logits."""
+
+    if logits.ndim != 2:
+        raise ValueError("top_token_table expects logits with shape [row, vocab].")
+    if target_token_ids is not None and target_token_ids.shape != logits.shape[:1]:
+        raise ValueError("target_token_ids must have one id per logits row.")
+    if row_labels is not None and len(row_labels) != logits.shape[0]:
+        raise ValueError("row_labels must have one label per logits row.")
+
+    top_ids, top_probs = top_tokens(logits, k=k)
+
+    def decode(token_id: int) -> str:
+        if callable(id_to_token):
+            return str(id_to_token(token_id))
+        return str(id_to_token[token_id])
+
+    rows: list[dict[str, object]] = []
+    sorted_ids = logits.float().argsort(dim=-1, descending=True)
+    for row in range(logits.shape[0]):
+        target_id = None if target_token_ids is None else int(target_token_ids[row].item())
+        target_rank = None
+        target_token = None
+        if target_id is not None:
+            target_token = decode(target_id)
+            target_rank = int((sorted_ids[row] == target_id).nonzero(as_tuple=False)[0].item()) + 1
+        rows.append(
+            {
+                "row": row if row_labels is None else row_labels[row],
+                "top_ids": [int(x) for x in top_ids[row].tolist()],
+                "top_tokens": [decode(int(x)) for x in top_ids[row].tolist()],
+                "top_probs": [float(x) for x in top_probs[row].tolist()],
+                "target_token": target_token,
+                "target_rank": target_rank,
+            }
+        )
+    return rows
+
+
 def prediction_accuracy(logits: t.Tensor, target_token_ids: t.Tensor) -> float:
     """Top-1 accuracy for decoded logits."""
 
@@ -152,6 +198,48 @@ def prediction_accuracy(logits: t.Tensor, target_token_ids: t.Tensor) -> float:
         raise ValueError("target_token_ids must match logits leading dimensions.")
     predictions = logits.argmax(dim=-1)
     return predictions.eq(target_token_ids).float().mean().item()
+
+
+def fit_ridge_tuned_lens(
+    residual_stream: t.Tensor,
+    target_residual_stream: t.Tensor,
+    *,
+    ridge: float = 1e-2,
+) -> tuple[t.Tensor, t.Tensor]:
+    """Fit an affine map from early residuals to target residuals by ridge regression."""
+
+    if residual_stream.ndim != 2 or target_residual_stream.ndim != 2:
+        raise ValueError("ridge fitting expects rank-2 [example, d_model] tensors.")
+    if residual_stream.shape[0] != target_residual_stream.shape[0]:
+        raise ValueError("source and target tensors must have the same number of examples.")
+    design = t.cat(
+        [
+            residual_stream.float(),
+            t.ones(residual_stream.shape[0], 1, device=residual_stream.device),
+        ],
+        dim=1,
+    )
+    penalty = t.eye(design.shape[1], device=design.device)
+    penalty[-1, -1] = 0.0
+    solution = t.linalg.solve(
+        design.T @ design + ridge * penalty,
+        design.T @ target_residual_stream.float(),
+    )
+    return solution[:-1], solution[-1]
+
+
+def evaluate_lens_on_heldout(
+    residual_stream: t.Tensor,
+    lens_weight: t.Tensor,
+    lens_bias: t.Tensor | None,
+    unembedding: t.Tensor,
+    target_token_ids: t.Tensor,
+) -> LensAccuracyReport:
+    """Evaluate ordinary logit lens and tuned lens on held-out target ids."""
+
+    logit_logits = logit_lens(residual_stream, unembedding)
+    tuned_logits = tuned_lens(residual_stream, lens_weight, lens_bias, unembedding)
+    return lens_accuracy_report(logit_logits, tuned_logits, target_token_ids)
 
 
 def lens_accuracy_report(
@@ -276,15 +364,54 @@ def random_activation_confidence_report(
     )
 
 
+def patchscope_eval(
+    patchscope_logits: t.Tensor,
+    text_only_logits: t.Tensor,
+    random_logits: t.Tensor,
+    target_answer_ids: t.Tensor,
+    *,
+    max_allowed_random_confidence: float = 0.6,
+) -> dict[str, object]:
+    """Bundle Patchscope, text-only, and random-activation controls."""
+
+    patchscope = patchscope_accuracy_report(
+        patchscope_logits,
+        text_only_logits,
+        target_answer_ids,
+    )
+    random_control = random_activation_confidence_report(
+        random_logits,
+        max_allowed_confidence=max_allowed_random_confidence,
+    )
+    return {
+        "patchscope_accuracy": patchscope.patchscope_accuracy,
+        "text_only_accuracy": patchscope.text_only_accuracy,
+        "improvement": patchscope.improvement,
+        "beats_text_only": patchscope.beats_text_only,
+        "random_mean_confidence": random_control.mean_confidence,
+        "random_max_confidence": random_control.max_confidence,
+        "random_passes_low_confidence": random_control.passes_low_confidence,
+        "passes": patchscope.beats_text_only and random_control.passes_low_confidence,
+    }
+
+
 def logit_lens_smoke_test() -> dict:
     residual = t.tensor([[1.0, 0.0], [0.0, 1.0]])
     unembedding = t.tensor([[2.0, 0.0, 1.0], [0.0, 3.0, 1.0]])
     logits = logit_lens(residual, unembedding)
     top_ids, top_probs = top_tokens(logits, k=1)
+    top_table = top_token_table(
+        logits,
+        [" floor", " sky", " neutral"],
+        k=2,
+        target_token_ids=t.tensor([0, 1]),
+        row_labels=["residual direction 0", "residual direction 1"],
+    )
     return {
         "logits": logits.tolist(),
         "top_ids": top_ids.tolist(),
         "top_probs": top_probs.tolist(),
+        "top_table": top_table,
     }
 
 
@@ -298,6 +425,27 @@ def tuned_lens_smoke_test() -> dict:
     return lens_accuracy_report(logit_logits, tuned_logits, targets).__dict__
 
 
+def fit_ridge_tuned_lens_smoke_test() -> dict:
+    train = t.tensor([[0.0, 0.0], [1.0, 0.0], [0.0, 1.0], [1.0, 1.0]])
+    true_weight = t.tensor([[0.0, 1.0], [1.0, 0.0]])
+    true_bias = t.tensor([0.5, -0.25])
+    target_residuals = train @ true_weight + true_bias
+    weight, bias = fit_ridge_tuned_lens(train, target_residuals, ridge=0.0)
+    heldout = t.tensor([[2.0, 0.0], [0.0, 2.0]])
+    report = evaluate_lens_on_heldout(
+        heldout,
+        weight,
+        bias,
+        t.eye(2),
+        t.tensor([1, 0]),
+    )
+    return {
+        "weight": weight.tolist(),
+        "bias": bias.tolist(),
+        **report.__dict__,
+    }
+
+
 def attention_lens_smoke_test() -> dict:
     attention = t.tensor([[[1.0, 0.0], [0.0, 1.0]]])
     values = t.tensor([[[1.0, 0.0], [0.0, 1.0]]])
@@ -309,6 +457,7 @@ def patchscope_smoke_test() -> dict:
     patchscope_logits = t.tensor([[2.0, 0.0], [0.0, 2.0]])
     text_only_logits = t.tensor([[0.0, 2.0], [0.0, 2.0]])
     targets = t.tensor([0, 1])
+    random_logits = t.zeros(3, 4)
     patched_acts = replace_final_position_activation(
         t.zeros(1, 3, 2),
         t.tensor([1.0, -1.0]),
@@ -319,6 +468,13 @@ def patchscope_smoke_test() -> dict:
         "next_token_prompt": patchscope_prompt("next_token"),
         "fact_prompt": patchscope_prompt("fact"),
         "patched_final_activation": patched_acts[0, -1].tolist(),
+        "patchscope_eval": patchscope_eval(
+            patchscope_logits,
+            text_only_logits,
+            random_logits,
+            targets,
+            max_allowed_random_confidence=0.3,
+        ),
         **report.__dict__,
     }
 
@@ -342,8 +498,10 @@ def run_smoke_test(cpu: bool = True) -> dict:
     return {
         "logit_lens": logit_lens_smoke_test(),
         "tuned_lens": tuned_lens_smoke_test(),
+        "fit_ridge_tuned_lens": fit_ridge_tuned_lens_smoke_test(),
         "attention_lens": attention_lens_smoke_test(),
         "patchscope": patchscope_smoke_test(),
+        "patchscope_eval": patchscope_smoke_test()["patchscope_eval"],
         "counterfactual": counterfactual_smoke_test(),
         "random_confidence": random_confidence_smoke_test(),
     }

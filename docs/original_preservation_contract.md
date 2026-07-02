@@ -10,9 +10,14 @@ lesson content.
 
 | Path | Allowed reason |
 | --- | --- |
+| `.agents/skills/arena-3-salvage/SKILL.md` | Local Codex skill enforcing ARENA learner-surface salvage rules. |
+| `.agents/skills/arena-3-salvage/references/arena_notebook_contract.md` | Skill-local copy of the learner-surface contract. |
+| `.agents/skills/arena-3-salvage/references/section_rewrite_blueprints.md` | Skill-local section rewrite blueprints for salvage work. |
+| `.agents/skills/arena-3-salvage/scripts/audit_learner_surface.py` | Skill-local learner-surface audit helper. |
 | `.github/workflows/extension-quality.yml` | Real CI gates for extension audits and GPU reports. |
 | `.gitignore` | Cache, model-weight, and generated-artifact hygiene for the extension. |
 | `.python-version` | uv-managed Python version pin for the CUDA 13 environment. |
+| `AGENTS.md` | Repo-local agent instructions for ARENA-style salvage without changing original lessons. |
 | `Extension-Roadmap.md` | User-authored extension specification. |
 | `guidance_2-0.md` | Reviewer guidance for the ARENA-style rewrite. |
 | `install.sh` | Original installer redirected to the pinned original requirements split. |

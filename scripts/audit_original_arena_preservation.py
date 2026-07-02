@@ -20,9 +20,14 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 COMPATIBILITY_PATCH_RATIONALES = {
+    ".agents/skills/arena-3-salvage/SKILL.md": "local Codex skill enforcing ARENA learner-surface salvage rules",
+    ".agents/skills/arena-3-salvage/references/arena_notebook_contract.md": "skill-local copy of the learner-surface contract",
+    ".agents/skills/arena-3-salvage/references/section_rewrite_blueprints.md": "skill-local section rewrite blueprints for salvage work",
+    ".agents/skills/arena-3-salvage/scripts/audit_learner_surface.py": "skill-local learner-surface audit helper",
     ".github/workflows/extension-quality.yml": "real CI gates for extension audits and GPU reports",
     ".gitignore": "cache, model-weight, and generated-artifact hygiene for the extension",
     ".python-version": "uv-managed Python version pin for the CUDA 13 environment",
+    "AGENTS.md": "repo-local agent instructions for ARENA-style salvage without changing original lessons",
     "Extension-Roadmap.md": "user-authored extension specification",
     "guidance_2-0.md": "review guidance for the ARENA-style rewrite",
     "README.md": "entrypoint documentation for the extended course",

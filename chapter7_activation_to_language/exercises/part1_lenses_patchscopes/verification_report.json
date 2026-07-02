@@ -82,9 +82,9 @@
       "train_prompt_count": 16
     }
   ],
-  "date_run": "2026-07-02T12:43:00+00:00",
+  "date_run": "2026-07-02T13:41:25+00:00",
   "evidence_level": "toy_lens_contract_plus_pinned_transformerlens_affine_lens_patchscope_preflight",
-  "git_commit": "3a539d48",
+  "git_commit": "b443cf72",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-1",
   "known_failures": [],
@@ -159,7 +159,7 @@
       "patchscope_min_patched_target_margin": 0.06480598449707031,
       "patchscope_pair_count": 6,
       "patchscope_target_prompt_count": 6,
-      "peak_vram_gb": 0.3269510269165039,
+      "peak_vram_gb": 0.2957010269165039,
       "preflight_passed": true,
       "random_max_confidence": 0.04065974801778793,
       "random_mean_confidence": 0.03239916265010834,
@@ -194,6 +194,26 @@
         "original_answer": 0,
         "patched_answer": 1
       },
+      "fit_ridge_tuned_lens": {
+        "bias": [
+          0.49999991059303284,
+          -0.2500000596046448
+        ],
+        "improvement": 1.0,
+        "logit_lens_accuracy": 0.0,
+        "tuned_lens_accuracy": 1.0,
+        "tuned_lens_improves": true,
+        "weight": [
+          [
+            0.0,
+            1.0
+          ],
+          [
+            1.0000001192092896,
+            3.973643103449831e-08
+          ]
+        ]
+      },
       "logit_lens": {
         "logits": [
           [
@@ -222,6 +242,42 @@
           [
             0.8437947034835815
           ]
+        ],
+        "top_table": [
+          {
+            "row": "residual direction 0",
+            "target_rank": 1,
+            "target_token": " floor",
+            "top_ids": [
+              0,
+              2
+            ],
+            "top_probs": [
+              0.6652408838272095,
+              0.2447284460067749
+            ],
+            "top_tokens": [
+              " floor",
+              " neutral"
+            ]
+          },
+          {
+            "row": "residual direction 1",
+            "target_rank": 1,
+            "target_token": " sky",
+            "top_ids": [
+              1,
+              2
+            ],
+            "top_probs": [
+              0.8437947034835815,
+              0.11419519037008286
+            ],
+            "top_tokens": [
+              " sky",
+              " neutral"
+            ]
+          }
         ]
       },
       "patchscope": {
@@ -235,6 +291,26 @@
           -1.0
         ],
         "patchscope_accuracy": 1.0,
+        "patchscope_eval": {
+          "beats_text_only": true,
+          "improvement": 0.5,
+          "passes": true,
+          "patchscope_accuracy": 1.0,
+          "random_max_confidence": 0.25,
+          "random_mean_confidence": 0.25,
+          "random_passes_low_confidence": true,
+          "text_only_accuracy": 0.5
+        },
+        "text_only_accuracy": 0.5
+      },
+      "patchscope_eval": {
+        "beats_text_only": true,
+        "improvement": 0.5,
+        "passes": true,
+        "patchscope_accuracy": 1.0,
+        "random_max_confidence": 0.25,
+        "random_mean_confidence": 0.25,
+        "random_passes_low_confidence": true,
         "text_only_accuracy": 0.5
       },
       "random_confidence": {
@@ -281,10 +357,10 @@
   "ood_tests": {
     "declared": "required_where_applicable"
   },
-  "peak_vram_gb": 0.3269510269165039,
+  "peak_vram_gb": 0.2957010269165039,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "610375fcc42ebdab6bc093cf68730ada461847aff1814bf986ce327bca5d6287",
+    "combined_sha256": "847961f1193189e805a009e7c80d517f45e970eb18949deafa7df8bcf290d29e",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -293,13 +369,13 @@
       },
       {
         "path": "chapter7_activation_to_language/exercises/part1_lenses_patchscopes/7.1_Logit_Lens_Tuned_Lens_and_Patchscopes_exercises.ipynb",
-        "sha256": "db71787812e7fc8e7f3cf4b458d676efdac8bef3362e4a126a8276f62e6fb4af",
-        "size_bytes": 24231
+        "sha256": "ec4b3b9916e5ae0ec94cb8cc8bd6815e7a8da35569f8fd6f46b59236a7816563",
+        "size_bytes": 55063
       },
       {
         "path": "chapter7_activation_to_language/exercises/part1_lenses_patchscopes/7.1_Logit_Lens_Tuned_Lens_and_Patchscopes_solutions.ipynb",
-        "sha256": "a26b40c6cb046e873c74da1b6acf44da16567c215e715ba35c74b6457d18f787",
-        "size_bytes": 10787
+        "sha256": "420d9ee62555ce52eaef93e23748f91d80c1aa74ebea65487dc49d4ac6add43f",
+        "size_bytes": 63177
       },
       {
         "path": "chapter7_activation_to_language/exercises/part1_lenses_patchscopes/README.md",
@@ -328,13 +404,13 @@
       },
       {
         "path": "chapter7_activation_to_language/exercises/part1_lenses_patchscopes/solutions.py",
-        "sha256": "8cdf30de9efd50704d520a83b3b638a696e73ac051de662c00406a24ee984821",
-        "size_bytes": 22379
+        "sha256": "b0e53803da3f4c2826691e36bcb2b218d3a1689d68aa12facb793ffe62b18b73",
+        "size_bytes": 28126
       },
       {
         "path": "chapter7_activation_to_language/exercises/part1_lenses_patchscopes/tests.py",
-        "sha256": "6d13d993964f226f4f24e9af72f76d0bf3ec0e22bb57a5163f65af7c75a03660",
-        "size_bytes": 13542
+        "sha256": "06229d44c566131e4521db2fabe4a2698e00292505e13d7d2c2fc46ccfc7d96b",
+        "size_bytes": 17947
       },
       {
         "path": "chapter7_activation_to_language/exercises/part1_lenses_patchscopes/utils.py",
@@ -364,5 +440,5 @@
     "The real-model path uses safe generic prompts and reads cached activations, logits, and attention values from a small public TransformerLens checkpoint. It does not use unsafe prompts, gated weights, or generated completions."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 2.159433
+  "wall_clock_seconds": 8.959283
 }

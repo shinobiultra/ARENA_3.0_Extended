@@ -60,6 +60,38 @@ def test_logit_lens_and_top_tokens_match_reference(
     print("All tests in `test_logit_lens_and_top_tokens_match_reference` passed!")
 
 
+def test_top_token_table_reports_target_ranks(
+    top_token_table: Callable | None = None,
+):
+    solutions = _solutions()
+    top_token_table = top_token_table or solutions.top_token_table
+    logits = t.tensor([[4.0, 1.0, 0.0], [0.0, 3.0, 2.0]])
+    tokens = [" yes", " no", " maybe"]
+    targets = t.tensor([0, 2])
+    rows = top_token_table(
+        logits,
+        tokens,
+        k=2,
+        target_token_ids=targets,
+        row_labels=["clean prompt", "patched prompt"],
+    )
+    expected = reference.top_token_table(
+        logits,
+        tokens,
+        k=2,
+        target_token_ids=targets,
+        row_labels=["clean prompt", "patched prompt"],
+    )
+    assert rows == expected, "Top-token table should match the independent reference."
+    assert rows[0]["top_tokens"] == [" yes", " no"], (
+        "Rows should contain decoded token strings in probability order."
+    )
+    assert rows[0]["target_rank"] == 1 and rows[1]["target_rank"] == 2, (
+        "Target ranks should be one-indexed ranks within the full vocabulary."
+    )
+    print("All tests in `test_top_token_table_reports_target_ranks` passed!")
+
+
 def test_top_tokens_rejects_invalid_k(top_tokens: Callable | None = None):
     solutions = _solutions()
     top_tokens = top_tokens or solutions.top_tokens
@@ -103,6 +135,39 @@ def test_tuned_lens_improves_over_logit_lens_on_toy_targets(
     )
     assert report.tuned_lens_improves, "Tuned lens should improve over logit lens."
     print("All tests in `test_tuned_lens_improves_over_logit_lens_on_toy_targets` passed!")
+
+
+def test_fit_ridge_tuned_lens_and_heldout_eval(
+    fit_ridge_tuned_lens: Callable | None = None,
+    evaluate_lens_on_heldout: Callable | None = None,
+):
+    solutions = _solutions()
+    fit_ridge_tuned_lens = fit_ridge_tuned_lens or solutions.fit_ridge_tuned_lens
+    evaluate_lens_on_heldout = evaluate_lens_on_heldout or solutions.evaluate_lens_on_heldout
+    train = t.tensor([[0.0, 0.0], [1.0, 0.0], [0.0, 1.0], [1.0, 1.0]])
+    true_weight = t.tensor([[0.0, 1.0], [1.0, 0.0]])
+    true_bias = t.tensor([0.5, -0.25])
+    target_residuals = train @ true_weight + true_bias
+    weight, bias = fit_ridge_tuned_lens(train, target_residuals, ridge=0.0)
+    ref_weight, ref_bias = reference.fit_ridge_tuned_lens(
+        train,
+        target_residuals,
+        ridge=0.0,
+    )
+    t.testing.assert_close(weight, ref_weight)
+    t.testing.assert_close(bias, ref_bias)
+    t.testing.assert_close(weight, true_weight)
+    t.testing.assert_close(bias, true_bias)
+
+    heldout = t.tensor([[2.0, 0.0], [0.0, 2.0]])
+    targets = t.tensor([1, 0])
+    report = evaluate_lens_on_heldout(heldout, weight, bias, t.eye(2), targets)
+    expected = reference.evaluate_lens_on_heldout(heldout, weight, bias, t.eye(2), targets)
+    _assert_report_close(report, expected, msg="Held-out tuned-lens report")
+    assert report.logit_lens_accuracy == 0.0 and report.tuned_lens_accuracy == 1.0, (
+        "The fitted affine lens should solve held-out points that logit lens misses."
+    )
+    print("All tests in `test_fit_ridge_tuned_lens_and_heldout_eval` passed!")
 
 
 def test_tuned_lens_uses_bias_and_leading_dims(
@@ -295,6 +360,39 @@ def test_counterfactual_and_random_activation_controls(
     print("All tests in `test_counterfactual_and_random_activation_controls` passed!")
 
 
+def test_patchscope_eval_bundles_controls(
+    patchscope_eval: Callable | None = None,
+):
+    solutions = _solutions()
+    patchscope_eval = patchscope_eval or solutions.patchscope_eval
+    patchscope_logits = t.tensor([[3.0, 0.0], [0.0, 3.0], [3.0, 0.0]])
+    text_only_logits = t.tensor([[0.0, 3.0], [0.0, 3.0], [0.0, 3.0]])
+    random_logits = t.zeros(4, 5)
+    targets = t.tensor([0, 1, 0])
+    result = patchscope_eval(
+        patchscope_logits,
+        text_only_logits,
+        random_logits,
+        targets,
+        max_allowed_random_confidence=0.25,
+    )
+    expected = reference.patchscope_eval(
+        patchscope_logits,
+        text_only_logits,
+        random_logits,
+        targets,
+        max_allowed_random_confidence=0.25,
+    )
+    assert result == expected, "Patchscope bundle should match the independent reference."
+    assert result["patchscope_accuracy"] == 1.0 and abs(result["text_only_accuracy"] - 1 / 3) < 1e-6, (
+        "Patchscope should beat the text-only prompt on the controlled examples."
+    )
+    assert result["random_passes_low_confidence"] and result["passes"], (
+        "Uniform random logits over five tokens should pass the low-confidence control."
+    )
+    print("All tests in `test_patchscope_eval_bundles_controls` passed!")
+
+
 def test_notebook_contract(run_smoke_test: Callable | None = None):
     if run_smoke_test is None:
         run_smoke_test = _solutions().run_smoke_test
@@ -302,14 +400,23 @@ def test_notebook_contract(run_smoke_test: Callable | None = None):
     assert result["logit_lens"]["top_ids"] == [[0], [1]], (
         "Notebook contract should include controlled logit-lens top tokens."
     )
+    assert result["logit_lens"]["top_table"][0]["target_rank"] == 1, (
+        "Notebook contract should include a visible top-token table."
+    )
     assert result["tuned_lens"]["tuned_lens_improves"], (
         "Notebook contract should include tuned-lens improvement over logit lens."
+    )
+    assert result["fit_ridge_tuned_lens"]["tuned_lens_accuracy"] == 1.0, (
+        "Notebook contract should include a fitted held-out tuned lens."
     )
     assert result["attention_lens"]["logits"] == [[[1.0, 0.0], [0.0, 1.0]]], (
         "Notebook contract should include an attention-lens decode."
     )
     assert result["patchscope"]["beats_text_only"], (
         "Notebook contract should include Patchscope beating a text-only baseline."
+    )
+    assert result["patchscope_eval"]["passes"], (
+        "Notebook contract should bundle Patchscope, text-only, and random controls."
     )
     assert result["counterfactual"]["changed"], (
         "Notebook contract should include a counterfactual activation changing the answer."

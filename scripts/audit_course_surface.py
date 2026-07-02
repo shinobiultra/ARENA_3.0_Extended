@@ -30,7 +30,11 @@ REQUIRED_INSTRUCTION_REQUIREMENTS = {
 REQUIRED_NOTEBOOK_VERIFICATION_STRINGS = (
     "def run_gpu_test(max_vram_gb: float = 24.0)",
     "def run_full_experiment(max_vram_gb: float = 24.0)",
+)
+REQUIRED_NOTEBOOK_EVIDENCE_SURFACES = (
     "verification_report.json",
+    "run_gelu1l_signature_result",
+    "prepare_gelu1l_state",
 )
 
 
@@ -97,7 +101,9 @@ def _exercise_notebook_source(path: Path) -> str:
 
 def _exercise_notebook_declares_verification_contract(path: Path) -> bool:
     source = _exercise_notebook_source(path)
-    return all(required in source for required in REQUIRED_NOTEBOOK_VERIFICATION_STRINGS)
+    has_contract = all(required in source for required in REQUIRED_NOTEBOOK_VERIFICATION_STRINGS)
+    has_evidence_surface = any(surface in source for surface in REQUIRED_NOTEBOOK_EVIDENCE_SURFACES)
+    return has_contract and has_evidence_surface
 
 
 def chapter_surface_blockers(config: dict[str, Any], chapter_name: str) -> list[str]:
