@@ -54,6 +54,7 @@ expected_metrics:
   probe_overfit_gap_min: 0.35
   random_direction_control_rejects_claim: true
   all_bogus_results_flagged: true
+  input_driven_alternate_fixtures_passed: true
   peak_vram_gb_max: 1.0
 controls:
 - baseline_or_reference_check
@@ -61,9 +62,13 @@ controls:
 - shape_dtype_or_exact_value_check
 - direct_label_leakage_control
 - shifted_no_leak_negative_control
+- alternate_feature_index_control
 - population_vs_selected_effect_control
+- representative_selection_positive_control
 - train_vs_heldout_probe_gap_control
+- generalizing_probe_positive_control
 - random_direction_p95_control
+- strong_direction_positive_control
 safety_notes:
 - No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.
 - This section uses generated numeric tensors only. It does not use real model completions,

@@ -7,14 +7,19 @@
       "shape_dtype_or_exact_value_check",
       "direct_label_leakage_control",
       "shifted_no_leak_negative_control",
+      "alternate_feature_index_control",
       "population_vs_selected_effect_control",
+      "representative_selection_positive_control",
       "train_vs_heldout_probe_gap_control",
-      "random_direction_p95_control"
+      "generalizing_probe_positive_control",
+      "random_direction_p95_control",
+      "strong_direction_positive_control"
     ],
     "expected_metrics": {
       "accepted": true,
       "all_bogus_results_flagged": true,
       "cherry_pick_inflation_min": 3.0,
+      "input_driven_alternate_fixtures_passed": true,
       "leakage_gap_min": 0.5,
       "leaked_feature_accuracy": 1.0,
       "max_allowed_gpu_gb": 24,
@@ -47,9 +52,9 @@
       "source": "generated"
     }
   ],
-  "date_run": "2026-07-01T06:33:54+00:00",
+  "date_run": "2026-07-02T12:36:55+00:00",
   "evidence_level": "cuda_fake_result_diagnostic_controls_preflight",
-  "git_commit": "3f277125",
+  "git_commit": "5fba65b2",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-0",
   "known_failures": [],
@@ -61,6 +66,7 @@
         "all_bogus_results_flagged",
         "cherry_pick_inflation",
         "claimed_direction_effect",
+        "input_driven_alternate_fixtures_passed",
         "leakage_gap",
         "leaked_feature_accuracy",
         "population_median_effect",
@@ -79,23 +85,24 @@
     "gpu_test": {
       "all_bogus_results_flagged": true,
       "cherry_pick_inflation": 4.1891886689003375,
-      "claimed_direction_effect": 0.050002459436655045,
+      "claimed_direction_effect": 0.0500024579312309,
       "cuda_available": true,
       "cuda_version": "13.2",
       "device": "NVIDIA GeForce RTX 5090 Laptop GPU",
       "full_path": "CUDA diagnostic preflight for fake-result failure modes: label leakage, cherry-pick inflation, probe overfit, and random-direction control rejection.",
       "gpu_total_memory_gb": 23.45965576171875,
+      "input_driven_alternate_fixtures_passed": true,
       "leakage_gap": 1.0,
       "leaked_feature_accuracy": 1.0,
-      "peak_vram_gb": 0.031258583068847656,
+      "peak_vram_gb": 0.031256675720214844,
       "population_median_effect": 0.09000000357627869,
       "preflight_passed": true,
       "probe_heldout_accuracy": 0.5,
       "probe_overfit_gap": 0.5,
       "probe_train_accuracy": 1.0,
       "random_direction_control_rejects_claim": true,
-      "random_direction_effect_gap": -0.06834893301129341,
-      "random_p95_effect": 0.11835139244794846,
+      "random_direction_effect_gap": -0.0683489412991283,
+      "random_p95_effect": 0.1183513992303592,
       "selected_mean_effect": 1.5499999523162842,
       "shifted_no_leak_accuracy": 0.0,
       "torch_version": "2.12.1+cu132",
@@ -167,10 +174,10 @@
   "ood_tests": {
     "declared": "required_where_applicable"
   },
-  "peak_vram_gb": 0.031258583068847656,
+  "peak_vram_gb": 0.031256675720214844,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "68230aba7842e61897dc2823ce590aeaa2fdb6276fdd08428788bce3edc7fc22",
+    "combined_sha256": "1d78f9146ccfdf6890015fba6645d76fea59718d309ae98463bcbd4122ecc3c0",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -179,13 +186,13 @@
       },
       {
         "path": "chapter0_fundamentals/exercises/part6_fake_interpretability_results/0.6_How_to_Know_When_an_Interpretability_Result_Is_Fake_exercises.ipynb",
-        "sha256": "ed46d71688a0c83b332fff44e7f0abd2190574e39779b78cf99fea31fa7bb249",
-        "size_bytes": 8147
+        "sha256": "49e107fb244d8d221e91c7ce3e316680890ddc5360f9feaf630a87b49dc6e3b2",
+        "size_bytes": 18456
       },
       {
         "path": "chapter0_fundamentals/exercises/part6_fake_interpretability_results/0.6_How_to_Know_When_an_Interpretability_Result_Is_Fake_solutions.ipynb",
-        "sha256": "a7a4b28b6f31962370f7d1e2f549b34b2c2dbbbf9111a173e239d79987fe8382",
-        "size_bytes": 3810
+        "sha256": "8227cf62352b68223b08c74d0ea9439c566088d4e0652c1b59e361ea72f0fb57",
+        "size_bytes": 11574
       },
       {
         "path": "chapter0_fundamentals/exercises/part6_fake_interpretability_results/README.md",
@@ -194,8 +201,8 @@
       },
       {
         "path": "chapter0_fundamentals/exercises/part6_fake_interpretability_results/artifacts.lock.yml",
-        "sha256": "0a8e5c7e1768cb90e17ad16b515b4b848553427cb0ca168c4740c63a452fd3b1",
-        "size_bytes": 2374
+        "sha256": "cb2a8244545cc21e8fb1b86a927f46c84b72efacd79e59b5ab6230f67259c8cc",
+        "size_bytes": 2573
       },
       {
         "path": "chapter0_fundamentals/exercises/part6_fake_interpretability_results/expected_outputs/README.md",
@@ -204,8 +211,8 @@
       },
       {
         "path": "chapter0_fundamentals/exercises/part6_fake_interpretability_results/expected_outputs/reference_metrics.json",
-        "sha256": "cc4875d5a71cc162c55cf479dc1dcf1532fbf50eff835fe292db155728c3be5d",
-        "size_bytes": 739
+        "sha256": "bde7d5b41a91826e856b4cecac26ceb9ca0ae56889766ac6c4b3de38332eba2b",
+        "size_bytes": 791
       },
       {
         "path": "chapter0_fundamentals/exercises/part6_fake_interpretability_results/expected_outputs/smoke_test.json",
@@ -214,13 +221,13 @@
       },
       {
         "path": "chapter0_fundamentals/exercises/part6_fake_interpretability_results/solutions.py",
-        "sha256": "d4f814ce6430e79a91da1dcf71cbbd7f202568f3f5208bd2a16dd85e7afed122",
-        "size_bytes": 11311
+        "sha256": "ed3b167b3061d6017117fd64b0eb4cb304a6f56011b4d849f1507b10c2f5aafa",
+        "size_bytes": 13608
       },
       {
         "path": "chapter0_fundamentals/exercises/part6_fake_interpretability_results/tests.py",
-        "sha256": "6b539d64cff6c302eeaca11caab524be4d9f4233e93d9a852fd35ae5fc1cbac7",
-        "size_bytes": 7352
+        "sha256": "3203678914ad059aac35e838308100fa87a72005887e6841e84e63ddaa8e7679",
+        "size_bytes": 13249
       },
       {
         "path": "chapter0_fundamentals/exercises/part6_fake_interpretability_results/utils.py",
@@ -234,8 +241,8 @@
       },
       {
         "path": "chapter0_fundamentals/instructions/pages/06_[0.6]_How_to_Know_When_an_Interpretability_Result_Is_Fake.md",
-        "sha256": "6e77816887c6b2b81eca3406e8ea8b3929964e860d8f48288e905e3078301d81",
-        "size_bytes": 14918
+        "sha256": "ac7afaa2951f1189669630c0498412a962fe904734aaa3efcc251055bc14772c",
+        "size_bytes": 22264
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
@@ -250,5 +257,5 @@
     "This section uses generated numeric tensors only. It does not use real model completions, unsafe prompts, gated weights, or user data."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 2.772108
+  "wall_clock_seconds": 1.089271
 }

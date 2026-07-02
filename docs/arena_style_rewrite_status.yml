@@ -2,9 +2,9 @@ version: 1
 policy: Only course_ready sections count as polished ARENA-style course material; prototype sections are retained as implementation evidence and must not be represented as final.
 sections:
   '0.6':
-    status: prototype
+    status: course_ready
     page: chapter0_fundamentals/instructions/pages/06_[0.6]_How_to_Know_When_an_Interpretability_Result_Is_Fake.md
-    notes: Prototype scaffold retained for implementation evidence; requires ARENA-style rewrite before course-ready release.
+    notes: ARENA-style GT-0 skepticism lab with validation-loop and signature-result diagrams, input-driven leakage/cherry-pick/probe-overfit/random-direction detectors, alternate-fixture controls, paired notebooks, limitations, anomaly hunting, and scoped CUDA 13.2 fake-result diagnostic evidence.
   '1.6':
     status: course_ready
     page: chapter1_transformer_interp/instructions/pages/40_[1.6]_Local_Frontier_ML_Infrastructure.md

@@ -59,29 +59,52 @@ def binary_accuracy(scores: t.Tensor, labels: t.Tensor) -> float:
     return float((predictions == labels).double().mean().item())
 
 
-def label_leakage_report() -> LabelLeakageReport:
+def default_label_leakage_fixture(
+    device: t.device | str | None = None,
+) -> tuple[t.Tensor, t.Tensor]:
+    """Return features where column 0 is leaked labels and column 1 is a control."""
+
+    labels = t.tensor([0, 1, 0, 1, 0, 1], dtype=t.long, device=device)
+    signed = labels.float() * 2 - 1
+    features = t.stack([signed, -signed], dim=1)
+    return features, labels
+
+
+def label_leakage_report(
+    features: t.Tensor | None = None,
+    labels: t.Tensor | None = None,
+    *,
+    leaked_feature_index: int = 0,
+    shifted_feature_index: int = 1,
+    min_gap: float = 0.5,
+) -> LabelLeakageReport:
     """Detect a feature that directly encodes the label."""
 
-    labels = t.tensor([0, 1, 0, 1, 0, 1], dtype=t.long)
-    signed = labels.double() * 2 - 1
-    leaked_feature = signed
-    shifted_spurious_feature = -signed
+    if features is None or labels is None:
+        features, labels = default_label_leakage_fixture()
+    if features.ndim == 1:
+        features = features[:, None]
+    if features.shape[0] != labels.numel():
+        raise ValueError("features and labels must have the same number of examples")
+
+    leaked_feature = features[:, leaked_feature_index]
+    shifted_spurious_feature = features[:, shifted_feature_index]
     leaked_accuracy = binary_accuracy(leaked_feature, labels)
     shifted_accuracy = binary_accuracy(shifted_spurious_feature, labels)
     gap = leaked_accuracy - shifted_accuracy
     return LabelLeakageReport(
-        leaked_feature_index=0,
+        leaked_feature_index=leaked_feature_index,
         leaked_feature_accuracy=leaked_accuracy,
         shifted_no_leak_accuracy=shifted_accuracy,
         accuracy_gap=gap,
-        detects_leakage=leaked_accuracy == 1.0 and gap >= 0.5,
+        detects_leakage=leaked_accuracy >= 0.95 and gap >= min_gap,
     )
 
 
-def cherry_pick_report() -> CherryPickReport:
-    """Detect when selected examples exaggerate the population effect."""
+def default_cherry_pick_fixture(device: t.device | str | None = None) -> t.Tensor:
+    """Return mostly small effects with three dramatic selected examples at the end."""
 
-    effects = t.tensor(
+    return t.tensor(
         [
             0.02,
             0.03,
@@ -98,9 +121,26 @@ def cherry_pick_report() -> CherryPickReport:
             1.40,
             1.55,
             1.70,
-        ]
+        ],
+        device=device,
     )
-    selected = effects[-3:]
+
+
+def cherry_pick_report(
+    effects: t.Tensor | None = None,
+    selected_indices: t.Tensor | list[int] | None = None,
+    *,
+    min_inflation: float = 3.0,
+    median_multiplier: float = 5.0,
+) -> CherryPickReport:
+    """Detect when selected examples exaggerate the population effect."""
+
+    effects = default_cherry_pick_fixture() if effects is None else effects.flatten()
+    if selected_indices is None:
+        selected = effects[-3:]
+    else:
+        indices = t.as_tensor(selected_indices, dtype=t.long, device=effects.device)
+        selected = effects[indices]
     selected_mean = float(selected.mean().item())
     population_mean = float(effects.mean().item())
     population_median = float(effects.median().item())
@@ -110,33 +150,79 @@ def cherry_pick_report() -> CherryPickReport:
         population_mean_effect=population_mean,
         population_median_effect=population_median,
         inflation_ratio=inflation,
-        detects_cherry_picking=inflation >= 3.0 and selected_mean >= 5 * population_median,
+        detects_cherry_picking=(
+            inflation >= min_inflation
+            and selected_mean >= median_multiplier * population_median
+        ),
     )
 
 
-def probe_overfit_report() -> ProbeOverfitReport:
+def default_probe_overfit_fixture(
+    device: t.device | str | None = None,
+) -> tuple[t.Tensor, t.Tensor, t.Tensor, t.Tensor]:
+    """Return train labels copied by a memorizing probe and held-out all-zero guesses."""
+
+    train_labels = t.tensor([0, 1, 0, 1, 0, 1], dtype=t.long, device=device)
+    heldout_labels = t.tensor([0, 1, 0, 1, 0, 1], dtype=t.long, device=device)
+    train_predictions = train_labels.clone()
+    heldout_predictions = t.zeros_like(heldout_labels)
+    return train_predictions, train_labels, heldout_predictions, heldout_labels
+
+
+def _class_accuracy(predictions: t.Tensor, labels: t.Tensor) -> float:
+    predictions = predictions.long().flatten()
+    labels = labels.long().flatten()
+    if predictions.numel() != labels.numel():
+        raise ValueError("predictions and labels must have the same number of examples")
+    return float(predictions.eq(labels).double().mean().item())
+
+
+def probe_overfit_report(
+    train_predictions: t.Tensor | None = None,
+    train_labels: t.Tensor | None = None,
+    heldout_predictions: t.Tensor | None = None,
+    heldout_labels: t.Tensor | None = None,
+    *,
+    min_train_accuracy: float = 0.95,
+    max_heldout_accuracy: float = 0.6,
+    min_gap: float = 0.35,
+) -> ProbeOverfitReport:
     """Detect a memorizing probe that does not generalize."""
 
-    train_labels = t.tensor([0, 1, 0, 1, 0, 1], dtype=t.long)
-    heldout_labels = t.tensor([0, 1, 0, 1, 0, 1], dtype=t.long)
-    train_predictions = train_labels.clone()
-    heldout_predictions = t.tensor([0, 0, 0, 0, 0, 0], dtype=t.long)
-    train_accuracy = float((train_predictions == train_labels).double().mean().item())
-    heldout_accuracy = float((heldout_predictions == heldout_labels).double().mean().item())
+    if (
+        train_predictions is None
+        or train_labels is None
+        or heldout_predictions is None
+        or heldout_labels is None
+    ):
+        (
+            train_predictions,
+            train_labels,
+            heldout_predictions,
+            heldout_labels,
+        ) = default_probe_overfit_fixture()
+    train_accuracy = _class_accuracy(train_predictions, train_labels)
+    heldout_accuracy = _class_accuracy(heldout_predictions, heldout_labels)
     gap = train_accuracy - heldout_accuracy
     return ProbeOverfitReport(
         train_accuracy=train_accuracy,
         heldout_accuracy=heldout_accuracy,
         generalization_gap=gap,
-        detects_overfit=train_accuracy >= 0.95 and heldout_accuracy <= 0.6 and gap >= 0.35,
+        detects_overfit=(
+            train_accuracy >= min_train_accuracy
+            and heldout_accuracy <= max_heldout_accuracy
+            and gap >= min_gap
+        ),
     )
 
 
-def random_direction_control_report() -> FakeRandomDirectionControlReport:
-    """Detect a claimed steering direction that is no stronger than random controls."""
+def default_random_direction_fixture(
+    device: t.device | str | None = None,
+) -> tuple[t.Tensor, t.Tensor, t.Tensor]:
+    """Return a weak claimed direction and a random-control bank."""
 
-    behavior_direction = t.tensor([1.0, 0.0, 0.0], dtype=t.float64)
-    claimed_direction = t.tensor([0.05, 0.9987, 0.0], dtype=t.float64)
+    behavior_direction = t.tensor([1.0, 0.0, 0.0], dtype=t.float64, device=device)
+    claimed_direction = t.tensor([0.05, 0.9987, 0.0], dtype=t.float64, device=device)
     random_directions = t.tensor(
         [
             [0.12, 0.99, 0.00],
@@ -146,14 +232,33 @@ def random_direction_control_report() -> FakeRandomDirectionControlReport:
             [-0.11, 0.00, 0.99],
         ],
         dtype=t.float64,
+        device=device,
     )
+    return behavior_direction, claimed_direction, random_directions
+
+
+def random_direction_control_report(
+    behavior_direction: t.Tensor | None = None,
+    claimed_direction: t.Tensor | None = None,
+    random_directions: t.Tensor | None = None,
+    *,
+    required_margin: float = 0.25,
+) -> FakeRandomDirectionControlReport:
+    """Detect a claimed steering direction that is no stronger than random controls."""
+
+    if behavior_direction is None or claimed_direction is None or random_directions is None:
+        behavior_direction, claimed_direction, random_directions = (
+            default_random_direction_fixture()
+        )
+    behavior_direction = behavior_direction.flatten()
     claimed_direction = claimed_direction / claimed_direction.norm()
+    behavior_direction = behavior_direction / behavior_direction.norm()
     random_directions = random_directions / random_directions.norm(dim=1, keepdim=True)
     claimed_effect = float(abs(claimed_direction @ behavior_direction).item())
     random_effects = (random_directions @ behavior_direction).abs()
     random_p95 = float(t.quantile(random_effects, 0.95).item())
     gap = claimed_effect - random_p95
-    passes = gap >= 0.25
+    passes = gap >= required_margin
     return FakeRandomDirectionControlReport(
         claimed_effect=claimed_effect,
         random_p95_effect=random_p95,
@@ -163,13 +268,18 @@ def random_direction_control_report() -> FakeRandomDirectionControlReport:
     )
 
 
-def fake_result_audit_report() -> FakeResultAuditReport:
+def fake_result_audit_report(
+    leakage: LabelLeakageReport | None = None,
+    cherry_pick: CherryPickReport | None = None,
+    overfit: ProbeOverfitReport | None = None,
+    random_direction: FakeRandomDirectionControlReport | None = None,
+) -> FakeResultAuditReport:
     """Run a compact audit suite for fake-result failure modes."""
 
-    leakage = label_leakage_report()
-    cherry_pick = cherry_pick_report()
-    overfit = probe_overfit_report()
-    random_direction = random_direction_control_report()
+    leakage = leakage or label_leakage_report()
+    cherry_pick = cherry_pick or cherry_pick_report()
+    overfit = overfit or probe_overfit_report()
+    random_direction = random_direction or random_direction_control_report()
     flags = [
         leakage.detects_leakage,
         cherry_pick.detects_cherry_picking,
