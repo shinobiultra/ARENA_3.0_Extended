@@ -12,7 +12,7 @@ sections:
   '5.1':
     status: course_ready
     page: chapter5_modern_architectures/instructions/pages/01_[5.1]_Gemma_from_Scratch.md
-    notes: Polished pilot section with diagrams, help dropdowns, signature result, and updated notebooks.
+    notes: Eight-exercise ARENA build from RMSNorm and RoPE through grouped-query attention, SwiGLU, a complete two-layer causal LM, KV-cache decoding, and activation tracing. The visible signature localizes the first divergence caused by removing embedding scaling or RoPE and by scrambling GQA order, while the exact implementation stays at zero trace error. CUDA verification loads all 21 matched weights into transformers GemmaForCausalLM, reaches 6.88e-05 maximum logit error, full top-5 and greedy-generation agreement, and cache parity within tolerance.
   '5.2':
     status: course_ready
     page: chapter5_modern_architectures/instructions/pages/02_[5.2]_Gemma_Scope_and_Feature_Steering.md

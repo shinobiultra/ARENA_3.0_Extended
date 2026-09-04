@@ -380,6 +380,57 @@ def test_tiny_gemma_matches_reference_decoder(GemmaForCausalLM: type | None = No
     print("All tests in `test_tiny_gemma_matches_reference_decoder` passed!")
 
 
+def test_capture_gemma_trace(
+    capture_gemma_trace: Callable | None = None,
+    make_tiny_gemma: Callable[[], object] = _make_default_tiny_gemma,
+):
+    capture_gemma_trace = capture_gemma_trace or _solutions().capture_gemma_trace
+    model = make_tiny_gemma().eval()
+    input_ids = t.tensor([[1, 5, 8, 13]])
+    trace = capture_gemma_trace(model, input_ids)
+    expected_stages = ["embedding", "layer_0", "layer_1", "final_norm", "logits"]
+    assert list(trace) == expected_stages, (
+        f"Expected trace stages {expected_stages}; got {list(trace)}."
+    )
+    for stage in expected_stages[:-1]:
+        assert trace[stage].shape == (1, 4, model.config.hidden_size), (
+            f"Stage {stage} should have residual-stream shape (1, 4, {model.config.hidden_size})."
+        )
+    assert trace["logits"].shape == (1, 4, model.config.vocab_size)
+    print("All tests in `test_capture_gemma_trace` passed!")
+
+
+def test_architecture_controls(run_architecture_controls: Callable | None = None):
+    run_architecture_controls = run_architecture_controls or _solutions().run_architecture_controls
+    result = run_architecture_controls()
+    profiles = result["profiles"]
+    assert list(profiles) == [
+        "exact",
+        "no embedding scale",
+        "no RoPE",
+        "wrong GQA order",
+    ]
+    assert profiles["exact"]["logits"]["max_abs"] <= 5e-6, (
+        "The completed learner model should match the independent reference at the logits."
+    )
+    assert profiles["no embedding scale"]["embedding"]["relative_rmse"] > 0.5, (
+        "Removing Gemma's sqrt(hidden_size) embedding scale should visibly diverge at the embedding."
+    )
+    assert profiles["no RoPE"]["embedding"]["max_abs"] == 0.0
+    assert profiles["no RoPE"]["layer_0"]["max_abs"] > 1e-3, (
+        "The no-RoPE control should first diverge inside the first decoder layer."
+    )
+    assert profiles["wrong GQA order"]["embedding"]["max_abs"] == 0.0
+    assert profiles["wrong GQA order"]["layer_0"]["max_abs"] > 1e-3, (
+        "The wrong-head-order control should first diverge inside the first decoder layer."
+    )
+    for control in ["no embedding scale", "no RoPE", "wrong GQA order"]:
+        assert profiles[control]["logits"]["max_abs"] > 1e-2, (
+            f"Control {control!r} did not produce a meaningful final-logit difference."
+        )
+    print("All tests in `test_architecture_controls` passed!")
+
+
 def test_notebook_contract(run_smoke_test: Callable | None = None):
     if run_smoke_test is None:
         from chapter5_modern_architectures.exercises.part1_gemma_from_scratch.solutions import (
@@ -398,4 +449,6 @@ def test_notebook_contract(run_smoke_test: Callable | None = None):
         "Exact-clone parity should have top-k agreement 1.0. "
         f"Got {result['clone_parity']}"
     )
+    test_capture_gemma_trace()
+    test_architecture_controls()
     print("All tests in `test_notebook_contract` passed!")

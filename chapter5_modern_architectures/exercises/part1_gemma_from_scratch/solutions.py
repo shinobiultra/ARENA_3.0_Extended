@@ -17,7 +17,7 @@ if str(root_dir) not in sys.path:
     sys.path.append(str(root_dir))
 
 from arena_ext import compare_logits, estimate_inference_memory
-from arena_ext.gemma import GemmaConfig
+from arena_ext.gemma import GemmaConfig, GemmaForCausalLM as ReferenceGemmaForCausalLM
 
 MAIN = __name__ == "__main__"
 
@@ -414,6 +414,122 @@ def make_tiny_gemma_config(sliding_window: int | None = None) -> GemmaConfig:
 def make_tiny_gemma(seed: int = 0, sliding_window: int | None = None) -> GemmaForCausalLM:
     t.manual_seed(seed)
     return GemmaForCausalLM(make_tiny_gemma_config(sliding_window=sliding_window))
+
+
+SIGNATURE_INPUT_IDS = t.tensor(
+    [
+        [1, 5, 8, 13, 2, 21, 3],
+        [3, 2, 1, 8, 5, 13, 21],
+        [21, 13, 8, 5, 3, 2, 1],
+        [2, 3, 5, 8, 13, 21, 1],
+    ],
+    dtype=t.long,
+)
+
+
+@t.inference_mode()
+def capture_gemma_trace(model: nn.Module, input_ids: t.Tensor) -> dict[str, t.Tensor]:
+    """Capture the residual stream after each learner-visible model stage."""
+
+    trace: dict[str, t.Tensor] = {}
+    handles = []
+
+    def save(name: str, scale: float = 1.0):
+        def hook(_module, _inputs, output):
+            value = output[0] if isinstance(output, tuple) else output
+            trace[name] = (value * scale).detach().float().cpu()
+
+        return hook
+
+    embed_scale = math.sqrt(model.config.hidden_size)
+    handles.append(model.model.embed_tokens.register_forward_hook(save("embedding", embed_scale)))
+    for layer_idx, layer in enumerate(model.model.layers):
+        handles.append(layer.register_forward_hook(save(f"layer_{layer_idx}")))
+    handles.append(model.model.norm.register_forward_hook(save("final_norm")))
+    try:
+        output = model(input_ids)
+    finally:
+        for handle in handles:
+            handle.remove()
+    trace["logits"] = output.logits.detach().float().cpu()
+    return trace
+
+
+def compare_gemma_traces(
+    actual: dict[str, t.Tensor],
+    expected: dict[str, t.Tensor],
+) -> dict[str, dict[str, float]]:
+    """Return interpretable error metrics for each shared activation stage."""
+
+    assert actual.keys() == expected.keys()
+    profile = {}
+    for name in expected:
+        actual_stage = actual[name]
+        expected_stage = expected[name]
+        delta = actual_stage - expected_stage
+        rmse = delta.square().mean().sqrt()
+        reference_rms = expected_stage.square().mean().sqrt()
+        cosine = F.cosine_similarity(
+            actual_stage.reshape(1, -1),
+            expected_stage.reshape(1, -1),
+        ).item()
+        profile[name] = {
+            "max_abs": delta.abs().max().item(),
+            "rmse": rmse.item(),
+            "relative_rmse": (rmse / reference_rms.clamp_min(1e-12)).item(),
+            "cosine": cosine,
+        }
+    return profile
+
+
+@t.inference_mode()
+def run_architecture_controls(
+    input_ids: t.Tensor = SIGNATURE_INPUT_IDS,
+    *,
+    seed: int = 5101,
+) -> dict[str, object]:
+    """Compare the exact decoder with three deliberate architecture mistakes."""
+
+    config = make_tiny_gemma_config()
+    t.manual_seed(seed)
+    reference = ReferenceGemmaForCausalLM(config).eval()
+    learner = GemmaForCausalLM(config).eval()
+    learner.load_state_dict(reference.state_dict())
+
+    reference_trace = capture_gemma_trace(reference, input_ids)
+    variant_traces = {"exact": capture_gemma_trace(learner, input_ids)}
+
+    remove_scale = learner.model.embed_tokens.register_forward_hook(
+        lambda _module, _inputs, output: output / math.sqrt(config.hidden_size)
+    )
+    try:
+        variant_traces["no embedding scale"] = capture_gemma_trace(learner, input_ids)
+    finally:
+        remove_scale.remove()
+
+    original_apply_rope = globals()["apply_rope"]
+    globals()["apply_rope"] = lambda x, _cos, _sin, _position_ids: x
+    try:
+        variant_traces["no RoPE"] = capture_gemma_trace(learner, input_ids)
+    finally:
+        globals()["apply_rope"] = original_apply_rope
+
+    original_repeat_kv = globals()["repeat_kv"]
+    globals()["repeat_kv"] = lambda hidden, repeats: hidden.repeat(1, repeats, 1, 1)
+    try:
+        variant_traces["wrong GQA order"] = capture_gemma_trace(learner, input_ids)
+    finally:
+        globals()["repeat_kv"] = original_repeat_kv
+
+    return {
+        "input_ids": input_ids.detach().cpu(),
+        "reference_trace": reference_trace,
+        "variant_traces": variant_traces,
+        "profiles": {
+            name: compare_gemma_traces(trace, reference_trace)
+            for name, trace in variant_traces.items()
+        },
+    }
 
 
 def rms_norm_smoke_test() -> bool:
