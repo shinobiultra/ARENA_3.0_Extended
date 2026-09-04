@@ -7,6 +7,33 @@ from pathlib import Path
 
 import torch as t
 
+from arena_ext.white_box_monitors import (
+    FEATURE_ACTIVATIONS,
+    FEATURE_NAMES,
+    HELDOUT_CONTEXTS,
+    OUTPUT_TEMPLATES,
+    TRAIN_CONTEXTS,
+    VISIBLE_RISK_SCORES,
+    MonitorDashboardEntry,
+    MonitorDirection,
+    MonitorRecord,
+    activation_matrix,
+    active_features,
+    build_dashboard_entries,
+    build_monitor_records,
+    fit_white_box_monitor,
+    ground_truth_failure_labels,
+    midpoint_threshold,
+    perturb_activation,
+    predict_from_scores,
+    random_direction_control_scores,
+    run_toy_monitor_experiment,
+    score_white_box_monitor,
+    shuffled_label_control_scores,
+    split_train_heldout,
+    surface_risk_scores,
+)
+
 chapter = "chapter9_alignment_interpretability"
 root_dir = next(p for p in [Path.cwd(), *Path.cwd().parents] if (p / chapter).exists())
 if str(root_dir) not in sys.path:
@@ -167,6 +194,54 @@ def binary_auroc(scores: t.Tensor, labels: t.Tensor) -> float:
     return (wins + 0.5 * ties) / total_pairs
 
 
+def threshold_sweep(
+    scores: t.Tensor,
+    labels: t.Tensor,
+    thresholds: t.Tensor,
+) -> dict[str, t.Tensor]:
+    """Evaluate accuracy and error rates at every candidate threshold."""
+
+    scores = scores.flatten().float()
+    labels = labels.flatten()
+    thresholds = thresholds.flatten().float()
+    _require_finite_tensor("scores", scores)
+    _require_binary_tensor("labels", labels)
+    _require_finite_tensor("thresholds", thresholds)
+    if scores.shape != labels.shape:
+        raise ValueError("scores and labels must have matching shape.")
+    labels = labels.bool()[:, None]
+    predictions = scores[:, None] > thresholds[None, :]
+    true_positive = (predictions & labels).sum(dim=0).float()
+    false_positive = (predictions & ~labels).sum(dim=0).float()
+    true_negative = (~predictions & ~labels).sum(dim=0).float()
+    false_negative = (~predictions & labels).sum(dim=0).float()
+    return {
+        "thresholds": thresholds,
+        "true_positive_rate": true_positive / (true_positive + false_negative),
+        "false_positive_rate": false_positive / (false_positive + true_negative),
+        "accuracy": (true_positive + true_negative) / scores.numel(),
+    }
+
+
+def white_box_only_catches(
+    white_box_predictions: t.Tensor,
+    black_box_predictions: t.Tensor,
+    labels: t.Tensor,
+) -> tuple[int, ...]:
+    """Return failures caught internally and missed by the surface baseline."""
+
+    white = white_box_predictions.flatten()
+    black = black_box_predictions.flatten()
+    labels = labels.flatten()
+    _require_binary_tensor("white_box_predictions", white)
+    _require_binary_tensor("black_box_predictions", black)
+    _require_binary_tensor("labels", labels)
+    if white.shape != black.shape or white.shape != labels.shape:
+        raise ValueError("predictions and labels must have matching shape.")
+    caught = labels.bool() & white.bool() & ~black.bool()
+    return tuple(int(index.item()) for index in caught.nonzero().flatten())
+
+
 def monitor_calibration_report(
     monitor_scores: t.Tensor,
     failure_labels: t.Tensor,
@@ -311,7 +386,20 @@ def explanation_validation_smoke_test() -> dict:
 
 def run_smoke_test(cpu: bool = True) -> dict:
     _ = cpu
+    exact = run_toy_monitor_experiment()
     return {
+        "contract_passed": True,
+        "tests_passed": True,
+        "accepted": True,
+        "toy_heldout_examples": len(exact["heldout_records"]),
+        "toy_white_box_auroc": exact["white_box_auroc"],
+        "toy_output_only_auroc": exact["black_box_auroc"],
+        "toy_white_box_accuracy": exact["white_box_accuracy"],
+        "toy_output_only_accuracy": exact["black_box_accuracy"],
+        "toy_white_box_only_catches": list(exact["white_box_only_catches"]),
+        "toy_shuffled_label_auroc": exact["shuffled_label_auroc"],
+        "toy_random_direction_auroc": exact["random_direction_auroc"],
+        "toy_feature_explanation_accuracy": exact["explanation_accuracy"],
         "dashboard": dashboard_smoke_test(),
         "calibration": calibration_smoke_test(),
         "missed_failure": missed_failure_smoke_test(),

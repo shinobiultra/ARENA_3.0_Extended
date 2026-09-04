@@ -4,6 +4,20 @@
   },
   "metrics": {
     "accepted": true,
+    "toy_heldout_examples": 24,
+    "toy_white_box_auroc": 1.0,
+    "toy_output_only_auroc": 0.8,
+    "toy_white_box_accuracy": 1.0,
+    "toy_output_only_accuracy": 0.8333333333333334,
+    "toy_white_box_only_catches": [
+      5,
+      11,
+      17,
+      23
+    ],
+    "toy_shuffled_label_auroc": 0.6,
+    "toy_random_direction_auroc": 0.2,
+    "toy_feature_explanation_accuracy": 1.0,
     "black_box_missed_failure_count": 3,
     "black_box_proxy_accuracy": 0.875,
     "black_box_token_ids": [

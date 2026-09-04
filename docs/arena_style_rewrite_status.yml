@@ -104,7 +104,7 @@ sections:
   '9.4':
     status: course_ready
     page: chapter9_alignment_interpretability/instructions/pages/04_[9.4]_White_box_Evals_and_Monitors.md
-    notes: ARENA-style rewrite with safe white-box monitor validation loop, dashboard/calibration/black-box-miss/false-positive/explanation-validation progression, help and interpretation dropdowns, pinned Pythia-70M monitor signature result, limitations, and paired notebook surfaces.
+    notes: "ARENA-style white-box-monitor lab with eight visible exercises, immediate semantic tests, expected/help/solution/interpretation dropdowns, threshold play, and anomaly hunting. On the exact six-feature organism, the white-box monitor gets held-out AUROC/accuracy 1.000/1.000 and catches four surface-identical CoT-unfaithful states that the output-only baseline misses; output-only, shuffled-label, and random-direction AUROCs are 0.800, 0.600, and 0.200. CUDA 13.2 verification loads pinned EleutherAI/pythia-70m-deduped revision e93a9faa9c77e5d09219f6c868bfc7a1bd65593c and obtains monitor AUROC 1.000 and accuracy 1.000 versus black-box proxy accuracy 0.875, with three missed failures, zero monitor false positives, label-shuffle AUROC 0.3875, random-direction AUROC 0.0875, and 0.309 GB peak VRAM. Twelve focused tests and all 21 solution cells pass. The real-model path is a safe hidden-state mechanics preflight without generated completions, not a broad safety-monitor or harmful-content benchmark."
   '10.1':
     status: course_ready
     page: chapter10_capstone_research_sprint/instructions/pages/01_[10.1]_Capstone_Research_Sprint.md

@@ -6,19 +6,18 @@ exercise_metadata:
   GT_TIER: GT-3
   DIFFICULTY: 3
   IMPORTANCE: 4
-  EXPECTED_RUNTIME: seconds on toy contract; minutes on local real-model path
+  EXPECTED_RUNTIME: 75-100 minutes for the learner path; minutes on local real-model path
   REQUIRES_GPU: true
 gt_tier: GT-3
-evidence_level: toy_monitor_contract_plus_pinned_pythia_white_box_monitor_preflight
-claim_scope: GT-3 white-box monitor preflight using safe generated eval records only.
-  The toy dashboard, AUROC calibration, missed-failure, false-positive, and explanation-validation
-  contracts are preserved, and the graded CUDA path loads pinned Pythia-70M-deduped
-  on neutral vs safe failure-policy prompts. It trains a thresholded hidden-state
-  monitor on 36 prompts, evaluates 24 held-out prompts across five benign failure
-  kinds, compares against a real next-token pass/fail black-box proxy, checks label-shuffled
-  and fixed random directions, and validates false-positive documentation. This is
-  not a harmful-content monitor benchmark, not a broad safety monitor claim, and not
-  a generated-completion evaluation.
+evidence_level: exact_model_organism_ground_truth_plus_pinned_pythia_white_box_monitor_preflight
+claim_scope: The learner-facing GT-0 theorem uses a fully declared safe model organism
+  to show that a mean-difference monitor on six planted internal features detects all
+  24 held-out clean/failure records, including four CoT-unfaithfulness states whose
+  visible outputs are identical to clean. The output-only baseline misses exactly
+  those four cases, while label-shuffled and random-direction controls lose ranking.
+  The separate GT-3 CUDA path loads pinned Pythia-70M-deduped on safe monitor prompts
+  as a hidden-state mechanics preflight. It is not a harmful-content benchmark, a
+  broad safety monitor, or a generated-completion evaluation.
 required_gpu_gb: 1
 max_allowed_gpu_gb: 24
 models:
@@ -59,6 +58,19 @@ datasets:
   target_source: manual_safe_failure_labels_plus_real_hidden_state_monitor
   hidden_layer: -1
 expected_metrics:
+  toy_heldout_examples: 24
+  toy_white_box_auroc: 1.0
+  toy_output_only_auroc: 0.8
+  toy_white_box_accuracy: 1.0
+  toy_output_only_accuracy: 0.8333333333333334
+  toy_white_box_only_catches:
+  - 5
+  - 11
+  - 17
+  - 23
+  toy_shuffled_label_auroc: 0.6
+  toy_random_direction_auroc: 0.2
+  toy_feature_explanation_accuracy: 1.0
   tests_passed: true
   accepted: true
   max_allowed_gpu_gb: 24
@@ -96,19 +108,20 @@ expected_metrics:
   generation_used: false
   peak_vram_gb_max: 1.0
 controls:
+- exact_planted_feature_matrix
+- context_disjoint_train_heldout_split
+- byte_identical_clean_and_cot_unfaithful_outputs
+- output_only_surface_score_baseline
+- label_shuffled_monitor_negative_control
+- same_dimensional_random_direction_negative_control
+- named_feature_intervention_with_exact_linear_prediction
 - baseline_or_reference_check
 - negative_control_where_applicable
 - shape_dtype_or_exact_value_check
-- toy_dashboard_row_contract
-- toy_monitor_calibration_contract
-- toy_missed_failure_contract
-- toy_false_positive_documentation_contract
-- toy_feature_explanation_validation_contract
+- auditable_dashboard_rows_with_behavior_and_internal_evidence
+- threshold_sweep_with_tpr_fpr_and_accuracy
 - pinned_pythia70m_white_box_monitor_direction
-- heldout_context_split
 - real_next_token_pass_fail_black_box_proxy
-- label_shuffled_monitor_negative_control
-- fixed_seed_random_direction_monitor_negative_control
 - false_positive_documentation_control
 - no_completion_generation_hidden_state_and_logits_only
 - broad_safety_monitor_benchmark_not_claimed
