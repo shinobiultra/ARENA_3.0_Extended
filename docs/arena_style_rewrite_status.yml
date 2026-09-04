@@ -140,7 +140,7 @@ sections:
   '16.2':
     status: course_ready
     page: chapter16_shapley_attribution_baselines/instructions/pages/02_[16.2]_KernelSHAP_and_PartitionSHAP_Controls.md
-    notes: ARENA-style KernelSHAP/PartitionSHAP lesson with full-table weighted regression, exact Owen-value grouping controls, cross-group shortcut anomaly hunting, local validation-loop and signature-result diagrams, help/interpretation dropdowns, paired notebooks, limitations, and scoped CUDA trained-neural-game evidence.
+    notes: "ARENA-style seven-exercise KernelSHAP/PartitionSHAP lab with an exact six-player dividend game, learner-implemented constrained regression and Owen values, immediate semantic tests, expected/help/solution/interpretation dropdowns, a three-panel signature result, parameterized budget/seed/partition play, and anomaly hunting. Full-table KernelSHAP matches exact Shapley within 5.55e-16; at budget 24 the paired-kernel sampler has 0.242 mean max error versus 0.477 uniform, while shuffled values give 0.994 error. The aligned partition has zero error, a fixed misaligned partition has 0.300, and 91/100 random balanced partitions differ from exact Shapley. Ten focused tests and all 11 solution cells pass. CUDA 13.2 trains a four-player neural coalition game, recovers exact KernelSHAP/PartitionSHAP within 9.38e-7, rejects shuffled attributions by 4.63, and peaks at 0.063 GB VRAM. Limits include the exact 64-coalition organism, illustrative rather than optimal sampling, and supplied rather than learned partitions."
   '16.3':
     status: course_ready
     page: chapter16_shapley_attribution_baselines/instructions/pages/03_[16.3]_Shapley_Interactions_with_shapiq.md

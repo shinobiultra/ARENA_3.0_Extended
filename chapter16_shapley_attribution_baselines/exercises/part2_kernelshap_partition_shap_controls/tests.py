@@ -299,3 +299,112 @@ def test_committed_report_has_real_cuda_kernel_partition_evidence():
         "The CUDA preflight should stay inside the declared VRAM budget."
     )
     print("All tests in `test_committed_report_has_real_cuda_kernel_partition_evidence` passed!")
+
+
+def test_exact_dividend_game_oracle(
+    game_from_dividends: Callable,
+    shapley_from_dividends: Callable,
+):
+    dividends = {
+        frozenset({0}): 0.6,
+        frozenset({1}): -0.2,
+        frozenset({2}): 0.5,
+        frozenset({3}): 0.1,
+        frozenset({4}): 0.4,
+        frozenset({5}): -0.1,
+        frozenset({0, 1, 2}): 1.8,
+        frozenset({3, 4, 5}): -0.9,
+    }
+    values = game_from_dividends(6, dividends)
+    oracle = shapley_from_dividends(6, dividends)
+    assert len(values) == 64
+    assert values[frozenset()] == 0.0
+    assert abs(values[frozenset(range(6))] - 2.2) < 1e-12
+    _assert_tensor_close(
+        oracle,
+        t.tensor([1.2, 0.4, 1.1, -0.2, 0.1, -0.4], dtype=t.float64),
+        msg="Dividend-game Shapley oracle",
+    )
+    print("All tests in `test_exact_dividend_game_oracle` passed!")
+
+
+def test_coalition_sampler_controls(sample_interior_coalitions: Callable):
+    paired = sample_interior_coalitions(6, budget=12, seed=7, strategy="paired_kernel")
+    repeated = sample_interior_coalitions(6, budget=12, seed=7, strategy="paired_kernel")
+    uniform = sample_interior_coalitions(6, budget=12, seed=7, strategy="uniform")
+    assert paired == repeated
+    assert len(paired) == len(set(paired)) == 12
+    assert len(uniform) == len(set(uniform)) == 12
+    full = frozenset(range(6))
+    assert all((full - coalition) in paired for coalition in paired)
+    complete = sample_interior_coalitions(6, budget=62, seed=7, strategy="uniform")
+    assert len(complete) == 62
+    assert all(0 < len(coalition) < 6 for coalition in complete)
+    print("All tests in `test_coalition_sampler_controls` passed!")
+
+
+def test_sampled_kernelshap_convergence_control(
+    game_from_dividends: Callable,
+    shapley_from_dividends: Callable,
+    sample_interior_coalitions: Callable,
+    kernelshap_values: Callable,
+):
+    dividends = {
+        frozenset({0}): 0.6,
+        frozenset({1}): -0.2,
+        frozenset({2}): 0.5,
+        frozenset({3}): 0.1,
+        frozenset({4}): 0.4,
+        frozenset({5}): -0.1,
+        frozenset({0, 1, 2}): 1.8,
+        frozenset({3, 4, 5}): -0.9,
+    }
+    values = game_from_dividends(6, dividends)
+    oracle = shapley_from_dividends(6, dividends)
+    full_sample = sample_interior_coalitions(6, budget=62, seed=0, strategy="uniform")
+    full_estimate = kernelshap_values(values, num_players=6, coalitions=full_sample)
+    assert float((full_estimate - oracle).abs().max().item()) < 1e-9
+    paired_errors = []
+    uniform_errors = []
+    for seed in range(12):
+        for strategy, errors in (("paired_kernel", paired_errors), ("uniform", uniform_errors)):
+            sample = sample_interior_coalitions(6, budget=24, seed=seed, strategy=strategy)
+            estimate = kernelshap_values(values, num_players=6, coalitions=sample)
+            errors.append(float((estimate - oracle).abs().max().item()))
+    assert sum(paired_errors) / len(paired_errors) < sum(uniform_errors) / len(uniform_errors)
+    print("All tests in `test_sampled_kernelshap_convergence_control` passed!")
+
+
+def test_partition_alignment_and_random_control(
+    game_from_dividends: Callable,
+    shapley_from_dividends: Callable,
+    partition_shap_values: Callable,
+):
+    dividends = {
+        frozenset({0}): 0.6,
+        frozenset({1}): -0.2,
+        frozenset({2}): 0.5,
+        frozenset({3}): 0.1,
+        frozenset({4}): 0.4,
+        frozenset({5}): -0.1,
+        frozenset({0, 1, 2}): 1.8,
+        frozenset({3, 4, 5}): -0.9,
+    }
+    values = game_from_dividends(6, dividends)
+    oracle = shapley_from_dividends(6, dividends)
+    aligned = partition_shap_values(values, groups=((0, 1, 2), (3, 4, 5)))
+    misaligned = partition_shap_values(values, groups=((0, 3, 4), (1, 2, 5)))
+    _assert_tensor_close(aligned, oracle, msg="Aligned PartitionSHAP values")
+    _assert_tensor_close(
+        misaligned,
+        t.tensor([1.5, 0.25, 0.95, -0.125, 0.175, -0.55], dtype=t.float64),
+        msg="Misaligned PartitionSHAP values",
+    )
+    assert abs(float((misaligned - oracle).abs().max().item()) - 0.3) < 1e-9
+    print("All tests in `test_partition_alignment_and_random_control` passed!")
+
+
+test_exact_dividend_game_oracle.__test__ = False
+test_coalition_sampler_controls.__test__ = False
+test_sampled_kernelshap_convergence_control.__test__ = False
+test_partition_alignment_and_random_control.__test__ = False
