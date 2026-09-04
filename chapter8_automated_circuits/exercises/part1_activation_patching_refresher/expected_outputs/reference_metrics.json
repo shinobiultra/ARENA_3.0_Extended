@@ -1,39 +1,31 @@
 {
   "baselines": {
-    "required": true
+    "denoising_noising_agreement_required": true,
+    "off_route_control_required": true,
+    "wrong_position_donor_required": true
   },
   "metrics": {
-    "accepted": true,
-    "best_position": 5,
-    "best_score_min": 0.99,
-    "bnb_cuda_override": "130",
-    "clean_corrupt_gap_min": 6.0,
-    "distractor_token": " top",
-    "finite_logits": true,
-    "hf_revision": "bddc0e332f0ae84279e6a6a45d91b314899e1603",
-    "hook_name": "blocks.0.hook_resid_post",
-    "localizes_final_position": true,
-    "max_abs_final_patch_logit_error_max": 1e-05,
-    "max_allowed_gpu_gb": 24,
-    "max_wrong_position_control_fraction_max": 0.0001,
-    "model_name": "gelu-1l",
-    "peak_vram_gb_max": 1.0,
-    "preflight_passed": true,
-    "sequence_length": 6,
-    "target_position": 5,
-    "target_recovered_fraction_min": 0.99,
-    "target_token": " floor",
-    "tests_passed": true,
-    "tokenizer_revision": "0f6671571a20be9756b9991d978047c03b75e749",
-    "top_beats_max_wrong_position_control": true,
-    "top_beats_wrong_position_control": true,
-    "wrong_position_control_fraction_max": 0.0001
-  },
-  "negative_controls": {
-    "required_where_applicable": true
+    "clean_metric": 2.0,
+    "corrupt_metric": -2.0,
+    "denoising_noising_max_error_max": 0.0,
+    "exact_ground_truth_passed": true,
+    "off_route_max_max": 0.0,
+    "route_mean_min": 1.0,
+    "separation_min": 1.0,
+    "topk_overlap_min": 1.0,
+    "wrong_position_donor_max_max": 0.0
   },
   "notebook_id": "8_1_activation_patching_refresher",
-  "ood_tests": {
-    "required_where_applicable": true
+  "real_model_preflight": {
+    "best_position": 5,
+    "clean_corrupt_gap_min": 6.0,
+    "cuda_version": "13.2",
+    "hf_revision": "bddc0e332f0ae84279e6a6a45d91b314899e1603",
+    "hook_name": "blocks.0.hook_resid_post",
+    "model_name": "gelu-1l",
+    "peak_vram_gb_max": 1.0,
+    "target_recovered_fraction_min": 0.99,
+    "torch_version_prefix": "2.12.1+cu132",
+    "wrong_position_control_fraction_max": 0.0001
   }
 }

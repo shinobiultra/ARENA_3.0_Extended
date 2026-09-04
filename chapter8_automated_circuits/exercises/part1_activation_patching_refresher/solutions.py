@@ -1,5 +1,7 @@
 # %%
-"""Reference solutions for [8.1] Activation Patching Refresher."""
+"""Reference implementations for [8.1] Activation Patching Refresher."""
+
+from __future__ import annotations
 
 import logging
 import os
@@ -16,6 +18,20 @@ if str(root_dir) not in sys.path:
 
 MAIN = __name__ == "__main__"
 
+TOK_BOS = 0
+TOK_RED = 1
+TOK_BLUE = 2
+TOK_QUERY = 3
+TOK_MASK = 4
+TOKEN_NAMES = ("<BOS>", "RED", "BLUE", "QUERY", "?")
+POSITION_LABELS = ("<BOS>", "source", "distractor", "query", "answer")
+LAYER_LABELS = ("embed", "route", "readout")
+SOURCE_POS = 1
+DISTRACTOR_POS = 2
+QUERY_POS = 3
+ANSWER_POS = 4
+ROUTE_CELLS = ((0, SOURCE_POS), (1, QUERY_POS), (2, ANSWER_POS))
+
 TL_GELU1L_MODEL_NAME = "gelu-1l"
 TL_GELU1L_HF_ID = "NeelNanda/GELU_1L512W_C4_Code"
 TL_GELU1L_REVISION = "bddc0e332f0ae84279e6a6a45d91b314899e1603"
@@ -27,86 +43,54 @@ TL_CORRUPT_PROMPT = "The bird flew over the"
 TL_BNB_CUDA_OVERRIDE = "130"
 
 
-# %%
 @dataclass(frozen=True)
-class PatchingRecoveryReport:
-    clean_metric: float
-    corrupt_metric: float
-    patched_metric: float
-    recovered_fraction: float
-    passes_recovery: bool
+class ToyRun:
+    logits: t.Tensor
+    cache: t.Tensor
 
 
 @dataclass(frozen=True)
-class ActivationPatchingSweep:
-    patch_scores: t.Tensor
-    best_index: int
-    best_score: float
-
-
-@dataclass(frozen=True)
-class PatchingLocalizationReport:
-    top_indices: tuple[int, ...]
-    target_indices: tuple[int, ...]
+class LocalizationReport:
+    top_cells: tuple[tuple[int, int], ...]
+    route_cells: tuple[tuple[int, int], ...]
     topk_overlap: float
-    localizes_target: bool
+    route_mean: float
+    off_route_max: float
+    separation: float
 
 
-@dataclass(frozen=True)
-class RandomPatchControlReport:
-    top_patch_score: float
-    random_patch_score: float
-    max_random_patch_score: float
-    top_beats_random: bool
-    top_beats_max_random: bool
+def make_copy_task_pair() -> tuple[t.Tensor, t.Tensor]:
+    """Return clean RED and corrupt BLUE prompts for the two-hop copy task."""
+
+    clean = t.tensor([TOK_BOS, TOK_RED, TOK_BLUE, TOK_QUERY, TOK_MASK])
+    corrupt = t.tensor([TOK_BOS, TOK_BLUE, TOK_RED, TOK_QUERY, TOK_MASK])
+    return clean, corrupt
 
 
 def answer_logit_diff(
     logits: t.Tensor,
     *,
-    positive_token_id: int,
-    negative_token_id: int,
+    positive_token_id: int = TOK_RED,
+    negative_token_id: int = TOK_BLUE,
 ) -> float:
     """Return mean positive-minus-negative logit difference."""
 
-    if logits.ndim < 1:
-        raise ValueError("logits must have a vocabulary dimension.")
-    vocab_size = logits.shape[-1]
-    if vocab_size == 0:
-        raise ValueError("logits vocabulary dimension must be nonempty.")
+    if logits.ndim < 1 or logits.shape[-1] == 0:
+        raise ValueError("logits must have a nonempty vocabulary dimension.")
     if positive_token_id == negative_token_id:
         raise ValueError("positive_token_id and negative_token_id must differ.")
-    if not 0 <= positive_token_id < vocab_size:
+    if not 0 <= positive_token_id < logits.shape[-1]:
         raise ValueError("positive_token_id is out of range.")
-    if not 0 <= negative_token_id < vocab_size:
+    if not 0 <= negative_token_id < logits.shape[-1]:
         raise ValueError("negative_token_id is out of range.")
     if not t.isfinite(logits).all():
         raise ValueError("logits must be finite.")
-    diff = logits[..., positive_token_id] - logits[..., negative_token_id]
-    return diff.float().mean().item()
-
-
-def patch_activation_slice(
-    clean_activations: t.Tensor,
-    corrupt_activations: t.Tensor,
-    *,
-    component_index: int,
-    component_dim: int = 0,
-) -> t.Tensor:
-    """Patch one clean activation slice into the corrupt activation tensor."""
-
-    if clean_activations.shape != corrupt_activations.shape:
-        raise ValueError("clean and corrupt activations must have matching shape.")
-    if not 0 <= component_dim < clean_activations.ndim:
-        raise ValueError("component_dim is out of range.")
-    if not 0 <= component_index < clean_activations.shape[component_dim]:
-        raise ValueError("component_index is out of range.")
-
-    patched = corrupt_activations.clone()
-    slices = [slice(None)] * clean_activations.ndim
-    slices[component_dim] = component_index
-    patched[tuple(slices)] = clean_activations[tuple(slices)]
-    return patched
+    return float(
+        (logits[..., positive_token_id] - logits[..., negative_token_id])
+        .float()
+        .mean()
+        .item()
+    )
 
 
 def recovery_fraction(
@@ -115,242 +99,242 @@ def recovery_fraction(
     corrupt_metric: float,
     patched_metric: float,
 ) -> float:
-    """Return how much of the clean-corrupt gap a patch recovers."""
+    """Calibrate a patched metric so corrupt is 0 and clean is 1."""
 
-    denominator = clean_metric - corrupt_metric
-    metrics_are_finite = all(
-        t.isfinite(t.tensor(value)).item()
-        for value in (clean_metric, corrupt_metric, patched_metric)
-    )
-    if not metrics_are_finite:
+    values = t.tensor([clean_metric, corrupt_metric, patched_metric], dtype=t.float64)
+    if not t.isfinite(values).all():
         raise ValueError("clean, corrupt, and patched metrics must be finite.")
-    if denominator == 0:
+    gap = clean_metric - corrupt_metric
+    if gap == 0:
         raise ValueError("clean_metric and corrupt_metric must differ.")
-    return (patched_metric - corrupt_metric) / denominator
+    return float((patched_metric - corrupt_metric) / gap)
 
 
-def patching_recovery_report(
-    clean_logits: t.Tensor,
-    corrupt_logits: t.Tensor,
-    patched_logits: t.Tensor,
+def _validate_copy_tokens(tokens: t.Tensor) -> None:
+    if tokens.shape != (len(POSITION_LABELS),):
+        raise ValueError(f"tokens must have shape ({len(POSITION_LABELS)},).")
+    if tokens.dtype != t.long:
+        raise ValueError("tokens must use torch.long ids.")
+    if int(tokens[SOURCE_POS]) not in (TOK_RED, TOK_BLUE):
+        raise ValueError("source position must contain RED or BLUE.")
+    if int(tokens[DISTRACTOR_POS]) not in (TOK_RED, TOK_BLUE):
+        raise ValueError("distractor position must contain RED or BLUE.")
+    if int(tokens[QUERY_POS]) != TOK_QUERY or int(tokens[ANSWER_POS]) != TOK_MASK:
+        raise ValueError("query and answer positions must contain QUERY and ?.")
+
+
+def run_causal_copy_model(
+    tokens: t.Tensor,
     *,
-    positive_token_id: int,
-    negative_token_id: int,
-    min_recovered_fraction: float = 0.5,
-) -> PatchingRecoveryReport:
-    """Measure logit-diff recovery after patching clean activations."""
+    patch_layer: int | None = None,
+    patch_position: int | None = None,
+    donor_cache: t.Tensor | None = None,
+) -> ToyRun:
+    """Run the exact source-to-query-to-answer routing model."""
 
-    if not 0.0 <= min_recovered_fraction <= 1.0:
-        raise ValueError("min_recovered_fraction must be between 0 and 1.")
-    clean_metric = answer_logit_diff(
-        clean_logits,
-        positive_token_id=positive_token_id,
-        negative_token_id=negative_token_id,
-    )
-    corrupt_metric = answer_logit_diff(
-        corrupt_logits,
-        positive_token_id=positive_token_id,
-        negative_token_id=negative_token_id,
-    )
-    patched_metric = answer_logit_diff(
-        patched_logits,
-        positive_token_id=positive_token_id,
-        negative_token_id=negative_token_id,
-    )
-    recovered = recovery_fraction(
-        clean_metric=clean_metric,
-        corrupt_metric=corrupt_metric,
-        patched_metric=patched_metric,
-    )
-    return PatchingRecoveryReport(
-        clean_metric=clean_metric,
-        corrupt_metric=corrupt_metric,
-        patched_metric=patched_metric,
-        recovered_fraction=recovered,
-        passes_recovery=recovered >= min_recovered_fraction,
-    )
+    _validate_copy_tokens(tokens)
+    patch_requested = patch_layer is not None or patch_position is not None or donor_cache is not None
+    if patch_requested:
+        if patch_layer is None or patch_position is None or donor_cache is None:
+            raise ValueError("patch_layer, patch_position, and donor_cache are required together.")
+        if donor_cache.shape != (len(LAYER_LABELS), len(POSITION_LABELS), 2):
+            raise ValueError("donor_cache has the wrong shape.")
+        if not 0 <= patch_layer < len(LAYER_LABELS):
+            raise ValueError("patch_layer is out of range.")
+        if not 0 <= patch_position < len(POSITION_LABELS):
+            raise ValueError("patch_position is out of range.")
+
+    def maybe_patch(resid: t.Tensor, layer: int) -> t.Tensor:
+        if patch_requested and layer == patch_layer:
+            resid = resid.clone()
+            resid[patch_position] = donor_cache[layer, patch_position]
+        return resid
+
+    resid_0 = t.zeros((len(POSITION_LABELS), 2), dtype=t.float32)
+    resid_0[tokens == TOK_RED, 0] = 1.0
+    resid_0[tokens == TOK_BLUE, 1] = 1.0
+    resid_0 = maybe_patch(resid_0, 0)
+
+    resid_1 = resid_0.clone()
+    resid_1[QUERY_POS] = resid_0[SOURCE_POS]
+    resid_1 = maybe_patch(resid_1, 1)
+
+    resid_2 = resid_1.clone()
+    resid_2[ANSWER_POS] = resid_1[QUERY_POS]
+    resid_2 = maybe_patch(resid_2, 2)
+
+    cache = t.stack([resid_0, resid_1, resid_2])
+    logits = t.zeros(len(TOKEN_NAMES), dtype=t.float32)
+    logits[TOK_RED] = 2.0 * resid_2[ANSWER_POS, 0]
+    logits[TOK_BLUE] = 2.0 * resid_2[ANSWER_POS, 1]
+    return ToyRun(logits=logits, cache=cache)
 
 
-def activation_patching_sweep(
+def patch_residual_cell(
+    recipient_tokens: t.Tensor,
+    donor_cache: t.Tensor,
     *,
-    clean_metric: float,
-    corrupt_metric: float,
-    patched_metrics: t.Tensor,
-) -> ActivationPatchingSweep:
-    """Convert per-component patched metrics into recovery scores."""
+    layer: int,
+    position: int,
+) -> ToyRun:
+    """Patch one donor residual cell into a fresh recipient run."""
 
-    if patched_metrics.ndim != 1:
-        raise ValueError("patched_metrics must be rank-1.")
-    if patched_metrics.numel() == 0:
-        raise ValueError("patched_metrics must be nonempty.")
-    if not t.isfinite(patched_metrics).all():
-        raise ValueError("patched_metrics must be finite.")
-    denominator = clean_metric - corrupt_metric
-    metrics_are_finite = all(
-        t.isfinite(t.tensor(value)).item()
-        for value in (clean_metric, corrupt_metric)
-    )
-    if not metrics_are_finite:
-        raise ValueError("clean_metric and corrupt_metric must be finite.")
-    if denominator == 0:
-        raise ValueError("clean_metric and corrupt_metric must differ.")
-    patch_scores = (patched_metrics.float() - corrupt_metric) / denominator
-    best_index = int(patch_scores.argmax().item())
-    return ActivationPatchingSweep(
-        patch_scores=patch_scores,
-        best_index=best_index,
-        best_score=float(patch_scores[best_index].item()),
+    return run_causal_copy_model(
+        recipient_tokens,
+        patch_layer=layer,
+        patch_position=position,
+        donor_cache=donor_cache,
     )
 
 
-def patching_localization_report(
+def denoising_patch_sweep(
+    clean_tokens: t.Tensor,
+    corrupt_tokens: t.Tensor,
+    *,
+    donor_cache: t.Tensor | None = None,
+) -> t.Tensor:
+    """Patch every layer-position cell into corrupt and return recovery fractions."""
+
+    clean_run = run_causal_copy_model(clean_tokens)
+    corrupt_run = run_causal_copy_model(corrupt_tokens)
+    donor_cache = clean_run.cache if donor_cache is None else donor_cache
+    clean_metric = answer_logit_diff(clean_run.logits)
+    corrupt_metric = answer_logit_diff(corrupt_run.logits)
+    scores = t.empty((len(LAYER_LABELS), len(POSITION_LABELS)), dtype=t.float32)
+    for layer in range(scores.shape[0]):
+        for position in range(scores.shape[1]):
+            patched = patch_residual_cell(
+                corrupt_tokens,
+                donor_cache,
+                layer=layer,
+                position=position,
+            )
+            scores[layer, position] = recovery_fraction(
+                clean_metric=clean_metric,
+                corrupt_metric=corrupt_metric,
+                patched_metric=answer_logit_diff(patched.logits),
+            )
+    return scores
+
+
+def noising_patch_sweep(clean_tokens: t.Tensor, corrupt_tokens: t.Tensor) -> t.Tensor:
+    """Patch corrupt cells into clean and return the fraction of clean behavior destroyed."""
+
+    clean_run = run_causal_copy_model(clean_tokens)
+    corrupt_run = run_causal_copy_model(corrupt_tokens)
+    clean_metric = answer_logit_diff(clean_run.logits)
+    corrupt_metric = answer_logit_diff(corrupt_run.logits)
+    gap = clean_metric - corrupt_metric
+    scores = t.empty((len(LAYER_LABELS), len(POSITION_LABELS)), dtype=t.float32)
+    for layer in range(scores.shape[0]):
+        for position in range(scores.shape[1]):
+            patched = patch_residual_cell(
+                clean_tokens,
+                corrupt_run.cache,
+                layer=layer,
+                position=position,
+            )
+            patched_metric = answer_logit_diff(patched.logits)
+            scores[layer, position] = (clean_metric - patched_metric) / gap
+    return scores
+
+
+def make_wrong_position_donor(clean_cache: t.Tensor) -> t.Tensor:
+    """Use the clean distractor activation as a shape-matched donor everywhere."""
+
+    expected_shape = (len(LAYER_LABELS), len(POSITION_LABELS), 2)
+    if clean_cache.shape != expected_shape:
+        raise ValueError(f"clean_cache must have shape {expected_shape}.")
+    return clean_cache[:, DISTRACTOR_POS : DISTRACTOR_POS + 1].expand_as(clean_cache).clone()
+
+
+def localization_report(
     patch_scores: t.Tensor,
-    target_indices: list[int],
     *,
-    top_k: int = 2,
-    min_overlap: float = 0.5,
-) -> PatchingLocalizationReport:
-    """Check whether top patching scores recover known target components."""
+    route_cells: tuple[tuple[int, int], ...] = ROUTE_CELLS,
+) -> LocalizationReport:
+    """Measure top-k recovery and separation from all off-route cells."""
 
-    if patch_scores.ndim != 1:
-        raise ValueError("patch_scores must be rank-1.")
-    if patch_scores.numel() == 0:
-        raise ValueError("patch_scores must be nonempty.")
+    expected_shape = (len(LAYER_LABELS), len(POSITION_LABELS))
+    if patch_scores.shape != expected_shape:
+        raise ValueError(f"patch_scores must have shape {expected_shape}.")
     if not t.isfinite(patch_scores).all():
         raise ValueError("patch_scores must be finite.")
-    if top_k <= 0:
-        raise ValueError("top_k must be positive.")
-    if not 0.0 <= min_overlap <= 1.0:
-        raise ValueError("min_overlap must be between 0 and 1.")
-    if len(target_indices) == 0:
-        raise ValueError("target_indices must be nonempty.")
-    target_tensor = t.tensor(target_indices, dtype=t.long, device=patch_scores.device)
-    if target_tensor.min().item() < 0 or target_tensor.max().item() >= patch_scores.numel():
-        raise ValueError("target index is out of range.")
-
-    k = min(top_k, patch_scores.numel())
-    top_indices = tuple(int(index) for index in patch_scores.topk(k=k).indices.tolist())
-    target_tuple = tuple(int(index) for index in target_indices)
-    top_set = set(top_indices)
-    target_set = set(target_tuple)
-    denominator = min(k, len(target_set))
-    overlap = len(top_set & target_set) / denominator
-    return PatchingLocalizationReport(
-        top_indices=top_indices,
-        target_indices=target_tuple,
-        topk_overlap=overlap,
-        localizes_target=overlap >= min_overlap,
+    if not route_cells:
+        raise ValueError("route_cells must be nonempty.")
+    flat = patch_scores.flatten()
+    route_indices: list[int] = []
+    for layer, position in route_cells:
+        if not 0 <= layer < patch_scores.shape[0] or not 0 <= position < patch_scores.shape[1]:
+            raise ValueError("route cell is out of range.")
+        route_indices.append(layer * patch_scores.shape[1] + position)
+    top_indices = flat.topk(k=len(route_indices)).indices.tolist()
+    top_cells = tuple((i // patch_scores.shape[1], i % patch_scores.shape[1]) for i in top_indices)
+    route_set = set(route_cells)
+    topk_overlap = len(set(top_cells) & route_set) / len(route_set)
+    route_mask = t.zeros_like(patch_scores, dtype=t.bool)
+    for cell in route_cells:
+        route_mask[cell] = True
+    route_mean = float(patch_scores[route_mask].mean().item())
+    off_route_max = float(patch_scores[~route_mask].max().item())
+    return LocalizationReport(
+        top_cells=top_cells,
+        route_cells=route_cells,
+        topk_overlap=topk_overlap,
+        route_mean=route_mean,
+        off_route_max=off_route_max,
+        separation=route_mean - off_route_max,
     )
 
 
-def random_patch_control_report(
-    patch_scores: t.Tensor,
-    random_indices: list[int],
-    *,
-    top_k: int = 2,
-) -> RandomPatchControlReport:
-    """Compare top patching score against a random-component control."""
+def run_toy_signature_result() -> dict:
+    """Return exact metrics backing the learner-generated signature figure."""
 
-    if patch_scores.ndim != 1:
-        raise ValueError("patch_scores must be rank-1.")
-    if patch_scores.numel() == 0:
-        raise ValueError("patch_scores must be nonempty.")
-    if not t.isfinite(patch_scores).all():
-        raise ValueError("patch_scores must be finite.")
-    if top_k <= 0:
-        raise ValueError("top_k must be positive.")
-    if len(random_indices) == 0:
-        raise ValueError("random_indices must be nonempty.")
-
-    k = min(top_k, patch_scores.numel())
-    top_patch_score = patch_scores.topk(k=k).values.mean().item()
-    random_tensor = t.tensor(random_indices, dtype=t.long, device=patch_scores.device)
-    if random_tensor.min().item() < 0 or random_tensor.max().item() >= patch_scores.numel():
-        raise ValueError("random index is out of range.")
-    random_scores = patch_scores[random_tensor].float()
-    random_patch_score = random_scores.mean().item()
-    max_random_patch_score = random_scores.max().item()
-    return RandomPatchControlReport(
-        top_patch_score=top_patch_score,
-        random_patch_score=random_patch_score,
-        max_random_patch_score=max_random_patch_score,
-        top_beats_random=top_patch_score > random_patch_score,
-        top_beats_max_random=top_patch_score > max_random_patch_score,
+    clean_tokens, corrupt_tokens = make_copy_task_pair()
+    clean_run = run_causal_copy_model(clean_tokens)
+    corrupt_run = run_causal_copy_model(corrupt_tokens)
+    denoising = denoising_patch_sweep(clean_tokens, corrupt_tokens)
+    noising = noising_patch_sweep(clean_tokens, corrupt_tokens)
+    wrong_donor = make_wrong_position_donor(clean_run.cache)
+    donor_control = denoising_patch_sweep(
+        clean_tokens,
+        corrupt_tokens,
+        donor_cache=wrong_donor,
     )
-
-
-def logit_diff_smoke_test() -> float:
-    logits = t.tensor([[4.0, 1.0], [3.0, 2.0]])
-    return answer_logit_diff(logits, positive_token_id=0, negative_token_id=1)
-
-
-def patch_slice_smoke_test() -> list[list[float]]:
-    clean = t.tensor([[10.0, 20.0], [30.0, 40.0]])
-    corrupt = t.zeros_like(clean)
-    patched = patch_activation_slice(
-        clean,
-        corrupt,
-        component_index=1,
-        component_dim=0,
-    )
-    return patched.tolist()
-
-
-def recovery_smoke_test() -> dict:
-    clean_logits = t.tensor([4.0, 1.0])
-    corrupt_logits = t.tensor([1.0, 3.0])
-    patched_logits = t.tensor([3.0, 1.0])
-    return patching_recovery_report(
-        clean_logits,
-        corrupt_logits,
-        patched_logits,
-        positive_token_id=0,
-        negative_token_id=1,
-        min_recovered_fraction=0.75,
-    ).__dict__
-
-
-def sweep_smoke_test() -> dict:
-    sweep = activation_patching_sweep(
-        clean_metric=3.0,
-        corrupt_metric=-2.0,
-        patched_metrics=t.tensor([-1.0, 2.0, 0.0]),
-    )
+    report = localization_report(denoising)
     return {
-        "patch_scores": [round(score, 6) for score in sweep.patch_scores.tolist()],
-        "best_index": sweep.best_index,
-        "best_score": sweep.best_score,
+        "claim": "Activation patching exactly recovers the planted source-to-query-to-answer route.",
+        "clean_metric": answer_logit_diff(clean_run.logits),
+        "corrupt_metric": answer_logit_diff(corrupt_run.logits),
+        "denoising_scores": denoising.tolist(),
+        "noising_scores": noising.tolist(),
+        "wrong_position_donor_scores": donor_control.tolist(),
+        "top_cells": [list(cell) for cell in report.top_cells],
+        "route_cells": [list(cell) for cell in report.route_cells],
+        "topk_overlap": report.topk_overlap,
+        "route_mean": report.route_mean,
+        "off_route_max": report.off_route_max,
+        "separation": report.separation,
+        "wrong_position_donor_max": float(donor_control.abs().max().item()),
+        "denoising_noising_max_error": float((denoising - noising).abs().max().item()),
+        "exact_ground_truth_passed": bool(
+            report.topk_overlap == 1.0
+            and report.separation == 1.0
+            and donor_control.abs().max().item() == 0.0
+            and t.equal(denoising, noising)
+        ),
     }
-
-
-def localization_smoke_test() -> dict:
-    report = patching_localization_report(
-        t.tensor([0.2, 0.9, 0.8, 0.1]),
-        target_indices=[1, 2],
-        top_k=2,
-        min_overlap=1.0,
-    )
-    return report.__dict__
-
-
-def random_control_smoke_test() -> dict:
-    report = random_patch_control_report(
-        t.tensor([0.2, 0.9, 0.8, 0.1]),
-        random_indices=[0, 3],
-        top_k=2,
-    )
-    return report.__dict__
 
 
 def run_smoke_test(cpu: bool = True) -> dict:
     _ = cpu
+    result = run_toy_signature_result()
+    passed = bool(result["exact_ground_truth_passed"])
     return {
-        "logit_diff": logit_diff_smoke_test(),
-        "patch_slice": patch_slice_smoke_test(),
-        "recovery": recovery_smoke_test(),
-        "sweep": sweep_smoke_test(),
-        "localization": localization_smoke_test(),
-        "random_control": random_control_smoke_test(),
+        **result,
+        "contract_passed": passed,
+        "tests_passed": passed,
+        "accepted": passed,
     }
 
 
@@ -374,7 +358,7 @@ def _load_gelu1l_model_on_cuda():
 
 
 def run_transformerlens_activation_patching_preflight(max_vram_gb: float = 24.0) -> dict:
-    """Run a real TransformerLens activation-patching position sweep on CUDA."""
+    """Run the pinned real-model residual-position mechanics preflight on CUDA."""
 
     if not t.cuda.is_available():
         return {
@@ -386,7 +370,6 @@ def run_transformerlens_activation_patching_preflight(max_vram_gb: float = 24.0)
     t.cuda.reset_peak_memory_stats()
     model = _load_gelu1l_model_on_cuda()
     model.eval()
-
     clean_tokens = model.to_tokens(TL_CLEAN_PROMPT)
     corrupt_tokens = model.to_tokens(TL_CORRUPT_PROMPT)
     if clean_tokens.shape != corrupt_tokens.shape:
@@ -412,16 +395,27 @@ def run_transformerlens_activation_patching_preflight(max_vram_gb: float = 24.0)
         for token_id in [*corrupt_top_tokens, *clean_top_tokens[1:]]
         if token_id != target_token_id
     )
+    clean_metric = answer_logit_diff(
+        clean_final_logits,
+        positive_token_id=target_token_id,
+        negative_token_id=distractor_token_id,
+    )
+    corrupt_metric = answer_logit_diff(
+        corrupt_final_logits,
+        positive_token_id=target_token_id,
+        negative_token_id=distractor_token_id,
+    )
 
     def make_patch_hook(position: int):
         def patch_hook(activation: t.Tensor, hook) -> t.Tensor:
+            del hook
             patched = activation.clone()
             patched[:, position, :] = clean_cache[TL_PATCH_HOOK_NAME][:, position, :]
             return patched
 
         return patch_hook
 
-    patched_metrics = []
+    patched_metrics: list[float] = []
     final_patched_logits = None
     with t.inference_mode():
         for position in range(clean_tokens.shape[1]):
@@ -441,54 +435,44 @@ def run_transformerlens_activation_patching_preflight(max_vram_gb: float = 24.0)
 
     if final_patched_logits is None:
         raise RuntimeError("final-position patched logits were not recorded.")
-
-    recovery = patching_recovery_report(
-        clean_final_logits,
-        corrupt_final_logits,
-        final_patched_logits[0, -1],
-        positive_token_id=target_token_id,
-        negative_token_id=distractor_token_id,
-        min_recovered_fraction=0.99,
+    patch_scores = t.tensor(
+        [
+            recovery_fraction(
+                clean_metric=clean_metric,
+                corrupt_metric=corrupt_metric,
+                patched_metric=metric,
+            )
+            for metric in patched_metrics
+        ]
     )
-    sweep = activation_patching_sweep(
-        clean_metric=recovery.clean_metric,
-        corrupt_metric=recovery.corrupt_metric,
-        patched_metrics=t.tensor(patched_metrics, device=clean_logits.device),
-    )
-    localization = patching_localization_report(
-        sweep.patch_scores,
-        target_indices=[target_position],
-        top_k=1,
-        min_overlap=1.0,
-    )
-    non_final_positions = list(range(target_position))
-    wrong_position_control = random_patch_control_report(
-        sweep.patch_scores,
-        random_indices=non_final_positions,
-        top_k=1,
-    )
+    best_position = int(patch_scores.argmax().item())
+    wrong_scores = patch_scores[:target_position]
+    target_recovered_fraction = float(patch_scores[target_position].item())
 
     t.cuda.synchronize()
     peak_vram_gb = t.cuda.max_memory_allocated() / 1024**3
     max_abs_final_patch_logit_error = (
         final_patched_logits[0, -1].float() - clean_final_logits.float()
     ).abs().max().item()
-    clean_corrupt_gap = recovery.clean_metric - recovery.corrupt_metric
-    finite_logits = bool(t.isfinite(clean_final_logits).all() and t.isfinite(corrupt_final_logits).all())
+    clean_corrupt_gap = clean_metric - corrupt_metric
+    finite_logits = bool(
+        t.isfinite(clean_final_logits).all() and t.isfinite(corrupt_final_logits).all()
+    )
+    wrong_mean = float(wrong_scores.mean().item())
+    wrong_max = float(wrong_scores.max().item())
     within_vram_budget = peak_vram_gb <= max_vram_gb
     preflight_passed = (
         finite_logits
         and clean_corrupt_gap >= 1.0
-        and recovery.passes_recovery
+        and target_recovered_fraction >= 0.99
         and max_abs_final_patch_logit_error <= 1e-5
-        and localization.localizes_target
-        and wrong_position_control.top_beats_random
-        and wrong_position_control.top_beats_max_random
-        and abs(wrong_position_control.random_patch_score) <= 1e-4
-        and abs(wrong_position_control.max_random_patch_score) <= 1e-4
+        and best_position == target_position
+        and target_recovered_fraction > wrong_mean
+        and target_recovered_fraction > wrong_max
+        and abs(wrong_mean) <= 1e-4
+        and abs(wrong_max) <= 1e-4
         and within_vram_budget
     )
-
     return {
         "cuda_available": True,
         "device": t.cuda.get_device_name(0),
@@ -510,20 +494,20 @@ def run_transformerlens_activation_patching_preflight(max_vram_gb: float = 24.0)
         "target_token": model.to_string(target_token_id),
         "distractor_token_id": int(distractor_token_id),
         "distractor_token": model.to_string(distractor_token_id),
-        "clean_metric": recovery.clean_metric,
-        "corrupt_metric": recovery.corrupt_metric,
-        "patched_metric": recovery.patched_metric,
+        "clean_metric": clean_metric,
+        "corrupt_metric": corrupt_metric,
+        "patched_metric": patched_metrics[target_position],
         "clean_corrupt_gap": clean_corrupt_gap,
-        "target_recovered_fraction": recovery.recovered_fraction,
-        "passes_recovery": recovery.passes_recovery,
-        "patch_scores_by_position": [float(score) for score in sweep.patch_scores.tolist()],
-        "best_position": sweep.best_index,
-        "best_score": sweep.best_score,
-        "localizes_final_position": localization.localizes_target,
-        "wrong_position_control_fraction": wrong_position_control.random_patch_score,
-        "max_wrong_position_control_fraction": wrong_position_control.max_random_patch_score,
-        "top_beats_wrong_position_control": wrong_position_control.top_beats_random,
-        "top_beats_max_wrong_position_control": wrong_position_control.top_beats_max_random,
+        "target_recovered_fraction": target_recovered_fraction,
+        "passes_recovery": target_recovered_fraction >= 0.99,
+        "patch_scores_by_position": [float(score) for score in patch_scores.tolist()],
+        "best_position": best_position,
+        "best_score": float(patch_scores[best_position].item()),
+        "localizes_final_position": best_position == target_position,
+        "wrong_position_control_fraction": wrong_mean,
+        "max_wrong_position_control_fraction": wrong_max,
+        "top_beats_wrong_position_control": target_recovered_fraction > wrong_mean,
+        "top_beats_max_wrong_position_control": target_recovered_fraction > wrong_max,
         "max_abs_final_patch_logit_error": max_abs_final_patch_logit_error,
         "finite_logits": finite_logits,
         "peak_vram_gb": peak_vram_gb,
@@ -533,12 +517,13 @@ def run_transformerlens_activation_patching_preflight(max_vram_gb: float = 24.0)
 
 
 def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
-    return run_transformerlens_activation_patching_preflight(max_vram_gb=max_vram_gb)
+    gpu = run_transformerlens_activation_patching_preflight(max_vram_gb=max_vram_gb)
+    toy = run_toy_signature_result()
+    gpu.update({f"toy_{key}": value for key, value in toy.items()})
+    return gpu
 
 
 def run_full_experiment(max_vram_gb: float = 24.0) -> dict:
-    """Run the validated experiment path used by the verification report."""
-
     return run_gpu_test(max_vram_gb=max_vram_gb)
 
 
