@@ -227,3 +227,124 @@ def test_notebook_contract(run_smoke_test: Callable | None = None):
         "Smoke test should verify the parity probe control."
     )
     print("All tests in `test_notebook_contract` passed!")
+
+
+def test_mamba_state_tracker_shapes(TinyMambaStateClassifier: type | None = None):
+    solutions = _solutions()
+    TinyMambaStateClassifier = (
+        TinyMambaStateClassifier or solutions.TinyMambaStateClassifier
+    )
+    model = TinyMambaStateClassifier(num_states=4).cpu().eval()
+    tokens = t.tensor([[1, 0, 1, 1, 0], [1, 1, 0, 0, 1]])
+    with t.inference_mode():
+        logits, hidden = model(tokens, return_hidden_states=True)
+    assert logits.shape == (2, 5, 4), "return one depth logit vector per token"
+    assert hidden.shape[:2] == tokens.shape, "preserve batch and sequence axes"
+    assert logits.device.type == "cpu", "the learner path must remain CPU runnable"
+    print("All tests in `test_mamba_state_tracker_shapes` passed!")
+
+
+def test_cpu_training_reduces_loss(train_state_tracker_cpu: Callable | None = None):
+    solutions = _solutions()
+    train_state_tracker_cpu = train_state_tracker_cpu or solutions.train_state_tracker_cpu
+    model, losses = train_state_tracker_cpu(
+        steps=12,
+        batch_size=32,
+        seq_len=16,
+        max_depth=3,
+        seed=17,
+    )
+    assert len(losses) == 12, "record one loss per optimizer step"
+    assert all(float("-inf") < loss < float("inf") for loss in losses), (
+        "training losses must remain finite"
+    )
+    assert losses[-1] < losses[0] - 0.25, (
+        f"loss should fall during the semantic smoke run; got {losses[0]:.3f} -> {losses[-1]:.3f}"
+    )
+    assert next(model.parameters()).device.type == "cpu"
+    print("All tests in `test_cpu_training_reduces_loss` passed!")
+
+
+def test_collect_recurrent_states_matches_full_forward(
+    collect_recurrent_states: Callable | None = None,
+):
+    solutions = _solutions()
+    collect_recurrent_states = collect_recurrent_states or solutions.collect_recurrent_states
+    t.manual_seed(3)
+    model = solutions.TinyMambaStateClassifier(num_states=4).cpu().eval()
+    tokens = solutions.generate_bracket_depth_task(
+        batch=3,
+        seq_len=9,
+        max_depth=3,
+        seed=4,
+    ).tokens
+    with t.inference_mode():
+        full_logits = model(tokens)
+        cached_logits, recurrent_states = collect_recurrent_states(model, tokens)
+    t.testing.assert_close(cached_logits, full_logits, atol=1e-5, rtol=1e-5)
+    expected_features = model.backbone.config.d_inner * model.backbone.config.d_state
+    assert recurrent_states.shape == (3, 9, expected_features)
+    print("All tests in `test_collect_recurrent_states_matches_full_forward` passed!")
+
+
+def test_state_probe_recovers_exact_control(
+    fit_state_probe: Callable | None = None,
+    state_probe_accuracy: Callable | None = None,
+):
+    solutions = _solutions()
+    fit_state_probe = fit_state_probe or solutions.fit_state_probe
+    state_probe_accuracy = state_probe_accuracy or solutions.state_probe_accuracy
+    labels = t.tensor([[0, 1, 2, 3], [3, 2, 1, 0]]).repeat(8, 1)
+    exact_features = t.nn.functional.one_hot(labels, num_classes=4).float()
+    probe = fit_state_probe(exact_features, labels, ridge=1e-3)
+    accuracy = state_probe_accuracy(exact_features, labels, probe)
+    assert accuracy == 1.0, f"the exact-state control should decode perfectly, got {accuracy:.3f}"
+    print("All tests in `test_state_probe_recovers_exact_control` passed!")
+
+
+def test_state_transplant_matches_donor_dynamics(
+    run_state_transplant: Callable | None = None,
+    make_matched_state_pair: Callable | None = None,
+):
+    solutions = _solutions()
+    run_state_transplant = run_state_transplant or solutions.run_state_transplant
+    make_matched_state_pair = make_matched_state_pair or solutions.make_matched_state_pair
+    t.manual_seed(5)
+    model = solutions.TinyMambaStateClassifier(num_states=4).cpu().eval()
+    source, donor, edit_position = make_matched_state_pair()
+    result = run_state_transplant(
+        model,
+        source,
+        donor,
+        edit_position,
+        random_seed=0,
+    )
+    t.testing.assert_close(
+        result["patched_logits"],
+        result["donor_logits"],
+        atol=1e-5,
+        rtol=1e-5,
+        msg=(
+            "with identical convolutional history and suffix, transplanting the donor SSM "
+            "state should exactly reproduce donor continuation logits"
+        ),
+    )
+    assert not t.allclose(result["random_logits"], result["donor_logits"])
+    print("All tests in `test_state_transplant_matches_donor_dynamics` passed!")
+
+
+def test_find_confident_errors_orders_real_mistakes(
+    find_confident_errors: Callable | None = None,
+):
+    solutions = _solutions()
+    find_confident_errors = find_confident_errors or solutions.find_confident_errors
+    tokens = t.tensor([[1, 1, 0, 1]])
+    labels = t.tensor([[1, 2, 1, 2]])
+    logits = t.tensor(
+        [[[5.0, 1.0, 0.0], [0.0, 0.0, 6.0], [0.0, 4.0, 1.0], [0.0, 4.0, 3.0]]]
+    )
+    records = find_confident_errors(tokens, labels, logits, k=2)
+    assert [record["position"] for record in records] == [0, 3]
+    assert records[0]["prefix"] == "("
+    assert records[0]["confidence"] >= records[1]["confidence"]
+    print("All tests in `test_find_confident_errors_orders_real_mistakes` passed!")

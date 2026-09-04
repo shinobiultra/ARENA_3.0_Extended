@@ -53,6 +53,16 @@ class InterventionReport:
     passed: bool
 
 
+@dataclass(frozen=True)
+class StateProbe:
+    """Standardized linear probe over flattened recurrent SSM states."""
+
+    mean: t.Tensor
+    scale: t.Tensor
+    weight: t.Tensor
+    bias: t.Tensor
+
+
 def generate_parity_task(batch: int, seq_len: int, seed: int = 0) -> StateTrackingBatch:
     """Generate binary-token sequences labelled by cumulative XOR."""
 
@@ -356,6 +366,307 @@ class TinyMambaStateClassifier(nn.Module):
         if return_hidden_states:
             return logits, hidden_states
         return logits
+
+
+def train_state_tracker_cpu(
+    *,
+    steps: int = 160,
+    batch_size: int = 64,
+    seq_len: int = 16,
+    max_depth: int = 3,
+    seed: int = 0,
+) -> tuple[TinyMambaStateClassifier, list[float]]:
+    """Train the section 5.3 tiny Mamba path on exact bracket-depth labels."""
+
+    t.manual_seed(seed)
+    model = TinyMambaStateClassifier(num_states=max_depth + 1).cpu()
+    optimizer = t.optim.AdamW(model.parameters(), lr=3e-3, weight_decay=1e-3)
+    losses: list[float] = []
+
+    model.train()
+    for step in range(steps):
+        batch = generate_bracket_depth_task(
+            batch=batch_size,
+            seq_len=seq_len,
+            max_depth=max_depth,
+            seed=seed + step,
+        )
+        logits = model(batch.tokens)
+        loss = F.cross_entropy(
+            logits.flatten(0, 1),
+            batch.states.flatten(),
+        )
+        optimizer.zero_grad(set_to_none=True)
+        loss.backward()
+        optimizer.step()
+        losses.append(float(loss.detach().item()))
+
+    return model.eval(), losses
+
+
+@t.inference_mode()
+def collect_recurrent_states(
+    model: TinyMambaStateClassifier,
+    tokens: t.Tensor,
+) -> tuple[t.Tensor, t.Tensor]:
+    """Run cached one-token steps and collect logits plus the first-layer SSM state."""
+
+    cache = None
+    logits_by_position: list[t.Tensor] = []
+    states_by_position: list[t.Tensor] = []
+    for position in range(tokens.shape[1]):
+        hidden, cache = model.backbone(
+            tokens[:, position : position + 1],
+            states=cache,
+            use_cache=True,
+        )
+        assert cache is not None and len(cache) == 1
+        logits_by_position.append(model.head(hidden))
+        states_by_position.append(cache[0].ssm_state.flatten(start_dim=1))
+
+    return t.cat(logits_by_position, dim=1), t.stack(states_by_position, dim=1)
+
+
+def fit_state_probe(
+    recurrent_states: t.Tensor,
+    labels: t.Tensor,
+    *,
+    num_classes: int | None = None,
+    ridge: float = 1e-2,
+    shuffle_labels: bool = False,
+    seed: int = 0,
+) -> StateProbe:
+    """Fit a standardized closed-form ridge probe to recurrent SSM states."""
+
+    if recurrent_states.shape[:-1] != labels.shape:
+        raise ValueError("recurrent state leading dimensions must match labels")
+    x = recurrent_states.flatten(0, -2).float()
+    y = labels.flatten().long()
+    if num_classes is None:
+        num_classes = int(labels.max().item()) + 1
+    if shuffle_labels:
+        generator = t.Generator(device=y.device).manual_seed(seed)
+        y = y[t.randperm(y.numel(), generator=generator, device=y.device)]
+
+    mean = x.mean(dim=0)
+    scale = x.std(dim=0, unbiased=False).clamp_min(1e-4)
+    standardized = (x - mean) / scale
+    design = t.cat([standardized, t.ones(x.shape[0], 1, device=x.device)], dim=-1)
+    targets = F.one_hot(y, num_classes=num_classes).float()
+    penalty = t.eye(design.shape[-1], device=x.device, dtype=x.dtype)
+    penalty[-1, -1] = 0.0
+    solution = t.linalg.solve(
+        design.T @ design + ridge * penalty,
+        design.T @ targets,
+    )
+    return StateProbe(
+        mean=mean,
+        scale=scale,
+        weight=solution[:-1],
+        bias=solution[-1],
+    )
+
+
+def state_probe_logits(recurrent_states: t.Tensor, probe: StateProbe) -> t.Tensor:
+    standardized = (recurrent_states.float() - probe.mean) / probe.scale
+    return standardized @ probe.weight + probe.bias
+
+
+def state_probe_accuracy(
+    recurrent_states: t.Tensor,
+    labels: t.Tensor,
+    probe: StateProbe,
+    mask: t.Tensor | None = None,
+) -> float:
+    predictions = state_probe_logits(recurrent_states, probe).argmax(dim=-1)
+    if mask is not None:
+        predictions = predictions[mask]
+        labels = labels[mask]
+    return float(predictions.eq(labels).float().mean().item())
+
+
+@t.inference_mode()
+def cache_after_position(
+    model: TinyMambaStateClassifier,
+    tokens: t.Tensor,
+    position: int,
+):
+    """Return the recurrent cache after consuming tokens through `position`."""
+
+    if not 0 <= position < tokens.shape[1]:
+        raise ValueError("position is outside the sequence")
+    cache = None
+    for index in range(position + 1):
+        _, cache = model.backbone(
+            tokens[:, index : index + 1],
+            states=cache,
+            use_cache=True,
+        )
+    assert cache is not None
+    return cache
+
+
+def transplant_ssm_state(source_cache, donor_cache):
+    """Copy only the donor SSM state, preserving the source convolutional history."""
+
+    if len(source_cache) != 1 or len(donor_cache) != 1:
+        raise ValueError("this lesson expects a one-layer tiny Mamba")
+    state_type = type(source_cache[0])
+    return (
+        state_type(
+            conv_state=source_cache[0].conv_state,
+            ssm_state=donor_cache[0].ssm_state,
+        ),
+    )
+
+
+def matched_random_state_edit(source_cache, donor_cache, *, seed: int = 0):
+    """Add a random SSM-state delta with the transplant delta's exact norm."""
+
+    source_state = source_cache[0]
+    target_delta = donor_cache[0].ssm_state - source_state.ssm_state
+    generator = t.Generator(device=target_delta.device).manual_seed(seed)
+    random_delta = t.randn(
+        target_delta.shape,
+        generator=generator,
+        device=target_delta.device,
+        dtype=target_delta.dtype,
+    )
+    random_delta = random_delta / random_delta.norm().clamp_min(1e-8)
+    random_delta = random_delta * target_delta.norm()
+    state_type = type(source_state)
+    return (
+        state_type(
+            conv_state=source_state.conv_state,
+            ssm_state=source_state.ssm_state + random_delta,
+        ),
+    )
+
+
+@t.inference_mode()
+def continue_from_cache(
+    model: TinyMambaStateClassifier,
+    suffix_tokens: t.Tensor,
+    cache,
+) -> t.Tensor:
+    """Continue cached Mamba inference and return one logit vector per suffix token."""
+
+    outputs: list[t.Tensor] = []
+    for position in range(suffix_tokens.shape[1]):
+        hidden, cache = model.backbone(
+            suffix_tokens[:, position : position + 1],
+            states=cache,
+            use_cache=True,
+        )
+        outputs.append(model.head(hidden))
+    return t.cat(outputs, dim=1)
+
+
+def make_matched_state_pair() -> tuple[t.Tensor, t.Tensor, int]:
+    """Return prefixes with different depths but identical local history and suffix."""
+
+    source = t.tensor([[1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]])
+    donor = t.tensor([[1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]])
+    return source, donor, 5
+
+
+@t.inference_mode()
+def run_state_transplant(
+    model: TinyMambaStateClassifier,
+    source_tokens: t.Tensor,
+    donor_tokens: t.Tensor,
+    edit_position: int,
+    *,
+    random_seed: int = 0,
+) -> dict[str, t.Tensor | float]:
+    """Compare an exact donor-state transplant with a matched random SSM edit."""
+
+    conv_width = model.backbone.config.d_conv - 1
+    local_start = max(0, edit_position - conv_width + 1)
+    if not t.equal(
+        source_tokens[:, local_start : edit_position + 1],
+        donor_tokens[:, local_start : edit_position + 1],
+    ):
+        raise ValueError("source and donor must share the convolutional history at the edit")
+    if not t.equal(source_tokens[:, edit_position + 1 :], donor_tokens[:, edit_position + 1 :]):
+        raise ValueError("source and donor must share the suffix after the edit")
+
+    source_cache = cache_after_position(model, source_tokens, edit_position)
+    donor_cache = cache_after_position(model, donor_tokens, edit_position)
+    suffix = source_tokens[:, edit_position + 1 :]
+    patched_cache = transplant_ssm_state(source_cache, donor_cache)
+    random_cache = matched_random_state_edit(
+        source_cache,
+        donor_cache,
+        seed=random_seed,
+    )
+
+    source_logits = model(source_tokens)[:, edit_position + 1 :]
+    donor_logits = model(donor_tokens)[:, edit_position + 1 :]
+    patched_logits = continue_from_cache(model, suffix, patched_cache)
+    random_logits = continue_from_cache(model, suffix, random_cache)
+    donor_states = t.where(donor_tokens.bool(), 1, -1).cumsum(dim=-1)[:, edit_position + 1 :]
+
+    def score(logits: t.Tensor) -> tuple[float, float]:
+        probabilities = logits.softmax(dim=-1)
+        predictions = probabilities.argmax(dim=-1)
+        accuracy = predictions.eq(donor_states).float().mean().item()
+        target_probability = probabilities.gather(-1, donor_states[..., None]).mean().item()
+        return float(accuracy), float(target_probability)
+
+    source_match, source_probability = score(source_logits)
+    patched_match, patched_probability = score(patched_logits)
+    random_match, random_probability = score(random_logits)
+    return {
+        "source_logits": source_logits,
+        "donor_logits": donor_logits,
+        "patched_logits": patched_logits,
+        "random_logits": random_logits,
+        "donor_states": donor_states,
+        "source_match": source_match,
+        "source_target_probability": source_probability,
+        "patched_match": patched_match,
+        "patched_target_probability": patched_probability,
+        "random_match": random_match,
+        "random_target_probability": random_probability,
+    }
+
+
+def find_confident_errors(
+    tokens: t.Tensor,
+    labels: t.Tensor,
+    logits: t.Tensor,
+    *,
+    k: int = 8,
+) -> list[dict[str, object]]:
+    """Return the most confident wrong OOD predictions with their exact prefixes."""
+
+    probabilities = logits.softmax(dim=-1)
+    confidence, predictions = probabilities.max(dim=-1)
+    wrong = predictions.ne(labels)
+    candidates = wrong.nonzero(as_tuple=False)
+    if candidates.numel() == 0:
+        return []
+    scores = confidence[wrong]
+    order = scores.argsort(descending=True)[:k]
+    records: list[dict[str, object]] = []
+    for candidate_index in order:
+        batch_index, position = candidates[int(candidate_index)]
+        prefix = "".join(
+            "(" if int(token) == 1 else ")"
+            for token in tokens[batch_index, : position + 1]
+        )
+        records.append(
+            {
+                "sequence": int(batch_index),
+                "position": int(position),
+                "prefix": prefix,
+                "true_depth": int(labels[batch_index, position]),
+                "predicted_depth": int(predictions[batch_index, position]),
+                "confidence": float(confidence[batch_index, position]),
+            }
+        )
+    return records
 
 
 class TinyTransformerStateClassifier(nn.Module):
