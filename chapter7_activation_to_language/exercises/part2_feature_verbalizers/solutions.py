@@ -1,6 +1,8 @@
 # %%
 """Reference solutions for [7.2] Feature Verbalizers."""
 
+from __future__ import annotations
+
 import logging
 import os
 import re
@@ -18,13 +20,17 @@ if str(root_dir) not in sys.path:
 
 MAIN = __name__ == "__main__"
 ExampleKind = Literal["top", "bottom", "random", "contrastive"]
+SplitKind = Literal["train", "revision", "heldout"]
 TOKEN_RE = re.compile(r"[a-zA-Z]+")
+
 DEFAULT_STOPWORDS = {
     "a",
     "an",
     "and",
     "at",
     "beside",
+    "by",
+    "during",
     "in",
     "near",
     "of",
@@ -32,6 +38,61 @@ DEFAULT_STOPWORDS = {
     "over",
     "the",
     "to",
+}
+
+ANIMAL_TERMS = frozenset(
+    {
+        "alpaca",
+        "badger",
+        "bear",
+        "cat",
+        "dog",
+        "fox",
+        "goat",
+        "horse",
+        "kitten",
+        "lizard",
+        "mouse",
+        "otter",
+        "owl",
+        "puppy",
+        "rabbit",
+        "seal",
+        "sheep",
+    }
+)
+RESTING_TERMS = frozenset(
+    {"curled", "dozed", "lounged", "napped", "perched", "rested", "roosted", "sat", "slept"}
+)
+SURFACE_TERMS = frozenset(
+    {
+        "basket",
+        "bench",
+        "blanket",
+        "branch",
+        "couch",
+        "dock",
+        "fence",
+        "floor",
+        "hay",
+        "ledge",
+        "log",
+        "mat",
+        "mound",
+        "pillow",
+        "rock",
+        "rug",
+        "shelf",
+        "sofa",
+        "table",
+    }
+)
+DECOY_TERMS = frozenset({"cardboard", "ceramic", "painted", "plastic", "plush", "statue", "toy", "wooden"})
+DEFAULT_SEMANTIC_LEXICON = {
+    "animal": ANIMAL_TERMS,
+    "resting": RESTING_TERMS,
+    "surface": SURFACE_TERMS,
+    "decoy": DECOY_TERMS,
 }
 
 TL_GELU1L_MODEL_NAME = "gelu-1l"
@@ -63,12 +124,9 @@ TL_VERBALIZER_HELDOUT_EXAMPLES = [
     ("The cat jumped over the", False),
     ("The rocket launched into the", False),
 ]
-TL_EXPLANATION = "Activates on prompts using resting-or-placed surface verbs."
-TL_EXPLANATION_TERMS = ["sat", "slept", "rested"]
 TL_DIRECTION_SCALE = 2.0
 
 
-# %%
 @dataclass(frozen=True)
 class VerbalizerExample:
     text: str
@@ -112,6 +170,174 @@ class ExplanationBrevityReport:
 class CounterexampleReport:
     num_counterexamples: int
     counterexamples: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class PlantedFeatureExample:
+    text: str
+    split: SplitKind
+    label: bool
+    score: float
+    tags: tuple[str, ...]
+    counterfactual_type: str
+
+
+@dataclass(frozen=True)
+class PlantedFeatureSplit:
+    train: tuple[PlantedFeatureExample, ...]
+    revision: tuple[PlantedFeatureExample, ...]
+    heldout: tuple[PlantedFeatureExample, ...]
+
+
+@dataclass(frozen=True)
+class ExplanationRule:
+    description: str
+    required_groups: tuple[str, ...]
+    excluded_terms: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True)
+class PlantedInterventionReport:
+    predicted_direction: Literal["increase", "decrease"]
+    observed_delta: float
+    random_direction_delta: float
+    matches_prediction: bool
+    beats_random_direction: bool
+    evaluated_examples: int
+
+
+_PLANTED_EXAMPLE_SPECS: tuple[tuple[str, SplitKind, str], ...] = (
+    ("The cat sat on the mat.", "train", "positive"),
+    ("A dog slept on the rug.", "train", "positive"),
+    ("The rabbit rested near the sofa.", "train", "positive"),
+    ("An otter napped on the dock.", "train", "positive"),
+    ("The goat lounged beside the bench.", "train", "positive"),
+    ("A fox perched on the ledge.", "train", "positive"),
+    ("The robot rested on the sofa.", "train", "object_resting"),
+    ("The book rested on the shelf.", "train", "object_resting"),
+    ("The cat sprinted across the mat.", "train", "animal_motion"),
+    ("The dog slept during the storm.", "train", "no_surface"),
+    ("The kite floated above the field.", "train", "irrelevant"),
+    ("The lamp sat on the floor.", "train", "object_resting"),
+    ("The toy cat sat on the mat.", "revision", "decoy_animal"),
+    ("The plush dog slept on the rug.", "revision", "decoy_animal"),
+    ("The wooden fox perched on the ledge.", "revision", "decoy_animal"),
+    ("The mouse rested under the table.", "revision", "positive"),
+    ("The seal napped on the rock.", "revision", "positive"),
+    ("The badger ran across the mound.", "revision", "animal_motion"),
+    ("The horse rested on the blanket.", "heldout", "positive"),
+    ("A lizard dozed on the warm rock.", "heldout", "positive"),
+    ("The owl perched on the branch.", "heldout", "positive"),
+    ("The kitten slept beside the basket.", "heldout", "positive"),
+    ("The puppy lounged on the couch.", "heldout", "positive"),
+    ("An alpaca sat near the fence.", "heldout", "positive"),
+    ("The bear rested by the log.", "heldout", "positive"),
+    ("The sheep slept on the hay.", "heldout", "positive"),
+    ("The toy horse rested on the blanket.", "heldout", "decoy_animal"),
+    ("A ceramic lizard dozed on the rock.", "heldout", "decoy_animal"),
+    ("The statue owl perched on the branch.", "heldout", "decoy_animal"),
+    ("The plush puppy slept on the couch.", "heldout", "decoy_animal"),
+    ("The horse galloped across the blanket.", "heldout", "animal_motion"),
+    ("The seal swam near the rock.", "heldout", "animal_motion"),
+    ("The lamp rested on the blanket.", "heldout", "object_resting"),
+    ("The book sat on the shelf.", "heldout", "object_resting"),
+    ("The kitten slept during the storm.", "heldout", "no_surface"),
+    ("The robot napped on the couch.", "heldout", "object_resting"),
+    ("The painted bear rested by the log.", "heldout", "decoy_animal"),
+    ("A cardboard sheep slept on the hay.", "heldout", "decoy_animal"),
+    ("The owl flew above the branch.", "heldout", "animal_motion"),
+    ("The fox chased the mouse.", "heldout", "no_rest"),
+    ("The catalog sat on the shelf.", "heldout", "substring_trap"),
+    ("The rocket launched above the clouds.", "heldout", "irrelevant"),
+)
+
+
+def _tokens(text: str) -> set[str]:
+    return set(TOKEN_RE.findall(text.lower()))
+
+
+def _has_group(tokens: set[str], group: str, lexicon: dict[str, frozenset[str]] | None = None) -> bool:
+    lexicon = DEFAULT_SEMANTIC_LEXICON if lexicon is None else lexicon
+    if group not in lexicon:
+        raise KeyError(f"Unknown semantic group: {group!r}.")
+    return bool(tokens.intersection(lexicon[group]))
+
+
+def planted_feature_label(text: str) -> bool:
+    """Exact toy-oracle rule: a living animal is resting on a physical surface."""
+
+    tokens = _tokens(text)
+    return (
+        _has_group(tokens, "animal")
+        and _has_group(tokens, "resting")
+        and _has_group(tokens, "surface")
+        and not _has_group(tokens, "decoy")
+    )
+
+
+def _planted_feature_score(text: str) -> float:
+    tokens = _tokens(text)
+    has_animal = float(_has_group(tokens, "animal"))
+    has_resting = float(_has_group(tokens, "resting"))
+    has_surface = float(_has_group(tokens, "surface"))
+    has_decoy = float(_has_group(tokens, "decoy"))
+    label = float(planted_feature_label(text))
+    jitter = ((sum(ord(char) for char in text) % 17) - 8) / 100.0
+    return (
+        -2.0
+        + 1.3 * has_animal
+        + 1.15 * has_resting
+        + 0.95 * has_surface
+        - 1.4 * has_decoy
+        + 3.2 * label
+        + jitter
+    )
+
+
+def _planted_tags(text: str) -> tuple[str, ...]:
+    tokens = _tokens(text)
+    tags = [group for group in ("animal", "resting", "surface", "decoy") if _has_group(tokens, group)]
+    return tuple(tags)
+
+
+def make_planted_feature_dataset() -> tuple[PlantedFeatureExample, ...]:
+    """Return the finite planted feature dataset with exact labels and scores."""
+
+    return tuple(
+        PlantedFeatureExample(
+            text=text,
+            split=split,
+            label=planted_feature_label(text),
+            score=_planted_feature_score(text),
+            tags=_planted_tags(text),
+            counterfactual_type=counterfactual_type,
+        )
+        for text, split, counterfactual_type in _PLANTED_EXAMPLE_SPECS
+    )
+
+
+def split_planted_feature_dataset(
+    examples: tuple[PlantedFeatureExample, ...] | list[PlantedFeatureExample],
+) -> PlantedFeatureSplit:
+    """Validate and split planted examples into train, revision, and final held-out sets."""
+
+    if not examples:
+        raise ValueError("examples must be nonempty.")
+    texts = [example.text for example in examples]
+    if len(set(texts)) != len(texts):
+        raise ValueError("example texts must be unique across splits.")
+    train = tuple(example for example in examples if example.split == "train")
+    revision = tuple(example for example in examples if example.split == "revision")
+    heldout = tuple(example for example in examples if example.split == "heldout")
+    if not train or not revision or not heldout:
+        raise ValueError("train, revision, and heldout splits must all be present.")
+    if set(example.text for example in train).intersection(example.text for example in heldout):
+        raise ValueError("train and heldout examples must be disjoint.")
+    for name, split in {"train": train, "revision": revision, "heldout": heldout}.items():
+        labels = {example.label for example in split}
+        if labels != {False, True}:
+            raise ValueError(f"{name} split must contain both positive and negative labels.")
+    return PlantedFeatureSplit(train=train, revision=revision, heldout=heldout)
 
 
 def _make_examples(
@@ -179,9 +405,33 @@ def keyword_explanation_predictions(
     if not normalized_terms:
         raise ValueError("explanation_terms must include at least one nonempty term.")
     return t.tensor(
-        [any(term in set(TOKEN_RE.findall(text.lower())) for term in normalized_terms) for text in texts],
+        [any(term in _tokens(text) for term in normalized_terms) for text in texts],
         dtype=t.bool,
     )
+
+
+def semantic_rule_predictions(
+    texts: list[str],
+    rule: ExplanationRule,
+    *,
+    lexicon: dict[str, frozenset[str]] | None = None,
+) -> t.Tensor:
+    """Turn a semantic verbalizer rule into whole-token predictions."""
+
+    lexicon = DEFAULT_SEMANTIC_LEXICON if lexicon is None else lexicon
+    if not rule.required_groups:
+        raise ValueError("rule.required_groups must be nonempty.")
+    for group in rule.required_groups:
+        if group not in lexicon:
+            raise KeyError(f"Unknown semantic group: {group!r}.")
+    excluded_terms = {term.strip().lower() for term in rule.excluded_terms if term.strip()}
+    predictions = []
+    for text in texts:
+        tokens = _tokens(text)
+        has_required_groups = all(tokens.intersection(lexicon[group]) for group in rule.required_groups)
+        has_excluded_term = bool(tokens.intersection(excluded_terms))
+        predictions.append(bool(has_required_groups and not has_excluded_term))
+    return t.tensor(predictions, dtype=t.bool)
 
 
 def learn_verbalizer_terms(
@@ -201,7 +451,7 @@ def learn_verbalizer_terms(
     stopwords = DEFAULT_STOPWORDS if stopwords is None else stopwords
     counts: dict[str, list[int]] = {}
     for text, label in zip(texts, labels.tolist(), strict=True):
-        for token in set(TOKEN_RE.findall(text.lower())):
+        for token in _tokens(text):
             if token in stopwords:
                 continue
             counts.setdefault(token, [0, 0])[int(bool(label))] += 1
@@ -275,6 +525,35 @@ def find_counterexamples(
     )
 
 
+def mine_counterexamples(
+    examples: tuple[PlantedFeatureExample, ...] | list[PlantedFeatureExample],
+    predictions: t.Tensor,
+    *,
+    max_examples: int = 8,
+) -> tuple[dict[str, object], ...]:
+    """Return structured false positives and false negatives for revision."""
+
+    predictions = predictions.flatten().bool()
+    if len(examples) != predictions.numel():
+        raise ValueError("examples and predictions must have matching length.")
+    if max_examples <= 0:
+        raise ValueError("max_examples must be positive.")
+    rows = []
+    for example, prediction in zip(examples, predictions.tolist(), strict=True):
+        if bool(prediction) != example.label:
+            rows.append(
+                {
+                    "text": example.text,
+                    "label": example.label,
+                    "predicted": bool(prediction),
+                    "score": example.score,
+                    "counterfactual_type": example.counterfactual_type,
+                    "tags": example.tags,
+                }
+            )
+    return tuple(rows[:max_examples])
+
+
 def revise_explanation(
     explanation: str,
     counterexamples: tuple[str, ...],
@@ -286,6 +565,42 @@ def revise_explanation(
     if not counterexamples:
         return explanation
     return f"{explanation} Revision: {revision_note}"
+
+
+def revise_rule_from_counterexamples(
+    rule: ExplanationRule,
+    counterexamples: tuple[dict[str, object], ...],
+) -> ExplanationRule:
+    """Revise the planted verbalizer by adding missing semantic constraints."""
+
+    if not counterexamples:
+        return rule
+    required_groups = set(rule.required_groups)
+    excluded_terms = set(rule.excluded_terms)
+    for row in counterexamples:
+        text = str(row["text"])
+        tokens = _tokens(text)
+        if row["predicted"] and not row["label"]:
+            required_groups.update({"animal", "resting", "surface"})
+            if tokens.intersection(DECOY_TERMS):
+                excluded_terms.update(DECOY_TERMS)
+        elif row["label"] and not row["predicted"]:
+            required_groups.update({"animal", "resting", "surface"})
+    ordered_groups = tuple(group for group in ("animal", "resting", "surface") if group in required_groups)
+    ordered_exclusions = tuple(sorted(excluded_terms))
+    if ordered_exclusions:
+        description = (
+            "living animal resting on a physical surface; exclude "
+            + ", ".join(ordered_exclusions)
+            + " examples"
+        )
+    else:
+        description = "living animal resting on a physical surface"
+    return ExplanationRule(
+        description=description,
+        required_groups=ordered_groups,
+        excluded_terms=ordered_exclusions,
+    )
 
 
 def intervention_prediction_report(
@@ -312,6 +627,38 @@ def intervention_prediction_report(
     )
 
 
+def planted_intervention_direction_test(
+    examples: tuple[PlantedFeatureExample, ...] | list[PlantedFeatureExample],
+    predictions: t.Tensor,
+    *,
+    alpha: float = 1.25,
+) -> PlantedInterventionReport:
+    """Exact toy intervention: adding the planted feature direction raises the readout score."""
+
+    predictions = predictions.flatten().bool()
+    if len(examples) != predictions.numel():
+        raise ValueError("examples and predictions must have matching length.")
+    if not predictions.any():
+        raise ValueError("at least one example must be predicted positive for intervention scoring.")
+    if alpha <= 0:
+        raise ValueError("alpha must be positive.")
+    scores = t.tensor([example.score for example in examples], dtype=t.float32)
+    mask = predictions
+    baseline_scores = scores[mask]
+    intervened_scores = baseline_scores + alpha
+    random_direction_scores = baseline_scores
+    observed_delta = (intervened_scores.mean() - baseline_scores.mean()).item()
+    random_delta = (random_direction_scores.mean() - baseline_scores.mean()).item()
+    return PlantedInterventionReport(
+        predicted_direction="increase",
+        observed_delta=observed_delta,
+        random_direction_delta=random_delta,
+        matches_prediction=observed_delta > 0,
+        beats_random_direction=observed_delta > abs(random_delta) + 0.5,
+        evaluated_examples=int(mask.sum().item()),
+    )
+
+
 def explanation_brevity_report(
     explanation: str,
     examples: list[str] | tuple[str, ...],
@@ -325,6 +672,207 @@ def explanation_brevity_report(
         examples_word_count=examples_word_count,
         shorter_than_examples=explanation_word_count < examples_word_count,
     )
+
+
+def _accuracy(predictions: t.Tensor, labels: t.Tensor) -> float:
+    return float(predictions.flatten().bool().eq(labels.flatten().bool()).float().mean().item())
+
+
+def examples_only_lookup_predictions(
+    train_examples: tuple[PlantedFeatureExample, ...] | list[PlantedFeatureExample],
+    test_examples: tuple[PlantedFeatureExample, ...] | list[PlantedFeatureExample],
+) -> t.Tensor:
+    """Predict positive only for exact held-out strings seen as positive in train."""
+
+    positive_train_texts = {example.text for example in train_examples if example.label}
+    return t.tensor([example.text in positive_train_texts for example in test_examples], dtype=t.bool)
+
+
+def random_keyword_predictions(
+    texts: list[str],
+    *,
+    seed: int = 0,
+    k: int = 3,
+) -> t.Tensor:
+    """A deterministic random-keyword control over the observed text vocabulary."""
+
+    if k <= 0:
+        raise ValueError("k must be positive.")
+    vocabulary = sorted({token for text in texts for token in _tokens(text)})
+    if not vocabulary:
+        raise ValueError("texts must contain at least one alphabetic token.")
+    generator = t.Generator().manual_seed(seed)
+    indices = t.randperm(len(vocabulary), generator=generator)[: min(k, len(vocabulary))]
+    terms = [vocabulary[int(index.item())] for index in indices]
+    return keyword_explanation_predictions(texts, terms)
+
+
+def control_prediction_table(
+    train_examples: tuple[PlantedFeatureExample, ...] | list[PlantedFeatureExample],
+    heldout_examples: tuple[PlantedFeatureExample, ...] | list[PlantedFeatureExample],
+    initial_rule: ExplanationRule,
+    revised_rule: ExplanationRule,
+    *,
+    seed: int = 0,
+) -> tuple[dict[str, object], ...]:
+    """Compare revised verbalizer predictions against non-explanatory controls."""
+
+    heldout_texts = [example.text for example in heldout_examples]
+    labels = t.tensor([example.label for example in heldout_examples], dtype=t.bool)
+    initial_predictions = semantic_rule_predictions(heldout_texts, initial_rule)
+    revised_predictions = semantic_rule_predictions(heldout_texts, revised_rule)
+    always_negative = t.zeros_like(labels)
+    random_predictions = random_keyword_predictions(heldout_texts, seed=seed, k=3)
+    lookup_predictions = examples_only_lookup_predictions(train_examples, heldout_examples)
+    train_scores = t.tensor([example.score for example in train_examples])
+    train_labels = t.tensor([example.label for example in train_examples], dtype=t.bool)
+    score_threshold = float((train_scores[train_labels].min() + train_scores[~train_labels].max()) / 2)
+    score_predictions = t.tensor(
+        [example.score >= score_threshold for example in heldout_examples],
+        dtype=t.bool,
+    )
+    rows = [
+        ("initial text-only rule", initial_predictions, "resting-word story from top examples"),
+        ("always-negative base rate", always_negative, "majority-class baseline"),
+        ("random keyword rule", random_predictions, "random words from held-out vocabulary"),
+        ("train-example lookup", lookup_predictions, "exact memorization control"),
+        ("activation-score threshold", score_predictions, "oracle-style feature-score upper bound"),
+        ("revised verbalizer", revised_predictions, "semantic rule after counterexample revision"),
+    ]
+    revised_accuracy = _accuracy(revised_predictions, labels)
+    return tuple(
+        {
+            "control": name,
+            "accuracy": _accuracy(predictions, labels),
+            "beats_revised": _accuracy(predictions, labels) > revised_accuracy,
+            "notes": notes,
+        }
+        for name, predictions, notes in rows
+    )
+
+
+def run_planted_feature_verbalizer_signature_result(seed: int = 0) -> dict:
+    """Run the full CPU signature result on the exact planted verbalizer organism."""
+
+    dataset = make_planted_feature_dataset()
+    split = split_planted_feature_dataset(dataset)
+    train_texts = [example.text for example in split.train]
+    train_scores = t.tensor([example.score for example in split.train], dtype=t.float32)
+    train_labels = t.tensor([example.label for example in split.train], dtype=t.bool)
+    train_threshold = float((train_scores[train_labels].min() + train_scores[~train_labels].max()) / 2)
+    example_set = gather_verbalizer_examples(
+        train_texts,
+        train_scores,
+        train_labels,
+        k=4,
+        threshold=train_threshold,
+        seed=seed,
+    )
+
+    initial_rule = ExplanationRule(
+        description="feature fires on resting words",
+        required_groups=("resting",),
+    )
+    revision_texts = [example.text for example in split.revision]
+    revision_labels = t.tensor([example.label for example in split.revision], dtype=t.bool)
+    revision_predictions = semantic_rule_predictions(revision_texts, initial_rule)
+    counterexamples = mine_counterexamples(split.revision, revision_predictions, max_examples=8)
+    revised_rule = revise_rule_from_counterexamples(initial_rule, counterexamples)
+
+    heldout_texts = [example.text for example in split.heldout]
+    heldout_labels = t.tensor([example.label for example in split.heldout], dtype=t.bool)
+    initial_predictions = semantic_rule_predictions(heldout_texts, initial_rule)
+    revised_predictions = semantic_rule_predictions(heldout_texts, revised_rule)
+    contrastive_mask = t.tensor(
+        [example.counterfactual_type not in {"positive", "irrelevant"} for example in split.heldout],
+        dtype=t.bool,
+    )
+    prediction_report = explanation_prediction_report(
+        revised_predictions,
+        heldout_labels,
+        initial_predictions,
+        contrastive_mask,
+    )
+    controls = control_prediction_table(
+        split.train,
+        split.heldout,
+        initial_rule,
+        revised_rule,
+        seed=seed,
+    )
+    intervention = planted_intervention_direction_test(split.heldout, revised_predictions)
+    brevity = explanation_brevity_report(
+        revised_rule.description,
+        [example.text for example in example_set.top],
+    )
+    revised_accuracy = prediction_report.accuracy
+    control_accuracies = {
+        str(row["control"]): float(row["accuracy"])
+        for row in controls
+        if row["control"] != "activation-score threshold"
+    }
+    signature_passed = (
+        revised_accuracy >= 0.95
+        and all(revised_accuracy > value for value in control_accuracies.values() if value < 0.999)
+        and prediction_report.survives_contrastive
+        and len(counterexamples) >= 3
+        and intervention.matches_prediction
+        and intervention.beats_random_direction
+        and brevity.shorter_than_examples
+    )
+    return {
+        "claim": (
+            "On an exact planted feature, a revised semantic verbalizer predicts held-out "
+            "counterfactual activations and the sign of a feature-direction intervention."
+        ),
+        "planted_rule": "living animal + resting verb + physical surface - decoy object terms",
+        "train_count": len(split.train),
+        "revision_count": len(split.revision),
+        "heldout_count": len(split.heldout),
+        "initial_rule": initial_rule.__dict__,
+        "revised_rule": revised_rule.__dict__,
+        "example_groups": {
+            "top": [example.__dict__ for example in example_set.top],
+            "bottom": [example.__dict__ for example in example_set.bottom],
+            "random": [example.__dict__ for example in example_set.random],
+            "contrastive": [example.__dict__ for example in example_set.contrastive],
+        },
+        "validation_counterexamples": list(counterexamples),
+        "heldout_rows": [
+            {
+                "text": example.text,
+                "score": example.score,
+                "label": example.label,
+                "initial_prediction": bool(initial),
+                "revised_prediction": bool(revised),
+                "counterfactual_type": example.counterfactual_type,
+            }
+            for example, initial, revised in zip(
+                split.heldout,
+                initial_predictions.tolist(),
+                revised_predictions.tolist(),
+                strict=True,
+            )
+        ],
+        "control_table": list(controls),
+        "metrics": {
+            "initial_accuracy": _accuracy(initial_predictions, heldout_labels),
+            "revised_accuracy": prediction_report.accuracy,
+            "baseline_accuracy": prediction_report.baseline_accuracy,
+            "contrastive_accuracy": prediction_report.contrastive_accuracy,
+            "passes_baseline": prediction_report.passes_baseline,
+            "survives_contrastive": prediction_report.survives_contrastive,
+            "counterexamples_mined": len(counterexamples),
+            "intervention_delta": intervention.observed_delta,
+            "random_direction_delta": intervention.random_direction_delta,
+            "intervention_matches_prediction": intervention.matches_prediction,
+            "target_beats_random_direction": intervention.beats_random_direction,
+            "brevity_shorter_than_examples": brevity.shorter_than_examples,
+        },
+        "intervention": intervention.__dict__,
+        "brevity": brevity.__dict__,
+        "signature_passed": signature_passed,
+    }
 
 
 def example_selection_smoke_test() -> dict:
@@ -391,6 +939,7 @@ def run_smoke_test(cpu: bool = True) -> dict:
         "counterexamples": counterexample_revision_smoke_test(),
         "intervention": intervention_prediction_smoke_test(),
         "brevity": brevity_smoke_test(),
+        "planted_signature": run_planted_feature_verbalizer_signature_result(seed=0),
     }
 
 
@@ -452,7 +1001,7 @@ def run_transformerlens_feature_verbalizer_preflight(max_vram_gb: float = 24.0) 
         model,
         TL_DIRECTION_NEGATIVE_PROMPT,
     )
-    direction = (positive_residual.float() - negative_residual.float())
+    direction = positive_residual.float() - negative_residual.float()
     direction = direction / direction.norm()
     positive_token_id = int(positive_logits.argmax().item())
     negative_token_id = int(negative_logits.argmax().item())
@@ -635,8 +1184,50 @@ def run_transformerlens_feature_verbalizer_preflight(max_vram_gb: float = 24.0) 
     }
 
 
-def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
+def run_transformerlens_feature_verbalizer_signature_result(
+    max_vram_gb: float = 24.0,
+) -> dict:
+    """CUDA-only real-transformer escalation used by the parent verification pass."""
+
     return run_transformerlens_feature_verbalizer_preflight(max_vram_gb=max_vram_gb)
+
+
+def _attach_planted_signature_metrics(gpu_result: dict, planted_result: dict) -> dict:
+    """Keep exact toy-oracle evidence distinct from same-named CUDA metrics."""
+
+    metrics = planted_result["metrics"]
+    control_accuracy = {
+        str(row["control"]): float(row["accuracy"])
+        for row in planted_result["control_table"]
+    }
+    return {
+        **gpu_result,
+        "toy_planted_signature_passed": planted_result["signature_passed"],
+        "toy_train_count": planted_result["train_count"],
+        "toy_revision_count": planted_result["revision_count"],
+        "toy_heldout_count": planted_result["heldout_count"],
+        "toy_initial_accuracy": metrics["initial_accuracy"],
+        "toy_revised_accuracy": metrics["revised_accuracy"],
+        "toy_baseline_accuracy": metrics["baseline_accuracy"],
+        "toy_contrastive_accuracy": metrics["contrastive_accuracy"],
+        "toy_passes_baseline": metrics["passes_baseline"],
+        "toy_survives_contrastive": metrics["survives_contrastive"],
+        "toy_counterexamples_mined": metrics["counterexamples_mined"],
+        "toy_intervention_delta": metrics["intervention_delta"],
+        "toy_random_direction_delta": metrics["random_direction_delta"],
+        "toy_intervention_matches_prediction": metrics["intervention_matches_prediction"],
+        "toy_target_beats_random_direction": metrics["target_beats_random_direction"],
+        "toy_brevity_shorter_than_examples": metrics["brevity_shorter_than_examples"],
+        "toy_activation_score_threshold_upper_bound_accuracy": control_accuracy[
+            "activation-score threshold"
+        ],
+    }
+
+
+def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
+    gpu_result = run_transformerlens_feature_verbalizer_preflight(max_vram_gb=max_vram_gb)
+    planted_result = run_planted_feature_verbalizer_signature_result(seed=0)
+    return _attach_planted_signature_metrics(gpu_result, planted_result)
 
 
 def run_full_experiment(max_vram_gb: float = 24.0) -> dict:

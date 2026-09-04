@@ -1,4 +1,7 @@
+import ast
+import json
 from collections.abc import Callable
+from pathlib import Path
 
 import torch as t
 
@@ -379,4 +382,355 @@ def test_notebook_contract(run_smoke_test: Callable | None = None):
     assert result["brevity"]["shorter_than_examples"], (
         "Notebook contract should include a brevity check against examples-only baseline."
     )
+    assert result["planted_signature"]["signature_passed"], (
+        "Notebook contract should include the planted feature-verbalizer signature result."
+    )
     print("All tests in `test_notebook_contract` passed!")
+
+
+def test_gpu_report_payload_keeps_toy_and_real_metrics_distinct():
+    solutions = _solutions()
+    planted = solutions.run_planted_feature_verbalizer_signature_result(seed=0)
+    combined = solutions._attach_planted_signature_metrics(
+        {
+            "preflight_passed": True,
+            "baseline_accuracy": 0.5,
+            "intervention_delta": 0.75,
+        },
+        planted,
+    )
+    assert combined["baseline_accuracy"] == 0.5
+    assert combined["intervention_delta"] == 0.75
+    assert combined["toy_baseline_accuracy"] == planted["metrics"]["baseline_accuracy"]
+    assert combined["toy_intervention_delta"] == planted["metrics"]["intervention_delta"]
+    assert combined["toy_planted_signature_passed"]
+    assert combined["toy_activation_score_threshold_upper_bound_accuracy"] == 1.0
+    print("All tests in `test_gpu_report_payload_keeps_toy_and_real_metrics_distinct` passed!")
+
+
+def test_planted_feature_dataset_exact_rule_and_disjoint_splits(
+    planted_feature_label: Callable | None = None,
+    make_planted_feature_dataset: Callable | None = None,
+    split_planted_feature_dataset: Callable | None = None,
+):
+    solutions = _solutions()
+    planted_feature_label = planted_feature_label or solutions.planted_feature_label
+    make_planted_feature_dataset = (
+        make_planted_feature_dataset or solutions.make_planted_feature_dataset
+    )
+    split_planted_feature_dataset = (
+        split_planted_feature_dataset or solutions.split_planted_feature_dataset
+    )
+    assert planted_feature_label("The cat sat on the mat.")
+    assert not planted_feature_label("The toy cat sat on the mat.")
+    assert not planted_feature_label("The catalog sat on the shelf."), (
+        "The planted oracle should use whole-token semantic groups, not substrings."
+    )
+    split = split_planted_feature_dataset(make_planted_feature_dataset())
+    assert len(split.train) >= 10 and len(split.heldout) >= 20
+    assert not {example.text for example in split.train}.intersection(
+        example.text for example in split.heldout
+    ), "Train and held-out examples must be disjoint."
+    assert {example.label for example in split.train} == {False, True}
+    assert {example.label for example in split.revision} == {False, True}
+    assert {example.label for example in split.heldout} == {False, True}
+    assert all(not example.label for example in split.heldout if "decoy" in example.tags), (
+        "Decoy toy/plush/statue/painted animals should be exact negative counterexamples."
+    )
+    print("All tests in `test_planted_feature_dataset_exact_rule_and_disjoint_splits` passed!")
+
+
+def test_semantic_rule_predictions_require_all_groups_and_exclusions(
+    semantic_rule_predictions: Callable | None = None,
+):
+    solutions = _solutions()
+    semantic_rule_predictions = semantic_rule_predictions or solutions.semantic_rule_predictions
+    rule = solutions.ExplanationRule(
+        description="living animal resting on a surface",
+        required_groups=("animal", "resting", "surface"),
+        excluded_terms=("toy", "plush"),
+    )
+    texts = [
+        "The cat sat on the mat.",
+        "The toy cat sat on the mat.",
+        "The cat sprinted across the mat.",
+        "The catalog sat on the shelf.",
+    ]
+    predictions = semantic_rule_predictions(texts, rule)
+    t.testing.assert_close(
+        predictions,
+        t.tensor([True, False, False, False]),
+        msg="Semantic rules should require all named groups, honor exclusions, and use whole tokens.",
+    )
+    try:
+        semantic_rule_predictions(["The cat sat on the mat."], solutions.ExplanationRule("", ()))
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("Rules with no required semantic groups should be rejected.")
+    print("All tests in `test_semantic_rule_predictions_require_all_groups_and_exclusions` passed!")
+
+
+def test_counterexample_revision_improves_heldout_counterfactuals(
+    semantic_rule_predictions: Callable | None = None,
+    mine_counterexamples: Callable | None = None,
+    revise_rule_from_counterexamples: Callable | None = None,
+):
+    solutions = _solutions()
+    semantic_rule_predictions = semantic_rule_predictions or solutions.semantic_rule_predictions
+    mine_counterexamples = mine_counterexamples or solutions.mine_counterexamples
+    revise_rule_from_counterexamples = (
+        revise_rule_from_counterexamples or solutions.revise_rule_from_counterexamples
+    )
+    split = solutions.split_planted_feature_dataset(solutions.make_planted_feature_dataset())
+    initial_rule = solutions.ExplanationRule(
+        description="feature fires on resting words",
+        required_groups=("resting",),
+    )
+    revision_texts = [example.text for example in split.revision]
+    revision_predictions = semantic_rule_predictions(revision_texts, initial_rule)
+    counterexamples = mine_counterexamples(split.revision, revision_predictions, max_examples=8)
+    revised_rule = revise_rule_from_counterexamples(initial_rule, counterexamples)
+    assert len(counterexamples) >= 3
+    assert set(revised_rule.required_groups) == {"animal", "resting", "surface"}
+    assert {"toy", "plush", "statue", "painted", "cardboard"}.issubset(
+        set(revised_rule.excluded_terms)
+    ), "Revision should generalize from seen decoys to the full decoy category."
+    heldout_texts = [example.text for example in split.heldout]
+    labels = t.tensor([example.label for example in split.heldout], dtype=t.bool)
+    initial_accuracy = semantic_rule_predictions(heldout_texts, initial_rule).eq(labels).float().mean()
+    revised_accuracy = semantic_rule_predictions(heldout_texts, revised_rule).eq(labels).float().mean()
+    assert initial_accuracy < 0.75
+    assert revised_accuracy == 1.0
+    print("All tests in `test_counterexample_revision_improves_heldout_counterfactuals` passed!")
+
+
+def test_control_table_revised_beats_text_random_and_lookup_controls(
+    control_prediction_table: Callable | None = None,
+):
+    solutions = _solutions()
+    control_prediction_table = control_prediction_table or solutions.control_prediction_table
+    split = solutions.split_planted_feature_dataset(solutions.make_planted_feature_dataset())
+    initial_rule = solutions.ExplanationRule(
+        description="feature fires on resting words",
+        required_groups=("resting",),
+    )
+    counterexamples = solutions.mine_counterexamples(
+        split.revision,
+        solutions.semantic_rule_predictions(
+            [example.text for example in split.revision],
+            initial_rule,
+        ),
+    )
+    revised_rule = solutions.revise_rule_from_counterexamples(initial_rule, counterexamples)
+    rows = control_prediction_table(split.train, split.heldout, initial_rule, revised_rule)
+    by_name = {str(row["control"]): row for row in rows}
+    assert by_name["revised verbalizer"]["accuracy"] == 1.0
+    for control_name in [
+        "initial text-only rule",
+        "always-negative base rate",
+        "random keyword rule",
+        "train-example lookup",
+    ]:
+        assert by_name[control_name]["accuracy"] < by_name["revised verbalizer"]["accuracy"], (
+            f"Revised verbalizer should beat {control_name} on final held-out examples."
+        )
+    assert by_name["activation-score threshold"]["accuracy"] == 1.0, (
+        "The score threshold is an oracle-style upper bound, not a defeated text baseline."
+    )
+    print(
+        "All tests in `test_control_table_revised_beats_text_random_and_lookup_controls` passed!"
+    )
+
+
+def test_planted_intervention_direction_beats_random_direction(
+    planted_intervention_direction_test: Callable | None = None,
+):
+    solutions = _solutions()
+    planted_intervention_direction_test = (
+        planted_intervention_direction_test or solutions.planted_intervention_direction_test
+    )
+    split = solutions.split_planted_feature_dataset(solutions.make_planted_feature_dataset())
+    signature = solutions.run_planted_feature_verbalizer_signature_result()
+    predictions = t.tensor(
+        [row["revised_prediction"] for row in signature["heldout_rows"]],
+        dtype=t.bool,
+    )
+    report = planted_intervention_direction_test(split.heldout, predictions, alpha=1.25)
+    assert report.matches_prediction
+    assert report.beats_random_direction
+    assert abs(report.observed_delta - 1.25) < 1e-6
+    assert abs(report.random_direction_delta) < 1e-6
+    try:
+        planted_intervention_direction_test(split.heldout, t.zeros(len(split.heldout), dtype=t.bool))
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("Intervention scoring should reject an all-negative verbalizer.")
+    print("All tests in `test_planted_intervention_direction_beats_random_direction` passed!")
+
+
+def test_planted_signature_result_contains_visible_evidence(
+    run_planted_feature_verbalizer_signature_result: Callable | None = None,
+):
+    solutions = _solutions()
+    run_planted_feature_verbalizer_signature_result = (
+        run_planted_feature_verbalizer_signature_result
+        or solutions.run_planted_feature_verbalizer_signature_result
+    )
+    result = run_planted_feature_verbalizer_signature_result(seed=0)
+    assert result["signature_passed"]
+    assert result["heldout_count"] >= 20
+    assert len(result["heldout_rows"]) == result["heldout_count"]
+    assert len(result["validation_counterexamples"]) >= 3
+    assert result["metrics"]["revised_accuracy"] == 1.0
+    assert result["metrics"]["initial_accuracy"] < 0.75
+    assert result["metrics"]["target_beats_random_direction"]
+    assert "verification_report" not in json.dumps(result), (
+        "The signature should be generated from notebook-visible data, not loaded from a report."
+    )
+    print("All tests in `test_planted_signature_result_contains_visible_evidence` passed!")
+
+
+def test_exercise_notebook_exposes_arena_learner_surface():
+    notebook_path = Path(__file__).with_name("7.2_Feature_Verbalizers_exercises.ipynb")
+    text = notebook_path.read_text()
+    required_strings = [
+        "By the end of this notebook",
+        "### Exercise - implement the exact planted feature oracle",
+        "### Exercise - gather top, bottom, random, and contrastive examples",
+        "### Exercise - turn a semantic explanation into predictions",
+        "### Exercise - mine counterexamples and revise the explanation",
+        "### Exercise - compare the revised verbalizer against controls",
+        "### Exercise - test the intervention direction",
+        "### Exercise - build the signature result table",
+        "Expected output",
+        "Help -",
+        "Interpreting the result",
+        "<summary>Solution</summary>",
+        "## Try It Yourself",
+        "## Bonus: Hunt an Anomaly",
+        "## Reading Links",
+        "Bills et al.",
+        "run_planted_feature_verbalizer_signature_result",
+        "fig, axes = plt.subplots(1, 3",
+        "The static image is only a preview",
+        "feature_verbalizers_planted_signature.png",
+    ]
+    missing = [needle for needle in required_strings if needle not in text]
+    assert not missing, f"Exercise notebook is missing ARENA learner-surface pieces: {missing}"
+    assert text.count("### Exercise -") >= 7
+    print("All tests in `test_exercise_notebook_exposes_arena_learner_surface` passed!")
+
+
+def _notebook_sources(path: Path) -> tuple[list[str], list[str]]:
+    notebook = json.loads(path.read_text())
+    markdown_sources = [
+        "".join(cell.get("source", []))
+        for cell in notebook["cells"]
+        if cell.get("cell_type") == "markdown"
+    ]
+    code_sources = [
+        "".join(cell.get("source", []))
+        for cell in notebook["cells"]
+        if cell.get("cell_type") == "code"
+    ]
+    return markdown_sources, code_sources
+
+
+def test_notebooks_expose_toy_ground_truth_without_reference_leakage():
+    section_dir = Path(__file__).parent
+    for filename in [
+        "7.2_Feature_Verbalizers_exercises.ipynb",
+        "7.2_Feature_Verbalizers_solutions.ipynb",
+    ]:
+        _, code_sources = _notebook_sources(section_dir / filename)
+        code = "\n".join(code_sources)
+        for required in [
+            "ANIMAL_TERMS = frozenset",
+            "RESTING_TERMS = frozenset",
+            "SURFACE_TERMS = frozenset",
+            "DECOY_TERMS = frozenset",
+            "_PLANTED_EXAMPLE_SPECS:",
+            '"The toy cat sat on the mat."',
+            '"The catalog sat on the shelf."',
+        ]:
+            assert required in code, f"{filename} must expose toy ground truth: {required}"
+        for forbidden in [
+            "TOKEN_RE = reference.TOKEN_RE",
+            "ANIMAL_TERMS = reference.ANIMAL_TERMS",
+            "_PLANTED_EXAMPLE_SPECS = reference._PLANTED_EXAMPLE_SPECS",
+        ]:
+            assert forbidden not in code, (
+                f"{filename} hides learner-visible ground truth behind solutions.py: {forbidden}"
+            )
+    print("All tests in `test_notebooks_expose_toy_ground_truth_without_reference_leakage` passed!")
+
+
+def test_solution_notebook_mirrors_progression_and_inlines_taught_implementations():
+    section_dir = Path(__file__).parent
+    exercise_markdown, _ = _notebook_sources(
+        section_dir / "7.2_Feature_Verbalizers_exercises.ipynb"
+    )
+    solution_markdown, solution_code = _notebook_sources(
+        section_dir / "7.2_Feature_Verbalizers_solutions.ipynb"
+    )
+
+    exercise_headings = [
+        line
+        for source in exercise_markdown
+        for line in source.splitlines()
+        if line.startswith("### Exercise -")
+    ]
+    solution_headings = [
+        line
+        for source in solution_markdown
+        for line in source.splitlines()
+        if line.startswith("### Exercise -")
+    ]
+    assert solution_headings == exercise_headings, (
+        "The solved notebook must mirror the complete seven-exercise learner progression."
+    )
+
+    required_functions = {
+        "planted_feature_label",
+        "_planted_feature_score",
+        "_planted_tags",
+        "make_planted_feature_dataset",
+        "split_planted_feature_dataset",
+        "_make_examples",
+        "gather_verbalizer_examples",
+        "keyword_explanation_predictions",
+        "semantic_rule_predictions",
+        "explanation_prediction_report",
+        "find_counterexamples",
+        "mine_counterexamples",
+        "revise_explanation",
+        "revise_rule_from_counterexamples",
+        "examples_only_lookup_predictions",
+        "random_keyword_predictions",
+        "control_prediction_table",
+        "intervention_prediction_report",
+        "planted_intervention_direction_test",
+        "explanation_brevity_report",
+        "run_planted_feature_verbalizer_signature_result",
+        "run_smoke_test",
+    }
+    defined_functions: set[str] = set()
+    for index, source in enumerate(solution_code):
+        try:
+            tree = ast.parse(source)
+        except SyntaxError as error:
+            raise AssertionError(f"Solution code cell {index} does not parse: {error}") from error
+        defined_functions.update(
+            node.name for node in ast.walk(tree) if isinstance(node, ast.FunctionDef)
+        )
+
+    missing = sorted(required_functions - defined_functions)
+    assert not missing, f"Solved notebook hides taught implementations: {missing}"
+    assert all("raise NotImplementedError" not in source for source in solution_code), (
+        "Solved notebook must contain no learner stubs."
+    )
+    print(
+        "All tests in `test_solution_notebook_mirrors_progression_and_inlines_taught_implementations` passed!"
+    )

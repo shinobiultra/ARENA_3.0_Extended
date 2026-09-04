@@ -2,59 +2,66 @@
   "accepted": true,
   "baselines": {
     "declared_controls": [
-      "baseline_or_reference_check",
-      "negative_control_where_applicable",
-      "shape_dtype_or_exact_value_check",
-      "toy_example_selection_contract",
-      "toy_explanation_prediction_contract",
-      "toy_counterexample_revision_contract",
-      "toy_intervention_direction_contract",
-      "toy_brevity_contract",
-      "pinned_transformerlens_gelu1l_residual_direction_scores",
-      "heldout_keyword_prediction_against_safe_manual_labels",
-      "contrastive_near_threshold_prompt_control",
-      "train_heldout_prompt_disjointness_check",
-      "learned_terms_from_train_only_check",
-      "zero_counterexample_check",
-      "direction_addition_logit_delta_intervention",
+      "exact_planted_feature_oracle",
+      "train_revision_heldout_disjointness_check",
+      "top_bottom_random_contrastive_example_collection",
+      "initial_text_only_resting_word_rule",
+      "always_negative_base_rate",
+      "deterministic_random_keyword_rule",
+      "train_example_lookup",
+      "activation_score_threshold_upper_bound",
+      "revision_split_counterexample_mining",
+      "final_heldout_counterfactuals",
+      "feature_direction_intervention",
       "orthogonal_random_direction_intervention_control",
-      "api_llm_and_sae_feature_explanation_not_claimed"
+      "pinned_transformerlens_gelu1l_cuda_handoff_not_rerun_by_subtask"
     ],
     "expected_metrics": {
       "accepted": true,
-      "baseline_accuracy": 0.5,
-      "bnb_cuda_override": "130",
-      "brevity_shorter_than_examples": true,
-      "contrastive_accuracy": 1.0,
-      "heldout_example_count": 8,
       "hf_revision": "bddc0e332f0ae84279e6a6a45d91b314899e1603",
-      "intervention_delta_min": 0.5,
-      "learned_terms_from_train": true,
-      "matches_intervention_prediction": true,
       "max_allowed_gpu_gb": 24,
       "model_name": "gelu-1l",
-      "negative_token": " top",
-      "num_counterexamples": 0,
-      "passes_baseline": true,
-      "peak_vram_gb_max": 1.0,
-      "positive_token": " floor",
-      "prediction_accuracy": 1.0,
-      "preflight_passed": true,
-      "score_separation_min": 5.0,
-      "survives_contrastive": true,
-      "target_beats_random_intervention": true,
       "tests_passed": true,
       "tokenizer_revision": "0f6671571a20be9756b9991d978047c03b75e749",
-      "train_example_count": 8,
-      "train_heldout_overlap_count": 0
+      "toy_activation_score_threshold_upper_bound_accuracy": 1.0,
+      "toy_baseline_accuracy": 0.5416666865348816,
+      "toy_brevity_shorter_than_examples": true,
+      "toy_contrastive_accuracy": 1.0,
+      "toy_counterexamples_mined": 3,
+      "toy_heldout_count": 24,
+      "toy_initial_accuracy": 0.5416666865348816,
+      "toy_intervention_delta": 1.25,
+      "toy_intervention_matches_prediction": true,
+      "toy_passes_baseline": true,
+      "toy_planted_signature_passed": true,
+      "toy_random_direction_delta": 0.0,
+      "toy_revised_accuracy": 1.0,
+      "toy_revision_count": 6,
+      "toy_survives_contrastive": true,
+      "toy_target_beats_random_direction": true,
+      "toy_train_count": 12
     }
   },
-  "claim_scope": "GT-1 feature-verbalizer preflight: reusable toy example-selection, keyword-prediction, counterexample, revision, intervention, and brevity contracts are kept for learner exercises, then a pinned TransformerLens gelu-1l checkpoint is loaded on CUDA. The report constructs a real residual direction from safe clean/corrupt final-token activations, scores safe prompt examples by projection onto that direction, validates a concise keyword explanation on held-out and contrastive examples, checks zero counterexamples, and verifies that adding the direction increases the predicted token logit difference. This is a local residual-direction verbalizer preflight, not an API-LLM or SAE-feature explanation claim.",
+  "claim_scope": "GT-1 feature-verbalizer course section: students first build an exact planted feature whose rule is living animal + resting verb + physical surface - decoy object terms. They gather top/bottom/random/contrastive examples, test an intentionally overbroad resting-word verbalizer, mine revision-split counterexamples, revise to a semantic rule, and evaluate on 24 final held-out counterfactual prompts. The revised verbalizer reaches 1.0 held-out accuracy, beats text-only/random/example-lookup/base-rate controls, ties the planted activation-score oracle, and predicts a positive feature-direction intervention while an orthogonal random direction has zero effect. A pinned TransformerLens gelu-1l CUDA path remains exposed as the real-transformer escalation, but is not the learner-facing proof surface.",
   "datasets": [
     {
-      "id": "7_2_feature_verbalizers_toy_inputs",
+      "counterfactual_types": [
+        "positive",
+        "decoy_animal",
+        "animal_motion",
+        "object_resting",
+        "no_surface",
+        "no_rest",
+        "substring_trap",
+        "irrelevant"
+      ],
+      "exact_rule": "living animal + resting verb + physical surface - decoy object terms",
+      "heldout_example_count": 24,
+      "id": "7_2_exact_planted_feature_counterfactuals_v2",
+      "revision_example_count": 6,
       "seed": 0,
-      "source": "generated"
+      "source": "generated_exact_prompts",
+      "train_example_count": 12
     },
     {
       "explanation_terms": [
@@ -74,9 +81,9 @@
       "train_example_count": 8
     }
   ],
-  "date_run": "2026-07-02T12:43:02+00:00",
-  "evidence_level": "toy_verbalizer_contract_plus_pinned_transformerlens_residual_direction_preflight",
-  "git_commit": "3a539d48",
+  "date_run": "2026-09-04T07:20:52+00:00",
+  "evidence_level": "exact_planted_model_organism_plus_pinned_transformerlens_residual_direction_handoff",
+  "git_commit": "510202e3",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-1",
   "known_failures": [],
@@ -124,6 +131,23 @@
         "tokenizer_id",
         "tokenizer_revision",
         "top_examples",
+        "toy_activation_score_threshold_upper_bound_accuracy",
+        "toy_baseline_accuracy",
+        "toy_brevity_shorter_than_examples",
+        "toy_contrastive_accuracy",
+        "toy_counterexamples_mined",
+        "toy_heldout_count",
+        "toy_initial_accuracy",
+        "toy_intervention_delta",
+        "toy_intervention_matches_prediction",
+        "toy_passes_baseline",
+        "toy_planted_signature_passed",
+        "toy_random_direction_delta",
+        "toy_revised_accuracy",
+        "toy_revision_count",
+        "toy_survives_contrastive",
+        "toy_target_beats_random_direction",
+        "toy_train_count",
         "train_example_count",
         "train_heldout_overlap_count"
       ],
@@ -186,7 +210,7 @@
       "negative_token": " top",
       "num_counterexamples": 0,
       "passes_baseline": true,
-      "peak_vram_gb": 0.26766014099121094,
+      "peak_vram_gb": 0.23641014099121094,
       "positive_mean_score": 1.6886990070343018,
       "positive_prompt": "The cat sat on the",
       "positive_token": " floor",
@@ -204,6 +228,23 @@
         "The child sat beside the"
       ],
       "torch_version": "2.12.1+cu132",
+      "toy_activation_score_threshold_upper_bound_accuracy": 1.0,
+      "toy_baseline_accuracy": 0.5416666865348816,
+      "toy_brevity_shorter_than_examples": true,
+      "toy_contrastive_accuracy": 1.0,
+      "toy_counterexamples_mined": 3,
+      "toy_heldout_count": 24,
+      "toy_initial_accuracy": 0.5416666865348816,
+      "toy_intervention_delta": 1.25,
+      "toy_intervention_matches_prediction": true,
+      "toy_passes_baseline": true,
+      "toy_planted_signature_passed": true,
+      "toy_random_direction_delta": 0.0,
+      "toy_revised_accuracy": 1.0,
+      "toy_revision_count": 6,
+      "toy_survives_contrastive": true,
+      "toy_target_beats_random_direction": true,
+      "toy_train_count": 12,
       "train_example_count": 8,
       "train_heldout_overlap_count": 0,
       "within_vram_budget": true
@@ -244,6 +285,445 @@
         "observed_delta": 0.4000000059604645,
         "predicted_direction": "increase"
       },
+      "planted_signature": {
+        "brevity": {
+          "examples_word_count": 24,
+          "explanation_word_count": 17,
+          "shorter_than_examples": true
+        },
+        "claim": "On an exact planted feature, a revised semantic verbalizer predicts held-out counterfactual activations and the sign of a feature-direction intervention.",
+        "control_table": [
+          {
+            "accuracy": 0.5416666865348816,
+            "beats_revised": false,
+            "control": "initial text-only rule",
+            "notes": "resting-word story from top examples"
+          },
+          {
+            "accuracy": 0.6666666865348816,
+            "beats_revised": false,
+            "control": "always-negative base rate",
+            "notes": "majority-class baseline"
+          },
+          {
+            "accuracy": 0.6666666865348816,
+            "beats_revised": false,
+            "control": "random keyword rule",
+            "notes": "random words from held-out vocabulary"
+          },
+          {
+            "accuracy": 0.6666666865348816,
+            "beats_revised": false,
+            "control": "train-example lookup",
+            "notes": "exact memorization control"
+          },
+          {
+            "accuracy": 1.0,
+            "beats_revised": false,
+            "control": "activation-score threshold",
+            "notes": "oracle-style feature-score upper bound"
+          },
+          {
+            "accuracy": 1.0,
+            "beats_revised": false,
+            "control": "revised verbalizer",
+            "notes": "semantic rule after counterexample revision"
+          }
+        ],
+        "example_groups": {
+          "bottom": [
+            {
+              "kind": "bottom",
+              "label": false,
+              "score": -1.9600000381469727,
+              "text": "The kite floated above the field."
+            },
+            {
+              "kind": "bottom",
+              "label": false,
+              "score": 0.07999999821186066,
+              "text": "The book rested on the shelf."
+            },
+            {
+              "kind": "bottom",
+              "label": false,
+              "score": 0.09000000357627869,
+              "text": "The robot rested on the sofa."
+            },
+            {
+              "kind": "bottom",
+              "label": false,
+              "score": 0.10000000149011612,
+              "text": "The lamp sat on the floor."
+            }
+          ],
+          "contrastive": [
+            {
+              "kind": "contrastive",
+              "label": false,
+              "score": 0.4300000071525574,
+              "text": "The dog slept during the storm."
+            },
+            {
+              "kind": "contrastive",
+              "label": true,
+              "score": 4.590000152587891,
+              "text": "A dog slept on the rug."
+            },
+            {
+              "kind": "contrastive",
+              "label": true,
+              "score": 4.619999885559082,
+              "text": "The cat sat on the mat."
+            },
+            {
+              "kind": "contrastive",
+              "label": true,
+              "score": 4.619999885559082,
+              "text": "A fox perched on the ledge."
+            }
+          ],
+          "random": [
+            {
+              "kind": "random",
+              "label": false,
+              "score": 0.33000001311302185,
+              "text": "The cat sprinted across the mat."
+            },
+            {
+              "kind": "random",
+              "label": true,
+              "score": 4.619999885559082,
+              "text": "The cat sat on the mat."
+            },
+            {
+              "kind": "random",
+              "label": true,
+              "score": 4.619999885559082,
+              "text": "A fox perched on the ledge."
+            },
+            {
+              "kind": "random",
+              "label": false,
+              "score": 0.4300000071525574,
+              "text": "The dog slept during the storm."
+            }
+          ],
+          "top": [
+            {
+              "kind": "top",
+              "label": true,
+              "score": 4.659999847412109,
+              "text": "The rabbit rested near the sofa."
+            },
+            {
+              "kind": "top",
+              "label": true,
+              "score": 4.659999847412109,
+              "text": "An otter napped on the dock."
+            },
+            {
+              "kind": "top",
+              "label": true,
+              "score": 4.659999847412109,
+              "text": "The goat lounged beside the bench."
+            },
+            {
+              "kind": "top",
+              "label": true,
+              "score": 4.619999885559082,
+              "text": "A fox perched on the ledge."
+            }
+          ]
+        },
+        "heldout_count": 24,
+        "heldout_rows": [
+          {
+            "counterfactual_type": "positive",
+            "initial_prediction": true,
+            "label": true,
+            "revised_prediction": true,
+            "score": 4.6,
+            "text": "The horse rested on the blanket."
+          },
+          {
+            "counterfactual_type": "positive",
+            "initial_prediction": true,
+            "label": true,
+            "revised_prediction": true,
+            "score": 4.569999999999999,
+            "text": "A lizard dozed on the warm rock."
+          },
+          {
+            "counterfactual_type": "positive",
+            "initial_prediction": true,
+            "label": true,
+            "revised_prediction": true,
+            "score": 4.6,
+            "text": "The owl perched on the branch."
+          },
+          {
+            "counterfactual_type": "positive",
+            "initial_prediction": true,
+            "label": true,
+            "revised_prediction": true,
+            "score": 4.6499999999999995,
+            "text": "The kitten slept beside the basket."
+          },
+          {
+            "counterfactual_type": "positive",
+            "initial_prediction": true,
+            "label": true,
+            "revised_prediction": true,
+            "score": 4.529999999999999,
+            "text": "The puppy lounged on the couch."
+          },
+          {
+            "counterfactual_type": "positive",
+            "initial_prediction": true,
+            "label": true,
+            "revised_prediction": true,
+            "score": 4.6,
+            "text": "An alpaca sat near the fence."
+          },
+          {
+            "counterfactual_type": "positive",
+            "initial_prediction": true,
+            "label": true,
+            "revised_prediction": true,
+            "score": 4.52,
+            "text": "The bear rested by the log."
+          },
+          {
+            "counterfactual_type": "positive",
+            "initial_prediction": true,
+            "label": true,
+            "revised_prediction": true,
+            "score": 4.6499999999999995,
+            "text": "The sheep slept on the hay."
+          },
+          {
+            "counterfactual_type": "decoy_animal",
+            "initial_prediction": true,
+            "label": false,
+            "revised_prediction": false,
+            "score": 0.06,
+            "text": "The toy horse rested on the blanket."
+          },
+          {
+            "counterfactual_type": "decoy_animal",
+            "initial_prediction": true,
+            "label": false,
+            "revised_prediction": false,
+            "score": -0.07,
+            "text": "A ceramic lizard dozed on the rock."
+          },
+          {
+            "counterfactual_type": "decoy_animal",
+            "initial_prediction": true,
+            "label": false,
+            "revised_prediction": false,
+            "score": -0.03,
+            "text": "The statue owl perched on the branch."
+          },
+          {
+            "counterfactual_type": "decoy_animal",
+            "initial_prediction": true,
+            "label": false,
+            "revised_prediction": false,
+            "score": -0.08,
+            "text": "The plush puppy slept on the couch."
+          },
+          {
+            "counterfactual_type": "animal_motion",
+            "initial_prediction": false,
+            "label": false,
+            "revised_prediction": false,
+            "score": 0.19,
+            "text": "The horse galloped across the blanket."
+          },
+          {
+            "counterfactual_type": "animal_motion",
+            "initial_prediction": false,
+            "label": false,
+            "revised_prediction": false,
+            "score": 0.31,
+            "text": "The seal swam near the rock."
+          },
+          {
+            "counterfactual_type": "object_resting",
+            "initial_prediction": true,
+            "label": false,
+            "revised_prediction": false,
+            "score": 0.09999999999999987,
+            "text": "The lamp rested on the blanket."
+          },
+          {
+            "counterfactual_type": "object_resting",
+            "initial_prediction": true,
+            "label": false,
+            "revised_prediction": false,
+            "score": 0.11999999999999987,
+            "text": "The book sat on the shelf."
+          },
+          {
+            "counterfactual_type": "no_surface",
+            "initial_prediction": true,
+            "label": false,
+            "revised_prediction": false,
+            "score": 0.43999999999999995,
+            "text": "The kitten slept during the storm."
+          },
+          {
+            "counterfactual_type": "object_resting",
+            "initial_prediction": true,
+            "label": false,
+            "revised_prediction": false,
+            "score": 0.13999999999999987,
+            "text": "The robot napped on the couch."
+          },
+          {
+            "counterfactual_type": "decoy_animal",
+            "initial_prediction": true,
+            "label": false,
+            "revised_prediction": false,
+            "score": 0.0,
+            "text": "The painted bear rested by the log."
+          },
+          {
+            "counterfactual_type": "decoy_animal",
+            "initial_prediction": true,
+            "label": false,
+            "revised_prediction": false,
+            "score": -0.05,
+            "text": "A cardboard sheep slept on the hay."
+          },
+          {
+            "counterfactual_type": "animal_motion",
+            "initial_prediction": false,
+            "label": false,
+            "revised_prediction": false,
+            "score": 0.28,
+            "text": "The owl flew above the branch."
+          },
+          {
+            "counterfactual_type": "no_rest",
+            "initial_prediction": false,
+            "label": false,
+            "revised_prediction": false,
+            "score": -0.7,
+            "text": "The fox chased the mouse."
+          },
+          {
+            "counterfactual_type": "substring_trap",
+            "initial_prediction": true,
+            "label": false,
+            "revised_prediction": false,
+            "score": 0.09999999999999987,
+            "text": "The catalog sat on the shelf."
+          },
+          {
+            "counterfactual_type": "irrelevant",
+            "initial_prediction": false,
+            "label": false,
+            "revised_prediction": false,
+            "score": -2.01,
+            "text": "The rocket launched above the clouds."
+          }
+        ],
+        "initial_rule": {
+          "description": "feature fires on resting words",
+          "excluded_terms": [],
+          "required_groups": [
+            "resting"
+          ]
+        },
+        "intervention": {
+          "beats_random_direction": true,
+          "evaluated_examples": 8,
+          "matches_prediction": true,
+          "observed_delta": 1.25,
+          "predicted_direction": "increase",
+          "random_direction_delta": 0.0
+        },
+        "metrics": {
+          "baseline_accuracy": 0.5416666865348816,
+          "brevity_shorter_than_examples": true,
+          "contrastive_accuracy": 1.0,
+          "counterexamples_mined": 3,
+          "initial_accuracy": 0.5416666865348816,
+          "intervention_delta": 1.25,
+          "intervention_matches_prediction": true,
+          "passes_baseline": true,
+          "random_direction_delta": 0.0,
+          "revised_accuracy": 1.0,
+          "survives_contrastive": true,
+          "target_beats_random_direction": true
+        },
+        "planted_rule": "living animal + resting verb + physical surface - decoy object terms",
+        "revised_rule": {
+          "description": "living animal resting on a physical surface; exclude cardboard, ceramic, painted, plastic, plush, statue, toy, wooden examples",
+          "excluded_terms": [
+            "cardboard",
+            "ceramic",
+            "painted",
+            "plastic",
+            "plush",
+            "statue",
+            "toy",
+            "wooden"
+          ],
+          "required_groups": [
+            "animal",
+            "resting",
+            "surface"
+          ]
+        },
+        "revision_count": 6,
+        "signature_passed": true,
+        "train_count": 12,
+        "validation_counterexamples": [
+          {
+            "counterfactual_type": "decoy_animal",
+            "label": false,
+            "predicted": true,
+            "score": 0.08,
+            "tags": [
+              "animal",
+              "resting",
+              "surface",
+              "decoy"
+            ],
+            "text": "The toy cat sat on the mat."
+          },
+          {
+            "counterfactual_type": "decoy_animal",
+            "label": false,
+            "predicted": true,
+            "score": -0.05,
+            "tags": [
+              "animal",
+              "resting",
+              "surface",
+              "decoy"
+            ],
+            "text": "The plush dog slept on the rug."
+          },
+          {
+            "counterfactual_type": "decoy_animal",
+            "label": false,
+            "predicted": true,
+            "score": -0.08,
+            "tags": [
+              "animal",
+              "resting",
+              "surface",
+              "decoy"
+            ],
+            "text": "The wooden fox perched on the ledge."
+          }
+        ]
+      },
       "prediction": {
         "accuracy": 1.0,
         "baseline_accuracy": 0.5,
@@ -261,14 +741,15 @@
   },
   "models": [
     {
+      "claim_scope": "living_animal_resting_on_surface_rule_with_decoy_counterexamples",
       "gated": false,
-      "id": "toy_or_generated_inputs",
+      "id": "exact_planted_feature_verbalizer_organism",
       "precision": "float32",
       "revision": "seed_0",
-      "source": "generated"
+      "source": "generated_exact_text_counterfactuals"
     },
     {
-      "claim_scope": "residual_direction_verbalizer_preflight",
+      "claim_scope": "residual_direction_verbalizer_cuda_handoff",
       "gated": false,
       "id": "NeelNanda/GELU_1L512W_C4_Code",
       "precision": "float32",
@@ -281,7 +762,9 @@
   ],
   "negative_controls": {
     "declared_controls": [
-      "negative_control_where_applicable",
+      "top_bottom_random_contrastive_example_collection",
+      "always_negative_base_rate",
+      "deterministic_random_keyword_rule",
       "orthogonal_random_direction_intervention_control"
     ]
   },
@@ -289,10 +772,10 @@
   "ood_tests": {
     "declared": "required_where_applicable"
   },
-  "peak_vram_gb": 0.26766014099121094,
+  "peak_vram_gb": 0.23641014099121094,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "0ea8fbc54de5ca735e135a14d550108c420b4ae1280df321ebea44183542c0b5",
+    "combined_sha256": "57105531ebaedacafcd93f9da1a4ceb12746566d4b28674eb8b1157a4c2b94af",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -301,23 +784,23 @@
       },
       {
         "path": "chapter7_activation_to_language/exercises/part2_feature_verbalizers/7.2_Feature_Verbalizers_exercises.ipynb",
-        "sha256": "a87e2c2e937fb14a83ef4fe9f531c357c4a4d7a93ac9a4834adc1b64e3b068e9",
-        "size_bytes": 17981
+        "sha256": "3762e7881c7da5ed46fe7148f97fbfe11b8ad672c32415afbbb0fbe5409d8970",
+        "size_bytes": 75739
       },
       {
         "path": "chapter7_activation_to_language/exercises/part2_feature_verbalizers/7.2_Feature_Verbalizers_solutions.ipynb",
-        "sha256": "685dcde0eff3bd6d87933a538376b751bb7940f2b6a7cde4382350182a76a3ec",
-        "size_bytes": 8808
+        "sha256": "e8352d6fddf013c0f0658221810c4b23000e1f3b16cfb451a05b8d80f87cad54",
+        "size_bytes": 281088
       },
       {
         "path": "chapter7_activation_to_language/exercises/part2_feature_verbalizers/README.md",
-        "sha256": "c5b29f6c45be0b1882ad028e5886ee4c2b132834fb88461a44f7205b5af69f29",
-        "size_bytes": 1126
+        "sha256": "57dde2330236c30072e77e1d50760a5707e73370d7adb1580d76d0e48e28f003",
+        "size_bytes": 1830
       },
       {
         "path": "chapter7_activation_to_language/exercises/part2_feature_verbalizers/artifacts.lock.yml",
-        "sha256": "099ad2ddb0d5c937e07122d438b2d86682ad4a8412c99d47ef33447e8b863342",
-        "size_bytes": 4025
+        "sha256": "a7b4152eb923d9f1e88f3e9c9832d764602edc805518331ace2dc6c46ebf84e3",
+        "size_bytes": 4549
       },
       {
         "path": "chapter7_activation_to_language/exercises/part2_feature_verbalizers/expected_outputs/README.md",
@@ -326,23 +809,23 @@
       },
       {
         "path": "chapter7_activation_to_language/exercises/part2_feature_verbalizers/expected_outputs/reference_metrics.json",
-        "sha256": "dfbf4bd8a7754cff5e6a6b7aa3788b7d9c9526812eb20cdacae16d801fa6825a",
-        "size_bytes": 1158
+        "sha256": "aed25589a8dddbae60b7a57c50b2258d6091cb9daa9c01705eb982ebe5fbf636",
+        "size_bytes": 1445
       },
       {
         "path": "chapter7_activation_to_language/exercises/part2_feature_verbalizers/expected_outputs/smoke_test.json",
-        "sha256": "98e2b455eeaad49965215a711266236eea86cd8020ccfe980ed34c139e720ecd",
-        "size_bytes": 277
+        "sha256": "9286f2d0d9cac7ad2c848c8578f4dcfad4461e3b4599e9773d22a0900a1ee0eb",
+        "size_bytes": 365
       },
       {
         "path": "chapter7_activation_to_language/exercises/part2_feature_verbalizers/solutions.py",
-        "sha256": "700e6c98584055e72dc5b797213a29131b4cc2d9f648d06cd93e8d9263173705",
-        "size_bytes": 23497
+        "sha256": "9bd4efb2abb283f1935d38a083677201dcad87a3c92d8d9261c4a1abb92741af",
+        "size_bytes": 47854
       },
       {
         "path": "chapter7_activation_to_language/exercises/part2_feature_verbalizers/tests.py",
-        "sha256": "2f72216440b7d8da73fd98a89f6de93baf37e96c6cf759fb440bcdf8ad521972",
-        "size_bytes": 15223
+        "sha256": "4cba2cdd78528864ae20fa1f2a9df68a99d05b559fb1b6f15e9154e413cfa0f5",
+        "size_bytes": 30953
       },
       {
         "path": "chapter7_activation_to_language/exercises/part2_feature_verbalizers/utils.py",
@@ -356,21 +839,21 @@
       },
       {
         "path": "chapter7_activation_to_language/instructions/pages/02_[7.2]_Feature_Verbalizers.md",
-        "sha256": "ff6d5fefd61092363740502dd725e5b5ed167981ec3c6556f12205dbb2a359ac",
-        "size_bytes": 29587
+        "sha256": "799bf25d3134dd4a583b6fdf11c0aaba56e22eca0a5a863a84cc9c085431864c",
+        "size_bytes": 57888
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
-        "sha256": "660040f459d07535deb9e0c34ffddb496c13b8770044ae380d3a8e45b0c8fb2b",
-        "size_bytes": 16080
+        "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
+        "size_bytes": 16272
       }
     ],
     "schema_version": 1
   },
   "safety_notes": [
-    "No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.",
-    "The real-model path uses safe generic prompts and reads cached activations and logits from a small public TransformerLens checkpoint. It does not use unsafe prompts, gated weights, generated completions, or external API calls."
+    "No unsafe prompts, adapters, gated weights, raw external data, API calls, or generated model completions are used in the CPU learner path.",
+    "The real-model path uses safe generic prompts and a small public TransformerLens checkpoint; parent CUDA verification must rerun it before making GPU-backed release claims."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 2.082353
+  "wall_clock_seconds": 5.403554
 }

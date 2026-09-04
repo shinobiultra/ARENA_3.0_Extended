@@ -1,39 +1,40 @@
 {
-  "baselines": {
-    "required": true
-  },
+  "notebook_id": "7_2_feature_verbalizers",
   "metrics": {
     "accepted": true,
-    "baseline_accuracy": 0.5,
-    "bnb_cuda_override": "130",
-    "brevity_shorter_than_examples": true,
-    "contrastive_accuracy": 1.0,
-    "heldout_example_count": 8,
-    "hf_revision": "bddc0e332f0ae84279e6a6a45d91b314899e1603",
-    "intervention_delta_min": 0.5,
-    "learned_terms_from_train": true,
-    "matches_intervention_prediction": true,
-    "max_allowed_gpu_gb": 24,
+    "gt_tier": "GT-1 exact planted verbalizer plus pinned gelu-1l CUDA escalation",
+    "toy_planted_signature_passed": true,
+    "toy_train_count": 12,
+    "toy_revision_count": 6,
+    "toy_heldout_count": 24,
+    "toy_initial_accuracy": 0.5416666865348816,
+    "toy_revised_accuracy": 1.0,
+    "toy_baseline_accuracy": 0.5416666865348816,
+    "toy_contrastive_accuracy": 1.0,
+    "toy_passes_baseline": true,
+    "toy_survives_contrastive": true,
+    "toy_counterexamples_mined": 3,
+    "toy_intervention_delta": 1.25,
+    "toy_random_direction_delta": 0.0,
+    "toy_intervention_matches_prediction": true,
+    "toy_target_beats_random_direction": true,
+    "toy_brevity_shorter_than_examples": true,
+    "toy_activation_score_threshold_upper_bound_accuracy": 1.0,
     "model_name": "gelu-1l",
-    "negative_token": " top",
-    "num_counterexamples": 0,
-    "passes_baseline": true,
-    "peak_vram_gb_max": 1.0,
-    "positive_token": " floor",
-    "prediction_accuracy": 1.0,
-    "preflight_passed": true,
-    "score_separation_min": 5.0,
-    "survives_contrastive": true,
-    "target_beats_random_intervention": true,
-    "tests_passed": true,
+    "hf_revision": "bddc0e332f0ae84279e6a6a45d91b314899e1603",
     "tokenizer_revision": "0f6671571a20be9756b9991d978047c03b75e749",
-    "train_example_count": 8,
-    "train_heldout_overlap_count": 0
+    "max_allowed_gpu_gb": 24
+  },
+  "baselines": {
+    "initial_text_only_rule": 0.5416666865348816,
+    "always_negative_base_rate": 0.6666666865348816,
+    "random_keyword_rule": 0.6666666865348816,
+    "train_example_lookup": 0.6666666865348816,
+    "activation_score_threshold_upper_bound": 1.0
   },
   "negative_controls": {
     "required_where_applicable": true
   },
-  "notebook_id": "7_2_feature_verbalizers",
   "ood_tests": {
     "required_where_applicable": true
   }

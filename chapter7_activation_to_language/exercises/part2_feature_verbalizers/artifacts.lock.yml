@@ -5,41 +5,57 @@ exercise_metadata:
   EXERCISE_ID: 7_2_feature_verbalizers
   GT_TIER: GT-1
   DIFFICULTY: 4
-  IMPORTANCE: 3
-  EXPECTED_RUNTIME: seconds on toy contract; minutes on local real-model path
-  REQUIRES_GPU: true
+  IMPORTANCE: 4
+  EXPECTED_RUNTIME: 60-90 minutes for CPU exercises; several minutes for parent CUDA gelu-1l preflight
+  REQUIRES_GPU: false for the planted learner path; true for the real TransformerLens escalation
 gt_tier: GT-1
-evidence_level: toy_verbalizer_contract_plus_pinned_transformerlens_residual_direction_preflight
-claim_scope: 'GT-1 feature-verbalizer preflight: reusable toy example-selection, keyword-prediction,
-  counterexample, revision, intervention, and brevity contracts are kept for learner
-  exercises, then a pinned TransformerLens gelu-1l checkpoint is loaded on CUDA. The
-  report constructs a real residual direction from safe clean/corrupt final-token
-  activations, scores safe prompt examples by projection onto that direction, validates
-  a concise keyword explanation on held-out and contrastive examples, checks zero
-  counterexamples, and verifies that adding the direction increases the predicted
-  token logit difference. This is a local residual-direction verbalizer preflight,
-  not an API-LLM or SAE-feature explanation claim.'
+evidence_level: exact_planted_model_organism_plus_pinned_transformerlens_residual_direction_handoff
+claim_scope: 'GT-1 feature-verbalizer course section: students first build an
+  exact planted feature whose rule is living animal + resting verb + physical
+  surface - decoy object terms. They gather top/bottom/random/contrastive
+  examples, test an intentionally overbroad resting-word verbalizer, mine
+  revision-split counterexamples, revise to a semantic rule, and evaluate on 24
+  final held-out counterfactual prompts. The revised verbalizer reaches 1.0
+  held-out accuracy, beats text-only/random/example-lookup/base-rate controls,
+  ties the planted activation-score oracle, and predicts a positive
+  feature-direction intervention while an orthogonal random direction has zero
+  effect. A pinned TransformerLens gelu-1l CUDA path remains exposed as the
+  real-transformer escalation, but is not the learner-facing proof surface.'
 required_gpu_gb: 1
 max_allowed_gpu_gb: 24
 models:
-- id: toy_or_generated_inputs
-  source: generated
+- id: exact_planted_feature_verbalizer_organism
+  source: generated_exact_text_counterfactuals
   revision: seed_0
   precision: float32
   gated: false
+  claim_scope: living_animal_resting_on_surface_rule_with_decoy_counterexamples
 - id: NeelNanda/GELU_1L512W_C4_Code
   source: huggingface_via_transformerlens
   revision: bddc0e332f0ae84279e6a6a45d91b314899e1603
   precision: float32
   gated: false
-  claim_scope: residual_direction_verbalizer_preflight
+  claim_scope: residual_direction_verbalizer_cuda_handoff
   transformerlens_model_name: gelu-1l
   tokenizer_id: NeelNanda/gpt-neox-tokenizer-digits
   tokenizer_revision: 0f6671571a20be9756b9991d978047c03b75e749
 datasets:
-- id: 7_2_feature_verbalizers_toy_inputs
-  source: generated
+- id: 7_2_exact_planted_feature_counterfactuals_v2
+  source: generated_exact_prompts
   seed: 0
+  train_example_count: 12
+  revision_example_count: 6
+  heldout_example_count: 24
+  exact_rule: living animal + resting verb + physical surface - decoy object terms
+  counterfactual_types:
+  - positive
+  - decoy_animal
+  - animal_motion
+  - object_resting
+  - no_surface
+  - no_rest
+  - substring_trap
+  - irrelevant
 - id: course_safe_residual_direction_verbalizer_prompts_v1
   source: generated_prompt_sets
   seed: 0
@@ -57,50 +73,44 @@ datasets:
 expected_metrics:
   tests_passed: true
   accepted: true
+  toy_planted_signature_passed: true
+  toy_train_count: 12
+  toy_revision_count: 6
+  toy_heldout_count: 24
+  toy_initial_accuracy: 0.5416666865348816
+  toy_revised_accuracy: 1.0
+  toy_baseline_accuracy: 0.5416666865348816
+  toy_contrastive_accuracy: 1.0
+  toy_passes_baseline: true
+  toy_survives_contrastive: true
+  toy_counterexamples_mined: 3
+  toy_intervention_delta: 1.25
+  toy_random_direction_delta: 0.0
+  toy_intervention_matches_prediction: true
+  toy_target_beats_random_direction: true
+  toy_brevity_shorter_than_examples: true
+  toy_activation_score_threshold_upper_bound_accuracy: 1.0
   max_allowed_gpu_gb: 24
-  preflight_passed: true
   model_name: gelu-1l
   hf_revision: bddc0e332f0ae84279e6a6a45d91b314899e1603
   tokenizer_revision: 0f6671571a20be9756b9991d978047c03b75e749
-  bnb_cuda_override: '130'
-  positive_token: ' floor'
-  negative_token: ' top'
-  train_example_count: 8
-  heldout_example_count: 8
-  score_separation_min: 5.0
-  intervention_delta_min: 0.5
-  matches_intervention_prediction: true
-  passes_baseline: true
-  prediction_accuracy: 1.0
-  baseline_accuracy: 0.5
-  contrastive_accuracy: 1.0
-  survives_contrastive: true
-  num_counterexamples: 0
-  brevity_shorter_than_examples: true
-  train_heldout_overlap_count: 0
-  learned_terms_from_train: true
-  target_beats_random_intervention: true
-  peak_vram_gb_max: 1.0
 controls:
-- baseline_or_reference_check
-- negative_control_where_applicable
-- shape_dtype_or_exact_value_check
-- toy_example_selection_contract
-- toy_explanation_prediction_contract
-- toy_counterexample_revision_contract
-- toy_intervention_direction_contract
-- toy_brevity_contract
-- pinned_transformerlens_gelu1l_residual_direction_scores
-- heldout_keyword_prediction_against_safe_manual_labels
-- contrastive_near_threshold_prompt_control
-- train_heldout_prompt_disjointness_check
-- learned_terms_from_train_only_check
-- zero_counterexample_check
-- direction_addition_logit_delta_intervention
+- exact_planted_feature_oracle
+- train_revision_heldout_disjointness_check
+- top_bottom_random_contrastive_example_collection
+- initial_text_only_resting_word_rule
+- always_negative_base_rate
+- deterministic_random_keyword_rule
+- train_example_lookup
+- activation_score_threshold_upper_bound
+- revision_split_counterexample_mining
+- final_heldout_counterfactuals
+- feature_direction_intervention
 - orthogonal_random_direction_intervention_control
-- api_llm_and_sae_feature_explanation_not_claimed
+- pinned_transformerlens_gelu1l_cuda_handoff_not_rerun_by_subtask
 safety_notes:
-- No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.
-- The real-model path uses safe generic prompts and reads cached activations and logits
-  from a small public TransformerLens checkpoint. It does not use unsafe prompts,
-  gated weights, generated completions, or external API calls.
+- No unsafe prompts, adapters, gated weights, raw external data, API calls, or
+  generated model completions are used in the CPU learner path.
+- The real-model path uses safe generic prompts and a small public
+  TransformerLens checkpoint; parent CUDA verification must rerun it before
+  making GPU-backed release claims.

@@ -56,7 +56,7 @@ sections:
   '7.2':
     status: course_ready
     page: chapter7_activation_to_language/instructions/pages/02_[7.2]_Feature_Verbalizers.md
-    notes: ARENA-style rewrite with feature-verbalizer validation loop diagram, example/hypothesis/prediction/counterexample/intervention progression, help/interpretation dropdowns, signature result, limitations, and paired notebook surfaces.
+    notes: Full ARENA-style learner progression from an exact planted semantic feature through example selection, held-out prediction, counterexample-driven revision, and causal intervention. The visible signature panel contrasts the revised verbalizer with text, base-rate, random-keyword, lookup, and score-oracle controls; a pinned gelu-1l CUDA run separately verifies held-out residual-direction prediction and targeted intervention against a random direction.
   '7.3':
     status: course_ready
     page: chapter7_activation_to_language/instructions/pages/03_[7.3]_Mini_Activation_Oracles.md

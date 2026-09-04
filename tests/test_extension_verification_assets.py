@@ -5,7 +5,7 @@ from pathlib import Path
 
 import yaml
 
-from scripts.run_extension_verification_reports import expected_metric_failures
+from scripts.run_extension_verification_reports import expected_metric_failures, load_solution
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -461,3 +461,18 @@ def test_hard_exercise_verification_ladder_policy_tracks_roadmap_appendix():
     ]
     missing_terms = [term for term in required_terms if term not in policy]
     assert missing_terms == []
+
+
+def test_dynamic_solution_loader_supports_python314_dataclasses(tmp_path: Path):
+    solution_path = tmp_path / "solutions.py"
+    solution_path.write_text(
+        "from __future__ import annotations\n"
+        "from dataclasses import dataclass\n\n"
+        "@dataclass(frozen=True)\n"
+        "class Report:\n"
+        "    values: tuple[int, ...]\n"
+    )
+
+    module = load_solution(solution_path, index=9999)
+
+    assert module.Report((1, 2)).values == (1, 2)

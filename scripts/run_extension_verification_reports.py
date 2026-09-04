@@ -71,6 +71,9 @@ def load_solution(path: Path, index: int) -> Any:
     if spec is None or spec.loader is None:
         raise RuntimeError(f"could not create import spec for {path}")
     module = importlib.util.module_from_spec(spec)
+    # Python 3.14 dataclass annotation resolution consults sys.modules while
+    # executing the class decorator. Dynamic modules must be registered first.
+    sys.modules[spec.name] = module
     spec.loader.exec_module(module)
     return module
 
