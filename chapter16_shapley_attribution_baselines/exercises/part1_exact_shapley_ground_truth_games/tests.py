@@ -328,15 +328,23 @@ def test_complete_table_normalization(
     )
     values = coalition_values_from_function(3, lambda coalition: len(coalition) ** 2)
     normalized = normalize_coalition_values(values, num_players=3)
-    assert tuple(normalized) == all_coalitions(3)
-    assert normalized[frozenset()] == 0.0
-    assert normalized[frozenset({0, 1, 2})] == 9.0
+    assert tuple(normalized) == all_coalitions(3), (
+        "Normalization should preserve the canonical coalition ordering."
+    )
+    assert normalized[frozenset()] == 0.0, (
+        "Normalization should retain the empty-coalition baseline."
+    )
+    assert normalized[frozenset({0, 1, 2})] == 9.0, (
+        "Normalization should retain the grand-coalition value."
+    )
     incomplete = dict(values)
     incomplete.pop(frozenset({0, 2}))
     try:
         normalize_coalition_values(incomplete, num_players=3)
     except ValueError as exc:
-        assert "missing" in str(exc).lower() and "coalition" in str(exc).lower()
+        assert "missing" in str(exc).lower() and "coalition" in str(exc).lower(), (
+            "Incomplete tables should explain that a coalition is missing."
+        )
     else:
         raise AssertionError("Incomplete coalition tables must raise ValueError.")
     print("All tests in `test_complete_table_normalization` passed!")
@@ -360,7 +368,7 @@ def test_dividend_game_and_analytic_oracle(
     }
     values = game_from_dividends(4, dividends, baseline=0.3)
     oracle = shapley_from_dividends(4, dividends)
-    assert len(values) == 16
+    assert len(values) == 16, "A four-player game must enumerate all 2^4 coalitions."
     _assert_close(values[frozenset()], 0.3, msg="Empty-coalition baseline")
     _assert_close(values[frozenset(range(4))], 4.4, msg="Full-coalition value")
     _assert_tensor_close(
@@ -382,10 +390,16 @@ def test_weighted_marginal_rows(marginal_contribution_rows: Callable | None = No
         frozenset({0, 1}): 3.0,
     }
     rows = marginal_contribution_rows(values, num_players=2, player=0)
-    assert len(rows) == 2
+    assert len(rows) == 2, (
+        "A two-player game gives player 0 two predecessor coalitions."
+    )
     _assert_close(sum(row[2] for row in rows), 1.0, msg="Marginal-row weight sum")
-    assert rows[0][0] == frozenset() and rows[0][1] == 1.0
-    assert rows[1][0] == frozenset({1}) and rows[1][1] == 3.0
+    assert rows[0][0] == frozenset() and rows[0][1] == 1.0, (
+        "The empty-predecessor row should record player 0's singleton marginal."
+    )
+    assert rows[1][0] == frozenset({1}) and rows[1][1] == 3.0, (
+        "The {1}-predecessor row should record player 0's interaction marginal."
+    )
     weighted = sum(marginal * weight for _, marginal, weight in rows)
     _assert_close(weighted, 2.0, msg="Weighted marginal average")
     print("All tests in `test_weighted_marginal_rows` passed!")
