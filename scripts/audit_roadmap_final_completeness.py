@@ -9,8 +9,12 @@ requirement.
 
 from __future__ import annotations
 
+import csv
+import hashlib
 import json
+import re
 import sys
+from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -26,6 +30,32 @@ from scripts.audit_course_surface import course_surface_blockers
 from scripts.audit_original_arena_preservation import original_preservation_blockers
 from scripts.audit_report_evidence_contracts import report_evidence_blockers
 from scripts.audit_arena_style_depth import style_depth_blockers
+
+
+ROADMAP_PATH = ROOT / "Extension-Roadmap.md"
+ROADMAP_REQUIREMENT_REGISTRY_PATH = ROOT / "docs/roadmap_requirement_registry.yml"
+METHOD_REGISTRY_PATH = ROOT / "docs/method_registry.csv"
+COURSE_STATUS_PATH = ROOT / "docs/arena_style_rewrite_status.yml"
+
+ROADMAP_STATUSES = frozenset(
+    {"TAUGHT", "TOY_ONLY", "PREFLIGHT_ONLY", "DEFERRED", "UNIMPLEMENTED"}
+)
+IMPLEMENTED_ROADMAP_STATUSES = frozenset({"TAUGHT", "TOY_ONLY", "PREFLIGHT_ONLY"})
+PARTIAL_ROADMAP_STATUSES = frozenset({"TOY_ONLY", "PREFLIGHT_ONLY"})
+ROADMAP_REF_RE = re.compile(r"^Extension-Roadmap\.md:(\d+)(?:-(\d+))?$")
+REQUIRED_REGISTRY_FIELDS = frozenset(
+    {
+        "id",
+        "topic",
+        "chapter",
+        "section",
+        "status",
+        "roadmap_refs",
+        "evidence",
+        "reason",
+        "blocker",
+    }
+)
 
 
 @dataclass(frozen=True)
@@ -79,6 +109,240 @@ def _load_json(relative_path: str) -> dict[str, Any]:
 
 def _load_yaml(relative_path: str) -> dict[str, Any]:
     return yaml.safe_load((ROOT / relative_path).read_text())
+
+
+def _sha256_text(text: str) -> str:
+    return hashlib.sha256(text.encode()).hexdigest()
+
+
+def load_roadmap_requirement_registry(
+    registry_path: Path = ROADMAP_REQUIREMENT_REGISTRY_PATH,
+) -> dict[str, Any]:
+    loaded = yaml.safe_load(registry_path.read_text())
+    return loaded if isinstance(loaded, dict) else {}
+
+
+def _method_registry_names(method_registry_path: Path) -> list[str]:
+    with method_registry_path.open(newline="") as handle:
+        return [row["method_name"] for row in csv.DictReader(handle)]
+
+
+def _course_status_sections(course_status_path: Path) -> list[str]:
+    status = yaml.safe_load(course_status_path.read_text())
+    if not isinstance(status, dict) or not isinstance(status.get("sections"), dict):
+        return []
+    return [str(section) for section in status["sections"]]
+
+
+def roadmap_requirement_registry_blockers(
+    *,
+    registry_path: Path = ROADMAP_REQUIREMENT_REGISTRY_PATH,
+    roadmap_path: Path = ROADMAP_PATH,
+    method_registry_path: Path = METHOD_REGISTRY_PATH,
+    course_status_path: Path = COURSE_STATUS_PATH,
+) -> list[str]:
+    """Validate that the normalized registry is exhaustive and internally honest.
+
+    Exhaustiveness is protected in three ways: the registry is pinned to the
+    complete roadmap file hash, every row has an inspectable roadmap line anchor,
+    and the registry must cover every existing method-registry row and every
+    tracked extension section. A roadmap edit therefore cannot silently bypass
+    reconciliation of the normalized requirement inventory.
+    """
+
+    blockers: list[str] = []
+    if not registry_path.exists():
+        return [f"roadmap registry: missing {registry_path.relative_to(ROOT)}"]
+    if not roadmap_path.exists():
+        return [f"roadmap registry: missing {roadmap_path.relative_to(ROOT)}"]
+
+    try:
+        registry = load_roadmap_requirement_registry(registry_path)
+    except (OSError, yaml.YAMLError) as exc:
+        return [f"roadmap registry: cannot parse {registry_path.name}: {exc}"]
+
+    if registry.get("schema_version") != 1:
+        blockers.append(
+            f"roadmap registry: schema_version must be 1, got {registry.get('schema_version')!r}"
+        )
+
+    roadmap_text = roadmap_path.read_text()
+    roadmap_lines = roadmap_text.splitlines()
+    roadmap_meta = registry.get("roadmap")
+    if not isinstance(roadmap_meta, dict):
+        blockers.append("roadmap registry: roadmap metadata must be a mapping")
+        roadmap_meta = {}
+    expected_hash = _sha256_text(roadmap_text)
+    if roadmap_meta.get("path") != "Extension-Roadmap.md":
+        blockers.append("roadmap registry: roadmap.path must be Extension-Roadmap.md")
+    if roadmap_meta.get("sha256") != expected_hash:
+        blockers.append(
+            "roadmap registry: roadmap sha256 is stale; reconcile every requirement "
+            "against the latest Extension-Roadmap.md"
+        )
+    if roadmap_meta.get("line_count") != len(roadmap_lines):
+        blockers.append(
+            f"roadmap registry: roadmap line_count must be {len(roadmap_lines)}, "
+            f"got {roadmap_meta.get('line_count')!r}"
+        )
+
+    declared_statuses = registry.get("allowed_statuses")
+    if set(declared_statuses or []) != ROADMAP_STATUSES:
+        blockers.append(
+            "roadmap registry: allowed_statuses must contain exactly "
+            f"{sorted(ROADMAP_STATUSES)}"
+        )
+
+    requirements = registry.get("requirements")
+    if not isinstance(requirements, list) or not requirements:
+        return blockers + ["roadmap registry: requirements must be a nonempty list"]
+
+    ids: list[str] = []
+    mapped_method_names: list[str] = []
+    covered_course_sections: set[str] = set()
+    for index, requirement in enumerate(requirements):
+        label = f"roadmap registry row {index + 1}"
+        if not isinstance(requirement, dict):
+            blockers.append(f"{label}: requirement must be a mapping")
+            continue
+        missing_fields = sorted(REQUIRED_REGISTRY_FIELDS - set(requirement))
+        if missing_fields:
+            blockers.append(f"{label}: missing fields {missing_fields}")
+            continue
+
+        requirement_id = requirement.get("id")
+        if not isinstance(requirement_id, str) or not requirement_id.strip():
+            blockers.append(f"{label}: id must be a nonempty string")
+            requirement_id = label
+        else:
+            ids.append(requirement_id)
+            label = requirement_id
+
+        for field in ("topic", "chapter", "section", "reason"):
+            value = requirement.get(field)
+            if not isinstance(value, str) or not value.strip():
+                blockers.append(f"{label}: {field} must be a nonempty string")
+
+        status = requirement.get("status")
+        if status not in ROADMAP_STATUSES:
+            blockers.append(
+                f"{label}: invalid status {status!r}; expected one of {sorted(ROADMAP_STATUSES)}"
+            )
+
+        blocker = requirement.get("blocker")
+        if status == "TAUGHT" and blocker not in (None, ""):
+            blockers.append(f"{label}: TAUGHT requirement must not declare a blocker")
+        if status in PARTIAL_ROADMAP_STATUSES | {"DEFERRED", "UNIMPLEMENTED"}:
+            if not isinstance(blocker, str) or not blocker.strip():
+                blockers.append(f"{label}: {status} requirement needs an explicit blocker")
+        if status == "DEFERRED":
+            deferred_until = requirement.get("deferred_until")
+            if not isinstance(deferred_until, str) or not deferred_until.strip():
+                blockers.append(f"{label}: DEFERRED requirement needs deferred_until")
+
+        refs = requirement.get("roadmap_refs")
+        if not isinstance(refs, list) or not refs:
+            blockers.append(f"{label}: roadmap_refs must be a nonempty list")
+        else:
+            for ref in refs:
+                match = ROADMAP_REF_RE.fullmatch(str(ref))
+                if match is None:
+                    blockers.append(f"{label}: malformed roadmap ref {ref!r}")
+                    continue
+                start = int(match.group(1))
+                end = int(match.group(2) or start)
+                if start < 1 or end < start or end > len(roadmap_lines):
+                    blockers.append(
+                        f"{label}: roadmap ref {ref!r} is outside 1-{len(roadmap_lines)}"
+                    )
+
+        evidence = requirement.get("evidence")
+        if not isinstance(evidence, list):
+            blockers.append(f"{label}: evidence must be a list")
+        else:
+            if status in IMPLEMENTED_ROADMAP_STATUSES and not evidence:
+                blockers.append(f"{label}: {status} requirement needs evidence paths")
+            for relative_path in evidence:
+                if not isinstance(relative_path, str) or not relative_path.strip():
+                    blockers.append(f"{label}: evidence paths must be nonempty strings")
+                elif not (ROOT / relative_path).exists():
+                    blockers.append(f"{label}: missing evidence path {relative_path}")
+
+        course_sections = requirement.get("course_sections", [])
+        if not isinstance(course_sections, list):
+            blockers.append(f"{label}: course_sections must be a list when present")
+        else:
+            covered_course_sections.update(str(section) for section in course_sections)
+
+        method_names = requirement.get("method_registry_names", [])
+        if not isinstance(method_names, list):
+            blockers.append(f"{label}: method_registry_names must be a list when present")
+        else:
+            mapped_method_names.extend(str(name) for name in method_names)
+
+    duplicate_ids = sorted(name for name, count in Counter(ids).items() if count > 1)
+    if duplicate_ids:
+        blockers.append(f"roadmap registry: duplicate requirement ids {duplicate_ids}")
+
+    if method_registry_path.exists():
+        current_method_names = _method_registry_names(method_registry_path)
+        missing_methods = sorted(set(current_method_names) - set(mapped_method_names))
+        duplicate_methods = sorted(
+            name for name, count in Counter(mapped_method_names).items() if count > 1
+        )
+        unknown_methods = sorted(set(mapped_method_names) - set(current_method_names))
+        if missing_methods:
+            blockers.append(
+                f"roadmap registry: method_registry.csv rows not represented {missing_methods}"
+            )
+        if duplicate_methods:
+            blockers.append(
+                f"roadmap registry: method_registry.csv rows represented more than once {duplicate_methods}"
+            )
+        if unknown_methods:
+            blockers.append(
+                f"roadmap registry: unknown method_registry_names {unknown_methods}"
+            )
+    else:
+        blockers.append("roadmap registry: docs/method_registry.csv is missing")
+
+    if course_status_path.exists():
+        current_sections = set(_course_status_sections(course_status_path))
+        missing_sections = sorted(current_sections - covered_course_sections)
+        unknown_sections = sorted(covered_course_sections - current_sections)
+        if missing_sections:
+            blockers.append(
+                f"roadmap registry: tracked extension sections not represented {missing_sections}"
+            )
+        if unknown_sections:
+            blockers.append(
+                f"roadmap registry: unknown course_sections {unknown_sections}"
+            )
+    else:
+        blockers.append("roadmap registry: docs/arena_style_rewrite_status.yml is missing")
+
+    return blockers
+
+
+def roadmap_requirement_status_blockers(
+    registry_path: Path = ROADMAP_REQUIREMENT_REGISTRY_PATH,
+) -> list[str]:
+    """Return release blockers implied by honest roadmap statuses."""
+
+    try:
+        registry = load_roadmap_requirement_registry(registry_path)
+    except (OSError, yaml.YAMLError):
+        return []
+    blockers: list[str] = []
+    for requirement in registry.get("requirements", []):
+        if not isinstance(requirement, dict):
+            continue
+        if requirement.get("status") == "UNIMPLEMENTED":
+            blockers.append(
+                f"{requirement.get('id', '<missing id>')}: UNIMPLEMENTED - "
+                f"{requirement.get('blocker') or requirement.get('reason') or 'no reason supplied'}"
+            )
+    return blockers
 
 
 REPORT_REQUIREMENTS: tuple[ReportRequirement, ...] = (
@@ -535,9 +799,6 @@ LEGACY_REQUIREMENTS: tuple[LegacyNotebookRequirement, ...] = (
 )
 
 
-BLOCKED_REQUIREMENTS: tuple[tuple[str, str, str], ...] = ()
-
-
 def report_requirement_blockers(requirement: ReportRequirement) -> list[str]:
     blockers: list[str] = []
     report_file = ROOT / requirement.report_path
@@ -695,6 +956,13 @@ def legacy_requirement_blockers(requirement: LegacyNotebookRequirement) -> list[
 
 def roadmap_final_completeness_blockers() -> list[str]:
     blockers: list[str] = []
+    registry_structure = roadmap_requirement_registry_blockers()
+    blockers.extend(registry_structure)
+    if not registry_structure:
+        blockers.extend(
+            f"roadmap status: {blocker}"
+            for blocker in roadmap_requirement_status_blockers()
+        )
     blockers.extend(
         f"original preservation: {blocker}" for blocker in original_preservation_blockers()
     )
@@ -707,16 +975,26 @@ def roadmap_final_completeness_blockers() -> list[str]:
         blockers.extend(report_requirement_blockers(requirement))
     for requirement in LEGACY_REQUIREMENTS:
         blockers.extend(legacy_requirement_blockers(requirement))
-    for requirement_id, group, reason in BLOCKED_REQUIREMENTS:
-        blockers.append(f"{requirement_id} ({group}): {reason}")
     return blockers
 
 
 def main() -> None:
     blockers = roadmap_final_completeness_blockers()
+    try:
+        registry = load_roadmap_requirement_registry()
+    except (OSError, yaml.YAMLError):
+        registry = {}
+    requirements = registry.get("requirements", [])
+    status_counts = Counter(
+        requirement.get("status")
+        for requirement in requirements
+        if isinstance(requirement, dict)
+    )
+    print(f"roadmap_requirements_checked={len(requirements)}")
+    for status in sorted(ROADMAP_STATUSES):
+        print(f"roadmap_status_{status.lower()}={status_counts.get(status, 0)}")
     print(f"report_requirements_checked={len(REPORT_REQUIREMENTS)}")
     print(f"legacy_requirements_checked={len(LEGACY_REQUIREMENTS)}")
-    print(f"blocked_requirements_declared={len(BLOCKED_REQUIREMENTS)}")
     print(f"roadmap_final_completeness_blockers={len(blockers)}")
     if blockers:
         print("ROADMAP_FINAL_COMPLETENESS=FAIL")

@@ -27,6 +27,7 @@ HOSTED_CPU_PYTEST_TARGETS = [
     "tests/test_extension_verification_assets.py",
     "tests/test_build_merged_config.py",
     "tests/test_arena_style_depth_audit.py",
+    "tests/test_roadmap_final_completeness.py",
     "tests/test_strict_completion_audit.py",
 ]
 

@@ -1,0 +1,2161 @@
+schema_version: 1
+roadmap:
+  path: Extension-Roadmap.md
+  sha256: d7dbe99670950c78f0f3a6ea37665dd9eca08e5ff62556851a45781d14c520ee
+  line_count: 8131
+allowed_statuses:
+  - TAUGHT
+  - TOY_ONLY
+  - PREFLIGHT_ONLY
+  - DEFERRED
+  - UNIMPLEMENTED
+
+# This is a requirement inventory, not a completion claim. Closely coupled
+# aliases are grouped only where the roadmap itself treats them as one method.
+# UNIMPLEMENTED rows are intentional release blockers.
+requirements:
+  - id: foundations.original_arena_preservation
+    topic: Original ARENA preserved append-only
+    chapter: 1 Original ARENA
+    section: original chapters
+    status: TAUGHT
+    roadmap_refs: [Extension-Roadmap.md:2848-2851, Extension-Roadmap.md:5214-5234]
+    evidence: [docs/original_preservation_contract.md, scripts/audit_original_arena_preservation.py]
+    reason: The canonical ARENA chapters remain present and are guarded by a preservation audit.
+    blocker: null
+
+  - id: foundations.original_mechinterp_spine
+    topic: Transformers from scratch, TransformerLens, induction, IOI, DLA, patching, superposition, SAEs, NNsight, and function vectors
+    chapter: 1 Original ARENA
+    section: original chapters
+    status: TAUGHT
+    roadmap_refs: [Extension-Roadmap.md:46-58, Extension-Roadmap.md:2173-2201]
+    evidence: [chapter0_fundamentals, chapter1_transformer_interp]
+    reason: These methods are retained in the original learner progression rather than reimplemented in the extension.
+    blocker: null
+
+  - id: foundations.local_gpu_reproducibility_harness
+    topic: Local GPU, reproducibility, parity, activation-store, and VRAM harness
+    chapter: 0 Course infrastructure
+    section: "1.6"
+    status: TAUGHT
+    roadmap_refs: [Extension-Roadmap.md:195-253, Extension-Roadmap.md:2845-2847]
+    course_sections: ["1.6"]
+    method_registry_names: [Local frontier ML harness]
+    evidence: [chapter1_transformer_interp/exercises/part6_frontier_ml_infrastructure, docs/local_gpu_setup.md]
+    reason: Section 1.6 exposes the environment, parity, activation-store, and memory-budget contracts.
+    blocker: null
+
+  - id: foundations.fake_result_diagnostics
+    topic: Detect leakage, cherry-picking, unstable plots, probe overfit, and random-direction failures
+    chapter: 0 Course infrastructure
+    section: "0.6"
+    status: TAUGHT
+    roadmap_refs: [Extension-Roadmap.md:5575-5604, Extension-Roadmap.md:6026-6093]
+    course_sections: ["0.6"]
+    method_registry_names: [Fake-result diagnostics, Max-activating examples as standalone explanations]
+    evidence: [chapter0_fundamentals/exercises/part6_fake_interpretability_results]
+    reason: Section 0.6 is explicitly a falsification lab and rejects standalone max-activation stories.
+    blocker: null
+
+  - id: foundations.hard_exercise_test_ladders
+    topic: Step-by-step hard-exercise verification ladders and educational failure messages
+    chapter: 0 Course infrastructure
+    section: cross-course
+    status: TAUGHT
+    roadmap_refs: [Extension-Roadmap.md:7490-8131]
+    evidence: [docs/hard_exercise_verification_ladders.md, scripts/audit_hard_exercise_ladders.py]
+    reason: The repository has a registry and audit for hard-exercise ladders.
+    blocker: null
+
+  - id: foundations.research_process_notebooks
+    topic: Research logs, hypothesis tracking, experiment registry, failure modes, and paper skeletons
+    chapter: 0 Course infrastructure
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:2512-2539, Extension-Roadmap.md:2801-2834]
+    evidence: []
+    reason: The roadmap requires a research apprenticeship surface beyond a single predetermined worksheet.
+    blocker: No learner-facing research-log and hypothesis-tracker progression exists.
+
+  - id: modern.gemma_decoder
+    topic: Gemma decoder block from scratch with RMSNorm, RoPE, GQA, local attention, SwiGLU, and KV cache
+    chapter: 2 Modern architectures
+    section: "5.1"
+    status: PREFLIGHT_ONLY
+    roadmap_refs: [Extension-Roadmap.md:257-286, Extension-Roadmap.md:5426-5431]
+    course_sections: ["5.1"]
+    method_registry_names: [Gemma-style decoder block]
+    evidence: [chapter5_modern_architectures/exercises/part1_gemma_from_scratch]
+    reason: A deterministic tiny matched-weight implementation and HF architecture parity exist.
+    blocker: The roadmap's pretrained Gemma weight-loading and end-to-end logits parity exercise is not yet learner-run.
+
+  - id: modern.gemma_quantized_inference
+    topic: Gemma quantized inference and QAT comparison
+    chapter: 2 Modern architectures
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:272-288, Extension-Roadmap.md:1245-1263]
+    evidence: []
+    reason: Quantized Gemma is a distinct required implementation and capstone comparison.
+    blocker: No Gemma quantized inference notebook or BF16-versus-int4 feature robustness study exists.
+
+  - id: modern.llama_like_decoder
+    topic: Llama-like modern decoder implementation and parity
+    chapter: 2 Modern architectures
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:2773-2794, Extension-Roadmap.md:2840-2855]
+    evidence: []
+    reason: Llama-like models are separately named in the final model-family coverage matrix.
+    blocker: No Llama-specific decoder, RoPE/GQA parity, or checkpoint-loading exercise exists.
+
+  - id: modern.gemma_scope_feature_steering
+    topic: Gemma Scope loading, feature activation, DLA, ablation, and steering
+    chapter: 2 Modern architectures
+    section: "5.2 and 6.2"
+    status: PREFLIGHT_ONLY
+    roadmap_refs: [Extension-Roadmap.md:294-329, Extension-Roadmap.md:524-558]
+    course_sections: ["5.2", "6.2"]
+    method_registry_names: [Gemma Scope feature steering]
+    evidence: [chapter5_modern_architectures/exercises/part2_gemma_scope_feature_steering, chapter6_sparse_feature_methods/exercises/part2_gemma_scope_deep_dive]
+    reason: Pinned Gemma Scope artifacts and bounded real-activation feature checks exist.
+    blocker: The complete learner-run base-versus-IT feature analysis and causal steering progression remains narrower than the roadmap.
+
+  - id: modern.mamba_selective_scan
+    topic: Mamba selective scan, recurrent path, parallel path, and cache
+    chapter: 2 Modern architectures
+    section: "5.3"
+    status: TOY_ONLY
+    roadmap_refs: [Extension-Roadmap.md:331-371]
+    course_sections: ["5.3"]
+    method_registry_names: [Mamba selective scan]
+    evidence: [chapter5_modern_architectures/exercises/part3_mamba_from_scratch]
+    reason: The current notebook proves scan/cache mechanics on a bounded organism and has an official checkpoint preflight.
+    blocker: It does not yet make students build causal convolution and a full Mamba block with official logits parity.
+
+  - id: modern.mamba2_ssd
+    topic: Mamba-2 structured state-space duality and implementation
+    chapter: 2 Modern architectures
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:335-371, Extension-Roadmap.md:1153-1176]
+    evidence: []
+    reason: Mamba-2 is separately required in the architecture progression and comparison matrix.
+    blocker: No Mamba-2 SSD implementation, checkpoint parity, or comparison notebook exists.
+
+  - id: modern.mamba3_state_tracking
+    topic: Mamba-3-style state tracking and causal hidden-state intervention
+    chapter: 2 Modern architectures
+    section: "5.4"
+    status: TOY_ONLY
+    roadmap_refs: [Extension-Roadmap.md:373-403]
+    course_sections: ["5.4"]
+    method_registry_names: [Mamba-3-style state tracking]
+    evidence: [chapter5_modern_architectures/exercises/part4_mamba_state_tracking]
+    reason: A generated bracket-depth organism compares a tiny Mamba-style model with a tiny Transformer.
+    blocker: No actual Mamba-3 implementation or Mamba-2-versus-Mamba-3 architecture comparison exists.
+
+  - id: modern.diffusion_language_model
+    topic: Discrete diffusion language model noising, denoising, remasking, and sampling
+    chapter: 2 Modern architectures
+    section: "5.5"
+    status: TOY_ONLY
+    roadmap_refs: [Extension-Roadmap.md:405-468]
+    course_sections: ["5.5"]
+    method_registry_names: [Discrete diffusion language modeling]
+    evidence: [chapter5_modern_architectures/exercises/part5_diffusion_language_models]
+    reason: The course trains and tests a tiny discrete diffusion language model with exact controls.
+    blocker: The full TinyStories/templated-QA progression and AR-versus-diffusion benchmark are absent.
+
+  - id: modern.diffusiongemma_inference
+    topic: DiffusionGemma local quantized inference
+    chapter: 2 Modern architectures
+    section: "5.5"
+    status: PREFLIGHT_ONLY
+    roadmap_refs: [Extension-Roadmap.md:405-468, Extension-Roadmap.md:2949-2969]
+    method_registry_names: [DiffusionGemma local inference]
+    evidence: [chapter5_modern_architectures/exercises/part5_diffusion_language_models, scripts/run_diffusiongemma_vllm_probe.py]
+    reason: A pinned isolated NVFP4 vLLM generation proof exists under the local memory budget.
+    blocker: The generation proof is not an integrated learner exercise in the main uv environment.
+
+  - id: modern.diffusiongemma_time_mechanisms
+    topic: DiffusionGemma denoising-step activation capture, commitment analysis, and diffusion patching
+    chapter: 2 Modern architectures
+    section: unassigned
+    status: DEFERRED
+    roadmap_refs: [Extension-Roadmap.md:436-466, Extension-Roadmap.md:1303-1320]
+    evidence: [docs/method_registry.csv, chapter5_modern_architectures/exercises/part5_diffusion_language_models/artifacts.lock.yml]
+    reason: This requires internals access across denoising steps in a model whose BF16 path does not fit the 24GB tier.
+    blocker: The proven NVFP4 serving path does not expose the required intermediate activations and direct BF16 loading exceeds local memory.
+    deferred_until: A stable quantized hookable runtime exposes denoising-step activations within 24GB, or larger hardware is used.
+
+  - id: modern.function_embedding_gemma
+    topic: FunctionGemma and EmbeddingGemma controls
+    chapter: 2 Modern architectures
+    section: "5.6"
+    status: PREFLIGHT_ONLY
+    roadmap_refs: [Extension-Roadmap.md:470-480]
+    course_sections: ["5.6"]
+    method_registry_names: [Specialist and embedding model controls]
+    evidence: [chapter5_modern_architectures/exercises/part6_multimodal_embedding_function_models]
+    reason: Authenticated retrieval and benign function-generation preflights exist with synthetic controls.
+    blocker: Schema-token attribution, tool-choice steering, and embedding representation geometry are not full learner exercises.
+
+  - id: modern.medgemma_safety_case
+    topic: MedGemma domain-safety and evaluation-design case study
+    chapter: 2 Modern architectures
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:470-480]
+    evidence: []
+    reason: The roadmap explicitly proposes a non-advice medical-domain safety case study.
+    blocker: No MedGemma safety/evaluation notebook exists.
+
+  - id: modern.mixture_of_experts
+    topic: Mixture-of-experts routing and expert-feature inspection
+    chapter: 2 Modern architectures
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:2773-2794, Extension-Roadmap.md:5426-5431]
+    evidence: []
+    reason: MoE is a named model family in the final architecture matrix.
+    blocker: No tiny MoE routing or expert interpretability notebook exists.
+
+  - id: modern.rwkv
+    topic: RWKV mechanistic interpretability
+    chapter: 2 Modern architectures
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:2608-2621, Extension-Roadmap.md:2845-2855]
+    evidence: []
+    reason: RWKV is explicitly named as a missing nonstandard sequence-model family.
+    blocker: No RWKV implementation, weight loading, or interpretability lab exists.
+
+  - id: modern.retnet
+    topic: RetNet and retention mechanisms
+    chapter: 2 Modern architectures
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:2608-2621, Extension-Roadmap.md:2845-2855]
+    evidence: []
+    reason: RetNet is explicitly named in the final modern-architecture requirements.
+    blocker: No retention implementation or recurrent/parallel equivalence lab exists.
+
+  - id: modern.recurrent_gemma_griffin
+    topic: RecurrentGemma and Griffin
+    chapter: 2 Modern architectures
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:2608-2621, Extension-Roadmap.md:5347-5360]
+    evidence: []
+    reason: RecurrentGemma/Griffin is a named required recurrent hybrid.
+    blocker: No Griffin recurrence, local-attention hybrid, or checkpoint notebook exists.
+
+  - id: modern.hyena
+    topic: Hyena implicit-convolution sequence models
+    chapter: 2 Modern architectures
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:2608-2621, Extension-Roadmap.md:2845-2855]
+    evidence: []
+    reason: Hyena is explicitly included in the final modern-model syllabus.
+    blocker: No Hyena operator implementation or interpretability comparison exists.
+
+  - id: modern.xlstm
+    topic: xLSTM recurrent sequence models
+    chapter: 2 Modern architectures
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:2608-2621, Extension-Roadmap.md:2845-2855]
+    evidence: []
+    reason: xLSTM is explicitly included in the final modern-model syllabus.
+    blocker: No xLSTM implementation or state-analysis notebook exists.
+
+  - id: modern.linear_attention
+    topic: Linear-attention variants
+    chapter: 2 Modern architectures
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:2608-2621]
+    evidence: []
+    reason: Linear attention is named as a missing model family.
+    blocker: No linear-attention implementation or transformer comparison exists.
+
+  - id: modern.hybrid_attention_ssm_rnn
+    topic: Hybrid attention-SSM-RNN architectures
+    chapter: 2 Modern architectures
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:2608-2621]
+    evidence: []
+    reason: Hybrid sequence architectures are explicitly required for cross-architecture transfer.
+    blocker: No hybrid model lab or shared-mechanism comparison exists.
+
+  - id: sparse.relu_sae
+    topic: ReLU plus L1 sparse autoencoder
+    chapter: 3 Sparse feature methods
+    section: "6.1"
+    status: TAUGHT
+    roadmap_refs: [Extension-Roadmap.md:482-522, Extension-Roadmap.md:5290-5310]
+    course_sections: ["6.1"]
+    method_registry_names: [SAE variants]
+    evidence: [chapter6_sparse_feature_methods/exercises/part1_sae_variants]
+    reason: Section 6.1 teaches and tests the ReLU SAE alongside other variants and a real-model activation task.
+    blocker: null
+
+  - id: sparse.topk_sae
+    topic: TopK sparse autoencoder
+    chapter: 3 Sparse feature methods
+    section: "6.1"
+    status: TAUGHT
+    roadmap_refs: [Extension-Roadmap.md:486-522]
+    evidence: [chapter6_sparse_feature_methods/exercises/part1_sae_variants]
+    reason: TopK encoding, reconstruction, sparsity, and controls are learner-visible.
+    blocker: null
+
+  - id: sparse.gated_sae
+    topic: Gated sparse autoencoder
+    chapter: 3 Sparse feature methods
+    section: "6.1"
+    status: TAUGHT
+    roadmap_refs: [Extension-Roadmap.md:486-522]
+    evidence: [chapter6_sparse_feature_methods/exercises/part1_sae_variants]
+    reason: Gated detection and magnitude mechanics are taught with exact tests.
+    blocker: null
+
+  - id: sparse.jumprelu_sae
+    topic: JumpReLU sparse autoencoder
+    chapter: 3 Sparse feature methods
+    section: "6.1 and 6.2"
+    status: TAUGHT
+    roadmap_refs: [Extension-Roadmap.md:486-522, Extension-Roadmap.md:5290-5310]
+    evidence: [chapter6_sparse_feature_methods/exercises/part1_sae_variants, chapter6_sparse_feature_methods/exercises/part2_gemma_scope_deep_dive]
+    reason: JumpReLU mechanics and a pinned released SAE artifact are both exercised.
+    blocker: null
+
+  - id: sparse.batchtopk_sae
+    topic: BatchTopK sparse autoencoder
+    chapter: 3 Sparse feature methods
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:2840-2860, Extension-Roadmap.md:5290-5310]
+    evidence: []
+    reason: BatchTopK is named separately in the final sparse-decomposition requirements.
+    blocker: No BatchTopK implementation or comparison exists.
+
+  - id: sparse.attention_output_sae
+    topic: Attention-output sparse autoencoders
+    chapter: 3 Sparse feature methods
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:5290-5310]
+    evidence: []
+    reason: Attention-output SAEs are explicitly required, distinct from residual-stream SAEs.
+    blocker: No attention-output SAE training or feature analysis notebook exists.
+
+  - id: sparse.residual_stream_sae
+    topic: Residual-stream sparse autoencoders on real model activations
+    chapter: 3 Sparse feature methods
+    section: "6.1 and 6.2"
+    status: PREFLIGHT_ONLY
+    roadmap_refs: [Extension-Roadmap.md:497-522, Extension-Roadmap.md:5290-5310]
+    evidence: [chapter6_sparse_feature_methods/exercises/part1_sae_variants, chapter6_sparse_feature_methods/exercises/part2_gemma_scope_deep_dive]
+    reason: Small Pythia SAE training and a released Gemma Scope residual SAE are exercised.
+    blocker: The full GPT-2/Gemma subset training progression and broad feature analysis are absent.
+
+  - id: sparse.feature_splitting_absorption
+    topic: SAE feature splitting and absorption pathologies
+    chapter: 3 Sparse feature methods
+    section: "6.1"
+    status: TOY_ONLY
+    roadmap_refs: [Extension-Roadmap.md:497-522]
+    evidence: [chapter6_sparse_feature_methods/exercises/part1_sae_variants]
+    reason: The section discusses and diagnoses bounded toy pathologies.
+    blocker: No systematic real-activation absorption/splitting experiment exists.
+
+  - id: sparse.transcoders
+    topic: Transcoder MLP replacement and feature graphs
+    chapter: 3 Sparse feature methods
+    section: "6.3"
+    status: PREFLIGHT_ONLY
+    roadmap_refs: [Extension-Roadmap.md:560-591]
+    course_sections: ["6.3"]
+    method_registry_names: [Transcoders and attribution graphs]
+    evidence: [chapter6_sparse_feature_methods/exercises/part3_transcoders_attribution_graphs]
+    reason: A tiny learned transcoder and a pinned GELU-1L feature-graph preflight exist.
+    blocker: A GPT-2 layer replacement and published circuit reproduction are not yet learner-run.
+
+  - id: sparse.skip_transcoders
+    topic: Skip transcoders
+    chapter: 3 Sparse feature methods
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:2840-2860]
+    evidence: []
+    reason: Skip transcoders are named in the final sparse-method inventory.
+    blocker: No skip-transcoder implementation or comparison exists.
+
+  - id: sparse.crosscoders
+    topic: Crosscoders for shared and model-specific features
+    chapter: 3 Sparse feature methods
+    section: "6.4"
+    status: PREFLIGHT_ONLY
+    roadmap_refs: [Extension-Roadmap.md:593-623]
+    course_sections: ["6.4"]
+    method_registry_names: [Crosscoders and model diffing]
+    evidence: [chapter6_sparse_feature_methods/exercises/part4_crosscoders_model_diffing]
+    reason: Exact paired-feature mechanics and a small paired-model SVD preflight exist.
+    blocker: No trained base-versus-instruction or cross-architecture crosscoder replication exists.
+
+  - id: sparse.feature_dashboards
+    topic: Neuronpedia-style feature dashboards with causal validation
+    chapter: 3 Sparse feature methods
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:2677-2686, Extension-Roadmap.md:5441-5447]
+    evidence: []
+    reason: Feature dashboards are named as a required human-computer interpretability surface.
+    blocker: No learner-facing searchable feature dashboard is integrated.
+
+  - id: sparse.frontier_scale_sae_training
+    topic: Frontier-scale SAE training across large model layers
+    chapter: 3 Sparse feature methods
+    section: unassigned
+    status: DEFERRED
+    roadmap_refs: [Extension-Roadmap.md:109-121, Extension-Roadmap.md:2949-2969]
+    evidence: [docs/method_registry.csv]
+    reason: The roadmap explicitly prefers released artifacts and small replicas over retraining large SAEs locally.
+    blocker: Full-layer frontier SAE training exceeds the 24GB single-laptop compute and storage budget.
+    deferred_until: Multi-GPU compute and a justified artifact gap are available.
+
+  - id: activation.logit_tuned_attention_lenses
+    topic: Logit lens, tuned lens, and attention lens
+    chapter: 5 Activation-to-language
+    section: "7.1"
+    status: PREFLIGHT_ONLY
+    roadmap_refs: [Extension-Roadmap.md:625-654, Extension-Roadmap.md:2866-2870]
+    course_sections: ["7.1"]
+    method_registry_names: ["Logit lens, tuned lens, and Patchscopes"]
+    evidence: [chapter7_activation_to_language/exercises/part1_lenses_patchscopes]
+    reason: Exact lens mechanics and a bounded GELU-1L real-model surface exist.
+    blocker: The real-model pipeline remains monolithic and the attention-lens progression is incomplete.
+
+  - id: activation.patchscopes
+    topic: Patchscopes with semantic held-out evaluation and text-only/random controls
+    chapter: 5 Activation-to-language
+    section: "7.1"
+    status: PREFLIGHT_ONLY
+    roadmap_refs: [Extension-Roadmap.md:629-654]
+    evidence: [chapter7_activation_to_language/exercises/part1_lenses_patchscopes]
+    reason: The notebook includes activation insertion and a small real-model Patchscope preflight.
+    blocker: Evaluation is below the roadmap's substantial held-out semantic task and lacks a full 20-plus-example learner-run study.
+
+  - id: activation.feature_verbalizers
+    topic: Feature verbalizers with hypothesis generation, held-out scoring, counterexamples, and revision
+    chapter: 5 Activation-to-language
+    section: "7.2"
+    status: TOY_ONLY
+    roadmap_refs: [Extension-Roadmap.md:656-690]
+    course_sections: ["7.2"]
+    method_registry_names: [Feature verbalizers]
+    evidence: [chapter7_activation_to_language/exercises/part2_feature_verbalizers]
+    reason: A deterministic toy explanation/prediction loop demonstrates validation mechanics.
+    blocker: No local-LLM hypothesis generation, blind held-out scoring, or iterative counterexample revision exists.
+
+  - id: activation.mini_activation_oracle
+    topic: Mini Activation Oracle with question-conditioned activation answers
+    chapter: 5 Activation-to-language
+    section: "7.3"
+    status: PREFLIGHT_ONLY
+    roadmap_refs: [Extension-Roadmap.md:692-751]
+    course_sections: ["7.3"]
+    method_registry_names: [Mini Activation Oracles]
+    evidence: [chapter7_activation_to_language/exercises/part3_mini_activation_oracles]
+    reason: A toy oracle and pinned small-model residual-direction preflight exercise the validation contract.
+    blocker: No small LoRA language oracle is trained to answer diverse natural-language questions about activations.
+
+  - id: activation.full_scale_activation_oracles
+    topic: Full-scale Activation Oracle training and AObench-style evaluation
+    chapter: 5 Activation-to-language
+    section: unassigned
+    status: DEFERRED
+    roadmap_refs: [Extension-Roadmap.md:109-121, Extension-Roadmap.md:692-751]
+    method_registry_names: [Full-scale Activation Oracles]
+    evidence: [docs/method_registry.csv]
+    reason: The roadmap explicitly replaces frontier-scale AO training with a miniature local version.
+    blocker: Frontier-scale model training and activation datasets exceed the 24GB local compute budget.
+    deferred_until: Sufficient multi-GPU training resources and an open reproducible AO training stack are available.
+
+  - id: activation.mini_natural_language_autoencoder
+    topic: Mini Natural Language Autoencoder with a learned text bottleneck
+    chapter: 5 Activation-to-language
+    section: "7.4"
+    status: PREFLIGHT_ONLY
+    roadmap_refs: [Extension-Roadmap.md:753-784]
+    course_sections: ["7.4"]
+    method_registry_names: [Mini Natural Language Autoencoders]
+    evidence: [chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders]
+    reason: A phrase-bottleneck residual reconstruction preflight exists on a small real model.
+    blocker: The text vocabulary is tiny and the notebook does not train a free-form learned natural-language bottleneck.
+
+  - id: activation.full_scale_natural_language_autoencoders
+    topic: Full-scale Natural Language Autoencoder training
+    chapter: 5 Activation-to-language
+    section: unassigned
+    status: DEFERRED
+    roadmap_refs: [Extension-Roadmap.md:109-121, Extension-Roadmap.md:753-784]
+    evidence: [docs/method_registry.csv]
+    reason: The roadmap explicitly requires a miniature local analogue rather than Anthropic-scale training.
+    blocker: Full NLA training requires frontier models, activation corpora, and compute beyond one 24GB GPU.
+    deferred_until: An open small-scale reference stack or larger training hardware makes faithful reproduction feasible.
+
+  - id: activation.predictive_concept_decoders
+    topic: Predictive Concept Decoders
+    chapter: 5 Activation-to-language
+    section: "7.5"
+    status: PREFLIGHT_ONLY
+    roadmap_refs: [Extension-Roadmap.md:786-817]
+    course_sections: ["7.5"]
+    method_registry_names: [Predictive Concept Decoders]
+    evidence: [chapter7_activation_to_language/exercises/part5_predictive_concept_decoders]
+    reason: A sparse question-conditioned concept decoder preflight exists with removal and stability controls.
+    blocker: The course does not yet reproduce a broad learned concept assistant benchmark.
+
+  - id: activation.maia
+    topic: MAIA automated interpretability agent
+    chapter: 5 Activation-to-language
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:2653-2664, Extension-Roadmap.md:2866-2870]
+    evidence: []
+    reason: MAIA is explicitly named in the final activation-to-language inventory.
+    blocker: No MAIA hypothesis-generation and experiment loop exists.
+
+  - id: activation.openmaia
+    topic: OpenMAIA-style local automated interpretability agent
+    chapter: 5 Activation-to-language
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:2653-2664, Extension-Roadmap.md:2840-2870]
+    evidence: []
+    reason: A local OpenMAIA-style variant is separately named as an implementation target.
+    blocker: No local agent, experiment API, or held-out hypothesis validator exists.
+
+  - id: representation.pca_svd_controls
+    topic: PCA and SVD representation geometry with quantitative controls
+    chapter: 6 Concept and representation methods
+    section: "11.1"
+    status: PREFLIGHT_ONLY
+    roadmap_refs: [Extension-Roadmap.md:4573-4731, Extension-Roadmap.md:5433-5439]
+    course_sections: ["11.1"]
+    method_registry_names: [Representation geometry controls]
+    evidence: [chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls]
+    reason: Controlled weekday/month geometry, PCA/SVD, random labels, and stability checks exist.
+    blocker: The full days/months/years/space/time progression and causal coordinate interventions are incomplete.
+
+  - id: representation.umap_tsne_validation
+    topic: UMAP and t-SNE with seed, hyperparameter, trustworthiness, and random-label controls
+    chapter: 6 Concept and representation methods
+    section: "11.1"
+    status: PREFLIGHT_ONLY
+    roadmap_refs: [Extension-Roadmap.md:4583-4731]
+    evidence: [chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls]
+    reason: The current geometry section treats nonlinear projections as controlled exploratory tools.
+    blocker: The full multi-dataset UMAP/t-SNE robustness suite is narrower than the roadmap.
+
+  - id: representation.days_months_space_time
+    topic: Days, months, years, cities, space, and time representation geometry
+    chapter: 6 Concept and representation methods
+    section: "11.1"
+    status: PREFLIGHT_ONLY
+    roadmap_refs: [Extension-Roadmap.md:4627-4679, Extension-Roadmap.md:5214-5253]
+    evidence: [chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls]
+    reason: Weekday and month experiments exist on a small real language model.
+    blocker: Years, cities, geographic coordinates, historical time, and corresponding causal tests are absent.
+
+  - id: representation.feature_manifolds
+    topic: Directions versus planes, rings, and feature manifolds
+    chapter: 6 Concept and representation methods
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:4627-4679, Extension-Roadmap.md:5214-5253]
+    evidence: []
+    reason: The roadmap explicitly requires distinguishing one-dimensional directions from higher-dimensional manifolds.
+    blocker: No learner notebook fits and causally validates feature manifolds.
+
+  - id: representation.cca_svcca_procrustes
+    topic: CCA, SVCCA, and Procrustes representation alignment
+    chapter: 6 Concept and representation methods
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:4583-4625]
+    evidence: []
+    reason: CCA/SVCCA and cross-model/layer Procrustes alignment are explicit geometry methods.
+    blocker: No representation-alignment implementation, seed test, or causal interpretation exists.
+
+  - id: representation.linear_and_nonlinear_probes
+    topic: Linear probes, nonlinear probes, and held-out probe validation
+    chapter: 6 Concept and representation methods
+    section: original and extension sections
+    status: TAUGHT
+    roadmap_refs: [Extension-Roadmap.md:2482-2497, Extension-Roadmap.md:2861-2874]
+    evidence: [chapter1_transformer_interp, chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls]
+    reason: Original ARENA and the extension repeatedly teach probes with held-out and random-label controls.
+    blocker: null
+
+  - id: representation.causal_probes_das
+    topic: Causal probes and Distributed Alignment Search
+    chapter: 6 Concept and representation methods
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:2482-2497, Extension-Roadmap.md:4523-4545]
+    evidence: []
+    reason: DAS and learned causal subspaces are named skeptical extensions to mean-difference directions.
+    blocker: No trainable intervention or DAS exercise exists.
+
+  - id: representation.ccs
+    topic: Contrast-Consistent Search
+    chapter: 6 Concept and representation methods
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:2840-2874]
+    evidence: []
+    reason: CCS is explicitly included in the final concept-method syllabus.
+    blocker: No CCS implementation or unsupervised concept-direction comparison exists.
+
+  - id: representation.concept_erasure
+    topic: Concept erasure
+    chapter: 6 Concept and representation methods
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:2631-2641, Extension-Roadmap.md:2840-2874]
+    evidence: []
+    reason: Concept erasure is a required bridge between representation geometry and editing.
+    blocker: No concept-erasure implementation or side-effect evaluation exists.
+
+  - id: representation.representation_engineering
+    topic: Representation engineering and steering vectors
+    chapter: 6 Concept and representation methods
+    section: "9.1"
+    status: PREFLIGHT_ONLY
+    roadmap_refs: [Extension-Roadmap.md:2631-2641, Extension-Roadmap.md:5214-5267]
+    evidence: [chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering]
+    reason: Refusal addition and projection-out provide a scoped steering-direction case.
+    blocker: General representation-engineering methods and cross-concept comparisons are absent.
+
+  - id: representation.causal_abstraction
+    topic: Causal abstraction and interchange interventions
+    chapter: 6 Concept and representation methods
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:2482-2497, Extension-Roadmap.md:2840-2874]
+    evidence: []
+    reason: Causal abstraction is explicitly named in the representation-method chapter.
+    blocker: No abstraction map or interchange-intervention verification lab exists.
+
+  - id: representation.subspace_patching_illusions
+    topic: Subspace-patching illusions and falsification
+    chapter: 6 Concept and representation methods
+    section: "0.6"
+    status: TOY_ONLY
+    roadmap_refs: [Extension-Roadmap.md:2482-2497, Extension-Roadmap.md:5575-5604]
+    evidence: [chapter0_fundamentals/exercises/part6_fake_interpretability_results]
+    reason: The fake-result section teaches the risk at a controlled diagnostic level.
+    blocker: No real-model subspace-patching illusion replication exists.
+
+  - id: circuits.activation_patching
+    topic: Activation patching
+    chapter: 4 Circuit methods
+    section: "8.1 and original ARENA"
+    status: TAUGHT
+    roadmap_refs: [Extension-Roadmap.md:819-849, Extension-Roadmap.md:3026-3115]
+    course_sections: ["8.1"]
+    method_registry_names: [Activation patching]
+    evidence: [chapter1_transformer_interp, chapter8_automated_circuits/exercises/part1_activation_patching_refresher]
+    reason: Original ARENA and 8.1 teach clean/corrupt activation replacement and causal metrics.
+    blocker: null
+
+  - id: circuits.path_patching
+    topic: Path and edge patching
+    chapter: 4 Circuit methods
+    section: original ARENA
+    status: TAUGHT
+    roadmap_refs: [Extension-Roadmap.md:2848-2851, Extension-Roadmap.md:5214-5234]
+    evidence: [chapter1_transformer_interp/exercises/part41_indirect_object_identification]
+    reason: The preserved IOI curriculum includes path patching and circuit extraction.
+    blocker: null
+
+  - id: circuits.direct_indirect_total_effects
+    topic: Direct, indirect, and total effects
+    chapter: 4 Circuit methods
+    section: "8.1 and 8.2"
+    status: TAUGHT
+    roadmap_refs: [Extension-Roadmap.md:3026-3170, Extension-Roadmap.md:5269-5288]
+    evidence: [chapter8_automated_circuits/exercises/part1_activation_patching_refresher, chapter8_automated_circuits/exercises/part2_attribution_patching_eap]
+    reason: The patching progression defines and computes exact and approximate causal effects.
+    blocker: null
+
+  - id: circuits.attribution_patching_eap_integrated_effects
+    topic: Attribution patching, EAP, integrated gradients, and integrated effects
+    chapter: 4 Circuit methods
+    section: "8.2"
+    status: TOY_ONLY
+    roadmap_refs: [Extension-Roadmap.md:825-849, Extension-Roadmap.md:3117-3169]
+    course_sections: ["8.2"]
+    method_registry_names: ["Attribution patching, EAP, and integrated effects"]
+    evidence: [chapter8_automated_circuits/exercises/part2_attribution_patching_eap]
+    reason: Exact linear/nonlinear organisms compare first-order and integrated approximations.
+    blocker: No real-model edge-attribution replication or scalable EAP graph is learner-run.
+
+  - id: circuits.eap_ig
+    topic: EAP-IG
+    chapter: 4 Circuit methods
+    section: "8.2"
+    status: TOY_ONLY
+    roadmap_refs: [Extension-Roadmap.md:3139-3169, Extension-Roadmap.md:6210-6242]
+    evidence: [chapter8_automated_circuits/exercises/part2_attribution_patching_eap]
+    reason: Integrated edge effects are compared against exact patching on a nonlinear toy case.
+    blocker: No published EAP-IG implementation parity or real circuit extraction exists.
+
+  - id: circuits.atp_star
+    topic: AtP star
+    chapter: 4 Circuit methods
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:825-849, Extension-Roadmap.md:5269-5288]
+    evidence: []
+    reason: AtP* is explicitly listed in the required circuit-attribution comparison.
+    blocker: No AtP* implementation, benchmark, or comparison exists.
+
+  - id: circuits.acdc
+    topic: ACDC iterative circuit discovery
+    chapter: 4 Circuit methods
+    section: "8.3"
+    status: TOY_ONLY
+    roadmap_refs: [Extension-Roadmap.md:851-872, Extension-Roadmap.md:3258-3310]
+    course_sections: ["8.3"]
+    method_registry_names: [ACDC and circuit metrics]
+    evidence: [chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics]
+    reason: The current section teaches circuit metrics and thresholding on a planted organism.
+    blocker: It does not implement iterative edge deletion with recomputation or reproduce IOI/greater-than ACDC.
+
+  - id: circuits.causal_scrubbing
+    topic: Causal scrubbing
+    chapter: 4 Circuit methods
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:2840-2865]
+    evidence: []
+    reason: Causal scrubbing is explicitly named in the final circuit-method syllabus.
+    blocker: No causal-scrubbing hypothesis or resampling intervention lab exists.
+
+  - id: circuits.circuit_metrics
+    topic: Faithfulness, completeness, minimality, sparsity, and OOD circuit metrics
+    chapter: 4 Circuit methods
+    section: "8.3"
+    status: TOY_ONLY
+    roadmap_refs: [Extension-Roadmap.md:851-872, Extension-Roadmap.md:3258-3310]
+    evidence: [chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics]
+    reason: Exact metric definitions and same-size random controls are taught on a known circuit.
+    blocker: No real-model discovered circuit is evaluated through the complete metric suite.
+
+  - id: circuits.attribution_graphs
+    topic: Attribution graphs and circuit tracing
+    chapter: 4 Circuit methods
+    section: "8.4"
+    status: TOY_ONLY
+    roadmap_refs: [Extension-Roadmap.md:874-898]
+    course_sections: ["8.4"]
+    evidence: [chapter8_automated_circuits/exercises/part4_circuit_tracing_attribution_graphs]
+    reason: A planted graph teaches node/edge scoring, perturbation, and causal-story checks.
+    blocker: No released circuit-tracer model/tool replication is student-implemented.
+
+  - id: circuits.sparse_feature_circuits
+    topic: Sparse Feature Circuits replication
+    chapter: 4 Circuit methods
+    section: "8.5"
+    status: TAUGHT
+    roadmap_refs: [Extension-Roadmap.md:3026-3256, Extension-Roadmap.md:6150-6208]
+    course_sections: ["8.5"]
+    method_registry_names: [Sparse Feature Circuits]
+    evidence: [chapter8_automated_circuits/exercises/part5_sparse_feature_circuits]
+    reason: Section 8.5 includes the toy ladder, official Pythia artifacts, a 100-example graph, and held-out faithfulness.
+    blocker: null
+
+  - id: circuits.shift_sparse_editing
+    topic: SHIFT-style sparse feature editing
+    chapter: 4 Circuit methods
+    section: "8.5"
+    status: PREFLIGHT_ONLY
+    roadmap_refs: [Extension-Roadmap.md:3217-3256, Extension-Roadmap.md:5269-5288]
+    evidence: [chapter8_automated_circuits/exercises/part5_sparse_feature_circuits]
+    reason: A safe generated-data SHIFT-style editing path includes same-size random controls.
+    blocker: It is not a paper-level Bias-in-Bios replication with human feature adjudication.
+
+  - id: circuits.transcoder_attribution_graphs
+    topic: Transcoder attribution graphs
+    chapter: 4 Circuit methods
+    section: "6.3 and 8.4"
+    status: PREFLIGHT_ONLY
+    roadmap_refs: [Extension-Roadmap.md:560-591, Extension-Roadmap.md:3258-3310]
+    evidence: [chapter6_sparse_feature_methods/exercises/part3_transcoders_attribution_graphs, chapter8_automated_circuits/exercises/part4_circuit_tracing_attribution_graphs]
+    reason: Small feature-graph and perturbation mechanics exist.
+    blocker: No end-to-end real-model transcoder attribution graph is built in the learner surface.
+
+  - id: circuits.feature_circuit_method_comparison
+    topic: Exact patching, EAP, EAP-IG, AtP*, ACDC, SFC, and transcoder method comparison
+    chapter: 4 Circuit methods
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:3258-3310, Extension-Roadmap.md:3374-3405]
+    evidence: []
+    reason: The roadmap requires one matched method-comparison notebook with runtime and causal metrics.
+    blocker: No unified real-task comparison across the circuit discovery methods exists.
+
+  - id: circuits.vlm_sparse_feature_circuits
+    topic: Sparse multimodal feature circuits from image regions to answer tokens
+    chapter: 4 and 6 Circuit/VLM methods
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:3312-3372, Extension-Roadmap.md:5312-5330]
+    evidence: []
+    reason: The roadmap explicitly requires extending Sparse Feature Circuits into VLMs.
+    blocker: No VLM SAE-error graph or image-region-to-answer feature circuit exists.
+
+  - id: vlm.clip_contrastive_from_scratch
+    topic: CLIP contrastive image-text model from scratch
+    chapter: 6 Vision-language interpretability
+    section: "12.1"
+    status: TOY_ONLY
+    roadmap_refs: [Extension-Roadmap.md:3566-3630, Extension-Roadmap.md:5312-5330]
+    course_sections: ["12.1"]
+    method_registry_names: ["CLIP, SigLIP, and VLM controls"]
+    evidence: [chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls]
+    reason: The learner surface implements normalized contrastive mechanics on controlled scenes.
+    blocker: It does not train a complete image/text encoder pair from scratch through retrieval convergence.
+
+  - id: vlm.siglip_loss_from_scratch
+    topic: SigLIP sigmoid contrastive loss from scratch
+    chapter: 6 Vision-language interpretability
+    section: "12.1"
+    status: TOY_ONLY
+    roadmap_refs: [Extension-Roadmap.md:3566-3630, Extension-Roadmap.md:6334-6362]
+    evidence: [chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls]
+    reason: Sigmoid pairwise loss mechanics and controlled retrieval are present.
+    blocker: A full SigLIP encoder training and official-output parity exercise is absent.
+
+  - id: vlm.real_clip_siglip_retrieval
+    topic: Real CLIP and SigLIP feature extraction, retrieval, and controls
+    chapter: 6 Vision-language interpretability
+    section: "12.1"
+    status: PREFLIGHT_ONLY
+    roadmap_refs: [Extension-Roadmap.md:3566-3673, Extension-Roadmap.md:6334-6362]
+    evidence: [chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls]
+    reason: Pinned real CLIP/SigLIP rendered-shape retrieval and hidden-token patching reports exist.
+    blocker: Core model hooking and evaluation remain delegated rather than decomposed into learner exercises.
+
+  - id: vlm.clip_siglip_feature_geometry
+    topic: CLIP and SigLIP feature geometry
+    chapter: 6 Vision-language interpretability
+    section: "12.1"
+    status: PREFLIGHT_ONLY
+    roadmap_refs: [Extension-Roadmap.md:3632-3690, Extension-Roadmap.md:4733-4839]
+    evidence: [chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls]
+    reason: Controlled object/color/style probes and text-prior controls exist.
+    blocker: Multi-model patch/CLS/projector geometry, seed robustness, and causal concept-direction studies are incomplete.
+
+  - id: vlm.clip_siglip_saes
+    topic: CLIP and SigLIP sparse autoencoders and steering
+    chapter: 6 Vision-language interpretability
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:3632-3690, Extension-Roadmap.md:3914-3974]
+    evidence: []
+    reason: Vision SAEs are a named required method, not an optional survey topic.
+    blocker: No CLIP/SigLIP SAE training, released SAE loading, or causal feature steering notebook exists.
+
+  - id: vlm.typographic_attack_mechanisms
+    topic: Typographic attack diagnosis and sparse-feature mitigation
+    chapter: 6 Vision-language interpretability
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:3566-3690, Extension-Roadmap.md:4278-4297]
+    evidence: []
+    reason: The VLM flagship requires a controlled typographic attack and mitigation project.
+    blocker: No typographic dataset, feature localization, or mitigation experiment exists.
+
+  - id: vlm.mini_vlm_from_scratch
+    topic: Mini VLM patch encoder, connector, image tokens, causal decoder, and losses from scratch
+    chapter: 6 Vision-language interpretability
+    section: "12.3"
+    status: TOY_ONLY
+    roadmap_refs: [Extension-Roadmap.md:3692-3758, Extension-Roadmap.md:6277-6332]
+    course_sections: ["12.3"]
+    evidence: [chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch]
+    reason: A working controlled mini-VLM and exact grounding tasks exist.
+    blocker: The architecture is largely supplied rather than built by students in a progressive from-scratch sequence.
+
+  - id: vlm.paligemma_adapter
+    topic: PaliGemma local loading and interpretability adapter
+    chapter: 6 Vision-language interpretability
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:3692-3758, Extension-Roadmap.md:4161-4199]
+    evidence: []
+    reason: PaliGemma is explicitly a required local VLM target.
+    blocker: No PaliGemma loader, visual-token cache, or causal experiment exists.
+
+  - id: vlm.qwen25_vl_adapter
+    topic: Qwen2.5-VL local loading and interpretability adapter
+    chapter: 6 Vision-language interpretability
+    section: "12.1"
+    status: PREFLIGHT_ONLY
+    roadmap_refs: [Extension-Roadmap.md:3692-3758, Extension-Roadmap.md:4161-4199]
+    evidence: [chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls]
+    reason: A pinned Qwen2.5-VL 3B rendered-shape generation preflight exists.
+    blocker: No learner-written hook/cache/patching adapter or held-out VLM mechanism study exists.
+
+  - id: vlm.llava_onevision_adapter
+    topic: LLaVA-OneVision local loading and interpretability adapter
+    chapter: 6 Vision-language interpretability
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:3692-3758, Extension-Roadmap.md:4161-4199]
+    evidence: []
+    reason: LLaVA-OneVision is explicitly named in the required VLM model progression.
+    blocker: No LLaVA-OneVision adapter or visual-token experiment exists.
+
+  - id: vlm.molmo_adapter
+    topic: Molmo local loading and interpretability adapter
+    chapter: 6 Vision-language interpretability
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:3692-3758, Extension-Roadmap.md:4161-4199]
+    evidence: []
+    reason: Molmo is explicitly named in the VLM model zoo and implementation path.
+    blocker: No Molmo adapter, hook surface, or mechanism lab exists.
+
+  - id: vlm.visual_token_flow
+    topic: Visual-token flow across vision encoder, projector, and language model
+    chapter: 6 Vision-language interpretability
+    section: "12.1"
+    status: PREFLIGHT_ONLY
+    roadmap_refs: [Extension-Roadmap.md:3760-3839]
+    evidence: [chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls]
+    reason: Real hidden visual-token replacement is verified on CLIP/SigLIP and controlled toy VLM flows exist.
+    blocker: The core hook registration, cache extraction, and cross-module flow analysis are not student-implemented end to end.
+
+  - id: vlm.full_sequence_patching
+    topic: Full-sequence versus last-token VLM activation patching
+    chapter: 6 Vision-language interpretability
+    section: "12.1"
+    status: PREFLIGHT_ONLY
+    roadmap_refs: [Extension-Roadmap.md:3760-3839]
+    evidence: [chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls]
+    reason: Same-size random-token and full-sequence controls are present in the real-model evidence.
+    blocker: No full decoder-layer-by-token learner heatmap on a generative VLM exists.
+
+  - id: vlm.object_hallucination_grounding_arbitration
+    topic: Object hallucination, grounding, and modality arbitration
+    chapter: 6 Vision-language interpretability
+    section: "12.1"
+    status: TOY_ONLY
+    roadmap_refs: [Extension-Roadmap.md:3841-3912, Extension-Roadmap.md:5255-5267]
+    evidence: [chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls]
+    reason: Controlled colored-shape text/image conflicts and object/background controls model the four failure hypotheses.
+    blocker: No real generative VLM hallucination benchmark separates perception, transfer, arbitration, and decoding failures.
+
+  - id: vlm.real_object_hallucination_arbitration
+    topic: Real-VLM object hallucination and perception/transfer/arbitration/decoding diagnosis
+    chapter: 6 Vision-language interpretability
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:3841-3912, Extension-Roadmap.md:4235-4276]
+    evidence: []
+    reason: The roadmap requires a real-model causal hallucination study beyond the controlled toy proxy.
+    blocker: No real generative VLM benchmark, internal probe ladder, or answer-flipping intervention exists.
+
+  - id: vlm.multimodal_saes
+    topic: Multimodal SAEs on projector, visual-token, text-token, and answer-token streams
+    chapter: 6 Vision-language interpretability
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:3914-3974, Extension-Roadmap.md:5312-5330]
+    evidence: []
+    reason: Multimodal SAE decomposition is a required VLM subchapter.
+    blocker: No VLM SAE dataset, training, reconstruction frontier, or causal steering exists.
+
+  - id: vlm.multimodal_transcoders
+    topic: Multimodal transcoders
+    chapter: 6 Vision-language interpretability
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:3914-3974]
+    evidence: []
+    reason: VLM transcoders are explicitly included alongside SAEs and crosscoders.
+    blocker: No projector or decoder-layer transcoder is trained or interpreted.
+
+  - id: vlm.multimodal_crosscoders
+    topic: CLIP-to-VLM and base-to-instruction multimodal crosscoders
+    chapter: 6 Vision-language interpretability
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:3914-3974, Extension-Roadmap.md:4299-4315]
+    evidence: []
+    reason: Cross-model visual feature comparison is a named VLM requirement and capstone.
+    blocker: No multimodal crosscoder or shared-versus-model-specific feature intervention exists.
+
+  - id: vlm.patchscopes_and_verbalizers
+    topic: VLM Patchscopes, visual-token tuned lenses, and feature verbalizers
+    chapter: 6 Vision-language interpretability
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:3976-4020]
+    evidence: []
+    reason: VLM activation-to-language is a dedicated required subchapter.
+    blocker: No image-token decoding, caption-scope, or held-out visual explanation notebook exists.
+
+  - id: vlm.clothing_object_color_style_geometry
+    topic: VLM clothing, object, color, material, and style geometry
+    chapter: 6 Vision-language interpretability
+    section: "12.1"
+    status: TOY_ONLY
+    roadmap_refs: [Extension-Roadmap.md:4733-4839, Extension-Roadmap.md:5312-5330]
+    evidence: [chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls]
+    reason: Synthetic clothing factors and confound controls exist in a bounded controlled study.
+    blocker: Real clothing datasets, multi-representation comparisons, and causal garment-region patching are absent.
+
+  - id: vlm.dino_dense_features
+    topic: DINO-family dense feature interpretability
+    chapter: 6 Vision-language interpretability
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:2464-2480]
+    evidence: []
+    reason: DINO/DINOv2/DINOv3-style features are explicitly named in the multimodal comparison module.
+    blocker: No DINO feature extraction, probe, patching, or controlled comparison exists.
+
+  - id: vlm.sam_segmentation_features
+    topic: SAM and SAM2 segmentation feature interpretability
+    chapter: 6 Vision-language interpretability
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:2464-2480]
+    evidence: []
+    reason: SAM-style segmentation representations are explicitly included in the multimodal track.
+    blocker: No segmentation feature or causal mask-representation notebook exists.
+
+  - id: vlm.videomae_videoprism_comparison
+    topic: VideoMAE, VideoPrism, and V-JEPA representation comparison
+    chapter: 6 Vision-language interpretability
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:2464-2480, Extension-Roadmap.md:2354-2384]
+    evidence: []
+    reason: The roadmap requires contrasting predictive, reconstructive, and contrastive video features.
+    blocker: No matched video feature benchmark or causal comparison exists.
+
+  - id: image.sd15_daam
+    topic: Stable Diffusion 1.5 cross-attention and DAAM prompt-to-region attribution
+    chapter: 7 Image-generation interpretability
+    section: "13.1"
+    status: PREFLIGHT_ONLY
+    roadmap_refs: [Extension-Roadmap.md:4086-4143, Extension-Roadmap.md:6364-6402]
+    course_sections: ["13.1"]
+    method_registry_names: [Image-generation interpretability]
+    evidence: [chapter13_image_generation_interpretability/exercises/part1_diffusion_image_controls]
+    reason: A pinned SD1.5 path captures token attention and tests target versus random token ablation.
+    blocker: Model loading, hook capture, and intervention construction are hidden behind a reference runner rather than taught progressively.
+
+  - id: image.denoising_time_causal_patching
+    topic: Denoising-time activation and latent patching
+    chapter: 7 Image-generation interpretability
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:4086-4143, Extension-Roadmap.md:6364-6402]
+    evidence: []
+    reason: Denoising-step causal patching is a required image-generation notebook.
+    blocker: No U-Net/DiT activation cache across timesteps or clean/corrupt denoising intervention exists.
+
+  - id: image.diffusion_concept_directions
+    topic: Diffusion activation and latent concept directions
+    chapter: 7 Image-generation interpretability
+    section: "13.1"
+    status: PREFLIGHT_ONLY
+    roadmap_refs: [Extension-Roadmap.md:4841-4921, Extension-Roadmap.md:5332-5345]
+    evidence: [chapter13_image_generation_interpretability/exercises/part1_diffusion_image_controls]
+    reason: A controlled SD1.5 token-ablation direction effect and independent CLIP score are recorded.
+    blocker: No learner-derived mean/PCA/sparse activation direction is causally swept across timesteps and seeds.
+
+  - id: image.dit_concept_attention
+    topic: Diffusion Transformer ConceptAttention and attention-map comparison
+    chapter: 7 Image-generation interpretability
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:4086-4143, Extension-Roadmap.md:6364-6402]
+    evidence: []
+    reason: DiT attention localization is separately required from U-Net cross-attention.
+    blocker: No DiT model, ConceptAttention implementation, or mask-overlap comparison exists.
+
+  - id: image.diffusion_saes_difflens
+    topic: Diffusion SAEs and DIFFLENS-style bias features
+    chapter: 7 Image-generation interpretability
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:4086-4143]
+    evidence: []
+    reason: Sparse diffusion features and DIFFLENS-style mitigation are named methods in the image track.
+    blocker: No diffusion activation dataset, SAE, feature analysis, or controlled mitigation exists.
+
+  - id: image.diffusion_lora
+    topic: Diffusion LoRA style, identity, concept, and safety directions
+    chapter: 7 Image-generation interpretability
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:5175-5208, Extension-Roadmap.md:5332-5345]
+    evidence: []
+    reason: Diffusion LoRA interpretation is a required PEFT/image-generation bridge.
+    blocker: No course-trained diffusion LoRA, spectral analysis, or causal strength sweep exists.
+
+  - id: image.autoregressive_image_tokens
+    topic: Toy VQ tokenizer and autoregressive image-token transformer interpretability
+    chapter: 7 Image-generation interpretability
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:4145-4159, Extension-Roadmap.md:5332-5345]
+    evidence: []
+    reason: Autoregressive image generation is explicitly required alongside diffusion.
+    blocker: No VQ tokenizer, image-token transformer, logit lens, or patching notebook exists.
+
+  - id: image.sdxl_optional
+    topic: SDXL comparison target
+    chapter: 7 Image-generation interpretability
+    section: unassigned
+    status: DEFERRED
+    roadmap_refs: [Extension-Roadmap.md:4096-4143, Extension-Roadmap.md:4161-4199]
+    evidence: [docs/artifact_registry.csv]
+    reason: SDXL is marked optional and follows the required SD1.5 path.
+    blocker: It adds substantial memory/runtime cost without closing a currently unique required-method gap.
+    deferred_until: The SD1.5 learner implementation is complete and SDXL adds a scoped architecture comparison.
+
+  - id: image.flux_optional
+    topic: FLUX rectified-flow transformer interpretability
+    chapter: 7 Image-generation interpretability
+    section: unassigned
+    status: DEFERRED
+    roadmap_refs: [Extension-Roadmap.md:4096-4143, Extension-Roadmap.md:6364-6402]
+    evidence: [docs/artifact_registry.csv]
+    reason: FLUX is explicitly a stretch target under the local feasibility policy.
+    blocker: The 12B model and associated activation workloads are not a stable required path on the 24GB tier.
+    deferred_until: A stable quantized hookable runtime and a specific comparison claim justify the cost.
+
+  - id: jepa.ijepa_from_scratch
+    topic: I-JEPA from scratch with masking, EMA target encoder, predictor, and collapse diagnostics
+    chapter: 8 JEPAs and world models
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:1483-1522, Extension-Roadmap.md:6462-6490]
+    evidence: []
+    reason: I-JEPA is the required first architecture notebook in the JEPA progression.
+    blocker: No image JEPA training, masking, EMA update, or collapse-diagnostic learner exercise exists.
+
+  - id: jepa.vjepa_from_scratch
+    topic: V-JEPA video tubelets, temporal masking, latent prediction, and retrieval
+    chapter: 8 JEPAs and world models
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:1524-1565]
+    evidence: []
+    reason: V-JEPA is separately specified before V-JEPA 2.
+    blocker: No video JEPA architecture or training notebook exists.
+
+  - id: jepa.vjepa2_feature_extraction
+    topic: V-JEPA 2 feature extraction and controlled world-state probes
+    chapter: 8 JEPAs and world models
+    section: "14.1"
+    status: PREFLIGHT_ONLY
+    roadmap_refs: [Extension-Roadmap.md:1567-1612, Extension-Roadmap.md:6462-6490]
+    course_sections: ["14.1"]
+    method_registry_names: [JEPA and world-model controls]
+    evidence: [chapter14_jepa_world_models/exercises/part1_jepa_world_model_controls]
+    reason: A pinned V-JEPA 2 ViT-L generated-video feature extraction and occlusion preflight exists.
+    blocker: Preprocessing, hooks, feature extraction, and evaluation are hidden behind a monolithic reference call.
+
+  - id: jepa.vjepa2_action_conditioned
+    topic: V-JEPA 2-AC latent action-conditioned prediction and planning
+    chapter: 8 JEPAs and world models
+    section: "14.1"
+    status: TOY_ONLY
+    roadmap_refs: [Extension-Roadmap.md:1567-1612, Extension-Roadmap.md:1988-2009]
+    evidence: [chapter14_jepa_world_models/exercises/part1_jepa_world_model_controls]
+    reason: The current section has a synthetic action-conditioned rollout head and shuffled-action control.
+    blocker: It does not load V-JEPA 2-AC or perform latent planning with real action-conditioned weights.
+
+  - id: jepa.vjepa21_dense_features
+    topic: V-JEPA 2.1 dense spatial-temporal feature interpretability
+    chapter: 8 JEPAs and world models
+    section: unassigned
+    status: DEFERRED
+    roadmap_refs: [Extension-Roadmap.md:1614-1642, Extension-Roadmap.md:2266-2306]
+    method_registry_names: [V-JEPA 2.1 dense features]
+    evidence: [docs/method_registry.csv]
+    reason: The roadmap conditions this notebook on stable released weights and tooling.
+    blocker: The pinned registry still records unresolved V-JEPA 2.1 weights/tooling for the local path.
+    deferred_until: Stable official weights and feature extraction tooling are pinned and fit the 24GB tier.
+
+  - id: jepa.vljepa
+    topic: VL-JEPA continuous text-embedding prediction and selective decoding
+    chapter: 8 JEPAs and world models
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:1644-1683]
+    evidence: []
+    reason: VL-JEPA is a distinct required conceptual branch and VLM comparison.
+    blocker: No embedding-prediction VLM, selective decoder, or caption retrieval experiment exists.
+
+  - id: jepa.audio_jepa
+    topic: Audio-JEPA and A-JEPA time-frequency latent prediction
+    chapter: 8 JEPAs and world models
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:1685-1720]
+    evidence: []
+    reason: Audio JEPA variants are explicitly included in the JEPA family inventory.
+    blocker: No spectrogram patching, masking, latent prediction, or audio probe notebook exists.
+
+  - id: jepa.mc_jepa
+    topic: MC-JEPA motion/content disentanglement
+    chapter: 8 JEPAs and world models
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:1722-1749]
+    evidence: []
+    reason: MC-JEPA is specified as a dedicated model-organism exercise.
+    blocker: No Moving-MNIST/bouncing-ball motion-content model or cross-patching test exists.
+
+  - id: jepa.3d_jepa
+    topic: 3D-JEPA point-cloud representations
+    chapter: 8 JEPAs and world models
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:1751-1787]
+    evidence: []
+    reason: 3D-JEPA is explicitly listed in the JEPA zoo.
+    blocker: No point-cloud JEPA adapter or interpretation exercise exists.
+
+  - id: jepa.us_jepa
+    topic: US-JEPA ultrasound representations
+    chapter: 8 JEPAs and world models
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:1751-1787]
+    evidence: []
+    reason: US-JEPA is explicitly listed in the JEPA zoo.
+    blocker: No ultrasound JEPA adapter or safety-scoped analysis exists.
+
+  - id: jepa.time_series_jepa
+    topic: T-JEPA and TC-JEPA time-series representations
+    chapter: 8 JEPAs and world models
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:1751-1787, Extension-Roadmap.md:2840-2880]
+    evidence: []
+    reason: Time-series JEPA is included in both the zoo and final syllabus.
+    blocker: No time-series latent-prediction adapter or state-probe exercise exists.
+
+  - id: jepa.mjepa
+    topic: MJEPA multimodal audio-visual latent prediction
+    chapter: 8 JEPAs and world models
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:1751-1787]
+    evidence: []
+    reason: MJEPA is explicitly listed as a multimodal JEPA branch.
+    blocker: No cross-modal JEPA implementation or audio-visual feature study exists.
+
+  - id: jepa.bijepa
+    topic: BiJEPA bidirectional or cycle-consistent latent prediction
+    chapter: 8 JEPAs and world models
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:1751-1787]
+    evidence: []
+    reason: BiJEPA is explicitly listed in the living JEPA zoo.
+    blocker: No BiJEPA adapter or cycle-consistency verification exists.
+
+  - id: jepa.llm_jepa
+    topic: LLM-JEPA language latent prediction
+    chapter: 8 JEPAs and world models
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:1751-1787]
+    evidence: []
+    reason: LLM-JEPA is explicitly listed as a language-model JEPA hybrid.
+    blocker: No language latent-prediction implementation or autoregressive comparison exists.
+
+  - id: jepa.jepa_vla
+    topic: JEPA-VLA predictive embeddings for vision-language-action models
+    chapter: 8 JEPAs and world models
+    section: unassigned
+    status: DEFERRED
+    roadmap_refs: [Extension-Roadmap.md:1751-1787, Extension-Roadmap.md:2266-2306]
+    evidence: [docs/method_registry.csv]
+    reason: The roadmap classifies robot action-conditioned demos as optional/stretch and potentially large.
+    blocker: Stable small released robotics checkpoints and local benchmark environments are not pinned.
+    deferred_until: A reproducible small VLA checkpoint and simulator fit the 24GB local tier.
+
+  - id: jepa.act_jepa
+    topic: ACT-JEPA imitation learning plus latent world-model objective
+    chapter: 8 JEPAs and world models
+    section: unassigned
+    status: DEFERRED
+    roadmap_refs: [Extension-Roadmap.md:1751-1787]
+    evidence: [Extension-Roadmap.md]
+    reason: ACT-JEPA is a long-tail robotics extension rather than a current local core notebook.
+    blocker: No pinned small robotics dataset, environment, or faithful reference implementation is integrated.
+    deferred_until: A stable local reference stack and scoped toy robotics claim are selected.
+
+  - id: jepa.demo_jepa
+    topic: Demo-JEPA demonstration-conditioned latent trajectories
+    chapter: 8 JEPAs and world models
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:1751-1787]
+    evidence: []
+    reason: Demo-JEPA is explicitly named in the JEPA zoo.
+    blocker: No demonstration-conditioned JEPA implementation or trajectory benchmark exists.
+
+  - id: jepa.sparse_jepa
+    topic: SparseJEPA representation learning
+    chapter: 8 JEPAs and world models
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:1751-1787]
+    evidence: []
+    reason: SparseJEPA is explicitly named in the JEPA zoo.
+    blocker: No sparse JEPA objective or sparse-latent analysis exists.
+
+  - id: world.othello_gpt
+    topic: Othello-GPT board state, legal moves, probes, and causal edits
+    chapter: 8 World-model interpretability
+    section: original ARENA
+    status: TAUGHT
+    roadmap_refs: [Extension-Roadmap.md:1807-1835, Extension-Roadmap.md:2876-2885]
+    evidence: [chapter1_transformer_interp/exercises/part53_othellogpt, docs/evidence/othello_gpt/verification_report.json]
+    reason: Original ARENA contains the learner progression and the extension adds a modern pinned verification report.
+    blocker: null
+
+  - id: world.maze_transformers
+    topic: Maze transformer world models and causal location/wall interventions
+    chapter: 8 World-model interpretability
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:1837-1858, Extension-Roadmap.md:2876-2885]
+    evidence: []
+    reason: Maze world models are a required standalone lab.
+    blocker: No maze generator, trained transformer, probes, or causal route intervention exists.
+
+  - id: world.sudoku_transformers
+    topic: Sudoku constraint world models and naked-single circuits
+    chapter: 8 World-model interpretability
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:1860-1880, Extension-Roadmap.md:2876-2885]
+    evidence: []
+    reason: Sudoku/constraint world models are a required standalone lab.
+    blocker: No Sudoku trace model, candidate probes, or naked-single circuit exercise exists.
+
+  - id: world.dreamer_lite
+    topic: Dreamer-lite recurrent state-space world model
+    chapter: 8 World-model interpretability
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:1882-1916, Extension-Roadmap.md:2876-2885]
+    evidence: []
+    reason: A small Dreamer lab is explicitly required rather than full DreamerV3 retraining.
+    blocker: No RSSM training, state probing, imagined rollout, or intervention notebook exists.
+
+  - id: world.tdmpc2_lite
+    topic: TD-MPC2-lite latent dynamics and planning
+    chapter: 8 World-model interpretability
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:1882-1916, Extension-Roadmap.md:2876-2885]
+    evidence: []
+    reason: TD-MPC2-lite is explicitly required as a local conceptual lab.
+    blocker: No latent trajectory optimizer, physical-state probe, or intervention exercise exists.
+
+  - id: world.iris_lite
+    topic: IRIS-lite discrete-token world model
+    chapter: 8 World-model interpretability
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:1882-1916, Extension-Roadmap.md:2876-2885]
+    evidence: []
+    reason: IRIS-lite is explicitly required for a discrete visual world-model comparison.
+    blocker: No discrete image tokenizer, rollout transformer, or state interpretation notebook exists.
+
+  - id: world.object_permanence
+    topic: Object-permanence features under occlusion
+    chapter: 8 World-model interpretability
+    section: "14.1"
+    status: PREFLIGHT_ONLY
+    roadmap_refs: [Extension-Roadmap.md:1968-1986, Extension-Roadmap.md:2423-2439]
+    evidence: [chapter14_jepa_world_models/exercises/part1_jepa_world_model_controls]
+    reason: Synthetic V-JEPA 2 occlusion evidence and same-size random token controls exist.
+    blocker: No learned object-permanence feature is tracked through a real-video or trained toy-world sequence.
+
+  - id: world.latent_planning
+    topic: Goal-conditioned planning in latent space
+    chapter: 8 World-model interpretability
+    section: "14.1"
+    status: TOY_ONLY
+    roadmap_refs: [Extension-Roadmap.md:1567-1612, Extension-Roadmap.md:1988-2009]
+    evidence: [chapter14_jepa_world_models/exercises/part1_jepa_world_model_controls]
+    reason: A simple generated action-conditioned latent rollout is tested.
+    blocker: No action-sequence search against a goal embedding is implemented on a trained or released world model.
+
+  - id: world.controllable_variables
+    topic: Controllable versus nuisance latent-variable separation
+    chapter: 8 World-model interpretability
+    section: "14.1"
+    status: TOY_ONLY
+    roadmap_refs: [Extension-Roadmap.md:1988-2009, Extension-Roadmap.md:2441-2462]
+    evidence: [chapter14_jepa_world_models/exercises/part1_jepa_world_model_controls]
+    reason: A generated transition organism tests action-conditioned versus shuffled-action effects.
+    blocker: No matched V-JEPA2/V-JEPA2-AC/TD-MPC/Dreamer comparison exists.
+
+  - id: world.microscope_ai
+    topic: Microscope AI for scientific concept discovery
+    chapter: 8 World-model interpretability
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:1789-1805, Extension-Roadmap.md:1882-1916]
+    evidence: []
+    reason: Microscope AI is a named endpoint for the world-model track.
+    blocker: No scientific model organism, concept-discovery workflow, or validated novel predictor exercise exists.
+
+  - id: organisms.modular_addition
+    topic: Modular-addition model organism
+    chapter: Cross-cutting benchmarks and model organisms
+    section: "17.1"
+    status: TOY_ONLY
+    roadmap_refs: [Extension-Roadmap.md:2688-2705, Extension-Roadmap.md:5691-5721]
+    evidence: [chapter17_training_dynamics/exercises/part1_checkpoint_archaeology]
+    reason: A tiny modular-addition MLP is trained and checkpointed for mechanism-emergence analysis.
+    blocker: The course does not recover a transformer modular-arithmetic circuit or compare it with known grokking results.
+
+  - id: organisms.greater_than
+    topic: Greater-than circuit model organism
+    chapter: Cross-cutting benchmarks and model organisms
+    section: original ARENA
+    status: TAUGHT
+    roadmap_refs: [Extension-Roadmap.md:851-872, Extension-Roadmap.md:2688-2705]
+    evidence: [chapter1_transformer_interp]
+    reason: The preserved original ARENA material contains the greater-than circuit investigation.
+    blocker: null
+
+  - id: organisms.tracr_rasp
+    topic: Tracr and RASP compiled ground-truth transformer programs
+    chapter: Cross-cutting benchmarks and model organisms
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:2688-2705, Extension-Roadmap.md:5691-5721]
+    evidence: []
+    reason: Compiled transformers are explicitly required as exact-mechanism model organisms.
+    blocker: No RASP program, Tracr compilation, or known-circuit recovery exercise exists.
+
+  - id: organisms.bouncing_balls_moving_mnist
+    topic: Bouncing-balls and Moving-MNIST physical-state organisms
+    chapter: Cross-cutting benchmarks and model organisms
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:1722-1749, Extension-Roadmap.md:2688-2705]
+    evidence: []
+    reason: These are required ground-truth video worlds for motion, occlusion, and object permanence.
+    blocker: No generator, trained predictive model, or causal state-patching exercise exists.
+
+  - id: organisms.tiny_rl_worlds
+    topic: Tiny reinforcement-learning world-model organisms
+    chapter: Cross-cutting benchmarks and model organisms
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:1882-1916, Extension-Roadmap.md:2688-2705]
+    evidence: []
+    reason: Toy RL worlds are explicitly required to ground latent planning claims.
+    blocker: No MiniGrid/CartPole/Crafter world model, state probe, or latent intervention exists.
+
+  - id: world.large_robot_models
+    topic: Large robot world models and real manipulation planning
+    chapter: 8 World-model interpretability
+    section: unassigned
+    status: DEFERRED
+    roadmap_refs: [Extension-Roadmap.md:2264-2306, Extension-Roadmap.md:2949-2969]
+    evidence: [docs/method_registry.csv]
+    reason: The roadmap explicitly excludes frontier-scale robot world models from the required 24GB path.
+    blocker: Model size, simulator/data requirements, and evaluation cost exceed the local course tier.
+    deferred_until: A small open checkpoint and reproducible simulator support a bounded local claim.
+
+  - id: hardware.large_27b_bf16_models
+    topic: Direct BF16 inference and activation capture for 27B-plus models
+    chapter: Cross-cutting local feasibility
+    section: unassigned
+    status: DEFERRED
+    roadmap_refs: [Extension-Roadmap.md:109-121, Extension-Roadmap.md:2949-2969]
+    evidence: [docs/local_gpu_setup.md, docs/method_registry.csv]
+    reason: The roadmap explicitly exempts 27B-plus BF16 models from the required 24GB local tier.
+    blocker: Weights plus activation caches exceed the available 24GB GPU memory.
+    deferred_until: Larger-memory hardware is available or a hookable quantized runtime supports the exact learning objective.
+
+  - id: peft.lora_from_scratch
+    topic: LoRA from scratch in transformer attention and MLP projections
+    chapter: 9 Finetuning, LoRA, DoRA, and misalignment
+    section: "15.1"
+    status: TOY_ONLY
+    roadmap_refs: [Extension-Roadmap.md:4939-4967, Extension-Roadmap.md:5362-5380]
+    course_sections: ["15.1"]
+    method_registry_names: ["LoRA, DoRA, and adapter interpretability"]
+    evidence: [chapter15_peft_misalignment/exercises/part1_lora_dora_adapter_controls]
+    reason: Exact low-rank update, rank, merge, and training mechanics are taught on a small linear organism.
+    blocker: No transformer Q/K/V/O or MLP LoRA insertion and training exercise exists.
+
+  - id: peft.dora_from_scratch
+    topic: DoRA magnitude-direction decomposition from scratch
+    chapter: 9 Finetuning, LoRA, DoRA, and misalignment
+    section: "15.1"
+    status: TOY_ONLY
+    roadmap_refs: [Extension-Roadmap.md:4969-4990, Extension-Roadmap.md:5362-5380]
+    evidence: [chapter15_peft_misalignment/exercises/part1_lora_dora_adapter_controls]
+    reason: Exact decomposition, reconstruction, and matched toy training controls exist.
+    blocker: No transformer DoRA adapter, merge path, or stability comparison exists.
+
+  - id: peft.lora_vs_full_finetuning
+    topic: LoRA versus DoRA versus full finetuning on matched transformer tasks
+    chapter: 9 Finetuning, LoRA, DoRA, and misalignment
+    section: "15.1"
+    status: TOY_ONLY
+    roadmap_refs: [Extension-Roadmap.md:4992-5047, Extension-Roadmap.md:5362-5380]
+    evidence: [chapter15_peft_misalignment/exercises/part1_lora_dora_adapter_controls]
+    reason: A matched eight-dimensional classifier comparison records task performance and update spectra.
+    blocker: The roadmap requires transformer adapters, OOD behavior, and crosscoder feature differences.
+
+  - id: peft.adapter_svd_intruder_dimensions
+    topic: Adapter SVD, effective rank, subspace overlap, and intruder dimensions
+    chapter: 9 Finetuning, LoRA, DoRA, and misalignment
+    section: "15.1"
+    status: TOY_ONLY
+    roadmap_refs: [Extension-Roadmap.md:4992-5047, Extension-Roadmap.md:5362-5380]
+    evidence: [chapter15_peft_misalignment/exercises/part1_lora_dora_adapter_controls]
+    reason: The toy section plots singular spectra and effective rank.
+    blocker: No pretrained-transformer weight-delta spectrum or intruder-dimension replication exists.
+
+  - id: peft.qlora
+    topic: QLoRA quantized adapter training
+    chapter: 9 Finetuning, LoRA, DoRA, and misalignment
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:4992-5047, Extension-Roadmap.md:5362-5380]
+    evidence: []
+    reason: QLoRA is explicitly listed as an optional PEFT method and local quantization comparison.
+    blocker: No quantized base-model adapter training or dequantization-control notebook exists.
+
+  - id: peft.safe_lora_misalignment_proxy
+    topic: Safe LoRA-induced broad behavior drift and causal activation direction
+    chapter: 9 Finetuning, LoRA, DoRA, and misalignment
+    section: "15.1"
+    status: TOY_ONLY
+    roadmap_refs: [Extension-Roadmap.md:5049-5129, Extension-Roadmap.md:5362-5380]
+    evidence: [chapter15_peft_misalignment/exercises/part1_lora_dora_adapter_controls]
+    reason: A generated rank-one safe proxy classifier tests target, shuffled-label, and random-adapter effects.
+    blocker: No language-model behavior drift, checkpoint phase transition, or projection-out study exists.
+
+  - id: peft.vlm_lora
+    topic: VLM LoRA visual instruction-tuning interpretability
+    chapter: 9 Finetuning, LoRA, DoRA, and misalignment
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:5131-5173, Extension-Roadmap.md:5312-5330]
+    evidence: []
+    reason: VLM LoRA is a required bridge between adapters and visual-token mechanisms.
+    blocker: No VLM adapter training, visual/text residual shift, or causal adapter-direction experiment exists.
+
+  - id: alignment.refusal_direction
+    topic: Refusal direction replication with addition, projection-out, layer/position sweeps, and controls
+    chapter: 10 Alignment interpretability
+    section: "9.1"
+    status: TAUGHT
+    roadmap_refs: [Extension-Roadmap.md:4465-4571, Extension-Roadmap.md:6096-6148]
+    course_sections: ["9.1"]
+    method_registry_names: [Refusal directions]
+    evidence: [chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering]
+    reason: Section 9.1 includes a sanitized GT-2 public-data replication with aggregate causal effects and negative controls.
+    blocker: null
+
+  - id: alignment.multi_refusal_geometry
+    topic: Multi-direction refusal and noncompliance geometry
+    chapter: 10 Alignment interpretability
+    section: "9.1"
+    status: PREFLIGHT_ONLY
+    roadmap_refs: [Extension-Roadmap.md:4523-4571, Extension-Roadmap.md:5255-5267]
+    evidence: [chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering]
+    reason: PCA/SVD and direction robustness are measured around a one-direction replication.
+    blocker: No category-specific multidirectional basis or causal comparison against learned DAS directions exists.
+
+  - id: alignment.truthfulness_directions
+    topic: Truthfulness directions and causal truthfulness intervention
+    chapter: 10 Alignment interpretability
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:5255-5267]
+    evidence: []
+    reason: Truthfulness directions are explicitly required alongside refusal and hallucination.
+    blocker: No truthfulness dataset, direction extraction, held-out validation, or causal intervention exists.
+
+  - id: alignment.hallucination_probes
+    topic: Language-model and VLM hallucination probes
+    chapter: 10 Alignment interpretability
+    section: "12.1"
+    status: TOY_ONLY
+    roadmap_refs: [Extension-Roadmap.md:5255-5267, Extension-Roadmap.md:5499-5505]
+    evidence: [chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls]
+    reason: Controlled synthetic VLM grounding scores provide a bounded hallucination-proxy lesson.
+    blocker: No real hallucination benchmark or language-model truthfulness probe is taught.
+
+  - id: alignment.cot_faithfulness
+    topic: Chain-of-thought faithfulness probes and causal hidden-reasoning patches
+    chapter: 10 Alignment interpretability
+    section: "9.2"
+    status: TOY_ONLY
+    roadmap_refs: [Extension-Roadmap.md:930-954]
+    course_sections: ["9.2"]
+    method_registry_names: [Chain-of-thought faithfulness probes]
+    evidence: [chapter9_alignment_interpretability/exercises/part2_cot_faithfulness]
+    reason: An exact toy organism demonstrates detection and intervention; a pinned real-model result is honestly negative.
+    blocker: The real-model preflight does not establish a causal hidden reasoning variable or benchmark-level faithfulness detector.
+
+  - id: alignment.emergent_misalignment_detection
+    topic: Safe emergent-misalignment proxy detection and mitigation
+    chapter: 10 Alignment interpretability
+    section: "9.3"
+    status: PREFLIGHT_ONLY
+    roadmap_refs: [Extension-Roadmap.md:956-983]
+    course_sections: ["9.3"]
+    method_registry_names: [Safe proxy drift detection]
+    evidence: [chapter9_alignment_interpretability/exercises/part3_emergent_misalignment_detection]
+    reason: A safe generated proxy and small-model activation preflight compare random/shuffled controls and projection mitigation.
+    blocker: No actual benign finetune trajectory or crosscoder-based early detection study exists.
+
+  - id: alignment.white_box_monitors
+    topic: White-box eval monitors, calibration, explanations, and black-box comparison
+    chapter: 10 Alignment interpretability
+    section: "9.4"
+    status: PREFLIGHT_ONLY
+    roadmap_refs: [Extension-Roadmap.md:985-1009, Extension-Roadmap.md:2677-2686]
+    course_sections: ["9.4"]
+    method_registry_names: [White-box eval monitors]
+    evidence: [chapter9_alignment_interpretability/exercises/part4_white_box_evals_monitors]
+    reason: A calibrated small-model monitor preflight and controlled dashboard artifacts exist.
+    blocker: No interactive monitor interface or multi-signal SAE/refusal/hallucination/CoT deployment evaluation exists.
+
+  - id: alignment.rome_model_editing
+    topic: ROME locate-then-edit and failure modes
+    chapter: 10 Alignment interpretability
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:2631-2641, Extension-Roadmap.md:5499-5505]
+    evidence: []
+    reason: ROME is explicitly named as a pedagogical model-editing example.
+    blocker: No causal tracing, rank-one edit, locality, or downstream side-effect notebook exists.
+
+  - id: alignment.memit_model_editing
+    topic: MEMIT mass model editing and failure modes
+    chapter: 10 Alignment interpretability
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:2631-2641, Extension-Roadmap.md:5499-5505]
+    evidence: []
+    reason: MEMIT is explicitly named as a model-editing method to teach skeptically.
+    blocker: No MEMIT implementation, multi-edit benchmark, locality, or forgetting analysis exists.
+
+  - id: alignment.unlearning
+    topic: Model unlearning and white-box unlearning evaluation
+    chapter: 10 Alignment interpretability
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:2631-2641, Extension-Roadmap.md:5499-5505]
+    evidence: []
+    reason: Unlearning is explicitly required in the alignment chapter and method inventory.
+    blocker: No unlearning algorithm, retain/forget split, white-box leakage test, or side-effect evaluation exists.
+
+  - id: alignment.red_teaming_with_internals
+    topic: Safe red-teaming using internal monitors
+    chapter: 10 Alignment interpretability
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:2840-2904, Extension-Roadmap.md:5499-5505]
+    evidence: []
+    reason: Red-teaming with internals is included in the final alignment syllabus.
+    blocker: No safety-scoped internal-monitor red-team protocol exists.
+
+  - id: alignment.world_model_safety
+    topic: World-model safety interpretability
+    chapter: 10 Alignment interpretability
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:2173-2262]
+    evidence: []
+    reason: World-model safety is named as an alignment application in the upgraded syllabus.
+    blocker: No world-model failure or unsafe-planning monitor exercise exists.
+
+  - id: alignment.robotics_vla_safety
+    topic: Robotics and VLA safety interpretability
+    chapter: 10 Alignment interpretability
+    section: unassigned
+    status: DEFERRED
+    roadmap_refs: [Extension-Roadmap.md:2173-2262]
+    evidence: [Extension-Roadmap.md]
+    reason: This depends on the deferred local VLA/world-model stack and safety-scoped simulation.
+    blocker: No suitable small VLA checkpoint, simulator, and benign safety benchmark are pinned.
+    deferred_until: The JEPA-VLA requirement has a reproducible local simulator and model target.
+
+  - id: intrinsic.concept_bottleneck_models
+    topic: Concept bottleneck models
+    chapter: Cross-cutting intrinsic interpretability
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:2643-2651]
+    evidence: []
+    reason: Concept bottlenecks are explicitly named as interpretable-by-construction models.
+    blocker: No concept bottleneck training, concept supervision, or intervention notebook exists.
+
+  - id: intrinsic.sparse_modular_training
+    topic: Sparse and modular training for intrinsic interpretability
+    chapter: Cross-cutting intrinsic interpretability
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:2643-2651]
+    evidence: []
+    reason: Sparse/modular training is a required intrinsic-interpretability comparison.
+    blocker: No architecture trained for modularity and no causal modularity evaluation exists.
+
+  - id: intrinsic.interchange_intervention_training
+    topic: Interchange Intervention Training
+    chapter: Cross-cutting intrinsic interpretability
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:2643-2651]
+    evidence: []
+    reason: Interchange-intervention training is explicitly named as an interpretable-by-design method.
+    blocker: No IIT objective, abstraction mapping, or intervention consistency test exists.
+
+  - id: intrinsic.backpack_language_models
+    topic: Backpack language models
+    chapter: Cross-cutting intrinsic interpretability
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:2631-2651]
+    evidence: []
+    reason: Backpack language models are explicitly named under steerable-by-design/intrinsic methods.
+    blocker: No Backpack architecture, sense-vector analysis, or steering exercise exists.
+
+  - id: intrinsic.kans_sparse_trees
+    topic: KANs and sparse trees as interpretable-by-design baselines
+    chapter: Cross-cutting intrinsic interpretability
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:2643-2651]
+    evidence: []
+    reason: KANs and sparse trees are explicitly included as comparison baselines.
+    blocker: No interpretable-by-design baseline notebook exists.
+
+  - id: ui.neuronpedia
+    topic: Neuronpedia integration
+    chapter: Cross-cutting interpretability interfaces
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:2677-2686, Extension-Roadmap.md:6561-6579]
+    evidence: []
+    reason: Neuronpedia is named as a required feature-inspection tool.
+    blocker: No notebook-to-Neuronpedia learner workflow or pinned feature links are integrated.
+
+  - id: ui.sae_vis
+    topic: sae-vis feature visualization
+    chapter: Cross-cutting interpretability interfaces
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:2677-2686, Extension-Roadmap.md:6561-6579]
+    evidence: []
+    reason: sae-vis is named as required visualization tooling.
+    blocker: No generated sae-vis dashboard or learner analysis workflow exists.
+
+  - id: ui.circuit_tracer_frontend
+    topic: Circuit-tracer frontend
+    chapter: Cross-cutting interpretability interfaces
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:2677-2686]
+    evidence: []
+    reason: A circuit-tracing interface is explicitly required for human interaction with internals.
+    blocker: No interactive attribution-graph frontend exists.
+
+  - id: ui.nnsight_model_internals_dashboards
+    topic: NNsight and model-internals dashboards
+    chapter: Cross-cutting interpretability interfaces
+    section: original ARENA and unassigned extension
+    status: PREFLIGHT_ONLY
+    roadmap_refs: [Extension-Roadmap.md:2677-2686, Extension-Roadmap.md:6561-6579]
+    evidence: [chapter1_transformer_interp]
+    reason: Original ARENA teaches NNsight, but the extension dashboard surface is not implemented.
+    blocker: No integrated white-box monitoring/model-internals dashboard exists.
+
+  - id: shapley.exact_values
+    topic: Exact Shapley values and axioms on ground-truth games
+    chapter: 11 Shapley and attribution baselines
+    section: "16.1"
+    status: TAUGHT
+    roadmap_refs: [Extension-Roadmap.md:2011-2063, Extension-Roadmap.md:6492-6518]
+    course_sections: ["16.1"]
+    method_registry_names: [Exact Shapley values]
+    evidence: [chapter16_shapley_attribution_baselines/exercises/part1_exact_shapley_ground_truth_games]
+    reason: Exact coalition enumeration, analytic parity, efficiency, symmetry, and controls are learner-visible.
+    blocker: null
+
+  - id: shapley.kernelshap
+    topic: KernelSHAP
+    chapter: 11 Shapley and attribution baselines
+    section: "16.2"
+    status: TAUGHT
+    roadmap_refs: [Extension-Roadmap.md:2011-2063, Extension-Roadmap.md:6492-6518]
+    course_sections: ["16.2"]
+    method_registry_names: [KernelSHAP and PartitionSHAP]
+    evidence: [chapter16_shapley_attribution_baselines/exercises/part2_kernelshap_partition_shap_controls]
+    reason: Weighted-regression attribution is built and checked against exact games.
+    blocker: null
+
+  - id: shapley.permutation_shap
+    topic: Permutation Shapley estimation
+    chapter: 11 Shapley and attribution baselines
+    section: "16.1 and 16.4"
+    status: TAUGHT
+    roadmap_refs: [Extension-Roadmap.md:2031-2048]
+    evidence: [chapter16_shapley_attribution_baselines/exercises/part1_exact_shapley_ground_truth_games, chapter16_shapley_attribution_baselines/exercises/part4_tokenshap_token_shapley]
+    reason: Permutation estimates are compared with exact values and convergence is visualized.
+    blocker: null
+
+  - id: shapley.partitionshap_owen
+    topic: PartitionSHAP and Owen values
+    chapter: 11 Shapley and attribution baselines
+    section: "16.2"
+    status: TAUGHT
+    roadmap_refs: [Extension-Roadmap.md:2031-2048]
+    evidence: [chapter16_shapley_attribution_baselines/exercises/part2_kernelshap_partition_shap_controls]
+    reason: Grouped coalition attribution and grouping controls are learner-visible.
+    blocker: null
+
+  - id: shapley.treeshap
+    topic: TreeSHAP
+    chapter: 11 Shapley and attribution baselines
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:2011-2048, Extension-Roadmap.md:5382-5402]
+    evidence: []
+    reason: TreeSHAP is explicitly required in the final attribution inventory.
+    blocker: No tree path algorithm, exact parity, or tree-model attribution lab exists.
+
+  - id: shapley.deepshap
+    topic: DeepSHAP
+    chapter: 11 Shapley and attribution baselines
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:2011-2048, Extension-Roadmap.md:5382-5402]
+    evidence: []
+    reason: DeepSHAP is explicitly required as a neural attribution baseline.
+    blocker: No DeepSHAP implementation or ground-truth causal comparison exists.
+
+  - id: shapley.gradientshap
+    topic: GradientSHAP
+    chapter: 11 Shapley and attribution baselines
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:2011-2048, Extension-Roadmap.md:5382-5402]
+    evidence: []
+    reason: GradientSHAP is explicitly required as an attribution baseline.
+    blocker: No GradientSHAP implementation, baseline-distribution study, or causal comparison exists.
+
+  - id: shapley.sage
+    topic: SAGE global Shapley feature importance
+    chapter: 11 Shapley and attribution baselines
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:2011-2048, Extension-Roadmap.md:2620-2629]
+    evidence: []
+    reason: SAGE is explicitly required both as global feature importance and training-data-adjacent attribution.
+    blocker: No SAGE implementation or global-versus-local comparison exists.
+
+  - id: shapley.token_shapley
+    topic: TokenSHAP and TokenShapley
+    chapter: 11 Shapley and attribution baselines
+    section: "16.4"
+    status: TAUGHT
+    roadmap_refs: [Extension-Roadmap.md:2031-2048, Extension-Roadmap.md:2143-2171]
+    course_sections: ["16.4"]
+    method_registry_names: [TokenSHAP and TokenShapley]
+    evidence: [chapter16_shapley_attribution_baselines/exercises/part4_tokenshap_token_shapley]
+    reason: Exact and sampled token attribution, deletion behavior, subword grouping, and off-manifold failures are taught.
+    blocker: null
+
+  - id: shapley.interactions_shapiq
+    topic: Shapley interaction values and shapiq parity
+    chapter: 11 Shapley and attribution baselines
+    section: "16.3"
+    status: TAUGHT
+    roadmap_refs: [Extension-Roadmap.md:2031-2048, Extension-Roadmap.md:2121-2141]
+    course_sections: ["16.3"]
+    method_registry_names: [Shapley interaction values]
+    evidence: [chapter16_shapley_attribution_baselines/exercises/part3_shapley_interactions_shapiq]
+    reason: Pair interactions, exact ground truth, and shapiq comparison are learner-visible.
+    blocker: null
+
+  - id: shapley.shapley_taylor_faith_shap
+    topic: Shapley-Taylor and Faith-Shap interactions
+    chapter: 11 Shapley and attribution baselines
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:2031-2048, Extension-Roadmap.md:2665-2675]
+    evidence: []
+    reason: These interaction formalisms are separately named in the final method inventory.
+    blocker: No Shapley-Taylor or Faith-Shap implementation and parity comparison exists.
+
+  - id: shapley.shap_iq
+    topic: SHAP-IQ and KernelSHAP-IQ
+    chapter: 11 Shapley and attribution baselines
+    section: "16.3"
+    status: PREFLIGHT_ONLY
+    roadmap_refs: [Extension-Roadmap.md:2031-2048, Extension-Roadmap.md:2665-2675]
+    evidence: [chapter16_shapley_attribution_baselines/exercises/part3_shapley_interactions_shapiq]
+    reason: shapiq provides a validated interaction reference, but the SHAP-IQ estimator itself is not built.
+    blocker: No SHAP-IQ/KernelSHAP-IQ learner implementation or estimator comparison exists.
+
+  - id: shapley.spex_proxyspex
+    topic: SPEX and ProxySPEX scalable interaction discovery
+    chapter: 11 Shapley and attribution baselines
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:2665-2675, Extension-Roadmap.md:2840-2890]
+    evidence: []
+    reason: SPEX/ProxySPEX is explicitly named as the scalable LLM interaction family.
+    blocker: No sparse interaction recovery, query complexity, or LLM comparison notebook exists.
+
+  - id: shapley.vlm_modality_region
+    topic: VLM modality, object, background, OCR, and region Shapley
+    chapter: 11 Shapley and attribution baselines
+    section: "16.5"
+    status: PREFLIGHT_ONLY
+    roadmap_refs: [Extension-Roadmap.md:4022-4084, Extension-Roadmap.md:7299-7340]
+    course_sections: ["16.5"]
+    method_registry_names: [VLM modality and region SHAP]
+    evidence: [chapter16_shapley_attribution_baselines/exercises/part5_vlm_modality_region_shap]
+    reason: Exact controlled multimodal games and a pinned CLIP rendered-shape preflight exist.
+    blocker: No generative VLM counterfactual answer study or real object-level image editing benchmark exists.
+
+  - id: shapley.shap_vs_activation_patching
+    topic: SHAP versus activation patching agreement and disagreement
+    chapter: 11 Shapley and attribution baselines
+    section: "16.6"
+    status: TAUGHT
+    roadmap_refs: [Extension-Roadmap.md:2065-2171, Extension-Roadmap.md:6492-6518]
+    course_sections: ["16.6"]
+    method_registry_names: [SHAP vs activation patching]
+    evidence: [chapter16_shapley_attribution_baselines/exercises/part6_shap_vs_activation_patching]
+    reason: Additive agreement and nonlinear overcounting are established on exact model organisms with controls.
+    blocker: null
+
+  - id: data_attribution.exact_mc_data_shapley
+    topic: Exact and Monte Carlo Data Shapley
+    chapter: 11 Shapley and attribution baselines
+    section: "16.7"
+    status: TOY_ONLY
+    roadmap_refs: [Extension-Roadmap.md:7053-7118]
+    course_sections: ["16.7"]
+    method_registry_names: [Data Shapley in one training run]
+    evidence: [chapter16_shapley_attribution_baselines/exercises/part7_data_shapley_in_one_training_run]
+    reason: Exact, Monte Carlo, and deletion controls exist on a tiny training problem.
+    blocker: The current 16.7 rewrite is uncommitted and has not yet completed the repository verification gates.
+
+  - id: data_attribution.in_run_data_shapley
+    topic: In-Run Data Shapley first-order attribution
+    chapter: 11 Shapley and attribution baselines
+    section: "16.7"
+    status: TOY_ONLY
+    roadmap_refs: [Extension-Roadmap.md:7038-7118]
+    evidence: [chapter16_shapley_attribution_baselines/exercises/part7_data_shapley_in_one_training_run]
+    reason: A one-step linear training organism compares in-run scores with exact coalition values.
+    blocker: No multi-step model, Ghost dot product, or realistic optimizer training run is taught.
+
+  - id: data_attribution.influence_functions
+    topic: Influence functions
+    chapter: 11 Training-data attribution
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:2620-2629, Extension-Roadmap.md:7135-7180]
+    evidence: []
+    reason: Influence functions are explicitly required in both the method inventory and agreement protocol.
+    blocker: No inverse-Hessian influence implementation or retraining validation exists.
+
+  - id: data_attribution.tracin
+    topic: TracIn-style training-data attribution
+    chapter: 11 Training-data attribution
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:2620-2629, Extension-Roadmap.md:7135-7180]
+    evidence: []
+    reason: TracIn is explicitly required as a checkpoint-gradient attribution baseline.
+    blocker: No TracIn implementation, checkpoint scoring, or deletion/retraining validation exists.
+
+  - id: data_attribution.datamodels
+    topic: Datamodels
+    chapter: 11 Training-data attribution
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:2620-2629]
+    evidence: []
+    reason: Datamodels are explicitly included in the training-data attribution family.
+    blocker: No subset-training response model or influence approximation notebook exists.
+
+  - id: data_attribution.dataset_cartography
+    topic: Dataset cartography
+    chapter: 11 Training-data attribution
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:2620-2629]
+    evidence: []
+    reason: Dataset cartography is explicitly listed as a data-attribution method.
+    blocker: No confidence/variability training-dynamics map or data pruning exercise exists.
+
+  - id: data_attribution.training_run_simulations
+    topic: Training-run simulations and contribution accounting
+    chapter: 11 Training-data attribution
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:2620-2629]
+    evidence: []
+    reason: Training-run simulation is explicitly listed as a method family.
+    blocker: No simulated retraining accountant or validated approximation exists.
+
+  - id: data_attribution.ghostsuite
+    topic: Ghost dot-product and GhostSuite per-example gradients
+    chapter: 11 Training-data attribution
+    section: "16.7"
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:7069-7118, Extension-Roadmap.md:7408-7440]
+    evidence: []
+    reason: The in-run notebook explicitly specifies ghost dot-product implementation and optional GhostSuite integration.
+    blocker: No per-example ghost-gradient implementation or reference comparison exists.
+
+  - id: data_attribution.adam_aware_in_run_shapley
+    topic: Adam-aware In-Run Data Shapley
+    chapter: 11 Training-data attribution
+    section: unassigned
+    status: DEFERRED
+    roadmap_refs: [Extension-Roadmap.md:7093-7118, Extension-Roadmap.md:7408-7440]
+    evidence: [Extension-Roadmap.md]
+    reason: The roadmap marks the 2026 Adam-aware extension as stretch/frontier after the SGD method.
+    blocker: The required multi-step in-run and ghost-gradient foundation is not yet implemented.
+    deferred_until: The first-order multi-step In-Run Data Shapley learner implementation is complete.
+
+  - id: shapley.mechanistic_agreement_matrix
+    topic: Cross-player SHAPley and mechanistic interpretability agreement matrix
+    chapter: 11 Shapley and attribution baselines
+    section: "16.8"
+    status: TOY_ONLY
+    roadmap_refs: [Extension-Roadmap.md:7120-7488]
+    course_sections: ["16.8"]
+    method_registry_names: [SHAPley and mechanistic agreement matrix]
+    evidence: [chapter16_shapley_attribution_baselines/exercises/part8_shapley_mechinterp_agreement]
+    reason: Exact controlled games compare rank, top-k, deletion, interactions, and shuffled controls.
+    blocker: The required IOI/SVA, VLM grounding, LoRA drift, and training-data player families are not jointly evaluated.
+
+  - id: training.checkpoint_archaeology
+    topic: Checkpoint archaeology and mechanism emergence
+    chapter: 12 Training dynamics and developmental interpretability
+    section: "17.1"
+    status: TOY_ONLY
+    roadmap_refs: [Extension-Roadmap.md:2499-2510, Extension-Roadmap.md:5515-5521]
+    course_sections: ["17.1"]
+    method_registry_names: [Checkpoint archaeology]
+    evidence: [chapter17_training_dynamics/exercises/part1_checkpoint_archaeology]
+    reason: A tiny modular-addition MLP is checkpointed and analyzed with a random-label control.
+    blocker: The roadmap's AR/JEPA/diffusion/Mamba cross-architecture developmental comparison is absent.
+
+  - id: training.grokking
+    topic: Grokking dynamics
+    chapter: 12 Training dynamics and developmental interpretability
+    section: "17.1"
+    status: TOY_ONLY
+    roadmap_refs: [Extension-Roadmap.md:2499-2510, Extension-Roadmap.md:5515-5521]
+    evidence: [chapter17_training_dynamics/exercises/part1_checkpoint_archaeology]
+    reason: The modular-addition organism exhibits and measures a bounded phase transition.
+    blocker: No full grokking mechanism analysis, circuit formation, or regularization sweep exists.
+
+  - id: training.induction_head_emergence
+    topic: Induction-head emergence during training
+    chapter: 12 Training dynamics and developmental interpretability
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:2499-2510, Extension-Roadmap.md:5515-5521]
+    evidence: []
+    reason: Induction emergence is explicitly required as a developmental case study.
+    blocker: No checkpointed transformer induction task or emerging-head circuit analysis exists.
+
+  - id: training.lora_phase_transitions
+    topic: LoRA behavior-direction phase transitions
+    chapter: 12 Training dynamics and developmental interpretability
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:5049-5129, Extension-Roadmap.md:5515-5521]
+    evidence: []
+    reason: The roadmap requires tracking whether adapter directions emerge suddenly during training.
+    blocker: No checkpointed language-model LoRA trajectory or direction-emergence analysis exists.
+
+  - id: training.finetuning_diffs
+    topic: Fine-tuning mechanism diffs across checkpoints
+    chapter: 12 Training dynamics and developmental interpretability
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:2499-2510, Extension-Roadmap.md:5515-5521]
+    evidence: []
+    reason: Fine-tuning diffs are explicitly named in the final developmental syllabus.
+    blocker: No pretrained-to-finetuned checkpoint sequence or causal feature/circuit diff exists.
+
+  - id: training.capability_emergence
+    topic: Capability-emergence mechanisms across training
+    chapter: 12 Training dynamics and developmental interpretability
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:2499-2510, Extension-Roadmap.md:5515-5521]
+    evidence: []
+    reason: Capability emergence is a named developmental interpretability endpoint.
+    blocker: No checkpointed capability benchmark and mechanism onset analysis exists.
+
+  - id: training.cross_architecture_dynamics
+    topic: AR, JEPA, diffusion, and Mamba training-dynamics comparison
+    chapter: 12 Training dynamics and developmental interpretability
+    section: unassigned
+    status: UNIMPLEMENTED
+    roadmap_refs: [Extension-Roadmap.md:2499-2510]
+    evidence: []
+    reason: The roadmap explicitly requires comparing mechanism development across model families.
+    blocker: No matched task, checkpoint schedule, or cross-architecture developmental metric suite exists.
+
+  - id: capstone.research_sprint
+    topic: Open-ended paper-style research sprint with preregistration and negative-result acceptance
+    chapter: 13 Capstone research sprint
+    section: "10.1"
+    status: TOY_ONLY
+    roadmap_refs: [Extension-Roadmap.md:1226-1239, Extension-Roadmap.md:2900-2907]
+    course_sections: ["10.1"]
+    method_registry_names: [Question-conditioned activation-oracle capstone]
+    evidence: [chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint]
+    reason: A rigorous exact rotated-parity model organism teaches claims, controls, causal intervention, and writeup structure.
+    blocker: The sprint predetermines the task and discovery; it lacks model/task choice, preregistration, budgeted method selection, and a passable negative-result path.
