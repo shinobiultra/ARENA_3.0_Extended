@@ -31,6 +31,40 @@ class MambaScanReport:
 
 
 @dataclass(frozen=True)
+class SelectiveCopyCase:
+    """Exact write-hold-read-erase task for inspecting a selective recurrence."""
+
+    event_ids: t.Tensor
+    values: t.Tensor
+    labels: tuple[str, ...]
+    read_positions: t.Tensor
+    read_targets: t.Tensor
+
+
+@dataclass(frozen=True)
+class SelectiveCopyResult:
+    """State trajectories and controls used by the learner-facing signature figure."""
+
+    case: SelectiveCopyCase
+    a: t.Tensor
+    b: t.Tensor
+    c: t.Tensor
+    sequential_states: t.Tensor
+    parallel_states: t.Tensor
+    chunked_states: t.Tensor
+    selective_reads: t.Tensor
+    fixed_decay_reads: t.Tensor
+    reset_chunk_reads: t.Tensor
+    ablated_reads: t.Tensor
+    parity_max_abs_diff: float
+    chunked_max_abs_diff: float
+    selective_read_mae: float
+    fixed_decay_read_mae: float
+    reset_chunk_read_mae: float
+    ablation_effect: float
+
+
+@dataclass(frozen=True)
 class MambaConfig:
     vocab_size: int = 32000
     d_model: int = 768
@@ -219,6 +253,234 @@ def scan_equivalence_report(
         mse=diff.pow(2).mean().item(),
         passed=bool(diff.max().item() <= atol),
         atol=atol,
+    )
+
+
+EVENT_HOLD = 0
+EVENT_WRITE = 1
+EVENT_READ = 2
+EVENT_ERASE = 3
+
+
+def sequential_affine_scan(
+    a: t.Tensor,
+    b: t.Tensor,
+    initial_state: t.Tensor | None = None,
+) -> t.Tensor:
+    """Apply h_t = a_t * h_(t-1) + b_t from left to right."""
+
+    if a.shape != b.shape or a.ndim < 2:
+        raise ValueError("a and b must have the same shape with sequence on axis 1.")
+    state = t.zeros_like(b[:, 0]) if initial_state is None else initial_state.to(b)
+    states = []
+    for position in range(a.shape[1]):
+        state = a[:, position] * state + b[:, position]
+        states.append(state)
+    return t.stack(states, dim=1)
+
+
+def compose_affine_updates(
+    a_left: t.Tensor,
+    b_left: t.Tensor,
+    a_right: t.Tensor,
+    b_right: t.Tensor,
+) -> tuple[t.Tensor, t.Tensor]:
+    """Compose the right update after the left update."""
+
+    return a_right * a_left, a_right * b_left + b_right
+
+
+def parallel_affine_scan(
+    a: t.Tensor,
+    b: t.Tensor,
+    initial_state: t.Tensor | None = None,
+) -> t.Tensor:
+    """Inclusive Hillis-Steele scan over affine recurrence updates."""
+
+    if a.shape != b.shape or a.ndim < 2:
+        raise ValueError("a and b must have the same shape with sequence on axis 1.")
+    a_prefix = a.clone()
+    b_prefix = b.clone()
+    offset = 1
+    while offset < a.shape[1]:
+        old_a = a_prefix.clone()
+        old_b = b_prefix.clone()
+        composed_a, composed_b = compose_affine_updates(
+            old_a[:, :-offset],
+            old_b[:, :-offset],
+            old_a[:, offset:],
+            old_b[:, offset:],
+        )
+        a_prefix[:, offset:] = composed_a
+        b_prefix[:, offset:] = composed_b
+        offset *= 2
+    state0 = t.zeros_like(b[:, 0]) if initial_state is None else initial_state.to(b)
+    return a_prefix * state0[:, None] + b_prefix
+
+
+def chunked_affine_scan(
+    a: t.Tensor,
+    b: t.Tensor,
+    chunk_size: int,
+    initial_state: t.Tensor | None = None,
+    *,
+    reset_each_chunk: bool = False,
+) -> t.Tensor:
+    """Run the sequential scan in chunks, optionally exposing the reset bug."""
+
+    if chunk_size <= 0:
+        raise ValueError("chunk_size must be positive.")
+    state = t.zeros_like(b[:, 0]) if initial_state is None else initial_state.to(b)
+    chunks = []
+    for start in range(0, a.shape[1], chunk_size):
+        stop = min(start + chunk_size, a.shape[1])
+        if reset_each_chunk and start > 0:
+            state = t.zeros_like(state)
+        chunk_states = sequential_affine_scan(a[:, start:stop], b[:, start:stop], state)
+        chunks.append(chunk_states)
+        state = chunk_states[:, -1]
+    return t.cat(chunks, dim=1)
+
+
+def selective_readout(states: t.Tensor, c: t.Tensor) -> t.Tensor:
+    """Read the recurrent state with an input-dependent C_t vector."""
+
+    if states.shape != c.shape:
+        raise ValueError("states and c must have the same shape.")
+    return (states * c).sum(dim=-1)
+
+
+def build_event_coefficients(
+    event_ids: t.Tensor,
+    values: t.Tensor,
+) -> tuple[t.Tensor, t.Tensor, t.Tensor]:
+    """Map exact WRITE/HOLD/READ/ERASE events to scalar affine updates."""
+
+    if event_ids.shape != values.shape or event_ids.ndim != 2:
+        raise ValueError("event_ids and values must both have shape (batch, sequence).")
+    dtype = values.dtype
+    a = t.ones((*values.shape, 1), dtype=dtype, device=values.device)
+    b = t.zeros_like(a)
+    c = t.zeros_like(a)
+    write = event_ids.eq(EVENT_WRITE)
+    erase = event_ids.eq(EVENT_ERASE)
+    read = event_ids.eq(EVENT_READ)
+    a[..., 0][write | erase] = 0.0
+    b[..., 0][write] = values[write]
+    c[..., 0][read] = 1.0
+    return a, b, c
+
+
+def intervene_on_state(
+    a: t.Tensor,
+    b: t.Tensor,
+    position: int,
+    replacement: t.Tensor | float = 0.0,
+    initial_state: t.Tensor | None = None,
+) -> t.Tensor:
+    """Replace h_position, then continue the same recurrence downstream."""
+
+    if not 0 <= position < a.shape[1]:
+        raise IndexError("position is outside the sequence.")
+    states = sequential_affine_scan(a[:, : position + 1], b[:, : position + 1], initial_state)
+    replacement_state = t.as_tensor(replacement, dtype=b.dtype, device=b.device)
+    state = t.broadcast_to(replacement_state, states[:, -1].shape).clone()
+    states[:, -1] = state
+    suffix = []
+    for index in range(position + 1, a.shape[1]):
+        state = a[:, index] * state + b[:, index]
+        suffix.append(state)
+    if suffix:
+        return t.cat([states, t.stack(suffix, dim=1)], dim=1)
+    return states
+
+
+def make_selective_copy_case(
+    first_value: float = 1.0,
+    second_value: float = -0.7,
+    first_delay: int = 2,
+    second_delay: int = 2,
+    final_delay: int = 1,
+    dtype: t.dtype = t.float64,
+) -> SelectiveCopyCase:
+    """Return an exact scalar-state task with three ground-truth reads."""
+
+    if min(first_delay, second_delay, final_delay) < 0:
+        raise ValueError("delay lengths must be non-negative.")
+    events = (
+        [EVENT_WRITE]
+        + [EVENT_HOLD] * first_delay
+        + [EVENT_READ, EVENT_HOLD, EVENT_WRITE]
+        + [EVENT_HOLD] * second_delay
+        + [EVENT_READ, EVENT_ERASE]
+        + [EVENT_HOLD] * final_delay
+        + [EVENT_READ]
+    )
+    event_ids = t.tensor([events], dtype=t.long)
+    values = t.linspace(-0.9, 0.9, len(events), dtype=dtype).unsqueeze(0)
+    write_positions = event_ids[0].eq(EVENT_WRITE).nonzero(as_tuple=False).flatten()
+    values[0, write_positions[0]] = first_value
+    values[0, write_positions[1]] = second_value
+    read_positions = event_ids[0].eq(EVENT_READ).nonzero(as_tuple=False).flatten()
+    read_targets = t.tensor([first_value, second_value, 0.0], dtype=dtype)
+    labels_list = []
+    for position, event in enumerate(events):
+        if event == EVENT_WRITE:
+            labels_list.append(f"WRITE {values[0, position].item():+.1f}")
+        elif event == EVENT_READ:
+            labels_list.append("READ")
+        elif event == EVENT_ERASE:
+            labels_list.append("ERASE")
+        else:
+            labels_list.append("hold")
+    labels = tuple(labels_list)
+    return SelectiveCopyCase(event_ids, values, labels, read_positions, read_targets)
+
+
+def run_selective_copy_experiment(
+    *,
+    case: SelectiveCopyCase | None = None,
+    fixed_decay: float = 0.82,
+    chunk_size: int = 4,
+    ablate_position: int = 6,
+) -> SelectiveCopyResult:
+    """Run the exact model organism, controls, and a causal state ablation."""
+
+    case = make_selective_copy_case() if case is None else case
+    a, b, c = build_event_coefficients(case.event_ids, case.values)
+    sequential_states = sequential_affine_scan(a, b)
+    parallel_states = parallel_affine_scan(a, b)
+    chunked_states = chunked_affine_scan(a, b, chunk_size)
+    selective = selective_readout(sequential_states, c)[0, case.read_positions]
+
+    fixed_a = t.full_like(a, fixed_decay)
+    fixed_states = sequential_affine_scan(fixed_a, b)
+    fixed_reads = selective_readout(fixed_states, c)[0, case.read_positions]
+
+    reset_states = chunked_affine_scan(a, b, chunk_size, reset_each_chunk=True)
+    reset_reads = selective_readout(reset_states, c)[0, case.read_positions]
+
+    ablated_states = intervene_on_state(a, b, ablate_position, replacement=0.0)
+    ablated_reads = selective_readout(ablated_states, c)[0, case.read_positions]
+
+    return SelectiveCopyResult(
+        case=case,
+        a=a,
+        b=b,
+        c=c,
+        sequential_states=sequential_states,
+        parallel_states=parallel_states,
+        chunked_states=chunked_states,
+        selective_reads=selective,
+        fixed_decay_reads=fixed_reads,
+        reset_chunk_reads=reset_reads,
+        ablated_reads=ablated_reads,
+        parity_max_abs_diff=(sequential_states - parallel_states).abs().max().item(),
+        chunked_max_abs_diff=(sequential_states - chunked_states).abs().max().item(),
+        selective_read_mae=(selective - case.read_targets).abs().mean().item(),
+        fixed_decay_read_mae=(fixed_reads - case.read_targets).abs().mean().item(),
+        reset_chunk_read_mae=(reset_reads - case.read_targets).abs().mean().item(),
+        ablation_effect=(selective[1] - ablated_reads[1]).abs().item(),
     )
 
 

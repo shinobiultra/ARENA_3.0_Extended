@@ -61,9 +61,9 @@
       "source": "generated_prompt_pair"
     }
   ],
-  "date_run": "2026-07-02T12:42:07+00:00",
+  "date_run": "2026-09-04T07:45:22+00:00",
   "evidence_level": "selective_scan_contract_plus_official_mamba_logits_generation_preflight",
-  "git_commit": "3a539d48",
+  "git_commit": "c780c2e8",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-1",
   "known_failures": [],
@@ -105,7 +105,7 @@
         8
       ],
       "official_mamba_generation_new_tokens": 4,
-      "official_mamba_generation_tokens_per_second": 4.47512143168267,
+      "official_mamba_generation_tokens_per_second": 6.522272967846882,
       "official_mamba_logits_generation_preflight_passed": true,
       "official_mamba_logits_shape": [
         2,
@@ -133,7 +133,7 @@
           1,
           8
         ],
-        "generation_tokens_per_second": 4.47512143168267,
+        "generation_tokens_per_second": 6.522272967846882,
         "logits_shape": [
           2,
           4,
@@ -213,7 +213,7 @@
   "peak_vram_gb": 0.2786750793457031,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "74eefc27b4fa0df0f4022e271529afaec5be657ba4609551ac081155d611c3c8",
+    "combined_sha256": "c6e14f50cb37bdb88c994516509e4570b8b461b54212ecab91ddbfa82e5bf161",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -222,13 +222,13 @@
       },
       {
         "path": "chapter5_modern_architectures/exercises/part3_mamba_from_scratch/5.3_Mamba_from_Scratch_exercises.ipynb",
-        "sha256": "ea4f9c39bf183a91c01c63db6f5817cd1cdc5382f46f59076584775500675eef",
-        "size_bytes": 26196
+        "sha256": "8aef1525b786dd1509b9abeaf35087db58ee9e8cce14ffc5970a75fb59a3a2c8",
+        "size_bytes": 33849
       },
       {
         "path": "chapter5_modern_architectures/exercises/part3_mamba_from_scratch/5.3_Mamba_from_Scratch_solutions.ipynb",
-        "sha256": "13d5910cbb1173928b13db3385447ce7271b964c60d528c5386dc9c91a57c9ad",
-        "size_bytes": 8987
+        "sha256": "8ad8ea2d2089a9e41686819d336e74fddb8cd4202f6a8f2fd822a046e9dcfae4",
+        "size_bytes": 516391
       },
       {
         "path": "chapter5_modern_architectures/exercises/part3_mamba_from_scratch/README.md",
@@ -257,13 +257,13 @@
       },
       {
         "path": "chapter5_modern_architectures/exercises/part3_mamba_from_scratch/solutions.py",
-        "sha256": "33e6ba97de6097b0876b13005e6f06a5372cc10845b3f5ce9e6cda42910ebb0d",
-        "size_bytes": 27173
+        "sha256": "49a3bdc280549c22a89375bcfd9b0d9f4a1dfcf36ba45c139c0c3b49101e35d5",
+        "size_bytes": 36209
       },
       {
         "path": "chapter5_modern_architectures/exercises/part3_mamba_from_scratch/tests.py",
-        "sha256": "886c539ec7fc66803b765f98f1b769fbaecf0fb1abe77cbb8e5788a17646c06a",
-        "size_bytes": 8544
+        "sha256": "5824b4c63aadef2f6dea0d56932dc6fce97759a57c6072e127371d29ea91b24e",
+        "size_bytes": 14106
       },
       {
         "path": "chapter5_modern_architectures/exercises/part3_mamba_from_scratch/utils.py",
@@ -277,13 +277,13 @@
       },
       {
         "path": "chapter5_modern_architectures/instructions/pages/03_[5.3]_Mamba_from_Scratch.md",
-        "sha256": "bb5f5b98a8f118030fc937e508d5d04e83c7398ba6433223b9f0e9dab279379a",
-        "size_bytes": 20227
+        "sha256": "d6e3ac8bd7d47e58b901625e8cb5c4839ba5a32827f181636b22ad71092d1948",
+        "size_bytes": 17087
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
-        "sha256": "660040f459d07535deb9e0c34ffddb496c13b8770044ae380d3a8e45b0c8fb2b",
-        "size_bytes": 16080
+        "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
+        "size_bytes": 16272
       }
     ],
     "schema_version": 1
@@ -293,5 +293,5 @@
     "The official Mamba path uses safe generic prompts and deterministic generation only. Full weight-level parity between the didactic tiny implementation and Mamba-130M-HF is not claimed."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 3.216108
+  "wall_clock_seconds": 5.480159
 }

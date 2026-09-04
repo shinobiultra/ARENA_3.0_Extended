@@ -208,3 +208,115 @@ def test_notebook_contract(run_smoke_test: Callable | None = None):
         f"Greedy generation should append 4 tokens to a length-3 prompt; got {result['generation_shape']}."
     )
     print("All tests in `test_notebook_contract` passed!")
+
+
+def test_sequential_affine_scan_manual(sequential_affine_scan: Callable | None = None):
+    if sequential_affine_scan is None:
+        sequential_affine_scan = _solutions().sequential_affine_scan
+    a = t.tensor([[[0.5], [0.25], [1.0]]], dtype=t.float64)
+    b = t.tensor([[[1.0], [-1.0], [3.0]]], dtype=t.float64)
+    initial_state = t.tensor([[2.0]], dtype=t.float64)
+    actual = sequential_affine_scan(a, b, initial_state)
+    expected = t.tensor([[[2.0], [-0.5], [2.5]]], dtype=t.float64)
+    t.testing.assert_close(actual, expected, atol=0.0, rtol=0.0)
+    print("All tests in `test_sequential_affine_scan_manual` passed!")
+
+
+def test_compose_affine_updates(compose_affine_updates: Callable | None = None):
+    if compose_affine_updates is None:
+        compose_affine_updates = _solutions().compose_affine_updates
+    a_left = t.tensor([0.5, 0.2], dtype=t.float64)
+    b_left = t.tensor([1.0, -2.0], dtype=t.float64)
+    a_right = t.tensor([0.4, 0.3], dtype=t.float64)
+    b_right = t.tensor([-1.0, 5.0], dtype=t.float64)
+    composed_a, composed_b = compose_affine_updates(a_left, b_left, a_right, b_right)
+    x = t.tensor([3.0, -4.0], dtype=t.float64)
+    explicit = a_right * (a_left * x + b_left) + b_right
+    t.testing.assert_close(composed_a * x + composed_b, explicit, atol=2e-16, rtol=0.0)
+    print("All tests in `test_compose_affine_updates` passed!")
+
+
+def test_parallel_affine_scan_parity(
+    sequential_affine_scan: Callable | None = None,
+    parallel_affine_scan: Callable | None = None,
+):
+    solutions = _solutions()
+    sequential_affine_scan = sequential_affine_scan or solutions.sequential_affine_scan
+    parallel_affine_scan = parallel_affine_scan or solutions.parallel_affine_scan
+    generator = t.Generator().manual_seed(13)
+    logits = t.randn((3, 37, 2, 4), generator=generator, dtype=t.float64)
+    a = t.sigmoid(logits)
+    b = t.randn((3, 37, 2, 4), generator=generator, dtype=t.float64)
+    initial_state = t.randn((3, 2, 4), generator=generator, dtype=t.float64)
+    sequential = sequential_affine_scan(a, b, initial_state)
+    parallel = parallel_affine_scan(a, b, initial_state)
+    t.testing.assert_close(parallel, sequential, atol=1e-12, rtol=0.0)
+    print("All tests in `test_parallel_affine_scan_parity` passed!")
+
+
+def test_chunked_affine_scan_state_carry(
+    sequential_affine_scan: Callable | None = None,
+    chunked_affine_scan: Callable | None = None,
+):
+    solutions = _solutions()
+    sequential_affine_scan = sequential_affine_scan or solutions.sequential_affine_scan
+    chunked_affine_scan = chunked_affine_scan or solutions.chunked_affine_scan
+    generator = t.Generator().manual_seed(21)
+    a = t.rand((2, 19, 3), generator=generator, dtype=t.float64)
+    b = t.randn((2, 19, 3), generator=generator, dtype=t.float64)
+    expected = sequential_affine_scan(a, b)
+    for chunk_size in (1, 4, 7, 32):
+        actual = chunked_affine_scan(a, b, chunk_size)
+        t.testing.assert_close(actual, expected, atol=0.0, rtol=0.0)
+    print("All tests in `test_chunked_affine_scan_state_carry` passed!")
+
+
+def test_selective_copy_ground_truth(
+    build_event_coefficients: Callable | None = None,
+    sequential_affine_scan: Callable | None = None,
+    selective_readout: Callable | None = None,
+):
+    solutions = _solutions()
+    build_event_coefficients = build_event_coefficients or solutions.build_event_coefficients
+    sequential_affine_scan = sequential_affine_scan or solutions.sequential_affine_scan
+    selective_readout = selective_readout or solutions.selective_readout
+    case = solutions.make_selective_copy_case()
+    a, b, c = build_event_coefficients(case.event_ids, case.values)
+    states = sequential_affine_scan(a, b)
+    reads = selective_readout(states, c)[0, case.read_positions]
+    expected_states = t.tensor(
+        [[[1.0], [1.0], [1.0], [1.0], [1.0], [-0.7], [-0.7], [-0.7],
+          [-0.7], [0.0], [0.0], [0.0]]],
+        dtype=t.float64,
+    )
+    t.testing.assert_close(states, expected_states, atol=0.0, rtol=0.0)
+    t.testing.assert_close(reads, case.read_targets, atol=0.0, rtol=0.0)
+    print("All tests in `test_selective_copy_ground_truth` passed!")
+
+
+def test_state_ablation_is_causal(intervene_on_state: Callable | None = None):
+    solutions = _solutions()
+    intervene_on_state = intervene_on_state or solutions.intervene_on_state
+    case = solutions.make_selective_copy_case()
+    a, b, c = solutions.build_event_coefficients(case.event_ids, case.values)
+    baseline = solutions.selective_readout(solutions.sequential_affine_scan(a, b), c)
+    ablated = solutions.selective_readout(intervene_on_state(a, b, 6, 0.0), c)
+    read_positions = case.read_positions
+    t.testing.assert_close(ablated[0, read_positions[0]], baseline[0, read_positions[0]])
+    assert ablated[0, read_positions[1]].item() == 0.0
+    assert baseline[0, read_positions[1]].item() == -0.7
+    print("All tests in `test_state_ablation_is_causal` passed!")
+
+
+def test_signature_controls_are_informative(run_experiment: Callable | None = None):
+    if run_experiment is None:
+        run_experiment = _solutions().run_selective_copy_experiment
+    result = run_experiment()
+    assert result.parity_max_abs_diff <= 1e-12
+    assert result.chunked_max_abs_diff == 0.0
+    assert result.selective_read_mae == 0.0
+    assert result.fixed_decay_read_mae >= 0.25
+    assert result.reset_chunk_read_mae >= 0.20
+    assert result.ablation_effect == 0.7
+    assert result.fixed_decay_reads.std().item() > 0.1
+    print("All tests in `test_signature_controls_are_informative` passed!")

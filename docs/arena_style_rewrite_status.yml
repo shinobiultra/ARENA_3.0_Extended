@@ -20,7 +20,7 @@ sections:
   '5.3':
     status: course_ready
     page: chapter5_modern_architectures/instructions/pages/03_[5.3]_Mamba_from_Scratch.md
-    notes: ARENA-style rewrite with selective-scan contract diagram, scan/cache parity progression, help/interpretation dropdowns, signature result, limitations, and paired notebook surfaces.
+    notes: "ARENA-style selective-memory progression with seven visible exercises, immediate semantic tests, expected/help/solution/interpretation dropdowns, a state-and-control signature figure, a parameterized play cell, and an anomaly hunt. The exact organism has zero selective-read error and exact sequential/parallel/chunked parity; fixed-decay and reset-each-chunk controls fail, while a state ablation removes only the downstream stored value. Seventeen focused tests and all 10 solution cells pass. CUDA 13.2 verification loads pinned state-spaces/mamba-130m-hf revision 1e76775f628fbf1350fbe4dbb3d971ba64af25a1 with every required Mamba fast-kernel component, finite logits, 1.0 batched/single top-token agreement, preserved generation prefix, 6.52 tokens/s, and 0.279 GB peak VRAM. The claim is execution-contract plus official logits/generation preflight, not full weight-level parity with the released model."
   '5.4':
     status: course_ready
     page: chapter5_modern_architectures/instructions/pages/04_[5.4]_Mamba_State_Tracking.md
