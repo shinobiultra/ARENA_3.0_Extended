@@ -11,8 +11,11 @@ Generated support files for the roadmap verification contract.
 - `expected_outputs/smoke_test.json` records the smoke-test contract.
 - `expected_outputs/reference_metrics.json` records baseline/control slots.
 
-The current GPU verification loads pinned `EleutherAI/pythia-70m-deduped`
-hidden states for generated weekday and month prompt splits. It checks raw
-template-dominated transfer failure, template-centered held-out label transfer,
-matched-pair retrieval, permuted-label controls, white-noise controls, no text
-generation, and measured VRAM.
+The learner path starts from a known cyclic toy representation, then loads pinned
+`EleutherAI/pythia-70m-deduped` hidden states for generated weekday and month
+prompt splits. Students implement train-only PCA/SVD, template centering,
+held-out centroid and kNN evaluation, a ridge coordinate probe, neighborhood
+preservation, and control gates. The live CUDA result generates raw-versus-
+centered PCA panels, cross-template cosine matrices, UMAP control plots, and a
+five-seed by three-setting stability table. The release report independently
+checks the same real-model claim and measured VRAM; it is not the lesson.

@@ -66,6 +66,106 @@ def test_pca_svd_projection_centers_and_reports_variance(
     print("All tests in `test_pca_svd_projection_centers_and_reports_variance` passed!")
 
 
+def test_train_heldout_pca_fits_only_on_training_activations(
+    pca_svd_train_heldout_projection: Callable | None = None,
+):
+    pca_svd_train_heldout_projection = (
+        pca_svd_train_heldout_projection
+        or _solutions().pca_svd_train_heldout_projection
+    )
+    train = t.tensor([[-2.0, 0.0], [-1.0, 0.0], [1.0, 0.0], [2.0, 0.0]])
+    heldout = t.tensor([[-1.0, 100.0], [1.0, -100.0]])
+    projection = pca_svd_train_heldout_projection(train, heldout, n_components=1)
+
+    assert projection.train_projected.shape == (4, 1), (
+        "PCA should return one projected training coordinate per training example."
+    )
+    assert projection.heldout_projected.shape == (2, 1), (
+        "PCA should transform every held-out example without fitting on it."
+    )
+    assert t.allclose(projection.train_mean, t.zeros(1, 2), atol=1e-6), (
+        "The stored center must be computed from the training examples only."
+    )
+    assert t.allclose(projection.components.abs(), t.tensor([[1.0, 0.0]]), atol=1e-6), (
+        "A held-out-only y direction must not rotate a PCA basis fitted on x-varying train data."
+    )
+    assert t.allclose(
+        projection.heldout_projected.abs().flatten(),
+        t.ones(2),
+        atol=1e-6,
+    ), "Held-out examples should be transformed using the training mean and components."
+    print("All tests in `test_train_heldout_pca_fits_only_on_training_activations` passed!")
+
+
+def test_ridge_coordinate_probe_generalizes_known_linear_coordinates(
+    ridge_coordinate_probe: Callable | None = None,
+):
+    ridge_coordinate_probe = ridge_coordinate_probe or _solutions().ridge_coordinate_probe
+    train = t.tensor(
+        [[-2.0, -1.0], [-1.0, 2.0], [0.0, 0.0], [1.0, -2.0], [2.0, 1.0]]
+    )
+    target = t.stack([2 * train[:, 0] - train[:, 1] + 0.5, train[:, 0] + 3.0], dim=1)
+    heldout = t.tensor([[-3.0, 1.0], [3.0, -1.0]])
+    expected = t.stack(
+        [2 * heldout[:, 0] - heldout[:, 1] + 0.5, heldout[:, 0] + 3.0],
+        dim=1,
+    )
+    report = ridge_coordinate_probe(train, target, heldout, l2=0.0)
+    assert report.weights.shape == (3, 2), "The probe should include one bias row."
+    assert t.allclose(report.heldout_predictions, expected, atol=1e-5), (
+        "An exact linear coordinate map should generalize to held-out activations."
+    )
+    print(
+        "All tests in `test_ridge_coordinate_probe_generalizes_known_linear_coordinates` passed!"
+    )
+
+
+def test_toy_calendar_ring_recovers_signal_only_after_template_centering(
+    make_toy_calendar_ring: Callable | None = None,
+    pca_svd_train_heldout_projection: Callable | None = None,
+    heldout_knn_accuracy_report: Callable | None = None,
+):
+    solutions = _solutions()
+    make_toy_calendar_ring = make_toy_calendar_ring or solutions.make_toy_calendar_ring
+    pca_svd_train_heldout_projection = (
+        pca_svd_train_heldout_projection
+        or solutions.pca_svd_train_heldout_projection
+    )
+    heldout_knn_accuracy_report = (
+        heldout_knn_accuracy_report or solutions.heldout_knn_accuracy_report
+    )
+    toy = make_toy_calendar_ring(seed=0)
+    assert toy["train_raw_grid"].shape == (4, 7, 32), (
+        "The toy task should contain four train templates, seven labels, and 32 features."
+    )
+    assert toy["heldout_raw_grid"].shape == (2, 7, 32), (
+        "The toy task should reserve two unseen prompt templates for held-out evaluation."
+    )
+    assert toy["train_centered"].reshape(4, 7, 32).mean(dim=1).abs().max() < 1e-6, (
+        "Every toy prompt template should have zero mean after template centering."
+    )
+    centered = pca_svd_train_heldout_projection(
+        toy["train_centered"], toy["heldout_centered"], n_components=2
+    )
+    report = heldout_knn_accuracy_report(
+        centered.train_projected,
+        toy["train_labels"],
+        centered.heldout_projected,
+        toy["heldout_labels"],
+        k=3,
+        min_accuracy=0.95,
+    )
+    assert centered.explained_variance_ratio.sum() > 0.95, (
+        "The toy ground truth is two-dimensional after nuisance offsets are removed."
+    )
+    assert report.heldout_accuracy == 1.0, (
+        "Template-centered toy points should recover every held-out calendar identity."
+    )
+    print(
+        "All tests in `test_toy_calendar_ring_recovers_signal_only_after_template_centering` passed!"
+    )
+
+
 def test_geometry_label_prediction_report_uses_heldout_centroids(
     geometry_label_prediction_report: Callable | None = None,
 ):
@@ -163,8 +263,8 @@ def test_geometry_stability_report_averages_pairwise_jaccard(
     assert report.stable_across_seeds, (
         "The toy neighbor sets should pass a 0.5 mean-Jaccard threshold."
     )
-    assert abs(report.mean_pairwise_jaccard - (7 / 9)) < 1e-6, (
-        "Stability should average all pairwise Jaccard overlaps."
+    assert abs(report.mean_pairwise_jaccard - (2 / 3)) < 1e-6, (
+        "Stability should average true intersection-over-union Jaccard overlaps."
     )
     assert report.stable_across_seeds, (
         "The toy neighbor sets should pass a 0.5 mean-Jaccard threshold."
@@ -467,6 +567,75 @@ def test_committed_verification_report_has_visualization_sweep_controls():
     assert gpu["pythia_month_umap_random_token_accuracy_max"] <= 0.35, (
         "Month matched random-token controls should fail the held-out calendar labels."
     )
+    preflight = gpu["pythia_weekday_preflight"]
+    for task_name in ("weekday", "month"):
+        geometry = preflight[f"{task_name}_geometry"]
+        assert not geometry["raw_predicts_heldout_labels"], (
+            f"{task_name} raw prompt geometry should fail the OOD identity threshold."
+        )
+        assert geometry["centered_predicts_heldout_labels"], (
+            f"{task_name} template-centered geometry should predict held-out identities."
+        )
+        assert geometry["centered_heldout_accuracy"] == 1.0, (
+            f"{task_name} centered centroids should retrieve every held-out identity."
+        )
+        assert geometry["permuted_label_accuracy"] <= geometry["noise_accuracy"], (
+            f"{task_name} permuted labels should perform no better than white noise."
+        )
+        assert geometry["survives_white_noise_control"], (
+            f"{task_name} real geometry should beat the white-noise margin."
+        )
+        assert geometry["matched_pair_accuracy"] == 1.0, (
+            f"{task_name} train and held-out identity centroids should match exactly."
+        )
+
+        visualization = preflight[f"{task_name}_visualization"]
+        sweep = visualization["sweep"]
+        runs = visualization["runs"]
+        assert len(runs) == sweep["run_count"] == 15, (
+            f"{task_name} should record all five-seed by three-setting UMAP runs."
+        )
+        assert sweep["run_count"] == sweep["seed_count"] * sweep["setting_count"], (
+            f"{task_name} run count should equal the full seed-setting product."
+        )
+        assert {run["seed"] for run in runs} == {0, 1, 2, 3, 4}, (
+            f"{task_name} should include every preregistered reducer seed."
+        )
+        assert {
+            (run["n_neighbors"], run["min_dist"]) for run in runs
+        } == {(3, 0.0), (5, 0.1), (8, 0.3)}, (
+            f"{task_name} should include every preregistered UMAP setting."
+        )
+        assert sweep["min_heldout_knn_accuracy"] == min(
+            run["heldout_knn_accuracy"] for run in runs
+        ), f"{task_name} kNN floor should equal the worst recorded run."
+        assert sweep["min_trustworthiness"] == min(
+            run["trustworthiness"] for run in runs
+        ), f"{task_name} trustworthiness floor should equal the worst recorded run."
+        assert sweep["min_neighborhood_preservation"] == min(
+            run["neighborhood_preservation"] for run in runs
+        ), f"{task_name} neighborhood floor should equal the worst recorded run."
+        assert sweep["random_label_accuracy_max"] == max(
+            run["random_label_accuracy"] for run in runs
+        ), f"{task_name} shuffled-label ceiling should equal the worst control run."
+        assert sweep["random_token_accuracy_max"] == max(
+            run["random_token_accuracy"] for run in runs
+        ), f"{task_name} random-token ceiling should equal the worst control run."
+        assert all(run["heldout_knn_accuracy"] >= 0.8 for run in runs), (
+            f"{task_name} held-out kNN must pass in every UMAP run."
+        )
+        assert all(run["trustworthiness"] >= 0.9 for run in runs), (
+            f"{task_name} trustworthiness must pass in every UMAP run."
+        )
+        assert all(run["neighborhood_preservation"] >= 0.55 for run in runs), (
+            f"{task_name} local neighbor preservation must pass in every UMAP run."
+        )
+        assert all(run["random_label_accuracy"] <= 0.35 for run in runs), (
+            f"{task_name} shuffled labels must remain below the control ceiling."
+        )
+        assert all(run["random_token_accuracy"] <= 0.35 for run in runs), (
+            f"{task_name} random tokens must remain below the control ceiling."
+        )
     print(
         "All tests in `test_committed_verification_report_has_visualization_sweep_controls` passed!"
     )
@@ -495,5 +664,14 @@ def test_exercise_notebook_declares_full_verification_contract():
     )
     assert "test_committed_verification_report_has_visualization_sweep_controls" in source, (
         "The learner notebook should end by checking the committed Pythia geometry report."
+    )
+    assert "## Try It Yourself" in source, (
+        "The learner notebook should expose editable real-activation controls."
+    )
+    assert "run_pythia_calendar_signature_result" in source, (
+        "The learner notebook should generate the live Pythia signature result."
+    )
+    assert "pca_svd_geometry_pythia_signature.png" in source, (
+        "The learner notebook should generate and display the calendar geometry panel."
     )
     print("All tests in `test_exercise_notebook_declares_full_verification_contract` passed!")

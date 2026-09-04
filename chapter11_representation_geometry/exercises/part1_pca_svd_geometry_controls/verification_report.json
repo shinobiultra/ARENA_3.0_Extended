@@ -32,17 +32,27 @@
       "pythia_month_noise_accuracy_max": 0.1,
       "pythia_month_permuted_label_accuracy": 0.0,
       "pythia_month_raw_heldout_accuracy_max": 0.75,
+      "pythia_month_umap_min_heldout_knn_accuracy_min": 0.8,
+      "pythia_month_umap_min_neighborhood_preservation_min": 0.55,
+      "pythia_month_umap_min_trustworthiness_min": 0.9,
+      "pythia_month_umap_random_label_accuracy_max_max": 0.35,
+      "pythia_month_umap_random_token_accuracy_max_max": 0.35,
       "pythia_weekday_centered_heldout_accuracy": 1.0,
       "pythia_weekday_generation_used": false,
       "pythia_weekday_noise_accuracy_max": 0.2,
       "pythia_weekday_permuted_label_accuracy": 0.0,
       "pythia_weekday_preflight_passed": true,
       "pythia_weekday_raw_heldout_accuracy_max": 0.2,
+      "pythia_weekday_umap_min_heldout_knn_accuracy_min": 0.8,
+      "pythia_weekday_umap_min_neighborhood_preservation_min": 0.55,
+      "pythia_weekday_umap_min_trustworthiness_min": 0.9,
+      "pythia_weekday_umap_random_label_accuracy_max_max": 0.35,
+      "pythia_weekday_umap_random_token_accuracy_max_max": 0.35,
       "template_centering_max_mean_abs": 0.0,
       "tests_passed": true
     }
   },
-  "claim_scope": "GT-0 toy PCA/SVD, held-out prediction, white-noise, stability, and causal direction contracts plus a pinned Pythia-70M-deduped hidden-state calendar geometry preflight over weekdays and months. The real-LM path shows raw template-dominated transfer failures and template-centered calendar-label transfer with permuted-label, matched-pair, white-noise, five-seed UMAP visualization sweeps, three reducer hyperparameter settings, held-out kNN, trustworthiness/neighborhood preservation, random-label controls, and matched random-token controls.",
+  "claim_scope": "A known cyclic toy task validates train-only PCA, template centering, kNN, and ridge coordinate probing before a pinned Pythia-70M-deduped experiment. The live real-model path shows raw template-dominated transfer failures and template-centered weekday/month identity transfer with learner-generated PCA, cross-template cosine retrieval, five-seed by three-setting UMAP sweeps, held-out kNN, trustworthiness, neighborhood preservation, permuted labels, white noise, and matched random-token controls. It does not claim a literal circular Pythia manifold or a causal intervention.",
   "datasets": [
     {
       "id": "11_1_pca_svd_and_geometry_controls_toy_inputs",
@@ -66,11 +76,11 @@
       "train_template": "The report was written in {}"
     }
   ],
-  "date_run": "2026-07-02T12:44:07+00:00",
-  "evidence_level": "gt0_toy_geometry_plus_real_lm_calendar_template_centering_and_umap_preflight",
-  "git_commit": "3a539d48",
+  "date_run": "2026-09-04T05:56:02+00:00",
+  "evidence_level": "gt1_live_pythia_calendar_geometry_with_toy_ground_truth_and_controls",
+  "git_commit": "0255eefe",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
-  "gt_tier": "GT-0",
+  "gt_tier": "GT-1",
   "known_failures": [],
   "metrics": {
     "gpu_evidence": {
@@ -126,7 +136,7 @@
       "full_path": "Run PCA/SVD and geometry controls on cached model activations.",
       "gpu_total_memory_gb": 23.45965576171875,
       "heldout_accuracy": 1.0,
-      "peak_vram_gb": 0.3446521759033203,
+      "peak_vram_gb": 0.3134021759033203,
       "predicts_heldout_labels": true,
       "pythia_calendar_preflight_passed": true,
       "pythia_calendar_task_count": 2,
@@ -149,7 +159,7 @@
       "pythia_weekday_generation_used": false,
       "pythia_weekday_matched_pair_accuracy": 1.0,
       "pythia_weekday_noise_accuracy": 0.1428571492433548,
-      "pythia_weekday_peak_vram_gb": 0.3446521759033203,
+      "pythia_weekday_peak_vram_gb": 0.3134021759033203,
       "pythia_weekday_permuted_label_accuracy": 0.0,
       "pythia_weekday_preflight": {
         "calendar_task_count": 2,
@@ -157,6 +167,8 @@
         "centered_predicts_heldout_labels": true,
         "claim_scope": "template_centered_weekday_and_month_hidden_state_geometry_preflight",
         "cuda_available": true,
+        "cuda_version": "13.2",
+        "device": "NVIDIA GeForce RTX 5090 Laptop GPU",
         "generation_used": false,
         "heldout_template": "The calendar says {}",
         "matched_pair_accuracy": 1.0,
@@ -221,7 +233,7 @@
               "n_neighbors": 3,
               "neighborhood_preservation": 0.71875,
               "random_label_accuracy": 0.2777777910232544,
-              "random_token_accuracy": 0.0555555559694767,
+              "random_token_accuracy": 0.02777777798473835,
               "seed": 1,
               "trustworthiness": 0.99453125
             },
@@ -359,7 +371,7 @@
           0.29690292477607727,
           0.16706226766109467
         ],
-        "peak_vram_gb": 0.3446521759033203,
+        "peak_vram_gb": 0.3134021759033203,
         "permuted_label_accuracy": 0.0,
         "preflight_passed": true,
         "raw_heldout_accuracy": 0.1428571492433548,
@@ -612,7 +624,7 @@
         "predicts_heldout_labels": true
       },
       "stability": {
-        "mean_pairwise_jaccard": 0.7777777777777777,
+        "mean_pairwise_jaccard": 0.6666666666666666,
         "neighbor_sets": [
           [
             1,
@@ -680,10 +692,10 @@
   "ood_tests": {
     "declared": "required_where_applicable"
   },
-  "peak_vram_gb": 0.3446521759033203,
+  "peak_vram_gb": 0.3134021759033203,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "793b107b2972b2c5d6dd0d2ba91a910789af4a940ce1220178f3eb3cf53aa107",
+    "combined_sha256": "4dbd49706a83e3a4eccf1044cd4914ffa1bc412b875d48f467f3bb141563fc94",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -692,23 +704,23 @@
       },
       {
         "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/11.1_PCA_SVD_and_Geometry_Controls_exercises.ipynb",
-        "sha256": "4eb6a1c428ed7f3d8644b8e3951e93edd133bd04d309de68dd185d12f8345f1e",
-        "size_bytes": 55106
+        "sha256": "6f45523056e8def250003f9041c7cae30621df236c4f47d188c03d4d95d6b8c0",
+        "size_bytes": 73090
       },
       {
         "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/11.1_PCA_SVD_and_Geometry_Controls_solutions.ipynb",
-        "sha256": "6e9100476720c9d6a1e3d4245c5a22916eecbe8153669c9be6d3da341f4d39ad",
-        "size_bytes": 72086
+        "sha256": "54b41f996d55bde54feb71c550345d393df89e84e4eebc9deaafe07cb1f8795b",
+        "size_bytes": 121172
       },
       {
         "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/README.md",
-        "sha256": "1151505629eb345e451b7db405c7211f428a6049c5c9216f1f90729d73c36548",
-        "size_bytes": 1017
+        "sha256": "8d54ae05d1a6e641e6c28ce5fa517f6a42f7667c2f4d04e68607dea612422911",
+        "size_bytes": 1295
       },
       {
         "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/artifacts.lock.yml",
-        "sha256": "ccbd49b065eab8f2848a0ae319a765ce80184b5e5a15da8db5dd2de150c6a802",
-        "size_bytes": 3478
+        "sha256": "5a4783ef96ec681cd96cd80cf9148b251a188449c60e59aa9c7ae9e6e064e81b",
+        "size_bytes": 4069
       },
       {
         "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/expected_outputs/README.md",
@@ -717,23 +729,23 @@
       },
       {
         "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/expected_outputs/reference_metrics.json",
-        "sha256": "a13edf987cb47f7a1d482cd8e2f04c1fcb4e43d704d7ec99c2df87739858c41f",
-        "size_bytes": 987
+        "sha256": "49361e284e706c4493100e37f9541925dfc57a793bbef2998d69c65f68b99770",
+        "size_bytes": 1597
       },
       {
         "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/expected_outputs/smoke_test.json",
-        "sha256": "fb84af0a6e67cbc832d8fdcf754af53d82413f3a811b28f9e1c2d37901ac37f8",
+        "sha256": "bf9715be7085c2493b95db8e9bc5902604e9021e5e92e37b6e72f27c819c84e1",
         "size_bytes": 301
       },
       {
         "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/solutions.py",
-        "sha256": "063a99c681bcaf7214fad10744e99e9478107ad4594246a369b619786ac02ba7",
-        "size_bytes": 42286
+        "sha256": "5fdaa3ca0f7b3df11a99cd65e7425698e2ebb8c1cb26dae38901fd28b558d0f1",
+        "size_bytes": 56878
       },
       {
         "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/tests.py",
-        "sha256": "9a371aa4cc953e36bb70c739a5725fb2bb259a0213405803c61c86f6275a5d74",
-        "size_bytes": 19777
+        "sha256": "d6e6cdaeab93e92ae9cb61559ae73b67cdf871b4aea2b55acc0a49fffbc5966c",
+        "size_bytes": 28298
       },
       {
         "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/utils.py",
@@ -747,8 +759,8 @@
       },
       {
         "path": "chapter11_representation_geometry/instructions/pages/01_[11.1]_PCA_SVD_and_Geometry_Controls.md",
-        "sha256": "27331095ffec122b4b4e26a2db4cc87ba45048da92906160c61193bb51047cd2",
-        "size_bytes": 40991
+        "sha256": "9ea16c8d3ad47495eb0f3872fe516d14c68a430b75a01d681aa23dd9edb5a9cc",
+        "size_bytes": 54332
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
@@ -763,5 +775,5 @@
     "The real-LM geometry path uses generated weekday/month labels and hidden states only. It performs no generated completions and does not claim causal space/time intervention behavior."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 12.432898
+  "wall_clock_seconds": 13.570086
 }
