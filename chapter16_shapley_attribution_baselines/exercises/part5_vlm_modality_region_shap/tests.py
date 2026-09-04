@@ -62,6 +62,38 @@ def _assert_report_close(actual: object, expected: object, *, msg: str) -> None:
             )
 
 
+def test_all_coalitions_and_normalization(
+    all_coalitions: Callable | None = None,
+    normalize_coalition_values: Callable | None = None,
+):
+    solutions = _solutions()
+    all_coalitions = all_coalitions or solutions.all_coalitions
+    normalize = normalize_coalition_values or solutions.normalize_coalition_values
+
+    coalitions = all_coalitions(3)
+    assert len(coalitions) == 8 and len(set(coalitions)) == 8, (
+        "Three players must produce all 2**3 distinct coalitions. Common bug: "
+        "omitting the empty or full coalition."
+    )
+    assert coalitions[0] == frozenset() and coalitions[-1] == frozenset({0, 1, 2})
+
+    complete = {tuple(sorted(coalition)): float(index) for index, coalition in enumerate(coalitions)}
+    normalized = normalize(complete, num_players=3)
+    assert set(normalized) == set(coalitions), (
+        "Normalization should convert tuple keys to frozensets without losing coalitions."
+    )
+
+    incomplete = dict(complete)
+    incomplete.pop((0, 1, 2))
+    try:
+        normalize(incomplete, num_players=3)
+    except ValueError as exc:
+        assert "missing" in str(exc)
+    else:
+        raise AssertionError("An incomplete game must fail before Shapley values are computed.")
+    print("All tests in `test_all_coalitions_and_normalization` passed!")
+
+
 def test_exact_shapley_values_splits_two_player_synergy(
     exact_shapley_values: Callable | None = None,
 ):
@@ -186,6 +218,38 @@ def test_vlm_region_shap_report_localizes_object_region(
     print("All tests in `test_vlm_region_shap_report_localizes_object_region` passed!")
 
 
+def test_render_region_clip_image_has_exact_components(
+    render_region_clip_image: Callable | None = None,
+):
+    render = render_region_clip_image or _solutions().render_region_clip_image
+    empty = render(object_present=False, background_present=False, ocr_present=False)
+    object_only = render(object_present=True, background_present=False, ocr_present=False)
+    background_only = render(object_present=False, background_present=True, ocr_present=False)
+    all_components = render(object_present=True, background_present=True, ocr_present=True)
+
+    assert empty.size == object_only.size == background_only.size == all_components.size == (
+        224,
+        224,
+    )
+    assert empty.getpixel((10, 10)) == (255, 255, 255)
+    assert background_only.getpixel((10, 10)) == (230, 230, 230)
+    assert object_only.getpixel((112, 100)) == (255, 0, 0)
+    assert all_components.getpixel((112, 100)) == (255, 0, 0)
+
+    images = [
+        render(
+            object_present=0 in coalition,
+            background_present=1 in coalition,
+            ocr_present=2 in coalition,
+        )
+        for coalition in reference.all_coalitions(3)
+    ]
+    assert len({image.tobytes() for image in images}) == 8, (
+        "Every object/background/OCR coalition should render a distinct intervention."
+    )
+    print("All tests in `test_render_region_clip_image_has_exact_components` passed!")
+
+
 def test_modality_shap_smoke_test(modality_shap_smoke_test: Callable | None = None):
     modality_shap_smoke_test = modality_shap_smoke_test or _solutions().modality_shap_smoke_test
     result = modality_shap_smoke_test()
@@ -267,3 +331,51 @@ def test_notebook_contract(run_smoke_test: Callable | None = None):
         "The notebook contract should include the region efficiency gate."
     )
     print("All tests in `test_notebook_contract` passed!")
+
+
+def validate_real_clip_vlm_shap_visual_payload(signature_result: dict) -> None:
+    """Validate the actual rendered coalitions and scores shown in the notebook."""
+
+    assert signature_result["preflight_passed"]
+    payload = signature_result.get("visual_payload")
+    assert payload is not None, "The live signature result should retain visual evidence."
+    assert payload["target_image"].size == payload["distractor_image"].size == (224, 224)
+    assert payload["target_image"].tobytes() != payload["distractor_image"].tobytes()
+
+    assert len(payload["modality_coalitions"]) == len(payload["modality_images"]) == 4
+    assert len(payload["modality_texts"]) == len(payload["modality_scores"]) == 4
+    assert set(payload["modality_coalitions"]) == set(reference.all_coalitions(2))
+    assert t.isfinite(t.tensor(payload["modality_scores"])).all()
+
+    assert len(payload["region_coalitions"]) == len(payload["region_images"]) == 8
+    assert len(payload["region_scores"]) == 8
+    assert set(payload["region_coalitions"]) == set(reference.all_coalitions(3))
+    assert len({image.tobytes() for image in payload["region_images"]}) == 8
+    assert t.isfinite(t.tensor(payload["region_scores"])).all()
+
+    assert signature_result["modality_synergy"] >= 2.0
+    assert signature_result["object_margin"] >= 1.0
+    assert signature_result["target_distractor_margin"] >= 2.0
+    assert signature_result["modality_satisfies_efficiency"]
+    assert signature_result["region_satisfies_efficiency"]
+    print("All tests in `validate_real_clip_vlm_shap_visual_payload` passed!")
+
+
+def test_exercise_notebook_exposes_live_learner_surface():
+    notebook_path = Path(__file__).with_name(
+        "16.5_VLM_Modality_and_Region_SHAP_exercises.ipynb"
+    )
+    notebook = json.loads(notebook_path.read_text())
+    source = "\n".join(
+        "".join(cell.get("source", [])) for cell in notebook.get("cells", [])
+    )
+    for marker in (
+        "By the end of this notebook",
+        "## Try It Yourself",
+        "## Bonus: Hunt an Anomaly",
+        "run_real_clip_vlm_shap_signature_result",
+        "vlm_region_clip_coalitions.png",
+        "vlm_modality_region_live_signature.png",
+    ):
+        assert marker in source, f"Learner notebook is missing {marker!r}."
+    print("All tests in `test_exercise_notebook_exposes_live_learner_surface` passed!")

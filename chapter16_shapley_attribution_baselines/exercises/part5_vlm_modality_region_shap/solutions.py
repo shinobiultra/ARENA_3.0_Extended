@@ -288,7 +288,7 @@ def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
     return run_real_clip_vlm_shap_preflight(max_vram_gb=max_vram_gb)
 
 
-def _render_shape_image(color: str, shape: str):
+def render_shape_image(color: str, shape: str):
     """Render a deterministic 224x224 colored-shape image for CLIP preflights."""
 
     from PIL import Image, ImageDraw
@@ -305,7 +305,7 @@ def _render_shape_image(color: str, shape: str):
     return image
 
 
-def _render_region_clip_image(
+def render_region_clip_image(
     *,
     object_present: bool,
     background_present: bool,
@@ -335,7 +335,11 @@ def _clip_scores(model, processor, *, images, texts, device: t.device) -> list[f
     return [float(logits[index, index].item()) for index in range(len(images))]
 
 
-def run_real_clip_vlm_shap_preflight(max_vram_gb: float = 24.0) -> dict:
+def run_real_clip_vlm_shap_preflight(
+    max_vram_gb: float = 24.0,
+    *,
+    include_visuals: bool = False,
+) -> dict:
     from huggingface_hub import snapshot_download
     from transformers import CLIPModel, CLIPProcessor
 
@@ -359,8 +363,8 @@ def run_real_clip_vlm_shap_preflight(max_vram_gb: float = 24.0) -> dict:
     model = CLIPModel.from_pretrained(local_snapshot, use_safetensors=False).to(device)
     model.eval()
 
-    target_image = _render_shape_image("red", "square")
-    distractor_image = _render_shape_image("blue", "circle")
+    target_image = render_shape_image("red", "square")
+    distractor_image = render_shape_image("blue", "circle")
     modality_coalitions = [frozenset(), frozenset({0}), frozenset({1}), frozenset({0, 1})]
     modality_images = [
         target_image if 0 in coalition else distractor_image
@@ -395,7 +399,7 @@ def run_real_clip_vlm_shap_preflight(max_vram_gb: float = 24.0) -> dict:
         for group in itertools.combinations(range(3), size)
     ]
     region_images = [
-        _render_region_clip_image(
+        render_region_clip_image(
             object_present=0 in coalition,
             background_present=1 in coalition,
             ocr_present=2 in coalition,
@@ -438,10 +442,28 @@ def run_real_clip_vlm_shap_preflight(max_vram_gb: float = 24.0) -> dict:
         and peak_vram_gb <= max_vram_gb
     )
 
+    visual_payload = None
+    if include_visuals:
+        visual_payload = {
+            "target_image": target_image,
+            "distractor_image": distractor_image,
+            "target_text": REAL_CLIP_TARGET_TEXT,
+            "distractor_text": REAL_CLIP_DISTRACTOR_TEXT,
+            "neutral_text": REAL_CLIP_NEUTRAL_TEXT,
+            "modality_coalitions": modality_coalitions,
+            "modality_images": modality_images,
+            "modality_texts": modality_texts,
+            "modality_scores": modality_raw_scores,
+            "region_coalitions": region_coalitions,
+            "region_images": region_images,
+            "region_scores": region_scores,
+            "target_and_distractor_scores": target_and_distractor_scores,
+        }
+
     del model, processor
     t.cuda.empty_cache()
 
-    return {
+    result = {
         "preflight_passed": preflight_passed,
         "cuda_available": True,
         "device": t.cuda.get_device_name(0),
@@ -465,6 +487,18 @@ def run_real_clip_vlm_shap_preflight(max_vram_gb: float = 24.0) -> dict:
         "within_vram_budget": peak_vram_gb <= max_vram_gb,
         "full_path": "Run modality and region SHAP on a pinned CLIP checkpoint with deterministic rendered image/text coalitions.",
     }
+    if visual_payload is not None:
+        result["visual_payload"] = visual_payload
+    return result
+
+
+def run_real_clip_vlm_shap_signature_result(max_vram_gb: float = 24.0) -> dict:
+    """Run the pinned CLIP experiment and retain every learner-facing coalition."""
+
+    return run_real_clip_vlm_shap_preflight(
+        max_vram_gb=max_vram_gb,
+        include_visuals=True,
+    )
 
 
 def run_full_experiment(max_vram_gb: float = 24.0) -> dict:

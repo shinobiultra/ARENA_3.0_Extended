@@ -59,9 +59,9 @@
       ]
     }
   ],
-  "date_run": "2026-07-02T12:45:03+00:00",
+  "date_run": "2026-09-04T06:41:29+00:00",
   "evidence_level": "vlm_shap_contract_plus_pinned_clip_rendered_shape_preflight",
-  "git_commit": "3a539d48",
+  "git_commit": "b6278637",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-0",
   "known_failures": [],
@@ -118,7 +118,7 @@
       "model_id": "openai/clip-vit-base-patch32",
       "object_margin": 1.380671501159668,
       "object_value": 5.606516202290853,
-      "peak_vram_gb": 0.6518421173095703,
+      "peak_vram_gb": 0.6205921173095703,
       "preflight_passed": true,
       "region_names": [
         "object",
@@ -195,10 +195,10 @@
   "ood_tests": {
     "declared": "required_where_applicable"
   },
-  "peak_vram_gb": 0.6518421173095703,
+  "peak_vram_gb": 0.6205921173095703,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "15dd347b56cb54db410188ad60f9b70f31124468f7a2a977c9951bbb439f3d46",
+    "combined_sha256": "189191ebfc3cd271482f7f7fb9a891257c3b968feba3b2222932ff3d2f0eca35",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -207,18 +207,18 @@
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part5_vlm_modality_region_shap/16.5_VLM_Modality_and_Region_SHAP_exercises.ipynb",
-        "sha256": "4b420f44539c819dc1d6b15581486f4ef884abfbf13315ac17e8a151cd53c22b",
-        "size_bytes": 20273
+        "sha256": "ccc1bd99bee18aa99f11b3201e702ec387d20d259bd3474a2ea2993b8746e14f",
+        "size_bytes": 48918
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part5_vlm_modality_region_shap/16.5_VLM_Modality_and_Region_SHAP_solutions.ipynb",
-        "sha256": "13da0afdf04792b0d63e01bd72f4195447a0f7482b86fbff3451e844244610f6",
-        "size_bytes": 28009
+        "sha256": "abdc1f378a8efbe50c4b28b16e6a0e9bfcf0497598f06affae818a771181fe14",
+        "size_bytes": 102572
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part5_vlm_modality_region_shap/README.md",
-        "sha256": "aeca27e13d3cee917875e35d6ad1f8d622e7852f16c2f8129dc14e34eb37c3c6",
-        "size_bytes": 1073
+        "sha256": "820b6c1a887b4f31c7782c2cdcd77e8d2547cadb4bb022af4069c9dc69ac64e5",
+        "size_bytes": 1298
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part5_vlm_modality_region_shap/artifacts.lock.yml",
@@ -242,13 +242,13 @@
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part5_vlm_modality_region_shap/solutions.py",
-        "sha256": "98e77c795d8f43368abecf1a250dface20d8b7f42136769e65adf4d5ae02ea2a",
-        "size_bytes": 15928
+        "sha256": "48451db267f775f0f7f5f9f3036c933753046f3900c8ba1472262e2c57269a5f",
+        "size_bytes": 17114
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part5_vlm_modality_region_shap/tests.py",
-        "sha256": "2d3bd648f6b37c5bbd4df15c37c6cad013a49305808b2712af41934679bda6d3",
-        "size_bytes": 11359
+        "sha256": "16f3a67a0e1106d1833f894e228791df61ebeaf9913cf882ae2bbdcf461e67c6",
+        "size_bytes": 16416
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part5_vlm_modality_region_shap/utils.py",
@@ -262,8 +262,8 @@
       },
       {
         "path": "chapter16_shapley_attribution_baselines/instructions/pages/05_[16.5]_VLM_Modality_and_Region_SHAP.md",
-        "sha256": "7449ebb206f0d3508715ba15c615020a102db94f774fb4fddac8f16001bd9f2a",
-        "size_bytes": 16566
+        "sha256": "880515a3fea2df5506043e502c8488ee6e363b02351649da66026ce2eae8a936",
+        "size_bytes": 35881
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
@@ -278,5 +278,5 @@
     "The real CLIP path uses generated safe rendered shape images and safe shape captions only. It does not use unsafe prompts, user images, external APIs, adapters, gated weights, or persistent real-image data."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 0.873983
+  "wall_clock_seconds": 3.221184
 }
