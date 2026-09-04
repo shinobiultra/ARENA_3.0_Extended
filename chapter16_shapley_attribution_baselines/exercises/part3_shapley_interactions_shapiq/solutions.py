@@ -3,6 +3,7 @@
 
 import itertools
 import math
+import random
 import sys
 from collections.abc import Callable, Mapping
 from dataclasses import dataclass
@@ -49,6 +50,15 @@ class ShapiqInteractionParityReport:
     max_abs_error: float
     matches_shapiq: bool
     shapiq_available: bool
+
+
+@dataclass(frozen=True)
+class InteractionRecoveryReport:
+    predicted_pair: tuple[int, int]
+    target_rank: int
+    target_value: float
+    max_off_target_interaction: float
+    mean_abs_error: float
 
 
 class NeuralCoalitionGame(t.nn.Module):
@@ -153,6 +163,57 @@ def interaction_game(
     return coalition_values_from_function(num_players, value_fn)
 
 
+def polynomial_game(
+    additive_weights: t.Tensor,
+    interaction_terms: Mapping[Coalition | tuple[int, ...], float],
+) -> dict[Coalition, float]:
+    """Build a finite binary game from additive weights and higher-order terms."""
+
+    weights = additive_weights.flatten().double()
+    num_players = int(weights.numel())
+    if num_players <= 0:
+        raise ValueError("additive_weights must contain at least one player.")
+    terms = {frozenset(term): float(value) for term, value in interaction_terms.items()}
+    for term in terms:
+        if len(term) < 2:
+            raise ValueError("interaction terms must contain at least two players.")
+        if min(term) < 0 or max(term) >= num_players:
+            raise ValueError("interaction term contains an invalid player index.")
+
+    def value_fn(coalition: Coalition) -> float:
+        additive = weights[list(coalition)].sum().item() if coalition else 0.0
+        interaction = sum(value for term, value in terms.items() if term <= coalition)
+        return additive + interaction
+
+    return coalition_values_from_function(num_players, value_fn)
+
+
+def discrete_second_difference(
+    coalition_values: Mapping[Coalition | tuple[int, ...], float],
+    coalition: Coalition | tuple[int, ...],
+    pair: tuple[int, int],
+    *,
+    num_players: int,
+) -> float:
+    """Return the interaction-only change from adding a pair to one context."""
+
+    values = normalize_coalition_values(coalition_values, num_players=num_players)
+    context = frozenset(coalition)
+    first, second = pair
+    if first == second:
+        raise ValueError("pair must contain two different players.")
+    if not (0 <= first < num_players and 0 <= second < num_players):
+        raise ValueError("pair contains an invalid player index.")
+    if first in context or second in context:
+        raise ValueError("coalition context must exclude both players in pair.")
+    return (
+        values[context | {first, second}]
+        - values[context | {first}]
+        - values[context | {second}]
+        + values[context]
+    )
+
+
 def pairwise_shapley_interactions(
     coalition_values: Mapping[Coalition | tuple[int, ...], float],
     *,
@@ -176,16 +237,139 @@ def pairwise_shapley_interactions(
             )
             for group in itertools.combinations(others, size):
                 coalition = frozenset(group)
-                delta = (
-                    values[coalition | {first, second}]
-                    - values[coalition | {first}]
-                    - values[coalition | {second}]
-                    + values[coalition]
+                delta = discrete_second_difference(
+                    values,
+                    coalition,
+                    (first, second),
+                    num_players=num_players,
                 )
                 score += weight * delta
         interactions[first, second] = score
         interactions[second, first] = score
     return interactions
+
+
+def exact_shapley_values(
+    coalition_values: Mapping[Coalition | tuple[int, ...], float],
+    *,
+    num_players: int,
+) -> t.Tensor:
+    """Compute exact first-order Shapley values from a complete coalition table."""
+
+    values = normalize_coalition_values(coalition_values, num_players=num_players)
+    result = t.zeros(num_players, dtype=t.float64)
+    denominator = math.factorial(num_players)
+    for player in range(num_players):
+        others = [other for other in range(num_players) if other != player]
+        for size in range(num_players):
+            weight = (
+                math.factorial(size)
+                * math.factorial(num_players - size - 1)
+                / denominator
+            )
+            for group in itertools.combinations(others, size):
+                coalition = frozenset(group)
+                result[player] += weight * (
+                    values[coalition | {player}] - values[coalition]
+                )
+    return result
+
+
+def sampled_pair_interaction(
+    coalition_values: Mapping[Coalition | tuple[int, ...], float],
+    *,
+    num_players: int,
+    pair: tuple[int, int],
+    budget: int,
+    seed: int,
+) -> float:
+    """Estimate pairwise SII from random predecessor sets in merged-player permutations."""
+
+    if budget <= 0:
+        raise ValueError("budget must be positive.")
+    values = normalize_coalition_values(coalition_values, num_players=num_players)
+    first, second = pair
+    if first == second or not (0 <= first < num_players and 0 <= second < num_players):
+        raise ValueError("pair must contain two different valid players.")
+    others = [player for player in range(num_players) if player not in pair]
+    marker = object()
+    rng = random.Random(seed)
+    deltas: list[float] = []
+    for _ in range(budget):
+        units: list[int | object] = [*others, marker]
+        rng.shuffle(units)
+        marker_position = units.index(marker)
+        predecessor = frozenset(
+            int(player) for player in units[:marker_position] if player is not marker
+        )
+        deltas.append(
+            discrete_second_difference(
+                values,
+                predecessor,
+                pair,
+                num_players=num_players,
+            )
+        )
+    return sum(deltas) / budget
+
+
+def permute_coalition_values_within_sizes(
+    coalition_values: Mapping[Coalition | tuple[int, ...], float],
+    *,
+    num_players: int,
+    seed: int,
+) -> dict[Coalition, float]:
+    """Shuffle values among coalitions of equal size while preserving size marginals."""
+
+    values = normalize_coalition_values(coalition_values, num_players=num_players)
+    rng = random.Random(seed)
+    permuted: dict[Coalition, float] = {}
+    for size in range(num_players + 1):
+        coalitions = sorted(
+            (coalition for coalition in values if len(coalition) == size),
+            key=lambda coalition: tuple(sorted(coalition)),
+        )
+        observed = [values[coalition] for coalition in coalitions]
+        rng.shuffle(observed)
+        permuted.update(zip(coalitions, observed, strict=True))
+    return permuted
+
+
+def interaction_recovery_report(
+    observed: t.Tensor,
+    expected: t.Tensor,
+    *,
+    target_pair: tuple[int, int],
+) -> InteractionRecoveryReport:
+    """Summarize target rank, off-target magnitude, and full-matrix error."""
+
+    if observed.ndim != 2 or observed.shape[0] != observed.shape[1]:
+        raise ValueError("observed must be a square interaction matrix.")
+    if expected.shape != observed.shape:
+        raise ValueError("expected must have the same shape as observed.")
+    first, second = target_pair
+    if first == second or not (0 <= first < observed.shape[0] and 0 <= second < observed.shape[0]):
+        raise ValueError("target_pair must contain two different valid players.")
+
+    pairs = list(itertools.combinations(range(observed.shape[0]), 2))
+    ranked = sorted(pairs, key=lambda pair: abs(float(observed[pair].item())), reverse=True)
+    off_target = [
+        abs(float(observed[pair].item()))
+        for pair in pairs
+        if frozenset(pair) != frozenset(target_pair)
+    ]
+    upper = t.triu_indices(observed.shape[0], observed.shape[1], offset=1)
+    mean_abs_error = float(
+        (observed[upper[0], upper[1]] - expected[upper[0], upper[1]]).abs().mean().item()
+    )
+    canonical_target = tuple(sorted(target_pair))
+    return InteractionRecoveryReport(
+        predicted_pair=ranked[0],
+        target_rank=ranked.index(canonical_target) + 1,
+        target_value=float(observed[target_pair].item()),
+        max_off_target_interaction=max(off_target, default=0.0),
+        mean_abs_error=mean_abs_error,
+    )
 
 
 def pairwise_interaction_report(

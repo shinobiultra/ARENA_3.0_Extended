@@ -181,6 +181,255 @@ def test_shapiq_interaction_parity_report_matches_exact_sii(
     print("All tests in `test_shapiq_interaction_parity_report_matches_exact_sii` passed!")
 
 
+def test_shapiq_pairwise_matrix_matches_student_exact_sii(
+    polynomial_game: Callable | None = None,
+    pairwise_shapley_interactions: Callable | None = None,
+    shapiq_pairwise_interactions: Callable | None = None,
+):
+    solutions = _solutions()
+    polynomial_game = polynomial_game or solutions.polynomial_game
+    pairwise_shapley_interactions = (
+        pairwise_shapley_interactions or solutions.pairwise_shapley_interactions
+    )
+    shapiq_pairwise_interactions = (
+        shapiq_pairwise_interactions or solutions.shapiq_pairwise_interactions
+    )
+    values = polynomial_game(
+        t.tensor([0.2, 0.2, 5.0, 4.0], dtype=t.float64),
+        {(0, 1): 3.0, (0, 1, 2): 2.0},
+    )
+    exact = pairwise_shapley_interactions(values, num_players=4)
+    observed = shapiq_pairwise_interactions(values, num_players=4)
+    t.testing.assert_close(
+        observed,
+        exact,
+        atol=1e-6,
+        rtol=0.0,
+        msg="Pinned shapiq SII should match the student implementation on all six pairs.",
+    )
+    print("All tests in `test_shapiq_pairwise_matrix_matches_student_exact_sii` passed!")
+
+
+def test_polynomial_game_enumerates_exact_ground_truth(
+    polynomial_game: Callable | None = None,
+):
+    polynomial_game = polynomial_game or _solutions().polynomial_game
+    values = polynomial_game(
+        t.tensor([0.2, 0.2, 5.0, 4.0], dtype=t.float64),
+        {(0, 1): 3.0, (0, 1, 2): 2.0},
+    )
+    assert len(values) == 16, (
+        "A four-player exact game should contain all 2**4 coalition values."
+    )
+    assert values[frozenset()] == 0.0, (
+        "The empty coalition should be the zero baseline for this game."
+    )
+    assert abs(values[frozenset((0, 1))] - 3.4) < 1e-9, (
+        "The target pair should include both additive terms and the planted synergy."
+    )
+    assert abs(values[frozenset((0, 1, 2))] - 10.4) < 1e-9, (
+        "The three-player coalition should include the planted higher-order term."
+    )
+    assert abs(values[frozenset((0, 1, 2, 3))] - 14.4) < 1e-9, (
+        "The full coalition should sum all additive, pair, and higher-order terms."
+    )
+    print("All tests in `test_polynomial_game_enumerates_exact_ground_truth` passed!")
+
+
+def test_discrete_second_difference_isolates_synergy_from_additive_effects(
+    polynomial_game: Callable | None = None,
+    discrete_second_difference: Callable | None = None,
+):
+    solutions = _solutions()
+    polynomial_game = polynomial_game or solutions.polynomial_game
+    discrete_second_difference = (
+        discrete_second_difference or solutions.discrete_second_difference
+    )
+    weights = t.tensor([0.2, 0.2, 5.0, 4.0], dtype=t.float64)
+    interacting = polynomial_game(weights, {(0, 1): 3.0, (0, 1, 2): 2.0})
+    additive = polynomial_game(weights, {})
+    for context in (frozenset(), frozenset((2,)), frozenset((3,)), frozenset((2, 3))):
+        observed = discrete_second_difference(
+            interacting,
+            context,
+            (0, 1),
+            num_players=4,
+        )
+        expected = 5.0 if 2 in context else 3.0
+        assert abs(observed - expected) < 1e-9, (
+            "The target pair's second difference should expose when the three-way term is active."
+        )
+        control = discrete_second_difference(
+            additive,
+            context,
+            (0, 1),
+            num_players=4,
+        )
+        assert abs(control) < 1e-9, (
+            "The matched additive control should have zero second difference."
+        )
+    print(
+        "All tests in "
+        "`test_discrete_second_difference_isolates_synergy_from_additive_effects` passed!"
+    )
+
+
+def test_pairwise_sii_recovers_pair_hidden_by_large_additive_effects(
+    polynomial_game: Callable | None = None,
+    pairwise_shapley_interactions: Callable | None = None,
+):
+    solutions = _solutions()
+    polynomial_game = polynomial_game or solutions.polynomial_game
+    pairwise_shapley_interactions = (
+        pairwise_shapley_interactions or solutions.pairwise_shapley_interactions
+    )
+    values = polynomial_game(
+        t.tensor([0.2, 0.2, 5.0, 4.0], dtype=t.float64),
+        {(0, 1): 3.0, (0, 1, 2): 2.0},
+    )
+    interactions = pairwise_shapley_interactions(values, num_players=4)
+    expected = t.zeros((4, 4), dtype=t.float64)
+    expected[0, 1] = expected[1, 0] = 4.0
+    expected[0, 2] = expected[2, 0] = 1.0
+    expected[1, 2] = expected[2, 1] = 1.0
+    t.testing.assert_close(
+        interactions,
+        expected,
+        atol=1e-9,
+        rtol=0.0,
+        msg="Exact SII should recover the pair term plus the contextual three-way contribution.",
+    )
+    print("All tests in `test_pairwise_sii_recovers_pair_hidden_by_large_additive_effects` passed!")
+
+
+def test_exact_shapley_values_make_main_effect_ranking_misleading(
+    polynomial_game: Callable | None = None,
+    exact_shapley_values: Callable | None = None,
+):
+    solutions = _solutions()
+    polynomial_game = polynomial_game or solutions.polynomial_game
+    exact_shapley_values = exact_shapley_values or solutions.exact_shapley_values
+    values = polynomial_game(
+        t.tensor([0.2, 0.2, 5.0, 4.0], dtype=t.float64),
+        {(0, 1): 3.0, (0, 1, 2): 2.0},
+    )
+    main_effects = exact_shapley_values(values, num_players=4)
+    t.testing.assert_close(
+        main_effects,
+        t.tensor([71 / 30, 71 / 30, 17 / 3, 4.0], dtype=t.float64),
+        atol=1e-9,
+        rtol=0.0,
+        msg="Individual values should divide both pair and three-way dividends symmetrically.",
+    )
+    assert set(main_effects.topk(2).indices.tolist()) == {2, 3}, (
+        "The two largest individual Shapley values should be additive decoys, not the interacting pair."
+    )
+    print("All tests in `test_exact_shapley_values_make_main_effect_ranking_misleading` passed!")
+
+
+def test_permutation_sampling_is_reproducible_and_converges(
+    polynomial_game: Callable | None = None,
+    pairwise_shapley_interactions: Callable | None = None,
+    sampled_pair_interaction: Callable | None = None,
+):
+    solutions = _solutions()
+    polynomial_game = polynomial_game or solutions.polynomial_game
+    pairwise_shapley_interactions = (
+        pairwise_shapley_interactions or solutions.pairwise_shapley_interactions
+    )
+    sampled_pair_interaction = (
+        sampled_pair_interaction or solutions.sampled_pair_interaction
+    )
+    values = polynomial_game(
+        t.tensor([0.2, 0.2, 5.0, 4.0], dtype=t.float64),
+        {(0, 1): 3.0, (0, 1, 2): 2.0},
+    )
+    exact = float(pairwise_shapley_interactions(values, num_players=4)[0, 1])
+    first = sampled_pair_interaction(
+        values,
+        num_players=4,
+        pair=(0, 1),
+        budget=4096,
+        seed=0,
+    )
+    second = sampled_pair_interaction(
+        values,
+        num_players=4,
+        pair=(0, 1),
+        budget=4096,
+        seed=0,
+    )
+    assert exact == 4.0, (
+        "The triple term should contribute 1.0 to the target pair's second-order SII."
+    )
+    assert first == second, "A fixed seed should reproduce the same sampled estimate."
+    assert abs(first - exact) < 0.02, (
+        "A 4096-permutation estimate should converge close to exact SII on the contextual game."
+    )
+    print("All tests in `test_permutation_sampling_is_reproducible_and_converges` passed!")
+
+
+def test_within_size_value_permutation_breaks_target_semantics(
+    polynomial_game: Callable | None = None,
+    pairwise_shapley_interactions: Callable | None = None,
+    permute_coalition_values_within_sizes: Callable | None = None,
+):
+    solutions = _solutions()
+    polynomial_game = polynomial_game or solutions.polynomial_game
+    pairwise_shapley_interactions = (
+        pairwise_shapley_interactions or solutions.pairwise_shapley_interactions
+    )
+    permute_coalition_values_within_sizes = (
+        permute_coalition_values_within_sizes
+        or solutions.permute_coalition_values_within_sizes
+    )
+    values = polynomial_game(
+        t.tensor([0.2, 0.2, 5.0, 4.0], dtype=t.float64),
+        {(0, 1): 3.0, (0, 1, 2): 2.0},
+    )
+    permuted = permute_coalition_values_within_sizes(values, num_players=4, seed=0)
+    for size in range(5):
+        original_values = sorted(value for coalition, value in values.items() if len(coalition) == size)
+        permuted_values = sorted(
+            value for coalition, value in permuted.items() if len(coalition) == size
+        )
+        assert original_values == permuted_values, (
+            "The control should preserve the value distribution at every coalition size."
+        )
+    permuted_target = float(pairwise_shapley_interactions(permuted, num_players=4)[0, 1])
+    assert abs(permuted_target - 0.1) < 1e-9, (
+        "The fixed within-size permutation should reduce the true target interaction from 4.0 to 0.1."
+    )
+    print("All tests in `test_within_size_value_permutation_breaks_target_semantics` passed!")
+
+
+def test_interaction_recovery_report_tracks_rank_spurious_terms_and_error(
+    interaction_recovery_report: Callable | None = None,
+):
+    interaction_recovery_report = (
+        interaction_recovery_report or _solutions().interaction_recovery_report
+    )
+    expected = t.zeros((4, 4), dtype=t.float64)
+    expected[0, 1] = expected[1, 0] = 3.0
+    observed = expected.clone()
+    observed[2, 3] = observed[3, 2] = 0.25
+    report = interaction_recovery_report(observed, expected, target_pair=(0, 1))
+    assert report.predicted_pair == (0, 1) and report.target_rank == 1, (
+        "The planted pair should remain the strongest recovered interaction."
+    )
+    assert report.target_value == 3.0, "The report should expose the target interaction value."
+    assert report.max_off_target_interaction == 0.25, (
+        "The report should expose the largest off-target interaction."
+    )
+    assert abs(report.mean_abs_error - (0.25 / 6)) < 1e-9, (
+        "Matrix MAE should average over the six unique unordered feature pairs."
+    )
+    print(
+        "All tests in "
+        "`test_interaction_recovery_report_tracks_rank_spurious_terms_and_error` passed!"
+    )
+
+
 def test_neural_game_value_table_contains_planted_interactions(
     binary_feature_table: Callable | None = None,
     true_neural_game_scores: Callable | None = None,

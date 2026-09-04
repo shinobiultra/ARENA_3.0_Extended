@@ -83,9 +83,9 @@
       "target_rule": "0.25 + 1.2*x0 - 0.7*x1 + 1.6*x2 + 0.9*x3 + 2.2*x0*x2 - 1.5*x1*x3"
     }
   ],
-  "date_run": "2026-07-02T12:44:59+00:00",
+  "date_run": "2026-09-04T08:15:00+00:00",
   "evidence_level": "shapley_interaction_contract_plus_cuda_trained_neural_game_preflight",
-  "git_commit": "3a539d48",
+  "git_commit": "b692a4f0",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-0",
   "known_failures": [],
@@ -284,7 +284,7 @@
   "peak_vram_gb": 0.06262922286987305,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "cd47278cfc8c7239db8259eed9ba734106ae078a88c8973670f86797a9610412",
+    "combined_sha256": "fcd40ca3d29838800b7740dc15b49fc44770efe0b86e947c2d84cc2946c7bb16",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -293,18 +293,18 @@
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part3_shapley_interactions_shapiq/16.3_Shapley_Interactions_with_shapiq_exercises.ipynb",
-        "sha256": "be475582c4e8d2b90b23a150adaa561990579097e6886d1e450383746265a924",
-        "size_bytes": 20780
+        "sha256": "7cf689a94746ba28d6c0e754bc25e27cef4f2bd179ca801fdec6f514fe1db8c8",
+        "size_bytes": 53021
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part3_shapley_interactions_shapiq/16.3_Shapley_Interactions_with_shapiq_solutions.ipynb",
-        "sha256": "0ae4ab190ad7d75b56c96fb2c2391edcaf58830e59169e0be416028ab3879226",
-        "size_bytes": 32985
+        "sha256": "09a997f6089d545ffa608efba888602902de00eda6e652bd4f91fb1f688941b2",
+        "size_bytes": 78556
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part3_shapley_interactions_shapiq/README.md",
-        "sha256": "bc325df1ab453024fadcb10a56db8a43e36448af5e8c73e0da5e1e42797778b6",
-        "size_bytes": 1068
+        "sha256": "a66704904925f31765fdb090c0ac6d800764b5855ce2e08d6b329348928cbc44",
+        "size_bytes": 1422
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part3_shapley_interactions_shapiq/artifacts.lock.yml",
@@ -328,13 +328,13 @@
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part3_shapley_interactions_shapiq/solutions.py",
-        "sha256": "ea1bb5bd9a7a609391bbfb5d0b74c7f87c2711c6af510ce18319c3bf7b2bf14d",
-        "size_bytes": 19796
+        "sha256": "a3ac383d8537551b93894ac5acbc8121ed82743c9d18f32e4cf5fed46db74b37",
+        "size_bytes": 26724
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part3_shapley_interactions_shapiq/tests.py",
-        "sha256": "ec77036c72e1cdc46076af0d61eecf1267d0814c613759c09369f090c67d5411",
-        "size_bytes": 12344
+        "sha256": "db3e0f1a7d098e4674b98fc017d1118266efce7fd71cd52ca9ed48e4af2b9f1f",
+        "size_bytes": 22382
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part3_shapley_interactions_shapiq/utils.py",
@@ -348,13 +348,13 @@
       },
       {
         "path": "chapter16_shapley_attribution_baselines/instructions/pages/03_[16.3]_Shapley_Interactions_with_shapiq.md",
-        "sha256": "6ac7d65ad68a97a3f9f99102da2b363acf624453d3e5ae8d30806eae4d31132d",
-        "size_bytes": 25703
+        "sha256": "1b280a09cef23a0f693833dfe16d9b2ad4f3704960cebbc43040cc0b872643a6",
+        "size_bytes": 39913
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
-        "sha256": "660040f459d07535deb9e0c34ffddb496c13b8770044ae380d3a8e45b0c8fb2b",
-        "size_bytes": 16080
+        "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
+        "size_bytes": 16272
       }
     ],
     "schema_version": 1
@@ -364,5 +364,5 @@
     "The real training path uses only a generated finite binary feature table and a shuffled-label negative control. It does not use unsafe prompts, user data, external APIs, adapters, gated weights, or large persistent artifacts."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 1.633529
+  "wall_clock_seconds": 3.476301
 }

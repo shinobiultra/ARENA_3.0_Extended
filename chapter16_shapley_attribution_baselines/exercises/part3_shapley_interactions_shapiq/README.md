@@ -1,22 +1,28 @@
-# [16.3] Shapley Interactions with shapiq Verification Assets
+# [16.3] Shapley Interactions with shapiq
 
-Generated support files for the roadmap verification contract and the real CUDA
-Shapley-interaction preflight.
+This section asks whether second-order Shapley interaction indices can recover
+a planted feature pair that individual Shapley-value rankings miss while
+correctly exposing contributions from a known three-way interaction.
 
-- `artifacts.lock.yml` pins the current smoke-test artifact contract plus a
-  CUDA-trained four-feature neural coalition game.
-- `verification_report.schema.json` defines the required final report.
-- `expected_outputs/smoke_test.json` records the smoke-test contract.
-- `expected_outputs/reference_metrics.json` records baseline/control slots.
+The learner notebooks begin from all 16 coalitions of a four-feature polynomial
+game containing both pairwise and three-way dividends. Students implement
+coalition enumeration, discrete second differences,
+exact pairwise SII, exact individual Shapley values, merged-player permutation
+sampling, a within-size value permutation control, `shapiq` parity, and recovery
+metrics. The signature result is generated from those implementations rather
+than loaded from `verification_report.json`.
 
-The graded GPU path in `solutions.py` trains the finite neural game, computes
-pairwise Shapley interactions from real model ablation tables, validates
-`shapiq` parity on that trained-model table, bounds off-target interactions,
-and rejects a shuffled-label trained-model control.
+Files:
 
-Notebooks:
+- `16.3_Shapley_Interactions_with_shapiq_exercises.ipynb`: seven exercises,
+  immediate semantic tests, controls, play cell, and anomaly hunt.
+- `16.3_Shapley_Interactions_with_shapiq_solutions.ipynb`: inline solved code
+  with executed CPU outputs.
+- `tests.py`: exact toy oracles and control-sensitive tests.
+- `solutions.py`: section-local references plus the existing serialized CUDA
+  neural-game path.
+- `verification_report.json`: supporting release evidence only.
 
-- `16.3_Shapley_Interactions_with_shapiq_exercises.ipynb` contains the learner
-  stubs and visible-test calls.
-- `16.3_Shapley_Interactions_with_shapiq_solutions.ipynb` runs the reference
-  implementation, visible tests, and committed CUDA report checks.
+The preserved CUDA path trains the finite four-feature MLP and compares its
+ablation table with the same exact SII and pinned `shapiq` conventions. It is
+not required for the CPU lesson.
