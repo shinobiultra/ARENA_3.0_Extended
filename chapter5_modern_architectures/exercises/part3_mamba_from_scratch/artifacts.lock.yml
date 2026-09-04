@@ -6,16 +6,19 @@ exercise_metadata:
   GT_TIER: GT-1
   DIFFICULTY: 4
   IMPORTANCE: 5
-  EXPECTED_RUNTIME: seconds on toy contract; minutes on local real-model path
+  EXPECTED_RUNTIME: about 3 minutes CPU including cached Mamba-130M parity
   REQUIRES_GPU: true
 gt_tier: GT-1
-evidence_level: selective_scan_contract_plus_official_mamba_logits_generation_preflight
-claim_scope: 'GT-1 Mamba implementation contract: recurrent, parallel, and chunked
-  selective scans and tiny-cache parity are checked on generated tensors, then a pinned
-  Mamba-130M-HF checkpoint is loaded on CUDA to verify finite logits, batched-vs-single
-  top-token consistency, deterministic generation, and required Transformers Mamba
-  fast kernels. This does not claim full weight-level parity between the tiny implementation
-  and the released 130M checkpoint.'
+evidence_level: exact_mamba_components_plus_pinned_130m_weight_output_parity
+claim_scope: 'GT-1 Mamba implementation contract: the learner implements stable
+  continuous-time discretization, causal depthwise convolution, token-dependent delta/B/C,
+  recurrent and associative selective scans, a gated pre-norm residual Mamba block,
+  recurrent cache, and a stacked tied-embedding LM. On CPU, all 243 tensors from pinned
+  Mamba-130M-HF map strictly with no missing or unexpected keys; 25 hidden-state checkpoints,
+  final logits, cache logits, and greedy tokens match the official implementation within
+  explicit tolerances. The exact selective-memory signature compares recurrent state with
+  causal-attention and finite-convolution controls. CUDA fast-kernel throughput and VRAM
+  remain a separate release contract and were not rerun for this learner-surface rewrite.'
 required_gpu_gb: 1
 max_allowed_gpu_gb: 24
 models:
@@ -27,9 +30,9 @@ models:
 - id: state-spaces/mamba-130m-hf
   source: huggingface
   revision: 1e76775f628fbf1350fbe4dbb3d971ba64af25a1
-  precision: float16
+  precision: float32 CPU parity; float16 CUDA release preflight
   gated: false
-  claim_scope: official_logits_generation_preflight
+  claim_scope: strict_weight_mapping_hidden_logits_cache_generation_parity
 datasets:
 - id: 5_3_mamba_from_scratch_toy_inputs
   source: generated
@@ -47,6 +50,18 @@ expected_metrics:
   tests_passed: true
   accepted: true
   max_allowed_gpu_gb: 24
+  cpu_mamba_130m_mapped_tensor_count: 243
+  cpu_mamba_130m_hidden_state_count: 25
+  cpu_mamba_130m_hidden_max_abs_diff_max: 0.003
+  cpu_mamba_130m_hidden_max_mean_abs_diff_max: 0.0001
+  cpu_mamba_130m_logits_max_abs_diff_max: 0.0005
+  cpu_mamba_130m_logits_mean_abs_diff_max: 0.00003
+  cpu_mamba_130m_logits_top1_agreement: 1.0
+  cpu_mamba_130m_cache_max_abs_diff_max: 0.001
+  cpu_mamba_130m_greedy_tokens_match: true
+  selective_memory_max_mae: 0.0
+  selective_memory_attention_max_mae_max: 1.0e-10
+  selective_memory_conv_distance_32_mae_min: 0.9
   official_mamba_logits_generation_preflight_passed: true
   official_mamba_batched_single_top1_agreement: 1.0
   official_mamba_generation_new_tokens: 4
@@ -71,15 +86,23 @@ controls:
 - negative_control_where_applicable
 - shape_dtype_or_exact_value_check
 - recurrent_parallel_selective_scan_equivalence
-- chunked_scan_state_carry_equivalence
-- tiny_mamba_cache_parity
+- exact_continuous_time_discretization_oracle
+- causal_depthwise_convolution_no_future_leakage
+- input_dependent_delta_B_C
+- pre_norm_residual_gated_mamba_block
+- tiny_stacked_mamba_cache_parity
+- strict_243_tensor_mamba_130m_mapping
+- official_hidden_state_and_logits_parity
+- official_greedy_token_parity
+- analytic_causal_attention_memory_control
+- finite_receptive_field_convolution_control
 - pinned_official_mamba_130m_hf_logits_generation
 - batched_vs_single_prompt_top_token_consistency
 - deterministic_generation_prefix_preservation
 - mamba_ssm_and_causal_conv1d_fast_kernels_required
-- full_weight_level_tiny_to_130m_parity_not_claimed
+- exact_state_ablation_control
 safety_notes:
 - No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.
 - The official Mamba path uses safe generic prompts and deterministic generation only.
-  Full weight-level parity between the didactic tiny implementation and Mamba-130M-HF
-  is not claimed.
+- CPU weight and output parity is learner-visible. The checked-in CUDA report is regenerated
+  by the release harness and records the same pinned-model execution.

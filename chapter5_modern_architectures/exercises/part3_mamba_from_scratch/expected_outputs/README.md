@@ -18,6 +18,19 @@ The generated artifact lock uses `seed: 0` for toy/generated inputs unless a sec
 
 Integer, token, boolean, and schema-contract checks require exact equality. Float32 toy checks should use `rtol=1e-5` and `atol=1e-6` unless the section file documents a stricter tolerance. bf16 or quantized real-model checks must update the section artifact lock and report with explicit behavioral tolerances.
 
+The pinned CPU Mamba-130M parity exercise has stronger method-specific evidence:
+
+- all `243` checkpoint tensors map with strict loading;
+- all `25` hidden-state checkpoints have max absolute error at most `3e-3`;
+- every layer's mean hidden-state error is at most `1e-4`;
+- final logits have max absolute error at most `5e-4`;
+- mean logit error is at most `3e-5`, with exact top-1 agreement;
+- local recurrent-cache logits have max absolute error at most `1e-3`;
+- three greedy continuation tokens match exactly.
+
+The signature delay sweep requires zero exact selective-state MAE, causal-attention
+MAE at most `1e-10`, and width-8 convolution MAE at least `0.9` at distance 32.
+
 ## When to regenerate
 
 Regenerate these fixtures when the section title, GT tier, artifact lock schema, verification report schema, expected baseline/control slots, or trusted toy implementation changes. Do not regenerate merely to hide a failing check; update the implementation or the declared claim scope first.

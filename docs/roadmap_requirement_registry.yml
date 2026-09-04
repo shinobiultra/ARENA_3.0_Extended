@@ -126,13 +126,13 @@ requirements:
     topic: Mamba selective scan, recurrent path, parallel path, and cache
     chapter: 2 Modern architectures
     section: "5.3"
-    status: TOY_ONLY
+    status: TAUGHT
     roadmap_refs: [Extension-Roadmap.md:331-371]
     course_sections: ["5.3"]
     method_registry_names: [Mamba selective scan]
     evidence: [chapter5_modern_architectures/exercises/part3_mamba_from_scratch]
-    reason: The current notebook proves scan/cache mechanics on a bounded organism and has an official checkpoint preflight.
-    blocker: It does not yet make students build causal convolution and a full Mamba block with official logits parity.
+    reason: Section 5.3 now makes students build stable discretization, recurrent and associative selective scans, causal depthwise convolution, token-dependent parameters, gated residual blocks, a stacked cached LM, and strict pinned Mamba-130M weight/output parity.
+    blocker: null
 
   - id: modern.mamba2_ssd
     topic: Mamba-2 structured state-space duality and implementation
