@@ -100,9 +100,9 @@
       "train_prompt_count": 40
     }
   ],
-  "date_run": "2026-09-04T08:16:58+00:00",
+  "date_run": "2026-09-04T08:18:12+00:00",
   "evidence_level": "exact_toy_ground_truth_plus_pinned_pythia_negative_hook_patching_result",
-  "git_commit": "7b90e75d",
+  "git_commit": "663d86b2",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-0",
   "known_failures": [],
@@ -571,5 +571,5 @@
     "The real-model CoT-faithfulness path uses safe synthetic A/B prompts, hidden states, answer-token logits, and PyTorch forward hooks only. It performs no generated completions and does not claim results on arbitrary reasoning traces."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 3.986388
+  "wall_clock_seconds": 3.964189
 }
