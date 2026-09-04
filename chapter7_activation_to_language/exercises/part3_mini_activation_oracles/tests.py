@@ -1,8 +1,14 @@
+import ast
+import json
 from collections.abc import Callable
+from pathlib import Path
 
 import torch as t
 
 from arena_ext import activation_oracles as reference
+
+
+SECTION_DIR = Path(__file__).resolve().parent
 
 
 def _solutions():
@@ -412,4 +418,275 @@ def test_notebook_contract(run_smoke_test: Callable | None = None):
     assert result["patching"]["changed"], (
         "Notebook contract should include an activation-patching answer flip."
     )
+    assert result["model_organism"]["baseline_accuracies"]["LoRA oracle"] == 1.0
+    assert result["model_organism"]["baseline_accuracies"]["text only"] == 0.5
+    assert result["model_organism"]["patch_changed_questions"] == [0, 2]
     print("All tests in `test_notebook_contract` passed!")
+
+
+def test_factor_world_has_exact_ground_truth(
+    make_factor_world: Callable | None = None,
+):
+    make_factor_world = make_factor_world or _solutions().make_factor_world
+    world = make_factor_world("train", repeats=3)
+    decoded = world.activations @ world.mixing
+    assert world.activations.shape == (12, 8)
+    assert t.allclose(decoded[:, :3], world.latent_factors, atol=1e-6), (
+        "The first three decoded coordinates must exactly recover color, shape, and their interaction."
+    )
+    assert t.allclose(decoded[:, 2], decoded[:, 0] * decoded[:, 1], atol=1e-6), (
+        "The interaction coordinate must equal color times shape."
+    )
+    assert t.allclose(decoded[:, -1], t.zeros(12), atol=1e-6), (
+        "The reserved off-manifold coordinate should be exactly zero."
+    )
+    assert world.latent_factors.unique(dim=0).shape[0] == 4, (
+        "Every binary factor combination must appear."
+    )
+    for bad_call in (
+        lambda: make_factor_world("unknown"),
+        lambda: make_factor_world("train", repeats=0),
+    ):
+        try:
+            bad_call()
+        except ValueError:
+            pass
+        else:
+            raise AssertionError("Invalid model-organism configurations must fail loudly.")
+    print("All tests in `test_factor_world_has_exact_ground_truth` passed!")
+
+
+def test_factor_question_rows_require_question_conditioning(
+    make_factor_world: Callable | None = None,
+    make_factor_question_rows: Callable | None = None,
+):
+    solutions = _solutions()
+    make_factor_world = make_factor_world or solutions.make_factor_world
+    make_factor_question_rows = make_factor_question_rows or solutions.make_factor_question_rows
+    world = make_factor_world("train", repeats=1)
+    batch = make_factor_question_rows(world)
+    expected_answers = t.tensor(
+        [0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1]
+    )
+    assert batch.activations.shape == (12, 8)
+    assert batch.questions == solutions.FACTOR_QUESTIONS
+    assert t.equal(batch.question_ids, t.arange(3).repeat(4))
+    assert t.equal(batch.answer_ids.cpu(), expected_answers), (
+        "Question answers must follow the exact color, shape, interaction truth table."
+    )
+    assert t.allclose(batch.activations[0], batch.activations[1])
+    assert batch.answer_ids[0] != batch.answer_ids[2], (
+        "The same activation must support different answers to different questions."
+    )
+    print("All tests in `test_factor_question_rows_require_question_conditioning` passed!")
+
+
+def test_low_rank_oracle_freezes_base_weights(
+    low_rank_cls=None,
+    oracle_cls=None,
+):
+    solutions = _solutions()
+    low_rank_cls = low_rank_cls or solutions.LowRankLinear
+    oracle_cls = oracle_cls or solutions.MiniActivationOracle
+    layer = low_rank_cls(5, 4, rank=2)
+    assert not layer.base.weight.requires_grad and not layer.base.bias.requires_grad
+    assert layer.lora_A.requires_grad and layer.lora_B.requires_grad
+    assert layer(t.ones(3, 5)).shape == (3, 4)
+    oracle = oracle_cls(activation_dim=8)
+    assert all(
+        ("lora_" in name) == parameter.requires_grad
+        for name, parameter in oracle.named_parameters()
+    ), "Only LoRA matrices should be trainable in the mini oracle."
+    assert oracle(t.zeros(6, 8), t.arange(3).repeat(2)).shape == (6, 2)
+    print("All tests in `test_low_rank_oracle_freezes_base_weights` passed!")
+
+
+def test_mini_oracle_learns_three_question_truth_table(
+    make_factor_world: Callable | None = None,
+    make_factor_question_rows: Callable | None = None,
+    train_mini_activation_oracle: Callable | None = None,
+):
+    solutions = _solutions()
+    make_factor_world = make_factor_world or solutions.make_factor_world
+    make_factor_question_rows = make_factor_question_rows or solutions.make_factor_question_rows
+    train_mini_activation_oracle = (
+        train_mini_activation_oracle or solutions.train_mini_activation_oracle
+    )
+    batch = make_factor_question_rows(make_factor_world("train"))
+    model, losses = train_mini_activation_oracle(batch, steps=160)
+    with t.inference_mode():
+        predictions = model(batch.activations, batch.question_ids).argmax(dim=-1)
+    assert float(losses[-1]) < 1e-3
+    assert predictions.eq(batch.answer_ids).all(), (
+        "The oracle should recover all three exact question functions."
+    )
+    predictions_by_question = predictions.reshape(-1, 3)
+    assert predictions_by_question.unique(dim=0).shape[0] == 4, (
+        "The oracle must route the same activation through distinct question semantics."
+    )
+    print("All tests in `test_mini_oracle_learns_three_question_truth_table` passed!")
+
+
+def test_shortcut_baselines_fail_for_the_expected_reason(
+    model_organism_baseline_accuracies: Callable | None = None,
+):
+    solutions = _solutions()
+    model_organism_baseline_accuracies = (
+        model_organism_baseline_accuracies
+        or solutions.model_organism_baseline_accuracies
+    )
+    world = solutions.make_factor_world("train")
+    batch = solutions.make_factor_question_rows(world)
+    model, _ = solutions.train_mini_activation_oracle(batch, steps=160)
+    scores = model_organism_baseline_accuracies(model, batch, batch, world.mixing)
+    assert scores["LoRA oracle"] == 1.0
+    assert scores["text only"] == 0.5
+    assert scores["activation-only linear"] <= 0.75
+    assert scores["activation-only MLP"] <= 0.75
+    assert scores["linear probe bank"] == 1.0
+    assert scores["exact feature classifier"] == 1.0
+    print("All tests in `test_shortcut_baselines_fail_for_the_expected_reason` passed!")
+
+
+def test_ood_splits_and_random_activations_are_visible_controls(
+    evaluate_factor_ood_splits: Callable | None = None,
+    factor_manifold_distance: Callable | None = None,
+    add_off_manifold_abstention: Callable | None = None,
+):
+    solutions = _solutions()
+    evaluate_factor_ood_splits = evaluate_factor_ood_splits or solutions.evaluate_factor_ood_splits
+    factor_manifold_distance = factor_manifold_distance or solutions.factor_manifold_distance
+    add_off_manifold_abstention = (
+        add_off_manifold_abstention or solutions.add_off_manifold_abstention
+    )
+    world = solutions.make_factor_world("train")
+    batch = solutions.make_factor_question_rows(world)
+    model, _ = solutions.train_mini_activation_oracle(batch, steps=160)
+    ood = evaluate_factor_ood_splits(model)
+    assert set(ood) == {
+        "heldout_template",
+        "new_names",
+        "long_context",
+        "adversarial_distractor",
+    }
+    assert min(ood.values()) == 1.0, "Every named nuisance shift should be reported separately."
+
+    generator = t.Generator().manual_seed(777)
+    random_activations = t.randn(256, 8, generator=generator) * 1.4
+    random_questions = t.arange(3).repeat(86)[:256]
+    with t.inference_mode():
+        binary_logits = model(random_activations, random_questions)
+    guarded = add_off_manifold_abstention(
+        binary_logits, random_activations, world.mixing
+    )
+    assert factor_manifold_distance(world.activations, world.mixing).max() < 1e-5
+    assert guarded.argmax(dim=-1).eq(2).float().mean() > 0.95, (
+        "Most random activations should visibly trigger abstention."
+    )
+    print("All tests in `test_ood_splits_and_random_activations_are_visible_controls` passed!")
+
+
+def test_factor_patching_is_selective_not_just_any_answer_flip(
+    patch_factor_activation: Callable | None = None,
+):
+    solutions = _solutions()
+    patch_factor_activation = patch_factor_activation or solutions.patch_factor_activation
+    world = solutions.make_factor_world("train", repeats=1)
+    source = world.activations[0]
+    color_donor = world.activations[2]
+    patched = patch_factor_activation(
+        source, color_donor, world.mixing, factor="color"
+    )
+    decoded_source = source @ world.mixing
+    decoded_patched = patched @ world.mixing
+    assert t.allclose(decoded_patched[:3], t.tensor([1.0, -1.0, -1.0]), atol=1e-6)
+    assert t.allclose(decoded_patched[3:], decoded_source[3:], atol=1e-6), (
+        "Patching color must preserve every nuisance coordinate."
+    )
+    source_answers = decoded_source[:3].gt(0)
+    patched_answers = decoded_patched[:3].gt(0)
+    assert t.equal(source_answers.ne(patched_answers), t.tensor([True, False, True]))
+    print("All tests in `test_factor_patching_is_selective_not_just_any_answer_flip` passed!")
+
+
+def test_model_organism_signature_metrics_are_not_white_noise(
+    run_model_organism_signature: Callable | None = None,
+):
+    run_model_organism_signature = (
+        run_model_organism_signature or _solutions().run_model_organism_signature
+    )
+    result = run_model_organism_signature()
+    assert result["baseline_accuracies"] == {
+        "LoRA oracle": 1.0,
+        "text only": 0.5,
+        "activation-only linear": 0.75,
+        "activation-only MLP": 0.75,
+        "linear probe bank": 1.0,
+        "exact feature classifier": 1.0,
+    }
+    assert min(result["ood_accuracies"].values()) == 1.0
+    assert result["random_abstention_rate"] > 0.95
+    assert result["patch_before"] == [0, 0, 1]
+    assert result["patch_after"] == [1, 0, 0]
+    assert result["patch_changed_questions"] == [0, 2]
+    print("All tests in `test_model_organism_signature_metrics_are_not_white_noise` passed!")
+
+
+def test_solution_notebook_exposes_taught_implementations():
+    path = SECTION_DIR / "7.3_Mini_Activation_Oracles_solutions.ipynb"
+    notebook = json.loads(path.read_text())
+    markdown = "\n".join(
+        "".join(cell.get("source", []))
+        for cell in notebook["cells"]
+        if cell["cell_type"] == "markdown"
+    )
+    code_cells = [
+        "".join(cell.get("source", []))
+        for cell in notebook["cells"]
+        if cell["cell_type"] == "code"
+    ]
+    code = "\n\n".join(code_cells)
+    for cell_code in code_cells:
+        ast.parse(cell_code)
+
+    required_definitions = {
+        "make_factor_world",
+        "make_factor_question_rows",
+        "LowRankLinear",
+        "MiniActivationOracle",
+        "train_mini_activation_oracle",
+        "question_only_logits",
+        "train_activation_only_classifier",
+        "train_question_probe_bank",
+        "exact_feature_classifier_logits",
+        "evaluate_factor_ood_splits",
+        "factor_manifold_distance",
+        "add_off_manifold_abstention",
+        "patch_factor_activation",
+    }
+    defined = {
+        node.name
+        for tree in (ast.parse(cell_code) for cell_code in code_cells)
+        for node in tree.body
+        if isinstance(node, (ast.FunctionDef, ast.ClassDef))
+    }
+    assert required_definitions <= defined, (
+        "The solved notebook must contain every taught implementation inline."
+    )
+    assert "import solutions" not in code and "solutions." not in code
+    assert "verification_report.json" not in code
+    assert "raise NotImplementedError" not in code
+    assert markdown.count("### Exercise") >= 7
+    assert markdown.count("<summary>Expected output") >= 7
+    assert markdown.count("<summary>Help") >= 7
+    assert markdown.count("<summary>Solution") >= 7
+    for marker in (
+        "By the end of this notebook",
+        "## Signature Result",
+        "## Try It Yourself",
+        "## Bonus Anomaly Hunt",
+        "## Limitations",
+    ):
+        assert marker in markdown
+    assert "plt.subplots" in code and "savefig" in code
+    print("All tests in `test_solution_notebook_exposes_taught_implementations` passed!")

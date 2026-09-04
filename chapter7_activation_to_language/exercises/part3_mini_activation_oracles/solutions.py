@@ -133,6 +133,32 @@ class ActivationPatchingOracleReport:
     changed: bool
 
 
+@dataclass(frozen=True)
+class FactorWorld:
+    """Exact model organism with three causal factors and five nuisance channels."""
+
+    activations: t.Tensor
+    latent_factors: t.Tensor
+    template_ids: t.Tensor
+    entity_ids: t.Tensor
+    mixing: t.Tensor
+    split: str
+
+
+FACTOR_QUESTIONS = (
+    "Is the represented object red?",
+    "Is the represented object square?",
+    "Do its color and shape agree?",
+)
+FACTOR_SPLITS = (
+    "train",
+    "heldout_template",
+    "new_names",
+    "long_context",
+    "adversarial_distractor",
+)
+
+
 def _prediction_accuracy(logits: t.Tensor, labels: t.Tensor) -> float:
     """Return exact top-1 accuracy for answer logits."""
 
@@ -333,6 +359,417 @@ def activation_patching_oracle_report(
     )
 
 
+def make_factor_world(
+    split: str = "train",
+    *,
+    repeats: int = 8,
+    device: str | t.device = "cpu",
+) -> FactorWorld:
+    """Create a deterministic activation dataset with exactly known latent factors."""
+
+    if split not in FACTOR_SPLITS:
+        raise ValueError(f"split must be one of {FACTOR_SPLITS}.")
+    if repeats < 1:
+        raise ValueError("repeats must be positive.")
+
+    generator = t.Generator(device="cpu").manual_seed(7303)
+    mixing, _ = t.linalg.qr(t.randn(8, 8, generator=generator))
+    raw_rows: list[t.Tensor] = []
+    latent_rows: list[list[float]] = []
+    template_ids: list[int] = []
+    entity_ids: list[int] = []
+
+    for repeat in range(repeats):
+        for color in (-1.0, 1.0):
+            for shape in (-1.0, 1.0):
+                interaction = color * shape
+                if split == "train":
+                    nuisance = (
+                        ((repeat % 4) - 1.5) / 2,
+                        ((repeat * 3) % 5 - 2) / 2,
+                        float((repeat % 3) - 1),
+                        -1.0 if repeat % 2 else 1.0,
+                    )
+                elif split == "heldout_template":
+                    nuisance = (1.6, -1.4, 0.5, -1.0 if repeat % 2 else 1.0)
+                elif split == "new_names":
+                    nuisance = (-1.7, 1.3, -0.5, -1.0 if repeat % 2 else 1.0)
+                elif split == "long_context":
+                    nuisance = (0.2, -0.2, 2.0, -1.0 if repeat % 2 else 1.0)
+                else:
+                    nuisance = (0.1, -0.1, 0.3, -color)
+
+                raw_rows.append(
+                    t.tensor([color, shape, interaction, *nuisance, 0.0])
+                )
+                latent_rows.append([color, shape, interaction])
+                template_ids.append(repeat)
+                entity_ids.append(1000 + repeat if split == "new_names" else repeat)
+
+    raw = t.stack(raw_rows)
+    mixing = mixing.to(device)
+    return FactorWorld(
+        activations=raw.to(device) @ mixing.T,
+        latent_factors=t.tensor(latent_rows, device=device),
+        template_ids=t.tensor(template_ids, dtype=t.long, device=device),
+        entity_ids=t.tensor(entity_ids, dtype=t.long, device=device),
+        mixing=mixing,
+        split=split,
+    )
+
+
+def make_factor_question_rows(world: FactorWorld) -> ActivationQuestionBatch:
+    """Ask three natural-language questions of every model-organism activation."""
+
+    answers = world.latent_factors.gt(0).long()
+    return build_activation_question_batch(
+        activations=world.activations.repeat_interleave(len(FACTOR_QUESTIONS), dim=0),
+        question_ids=t.arange(
+            len(FACTOR_QUESTIONS), device=world.activations.device
+        ).repeat(world.activations.shape[0]),
+        answer_ids=answers.reshape(-1),
+        template_ids=world.template_ids.repeat_interleave(len(FACTOR_QUESTIONS)),
+        questions=FACTOR_QUESTIONS,
+    )
+
+
+class LowRankLinear(t.nn.Module):
+    """Frozen linear map plus a trainable LoRA update."""
+
+    def __init__(
+        self,
+        in_features: int,
+        out_features: int,
+        *,
+        rank: int = 4,
+        alpha: float = 4.0,
+    ):
+        super().__init__()
+        if not 1 <= rank <= min(in_features, out_features):
+            raise ValueError("rank must lie between 1 and the smaller feature dimension.")
+        self.base = t.nn.Linear(in_features, out_features)
+        self.base.requires_grad_(False)
+        self.lora_A = t.nn.Parameter(t.randn(rank, in_features) * 0.05)
+        self.lora_B = t.nn.Parameter(t.zeros(out_features, rank))
+        self.scale = alpha / rank
+
+    def forward(self, inputs: t.Tensor) -> t.Tensor:
+        update = inputs @ self.lora_A.T @ self.lora_B.T
+        return self.base(inputs) + self.scale * update
+
+
+class MiniActivationOracle(t.nn.Module):
+    """Question-conditioned classifier trained only through low-rank updates."""
+
+    def __init__(
+        self,
+        activation_dim: int = 8,
+        *,
+        num_questions: int = len(FACTOR_QUESTIONS),
+        hidden_dim: int = 24,
+        rank: int = 4,
+    ):
+        super().__init__()
+        self.num_questions = num_questions
+        self.input_adapter = LowRankLinear(
+            activation_dim + num_questions,
+            hidden_dim,
+            rank=rank,
+        )
+        self.output_adapter = LowRankLinear(hidden_dim, 2, rank=min(rank, 2))
+
+    def forward(self, activations: t.Tensor, question_ids: t.Tensor) -> t.Tensor:
+        if activations.ndim != 2:
+            raise ValueError("activations must have shape (rows, activation_dim).")
+        if question_ids.shape != (activations.shape[0],):
+            raise ValueError("question_ids must have one entry per activation row.")
+        if question_ids.numel() and (
+            int(question_ids.min()) < 0
+            or int(question_ids.max()) >= self.num_questions
+        ):
+            raise ValueError("question_ids are outside this oracle's question bank.")
+        question_one_hot = F.one_hot(
+            question_ids.long(), num_classes=self.num_questions
+        ).float()
+        inputs = t.cat([activations.float(), question_one_hot], dim=-1)
+        return self.output_adapter(t.tanh(self.input_adapter(inputs)))
+
+
+def train_mini_activation_oracle(
+    batch: ActivationQuestionBatch,
+    *,
+    steps: int = 180,
+    lr: float = 0.04,
+    seed: int = 7303,
+) -> tuple[MiniActivationOracle, t.Tensor]:
+    """Fit LoRA parameters while every base weight remains frozen."""
+
+    if steps < 1 or lr <= 0:
+        raise ValueError("steps and lr must be positive.")
+    t.manual_seed(seed)
+    model = MiniActivationOracle(
+        activation_dim=batch.activations.shape[1],
+        num_questions=len(batch.questions),
+    ).to(batch.activations.device)
+    trainable = [parameter for parameter in model.parameters() if parameter.requires_grad]
+    optimizer = t.optim.AdamW(trainable, lr=lr, weight_decay=1e-4)
+    loss_history = []
+    for _ in range(steps):
+        optimizer.zero_grad(set_to_none=True)
+        logits = model(batch.activations, batch.question_ids)
+        loss = F.cross_entropy(logits, batch.answer_ids)
+        loss.backward()
+        optimizer.step()
+        loss_history.append(loss.detach())
+    return model, t.stack(loss_history)
+
+
+def question_only_logits(
+    train_batch: ActivationQuestionBatch,
+    eval_batch: ActivationQuestionBatch,
+) -> t.Tensor:
+    """Predict each question's majority label without access to activations."""
+
+    logits = t.zeros(
+        (eval_batch.answer_ids.numel(), 2), device=eval_batch.activations.device
+    )
+    for question_id in train_batch.question_ids.unique(sorted=True):
+        train_mask = train_batch.question_ids.eq(question_id)
+        positive_rate = train_batch.answer_ids[train_mask].float().mean()
+        majority = int(positive_rate > 0.5)
+        logits[eval_batch.question_ids.eq(question_id), majority] = 1.0
+    return logits
+
+
+def train_activation_only_classifier(
+    train_batch: ActivationQuestionBatch,
+    eval_batch: ActivationQuestionBatch,
+    *,
+    hidden_dim: int | None = None,
+    steps: int = 200,
+) -> t.Tensor:
+    """Train one classifier that never receives the question id."""
+
+    t.manual_seed(7304 if hidden_dim is None else 7305)
+    activation_dim = train_batch.activations.shape[1]
+    if hidden_dim is None:
+        model: t.nn.Module = t.nn.Linear(activation_dim, 2)
+    else:
+        model = t.nn.Sequential(
+            t.nn.Linear(activation_dim, hidden_dim),
+            t.nn.ReLU(),
+            t.nn.Linear(hidden_dim, 2),
+        )
+    model = model.to(train_batch.activations.device)
+    optimizer = t.optim.AdamW(model.parameters(), lr=0.04, weight_decay=1e-4)
+    for _ in range(steps):
+        optimizer.zero_grad(set_to_none=True)
+        loss = F.cross_entropy(
+            model(train_batch.activations), train_batch.answer_ids
+        )
+        loss.backward()
+        optimizer.step()
+    with t.inference_mode():
+        return model(eval_batch.activations)
+
+
+def train_question_probe_bank(
+    train_batch: ActivationQuestionBatch,
+    eval_batch: ActivationQuestionBatch,
+    *,
+    steps: int = 180,
+) -> t.Tensor:
+    """Train an independent linear probe for each known question."""
+
+    logits = t.zeros(
+        (eval_batch.answer_ids.numel(), 2), device=eval_batch.activations.device
+    )
+    for question_id in range(len(train_batch.questions)):
+        t.manual_seed(7400 + question_id)
+        train_mask = train_batch.question_ids.eq(question_id)
+        eval_mask = eval_batch.question_ids.eq(question_id)
+        probe = t.nn.Linear(train_batch.activations.shape[1], 2).to(
+            train_batch.activations.device
+        )
+        optimizer = t.optim.AdamW(probe.parameters(), lr=0.04, weight_decay=1e-4)
+        for _ in range(steps):
+            optimizer.zero_grad(set_to_none=True)
+            loss = F.cross_entropy(
+                probe(train_batch.activations[train_mask]),
+                train_batch.answer_ids[train_mask],
+            )
+            loss.backward()
+            optimizer.step()
+        with t.inference_mode():
+            logits[eval_mask] = probe(eval_batch.activations[eval_mask])
+    return logits
+
+
+def exact_feature_classifier_logits(
+    batch: ActivationQuestionBatch,
+    mixing: t.Tensor,
+) -> t.Tensor:
+    """Classify from the three exact sparse features of the model organism."""
+
+    decoded = batch.activations @ mixing
+    selected_scores = decoded[
+        t.arange(decoded.shape[0], device=decoded.device), batch.question_ids
+    ]
+    return t.stack([-selected_scores, selected_scores], dim=-1)
+
+
+def model_organism_baseline_accuracies(
+    model: MiniActivationOracle,
+    train_batch: ActivationQuestionBatch,
+    eval_batch: ActivationQuestionBatch,
+    mixing: t.Tensor,
+) -> dict[str, float]:
+    """Compare the oracle with text-only, probe, and exact-feature baselines."""
+
+    with t.inference_mode():
+        oracle_logits = model(eval_batch.activations, eval_batch.question_ids)
+    candidates = {
+        "LoRA oracle": oracle_logits,
+        "text only": question_only_logits(train_batch, eval_batch),
+        "activation-only linear": train_activation_only_classifier(
+            train_batch, eval_batch
+        ),
+        "activation-only MLP": train_activation_only_classifier(
+            train_batch, eval_batch, hidden_dim=16
+        ),
+        "linear probe bank": train_question_probe_bank(train_batch, eval_batch),
+        "exact feature classifier": exact_feature_classifier_logits(eval_batch, mixing),
+    }
+    return {
+        name: _prediction_accuracy(logits, eval_batch.answer_ids)
+        for name, logits in candidates.items()
+    }
+
+
+def evaluate_factor_ood_splits(
+    model: MiniActivationOracle,
+    *,
+    repeats: int = 8,
+) -> dict[str, float]:
+    """Evaluate the four roadmap stress splits without averaging them together."""
+
+    scores: dict[str, float] = {}
+    for split in FACTOR_SPLITS[1:]:
+        batch = make_factor_question_rows(make_factor_world(split, repeats=repeats))
+        with t.inference_mode():
+            logits = model(batch.activations, batch.question_ids)
+        scores[split] = _prediction_accuracy(logits, batch.answer_ids)
+    return scores
+
+
+def factor_manifold_distance(activations: t.Tensor, mixing: t.Tensor) -> t.Tensor:
+    """Distance to the four valid (color, shape, interaction) states."""
+
+    decoded_factors = (activations @ mixing)[:, :3]
+    prototypes = t.tensor(
+        [
+            [-1.0, -1.0, 1.0],
+            [-1.0, 1.0, -1.0],
+            [1.0, -1.0, -1.0],
+            [1.0, 1.0, 1.0],
+        ],
+        device=activations.device,
+    )
+    squared_distances = (
+        decoded_factors.float()[:, None, :] - prototypes[None, :, :]
+    ).square().sum(dim=-1)
+    return squared_distances.sqrt().min(dim=-1).values
+
+
+def add_off_manifold_abstention(
+    binary_logits: t.Tensor,
+    activations: t.Tensor,
+    mixing: t.Tensor,
+    *,
+    threshold: float = 0.5,
+) -> t.Tensor:
+    """Add an abstain class for activations outside the exact organism manifold."""
+
+    if binary_logits.shape != (activations.shape[0], 2):
+        raise ValueError("binary_logits must have shape (rows, 2).")
+    distances = factor_manifold_distance(activations, mixing)
+    off_manifold = distances > threshold
+    guarded_binary = t.where(
+        off_manifold[:, None], t.zeros_like(binary_logits), binary_logits
+    )
+    abstain = t.where(
+        off_manifold,
+        t.full_like(distances, 0.1),
+        binary_logits.max(dim=-1).values - 5.0,
+    )
+    return t.cat([guarded_binary, abstain[:, None]], dim=-1)
+
+
+def patch_factor_activation(
+    source: t.Tensor,
+    donor: t.Tensor,
+    mixing: t.Tensor,
+    *,
+    factor: Literal["color", "shape"],
+) -> t.Tensor:
+    """Patch one causal factor and restore the exact interaction relation."""
+
+    if source.shape != donor.shape or source.ndim != 1:
+        raise ValueError("source and donor must be matching activation vectors.")
+    factor_index = {"color": 0, "shape": 1}.get(factor)
+    if factor_index is None:
+        raise ValueError("factor must be 'color' or 'shape'.")
+    decoded = source @ mixing
+    donor_decoded = donor @ mixing
+    decoded[factor_index] = donor_decoded[factor_index]
+    decoded[2] = decoded[0] * decoded[1]
+    return decoded @ mixing.T
+
+
+def run_model_organism_signature() -> dict[str, object]:
+    """Run the complete CPU signature computation used by the learner notebook."""
+
+    train_world = make_factor_world("train")
+    train_batch = make_factor_question_rows(train_world)
+    model, losses = train_mini_activation_oracle(train_batch)
+    baselines = model_organism_baseline_accuracies(
+        model, train_batch, train_batch, train_world.mixing
+    )
+    ood = evaluate_factor_ood_splits(model)
+
+    random_generator = t.Generator(device="cpu").manual_seed(777)
+    random_activations = t.randn(256, 8, generator=random_generator) * 1.4
+    random_questions = t.arange(3).repeat(86)[:256]
+    with t.inference_mode():
+        random_binary = model(random_activations, random_questions)
+    random_logits = add_off_manifold_abstention(
+        random_binary, random_activations, train_world.mixing
+    )
+    random_abstention_rate = random_logits.argmax(dim=-1).eq(2).float().mean().item()
+
+    source = train_world.activations[0]
+    donor = train_world.activations[2]
+    patched = patch_factor_activation(
+        source, donor, train_world.mixing, factor="color"
+    )
+    patch_activations = t.stack([source, patched]).repeat_interleave(3, dim=0)
+    patch_questions = t.arange(3).repeat(2)
+    with t.inference_mode():
+        patch_answers = model(patch_activations, patch_questions).argmax(dim=-1)
+    before, after = patch_answers[:3], patch_answers[3:]
+
+    return {
+        "claim": "question-conditioned low-rank routing beats shortcut baselines",
+        "train_loss": float(losses[-1]),
+        "baseline_accuracies": baselines,
+        "ood_accuracies": ood,
+        "random_abstention_rate": random_abstention_rate,
+        "patch_before": before.tolist(),
+        "patch_after": after.tolist(),
+        "patch_changed_questions": before.ne(after).nonzero().flatten().tolist(),
+    }
+
+
 def batch_smoke_test() -> dict:
     activations = t.eye(3)
     question_ids = t.tensor([0, 1, 2])
@@ -417,6 +854,7 @@ def run_smoke_test(cpu: bool = True) -> dict:
         "ood": ood_smoke_test(),
         "random_activation": random_activation_smoke_test(),
         "patching": patching_smoke_test(),
+        "model_organism": run_model_organism_signature(),
     }
 
 
@@ -928,7 +1366,41 @@ def run_transformerlens_activation_oracle_preflight(max_vram_gb: float = 24.0) -
 
 
 def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
-    return run_transformerlens_activation_oracle_preflight(max_vram_gb=max_vram_gb)
+    signature = run_model_organism_signature()
+    baselines = signature["baseline_accuracies"]
+    ood = signature["ood_accuracies"]
+    toy_metrics = {
+        "toy_signature_passed": (
+            baselines["LoRA oracle"] == 1.0
+            and baselines["text only"] == 0.5
+            and baselines["activation-only linear"] <= 0.75
+            and baselines["activation-only MLP"] <= 0.75
+            and min(ood.values()) == 1.0
+            and signature["random_abstention_rate"] > 0.95
+            and signature["patch_changed_questions"] == [0, 2]
+        ),
+        "toy_train_loss": signature["train_loss"],
+        "toy_oracle_accuracy": baselines["LoRA oracle"],
+        "toy_text_only_accuracy": baselines["text only"],
+        "toy_activation_only_linear_accuracy": baselines[
+            "activation-only linear"
+        ],
+        "toy_activation_only_mlp_accuracy": baselines["activation-only MLP"],
+        "toy_probe_bank_accuracy": baselines["linear probe bank"],
+        "toy_exact_feature_accuracy": baselines["exact feature classifier"],
+        "toy_heldout_template_accuracy": ood["heldout_template"],
+        "toy_new_names_accuracy": ood["new_names"],
+        "toy_long_context_accuracy": ood["long_context"],
+        "toy_adversarial_distractor_accuracy": ood["adversarial_distractor"],
+        "toy_random_abstention_rate": signature["random_abstention_rate"],
+        "toy_patch_before": signature["patch_before"],
+        "toy_patch_after": signature["patch_after"],
+        "toy_patch_changed_questions": signature["patch_changed_questions"],
+    }
+    return {
+        **toy_metrics,
+        **run_transformerlens_activation_oracle_preflight(max_vram_gb=max_vram_gb),
+    }
 
 
 def run_full_experiment(max_vram_gb: float = 24.0) -> dict:

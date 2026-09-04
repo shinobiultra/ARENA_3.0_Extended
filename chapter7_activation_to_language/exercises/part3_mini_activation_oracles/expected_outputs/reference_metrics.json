@@ -42,6 +42,33 @@
     "tests_passed": true,
     "text_only_accuracy": 0.5,
     "tokenizer_revision": "0f6671571a20be9756b9991d978047c03b75e749",
+    "toy_activation_only_linear_accuracy_max": 0.75,
+    "toy_activation_only_mlp_accuracy_max": 0.75,
+    "toy_adversarial_distractor_accuracy": 1.0,
+    "toy_exact_feature_accuracy": 1.0,
+    "toy_heldout_template_accuracy": 1.0,
+    "toy_long_context_accuracy": 1.0,
+    "toy_new_names_accuracy": 1.0,
+    "toy_oracle_accuracy": 1.0,
+    "toy_patch_after": [
+      1,
+      0,
+      0
+    ],
+    "toy_patch_before": [
+      0,
+      0,
+      1
+    ],
+    "toy_patch_changed_questions": [
+      0,
+      2
+    ],
+    "toy_probe_bank_accuracy": 1.0,
+    "toy_random_abstention_rate_min": 0.95,
+    "toy_signature_passed": true,
+    "toy_text_only_accuracy": 0.5,
+    "toy_train_loss_max": 0.001,
     "train_accuracy": 1.0,
     "train_example_count": 8
   },

@@ -10,6 +10,13 @@ This directory contains frozen fixtures for the learner-facing notebook contract
 
 The fixture schema and baseline/control slots are produced by the course asset generator. Numeric report values come from the checked-in `solutions.py` implementation for this section when the report runner executes `run_smoke_test` and `run_gpu_test`.
 
+The learner-facing reference is the exact factor-world signature: oracle `1.00`,
+text-only `0.50`, activation-only linear and MLP `0.75`, question-specific probe
+bank and exact feature classifier `1.00`, all four named OOD splits `1.00`,
+random-activation abstention above `0.95`, and a color patch that changes answers
+`[0, 0, 1]` to `[1, 0, 0]`. These values are computed in the solved notebook;
+they are not loaded from this fixture.
+
 ## Random seed
 
 The generated artifact lock uses `seed: 0` for toy/generated inputs unless a section-specific solution function states a narrower seed.
