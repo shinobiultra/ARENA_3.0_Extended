@@ -80,7 +80,7 @@ sections:
   '8.3':
     status: course_ready
     page: chapter8_automated_circuits/instructions/pages/03_[8.3]_ACDC_and_Circuit_Metrics.md
-    notes: ARENA-style rewrite with ACDC/circuit-metric validation diagrams, patch-score/pruning/faithfulness/minimality/completeness/OOD progression, help/interpretation dropdowns, signature result, limitations, and paired notebook surfaces.
+    notes: "ARENA-style seven-exercise progression from an exact nonlinear named-edge graph through corrupt-matched interventions, deliberately failing one-shot scores, greedy ACDC with recomputation, threshold cliffs, faithfulness/minimality/pairwise-completeness metrics, exhaustive same-size controls, and held-out transfer. The toy search recovers all eight ground-truth edges while every one-shot score is zero; the exact circuit ranks 1/45 with p=0.022. A pinned gelu-1l CUDA 13.2 study finds heads L0H0/L0H4/L0H6 with 0.946 primary recovery, rank 1/56 with p=0.0179, worst held-out recovery 0.785, MLP bottleneck recovery 0.991, and 0.238 GB peak VRAM. Nineteen focused tests and all 13 solution cells pass. The real claim is component-level head deletion with the real MLP recomputed, not a full edge-level IOI or greater-than ACDC replication."
   '8.4':
     status: course_ready
     page: chapter8_automated_circuits/instructions/pages/04_[8.4]_Circuit_Tracing_with_Attribution_Graphs.md

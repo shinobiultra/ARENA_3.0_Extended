@@ -732,13 +732,13 @@ requirements:
     topic: ACDC iterative circuit discovery
     chapter: 4 Circuit methods
     section: "8.3"
-    status: TOY_ONLY
+    status: PREFLIGHT_ONLY
     roadmap_refs: [Extension-Roadmap.md:851-872, Extension-Roadmap.md:3258-3310]
     course_sections: ["8.3"]
     method_registry_names: [ACDC and circuit metrics]
     evidence: [chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics]
-    reason: The current section teaches circuit metrics and thresholding on a planted organism.
-    blocker: It does not implement iterative edge deletion with recomputation or reproduce IOI/greater-than ACDC.
+    reason: Section 8.3 teaches iterative deletion with metric recomputation on an exact nonlinear graph, then applies the same search to named attention-head result components in pinned gelu-1l with exhaustive same-size controls and held-out prompts.
+    blocker: The roadmap's full edge-level IOI or greater-than ACDC replication is not yet implemented.
 
   - id: circuits.causal_scrubbing
     topic: Causal scrubbing
@@ -754,11 +754,11 @@ requirements:
     topic: Faithfulness, completeness, minimality, sparsity, and OOD circuit metrics
     chapter: 4 Circuit methods
     section: "8.3"
-    status: TOY_ONLY
+    status: PREFLIGHT_ONLY
     roadmap_refs: [Extension-Roadmap.md:851-872, Extension-Roadmap.md:3258-3310]
     evidence: [chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics]
-    reason: Exact metric definitions and same-size random controls are taught on a known circuit.
-    blocker: No real-model discovered circuit is evaluated through the complete metric suite.
+    reason: Exact faithfulness, edgewise minimality, pairwise completeness, exhaustive same-size controls, and OOD transfer are taught on known ground truth; the real component study adds same-size ranking, held-out transfer, and an MLP bottleneck control.
+    blocker: A discovered real-model edge circuit has not yet been evaluated through the complete faithfulness, minimality, completeness, sparsity, and OOD suite.
 
   - id: circuits.attribution_graphs
     topic: Attribution graphs and circuit tracing

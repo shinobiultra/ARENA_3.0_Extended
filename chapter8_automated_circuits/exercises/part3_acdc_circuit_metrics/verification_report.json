@@ -2,316 +2,681 @@
   "accepted": true,
   "baselines": {
     "declared_controls": [
-      "baseline_or_reference_check",
-      "negative_control_where_applicable",
-      "shape_dtype_or_exact_value_check",
-      "toy_acdc_pruning_contract",
-      "toy_faithfulness_minimality_completeness_contracts",
-      "toy_random_circuit_baseline_contract",
-      "toy_ood_template_contract",
-      "pinned_transformerlens_gelu1l_exact_patch_scores",
-      "threshold_pruned_final_position_circuit",
-      "same_size_wrong_position_random_baseline",
-      "top_omitted_position_completeness_check",
-      "heldout_prompt_template_final_position_localization",
-      "full_acdc_ioi_replication_not_claimed"
+      "exact clean and corrupt metric endpoints",
+      "corrupt-matched edge replacement rather than zero ablation",
+      "deliberately failing one-shot insertion baseline",
+      "two matched background-decoy edges",
+      "iterative deletion trace proving metric recomputation",
+      "two-cliff threshold sweep",
+      "faithfulness and edgewise minimality",
+      "pairwise completeness for interacting omitted paths",
+      "exhaustive same-size random-circuit null over all 45 circuits",
+      "three exact held-out toy regimes",
+      "exhaustive real-model same-size random-circuit null over all 56 three-head sets",
+      "three held-out real prompt pairs",
+      "downstream MLP clean-output bottleneck control"
     ],
     "expected_metrics": {
       "accepted": true,
-      "best_position": 5,
-      "best_score_min": 0.99,
-      "bnb_cuda_override": "130",
-      "circuit_beats_random": true,
       "clean_corrupt_gap_min": 6.0,
       "distractor_token": " top",
+      "head_hook": "blocks.0.attn.hook_result",
       "hf_revision": "bddc0e332f0ae84279e6a6a45d91b314899e1603",
-      "hook_name": "blocks.0.hook_resid_post",
-      "kept_edges": [
-        "position_5"
-      ],
-      "max_allowed_gpu_gb": 24,
-      "minimality_metric_damage_min": 1.0,
+      "mlp_hook": "blocks.0.hook_mlp_out",
       "model_name": "gelu-1l",
-      "num_kept_edges": 1,
-      "omitted_node_gain_max": 1e-05,
-      "passes_completeness": true,
-      "passes_faithfulness": true,
-      "passes_minimality": true,
-      "passes_ood": true,
-      "peak_vram_gb_max": 1.0,
-      "preflight_passed": true,
-      "preserved_fraction_min": 0.99,
-      "random_baseline_margin_min": 1.0,
-      "sequence_length": 6,
-      "target_position": 5,
+      "real_kept_heads": [
+        "L0H0",
+        "L0H4",
+        "L0H6"
+      ],
+      "real_mlp_bottleneck_recovery_min": 0.95,
+      "real_model_component_result_passed": true,
+      "real_primary_recovery_min": 0.9,
+      "real_same_size_best_other_recovery_max": 0.89,
+      "real_same_size_exact_pvalue_max": 0.0179,
+      "real_same_size_rank": 1,
+      "real_same_size_set_count": 56,
+      "real_worst_heldout_recovery_min": 0.75,
       "target_token": " floor",
-      "template_count": 3,
       "tests_passed": true,
+      "threshold_backup_cliff": 0.17,
+      "threshold_primary_cliff": 0.84,
       "tokenizer_revision": "0f6671571a20be9756b9991d978047c03b75e749",
-      "top_omitted_position_min": 0
+      "toy_exact_ground_truth_recovered": true,
+      "toy_kept_edge_count": 8,
+      "toy_max_omitted_subset_gain_max": 0.0,
+      "toy_min_edge_damage_min": 0.1666,
+      "toy_one_shot_max_abs": 0.0,
+      "toy_recovery_min": 0.999999,
+      "toy_same_size_best_wrong_recovery_max": 0.8334,
+      "toy_same_size_circuit_count": 45,
+      "toy_same_size_exact_pvalue_max": 0.0223,
+      "toy_same_size_rank": 1,
+      "toy_worst_heldout_recovery_min": 0.999999
     }
   },
-  "claim_scope": "GT-1 circuit-metric preflight: reusable toy ACDC pruning, faithfulness, minimality, completeness, random-baseline, and OOD-template contracts are kept for learner exercises, then a pinned TransformerLens gelu-1l checkpoint is loaded on CUDA. The report uses exact residual-stream patch scores to prune a position circuit, requires the final residual position to be the only kept edge, verifies faithfulness, minimality, completeness, and a same-size wrong-position baseline on the primary prompt pair, and checks the same final-position localization on held-out safe prompt templates. This is a mechanics preflight, not a full ACDC IOI or greater-than circuit discovery replication.",
+  "claim_scope": "The learner-facing signature result is an exact named-node and named-edge nonlinear graph with a declared eight-edge ground-truth circuit. Corrupt-matched edge intervention, iterative greedy deletion with metric recomputation, a full threshold sweep, faithfulness, edgewise minimality, pairwise completeness, exhaustive same-size controls, and three held-out toy regimes are all evaluated exactly. A separate pinned gelu-1l path applies the same greedy algorithm to eight named attention-head result components while the real MLP recomputes, then checks every same-size three-head set and three held-out prompt pairs. This is honest component-level evidence, not a full edge-level IOI or greater-than ACDC replication.",
   "datasets": [
     {
-      "id": "8_3_acdc_and_circuit_metrics_toy_inputs",
-      "seed": 0,
-      "source": "generated"
+      "candidate_edge_count": 10,
+      "clean_metric": 2.5,
+      "corrupt_metric": 0.1,
+      "ground_truth_edge_count": 8,
+      "id": "exact_nonlinear_named_edge_inputs_v1",
+      "seed": "deterministic",
+      "source": "generated_analytic_task"
     },
     {
-      "heldout_clean_prompts": [
-        "To make tea, boil the",
-        "The recipe calls for sugar and",
-        "The chef cooked a"
-      ],
-      "heldout_corrupt_prompts": [
-        "To make bread, bake the",
-        "The recipe calls for salt and",
-        "The teacher taught a"
+      "heldout_labels": [
+        "dog_vs_plane",
+        "child_vs_plane",
+        "cup_vs_plane"
       ],
       "heldout_pair_count": 3,
-      "id": "course_safe_clean_corrupt_position_circuit_prompts_v1",
+      "id": "course_safe_head_component_prompt_pairs_v1",
       "primary_clean_prompt": "The cat sat on the",
       "primary_corrupt_prompt": "The bird flew over the",
-      "seed": 0,
+      "seed": "deterministic",
       "source": "generated_prompt_pairs",
       "tokenizer": "NeelNanda/gpt-neox-tokenizer-digits"
     }
   ],
-  "date_run": "2026-09-04T08:44:22+00:00",
-  "evidence_level": "toy_circuit_metric_contract_plus_pinned_transformerlens_position_circuit_preflight",
-  "git_commit": "d5d0f7d4",
+  "date_run": "2026-09-04T13:37:46+00:00",
+  "evidence_level": "exact_nonlinear_ground_truth_acdc_plus_pinned_transformerlens_component_result",
+  "git_commit": "06a547b0",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
-  "gt_tier": "GT-1",
+  "gt_tier": "GT-0",
   "known_failures": [],
   "metrics": {
     "gpu_evidence": {
       "category": "cuda_section_metric",
       "placeholder_only": false,
       "section_specific_metric_keys": [
-        "best_position",
-        "best_score",
-        "bnb_cuda_override",
-        "circuit_beats_random",
+        "accepted",
         "clean_corrupt_gap",
-        "clean_prompt",
-        "corrupt_prompt",
         "distractor_token",
-        "hf_model_id",
+        "head_hook",
         "hf_revision",
-        "hook_name",
-        "kept_edges",
-        "minimality_metric_damage",
+        "mlp_hook",
         "model_name",
-        "num_kept_edges",
-        "omitted_node_gain",
-        "passes_completeness",
-        "passes_faithfulness",
-        "passes_minimality",
-        "passes_ood",
-        "patch_scores_by_position",
-        "preflight_passed",
-        "preserved_fraction",
-        "random_baseline_margin",
-        "sequence_length",
-        "target_position",
+        "real_kept_heads",
+        "real_mlp_bottleneck_recovery",
+        "real_model",
+        "real_model_component_result_passed",
+        "real_primary_recovery",
+        "real_same_size_best_other_recovery",
+        "real_same_size_exact_pvalue",
+        "real_same_size_rank",
+        "real_same_size_set_count",
+        "real_worst_heldout_recovery",
         "target_token",
-        "template_best_positions",
-        "template_count",
-        "template_random_recoveries",
-        "template_recoveries",
-        "template_target_positions",
-        "tokenizer_id",
+        "threshold_backup_cliff",
+        "threshold_primary_cliff",
         "tokenizer_revision",
-        "top_omitted_metric",
-        "top_omitted_position"
+        "toy_exact_ground_truth_recovered",
+        "toy_kept_edge_count",
+        "toy_max_omitted_subset_gain",
+        "toy_min_edge_damage",
+        "toy_one_shot_max_abs",
+        "toy_recovery",
+        "toy_same_size_best_wrong_recovery",
+        "toy_same_size_circuit_count",
+        "toy_same_size_exact_pvalue",
+        "toy_same_size_rank",
+        "toy_worst_heldout_recovery"
       ],
       "uses_cuda": true
     },
     "gpu_test": {
-      "best_position": 5,
-      "best_score": 1.0,
-      "bnb_cuda_override": "130",
-      "circuit_beats_random": true,
-      "clean_corrupt_gap": 6.27708625793457,
-      "clean_prompt": "The cat sat on the",
-      "corrupt_prompt": "The bird flew over the",
+      "accepted": true,
+      "clean_corrupt_gap": 6.277088165283203,
       "cuda_available": true,
       "cuda_version": "13.2",
       "device": "NVIDIA GeForce RTX 5090 Laptop GPU",
       "distractor_token": " top",
-      "full_path": "Pinned TransformerLens gelu-1l ACDC-style position-circuit preflight.",
+      "full_path": "Exact nonlinear ACDC ground truth plus pinned gelu-1l attention-head component deletion, exhaustive same-size controls, and held-out transfer.",
       "gpu_total_memory_gb": 23.45965576171875,
-      "hf_model_id": "NeelNanda/GELU_1L512W_C4_Code",
+      "head_hook": "blocks.0.attn.hook_result",
       "hf_revision": "bddc0e332f0ae84279e6a6a45d91b314899e1603",
-      "hook_name": "blocks.0.hook_resid_post",
-      "kept_edges": [
-        "position_5"
-      ],
-      "minimality_metric_damage": 6.27708625793457,
+      "mlp_hook": "blocks.0.hook_mlp_out",
       "model_name": "gelu-1l",
-      "num_kept_edges": 1,
-      "omitted_node_gain": 0.0,
-      "passes_completeness": true,
-      "passes_faithfulness": true,
-      "passes_minimality": true,
-      "passes_ood": true,
-      "patch_scores_by_position": [
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        1.0
+      "peak_vram_gb": 0.23825597763061523,
+      "real_kept_heads": [
+        "L0H0",
+        "L0H4",
+        "L0H6"
       ],
-      "peak_vram_gb": 0.23518753051757812,
-      "preflight_passed": true,
-      "preserved_fraction": 1.0,
-      "random_baseline_margin": 6.27708625793457,
-      "sequence_length": 6,
-      "target_position": 5,
+      "real_mlp_bottleneck_recovery": 0.9912096680585426,
+      "real_model": {
+        "accepted": true,
+        "acdc": {
+          "kept_edges": [
+            "L0H0",
+            "L0H4",
+            "L0H6"
+          ],
+          "recovery": 0.9455158337794993,
+          "removed_edges": [
+            "L0H2",
+            "L0H3",
+            "L0H7",
+            "L0H5",
+            "L0H1"
+          ],
+          "steps": [
+            {
+              "before_recovery": 1.0,
+              "decision": "remove",
+              "edge": "L0H2",
+              "normalized_damage": -0.011611964988170742,
+              "trial_recovery": 1.0116119649881707
+            },
+            {
+              "before_recovery": 1.0116119649881707,
+              "decision": "remove",
+              "edge": "L0H3",
+              "normalized_damage": -0.0004181097428685998,
+              "trial_recovery": 1.0120300747310393
+            },
+            {
+              "before_recovery": 1.0120300747310393,
+              "decision": "remove",
+              "edge": "L0H7",
+              "normalized_damage": 0.01351108264291545,
+              "trial_recovery": 0.9985189920881239
+            },
+            {
+              "before_recovery": 0.9985189920881239,
+              "decision": "remove",
+              "edge": "L0H5",
+              "normalized_damage": 0.01298343179372119,
+              "trial_recovery": 0.9855355602944027
+            },
+            {
+              "before_recovery": 0.9855355602944027,
+              "decision": "remove",
+              "edge": "L0H1",
+              "normalized_damage": 0.040019726514903375,
+              "trial_recovery": 0.9455158337794993
+            },
+            {
+              "before_recovery": 0.9455158337794993,
+              "decision": "keep",
+              "edge": "L0H6",
+              "normalized_damage": 0.1007094495840476,
+              "trial_recovery": 0.8448063841954517
+            },
+            {
+              "before_recovery": 0.9455158337794993,
+              "decision": "keep",
+              "edge": "L0H4",
+              "normalized_damage": 0.2818907433055342,
+              "trial_recovery": 0.6636250904739651
+            },
+            {
+              "before_recovery": 0.9455158337794993,
+              "decision": "keep",
+              "edge": "L0H0",
+              "normalized_damage": 0.5026984182932736,
+              "trial_recovery": 0.4428174154862258
+            }
+          ],
+          "threshold": 0.05
+        },
+        "claim_scope": "Component-level head deletion in one layer with the real MLP recomputed; not a full edge-level IOI or greater-than ACDC replication.",
+        "clean_corrupt_gap": 6.277088165283203,
+        "clean_metric": 2.567628860473633,
+        "clean_prompt": "The cat sat on the",
+        "corrupt_metric": -3.7094593048095703,
+        "corrupt_prompt": "The bird flew over the",
+        "cuda_version": "13.2",
+        "deletion_order": [
+          "L0H2",
+          "L0H3",
+          "L0H7",
+          "L0H5",
+          "L0H1",
+          "L0H6",
+          "L0H4",
+          "L0H0"
+        ],
+        "device": "cuda",
+        "head_hook": "blocks.0.attn.hook_result",
+        "heldout_recoveries": {
+          "child_vs_plane": 0.9448657713339514,
+          "cup_vs_plane": 0.7854965050546653,
+          "dog_vs_plane": 0.8375967903322097
+        },
+        "heldout_tokens": {
+          "child_vs_plane": {
+            "negative": " moon",
+            "positive": " floor"
+          },
+          "cup_vs_plane": {
+            "negative": " moon",
+            "positive": " table"
+          },
+          "dog_vs_plane": {
+            "negative": " moon",
+            "positive": " floor"
+          }
+        },
+        "hf_model_id": "NeelNanda/GELU_1L512W_C4_Code",
+        "hf_revision": "bddc0e332f0ae84279e6a6a45d91b314899e1603",
+        "initial_deletion_damage": {
+          "L0H0": 0.4737728813291514,
+          "L0H1": 0.0343817779509098,
+          "L0H2": -0.011611964988170742,
+          "L0H3": -0.0006361284496332331,
+          "L0H4": 0.2164339310641561,
+          "L0H5": 0.004016405945666435,
+          "L0H6": 0.09502242781985548,
+          "L0H7": 0.002376176009616482
+        },
+        "mlp_bottleneck_recovery": 0.9912096680585426,
+        "mlp_hook": "blocks.0.hook_mlp_out",
+        "model_name": "gelu-1l",
+        "negative_token": " top",
+        "peak_vram_gb": 0.23825597763061523,
+        "positive_token": " floor",
+        "same_size_random": {
+          "circuit_size": 3,
+          "control_best_recovery": 0.8854844208541958,
+          "control_mean_recovery": 0.40948532337015237,
+          "control_recoveries": [
+            0.602317014696436,
+            0.5816837850599909,
+            0.8854844208541958,
+            0.593160229012319,
+            0.709839131060996,
+            0.6383048384656101,
+            0.5507497412642107,
+            0.8498730781688981,
+            0.5603544148560226,
+            0.6874640307116191,
+            0.6106696380008277,
+            0.8407808624850426,
+            0.5420590750172743,
+            0.6598148527408978,
+            0.5936866644262143,
+            0.8528273455926189,
+            0.8771895307265082,
+            0.6791082168895674,
+            0.6015439978462487,
+            0.7222189472993331,
+            0.07711344447678853,
+            0.42006021266471427,
+            0.10000723184002927,
+            0.20640643791769195,
+            0.12776853371708677,
+            0.4013028554829198,
+            0.07389725074612534,
+            0.1718042103894194,
+            0.10341090646556884,
+            0.4278637630727663,
+            0.4977684607909688,
+            0.44137514957450646,
+            0.19881938692228082,
+            0.1231732767102542,
+            0.224963096345733,
+            0.3558328132283116,
+            0.02623152462380758,
+            0.13101982314200963,
+            0.05990455186596666,
+            0.3850571953465844,
+            0.4564454837766735,
+            0.39148624036083846,
+            0.1596767489050447,
+            0.08144799061197774,
+            0.18922534838933552,
+            0.3661927279290623,
+            0.43532197792647953,
+            0.381676006274077,
+            0.1254484196606383,
+            0.057324486584936746,
+            0.15791634280380262,
+            0.4667061885711403,
+            0.4072835568012417,
+            0.46818582911830503,
+            0.18444549714646177
+          ],
+          "discovered_rank": 1,
+          "discovered_recovery": 0.9455158337794993,
+          "exact_empirical_pvalue": 0.017857142857142856,
+          "num_circuits": 56
+        },
+        "threshold": 0.05,
+        "tokenizer_id": "NeelNanda/gpt-neox-tokenizer-digits",
+        "tokenizer_revision": "0f6671571a20be9756b9991d978047c03b75e749",
+        "torch_version": "2.12.1+cu132",
+        "worst_heldout_recovery": 0.7854965050546653
+      },
+      "real_model_component_result_passed": true,
+      "real_primary_recovery": 0.9455158337794993,
+      "real_same_size_best_other_recovery": 0.8854844208541958,
+      "real_same_size_exact_pvalue": 0.017857142857142856,
+      "real_same_size_rank": 1,
+      "real_same_size_set_count": 56,
+      "real_worst_heldout_recovery": 0.7854965050546653,
       "target_token": " floor",
-      "template_best_positions": [
-        6,
-        6,
-        4
-      ],
-      "template_count": 3,
-      "template_random_recoveries": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "template_recoveries": [
-        1.0,
-        1.0,
-        1.0
-      ],
-      "template_target_positions": [
-        6,
-        6,
-        4
-      ],
-      "tokenizer_id": "NeelNanda/gpt-neox-tokenizer-digits",
+      "threshold_backup_cliff": 0.17,
+      "threshold_primary_cliff": 0.84,
       "tokenizer_revision": "0f6671571a20be9756b9991d978047c03b75e749",
-      "top_omitted_metric": -3.7094573974609375,
-      "top_omitted_position": 0,
       "torch_version": "2.12.1+cu132",
+      "toy_exact_ground_truth_recovered": true,
+      "toy_kept_edge_count": 8,
+      "toy_max_omitted_subset_gain": 0.0,
+      "toy_min_edge_damage": 0.16666666666666663,
+      "toy_one_shot_max_abs": 0.0,
+      "toy_recovery": 1.0,
+      "toy_same_size_best_wrong_recovery": 0.8333333333333334,
+      "toy_same_size_circuit_count": 45,
+      "toy_same_size_exact_pvalue": 0.022222222222222223,
+      "toy_same_size_rank": 1,
+      "toy_worst_heldout_recovery": 1.0,
       "within_vram_budget": true
     },
     "notebook_contract": {
+      "accepted": true,
       "acdc": {
         "kept_edges": [
-          "name-mover",
-          "negative"
+          "tokens.io_name -> L0H0.name_copy",
+          "tokens.position -> L0H1.position",
+          "L0H0.name_copy -> L0M0.binding",
+          "L0H1.position -> L0M0.binding",
+          "L0M0.binding -> L1H0.answer",
+          "L1H0.answer -> logits.io",
+          "tokens.backup -> L1M0.backup",
+          "L1M0.backup -> logits.io"
         ],
-        "num_kept": 2,
+        "recovery": 1.0,
         "removed_edges": [
-          "backup"
+          "tokens.background -> L0H2.background",
+          "L0H2.background -> logits.io"
         ],
-        "threshold": 0.5
+        "steps": [
+          {
+            "before_recovery": 1.0,
+            "decision": "remove",
+            "edge": "tokens.background -> L0H2.background",
+            "normalized_damage": 0.0,
+            "trial_recovery": 1.0
+          },
+          {
+            "before_recovery": 1.0,
+            "decision": "remove",
+            "edge": "L0H2.background -> logits.io",
+            "normalized_damage": 0.0,
+            "trial_recovery": 1.0
+          },
+          {
+            "before_recovery": 1.0,
+            "decision": "keep",
+            "edge": "tokens.backup -> L1M0.backup",
+            "normalized_damage": 0.16666666666666663,
+            "trial_recovery": 0.8333333333333334
+          },
+          {
+            "before_recovery": 1.0,
+            "decision": "keep",
+            "edge": "L1M0.backup -> logits.io",
+            "normalized_damage": 0.16666666666666663,
+            "trial_recovery": 0.8333333333333334
+          },
+          {
+            "before_recovery": 1.0,
+            "decision": "keep",
+            "edge": "tokens.io_name -> L0H0.name_copy",
+            "normalized_damage": 0.8333333333333333,
+            "trial_recovery": 0.16666666666666669
+          },
+          {
+            "before_recovery": 1.0,
+            "decision": "keep",
+            "edge": "tokens.position -> L0H1.position",
+            "normalized_damage": 0.8333333333333333,
+            "trial_recovery": 0.16666666666666669
+          },
+          {
+            "before_recovery": 1.0,
+            "decision": "keep",
+            "edge": "L0H0.name_copy -> L0M0.binding",
+            "normalized_damage": 0.8333333333333333,
+            "trial_recovery": 0.16666666666666669
+          },
+          {
+            "before_recovery": 1.0,
+            "decision": "keep",
+            "edge": "L0H1.position -> L0M0.binding",
+            "normalized_damage": 0.8333333333333333,
+            "trial_recovery": 0.16666666666666669
+          },
+          {
+            "before_recovery": 1.0,
+            "decision": "keep",
+            "edge": "L0M0.binding -> L1H0.answer",
+            "normalized_damage": 0.8333333333333333,
+            "trial_recovery": 0.16666666666666669
+          },
+          {
+            "before_recovery": 1.0,
+            "decision": "keep",
+            "edge": "L1H0.answer -> logits.io",
+            "normalized_damage": 0.8333333333333333,
+            "trial_recovery": 0.16666666666666669
+          }
+        ],
+        "threshold": 0.1
       },
-      "completeness": {
-        "circuit_metric": 2.2,
-        "expanded_metric": 2.35,
-        "omitted_node_gain": 0.1499999999999999,
-        "passes_completeness": true
-      },
-      "faithfulness": {
-        "circuit_metric": 2.2,
-        "corrupt_metric": -1.0,
-        "full_metric": 3.0,
+      "clean_metric": 2.5,
+      "corrupt_metric": 0.1,
+      "decoy_edges": [
+        "tokens.background -> L0H2.background",
+        "L0H2.background -> logits.io"
+      ],
+      "deletion_order": [
+        "tokens.background -> L0H2.background",
+        "L0H2.background -> logits.io",
+        "tokens.backup -> L1M0.backup",
+        "L1M0.backup -> logits.io",
+        "tokens.io_name -> L0H0.name_copy",
+        "tokens.position -> L0H1.position",
+        "L0H0.name_copy -> L0M0.binding",
+        "L0H1.position -> L0M0.binding",
+        "L0M0.binding -> L1H0.answer",
+        "L1H0.answer -> logits.io"
+      ],
+      "edge_names": [
+        "tokens.io_name -> L0H0.name_copy",
+        "tokens.position -> L0H1.position",
+        "L0H0.name_copy -> L0M0.binding",
+        "L0H1.position -> L0M0.binding",
+        "L0M0.binding -> L1H0.answer",
+        "L1H0.answer -> logits.io",
+        "tokens.backup -> L1M0.backup",
+        "L1M0.backup -> logits.io",
+        "tokens.background -> L0H2.background",
+        "L0H2.background -> logits.io"
+      ],
+      "ground_truth_edges": [
+        "tokens.io_name -> L0H0.name_copy",
+        "tokens.position -> L0H1.position",
+        "L0H0.name_copy -> L0M0.binding",
+        "L0H1.position -> L0M0.binding",
+        "L0M0.binding -> L1H0.answer",
+        "L1H0.answer -> logits.io",
+        "tokens.backup -> L1M0.backup",
+        "L1M0.backup -> logits.io"
+      ],
+      "metrics": {
+        "circuit_recovery": 1.0,
+        "completeness_by_edge": {
+          "L0H2.background -> logits.io": 0.0,
+          "tokens.background -> L0H2.background": 0.0
+        },
+        "completeness_by_subset": {
+          "L0H2.background -> logits.io": 0.0,
+          "tokens.background -> L0H2.background": 0.0,
+          "tokens.background -> L0H2.background + L0H2.background -> logits.io": 0.0
+        },
+        "max_omitted_gain": 0.0,
+        "min_edge_damage": 0.16666666666666663,
+        "minimality_by_edge": {
+          "L0H0.name_copy -> L0M0.binding": 0.8333333333333333,
+          "L0H1.position -> L0M0.binding": 0.8333333333333333,
+          "L0M0.binding -> L1H0.answer": 0.8333333333333333,
+          "L1H0.answer -> logits.io": 0.8333333333333333,
+          "L1M0.backup -> logits.io": 0.16666666666666663,
+          "tokens.backup -> L1M0.backup": 0.16666666666666663,
+          "tokens.io_name -> L0H0.name_copy": 0.8333333333333333,
+          "tokens.position -> L0H1.position": 0.8333333333333333
+        },
+        "passes_completeness": true,
         "passes_faithfulness": true,
-        "preserved_fraction": 0.8
+        "passes_minimality": true,
+        "strongest_omitted_subset": [
+          "tokens.background -> L0H2.background"
+        ]
       },
-      "method_comparison": {
-        "best_matching_method": "eap_ig",
-        "circuit_sizes": {
-          "eap_ig": 2,
-          "exact": 2
-        },
-        "exact_top_edges": [
-          "name-mover",
-          "backup-name-mover"
-        ],
-        "method_top_edges": {
-          "eap_ig": [
-            "name-mover",
-            "backup-name-mover"
-          ]
-        },
-        "passes_comparison": true,
-        "score_correlations": {
-          "eap_ig": 0.996847927570343
-        },
-        "topk_overlap": {
-          "eap_ig": 1.0
-        }
-      },
-      "minimality": {
-        "ablated_metric": 0.5,
-        "circuit_metric": 2.2,
-        "metric_damage": 1.7000000000000002,
-        "passes_minimality": true
+      "one_shot_scores": {
+        "L0H0.name_copy -> L0M0.binding": 0.0,
+        "L0H1.position -> L0M0.binding": 0.0,
+        "L0H2.background -> logits.io": 0.0,
+        "L0M0.binding -> L1H0.answer": 0.0,
+        "L1H0.answer -> logits.io": 0.0,
+        "L1M0.backup -> logits.io": 0.0,
+        "tokens.background -> L0H2.background": 0.0,
+        "tokens.backup -> L1M0.backup": 0.0,
+        "tokens.io_name -> L0H0.name_copy": 0.0,
+        "tokens.position -> L0H1.position": 0.0
       },
       "ood": {
         "passes_ood": true,
-        "per_template_accuracy": {
-          "0": 1.0,
-          "1": 1.0
+        "recoveries": {
+          "small_signal": 1.0,
+          "strong_name_weak_position": 1.0,
+          "weak_name_strong_position": 1.0
         },
-        "worst_template_accuracy": 1.0
+        "worst_recovery": 1.0
       },
-      "random_baseline": {
-        "circuit_beats_random": true,
-        "circuit_metric": 2.2,
-        "margin": 1.4000000000000001,
-        "random_metric": 0.8
-      },
-      "toy_circuit": {
-        "circuit_metric": 3.6000001430511475,
-        "completeness_gain": 0.0,
-        "corrupt_metric": 0.10000000149011612,
-        "discovered_edges": [
-          "color_input -> answer_logit",
-          "shape_input -> answer_logit"
-        ],
-        "edge_names": [
-          "color_input -> answer_logit",
-          "shape_input -> answer_logit",
-          "background_input -> answer_logit",
-          "position_input -> answer_logit"
-        ],
-        "exact_match": true,
-        "full_metric": 3.6000001430511475,
-        "ground_truth_edges": [
-          "color_input -> answer_logit",
-          "shape_input -> answer_logit"
-        ],
-        "minimality_damage": 1.5,
-        "passes": true,
-        "patch_scores": [
-          0.5714285969734192,
-          0.4285714030265808,
+      "same_size_random": {
+        "circuit_size": 8,
+        "control_best_recovery": 0.8333333333333334,
+        "control_mean_recovery": 0.196969696969697,
+        "control_recoveries": [
+          0.8333333333333334,
+          0.8333333333333334,
+          0.8333333333333334,
+          0.8333333333333334,
+          0.8333333333333334,
+          0.16666666666666669,
+          0.16666666666666669,
           0.0,
-          0.0
+          0.0,
+          0.16666666666666669,
+          0.16666666666666669,
+          0.0,
+          0.0,
+          0.16666666666666669,
+          0.16666666666666669,
+          0.16666666666666669,
+          0.0,
+          0.0,
+          0.16666666666666669,
+          0.16666666666666669,
+          0.16666666666666669,
+          0.16666666666666669,
+          0.0,
+          0.0,
+          0.16666666666666669,
+          0.16666666666666669,
+          0.16666666666666669,
+          0.16666666666666669,
+          0.16666666666666669,
+          0.0,
+          0.0,
+          0.16666666666666669,
+          0.16666666666666669,
+          0.16666666666666669,
+          0.16666666666666669,
+          0.16666666666666669,
+          0.16666666666666669,
+          0.0,
+          0.0,
+          0.16666666666666669,
+          0.16666666666666669,
+          0.16666666666666669,
+          0.16666666666666669,
+          0.16666666666666669
         ],
-        "preserved_fraction": 1.0,
-        "random_margin": 3.5000001415610313,
-        "random_metric": 0.10000000149011612
-      }
+        "discovered_rank": 1,
+        "discovered_recovery": 1.0,
+        "exact_empirical_pvalue": 0.022222222222222223,
+        "num_circuits": 45
+      },
+      "threshold_sweep": [
+        {
+          "circuit_size": 8,
+          "exact_ground_truth": true,
+          "recovery": 1.0,
+          "threshold": 0.0
+        },
+        {
+          "circuit_size": 8,
+          "exact_ground_truth": true,
+          "recovery": 1.0,
+          "threshold": 0.05
+        },
+        {
+          "circuit_size": 8,
+          "exact_ground_truth": true,
+          "recovery": 1.0,
+          "threshold": 0.1
+        },
+        {
+          "circuit_size": 8,
+          "exact_ground_truth": true,
+          "recovery": 1.0,
+          "threshold": 0.16
+        },
+        {
+          "circuit_size": 6,
+          "exact_ground_truth": false,
+          "recovery": 0.8333333333333334,
+          "threshold": 0.17
+        },
+        {
+          "circuit_size": 6,
+          "exact_ground_truth": false,
+          "recovery": 0.8333333333333334,
+          "threshold": 0.4
+        },
+        {
+          "circuit_size": 6,
+          "exact_ground_truth": false,
+          "recovery": 0.8333333333333334,
+          "threshold": 0.83
+        },
+        {
+          "circuit_size": 0,
+          "exact_ground_truth": false,
+          "recovery": 0.0,
+          "threshold": 0.84
+        }
+      ]
     }
   },
   "models": [
     {
+      "claim_scope": "exact_ground_truth_acdc",
       "gated": false,
-      "id": "toy_or_generated_inputs",
-      "precision": "float32",
-      "revision": "seed_0",
-      "source": "generated"
+      "id": "exact_nonlinear_named_edge_graph_v1",
+      "precision": "float64_python",
+      "revision": "product_gate_plus_backup_and_matched_decoy_v1",
+      "source": "generated_analytic_model"
     },
     {
-      "claim_scope": "position_circuit_metric_preflight",
+      "claim_scope": "component_level_attention_head_deletion_with_real_mlp_recomputation",
       "gated": false,
       "id": "NeelNanda/GELU_1L512W_C4_Code",
       "precision": "float32",
@@ -324,25 +689,19 @@
   ],
   "negative_controls": {
     "declared_controls": [
-      "negative_control_where_applicable",
-      "toy_random_circuit_baseline_contract",
-      "same_size_wrong_position_random_baseline"
+      "exhaustive same-size random-circuit null over all 45 circuits",
+      "exhaustive real-model same-size random-circuit null over all 56 three-head sets"
     ]
   },
   "notebook_id": "8_3_acdc_and_circuit_metrics",
   "ood_tests": {
     "declared": "required_where_applicable"
   },
-  "peak_vram_gb": 0.23518753051757812,
+  "peak_vram_gb": 0.23825597763061523,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "5ab8cd575ea364368f35713e0b6c5529ced4c6d5a7164dbe16597502dc366ad3",
+    "combined_sha256": "9555f113938ceced30a2ed99643fa2883b34e48591e71af895700b253c2037a4",
     "files": [
-      {
-        "path": "arena_ext/circuit_metrics.py",
-        "sha256": "44e7ceb07309931e6d2b0563045460d6a2a15f5e269cb224f177b1518ae074b2",
-        "size_bytes": 21022
-      },
       {
         "path": "arena_ext/verification.py",
         "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
@@ -350,13 +709,13 @@
       },
       {
         "path": "chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/8.3_ACDC_and_Circuit_Metrics_exercises.ipynb",
-        "sha256": "fd43bf0db0ef33530914acbaef2d7a4322687069c9a03a623d5cc669e97f6fe1",
-        "size_bytes": 55250
+        "sha256": "b3d386ff0dbc242fb92eb1dd60c08f2e56f7db91c909fead9f577f9837ebc0cd",
+        "size_bytes": 64963
       },
       {
         "path": "chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/8.3_ACDC_and_Circuit_Metrics_solutions.ipynb",
-        "sha256": "9a8d8cbcdec143bc277f686292c37afd780f8102998bb1227d297c9c4756c1c9",
-        "size_bytes": 166501
+        "sha256": "541526c322bc0fc4ff8d24c793ca3051fcfbf77fa6b4cada2967d33944603bf2",
+        "size_bytes": 302923
       },
       {
         "path": "chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/README.md",
@@ -365,33 +724,33 @@
       },
       {
         "path": "chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/artifacts.lock.yml",
-        "sha256": "921ca56a0bebc14535dd0f65824accd0363f70995c33dcea42b9994784ae6a08",
-        "size_bytes": 3972
+        "sha256": "9dc4a177d9067aa92cfe27cc99cef08b5950c4c0d50fbc87d2297a5502089b3e",
+        "size_bytes": 4662
       },
       {
         "path": "chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/expected_outputs/README.md",
-        "sha256": "a13c380bb73f170c18244016944218de3f3a2e4917f68e9cbe629ae53bfa988b",
-        "size_bytes": 1776
+        "sha256": "1cded8f4a38af1706877e41f066c7813e71a4e2364649bf7378131c1ec7ae107",
+        "size_bytes": 2100
       },
       {
         "path": "chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/expected_outputs/reference_metrics.json",
-        "sha256": "808d667e23e16f9a0762f73acf55ce4e9e8b508eb92dd4e991f2559281f18554",
-        "size_bytes": 1221
+        "sha256": "1a3bf27ff1cf6e55634d334242301fd22191229b4999a3fa51088a5fffca4412",
+        "size_bytes": 1728
       },
       {
         "path": "chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/expected_outputs/smoke_test.json",
-        "sha256": "466b0c9fd5c5346cf38f90473a86fb04063ee5aa1bb1551915102aa59d4f8be3",
-        "size_bytes": 287
+        "sha256": "a99eca4f939cc36c0399561d55f84600bc1e036cd80b53d1949ef3ebd4b7ba29",
+        "size_bytes": 460
       },
       {
         "path": "chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/solutions.py",
-        "sha256": "e81c1dc440e17dbe0f2ecd4bfb67d7a8eef9ee5780a49183260d1b092f78c6ff",
-        "size_bytes": 35789
+        "sha256": "ca76f5d8a3a148180fe2e189c6058db4747ad209acaf58b53a81060c2d5f58c7",
+        "size_bytes": 39078
       },
       {
         "path": "chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/tests.py",
-        "sha256": "0d029c3631c14fb248ba9969ecc69d577d409cf75c0225a57e977a4a48add167",
-        "size_bytes": 27652
+        "sha256": "526c7c55ef8fb7c3a04408f7467717df80207c8dd6afe7dc8381b4a2a6122e68",
+        "size_bytes": 18064
       },
       {
         "path": "chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/utils.py",
@@ -405,8 +764,8 @@
       },
       {
         "path": "chapter8_automated_circuits/instructions/pages/03_[8.3]_ACDC_and_Circuit_Metrics.md",
-        "sha256": "08c590b8990bd4e6bbc7a9d17c3d7bb360f715802dd1e057edc24e25648f82b6",
-        "size_bytes": 31029
+        "sha256": "90373a84a88a9f767230349f1f0d6c6efb93bfb2f96654c460ee58e570f978db",
+        "size_bytes": 50778
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
@@ -417,9 +776,12 @@
     "schema_version": 1
   },
   "safety_notes": [
-    "No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.",
-    "The real-model path uses safe generic prompts and reads only next-token logits from a small public TransformerLens checkpoint. It does not use unsafe prompts, gated weights, or generated completions."
+    "No unsafe prompts, adapters, gated weights, or large data artifacts are used.",
+    "The exact model organism is deterministic and contains no learned empirical claim.",
+    "The real path reads next-token logits for safe generic prompts and runs on CPU.",
+    "The real result is limited to named head-result components in one layer; it does not claim a full causal edge circuit.",
+    "Verification reports support the lesson but are not the learner-facing signature result."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 5.811604
+  "wall_clock_seconds": 10.705935
 }

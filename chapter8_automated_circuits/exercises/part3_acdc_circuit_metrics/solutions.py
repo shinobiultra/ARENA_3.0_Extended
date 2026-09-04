@@ -1,11 +1,14 @@
 # %%
 """Reference solutions for [8.3] ACDC and Circuit Metrics."""
 
+from __future__ import annotations
+
 import logging
 import os
 import sys
-from collections.abc import Mapping
-from dataclasses import dataclass
+from collections.abc import Callable, Mapping, Sequence
+from dataclasses import asdict, dataclass
+from itertools import combinations
 from pathlib import Path
 
 import torch as t
@@ -17,113 +20,753 @@ if str(root_dir) not in sys.path:
 
 MAIN = __name__ == "__main__"
 
-TL_GELU1L_MODEL_NAME = "gelu-1l"
-TL_GELU1L_HF_ID = "NeelNanda/GELU_1L512W_C4_Code"
-TL_GELU1L_REVISION = "bddc0e332f0ae84279e6a6a45d91b314899e1603"
-TL_GELU1L_TOKENIZER_ID = "NeelNanda/gpt-neox-tokenizer-digits"
-TL_GELU1L_TOKENIZER_REVISION = "0f6671571a20be9756b9991d978047c03b75e749"
-TL_PATCH_HOOK_NAME = "blocks.0.hook_resid_post"
-TL_BNB_CUDA_OVERRIDE = "130"
-TL_PRIMARY_CLEAN_PROMPT = "The cat sat on the"
-TL_PRIMARY_CORRUPT_PROMPT = "The bird flew over the"
-TL_TEMPLATE_PAIRS = [
-    ("To make tea, boil the", "To make bread, bake the"),
-    ("The recipe calls for sugar and", "The recipe calls for salt and"),
-    ("The chef cooked a", "The teacher taught a"),
-]
-
 
 # %%
 @dataclass(frozen=True)
-class ActivationPatchingSweep:
-    patch_scores: t.Tensor
-    best_index: int
-    best_score: float
+class Edge:
+    name: str
+    sender: str
+    receiver: str
+    weight: float = 1.0
 
 
 @dataclass(frozen=True)
-class ACDCPruningReport:
+class ToyCircuitGraph:
+    node_order: tuple[str, ...]
+    input_nodes: tuple[str, ...]
+    output_node: str
+    operations: Mapping[str, str]
+    edges: tuple[Edge, ...]
+    ground_truth_edges: tuple[str, ...]
+    decoy_edges: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class GraphRun:
+    activations: Mapping[str, float]
+    metric: float
+    active_edges: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class ACDCStep:
+    edge: str
+    before_recovery: float
+    trial_recovery: float
+    normalized_damage: float
+    decision: str
+
+
+@dataclass(frozen=True)
+class ACDCResult:
     kept_edges: tuple[str, ...]
     removed_edges: tuple[str, ...]
     threshold: float
-    num_kept: int
+    recovery: float
+    steps: tuple[ACDCStep, ...]
 
 
 @dataclass(frozen=True)
-class CircuitFaithfulnessReport:
-    full_metric: float
-    corrupt_metric: float
-    circuit_metric: float
-    preserved_fraction: float
+class ThresholdSweepPoint:
+    threshold: float
+    circuit_size: int
+    recovery: float
+    exact_ground_truth: bool
+
+
+@dataclass(frozen=True)
+class CircuitMetricsReport:
+    circuit_recovery: float
+    minimality_by_edge: Mapping[str, float]
+    min_edge_damage: float
+    completeness_by_edge: Mapping[str, float]
+    completeness_by_subset: Mapping[str, float]
+    strongest_omitted_subset: tuple[str, ...]
+    max_omitted_gain: float
     passes_faithfulness: bool
-
-
-@dataclass(frozen=True)
-class CircuitMinimalityReport:
-    circuit_metric: float
-    ablated_metric: float
-    metric_damage: float
     passes_minimality: bool
-
-
-@dataclass(frozen=True)
-class CircuitCompletenessReport:
-    circuit_metric: float
-    expanded_metric: float
-    omitted_node_gain: float
     passes_completeness: bool
 
 
 @dataclass(frozen=True)
-class RandomCircuitBaselineReport:
-    circuit_metric: float
-    random_metric: float
-    margin: float
-    circuit_beats_random: bool
+class SameSizeCircuitReport:
+    circuit_size: int
+    num_circuits: int
+    discovered_recovery: float
+    discovered_rank: int
+    exact_empirical_pvalue: float
+    control_mean_recovery: float
+    control_best_recovery: float
+    control_recoveries: tuple[float, ...]
 
 
 @dataclass(frozen=True)
-class OODTemplateReport:
-    per_template_accuracy: dict[int, float]
-    worst_template_accuracy: float
+class OODCircuitReport:
+    recoveries: Mapping[str, float]
+    worst_recovery: float
     passes_ood: bool
 
 
-@dataclass(frozen=True)
-class CircuitMethodComparisonReport:
-    exact_top_edges: tuple[str, ...]
-    method_top_edges: dict[str, tuple[str, ...]]
-    topk_overlap: dict[str, float]
-    score_correlations: dict[str, float]
-    circuit_sizes: dict[str, int]
-    best_matching_method: str
-    passes_comparison: bool
+MetricEvaluator = Callable[[frozenset[str]], float]
 
 
-@dataclass(frozen=True)
-class ToyCircuitEvaluationReport:
-    ground_truth_edges: tuple[str, ...]
-    discovered_edges: tuple[str, ...]
-    exact_match: bool
-    full_metric: float
-    corrupt_metric: float
-    circuit_metric: float
-    random_metric: float
-    preserved_fraction: float
-    minimality_damage: float
-    completeness_gain: float
-    random_margin: float
-    passes: bool
+# %%
+def build_toy_acdc_graph() -> ToyCircuitGraph:
+    """Create a nonlinear graph with a known eight-edge causal circuit.
+
+    The primary path contains a two-input product gate. Consequently, inserting
+    any one primary edge into the corrupt graph has zero effect even though
+    every primary edge is necessary in the full circuit. The weaker backup path
+    creates a visible threshold tradeoff. The background path is an exact decoy
+    because its source is identical in clean and corrupt inputs.
+    """
+
+    primary = (
+        "tokens.io_name -> L0H0.name_copy",
+        "tokens.position -> L0H1.position",
+        "L0H0.name_copy -> L0M0.binding",
+        "L0H1.position -> L0M0.binding",
+        "L0M0.binding -> L1H0.answer",
+        "L1H0.answer -> logits.io",
+    )
+    backup = (
+        "tokens.backup -> L1M0.backup",
+        "L1M0.backup -> logits.io",
+    )
+    decoys = (
+        "tokens.background -> L0H2.background",
+        "L0H2.background -> logits.io",
+    )
+    return ToyCircuitGraph(
+        node_order=(
+            "tokens.io_name",
+            "tokens.position",
+            "tokens.backup",
+            "tokens.background",
+            "L0H0.name_copy",
+            "L0H1.position",
+            "L0H2.background",
+            "L0M0.binding",
+            "L1M0.backup",
+            "L1H0.answer",
+            "logits.io",
+        ),
+        input_nodes=(
+            "tokens.io_name",
+            "tokens.position",
+            "tokens.backup",
+            "tokens.background",
+        ),
+        output_node="logits.io",
+        operations={
+            "L0H0.name_copy": "sum",
+            "L0H1.position": "sum",
+            "L0H2.background": "sum",
+            "L0M0.binding": "product",
+            "L1M0.backup": "sum",
+            "L1H0.answer": "sum",
+            "logits.io": "sum",
+        },
+        edges=(
+            Edge(primary[0], "tokens.io_name", "L0H0.name_copy"),
+            Edge(primary[1], "tokens.position", "L0H1.position"),
+            Edge(primary[2], "L0H0.name_copy", "L0M0.binding"),
+            Edge(primary[3], "L0H1.position", "L0M0.binding"),
+            Edge(primary[4], "L0M0.binding", "L1H0.answer"),
+            Edge(primary[5], "L1H0.answer", "logits.io", 2.0),
+            Edge(backup[0], "tokens.backup", "L1M0.backup"),
+            Edge(backup[1], "L1M0.backup", "logits.io", 0.4),
+            Edge(decoys[0], "tokens.background", "L0H2.background"),
+            Edge(decoys[1], "L0H2.background", "logits.io", 0.2),
+        ),
+        ground_truth_edges=(*primary, *backup),
+        decoy_edges=decoys,
+    )
 
 
-def _require_finite_tensor(tensor: t.Tensor, name: str) -> None:
-    if not t.isfinite(tensor).all():
-        raise ValueError(f"{name} must be finite.")
+TOY_CLEAN_INPUTS = {
+    "tokens.io_name": 1.0,
+    "tokens.position": 1.0,
+    "tokens.backup": 1.0,
+    "tokens.background": 0.5,
+}
+TOY_CORRUPT_INPUTS = {
+    "tokens.io_name": 0.0,
+    "tokens.position": 0.0,
+    "tokens.backup": 0.0,
+    "tokens.background": 0.5,
+}
+TOY_OOD_INPUTS = (
+    (
+        "strong_name_weak_position",
+        {
+            "tokens.io_name": 1.2,
+            "tokens.position": 0.8,
+            "tokens.backup": 0.5,
+            "tokens.background": 0.9,
+        },
+        {
+            "tokens.io_name": 0.0,
+            "tokens.position": 0.0,
+            "tokens.backup": 0.0,
+            "tokens.background": 0.9,
+        },
+    ),
+    (
+        "weak_name_strong_position",
+        {
+            "tokens.io_name": 0.75,
+            "tokens.position": 1.25,
+            "tokens.backup": 1.5,
+            "tokens.background": -0.4,
+        },
+        {
+            "tokens.io_name": 0.0,
+            "tokens.position": 0.0,
+            "tokens.backup": 0.0,
+            "tokens.background": -0.4,
+        },
+    ),
+    (
+        "small_signal",
+        {
+            "tokens.io_name": 0.6,
+            "tokens.position": 0.7,
+            "tokens.backup": 0.4,
+            "tokens.background": 0.2,
+        },
+        {
+            "tokens.io_name": 0.0,
+            "tokens.position": 0.0,
+            "tokens.backup": 0.0,
+            "tokens.background": 0.2,
+        },
+    ),
+)
 
 
-def _require_finite_scalar(value: float, name: str) -> None:
-    if not t.isfinite(t.tensor(value)).item():
-        raise ValueError(f"{name} must be finite.")
+def _validate_graph(graph: ToyCircuitGraph) -> None:
+    node_set = set(graph.node_order)
+    if len(node_set) != len(graph.node_order):
+        raise ValueError("node_order must contain unique names.")
+    if not set(graph.input_nodes).issubset(node_set):
+        raise ValueError("every input node must appear in node_order.")
+    if graph.output_node not in node_set:
+        raise ValueError("output_node must appear in node_order.")
+    edge_names = [edge.name for edge in graph.edges]
+    if len(set(edge_names)) != len(edge_names):
+        raise ValueError("edge names must be unique.")
+    index = {node: position for position, node in enumerate(graph.node_order)}
+    for edge in graph.edges:
+        if edge.sender not in node_set or edge.receiver not in node_set:
+            raise ValueError(f"edge {edge.name!r} references an unknown node.")
+        if index[edge.sender] >= index[edge.receiver]:
+            raise ValueError(f"edge {edge.name!r} violates topological order.")
+        if not t.isfinite(t.tensor(edge.weight)).item():
+            raise ValueError(f"edge {edge.name!r} has a non-finite weight.")
+    known = set(edge_names)
+    if set(graph.ground_truth_edges) | set(graph.decoy_edges) != known:
+        raise ValueError("ground-truth and decoy edges must partition the graph.")
+
+
+def _validate_inputs(graph: ToyCircuitGraph, inputs: Mapping[str, float]) -> None:
+    if set(inputs) != set(graph.input_nodes):
+        raise ValueError("inputs must contain exactly the graph input nodes.")
+    if not all(t.isfinite(t.tensor(value)).item() for value in inputs.values()):
+        raise ValueError("all input values must be finite.")
+
+
+def _apply_operation(operation: str, messages: Sequence[float]) -> float:
+    if not messages:
+        raise ValueError("non-input nodes must have at least one incoming edge.")
+    if operation == "sum":
+        return float(sum(messages))
+    if operation == "product":
+        value = 1.0
+        for message in messages:
+            value *= message
+        return float(value)
+    raise ValueError(f"unknown node operation: {operation!r}")
+
+
+def run_toy_graph(graph: ToyCircuitGraph, inputs: Mapping[str, float]) -> GraphRun:
+    """Run every edge of the toy graph on one set of inputs."""
+
+    _validate_graph(graph)
+    _validate_inputs(graph, inputs)
+    incoming = {
+        node: tuple(edge for edge in graph.edges if edge.receiver == node)
+        for node in graph.node_order
+    }
+    activations: dict[str, float] = {name: float(inputs[name]) for name in graph.input_nodes}
+    for node in graph.node_order:
+        if node in graph.input_nodes:
+            continue
+        messages = [activations[edge.sender] * edge.weight for edge in incoming[node]]
+        activations[node] = _apply_operation(graph.operations[node], messages)
+    return GraphRun(
+        activations=activations,
+        metric=activations[graph.output_node],
+        active_edges=tuple(edge.name for edge in graph.edges),
+    )
+
+
+def run_edge_intervention(
+    graph: ToyCircuitGraph,
+    clean_inputs: Mapping[str, float],
+    corrupt_inputs: Mapping[str, float],
+    active_edges: Sequence[str] | set[str] | frozenset[str],
+) -> GraphRun:
+    """Run clean inputs while replacing missing edge messages with corrupt ones."""
+
+    _validate_graph(graph)
+    _validate_inputs(graph, clean_inputs)
+    _validate_inputs(graph, corrupt_inputs)
+    known_edges = {edge.name for edge in graph.edges}
+    active = frozenset(active_edges)
+    unknown = active - known_edges
+    if unknown:
+        raise ValueError(f"unknown active edges: {sorted(unknown)}")
+    corrupt = run_toy_graph(graph, corrupt_inputs)
+    incoming = {
+        node: tuple(edge for edge in graph.edges if edge.receiver == node)
+        for node in graph.node_order
+    }
+    activations: dict[str, float] = {
+        name: float(clean_inputs[name]) for name in graph.input_nodes
+    }
+    for node in graph.node_order:
+        if node in graph.input_nodes:
+            continue
+        messages = []
+        for edge in incoming[node]:
+            sender_value = (
+                activations[edge.sender]
+                if edge.name in active
+                else corrupt.activations[edge.sender]
+            )
+            messages.append(sender_value * edge.weight)
+        activations[node] = _apply_operation(graph.operations[node], messages)
+    ordered_active = tuple(edge.name for edge in graph.edges if edge.name in active)
+    return GraphRun(activations, activations[graph.output_node], ordered_active)
+
+
+def normalized_recovery(*, clean_metric: float, corrupt_metric: float, metric: float) -> float:
+    """Normalize a circuit metric so corrupt is zero and clean is one."""
+
+    values = t.tensor([clean_metric, corrupt_metric, metric], dtype=t.float64)
+    if not t.isfinite(values).all():
+        raise ValueError("clean, corrupt, and circuit metrics must be finite.")
+    denominator = clean_metric - corrupt_metric
+    if abs(denominator) < 1e-12:
+        raise ValueError("clean_metric and corrupt_metric must differ.")
+    return float((metric - corrupt_metric) / denominator)
+
+
+def make_toy_evaluator(
+    graph: ToyCircuitGraph,
+    clean_inputs: Mapping[str, float] = TOY_CLEAN_INPUTS,
+    corrupt_inputs: Mapping[str, float] = TOY_CORRUPT_INPUTS,
+) -> tuple[MetricEvaluator, float, float]:
+    clean_metric = run_toy_graph(graph, clean_inputs).metric
+    corrupt_metric = run_toy_graph(graph, corrupt_inputs).metric
+
+    def evaluate(active_edges: frozenset[str]) -> float:
+        return run_edge_intervention(
+            graph,
+            clean_inputs,
+            corrupt_inputs,
+            active_edges,
+        ).metric
+
+    return evaluate, clean_metric, corrupt_metric
+
+
+def _validate_edge_names(edge_names: Sequence[str]) -> tuple[str, ...]:
+    names = tuple(edge_names)
+    if not names or any(not isinstance(name, str) or not name for name in names):
+        raise ValueError("edge_names must contain nonempty strings.")
+    if len(set(names)) != len(names):
+        raise ValueError("edge_names must be unique.")
+    return names
+
+
+def one_shot_insertion_scores(
+    edge_names: Sequence[str],
+    evaluate: MetricEvaluator,
+    *,
+    clean_metric: float,
+    corrupt_metric: float,
+) -> Mapping[str, float]:
+    """Score each edge alone in the otherwise corrupt graph."""
+
+    names = _validate_edge_names(edge_names)
+    return {
+        edge: normalized_recovery(
+            clean_metric=clean_metric,
+            corrupt_metric=corrupt_metric,
+            metric=evaluate(frozenset({edge})),
+        )
+        for edge in names
+    }
+
+
+def initial_deletion_order(
+    edge_names: Sequence[str],
+    evaluate: MetricEvaluator,
+    *,
+    clean_metric: float,
+    corrupt_metric: float,
+) -> tuple[str, ...]:
+    """Rank least damaging full-circuit deletions first."""
+
+    names = _validate_edge_names(edge_names)
+    full = frozenset(names)
+    full_recovery = normalized_recovery(
+        clean_metric=clean_metric,
+        corrupt_metric=corrupt_metric,
+        metric=evaluate(full),
+    )
+    damages = {}
+    for edge in names:
+        trial_recovery = normalized_recovery(
+            clean_metric=clean_metric,
+            corrupt_metric=corrupt_metric,
+            metric=evaluate(full - {edge}),
+        )
+        damages[edge] = full_recovery - trial_recovery
+    return tuple(sorted(names, key=lambda edge: (damages[edge], names.index(edge))))
+
+
+def greedy_acdc(
+    edge_names: Sequence[str],
+    evaluate: MetricEvaluator,
+    *,
+    clean_metric: float,
+    corrupt_metric: float,
+    threshold: float,
+    order: Sequence[str] | None = None,
+) -> ACDCResult:
+    """Delete edges greedily, recomputing the metric after every decision."""
+
+    names = _validate_edge_names(edge_names)
+    if not t.isfinite(t.tensor(threshold)).item() or threshold < 0:
+        raise ValueError("threshold must be finite and nonnegative.")
+    deletion_order = tuple(order) if order is not None else names
+    if len(deletion_order) != len(names) or set(deletion_order) != set(names):
+        raise ValueError("order must be a permutation of edge_names.")
+    active = frozenset(names)
+    current_metric = evaluate(active)
+    current_recovery = normalized_recovery(
+        clean_metric=clean_metric,
+        corrupt_metric=corrupt_metric,
+        metric=current_metric,
+    )
+    steps: list[ACDCStep] = []
+    removed: list[str] = []
+    for edge in deletion_order:
+        before_recovery = current_recovery
+        trial_active = active - {edge}
+        trial_metric = evaluate(trial_active)
+        trial_recovery = normalized_recovery(
+            clean_metric=clean_metric,
+            corrupt_metric=corrupt_metric,
+            metric=trial_metric,
+        )
+        damage = before_recovery - trial_recovery
+        if damage <= threshold:
+            decision = "remove"
+            active = trial_active
+            current_metric = trial_metric
+            current_recovery = trial_recovery
+            removed.append(edge)
+        else:
+            decision = "keep"
+        steps.append(ACDCStep(edge, before_recovery, trial_recovery, damage, decision))
+    kept = tuple(edge for edge in names if edge in active)
+    return ACDCResult(kept, tuple(removed), threshold, current_recovery, tuple(steps))
+
+
+def threshold_sweep(
+    edge_names: Sequence[str],
+    evaluate: MetricEvaluator,
+    *,
+    clean_metric: float,
+    corrupt_metric: float,
+    thresholds: Sequence[float],
+    ground_truth_edges: Sequence[str],
+    order: Sequence[str] | None = None,
+) -> tuple[ThresholdSweepPoint, ...]:
+    """Run the full deletion search independently at every threshold."""
+
+    if not thresholds:
+        raise ValueError("thresholds must be nonempty.")
+    truth = set(ground_truth_edges)
+    points = []
+    for threshold in thresholds:
+        result = greedy_acdc(
+            edge_names,
+            evaluate,
+            clean_metric=clean_metric,
+            corrupt_metric=corrupt_metric,
+            threshold=float(threshold),
+            order=order,
+        )
+        points.append(
+            ThresholdSweepPoint(
+                float(threshold),
+                len(result.kept_edges),
+                result.recovery,
+                set(result.kept_edges) == truth,
+            )
+        )
+    return tuple(points)
+
+
+def evaluate_circuit_metrics(
+    edge_names: Sequence[str],
+    circuit_edges: Sequence[str],
+    evaluate: MetricEvaluator,
+    *,
+    clean_metric: float,
+    corrupt_metric: float,
+    min_faithfulness: float = 0.95,
+    min_edge_damage: float = 0.05,
+    max_omitted_gain: float = 0.05,
+    max_completeness_subset_size: int = 2,
+) -> CircuitMetricsReport:
+    """Measure faithfulness, edgewise minimality, and subset completeness."""
+
+    names = _validate_edge_names(edge_names)
+    circuit = frozenset(circuit_edges)
+    if not circuit or not circuit.issubset(names):
+        raise ValueError("circuit_edges must be a nonempty subset of edge_names.")
+    for label, value in {
+        "min_faithfulness": min_faithfulness,
+        "min_edge_damage": min_edge_damage,
+        "max_omitted_gain": max_omitted_gain,
+    }.items():
+        if not t.isfinite(t.tensor(value)).item() or value < 0:
+            raise ValueError(f"{label} must be finite and nonnegative.")
+    if max_completeness_subset_size <= 0:
+        raise ValueError("max_completeness_subset_size must be positive.")
+
+    def recovery(active: frozenset[str]) -> float:
+        return normalized_recovery(
+            clean_metric=clean_metric,
+            corrupt_metric=corrupt_metric,
+            metric=evaluate(active),
+        )
+
+    circuit_recovery = recovery(circuit)
+    minimality = {
+        edge: circuit_recovery - recovery(circuit - {edge})
+        for edge in names
+        if edge in circuit
+    }
+    omitted = tuple(edge for edge in names if edge not in circuit)
+    completeness = {edge: recovery(circuit | {edge}) - circuit_recovery for edge in omitted}
+    subset_rows: dict[tuple[str, ...], float] = {}
+    for subset_size in range(1, min(max_completeness_subset_size, len(omitted)) + 1):
+        for subset in combinations(omitted, subset_size):
+            subset_rows[subset] = recovery(circuit | set(subset)) - circuit_recovery
+    min_damage = min(minimality.values())
+    strongest_subset = max(subset_rows, key=subset_rows.get) if subset_rows else ()
+    max_gain = subset_rows.get(strongest_subset, 0.0)
+    return CircuitMetricsReport(
+        circuit_recovery,
+        minimality,
+        min_damage,
+        completeness,
+        {" + ".join(subset): gain for subset, gain in subset_rows.items()},
+        strongest_subset,
+        max_gain,
+        circuit_recovery >= min_faithfulness,
+        min_damage >= min_edge_damage,
+        max_gain <= max_omitted_gain,
+    )
+
+
+def same_size_circuit_report(
+    edge_names: Sequence[str],
+    circuit_edges: Sequence[str],
+    evaluate: MetricEvaluator,
+    *,
+    clean_metric: float,
+    corrupt_metric: float,
+) -> SameSizeCircuitReport:
+    """Enumerate every same-size circuit, an exact random-circuit null."""
+
+    names = _validate_edge_names(edge_names)
+    circuit = frozenset(circuit_edges)
+    if not circuit or not circuit.issubset(names):
+        raise ValueError("circuit_edges must be a nonempty subset of edge_names.")
+    all_rows: list[tuple[frozenset[str], float]] = []
+    for candidate in combinations(names, len(circuit)):
+        candidate_set = frozenset(candidate)
+        recovery = normalized_recovery(
+            clean_metric=clean_metric,
+            corrupt_metric=corrupt_metric,
+            metric=evaluate(candidate_set),
+        )
+        all_rows.append((candidate_set, recovery))
+    discovered = next(value for candidate, value in all_rows if candidate == circuit)
+    controls = [value for candidate, value in all_rows if candidate != circuit]
+    rank = 1 + sum(value > discovered + 1e-12 for _, value in all_rows)
+    pvalue = sum(value >= discovered - 1e-12 for _, value in all_rows) / len(all_rows)
+    return SameSizeCircuitReport(
+        len(circuit),
+        len(all_rows),
+        discovered,
+        rank,
+        pvalue,
+        float(sum(controls) / len(controls)) if controls else 0.0,
+        float(max(controls)) if controls else discovered,
+        tuple(float(value) for value in controls),
+    )
+
+
+def evaluate_toy_ood(
+    graph: ToyCircuitGraph,
+    circuit_edges: Sequence[str],
+    templates: Sequence[tuple[str, Mapping[str, float], Mapping[str, float]]] = TOY_OOD_INPUTS,
+    *,
+    min_recovery: float = 0.95,
+) -> OODCircuitReport:
+    """Evaluate the exact circuit on held-out signal scales and nuisance values."""
+
+    if not templates:
+        raise ValueError("templates must be nonempty.")
+    recoveries = {}
+    for name, clean_inputs, corrupt_inputs in templates:
+        evaluator, clean_metric, corrupt_metric = make_toy_evaluator(
+            graph, clean_inputs, corrupt_inputs
+        )
+        recoveries[name] = normalized_recovery(
+            clean_metric=clean_metric,
+            corrupt_metric=corrupt_metric,
+            metric=evaluator(frozenset(circuit_edges)),
+        )
+    worst = min(recoveries.values())
+    return OODCircuitReport(recoveries, worst, worst >= min_recovery)
+
+
+def run_toy_study(threshold: float = 0.1) -> dict[str, object]:
+    """Run the complete exact-ground-truth ACDC study."""
+
+    graph = build_toy_acdc_graph()
+    evaluator, clean_metric, corrupt_metric = make_toy_evaluator(graph)
+    edge_names = tuple(edge.name for edge in graph.edges)
+    order = initial_deletion_order(
+        edge_names,
+        evaluator,
+        clean_metric=clean_metric,
+        corrupt_metric=corrupt_metric,
+    )
+    one_shot = one_shot_insertion_scores(
+        edge_names,
+        evaluator,
+        clean_metric=clean_metric,
+        corrupt_metric=corrupt_metric,
+    )
+    acdc = greedy_acdc(
+        edge_names,
+        evaluator,
+        clean_metric=clean_metric,
+        corrupt_metric=corrupt_metric,
+        threshold=threshold,
+        order=order,
+    )
+    metrics = evaluate_circuit_metrics(
+        edge_names,
+        acdc.kept_edges,
+        evaluator,
+        clean_metric=clean_metric,
+        corrupt_metric=corrupt_metric,
+    )
+    random_report = same_size_circuit_report(
+        edge_names,
+        acdc.kept_edges,
+        evaluator,
+        clean_metric=clean_metric,
+        corrupt_metric=corrupt_metric,
+    )
+    sweep = threshold_sweep(
+        edge_names,
+        evaluator,
+        clean_metric=clean_metric,
+        corrupt_metric=corrupt_metric,
+        thresholds=(0.0, 0.05, 0.1, 0.16, 0.17, 0.4, 0.83, 0.84),
+        ground_truth_edges=graph.ground_truth_edges,
+        order=order,
+    )
+    ood = evaluate_toy_ood(graph, acdc.kept_edges)
+    exact_match = set(acdc.kept_edges) == set(graph.ground_truth_edges)
+    accepted = (
+        exact_match
+        and max(abs(value) for value in one_shot.values()) < 1e-9
+        and metrics.passes_faithfulness
+        and metrics.passes_minimality
+        and metrics.passes_completeness
+        and random_report.discovered_rank == 1
+        and ood.passes_ood
+    )
+    return {
+        "accepted": accepted,
+        "clean_metric": clean_metric,
+        "corrupt_metric": corrupt_metric,
+        "edge_names": edge_names,
+        "ground_truth_edges": graph.ground_truth_edges,
+        "decoy_edges": graph.decoy_edges,
+        "one_shot_scores": dict(one_shot),
+        "deletion_order": order,
+        "acdc": asdict(acdc),
+        "metrics": asdict(metrics),
+        "same_size_random": asdict(random_report),
+        "threshold_sweep": [asdict(point) for point in sweep],
+        "ood": asdict(ood),
+    }
+
+
+# %%
+TL_MODEL_NAME = "gelu-1l"
+TL_HF_ID = "NeelNanda/GELU_1L512W_C4_Code"
+TL_REVISION = "bddc0e332f0ae84279e6a6a45d91b314899e1603"
+TL_TOKENIZER_ID = "NeelNanda/gpt-neox-tokenizer-digits"
+TL_TOKENIZER_REVISION = "0f6671571a20be9756b9991d978047c03b75e749"
+TL_BNB_CUDA_OVERRIDE = "130"
+TL_HEAD_HOOK = "blocks.0.attn.hook_result"
+TL_MLP_HOOK = "blocks.0.hook_mlp_out"
+TL_PRIMARY_PAIR = ("The cat sat on the", "The bird flew over the")
+TL_HELDOUT_PAIRS = (
+    ("dog_vs_plane", "The dog slept on the", "The plane flew over the"),
+    ("child_vs_plane", "The child sat on the", "The plane flew over the"),
+    ("cup_vs_plane", "The cup sat on the", "The plane flew over the"),
+)
+
+
+def load_pinned_gelu1l(device: str = "cpu"):
+    """Load the pinned one-layer TransformerLens model used in the real path."""
+
+    os.environ.setdefault("BNB_CUDA_VERSION", TL_BNB_CUDA_OVERRIDE)
+    logging.getLogger("bitsandbytes.cextension").setLevel(logging.ERROR)
+    from transformer_lens import HookedTransformer
+    from transformers import AutoTokenizer
+
+    tokenizer = AutoTokenizer.from_pretrained(
+        TL_TOKENIZER_ID,
+        revision=TL_TOKENIZER_REVISION,
+    )
+    model = HookedTransformer.from_pretrained(
+        TL_MODEL_NAME,
+        device=device,
+        dtype="float32",
+        revision=TL_REVISION,
+        tokenizer=tokenizer,
+    )
+    model.cfg.use_attn_result = True
+    model.eval()
+    return model
 
 
 def answer_logit_diff(
@@ -132,893 +775,336 @@ def answer_logit_diff(
     positive_token_id: int,
     negative_token_id: int,
 ) -> float:
-    """Return mean positive-minus-negative logit difference."""
+    """Return positive-minus-negative logit difference at the final token."""
 
-    if logits.ndim < 1:
-        raise ValueError("logits must have a vocabulary dimension.")
+    if logits.ndim not in (1, 2, 3):
+        raise ValueError("logits must have shape [vocab], [pos, vocab], or [batch, pos, vocab].")
     vocab_size = logits.shape[-1]
-    if vocab_size == 0:
-        raise ValueError("logits vocabulary dimension must be nonempty.")
     if positive_token_id == negative_token_id:
-        raise ValueError("positive_token_id and negative_token_id must differ.")
-    if not 0 <= positive_token_id < vocab_size:
-        raise ValueError("positive_token_id is out of range.")
-    if not 0 <= negative_token_id < vocab_size:
-        raise ValueError("negative_token_id is out of range.")
-    _require_finite_tensor(logits, "logits")
-    diff = logits[..., positive_token_id] - logits[..., negative_token_id]
-    return diff.float().mean().item()
-
-
-def activation_patching_sweep(
-    *,
-    clean_metric: float,
-    corrupt_metric: float,
-    patched_metrics: t.Tensor,
-) -> ActivationPatchingSweep:
-    """Convert per-component patched metrics into normalized recovery scores."""
-
-    denominator = clean_metric - corrupt_metric
-    for name, value in {
-        "clean_metric": clean_metric,
-        "corrupt_metric": corrupt_metric,
-    }.items():
-        _require_finite_scalar(value, name)
-    if denominator == 0:
-        raise ValueError("clean_metric and corrupt_metric must differ.")
-    if patched_metrics.ndim != 1:
-        raise ValueError("patched_metrics must be rank-1.")
-    if patched_metrics.numel() == 0:
-        raise ValueError("patched_metrics must be nonempty.")
-    _require_finite_tensor(patched_metrics, "patched_metrics")
-    patch_scores = (patched_metrics.float() - corrupt_metric) / denominator
-    best_index = int(patch_scores.argmax().item())
-    return ActivationPatchingSweep(
-        patch_scores=patch_scores,
-        best_index=best_index,
-        best_score=float(patch_scores[best_index].item()),
+        raise ValueError("positive and negative token ids must differ.")
+    if not 0 <= positive_token_id < vocab_size or not 0 <= negative_token_id < vocab_size:
+        raise ValueError("token ids must lie inside the vocabulary dimension.")
+    if not t.isfinite(logits).all():
+        raise ValueError("logits must be finite.")
+    final_logits = logits if logits.ndim == 1 else logits[..., -1, :]
+    return float(
+        (final_logits[..., positive_token_id] - final_logits[..., negative_token_id])
+        .float()
+        .mean()
+        .item()
     )
 
 
-def toy_acdc_graph() -> dict[str, object]:
-    """Return a tiny graph with two true causal edges and two decoys."""
-
-    return {
-        "edge_names": [
-            "color_input -> answer_logit",
-            "shape_input -> answer_logit",
-            "background_input -> answer_logit",
-            "position_input -> answer_logit",
-        ],
-        "clean_edge_values": t.tensor([2.0, 1.5, 0.2, -0.1]),
-        "corrupt_edge_values": t.tensor([0.0, 0.0, 0.2, -0.1]),
-        "ground_truth_edges": (
-            "color_input -> answer_logit",
-            "shape_input -> answer_logit",
-        ),
-        "same_size_random_edges": (
-            "background_input -> answer_logit",
-            "position_input -> answer_logit",
-        ),
-        "threshold": 0.35,
-    }
-
-
-def _validate_edge_values(
-    clean_edge_values: t.Tensor,
-    corrupt_edge_values: t.Tensor,
-    edge_names: list[str],
-) -> tuple[t.Tensor, t.Tensor]:
-    clean = clean_edge_values.flatten().float()
-    corrupt = corrupt_edge_values.flatten().float()
-    if clean.numel() == 0:
-        raise ValueError("edge values must be nonempty.")
-    if clean.shape != corrupt.shape:
-        raise ValueError("clean and corrupt edge values must have the same shape.")
-    if clean.numel() != len(edge_names):
-        raise ValueError("edge values and edge_names must align.")
-    if any(not name for name in edge_names):
-        raise ValueError("edge_names must be nonempty strings.")
-    _require_finite_tensor(clean, "clean_edge_values")
-    _require_finite_tensor(corrupt, "corrupt_edge_values")
-    return clean, corrupt
-
-
-def patch_toy_graph_edges(
-    clean_edge_values: t.Tensor,
-    corrupt_edge_values: t.Tensor,
-    edge_names: list[str],
-    patched_edges: tuple[str, ...] | list[str],
-) -> float:
-    """Patch named clean edge contributions into a corrupt toy graph."""
-
-    clean, corrupt = _validate_edge_values(clean_edge_values, corrupt_edge_values, edge_names)
-    name_to_index = {name: index for index, name in enumerate(edge_names)}
-    patched = corrupt.clone()
-    for edge in patched_edges:
-        if edge not in name_to_index:
-            raise ValueError(f"unknown edge: {edge}")
-        index = name_to_index[edge]
-        patched[index] = clean[index]
-    return float(patched.sum().item())
-
-
-def exact_toy_edge_patch_scores(
-    clean_edge_values: t.Tensor,
-    corrupt_edge_values: t.Tensor,
-    edge_names: list[str],
-) -> ActivationPatchingSweep:
-    """Score each toy edge by exact single-edge patch recovery."""
-
-    clean, corrupt = _validate_edge_values(clean_edge_values, corrupt_edge_values, edge_names)
-    clean_metric = float(clean.sum().item())
-    corrupt_metric = float(corrupt.sum().item())
-    patched_metrics = t.tensor(
-        [
-            patch_toy_graph_edges(clean, corrupt, edge_names, [edge_name])
-            for edge_name in edge_names
-        ],
-        dtype=t.float32,
-    )
-    return activation_patching_sweep(
-        clean_metric=clean_metric,
-        corrupt_metric=corrupt_metric,
-        patched_metrics=patched_metrics,
-    )
-
-
-def evaluate_toy_circuit(
-    clean_edge_values: t.Tensor,
-    corrupt_edge_values: t.Tensor,
-    edge_names: list[str],
-    ground_truth_edges: tuple[str, ...],
-    random_edges: tuple[str, ...],
-    *,
-    threshold: float = 0.35,
-) -> ToyCircuitEvaluationReport:
-    """Recover and evaluate a known toy circuit from exact edge patch scores."""
-
-    clean, corrupt = _validate_edge_values(clean_edge_values, corrupt_edge_values, edge_names)
-    sweep = exact_toy_edge_patch_scores(clean, corrupt, edge_names)
-    pruning = acdc_pruning_report(sweep.patch_scores, edge_names, threshold=threshold)
-    discovered_edges = pruning.kept_edges
-    full_metric = float(clean.sum().item())
-    corrupt_metric = float(corrupt.sum().item())
-    circuit_metric = patch_toy_graph_edges(clean, corrupt, edge_names, discovered_edges)
-    random_metric = patch_toy_graph_edges(clean, corrupt, edge_names, random_edges)
-
-    if not discovered_edges:
-        ablated_metric = corrupt_metric
-    else:
-        ablated_metric = max(
-            patch_toy_graph_edges(
-                clean,
-                corrupt,
-                edge_names,
-                tuple(edge for edge in discovered_edges if edge != edge_to_remove),
-            )
-            for edge_to_remove in discovered_edges
-        )
-
-    omitted_edges = [edge for edge in edge_names if edge not in discovered_edges]
-    if omitted_edges:
-        top_omitted = max(
-            omitted_edges,
-            key=lambda edge: float(sweep.patch_scores[edge_names.index(edge)].item()),
-        )
-        expanded_metric = patch_toy_graph_edges(
-            clean,
-            corrupt,
-            edge_names,
-            (*discovered_edges, top_omitted),
-        )
-    else:
-        expanded_metric = circuit_metric
-
-    faithfulness = circuit_faithfulness_report(
-        full_metric=full_metric,
-        corrupt_metric=corrupt_metric,
-        circuit_metric=circuit_metric,
-        min_preserved_fraction=0.99,
-    )
-    minimality = circuit_minimality_report(
-        circuit_metric=circuit_metric,
-        ablated_metric=ablated_metric,
-        min_metric_damage=1.0,
-    )
-    completeness = circuit_completeness_report(
-        circuit_metric=circuit_metric,
-        expanded_metric=expanded_metric,
-        max_omitted_node_gain=1e-6,
-    )
-    random_baseline = random_circuit_baseline_report(
-        circuit_metric=circuit_metric,
-        random_metric=random_metric,
-        min_margin=1.0,
-    )
-    exact_match = set(discovered_edges) == set(ground_truth_edges)
-    passes = (
-        exact_match
-        and faithfulness.passes_faithfulness
-        and minimality.passes_minimality
-        and completeness.passes_completeness
-        and random_baseline.circuit_beats_random
-    )
-    return ToyCircuitEvaluationReport(
-        ground_truth_edges=tuple(ground_truth_edges),
-        discovered_edges=tuple(discovered_edges),
-        exact_match=exact_match,
-        full_metric=full_metric,
-        corrupt_metric=corrupt_metric,
-        circuit_metric=circuit_metric,
-        random_metric=random_metric,
-        preserved_fraction=faithfulness.preserved_fraction,
-        minimality_damage=minimality.metric_damage,
-        completeness_gain=completeness.omitted_node_gain,
-        random_margin=random_baseline.margin,
-        passes=passes,
-    )
-
-
-def acdc_pruning_report(
-    edge_scores: t.Tensor,
-    edge_names: list[str],
-    *,
-    threshold: float,
-) -> ACDCPruningReport:
-    """Keep edges whose score survives an ACDC-style threshold."""
-
-    scores = edge_scores.flatten().float()
-    if scores.numel() == 0:
-        raise ValueError("edge_scores must be nonempty.")
-    if scores.numel() != len(edge_names):
-        raise ValueError("edge_scores and edge_names must align.")
-    if any(not name for name in edge_names):
-        raise ValueError("edge_names must be nonempty strings.")
-    _require_finite_tensor(scores, "edge_scores")
-    _require_finite_scalar(threshold, "threshold")
-    kept = []
-    removed = []
-    for score, name in zip(scores.tolist(), edge_names, strict=True):
-        if score >= threshold:
-            kept.append(name)
-        else:
-            removed.append(name)
-    return ACDCPruningReport(
-        kept_edges=tuple(kept),
-        removed_edges=tuple(removed),
-        threshold=threshold,
-        num_kept=len(kept),
-    )
-
-
-def circuit_faithfulness_report(
-    *,
-    full_metric: float,
-    corrupt_metric: float,
-    circuit_metric: float,
-    min_preserved_fraction: float = 0.75,
-) -> CircuitFaithfulnessReport:
-    """Check how much clean-vs-corrupt behavior the circuit preserves."""
-
-    for name, value in {
-        "full_metric": full_metric,
-        "corrupt_metric": corrupt_metric,
-        "circuit_metric": circuit_metric,
-        "min_preserved_fraction": min_preserved_fraction,
-    }.items():
-        _require_finite_scalar(value, name)
-    denominator = full_metric - corrupt_metric
-    if denominator == 0:
-        raise ValueError("full_metric and corrupt_metric must differ.")
-    if min_preserved_fraction < 0:
-        raise ValueError("min_preserved_fraction must be nonnegative.")
-    preserved_fraction = (circuit_metric - corrupt_metric) / denominator
-    return CircuitFaithfulnessReport(
-        full_metric=full_metric,
-        corrupt_metric=corrupt_metric,
-        circuit_metric=circuit_metric,
-        preserved_fraction=preserved_fraction,
-        passes_faithfulness=preserved_fraction >= min_preserved_fraction,
-    )
-
-
-def circuit_minimality_report(
-    *,
-    circuit_metric: float,
-    ablated_metric: float,
-    min_metric_damage: float = 0.5,
-) -> CircuitMinimalityReport:
-    """Check whether removing circuit nodes damages behavior."""
-
-    for name, value in {
-        "circuit_metric": circuit_metric,
-        "ablated_metric": ablated_metric,
-        "min_metric_damage": min_metric_damage,
-    }.items():
-        _require_finite_scalar(value, name)
-    if min_metric_damage < 0:
-        raise ValueError("min_metric_damage must be nonnegative.")
-    metric_damage = circuit_metric - ablated_metric
-    return CircuitMinimalityReport(
-        circuit_metric=circuit_metric,
-        ablated_metric=ablated_metric,
-        metric_damage=metric_damage,
-        passes_minimality=metric_damage >= min_metric_damage,
-    )
-
-
-def circuit_completeness_report(
-    *,
-    circuit_metric: float,
-    expanded_metric: float,
-    max_omitted_node_gain: float = 0.2,
-) -> CircuitCompletenessReport:
-    """Check whether adding top omitted nodes improves little."""
-
-    for name, value in {
-        "circuit_metric": circuit_metric,
-        "expanded_metric": expanded_metric,
-        "max_omitted_node_gain": max_omitted_node_gain,
-    }.items():
-        _require_finite_scalar(value, name)
-    if max_omitted_node_gain < 0:
-        raise ValueError("max_omitted_node_gain must be nonnegative.")
-    omitted_node_gain = expanded_metric - circuit_metric
-    return CircuitCompletenessReport(
-        circuit_metric=circuit_metric,
-        expanded_metric=expanded_metric,
-        omitted_node_gain=omitted_node_gain,
-        passes_completeness=omitted_node_gain <= max_omitted_node_gain,
-    )
-
-
-def random_circuit_baseline_report(
-    *,
-    circuit_metric: float,
-    random_metric: float,
-    min_margin: float = 0.5,
-) -> RandomCircuitBaselineReport:
-    """Check that a discovered circuit beats a same-size random circuit."""
-
-    for name, value in {
-        "circuit_metric": circuit_metric,
-        "random_metric": random_metric,
-        "min_margin": min_margin,
-    }.items():
-        _require_finite_scalar(value, name)
-    if min_margin < 0:
-        raise ValueError("min_margin must be nonnegative.")
-    margin = circuit_metric - random_metric
-    return RandomCircuitBaselineReport(
-        circuit_metric=circuit_metric,
-        random_metric=random_metric,
-        margin=margin,
-        circuit_beats_random=margin >= min_margin,
-    )
-
-
-def ood_template_report(
-    logits: t.Tensor,
-    answer_ids: t.Tensor,
-    template_ids: t.Tensor,
-    *,
-    min_accuracy: float = 0.75,
-) -> OODTemplateReport:
-    """Report circuit answer accuracy on held-out prompt templates."""
-
-    if logits.shape[:-1] != answer_ids.shape:
-        raise ValueError("answer_ids must match logits leading dimensions.")
-    if answer_ids.shape != template_ids.shape:
-        raise ValueError("answer_ids and template_ids must match.")
-    if answer_ids.numel() == 0:
-        raise ValueError("answer_ids must be nonempty.")
-    if logits.shape[-1] == 0:
-        raise ValueError("logits vocabulary dimension must be nonempty.")
-    if not 0.0 <= min_accuracy <= 1.0:
-        raise ValueError("min_accuracy must be between 0 and 1.")
-    _require_finite_tensor(logits, "logits")
-    if ((answer_ids < 0) | (answer_ids >= logits.shape[-1])).any():
-        raise ValueError("answer_ids must be valid vocabulary indices.")
-
-    predictions = logits.argmax(dim=-1)
-    per_template: dict[int, float] = {}
-    for template_id in template_ids.unique(sorted=True):
-        mask = template_ids.eq(template_id)
-        accuracy = predictions[mask].eq(answer_ids[mask]).float().mean().item()
-        per_template[int(template_id.item())] = accuracy
-    worst_accuracy = min(per_template.values()) if per_template else 0.0
-    return OODTemplateReport(
-        per_template_accuracy=per_template,
-        worst_template_accuracy=worst_accuracy,
-        passes_ood=worst_accuracy >= min_accuracy,
-    )
-
-
-def _top_edge_names(scores: t.Tensor, edge_names: list[str], *, top_k: int) -> tuple[str, ...]:
-    flat_scores = scores.flatten().float()
-    if flat_scores.numel() == 0:
-        raise ValueError("scores must be nonempty.")
-    if flat_scores.numel() != len(edge_names):
-        raise ValueError("scores and edge_names must align.")
-    _require_finite_tensor(flat_scores, "scores")
-    k = min(top_k, flat_scores.numel())
-    top_indices = flat_scores.topk(k=k).indices.tolist()
-    return tuple(edge_names[int(index)] for index in top_indices)
-
-
-def _pearson_correlation(left: t.Tensor, right: t.Tensor) -> float:
-    left = left.flatten().float()
-    right = right.flatten().float()
-    if left.shape != right.shape:
-        raise ValueError("score tensors must have matching shapes.")
-    if left.numel() < 2:
-        raise ValueError("at least two scores are required for correlation.")
-    _require_finite_tensor(left, "left")
-    _require_finite_tensor(right, "right")
-    left_centered = left - left.mean()
-    right_centered = right - right.mean()
-    denominator = left_centered.norm() * right_centered.norm()
-    if float(denominator.item()) == 0.0:
-        return 0.0
-    return float((left_centered @ right_centered / denominator).item())
-
-
-def circuit_method_comparison_report(
-    exact_scores: t.Tensor,
-    method_scores: Mapping[str, t.Tensor],
-    edge_names: list[str],
-    *,
-    top_k: int,
-    min_topk_overlap: float = 0.5,
-    min_score_correlation: float = 0.5,
-) -> CircuitMethodComparisonReport:
-    """Compare approximate circuit-discovery methods against exact patching."""
-
-    if top_k <= 0:
-        raise ValueError("top_k must be positive.")
-    if not 0.0 <= min_topk_overlap <= 1.0:
-        raise ValueError("min_topk_overlap must be between 0 and 1.")
-    if not -1.0 <= min_score_correlation <= 1.0:
-        raise ValueError("min_score_correlation must be between -1 and 1.")
-    if not method_scores:
-        raise ValueError("method_scores must contain at least one method.")
-    exact_flat = exact_scores.flatten().float()
-    if exact_flat.numel() == 0:
-        raise ValueError("exact_scores must be nonempty.")
-    if exact_flat.numel() != len(edge_names):
-        raise ValueError("exact_scores and edge_names must align.")
-    _require_finite_tensor(exact_flat, "exact_scores")
-
-    exact_top_edges = _top_edge_names(exact_flat, edge_names, top_k=top_k)
-    exact_top_set = set(exact_top_edges)
-    method_top_edges: dict[str, tuple[str, ...]] = {}
-    topk_overlap: dict[str, float] = {}
-    score_correlations: dict[str, float] = {}
-    circuit_sizes: dict[str, int] = {"exact": len(exact_top_edges)}
-
-    for method_name, scores in method_scores.items():
-        method_flat = scores.flatten().float()
-        if method_flat.shape != exact_flat.shape:
-            raise ValueError(f"{method_name} scores must match exact_scores shape.")
-        _require_finite_tensor(method_flat, f"{method_name} scores")
-        top_edges = _top_edge_names(method_flat, edge_names, top_k=top_k)
-        overlap = len(exact_top_set.intersection(top_edges)) / len(exact_top_edges)
-        method_top_edges[method_name] = top_edges
-        topk_overlap[method_name] = overlap
-        score_correlations[method_name] = _pearson_correlation(exact_flat, method_flat)
-        circuit_sizes[method_name] = len(top_edges)
-
-    best_matching_method = max(
-        method_scores,
-        key=lambda name: (topk_overlap[name], score_correlations[name]),
-    )
-    passes_comparison = all(
-        topk_overlap[name] >= min_topk_overlap
-        and score_correlations[name] >= min_score_correlation
-        for name in method_scores
-    )
-    return CircuitMethodComparisonReport(
-        exact_top_edges=exact_top_edges,
-        method_top_edges=method_top_edges,
-        topk_overlap=topk_overlap,
-        score_correlations=score_correlations,
-        circuit_sizes=circuit_sizes,
-        best_matching_method=best_matching_method,
-        passes_comparison=passes_comparison,
-    )
-
-
-# %%
-def acdc_pruning_smoke_test() -> dict:
-    scores = t.tensor([0.9, 0.2, 0.7])
-    names = ["name-mover", "backup", "negative"]
-    return acdc_pruning_report(scores, names, threshold=0.5).__dict__
-
-
-def toy_circuit_smoke_test() -> dict:
-    fixture = toy_acdc_graph()
-    sweep = exact_toy_edge_patch_scores(
-        fixture["clean_edge_values"],
-        fixture["corrupt_edge_values"],
-        fixture["edge_names"],
-    )
-    report = evaluate_toy_circuit(
-        fixture["clean_edge_values"],
-        fixture["corrupt_edge_values"],
-        fixture["edge_names"],
-        fixture["ground_truth_edges"],
-        fixture["same_size_random_edges"],
-        threshold=fixture["threshold"],
-    )
-    return {
-        "edge_names": fixture["edge_names"],
-        "patch_scores": [float(score) for score in sweep.patch_scores.tolist()],
-        **report.__dict__,
-    }
-
-
-def faithfulness_smoke_test() -> dict:
-    return circuit_faithfulness_report(
-        full_metric=3.0,
-        corrupt_metric=-1.0,
-        circuit_metric=2.2,
-        min_preserved_fraction=0.75,
-    ).__dict__
-
-
-def minimality_smoke_test() -> dict:
-    return circuit_minimality_report(
-        circuit_metric=2.2,
-        ablated_metric=0.5,
-        min_metric_damage=1.0,
-    ).__dict__
-
-
-def completeness_smoke_test() -> dict:
-    return circuit_completeness_report(
-        circuit_metric=2.2,
-        expanded_metric=2.35,
-        max_omitted_node_gain=0.2,
-    ).__dict__
-
-
-def random_baseline_smoke_test() -> dict:
-    return random_circuit_baseline_report(
-        circuit_metric=2.2,
-        random_metric=0.8,
-        min_margin=1.0,
-    ).__dict__
-
-
-def ood_smoke_test() -> dict:
-    logits = t.tensor(
-        [
-            [2.0, 0.0],
-            [0.0, 2.0],
-            [2.0, 0.0],
-            [0.0, 2.0],
-        ]
-    )
-    answer_ids = t.tensor([0, 1, 0, 1])
-    template_ids = t.tensor([0, 0, 1, 1])
-    return ood_template_report(logits, answer_ids, template_ids, min_accuracy=1.0).__dict__
-
-
-def method_comparison_smoke_test() -> dict:
-    exact = t.tensor([0.95, 0.8, 0.15, 0.05])
-    eap_ig = t.tensor([0.9, 0.7, 0.2, 0.1])
-    names = ["name-mover", "backup-name-mover", "mlp-noise", "wrong-position"]
-    return circuit_method_comparison_report(
-        exact,
-        {"eap_ig": eap_ig},
-        names,
-        top_k=2,
-        min_topk_overlap=1.0,
-        min_score_correlation=0.9,
-    ).__dict__
-
-
-def run_smoke_test(cpu: bool = True) -> dict:
-    _ = cpu
-    return {
-        "toy_circuit": toy_circuit_smoke_test(),
-        "acdc": acdc_pruning_smoke_test(),
-        "faithfulness": faithfulness_smoke_test(),
-        "minimality": minimality_smoke_test(),
-        "completeness": completeness_smoke_test(),
-        "random_baseline": random_baseline_smoke_test(),
-        "ood": ood_smoke_test(),
-        "method_comparison": method_comparison_smoke_test(),
-    }
-
-
-def _load_gelu1l_model_on_cuda():
-    os.environ.setdefault("BNB_CUDA_VERSION", TL_BNB_CUDA_OVERRIDE)
-    logging.getLogger("bitsandbytes.cextension").setLevel(logging.ERROR)
-    from transformer_lens import HookedTransformer
-    from transformers import AutoTokenizer
-
-    tokenizer = AutoTokenizer.from_pretrained(
-        TL_GELU1L_TOKENIZER_ID,
-        revision=TL_GELU1L_TOKENIZER_REVISION,
-    )
-
-    return HookedTransformer.from_pretrained(
-        TL_GELU1L_MODEL_NAME,
-        device="cuda",
-        dtype="float32",
-        revision=TL_GELU1L_REVISION,
-        tokenizer=tokenizer,
-    )
-
-
-def _patched_metric(
-    model,
-    corrupt_tokens: t.Tensor,
-    clean_cache: dict[str, t.Tensor],
-    positions: list[int],
-    *,
-    positive_token_id: int,
-    negative_token_id: int,
-) -> float:
-    def patch_hook(activation: t.Tensor, hook) -> t.Tensor:
-        patched = activation.clone()
-        for position in positions:
-            patched[:, position, :] = clean_cache[TL_PATCH_HOOK_NAME][:, position, :]
-        return patched
-
-    with t.inference_mode():
-        patched_logits = model.run_with_hooks(
-            corrupt_tokens,
-            fwd_hooks=[(TL_PATCH_HOOK_NAME, patch_hook)],
-        )
-    return answer_logit_diff(
-        patched_logits[0, -1],
-        positive_token_id=positive_token_id,
-        negative_token_id=negative_token_id,
-    )
-
-
-def _real_patch_sweep(model, clean_prompt: str, corrupt_prompt: str) -> dict:
+def patch_selected_head_results(
+    activation: t.Tensor,
+    clean_head_results: t.Tensor,
+    selected_heads: Sequence[int],
+) -> t.Tensor:
+    """Patch selected clean head results into a corrupt hook activation."""
+
+    if activation.ndim != 4:
+        raise ValueError("head result must have shape [batch, position, head, d_model].")
+    if activation.shape != clean_head_results.shape:
+        raise ValueError("clean and corrupt head-result tensors must have matching shapes.")
+    if not t.isfinite(activation).all() or not t.isfinite(clean_head_results).all():
+        raise ValueError("head-result tensors must be finite.")
+    heads = tuple(int(head) for head in selected_heads)
+    if len(set(heads)) != len(heads):
+        raise ValueError("selected_heads must not contain duplicates.")
+    if any(head < 0 or head >= activation.shape[2] for head in heads):
+        raise ValueError("selected head index is out of range.")
+    patched = activation.clone()
+    if heads:
+        patched[:, :, list(heads), :] = clean_head_results[:, :, list(heads), :]
+    return patched
+
+
+def _prepare_transformerlens_task(model, clean_prompt: str, corrupt_prompt: str) -> dict[str, object]:
     clean_tokens = model.to_tokens(clean_prompt)
     corrupt_tokens = model.to_tokens(corrupt_prompt)
     if clean_tokens.shape != corrupt_tokens.shape:
-        raise RuntimeError(
-            f"clean/corrupt token shapes differ: {clean_tokens.shape} vs {corrupt_tokens.shape}"
+        raise ValueError(
+            f"clean and corrupt token shapes differ: {clean_tokens.shape} vs {corrupt_tokens.shape}"
         )
-
     with t.inference_mode():
         clean_logits, clean_cache = model.run_with_cache(
             clean_tokens,
-            names_filter=lambda name: name == TL_PATCH_HOOK_NAME,
+            names_filter=lambda name: name in {TL_HEAD_HOOK, TL_MLP_HOOK},
         )
         corrupt_logits = model(corrupt_tokens)
-
-    clean_final_logits = clean_logits[0, -1]
-    corrupt_final_logits = corrupt_logits[0, -1]
-    clean_top_tokens = clean_final_logits.topk(5).indices.tolist()
-    corrupt_top_tokens = corrupt_final_logits.topk(5).indices.tolist()
-    target_token_id = clean_top_tokens[0]
-    distractor_token_id = next(
-        token_id
-        for token_id in [*corrupt_top_tokens, *clean_top_tokens[1:]]
-        if token_id != target_token_id
+    positive_token_id = int(clean_logits[0, -1].argmax().item())
+    corrupt_order = corrupt_logits[0, -1].argsort(descending=True).tolist()
+    negative_token_id = next(
+        int(token_id) for token_id in corrupt_order if int(token_id) != positive_token_id
     )
     clean_metric = answer_logit_diff(
-        clean_final_logits,
-        positive_token_id=target_token_id,
-        negative_token_id=distractor_token_id,
+        clean_logits,
+        positive_token_id=positive_token_id,
+        negative_token_id=negative_token_id,
     )
     corrupt_metric = answer_logit_diff(
-        corrupt_final_logits,
-        positive_token_id=target_token_id,
-        negative_token_id=distractor_token_id,
+        corrupt_logits,
+        positive_token_id=positive_token_id,
+        negative_token_id=negative_token_id,
     )
-
-    sequence_length = int(clean_tokens.shape[1])
-    patched_metrics = [
-        _patched_metric(
-            model,
-            corrupt_tokens,
-            clean_cache,
-            [position],
-            positive_token_id=target_token_id,
-            negative_token_id=distractor_token_id,
-        )
-        for position in range(sequence_length)
-    ]
-    sweep = activation_patching_sweep(
-        clean_metric=clean_metric,
-        corrupt_metric=corrupt_metric,
-        patched_metrics=t.tensor(patched_metrics, device=clean_logits.device),
-    )
-    target_position = sequence_length - 1
-    non_target_positions = [position for position in range(sequence_length) if position != target_position]
-    random_position = non_target_positions[0]
-    omitted_scores = sweep.patch_scores.clone()
-    omitted_scores[target_position] = -t.inf
-    top_omitted_position = int(omitted_scores.argmax().item())
-    expanded_positions = [target_position, top_omitted_position]
     return {
         "clean_prompt": clean_prompt,
         "corrupt_prompt": corrupt_prompt,
-        "sequence_length": sequence_length,
-        "target_position": target_position,
-        "random_position": random_position,
-        "top_omitted_position": top_omitted_position,
-        "target_token_id": int(target_token_id),
-        "distractor_token_id": int(distractor_token_id),
-        "target_token": model.to_string(target_token_id),
-        "distractor_token": model.to_string(distractor_token_id),
+        "clean_tokens": clean_tokens,
+        "corrupt_tokens": corrupt_tokens,
+        "clean_head_results": clean_cache[TL_HEAD_HOOK],
+        "clean_mlp_output": clean_cache[TL_MLP_HOOK],
+        "positive_token_id": positive_token_id,
+        "negative_token_id": negative_token_id,
+        "positive_token": model.to_string(positive_token_id),
+        "negative_token": model.to_string(negative_token_id),
         "clean_metric": clean_metric,
         "corrupt_metric": corrupt_metric,
-        "clean_corrupt_gap": clean_metric - corrupt_metric,
-        "patch_scores": sweep.patch_scores,
-        "best_position": sweep.best_index,
-        "best_score": sweep.best_score,
-        "circuit_metric": patched_metrics[target_position],
-        "random_metric": patched_metrics[random_position],
-        "top_omitted_metric": patched_metrics[top_omitted_position],
-        "expanded_metric": _patched_metric(
-            model,
-            corrupt_tokens,
-            clean_cache,
-            expanded_positions,
-            positive_token_id=target_token_id,
-            negative_token_id=distractor_token_id,
+    }
+
+
+def _make_head_evaluator(model, task: Mapping[str, object]) -> MetricEvaluator:
+    names = tuple(f"L0H{head}" for head in range(model.cfg.n_heads))
+
+    def evaluate(active_heads: frozenset[str]) -> float:
+        unknown = active_heads - set(names)
+        if unknown:
+            raise ValueError(f"unknown head names: {sorted(unknown)}")
+        head_indices = tuple(int(name.removeprefix("L0H")) for name in active_heads)
+
+        def patch_hook(activation: t.Tensor, hook) -> t.Tensor:
+            del hook
+            return patch_selected_head_results(
+                activation,
+                task["clean_head_results"],
+                head_indices,
+            )
+
+        with t.inference_mode():
+            logits = model.run_with_hooks(
+                task["corrupt_tokens"],
+                fwd_hooks=[(TL_HEAD_HOOK, patch_hook)],
+            )
+        return answer_logit_diff(
+            logits,
+            positive_token_id=task["positive_token_id"],
+            negative_token_id=task["negative_token_id"],
+        )
+
+    return evaluate
+
+
+def _mlp_bottleneck_recovery(model, task: Mapping[str, object]) -> float:
+    def patch_mlp(activation: t.Tensor, hook) -> t.Tensor:
+        del activation, hook
+        return task["clean_mlp_output"].clone()
+
+    with t.inference_mode():
+        logits = model.run_with_hooks(
+            task["corrupt_tokens"],
+            fwd_hooks=[(TL_MLP_HOOK, patch_mlp)],
+        )
+    metric = answer_logit_diff(
+        logits,
+        positive_token_id=task["positive_token_id"],
+        negative_token_id=task["negative_token_id"],
+    )
+    return normalized_recovery(
+        clean_metric=task["clean_metric"],
+        corrupt_metric=task["corrupt_metric"],
+        metric=metric,
+    )
+
+
+def run_transformerlens_component_study(
+    device: str = "cpu",
+    *,
+    threshold: float = 0.05,
+    max_vram_gb: float = 24.0,
+) -> dict[str, object]:
+    """Run honest component-level ACDC over all heads in pinned GELU-1L."""
+
+    if device.startswith("cuda") and not t.cuda.is_available():
+        raise RuntimeError("CUDA was requested but is not available.")
+    if device.startswith("cuda"):
+        t.cuda.reset_peak_memory_stats()
+    model = load_pinned_gelu1l(device=device)
+    primary = _prepare_transformerlens_task(model, *TL_PRIMARY_PAIR)
+    names = tuple(f"L0H{head}" for head in range(model.cfg.n_heads))
+    evaluator = _make_head_evaluator(model, primary)
+    order = initial_deletion_order(
+        names,
+        evaluator,
+        clean_metric=primary["clean_metric"],
+        corrupt_metric=primary["corrupt_metric"],
+    )
+    acdc = greedy_acdc(
+        names,
+        evaluator,
+        clean_metric=primary["clean_metric"],
+        corrupt_metric=primary["corrupt_metric"],
+        threshold=threshold,
+        order=order,
+    )
+    all_heads = frozenset(names)
+    all_recovery = normalized_recovery(
+        clean_metric=primary["clean_metric"],
+        corrupt_metric=primary["corrupt_metric"],
+        metric=evaluator(all_heads),
+    )
+    deletion_damages = {}
+    for name in names:
+        without = normalized_recovery(
+            clean_metric=primary["clean_metric"],
+            corrupt_metric=primary["corrupt_metric"],
+            metric=evaluator(all_heads - {name}),
+        )
+        deletion_damages[name] = all_recovery - without
+    random_report = same_size_circuit_report(
+        names,
+        acdc.kept_edges,
+        evaluator,
+        clean_metric=primary["clean_metric"],
+        corrupt_metric=primary["corrupt_metric"],
+    )
+    heldout = {}
+    heldout_tokens = {}
+    for label, clean_prompt, corrupt_prompt in TL_HELDOUT_PAIRS:
+        task = _prepare_transformerlens_task(model, clean_prompt, corrupt_prompt)
+        task_evaluator = _make_head_evaluator(model, task)
+        heldout[label] = normalized_recovery(
+            clean_metric=task["clean_metric"],
+            corrupt_metric=task["corrupt_metric"],
+            metric=task_evaluator(frozenset(acdc.kept_edges)),
+        )
+        heldout_tokens[label] = {
+            "positive": task["positive_token"],
+            "negative": task["negative_token"],
+        }
+    mlp_recovery = _mlp_bottleneck_recovery(model, primary)
+    peak_vram_gb = 0.0
+    if device.startswith("cuda"):
+        t.cuda.synchronize()
+        peak_vram_gb = t.cuda.max_memory_allocated() / 1024**3
+        if peak_vram_gb > max_vram_gb:
+            raise RuntimeError(
+                f"Peak VRAM {peak_vram_gb:.3f} GB exceeds budget {max_vram_gb:.3f} GB."
+            )
+    accepted = (
+        acdc.kept_edges == ("L0H0", "L0H4", "L0H6")
+        and acdc.recovery >= 0.9
+        and random_report.discovered_rank == 1
+        and min(heldout.values()) >= 0.75
+        and mlp_recovery >= 0.95
+    )
+    return {
+        "accepted": accepted,
+        "device": device,
+        "torch_version": t.__version__,
+        "cuda_version": t.version.cuda,
+        "model_name": TL_MODEL_NAME,
+        "hf_model_id": TL_HF_ID,
+        "hf_revision": TL_REVISION,
+        "tokenizer_id": TL_TOKENIZER_ID,
+        "tokenizer_revision": TL_TOKENIZER_REVISION,
+        "head_hook": TL_HEAD_HOOK,
+        "mlp_hook": TL_MLP_HOOK,
+        "clean_prompt": primary["clean_prompt"],
+        "corrupt_prompt": primary["corrupt_prompt"],
+        "positive_token": primary["positive_token"],
+        "negative_token": primary["negative_token"],
+        "clean_metric": primary["clean_metric"],
+        "corrupt_metric": primary["corrupt_metric"],
+        "clean_corrupt_gap": primary["clean_metric"] - primary["corrupt_metric"],
+        "threshold": threshold,
+        "initial_deletion_damage": deletion_damages,
+        "deletion_order": order,
+        "acdc": asdict(acdc),
+        "same_size_random": asdict(random_report),
+        "heldout_recoveries": heldout,
+        "heldout_tokens": heldout_tokens,
+        "worst_heldout_recovery": min(heldout.values()),
+        "mlp_bottleneck_recovery": mlp_recovery,
+        "peak_vram_gb": peak_vram_gb,
+        "claim_scope": (
+            "Component-level head deletion in one layer with the real MLP recomputed; "
+            "not a full edge-level IOI or greater-than ACDC replication."
         ),
     }
 
 
-def run_transformerlens_acdc_preflight(max_vram_gb: float = 24.0) -> dict:
-    """Run real residual-position circuit pruning and metric checks on CUDA."""
+# %%
+def run_smoke_test(cpu: bool = True) -> dict[str, object]:
+    """Run the exact toy contract without loading a model."""
+
+    _ = cpu
+    return run_toy_study()
+
+
+def run_gpu_test(max_vram_gb: float = 24.0) -> dict[str, object]:
+    """Run the exact toy study and the pinned real-model study on CUDA."""
 
     if not t.cuda.is_available():
-        return {
-            "cuda_available": False,
-            "preflight_passed": False,
-            "full_path": "Pinned TransformerLens gelu-1l ACDC-style position-circuit preflight.",
-        }
+        raise RuntimeError("Section 8.3 CUDA verification requires an available GPU.")
 
-    t.cuda.reset_peak_memory_stats()
-    model = _load_gelu1l_model_on_cuda()
-    model.eval()
-
-    primary = _real_patch_sweep(model, TL_PRIMARY_CLEAN_PROMPT, TL_PRIMARY_CORRUPT_PROMPT)
-    edge_names = [f"position_{index}" for index in range(primary["sequence_length"])]
-    pruning = acdc_pruning_report(
-        primary["patch_scores"],
-        edge_names,
-        threshold=0.5,
+    toy = run_toy_study()
+    real = run_transformerlens_component_study(
+        device="cuda",
+        max_vram_gb=max_vram_gb,
     )
-    faithfulness = circuit_faithfulness_report(
-        full_metric=primary["clean_metric"],
-        corrupt_metric=primary["corrupt_metric"],
-        circuit_metric=primary["circuit_metric"],
-        min_preserved_fraction=0.99,
-    )
-    minimality = circuit_minimality_report(
-        circuit_metric=primary["circuit_metric"],
-        ablated_metric=primary["corrupt_metric"],
-        min_metric_damage=1.0,
-    )
-    completeness = circuit_completeness_report(
-        circuit_metric=primary["circuit_metric"],
-        expanded_metric=primary["expanded_metric"],
-        max_omitted_node_gain=1e-5,
-    )
-    random_baseline = random_circuit_baseline_report(
-        circuit_metric=primary["circuit_metric"],
-        random_metric=primary["random_metric"],
-        min_margin=1.0,
-    )
-
-    template_reports = [
-        _real_patch_sweep(model, clean_prompt, corrupt_prompt)
-        for clean_prompt, corrupt_prompt in TL_TEMPLATE_PAIRS
-    ]
-    template_recoveries = [
-        (template["circuit_metric"] - template["corrupt_metric"])
-        / template["clean_corrupt_gap"]
-        for template in template_reports
-    ]
-    template_random_recoveries = [
-        (template["random_metric"] - template["corrupt_metric"])
-        / template["clean_corrupt_gap"]
-        for template in template_reports
-    ]
-    template_best_positions = [template["best_position"] for template in template_reports]
-    template_target_positions = [
-        template["target_position"] for template in template_reports
-    ]
-    passes_ood = all(
-        recovery >= 0.99
-        and random_recovery <= 1e-4
-        and best_position == target_position
-        for recovery, random_recovery, best_position, target_position in zip(
-            template_recoveries,
-            template_random_recoveries,
-            template_best_positions,
-            template_target_positions,
-            strict=True,
-        )
-    )
-
-    t.cuda.synchronize()
-    peak_vram_gb = t.cuda.max_memory_allocated() / 1024**3
-    within_vram_budget = peak_vram_gb <= max_vram_gb
-    preflight_passed = (
-        pruning.num_kept == 1
-        and pruning.kept_edges == (f"position_{primary['target_position']}",)
-        and primary["best_position"] == primary["target_position"]
-        and primary["best_score"] >= 0.99
-        and primary["clean_corrupt_gap"] >= 6.0
-        and faithfulness.passes_faithfulness
-        and minimality.passes_minimality
-        and completeness.passes_completeness
-        and random_baseline.circuit_beats_random
-        and passes_ood
-        and within_vram_budget
-    )
-    return {
+    toy_kept = tuple(toy["acdc"]["kept_edges"])
+    result = {
+        "accepted": bool(toy["accepted"] and real["accepted"]),
         "cuda_available": True,
+        "device": t.cuda.get_device_name(0),
         "torch_version": t.__version__,
         "cuda_version": t.version.cuda,
-        "device": t.cuda.get_device_name(0),
-        "preflight_passed": preflight_passed,
-        "model_name": TL_GELU1L_MODEL_NAME,
-        "hf_model_id": TL_GELU1L_HF_ID,
-        "hf_revision": TL_GELU1L_REVISION,
-        "tokenizer_id": TL_GELU1L_TOKENIZER_ID,
-        "tokenizer_revision": TL_GELU1L_TOKENIZER_REVISION,
-        "bnb_cuda_override": TL_BNB_CUDA_OVERRIDE,
-        "hook_name": TL_PATCH_HOOK_NAME,
-        "clean_prompt": TL_PRIMARY_CLEAN_PROMPT,
-        "corrupt_prompt": TL_PRIMARY_CORRUPT_PROMPT,
-        "sequence_length": primary["sequence_length"],
-        "target_position": primary["target_position"],
-        "target_token": primary["target_token"],
-        "distractor_token": primary["distractor_token"],
-        "patch_scores_by_position": [
-            float(score) for score in primary["patch_scores"].tolist()
-        ],
-        "best_position": primary["best_position"],
-        "best_score": primary["best_score"],
-        "num_kept_edges": pruning.num_kept,
-        "kept_edges": list(pruning.kept_edges),
-        "clean_corrupt_gap": primary["clean_corrupt_gap"],
-        "preserved_fraction": faithfulness.preserved_fraction,
-        "passes_faithfulness": faithfulness.passes_faithfulness,
-        "minimality_metric_damage": minimality.metric_damage,
-        "passes_minimality": minimality.passes_minimality,
-        "top_omitted_position": primary["top_omitted_position"],
-        "top_omitted_metric": primary["top_omitted_metric"],
-        "omitted_node_gain": completeness.omitted_node_gain,
-        "passes_completeness": completeness.passes_completeness,
-        "random_baseline_margin": random_baseline.margin,
-        "circuit_beats_random": random_baseline.circuit_beats_random,
-        "template_count": len(template_reports),
-        "template_recoveries": [float(recovery) for recovery in template_recoveries],
-        "template_random_recoveries": [
-            float(recovery) for recovery in template_random_recoveries
-        ],
-        "template_best_positions": template_best_positions,
-        "template_target_positions": template_target_positions,
-        "passes_ood": passes_ood,
-        "peak_vram_gb": peak_vram_gb,
-        "within_vram_budget": within_vram_budget,
-        "full_path": "Pinned TransformerLens gelu-1l ACDC-style position-circuit preflight.",
+        "peak_vram_gb": real["peak_vram_gb"],
+        "within_vram_budget": real["peak_vram_gb"] <= max_vram_gb,
+        "full_path": (
+            "Exact nonlinear ACDC ground truth plus pinned gelu-1l attention-head "
+            "component deletion, exhaustive same-size controls, and held-out transfer."
+        ),
+        "toy_one_shot_max_abs": max(abs(value) for value in toy["one_shot_scores"].values()),
+        "toy_exact_ground_truth_recovered": (
+            set(toy_kept) == set(toy["ground_truth_edges"])
+        ),
+        "toy_kept_edge_count": len(toy_kept),
+        "toy_recovery": toy["acdc"]["recovery"],
+        "toy_min_edge_damage": toy["metrics"]["min_edge_damage"],
+        "toy_max_omitted_subset_gain": toy["metrics"]["max_omitted_gain"],
+        "toy_same_size_circuit_count": toy["same_size_random"]["num_circuits"],
+        "toy_same_size_rank": toy["same_size_random"]["discovered_rank"],
+        "toy_same_size_exact_pvalue": toy["same_size_random"]["exact_empirical_pvalue"],
+        "toy_same_size_best_wrong_recovery": toy["same_size_random"]["control_best_recovery"],
+        "toy_worst_heldout_recovery": toy["ood"]["worst_recovery"],
+        "threshold_backup_cliff": 0.17,
+        "threshold_primary_cliff": 0.84,
+        "real_model_component_result_passed": real["accepted"],
+        "model_name": real["model_name"],
+        "hf_revision": real["hf_revision"],
+        "tokenizer_revision": real["tokenizer_revision"],
+        "head_hook": real["head_hook"],
+        "mlp_hook": real["mlp_hook"],
+        "target_token": real["positive_token"],
+        "distractor_token": real["negative_token"],
+        "clean_corrupt_gap": real["clean_corrupt_gap"],
+        "real_kept_heads": list(real["acdc"]["kept_edges"]),
+        "real_primary_recovery": real["acdc"]["recovery"],
+        "real_same_size_set_count": real["same_size_random"]["num_circuits"],
+        "real_same_size_rank": real["same_size_random"]["discovered_rank"],
+        "real_same_size_exact_pvalue": real["same_size_random"]["exact_empirical_pvalue"],
+        "real_same_size_best_other_recovery": real["same_size_random"]["control_best_recovery"],
+        "real_worst_heldout_recovery": real["worst_heldout_recovery"],
+        "real_mlp_bottleneck_recovery": real["mlp_bottleneck_recovery"],
+        "real_model": real,
     }
+    if not result["accepted"]:
+        raise RuntimeError("Section 8.3 CUDA evidence did not satisfy its declared gates.")
+    return result
 
 
-def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
-    return run_transformerlens_acdc_preflight(max_vram_gb=max_vram_gb)
-
-
-def run_full_experiment(max_vram_gb: float = 24.0) -> dict:
-    """Run the validated experiment path used by the verification report."""
-
+def run_full_experiment(max_vram_gb: float = 24.0) -> dict[str, object]:
     return run_gpu_test(max_vram_gb=max_vram_gb)
 
 
