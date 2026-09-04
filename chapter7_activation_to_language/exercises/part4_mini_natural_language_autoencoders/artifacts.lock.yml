@@ -9,18 +9,15 @@ exercise_metadata:
   EXPECTED_RUNTIME: seconds on toy contract; minutes on live trainable local real-model path
   REQUIRES_GPU: true
 gt_tier: GT-3
-evidence_level: toy_nla_contract_plus_live_trainable_transformerlens_phrase_bottleneck_preflight
-claim_scope: 'GT-3 mini Natural Language Autoencoder preflight: reusable toy activation-batch,
-  reconstruction, logit-diff, latent-preservation, brevity, and counterfactual contracts
-  are kept for learner exercises, then a pinned TransformerLens gelu-1l checkpoint
-  is loaded on CUDA. The report trains a small linear residual-to-phrase-id encoder
-  and trainable phrase-id-to-residual decoder table on real final-token residuals,
-  transmits only short discrete natural-language phrase ids, and validates held-out
-  activation MSE against blank-text and prompt-label baselines, direction-probe logit-diff
-  preservation, latent preservation, OOD long-context prompts, brevity, no-numeric-payload
-  checks, shuffled-text controls, and counterfactual explanation changes. This is a
-  live local phrase-bottleneck mini-NLA preflight, not Anthropic-scale NLA training
-  or a claim of faithful natural-language explanation of arbitrary activations.'
+evidence_level: exact_planted_semantic_ground_truth_plus_live_transformerlens_phrase_bottleneck_preflight
+claim_scope: 'The learner-facing GT-0 result proves that a four-phrase compositional
+  bottleneck recovers two planted semantic variables from held-out activations and
+  preserves their exact downstream readout while prompt-only and opposite-phrase
+  controls fail. Every visible prompt is paired with all four latent states, so the
+  text-only information limit is exact. A pinned TransformerLens gelu-1l CUDA run
+  remains supporting GT-3 evidence for a small residual phrase bottleneck. Neither
+  result claims free-form explanation generation, discovery of unknown concepts,
+  arbitrary residual reconstruction, or Anthropic-scale NLA training.'
 required_gpu_gb: 1
 max_allowed_gpu_gb: 24
 models:
@@ -39,9 +36,17 @@ models:
   tokenizer_id: NeelNanda/gpt-neox-tokenizer-digits
   tokenizer_revision: 0f6671571a20be9756b9991d978047c03b75e749
 datasets:
-- id: 7_4_mini_natural_language_autoencoders_toy_inputs
+- id: 7_4_exact_courier_state_model_organism
   source: generated
   seed: 0
+  train_prompt_count: 6
+  eval_prompt_count: 4
+  paired_hidden_states_per_prompt: 4
+  semantic_variables:
+  - route_north_vs_south
+  - cargo_fragile_vs_standard
+  d_model: 8
+  nuisance_scale: 0.35
 - id: course_safe_residual_text_bottleneck_nla_prompts_v1
   source: generated_prompt_sets
   seed: 0
@@ -61,6 +66,16 @@ datasets:
 expected_metrics:
   tests_passed: true
   accepted: true
+  toy_phrase_accuracy: 1.0
+  toy_nla_mse_max: 0.02
+  toy_prompt_only_mse_min: 1.0
+  toy_shuffled_phrase_mse_min: 5.0
+  toy_behavior_mae_max: 0.0001
+  toy_prompt_only_behavior_mae_min: 3.0
+  toy_shuffled_behavior_mae_min: 6.0
+  toy_route_accuracy: 1.0
+  toy_cargo_accuracy: 1.0
+  toy_compression_ratio_max: 0.5
   max_allowed_gpu_gb: 24
   preflight_passed: true
   model_name: gelu-1l
@@ -132,6 +147,12 @@ controls:
 - toy_brevity_contract
 - toy_counterfactual_explanation_contract
 - toy_trainable_discrete_nla_bottleneck_contract
+- exact_paired_prompt_information_limit
+- exact_orthogonal_semantic_and_nuisance_directions
+- compositional_word_features_not_phrase_ids
+- opposite_meaning_phrase_control
+- prompt_copy_compression_failure
+- route_only_counterfactual_reflection
 - pinned_transformerlens_gelu1l_live_trainable_phrase_bottleneck_reconstruction
 - no_activation_mean_reconstruction_baseline
 - prompt_label_text_only_reconstruction_baseline

@@ -1,77 +1,20 @@
 {
-  "baselines": {
-    "required": true
-  },
-  "metrics": {
-    "accepted": true,
-    "activation_mse_max": 0.15,
-    "activation_shape": [
-      8,
-      512
-    ],
-    "beats_prompt_label_baseline": true,
-    "beats_text_only": true,
-    "blank_text_control_worse": true,
-    "blank_text_mse_min": 0.2,
-    "bnb_cuda_override": "130",
-    "compression_ratio_max": 0.7,
-    "counterfactual_activation_delta_min": 10.0,
-    "counterfactual_explanation_changed": true,
-    "eval_example_count": 8,
-    "explanation_count": 8,
-    "generated_word_count": 32,
-    "hf_revision": "bddc0e332f0ae84279e6a6a45d91b314899e1603",
-    "live_trainable_nla": true,
-    "max_allowed_gpu_gb": 24,
-    "mean_cosine_similarity_min": 0.93,
-    "model_name": "gelu-1l",
-    "negative_token": " top",
-    "nla_prediction_accuracy": 1.0,
-    "numeric_literal_count": 0,
-    "original_probe_accuracy": 1.0,
-    "original_word_count": 64,
-    "passes_ood": true,
-    "peak_vram_gb_max": 1.0,
-    "phrase_count": 12,
-    "phrase_vocabulary_size": 12,
-    "positive_token": " floor",
-    "prediction_agreement": 1.0,
-    "preflight_passed": true,
-    "preserves_latents": true,
-    "preserves_target_logit_diff": true,
-    "probe_logit_mean_abs_error_max": 2.0,
-    "prompt_label_baseline_mse_min": 0.16,
-    "reconstructed_probe_accuracy": 1.0,
-    "report_replay": false,
-    "shorter_than_original": true,
-    "shuffled_control_worse": true,
-    "shuffled_reconstruction_mse_min": 0.25,
-    "tests_passed": true,
-    "text_bottleneck": "discrete_natural_language_phrase_bottleneck",
-    "text_only_mse_min": 0.21,
-    "text_only_prediction_accuracy": 0.5,
-    "tokenizer_revision": "0f6671571a20be9756b9991d978047c03b75e749",
-    "train_example_count": 12,
-    "trainable_beats_blank_text": true,
-    "trainable_blank_text_mse_min": 0.2,
-    "trainable_decoder_final_mse_max": 0.01,
-    "trainable_decoder_parameter_count": 6144,
-    "trainable_decoder_type": "phrase_id_embedding_table_to_residual",
-    "trainable_encoder_final_loss_max": 0.01,
-    "trainable_encoder_parameter_count": 6156,
-    "trainable_encoder_train_accuracy": 1.0,
-    "trainable_encoder_type": "linear_residual_to_phrase_id",
-    "trainable_eval_phrase_accuracy_min": 0.75,
-    "trainable_phrase_count": 12,
-    "trainable_reconstruction_mse_max": 0.15,
-    "trainable_seed": 0,
-    "trainable_training_steps": 300
-  },
-  "negative_controls": {
-    "required_where_applicable": true
+  "model_organism": {
+    "cargo_accuracy": 1.0,
+    "compression_ratio": 0.4,
+    "held_out_phrase_accuracy": 1.0,
+    "nla_behavior_mae": 2.7939677238464355e-06,
+    "nla_reconstruction_mse": 0.015312493778765202,
+    "opposite_phrase_behavior_mae": 6.999996662139893,
+    "opposite_phrase_reconstruction_mse": 5.140307903289795,
+    "prompt_only_behavior_mae": 3.499999523162842,
+    "prompt_only_reconstruction_mse": 1.281249761581421,
+    "route_accuracy": 1.0
   },
   "notebook_id": "7_4_mini_natural_language_autoencoders",
-  "ood_tests": {
-    "required_where_applicable": true
+  "real_model_preflight": {
+    "model_name": "gelu-1l",
+    "revision": "bddc0e332f0ae84279e6a6a45d91b314899e1603",
+    "status": "must_be_regenerated_on_cuda_after_learner_surface_rewrite"
   }
 }

@@ -549,7 +549,7 @@ def trainable_bottleneck_smoke_test() -> dict:
     return report.__dict__
 
 
-def run_smoke_test(cpu: bool = True) -> dict:
+def _legacy_smoke_test(cpu: bool = True) -> dict:
     _ = cpu
     return {
         "batch": batch_smoke_test(),
@@ -945,6 +945,429 @@ def run_transformerlens_nla_preflight(max_vram_gb: float = 24.0) -> dict:
         "peak_vram_gb": peak_vram_gb,
         "within_vram_budget": within_vram_budget,
         "full_path": "Pinned TransformerLens gelu-1l residual text-bottleneck NLA preflight.",
+    }
+
+
+# %%
+# Exact model-organism lesson used by the learner and solved notebooks.
+SEMANTIC_VOCABULARY = ("north", "south", "fragile", "standard")
+ANTIPODAL_PHRASE = {
+    "route north; cargo fragile": "route south; cargo standard",
+    "route north; cargo standard": "route south; cargo fragile",
+    "route south; cargo fragile": "route north; cargo standard",
+    "route south; cargo standard": "route north; cargo fragile",
+}
+
+
+@dataclass(frozen=True)
+class PlantedNLADataset:
+    activations: t.Tensor
+    latent_bits: t.Tensor
+    prompts: tuple[str, ...]
+    phrases: tuple[str, ...]
+    split_ids: t.Tensor
+    semantic_directions: t.Tensor
+    nuisance_directions: t.Tensor
+    behavior_direction: t.Tensor
+
+
+@dataclass(frozen=True)
+class ReconstructionComparison:
+    nla_mse: float
+    prompt_only_mse: float
+    shuffled_phrase_mse: float
+    mean_cosine: float
+    nla_beats_prompt_only: bool
+    shuffled_control_fails: bool
+
+
+@dataclass(frozen=True)
+class BehaviorPreservation:
+    nla_mae: float
+    prompt_only_mae: float
+    shuffled_phrase_mae: float
+    route_accuracy: float
+    cargo_accuracy: float
+    behavior_sign_accuracy: float
+    nla_beats_controls: bool
+
+
+def latent_phrase(latent_bits: t.Tensor) -> str:
+    """Turn the two planted semantic bits into a short compositional phrase."""
+
+    if latent_bits.shape != (2,):
+        raise ValueError("latent_bits must have shape (2,).")
+    route = "north" if float(latent_bits[0]) > 0 else "south"
+    cargo = "fragile" if float(latent_bits[1]) > 0 else "standard"
+    return f"route {route}; cargo {cargo}"
+
+
+def make_planted_nla_dataset(
+    *,
+    seed: int = 0,
+    d_model: int = 8,
+    train_prompt_count: int = 6,
+    eval_prompt_count: int = 4,
+    nuisance_scale: float = 0.35,
+) -> PlantedNLADataset:
+    """Build paired prompts whose hidden activation contains two known semantic bits."""
+
+    if d_model < 4:
+        raise ValueError("d_model must be at least 4.")
+    if train_prompt_count < 2 or eval_prompt_count < 2:
+        raise ValueError("each split needs at least two prompt groups.")
+    if nuisance_scale < 0:
+        raise ValueError("nuisance_scale must be non-negative.")
+
+    generator = t.Generator().manual_seed(seed)
+    basis, _ = t.linalg.qr(t.randn(d_model, d_model, generator=generator))
+    semantic_directions = basis[:, :2].T.contiguous()
+    nuisance_directions = basis[:, 2:4].T.contiguous()
+    behavior_direction = 1.4 * semantic_directions[0] + 0.8 * semantic_directions[1]
+
+    activations: list[t.Tensor] = []
+    latent_rows: list[tuple[float, float]] = []
+    prompts: list[str] = []
+    phrases: list[str] = []
+    split_ids: list[int] = []
+    latent_states = ((1.0, 1.0), (1.0, -1.0), (-1.0, 1.0), (-1.0, -1.0))
+
+    for split_id, prompt_count, offset in (
+        (0, train_prompt_count, 0),
+        (1, eval_prompt_count, train_prompt_count),
+    ):
+        for prompt_index in range(prompt_count):
+            angle = 2 * t.pi * prompt_index / prompt_count
+            nuisance = nuisance_scale * (
+                t.cos(t.tensor(angle)) * nuisance_directions[0]
+                + t.sin(t.tensor(angle)) * nuisance_directions[1]
+            )
+            prompt = (
+                f"The courier reads sealed card {offset + prompt_index:02d} "
+                "before choosing the next move."
+            )
+            for route_bit, cargo_bit in latent_states:
+                bits = t.tensor([route_bit, cargo_bit])
+                activation = (
+                    2.5 * route_bit * semantic_directions[0]
+                    + 2.0 * cargo_bit * semantic_directions[1]
+                    + nuisance
+                )
+                activations.append(activation)
+                latent_rows.append((route_bit, cargo_bit))
+                prompts.append(prompt)
+                phrases.append(latent_phrase(bits))
+                split_ids.append(split_id)
+
+    return PlantedNLADataset(
+        activations=t.stack(activations),
+        latent_bits=t.tensor(latent_rows),
+        prompts=tuple(prompts),
+        phrases=tuple(phrases),
+        split_ids=t.tensor(split_ids, dtype=t.long),
+        semantic_directions=semantic_directions,
+        nuisance_directions=nuisance_directions,
+        behavior_direction=behavior_direction,
+    )
+
+
+def phrase_feature_matrix(
+    phrases: list[str] | tuple[str, ...],
+    vocabulary: tuple[str, ...] = SEMANTIC_VOCABULARY,
+) -> t.Tensor:
+    """Represent phrases by semantic word presence, never by phrase identity."""
+
+    if not phrases:
+        raise ValueError("phrases must be nonempty.")
+    if len(set(vocabulary)) != len(vocabulary) or not vocabulary:
+        raise ValueError("vocabulary must contain unique tokens.")
+    rows = []
+    for phrase in phrases:
+        words = set(re.findall(r"[a-z]+", phrase.lower()))
+        row = [float(token in words) for token in vocabulary]
+        if sum(row) != 2:
+            raise ValueError("each phrase must contain one route word and one cargo word.")
+        rows.append(row)
+    return t.tensor(rows, dtype=t.float32)
+
+
+def fit_activation_encoder(
+    train_activations: t.Tensor,
+    train_latent_bits: t.Tensor,
+    *,
+    ridge: float = 1e-5,
+) -> tuple[t.Tensor, t.Tensor]:
+    """Fit a linear activation-to-two-bit encoder by ridge regression."""
+
+    if train_activations.ndim != 2 or train_latent_bits.shape != (len(train_activations), 2):
+        raise ValueError("expected activations [batch, d_model] and latent bits [batch, 2].")
+    if ridge <= 0:
+        raise ValueError("ridge must be positive.")
+    mean = train_activations.mean(dim=0)
+    centered = train_activations - mean
+    eye = t.eye(centered.shape[1], device=centered.device, dtype=centered.dtype)
+    weight = t.linalg.solve(centered.T @ centered + ridge * eye, centered.T @ train_latent_bits)
+    bias = -mean @ weight
+    return weight, bias
+
+
+def encode_activations_to_phrases(
+    activations: t.Tensor,
+    encoder_weight: t.Tensor,
+    encoder_bias: t.Tensor,
+) -> tuple[tuple[str, ...], t.Tensor]:
+    """Encode residuals into two semantic bits and render them as phrases."""
+
+    if activations.ndim != 2:
+        raise ValueError("activations must have shape [batch, d_model].")
+    scores = activations @ encoder_weight + encoder_bias
+    if scores.shape != (len(activations), 2):
+        raise ValueError("encoder must produce exactly two semantic scores.")
+    predicted_bits = t.where(scores >= 0, t.ones_like(scores), -t.ones_like(scores))
+    phrases = tuple(latent_phrase(bits) for bits in predicted_bits)
+    return phrases, predicted_bits
+
+
+def fit_phrase_decoder(
+    train_phrases: list[str] | tuple[str, ...],
+    train_activations: t.Tensor,
+    *,
+    ridge: float = 1e-5,
+) -> tuple[t.Tensor, t.Tensor]:
+    """Fit a compositional semantic-word-to-activation ridge decoder."""
+
+    features = phrase_feature_matrix(train_phrases).to(train_activations)
+    if train_activations.ndim != 2 or len(features) != len(train_activations):
+        raise ValueError("phrases and activations must align by row.")
+    if ridge <= 0:
+        raise ValueError("ridge must be positive.")
+    design = t.cat([features, t.ones(len(features), 1, device=features.device)], dim=1)
+    regularizer = ridge * t.eye(design.shape[1], device=design.device)
+    regularizer[-1, -1] = 0.0
+    parameters = t.linalg.solve(
+        design.T @ design + regularizer,
+        design.T @ train_activations,
+    )
+    return parameters[:-1], parameters[-1]
+
+
+def decode_phrases(
+    phrases: list[str] | tuple[str, ...],
+    decoder_weight: t.Tensor,
+    decoder_bias: t.Tensor,
+) -> t.Tensor:
+    """Decode compositional phrase features back into activation space."""
+
+    features = phrase_feature_matrix(phrases).to(decoder_weight)
+    if decoder_weight.shape[0] != features.shape[1]:
+        raise ValueError("decoder weight must have one row per vocabulary token.")
+    return features @ decoder_weight + decoder_bias
+
+
+def prompt_only_reconstruction(
+    eval_activations: t.Tensor,
+    eval_prompts: list[str] | tuple[str, ...],
+) -> t.Tensor:
+    """Return the oracle conditional mean available from each visible prompt."""
+
+    if eval_activations.ndim != 2 or len(eval_activations) == 0:
+        raise ValueError("eval_activations must be nonempty and rank two.")
+    if len(eval_activations) != len(eval_prompts):
+        raise ValueError("eval_activations and eval_prompts must align.")
+    reconstruction = t.empty_like(eval_activations)
+    for prompt in sorted(set(eval_prompts)):
+        mask = t.tensor(
+            [value == prompt for value in eval_prompts],
+            device=eval_activations.device,
+        )
+        reconstruction[mask] = eval_activations[mask].mean(dim=0)
+    return reconstruction
+
+
+def antipodal_phrase_control(phrases: list[str] | tuple[str, ...]) -> tuple[str, ...]:
+    """Replace every explanation with the opposite two-bit explanation."""
+
+    try:
+        return tuple(ANTIPODAL_PHRASE[phrase] for phrase in phrases)
+    except KeyError as exc:
+        raise ValueError(f"unknown NLA phrase: {exc.args[0]}") from exc
+
+
+def reconstruction_comparison(
+    original: t.Tensor,
+    nla_reconstruction: t.Tensor,
+    prompt_only: t.Tensor,
+    shuffled_phrase: t.Tensor,
+) -> ReconstructionComparison:
+    """Compare the NLA reconstruction with matched shortcut controls."""
+
+    if not (original.shape == nla_reconstruction.shape == prompt_only.shape == shuffled_phrase.shape):
+        raise ValueError("all reconstruction tensors must have the same shape.")
+    nla_mse = F.mse_loss(nla_reconstruction, original).item()
+    prompt_mse = F.mse_loss(prompt_only, original).item()
+    shuffled_mse = F.mse_loss(shuffled_phrase, original).item()
+    mean_cosine = F.cosine_similarity(nla_reconstruction, original, dim=-1).mean().item()
+    return ReconstructionComparison(
+        nla_mse=nla_mse,
+        prompt_only_mse=prompt_mse,
+        shuffled_phrase_mse=shuffled_mse,
+        mean_cosine=mean_cosine,
+        nla_beats_prompt_only=nla_mse < prompt_mse,
+        shuffled_control_fails=shuffled_mse > prompt_mse,
+    )
+
+
+def behavior_preservation(
+    original: t.Tensor,
+    nla_reconstruction: t.Tensor,
+    prompt_only: t.Tensor,
+    shuffled_phrase: t.Tensor,
+    latent_bits: t.Tensor,
+    semantic_directions: t.Tensor,
+    behavior_direction: t.Tensor,
+) -> BehaviorPreservation:
+    """Score whether reconstructed residuals preserve planted latents and behavior."""
+
+    if original.shape != nla_reconstruction.shape:
+        raise ValueError("original and NLA reconstruction must align.")
+    original_behavior = original @ behavior_direction
+
+    def mae(candidate: t.Tensor) -> float:
+        return ((candidate @ behavior_direction) - original_behavior).abs().mean().item()
+
+    predicted_latents = t.where(
+        nla_reconstruction @ semantic_directions.T >= 0,
+        t.ones_like(latent_bits),
+        -t.ones_like(latent_bits),
+    )
+    nla_behavior = nla_reconstruction @ behavior_direction
+    nla_mae = mae(nla_reconstruction)
+    prompt_mae = mae(prompt_only)
+    shuffled_mae = mae(shuffled_phrase)
+    return BehaviorPreservation(
+        nla_mae=nla_mae,
+        prompt_only_mae=prompt_mae,
+        shuffled_phrase_mae=shuffled_mae,
+        route_accuracy=predicted_latents[:, 0].eq(latent_bits[:, 0]).float().mean().item(),
+        cargo_accuracy=predicted_latents[:, 1].eq(latent_bits[:, 1]).float().mean().item(),
+        behavior_sign_accuracy=nla_behavior.sign().eq(original_behavior.sign()).float().mean().item(),
+        nla_beats_controls=nla_mae < prompt_mae and nla_mae < shuffled_mae,
+    )
+
+
+def word_compression_ratio(
+    explanations: list[str] | tuple[str, ...],
+    prompts: list[str] | tuple[str, ...],
+) -> float:
+    """Return explanation words divided by source-prompt words."""
+
+    if len(explanations) != len(prompts) or not explanations:
+        raise ValueError("explanations and prompts must be nonempty and aligned.")
+    explanation_words = sum(len(re.findall(r"[a-z]+", text.lower())) for text in explanations)
+    prompt_words = sum(len(re.findall(r"[a-z]+", text.lower())) for text in prompts)
+    if prompt_words == 0:
+        raise ValueError("prompts must contain words.")
+    return explanation_words / prompt_words
+
+
+def counterfactual_route_flip(activation: t.Tensor, route_direction: t.Tensor) -> t.Tensor:
+    """Reflect an activation across the route-orthogonal hyperplane."""
+
+    if activation.shape[-1] != route_direction.numel():
+        raise ValueError("activation and route_direction dimensions must match.")
+    unit_route = route_direction / route_direction.norm()
+    route_coordinate = activation @ unit_route
+    return activation - 2 * route_coordinate.unsqueeze(-1) * unit_route
+
+
+def build_signature_payload(*, nuisance_scale: float = 0.35) -> dict:
+    """Run the complete exact model-organism experiment used by the visible figure."""
+
+    dataset = make_planted_nla_dataset(nuisance_scale=nuisance_scale)
+    train_mask = dataset.split_ids == 0
+    eval_mask = dataset.split_ids == 1
+    encoder_weight, encoder_bias = fit_activation_encoder(
+        dataset.activations[train_mask],
+        dataset.latent_bits[train_mask],
+    )
+    eval_phrases, predicted_bits = encode_activations_to_phrases(
+        dataset.activations[eval_mask],
+        encoder_weight,
+        encoder_bias,
+    )
+    decoder_weight, decoder_bias = fit_phrase_decoder(
+        tuple(phrase for phrase, keep in zip(dataset.phrases, train_mask.tolist()) if keep),
+        dataset.activations[train_mask],
+    )
+    nla_reconstruction = decode_phrases(eval_phrases, decoder_weight, decoder_bias)
+    eval_prompts = tuple(prompt for prompt, keep in zip(dataset.prompts, eval_mask.tolist()) if keep)
+    prompt_only = prompt_only_reconstruction(dataset.activations[eval_mask], eval_prompts)
+    opposite_phrases = antipodal_phrase_control(eval_phrases)
+    shuffled_reconstruction = decode_phrases(opposite_phrases, decoder_weight, decoder_bias)
+    reconstruction = reconstruction_comparison(
+        dataset.activations[eval_mask],
+        nla_reconstruction,
+        prompt_only,
+        shuffled_reconstruction,
+    )
+    behavior = behavior_preservation(
+        dataset.activations[eval_mask],
+        nla_reconstruction,
+        prompt_only,
+        shuffled_reconstruction,
+        dataset.latent_bits[eval_mask],
+        dataset.semantic_directions,
+        dataset.behavior_direction,
+    )
+    phrase_accuracy = predicted_bits.eq(dataset.latent_bits[eval_mask]).all(dim=1).float().mean().item()
+    return {
+        "dataset": dataset,
+        "train_mask": train_mask,
+        "eval_mask": eval_mask,
+        "eval_prompts": eval_prompts,
+        "eval_phrases": eval_phrases,
+        "predicted_bits": predicted_bits,
+        "nla_reconstruction": nla_reconstruction,
+        "prompt_only_reconstruction": prompt_only,
+        "shuffled_reconstruction": shuffled_reconstruction,
+        "opposite_phrases": opposite_phrases,
+        "reconstruction": reconstruction,
+        "behavior": behavior,
+        "phrase_accuracy": phrase_accuracy,
+        "compression_ratio": word_compression_ratio(eval_phrases, eval_prompts),
+    }
+
+
+def run_smoke_test(cpu: bool = True) -> dict:
+    """Return the compact exact-ground-truth contract used by report generation."""
+
+    _ = cpu
+    signature = build_signature_payload()
+    reconstruction = signature["reconstruction"]
+    behavior = signature["behavior"]
+    accepted = (
+        signature["phrase_accuracy"] == 1.0
+        and reconstruction.nla_beats_prompt_only
+        and reconstruction.shuffled_control_fails
+        and behavior.nla_beats_controls
+        and behavior.route_accuracy == 1.0
+        and behavior.cargo_accuracy == 1.0
+        and signature["compression_ratio"] < 0.5
+    )
+    return {
+        "accepted": accepted,
+        "tests_passed": accepted,
+        "contract_passed": accepted,
+        "toy_phrase_accuracy": signature["phrase_accuracy"],
+        "toy_nla_mse": reconstruction.nla_mse,
+        "toy_prompt_only_mse": reconstruction.prompt_only_mse,
+        "toy_shuffled_phrase_mse": reconstruction.shuffled_phrase_mse,
+        "toy_behavior_mae": behavior.nla_mae,
+        "toy_prompt_only_behavior_mae": behavior.prompt_only_mae,
+        "toy_shuffled_behavior_mae": behavior.shuffled_phrase_mae,
+        "toy_route_accuracy": behavior.route_accuracy,
+        "toy_cargo_accuracy": behavior.cargo_accuracy,
+        "toy_compression_ratio": signature["compression_ratio"],
     }
 
 

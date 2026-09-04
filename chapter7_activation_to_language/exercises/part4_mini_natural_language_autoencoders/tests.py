@@ -1,8 +1,25 @@
+"""Focused semantic and learner-surface tests for section 7.4."""
+
+from __future__ import annotations
+
+import ast
+import json
+import re
 from collections.abc import Callable
+from pathlib import Path
 
 import torch as t
 
-from arena_ext import natural_language_autoencoders as reference
+
+SECTION_DIR = Path(__file__).resolve().parent
+EXERCISE_NOTEBOOK = SECTION_DIR / "7.4_Mini_Natural_Language_Autoencoders_exercises.ipynb"
+SOLUTION_NOTEBOOK = SECTION_DIR / "7.4_Mini_Natural_Language_Autoencoders_solutions.ipynb"
+PAGE = (
+    SECTION_DIR.parents[1]
+    / "instructions"
+    / "pages"
+    / "04_[7.4]_Mini_Natural_Language_Autoencoders.md"
+)
 
 
 def _solutions():
@@ -13,534 +30,300 @@ def _solutions():
     return solutions
 
 
-def _assert_report_close(actual: object, expected: object, *, msg: str) -> None:
-    actual_dict = actual.__dict__
-    expected_dict = expected.__dict__
-    assert actual_dict.keys() == expected_dict.keys(), (
-        f"{msg} fields should match the independent reference implementation."
-    )
-    for key, expected_value in expected_dict.items():
-        actual_value = actual_dict[key]
-        if isinstance(expected_value, float):
-            assert abs(actual_value - expected_value) < 1e-6, (
-                f"{msg} field {key!r} should be {expected_value}, got {actual_value}."
-            )
-        else:
-            assert actual_value == expected_value, (
-                f"{msg} field {key!r} should be {expected_value!r}, got {actual_value!r}."
-            )
-
-
-def test_build_nla_training_batch_validates_alignment(
-    build_nla_training_batch: Callable | None = None,
-):
-    build_nla_training_batch = build_nla_training_batch or _solutions().build_nla_training_batch
-    activations = t.eye(3)
-    batch = build_nla_training_batch(
-        activations,
-        ["Alice gave Bob the book.", "def add(x, y):", "The answer is Paris."],
-        ["ioi", "code", "fact"],
-        ["indirect object is Bob", "python function", "stored capital fact"],
-    )
-    expected = reference.build_nla_training_batch(
-        activations,
-        ["Alice gave Bob the book.", "def add(x, y):", "The answer is Paris."],
-        ["ioi", "code", "fact"],
-        ["indirect object is Bob", "python function", "stored capital fact"],
-    )
-    assert batch.activations.shape == (3, 3), (
-        "NLA batches should preserve the [examples, d_model] activation tensor."
-    )
-    assert batch.original_text_spans == expected.original_text_spans, (
-        "Original text spans should stay aligned with activation rows."
-    )
-    assert batch.synthetic_latent_labels == ("ioi", "code", "fact"), (
-        "Synthetic latent labels should be stored as an immutable tuple."
-    )
-    assert batch.generated_explanations[-1] == "stored capital fact", (
-        "Generated explanations should stay in the same row order as activations."
-    )
-    try:
-        build_nla_training_batch(
-            activations,
-            ["only one span"],
-            ["ioi", "code", "fact"],
-            ["indirect object is Bob", "python function", "stored capital fact"],
-        )
-    except ValueError as exc:
-        assert "one entry per activation" in str(exc), (
-            "Alignment errors should tell the learner that every text field needs one row per activation."
-        )
-    else:
-        raise AssertionError("Mismatched text-field lengths should raise ValueError.")
-    print("All tests in `test_build_nla_training_batch_validates_alignment` passed!")
-
-
-def test_build_nla_training_batch_rejects_empty_batches(
-    build_nla_training_batch: Callable | None = None,
-):
-    build_nla_training_batch = build_nla_training_batch or _solutions().build_nla_training_batch
-    try:
-        build_nla_training_batch(
-            t.empty(0, 3),
-            [],
-            [],
-            [],
-        )
-    except ValueError as exc:
-        assert "at least one example" in str(exc), (
-            "Empty NLA batches should be rejected before downstream metrics produce NaNs."
-        )
-    else:
-        raise AssertionError("Empty NLA batches should raise ValueError.")
-    print("All tests in `test_build_nla_training_batch_rejects_empty_batches` passed!")
-
-
-def test_generated_explanations_do_not_hide_numeric_coefficients(
-    numeric_literal_count: Callable | None = None,
-):
-    if numeric_literal_count is None:
-        numeric_literal_count = getattr(_solutions(), "_numeric_literal_count")
-    phrase_explanations = [
-        "blanket lying on support",
-        "rocket moving above path",
-    ]
-    coefficient_payloads = [
-        "surface +3.761 -2.767 -1.806 +0.109",
-        "motion -4.0",
-    ]
-
-    assert numeric_literal_count(phrase_explanations) == 0, (
-        "Natural-language phrase explanations should not carry numeric coordinates."
-    )
-    assert numeric_literal_count(coefficient_payloads) == 5, (
-        "Signed residual-coefficient payloads should be detectable and rejected by the full report."
-    )
-    print(
-        "All tests in `test_generated_explanations_do_not_hide_numeric_coefficients` passed!"
-    )
-
-
-def test_activation_reconstruction_report_beats_text_only_baseline(
-    activation_reconstruction_report: Callable | None = None,
-):
-    activation_reconstruction_report = (
-        activation_reconstruction_report or _solutions().activation_reconstruction_report
-    )
-    original = t.tensor([[1.0, 0.0], [0.0, 1.0]])
-    reconstructed = t.tensor([[0.9, 0.1], [0.1, 0.9]])
-    text_only = t.zeros_like(original)
-    report = activation_reconstruction_report(original, reconstructed, text_only)
-    expected = reference.activation_reconstruction_report(original, reconstructed, text_only)
-    _assert_report_close(report, expected, msg="Reconstruction report")
-    assert abs(report.activation_mse - 0.01) < 1e-6, (
-        "The toy NLA reconstruction MSE should average the squared residual error."
-    )
-    assert abs(report.text_only_mse - 0.5) < 1e-6, (
-        "The text-only baseline should be scored against the same original activations."
-    )
-    assert report.mean_cosine_similarity > 0.99 and report.beats_text_only, (
-        "A useful mini NLA should be close in direction and beat the text-only baseline."
-    )
-    try:
-        activation_reconstruction_report(original, reconstructed[:1], text_only)
-    except ValueError as exc:
-        assert "matching shape" in str(exc), (
-            "Shape errors should explain that all reconstruction tensors must align."
-        )
-    else:
-        raise AssertionError("Shape-mismatched reconstructions should raise ValueError.")
-    print(
-        "All tests in `test_activation_reconstruction_report_beats_text_only_baseline` passed!"
-    )
-
-
-def test_activation_reconstruction_report_rejects_empty_and_rank1_inputs(
-    activation_reconstruction_report: Callable | None = None,
-):
-    activation_reconstruction_report = (
-        activation_reconstruction_report or _solutions().activation_reconstruction_report
-    )
-    for bad in [t.empty(0, 2), t.ones(2)]:
-        try:
-            activation_reconstruction_report(bad, bad.clone(), bad.clone())
-        except ValueError as exc:
-            assert "activation" in str(exc), (
-                "Invalid activation tensors should fail before MSE/cosine summaries are computed."
-            )
-        else:
-            raise AssertionError("Invalid activation tensors should raise ValueError.")
-    print(
-        "All tests in `test_activation_reconstruction_report_rejects_empty_and_rank1_inputs` passed!"
-    )
-
-
-def test_logit_diff_preservation_report_checks_actual_logit_diff(
-    logit_diff_preservation_report: Callable | None = None,
-):
-    logit_diff_preservation_report = (
-        logit_diff_preservation_report or _solutions().logit_diff_preservation_report
-    )
-    original_logits = t.tensor([[3.0, 1.0, 0.0], [2.0, 0.0, 1.0]])
-    reconstructed_logits = t.tensor([[2.9, 1.1, 0.0], [2.1, 0.0, 1.1]])
-    report = logit_diff_preservation_report(
-        original_logits,
-        reconstructed_logits,
-        positive_token_id=0,
-        negative_token_id=1,
-        max_mean_abs_error=0.25,
-    )
-    assert abs(report.original_logit_diff - 2.0) < 1e-6, (
-        "Original logit diff should average positive-minus-negative logits over the batch."
-    )
-    assert abs(report.reconstructed_logit_diff - 1.95) < 1e-6, (
-        "Reconstructed logit diff should use the same positive-minus-negative readout."
-    )
-    assert 0.149 < report.mean_abs_error < 0.151, (
-        "Mean absolute error should compare the per-example logit differences, not just one token."
-    )
-    assert report.preserves_target_logit_diff, (
-        "The report should pass when mean logit-diff error is below the tolerance."
-    )
-    strict_report = logit_diff_preservation_report(
-        original_logits,
-        reconstructed_logits,
-        positive_token_id=0,
-        negative_token_id=1,
-        max_mean_abs_error=0.05,
-    )
-    assert not strict_report.preserves_target_logit_diff, (
-        "The same reconstruction should fail when the logit-diff tolerance is too strict."
-    )
-    print(
-        "All tests in `test_logit_diff_preservation_report_checks_actual_logit_diff` passed!"
-    )
-
-
-def test_logit_diff_preservation_report_rejects_bad_inputs(
-    logit_diff_preservation_report: Callable | None = None,
-):
-    logit_diff_preservation_report = (
-        logit_diff_preservation_report or _solutions().logit_diff_preservation_report
-    )
-    logits = t.tensor([[1.0, 0.0], [0.0, 1.0]])
-    try:
-        logit_diff_preservation_report(
-            t.tensor([1.0, 0.0]),
-            t.tensor([0.9, 0.1]),
-            positive_token_id=0,
-            negative_token_id=1,
-        )
-    except ValueError as exc:
-        assert "logits" in str(exc), "Rank-1 logits should be rejected as non-batched."
-    else:
-        raise AssertionError("Rank-1 logits should raise ValueError.")
-    try:
-        logit_diff_preservation_report(
-            logits,
-            logits,
-            positive_token_id=0,
-            negative_token_id=1,
-            max_mean_abs_error=-0.1,
-        )
-    except ValueError as exc:
-        assert "non-negative" in str(exc), "Negative tolerances should be rejected."
-    else:
-        raise AssertionError("Negative max_mean_abs_error should raise ValueError.")
-    print(
-        "All tests in `test_logit_diff_preservation_report_rejects_bad_inputs` passed!"
-    )
-
-
-def test_latent_preservation_report_requires_accuracy_and_agreement(
-    latent_preservation_report: Callable | None = None,
-):
-    latent_preservation_report = latent_preservation_report or _solutions().latent_preservation_report
-    latent_ids = t.tensor([0, 1, 2])
-    original_logits = t.tensor([[4.0, 0.0, 0.0], [0.0, 4.0, 0.0], [0.0, 0.0, 4.0]])
-    reconstructed_logits = t.tensor(
-        [[3.0, 0.0, 0.0], [0.0, 3.0, 0.0], [0.0, 0.5, 2.0]]
-    )
-    report = latent_preservation_report(
-        original_logits,
-        reconstructed_logits,
-        latent_ids,
-        min_accuracy=0.75,
-        min_agreement=0.75,
-    )
-    expected = reference.latent_preservation_report(
-        original_logits,
-        reconstructed_logits,
-        latent_ids,
-        min_accuracy=0.75,
-        min_agreement=0.75,
-    )
-    _assert_report_close(report, expected, msg="Latent preservation report")
-    assert report.preserves_latents, (
-        "A reconstruction should pass when probe accuracy and prediction agreement stay high."
-    )
-    bad_logits = t.tensor([[0.0, 4.0, 0.0], [0.0, 4.0, 0.0], [0.0, 4.0, 0.0]])
-    bad_report = latent_preservation_report(
-        original_logits,
-        bad_logits,
-        latent_ids,
-        min_accuracy=0.75,
-        min_agreement=0.75,
-    )
-    assert bad_report.reconstructed_probe_accuracy < 0.75, (
-        "A collapsed reconstructed probe should expose low reconstructed accuracy."
-    )
-    assert not bad_report.preserves_latents, (
-        "Low probe accuracy or agreement should fail latent preservation."
-    )
-    print(
-        "All tests in `test_latent_preservation_report_requires_accuracy_and_agreement` passed!"
-    )
-
-
-def test_latent_preservation_report_rejects_invalid_thresholds(
-    latent_preservation_report: Callable | None = None,
-):
-    latent_preservation_report = latent_preservation_report or _solutions().latent_preservation_report
-    logits = t.eye(2)
-    labels = t.tensor([0, 1])
-    for kwargs in [{"min_accuracy": 1.1}, {"min_agreement": -0.1}]:
-        try:
-            latent_preservation_report(logits, logits, labels, **kwargs)
-        except ValueError as exc:
-            assert "between 0 and 1" in str(exc), (
-                "Threshold validators should explain the valid probability range."
-            )
-        else:
-            raise AssertionError("Invalid latent preservation thresholds should raise ValueError.")
-    print(
-        "All tests in `test_latent_preservation_report_rejects_invalid_thresholds` passed!"
-    )
-
-
-def test_brevity_and_counterfactual_reports_reject_prompt_copying(
-    generated_text_brevity_report: Callable | None = None,
-    counterfactual_explanation_report: Callable | None = None,
+def test_planted_dataset_has_exact_semantic_ground_truth(
+    make_planted_nla_dataset: Callable | None = None,
+    latent_phrase: Callable | None = None,
 ):
     solutions = _solutions()
-    generated_text_brevity_report = (
-        generated_text_brevity_report or solutions.generated_text_brevity_report
-    )
-    counterfactual_explanation_report = (
-        counterfactual_explanation_report or solutions.counterfactual_explanation_report
-    )
-    generated = ["ioi target Bob", "python function"]
-    prompts = [
-        "Alice walked to the hall and gave Bob the book",
-        "Please write a python function that adds two numbers",
-    ]
-    brevity = generated_text_brevity_report(generated, prompts)
-    expected_brevity = reference.generated_text_brevity_report(generated, prompts)
-    _assert_report_close(brevity, expected_brevity, msg="Brevity report")
-    assert brevity.generated_word_count == 5 and brevity.original_word_count == 19, (
-        "Brevity should count all generated explanation words and all original prompt words."
-    )
-    assert brevity.compression_ratio < 0.5 and brevity.shorter_than_original, (
-        "The toy generated explanations should form a real text bottleneck."
-    )
-    copied = generated_text_brevity_report(prompts, prompts)
-    assert not copied.shorter_than_original, (
-        "Copying the prompt into the explanation should fail the compression check."
-    )
+    make_planted_nla_dataset = make_planted_nla_dataset or solutions.make_planted_nla_dataset
+    latent_phrase = latent_phrase or solutions.latent_phrase
+    dataset = make_planted_nla_dataset()
 
-    counterfactual = counterfactual_explanation_report(
-        t.tensor([1.0, 0.0]),
-        t.tensor([0.0, 1.0]),
-        "indirect object is Bob",
-        "indirect object is Alice",
-        min_activation_delta=0.5,
-    )
-    expected_counterfactual = reference.counterfactual_explanation_report(
-        t.tensor([1.0, 0.0]),
-        t.tensor([0.0, 1.0]),
-        "indirect object is Bob",
-        "indirect object is Alice",
-        min_activation_delta=0.5,
-    )
-    _assert_report_close(
-        counterfactual,
-        expected_counterfactual,
-        msg="Counterfactual explanation report",
-    )
-    assert counterfactual.explanation_changed and counterfactual.activation_delta > 1.0, (
-        "Counterfactual activations should change the generated explanation by a meaningful delta."
-    )
-    unchanged = counterfactual_explanation_report(
-        t.tensor([1.0, 0.0]),
-        t.tensor([0.0, 1.0]),
-        "indirect object is Bob",
-        "  Indirect Object Is Bob  ",
-        min_activation_delta=0.5,
-    )
-    assert not unchanged.explanation_changed, (
-        "Case and whitespace changes alone should not count as a counterfactual explanation change."
-    )
-    tiny_delta = counterfactual_explanation_report(
-        t.tensor([1.0, 0.0]),
-        t.tensor([1.1, 0.0]),
-        "indirect object is Bob",
-        "indirect object is Alice",
-        min_activation_delta=0.5,
-    )
-    assert not tiny_delta.explanation_changed, (
-        "Text changes should fail if the activation delta is below the requested threshold."
-    )
-    print(
-        "All tests in `test_brevity_and_counterfactual_reports_reject_prompt_copying` passed!"
-    )
+    assert dataset.activations.shape == (40, 8)
+    assert dataset.latent_bits.shape == (40, 2)
+    gram = dataset.semantic_directions @ dataset.semantic_directions.T
+    assert t.allclose(gram, t.eye(2), atol=1e-6), "The planted semantic axes must be orthonormal."
+    cross = dataset.semantic_directions @ dataset.nuisance_directions.T
+    assert t.allclose(cross, t.zeros(2, 2), atol=1e-6), "Nuisance must be orthogonal to semantics."
+
+    semantic_coordinates = dataset.activations @ dataset.semantic_directions.T
+    expected_coordinates = dataset.latent_bits * t.tensor([2.5, 2.0])
+    assert t.allclose(semantic_coordinates, expected_coordinates, atol=1e-5)
+    assert tuple(latent_phrase(bits) for bits in dataset.latent_bits) == dataset.phrases
+
+    for prompt in sorted(set(dataset.prompts)):
+        rows = [i for i, value in enumerate(dataset.prompts) if value == prompt]
+        assert len(rows) == 4, "Every visible prompt must be paired with all four hidden states."
+        assert {tuple(row.tolist()) for row in dataset.latent_bits[rows]} == {
+            (1.0, 1.0),
+            (1.0, -1.0),
+            (-1.0, 1.0),
+            (-1.0, -1.0),
+        }
+    print("All tests in `test_planted_dataset_has_exact_semantic_ground_truth` passed!")
 
 
-def test_brevity_and_counterfactual_reports_reject_bad_controls(
-    generated_text_brevity_report: Callable | None = None,
-    counterfactual_explanation_report: Callable | None = None,
+def test_phrase_features_are_compositional(
+    phrase_feature_matrix: Callable | None = None,
 ):
-    solutions = _solutions()
-    generated_text_brevity_report = (
-        generated_text_brevity_report or solutions.generated_text_brevity_report
+    phrase_feature_matrix = phrase_feature_matrix or _solutions().phrase_feature_matrix
+    phrases = (
+        "route north; cargo fragile",
+        "route north; cargo standard",
+        "route south; cargo fragile",
+        "route south; cargo standard",
     )
-    counterfactual_explanation_report = (
-        counterfactual_explanation_report or solutions.counterfactual_explanation_report
-    )
-    try:
-        generated_text_brevity_report([""], ["the original prompt has words"])
-    except ValueError as exc:
-        assert "contain text" in str(exc), (
-            "Empty explanations should not pass just because they are short."
-        )
-    else:
-        raise AssertionError("Empty generated explanations should raise ValueError.")
-    try:
-        counterfactual_explanation_report(
-            t.tensor([1.0, 0.0]),
-            t.tensor([0.0, 1.0]),
-            "surface phrase",
-            "motion phrase",
-            min_activation_delta=-1.0,
-        )
-    except ValueError as exc:
-        assert "non-negative" in str(exc), "Negative counterfactual thresholds should fail."
-    else:
-        raise AssertionError("Negative min_activation_delta should raise ValueError.")
-    print(
-        "All tests in `test_brevity_and_counterfactual_reports_reject_bad_controls` passed!"
-    )
-
-
-def test_trainable_discrete_bottleneck_learns_phrase_ids(
-    train_discrete_nla_bottleneck: Callable | None = None,
-):
-    train_discrete_nla_bottleneck = (
-        train_discrete_nla_bottleneck or _solutions().train_discrete_nla_bottleneck
-    )
-    train_activations = t.tensor(
+    expected = t.tensor(
         [
-            [2.0, 0.0],
-            [1.8, 0.1],
-            [-2.0, 0.0],
-            [-1.8, -0.1],
+            [1.0, 0.0, 1.0, 0.0],
+            [1.0, 0.0, 0.0, 1.0],
+            [0.0, 1.0, 1.0, 0.0],
+            [0.0, 1.0, 0.0, 1.0],
         ]
     )
-    eval_activations = t.tensor([[1.9, 0.0], [-1.9, 0.0]])
-    train_phrase_ids = t.tensor([0, 0, 1, 1])
-    eval_phrase_ids = t.tensor([0, 1])
-    *_, report = train_discrete_nla_bottleneck(
-        train_activations,
-        train_phrase_ids,
-        eval_activations,
-        eval_phrase_ids,
-        ("positive direction", "negative direction"),
-        steps=120,
-        lr=0.08,
-        seed=0,
-    )
-    expected = reference.train_discrete_nla_bottleneck(
-        train_activations,
-        train_phrase_ids,
-        eval_activations,
-        eval_phrase_ids,
-        ("positive direction", "negative direction"),
-        steps=120,
-        lr=0.08,
-        seed=0,
-    )[-1]
-    _assert_report_close(report, expected, msg="Trainable NLA bottleneck report")
-    assert report.encoder_train_accuracy == 1.0, (
-        "The activation-to-phrase encoder should learn the training phrase ids."
-    )
-    assert report.eval_phrase_accuracy == 1.0, (
-        "The trained encoder should generalize to the held-out phrase-code fixture."
-    )
-    assert report.encoder_final_loss < 0.05, (
-        "The encoder loss should decrease enough to show a real trained bottleneck."
-    )
-    assert report.beats_blank_text and report.reconstruction_mse < report.blank_text_mse, (
-        "The phrase-to-activation decoder should beat a blank-text mean reconstruction."
-    )
-    assert report.generated_explanations == ("positive direction", "negative direction"), (
-        "The transmitted bottleneck should be phrase text, not numeric coordinates."
-    )
-    print("All tests in `test_trainable_discrete_bottleneck_learns_phrase_ids` passed!")
-
-
-def test_trainable_discrete_bottleneck_rejects_empty_splits(
-    train_discrete_nla_bottleneck: Callable | None = None,
-):
-    train_discrete_nla_bottleneck = (
-        train_discrete_nla_bottleneck or _solutions().train_discrete_nla_bottleneck
-    )
+    assert t.equal(phrase_feature_matrix(phrases), expected)
+    assert t.equal(phrase_feature_matrix(("cargo fragile; route north",)), expected[:1])
     try:
-        train_discrete_nla_bottleneck(
-            t.empty(0, 2),
-            t.empty(0, dtype=t.long),
-            t.tensor([[1.0, 0.0]]),
-            t.tensor([0]),
-            ("positive direction",),
-        )
+        phrase_feature_matrix(("route north; cargo mysterious",))
     except ValueError as exc:
-        assert "nonempty" in str(exc), (
-            "Empty train/eval splits should be rejected before training starts."
-        )
+        assert "one route word and one cargo word" in str(exc)
     else:
-        raise AssertionError("Empty train/eval splits should raise ValueError.")
-    print(
-        "All tests in `test_trainable_discrete_bottleneck_rejects_empty_splits` passed!"
+        raise AssertionError("Unknown semantic words must not silently become a valid code.")
+    print("All tests in `test_phrase_features_are_compositional` passed!")
+
+
+def test_activation_encoder_recovers_held_out_phrases(
+    make_planted_nla_dataset: Callable | None = None,
+    fit_activation_encoder: Callable | None = None,
+    encode_activations_to_phrases: Callable | None = None,
+):
+    solutions = _solutions()
+    make_planted_nla_dataset = make_planted_nla_dataset or solutions.make_planted_nla_dataset
+    fit_activation_encoder = fit_activation_encoder or solutions.fit_activation_encoder
+    encode_activations_to_phrases = encode_activations_to_phrases or solutions.encode_activations_to_phrases
+    dataset = make_planted_nla_dataset()
+    train = dataset.split_ids == 0
+    evaluation = dataset.split_ids == 1
+    weight, bias = fit_activation_encoder(dataset.activations[train], dataset.latent_bits[train])
+    phrases, bits = encode_activations_to_phrases(dataset.activations[evaluation], weight, bias)
+    assert t.equal(bits, dataset.latent_bits[evaluation])
+    expected = tuple(phrase for phrase, keep in zip(dataset.phrases, evaluation.tolist()) if keep)
+    assert phrases == expected
+    print("All tests in `test_activation_encoder_recovers_held_out_phrases` passed!")
+
+
+def test_phrase_decoder_recovers_semantic_coordinates(
+    make_planted_nla_dataset: Callable | None = None,
+    fit_phrase_decoder: Callable | None = None,
+    decode_phrases: Callable | None = None,
+):
+    solutions = _solutions()
+    make_planted_nla_dataset = make_planted_nla_dataset or solutions.make_planted_nla_dataset
+    fit_phrase_decoder = fit_phrase_decoder or solutions.fit_phrase_decoder
+    decode_phrases = decode_phrases or solutions.decode_phrases
+    dataset = make_planted_nla_dataset()
+    train = dataset.split_ids == 0
+    train_phrases = tuple(phrase for phrase, keep in zip(dataset.phrases, train.tolist()) if keep)
+    weight, bias = fit_phrase_decoder(train_phrases, dataset.activations[train])
+    canonical_phrases = (
+        "route north; cargo fragile",
+        "route north; cargo standard",
+        "route south; cargo fragile",
+        "route south; cargo standard",
     )
+    decoded = decode_phrases(canonical_phrases, weight, bias)
+    coordinates = decoded @ dataset.semantic_directions.T
+    expected = t.tensor([[2.5, 2.0], [2.5, -2.0], [-2.5, 2.0], [-2.5, -2.0]])
+    assert t.allclose(coordinates, expected, atol=1e-4)
+    assert (decoded @ dataset.nuisance_directions.T).abs().max() < 1e-5
+    print("All tests in `test_phrase_decoder_recovers_semantic_coordinates` passed!")
+
+
+def test_reconstruction_beats_prompt_only_and_opposite_phrases(
+    build_signature_payload: Callable | None = None,
+):
+    build_signature_payload = build_signature_payload or _solutions().build_signature_payload
+    report = build_signature_payload()["reconstruction"]
+    assert report.nla_mse < 0.02
+    assert report.prompt_only_mse > 1.0
+    assert report.shuffled_phrase_mse > 5.0
+    assert report.mean_cosine > 0.99
+    assert report.nla_beats_prompt_only and report.shuffled_control_fails
+    print("All tests in `test_reconstruction_beats_prompt_only_and_opposite_phrases` passed!")
+
+
+def test_reconstruction_metrics_reject_misaligned_rows(
+    reconstruction_comparison: Callable | None = None,
+):
+    reconstruction_comparison = reconstruction_comparison or _solutions().reconstruction_comparison
+    original = t.zeros(4, 3)
+    try:
+        reconstruction_comparison(original, original[:3], original, original)
+    except ValueError as exc:
+        assert "same shape" in str(exc)
+    else:
+        raise AssertionError("A row-misaligned comparison must fail before scoring.")
+    print("All tests in `test_reconstruction_metrics_reject_misaligned_rows` passed!")
+
+
+def test_reconstruction_preserves_planted_behavior(
+    build_signature_payload: Callable | None = None,
+):
+    build_signature_payload = build_signature_payload or _solutions().build_signature_payload
+    report = build_signature_payload()["behavior"]
+    assert report.nla_mae < 1e-4
+    assert report.prompt_only_mae > 3.0
+    assert report.shuffled_phrase_mae > 6.0
+    assert report.route_accuracy == 1.0
+    assert report.cargo_accuracy == 1.0
+    assert report.behavior_sign_accuracy == 1.0
+    assert report.nla_beats_controls
+    print("All tests in `test_reconstruction_preserves_planted_behavior` passed!")
+
+
+def test_controls_are_semantic_and_explanations_are_short(
+    antipodal_phrase_control: Callable | None = None,
+    word_compression_ratio: Callable | None = None,
+    make_planted_nla_dataset: Callable | None = None,
+):
+    solutions = _solutions()
+    antipodal_phrase_control = antipodal_phrase_control or solutions.antipodal_phrase_control
+    word_compression_ratio = word_compression_ratio or solutions.word_compression_ratio
+    make_planted_nla_dataset = make_planted_nla_dataset or solutions.make_planted_nla_dataset
+    dataset = make_planted_nla_dataset()
+    evaluation = dataset.split_ids == 1
+    phrases = tuple(phrase for phrase, keep in zip(dataset.phrases, evaluation.tolist()) if keep)
+    prompts = tuple(prompt for prompt, keep in zip(dataset.prompts, evaluation.tolist()) if keep)
+    opposite = antipodal_phrase_control(phrases)
+    assert all(a != b for a, b in zip(phrases, opposite))
+    assert antipodal_phrase_control(opposite) == phrases
+    assert word_compression_ratio(phrases, prompts) == 0.4
+    assert word_compression_ratio(prompts, prompts) == 1.0
+    assert not any(re.search(r"[+-]?\d+(?:\.\d+)?", phrase) for phrase in phrases)
+    print("All tests in `test_controls_are_semantic_and_explanations_are_short` passed!")
+
+
+def test_counterfactual_route_flip_changes_only_route_semantics(
+    counterfactual_route_flip: Callable | None = None,
+    make_planted_nla_dataset: Callable | None = None,
+    fit_activation_encoder: Callable | None = None,
+    encode_activations_to_phrases: Callable | None = None,
+):
+    solutions = _solutions()
+    counterfactual_route_flip = counterfactual_route_flip or solutions.counterfactual_route_flip
+    make_planted_nla_dataset = make_planted_nla_dataset or solutions.make_planted_nla_dataset
+    fit_activation_encoder = fit_activation_encoder or solutions.fit_activation_encoder
+    encode_activations_to_phrases = encode_activations_to_phrases or solutions.encode_activations_to_phrases
+    dataset = make_planted_nla_dataset()
+    train = dataset.split_ids == 0
+    evaluation = dataset.split_ids == 1
+    weight, bias = fit_activation_encoder(dataset.activations[train], dataset.latent_bits[train])
+    original = dataset.activations[evaluation][0:1]
+    changed = counterfactual_route_flip(original, dataset.semantic_directions[0])
+    original_phrase, original_bits = encode_activations_to_phrases(original, weight, bias)
+    changed_phrase, changed_bits = encode_activations_to_phrases(changed, weight, bias)
+    assert original_phrase == ("route north; cargo fragile",)
+    assert changed_phrase == ("route south; cargo fragile",)
+    assert changed_bits[0, 0] == -original_bits[0, 0]
+    assert changed_bits[0, 1] == original_bits[0, 1]
+    delta = changed - original
+    assert (delta @ dataset.nuisance_directions.T).abs().max() < 1e-5
+    behavior_change = (delta @ dataset.behavior_direction).item()
+    assert behavior_change < -6.9
+    print("All tests in `test_counterfactual_route_flip_changes_only_route_semantics` passed!")
+
+
+def test_signature_payload_is_actual_computation(
+    build_signature_payload: Callable | None = None,
+):
+    build_signature_payload = build_signature_payload or _solutions().build_signature_payload
+    low_noise = build_signature_payload(nuisance_scale=0.1)
+    high_noise = build_signature_payload(nuisance_scale=0.7)
+    assert low_noise["phrase_accuracy"] == high_noise["phrase_accuracy"] == 1.0
+    assert low_noise["reconstruction"].nla_mse < high_noise["reconstruction"].nla_mse
+    assert high_noise["reconstruction"].nla_mse < high_noise["reconstruction"].prompt_only_mse
+    print("All tests in `test_signature_payload_is_actual_computation` passed!")
 
 
 def test_notebook_contract(run_smoke_test: Callable | None = None):
-    if run_smoke_test is None:
-        run_smoke_test = _solutions().run_smoke_test
-    result = run_smoke_test(cpu=True)
-    assert result["batch"]["latent_labels"] == ["ioi", "code", "fact"], (
-        "Notebook contract should include the aligned mini NLA batch."
-    )
-    assert result["reconstruction"]["beats_text_only"], (
-        "Notebook contract should show reconstruction beating a text-only baseline."
-    )
-    assert result["logit_diff"]["preserves_target_logit_diff"], (
-        "Notebook contract should check a preserved target logit difference."
-    )
-    assert 0.149 < result["logit_diff"]["mean_abs_error"] < 0.151, (
-        "Notebook contract should report the corrected per-example logit-diff error."
-    )
-    assert result["latent_preservation"]["preserves_latents"], (
-        "Notebook contract should include probe-latent preservation."
-    )
-    assert result["brevity"]["shorter_than_original"], (
-        "Notebook contract should verify the generated text is a bottleneck."
-    )
-    assert result["counterfactual"]["explanation_changed"], (
-        "Notebook contract should include a counterfactual explanation change."
-    )
-    assert result["trainable_bottleneck"]["eval_phrase_accuracy"] == 1.0, (
-        "Notebook contract should include a trainable activation-to-phrase bottleneck."
-    )
-    assert result["trainable_bottleneck"]["beats_blank_text"], (
-        "The trained phrase decoder should beat the blank-text reconstruction baseline."
-    )
+    run_smoke_test = run_smoke_test or _solutions().run_smoke_test
+    contract = run_smoke_test(cpu=True)
+    assert contract["accepted"] and contract["tests_passed"] and contract["contract_passed"]
+    assert contract["toy_phrase_accuracy"] == 1.0
+    assert contract["toy_nla_mse"] < contract["toy_prompt_only_mse"]
+    assert contract["toy_prompt_only_mse"] < contract["toy_shuffled_phrase_mse"]
+    assert contract["toy_behavior_mae"] < 1e-4
+    assert contract["toy_compression_ratio"] < 0.5
     print("All tests in `test_notebook_contract` passed!")
+
+
+def _notebook_text(path: Path) -> tuple[str, str]:
+    notebook = json.loads(path.read_text())
+    markdown = "\n".join(
+        "".join(cell.get("source", []))
+        for cell in notebook["cells"]
+        if cell.get("cell_type") == "markdown"
+    )
+    code = "\n".join(
+        "".join(cell.get("source", []))
+        for cell in notebook["cells"]
+        if cell.get("cell_type") == "code"
+    )
+    return markdown, code
+
+
+def test_solution_notebook_exposes_taught_implementations():
+    markdown, code = _notebook_text(SOLUTION_NOTEBOOK)
+    required = {
+        "latent_phrase",
+        "make_planted_nla_dataset",
+        "phrase_feature_matrix",
+        "fit_activation_encoder",
+        "encode_activations_to_phrases",
+        "fit_phrase_decoder",
+        "decode_phrases",
+        "prompt_only_reconstruction",
+        "reconstruction_comparison",
+        "behavior_preservation",
+        "antipodal_phrase_control",
+        "word_compression_ratio",
+        "counterfactual_route_flip",
+        "build_signature_payload",
+    }
+    tree = ast.parse(code)
+    defined = {node.name for node in ast.walk(tree) if isinstance(node, ast.FunctionDef)}
+    assert required <= defined, f"Solved notebook is missing inline implementations: {required - defined}"
+    assert "raise NotImplementedError" not in code
+    assert "solutions." not in code and "import solutions" not in code
+    assert markdown.count("### Exercise -") == 8
+    print("All tests in `test_solution_notebook_exposes_taught_implementations` passed!")
+
+
+def test_learner_surfaces_have_complete_progression():
+    required_markers = (
+        "By the end of this notebook",
+        "Learning Objectives",
+        "Cold Open",
+        "## Signature Result",
+        "## Try It Yourself",
+        "## Bonus Anomaly Hunt",
+        "## Limitations",
+    )
+    for path in (EXERCISE_NOTEBOOK, SOLUTION_NOTEBOOK):
+        markdown, code = _notebook_text(path)
+        assert all(marker in markdown for marker in required_markers), f"Missing progression marker in {path.name}"
+        assert markdown.count("### Exercise -") == 8
+        assert markdown.count("<summary>Expected output</summary>") == 8
+        assert markdown.count("<summary>Help</summary>") == 8
+        assert markdown.count("<summary>Interpretation</summary>") == 8
+        assert markdown.count("<summary>Solution</summary>") == 8
+        for cell in json.loads(path.read_text())["cells"]:
+            if cell.get("cell_type") == "code":
+                ast.parse("".join(cell.get("source", [])))
+        assert "verification_report.json" not in markdown + code
+
+    page = PAGE.read_text()
+    assert all(marker in page for marker in required_markers)
+    assert page.count("### Exercise -") == 8
+    assert "mini_nla_signature_result.png" in page
+    print("All tests in `test_learner_surfaces_have_complete_progression` passed!")
