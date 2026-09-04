@@ -33,6 +33,7 @@ OFFICIAL_SFC_GRAPH_FIGURE = (
 OFFICIAL_SFC_HELDOUT_EXAMPLES = 40
 OFFICIAL_SFC_FAITHFULNESS_START_LAYER = 2
 OFFICIAL_SFC_FAITHFULNESS_NODE_THRESHOLD = 0.0
+PYTHIA_70M_REVISION = "e93a9faa9c77e5d09219f6c868bfc7a1bd65593c"
 
 
 # %%
@@ -1847,8 +1848,12 @@ def pythia_subject_verb_residual_preflight(
     from transformers import AutoModelForCausalLM, AutoTokenizer
 
     device = t.device("cuda")
-    tokenizer = AutoTokenizer.from_pretrained(model_id)
-    model = AutoModelForCausalLM.from_pretrained(model_id, dtype=t.float32).to(device).eval()
+    tokenizer = AutoTokenizer.from_pretrained(model_id, revision=PYTHIA_70M_REVISION)
+    model = AutoModelForCausalLM.from_pretrained(
+        model_id,
+        revision=PYTHIA_70M_REVISION,
+        dtype=t.float32,
+    ).to(device).eval()
     target_id = _single_token_id(tokenizer, target_token)
     distractor_id = _single_token_id(tokenizer, distractor_token)
 
@@ -1882,6 +1887,7 @@ def pythia_subject_verb_residual_preflight(
     return {
         "cuda_available": True,
         "model_id": model_id,
+        "model_revision": PYTHIA_70M_REVISION,
         "device": t.cuda.get_device_name(0),
         "clean_prompt": clean_prompt,
         "corrupt_prompt": corrupt_prompt,
@@ -1951,8 +1957,12 @@ def official_sae_state_dict_smoke_test(
     from transformers import AutoModelForCausalLM, AutoTokenizer
 
     device = t.device("cuda")
-    tokenizer = AutoTokenizer.from_pretrained(model_id)
-    model = AutoModelForCausalLM.from_pretrained(model_id, dtype=t.float32).to(device).eval()
+    tokenizer = AutoTokenizer.from_pretrained(model_id, revision=PYTHIA_70M_REVISION)
+    model = AutoModelForCausalLM.from_pretrained(
+        model_id,
+        revision=PYTHIA_70M_REVISION,
+        dtype=t.float32,
+    ).to(device).eval()
     activation_cache: dict[str, t.Tensor] = {}
 
     def save_layer_output(_module, _inputs, output):
@@ -1975,6 +1985,7 @@ def official_sae_state_dict_smoke_test(
     return {
         "cuda_available": True,
         "model_id": model_id,
+        "model_revision": PYTHIA_70M_REVISION,
         "prompt": prompt,
         "tokens": tokenizer.convert_ids_to_tokens(input_ids[0].tolist()),
         "dictionary_path": str(ae_path),
@@ -2038,8 +2049,12 @@ def official_sae_feature_attribution_smoke_test(
     from transformers import AutoModelForCausalLM, AutoTokenizer
 
     device = t.device("cuda")
-    tokenizer = AutoTokenizer.from_pretrained(model_id)
-    model = AutoModelForCausalLM.from_pretrained(model_id, dtype=t.float32).to(device).eval()
+    tokenizer = AutoTokenizer.from_pretrained(model_id, revision=PYTHIA_70M_REVISION)
+    model = AutoModelForCausalLM.from_pretrained(
+        model_id,
+        revision=PYTHIA_70M_REVISION,
+        dtype=t.float32,
+    ).to(device).eval()
     target_id = _single_token_id(tokenizer, target_token)
     distractor_id = _single_token_id(tokenizer, distractor_token)
 
@@ -2081,6 +2096,7 @@ def official_sae_feature_attribution_smoke_test(
     return {
         "cuda_available": True,
         "model_id": model_id,
+        "model_revision": PYTHIA_70M_REVISION,
         "clean_prompt": clean_prompt,
         "corrupt_prompt": corrupt_prompt,
         "clean_tokens": clean_tokens,

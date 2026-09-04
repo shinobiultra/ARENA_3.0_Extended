@@ -64,9 +64,9 @@
       "target_feature": "signed task label feature"
     }
   ],
-  "date_run": "2026-09-04T08:01:31+00:00",
+  "date_run": "2026-09-04T08:04:26+00:00",
   "evidence_level": "toy_ladder_plus_real_pythia_official_sae_sfc_faithfulness_and_shift_editing",
-  "git_commit": "fe8ec66e",
+  "git_commit": "afafa780",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-0",
   "known_failures": [],
@@ -180,6 +180,7 @@
         "distractor_token": " is",
         "distractor_token_id": 310,
         "model_id": "EleutherAI/pythia-70m-deduped",
+        "model_revision": "e93a9faa9c77e5d09219f6c868bfc7a1bd65593c",
         "passes_smoke": true,
         "peak_vram_gb": 0.5876307487487793,
         "random_control_fails": true,
@@ -245,6 +246,7 @@
         "feature_l0": 35,
         "feature_max": 1.9689345359802246,
         "model_id": "EleutherAI/pythia-70m-deduped",
+        "model_revision": "e93a9faa9c77e5d09219f6c868bfc7a1bd65593c",
         "passes_smoke": true,
         "peak_vram_gb": 0.529515266418457,
         "prompt": "The cats",
@@ -324,6 +326,7 @@
         "distractor_token_id": 310,
         "linearization_error": 0.0001392364501953125,
         "model_id": "EleutherAI/pythia-70m-deduped",
+        "model_revision": "e93a9faa9c77e5d09219f6c868bfc7a1bd65593c",
         "peak_vram_gb": 0.4632563591003418,
         "preflight_passed": true,
         "random_control_fails": true,
@@ -841,7 +844,7 @@
       "gated": false,
       "id": "EleutherAI/pythia-70m-deduped",
       "precision": "float32",
-      "revision": "default_hf_revision",
+      "revision": "e93a9faa9c77e5d09219f6c868bfc7a1bd65593c",
       "source": "huggingface"
     }
   ],
@@ -860,7 +863,7 @@
   "peak_vram_gb": 0.5876307487487793,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "d38f70f4bc7e35fe9f9a51da743f10b3dec10a05d4f3146538e1011116ed573b",
+    "combined_sha256": "6c5ac538db075b6f7e4cedf2bf0b8324632a87b2dc1f1f5afb39a814d83f6f11",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -884,8 +887,8 @@
       },
       {
         "path": "chapter8_automated_circuits/exercises/part5_sparse_feature_circuits/artifacts.lock.yml",
-        "sha256": "16842b0d81834f436e3e4c8d9a40bdadf7811abe1cf5807273b1a6d54943c7db",
-        "size_bytes": 4087
+        "sha256": "c80fe7518b61a23cef4f623385017ca83e8f330849f5728195d104177a7b9093",
+        "size_bytes": 4108
       },
       {
         "path": "chapter8_automated_circuits/exercises/part5_sparse_feature_circuits/expected_outputs/README.md",
@@ -904,8 +907,8 @@
       },
       {
         "path": "chapter8_automated_circuits/exercises/part5_sparse_feature_circuits/solutions.py",
-        "sha256": "eda492ca8e2b9ca3b2585ba0f5bd04b176425197bf99db55cda6dbd9a5db467e",
-        "size_bytes": 97041
+        "sha256": "04733fb96c22e3abe1d28e8c5116303239568dc2519fdf9a9ee084d5a7838900",
+        "size_bytes": 97520
       },
       {
         "path": "chapter8_automated_circuits/exercises/part5_sparse_feature_circuits/tests.py",
@@ -941,5 +944,5 @@
     "The real Sparse Feature Circuits path uses the pinned official repo, downloaded Pythia-70M-deduped SAE dictionaries, generated safe subject-verb data from the official split, and held-out faithfulness. The SHIFT-style editing exercise uses generated sparse features only; it does not use Bias-in-Bios or sensitive demographic text."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 20.250663
+  "wall_clock_seconds": 13.416351
 }
