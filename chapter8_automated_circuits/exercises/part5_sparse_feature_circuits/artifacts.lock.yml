@@ -10,13 +10,18 @@ exercise_metadata:
   REQUIRES_GPU: true
 gt_tier: GT-0
 evidence_level: toy_ladder_plus_real_pythia_official_sae_sfc_faithfulness_and_shift_editing
-claim_scope: GT-0 toy sparse-feature contract plus Pythia-70M-deduped residual-feature
-  subject/verb preflight, official artifact readiness, one released SAE state-dict
-  check, one-layer SAE feature-attribution with random-feature control, a 100-example
+claim_scope: >-
+  The learner-facing signature result is a GT-0 exact planted sparse-feature
+  graph with known SAE nodes, known source-to-receiver edges, exact patching,
+  EAP-IG comparison, threshold curves, faithfulness/minimality/completeness,
+  and same-size random controls. The serialized CUDA/external-artifact evidence
+  is separate GT-2 support: Pythia-70M-deduped residual-feature subject/verb
+  preflight, official artifact readiness, one released SAE state-dict check,
+  one-layer SAE feature-attribution with random-feature control, a 100-example
   official-code sparse feature graph artifact, and held-out official faithfulness
-  on 40 simple_test examples, plus a safe generated-data SHIFT-style editing organism
-  that suppresses a spurious feature, preserves target accuracy, improves OOD accuracy,
-  and beats a same-size random feature edit.
+  on 40 simple_test examples, plus a safe generated-data SHIFT-style editing
+  organism that suppresses a spurious feature, preserves target accuracy,
+  improves OOD accuracy, and beats a same-size random feature edit.
 required_gpu_gb: 1
 max_allowed_gpu_gb: 24
 models:
@@ -85,6 +90,7 @@ controls:
 - same_size_random_feature_edit_control
 safety_notes:
 - No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.
+- The CPU learner notebook does not download or execute external artifacts.
 - The real Sparse Feature Circuits path uses the pinned official repo, downloaded
   Pythia-70M-deduped SAE dictionaries, generated safe subject-verb data from the official
   split, and held-out faithfulness. The SHIFT-style editing exercise uses generated

@@ -68,6 +68,331 @@ def test_encode_decode_shape_smoke_test(
     print("All tests in `test_encode_decode_shape_smoke_test` passed!")
 
 
+def test_toy_sae_encode_decode_metrics_on_planted_fixture(
+    toy_sae_encode: Callable | None = None,
+    toy_sae_decode: Callable | None = None,
+    sae_reconstruction_report: Callable | None = None,
+):
+    solutions = _solutions()
+    toy_sae_encode = toy_sae_encode or solutions.toy_sae_encode
+    toy_sae_decode = toy_sae_decode or solutions.toy_sae_decode
+    sae_reconstruction_report = sae_reconstruction_report or solutions.sae_reconstruction_report
+    fixture = solutions.planted_sparse_feature_circuit_fixture()
+    activations = t.stack([fixture["clean_activation"], fixture["corrupt_activation"]])
+    feature_acts = toy_sae_encode(
+        activations,
+        fixture["encoder_weight"],
+        fixture["encoder_bias"],
+    )
+    reconstructions = toy_sae_decode(
+        feature_acts,
+        fixture["decoder_weight"],
+        fixture["decoder_bias"],
+    )
+    report = sae_reconstruction_report(activations, feature_acts, reconstructions)
+    assert tuple(feature_acts.shape) == (2, 6), (
+        "The planted SAE should expose two examples and six sparse features."
+    )
+    assert report.reconstruction_mse == 0.0 and report.relative_l2_error == 0.0, (
+        "The planted identity SAE should reconstruct exactly."
+    )
+    assert abs(report.l0_mean - 3.5) < 1e-6 and report.density > 0.5, (
+        "The fixture should make sparsity visible rather than hiding dense activations."
+    )
+    assert abs(report.dead_feature_fraction - (1.0 / 6.0)) < 1e-6, (
+        "One feature is deliberately dead so students can see the SAE metric."
+    )
+    assert feature_acts[0, 1] > feature_acts[1, 1], (
+        "The clean prompt should activate the plural-subject feature more."
+    )
+    assert feature_acts[1, 2] > feature_acts[0, 2], (
+        "The corrupt prompt should activate the singular-subject feature more."
+    )
+    try:
+        toy_sae_encode(activations, fixture["encoder_weight"][:, :-1], fixture["encoder_bias"])
+    except ValueError as exc:
+        assert "activation dimension" in str(exc), (
+            "Shape mistakes in the SAE encoder should fail before graph attribution."
+        )
+    else:
+        raise AssertionError("Mismatched SAE encoder dimensions should raise ValueError.")
+    print("All tests in `test_toy_sae_encode_decode_metrics_on_planted_fixture` passed!")
+
+
+def test_exact_planted_node_patch_scores_identify_known_nodes(
+    exact_planted_node_patch_scores: Callable | None = None,
+    patch_planted_nodes: Callable | None = None,
+):
+    solutions = _solutions()
+    exact_planted_node_patch_scores = (
+        exact_planted_node_patch_scores or solutions.exact_planted_node_patch_scores
+    )
+    patch_planted_nodes = patch_planted_nodes or solutions.patch_planted_nodes
+    fixture = solutions.planted_sparse_feature_circuit_fixture()
+    clean_features = solutions.toy_sae_encode(
+        fixture["clean_activation"],
+        fixture["encoder_weight"],
+        fixture["encoder_bias"],
+    )
+    corrupt_features = solutions.toy_sae_encode(
+        fixture["corrupt_activation"],
+        fixture["encoder_weight"],
+        fixture["encoder_bias"],
+    )
+    clean_receiver = solutions.planted_receiver_activations(
+        clean_features,
+        fixture["edge_weights"],
+    )
+    corrupt_receiver = solutions.planted_receiver_activations(
+        corrupt_features,
+        fixture["edge_weights"],
+    )
+    node_scores = exact_planted_node_patch_scores(
+        clean_receiver,
+        corrupt_receiver,
+        fixture["readout_weights"],
+    )
+    node_report = solutions.exact_feature_node_patching_report(
+        node_scores,
+        fixture["ground_truth_node_ids"],
+        min_recovered_fraction=0.95,
+    )
+    clean_metric = solutions.planted_circuit_metric(clean_receiver, fixture["readout_weights"])
+    corrupt_metric = solutions.planted_circuit_metric(corrupt_receiver, fixture["readout_weights"])
+    patched_metric = patch_planted_nodes(
+        corrupt_receiver,
+        clean_receiver,
+        fixture["readout_weights"],
+        fixture["ground_truth_node_ids"],
+    )
+    recovered = (patched_metric - corrupt_metric) / (clean_metric - corrupt_metric)
+    assert node_scores.argmax().item() == 0, (
+        "The plural relay should be the largest exact node-patching score."
+    )
+    assert node_report.selected_feature_ids == (0, 1), (
+        "The planted node graph should be the plural and singular relay nodes."
+    )
+    assert recovered > 0.98 and node_report.passes_recovery, (
+        "Patching the two planted nodes should almost fully recover the clean metric."
+    )
+    try:
+        patch_planted_nodes(corrupt_receiver, clean_receiver, fixture["readout_weights"], [0, 0])
+    except ValueError as exc:
+        assert "unique" in str(exc), (
+            "Node patching must reject duplicate nodes instead of double-counting."
+        )
+    else:
+        raise AssertionError("Duplicate node ids should raise ValueError.")
+    print("All tests in `test_exact_planted_node_patch_scores_identify_known_nodes` passed!")
+
+
+def test_exact_planted_edge_patch_scores_identify_known_edges(
+    exact_planted_edge_patch_scores: Callable | None = None,
+    patch_planted_edges: Callable | None = None,
+):
+    solutions = _solutions()
+    exact_planted_edge_patch_scores = (
+        exact_planted_edge_patch_scores or solutions.exact_planted_edge_patch_scores
+    )
+    patch_planted_edges = patch_planted_edges or solutions.patch_planted_edges
+    fixture = solutions.planted_sparse_feature_circuit_fixture()
+    clean_features = solutions.toy_sae_encode(
+        fixture["clean_activation"],
+        fixture["encoder_weight"],
+        fixture["encoder_bias"],
+    )
+    corrupt_features = solutions.toy_sae_encode(
+        fixture["corrupt_activation"],
+        fixture["encoder_weight"],
+        fixture["encoder_bias"],
+    )
+    edge_scores = exact_planted_edge_patch_scores(
+        clean_features,
+        corrupt_features,
+        fixture["edge_weights"],
+        fixture["readout_weights"],
+    )
+    edge_report = solutions.exact_feature_edge_patching_report(
+        edge_scores,
+        fixture["ground_truth_edges"],
+        min_recovered_fraction=0.95,
+    )
+    clean_metric = solutions.planted_circuit_metric(
+        solutions.planted_receiver_activations(clean_features, fixture["edge_weights"]),
+        fixture["readout_weights"],
+    )
+    corrupt_metric = solutions.planted_circuit_metric(
+        solutions.planted_receiver_activations(corrupt_features, fixture["edge_weights"]),
+        fixture["readout_weights"],
+    )
+    patched_metric = patch_planted_edges(
+        corrupt_features,
+        clean_features,
+        fixture["edge_weights"],
+        fixture["readout_weights"],
+        fixture["ground_truth_edges"],
+    )
+    recovered = (patched_metric - corrupt_metric) / (clean_metric - corrupt_metric)
+    assert edge_scores[1, 0] > 1.0 and edge_scores[2, 1] > 0.7, (
+        "The two planted edges should dominate the exact edge-patching table."
+    )
+    assert edge_report.selected_edges == ((1, 0), (2, 1)), (
+        "The planted edge graph should be plural-source -> plural-relay and singular-source -> singular-relay."
+    )
+    assert recovered > 0.98 and edge_report.passes_recovery, (
+        "Patching the two planted edges should almost fully recover the clean metric."
+    )
+    try:
+        patch_planted_edges(
+            corrupt_features,
+            clean_features,
+            fixture["edge_weights"],
+            fixture["readout_weights"],
+            [(99, 0)],
+        )
+    except ValueError as exc:
+        assert "source id" in str(exc), (
+            "Edge patching should identify an out-of-range source id."
+        )
+    else:
+        raise AssertionError("Out-of-range source ids should raise ValueError.")
+    print("All tests in `test_exact_planted_edge_patch_scores_identify_known_edges` passed!")
+
+
+def test_nonlinear_eap_ig_beats_plain_attribution_patching(
+    nonlinear_eap_ig_edge_attribution_report: Callable | None = None,
+):
+    solutions = _solutions()
+    nonlinear_eap_ig_edge_attribution_report = (
+        nonlinear_eap_ig_edge_attribution_report
+        or solutions.nonlinear_eap_ig_edge_attribution_report
+    )
+    fixture = solutions.planted_sparse_feature_circuit_fixture()
+    clean_features = solutions.toy_sae_encode(
+        fixture["clean_activation"],
+        fixture["encoder_weight"],
+        fixture["encoder_bias"],
+    )
+    corrupt_features = solutions.toy_sae_encode(
+        fixture["corrupt_activation"],
+        fixture["encoder_weight"],
+        fixture["encoder_bias"],
+    )
+    report = nonlinear_eap_ig_edge_attribution_report(
+        clean_features,
+        corrupt_features,
+        fixture["edge_weights"],
+        fixture["readout_weights"],
+        steps=128,
+    )
+    assert report["eap_ig_error"] < report["eap_error"], (
+        "EAP-IG should be closer than one-gradient EAP on the saturated readout."
+    )
+    assert abs(report["eap_ig_total"] - report["exact_total_effect"]) < 1e-4, (
+        "The integrated path scores should add up to the nonlinear total effect."
+    )
+    assert abs(report["eap_total"] - report["exact_total_effect"]) > 0.2, (
+        "Plain EAP should visibly miscalibrate the saturated toy graph."
+    )
+    try:
+        nonlinear_eap_ig_edge_attribution_report(
+            clean_features,
+            corrupt_features,
+            fixture["edge_weights"],
+            fixture["readout_weights"],
+            steps=1,
+        )
+    except ValueError as exc:
+        assert "steps" in str(exc), "EAP-IG needs more than one integration step."
+    else:
+        raise AssertionError("A one-step EAP-IG path should raise ValueError.")
+    print("All tests in `test_nonlinear_eap_ig_beats_plain_attribution_patching` passed!")
+
+
+def test_threshold_graph_metrics_and_random_controls(
+    threshold_sparse_feature_graph: Callable | None = None,
+    faithfulness_minimality_completeness_report: Callable | None = None,
+):
+    solutions = _solutions()
+    threshold_sparse_feature_graph = (
+        threshold_sparse_feature_graph or solutions.threshold_sparse_feature_graph
+    )
+    faithfulness_minimality_completeness_report = (
+        faithfulness_minimality_completeness_report
+        or solutions.faithfulness_minimality_completeness_report
+    )
+    signature = solutions.run_planted_sparse_feature_signature()
+    node_scores = t.tensor(signature["node_scores"])
+    edge_scores = t.tensor(signature["edge_scores"])
+    fixture = solutions.planted_sparse_feature_circuit_fixture()
+    graph = threshold_sparse_feature_graph(
+        node_scores,
+        edge_scores,
+        node_threshold=fixture["node_threshold"],
+        edge_threshold=fixture["edge_threshold"],
+        min_node_recovery=0.95,
+        min_edge_recovery=0.95,
+    )
+    metrics = faithfulness_minimality_completeness_report(
+        node_scores,
+        graph["selected_node_ids"],
+        fixture["same_size_random_node_ids"],
+        min_faithfulness=0.95,
+        min_random_margin=0.9,
+    )
+    assert graph["selected_node_ids"] == fixture["ground_truth_node_ids"], (
+        "Thresholding should recover exactly the two planted receiver nodes."
+    )
+    assert graph["selected_edges"] == fixture["ground_truth_edges"], (
+        "Thresholding should recover exactly the two planted source-to-receiver edges."
+    )
+    assert metrics["faithfulness"] > 0.98 and metrics["completeness"] > 0.98, (
+        "The planted graph should preserve almost all of the exact node effect."
+    )
+    assert metrics["random_margin"] > 0.9 and metrics["passes"], (
+        "A same-size random graph should visibly fail."
+    )
+    too_sparse = faithfulness_minimality_completeness_report(
+        node_scores,
+        [0],
+        fixture["same_size_random_node_ids"][:1],
+        min_faithfulness=0.95,
+        min_random_margin=0.9,
+    )
+    assert not too_sparse["passes"], (
+        "Dropping the singular relay should fail the faithfulness gate."
+    )
+    print("All tests in `test_threshold_graph_metrics_and_random_controls` passed!")
+
+
+def test_planted_sparse_feature_signature_result_is_visual_ready(
+    run_planted_sparse_feature_signature: Callable | None = None,
+):
+    run_planted_sparse_feature_signature = (
+        run_planted_sparse_feature_signature
+        or _solutions().run_planted_sparse_feature_signature
+    )
+    result = run_planted_sparse_feature_signature()
+    assert result["accepted"], "The exact planted sparse-feature theorem should pass."
+    assert result["claim_scope"].startswith("GT-0 exact planted"), (
+        "The signature result should state the toy theorem boundary."
+    )
+    assert result["graph"]["selected_node_ids"] == (0, 1), (
+        "The signature graph should expose the planted sparse nodes."
+    )
+    assert result["graph"]["selected_edges"] == ((1, 0), (2, 1)), (
+        "The signature graph should expose the planted sparse edges."
+    )
+    rows = result["threshold_rows"]
+    assert len(rows) >= 5 and rows[0]["num_features"] > rows[-1]["num_features"], (
+        "The signature result should include threshold-curve rows for plotting."
+    )
+    assert result["random_control"]["random_graph_fails"], (
+        "The signature result should include a failed same-size random graph."
+    )
+    print("All tests in `test_planted_sparse_feature_signature_result_is_visual_ready` passed!")
+
+
 def test_exact_feature_node_patching_report_recovers_selected_features(
     exact_feature_node_patching_report: Callable | None = None,
 ):
@@ -358,6 +683,9 @@ def test_sparse_autoencoder_state_dict_smoke_report_checks_shapes(
 def test_notebook_contract(run_smoke_test: Callable | None = None):
     run_smoke_test = run_smoke_test or _solutions().run_smoke_test
     result = run_smoke_test(cpu=True)
+    assert result["planted_signature"]["accepted"], (
+        "The notebook contract should include the exact planted sparse-feature signature."
+    )
     assert result["encode_decode"]["matches_input"], (
         "The notebook contract should include the encode/decode shape check."
     )
@@ -380,6 +708,41 @@ def test_notebook_contract(run_smoke_test: Callable | None = None):
         "The notebook contract should include SHIFT-style sparse-feature editing."
     )
     print("All tests in `test_notebook_contract` passed!")
+
+
+def test_exercise_notebook_exposes_arena_style_sparse_feature_surface():
+    notebook_path = _section_dir() / "8.5_Sparse_Feature_Circuits_exercises.ipynb"
+    notebook = json.loads(notebook_path.read_text(encoding="utf-8"))
+    text = "\n".join("".join(cell.get("source", [])) for cell in notebook["cells"])
+    required_markers = [
+        "By the end of this notebook",
+        "Core question",
+        "exact planted sparse-feature graph",
+        "### Exercise - implement `toy_sae_encode`",
+        "### Exercise - implement `exact_planted_node_patch_scores`",
+        "### Exercise - implement `exact_planted_edge_patch_scores`",
+        "### Exercise - implement `nonlinear_eap_ig_edge_attribution_report`",
+        "### Exercise - implement `threshold_sparse_feature_graph`",
+        "### Exercise - implement `faithfulness_minimality_completeness_report`",
+        "### Exercise - implement `shift_style_sparse_feature_editing_report`",
+        "sparse_feature_circuits_planted_graph.png",
+        "sparse_feature_circuits_metric_curves.png",
+        "## Try It Yourself",
+        "## Bonus: Hunt an Anomaly",
+        "Released-artifact boundary",
+    ]
+    missing = [marker for marker in required_markers if marker not in text]
+    assert not missing, f"8.5 learner surface is missing ARENA markers: {missing}"
+    assert text.count("<summary>Expected output</summary>") >= 7, (
+        "Each graded exercise should include an expected-output dropdown."
+    )
+    assert text.count("<summary>Solution</summary>") >= 7, (
+        "Each graded exercise should include a solution dropdown."
+    )
+    assert text.count("<summary>Help") >= 7, (
+        "Each graded exercise should include help or interpretation guidance."
+    )
+    print("All tests in `test_exercise_notebook_exposes_arena_style_sparse_feature_surface` passed!")
 
 
 def test_pythia_subject_verb_residual_preflight_result(result: dict | None = None):
