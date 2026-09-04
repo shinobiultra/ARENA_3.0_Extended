@@ -16,7 +16,7 @@ sections:
   '5.2':
     status: course_ready
     page: chapter5_modern_architectures/instructions/pages/02_[5.2]_Gemma_Scope_and_Feature_Steering.md
-    notes: ARENA-style rewrite with validation-ladder diagram, help/interpretation dropdowns, signature result, limitations, and paired notebook surfaces.
+    notes: "ARENA-style sparse-feature progression with visible JumpReLU, reconstruction, held-out discovery, steering, and progressive-ablation exercises; immediate semantic tests; expected/help/solution/interpretation dropdowns; parameterized play cells; and anomaly hunting. The exact organism gives held-out AUC 1.000 versus 0.500 nuisance features and 0.498 across 200 label shuffles, while selected-feature steering reaches delta 2.000 and full ablation removes the target score. CUDA 13.2 verification uses authenticated google/gemma-3-1b-it plus the pinned Gemma Scope layer-13 width-16k SAE: feature 15586 reaches held-out AUC 1.000 versus random feature 0.500, the label-shuffle control fails, and peak VRAM is 2.236 GB. Seven focused tests and all 13 solution cells pass. The real claim is limited to an eight-plus-eight benign technical-versus-narrative probe and DLA-aligned logit contrast, not monosemanticity, broad feature coverage, safety behavior, or generation quality."
   '5.3':
     status: course_ready
     page: chapter5_modern_architectures/instructions/pages/03_[5.3]_Mamba_from_Scratch.md

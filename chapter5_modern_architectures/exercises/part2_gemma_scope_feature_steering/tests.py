@@ -231,3 +231,164 @@ def test_notebook_contract(run_smoke_test: Callable | None = None):
         "Smoke ablation should zero the selected feature."
     )
     print("All tests in `test_notebook_contract` passed!")
+
+
+def test_jumprelu_encode_decode(
+    jumprelu_encode: Callable,
+    sae_decode: Callable,
+):
+    """Check the exact JumpReLU equations, including the strict threshold boundary."""
+
+    w_dec = t.eye(3)
+    w_enc = w_dec.T
+    b_dec = t.tensor([0.25, -0.5, 1.0])
+    b_enc = t.zeros(3)
+    threshold = t.tensor([0.5, 0.5, 0.5])
+    feature_acts = t.tensor([[1.0, 0.0, 2.0], [0.0, 1.5, 0.0]])
+    residual = feature_acts @ w_dec + b_dec
+
+    encoded = jumprelu_encode(
+        residual,
+        w_enc=w_enc,
+        b_enc=b_enc,
+        b_dec=b_dec,
+        threshold=threshold,
+    )
+    reconstructed = sae_decode(encoded, w_dec=w_dec, b_dec=b_dec)
+    t.testing.assert_close(encoded, feature_acts)
+    t.testing.assert_close(reconstructed, residual)
+
+    boundary = b_dec + t.tensor([0.5, 0.0, 0.0])
+    boundary_encoded = jumprelu_encode(
+        boundary,
+        w_enc=w_enc,
+        b_enc=b_enc,
+        b_dec=b_dec,
+        threshold=threshold,
+    )
+    assert boundary_encoded[0].item() == 0.0, (
+        "JumpReLU must use pre_activation > threshold, so equality stays inactive."
+    )
+    print("All tests in `test_jumprelu_encode_decode` passed!")
+
+
+def test_feature_discovery_and_heldout_scoring(
+    select_feature_by_mean_difference: Callable,
+    binary_roc_auc: Callable,
+    topk_example_indices: Callable,
+):
+    """Check that selection uses discovery rows and evaluation handles ties."""
+
+    scores = t.tensor(
+        [
+            [1.2, 0.0, 1.0],
+            [1.0, 0.0, 0.0],
+            [0.0, 1.2, 1.0],
+            [0.0, 1.0, 0.0],
+            [1.3, 0.0, 1.0],
+            [1.1, 0.0, 0.0],
+            [0.0, 1.3, 1.0],
+            [0.0, 1.1, 0.0],
+        ]
+    )
+    labels = t.tensor([1, 1, 0, 0, 1, 1, 0, 0], dtype=t.bool)
+    discovery = t.tensor([1, 1, 1, 1, 0, 0, 0, 0], dtype=t.bool)
+    selected = select_feature_by_mean_difference(scores, labels, discovery)
+    assert selected == 0, "The target feature must be selected from discovery rows only."
+    assert binary_roc_auc(scores[~discovery, selected], labels[~discovery]) == 1.0
+    assert binary_roc_auc(scores[~discovery, 2], labels[~discovery]) == 0.5
+    assert topk_example_indices(scores[~discovery, selected], k=2).tolist() == [0, 1]
+    print("All tests in `test_feature_discovery_and_heldout_scoring` passed!")
+
+
+def test_feature_steering_and_ablation(
+    steer_residual: Callable,
+    ablate_feature: Callable,
+    direction_score: Callable,
+):
+    """Check additive steering and contribution-preserving progressive ablation."""
+
+    decoder = t.eye(4)
+    residual = t.tensor([[1.5, 0.5, 0.0, 0.0], [2.0, 0.0, 1.0, 0.0]])
+    feature_acts = residual.clone()
+    target_direction = decoder[0]
+
+    steered = steer_residual(residual, decoder[0], coefficient=2.0)
+    t.testing.assert_close(
+        direction_score(steered, target_direction) - direction_score(residual, target_direction),
+        t.full((2,), 2.0),
+    )
+    target_ablated = ablate_feature(
+        residual,
+        feature_acts,
+        decoder,
+        feature_id=0,
+        fraction=1.0,
+    )
+    random_ablated = ablate_feature(
+        residual,
+        feature_acts,
+        decoder,
+        feature_id=1,
+        fraction=1.0,
+    )
+    t.testing.assert_close(direction_score(target_ablated, target_direction), t.zeros(2))
+    t.testing.assert_close(
+        direction_score(random_ablated, target_direction),
+        direction_score(residual, target_direction),
+    )
+    print("All tests in `test_feature_steering_and_ablation` passed!")
+
+
+def test_released_gemma_scope_artifact(
+    config: dict,
+    state: dict[str, t.Tensor],
+    jumprelu_encode: Callable,
+    sae_decode: Callable,
+):
+    """Validate the pinned released artifact and one genuine CPU encode/decode pass."""
+
+    assert config["model_name"] == "google/gemma-3-1b-it"
+    assert config["hf_hook_point_in"] == "model.layers.13.output"
+    assert config["architecture"] == "jump_relu"
+    assert config["width"] == 16384
+    expected_shapes = {
+        "w_enc": (1152, 16384),
+        "w_dec": (16384, 1152),
+        "b_enc": (16384,),
+        "b_dec": (1152,),
+        "threshold": (16384,),
+    }
+    assert set(expected_shapes).issubset(state)
+    for name, shape in expected_shapes.items():
+        assert tuple(state[name].shape) == shape
+        assert bool(t.isfinite(state[name]).all().item())
+
+    candidate_mask = (state["threshold"] > state["b_enc"]) & (
+        state["w_enc"].square().sum(dim=0) > 1e-8
+    )
+    feature_id = int(t.nonzero(candidate_mask, as_tuple=False)[0].item())
+    column = state["w_enc"][:, feature_id]
+    scale = (
+        state["threshold"][feature_id] - state["b_enc"][feature_id] + 1.0
+    ) / column.square().sum().clamp_min(1e-8)
+    residual = state["b_dec"] + scale * column
+    feature_acts = jumprelu_encode(
+        residual[None],
+        w_enc=state["w_enc"],
+        b_enc=state["b_enc"],
+        b_dec=state["b_dec"],
+        threshold=state["threshold"],
+    )
+    reconstructed = sae_decode(feature_acts, w_dec=state["w_dec"], b_dec=state["b_dec"])
+    assert feature_acts[0, feature_id].item() > 0
+    assert bool(t.isfinite(reconstructed).all().item())
+    print("All tests in `test_released_gemma_scope_artifact` passed!")
+
+
+# These learner-facing checks receive notebook functions as arguments; they are
+# invoked directly from notebook cells rather than collected as pytest fixtures.
+test_jumprelu_encode_decode.__test__ = False
+test_feature_discovery_and_heldout_scoring.__test__ = False
+test_feature_steering_and_ablation.__test__ = False
+test_released_gemma_scope_artifact.__test__ = False
