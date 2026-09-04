@@ -5,10 +5,14 @@
       "baseline_or_reference_check",
       "negative_control_where_applicable",
       "shape_dtype_or_exact_value_check",
-      "toy_transcoder_forward_contract",
-      "toy_replacement_kl_contract",
-      "toy_feature_logit_contribution_contract",
-      "toy_graph_reproducibility_contract",
+      "exact_colored_shape_mlp_replacement",
+      "exact_reconstruction_decomposition",
+      "known_ten_edge_attribution_graph",
+      "feature_retention_and_ablation_interventions",
+      "fixed_same_size_random_graph",
+      "cyclically_shuffled_feature_ids",
+      "cyclically_shuffled_edge_targets",
+      "decoder_norm_reconstruction_only_baseline",
       "pinned_gelu1l_mlp_feature_oracle_replacement",
       "oracle_logits_and_mlp_output_parity",
       "trained_tiny_relu_transcoder_heldout_reconstruction",
@@ -40,13 +44,21 @@
       "preserves_logit_diff": true,
       "replacement_kl_max": 1e-06,
       "tests_passed": true,
+      "toy_edge_conservation": 1.0,
+      "toy_edge_decomposition_max_error": 0.0,
+      "toy_graph_ablation_damage": 1.0,
+      "toy_graph_edge_count": 10,
+      "toy_random_ablation_damage": 0.09375,
+      "toy_reconstruction_max_error": 0.0,
+      "toy_shuffled_edge_conservation": 0.0,
+      "toy_target_score": 1.6,
       "trained_replacement_top1_agreement_min": 0.75,
       "trained_transcoder_heldout_mse_ratio_max": 0.5,
       "trained_transcoder_steps": 800,
       "trained_transcoder_width": 512
     }
   },
-  "claim_scope": "GT-0/GT-1 sparse-feature ladder: toy transcoder helpers remain exact, then a pinned TransformerLens GELU-1L checkpoint is loaded on CUDA. The report checks exact MLP-feature oracle replacement parity, a trained tiny ReLU transcoder's held-out reconstruction/top-token behavior, and a feature-level attribution graph with top-feature versus low-effect controls. This is not a full published transcoder artifact replication.",
+  "claim_scope": "The primary GT-0 result is an exact colored-shape ReLU MLP replacement with a known ten-edge attribution graph, signed bias paths, intervention faithfulness, and matched random, shuffled-edge, shuffled-feature, and reconstruction-only controls. A pinned TransformerLens GELU-1L CUDA run remains supporting evidence and is not a published cross-layer-transcoder replication.",
   "datasets": [
     {
       "id": "6_3_transcoders_and_attribution_graphs_toy_inputs",
@@ -64,9 +76,9 @@
       "target_hook": "blocks.0.hook_mlp_out"
     }
   ],
-  "date_run": "2026-07-02T12:42:53+00:00",
-  "evidence_level": "toy_transcoder_contract_plus_pinned_transformerlens_mlp_feature_graph_preflight",
-  "git_commit": "3a539d48",
+  "date_run": "2026-09-04T08:21:50+00:00",
+  "evidence_level": "exact_model_organism_plus_pinned_transformerlens_preflight",
+  "git_commit": "d8262edb",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-0",
   "known_failures": [],
@@ -130,7 +142,7 @@
       "oracle_mlp_out_max_abs_error": 5.7220458984375e-06,
       "oracle_preserves_logit_diff": true,
       "oracle_replacement_kl": -2.075782035149132e-08,
-      "peak_vram_gb": 0.39995527267456055,
+      "peak_vram_gb": 0.36870527267456055,
       "preflight_passed": true,
       "preserves_logit_diff": true,
       "prompt_count": 16,
@@ -149,86 +161,79 @@
       "within_vram_budget": true
     },
     "notebook_contract": {
-      "contributions": {
-        "contributions": [
-          1.0,
-          1.0,
-          -1.0
-        ],
-        "target_logit_diff": 2.0
-      },
-      "forward": {
-        "feature_acts": [
-          [
-            1.0,
-            2.0
-          ],
-          [
-            3.0,
-            4.0
-          ]
-        ],
-        "reconstructed_activations": [
-          [
-            1.0,
-            2.0
-          ],
-          [
-            3.0,
-            4.0
-          ]
-        ]
-      },
-      "graph_edges": {
-        "first_edge": {
-          "source_id": 0,
-          "source_type": "input",
-          "target_id": 1,
-          "target_type": "feature",
-          "weight": 0.800000011920929
-        },
-        "num_edges": 2,
-        "reproducible": true,
-        "second_edge": {
-          "source_id": 1,
-          "source_type": "feature",
-          "target_id": 0,
-          "target_type": "logit_diff",
-          "weight": 1.0
-        }
-      },
-      "graph_report": {
-        "ablated_logit_diff": 0.10000002384185791,
-        "density": 0.13333333333333333,
-        "full_logit_diff": 1.0,
-        "graph_logit_diff": 0.8999999761581421,
-        "num_edges": 4,
-        "num_nodes": 6,
-        "passes_damage_control": true,
-        "preserves_logit_diff": true,
-        "random_ablated_logit_diff": 0.8999999985098839,
-        "random_damage": 0.10000000149011612,
-        "reproducible": true,
-        "topk_damage": 0.8999999761581421
-      },
-      "replacement": {
-        "logit_diff_error": 0.039999961853027344,
-        "passes_kl": true,
-        "preserves_logit_diff": true,
-        "reconstruction_mse": 9.999980829888955e-05,
-        "replacement_kl": 8.58873245306313e-05,
-        "replacement_logit_diff": 1.9600000381469727,
-        "target_logit_diff": 2.0
-      }
+      "edge_conservation": 1.0,
+      "edge_decomposition_max_error": 0.0,
+      "faithfulness_curve": [
+        0.78125,
+        0.90625,
+        1.0
+      ],
+      "feature_acts": [
+        0.5,
+        0.0,
+        0.5,
+        0.0,
+        0.5,
+        0.0
+      ],
+      "graph_ablation_damage": 1.0,
+      "graph_edge_count": 10,
+      "graph_feature_ids": [
+        4,
+        0,
+        2
+      ],
+      "input": "red square",
+      "model_organism": "exact_colored_shape_relu_mlp",
+      "pre_acts": [
+        0.5,
+        -0.5,
+        0.5,
+        -0.5,
+        0.5,
+        -1.5
+      ],
+      "random_ablation_damage": 0.09375,
+      "reconstructed_activations": [
+        1.350000023841858,
+        -0.25,
+        0.10000000149011612
+      ],
+      "reconstruction_max_error": 0.0,
+      "reconstruction_only_curve": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "same_size_random_curve": [
+        0.0,
+        0.0,
+        0.09375
+      ],
+      "shuffled_edge_conservation": 0.0,
+      "shuffled_feature_curve": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "target_score": 1.600000023841858,
+      "toy_edge_conservation": 1.0,
+      "toy_edge_decomposition_max_error": 0.0,
+      "toy_graph_ablation_damage": 1.0,
+      "toy_graph_edge_count": 10,
+      "toy_random_ablation_damage": 0.09375,
+      "toy_reconstruction_max_error": 0.0,
+      "toy_shuffled_edge_conservation": 0.0,
+      "toy_target_score": 1.600000023841858
     }
   },
   "models": [
     {
       "gated": false,
-      "id": "toy_or_generated_inputs",
+      "id": "exact_colored_shape_relu_mlp",
       "precision": "float32",
-      "revision": "seed_0",
-      "source": "generated"
+      "revision": "section_6_3_v1",
+      "source": "hand_specified_model_organism"
     },
     {
       "alias": "gelu-1l",
@@ -245,6 +250,7 @@
   "negative_controls": {
     "declared_controls": [
       "negative_control_where_applicable",
+      "fixed_same_size_random_graph",
       "low_effect_feature_ablation_negative_control"
     ]
   },
@@ -252,10 +258,10 @@
   "ood_tests": {
     "declared": "required_where_applicable"
   },
-  "peak_vram_gb": 0.39995527267456055,
+  "peak_vram_gb": 0.36870527267456055,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "6790947f6635c101bfdb315411b64131d158cf5ff4849ecbafc127e443f75a46",
+    "combined_sha256": "7c7f9658609081e88f804b69a0ae9f98322ef5c72bff6939768fe6eec9589280",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -264,48 +270,48 @@
       },
       {
         "path": "chapter6_sparse_feature_methods/exercises/part3_transcoders_attribution_graphs/6.3_Transcoders_and_Attribution_Graphs_exercises.ipynb",
-        "sha256": "543d8676a767e9feac5ba21aa5f49022edfd9b7d9bc1bb566aa59bb5b3a1483a",
-        "size_bytes": 21504
+        "sha256": "e6f87a7cf003a81af3ec628136c296ff1894954f32c31071def6473e58cbd771",
+        "size_bytes": 58482
       },
       {
         "path": "chapter6_sparse_feature_methods/exercises/part3_transcoders_attribution_graphs/6.3_Transcoders_and_Attribution_Graphs_solutions.ipynb",
-        "sha256": "dd58c216b441eafbe7c7646c84e0869706b5e10a6847b89d0e02d69c60aaa44b",
-        "size_bytes": 9583
+        "sha256": "af01d2a4aeed111dca3b57727bc0289636cae3bc47d1d3882df19a933cf7e80e",
+        "size_bytes": 417500
       },
       {
         "path": "chapter6_sparse_feature_methods/exercises/part3_transcoders_attribution_graphs/README.md",
-        "sha256": "bb949d10032527a40cba18bee1a27ba766439896631b73bf555af2a26e4c0448",
-        "size_bytes": 1123
+        "sha256": "756ab097226ee625163ae07db4eb26c57439f09334dbfde8bc62044a5d46a8e4",
+        "size_bytes": 1222
       },
       {
         "path": "chapter6_sparse_feature_methods/exercises/part3_transcoders_attribution_graphs/artifacts.lock.yml",
-        "sha256": "9ac02337795a0b0f5b6010272f77da2e799007cbfe397f215f44bd890133dd0c",
-        "size_bytes": 3447
+        "sha256": "31a48d51f48edd655bfbd7b59614cc51c5ef22fad17a685f1ace82100ad721da",
+        "size_bytes": 3816
       },
       {
         "path": "chapter6_sparse_feature_methods/exercises/part3_transcoders_attribution_graphs/expected_outputs/README.md",
-        "sha256": "b0b6ebf44b46cb8a9ce389a9af7dfd115df4601e8fc0fbe2bb29bcd06259cb87",
-        "size_bytes": 1786
+        "sha256": "43c30b1ef6c566aaf59210a3293ac7d646b68ef9ef5ae0b7a4b18627344c9b70",
+        "size_bytes": 740
       },
       {
         "path": "chapter6_sparse_feature_methods/exercises/part3_transcoders_attribution_graphs/expected_outputs/reference_metrics.json",
-        "sha256": "910bbc97b08d27a9332801e4c40cb497337b40c75391e0ad7b030e341594ff37",
-        "size_bytes": 1188
+        "sha256": "9cdac02c288f40146da32a44e6382517e4cf53e4c89736d7bac0d36dae757e0e",
+        "size_bytes": 1648
       },
       {
         "path": "chapter6_sparse_feature_methods/exercises/part3_transcoders_attribution_graphs/expected_outputs/smoke_test.json",
-        "sha256": "58d2ab08c80b14954c8b191d022192747b06bbe9f59b0ace1e76d36f4b9d477a",
-        "size_bytes": 307
+        "sha256": "a718812f2458597e54385390636555e3839afa218581e8d506129667995faca9",
+        "size_bytes": 644
       },
       {
         "path": "chapter6_sparse_feature_methods/exercises/part3_transcoders_attribution_graphs/solutions.py",
-        "sha256": "32f749ca5ef89781cdc59c66734b550df5ee551408e1caac153e56e3e625b014",
-        "size_bytes": 23611
+        "sha256": "196566ed25b8faaae8e77cba8ea1cbe6c6844017664fe7590a57cda4fdd60c4d",
+        "size_bytes": 43466
       },
       {
         "path": "chapter6_sparse_feature_methods/exercises/part3_transcoders_attribution_graphs/tests.py",
-        "sha256": "b4ca1ab260d6073a4bbcbc17cbeaa1dd35c8a35784762207a297c51422fc10cf",
-        "size_bytes": 11569
+        "sha256": "810e27ee14eab2d8055001a16615ef2e6f96a022a5c55613ae0eff0c1824a76c",
+        "size_bytes": 11779
       },
       {
         "path": "chapter6_sparse_feature_methods/exercises/part3_transcoders_attribution_graphs/utils.py",
@@ -319,13 +325,13 @@
       },
       {
         "path": "chapter6_sparse_feature_methods/instructions/pages/03_[6.3]_Transcoders_and_Attribution_Graphs.md",
-        "sha256": "bd443c9f4d4473579426fb24aa9d3d030f35236ab91027807be0fb8b2735ffcc",
-        "size_bytes": 26136
+        "sha256": "4741330f1c5702656551dd1a39305ca3f346a654f0401bb7d6c0a398facc2e12",
+        "size_bytes": 44397
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
-        "sha256": "660040f459d07535deb9e0c34ffddb496c13b8770044ae380d3a8e45b0c8fb2b",
-        "size_bytes": 16080
+        "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
+        "size_bytes": 16272
       }
     ],
     "schema_version": 1
@@ -335,5 +341,5 @@
     "The real-model path uses safe generic prompts and one small public TransformerLens checkpoint. It does not use unsafe prompts, gated weights, generated completions, or user data."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 3.661252
+  "wall_clock_seconds": 5.952713
 }

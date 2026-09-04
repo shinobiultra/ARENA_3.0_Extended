@@ -1,291 +1,293 @@
+"""Visible semantic tests for [6.3] Transcoders and Attribution Graphs."""
+
+from __future__ import annotations
+
 from collections.abc import Callable
 
 import torch as t
 
-from arena_ext import transcoders as reference
-
 
 def _solutions():
-    from chapter6_sparse_feature_methods.exercises.part3_transcoders_attribution_graphs import (
-        solutions,
-    )
+    from chapter6_sparse_feature_methods.exercises.part3_transcoders_attribution_graphs import solutions
 
     return solutions
 
 
-def _assert_report_close(actual: object, expected: object, *, msg: str) -> None:
-    actual_dict = actual.__dict__
-    expected_dict = expected.__dict__
-    assert actual_dict.keys() == expected_dict.keys(), (
-        f"{msg} Report fields should match the independent reference."
-    )
-    for key, expected_value in expected_dict.items():
-        actual_value = actual_dict[key]
-        if isinstance(expected_value, float):
-            assert abs(actual_value - expected_value) < 1e-6, (
-                f"{msg} Field {key!r} should be {expected_value}, got {actual_value}."
-            )
-        else:
-            assert actual_value == expected_value, (
-                f"{msg} Field {key!r} should be {expected_value!r}, got {actual_value!r}."
-            )
+def _fn(provided: Callable | None, name: str) -> Callable:
+    return provided if provided is not None else getattr(_solutions(), name)
 
 
-def test_transcoder_forward_matches_reference_and_relu_rules(
+def _organism_and_input():
+    solutions = _solutions()
+    return solutions.make_toy_organism(), solutions.make_toy_input("red", "square")
+
+
+def test_encoder_decoder_and_forward_recover_exact_mlp(
+    encode: Callable | None = None,
+    decode: Callable | None = None,
     transcoder_forward: Callable | None = None,
-):
-    solutions = _solutions()
-    transcoder_forward = transcoder_forward or solutions.transcoder_forward
-    inputs = t.tensor([[1.0, -2.0], [3.0, 4.0]])
-    encoder_weight = t.tensor([[1.0, 0.0], [0.0, 1.0], [-1.0, 1.0]])
-    decoder_weight = t.tensor([[1.0, 0.0], [0.0, 1.0], [0.5, -0.5]])
-    encoder_bias = t.tensor([0.0, 0.0, 0.25])
-    decoder_bias = t.tensor([0.1, -0.2])
-
-    actual = transcoder_forward(
+) -> None:
+    encode = _fn(encode, "encode")
+    decode = _fn(decode, "decode")
+    transcoder_forward = _fn(transcoder_forward, "transcoder_forward")
+    organism, inputs = _organism_and_input()
+    pre_acts, feature_acts = encode(inputs, organism.encoder_weight, organism.encoder_bias)
+    t.testing.assert_close(
+        pre_acts,
+        t.tensor([0.5, -0.5, 0.5, -0.5, 0.5, -1.5]),
+        msg="The red-square pre-activations should include red, square, and conjunction detectors.",
+    )
+    t.testing.assert_close(
+        feature_acts,
+        t.tensor([0.5, 0.0, 0.5, 0.0, 0.5, 0.0]),
+        msg="ReLU should retain exactly the three active red-square features.",
+    )
+    expected_reconstruction = t.tensor([1.35, -0.25, 0.10])
+    t.testing.assert_close(
+        decode(feature_acts, organism.decoder_weight, organism.decoder_bias),
+        expected_reconstruction,
+        msg="The decoder should reconstruct the exact MLP output [1.35, -0.25, 0.10].",
+    )
+    output = transcoder_forward(
         inputs,
-        encoder_weight,
-        decoder_weight,
-        encoder_bias=encoder_bias,
-        decoder_bias=decoder_bias,
+        organism.encoder_weight,
+        organism.decoder_weight,
+        encoder_bias=organism.encoder_bias,
+        decoder_bias=organism.decoder_bias,
     )
-    expected = reference.transcoder_forward(
+    t.testing.assert_close(
+        output.reconstructed_activations,
+        expected_reconstruction,
+        msg="The composed transcoder should exactly match the hand-computed MLP replacement.",
+    )
+    print("All tests in `test_encoder_decoder_and_forward_recover_exact_mlp` passed!")
+
+
+def test_reconstruction_decomposition_sums_feature_vectors(
+    reconstruction_decomposition: Callable | None = None,
+) -> None:
+    reconstruction_decomposition = _fn(reconstruction_decomposition, "reconstruction_decomposition")
+    organism, _ = _organism_and_input()
+    feature_acts = t.tensor([0.5, 0.0, 0.5, 0.0, 0.5, 0.0])
+    decomposition = reconstruction_decomposition(feature_acts, organism.decoder_weight, organism.decoder_bias)
+    assert decomposition.feature_components.shape == (6, 3), (
+        "The decomposition should expose one three-dimensional output vector per feature."
+    )
+    t.testing.assert_close(
+        decomposition.feature_components[4],
+        t.tensor([1.0, -0.25, 0.0]),
+        msg="The red-square feature component should be 0.5 times its decoder row.",
+    )
+    t.testing.assert_close(
+        decomposition.reconstructed_activations,
+        t.tensor([1.35, -0.25, 0.10]),
+        msg="Feature components plus decoder bias should sum exactly to the reconstruction.",
+    )
+    print("All tests in `test_reconstruction_decomposition_sums_feature_vectors` passed!")
+
+
+def test_feature_edge_attributions_are_exact_and_conserved(
+    transcoder_forward: Callable | None = None,
+    feature_edge_attributions: Callable | None = None,
+) -> None:
+    transcoder_forward = _fn(transcoder_forward, "transcoder_forward")
+    feature_edge_attributions = _fn(feature_edge_attributions, "feature_edge_attributions")
+    organism, inputs = _organism_and_input()
+    output = transcoder_forward(
         inputs,
-        encoder_weight,
-        decoder_weight,
-        encoder_bias=encoder_bias,
-        decoder_bias=decoder_bias,
+        organism.encoder_weight,
+        organism.decoder_weight,
+        encoder_bias=organism.encoder_bias,
+        decoder_bias=organism.decoder_bias,
+    )
+    attributions = feature_edge_attributions(
+        inputs,
+        output.pre_acts,
+        output.feature_acts,
+        organism.encoder_weight,
+        organism.encoder_bias,
+        organism.decoder_weight,
+        organism.readout,
+    )
+    expected_edges = t.zeros(5, 6)
+    expected_edges[0, 0] = 0.4
+    expected_edges[0, 4] = 2.5
+    expected_edges[2, 2] = 0.3
+    expected_edges[2, 4] = 2.5
+    expected_edges[4, 0] = -0.2
+    expected_edges[4, 2] = -0.15
+    expected_edges[4, 4] = -3.75
+    t.testing.assert_close(
+        attributions.input_to_feature,
+        expected_edges,
+        msg="Signed source-to-feature paths should match the exact gated linear calculation.",
     )
     t.testing.assert_close(
-        actual.feature_acts,
-        expected.feature_acts,
-        msg="Transcoder feature activations should match ReLU(input @ W_enc.T + b_enc).",
+        attributions.feature_to_score,
+        t.tensor([0.20, 0.0, 0.15, 0.0, 1.25, 0.0]),
+        msg="Feature-to-score contributions should sum to the warm-minus-cool score of 1.6.",
     )
     t.testing.assert_close(
-        actual.reconstructed_activations,
-        expected.reconstructed_activations,
-        msg="Transcoder reconstruction should match feature_acts @ W_dec + b_dec.",
+        attributions.input_to_feature.sum(dim=0),
+        attributions.feature_to_score,
+        msg="Incoming path attribution must equal each active feature's outgoing score contribution.",
     )
-    assert actual.feature_acts[0, 1].item() == 0.0, (
-        "Negative encoder pre-activations should be clamped to zero by the ReLU."
-    )
-    print("All tests in `test_transcoder_forward_matches_reference_and_relu_rules` passed!")
+    print("All tests in `test_feature_edge_attributions_are_exact_and_conserved` passed!")
 
 
-def test_target_logit_diff_and_replacement_report_match_reference(
-    target_logit_diff: Callable | None = None,
-    transcoder_replacement_report: Callable | None = None,
-):
-    solutions = _solutions()
-    target_logit_diff = target_logit_diff or solutions.target_logit_diff
-    transcoder_replacement_report = (
-        transcoder_replacement_report or solutions.transcoder_replacement_report
+def test_graph_extraction_recovers_known_ground_truth(
+    extract_attribution_graph: Callable | None = None,
+) -> None:
+    extract_attribution_graph = _fn(extract_attribution_graph, "extract_attribution_graph")
+    input_edges = t.zeros(5, 6)
+    input_edges[0, 0] = 0.4
+    input_edges[0, 4] = 2.5
+    input_edges[2, 2] = 0.3
+    input_edges[2, 4] = 2.5
+    input_edges[4, 0] = -0.2
+    input_edges[4, 2] = -0.15
+    input_edges[4, 4] = -3.75
+    feature_edges = t.tensor([0.20, 0.0, 0.15, 0.0, 1.25, 0.0])
+    graph = extract_attribution_graph(input_edges, feature_edges, top_k_features=3)
+    assert graph.feature_ids == (4, 0, 2), (
+        "The graph should rank red_square, red, then square by absolute score contribution."
     )
-    reference_activations = t.tensor([[1.0, 2.0], [0.5, -1.0]])
-    reconstructed = reference_activations + t.tensor([[0.01, -0.02], [0.0, 0.02]])
-    reference_logits = t.tensor([[2.0, 0.0, -1.0], [1.5, 0.5, -0.5]])
-    replacement_logits = t.tensor([[1.98, 0.02, -1.0], [1.48, 0.52, -0.5]])
-
-    actual_diff = target_logit_diff(
-        reference_logits,
-        positive_token_id=0,
-        negative_token_id=1,
+    assert len(graph.edges) == 10, (
+        "The exact graph has seven input/bias edges and three feature-to-score edges."
     )
-    expected_diff = reference.target_logit_diff(
-        reference_logits,
-        positive_token_id=0,
-        negative_token_id=1,
+    edge_keys = {(edge.source_type, edge.source_id, edge.target_type, edge.target_id) for edge in graph.edges}
+    assert ("bias", 0, "feature", 4) in edge_keys, (
+        "The inhibitory encoder-bias edge is part of the exact conjunction computation."
     )
-    assert abs(actual_diff - expected_diff) < 1e-6, (
-        "Target logit diff should be the mean positive-minus-negative logit."
+    assert ("feature", 4, "score", 0) in edge_keys, (
+        "The red-square feature must connect to the target score."
     )
-
-    actual = transcoder_replacement_report(
-        reference_activations=reference_activations,
-        reconstructed_activations=reconstructed,
-        reference_logits=reference_logits,
-        replacement_logits=replacement_logits,
-        positive_token_id=0,
-        negative_token_id=1,
-        kl_threshold=1e-3,
-        logit_diff_tolerance=0.1,
-    )
-    expected = reference.transcoder_replacement_report(
-        reference_activations=reference_activations,
-        reconstructed_activations=reconstructed,
-        reference_logits=reference_logits,
-        replacement_logits=replacement_logits,
-        positive_token_id=0,
-        negative_token_id=1,
-        kl_threshold=1e-3,
-        logit_diff_tolerance=0.1,
-    )
-    _assert_report_close(actual, expected, msg="Replacement report")
-    assert actual.passes_kl and actual.preserves_logit_diff, (
-        "Small logit perturbations should pass both KL and logit-diff preservation checks."
-    )
-    print("All tests in `test_target_logit_diff_and_replacement_report_match_reference` passed!")
+    print("All tests in `test_graph_extraction_recovers_known_ground_truth` passed!")
 
 
-def test_feature_logit_contributions_reduce_all_nonfeature_dimensions(
-    feature_logit_contributions: Callable | None = None,
-):
-    solutions = _solutions()
-    feature_logit_contributions = (
-        feature_logit_contributions or solutions.feature_logit_contributions
+def test_shuffled_edges_fail_conservation_control(
+    edge_conservation_score: Callable | None = None,
+    shuffle_input_edge_targets: Callable | None = None,
+) -> None:
+    edge_conservation_score = _fn(edge_conservation_score, "edge_conservation_score")
+    shuffle_input_edge_targets = _fn(shuffle_input_edge_targets, "shuffle_input_edge_targets")
+    graph = _solutions().toy_experiment()["graph"]
+    exact_score = edge_conservation_score(graph.edges, 6)
+    shuffled = shuffle_input_edge_targets(graph.edges, n_features=6, shift=1)
+    shuffled_score = edge_conservation_score(shuffled, 6)
+    assert abs(exact_score - 1.0) < 1e-7, (
+        "The exact graph should conserve every feature's incoming and outgoing attribution."
     )
-    feature_acts = t.tensor(
-        [
-            [[1.0, 2.0, 0.0], [3.0, 0.0, 2.0]],
-            [[0.0, 4.0, 1.0], [2.0, 2.0, 1.0]],
-        ]
+    assert shuffled_score == 0.0, (
+        "Cyclically shuffled edge targets should fail the conservation control completely."
     )
-    logit_effects = t.tensor([0.5, 1.0, -1.0])
-    actual = feature_logit_contributions(feature_acts, logit_effects)
-    expected = reference.feature_logit_contributions(feature_acts, logit_effects)
+    print("All tests in `test_shuffled_edges_fail_conservation_control` passed!")
+
+
+def test_interventions_recover_faithfulness_and_reject_controls(
+    intervene_features: Callable | None = None,
+    causal_validate_graph: Callable | None = None,
+    faithfulness_curve: Callable | None = None,
+) -> None:
+    intervene_features = _fn(intervene_features, "intervene_features")
+    causal_validate_graph = _fn(causal_validate_graph, "causal_validate_graph")
+    faithfulness_curve = _fn(faithfulness_curve, "faithfulness_curve")
+    experiment = _solutions().toy_experiment()
+    organism = experiment["organism"]
+    feature_acts = experiment["output"].feature_acts
+    kept = intervene_features(feature_acts, [4], mode="keep")
     t.testing.assert_close(
-        actual,
-        expected,
-        msg="Feature contributions should average over every non-feature dimension.",
+        kept,
+        t.tensor([0.0, 0.0, 0.0, 0.0, 0.5, 0.0]),
+        msg="Keeping feature 4 should zero every other feature before decoding.",
+    )
+    discovered = faithfulness_curve(
+        feature_acts,
+        organism.decoder_weight,
+        organism.decoder_bias,
+        organism.readout,
+        [4, 0, 2],
+        max_k=3,
+    )
+    same_size_random = faithfulness_curve(
+        feature_acts,
+        organism.decoder_weight,
+        organism.decoder_bias,
+        organism.readout,
+        [3, 1, 2],
+        max_k=3,
     )
     t.testing.assert_close(
-        actual,
-        t.tensor([0.75, 2.0, -1.0]),
-        msg="Controlled feature contribution values should match mean_activation * logit_effect.",
+        discovered,
+        t.tensor([0.78125, 0.90625, 1.0]),
+        msg="The discovered graph should recover 78.125%, 90.625%, then 100% of the score.",
     )
-    print(
-        "All tests in `test_feature_logit_contributions_reduce_all_nonfeature_dimensions` passed!"
+    t.testing.assert_close(
+        same_size_random,
+        t.tensor([0.0, 0.0, 0.09375]),
+        msg="The fixed same-size random graph should recover only the small square contribution.",
     )
+    validation = causal_validate_graph(
+        feature_acts,
+        organism.decoder_weight,
+        organism.decoder_bias,
+        organism.readout,
+        [4, 0, 2],
+    )
+    assert abs(validation.normalized_damage - 1.0) < 1e-7, (
+        "Ablating all discovered features should remove the entire target score."
+    )
+    print("All tests in `test_interventions_recover_faithfulness_and_reject_controls` passed!")
 
 
-def test_build_attribution_edges_keeps_top_input_and_logit_edges(
-    build_attribution_edges: Callable | None = None,
-    graph_reproducible: Callable | None = None,
-):
-    solutions = _solutions()
-    build_attribution_edges = build_attribution_edges or solutions.build_attribution_edges
-    graph_reproducible = graph_reproducible or solutions.graph_reproducible
-    input_scores = t.tensor([[0.1, 0.8], [0.4, -0.9]])
-    logit_effects = t.tensor([0.3, -1.0])
-
-    actual = build_attribution_edges(input_scores, logit_effects, top_k=2)
-    expected = reference.build_attribution_edges(input_scores, logit_effects, top_k=2)
-    assert [edge.__dict__ for edge in actual] == [edge.__dict__ for edge in expected], (
-        "Attribution edges should keep top absolute input-feature and feature-logit weights."
+def test_reconstruction_only_ranking_misses_behavior(
+    reconstruction_only_ranking: Callable | None = None,
+    faithfulness_curve: Callable | None = None,
+) -> None:
+    reconstruction_only_ranking = _fn(reconstruction_only_ranking, "reconstruction_only_ranking")
+    faithfulness_curve = _fn(faithfulness_curve, "faithfulness_curve")
+    experiment = _solutions().toy_experiment()
+    organism = experiment["organism"]
+    feature_acts = experiment["output"].feature_acts
+    ranking = reconstruction_only_ranking(organism.decoder_weight)
+    assert ranking[:3] == (5, 1, 3), (
+        "Decoder norm should rank blue_circle, blue, and circle first in this exact control."
     )
-    assert actual[0].source_type == "input" and actual[0].target_type == "feature", (
-        "The first block of edges should connect input positions to feature nodes."
+    curve = faithfulness_curve(
+        feature_acts,
+        organism.decoder_weight,
+        organism.decoder_bias,
+        organism.readout,
+        ranking,
+        max_k=3,
     )
-    assert actual[-1].source_type == "feature" and actual[-1].target_type == "logit_diff", (
-        "The second block of edges should connect feature nodes to the target logit diff."
+    t.testing.assert_close(
+        curve,
+        t.zeros(3),
+        msg="Reconstruction-only decoder norms should miss the red-square target computation.",
     )
-    assert graph_reproducible(actual, build_attribution_edges(input_scores, logit_effects, top_k=2)), (
-        "Deterministic graph construction should reproduce the same edge list."
-    )
-    print("All tests in `test_build_attribution_edges_keeps_top_input_and_logit_edges` passed!")
-
-
-def test_graph_reproducible_rejects_structure_and_weight_changes(
-    AttributionEdge: type | None = None,
-    graph_reproducible: Callable | None = None,
-):
-    solutions = _solutions()
-    AttributionEdge = AttributionEdge or solutions.AttributionEdge
-    graph_reproducible = graph_reproducible or solutions.graph_reproducible
-    edges = [
-        AttributionEdge("input", 0, "feature", 1, 0.8),
-        AttributionEdge("feature", 1, "logit_diff", 0, -1.0),
-    ]
-    same = [
-        AttributionEdge("input", 0, "feature", 1, 0.8000001),
-        AttributionEdge("feature", 1, "logit_diff", 0, -1.0),
-    ]
-    changed_weight = [
-        AttributionEdge("input", 0, "feature", 1, 0.81),
-        AttributionEdge("feature", 1, "logit_diff", 0, -1.0),
-    ]
-    changed_structure = [
-        AttributionEdge("input", 0, "feature", 0, 0.8),
-        AttributionEdge("feature", 1, "logit_diff", 0, -1.0),
-    ]
-    assert graph_reproducible(edges, same), (
-        "Tiny floating-point edge-weight differences should be tolerated."
-    )
-    assert not graph_reproducible(edges, changed_weight), (
-        "Graph reproducibility should fail when an edge weight changes beyond tolerance."
-    )
-    assert not graph_reproducible(edges, changed_structure), (
-        "Graph reproducibility should fail when edge structure changes."
-    )
-    print("All tests in `test_graph_reproducible_rejects_structure_and_weight_changes` passed!")
+    print("All tests in `test_reconstruction_only_ranking_misses_behavior` passed!")
 
 
-def test_attribution_graph_report_preservation_and_damage_controls(
-    graph_density: Callable | None = None,
-    attribution_graph_report: Callable | None = None,
-):
-    solutions = _solutions()
-    graph_density = graph_density or solutions.graph_density
-    attribution_graph_report = attribution_graph_report or solutions.attribution_graph_report
-    contributions = t.tensor([0.7, 0.2, 0.05, 0.05])
-    actual = attribution_graph_report(
-        contributions,
-        graph_feature_ids=[0, 1],
-        random_feature_ids=[2, 3],
-        num_nodes=6,
-        num_edges=4,
-        reproducible=True,
-    )
-    expected = reference.attribution_graph_report(
-        contributions,
-        graph_feature_ids=[0, 1],
-        random_feature_ids=[2, 3],
-        num_nodes=6,
-        num_edges=4,
-        reproducible=True,
-    )
-    _assert_report_close(actual, expected, msg="Attribution graph report")
-    assert abs(graph_density(num_nodes=6, num_edges=4) - 4 / 30) < 1e-6, (
-        "Directed graph density should be num_edges / (num_nodes * (num_nodes - 1))."
-    )
-    assert actual.preserves_logit_diff and actual.passes_damage_control, (
-        "Top graph features should preserve most of the logit diff and damage behavior more than controls."
-    )
-
-    failed = attribution_graph_report(
-        contributions,
-        graph_feature_ids=[2, 3],
-        random_feature_ids=[0, 1],
-        num_nodes=6,
-        num_edges=4,
-        reproducible=True,
-    )
-    assert not failed.preserves_logit_diff and not failed.passes_damage_control, (
-        "Low-effect graph nodes should fail preservation and damage-control checks."
-    )
-    print("All tests in `test_attribution_graph_report_preservation_and_damage_controls` passed!")
-
-
-def test_notebook_contract(run_smoke_test: Callable | None = None):
-    if run_smoke_test is None:
-        run_smoke_test = _solutions().run_smoke_test
+def test_notebook_contract(run_smoke_test: Callable | None = None) -> None:
+    run_smoke_test = _fn(run_smoke_test, "run_smoke_test")
     result = run_smoke_test(cpu=True)
-    assert result["forward"]["reconstructed_activations"] == [[1.0, 2.0], [3.0, 4.0]], (
-        "Notebook contract should include the identity transcoder reconstruction example."
+    assert result["model_organism"] == "exact_colored_shape_relu_mlp", (
+        "The notebook contract should identify the exact model organism."
     )
-    assert result["replacement"]["passes_kl"], (
-        "Notebook contract should include a replacement KL check."
+    assert result["graph_feature_ids"] == [4, 0, 2], (
+        "The notebook contract should recover the known feature graph."
     )
-    assert result["replacement"]["preserves_logit_diff"], (
-        "Notebook contract should include target logit-diff preservation."
+    assert result["graph_edge_count"] == 10, (
+        "The notebook contract should include all ten exact graph edges."
     )
-    assert result["contributions"]["contributions"] == [1.0, 1.0, -1.0], (
-        "Notebook contract should include controlled feature-logit contribution values."
+    assert result["faithfulness_curve"] == [0.78125, 0.90625, 1.0], (
+        "The notebook contract should report the exact intervention faithfulness curve."
     )
-    assert result["graph_edges"]["reproducible"], (
-        "Notebook contract should include deterministic graph construction."
+    assert result["same_size_random_curve"] == [0.0, 0.0, 0.09375], (
+        "The same-size random graph should remain far below the discovered graph."
     )
-    assert result["graph_report"]["passes_damage_control"], (
-        "Notebook contract should include top-feature damage beating a random control."
+    assert result["edge_conservation"] == 1.0 and result["shuffled_edge_conservation"] == 0.0, (
+        "Exact edges should conserve attribution while shuffled targets fail."
     )
     print("All tests in `test_notebook_contract` passed!")

@@ -2,15 +2,17 @@
   "accepted": true,
   "baselines": {
     "declared_controls": [
-      "baseline_or_reference_check",
-      "negative_control_where_applicable",
-      "shape_dtype_or_exact_value_check",
-      "metadata_and_feature_tag_contract",
-      "heldout_auc_and_baseline_contract",
-      "base_instruction_delta_contract",
-      "ablation_random_feature_control_contract",
-      "steering_perplexity_guard_contract",
-      "direct_logit_attribution_contract",
+      "function_preserving_decoder_normalization",
+      "exact_latent_recovery_and_reconstruction",
+      "heldout_semantic_split",
+      "matched_random_feature_auc",
+      "rank_balanced_shuffled_labels",
+      "train_only_confounder_collapse",
+      "decoder_norm_audit",
+      "density_rare_and_dead_feature_audit",
+      "matched_feature_ablation",
+      "equal_l2_random_direction_steering",
+      "direct_logit_attribution_known_tokens",
       "pinned_gemma_scope_sae_config_check",
       "pinned_gemma_scope_safetensor_shape_and_finiteness_check",
       "pinned_gemma_scope_jumprelu_cuda_encode_decode",
@@ -23,6 +25,18 @@
     ],
     "expected_metrics": {
       "accepted": true,
+      "exact_control_ablation_delta_abs_max": 1e-06,
+      "exact_dead_feature_ids": [
+        5
+      ],
+      "exact_feature_auc": 1.0,
+      "exact_heldout_confound_auc": 0.5,
+      "exact_heldout_examples": 24,
+      "exact_random_feature_auc": 0.5,
+      "exact_reconstruction_mse_max": 1e-12,
+      "exact_shuffled_label_auc": 0.5,
+      "exact_target_ablation_delta": 1.15,
+      "exact_train_confound_auc": 1.0,
       "gemma3_base_authenticated": true,
       "gemma3_base_local_non_ref_file_count": 19,
       "gemma3_base_ready_for_real_activations": true,
@@ -45,12 +59,13 @@
       "tests_passed": true
     }
   },
-  "claim_scope": "GT-1 Gemma Scope artifact path plus real activation validation: pinned 1B-IT layer-13 residual JumpReLU SAE config and safetensors are loaded, shape/finiteness checked, moved to CUDA, and exercised with a deterministic encode/decode probe. Authenticated Gemma 3 1B IT layer-13 activations are then encoded through the SAE and validated on a held-out benign technical-vs-narrative semantic split with random-feature and label-shuffle controls.",
+  "claim_scope": "GT-0 exact organism first: normalized JumpReLU loading, latent recovery, reconstruction, held-out semantics, density, DLA, ablation, and steering are checked against known ground truth and matched controls. GT-1 supporting evidence then records one pinned Gemma Scope 2 1B-IT layer-13 artifact and one small authenticated Gemma 3 technical-vs-narrative activation split. The real-model claim is correlational.",
   "datasets": [
     {
-      "id": "6_2_gemma_scope_deep_dive_toy_inputs",
-      "seed": 0,
-      "source": "generated"
+      "id": "6_2_exact_sparse_feature_organism",
+      "semantic_feature_labels": "exact_by_construction",
+      "source": "generated",
+      "split": "16_train_24_heldout"
     },
     {
       "id": "constructed_sae_probe_activations_layer13_width16k_seed0",
@@ -59,9 +74,9 @@
       "source": "deterministic_from_sae_encoder_columns"
     }
   ],
-  "date_run": "2026-07-02T12:42:49+00:00",
-  "evidence_level": "toy_feature_controls_plus_real_gemma_scope_sae_activation_validation",
-  "git_commit": "3a539d48",
+  "date_run": "2026-09-04T08:26:31+00:00",
+  "evidence_level": "exact_sparse_feature_ground_truth_plus_pinned_real_gemma_scope_validation",
+  "git_commit": "d8262edb",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-1",
   "known_failures": [],
@@ -194,7 +209,7 @@
       "gemma_scope_hook_point": "model.layers.13.output",
       "gemma_scope_layer": 13,
       "gemma_scope_model_name": "google/gemma-3-1b-it",
-      "gemma_scope_peak_vram_gb": 0.33612585067749023,
+      "gemma_scope_peak_vram_gb": 0.30487585067749023,
       "gemma_scope_real_activation_auc_margin": 0.5,
       "gemma_scope_real_activation_baseline_auc": 0.5,
       "gemma_scope_real_activation_feature_auc": 1.0,
@@ -207,7 +222,7 @@
       "gemma_scope_real_activation_label_shuffle_control_passed": true,
       "gemma_scope_real_activation_layer": 13,
       "gemma_scope_real_activation_model_id": "google/gemma-3-1b-it",
-      "gemma_scope_real_activation_peak_vram_gb": 2.2674522399902344,
+      "gemma_scope_real_activation_peak_vram_gb": 2.2367515563964844,
       "gemma_scope_real_activation_preflight": {
         "active_features_per_prompt_token": 1627.8597412109375,
         "artifact_path": "resid_post/layer_13_width_16k_l0_small",
@@ -258,7 +273,7 @@
         "narrative_prompt_count": 8,
         "negative_mean": 102.71952819824219,
         "passes_random_feature_baseline": true,
-        "peak_vram_gb": 2.2674522399902344,
+        "peak_vram_gb": 2.2367515563964844,
         "positive_mean": 240.3575439453125,
         "preflight_passed": true,
         "prompt_count": 16,
@@ -335,76 +350,95 @@
       "gpu_total_memory_gb": 23.45965576171875,
       "logit_attribution_sum": 14.0,
       "passes_baseline": true,
-      "peak_vram_gb": 2.2674522399902344,
+      "peak_vram_gb": 2.2367515563964844,
       "steering_passes_control": true,
       "torch_version": "2.12.1+cu132",
       "within_vram_budget": true
     },
     "notebook_contract": {
-      "ablation": {
-        "ablated_mean": 0.25,
-        "ablation_delta": 0.75,
-        "baseline_mean": 1.0,
-        "passes_control": true,
-        "random_ablated_mean": 0.8500000238418579,
-        "random_delta": 0.1499999761581421
-      },
-      "base_instruction_delta": {
-        "abs_delta": 0.20000000298023224,
-        "base_mean": 0.20000000298023224,
-        "delta": 0.20000000298023224,
-        "instruction_mean": 0.4000000059604645
-      },
-      "logit_attribution": [
-        [
-          1.0,
-          3.0
-        ],
-        [
-          4.0,
-          6.0
-        ]
+      "control_ablation_delta": 0.0,
+      "control_steering_delta": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
       ],
-      "metadata": {
-        "code_feature_ids": [
-          1
-        ],
-        "metadata_complete": true,
-        "refusal_feature_ids": [
-          0
-        ]
+      "dead_feature_ids": [
+        5
+      ],
+      "density": [
+        0.5,
+        0.5,
+        0.6499999761581421,
+        0.07500000298023224,
+        0.5,
+        0.0
+      ],
+      "exact_control_ablation_delta_abs": 0.0,
+      "exact_dead_feature_ids": [
+        5
+      ],
+      "exact_feature_auc": 1.0,
+      "exact_heldout_confound_auc": 0.5,
+      "exact_heldout_examples": 24,
+      "exact_random_feature_auc": 0.5,
+      "exact_reconstruction_mse": 1.4847498654401966e-15,
+      "exact_shuffled_label_auc": 0.5,
+      "exact_target_ablation_delta": 1.1500000953674316,
+      "exact_train_confound_auc": 1.0,
+      "heldout_confound_auc": 0.5,
+      "normalized_decoder_norms": [
+        1.0,
+        1.0,
+        1.0,
+        0.9999999403953552,
+        0.9999999403953552,
+        0.9999999403953552
+      ],
+      "raw_decoder_norms": [
+        0.5,
+        1.9999998807907104,
+        1.5,
+        0.7500000596046448,
+        1.25,
+        3.0
+      ],
+      "reconstruction": {
+        "explained_variance": 1.0,
+        "mse": 1.4847498654401966e-15,
+        "relative_mse": 1.0666785007628233e-14
       },
-      "score_reduction": {
-        "last": [
-          0.2,
-          0.9
-        ],
-        "max": [
-          0.5,
-          0.9
-        ],
-        "mean": [
-          0.266667,
-          0.533333
-        ]
-      },
-      "steering": {
-        "baseline_mean": 0.15000000596046448,
-        "passes_control": true,
-        "passes_perplexity_guard": true,
-        "perplexity_ratio": 1.1,
-        "random_delta": 0.09999999403953552,
-        "random_mean": 0.25,
-        "steered_delta": 0.4999999701976776,
-        "steered_mean": 0.6499999761581421
-      },
+      "steering_strengths": [
+        -1.0,
+        -0.5,
+        0.0,
+        0.5,
+        1.0
+      ],
+      "target_ablation_delta": 1.1500000953674316,
+      "target_dla": [
+        1.2000001668930054,
+        -1.0,
+        0.9000000357627869,
+        -0.7000000476837158,
+        1.707000762962707e-09,
+        -4.238671635903302e-09
+      ],
+      "target_steering_delta": [
+        -1.0000001192092896,
+        -0.5000000596046448,
+        0.0,
+        0.4999999403953552,
+        0.9999999403953552
+      ],
+      "train_confound_auc": 1.0,
       "validation": {
-        "auc_margin": 1.0,
-        "baseline_auc": 0.0,
         "feature_auc": 1.0,
-        "negative_mean": 0.15000000596046448,
-        "passes_baseline": true,
-        "positive_mean": 0.949999988079071,
+        "negative_mean": 0.0,
+        "positive_mean": 1.1500000953674316,
+        "random_feature_auc": 0.5,
+        "shuffled_label_auc": 0.5,
         "threshold_accuracy": 1.0
       }
     }
@@ -412,9 +446,9 @@
   "models": [
     {
       "gated": false,
-      "id": "toy_or_generated_inputs",
+      "id": "exact_six_feature_organism",
       "precision": "float32",
-      "revision": "seed_0",
+      "revision": "deterministic_dct_v1",
       "source": "generated"
     },
     {
@@ -430,8 +464,8 @@
   ],
   "negative_controls": {
     "declared_controls": [
-      "negative_control_where_applicable",
-      "ablation_random_feature_control_contract",
+      "matched_random_feature_auc",
+      "equal_l2_random_direction_steering",
       "real_gemma_activation_random_feature_control"
     ]
   },
@@ -439,10 +473,10 @@
   "ood_tests": {
     "declared": "required_where_applicable"
   },
-  "peak_vram_gb": 2.2674522399902344,
+  "peak_vram_gb": 2.2367515563964844,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "53f2187d07eebaac13c696ef720db953857c9380e8f676f7b9a093cd16482ad5",
+    "combined_sha256": "8bfffb7c285f019e0127b92317490f22a7f2302cb50e56c0858137adead4cf05",
     "files": [
       {
         "path": "arena_ext/features.py",
@@ -461,53 +495,53 @@
       },
       {
         "path": "chapter6_sparse_feature_methods/exercises/part2_gemma_scope_deep_dive/6.2_Gemma_Scope_Deep_Dive_exercises.ipynb",
-        "sha256": "97067dc831aad042ff8a010225d50d6d8f48775222768bb3ccd16ad57133928d",
-        "size_bytes": 23640
+        "sha256": "6bf13b866e933c0e4295aed7f36dfd59b6faa0fa5c13ed02f1104659815347c6",
+        "size_bytes": 44325
       },
       {
         "path": "chapter6_sparse_feature_methods/exercises/part2_gemma_scope_deep_dive/6.2_Gemma_Scope_Deep_Dive_solutions.ipynb",
-        "sha256": "036c79050b2719f98620de2fe974b26b88afc9efbcf7a085e285dbb97364d3d1",
-        "size_bytes": 9832
+        "sha256": "57693e590cfb0835453be8f4a3b8d06c0ed247d39c39e9605afa91602bb36ee7",
+        "size_bytes": 198981
       },
       {
         "path": "chapter6_sparse_feature_methods/exercises/part2_gemma_scope_deep_dive/README.md",
-        "sha256": "6c96deffbeec00992fff5a4eb1d01bb2a7e7609f0db4c1952ed2be021e7a73b0",
-        "size_bytes": 1083
+        "sha256": "fdc872c666be6e05fab0f4ac8901ebaa3fdd50e16da3844c53b644923bb5fc30",
+        "size_bytes": 1215
       },
       {
         "path": "chapter6_sparse_feature_methods/exercises/part2_gemma_scope_deep_dive/artifacts.lock.yml",
-        "sha256": "1d3fe9d8e8119b83c8912ae6259b6fe01c696a065434be63c752f2fcb60ca4a4",
-        "size_bytes": 3301
+        "sha256": "585db2b46b117341e00d7668ccc967e4c58c7fbb9ae2392e330ed5c4cac4fd3d",
+        "size_bytes": 3891
       },
       {
         "path": "chapter6_sparse_feature_methods/exercises/part2_gemma_scope_deep_dive/expected_outputs/README.md",
-        "sha256": "d27830b46dbd3f70d1645937208be2928765667dfd1b0388de2e561c12892571",
-        "size_bytes": 1773
+        "sha256": "2ff9b281d4c20b204a944b378e6088b18471d51441ce1b5d95e89c0924af5af7",
+        "size_bytes": 1668
       },
       {
         "path": "chapter6_sparse_feature_methods/exercises/part2_gemma_scope_deep_dive/expected_outputs/reference_metrics.json",
-        "sha256": "0d28be8c03ecdfa6a17d94870ce3d97ec954c5c751222d7e7c45d65a2d57faf6",
-        "size_bytes": 868
+        "sha256": "027864c8a7335e41de456d2489044f4c146b51377a9c5aaf6132e1f9767d8143",
+        "size_bytes": 1267
       },
       {
         "path": "chapter6_sparse_feature_methods/exercises/part2_gemma_scope_deep_dive/expected_outputs/smoke_test.json",
-        "sha256": "6c52cdd445595588f0c467e3b2e7d392a36dbfa829f2e9fcf692d3c1b8736e8e",
-        "size_bytes": 281
+        "sha256": "3047bf28c8bbd4587070bd8d92786434b7401dabc5d9d2fc5fc1049614515908",
+        "size_bytes": 685
       },
       {
         "path": "chapter6_sparse_feature_methods/exercises/part2_gemma_scope_deep_dive/solutions.py",
-        "sha256": "1dc9fd91779c9362b09a22c8d94fd8c55f162d48b4e9281cd001f18f5fa2746b",
-        "size_bytes": 20789
+        "sha256": "86dc8c25b4b23859a625755972a5836c71c9ed74c939d431e54919283eb8687d",
+        "size_bytes": 25949
       },
       {
         "path": "chapter6_sparse_feature_methods/exercises/part2_gemma_scope_deep_dive/tests.py",
-        "sha256": "71a6919416cb9cf7ad05659dfefade03f9f038b5038151855a23f6f3c510a737",
-        "size_bytes": 11507
+        "sha256": "aae449c20cd87b3bca36fa9adecc540c9b39891e3bba124439be4113c805a1c4",
+        "size_bytes": 13671
       },
       {
         "path": "chapter6_sparse_feature_methods/exercises/part2_gemma_scope_deep_dive/utils.py",
-        "sha256": "d5219a0b52bdf22090d14635103b517602f352bef93e6043bcf2203b6d0eb6fd",
-        "size_bytes": 352
+        "sha256": "27327b93a4dd72b7cfac4de28fbe21fd043c3c0757a1ba6e2a5bccc65e24f19d",
+        "size_bytes": 6308
       },
       {
         "path": "chapter6_sparse_feature_methods/exercises/part2_gemma_scope_deep_dive/verification_report.schema.json",
@@ -516,21 +550,22 @@
       },
       {
         "path": "chapter6_sparse_feature_methods/instructions/pages/02_[6.2]_Gemma_Scope_Deep_Dive.md",
-        "sha256": "e3d6a56ccded1327e4a409b73116a1edfadd793d5890493db13ce8459828b945",
-        "size_bytes": 28462
+        "sha256": "0d48dc201b876e2b46fb2132027493b73bc1f85fd3d5a7ec3ed8b2f5127e8f0c",
+        "size_bytes": 39222
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
-        "sha256": "660040f459d07535deb9e0c34ffddb496c13b8770044ae380d3a8e45b0c8fb2b",
-        "size_bytes": 16080
+        "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
+        "size_bytes": 16272
       }
     ],
     "schema_version": 1
   },
   "safety_notes": [
     "No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.",
+    "The learner-facing signature result is generated from exact CPU ground truth and does not use a scientific mock or a report-loaded result.",
     "Gemma Scope artifact loading and authenticated Gemma 3 1B IT layer-13 activation capture are verified on CUDA in this environment. The claim remains limited to the benign technical-vs-narrative semantic split and does not claim broad Gemma Scope coverage or safety-relevant steering behavior."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 3.449439
+  "wall_clock_seconds": 5.572206
 }

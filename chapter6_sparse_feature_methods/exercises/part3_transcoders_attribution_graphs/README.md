@@ -1,19 +1,21 @@
-# [6.3] Transcoders and Attribution Graphs Verification Assets
+# [6.3] Transcoders and Attribution Graphs
 
-Generated support files for the roadmap verification contract.
+The learner-facing result is an exact colored-shape ReLU MLP model organism.
+Students implement its transcoder replacement, reconstruction decomposition,
+signed feature-edge attribution, graph extraction, and causal validation in the
+notebook. The known `red square` graph has three active feature nodes and ten
+signed edges, including the inhibitory encoder-bias paths.
 
-- `6.3_Transcoders_and_Attribution_Graphs_exercises.ipynb` is the learner
-  notebook with local stubs for transcoder replacement, KL/logit-diff checks,
-  feature contributions, graph construction, and graph controls.
-- `6.3_Transcoders_and_Attribution_Graphs_solutions.ipynb` executes the visible
-  tests against `solutions.py` and checks the committed CUDA report highlights.
-- `artifacts.lock.yml` pins the current smoke-test artifact contract and the
-  pinned TransformerLens `gelu-1l` CUDA preflight.
-- `verification_report.schema.json` defines the required final report.
-- `expected_outputs/smoke_test.json` records the smoke-test contract.
-- `expected_outputs/reference_metrics.json` records baseline/control slots.
+The signature result compares the recovered graph with a fixed same-size random
+graph, shuffled feature identities, shuffled edge targets, and a decoder-norm
+reconstruction-only baseline. The paired solution notebook contains the full
+implementation in visible cells and runs entirely on CPU.
 
-The real-model graded path is `run_gpu_test`: it loads `gelu-1l` at the locked
-revision, checks exact MLP-feature replacement parity, trains a tiny ReLU
-transcoder on real MLP activations, and validates a top-feature attribution
-graph against low-effect feature controls.
+`solutions.py` and `tests.py` provide the reference implementation and semantic
+tests. `_build_salvage_notebooks.py` regenerates both notebooks and the instruction
+page from that source. The two PNGs in `instructions/assets` are deterministic
+renders of the exact graph and intervention result.
+
+The pinned TransformerLens `gelu-1l` CUDA preflight remains supporting evidence
+in `verification_report.json`; it is not the lesson or the signature result.
+The parent verification workflow owns rerunning that path.

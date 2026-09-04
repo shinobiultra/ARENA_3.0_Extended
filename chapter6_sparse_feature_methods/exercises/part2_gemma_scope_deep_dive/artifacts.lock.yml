@@ -6,22 +6,21 @@ exercise_metadata:
   GT_TIER: GT-1
   DIFFICULTY: 4
   IMPORTANCE: 4
-  EXPECTED_RUNTIME: seconds on toy contract; minutes on local real-model path
+  EXPECTED_RUNTIME: 75-100 minutes for the CPU lesson; minutes to refresh CUDA evidence
   REQUIRES_GPU: true
 gt_tier: GT-1
-evidence_level: toy_feature_controls_plus_real_gemma_scope_sae_activation_validation
-claim_scope: 'GT-1 Gemma Scope artifact path plus real activation validation: pinned
-  1B-IT layer-13 residual JumpReLU SAE config and safetensors are loaded, shape/finiteness
-  checked, moved to CUDA, and exercised with a deterministic encode/decode probe.
-  Authenticated Gemma 3 1B IT layer-13 activations are then encoded through the SAE
-  and validated on a held-out benign technical-vs-narrative semantic split with random-feature
-  and label-shuffle controls.'
+evidence_level: exact_sparse_feature_ground_truth_plus_pinned_real_gemma_scope_validation
+claim_scope: 'GT-0 exact organism first: normalized JumpReLU loading, latent recovery,
+  reconstruction, held-out semantics, density, DLA, ablation, and steering are checked
+  against known ground truth and matched controls. GT-1 supporting evidence then records
+  one pinned Gemma Scope 2 1B-IT layer-13 artifact and one small authenticated Gemma 3
+  technical-vs-narrative activation split. The real-model claim is correlational.'
 required_gpu_gb: 1
 max_allowed_gpu_gb: 24
 models:
-- id: toy_or_generated_inputs
+- id: exact_six_feature_organism
   source: generated
-  revision: seed_0
+  revision: deterministic_dct_v1
   precision: float32
   gated: false
 - id: google/gemma-scope-2-1b-it/resid_post/layer_13_width_16k_l0_small
@@ -33,9 +32,10 @@ models:
   base_model: google/gemma-3-1b-it
   base_model_access: authenticated_local_and_remote_access_verified
 datasets:
-- id: 6_2_gemma_scope_deep_dive_toy_inputs
+- id: 6_2_exact_sparse_feature_organism
   source: generated
-  seed: 0
+  split: 16_train_24_heldout
+  semantic_feature_labels: exact_by_construction
 - id: constructed_sae_probe_activations_layer13_width16k_seed0
   source: deterministic_from_sae_encoder_columns
   seed: 0
@@ -43,6 +43,17 @@ datasets:
 expected_metrics:
   tests_passed: true
   accepted: true
+  exact_heldout_examples: 24
+  exact_reconstruction_mse_max: 1.0e-12
+  exact_feature_auc: 1.0
+  exact_random_feature_auc: 0.5
+  exact_shuffled_label_auc: 0.5
+  exact_train_confound_auc: 1.0
+  exact_heldout_confound_auc: 0.5
+  exact_target_ablation_delta: 1.15
+  exact_control_ablation_delta_abs_max: 1.0e-6
+  exact_dead_feature_ids:
+  - 5
   max_allowed_gpu_gb: 24
   gemma_scope_artifact_preflight_passed: true
   gemma_scope_forward_passed: true
@@ -61,15 +72,17 @@ expected_metrics:
   gemma3_base_local_non_ref_file_count: 19
   gemma3_base_ready_for_real_activations: true
 controls:
-- baseline_or_reference_check
-- negative_control_where_applicable
-- shape_dtype_or_exact_value_check
-- metadata_and_feature_tag_contract
-- heldout_auc_and_baseline_contract
-- base_instruction_delta_contract
-- ablation_random_feature_control_contract
-- steering_perplexity_guard_contract
-- direct_logit_attribution_contract
+- function_preserving_decoder_normalization
+- exact_latent_recovery_and_reconstruction
+- heldout_semantic_split
+- matched_random_feature_auc
+- rank_balanced_shuffled_labels
+- train_only_confounder_collapse
+- decoder_norm_audit
+- density_rare_and_dead_feature_audit
+- matched_feature_ablation
+- equal_l2_random_direction_steering
+- direct_logit_attribution_known_tokens
 - pinned_gemma_scope_sae_config_check
 - pinned_gemma_scope_safetensor_shape_and_finiteness_check
 - pinned_gemma_scope_jumprelu_cuda_encode_decode
@@ -81,6 +94,8 @@ controls:
 - real_gemma_activation_label_shuffle_control
 safety_notes:
 - No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.
+- The learner-facing signature result is generated from exact CPU ground truth and
+  does not use a scientific mock or a report-loaded result.
 - Gemma Scope artifact loading and authenticated Gemma 3 1B IT layer-13 activation
   capture are verified on CUDA in this environment. The claim remains limited to
   the benign technical-vs-narrative semantic split and does not claim broad Gemma

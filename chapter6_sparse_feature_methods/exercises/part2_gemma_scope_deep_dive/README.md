@@ -1,19 +1,23 @@
-# [6.2] Gemma Scope Deep Dive Verification Assets
+# [6.2] Gemma Scope Deep Dive
 
-Generated support files for the roadmap verification contract.
+This section starts with an exact six-feature organism, then escalates to a
+strictly pinned Gemma Scope 2 result.
 
-- `6.2_Gemma_Scope_Deep_Dive_exercises.ipynb` is the learner notebook with
-  local stubs for metadata checks, feature scoring, validation, ablation,
+- `6.2_Gemma_Scope_Deep_Dive_exercises.ipynb` asks students to implement
+  function-preserving decoder normalization, JumpReLU encoding,
+  reconstruction, held-out scoring, density diagnostics, matched ablation and
   steering, and direct logit attribution.
-- `6.2_Gemma_Scope_Deep_Dive_solutions.ipynb` executes the visible tests
-  against `solutions.py` and checks the committed CUDA report highlights.
-- `artifacts.lock.yml` pins the current notebook contract plus the real Gemma Scope
-  2 1B-IT layer-13 residual JumpReLU SAE artifact preflight and authenticated
-  Gemma 3 activation validation.
-- `verification_report.schema.json` defines the required final report.
-- `expected_outputs/smoke_test.json` records the smoke-test contract.
-- `expected_outputs/reference_metrics.json` records baseline/control slots.
+- `6.2_Gemma_Scope_Deep_Dive_solutions.ipynb` contains the same learner arc
+  with executed CPU outputs, visible examples, and the signature figure.
+- `utils.py` constructs the deterministic ground-truth organism and validates
+  the identity of the committed real-model evidence. It contains no learned
+  method implementation.
+- `solutions.py` is the reference implementation and retains the CUDA refresh
+  entry point used by the verification runner.
+- `tests.py` contains immediate semantic and edge-case tests for every student
+  function.
+- `artifacts.lock.yml` records both the exact CPU claim and the pinned Gemma
+  Scope 2 / Gemma 3 evidence boundary.
 
-The current GPU report verifies the pinned SAE config, safetensor shapes,
-finiteness, CUDA load, JumpReLU encode/decode, and real Gemma 3 residual
-activation scoring against random-feature and label-shuffle controls.
+The committed CUDA report remains supporting evidence. The notebook's primary
+result is computed from the exact organism, not loaded from that report.

@@ -1,34 +1,60 @@
 {
   "baselines": {
-    "required": true
+    "required": true,
+    "toy_controls": [
+      "fixed_same_size_random_graph",
+      "cyclically_shuffled_feature_ids",
+      "cyclically_shuffled_edge_targets",
+      "decoder_norm_reconstruction_only"
+    ]
   },
   "metrics": {
     "accepted": true,
-    "activation_count": 104,
-    "d_model": 512,
-    "graph_feature_count": 64,
-    "graph_passes_damage_control": true,
-    "graph_preserves_logit_diff": true,
-    "graph_random_damage_max": 0.01,
-    "graph_reproducible": true,
-    "graph_topk_damage_min": 0.1,
-    "hf_revision": "bddc0e332f0ae84279e6a6a45d91b314899e1603",
-    "max_allowed_gpu_gb": 24,
-    "mlp_width": 2048,
-    "model_name": "gelu-1l",
-    "oracle_logits_max_abs_error_max": 5e-05,
-    "oracle_mlp_out_max_abs_error_max": 1e-05,
-    "oracle_preserves_logit_diff": true,
-    "oracle_replacement_kl_max": 1e-06,
-    "peak_vram_gb_max": 1.0,
-    "preflight_passed": true,
-    "preserves_logit_diff": true,
-    "replacement_kl_max": 1e-06,
     "tests_passed": true,
-    "trained_replacement_top1_agreement_min": 0.75,
+    "toy_model_organism": "exact_colored_shape_relu_mlp",
+    "toy_target_score": 1.6,
+    "toy_reconstruction_max_error": 0.0,
+    "toy_edge_decomposition_max_error": 0.0,
+    "toy_graph_feature_ids": [
+      4,
+      0,
+      2
+    ],
+    "toy_graph_edge_count": 10,
+    "toy_faithfulness_curve": [
+      0.78125,
+      0.90625,
+      1.0
+    ],
+    "toy_same_size_random_curve": [
+      0.0,
+      0.0,
+      0.09375
+    ],
+    "toy_shuffled_feature_curve": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "toy_reconstruction_only_curve": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "toy_graph_ablation_damage": 1.0,
+    "toy_random_ablation_damage": 0.09375,
+    "toy_edge_conservation": 1.0,
+    "toy_shuffled_edge_conservation": 0.0,
+    "model_name": "gelu-1l",
+    "hf_revision": "bddc0e332f0ae84279e6a6a45d91b314899e1603",
+    "activation_count": 104,
+    "oracle_mlp_out_max_abs_error_max": 1e-05,
+    "oracle_logits_max_abs_error_max": 5e-05,
     "trained_transcoder_heldout_mse_ratio_max": 0.5,
-    "trained_transcoder_steps": 800,
-    "trained_transcoder_width": 512
+    "trained_replacement_top1_agreement_min": 0.75,
+    "graph_topk_damage_min": 0.1,
+    "graph_random_damage_max": 0.01,
+    "peak_vram_gb_max": 1.0
   },
   "negative_controls": {
     "required_where_applicable": true

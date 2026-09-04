@@ -93,9 +93,9 @@
       "train_prompt_count": 64
     }
   ],
-  "date_run": "2026-09-04T08:16:50+00:00",
+  "date_run": "2026-09-04T08:19:06+00:00",
   "evidence_level": "toy_sae_contract_plus_pinned_pythia_topk_sae_mechanics_and_semantic_negative_result",
-  "git_commit": "7b90e75d",
+  "git_commit": "d8262edb",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-1",
   "known_failures": [],
@@ -372,5 +372,5 @@
     "The real-model path uses safe generated topic prompts and hidden-state extraction from a small public Pythia checkpoint. It does not use unsafe prompts, gated weights, generated completions, user data, or raw large activation artifacts."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 4.523966
+  "wall_clock_seconds": 4.649982
 }
