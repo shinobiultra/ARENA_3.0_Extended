@@ -1,443 +1,274 @@
-from collections.abc import Callable
+"""Semantic and learner-surface tests for section 8.2."""
 
+from __future__ import annotations
+
+import ast
+from collections.abc import Callable
+from pathlib import Path
+
+import nbformat
 import torch as t
 
-from arena_ext import attribution_patching as reference
+
+SECTION_DIR = Path(__file__).resolve().parent
+EXERCISE_NOTEBOOK = SECTION_DIR / "8.2_Attribution_Patching_and_EAP_exercises.ipynb"
+SOLUTION_NOTEBOOK = SECTION_DIR / "8.2_Attribution_Patching_and_EAP_solutions.ipynb"
+PAGE = SECTION_DIR.parents[1] / "instructions" / "pages" / "02_[8.2]_Attribution_Patching_and_EAP.md"
 
 
 def _solutions():
-    from chapter8_automated_circuits.exercises.part2_attribution_patching_eap import (
-        solutions,
-    )
+    from chapter8_automated_circuits.exercises.part2_attribution_patching_eap import solutions
 
     return solutions
 
 
-def _assert_report_close(actual: object, expected: object, *, msg: str) -> None:
-    actual_dict = actual.__dict__
-    expected_dict = expected.__dict__
-    assert actual_dict.keys() == expected_dict.keys(), (
-        f"{msg} fields should match the independent reference implementation."
+def _assert_close(actual: t.Tensor, expected: t.Tensor, *, atol: float = 1e-4) -> None:
+    assert t.allclose(actual.to(dtype=t.float64), expected.to(dtype=t.float64), atol=atol), (
+        f"Expected {expected.tolist()}, got {actual.tolist()}."
     )
-    for key, expected_value in expected_dict.items():
-        actual_value = actual_dict[key]
-        if isinstance(expected_value, float):
-            assert abs(actual_value - expected_value) < 1e-6, (
-                f"{msg} field {key!r} should be {expected_value}, got {actual_value}."
-            )
-        else:
-            assert actual_value == expected_value, (
-                f"{msg} field {key!r} should be {expected_value!r}, got {actual_value!r}."
-            )
 
 
-def test_attribution_patch_scores_sums_non_component_dims(
-    attribution_patch_scores: Callable | None = None,
-):
-    attribution_patch_scores = attribution_patch_scores or _solutions().attribution_patch_scores
-    clean = t.tensor([[2.0, 0.0], [0.0, 3.0]])
-    corrupt = t.zeros_like(clean)
-    gradients = t.tensor([[0.5, 0.5], [1.0, 1.0]])
-    scores = attribution_patch_scores(clean, corrupt, gradients)
-    expected = reference.attribution_patch_scores(clean, corrupt, gradients)
-    assert scores.tolist() == expected.tolist() == [1.0, 3.0], (
-        "Attribution scores should sum (clean-corrupt) * gradient over non-component dims."
+def test_make_planted_graph_has_exact_ground_truth(
+    make_graph: Callable | None = None,
+    metric: Callable | None = None,
+) -> None:
+    make_graph = make_graph or _solutions().make_planted_attribution_graph
+    metric = metric or _solutions().toy_metric
+    graph = make_graph()
+    assert graph.weights.shape == (4, 4)
+    assert graph.sender_labels == ("name copy", "relation gate", "context", "decoy")
+    assert graph.receiver_labels[1] == "threshold gate"
+    assert graph.weights[3, :3].abs().sum().item() == 0.0
+    corrupt = metric(graph, graph.corrupt_sender)
+    clean = metric(graph, graph.clean_sender)
+    assert abs(float(corrupt.item())) < 1e-12
+    assert abs(float(clean.item()) - 4.399326441019204) < 1e-9
+    print("Planted graph ground truth passed: clean-corrupt metric = 4.399326.")
+
+
+def test_exact_node_patching_recovers_known_effects(
+    exact_node_patch_effects: Callable | None = None,
+) -> None:
+    exact_node_patch_effects = exact_node_patch_effects or _solutions().exact_node_patch_effects
+    graph = _solutions().make_planted_attribution_graph()
+    actual = exact_node_patch_effects(graph)
+    expected = t.tensor([1.4391066, 1.4, 0.8312297, 0.0], dtype=t.float64)
+    _assert_close(actual, expected)
+    assert int(actual.argmax().item()) == 0
+    assert actual[1] > 1.0, "The gated relation route must be causally important."
+    assert actual[3] == 0.0, "The decoy must be an exact zero-effect control."
+    print("Exact node patching passed: the gated route is important and the decoy is null.")
+
+
+def test_first_order_attribution_exposes_nonlinear_false_negative(
+    first_order_node_attribution: Callable | None = None,
+) -> None:
+    first_order_node_attribution = first_order_node_attribution or _solutions().first_order_node_attribution
+    graph = _solutions().make_planted_attribution_graph()
+    actual = first_order_node_attribution(graph)
+    expected = t.tensor([1.44, 0.0, 0.94, 0.0], dtype=t.float64)
+    _assert_close(actual, expected)
+    assert actual[1] == 0.0
+    assert _solutions().exact_node_patch_effects(graph)[1] > 1.0
+    print("First-order attribution passed: it visibly misses the threshold-gated route.")
+
+
+def test_integrated_gradients_recovers_ranking_and_completeness(
+    sender_path_gradients: Callable | None = None,
+    integrated_gradient_node_scores: Callable | None = None,
+) -> None:
+    sender_path_gradients = sender_path_gradients or _solutions().sender_path_gradients
+    integrated_gradient_node_scores = integrated_gradient_node_scores or _solutions().integrated_gradient_node_scores
+    graph = _solutions().make_planted_attribution_graph()
+    gradients = sender_path_gradients(graph, steps=64)
+    assert gradients.shape == (64, 4)
+    actual = integrated_gradient_node_scores(graph, steps=64)
+    expected = t.tensor([1.4134, 1.9441, 1.0414, 0.0], dtype=t.float64)
+    _assert_close(actual, expected, atol=2e-3)
+    full_delta = _solutions().toy_metric(graph, graph.clean_sender) - _solutions().toy_metric(
+        graph, graph.corrupt_sender
     )
-    column_scores = attribution_patch_scores(
-        clean,
-        corrupt,
-        gradients,
-        component_dim=1,
-    )
-    assert column_scores.tolist() == [1.0, 3.0], (
-        "Changing component_dim should preserve that axis and reduce all other axes."
-    )
-    try:
-        attribution_patch_scores(clean, corrupt[:1], gradients)
-    except ValueError as exc:
-        assert "matching shape" in str(exc), (
-            "Mismatched clean/corrupt activations should fail with a shape message."
-        )
-    else:
-        raise AssertionError("Shape-mismatched activations should raise ValueError.")
-    print("All tests in `test_attribution_patch_scores_sums_non_component_dims` passed!")
+    assert abs(float(actual.sum().item() - full_delta.item())) < 5e-4
+    exact = _solutions().exact_node_patch_effects(graph)
+    ap = _solutions().first_order_node_attribution(graph)
+    ig_corr = _solutions().agreement_metrics(exact, actual, top_k=2).correlation
+    ap_corr = _solutions().agreement_metrics(exact, ap, top_k=2).correlation
+    assert ig_corr > 0.95 and ig_corr > ap_corr + 0.45
+    print("Integrated gradients passed: top-2 ranking recovered and completeness error < 5e-4.")
 
 
-def test_attribution_patch_scores_rejects_degenerate_inputs(
-    attribution_patch_scores: Callable | None = None,
-):
-    attribution_patch_scores = attribution_patch_scores or _solutions().attribution_patch_scores
-    clean = t.tensor([[2.0, 0.0], [0.0, 3.0]])
-    corrupt = t.zeros_like(clean)
-    gradients = t.tensor([[0.5, 0.5], [1.0, 1.0]])
-    try:
-        attribution_patch_scores(clean, corrupt, gradients, component_dim=2)
-    except ValueError as exc:
-        assert "component_dim" in str(exc), "component_dim should index an activation axis."
-    else:
-        raise AssertionError("Out-of-range component_dim should raise ValueError.")
-    try:
-        attribution_patch_scores(
-            clean,
-            corrupt,
-            t.tensor([[float("nan"), 0.5], [1.0, 1.0]]),
-        )
-    except ValueError as exc:
-        assert "finite" in str(exc), "Non-finite gradients should fail clearly."
-    else:
-        raise AssertionError("Non-finite gradients should raise ValueError.")
-    print("All tests in `test_attribution_patch_scores_rejects_degenerate_inputs` passed!")
-
-
-def test_integrated_gradient_patch_scores_average_path_gradients(
-    integrated_gradient_patch_scores: Callable | None = None,
-):
-    integrated_gradient_patch_scores = (
-        integrated_gradient_patch_scores or _solutions().integrated_gradient_patch_scores
-    )
-    clean = t.tensor([[2.0, 0.0], [0.0, 3.0]])
-    corrupt = t.zeros_like(clean)
-    path_gradients = t.tensor(
+def test_exact_edge_patching_matches_planted_matrix(
+    planted_edge_deltas: Callable | None = None,
+    exact_edge_patch_effects: Callable | None = None,
+) -> None:
+    planted_edge_deltas = planted_edge_deltas or _solutions().planted_edge_deltas
+    exact_edge_patch_effects = exact_edge_patch_effects or _solutions().exact_edge_patch_effects
+    graph = _solutions().make_planted_attribution_graph()
+    edge_deltas = planted_edge_deltas(graph)
+    assert edge_deltas.shape == (4, 4)
+    actual = exact_edge_patch_effects(graph)
+    expected = t.tensor(
         [
-            [[0.25, 0.25], [0.5, 0.5]],
-            [[0.75, 0.75], [1.5, 1.5]],
-        ]
+            [1.32, 0.0, 0.1191066, 0.0],
+            [0.0, 1.4, 0.0, 0.0],
+            [0.3, 0.0, 0.5312297, 0.0],
+            [0.0, 0.0, 0.0, 0.0],
+        ],
+        dtype=t.float64,
     )
-    scores = integrated_gradient_patch_scores(clean, corrupt, path_gradients)
-    expected = reference.integrated_gradient_patch_scores(clean, corrupt, path_gradients)
-    assert scores.tolist() == expected.tolist() == [1.0, 3.0], (
-        "Integrated-gradient scores should use the mean gradient along the interpolation path."
-    )
+    _assert_close(actual, expected)
+    assert int(actual.abs().flatten().topk(3).indices[0].item()) == 5
+    print("Exact edge patching passed: relation gate -> threshold gate is the top edge.")
+
+
+def test_eap_and_eap_ig_separate_speed_from_faithfulness(
+    receiver_path_gradients: Callable | None = None,
+    eap_edge_scores: Callable | None = None,
+    corrupt_receiver_gradients: Callable | None = None,
+) -> None:
+    receiver_path_gradients = receiver_path_gradients or _solutions().receiver_path_gradients
+    eap_edge_scores = eap_edge_scores or _solutions().eap_edge_scores
+    corrupt_receiver_gradients = corrupt_receiver_gradients or _solutions().corrupt_receiver_gradients
+    graph = _solutions().make_planted_attribution_graph()
+    deltas = _solutions().planted_edge_deltas(graph)
+    corrupt_grad = corrupt_receiver_gradients(graph)
+    eap = eap_edge_scores(deltas, corrupt_grad)
+    eap_ig = eap_edge_scores(deltas, receiver_path_gradients(graph, steps=64).mean(dim=0))
+    assert eap.shape == eap_ig.shape == (4, 4)
+    assert eap[1, 1] == 0.0, "Corrupt-point EAP must miss the inactive threshold edge."
+    assert eap_ig[1, 1] > 1.9, "EAP-IG must recover the threshold edge along the path."
+    exact = _solutions().exact_edge_patch_effects(graph)
+    eap_metrics = _solutions().agreement_metrics(exact, eap, top_k=3)
+    eap_ig_metrics = _solutions().agreement_metrics(exact, eap_ig, top_k=3)
+    assert eap_metrics.topk_overlap == 2 / 3
+    assert eap_ig_metrics.topk_overlap == 1.0
+    assert eap_ig_metrics.correlation > 0.97 > eap_metrics.correlation
+    print("EAP comparison passed: IG raises top-3 overlap from 2/3 to 1.0.")
+
+
+def test_agreement_metrics_rejects_pretty_but_wrong_rankings(
+    agreement_metrics: Callable | None = None,
+) -> None:
+    agreement_metrics = agreement_metrics or _solutions().agreement_metrics
+    exact = t.tensor([3.0, 2.0, 1.0, 0.0])
+    wrong = t.tensor([0.0, 0.1, 4.0, 3.0])
+    report = agreement_metrics(exact, wrong, top_k=2, false_negative_threshold=1.5)
+    assert report.topk_overlap == 0.0
+    assert report.false_negative_indices == (0, 1)
+    assert report.mean_absolute_error > 0.0
     try:
-        integrated_gradient_patch_scores(clean, corrupt, path_gradients[0])
+        agreement_metrics(exact, wrong[:3], top_k=2)
     except ValueError as exc:
-        assert "path_gradients" in str(exc), (
-            "Path-gradient rank errors should name the required path_gradients shape."
-        )
+        assert "match" in str(exc)
     else:
-        raise AssertionError("Rank-mismatched path gradients should raise ValueError.")
-    print(
-        "All tests in `test_integrated_gradient_patch_scores_average_path_gradients` passed!"
-    )
+        raise AssertionError("Mismatched score tensors must fail.")
+    print("Agreement diagnostics passed: wrong top-k rankings cannot hide behind a plot.")
 
 
-def test_integrated_gradient_patch_scores_rejects_empty_or_nonfinite_paths(
-    integrated_gradient_patch_scores: Callable | None = None,
-):
-    integrated_gradient_patch_scores = (
-        integrated_gradient_patch_scores or _solutions().integrated_gradient_patch_scores
-    )
-    clean = t.tensor([[2.0, 0.0], [0.0, 3.0]])
-    corrupt = t.zeros_like(clean)
-    try:
-        integrated_gradient_patch_scores(clean, corrupt, t.empty(0, 2, 2))
-    except ValueError as exc:
-        assert "at least one step" in str(exc), "IG path should contain gradients."
-    else:
-        raise AssertionError("Empty path_gradients should raise ValueError.")
-    bad_path = t.ones(2, 2, 2)
-    bad_path[0, 0, 0] = float("inf")
-    try:
-        integrated_gradient_patch_scores(clean, corrupt, bad_path)
-    except ValueError as exc:
-        assert "finite" in str(exc), "IG path gradients should be finite."
-    else:
-        raise AssertionError("Non-finite path_gradients should raise ValueError.")
-    print(
-        "All tests in `test_integrated_gradient_patch_scores_rejects_empty_or_nonfinite_paths` passed!"
-    )
+def test_signature_result_metrics_and_controls() -> None:
+    result = _solutions().run_planted_signature_result()
+    assert abs(result.full_metric_delta - 4.399326441019204) < 1e-9
+    assert result.node_attribution.correlation < 0.47
+    assert result.node_integrated.correlation > 0.95
+    assert result.node_attribution.topk_overlap == 0.5
+    assert result.node_integrated.topk_overlap == 1.0
+    assert result.edge_eap.correlation < 0.67
+    assert result.edge_eap_ig.correlation > 0.97
+    assert result.edge_eap.topk_overlap == 2 / 3
+    assert result.edge_eap_ig.topk_overlap == 1.0
+    assert result.node_ig_conservation_error < 5e-4
+    assert result.edge_ig_conservation_error < 5e-4
+    assert result.linear_control_max_error < 1e-12
+    assert result.shuffled_edge_correlation < 0.0
+    assert result.shuffled_edge_topk_overlap == 0.0
+    print("Signature result passed: nonlinear recovery, linear control, and shuffled control all separate.")
 
 
-def test_edge_attribution_scores_forms_upstream_downstream_matrix(
-    edge_attribution_scores: Callable | None = None,
-):
-    edge_attribution_scores = edge_attribution_scores or _solutions().edge_attribution_scores
-    upstream_delta = t.tensor([[1.0, 0.0], [0.0, 2.0]])
-    downstream_gradients = t.tensor([[3.0, 0.0], [0.0, 4.0]])
-    scores = edge_attribution_scores(upstream_delta, downstream_gradients)
-    expected = reference.edge_attribution_scores(upstream_delta, downstream_gradients)
-    assert scores.tolist() == expected.tolist() == [[3.0, 0.0], [0.0, 8.0]], (
-        "EAP edge scores should be upstream deltas times downstream gradients."
-    )
-    try:
-        edge_attribution_scores(upstream_delta, downstream_gradients[:, :1])
-    except ValueError as exc:
-        assert "hidden dimensions" in str(exc), (
-            "Hidden-width mismatches should raise a helpful dimension error."
-        )
-    else:
-        raise AssertionError("Mismatched hidden dimensions should raise ValueError.")
-    print("All tests in `test_edge_attribution_scores_forms_upstream_downstream_matrix` passed!")
+def test_solution_smoke_contract_contains_signature_metrics() -> None:
+    signature = _solutions().run_smoke_test(cpu=True)["toy_signature"]
+    assert signature["node_integrated_correlation"] > 0.95
+    assert signature["edge_eap_ig_top3_overlap"] == 1.0
+    assert signature["linear_control_max_error"] < 1e-12
+    assert signature["shuffled_edge_top3_overlap"] == 0.0
 
 
-def test_edge_attribution_scores_rejects_empty_or_nonfinite_inputs(
-    edge_attribution_scores: Callable | None = None,
-):
-    edge_attribution_scores = edge_attribution_scores or _solutions().edge_attribution_scores
-    try:
-        edge_attribution_scores(t.empty(0, 2), t.ones(1, 2))
-    except ValueError as exc:
-        assert "at least one component" in str(exc), "EAP matrices need components."
-    else:
-        raise AssertionError("Empty upstream components should raise ValueError.")
-    try:
-        edge_attribution_scores(t.empty(1, 0), t.empty(1, 0))
-    except ValueError as exc:
-        assert "hidden dimension" in str(exc), "EAP hidden dimension should be nonempty."
-    else:
-        raise AssertionError("Empty hidden dimensions should raise ValueError.")
-    try:
-        edge_attribution_scores(t.tensor([[float("nan"), 0.0]]), t.ones(1, 2))
-    except ValueError as exc:
-        assert "finite" in str(exc), "EAP score inputs should be finite."
-    else:
-        raise AssertionError("Non-finite EAP inputs should raise ValueError.")
-    print("All tests in `test_edge_attribution_scores_rejects_empty_or_nonfinite_inputs` passed!")
+def _notebook_sources(path: Path) -> tuple[str, str]:
+    notebook = nbformat.read(path, as_version=4)
+    markdown = "\n".join(cell.source for cell in notebook.cells if cell.cell_type == "markdown")
+    code = "\n".join(cell.source for cell in notebook.cells if cell.cell_type == "code")
+    return markdown, code
 
 
-def test_exact_vs_approx_reports_measure_correlation_and_topk_overlap(
-    score_correlation_report: Callable | None = None,
-    topk_overlap_report: Callable | None = None,
-):
-    solutions = _solutions()
-    score_correlation_report = score_correlation_report or solutions.score_correlation_report
-    topk_overlap_report = topk_overlap_report or solutions.topk_overlap_report
-    exact = t.tensor([0.1, 0.9, 0.8, 0.0])
-    approx = t.tensor([0.2, 0.85, 0.7, 0.1])
-    correlation = score_correlation_report(exact, approx, min_correlation=0.95)
-    expected_correlation = reference.score_correlation_report(
-        exact,
-        approx,
-        min_correlation=0.95,
-    )
-    _assert_report_close(correlation, expected_correlation, msg="Score correlation report")
-    assert correlation.correlation > 0.95 and correlation.passes_threshold, (
-        "Approximate scores should pass when Pearson correlation with exact scores is high."
-    )
-    bad_correlation = score_correlation_report(
-        exact,
-        t.tensor([0.9, 0.1, 0.0, 0.8]),
-        min_correlation=0.95,
-    )
-    assert not bad_correlation.passes_threshold, (
-        "A badly ordered approximation should fail the correlation threshold."
-    )
-
-    overlap = topk_overlap_report(exact, approx, top_k=2, min_overlap=1.0)
-    expected_overlap = reference.topk_overlap_report(
-        exact,
-        approx,
-        top_k=2,
-        min_overlap=1.0,
-    )
-    _assert_report_close(overlap, expected_overlap, msg="Top-k overlap report")
-    assert overlap.exact_top_indices == (1, 2) and overlap.approx_top_indices == (1, 2), (
-        "Top-k report should expose exact and approximate priority sets."
-    )
-    assert overlap.topk_overlap == 1.0 and overlap.passes_threshold, (
-        "Exact and approximate top-2 sets should fully overlap in this fixture."
-    )
-    missed_topk = topk_overlap_report(
-        exact,
-        t.tensor([0.9, 0.1, 0.0, 0.8]),
-        top_k=2,
-        min_overlap=1.0,
-    )
-    assert not missed_topk.passes_threshold, (
-        "Top-k overlap should fail when approximate scores prioritize different components."
-    )
-    print(
-        "All tests in `test_exact_vs_approx_reports_measure_correlation_and_topk_overlap` passed!"
-    )
+def test_notebook_code_cells_parse() -> None:
+    for path in (EXERCISE_NOTEBOOK, SOLUTION_NOTEBOOK):
+        _, code = _notebook_sources(path)
+        ast.parse(code)
 
 
-def test_exact_vs_approx_reports_reject_bad_thresholds_and_scores(
-    score_correlation_report: Callable | None = None,
-    topk_overlap_report: Callable | None = None,
-):
-    solutions = _solutions()
-    score_correlation_report = score_correlation_report or solutions.score_correlation_report
-    topk_overlap_report = topk_overlap_report or solutions.topk_overlap_report
-    exact = t.tensor([0.1, 0.9, 0.8, 0.0])
-    approx = t.tensor([0.2, 0.85, 0.7, 0.1])
-    try:
-        score_correlation_report(exact, approx, min_correlation=1.5)
-    except ValueError as exc:
-        assert "between -1 and 1" in str(exc), "Correlation thresholds should be valid."
-    else:
-        raise AssertionError("Invalid min_correlation should raise ValueError.")
-    try:
-        score_correlation_report(exact, t.tensor([0.2, float("nan"), 0.7, 0.1]))
-    except ValueError as exc:
-        assert "finite" in str(exc), "Correlation inputs should reject NaNs."
-    else:
-        raise AssertionError("Non-finite approximate scores should raise ValueError.")
-    try:
-        topk_overlap_report(t.empty(0), t.empty(0), top_k=1)
-    except ValueError as exc:
-        assert "nonempty" in str(exc), "Top-k overlap needs at least one score."
-    else:
-        raise AssertionError("Empty top-k inputs should raise ValueError.")
-    try:
-        topk_overlap_report(exact, approx, min_overlap=-0.1)
-    except ValueError as exc:
-        assert "between 0 and 1" in str(exc), "Overlap thresholds should be probabilities."
-    else:
-        raise AssertionError("Invalid min_overlap should raise ValueError.")
-    print(
-        "All tests in `test_exact_vs_approx_reports_reject_bad_thresholds_and_scores` passed!"
+def test_solution_notebook_exposes_taught_implementations() -> None:
+    _, code = _notebook_sources(SOLUTION_NOTEBOOK)
+    taught = (
+        "make_planted_attribution_graph",
+        "toy_metric",
+        "exact_node_patch_effects",
+        "first_order_node_attribution",
+        "sender_path_gradients",
+        "integrated_gradient_node_scores",
+        "planted_edge_deltas",
+        "exact_edge_patch_effects",
+        "receiver_path_gradients",
+        "eap_edge_scores",
+        "corrupt_receiver_gradients",
+        "agreement_metrics",
     )
+    for name in taught:
+        assert f"def {name}(" in code, f"Solved notebook must define {name} inline."
+    assert "NotImplementedError" not in code
+    assert "solutions." not in code, "The solved learner path must not call hidden taught methods."
 
 
-def test_runtime_and_false_negative_reports_enforce_accountability(
-    runtime_improvement_report: Callable | None = None,
-    false_negative_report: Callable | None = None,
-):
-    solutions = _solutions()
-    runtime_improvement_report = runtime_improvement_report or solutions.runtime_improvement_report
-    false_negative_report = false_negative_report or solutions.false_negative_report
-    runtime = runtime_improvement_report(
-        exact_runtime_s=10.0,
-        approx_runtime_s=2.0,
-        min_speedup=4.0,
-    )
-    expected_runtime = reference.runtime_improvement_report(
-        exact_runtime_s=10.0,
-        approx_runtime_s=2.0,
-        min_speedup=4.0,
-    )
-    _assert_report_close(runtime, expected_runtime, msg="Runtime improvement report")
-    assert runtime.speedup == 5.0 and runtime.passes_speedup, (
-        "Approximate patching should report measured speedup over exact patching."
-    )
-    try:
-        runtime_improvement_report(
-            exact_runtime_s=10.0,
-            approx_runtime_s=0.0,
-            min_speedup=4.0,
-        )
-    except ValueError as exc:
-        assert "positive" in str(exc), (
-            "Nonpositive runtimes should raise a helpful ValueError."
-        )
-    else:
-        raise AssertionError("Zero approximate runtime should raise ValueError.")
-
-    exact = t.tensor([0.1, 0.9, 0.8])
-    approx = t.tensor([0.1, 0.2, 0.7])
-    false_negative = false_negative_report(
-        exact,
-        approx,
-        exact_threshold=0.75,
-        approx_threshold=0.5,
-        documentation={1: "Approximation misses a nonlinear interaction."},
-    )
-    expected_false_negative = reference.false_negative_report(
-        exact,
-        approx,
-        exact_threshold=0.75,
-        approx_threshold=0.5,
-        documentation={1: "Approximation misses a nonlinear interaction."},
-    )
-    _assert_report_close(false_negative, expected_false_negative, msg="False-negative report")
-    assert false_negative.false_negative_indices == (1,), (
-        "False-negative report should identify exact-important components missed by the approximation."
-    )
-    assert false_negative.documented, (
-        "False negatives should pass only when every missed component has a nonempty note."
-    )
-    undocumented = false_negative_report(
-        exact,
-        approx,
-        exact_threshold=0.75,
-        approx_threshold=0.5,
-        documentation={},
-    )
-    assert not undocumented.documented, (
-        "Missing documentation for false negatives should fail the accountability check."
-    )
-    print(
-        "All tests in `test_runtime_and_false_negative_reports_enforce_accountability` passed!"
-    )
+def test_learner_surface_contains_full_arena_progression() -> None:
+    exercise_markdown, exercise_code = _notebook_sources(EXERCISE_NOTEBOOK)
+    solution_markdown, _ = _notebook_sources(SOLUTION_NOTEBOOK)
+    for markdown in (exercise_markdown, solution_markdown):
+        assert markdown.count("### Exercise ") == 7
+        for marker in (
+            "By the end of this notebook",
+            "Learning Objectives",
+            "Expected output",
+            "Help",
+            "Interpretation",
+            "Solution",
+            "Try It Yourself",
+            "Bonus Anomaly Hunt",
+            "Limitations",
+            "Reading",
+        ):
+            assert marker in markdown
+    assert "verification_report.json" not in exercise_code
+    assert "raise NotImplementedError" in exercise_code
 
 
-def test_runtime_and_false_negative_reports_reject_nonfinite_inputs(
-    runtime_improvement_report: Callable | None = None,
-    false_negative_report: Callable | None = None,
-):
-    solutions = _solutions()
-    runtime_improvement_report = runtime_improvement_report or solutions.runtime_improvement_report
-    false_negative_report = false_negative_report or solutions.false_negative_report
-    try:
-        runtime_improvement_report(
-            exact_runtime_s=10.0,
-            approx_runtime_s=2.0,
-            min_speedup=float("inf"),
-        )
-    except ValueError as exc:
-        assert "finite" in str(exc), "Runtime thresholds should be finite."
-    else:
-        raise AssertionError("Non-finite min_speedup should raise ValueError.")
-    try:
-        runtime_improvement_report(
-            exact_runtime_s=10.0,
-            approx_runtime_s=2.0,
-            min_speedup=0.0,
-        )
-    except ValueError as exc:
-        assert "positive" in str(exc), "Speedup threshold should be positive."
-    else:
-        raise AssertionError("Non-positive min_speedup should raise ValueError.")
-    try:
-        false_negative_report(
-            t.tensor([0.1, float("nan")]),
-            t.tensor([0.1, 0.2]),
-            exact_threshold=0.75,
-            approx_threshold=0.5,
-        )
-    except ValueError as exc:
-        assert "finite" in str(exc), "False-negative reports should reject NaNs."
-    else:
-        raise AssertionError("Non-finite exact scores should raise ValueError.")
-    try:
-        false_negative_report(
-            t.tensor([0.1, 0.9]),
-            t.tensor([0.1, 0.2]),
-            exact_threshold=float("nan"),
-            approx_threshold=0.5,
-        )
-    except ValueError as exc:
-        assert "finite" in str(exc), "False-negative thresholds should be finite."
-    else:
-        raise AssertionError("Non-finite false-negative thresholds should raise ValueError.")
-    print(
-        "All tests in `test_runtime_and_false_negative_reports_reject_nonfinite_inputs` passed!"
-    )
+def test_instruction_page_teaches_the_same_claim() -> None:
+    page = PAGE.read_text()
+    for marker in (
+        "corrupt-point attribution misses",
+        "Exact node patching",
+        "EAP-IG",
+        "Try It Yourself",
+        "Bonus Anomaly Hunt",
+        "linear positive control",
+        "shuffled-delta control",
+        "not an IOI-scale",
+        "attribution_patching_eap_signature_result.png",
+    ):
+        assert marker in page
 
 
-def test_notebook_contract(run_smoke_test: Callable | None = None):
-    if run_smoke_test is None:
-        run_smoke_test = _solutions().run_smoke_test
-    result = run_smoke_test(cpu=True)
-    assert result["attribution_scores"] == [1.0, 3.0], (
-        "Notebook contract should include first-order attribution patch scores."
-    )
-    assert result["integrated_gradients"] == [1.0, 3.0], (
-        "Notebook contract should include integrated-gradient patch scores."
-    )
-    assert result["edge_scores"] == [[3.0, 0.0], [0.0, 8.0]], (
-        "Notebook contract should include the EAP-style edge matrix."
-    )
-    assert result["correlation"]["passes_threshold"], (
-        "Notebook contract should compare approximate scores against exact scores by correlation."
-    )
-    assert result["topk_overlap"]["passes_threshold"], (
-        "Notebook contract should compare exact and approximate top-k components."
-    )
-    assert result["runtime"]["passes_speedup"], (
-        "Notebook contract should include measured runtime improvement."
-    )
-    assert result["false_negative"]["documented"], (
-        "Notebook contract should document any exact-important missed components."
-    )
-    print("All tests in `test_notebook_contract` passed!")
+def test_original_arena_preservation_boundary() -> None:
+    relative_paths = [
+        str(path.relative_to(SECTION_DIR.parents[2]))
+        for path in SECTION_DIR.rglob("*")
+        if path.is_file()
+    ]
+    assert all(not path.startswith("chapter1_transformer_interp/") for path in relative_paths)

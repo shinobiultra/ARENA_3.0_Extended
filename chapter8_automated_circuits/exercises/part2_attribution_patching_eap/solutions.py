@@ -65,6 +65,47 @@ class FalseNegativeReport:
     documented: bool
 
 
+@dataclass(frozen=True)
+class PlantedAttributionGraph:
+    """A tiny nonlinear graph with an exact, human-readable edge ground truth."""
+
+    sender_labels: tuple[str, ...]
+    receiver_labels: tuple[str, ...]
+    weights: t.Tensor
+    clean_sender: t.Tensor
+    corrupt_sender: t.Tensor
+    gate_strength: float
+    gate_threshold: float
+
+
+@dataclass(frozen=True)
+class AgreementMetrics:
+    correlation: float
+    topk_overlap: float
+    mean_absolute_error: float
+    false_negative_indices: tuple[int, ...]
+
+
+@dataclass(frozen=True)
+class ToySignatureResult:
+    exact_nodes: t.Tensor
+    attribution_nodes: t.Tensor
+    integrated_nodes: t.Tensor
+    exact_edges: t.Tensor
+    eap_edges: t.Tensor
+    eap_ig_edges: t.Tensor
+    node_attribution: AgreementMetrics
+    node_integrated: AgreementMetrics
+    edge_eap: AgreementMetrics
+    edge_eap_ig: AgreementMetrics
+    full_metric_delta: float
+    node_ig_conservation_error: float
+    edge_ig_conservation_error: float
+    linear_control_max_error: float
+    shuffled_edge_correlation: float
+    shuffled_edge_topk_overlap: float
+
+
 def _require_finite_tensor(tensor: t.Tensor, name: str) -> None:
     if not t.isfinite(tensor).all():
         raise ValueError(f"{name} must be finite.")
@@ -317,6 +358,289 @@ def false_negative_report(
     )
 
 
+# %%
+def make_planted_attribution_graph(
+    *,
+    gate_strength: float = 1.4,
+    gate_threshold: float = 1.0,
+) -> PlantedAttributionGraph:
+    """Build the exact toy graph used throughout the learner-facing section."""
+
+    if gate_strength <= 0:
+        raise ValueError("gate_strength must be positive.")
+    if gate_threshold <= 0:
+        raise ValueError("gate_threshold must be positive.")
+    weights = t.tensor(
+        [
+            [1.10, 0.00, 0.25, 0.00],
+            [0.00, 2.00, 0.25, 0.00],
+            [0.15, 0.00, 0.80, 0.00],
+            [0.00, 0.00, 0.00, 0.70],
+        ],
+        dtype=t.float64,
+    )
+    return PlantedAttributionGraph(
+        sender_labels=("name copy", "relation gate", "context", "decoy"),
+        receiver_labels=("answer evidence", "threshold gate", "context read", "unused monitor"),
+        weights=weights,
+        clean_sender=t.ones(4, dtype=t.float64),
+        corrupt_sender=t.zeros(4, dtype=t.float64),
+        gate_strength=float(gate_strength),
+        gate_threshold=float(gate_threshold),
+    )
+
+
+def _validate_sender(graph: PlantedAttributionGraph, sender: t.Tensor) -> None:
+    if sender.shape != graph.clean_sender.shape:
+        raise ValueError("sender must match the planted sender shape.")
+    _require_finite_tensor(sender, "sender")
+
+
+def toy_metric_from_receivers(
+    graph: PlantedAttributionGraph,
+    receivers: t.Tensor,
+) -> t.Tensor:
+    """Score evidence, a nonlinear threshold route, and contextual support."""
+
+    if receivers.shape != (len(graph.receiver_labels),):
+        raise ValueError("receivers must have one value per receiver node.")
+    _require_finite_tensor(receivers, "receivers")
+    gated = t.relu(receivers[1] - graph.gate_threshold).square()
+    return 1.2 * receivers[0] + graph.gate_strength * gated + 0.8 * t.tanh(receivers[2])
+
+
+def toy_metric(graph: PlantedAttributionGraph, sender: t.Tensor) -> t.Tensor:
+    """Run sender activations through the planted graph and return its scalar score."""
+
+    _validate_sender(graph, sender)
+    return toy_metric_from_receivers(graph, graph.weights @ sender)
+
+
+def exact_node_patch_effects(graph: PlantedAttributionGraph) -> t.Tensor:
+    """Patch one clean sender node at a time into the corrupt run."""
+
+    baseline = toy_metric(graph, graph.corrupt_sender)
+    effects = []
+    for index in range(graph.clean_sender.numel()):
+        patched = graph.corrupt_sender.clone()
+        patched[index] = graph.clean_sender[index]
+        effects.append(toy_metric(graph, patched) - baseline)
+    return t.stack(effects)
+
+
+def first_order_node_attribution(graph: PlantedAttributionGraph) -> t.Tensor:
+    """Compute corrupt-point attribution for each sender node."""
+
+    sender = graph.corrupt_sender.clone().requires_grad_(True)
+    gradient = t.autograd.grad(toy_metric(graph, sender), sender)[0]
+    return (graph.clean_sender - graph.corrupt_sender) * gradient
+
+
+def sender_path_gradients(
+    graph: PlantedAttributionGraph,
+    *,
+    steps: int = 64,
+) -> t.Tensor:
+    """Evaluate sender gradients at midpoint samples on the corrupt-clean path."""
+
+    if steps <= 0:
+        raise ValueError("steps must be positive.")
+    delta = graph.clean_sender - graph.corrupt_sender
+    gradients = []
+    for alpha in (t.arange(steps, dtype=t.float64) + 0.5) / steps:
+        sender = (graph.corrupt_sender + alpha * delta).detach().requires_grad_(True)
+        gradients.append(t.autograd.grad(toy_metric(graph, sender), sender)[0])
+    return t.stack(gradients)
+
+
+def integrated_gradient_node_scores(
+    graph: PlantedAttributionGraph,
+    *,
+    steps: int = 64,
+) -> t.Tensor:
+    """Compute per-sender integrated-gradient scores along the joint path."""
+
+    path_gradients = sender_path_gradients(graph, steps=steps)
+    return (graph.clean_sender - graph.corrupt_sender) * path_gradients.mean(dim=0)
+
+
+def planted_edge_deltas(graph: PlantedAttributionGraph) -> t.Tensor:
+    """Return clean-corrupt contributions for every sender-to-receiver edge."""
+
+    sender_delta = graph.clean_sender - graph.corrupt_sender
+    return graph.weights.T * sender_delta[:, None]
+
+
+def exact_edge_patch_effects(graph: PlantedAttributionGraph) -> t.Tensor:
+    """Patch one clean edge contribution at a time into corrupt receivers."""
+
+    corrupt_receivers = graph.weights @ graph.corrupt_sender
+    baseline = toy_metric_from_receivers(graph, corrupt_receivers)
+    edge_deltas = planted_edge_deltas(graph)
+    effects = t.empty_like(edge_deltas)
+    for sender_index in range(edge_deltas.shape[0]):
+        for receiver_index in range(edge_deltas.shape[1]):
+            patched = corrupt_receivers.clone()
+            patched[receiver_index] += edge_deltas[sender_index, receiver_index]
+            effects[sender_index, receiver_index] = (
+                toy_metric_from_receivers(graph, patched) - baseline
+            )
+    return effects
+
+
+def receiver_path_gradients(
+    graph: PlantedAttributionGraph,
+    *,
+    steps: int = 64,
+) -> t.Tensor:
+    """Evaluate metric gradients with respect to receiver nodes along the path."""
+
+    if steps <= 0:
+        raise ValueError("steps must be positive.")
+    corrupt = graph.weights @ graph.corrupt_sender
+    clean = graph.weights @ graph.clean_sender
+    delta = clean - corrupt
+    gradients = []
+    for alpha in (t.arange(steps, dtype=t.float64) + 0.5) / steps:
+        receivers = (corrupt + alpha * delta).detach().requires_grad_(True)
+        gradients.append(
+            t.autograd.grad(toy_metric_from_receivers(graph, receivers), receivers)[0]
+        )
+    return t.stack(gradients)
+
+
+def eap_edge_scores(
+    edge_deltas: t.Tensor,
+    receiver_gradients: t.Tensor,
+) -> t.Tensor:
+    """Multiply every edge delta by the downstream receiver gradient."""
+
+    if edge_deltas.ndim != 2:
+        raise ValueError("edge_deltas must have shape (sender, receiver).")
+    if receiver_gradients.shape != (edge_deltas.shape[1],):
+        raise ValueError("receiver_gradients must have one value per receiver.")
+    _require_finite_tensor(edge_deltas, "edge_deltas")
+    _require_finite_tensor(receiver_gradients, "receiver_gradients")
+    return edge_deltas * receiver_gradients[None, :]
+
+
+def corrupt_receiver_gradients(graph: PlantedAttributionGraph) -> t.Tensor:
+    """Return downstream gradients at the corrupt receiver state."""
+
+    receivers = (graph.weights @ graph.corrupt_sender).detach().requires_grad_(True)
+    return t.autograd.grad(toy_metric_from_receivers(graph, receivers), receivers)[0]
+
+
+def agreement_metrics(
+    exact_scores: t.Tensor,
+    approx_scores: t.Tensor,
+    *,
+    top_k: int,
+    false_negative_threshold: float = 0.5,
+) -> AgreementMetrics:
+    """Measure ranking agreement and distinguish it from completeness."""
+
+    exact = exact_scores.flatten().to(dtype=t.float64)
+    approx = approx_scores.flatten().to(dtype=t.float64)
+    if exact.shape != approx.shape or exact.numel() < 2:
+        raise ValueError("exact_scores and approx_scores must match and contain two values.")
+    if not 0 < top_k <= exact.numel():
+        raise ValueError("top_k must index at least one available score.")
+    _require_finite_tensor(exact, "exact_scores")
+    _require_finite_tensor(approx, "approx_scores")
+    centered_exact = exact - exact.mean()
+    centered_approx = approx - approx.mean()
+    denom = centered_exact.norm() * centered_approx.norm()
+    correlation = 0.0 if denom.item() == 0 else float(
+        (centered_exact @ centered_approx / denom).item()
+    )
+    exact_top = set(exact.abs().topk(top_k).indices.tolist())
+    approx_top = set(approx.abs().topk(top_k).indices.tolist())
+    false_negatives = tuple(
+        int(index)
+        for index in (
+            (exact.abs() >= false_negative_threshold)
+            & (approx.abs() < false_negative_threshold)
+        ).nonzero(as_tuple=False).flatten().tolist()
+    )
+    return AgreementMetrics(
+        correlation=correlation,
+        topk_overlap=len(exact_top & approx_top) / top_k,
+        mean_absolute_error=float((exact - approx).abs().mean().item()),
+        false_negative_indices=false_negatives,
+    )
+
+
+def linear_positive_control(graph: PlantedAttributionGraph) -> float:
+    """Verify first-order attribution is exact when the downstream metric is linear."""
+
+    receiver_weights = t.tensor([1.2, 0.6, 0.8, 0.0], dtype=t.float64)
+
+    def linear_metric(sender: t.Tensor) -> t.Tensor:
+        return receiver_weights @ (graph.weights @ sender)
+
+    baseline = linear_metric(graph.corrupt_sender)
+    exact = []
+    for index in range(graph.clean_sender.numel()):
+        patched = graph.corrupt_sender.clone()
+        patched[index] = graph.clean_sender[index]
+        exact.append(linear_metric(patched) - baseline)
+    sender = graph.corrupt_sender.clone().requires_grad_(True)
+    gradient = t.autograd.grad(linear_metric(sender), sender)[0]
+    attribution = (graph.clean_sender - graph.corrupt_sender) * gradient
+    return float((t.stack(exact) - attribution).abs().max().item())
+
+
+def run_planted_signature_result(
+    *,
+    gate_strength: float = 1.4,
+    ig_steps: int = 64,
+) -> ToySignatureResult:
+    """Run the exact-vs-approximate experiment that anchors section 8.2."""
+
+    graph = make_planted_attribution_graph(gate_strength=gate_strength)
+    exact_nodes = exact_node_patch_effects(graph)
+    attribution_nodes = first_order_node_attribution(graph)
+    integrated_nodes = integrated_gradient_node_scores(graph, steps=ig_steps)
+    exact_edges = exact_edge_patch_effects(graph)
+    edge_deltas = planted_edge_deltas(graph)
+    eap_edges = eap_edge_scores(edge_deltas, corrupt_receiver_gradients(graph))
+    eap_ig_edges = eap_edge_scores(
+        edge_deltas,
+        receiver_path_gradients(graph, steps=ig_steps).mean(dim=0),
+    )
+    shuffled = eap_edge_scores(
+        edge_deltas[t.tensor([2, 0, 3, 1])],
+        receiver_path_gradients(graph, steps=ig_steps).mean(dim=0),
+    )
+    shuffled_metrics = agreement_metrics(exact_edges, shuffled, top_k=3)
+    full_metric_delta = float(
+        (toy_metric(graph, graph.clean_sender) - toy_metric(graph, graph.corrupt_sender)).item()
+    )
+    return ToySignatureResult(
+        exact_nodes=exact_nodes,
+        attribution_nodes=attribution_nodes,
+        integrated_nodes=integrated_nodes,
+        exact_edges=exact_edges,
+        eap_edges=eap_edges,
+        eap_ig_edges=eap_ig_edges,
+        node_attribution=agreement_metrics(exact_nodes, attribution_nodes, top_k=2),
+        node_integrated=agreement_metrics(exact_nodes, integrated_nodes, top_k=2),
+        edge_eap=agreement_metrics(exact_edges, eap_edges, top_k=3),
+        edge_eap_ig=agreement_metrics(exact_edges, eap_ig_edges, top_k=3),
+        full_metric_delta=full_metric_delta,
+        node_ig_conservation_error=abs(
+            float(integrated_nodes.sum().item() - full_metric_delta)
+        ),
+        edge_ig_conservation_error=abs(
+            float(eap_ig_edges.sum().item() - full_metric_delta)
+        ),
+        linear_control_max_error=linear_positive_control(graph),
+        shuffled_edge_correlation=shuffled_metrics.correlation,
+        shuffled_edge_topk_overlap=shuffled_metrics.topk_overlap,
+    )
+
+
 def attribution_scores_smoke_test() -> list[float]:
     clean = t.tensor([[2.0, 0.0], [0.0, 3.0]])
     corrupt = t.zeros_like(clean)
@@ -376,6 +700,7 @@ def false_negative_smoke_test() -> dict:
 
 def run_smoke_test(cpu: bool = True) -> dict:
     _ = cpu
+    signature = run_planted_signature_result()
     return {
         "attribution_scores": attribution_scores_smoke_test(),
         "integrated_gradients": integrated_gradients_smoke_test(),
@@ -384,6 +709,22 @@ def run_smoke_test(cpu: bool = True) -> dict:
         "topk_overlap": topk_overlap_smoke_test(),
         "runtime": runtime_smoke_test(),
         "false_negative": false_negative_smoke_test(),
+        "toy_signature": {
+            "full_metric_delta": signature.full_metric_delta,
+            "node_attribution_correlation": signature.node_attribution.correlation,
+            "node_integrated_correlation": signature.node_integrated.correlation,
+            "node_attribution_top2_overlap": signature.node_attribution.topk_overlap,
+            "node_integrated_top2_overlap": signature.node_integrated.topk_overlap,
+            "edge_eap_correlation": signature.edge_eap.correlation,
+            "edge_eap_ig_correlation": signature.edge_eap_ig.correlation,
+            "edge_eap_top3_overlap": signature.edge_eap.topk_overlap,
+            "edge_eap_ig_top3_overlap": signature.edge_eap_ig.topk_overlap,
+            "node_ig_conservation_error": signature.node_ig_conservation_error,
+            "edge_ig_conservation_error": signature.edge_ig_conservation_error,
+            "linear_control_max_error": signature.linear_control_max_error,
+            "shuffled_edge_correlation": signature.shuffled_edge_correlation,
+            "shuffled_edge_top3_overlap": signature.shuffled_edge_topk_overlap,
+        },
     }
 
 
@@ -661,7 +1002,30 @@ def run_transformerlens_attribution_patching_preflight(max_vram_gb: float = 24.0
 
 
 def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
-    return run_transformerlens_attribution_patching_preflight(max_vram_gb=max_vram_gb)
+    gpu = run_transformerlens_attribution_patching_preflight(max_vram_gb=max_vram_gb)
+    signature = run_planted_signature_result()
+    return {
+        **gpu,
+        "cpu_signature_claim": (
+            "Path integration recovers the planted nonlinear route that corrupt-point "
+            "attribution misses."
+        ),
+        "cpu_full_metric_delta": signature.full_metric_delta,
+        "cpu_node_attribution_correlation": signature.node_attribution.correlation,
+        "cpu_node_integrated_correlation": signature.node_integrated.correlation,
+        "cpu_node_attribution_top2_overlap": signature.node_attribution.topk_overlap,
+        "cpu_node_integrated_top2_overlap": signature.node_integrated.topk_overlap,
+        "cpu_edge_eap_correlation": signature.edge_eap.correlation,
+        "cpu_edge_eap_ig_correlation": signature.edge_eap_ig.correlation,
+        "cpu_edge_eap_top3_overlap": signature.edge_eap.topk_overlap,
+        "cpu_edge_eap_ig_top3_overlap": signature.edge_eap_ig.topk_overlap,
+        "cpu_node_ig_conservation_error": signature.node_ig_conservation_error,
+        "cpu_edge_ig_conservation_error": signature.edge_ig_conservation_error,
+        "cpu_linear_control_max_error": signature.linear_control_max_error,
+        "cpu_shuffled_edge_correlation": signature.shuffled_edge_correlation,
+        "cpu_shuffled_edge_top3_overlap": signature.shuffled_edge_topk_overlap,
+        "gpu_preflight_required_for_release": True,
+    }
 
 
 def run_full_experiment(max_vram_gb: float = 24.0) -> dict:
