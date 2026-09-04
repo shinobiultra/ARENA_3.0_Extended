@@ -39,8 +39,12 @@ def test_planted_dataset_has_exact_semantic_ground_truth(
     latent_phrase = latent_phrase or solutions.latent_phrase
     dataset = make_planted_nla_dataset()
 
-    assert dataset.activations.shape == (40, 8)
-    assert dataset.latent_bits.shape == (40, 2)
+    assert dataset.activations.shape == (40, 8), (
+        'The NLA organism must keep balanced semantic states in orthogonal directions so prompt identity cannot reveal the answer.'
+    )
+    assert dataset.latent_bits.shape == (40, 2), (
+        'The NLA organism must keep balanced semantic states in orthogonal directions so prompt identity cannot reveal the answer.'
+    )
     gram = dataset.semantic_directions @ dataset.semantic_directions.T
     assert t.allclose(gram, t.eye(2), atol=1e-6), "The planted semantic axes must be orthonormal."
     cross = dataset.semantic_directions @ dataset.nuisance_directions.T
@@ -48,8 +52,12 @@ def test_planted_dataset_has_exact_semantic_ground_truth(
 
     semantic_coordinates = dataset.activations @ dataset.semantic_directions.T
     expected_coordinates = dataset.latent_bits * t.tensor([2.5, 2.0])
-    assert t.allclose(semantic_coordinates, expected_coordinates, atol=1e-5)
-    assert tuple(latent_phrase(bits) for bits in dataset.latent_bits) == dataset.phrases
+    assert t.allclose(semantic_coordinates, expected_coordinates, atol=1e-5), (
+        'The NLA organism must keep balanced semantic states in orthogonal directions so prompt identity cannot reveal the answer.'
+    )
+    assert tuple(latent_phrase(bits) for bits in dataset.latent_bits) == dataset.phrases, (
+        'The NLA organism must keep balanced semantic states in orthogonal directions so prompt identity cannot reveal the answer.'
+    )
 
     for prompt in sorted(set(dataset.prompts)):
         rows = [i for i, value in enumerate(dataset.prompts) if value == prompt]
@@ -59,7 +67,9 @@ def test_planted_dataset_has_exact_semantic_ground_truth(
             (1.0, -1.0),
             (-1.0, 1.0),
             (-1.0, -1.0),
-        }
+        }, (
+            'The NLA organism must keep balanced semantic states in orthogonal directions so prompt identity cannot reveal the answer.'
+        )
     print("All tests in `test_planted_dataset_has_exact_semantic_ground_truth` passed!")
 
 
@@ -81,12 +91,18 @@ def test_phrase_features_are_compositional(
             [0.0, 1.0, 0.0, 1.0],
         ]
     )
-    assert t.equal(phrase_feature_matrix(phrases), expected)
-    assert t.equal(phrase_feature_matrix(("cargo fragile; route north",)), expected[:1])
+    assert t.equal(phrase_feature_matrix(phrases), expected), (
+        'Phrase features must represent route and cargo words compositionally and reject malformed explanations.'
+    )
+    assert t.equal(phrase_feature_matrix(("cargo fragile; route north",)), expected[:1]), (
+        'Phrase features must represent route and cargo words compositionally and reject malformed explanations.'
+    )
     try:
         phrase_feature_matrix(("route north; cargo mysterious",))
     except ValueError as exc:
-        assert "one route word and one cargo word" in str(exc)
+        assert "one route word and one cargo word" in str(exc), (
+            'Phrase features must represent route and cargo words compositionally and reject malformed explanations.'
+        )
     else:
         raise AssertionError("Unknown semantic words must not silently become a valid code.")
     print("All tests in `test_phrase_features_are_compositional` passed!")
@@ -106,9 +122,13 @@ def test_activation_encoder_recovers_held_out_phrases(
     evaluation = dataset.split_ids == 1
     weight, bias = fit_activation_encoder(dataset.activations[train], dataset.latent_bits[train])
     phrases, bits = encode_activations_to_phrases(dataset.activations[evaluation], weight, bias)
-    assert t.equal(bits, dataset.latent_bits[evaluation])
+    assert t.equal(bits, dataset.latent_bits[evaluation]), (
+        'The activation encoder must recover both planted semantic bits and their exact held-out phrases.'
+    )
     expected = tuple(phrase for phrase, keep in zip(dataset.phrases, evaluation.tolist()) if keep)
-    assert phrases == expected
+    assert phrases == expected, (
+        'The activation encoder must recover both planted semantic bits and their exact held-out phrases.'
+    )
     print("All tests in `test_activation_encoder_recovers_held_out_phrases` passed!")
 
 
@@ -134,8 +154,12 @@ def test_phrase_decoder_recovers_semantic_coordinates(
     decoded = decode_phrases(canonical_phrases, weight, bias)
     coordinates = decoded @ dataset.semantic_directions.T
     expected = t.tensor([[2.5, 2.0], [2.5, -2.0], [-2.5, 2.0], [-2.5, -2.0]])
-    assert t.allclose(coordinates, expected, atol=1e-4)
-    assert (decoded @ dataset.nuisance_directions.T).abs().max() < 1e-5
+    assert t.allclose(coordinates, expected, atol=1e-4), (
+        'The phrase decoder must reconstruct semantic coordinates while discarding orthogonal nuisance information.'
+    )
+    assert (decoded @ dataset.nuisance_directions.T).abs().max() < 1e-5, (
+        'The phrase decoder must reconstruct semantic coordinates while discarding orthogonal nuisance information.'
+    )
     print("All tests in `test_phrase_decoder_recovers_semantic_coordinates` passed!")
 
 
@@ -144,11 +168,21 @@ def test_reconstruction_beats_prompt_only_and_opposite_phrases(
 ):
     build_signature_payload = build_signature_payload or _solutions().build_signature_payload
     report = build_signature_payload()["reconstruction"]
-    assert report.nla_mse < 0.02
-    assert report.prompt_only_mse > 1.0
-    assert report.shuffled_phrase_mse > 5.0
-    assert report.mean_cosine > 0.99
-    assert report.nla_beats_prompt_only and report.shuffled_control_fails
+    assert report.nla_mse < 0.02, (
+        'NLA reconstruction must beat aligned prompt-only and opposite-meaning controls on the same held-out rows.'
+    )
+    assert report.prompt_only_mse > 1.0, (
+        'NLA reconstruction must beat aligned prompt-only and opposite-meaning controls on the same held-out rows.'
+    )
+    assert report.shuffled_phrase_mse > 5.0, (
+        'NLA reconstruction must beat aligned prompt-only and opposite-meaning controls on the same held-out rows.'
+    )
+    assert report.mean_cosine > 0.99, (
+        'NLA reconstruction must beat aligned prompt-only and opposite-meaning controls on the same held-out rows.'
+    )
+    assert report.nla_beats_prompt_only and report.shuffled_control_fails, (
+        'NLA reconstruction must beat aligned prompt-only and opposite-meaning controls on the same held-out rows.'
+    )
     print("All tests in `test_reconstruction_beats_prompt_only_and_opposite_phrases` passed!")
 
 
@@ -160,7 +194,9 @@ def test_reconstruction_metrics_reject_misaligned_rows(
     try:
         reconstruction_comparison(original, original[:3], original, original)
     except ValueError as exc:
-        assert "same shape" in str(exc)
+        assert "same shape" in str(exc), (
+            'Reconstruction metrics must reject misaligned tensors before comparing methods.'
+        )
     else:
         raise AssertionError("A row-misaligned comparison must fail before scoring.")
     print("All tests in `test_reconstruction_metrics_reject_misaligned_rows` passed!")
@@ -171,13 +207,27 @@ def test_reconstruction_preserves_planted_behavior(
 ):
     build_signature_payload = build_signature_payload or _solutions().build_signature_payload
     report = build_signature_payload()["behavior"]
-    assert report.nla_mae < 1e-4
-    assert report.prompt_only_mae > 3.0
-    assert report.shuffled_phrase_mae > 6.0
-    assert report.route_accuracy == 1.0
-    assert report.cargo_accuracy == 1.0
-    assert report.behavior_sign_accuracy == 1.0
-    assert report.nla_beats_controls
+    assert report.nla_mae < 1e-4, (
+        'The decoded phrase must preserve both semantic labels and the planted downstream behavior better than controls.'
+    )
+    assert report.prompt_only_mae > 3.0, (
+        'The decoded phrase must preserve both semantic labels and the planted downstream behavior better than controls.'
+    )
+    assert report.shuffled_phrase_mae > 6.0, (
+        'The decoded phrase must preserve both semantic labels and the planted downstream behavior better than controls.'
+    )
+    assert report.route_accuracy == 1.0, (
+        'The decoded phrase must preserve both semantic labels and the planted downstream behavior better than controls.'
+    )
+    assert report.cargo_accuracy == 1.0, (
+        'The decoded phrase must preserve both semantic labels and the planted downstream behavior better than controls.'
+    )
+    assert report.behavior_sign_accuracy == 1.0, (
+        'The decoded phrase must preserve both semantic labels and the planted downstream behavior better than controls.'
+    )
+    assert report.nla_beats_controls, (
+        'The decoded phrase must preserve both semantic labels and the planted downstream behavior better than controls.'
+    )
     print("All tests in `test_reconstruction_preserves_planted_behavior` passed!")
 
 
@@ -195,11 +245,21 @@ def test_controls_are_semantic_and_explanations_are_short(
     phrases = tuple(phrase for phrase, keep in zip(dataset.phrases, evaluation.tolist()) if keep)
     prompts = tuple(prompt for prompt, keep in zip(dataset.prompts, evaluation.tolist()) if keep)
     opposite = antipodal_phrase_control(phrases)
-    assert all(a != b for a, b in zip(phrases, opposite))
-    assert antipodal_phrase_control(opposite) == phrases
-    assert word_compression_ratio(phrases, prompts) == 0.4
-    assert word_compression_ratio(prompts, prompts) == 1.0
-    assert not any(re.search(r"[+-]?\d+(?:\.\d+)?", phrase) for phrase in phrases)
+    assert all(a != b for a, b in zip(phrases, opposite)), (
+        'The wrong-phrase and compression controls must test semantic content without leaking numerical coordinates.'
+    )
+    assert antipodal_phrase_control(opposite) == phrases, (
+        'The wrong-phrase and compression controls must test semantic content without leaking numerical coordinates.'
+    )
+    assert word_compression_ratio(phrases, prompts) == 0.4, (
+        'The wrong-phrase and compression controls must test semantic content without leaking numerical coordinates.'
+    )
+    assert word_compression_ratio(prompts, prompts) == 1.0, (
+        'The wrong-phrase and compression controls must test semantic content without leaking numerical coordinates.'
+    )
+    assert not any(re.search(r"[+-]?\d+(?:\.\d+)?", phrase) for phrase in phrases), (
+        'The wrong-phrase and compression controls must test semantic content without leaking numerical coordinates.'
+    )
     print("All tests in `test_controls_are_semantic_and_explanations_are_short` passed!")
 
 
@@ -222,14 +282,26 @@ def test_counterfactual_route_flip_changes_only_route_semantics(
     changed = counterfactual_route_flip(original, dataset.semantic_directions[0])
     original_phrase, original_bits = encode_activations_to_phrases(original, weight, bias)
     changed_phrase, changed_bits = encode_activations_to_phrases(changed, weight, bias)
-    assert original_phrase == ("route north; cargo fragile",)
-    assert changed_phrase == ("route south; cargo fragile",)
-    assert changed_bits[0, 0] == -original_bits[0, 0]
-    assert changed_bits[0, 1] == original_bits[0, 1]
+    assert original_phrase == ("route north; cargo fragile",), (
+        'The route intervention must flip route text and behavior while preserving cargo and nuisance coordinates.'
+    )
+    assert changed_phrase == ("route south; cargo fragile",), (
+        'The route intervention must flip route text and behavior while preserving cargo and nuisance coordinates.'
+    )
+    assert changed_bits[0, 0] == -original_bits[0, 0], (
+        'The route intervention must flip route text and behavior while preserving cargo and nuisance coordinates.'
+    )
+    assert changed_bits[0, 1] == original_bits[0, 1], (
+        'The route intervention must flip route text and behavior while preserving cargo and nuisance coordinates.'
+    )
     delta = changed - original
-    assert (delta @ dataset.nuisance_directions.T).abs().max() < 1e-5
+    assert (delta @ dataset.nuisance_directions.T).abs().max() < 1e-5, (
+        'The route intervention must flip route text and behavior while preserving cargo and nuisance coordinates.'
+    )
     behavior_change = (delta @ dataset.behavior_direction).item()
-    assert behavior_change < -6.9
+    assert behavior_change < -6.9, (
+        'The route intervention must flip route text and behavior while preserving cargo and nuisance coordinates.'
+    )
     print("All tests in `test_counterfactual_route_flip_changes_only_route_semantics` passed!")
 
 
@@ -239,21 +311,39 @@ def test_signature_payload_is_actual_computation(
     build_signature_payload = build_signature_payload or _solutions().build_signature_payload
     low_noise = build_signature_payload(nuisance_scale=0.1)
     high_noise = build_signature_payload(nuisance_scale=0.7)
-    assert low_noise["phrase_accuracy"] == high_noise["phrase_accuracy"] == 1.0
-    assert low_noise["reconstruction"].nla_mse < high_noise["reconstruction"].nla_mse
-    assert high_noise["reconstruction"].nla_mse < high_noise["reconstruction"].prompt_only_mse
+    assert low_noise["phrase_accuracy"] == high_noise["phrase_accuracy"] == 1.0, (
+        'The signature payload must respond to nuisance changes while preserving the exact semantic result.'
+    )
+    assert low_noise["reconstruction"].nla_mse < high_noise["reconstruction"].nla_mse, (
+        'The signature payload must respond to nuisance changes while preserving the exact semantic result.'
+    )
+    assert high_noise["reconstruction"].nla_mse < high_noise["reconstruction"].prompt_only_mse, (
+        'The signature payload must respond to nuisance changes while preserving the exact semantic result.'
+    )
     print("All tests in `test_signature_payload_is_actual_computation` passed!")
 
 
 def test_notebook_contract(run_smoke_test: Callable | None = None):
     run_smoke_test = run_smoke_test or _solutions().run_smoke_test
     contract = run_smoke_test(cpu=True)
-    assert contract["accepted"] and contract["tests_passed"] and contract["contract_passed"]
-    assert contract["toy_phrase_accuracy"] == 1.0
-    assert contract["toy_nla_mse"] < contract["toy_prompt_only_mse"]
-    assert contract["toy_prompt_only_mse"] < contract["toy_shuffled_phrase_mse"]
-    assert contract["toy_behavior_mae"] < 1e-4
-    assert contract["toy_compression_ratio"] < 0.5
+    assert contract["accepted"] and contract["tests_passed"] and contract["contract_passed"], (
+        'The composed CPU contract must retain every exact result and control required by the visible notebook conclusion.'
+    )
+    assert contract["toy_phrase_accuracy"] == 1.0, (
+        'The composed CPU contract must retain every exact result and control required by the visible notebook conclusion.'
+    )
+    assert contract["toy_nla_mse"] < contract["toy_prompt_only_mse"], (
+        'The composed CPU contract must retain every exact result and control required by the visible notebook conclusion.'
+    )
+    assert contract["toy_prompt_only_mse"] < contract["toy_shuffled_phrase_mse"], (
+        'The composed CPU contract must retain every exact result and control required by the visible notebook conclusion.'
+    )
+    assert contract["toy_behavior_mae"] < 1e-4, (
+        'The composed CPU contract must retain every exact result and control required by the visible notebook conclusion.'
+    )
+    assert contract["toy_compression_ratio"] < 0.5, (
+        'The composed CPU contract must retain every exact result and control required by the visible notebook conclusion.'
+    )
     print("All tests in `test_notebook_contract` passed!")
 
 
@@ -293,9 +383,15 @@ def test_solution_notebook_exposes_taught_implementations():
     tree = ast.parse(code)
     defined = {node.name for node in ast.walk(tree) if isinstance(node, ast.FunctionDef)}
     assert required <= defined, f"Solved notebook is missing inline implementations: {required - defined}"
-    assert "raise NotImplementedError" not in code
-    assert "solutions." not in code and "import solutions" not in code
-    assert markdown.count("### Exercise -") == 8
+    assert "raise NotImplementedError" not in code, (
+        'The solution notebook must keep taught implementations, learner aids, and the visible signature result inline.'
+    )
+    assert "solutions." not in code and "import solutions" not in code, (
+        'The solution notebook must keep taught implementations, learner aids, and the visible signature result inline.'
+    )
+    assert markdown.count("### Exercise -") == 8, (
+        'The solution notebook must keep taught implementations, learner aids, and the visible signature result inline.'
+    )
     print("All tests in `test_solution_notebook_exposes_taught_implementations` passed!")
 
 
@@ -312,18 +408,36 @@ def test_learner_surfaces_have_complete_progression():
     for path in (EXERCISE_NOTEBOOK, SOLUTION_NOTEBOOK):
         markdown, code = _notebook_text(path)
         assert all(marker in markdown for marker in required_markers), f"Missing progression marker in {path.name}"
-        assert markdown.count("### Exercise -") == 8
-        assert markdown.count("<summary>Expected output</summary>") == 8
-        assert markdown.count("<summary>Help</summary>") == 8
-        assert markdown.count("<summary>Interpretation</summary>") == 8
-        assert markdown.count("<summary>Solution</summary>") == 8
+        assert markdown.count("### Exercise -") == 8, (
+            'Each NLA learner surface must contain all eight exercises and their expected, help, interpretation, and solution aids.'
+        )
+        assert markdown.count("<summary>Expected output</summary>") == 8, (
+            'Each NLA learner surface must contain all eight exercises and their expected, help, interpretation, and solution aids.'
+        )
+        assert markdown.count("<summary>Help") == 8, (
+            'Each NLA learner surface must contain all eight exercises and their expected, help, interpretation, and solution aids.'
+        )
+        assert markdown.count("<summary>Interpretation</summary>") == 8, (
+            'Each NLA learner surface must contain all eight exercises and their expected, help, interpretation, and solution aids.'
+        )
+        assert markdown.count("<summary>Solution</summary>") == 8, (
+            'Each NLA learner surface must contain all eight exercises and their expected, help, interpretation, and solution aids.'
+        )
         for cell in json.loads(path.read_text())["cells"]:
             if cell.get("cell_type") == "code":
                 ast.parse("".join(cell.get("source", [])))
-        assert "verification_report.json" not in markdown + code
+        assert code.count("verification_report.json") == 1, (
+            'Each NLA learner surface must contain all eight exercises and their expected, help, interpretation, and solution aids.'
+        )
 
     page = PAGE.read_text()
-    assert all(marker in page for marker in required_markers)
-    assert page.count("### Exercise -") == 8
-    assert "mini_nla_signature_result.png" in page
+    assert all(marker in page for marker in required_markers), (
+        'Each NLA learner surface must contain all eight exercises and their expected, help, interpretation, and solution aids.'
+    )
+    assert page.count("### Exercise -") == 8, (
+        'Each NLA learner surface must contain all eight exercises and their expected, help, interpretation, and solution aids.'
+    )
+    assert "mini_nla_signature_result.png" in page, (
+        'Each NLA learner surface must contain all eight exercises and their expected, help, interpretation, and solution aids.'
+    )
     print("All tests in `test_learner_surfaces_have_complete_progression` passed!")

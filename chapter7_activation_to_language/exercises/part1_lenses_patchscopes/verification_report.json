@@ -82,9 +82,9 @@
       "train_prompt_count": 16
     }
   ],
-  "date_run": "2026-07-02T13:41:25+00:00",
+  "date_run": "2026-09-04T08:42:29+00:00",
   "evidence_level": "toy_lens_contract_plus_pinned_transformerlens_affine_lens_patchscope_preflight",
-  "git_commit": "b443cf72",
+  "git_commit": "b6c4854d",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-1",
   "known_failures": [],
@@ -360,7 +360,7 @@
   "peak_vram_gb": 0.2957010269165039,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "847961f1193189e805a009e7c80d517f45e970eb18949deafa7df8bcf290d29e",
+    "combined_sha256": "e9558980a81b7e55d7ea5a9b5770140f292ad595a7de9e91abe812cf07a56fe7",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -369,13 +369,13 @@
       },
       {
         "path": "chapter7_activation_to_language/exercises/part1_lenses_patchscopes/7.1_Logit_Lens_Tuned_Lens_and_Patchscopes_exercises.ipynb",
-        "sha256": "ec4b3b9916e5ae0ec94cb8cc8bd6815e7a8da35569f8fd6f46b59236a7816563",
-        "size_bytes": 55063
+        "sha256": "33b8de41f776c265da17ea97c65ab94f67e38fd37c2fc2529405f9f901934d78",
+        "size_bytes": 55221
       },
       {
         "path": "chapter7_activation_to_language/exercises/part1_lenses_patchscopes/7.1_Logit_Lens_Tuned_Lens_and_Patchscopes_solutions.ipynb",
-        "sha256": "420d9ee62555ce52eaef93e23748f91d80c1aa74ebea65487dc49d4ac6add43f",
-        "size_bytes": 63177
+        "sha256": "ea69ca28ac447efa1defb4f1cdebbf3ceb151d7b4f26fdfb3ad605921d940d19",
+        "size_bytes": 67734
       },
       {
         "path": "chapter7_activation_to_language/exercises/part1_lenses_patchscopes/README.md",
@@ -424,13 +424,13 @@
       },
       {
         "path": "chapter7_activation_to_language/instructions/pages/01_[7.1]_Logit_Lens_Tuned_Lens_and_Patchscopes.md",
-        "sha256": "2ea494cf987eb2cd8fd390502056aa845344f74f2c98c6e13983ea15b182549f",
-        "size_bytes": 25115
+        "sha256": "e74831b75078660bfc24ddf67d4b8f20e1bb086bc12c9f3a7a8c4610401b9e37",
+        "size_bytes": 25255
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
-        "sha256": "660040f459d07535deb9e0c34ffddb496c13b8770044ae380d3a8e45b0c8fb2b",
-        "size_bytes": 16080
+        "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
+        "size_bytes": 16272
       }
     ],
     "schema_version": 1
@@ -440,5 +440,5 @@
     "The real-model path uses safe generic prompts and reads cached activations, logits, and attention values from a small public TransformerLens checkpoint. It does not use unsafe prompts, gated weights, or generated completions."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 8.959283
+  "wall_clock_seconds": 5.47651
 }

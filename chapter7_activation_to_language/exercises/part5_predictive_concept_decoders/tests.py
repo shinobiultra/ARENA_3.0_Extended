@@ -1076,10 +1076,24 @@ def test_solution_notebook_exposes_taught_implementations():
         "The solution notebook must expose the taught implementations inline; "
         f"missing {missing}."
     )
-    assert "## Learning Objectives" in markdown
-    assert "## Signature Result" in markdown
-    assert "## Try It Yourself" in markdown
-    assert "<summary>Expected output</summary>" in markdown
-    assert "<summary>Solution</summary>" in markdown
-    assert "<summary>Help" in markdown
-    assert "<summary>Interpretation</summary>" in markdown
+    assert "## Learning Objectives" in markdown, (
+        'The solution notebook must keep taught implementations, learner aids, and the visible signature result inline.'
+    )
+    assert "## Signature Result" in markdown, (
+        'The solution notebook must keep taught implementations, learner aids, and the visible signature result inline.'
+    )
+    assert "## Try It Yourself" in markdown, (
+        'The solution notebook must keep taught implementations, learner aids, and the visible signature result inline.'
+    )
+    assert "<summary>Expected output</summary>" in markdown, (
+        'The solution notebook must keep taught implementations, learner aids, and the visible signature result inline.'
+    )
+    assert "<summary>Solution</summary>" in markdown, (
+        'The solution notebook must keep taught implementations, learner aids, and the visible signature result inline.'
+    )
+    assert "<summary>Help" in markdown, (
+        'The solution notebook must keep taught implementations, learner aids, and the visible signature result inline.'
+    )
+    assert "<summary>Interpretation</summary>" in markdown, (
+        'The solution notebook must keep taught implementations, learner aids, and the visible signature result inline.'
+    )

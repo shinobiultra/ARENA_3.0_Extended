@@ -12,6 +12,12 @@
       "toy_brevity_contract",
       "toy_counterfactual_explanation_contract",
       "toy_trainable_discrete_nla_bottleneck_contract",
+      "exact_paired_prompt_information_limit",
+      "exact_orthogonal_semantic_and_nuisance_directions",
+      "compositional_word_features_not_phrase_ids",
+      "opposite_meaning_phrase_control",
+      "prompt_copy_compression_failure",
+      "route_only_counterfactual_reflection",
       "pinned_transformerlens_gelu1l_live_trainable_phrase_bottleneck_reconstruction",
       "no_activation_mean_reconstruction_baseline",
       "prompt_label_text_only_reconstruction_baseline",
@@ -72,6 +78,16 @@
       "text_only_mse_min": 0.21,
       "text_only_prediction_accuracy": 0.5,
       "tokenizer_revision": "0f6671571a20be9756b9991d978047c03b75e749",
+      "toy_behavior_mae_max": 0.0001,
+      "toy_cargo_accuracy": 1.0,
+      "toy_compression_ratio_max": 0.5,
+      "toy_nla_mse_max": 0.02,
+      "toy_phrase_accuracy": 1.0,
+      "toy_prompt_only_behavior_mae_min": 3.0,
+      "toy_prompt_only_mse_min": 1.0,
+      "toy_route_accuracy": 1.0,
+      "toy_shuffled_behavior_mae_min": 6.0,
+      "toy_shuffled_phrase_mse_min": 5.0,
       "train_example_count": 12,
       "trainable_beats_blank_text": true,
       "trainable_blank_text_mse_min": 0.2,
@@ -89,12 +105,21 @@
       "trainable_training_steps": 300
     }
   },
-  "claim_scope": "GT-3 mini Natural Language Autoencoder preflight: reusable toy activation-batch, reconstruction, logit-diff, latent-preservation, brevity, and counterfactual contracts are kept for learner exercises, then a pinned TransformerLens gelu-1l checkpoint is loaded on CUDA. The report trains a small linear residual-to-phrase-id encoder and trainable phrase-id-to-residual decoder table on real final-token residuals, transmits only short discrete natural-language phrase ids, and validates held-out activation MSE against blank-text and prompt-label baselines, direction-probe logit-diff preservation, latent preservation, OOD long-context prompts, brevity, no-numeric-payload checks, shuffled-text controls, and counterfactual explanation changes. This is a live local phrase-bottleneck mini-NLA preflight, not Anthropic-scale NLA training or a claim of faithful natural-language explanation of arbitrary activations.",
+  "claim_scope": "The learner-facing GT-0 result proves that a four-phrase compositional bottleneck recovers two planted semantic variables from held-out activations and preserves their exact downstream readout while prompt-only and opposite-phrase controls fail. Every visible prompt is paired with all four latent states, so the text-only information limit is exact. A pinned TransformerLens gelu-1l CUDA run remains supporting GT-3 evidence for a small residual phrase bottleneck. Neither result claims free-form explanation generation, discovery of unknown concepts, arbitrary residual reconstruction, or Anthropic-scale NLA training.",
   "datasets": [
     {
-      "id": "7_4_mini_natural_language_autoencoders_toy_inputs",
+      "d_model": 8,
+      "eval_prompt_count": 4,
+      "id": "7_4_exact_courier_state_model_organism",
+      "nuisance_scale": 0.35,
+      "paired_hidden_states_per_prompt": 4,
       "seed": 0,
-      "source": "generated"
+      "semantic_variables": [
+        "route_north_vs_south",
+        "cargo_fragile_vs_standard"
+      ],
+      "source": "generated",
+      "train_prompt_count": 6
     },
     {
       "eval_example_count": 8,
@@ -116,9 +141,9 @@
       "train_example_count": 12
     }
   ],
-  "date_run": "2026-07-02T12:43:07+00:00",
-  "evidence_level": "toy_nla_contract_plus_live_trainable_transformerlens_phrase_bottleneck_preflight",
-  "git_commit": "3a539d48",
+  "date_run": "2026-09-04T08:42:52+00:00",
+  "evidence_level": "exact_planted_semantic_ground_truth_plus_live_transformerlens_phrase_bottleneck_preflight",
+  "git_commit": "66aad913",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-3",
   "known_failures": [],
@@ -229,7 +254,7 @@
       "original_probe_accuracy": 1.0,
       "original_word_count": 64,
       "passes_ood": true,
-      "peak_vram_gb": 0.2648811340332031,
+      "peak_vram_gb": 0.2618422508239746,
       "phrase_count": 12,
       "phrase_vocabulary_size": 12,
       "positive_anchor_prompt": "The cat sat on the",
@@ -270,68 +295,19 @@
       "within_vram_budget": true
     },
     "notebook_contract": {
-      "batch": {
-        "activation_shape": [
-          3,
-          3
-        ],
-        "generated_explanations": [
-          "indirect object is Bob",
-          "python function",
-          "stored capital fact"
-        ],
-        "latent_labels": [
-          "ioi",
-          "code",
-          "fact"
-        ]
-      },
-      "brevity": {
-        "compression_ratio": 0.2631578947368421,
-        "generated_word_count": 5,
-        "original_word_count": 19,
-        "shorter_than_original": true
-      },
-      "counterfactual": {
-        "activation_delta": 1.4142135381698608,
-        "counterfactual_explanation": "indirect object is Alice",
-        "explanation_changed": true,
-        "original_explanation": "indirect object is Bob"
-      },
-      "latent_preservation": {
-        "original_probe_accuracy": 1.0,
-        "prediction_agreement": 1.0,
-        "preserves_latents": true,
-        "reconstructed_probe_accuracy": 1.0
-      },
-      "logit_diff": {
-        "mean_abs_error": 0.14999991655349731,
-        "original_logit_diff": 2.0,
-        "preserves_target_logit_diff": true,
-        "reconstructed_logit_diff": 1.9500000476837158
-      },
-      "reconstruction": {
-        "activation_mse": 0.010000002570450306,
-        "beats_text_only": true,
-        "mean_cosine_similarity": 0.9938837289810181,
-        "text_only_mse": 0.5
-      },
-      "trainable_bottleneck": {
-        "beats_blank_text": true,
-        "blank_text_mse": 1.8049999475479126,
-        "decoder_final_mse": 0.006250002421438694,
-        "encoder_final_loss": 0.005493763368576765,
-        "encoder_train_accuracy": 1.0,
-        "eval_phrase_accuracy": 1.0,
-        "generated_explanations": [
-          "positive direction",
-          "negative direction"
-        ],
-        "phrase_count": 2,
-        "reconstruction_mse": 0.0012500000884756446,
-        "seed": 0,
-        "training_steps": 120
-      }
+      "accepted": true,
+      "contract_passed": true,
+      "tests_passed": true,
+      "toy_behavior_mae": 2.7939677238464355e-06,
+      "toy_cargo_accuracy": 1.0,
+      "toy_compression_ratio": 0.4,
+      "toy_nla_mse": 0.015312493778765202,
+      "toy_phrase_accuracy": 1.0,
+      "toy_prompt_only_behavior_mae": 3.499999523162842,
+      "toy_prompt_only_mse": 1.281249761581421,
+      "toy_route_accuracy": 1.0,
+      "toy_shuffled_behavior_mae": 6.999996662139893,
+      "toy_shuffled_phrase_mse": 5.140307903289795
     }
   },
   "models": [
@@ -365,10 +341,10 @@
   "ood_tests": {
     "declared": "required_where_applicable"
   },
-  "peak_vram_gb": 0.2648811340332031,
+  "peak_vram_gb": 0.2618422508239746,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "61c98d9c67959c497f6a6213430db78762e751cf0dd143a27bd74caf38da5e7f",
+    "combined_sha256": "3320ed22d82281155a463f25578149d724a710ed90f2d992ab0c525c4d317307",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -377,48 +353,48 @@
       },
       {
         "path": "chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/7.4_Mini_Natural_Language_Autoencoders_exercises.ipynb",
-        "sha256": "f703cdb4573bf216afc866b34de3cc55ebcef18744c1e9a7689c4c08688bb5c0",
-        "size_bytes": 22544
+        "sha256": "08c6dfc69bdc95e93424b3093a59f3476221f0d69775a756006b145ba4ee4a04",
+        "size_bytes": 54754
       },
       {
         "path": "chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/7.4_Mini_Natural_Language_Autoencoders_solutions.ipynb",
-        "sha256": "edcc50afb06a557043d0e8f8ab0f161347468bafa39321caca55e500f7fc029a",
-        "size_bytes": 10572
+        "sha256": "26d06087f112fa8a7107c7931e0e82f509cefe586717931d0e8124dbf68e1d6e",
+        "size_bytes": 186422
       },
       {
         "path": "chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/README.md",
-        "sha256": "08263eb3b471bb60bb8bc533567066d9cd4002542b4b3fd988657c9099f372a8",
-        "size_bytes": 1320
+        "sha256": "1d6e43cf4bb30dda3631562d573babe61efdb1c70916f158d2fbae524cd4b8d8",
+        "size_bytes": 1535
       },
       {
         "path": "chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/artifacts.lock.yml",
-        "sha256": "aecc73deeff942d3b53837961bddedc68989ba6ba55ee1419d415ad90f64100f",
-        "size_bytes": 5807
+        "sha256": "824b1e5e0e5b368a23eeedd7fa545354059e1c5c82601727da9595d369fe33da",
+        "size_bytes": 6257
       },
       {
         "path": "chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/expected_outputs/README.md",
-        "sha256": "40f1d52cedb8d688defd8573905d91d0f60a4854fac5475ae5538913a297a8b2",
-        "size_bytes": 1786
+        "sha256": "15fb4a528a36503e7f467d617611b38c1091ba05906e8fd01377ffd1bde3e111",
+        "size_bytes": 1796
       },
       {
         "path": "chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/expected_outputs/reference_metrics.json",
-        "sha256": "834160305e202f51dbb793e254d15a0724fa71559a0ef83ab7713ee9407a8138",
-        "size_bytes": 2561
+        "sha256": "ea9c7f7d4d4b40d36f0bdde072f3284779ef35c36dc17e09a5e4651a94ad3ab9",
+        "size_bytes": 729
       },
       {
         "path": "chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/expected_outputs/smoke_test.json",
-        "sha256": "fdedc50a94809e43cbdf66b9898657d988aa9ed6e602c67ec7b19fb3bc469c5d",
-        "size_bytes": 307
+        "sha256": "0d69ed4925511e1cd43f355f63a8aed3aa02655f3f0072891ede78de613e1670",
+        "size_bytes": 394
       },
       {
         "path": "chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/solutions.py",
-        "sha256": "888a99779daa109f6f5660f92f4971deb2b73206a49b408c70cf618beb2f0368",
-        "size_bytes": 36896
+        "sha256": "def365b3763d515e32bd33d7d1d7e2b5ceaf97ca05feb250f3f7702814c9a6f9",
+        "size_bytes": 53373
       },
       {
         "path": "chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/tests.py",
-        "sha256": "9823ed3ea137ff63a7d127a9146c87df60c3a28d231aa39a8a250ade036f8851",
-        "size_bytes": 21488
+        "sha256": "01bc1bbe117239d9655fa4fb0fb12213511481bf927d0bb55e39c0fce3618d10",
+        "size_bytes": 22304
       },
       {
         "path": "chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/utils.py",
@@ -432,13 +408,13 @@
       },
       {
         "path": "chapter7_activation_to_language/instructions/pages/04_[7.4]_Mini_Natural_Language_Autoencoders.md",
-        "sha256": "9a76648d779f890f9a0de20afb5e351e001daa50c97643d3e798b8c6c945f5c4",
-        "size_bytes": 36374
+        "sha256": "68ff976553998b47307db1a867498d95efc2e42d397c879ce3bfc4eb8057359a",
+        "size_bytes": 41842
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
-        "sha256": "660040f459d07535deb9e0c34ffddb496c13b8770044ae380d3a8e45b0c8fb2b",
-        "size_bytes": 16080
+        "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
+        "size_bytes": 16272
       }
     ],
     "schema_version": 1
@@ -448,5 +424,5 @@
     "The real-model path uses safe generic prompts and cached activations/logits from a small public TransformerLens checkpoint. It does not use unsafe prompts, gated weights, generated completions, adapter training, external API calls, or claims about arbitrary hidden thoughts."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 2.144317
+  "wall_clock_seconds": 5.524322
 }

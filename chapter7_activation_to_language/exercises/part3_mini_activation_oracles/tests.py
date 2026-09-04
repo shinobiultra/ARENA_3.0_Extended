@@ -418,9 +418,15 @@ def test_notebook_contract(run_smoke_test: Callable | None = None):
     assert result["patching"]["changed"], (
         "Notebook contract should include an activation-patching answer flip."
     )
-    assert result["model_organism"]["baseline_accuracies"]["LoRA oracle"] == 1.0
-    assert result["model_organism"]["baseline_accuracies"]["text only"] == 0.5
-    assert result["model_organism"]["patch_changed_questions"] == [0, 2]
+    assert result["model_organism"]["baseline_accuracies"]["LoRA oracle"] == 1.0, (
+        'The composed CPU contract must retain every exact result and control required by the visible notebook conclusion.'
+    )
+    assert result["model_organism"]["baseline_accuracies"]["text only"] == 0.5, (
+        'The composed CPU contract must retain every exact result and control required by the visible notebook conclusion.'
+    )
+    assert result["model_organism"]["patch_changed_questions"] == [0, 2], (
+        'The composed CPU contract must retain every exact result and control required by the visible notebook conclusion.'
+    )
     print("All tests in `test_notebook_contract` passed!")
 
 
@@ -430,7 +436,9 @@ def test_factor_world_has_exact_ground_truth(
     make_factor_world = make_factor_world or _solutions().make_factor_world
     world = make_factor_world("train", repeats=3)
     decoded = world.activations @ world.mixing
-    assert world.activations.shape == (12, 8)
+    assert world.activations.shape == (12, 8), (
+        'The factor world must preserve its exact truth table and orthogonal coordinate contract before the oracle is evaluated.'
+    )
     assert t.allclose(decoded[:, :3], world.latent_factors, atol=1e-6), (
         "The first three decoded coordinates must exactly recover color, shape, and their interaction."
     )
@@ -468,13 +476,21 @@ def test_factor_question_rows_require_question_conditioning(
     expected_answers = t.tensor(
         [0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1]
     )
-    assert batch.activations.shape == (12, 8)
-    assert batch.questions == solutions.FACTOR_QUESTIONS
-    assert t.equal(batch.question_ids, t.arange(3).repeat(4))
+    assert batch.activations.shape == (12, 8), (
+        'Activation-question rows must preserve activation-major alignment and contradictory labels that force question conditioning.'
+    )
+    assert batch.questions == solutions.FACTOR_QUESTIONS, (
+        'Activation-question rows must preserve activation-major alignment and contradictory labels that force question conditioning.'
+    )
+    assert t.equal(batch.question_ids, t.arange(3).repeat(4)), (
+        'Activation-question rows must preserve activation-major alignment and contradictory labels that force question conditioning.'
+    )
     assert t.equal(batch.answer_ids.cpu(), expected_answers), (
         "Question answers must follow the exact color, shape, interaction truth table."
     )
-    assert t.allclose(batch.activations[0], batch.activations[1])
+    assert t.allclose(batch.activations[0], batch.activations[1]), (
+        'Activation-question rows must preserve activation-major alignment and contradictory labels that force question conditioning.'
+    )
     assert batch.answer_ids[0] != batch.answer_ids[2], (
         "The same activation must support different answers to different questions."
     )
@@ -489,15 +505,23 @@ def test_low_rank_oracle_freezes_base_weights(
     low_rank_cls = low_rank_cls or solutions.LowRankLinear
     oracle_cls = oracle_cls or solutions.MiniActivationOracle
     layer = low_rank_cls(5, 4, rank=2)
-    assert not layer.base.weight.requires_grad and not layer.base.bias.requires_grad
-    assert layer.lora_A.requires_grad and layer.lora_B.requires_grad
-    assert layer(t.ones(3, 5)).shape == (3, 4)
+    assert not layer.base.weight.requires_grad and not layer.base.bias.requires_grad, (
+        'The mini oracle must train only genuine low-rank adapters while preserving the declared input and output shapes.'
+    )
+    assert layer.lora_A.requires_grad and layer.lora_B.requires_grad, (
+        'The mini oracle must train only genuine low-rank adapters while preserving the declared input and output shapes.'
+    )
+    assert layer(t.ones(3, 5)).shape == (3, 4), (
+        'The mini oracle must train only genuine low-rank adapters while preserving the declared input and output shapes.'
+    )
     oracle = oracle_cls(activation_dim=8)
     assert all(
         ("lora_" in name) == parameter.requires_grad
         for name, parameter in oracle.named_parameters()
     ), "Only LoRA matrices should be trainable in the mini oracle."
-    assert oracle(t.zeros(6, 8), t.arange(3).repeat(2)).shape == (6, 2)
+    assert oracle(t.zeros(6, 8), t.arange(3).repeat(2)).shape == (6, 2), (
+        'The mini oracle must train only genuine low-rank adapters while preserving the declared input and output shapes.'
+    )
     print("All tests in `test_low_rank_oracle_freezes_base_weights` passed!")
 
 
@@ -516,7 +540,9 @@ def test_mini_oracle_learns_three_question_truth_table(
     model, losses = train_mini_activation_oracle(batch, steps=160)
     with t.inference_mode():
         predictions = model(batch.activations, batch.question_ids).argmax(dim=-1)
-    assert float(losses[-1]) < 1e-3
+    assert float(losses[-1]) < 1e-3, (
+        'The trained oracle must fit all three exact questions; a higher loss or missed row means the conditional routing was not learned.'
+    )
     assert predictions.eq(batch.answer_ids).all(), (
         "The oracle should recover all three exact question functions."
     )
@@ -539,12 +565,24 @@ def test_shortcut_baselines_fail_for_the_expected_reason(
     batch = solutions.make_factor_question_rows(world)
     model, _ = solutions.train_mini_activation_oracle(batch, steps=160)
     scores = model_organism_baseline_accuracies(model, batch, batch, world.mixing)
-    assert scores["LoRA oracle"] == 1.0
-    assert scores["text only"] == 0.5
-    assert scores["activation-only linear"] <= 0.75
-    assert scores["activation-only MLP"] <= 0.75
-    assert scores["linear probe bank"] == 1.0
-    assert scores["exact feature classifier"] == 1.0
+    assert scores["LoRA oracle"] == 1.0, (
+        'Each baseline must exhibit its predicted information limit so the oracle result cannot be explained by a shortcut.'
+    )
+    assert scores["text only"] == 0.5, (
+        'Each baseline must exhibit its predicted information limit so the oracle result cannot be explained by a shortcut.'
+    )
+    assert scores["activation-only linear"] <= 0.75, (
+        'Each baseline must exhibit its predicted information limit so the oracle result cannot be explained by a shortcut.'
+    )
+    assert scores["activation-only MLP"] <= 0.75, (
+        'Each baseline must exhibit its predicted information limit so the oracle result cannot be explained by a shortcut.'
+    )
+    assert scores["linear probe bank"] == 1.0, (
+        'Each baseline must exhibit its predicted information limit so the oracle result cannot be explained by a shortcut.'
+    )
+    assert scores["exact feature classifier"] == 1.0, (
+        'Each baseline must exhibit its predicted information limit so the oracle result cannot be explained by a shortcut.'
+    )
     print("All tests in `test_shortcut_baselines_fail_for_the_expected_reason` passed!")
 
 
@@ -568,7 +606,9 @@ def test_ood_splits_and_random_activations_are_visible_controls(
         "new_names",
         "long_context",
         "adversarial_distractor",
-    }
+    }, (
+        'Named nuisance shifts and off-manifold random activations must remain separate visible controls with their declared outcomes.'
+    )
     assert min(ood.values()) == 1.0, "Every named nuisance shift should be reported separately."
 
     generator = t.Generator().manual_seed(777)
@@ -579,7 +619,9 @@ def test_ood_splits_and_random_activations_are_visible_controls(
     guarded = add_off_manifold_abstention(
         binary_logits, random_activations, world.mixing
     )
-    assert factor_manifold_distance(world.activations, world.mixing).max() < 1e-5
+    assert factor_manifold_distance(world.activations, world.mixing).max() < 1e-5, (
+        'Named nuisance shifts and off-manifold random activations must remain separate visible controls with their declared outcomes.'
+    )
     assert guarded.argmax(dim=-1).eq(2).float().mean() > 0.95, (
         "Most random activations should visibly trigger abstention."
     )
@@ -599,13 +641,17 @@ def test_factor_patching_is_selective_not_just_any_answer_flip(
     )
     decoded_source = source @ world.mixing
     decoded_patched = patched @ world.mixing
-    assert t.allclose(decoded_patched[:3], t.tensor([1.0, -1.0, -1.0]), atol=1e-6)
+    assert t.allclose(decoded_patched[:3], t.tensor([1.0, -1.0, -1.0]), atol=1e-6), (
+        'A structural factor patch must alter only the decoded factor and the answers causally downstream of it.'
+    )
     assert t.allclose(decoded_patched[3:], decoded_source[3:], atol=1e-6), (
         "Patching color must preserve every nuisance coordinate."
     )
     source_answers = decoded_source[:3].gt(0)
     patched_answers = decoded_patched[:3].gt(0)
-    assert t.equal(source_answers.ne(patched_answers), t.tensor([True, False, True]))
+    assert t.equal(source_answers.ne(patched_answers), t.tensor([True, False, True])), (
+        'A structural factor patch must alter only the decoded factor and the answers causally downstream of it.'
+    )
     print("All tests in `test_factor_patching_is_selective_not_just_any_answer_flip` passed!")
 
 
@@ -623,12 +669,24 @@ def test_model_organism_signature_metrics_are_not_white_noise(
         "activation-only MLP": 0.75,
         "linear probe bank": 1.0,
         "exact feature classifier": 1.0,
-    }
-    assert min(result["ood_accuracies"].values()) == 1.0
-    assert result["random_abstention_rate"] > 0.95
-    assert result["patch_before"] == [0, 0, 1]
-    assert result["patch_after"] == [1, 0, 0]
-    assert result["patch_changed_questions"] == [0, 2]
+    }, (
+        'The signature metrics must reproduce the exact model-organism result and its falsifying controls.'
+    )
+    assert min(result["ood_accuracies"].values()) == 1.0, (
+        'The signature metrics must reproduce the exact model-organism result and its falsifying controls.'
+    )
+    assert result["random_abstention_rate"] > 0.95, (
+        'The signature metrics must reproduce the exact model-organism result and its falsifying controls.'
+    )
+    assert result["patch_before"] == [0, 0, 1], (
+        'The signature metrics must reproduce the exact model-organism result and its falsifying controls.'
+    )
+    assert result["patch_after"] == [1, 0, 0], (
+        'The signature metrics must reproduce the exact model-organism result and its falsifying controls.'
+    )
+    assert result["patch_changed_questions"] == [0, 2], (
+        'The signature metrics must reproduce the exact model-organism result and its falsifying controls.'
+    )
     print("All tests in `test_model_organism_signature_metrics_are_not_white_noise` passed!")
 
 
@@ -673,13 +731,27 @@ def test_solution_notebook_exposes_taught_implementations():
     assert required_definitions <= defined, (
         "The solved notebook must contain every taught implementation inline."
     )
-    assert "import solutions" not in code and "solutions." not in code
-    assert "verification_report.json" not in code
-    assert "raise NotImplementedError" not in code
-    assert markdown.count("### Exercise") >= 7
-    assert markdown.count("<summary>Expected output") >= 7
-    assert markdown.count("<summary>Help") >= 7
-    assert markdown.count("<summary>Solution") >= 7
+    assert "import solutions" not in code and "solutions." not in code, (
+        'The solution notebook must keep taught implementations, learner aids, and the visible signature result inline.'
+    )
+    assert code.count("verification_report.json") == 1, (
+        'The solution notebook must keep taught implementations, learner aids, and the visible signature result inline.'
+    )
+    assert "raise NotImplementedError" not in code, (
+        'The solution notebook must keep taught implementations, learner aids, and the visible signature result inline.'
+    )
+    assert markdown.count("### Exercise") >= 7, (
+        'The solution notebook must keep taught implementations, learner aids, and the visible signature result inline.'
+    )
+    assert markdown.count("<summary>Expected output") >= 7, (
+        'The solution notebook must keep taught implementations, learner aids, and the visible signature result inline.'
+    )
+    assert markdown.count("<summary>Help") >= 7, (
+        'The solution notebook must keep taught implementations, learner aids, and the visible signature result inline.'
+    )
+    assert markdown.count("<summary>Solution") >= 7, (
+        'The solution notebook must keep taught implementations, learner aids, and the visible signature result inline.'
+    )
     for marker in (
         "By the end of this notebook",
         "## Signature Result",
@@ -687,6 +759,10 @@ def test_solution_notebook_exposes_taught_implementations():
         "## Bonus Anomaly Hunt",
         "## Limitations",
     ):
-        assert marker in markdown
-    assert "plt.subplots" in code and "savefig" in code
+        assert marker in markdown, (
+            'The solution notebook must keep taught implementations, learner aids, and the visible signature result inline.'
+        )
+    assert "plt.subplots" in code and "savefig" in code, (
+        'The solution notebook must keep taught implementations, learner aids, and the visible signature result inline.'
+    )
     print("All tests in `test_solution_notebook_exposes_taught_implementations` passed!")

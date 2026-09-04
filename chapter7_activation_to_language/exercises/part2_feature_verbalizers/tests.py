@@ -399,12 +399,24 @@ def test_gpu_report_payload_keeps_toy_and_real_metrics_distinct():
         },
         planted,
     )
-    assert combined["baseline_accuracy"] == 0.5
-    assert combined["intervention_delta"] == 0.75
-    assert combined["toy_baseline_accuracy"] == planted["metrics"]["baseline_accuracy"]
-    assert combined["toy_intervention_delta"] == planted["metrics"]["intervention_delta"]
-    assert combined["toy_planted_signature_passed"]
-    assert combined["toy_activation_score_threshold_upper_bound_accuracy"] == 1.0
+    assert combined["baseline_accuracy"] == 0.5, (
+        'The serialized report must keep planted controls separate from real-model metrics so each claim has an identifiable evidence source.'
+    )
+    assert combined["intervention_delta"] == 0.75, (
+        'The serialized report must keep planted controls separate from real-model metrics so each claim has an identifiable evidence source.'
+    )
+    assert combined["toy_baseline_accuracy"] == planted["metrics"]["baseline_accuracy"], (
+        'The serialized report must keep planted controls separate from real-model metrics so each claim has an identifiable evidence source.'
+    )
+    assert combined["toy_intervention_delta"] == planted["metrics"]["intervention_delta"], (
+        'The serialized report must keep planted controls separate from real-model metrics so each claim has an identifiable evidence source.'
+    )
+    assert combined["toy_planted_signature_passed"], (
+        'The serialized report must keep planted controls separate from real-model metrics so each claim has an identifiable evidence source.'
+    )
+    assert combined["toy_activation_score_threshold_upper_bound_accuracy"] == 1.0, (
+        'The serialized report must keep planted controls separate from real-model metrics so each claim has an identifiable evidence source.'
+    )
     print("All tests in `test_gpu_report_payload_keeps_toy_and_real_metrics_distinct` passed!")
 
 
@@ -421,19 +433,31 @@ def test_planted_feature_dataset_exact_rule_and_disjoint_splits(
     split_planted_feature_dataset = (
         split_planted_feature_dataset or solutions.split_planted_feature_dataset
     )
-    assert planted_feature_label("The cat sat on the mat.")
-    assert not planted_feature_label("The toy cat sat on the mat.")
+    assert planted_feature_label("The cat sat on the mat."), (
+        'The planted dataset must encode the declared semantic rule with disjoint, balanced splits; otherwise held-out accuracy can reflect leakage.'
+    )
+    assert not planted_feature_label("The toy cat sat on the mat."), (
+        'The planted dataset must encode the declared semantic rule with disjoint, balanced splits; otherwise held-out accuracy can reflect leakage.'
+    )
     assert not planted_feature_label("The catalog sat on the shelf."), (
         "The planted oracle should use whole-token semantic groups, not substrings."
     )
     split = split_planted_feature_dataset(make_planted_feature_dataset())
-    assert len(split.train) >= 10 and len(split.heldout) >= 20
+    assert len(split.train) >= 10 and len(split.heldout) >= 20, (
+        'The planted dataset must encode the declared semantic rule with disjoint, balanced splits; otherwise held-out accuracy can reflect leakage.'
+    )
     assert not {example.text for example in split.train}.intersection(
         example.text for example in split.heldout
     ), "Train and held-out examples must be disjoint."
-    assert {example.label for example in split.train} == {False, True}
-    assert {example.label for example in split.revision} == {False, True}
-    assert {example.label for example in split.heldout} == {False, True}
+    assert {example.label for example in split.train} == {False, True}, (
+        'The planted dataset must encode the declared semantic rule with disjoint, balanced splits; otherwise held-out accuracy can reflect leakage.'
+    )
+    assert {example.label for example in split.revision} == {False, True}, (
+        'The planted dataset must encode the declared semantic rule with disjoint, balanced splits; otherwise held-out accuracy can reflect leakage.'
+    )
+    assert {example.label for example in split.heldout} == {False, True}, (
+        'The planted dataset must encode the declared semantic rule with disjoint, balanced splits; otherwise held-out accuracy can reflect leakage.'
+    )
     assert all(not example.label for example in split.heldout if "decoy" in example.tags), (
         "Decoy toy/plush/statue/painted animals should be exact negative counterexamples."
     )
@@ -491,8 +515,12 @@ def test_counterexample_revision_improves_heldout_counterfactuals(
     revision_predictions = semantic_rule_predictions(revision_texts, initial_rule)
     counterexamples = mine_counterexamples(split.revision, revision_predictions, max_examples=8)
     revised_rule = revise_rule_from_counterexamples(initial_rule, counterexamples)
-    assert len(counterexamples) >= 3
-    assert set(revised_rule.required_groups) == {"animal", "resting", "surface"}
+    assert len(counterexamples) >= 3, (
+        'Counterexample-guided revision must improve on untouched held-out prompts and recover the declared animal-resting-surface rule.'
+    )
+    assert set(revised_rule.required_groups) == {"animal", "resting", "surface"}, (
+        'Counterexample-guided revision must improve on untouched held-out prompts and recover the declared animal-resting-surface rule.'
+    )
     assert {"toy", "plush", "statue", "painted", "cardboard"}.issubset(
         set(revised_rule.excluded_terms)
     ), "Revision should generalize from seen decoys to the full decoy category."
@@ -500,8 +528,12 @@ def test_counterexample_revision_improves_heldout_counterfactuals(
     labels = t.tensor([example.label for example in split.heldout], dtype=t.bool)
     initial_accuracy = semantic_rule_predictions(heldout_texts, initial_rule).eq(labels).float().mean()
     revised_accuracy = semantic_rule_predictions(heldout_texts, revised_rule).eq(labels).float().mean()
-    assert initial_accuracy < 0.75
-    assert revised_accuracy == 1.0
+    assert initial_accuracy < 0.75, (
+        'Counterexample-guided revision must improve on untouched held-out prompts and recover the declared animal-resting-surface rule.'
+    )
+    assert revised_accuracy == 1.0, (
+        'Counterexample-guided revision must improve on untouched held-out prompts and recover the declared animal-resting-surface rule.'
+    )
     print("All tests in `test_counterexample_revision_improves_heldout_counterfactuals` passed!")
 
 
@@ -525,7 +557,9 @@ def test_control_table_revised_beats_text_random_and_lookup_controls(
     revised_rule = solutions.revise_rule_from_counterexamples(initial_rule, counterexamples)
     rows = control_prediction_table(split.train, split.heldout, initial_rule, revised_rule)
     by_name = {str(row["control"]): row for row in rows}
-    assert by_name["revised verbalizer"]["accuracy"] == 1.0
+    assert by_name["revised verbalizer"]["accuracy"] == 1.0, (
+        'The revised verbalizer must beat shortcut controls on the same held-out examples before its description is treated as predictive.'
+    )
     for control_name in [
         "initial text-only rule",
         "always-negative base rate",
@@ -557,10 +591,18 @@ def test_planted_intervention_direction_beats_random_direction(
         dtype=t.bool,
     )
     report = planted_intervention_direction_test(split.heldout, predictions, alpha=1.25)
-    assert report.matches_prediction
-    assert report.beats_random_direction
-    assert abs(report.observed_delta - 1.25) < 1e-6
-    assert abs(report.random_direction_delta) < 1e-6
+    assert report.matches_prediction, (
+        'The planted feature direction must produce the predicted signed effect while the orthogonal random direction remains inert.'
+    )
+    assert report.beats_random_direction, (
+        'The planted feature direction must produce the predicted signed effect while the orthogonal random direction remains inert.'
+    )
+    assert abs(report.observed_delta - 1.25) < 1e-6, (
+        'The planted feature direction must produce the predicted signed effect while the orthogonal random direction remains inert.'
+    )
+    assert abs(report.random_direction_delta) < 1e-6, (
+        'The planted feature direction must produce the predicted signed effect while the orthogonal random direction remains inert.'
+    )
     try:
         planted_intervention_direction_test(split.heldout, t.zeros(len(split.heldout), dtype=t.bool))
     except ValueError:
@@ -579,13 +621,27 @@ def test_planted_signature_result_contains_visible_evidence(
         or solutions.run_planted_feature_verbalizer_signature_result
     )
     result = run_planted_feature_verbalizer_signature_result(seed=0)
-    assert result["signature_passed"]
-    assert result["heldout_count"] >= 20
-    assert len(result["heldout_rows"]) == result["heldout_count"]
-    assert len(result["validation_counterexamples"]) >= 3
-    assert result["metrics"]["revised_accuracy"] == 1.0
-    assert result["metrics"]["initial_accuracy"] < 0.75
-    assert result["metrics"]["target_beats_random_direction"]
+    assert result["signature_passed"], (
+        'The signature payload must include row-level held-out and causal-control evidence for the learner-facing result.'
+    )
+    assert result["heldout_count"] >= 20, (
+        'The signature payload must include row-level held-out and causal-control evidence for the learner-facing result.'
+    )
+    assert len(result["heldout_rows"]) == result["heldout_count"], (
+        'The signature payload must include row-level held-out and causal-control evidence for the learner-facing result.'
+    )
+    assert len(result["validation_counterexamples"]) >= 3, (
+        'The signature payload must include row-level held-out and causal-control evidence for the learner-facing result.'
+    )
+    assert result["metrics"]["revised_accuracy"] == 1.0, (
+        'The signature payload must include row-level held-out and causal-control evidence for the learner-facing result.'
+    )
+    assert result["metrics"]["initial_accuracy"] < 0.75, (
+        'The signature payload must include row-level held-out and causal-control evidence for the learner-facing result.'
+    )
+    assert result["metrics"]["target_beats_random_direction"], (
+        'The signature payload must include row-level held-out and causal-control evidence for the learner-facing result.'
+    )
     assert "verification_report" not in json.dumps(result), (
         "The signature should be generated from notebook-visible data, not loaded from a report."
     )
@@ -619,7 +675,9 @@ def test_exercise_notebook_exposes_arena_learner_surface():
     ]
     missing = [needle for needle in required_strings if needle not in text]
     assert not missing, f"Exercise notebook is missing ARENA learner-surface pieces: {missing}"
-    assert text.count("### Exercise -") >= 7
+    assert text.count("### Exercise -") >= 7, (
+        'The exercise notebook must expose the complete learner progression instead of hiding the taught method in helpers.'
+    )
     print("All tests in `test_exercise_notebook_exposes_arena_learner_surface` passed!")
 
 

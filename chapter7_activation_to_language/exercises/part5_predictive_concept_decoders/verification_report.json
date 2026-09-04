@@ -144,9 +144,9 @@
       "train_pcd_row_count": 48
     }
   ],
-  "date_run": "2026-09-04T07:04:42+00:00",
+  "date_run": "2026-09-04T08:43:01+00:00",
   "evidence_level": "exact_planted_sparse_concept_pcd_contract_plus_pinned_transformerlens_trained_sparse_concept_decoder_preflight",
-  "git_commit": "6e61c49e",
+  "git_commit": "66aad913",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-3",
   "known_failures": [],
@@ -950,7 +950,7 @@
   "peak_vram_gb": 0.30846214294433594,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "dbf1ad304f373019af8ec369d2c26c200602082c6f023d195a9a76e4a7a6850c",
+    "combined_sha256": "43f78391202b5dd51b9ec932faeccdb96c7df0cd34418d474e61ea9afa872e4a",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -959,13 +959,13 @@
       },
       {
         "path": "chapter7_activation_to_language/exercises/part5_predictive_concept_decoders/7.5_Predictive_Concept_Decoders_exercises.ipynb",
-        "sha256": "d5fee845324df488b8e0fae3ffbe1244abe10c5329bb953c59383d3ec6399a7f",
-        "size_bytes": 84907
+        "sha256": "f733fb9b032136927d9de54e0df5e3e0cd52471060c83914dfc33a9972af5f7e",
+        "size_bytes": 86991
       },
       {
         "path": "chapter7_activation_to_language/exercises/part5_predictive_concept_decoders/7.5_Predictive_Concept_Decoders_solutions.ipynb",
-        "sha256": "bccbf18138de396060fc8fa560a8347def5ec676212367dbb17fcd4eeedd80a6",
-        "size_bytes": 254420
+        "sha256": "4879bab5b8091624265e71173ed64f2f58c1e73b5352813588506278fdb6547d",
+        "size_bytes": 257103
       },
       {
         "path": "chapter7_activation_to_language/exercises/part5_predictive_concept_decoders/README.md",
@@ -999,8 +999,8 @@
       },
       {
         "path": "chapter7_activation_to_language/exercises/part5_predictive_concept_decoders/tests.py",
-        "sha256": "edb069f42ec5eadb4a16b59c2977747bb0410218d96623d3783e8fcf41c702d4",
-        "size_bytes": 44282
+        "sha256": "654125fca7b9ef9553cf9371d65cbb5db5ceceaff183ccc857b6c0e4730c4bb0",
+        "size_bytes": 45192
       },
       {
         "path": "chapter7_activation_to_language/exercises/part5_predictive_concept_decoders/utils.py",
@@ -1014,13 +1014,13 @@
       },
       {
         "path": "chapter7_activation_to_language/instructions/pages/05_[7.5]_Predictive_Concept_Decoders.md",
-        "sha256": "c0147964930956cf13e491afecd3ad08c4972b244ce797a27657a9ad051077ae",
-        "size_bytes": 36184
+        "sha256": "bb0a956b60a9fa19263505ee12d7067054642f8a93cddce187248bf0e380e173",
+        "size_bytes": 37567
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
-        "sha256": "660040f459d07535deb9e0c34ffddb496c13b8770044ae380d3a8e45b0c8fb2b",
-        "size_bytes": 16080
+        "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
+        "size_bytes": 16272
       }
     ],
     "schema_version": 1
@@ -1030,5 +1030,5 @@
     "The real-model path uses safe generic prompts and cached activations/logits from a small public TransformerLens checkpoint. It does not use unsafe prompts, gated weights, generated completions, adapter training, external API calls, or full Activation Oracle comparisons."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 14.220433
+  "wall_clock_seconds": 7.253447
 }
