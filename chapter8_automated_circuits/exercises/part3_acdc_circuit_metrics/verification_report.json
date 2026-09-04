@@ -81,7 +81,7 @@
       "tokenizer": "NeelNanda/gpt-neox-tokenizer-digits"
     }
   ],
-  "date_run": "2026-09-04T13:37:46+00:00",
+  "date_run": "2026-09-04T13:38:12+00:00",
   "evidence_level": "exact_nonlinear_ground_truth_acdc_plus_pinned_transformerlens_component_result",
   "git_commit": "06a547b0",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
@@ -783,5 +783,5 @@
     "Verification reports support the lesson but are not the learner-facing signature result."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 10.705935
+  "wall_clock_seconds": 12.036417
 }
