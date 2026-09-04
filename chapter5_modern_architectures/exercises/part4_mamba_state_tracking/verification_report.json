@@ -66,9 +66,9 @@
       "train_seq_len": 16
     }
   ],
-  "date_run": "2026-09-04T08:34:04+00:00",
+  "date_run": "2026-09-04T08:41:28+00:00",
   "evidence_level": "toy_state_tracking_plus_trained_mamba_transformer_comparison_learned_intervention_and_official_hidden_state_preflight",
-  "git_commit": "7cacf244",
+  "git_commit": "5e16cf8e",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-1",
   "known_failures": [],
@@ -433,5 +433,5 @@
     "The trained Mamba path uses generated bracket-depth data only. Official Mamba-130M-HF is used for hidden-state extraction, not as a solved state-tracking model. The Transformer comparison and learned-state intervention are local generated-task organism checks."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 6.409943
+  "wall_clock_seconds": 10.300704
 }

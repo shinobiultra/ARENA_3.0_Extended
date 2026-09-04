@@ -57,9 +57,9 @@
       "source": "deterministic_from_sae_encoder_columns"
     }
   ],
-  "date_run": "2026-09-04T08:33:41+00:00",
+  "date_run": "2026-09-04T08:41:10+00:00",
   "evidence_level": "toy_feature_controls_plus_real_gemma_scope_sae_activation_validation",
-  "git_commit": "7cacf244",
+  "git_commit": "5e16cf8e",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-3",
   "known_failures": [],
@@ -467,5 +467,5 @@
     "Gemma Scope artifact loading and authenticated Gemma 3 1B IT layer-13 activation capture are verified on CUDA in this environment. The claim remains limited to the benign technical-vs-narrative semantic split and does not claim broad Gemma Scope coverage or safety-relevant steering behavior."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 5.16976
+  "wall_clock_seconds": 5.570199
 }
