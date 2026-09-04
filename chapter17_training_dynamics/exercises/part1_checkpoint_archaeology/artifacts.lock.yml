@@ -6,40 +6,39 @@ exercise_metadata:
   GT_TIER: GT-0
   DIFFICULTY: 4
   IMPORTANCE: 3
-  EXPECTED_RUNTIME: seconds on toy contract; minutes on local real-model path
+  EXPECTED_RUNTIME: seconds for exact Fourier oracles; about 30 seconds for the CPU
+    train/save/reload notebook contract; parent runner handles CUDA validation
   REQUIRES_GPU: true
 gt_tier: GT-0
-evidence_level: toy_trajectory_contract_plus_real_modular_addition_checkpoint_preflight
-claim_scope: 'GT-0 developmental-interpretability preflight: deterministic toy AR,
-  JEPA, diffusion, Mamba, and random-control trajectories are kept for learner exercises,
-  then a tiny modular-addition MLP is trained on CUDA on the complete mod-13 addition
-  table. The report saves and reloads real checkpoints, detects stable emergence and
-  a phase jump from the reloaded checkpoint accuracies, and rejects a random-label
-  checkpoint control evaluated against the true table. This proves the local checkpoint-archaeology
-  workflow on a finite model organism. The complete mod-13 input domain is exhausted
-  at evaluation time, so the generalization claim is finite-domain coverage rather
-  than OOD extrapolation; it is not a claim about large-model developmental mechanisms.'
+evidence_level: exact_fourier_oracle_plus_real_checkpoint_train_save_reload
+claim_scope: 'GT-0 developmental-interpretability model organism: a tiny MLP is
+  trained on the complete mod-13 addition table, real checkpoint files are saved
+  and reloaded, and every metric is recomputed from the reloaded checkpoints. The
+  mechanism metric is the fraction of centered logit-table Fourier power in modes
+  satisfying k_a = k_b = -k_c mod 13. The notebook validates this metric on exact
+  toy ground truth, shows that task accuracy and legal Fourier power rise during
+  training, tests early/mid/late legal-mode keep and ablation interventions, and
+  rejects random-label plus same-size random-Fourier controls. The finite-domain
+  evaluation exhausts all 169 input pairs; no OOD arithmetic generalization or
+  large-model developmental mechanism is claimed.'
 required_gpu_gb: 1
 max_allowed_gpu_gb: 24
 models:
-- id: toy_or_generated_inputs
-  source: generated
-  revision: seed_0
+- id: exact_mod13_addition_logit_table_v1
+  source: generated_finite_table
+  revision: deterministic_mod13_correct5_incorrect_minus5
   precision: float32
   gated: false
-- id: course_tiny_modular_addition_mlp_v1
+- id: course_tiny_modular_addition_mlp_v2
   source: generated_training_run
-  revision: seed_0_mod13_embed32_hidden64_steps80
+  revision: seed_0_mod13_embed32_hidden96_steps180
   precision: float32
   gated: false
-  claim_scope: trained_checkpoint_archaeology_preflight
+  claim_scope: checkpoint_archaeology_fourier_mechanism_preflight
   optimizer: AdamW
   learning_rate: 0.005
 datasets:
-- id: 17_1_checkpoint_archaeology_and_mechanism_emergence_toy_inputs
-  source: generated
-  seed: 0
-- id: complete_mod13_addition_table_v1
+- id: complete_mod13_addition_table_v2
   source: generated_finite_table
   seed: 0
   modulus: 13
@@ -48,18 +47,19 @@ datasets:
   random_label_control: true
   checkpoint_steps:
   - 0
+  - 1
   - 2
   - 4
-  - 6
   - 8
-  - 10
   - 12
-  - 15
-  - 20
-  - 30
-  - 40
-  - 60
-  - 80
+  - 16
+  - 24
+  - 32
+  - 48
+  - 64
+  - 96
+  - 128
+  - 180
 expected_metrics:
   tests_passed: true
   accepted: true
@@ -68,36 +68,31 @@ expected_metrics:
   model_family: tiny_modular_addition_mlp
   modulus: 13
   table_example_count: 169
-  checkpoint_count: 26
-  first_crossing_step: 30
-  stable_from_step: 30
+  checkpoint_count: 28
+  accuracy_stable_from_step: 24
+  mechanism_stable_from_step: 24
   final_accuracy: 1.0
-  phase_transition_step: 30
-  phase_transition_jump_min: 0.2
-  random_control_peak_accuracy_max: 0.2
-  random_control_passed: true
+  final_addition_fourier_score_min: 0.70
+  late_legal_only_accuracy_min: 0.99
+  late_legal_mode_ablation_drop_min: 0.90
+  random_label_peak_accuracy_max: 0.20
+  random_label_peak_fourier_score_max: 0.05
+  random_mechanism_peak_score_max: 0.05
   real_checkpoints_reloaded: true
-  loss_drop_min: 2.0
   peak_vram_gb_max: 0.2
 controls:
-- baseline_or_reference_check
-- random_label_checkpoint_control_required
-- shape_dtype_or_exact_value_check
-- toy_checkpoint_trajectory_contract
-- toy_phase_transition_contract
-- toy_random_control_contract
-- toy_family_timing_contract
-- real_cuda_training_run
+- exact_addition_fourier_oracle
 - real_checkpoint_save_and_reload
-- complete_modular_addition_table_accuracy
+- complete_mod13_finite_domain_evaluation
+- stable_accuracy_threshold
+- stable_mechanism_threshold
+- early_mid_late_legal_mode_intervention
+- legal_mode_ablation_control
 - random_label_checkpoint_control
-- exhaustive_mod13_finite_domain_evaluation
+- same_size_random_fourier_mask_control
 - no_ood_extrapolation_claimed
-- stable_threshold_emergence_check
-- phase_jump_check
 - large_model_checkpoint_archaeology_not_claimed
 safety_notes:
 - No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.
-- The real training path uses only a generated finite modular-addition table and a
-  random-label negative control. It does not use unsafe data, user data, adapters,
-  gated weights, or large persistent artifacts.
+- The training path uses only a generated finite modular-addition table and a random-label
+  negative control. It does not use user data, gated weights, or persistent large artifacts.
