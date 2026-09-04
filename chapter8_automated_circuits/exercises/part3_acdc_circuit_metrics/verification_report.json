@@ -81,9 +81,9 @@
       "tokenizer": "NeelNanda/gpt-neox-tokenizer-digits"
     }
   ],
-  "date_run": "2026-09-04T13:38:12+00:00",
+  "date_run": "2026-09-04T13:51:51+00:00",
   "evidence_level": "exact_nonlinear_ground_truth_acdc_plus_pinned_transformerlens_component_result",
-  "git_commit": "06a547b0",
+  "git_commit": "dcdcd5c8",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-0",
   "known_failures": [],
@@ -700,7 +700,7 @@
   "peak_vram_gb": 0.23825597763061523,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "9555f113938ceced30a2ed99643fa2883b34e48591e71af895700b253c2037a4",
+    "combined_sha256": "f4f8ddd1bcb50321749bcc558315df956e0b15a3141111eb297422637a9bae0b",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -709,13 +709,13 @@
       },
       {
         "path": "chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/8.3_ACDC_and_Circuit_Metrics_exercises.ipynb",
-        "sha256": "b3d386ff0dbc242fb92eb1dd60c08f2e56f7db91c909fead9f577f9837ebc0cd",
-        "size_bytes": 64963
+        "sha256": "012d78862b962343e6371a4ec9cc8324e1c3673166082a4f03c0d39404cfae5b",
+        "size_bytes": 66535
       },
       {
         "path": "chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/8.3_ACDC_and_Circuit_Metrics_solutions.ipynb",
-        "sha256": "541526c322bc0fc4ff8d24c793ca3051fcfbf77fa6b4cada2967d33944603bf2",
-        "size_bytes": 302923
+        "sha256": "993d673aed249c899180d3232a8d004c1dde1d9e1420353fc86b99f9b2ebcd9d",
+        "size_bytes": 304793
       },
       {
         "path": "chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/README.md",
@@ -764,8 +764,8 @@
       },
       {
         "path": "chapter8_automated_circuits/instructions/pages/03_[8.3]_ACDC_and_Circuit_Metrics.md",
-        "sha256": "90373a84a88a9f767230349f1f0d6c6efb93bfb2f96654c460ee58e570f978db",
-        "size_bytes": 50778
+        "sha256": "bdc57d08f7f78d58d167eff59ffe633cad5c7f9a52b2c96d74f39c29ddb56bf7",
+        "size_bytes": 51869
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
@@ -783,5 +783,5 @@
     "Verification reports support the lesson but are not the learner-facing signature result."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 12.036417
+  "wall_clock_seconds": 10.43531
 }
