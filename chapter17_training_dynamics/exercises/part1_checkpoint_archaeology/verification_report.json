@@ -64,9 +64,9 @@
       "source": "generated_finite_table"
     }
   ],
-  "date_run": "2026-09-04T08:06:11+00:00",
+  "date_run": "2026-09-04T08:13:26+00:00",
   "evidence_level": "exact_fourier_oracle_plus_real_checkpoint_train_save_reload",
-  "git_commit": "805fb7b3",
+  "git_commit": "d938a6bb",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-0",
   "known_failures": [],
@@ -735,5 +735,5 @@
     "The training path uses only a generated finite modular-addition table and a random-label negative control. It does not use user data, gated weights, or persistent large artifacts."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 22.713505
+  "wall_clock_seconds": 11.681179
 }
