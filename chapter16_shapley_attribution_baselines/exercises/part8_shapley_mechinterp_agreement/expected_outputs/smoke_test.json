@@ -4,6 +4,11 @@
   "evidence_level": "notebook_contract",
   "gt_tier": "GT-0",
   "notebook_id": "16_8_do_shapley_and_mechanistic_interpretability_agree",
+  "required_smoke_cases": [
+    "additive_agreement",
+    "xor_disagreement",
+    "data_player_bridge"
+  ],
   "section": "16.8",
   "tests_passed": true,
   "title": "Do SHAPley and Mechanistic Interpretability Agree?"

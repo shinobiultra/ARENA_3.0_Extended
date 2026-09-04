@@ -10,6 +10,8 @@
     "agreement_matrix_rows_min": 7,
     "agrees_with_mechanistic": true,
     "coalition_count": 16,
+    "data_player_bridge_pearson_min": 0.99,
+    "data_player_harmful_identified": true,
     "deletion_curve_points": 5,
     "disagreement_case_count_min": 1,
     "fit_max_abs_error_max": 0.0001,
@@ -37,6 +39,7 @@
     "topk_heatmap_cols": 4,
     "topk_heatmap_rows": 4,
     "topk_overlap": 1.0,
+    "toy_xor_pair_interaction_abs": 2.0,
     "training_example_count": 16,
     "training_steps": 1200
   },

@@ -2,8 +2,11 @@
 """Reference solutions for [16.8] SHAPley and mechanistic agreement tests."""
 
 import csv
+import itertools
+import math
 import sys
 from pathlib import Path
+from typing import Mapping
 
 import torch as t
 
@@ -14,9 +17,14 @@ if str(root_dir) not in sys.path:
 
 from arena_ext.shapley_attribution import (
     additive_game,
+    all_coalitions,
+    average_ranks,
     attribution_agreement_report,
+    coalition_values_from_function,
+    exact_shapley_values,
     interaction_agreement_report,
     pairwise_shapley_interactions,
+    spearman_rank_correlation,
     topk_overlap_fraction,
     xor_game,
 )
@@ -38,6 +46,216 @@ NEURAL_INTERACTION_MAX_ERROR = 1e-4
 NEURAL_FIT_MSE_MAX = 1e-8
 SHUFFLED_MAX_CORRELATION = 0.0
 ARTIFACT_DIR = Path(__file__).resolve().parent / "artifacts"
+Coalition = frozenset[int]
+TOY_FEATURE_NAMES = ("subject-token", "distractor-token", "answer-slot", "style-prior")
+TOY_LINEAR_WEIGHTS = t.tensor([1.2, -0.7, 1.6, 0.9], dtype=t.float64)
+TOY_PAIR_WEIGHTS = {(0, 2): 2.2, (1, 3): -1.5}
+TOY_INTERCEPT = 0.25
+
+
+def enumerate_coalitions(num_players: int) -> tuple[Coalition, ...]:
+    """Return every coalition in size-then-lexicographic order."""
+
+    if num_players <= 0:
+        raise ValueError("num_players must be positive.")
+    coalitions: list[Coalition] = []
+    for size in range(num_players + 1):
+        coalitions.extend(
+            frozenset(group) for group in itertools.combinations(range(num_players), size)
+        )
+    return tuple(coalitions)
+
+
+def finite_circuit_value(
+    coalition: Coalition | tuple[int, ...],
+    *,
+    linear_weights: t.Tensor = TOY_LINEAR_WEIGHTS,
+    pair_weights: Mapping[tuple[int, int], float] = TOY_PAIR_WEIGHTS,
+    intercept: float = TOY_INTERCEPT,
+) -> float:
+    """Evaluate the planted finite circuit on a coalition of present features."""
+
+    active = set(coalition)
+    value = float(intercept)
+    for player, weight in enumerate(linear_weights.double().tolist()):
+        if player in active:
+            value += float(weight)
+    for (first, second), weight in pair_weights.items():
+        if first in active and second in active:
+            value += float(weight)
+    return value
+
+
+def finite_circuit_table(
+    *,
+    num_players: int = NEURAL_GAME_NUM_PLAYERS,
+    linear_weights: t.Tensor = TOY_LINEAR_WEIGHTS,
+    pair_weights: Mapping[tuple[int, int], float] = TOY_PAIR_WEIGHTS,
+    intercept: float = TOY_INTERCEPT,
+) -> dict[Coalition, float]:
+    """Return the complete coalition table for the planted finite circuit."""
+
+    return {
+        coalition: finite_circuit_value(
+            coalition,
+            linear_weights=linear_weights,
+            pair_weights=pair_weights,
+            intercept=intercept,
+        )
+        for coalition in enumerate_coalitions(num_players)
+    }
+
+
+def exact_shapley_from_table(
+    coalition_values: Mapping[Coalition | tuple[int, ...], float],
+    *,
+    num_players: int,
+) -> t.Tensor:
+    """Compute exact Shapley values from first principles."""
+
+    values = {frozenset(key): float(value) for key, value in coalition_values.items()}
+    expected = set(enumerate_coalitions(num_players))
+    missing = expected - set(values)
+    if missing:
+        raise ValueError(f"coalition value table is missing {len(missing)} coalitions.")
+
+    shapley = t.zeros(num_players, dtype=t.float64)
+    denominator = math.factorial(num_players)
+    for player in range(num_players):
+        others = [candidate for candidate in range(num_players) if candidate != player]
+        for size in range(num_players):
+            weight = math.factorial(size) * math.factorial(num_players - size - 1) / denominator
+            for group in itertools.combinations(others, size):
+                coalition = frozenset(group)
+                shapley[player] += weight * (
+                    values[coalition | {player}] - values[coalition]
+                )
+    return shapley
+
+
+def causal_patching_effects(
+    coalition_values: Mapping[Coalition | tuple[int, ...], float],
+    *,
+    num_players: int,
+) -> t.Tensor:
+    """Return full-minus-ablated causal effects for each feature player."""
+
+    values = {frozenset(key): float(value) for key, value in coalition_values.items()}
+    full = frozenset(range(num_players))
+    if full not in values:
+        raise ValueError("coalition value table must contain the full coalition.")
+    effects = [
+        values[full] - values[full - {player}]
+        for player in range(num_players)
+    ]
+    return t.tensor(effects, dtype=t.float64)
+
+
+def mechanistic_endpoint_scores(
+    *,
+    linear_weights: t.Tensor = TOY_LINEAR_WEIGHTS,
+    pair_weights: Mapping[tuple[int, int], float] = TOY_PAIR_WEIGHTS,
+) -> t.Tensor:
+    """Allocate each planted pair edge equally to its two endpoint features."""
+
+    scores = linear_weights.double().clone()
+    for (first, second), weight in pair_weights.items():
+        scores[first] += float(weight) / 2
+        scores[second] += float(weight) / 2
+    return scores
+
+
+def mechanistic_pair_matrix(
+    *,
+    num_players: int = NEURAL_GAME_NUM_PLAYERS,
+    pair_weights: Mapping[tuple[int, int], float] = TOY_PAIR_WEIGHTS,
+) -> t.Tensor:
+    """Return the known pair-edge mechanism as a symmetric matrix."""
+
+    matrix = t.zeros((num_players, num_players), dtype=t.float64)
+    for (first, second), weight in pair_weights.items():
+        matrix[first, second] = float(weight)
+        matrix[second, first] = float(weight)
+    return matrix
+
+
+def pairwise_interactions_from_table(
+    coalition_values: Mapping[Coalition | tuple[int, ...], float],
+    *,
+    num_players: int,
+) -> t.Tensor:
+    """Compute second-order Shapley interaction indices from first principles."""
+
+    if num_players < 2:
+        raise ValueError("pairwise interactions require at least two players.")
+    values = {frozenset(key): float(value) for key, value in coalition_values.items()}
+    expected = set(enumerate_coalitions(num_players))
+    missing = expected - set(values)
+    if missing:
+        raise ValueError(f"coalition value table is missing {len(missing)} coalitions.")
+
+    interactions = t.zeros((num_players, num_players), dtype=t.float64)
+    denominator = math.factorial(num_players - 1)
+    for first, second in itertools.combinations(range(num_players), 2):
+        others = [player for player in range(num_players) if player not in (first, second)]
+        score = 0.0
+        for size in range(num_players - 1):
+            weight = (
+                math.factorial(size)
+                * math.factorial(num_players - size - 2)
+                / denominator
+            )
+            for group in itertools.combinations(others, size):
+                coalition = frozenset(group)
+                score += weight * (
+                    values[coalition | {first, second}]
+                    - values[coalition | {first}]
+                    - values[coalition | {second}]
+                    + values[coalition]
+                )
+        interactions[first, second] = score
+        interactions[second, first] = score
+    return interactions
+
+
+def agreement_summary(
+    coalition_values: Mapping[Coalition | tuple[int, ...], float],
+    *,
+    mechanistic_scores: t.Tensor,
+    num_players: int,
+    topk: int = 2,
+) -> dict:
+    """Compare Shapley, causal patching, and known mechanistic scores."""
+
+    shapley = exact_shapley_from_table(coalition_values, num_players=num_players)
+    patching = causal_patching_effects(coalition_values, num_players=num_players)
+    mech = mechanistic_scores.double().flatten()
+    full = frozenset(range(num_players))
+    values = {frozenset(key): float(value) for key, value in coalition_values.items()}
+    top_player = int(shapley.argmax().item())
+    non_top = [player for player in range(num_players) if player != top_player]
+    deletion_drop = values[full] - values[full - {top_player}]
+    matched_random_drop = sum(values[full] - values[full - {player}] for player in non_top) / len(
+        non_top
+    )
+    return {
+        "shapley_values": shapley,
+        "patching_effects": patching,
+        "mechanistic_scores": mech,
+        "spearman_correlation": spearman_rank_correlation(shapley, mech),
+        "topk_overlap": topk_overlap_fraction(shapley, mech, k=topk),
+        "patching_topk_overlap": topk_overlap_fraction(patching, mech, k=topk),
+        "shapley_top_feature": top_player,
+        "mechanistic_top_feature": int(mech.argmax().item()),
+        "patching_top_feature": int(patching.argmax().item()),
+        "deletion_drop": deletion_drop,
+        "matched_random_drop": matched_random_drop,
+        "random_baseline_drop": matched_random_drop,
+        "agrees_with_mechanistic": (
+            spearman_rank_correlation(shapley, mech) >= NEURAL_AGREEMENT_MIN_CORRELATION
+            and topk_overlap_fraction(shapley, mech, k=topk) == 1.0
+        ),
+    }
 
 
 # %%
@@ -66,7 +284,7 @@ def analytic_neural_game_mechanistic_scores() -> t.Tensor:
     data-generating rule, not a Shapley call over the learned model outputs.
     """
 
-    return t.tensor([2.3, -1.45, 2.7, 0.15], dtype=t.float64)
+    return mechanistic_endpoint_scores()
 
 
 def _rank_desc(scores: t.Tensor) -> list[int]:
@@ -163,6 +381,267 @@ def _write_heatmap(path: Path, rows: list[str], columns: list[str], values: list
     fig.tight_layout()
     fig.savefig(path)
     plt.close(fig)
+
+
+def _tensor_to_list_report(report: dict) -> dict:
+    """Convert tensor-valued report fields into plain Python objects."""
+
+    converted = report.copy()
+    for key, value in list(converted.items()):
+        if hasattr(value, "tolist"):
+            converted[key] = value.tolist()
+    return converted
+
+
+def toy_agreement_case() -> dict:
+    """Return the planted finite-circuit agreement case used in the notebook."""
+
+    values = finite_circuit_table()
+    return _tensor_to_list_report(
+        agreement_summary(
+            values,
+            mechanistic_scores=mechanistic_endpoint_scores(),
+            num_players=NEURAL_GAME_NUM_PLAYERS,
+            topk=2,
+        )
+    )
+
+
+def xor_interaction_diagnosis() -> dict:
+    """Return single-feature and pair-player scores for the XOR disagreement case."""
+
+    values = xor_game()
+    shapley = exact_shapley_from_table(values, num_players=2)
+    patching = causal_patching_effects(values, num_players=2)
+    interactions = pairwise_interactions_from_table(values, num_players=2)
+    return {
+        "shapley_values": shapley.tolist(),
+        "patching_effects": patching.tolist(),
+        "pair_interactions": interactions.tolist(),
+        "max_single_feature_value": float(shapley.abs().max().item()),
+        "recovered_pair_interaction": float(abs(interactions[0, 1].item())),
+        "ordinary_shapley_misses": float(shapley.abs().max().item()) <= 1e-9,
+        "interaction_recovers_pair": float(abs(interactions[0, 1].item())) >= 1.0,
+    }
+
+
+def shuffled_mechanistic_control() -> dict:
+    """Compare the same Shapley values against a shuffled mechanism label control."""
+
+    values = finite_circuit_table()
+    shapley = exact_shapley_from_table(values, num_players=NEURAL_GAME_NUM_PLAYERS)
+    mechanistic = mechanistic_endpoint_scores()
+    shuffled = mechanistic[t.tensor([1, 3, 0, 2])]
+    return {
+        "shapley_values": shapley.tolist(),
+        "true_mechanistic_scores": mechanistic.tolist(),
+        "shuffled_mechanistic_scores": shuffled.tolist(),
+        "true_spearman": spearman_rank_correlation(shapley, mechanistic),
+        "shuffled_spearman": spearman_rank_correlation(shapley, shuffled),
+        "true_top2_overlap": topk_overlap_fraction(shapley, mechanistic, k=2),
+        "shuffled_top2_overlap": topk_overlap_fraction(shapley, shuffled, k=2),
+        "control_rejected": topk_overlap_fraction(shapley, shuffled, k=2) < 1.0,
+    }
+
+
+def one_step_data_utility(
+    coalition: Coalition | tuple[int, ...],
+    *,
+    train_labels: t.Tensor | None = None,
+    validation_label: float = 1.0,
+    learning_rate: float = 0.5,
+) -> float:
+    """Utility from one gradient step on selected scalar training examples."""
+
+    labels = (
+        t.tensor([1.0, 1.0, 1.0, -1.0], dtype=t.float64)
+        if train_labels is None
+        else train_labels.double()
+    )
+    active = sorted(coalition)
+    baseline_loss = validation_label**2
+    if not active:
+        return 0.0
+    selected = labels[t.tensor(active, dtype=t.long)]
+    gradient = -2.0 * selected.mean()
+    updated_weight = -learning_rate * gradient
+    updated_loss = (updated_weight - validation_label) ** 2
+    return float(baseline_loss - updated_loss)
+
+
+def one_step_data_value_table(
+    *,
+    num_examples: int = 4,
+    train_labels: t.Tensor | None = None,
+) -> dict[Coalition, float]:
+    """Return the complete training-example coalition table for the data bridge."""
+
+    return {
+        coalition: one_step_data_utility(coalition, train_labels=train_labels)
+        for coalition in enumerate_coalitions(num_examples)
+    }
+
+
+def data_gradient_dot_scores(
+    *,
+    train_labels: t.Tensor | None = None,
+    validation_label: float = 1.0,
+) -> t.Tensor:
+    """Return one-run gradient-dot scores from initialization."""
+
+    labels = (
+        t.tensor([1.0, 1.0, 1.0, -1.0], dtype=t.float64)
+        if train_labels is None
+        else train_labels.double()
+    )
+    validation_gradient = -2.0 * validation_label
+    train_gradients = -2.0 * labels
+    return train_gradients * validation_gradient
+
+
+def pearson_correlation(first: t.Tensor, second: t.Tensor) -> float:
+    """Return Pearson correlation for two nonconstant vectors."""
+
+    first = first.double().flatten()
+    second = second.double().flatten()
+    first_centered = first - first.mean()
+    second_centered = second - second.mean()
+    denominator = first_centered.norm() * second_centered.norm()
+    if float(denominator.item()) == 0.0:
+        return 0.0
+    return float((first_centered @ second_centered / denominator).item())
+
+
+def data_player_bridge_report() -> dict:
+    """Compare exact Data Shapley with a one-run gradient-dot proxy."""
+
+    values = one_step_data_value_table()
+    exact = exact_shapley_from_table(values, num_players=4)
+    proxy = data_gradient_dot_scores()
+    harmful = int(exact.argmin().item())
+    helpful = int(exact.argmax().item())
+    return {
+        "exact_data_shapley": exact.tolist(),
+        "gradient_dot_scores": proxy.tolist(),
+        "pearson_correlation": pearson_correlation(exact, proxy),
+        "helpful_example": helpful,
+        "harmful_example": harmful,
+        "identifies_harmful": harmful == int(proxy.argmin().item()),
+        "identifies_helpful_tie": float(proxy[helpful].item()) == float(proxy.max().item()),
+    }
+
+
+def write_signature_panel(
+    path: Path,
+    *,
+    values: Mapping[Coalition | tuple[int, ...], float] | None = None,
+) -> dict:
+    """Write the learner-facing 16.8 signature result panel."""
+
+    import matplotlib
+
+    matplotlib.use("Agg", force=True)
+    import matplotlib.pyplot as plt
+
+    values = finite_circuit_table() if values is None else dict(values)
+    mech = mechanistic_endpoint_scores()
+    summary = agreement_summary(values, mechanistic_scores=mech, num_players=NEURAL_GAME_NUM_PLAYERS)
+    shapley = summary["shapley_values"]
+    patching = summary["patching_effects"]
+    pair_mech = mechanistic_pair_matrix()
+    pair_shap = pairwise_interactions_from_table(values, num_players=NEURAL_GAME_NUM_PLAYERS)
+    shap_rank = _rank_desc(shapley)
+    mech_rank = _rank_desc(mech)
+    shuffled_rank = _rank_desc(mech[t.tensor([1, 3, 0, 2])])
+    curves = {
+        "Shapley deletion": _curve_from_rank(values, shap_rank, "deletion"),
+        "Mechanism deletion": _curve_from_rank(values, mech_rank, "deletion"),
+        "Shuffled-control deletion": _curve_from_rank(values, shuffled_rank, "deletion"),
+    }
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fig, axes = plt.subplots(2, 2, figsize=(12.5, 8.0), dpi=160)
+
+    feature_labels = [f"x{i}" for i in range(NEURAL_GAME_NUM_PLAYERS)]
+    width = 0.23
+    x_positions = t.arange(NEURAL_GAME_NUM_PLAYERS).double().tolist()
+    axes[0, 0].bar([x - width for x in x_positions], shapley.tolist(), width=width, label="Exact Shapley")
+    axes[0, 0].bar(x_positions, patching.tolist(), width=width, label="Causal patch")
+    axes[0, 0].bar([x + width for x in x_positions], mech.tolist(), width=width, label="Known mechanism")
+    axes[0, 0].axhline(0.0, color="black", linewidth=0.8)
+    axes[0, 0].set_xticks(x_positions, feature_labels)
+    axes[0, 0].set_title("Agreement case: additive + pair circuit")
+    axes[0, 0].set_ylabel("score")
+    axes[0, 0].legend(frameon=False, fontsize=8)
+
+    for label, points in curves.items():
+        axes[0, 1].plot(
+            [point["step"] for point in points],
+            [point["value"] for point in points],
+            marker="o",
+            linewidth=2,
+            label=label,
+        )
+    axes[0, 1].set_title("Deletion consequence test")
+    axes[0, 1].set_xlabel("players removed")
+    axes[0, 1].set_ylabel("circuit value")
+    axes[0, 1].grid(alpha=0.25)
+    axes[0, 1].legend(frameon=False, fontsize=8)
+
+    overlap = [
+        [
+            topk_overlap_fraction(shapley, mech, k=k)
+            for k in range(1, NEURAL_GAME_NUM_PLAYERS + 1)
+        ],
+        [
+            topk_overlap_fraction(patching, mech, k=k)
+            for k in range(1, NEURAL_GAME_NUM_PLAYERS + 1)
+        ],
+        [
+            topk_overlap_fraction(shapley, mech[t.tensor([1, 3, 0, 2])], k=k)
+            for k in range(1, NEURAL_GAME_NUM_PLAYERS + 1)
+        ],
+    ]
+    image = axes[1, 0].imshow(overlap, cmap="viridis", vmin=0, vmax=1)
+    axes[1, 0].set_title("Agreement matrix: top-k overlap")
+    axes[1, 0].set_xticks(range(NEURAL_GAME_NUM_PLAYERS), [f"k={k}" for k in range(1, 5)])
+    axes[1, 0].set_yticks(range(3), ["Shapley", "Patching", "Shuffled"])
+    for row_idx, row_values in enumerate(overlap):
+        for col_idx, value in enumerate(row_values):
+            axes[1, 0].text(col_idx, row_idx, f"{value:.2f}", ha="center", va="center")
+    fig.colorbar(image, ax=axes[1, 0], shrink=0.82)
+
+    im = axes[1, 1].imshow(pair_shap.abs(), cmap="magma", vmin=0)
+    axes[1, 1].set_title("Disagreement diagnosis: pair interactions")
+    axes[1, 1].set_xticks(range(NEURAL_GAME_NUM_PLAYERS), feature_labels)
+    axes[1, 1].set_yticks(range(NEURAL_GAME_NUM_PLAYERS), feature_labels)
+    for row in range(NEURAL_GAME_NUM_PLAYERS):
+        for col in range(NEURAL_GAME_NUM_PLAYERS):
+            if row == col:
+                label = ""
+            elif abs(float(pair_mech[row, col].item())) > 0:
+                label = f"{float(pair_shap[row, col].item()):.1f}"
+            else:
+                label = f"{float(pair_shap[row, col].item()):.1f}"
+            axes[1, 1].text(col, row, label, ha="center", va="center", color="white")
+    fig.colorbar(im, ax=axes[1, 1], shrink=0.82)
+
+    fig.suptitle(
+        "SHAPley and mechanistic scores agree only after the player set is right",
+        fontsize=14,
+    )
+    fig.tight_layout()
+    fig.savefig(path)
+    plt.close(fig)
+
+    return {
+        "signature_panel_written": path.exists() and path.stat().st_size > 0,
+        "signature_panel_path": _artifact_display_path(path),
+        "spearman_correlation": summary["spearman_correlation"],
+        "top2_overlap": summary["topk_overlap"],
+        "patching_top2_overlap": summary["patching_topk_overlap"],
+        "xor_pair_interaction_abs": xor_interaction_diagnosis()["recovered_pair_interaction"],
+    }
 
 
 def write_agreement_artifacts(
@@ -404,6 +883,7 @@ def run_smoke_test(cpu: bool = True) -> dict:
     return {
         "additive_agreement": additive_agreement_smoke_test(),
         "xor_disagreement": xor_disagreement_smoke_test(),
+        "data_player_bridge": data_player_bridge_report(),
     }
 
 
@@ -411,7 +891,22 @@ def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
     if not t.cuda.is_available():
         raise RuntimeError("16.8 GPU preflight requires CUDA; no CPU fallback is accepted.")
 
-    return run_neural_mechanistic_agreement_preflight(max_vram_gb=max_vram_gb)
+    gpu = run_neural_mechanistic_agreement_preflight(max_vram_gb=max_vram_gb)
+    notebook = run_smoke_test(cpu=False)
+    gpu.update(
+        {
+            "data_player_bridge_pearson": notebook["data_player_bridge"][
+                "pearson_correlation"
+            ],
+            "data_player_harmful_identified": notebook["data_player_bridge"][
+                "identifies_harmful"
+            ],
+            "toy_xor_pair_interaction_abs": notebook["xor_disagreement"][
+                "recovered_pair_interaction"
+            ],
+        }
+    )
+    return gpu
 
 
 def run_neural_mechanistic_agreement_preflight(max_vram_gb: float = 24.0) -> dict:

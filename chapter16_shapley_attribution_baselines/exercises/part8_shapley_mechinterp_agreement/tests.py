@@ -1,3 +1,4 @@
+import ast
 import csv
 import json
 import tempfile
@@ -5,6 +6,9 @@ from collections.abc import Callable
 from pathlib import Path
 
 import torch as t
+
+
+SECTION_DIR = Path(__file__).resolve().parent
 
 
 def _solutions():
@@ -22,6 +26,147 @@ def test_rank_desc_toy_oracle(rank_desc: Callable | None = None):
         "Ranking should sort descending and keep a deterministic order for ties."
     )
     print("All tests in `test_rank_desc_toy_oracle` passed!")
+
+
+def test_enumerate_coalitions_toy_oracle(enumerate_coalitions: Callable | None = None):
+    enumerate_coalitions = enumerate_coalitions or _solutions().enumerate_coalitions
+    coalitions = enumerate_coalitions(3)
+    assert len(coalitions) == 8, "Three binary players should have 2**3 coalitions."
+    assert coalitions[0] == frozenset(), "The empty coalition should appear first."
+    assert coalitions[-1] == frozenset({0, 1, 2}), "The full coalition should appear last."
+    assert len(set(coalitions)) == len(coalitions), "Coalitions should be unique."
+    print("All tests in `test_enumerate_coalitions_toy_oracle` passed!")
+
+
+def test_exact_shapley_from_table_additive_oracle(
+    exact_shapley_from_table: Callable | None = None,
+):
+    exact_shapley_from_table = exact_shapley_from_table or _solutions().exact_shapley_from_table
+    values = _solutions().additive_game(t.tensor([1.0, 2.0, 0.5], dtype=t.float64))
+    shapley = exact_shapley_from_table(values, num_players=3)
+    assert t.allclose(shapley, t.tensor([1.0, 2.0, 0.5], dtype=t.float64)), (
+        "Exact Shapley should recover the weights in an additive game."
+    )
+    assert abs(float(shapley.sum().item()) - 3.5) < 1e-9, (
+        "Shapley values should satisfy efficiency: they sum to full minus empty value."
+    )
+    print("All tests in `test_exact_shapley_from_table_additive_oracle` passed!")
+
+
+def test_finite_circuit_table_toy_oracle(
+    finite_circuit_table: Callable | None = None,
+    mechanistic_endpoint_scores: Callable | None = None,
+    mechanistic_pair_matrix: Callable | None = None,
+):
+    solutions = _solutions()
+    finite_circuit_table = finite_circuit_table or solutions.finite_circuit_table
+    mechanistic_endpoint_scores = mechanistic_endpoint_scores or solutions.mechanistic_endpoint_scores
+    mechanistic_pair_matrix = mechanistic_pair_matrix or solutions.mechanistic_pair_matrix
+
+    values = finite_circuit_table()
+    assert len(values) == 16, "The four-feature circuit should expose the complete 2**4 table."
+    assert abs(values[frozenset()] - 0.25) < 1e-9, "The empty coalition should equal the intercept."
+    assert abs(values[frozenset({0, 2})] - 5.25) < 1e-9, (
+        "The {0, 2} coalition should include the positive x0*x2 edge."
+    )
+    scores = mechanistic_endpoint_scores()
+    assert t.allclose(scores, t.tensor([2.3, -1.45, 2.7, 0.15], dtype=t.float64)), (
+        "Endpoint scores should allocate each pair edge equally to its two endpoint features."
+    )
+    pair_matrix = mechanistic_pair_matrix()
+    assert pair_matrix[0, 2] == pair_matrix[2, 0] == 2.2, (
+        "The positive planted pair edge should be represented symmetrically."
+    )
+    assert pair_matrix[1, 3] == pair_matrix[3, 1] == -1.5, (
+        "The negative planted pair edge should be represented symmetrically."
+    )
+    print("All tests in `test_finite_circuit_table_toy_oracle` passed!")
+
+
+def test_finite_circuit_agreement_case_matches_ground_truth(
+    finite_circuit_table: Callable | None = None,
+    exact_shapley_from_table: Callable | None = None,
+    mechanistic_endpoint_scores: Callable | None = None,
+):
+    solutions = _solutions()
+    finite_circuit_table = finite_circuit_table or solutions.finite_circuit_table
+    exact_shapley_from_table = exact_shapley_from_table or solutions.exact_shapley_from_table
+    mechanistic_endpoint_scores = mechanistic_endpoint_scores or solutions.mechanistic_endpoint_scores
+
+    values = finite_circuit_table()
+    shapley = exact_shapley_from_table(values, num_players=solutions.NEURAL_GAME_NUM_PLAYERS)
+    mechanism = mechanistic_endpoint_scores()
+    assert t.allclose(shapley, mechanism), (
+        "The planted finite circuit should be an exact agreement case: Shapley equals "
+        "linear wires plus half of each pair edge."
+    )
+    assert int(shapley.argmax().item()) == 2, "The answer-slot feature should be top-ranked."
+    print("All tests in `test_finite_circuit_agreement_case_matches_ground_truth` passed!")
+
+
+def test_causal_patching_effects_expose_interaction_consequences(
+    causal_patching_effects: Callable | None = None,
+):
+    solutions = _solutions()
+    causal_patching_effects = causal_patching_effects or solutions.causal_patching_effects
+    values = solutions.finite_circuit_table()
+    patching = causal_patching_effects(values, num_players=solutions.NEURAL_GAME_NUM_PLAYERS)
+    shapley = solutions.exact_shapley_from_table(values, num_players=solutions.NEURAL_GAME_NUM_PLAYERS)
+    assert int(patching.argmax().item()) == int(shapley.argmax().item()) == 2, (
+        "Causal patching and Shapley should identify the same top feature in the agreement case."
+    )
+    assert patching[0] > shapley[0] and patching[2] > shapley[2], (
+        "Full-minus-ablated patching should expose downstream interaction consequences, "
+        "so it need not equal single-feature Shapley in an interaction-bearing circuit."
+    )
+    print("All tests in `test_causal_patching_effects_expose_interaction_consequences` passed!")
+
+
+def test_pairwise_interactions_recover_planted_edges(
+    pairwise_interactions_from_table: Callable | None = None,
+):
+    solutions = _solutions()
+    pairwise_interactions_from_table = (
+        pairwise_interactions_from_table or solutions.pairwise_interactions_from_table
+    )
+    interactions = pairwise_interactions_from_table(
+        solutions.finite_circuit_table(),
+        num_players=solutions.NEURAL_GAME_NUM_PLAYERS,
+    )
+    expected = solutions.mechanistic_pair_matrix()
+    assert t.allclose(interactions, expected, atol=1e-9), (
+        "Pairwise Shapley interactions should recover the planted positive and negative edges."
+    )
+    print("All tests in `test_pairwise_interactions_recover_planted_edges` passed!")
+
+
+def test_shuffled_mechanistic_control_rejected(shuffled_mechanistic_control: Callable | None = None):
+    shuffled_mechanistic_control = (
+        shuffled_mechanistic_control or _solutions().shuffled_mechanistic_control
+    )
+    result = shuffled_mechanistic_control()
+    assert result["true_top2_overlap"] == 1.0, "The true mechanism should pass top-2 overlap."
+    assert result["shuffled_top2_overlap"] < 1.0, (
+        "A shuffled mechanism-label control should fail the same top-k agreement check."
+    )
+    assert result["control_rejected"], "The shuffled control should be explicitly rejected."
+    print("All tests in `test_shuffled_mechanistic_control_rejected` passed!")
+
+
+def test_data_player_bridge_matches_exact_data_shapley(
+    data_player_bridge_report: Callable | None = None,
+):
+    data_player_bridge_report = data_player_bridge_report or _solutions().data_player_bridge_report
+    result = data_player_bridge_report()
+    assert result["pearson_correlation"] > 0.99, (
+        "The one-run gradient-dot proxy should correlate with exact Data Shapley on this "
+        "one-step linear bridge problem."
+    )
+    assert result["identifies_harmful"], "The mislabeled example should be the harmful one."
+    assert result["identifies_helpful_tie"], (
+        "At least one helpful example should be top-scored, with ties handled honestly."
+    )
+    print("All tests in `test_data_player_bridge_matches_exact_data_shapley` passed!")
 
 
 def test_analytic_neural_game_mechanistic_scores_toy_oracle(
@@ -109,10 +254,14 @@ def test_xor_disagreement_smoke_test(
     print("All tests in `test_xor_disagreement_smoke_test` passed!")
 
 
-def test_write_agreement_artifacts_contract(tmp_path: Path | None = None):
+def test_write_agreement_artifacts_contract(
+    tmp_path: Path | None = None,
+    write_agreement_artifacts: Callable | None = None,
+):
     if tmp_path is None:
         tmp_path = Path(tempfile.mkdtemp(prefix="arena-16-8-artifacts-"))
     solutions = _solutions()
+    write_agreement_artifacts = write_agreement_artifacts or solutions.write_agreement_artifacts
     device = t.device("cpu")
     true_values = solutions.coalition_table_from_true_game(device)
     mechanistic_scores = solutions.analytic_neural_game_mechanistic_scores()
@@ -136,7 +285,7 @@ def test_write_agreement_artifacts_contract(tmp_path: Path | None = None):
         num_players=solutions.NEURAL_GAME_NUM_PLAYERS,
     )
 
-    summary = solutions.write_agreement_artifacts(
+    summary = write_agreement_artifacts(
         output_dir=tmp_path,
         model_values=true_values,
         true_values=true_values,
@@ -150,13 +299,13 @@ def test_write_agreement_artifacts_contract(tmp_path: Path | None = None):
     assert summary["agreement_artifacts_written"], (
         "Artifact writer should materialize every declared agreement artifact."
     )
-    assert summary["agreement_artifact_count"] == 5, (
-        "The artifact contract should include matrix, two curves, heatmap, and examples."
+    assert summary["agreement_artifact_count"] >= 5, (
+        "The artifact contract should include at least matrix, two curves, heatmap, and examples."
     )
     matrix_path = tmp_path / "agreement_matrix.csv"
     with matrix_path.open() as handle:
         rows = list(csv.DictReader(handle))
-    assert len(rows) == 7, "The agreement matrix should keep all seven required rows."
+    assert len(rows) >= 7, "The agreement matrix should keep at least the seven required rows."
     assert {row["task"] for row in rows} >= {
         "additive_control",
         "neural_coalition_game",
@@ -176,6 +325,26 @@ def test_write_agreement_artifacts_contract(tmp_path: Path | None = None):
     print("All tests in `test_write_agreement_artifacts_contract` passed!")
 
 
+def test_write_signature_panel_contract(
+    tmp_path: Path | None = None,
+    write_signature_panel: Callable | None = None,
+):
+    if tmp_path is None:
+        tmp_path = Path(tempfile.mkdtemp(prefix="arena-16-8-signature-"))
+    write_signature_panel = write_signature_panel or _solutions().write_signature_panel
+    path = tmp_path / "signature.png"
+    summary = write_signature_panel(path)
+    assert summary["signature_panel_written"], "The signature panel should be written."
+    assert path.exists() and path.stat().st_size > 10_000, (
+        "The signature result should be a nontrivial visual artifact, not an empty placeholder."
+    )
+    assert summary["top2_overlap"] == 1.0, "The agreement panel should include a true agreement case."
+    assert summary["xor_pair_interaction_abs"] == 2.0, (
+        "The panel should be backed by a tested XOR disagreement diagnosis."
+    )
+    print("All tests in `test_write_signature_panel_contract` passed!")
+
+
 def test_notebook_contract(run_smoke_test: Callable | None = None):
     run_smoke_test = run_smoke_test or _solutions().run_smoke_test
     result = run_smoke_test(cpu=True)
@@ -185,7 +354,77 @@ def test_notebook_contract(run_smoke_test: Callable | None = None):
     assert result["xor_disagreement"]["interaction_recovers_pair"], (
         "The notebook contract should include the XOR interaction disagreement control."
     )
+    assert result["data_player_bridge"]["pearson_correlation"] > 0.99, (
+        "The notebook contract should include the one-step Data Shapley bridge."
+    )
     print("All tests in `test_notebook_contract` passed!")
+
+
+def test_notebooks_have_arena_learner_surface():
+    required_phrases = [
+        "By the end of this notebook",
+        "Core Question",
+        "Learning Objectives",
+        "Signature Result",
+        "Try It Yourself",
+        "Bonus Anomaly Hunt",
+        "Limitations",
+        "<summary>Expected output</summary>",
+        "<summary>Help",
+        "<summary>Interpreting the result</summary>",
+        "<summary>Solution</summary>",
+    ]
+    for notebook_name in [
+        "16.8_Do_SHAPley_and_Mechanistic_Interpretability_Agree_exercises.ipynb",
+        "16.8_Do_SHAPley_and_Mechanistic_Interpretability_Agree_solutions.ipynb",
+    ]:
+        text = (SECTION_DIR / notebook_name).read_text(encoding="utf-8")
+        for phrase in required_phrases:
+            assert phrase in text, f"{notebook_name} is missing {phrase!r}."
+        assert text.count("Exercise -") >= 6, f"{notebook_name} should expose at least six exercises."
+        assert "verification_report.json" not in text[text.find("Signature Result") : text.find("Limitations")], (
+            f"{notebook_name} should not make the signature result a verification-report wrapper."
+        )
+    print("All tests in `test_notebooks_have_arena_learner_surface` passed!")
+
+
+def test_solution_notebook_exposes_taught_implementations():
+    notebook_path = SECTION_DIR / (
+        "16.8_Do_SHAPley_and_Mechanistic_Interpretability_Agree_solutions.ipynb"
+    )
+    notebook = json.loads(notebook_path.read_text(encoding="utf-8"))
+    function_names: set[str] = set()
+    for cell in notebook["cells"]:
+        if cell.get("cell_type") != "code":
+            continue
+        source = cell.get("source", "")
+        if isinstance(source, list):
+            source = "".join(source)
+        assert "NotImplementedError" not in source, (
+            "The solution notebook must not retain learner stubs."
+        )
+        tree = ast.parse(source)
+        function_names.update(
+            node.name for node in tree.body if isinstance(node, ast.FunctionDef)
+        )
+
+    required = {
+        "enumerate_coalitions",
+        "finite_circuit_value",
+        "exact_shapley_from_table",
+        "causal_patching_effects",
+        "agreement_summary",
+        "pairwise_interactions_from_table",
+        "shuffled_mechanistic_control",
+        "data_player_bridge_report",
+        "write_signature_panel",
+        "run_smoke_test",
+    }
+    missing = sorted(required - function_names)
+    assert not missing, (
+        "The solved notebook must expose every taught method inline; "
+        f"missing {missing}."
+    )
 
 
 def test_committed_gpu_report_records_agreement_and_controls():
