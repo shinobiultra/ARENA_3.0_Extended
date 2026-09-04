@@ -84,7 +84,7 @@ sections:
   '8.4':
     status: course_ready
     page: chapter8_automated_circuits/instructions/pages/04_[8.4]_Circuit_Tracing_with_Attribution_Graphs.md
-    notes: ARENA-style rewrite with circuit-tracing attribution-graph validation, EAP edge-score/top-k graph/target-metric/path-perturbation/alternative-baseline/counterfactual-summary progression, signature result, limitations, and paired notebook surfaces.
+    notes: ARENA-style circuit-tracing lesson with seven tested exercises, an exact planted feature/head/MLP/logit DAG, exact-vs-IG edge heatmaps, top-path extraction, path-only/path-removed faithfulness-completeness-minimality tests, same-size random and reversed-edge controls, editable threshold sweep, inline solution implementations, and an explicitly demoted CUDA residual-position preflight.
   '8.5':
     status: course_ready
     page: chapter8_automated_circuits/instructions/pages/05_[8.5]_Sparse_Feature_Circuits.md

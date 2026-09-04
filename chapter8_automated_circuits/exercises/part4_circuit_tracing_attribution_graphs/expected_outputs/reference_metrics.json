@@ -1,44 +1,49 @@
 {
-  "baselines": {
-    "required": true
-  },
+  "notebook_id": "8_4_circuit_tracing_with_attribution_graphs",
   "metrics": {
     "accepted": true,
-    "alternative_baseline_fails": true,
-    "alternative_baseline_margin_min": 1.0,
-    "bnb_cuda_override": "130",
-    "clean_corrupt_gap_min": 6.0,
-    "counterfactual_observed_delta_max": -1.0,
-    "counterfactual_predicted_direction": "decrease",
-    "distractor_token": " top",
-    "explained_fraction_min": 0.99,
-    "explains_target_metric": true,
-    "graph_edge_score_min": 6.0,
-    "graph_edge_source": "position_5",
-    "graph_edge_target": "position_5",
-    "graph_node_count": 6,
-    "hf_revision": "bddc0e332f0ae84279e6a6a45d91b314899e1603",
-    "hook_name": "blocks.0.hook_resid_post",
-    "max_allowed_gpu_gb": 24,
-    "model_name": "gelu-1l",
-    "num_graph_edges": 1,
-    "path_metric_drop_min": 1.0,
-    "peak_vram_gb_max": 1.0,
-    "predicts_counterfactual": true,
-    "preflight_passed": true,
-    "sequence_length": 6,
-    "target_position": 5,
-    "target_token": " floor",
     "tests_passed": true,
-    "tokenizer_revision": "0f6671571a20be9756b9991d978047c03b75e749",
-    "top_edge_score_abs_min": 6.0,
-    "top_path_survives_test": true
+    "full_metric_min": 1.9,
+    "path_only_metric_min": 1.7,
+    "path_removed_metric_max": 0.3,
+    "faithfulness_min": 0.85,
+    "completeness_min": 0.95,
+    "minimality_min": 0.85,
+    "same_size_random_metric_max": 0.3,
+    "reversed_edge_metric_max": 0.0,
+    "random_margin_min": 1.0,
+    "reversed_margin_min": 1.0,
+    "top_path_survives_test": true,
+    "same_size_random_fails": true,
+    "reversed_edges_fail": true,
+    "top_path": [
+      "feature:country=France",
+      "head:subject-router",
+      "mlp:relation-lookup",
+      "feature:capital=Paris",
+      "logit:Paris-vs-Rome"
+    ],
+    "num_default_graph_edges": 4,
+    "ig_steps": 16,
+    "threshold": 0.25
+  },
+  "baselines": {
+    "required": true,
+    "same_size_random_graph": true,
+    "reversed_edge_graph": true,
+    "path_removed_graph": true
   },
   "negative_controls": {
     "required_where_applicable": true
   },
-  "notebook_id": "8_4_circuit_tracing_with_attribution_graphs",
   "ood_tests": {
-    "required_where_applicable": true
+    "required_where_applicable": false
+  },
+  "gpu_preflight": {
+    "required_for_release": true,
+    "not_run_by_this_cpu_salvage": true,
+    "model_name": "gelu-1l",
+    "hook_name": "blocks.0.hook_resid_post",
+    "claim_scope": "residual-position EAP mechanics preflight only"
   }
 }

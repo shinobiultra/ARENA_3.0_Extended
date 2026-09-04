@@ -1,10 +1,17 @@
 {
   "accepted": true,
-  "claim_scope": "Contract check; not a full real-model validation.",
-  "evidence_level": "notebook_contract",
+  "claim_scope": "Exact planted component-graph theorem; TransformerLens position graph remains a GPU preflight, not the learner flagship.",
+  "evidence_level": "cpu_planted_attribution_graph_theorem",
   "gt_tier": "GT-1",
   "notebook_id": "8_4_circuit_tracing_with_attribution_graphs",
   "section": "8.4",
   "tests_passed": true,
-  "title": "Circuit Tracing with Attribution Graphs"
+  "title": "Circuit Tracing with Attribution Graphs",
+  "top_path": [
+    "feature:country=France",
+    "head:subject-router",
+    "mlp:relation-lookup",
+    "feature:capital=Paris",
+    "logit:Paris-vs-Rome"
+  ]
 }

@@ -10,6 +10,8 @@ from typing import Literal
 
 import torch as t
 
+from arena_ext import circuit_tracing as reference_impl
+
 chapter = "chapter8_automated_circuits"
 root_dir = next(p for p in [Path.cwd(), *Path.cwd().parents] if (p / chapter).exists())
 if str(root_dir) not in sys.path:
@@ -368,6 +370,25 @@ def top_attribution_path(
 
 
 # %%
+PlantedAttributionCircuit = reference_impl.PlantedAttributionCircuit
+ExactPathPatchReport = reference_impl.ExactPathPatchReport
+GraphControlReport = reference_impl.GraphControlReport
+
+make_planted_attribution_circuit = reference_impl.make_planted_attribution_circuit
+planted_circuit_activations = reference_impl.planted_circuit_activations
+planted_circuit_metric = reference_impl.planted_circuit_metric
+exact_edge_ablation_effects = reference_impl.exact_edge_ablation_effects
+integrated_edge_attribution_scores = reference_impl.integrated_edge_attribution_scores
+threshold_attribution_graph = reference_impl.threshold_attribution_graph
+graph_edge_mask = reference_impl.graph_edge_mask
+graph_metric_from_edges = reference_impl.graph_metric_from_edges
+exact_path_patch_report = reference_impl.exact_path_patch_report
+same_size_random_graph = reference_impl.same_size_random_graph
+reversed_edge_graph = reference_impl.reversed_edge_graph
+graph_control_report = reference_impl.graph_control_report
+run_planted_graph_signature_result = reference_impl.run_planted_graph_signature_result
+
+
 def graph_smoke_test() -> dict:
     edge_scores = t.tensor(
         [
@@ -441,13 +462,22 @@ def path_smoke_test() -> dict:
 
 def run_smoke_test(cpu: bool = True) -> dict:
     _ = cpu
+    signature = run_planted_graph_signature_result()
     return {
-        "graph": graph_smoke_test(),
-        "metric": graph_metric_smoke_test(),
-        "path_perturbation": path_perturbation_smoke_test(),
-        "alternative": alternative_graph_smoke_test(),
-        "counterfactual": counterfactual_smoke_test(),
-        "path": path_smoke_test(),
+        "claim": signature["claim"],
+        "accepted": signature["accepted"],
+        "top_path": signature["top_path"],
+        "graph_edges": signature["graph_edges"],
+        "metrics": signature["metrics"],
+        "threshold_sweep": signature["threshold_sweep"],
+        "legacy_preflight_contract": {
+            "graph": graph_smoke_test(),
+            "metric": graph_metric_smoke_test(),
+            "path_perturbation": path_perturbation_smoke_test(),
+            "alternative": alternative_graph_smoke_test(),
+            "counterfactual": counterfactual_smoke_test(),
+            "path": path_smoke_test(),
+        },
     }
 
 
@@ -680,7 +710,31 @@ def run_transformerlens_attribution_graph_preflight(max_vram_gb: float = 24.0) -
 
 
 def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
-    return run_transformerlens_attribution_graph_preflight(max_vram_gb=max_vram_gb)
+    gpu = run_transformerlens_attribution_graph_preflight(max_vram_gb=max_vram_gb)
+    signature = run_planted_graph_signature_result()
+    metrics = signature["metrics"]
+    gpu.update(
+        {
+            "cpu_signature_claim": "planted_component_graph_exact_theorem",
+            "cpu_top_path": signature["top_path"],
+            "cpu_default_graph_edges": len(signature["graph_edges"]),
+            "cpu_full_metric": metrics["full_metric"],
+            "cpu_path_only_metric": metrics["path_only_metric"],
+            "cpu_path_removed_metric": metrics["path_removed_metric"],
+            "cpu_faithfulness": metrics["faithfulness"],
+            "cpu_completeness": metrics["completeness"],
+            "cpu_minimality": metrics["minimality"],
+            "cpu_same_size_random_metric": metrics["same_size_random_metric"],
+            "cpu_reversed_edge_metric": metrics["reversed_edge_metric"],
+            "cpu_random_margin": metrics["random_margin"],
+            "cpu_reversed_margin": metrics["reversed_margin"],
+            "cpu_same_size_random_fails": metrics["same_size_random_fails"],
+            "cpu_reversed_edges_fail": metrics["reversed_edges_fail"],
+            "gpu_preflight_required_for_release": True,
+        }
+    )
+    gpu["preflight_passed"] = bool(gpu["preflight_passed"] and signature["accepted"])
+    return gpu
 
 
 def run_full_experiment(max_vram_gb: float = 24.0) -> dict:

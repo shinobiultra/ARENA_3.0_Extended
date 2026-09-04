@@ -5,16 +5,20 @@
       "baseline_or_reference_check",
       "negative_control_where_applicable",
       "shape_dtype_or_exact_value_check",
-      "toy_local_attribution_graph_contract",
-      "toy_graph_metric_contract",
-      "toy_path_perturbation_contract",
-      "toy_alternative_graph_baseline_contract",
-      "toy_counterfactual_summary_contract",
+      "exact_planted_component_graph_contract",
+      "exact_edge_ablation_ground_truth_heatmap",
+      "integrated_gradient_edge_score_heatmap",
+      "thresholded_graph_recovers_top_path",
+      "exact_path_only_patch_metric",
+      "exact_path_removed_metric",
+      "faithfulness_minimality_completeness_metrics",
+      "same_size_random_non_path_graph_control",
+      "reversed_edge_graph_directionality_control",
       "pinned_transformerlens_gelu1l_eap_position_edge_matrix",
-      "top1_final_position_self_edge_graph_check",
-      "top_path_perturbation_to_corrupt_metric",
-      "same_size_wrong_position_alternative_graph_baseline",
-      "summary_predicted_decrease_counterfactual",
+      "gpu_preflight_top1_final_position_self_edge_graph_check",
+      "gpu_preflight_top_path_perturbation_to_corrupt_metric",
+      "gpu_preflight_same_size_wrong_position_alternative_graph_baseline",
+      "gpu_preflight_summary_predicted_decrease_counterfactual",
       "full_sparse_feature_circuit_tracing_not_claimed"
     ],
     "expected_metrics": {
@@ -25,9 +29,31 @@
       "clean_corrupt_gap_min": 6.0,
       "counterfactual_observed_delta_max": -1.0,
       "counterfactual_predicted_direction": "decrease",
+      "cpu_completeness_min": 0.95,
+      "cpu_default_graph_edges": 4,
+      "cpu_faithfulness_min": 0.85,
+      "cpu_full_metric_min": 1.9,
+      "cpu_minimality_min": 0.85,
+      "cpu_path_only_metric_min": 1.7,
+      "cpu_path_removed_metric_max": 0.3,
+      "cpu_random_margin_min": 1.0,
+      "cpu_reversed_edge_metric_max": 0.0,
+      "cpu_reversed_edges_fail": true,
+      "cpu_reversed_margin_min": 1.0,
+      "cpu_same_size_random_fails": true,
+      "cpu_same_size_random_metric_max": 0.3,
+      "cpu_signature_claim": "planted_component_graph_exact_theorem",
+      "cpu_top_path": [
+        "feature:country=France",
+        "head:subject-router",
+        "mlp:relation-lookup",
+        "feature:capital=Paris",
+        "logit:Paris-vs-Rome"
+      ],
       "distractor_token": " top",
       "explained_fraction_min": 0.99,
       "explains_target_metric": true,
+      "gpu_preflight_required_for_release": true,
       "graph_edge_score_min": 6.0,
       "graph_edge_source": "position_5",
       "graph_edge_target": "position_5",
@@ -50,7 +76,7 @@
       "top_path_survives_test": true
     }
   },
-  "claim_scope": "GT-1 attribution-graph preflight: reusable toy local-graph, graph-metric, path-perturbation, alternative-baseline, and counterfactual-summary contracts are kept for learner exercises, then a pinned TransformerLens gelu-1l checkpoint is loaded on CUDA. The report builds a top-1 local attribution graph from the real EAP position-edge matrix at blocks.0.hook_resid_post, requires the final-position self-edge to be the graph edge, and validates target-metric explanation, top-path perturbation, same-size alternative baseline failure, and a decrease counterfactual. This is a mechanics preflight, not a full sparse-feature or transcoder circuit-tracing replication.",
+  "claim_scope": "GT-1 learner claim: students build an exact planted component graph with feature, head, MLP, and logit nodes; integrated-gradient edge scores recover the planted top path; exact path-only and path-removed interventions validate faithfulness, completeness, and minimality; same-size random and reversed-edge graphs fail. The pinned TransformerLens gelu-1l CUDA route remains a residual-position EAP mechanics preflight only. Its one-edge position result is not the flagship attribution-graph claim.",
   "datasets": [
     {
       "id": "8_4_circuit_tracing_with_attribution_graphs_toy_inputs",
@@ -69,9 +95,9 @@
       "tokenizer": "NeelNanda/gpt-neox-tokenizer-digits"
     }
   ],
-  "date_run": "2026-07-02T12:43:25+00:00",
-  "evidence_level": "toy_graph_contract_plus_pinned_transformerlens_eap_position_graph_preflight",
-  "git_commit": "3a539d48",
+  "date_run": "2026-09-04T06:50:57+00:00",
+  "evidence_level": "exact_planted_component_graph_theorem_plus_pinned_transformerlens_position_graph_preflight",
+  "git_commit": "0b01f38e",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-1",
   "known_failures": [],
@@ -88,9 +114,25 @@
         "corrupt_prompt",
         "counterfactual_observed_delta",
         "counterfactual_predicted_direction",
+        "cpu_completeness",
+        "cpu_default_graph_edges",
+        "cpu_faithfulness",
+        "cpu_full_metric",
+        "cpu_minimality",
+        "cpu_path_only_metric",
+        "cpu_path_removed_metric",
+        "cpu_random_margin",
+        "cpu_reversed_edge_metric",
+        "cpu_reversed_edges_fail",
+        "cpu_reversed_margin",
+        "cpu_same_size_random_fails",
+        "cpu_same_size_random_metric",
+        "cpu_signature_claim",
+        "cpu_top_path",
         "distractor_token",
         "explained_fraction",
         "explains_target_metric",
+        "gpu_preflight_required_for_release",
         "graph_edge_score",
         "graph_edge_source",
         "graph_edge_target",
@@ -122,6 +164,27 @@
       "corrupt_prompt": "The bird flew over the",
       "counterfactual_observed_delta": -6.27708625793457,
       "counterfactual_predicted_direction": "decrease",
+      "cpu_completeness": 0.992099,
+      "cpu_default_graph_edges": 4,
+      "cpu_faithfulness": 0.860862,
+      "cpu_full_metric": 1.99335,
+      "cpu_minimality": 0.860862,
+      "cpu_path_only_metric": 1.716,
+      "cpu_path_removed_metric": 0.01575,
+      "cpu_random_margin": 1.70025,
+      "cpu_reversed_edge_metric": 0.0,
+      "cpu_reversed_edges_fail": true,
+      "cpu_reversed_margin": 1.716,
+      "cpu_same_size_random_fails": true,
+      "cpu_same_size_random_metric": 0.01575,
+      "cpu_signature_claim": "planted_component_graph_exact_theorem",
+      "cpu_top_path": [
+        "feature:country=France",
+        "head:subject-router",
+        "mlp:relation-lookup",
+        "feature:capital=Paris",
+        "logit:Paris-vs-Rome"
+      ],
       "cuda_available": true,
       "cuda_version": "13.2",
       "device": "NVIDIA GeForce RTX 5090 Laptop GPU",
@@ -129,6 +192,7 @@
       "explained_fraction": 1.0,
       "explains_target_metric": true,
       "full_path": "Pinned TransformerLens gelu-1l position-edge attribution graph preflight.",
+      "gpu_preflight_required_for_release": true,
       "gpu_total_memory_gb": 23.45965576171875,
       "graph_edge_score": 6.031335,
       "graph_edge_source": "position_5",
@@ -154,66 +218,152 @@
       "within_vram_budget": true
     },
     "notebook_contract": {
-      "alternative": {
-        "alternative_baseline_fails": true,
-        "alternative_metric": 1.0,
-        "graph_metric": 2.4,
-        "margin": 1.4
-      },
-      "counterfactual": {
-        "observed_delta": -1.5999999999999999,
-        "predicted_direction": "decrease",
-        "predicts_counterfactual": true
-      },
-      "graph": {
-        "edges": [
-          [
-            "transcoder:mlp",
-            "logit:Paris",
-            0.9
+      "accepted": true,
+      "claim": "The planted attribution graph's top path predicts the target metric and survives exact causal path interventions; same-size random and reversed-edge graphs fail.",
+      "graph_edges": [
+        {
+          "score": 0.515277,
+          "source": "feature:country=France",
+          "target": "head:subject-router"
+        },
+        {
+          "score": 0.508084,
+          "source": "head:subject-router",
+          "target": "mlp:relation-lookup"
+        },
+        {
+          "score": 0.428162,
+          "source": "mlp:relation-lookup",
+          "target": "feature:capital=Paris"
+        },
+        {
+          "score": 0.428162,
+          "source": "feature:capital=Paris",
+          "target": "logit:Paris-vs-Rome"
+        }
+      ],
+      "legacy_preflight_contract": {
+        "alternative": {
+          "alternative_baseline_fails": true,
+          "alternative_metric": 1.0,
+          "graph_metric": 2.4,
+          "margin": 1.4
+        },
+        "counterfactual": {
+          "observed_delta": -1.5999999999999999,
+          "predicted_direction": "decrease",
+          "predicts_counterfactual": true
+        },
+        "graph": {
+          "edges": [
+            [
+              "transcoder:mlp",
+              "logit:Paris",
+              0.9
+            ],
+            [
+              "feature:fact",
+              "transcoder:mlp",
+              0.8
+            ]
           ],
-          [
+          "nodes": [
             "feature:fact",
             "transcoder:mlp",
-            0.8
+            "logit:Paris"
           ]
-        ],
-        "nodes": [
-          "feature:fact",
-          "transcoder:mlp",
-          "logit:Paris"
-        ]
+        },
+        "metric": {
+          "corrupt_metric": 0.0,
+          "explained_fraction": 0.7999999999999999,
+          "explains_target_metric": true,
+          "full_metric": 3.0,
+          "graph_metric": 2.4
+        },
+        "path": {
+          "edge_scores": [
+            0.8,
+            0.9,
+            0.7
+          ],
+          "path": [
+            "feature:subject",
+            "transcoder:mlp",
+            "feature:object",
+            "logit:Paris"
+          ],
+          "path_score": 0.504,
+          "reaches_target": true,
+          "source": "feature:subject",
+          "target": "logit:Paris"
+        },
+        "path_perturbation": {
+          "metric_drop": 1.7,
+          "original_metric": 2.4,
+          "perturbed_metric": 0.7,
+          "top_path_survives_test": true
+        }
       },
-      "metric": {
+      "metrics": {
+        "completeness": 0.992099,
         "corrupt_metric": 0.0,
-        "explained_fraction": 0.7999999999999999,
-        "explains_target_metric": true,
-        "full_metric": 3.0,
-        "graph_metric": 2.4
-      },
-      "path": {
-        "edge_scores": [
-          0.8,
-          0.9,
-          0.7
-        ],
-        "path": [
-          "feature:subject",
-          "transcoder:mlp",
-          "feature:object",
-          "logit:Paris"
-        ],
-        "path_score": 0.504,
-        "reaches_target": true,
-        "source": "feature:subject",
-        "target": "logit:Paris"
-      },
-      "path_perturbation": {
-        "metric_drop": 1.7,
-        "original_metric": 2.4,
-        "perturbed_metric": 0.7,
+        "faithfulness": 0.860862,
+        "full_metric": 1.99335,
+        "minimality": 0.860862,
+        "path_only_metric": 1.716,
+        "path_removed_metric": 0.01575,
+        "random_margin": 1.70025,
+        "reversed_edge_metric": 0.0,
+        "reversed_edges_fail": true,
+        "reversed_margin": 1.716,
+        "same_size_random_fails": true,
+        "same_size_random_metric": 0.01575,
         "top_path_survives_test": true
-      }
+      },
+      "threshold_sweep": [
+        {
+          "faithfulness": 0.860862,
+          "num_edges": 5,
+          "path_only_metric": 1.716,
+          "path_reaches_target": true,
+          "threshold": 0.05
+        },
+        {
+          "faithfulness": 0.860862,
+          "num_edges": 4,
+          "path_only_metric": 1.716,
+          "path_reaches_target": true,
+          "threshold": 0.1
+        },
+        {
+          "faithfulness": 0.860862,
+          "num_edges": 4,
+          "path_only_metric": 1.716,
+          "path_reaches_target": true,
+          "threshold": 0.25
+        },
+        {
+          "faithfulness": 0.860862,
+          "num_edges": 4,
+          "path_only_metric": 1.716,
+          "path_reaches_target": true,
+          "threshold": 0.4
+        },
+        {
+          "faithfulness": 0.0,
+          "num_edges": 0,
+          "path_only_metric": 0.0,
+          "path_reaches_target": false,
+          "threshold": 0.55
+        }
+      ],
+      "top_path": [
+        "feature:country=France",
+        "head:subject-router",
+        "mlp:relation-lookup",
+        "feature:capital=Paris",
+        "logit:Paris-vs-Rome"
+      ]
     }
   },
   "models": [
@@ -238,7 +388,8 @@
   ],
   "negative_controls": {
     "declared_controls": [
-      "negative_control_where_applicable"
+      "negative_control_where_applicable",
+      "same_size_random_non_path_graph_control"
     ]
   },
   "notebook_id": "8_4_circuit_tracing_with_attribution_graphs",
@@ -248,12 +399,17 @@
   "peak_vram_gb": 0.46683549880981445,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "89ab495f8bf0be3b1e00bf82adfb57df230e89825711afc91f36127efa3159a7",
+    "combined_sha256": "619110c4c7077ef8e74efe20ea4440f109b62f09e4c0060df52ae9ed4dae6ba0",
     "files": [
       {
+        "path": "arena_ext/__init__.py",
+        "sha256": "98abfe2501c14bb586c6e5711446dd613a44fde9c7e0fc1b6d1438a986e58b4e",
+        "size_bytes": 2917
+      },
+      {
         "path": "arena_ext/circuit_tracing.py",
-        "sha256": "c69b53d2483ebb2b8a06ce9836bc2c73d2a356ee0f896734291bfb0b58749efa",
-        "size_bytes": 10187
+        "sha256": "875570dcb42aceae0ab56732957b9cb46facb3dc73f4b2dc1dd9a93e9350f193",
+        "size_bytes": 30787
       },
       {
         "path": "arena_ext/verification.py",
@@ -262,23 +418,23 @@
       },
       {
         "path": "chapter8_automated_circuits/exercises/part4_circuit_tracing_attribution_graphs/8.4_Circuit_Tracing_with_Attribution_Graphs_exercises.ipynb",
-        "sha256": "4e6bcdad69f891ffe5a93b3d0e3317895d9c74ab4636940eb021cac65ec73b85",
-        "size_bytes": 23689
+        "sha256": "4ee5a62b9c2d1ca3422dc9f1ae6085c591343a5745676103e4d427fd315373c6",
+        "size_bytes": 66608
       },
       {
         "path": "chapter8_automated_circuits/exercises/part4_circuit_tracing_attribution_graphs/8.4_Circuit_Tracing_with_Attribution_Graphs_solutions.ipynb",
-        "sha256": "19f3c16e19a7972a8a1d61d95826248582d3af207e367a82679fafb0cbd2f820",
-        "size_bytes": 10557
+        "sha256": "608bf784b2f5cbca0d9d20eec75dbd290f8d90394fdcb4abe73e529d67f07ab5",
+        "size_bytes": 95661
       },
       {
         "path": "chapter8_automated_circuits/exercises/part4_circuit_tracing_attribution_graphs/README.md",
-        "sha256": "936a184161ef24edcd314d82a25364fce90f985a84153a3a7b31ad202b25df45",
-        "size_bytes": 1012
+        "sha256": "a5fee9fbaec14590e934a357193e5c9c6c5659cea71744c2f0a207e27d607574",
+        "size_bytes": 1336
       },
       {
         "path": "chapter8_automated_circuits/exercises/part4_circuit_tracing_attribution_graphs/artifacts.lock.yml",
-        "sha256": "cbc223979330db3b579184bda143fe08fa5d5ac9d9113e74f27ba25d3d033cd6",
-        "size_bytes": 3935
+        "sha256": "fd8e9169a8227ea55c82722781dde710646498c3208b346b7b2b289a5e8acae7",
+        "size_bytes": 4678
       },
       {
         "path": "chapter8_automated_circuits/exercises/part4_circuit_tracing_attribution_graphs/expected_outputs/README.md",
@@ -287,23 +443,23 @@
       },
       {
         "path": "chapter8_automated_circuits/exercises/part4_circuit_tracing_attribution_graphs/expected_outputs/reference_metrics.json",
-        "sha256": "50b51969e0df254458139978c10e55e528e5cda38b1a8f5afd3b381257e91121",
-        "size_bytes": 1343
+        "sha256": "a3635f84ea58b5817f08c55a3e40299d039e17eb1a234bbb102cde6dbe85a98d",
+        "size_bytes": 1330
       },
       {
         "path": "chapter8_automated_circuits/exercises/part4_circuit_tracing_attribution_graphs/expected_outputs/smoke_test.json",
-        "sha256": "90f5b3f30a274738bd96ed0dbebcf58f358b4be1d5b4507f66e470c9863d6f29",
-        "size_bytes": 317
+        "sha256": "a5ad5de2c937dc8a3633b54affe1dffbea45fdd6f5b0f403ce3aece7a49374f9",
+        "size_bytes": 568
       },
       {
         "path": "chapter8_automated_circuits/exercises/part4_circuit_tracing_attribution_graphs/solutions.py",
-        "sha256": "dfe2b5340a01d7b41cc44a2eb09ed48166963b2a184858206a0b0b3f6f1f51b0",
-        "size_bytes": 23523
+        "sha256": "81b9dbcc8fa1b274b53a41f65b17bee34cdadf349632eb07365757be1d2ba975",
+        "size_bytes": 26323
       },
       {
         "path": "chapter8_automated_circuits/exercises/part4_circuit_tracing_attribution_graphs/tests.py",
-        "sha256": "65f68cc2e6ef3843a16217ebd23c93a425c0a89fd9e556bee7e421a1430dbe3a",
-        "size_bytes": 17966
+        "sha256": "114895b2c3bfb73189c7333eb859b4539d234105771b541b336719eb08b46084",
+        "size_bytes": 30285
       },
       {
         "path": "chapter8_automated_circuits/exercises/part4_circuit_tracing_attribution_graphs/utils.py",
@@ -317,8 +473,8 @@
       },
       {
         "path": "chapter8_automated_circuits/instructions/pages/04_[8.4]_Circuit_Tracing_with_Attribution_Graphs.md",
-        "sha256": "e0af3dc8cba1d0e40b378d335ca3c0a10007ac7692fb527d124bc57b24eadcc3",
-        "size_bytes": 33009
+        "sha256": "38533aaabd50f00486e78de91c8c15d7a2d6e96e7b2fcd4eaf7c7fd37b03fcef",
+        "size_bytes": 50263
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
@@ -333,5 +489,5 @@
     "The real-model path uses safe generic prompts and reads logits and gradients from a small public TransformerLens checkpoint. It does not use unsafe prompts, gated weights, or generated completions."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 2.988116
+  "wall_clock_seconds": 6.443896
 }

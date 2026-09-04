@@ -1,4 +1,6 @@
+import json
 from collections.abc import Callable
+from pathlib import Path
 
 import torch as t
 
@@ -446,25 +448,293 @@ def test_top_attribution_path_rejects_invalid_graphs(
     print("All tests in `test_top_attribution_path_rejects_invalid_graphs` passed!")
 
 
+def test_planted_circuit_has_meaningful_component_nodes(
+    make_planted_attribution_circuit: Callable | None = None,
+    planted_circuit_metric: Callable | None = None,
+):
+    solutions = _solutions()
+    make_planted_attribution_circuit = (
+        make_planted_attribution_circuit or solutions.make_planted_attribution_circuit
+    )
+    planted_circuit_metric = planted_circuit_metric or solutions.planted_circuit_metric
+    circuit = make_planted_attribution_circuit()
+    node_names = circuit.node_names
+    assert any(name.startswith("feature:") for name in node_names), (
+        "The planted graph should expose feature nodes, not only positions."
+    )
+    assert any(name.startswith("head:") for name in node_names), (
+        "The planted graph should expose head-like routing nodes."
+    )
+    assert any(name.startswith("mlp:") for name in node_names), (
+        "The planted graph should expose MLP/transcoder-like nodes."
+    )
+    assert any(name.startswith("logit:") for name in node_names), (
+        "The planted graph should expose the final logit-difference node."
+    )
+    assert circuit.ground_truth_path == (
+        "feature:country=France",
+        "head:subject-router",
+        "mlp:relation-lookup",
+        "feature:capital=Paris",
+        "logit:Paris-vs-Rome",
+    ), "The exact theorem should name the intended top path."
+    full_metric = planted_circuit_metric(circuit)
+    corrupt_metric = planted_circuit_metric(circuit, inputs=circuit.corrupt_inputs)
+    assert full_metric > 1.9 and corrupt_metric == 0.0, (
+        "The clean graph should produce a real target metric gap."
+    )
+    print("All tests in `test_planted_circuit_has_meaningful_component_nodes` passed!")
+
+
+def test_exact_edge_ablation_effects_identify_ground_truth_path(
+    make_planted_attribution_circuit: Callable | None = None,
+    exact_edge_ablation_effects: Callable | None = None,
+):
+    solutions = _solutions()
+    make_planted_attribution_circuit = (
+        make_planted_attribution_circuit or solutions.make_planted_attribution_circuit
+    )
+    exact_edge_ablation_effects = (
+        exact_edge_ablation_effects or solutions.exact_edge_ablation_effects
+    )
+    circuit = make_planted_attribution_circuit()
+    effects = exact_edge_ablation_effects(circuit)
+    path_edges = list(zip(circuit.ground_truth_path[:-1], circuit.ground_truth_path[1:]))
+    node_to_index = {node: index for index, node in enumerate(circuit.node_names)}
+    for source, target in path_edges:
+        assert effects[node_to_index[source], node_to_index[target]] > 1.7, (
+            f"The exact ablation effect for {source} -> {target} should be large."
+        )
+    shortcut_effect = effects[
+        node_to_index["mlp:relation-lookup"],
+        node_to_index["logit:Paris-vs-Rome"],
+    ]
+    assert 0.15 < shortcut_effect < 0.35, (
+        "The direct shortcut should be visible but much weaker than the planted path."
+    )
+    distractor_effects = [
+        effects[node_to_index[source], node_to_index[target]].item()
+        for source, target in circuit.distractor_edges
+        if source != "mlp:relation-lookup"
+    ]
+    assert max(distractor_effects) < 0.05, (
+        "Syntax/style distractor edges should not explain the target metric."
+    )
+    print("All tests in `test_exact_edge_ablation_effects_identify_ground_truth_path` passed!")
+
+
+def test_integrated_edge_scores_recover_top_path_edges(
+    make_planted_attribution_circuit: Callable | None = None,
+    integrated_edge_attribution_scores: Callable | None = None,
+    threshold_attribution_graph: Callable | None = None,
+    top_attribution_path: Callable | None = None,
+):
+    solutions = _solutions()
+    make_planted_attribution_circuit = (
+        make_planted_attribution_circuit or solutions.make_planted_attribution_circuit
+    )
+    integrated_edge_attribution_scores = (
+        integrated_edge_attribution_scores or solutions.integrated_edge_attribution_scores
+    )
+    threshold_attribution_graph = threshold_attribution_graph or solutions.threshold_attribution_graph
+    top_attribution_path = top_attribution_path or solutions.top_attribution_path
+    circuit = make_planted_attribution_circuit()
+    scores = integrated_edge_attribution_scores(circuit, ig_steps=16)
+    graph = threshold_attribution_graph(scores, circuit.node_names, min_abs_score=0.25)
+    path = top_attribution_path(
+        graph,
+        source=circuit.source_node,
+        target=circuit.target_node,
+        max_depth=4,
+    )
+    assert path.reaches_target, "The thresholded attribution graph should reach the logit node."
+    assert path.path == circuit.ground_truth_path, (
+        "IG edge scores should recover the planted country -> head -> MLP -> feature -> logit path."
+    )
+    assert len(graph.edges) == 4, (
+        "The default threshold should select the four planted path edges and reject distractors."
+    )
+    print("All tests in `test_integrated_edge_scores_recover_top_path_edges` passed!")
+
+
+def test_exact_path_patch_report_measures_causal_survival(
+    make_planted_attribution_circuit: Callable | None = None,
+    exact_path_patch_report: Callable | None = None,
+):
+    solutions = _solutions()
+    make_planted_attribution_circuit = (
+        make_planted_attribution_circuit or solutions.make_planted_attribution_circuit
+    )
+    exact_path_patch_report = exact_path_patch_report or solutions.exact_path_patch_report
+    circuit = make_planted_attribution_circuit()
+    report = exact_path_patch_report(circuit, circuit.ground_truth_path, min_fraction=0.8)
+    assert report.top_path_survives_test, (
+        "The planted path should pass faithfulness, completeness, and minimality checks."
+    )
+    assert report.faithfulness > 0.85, "The path-only graph should recover most of the metric."
+    assert report.completeness > 0.85, "Removing the path should remove most of the metric."
+    assert report.minimality > 0.85, "Every edge on the path should matter."
+    assert report.path_removed_metric < 0.3, (
+        "After removing the top path, only weak shortcuts/distractors should remain."
+    )
+    print("All tests in `test_exact_path_patch_report_measures_causal_survival` passed!")
+
+
+def test_same_size_random_and_reversed_graph_controls_fail(
+    make_planted_attribution_circuit: Callable | None = None,
+    integrated_edge_attribution_scores: Callable | None = None,
+    threshold_attribution_graph: Callable | None = None,
+    graph_control_report: Callable | None = None,
+):
+    solutions = _solutions()
+    make_planted_attribution_circuit = (
+        make_planted_attribution_circuit or solutions.make_planted_attribution_circuit
+    )
+    integrated_edge_attribution_scores = (
+        integrated_edge_attribution_scores or solutions.integrated_edge_attribution_scores
+    )
+    threshold_attribution_graph = threshold_attribution_graph or solutions.threshold_attribution_graph
+    graph_control_report = graph_control_report or solutions.graph_control_report
+    circuit = make_planted_attribution_circuit()
+    scores = integrated_edge_attribution_scores(circuit, ig_steps=16)
+    graph = threshold_attribution_graph(scores, circuit.node_names, min_abs_score=0.25)
+    report = graph_control_report(circuit, graph, random_seed=0, min_control_margin=0.5)
+    assert report.same_size_random_fails, (
+        "A same-size random non-path graph should not recover the target metric."
+    )
+    assert report.reversed_edges_fail, (
+        "A reversed-edge graph should fail because direction is part of the claim."
+    )
+    assert report.graph_metric > 1.7, "The selected graph should carry the planted signal."
+    assert report.same_size_random_metric < 0.3, (
+        "The same-size random graph should be visibly worse than the top path."
+    )
+    assert report.reversed_edge_metric == 0.0, (
+        "Reversed DAG edges should not propagate country information to the logit."
+    )
+    print("All tests in `test_same_size_random_and_reversed_graph_controls_fail` passed!")
+
+
+def test_planted_graph_signature_result_is_visible_and_bounded(
+    run_planted_graph_signature_result: Callable | None = None,
+):
+    run_planted_graph_signature_result = (
+        run_planted_graph_signature_result
+        or _solutions().run_planted_graph_signature_result
+    )
+    result = run_planted_graph_signature_result(threshold=0.25, ig_steps=16, random_seed=0)
+    metrics = result["metrics"]
+    assert result["accepted"], "The CPU signature theorem should pass."
+    assert result["top_path"] == result["ground_truth_path"], (
+        "The visible signature result should name the recovered ground-truth path."
+    )
+    assert len(result["exact_edge_effects"]) == len(result["node_names"]), (
+        "The signature result should include a notebook-plottable exact-effect heatmap."
+    )
+    assert len(result["attribution_scores"]) == len(result["node_names"]), (
+        "The signature result should include a notebook-plottable attribution heatmap."
+    )
+    assert metrics["top_path_survives_test"], (
+        "The signature metrics should include the exact causal path-patching check."
+    )
+    assert metrics["same_size_random_fails"] and metrics["reversed_edges_fail"], (
+        "The signature metrics should include failing control graphs."
+    )
+    assert "position_5" not in " ".join(result["top_path"]), (
+        "The learner-facing flagship should not be the old position_5 self-edge preflight."
+    )
+    assert len(result["threshold_sweep"]) >= 5, (
+        "The notebook should have data for a threshold/IG play plot."
+    )
+    print("All tests in `test_planted_graph_signature_result_is_visible_and_bounded` passed!")
+
+
 def test_notebook_contract(run_smoke_test: Callable | None = None):
     run_smoke_test = run_smoke_test or _solutions().run_smoke_test
     result = run_smoke_test(cpu=True)
-    assert result["graph"]["edges"][0][1] == "logit:Paris", (
-        "The notebook smoke contract should include the top graph edge."
+    assert result["accepted"], "The notebook smoke contract should pass the CPU theorem."
+    assert result["top_path"] == [
+        "feature:country=France",
+        "head:subject-router",
+        "mlp:relation-lookup",
+        "feature:capital=Paris",
+        "logit:Paris-vs-Rome",
+    ], "The notebook smoke contract should expose the meaningful recovered path."
+    assert result["metrics"]["top_path_survives_test"], (
+        "The notebook smoke contract should include exact path-patching survival."
     )
-    assert result["metric"]["explains_target_metric"], (
-        "The notebook smoke contract should include target-metric explanation."
+    assert result["metrics"]["same_size_random_fails"], (
+        "The notebook smoke contract should include a failing same-size random graph."
     )
-    assert result["path_perturbation"]["top_path_survives_test"], (
-        "The notebook smoke contract should include a passing path perturbation."
+    assert result["metrics"]["reversed_edges_fail"], (
+        "The notebook smoke contract should include a failing reversed-edge graph."
     )
-    assert result["alternative"]["alternative_baseline_fails"], (
-        "The notebook smoke contract should include a failing alternative baseline."
-    )
-    assert result["counterfactual"]["predicts_counterfactual"], (
-        "The notebook smoke contract should include a correct counterfactual prediction."
-    )
-    assert result["path"]["reaches_target"], (
-        "The notebook smoke contract should include a multi-hop graph path."
+    assert len(result["threshold_sweep"]) >= 5, (
+        "The notebook smoke contract should include threshold sweep data for play cells."
     )
     print("All tests in `test_notebook_contract` passed!")
+
+
+def test_notebook_learner_surface_contract():
+    notebook_path = (
+        Path(__file__).parent
+        / "8.4_Circuit_Tracing_with_Attribution_Graphs_exercises.ipynb"
+    )
+    notebook = json.loads(notebook_path.read_text(encoding="utf-8"))
+    text = "\n".join(
+        "".join(cell.get("source", ""))
+        for cell in notebook["cells"]
+        if cell.get("cell_type") in {"markdown", "code"}
+    )
+    assert text.count("## Exercise ") >= 7, (
+        "8.4 should expose at least seven learner exercises, not a report wrapper."
+    )
+    for required in [
+        "By the end of this notebook",
+        "Expected output",
+        "Help -",
+        "Solution",
+        "Try It Yourself",
+        "Bonus - Anomaly Hunt",
+        "same-size random",
+        "reversed-edge",
+        "circuit_tracing_attribution_graphs_signature_result.png",
+        "circuit_tracing_attribution_graphs_exact_vs_approx_heatmap.png",
+        "circuit_tracing_attribution_graphs_metrics_controls.png",
+    ]:
+        assert required in text, f"Missing required ARENA learner-surface marker: {required}"
+    assert "position_5 -> position_5" in text and "not the flagship claim" in text, (
+        "The notebook must explicitly demote the old position-level preflight."
+    )
+    print("All tests in `test_notebook_learner_surface_contract` passed!")
+
+
+def test_solution_notebook_exposes_taught_implementations():
+    notebook_path = (
+        Path(__file__).parent
+        / "8.4_Circuit_Tracing_with_Attribution_Graphs_solutions.ipynb"
+    )
+    notebook = json.loads(notebook_path.read_text(encoding="utf-8"))
+    code = "\n".join(
+        "".join(cell.get("source", ""))
+        for cell in notebook["cells"]
+        if cell.get("cell_type") == "code"
+    )
+    for function_name in [
+        "make_planted_attribution_circuit",
+        "planted_circuit_activations",
+        "exact_edge_ablation_effects",
+        "integrated_edge_attribution_scores",
+        "threshold_attribution_graph",
+        "top_attribution_path",
+        "exact_path_patch_report",
+        "graph_control_report",
+        "run_planted_graph_signature_result",
+    ]:
+        assert f"def {function_name}(" in code, (
+            f"The solution notebook must expose `{function_name}` rather than hide it in solutions.py."
+        )
+    assert "solutions.run_planted_graph_signature_result" not in code, (
+        "The solution notebook must generate its flagship result from its visible implementation."
+    )
+    print("All tests in `test_solution_notebook_exposes_taught_implementations` passed!")
