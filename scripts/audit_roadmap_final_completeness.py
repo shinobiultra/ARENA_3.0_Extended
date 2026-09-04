@@ -442,7 +442,10 @@ REPORT_REQUIREMENTS: tuple[ReportRequirement, ...] = (
             "metrics.gpu_test.diffusiongemma_model_class_supported": True,
             "metrics.gpu_test.diffusiongemma_generation_ready": True,
         },
-        ("forward_noising_extreme_timestep_contract", "shuffled_label_negative_control"),
+        (
+            "forward_noising_extreme_timestep_contract",
+            "independently_trained_shuffled_label_denoiser",
+        ),
         "GT-0",
     ),
     ReportRequirement(
