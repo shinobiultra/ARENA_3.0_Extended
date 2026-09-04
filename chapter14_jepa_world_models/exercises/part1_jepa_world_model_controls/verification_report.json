@@ -63,7 +63,7 @@
       "vjepa2_world_model_controls_passed": true
     }
   },
-  "claim_scope": "GT-1 toy JEPA/world-model controls plus pinned V-JEPA 2 ViT-L frozen-latent world-model controls on deterministic generated videos. The real model path verifies finite non-collapsed video features, trains a masked latent predictor from occluded to visible states, probes held-out object state above a shuffled-label baseline, trains an action-conditioned latent rollout head that beats copy and shuffled-action baselines, tests occluded-vs-absent object permanence, and performs causal latent-token patching against same-size random-token patches. It does not fine-tune V-JEPA or claim a real-video benchmark replication.",
+  "claim_scope": "GT-1 toy JEPA/world-model controls plus pinned V-JEPA 2 ViT-L frozen-latent world-model controls on deterministic generated videos. The real model path verifies finite non-collapsed video features, trains a masked latent predictor from occluded to visible states, probes held-out object state above a shuffled-label baseline, trains an action-conditioned latent rollout head that beats copy and shuffled-action baselines, tests occluded-vs-absent object permanence, and performs causal latent-token patching against same-size random-token patches. The learner notebook renders the generated video controls, latent geometry, losses, probes, persistence, and per-example patch effects directly. It does not fine-tune V-JEPA or claim a real-video benchmark replication.",
   "datasets": [
     {
       "id": "14_1_jepa_and_world_model_controls_toy_inputs",
@@ -84,11 +84,26 @@
         "red_square_late_occluded",
         "red_square_absent_occluder"
       ]
+    },
+    {
+      "frames_per_video": 8,
+      "id": "course_generated_synthetic_vjepa_world_controls_v1",
+      "input_size": "96x96",
+      "matched_variants_per_state": 4,
+      "seed": 0,
+      "source": "generated_tensor_video",
+      "state_count": 200,
+      "variants": [
+        "visible",
+        "next_state",
+        "late_occluded",
+        "absent_object_same_occluder"
+      ]
     }
   ],
-  "date_run": "2026-07-02T12:44:52+00:00",
+  "date_run": "2026-09-04T06:25:42+00:00",
   "evidence_level": "toy_world_model_controls_plus_real_vjepa2_frozen_latent_world_model_preflight",
-  "git_commit": "3a539d48",
+  "git_commit": "03420353",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-1",
   "known_failures": [],
@@ -165,7 +180,7 @@
       "masked_prediction_loss_reduction": 0.9991992501680198,
       "masked_prediction_passed": true,
       "mean_cosine": 1.0,
-      "peak_vram_gb": 0.7404966354370117,
+      "peak_vram_gb": 0.7092466354370117,
       "position_probe_accuracy": 1.0,
       "prediction_mse": 0.0,
       "predicts_target": true,
@@ -190,7 +205,7 @@
       "vjepa2_non_collapsed": true,
       "vjepa2_occluded_vs_absent_gap": 0.22296786308288574,
       "vjepa2_occluded_vs_blue_gap": 0.048720359802246094,
-      "vjepa2_peak_vram_gb": 0.6926450729370117,
+      "vjepa2_peak_vram_gb": 0.6595029830932617,
       "vjepa2_preflight": {
         "absent_occluder_cosine": 0.7437694668769836,
         "claim_scope": "pinned_vjepa2_vitl_synthetic_video_feature_extraction_preflight",
@@ -211,7 +226,7 @@
         "model_id": "facebook/vjepa2-vitl-fpc64-256",
         "occluded_vs_absent_gap": 0.22296786308288574,
         "occluded_vs_blue_gap": 0.048720359802246094,
-        "peak_vram_gb": 0.6926450729370117,
+        "peak_vram_gb": 0.6595029830932617,
         "preflight_passed": true,
         "revision": "b3c1679b7c34d3255ef3547f27c7b226aefab26f",
         "same_object_beats_different_object": true,
@@ -301,7 +316,7 @@
           "preserves_occluded_object": true,
           "visible_mean": 1.0
         },
-        "peak_vram_gb": 0.7404966354370117,
+        "peak_vram_gb": 0.7092466354370117,
         "position_probe_accuracy": 1.0,
         "preflight_passed": true,
         "real_latent_object_permanence_passed": true,
@@ -321,7 +336,7 @@
         "vjepa2_non_collapsed": true,
         "within_vram_budget": true
       },
-      "vjepa2_world_controls_peak_vram_gb": 0.7404966354370117,
+      "vjepa2_world_controls_peak_vram_gb": 0.7092466354370117,
       "vjepa2_world_feature_shape": [
         200,
         1024
@@ -454,10 +469,10 @@
   "ood_tests": {
     "declared": "required_where_applicable"
   },
-  "peak_vram_gb": 0.7404966354370117,
+  "peak_vram_gb": 0.7092466354370117,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "9ee7a6b8091c2c1f91014cd1746ee6becd6bc12f55ed89d4c69a462e8905993a",
+    "combined_sha256": "54acc59a6d30cac4682a63400630e69438c83130d93f7b57395c5940d0b012ba",
     "files": [
       {
         "path": "arena_ext/jepa_world_models.py",
@@ -471,13 +486,13 @@
       },
       {
         "path": "chapter14_jepa_world_models/exercises/part1_jepa_world_model_controls/14.1_JEPA_and_World_Model_Controls_exercises.ipynb",
-        "sha256": "eeaf171988c5c5c323f98e6e66c67cd4cc3448414f8814ec7a8073be6c6fffe8",
-        "size_bytes": 16575
+        "sha256": "d5efa5c94098ba933823aeab66b4861edc1dc103d7b6ba23b0962bc6a5116e30",
+        "size_bytes": 52799
       },
       {
         "path": "chapter14_jepa_world_models/exercises/part1_jepa_world_model_controls/14.1_JEPA_and_World_Model_Controls_solutions.ipynb",
-        "sha256": "79bbf71ca79af24563cc971628b7e7de814e9296bb695a940e5e4d18311b6338",
-        "size_bytes": 19906
+        "sha256": "05900c853ad9341fd12751ea3c68e019586dd89b5556dce29ee0817264efec00",
+        "size_bytes": 101552
       },
       {
         "path": "chapter14_jepa_world_models/exercises/part1_jepa_world_model_controls/README.md",
@@ -486,8 +501,8 @@
       },
       {
         "path": "chapter14_jepa_world_models/exercises/part1_jepa_world_model_controls/artifacts.lock.yml",
-        "sha256": "16f55f141c5f1c55bcb97486398fd5c0c6fceeeb2f81101f1c9b9c3526b47e33",
-        "size_bytes": 3961
+        "sha256": "0a60b89b429eb9a601d13131f285490bcdbf1b45c46a4ba3399d5b8b1836df0f",
+        "size_bytes": 4392
       },
       {
         "path": "chapter14_jepa_world_models/exercises/part1_jepa_world_model_controls/expected_outputs/README.md",
@@ -506,13 +521,13 @@
       },
       {
         "path": "chapter14_jepa_world_models/exercises/part1_jepa_world_model_controls/solutions.py",
-        "sha256": "51121ef5f5c7f5df905d260cf0452678b165388456398a93c700ae16dbd6600f",
-        "size_bytes": 37954
+        "sha256": "5d4a0135fe4c7f060b7940b404303601a89755bf8446fa99176c099a07ce7011",
+        "size_bytes": 39920
       },
       {
         "path": "chapter14_jepa_world_models/exercises/part1_jepa_world_model_controls/tests.py",
-        "sha256": "b51dfe608d16a18041e957fbce29d5cd1f1d0f36544bddc5fb7540c4dae84ce5",
-        "size_bytes": 17186
+        "sha256": "8463eea9ffb2ca23fa93fbfe57b79363d8ef1872a2b9ef3410b78d52d85b30b8",
+        "size_bytes": 22506
       },
       {
         "path": "chapter14_jepa_world_models/exercises/part1_jepa_world_model_controls/utils.py",
@@ -526,8 +541,8 @@
       },
       {
         "path": "chapter14_jepa_world_models/instructions/pages/01_[14.1]_JEPA_and_World_Model_Controls.md",
-        "sha256": "8d204fab4638639046929003093d74d5b42adfecf5edee6e257dcfa573dc08b8",
-        "size_bytes": 22005
+        "sha256": "aa6273388ab424fdbf425e4393b609fe440645685c3808a827f5fc9c8b4e3d9d",
+        "size_bytes": 39086
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
@@ -542,5 +557,5 @@
     "The real-model path uses generated shape videos only. The occlusion contrast, masked latent prediction, and action-conditioned rollout are deterministic synthetic-video controls and do not claim real-video benchmark replication."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 7.033496
+  "wall_clock_seconds": 13.691224
 }

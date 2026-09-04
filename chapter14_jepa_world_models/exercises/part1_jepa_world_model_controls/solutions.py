@@ -251,7 +251,7 @@ def _synthetic_vjepa_video(kind: str, *, frames: int = 8, size: int = 96) -> t.T
     return t.stack(video_frames)
 
 
-def _draw_object_video(
+def make_world_video(
     object_kind: str,
     x: int,
     y: int,
@@ -307,16 +307,16 @@ def _build_synthetic_vjepa_world_batch(*, size: int = 96) -> SyntheticVJEPAWorld
                 for action_id, (dx, dy) in enumerate(VJEPA2_ACTIONS):
                     next_x = max(4, min(size - 24, x + dx))
                     next_y = max(4, min(size - 24, y + dy))
-                    videos.append(_draw_object_video(object_kind, x, y, size=size))
+                    videos.append(make_world_video(object_kind, x, y, size=size))
                     labels.append(label)
                     x_buckets.append(x_bucket)
                     action_ids.append(action_id)
-                    next_videos.append(_draw_object_video(object_kind, next_x, next_y, size=size))
+                    next_videos.append(make_world_video(object_kind, next_x, next_y, size=size))
                     occluded_videos.append(
-                        _draw_object_video(object_kind, x, y, size=size, occlude_late=True)
+                        make_world_video(object_kind, x, y, size=size, occlude_late=True)
                     )
                     absent_videos.append(
-                        _draw_object_video(
+                        make_world_video(
                             object_kind,
                             x,
                             y,
@@ -338,7 +338,7 @@ def _build_synthetic_vjepa_world_batch(*, size: int = 96) -> SyntheticVJEPAWorld
     )
 
 
-def _bbox_to_vjepa_tokens(
+def bbox_to_vjepa_tokens(
     bbox: tuple[int, int, int, int],
     *,
     image_size: int = 96,
@@ -569,7 +569,11 @@ def vjepa2_feature_extraction_preflight(max_vram_gb: float = 24.0) -> dict:
     }
 
 
-def vjepa2_world_model_control_preflight(max_vram_gb: float = 24.0) -> dict:
+def vjepa2_world_model_control_preflight(
+    max_vram_gb: float = 24.0,
+    *,
+    include_visuals: bool = False,
+) -> dict:
     """Run frozen V-JEPA 2 latent probes, rollout heads, and causal patch controls."""
 
     if not t.cuda.is_available():
@@ -718,7 +722,7 @@ def vjepa2_world_model_control_preflight(max_vram_gb: float = 24.0) -> dict:
     feature_tokens = features.to(device)
     local_position_features = t.stack(
         [
-            feature_tokens[index, _bbox_to_vjepa_tokens(bbox)].mean(dim=0)
+            feature_tokens[index, bbox_to_vjepa_tokens(bbox)].mean(dim=0)
             for index, bbox in enumerate(batch.bboxes)
         ]
     )
@@ -749,8 +753,8 @@ def vjepa2_world_model_control_preflight(max_vram_gb: float = 24.0) -> dict:
                 and bbox[1] == y_position
             ]
             for source_index, target_index in zip(source_candidates[:2], target_candidates[:2]):
-                source_tokens = _bbox_to_vjepa_tokens(batch.bboxes[source_index])
-                target_tokens = _bbox_to_vjepa_tokens(batch.bboxes[target_index])
+                source_tokens = bbox_to_vjepa_tokens(batch.bboxes[source_index])
+                target_tokens = bbox_to_vjepa_tokens(batch.bboxes[target_index])
                 token_count = min(len(source_tokens), len(target_tokens))
                 source_tokens = source_tokens[:token_count]
                 target_tokens = target_tokens[:token_count]
@@ -809,6 +813,37 @@ def vjepa2_world_model_control_preflight(max_vram_gb: float = 24.0) -> dict:
         and within_vram_budget
     )
 
+    visual_payload = None
+    if include_visuals:
+        frame_indices = t.tensor([0, 3, 4, 7])
+        visual_cases = []
+        for case_id, index in (("red_square_right", 1), ("blue_circle_right", 101)):
+            visual_cases.append(
+                {
+                    "case_id": case_id,
+                    "index": index,
+                    "label": int(batch.labels[index].item()),
+                    "x_bucket": int(batch.x_buckets[index].item()),
+                    "action_id": int(batch.action_ids[index].item()),
+                    "action": VJEPA2_ACTIONS[int(batch.action_ids[index].item())],
+                    "bbox": batch.bboxes[index],
+                    "frame_indices": frame_indices.tolist(),
+                    "visible_frames": batch.videos[index, frame_indices].clone(),
+                    "next_frames": batch.next_videos[index, frame_indices].clone(),
+                    "occluded_frames": batch.occluded_videos[index, frame_indices].clone(),
+                    "absent_frames": batch.absent_videos[index, frame_indices].clone(),
+                }
+            )
+        visual_payload = {
+            "cases": visual_cases,
+            "pooled_features": pooled.clone(),
+            "labels": batch.labels.clone(),
+            "x_buckets": batch.x_buckets.clone(),
+            "action_ids": batch.action_ids.clone(),
+            "object_patch_effects": t.stack(object_patch_effects).detach().cpu(),
+            "random_patch_effects": t.stack(random_patch_effects).detach().cpu(),
+        }
+
     del (
         features,
         next_features,
@@ -825,7 +860,7 @@ def vjepa2_world_model_control_preflight(max_vram_gb: float = 24.0) -> dict:
     )
     t.cuda.empty_cache()
 
-    return {
+    result = {
         "cuda_available": True,
         "model_id": REAL_VJEPA2_MODEL_ID,
         "revision": REAL_VJEPA2_REVISION,
@@ -863,6 +898,20 @@ def vjepa2_world_model_control_preflight(max_vram_gb: float = 24.0) -> dict:
         "within_vram_budget": within_vram_budget,
         "preflight_passed": preflight_passed,
     }
+    if visual_payload is not None:
+        result["visual_payload"] = visual_payload
+    return result
+
+
+def run_vjepa2_world_model_signature_result(
+    max_vram_gb: float = 24.0,
+) -> dict:
+    """Run the pinned world-model controls and retain learner-facing evidence."""
+
+    return vjepa2_world_model_control_preflight(
+        max_vram_gb=max_vram_gb,
+        include_visuals=True,
+    )
 
 
 def run_smoke_test(cpu: bool = True) -> dict:

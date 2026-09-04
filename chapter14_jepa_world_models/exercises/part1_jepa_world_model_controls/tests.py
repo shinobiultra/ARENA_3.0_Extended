@@ -6,6 +6,7 @@ import pytest
 import torch as t
 
 from arena_ext.jepa_world_models import (
+    causal_latent_patch_report,
     collapse_diagnostics_report,
     jepa_prediction_report,
     latent_rollout_report,
@@ -56,6 +57,53 @@ def test_paired_cosine_rejects_shape_mismatch(paired_cosine: Callable | None = N
     with pytest.raises(ValueError, match="shape"):
         paired_cosine(t.ones(3), t.ones(3))
     print("All tests in `test_paired_cosine_rejects_shape_mismatch` passed!")
+
+
+def test_make_world_video_ground_truth(make_world_video: Callable | None = None):
+    make_world_video = make_world_video or _solutions().make_world_video
+    moving = make_world_video("red_square", 8, 12, dx=8, frames=8, size=96)
+    assert moving.shape == (8, 3, 96, 96)
+    red = (moving[:, 0] + 1.0) / 2.0
+    xx = t.arange(96).view(1, 1, 96)
+    first_x = (red[0] * xx).sum() / red[0].sum()
+    last_x = (red[-1] * xx).sum() / red[-1].sum()
+    assert abs((last_x - first_x).item() - 8.0) < 1e-6, (
+        "The exact toy video should move the red square eight pixels to the right."
+    )
+
+    occluded = make_world_video(
+        "red_square", 8, 12, frames=8, size=96, occlude_late=True
+    )
+    absent = make_world_video(
+        "red_square", 8, 12, frames=8, size=96, occlude_late=True, absent=True
+    )
+    assert t.allclose(occluded[-1, :, 8:40, 4:36], t.zeros(3, 32, 32)), (
+        "The late occluder should replace the known object box with normalized gray."
+    )
+    assert absent[0].eq(-1).all(), (
+        "The absent-object control should contain no object before the occluder appears."
+    )
+    assert not t.equal(moving, absent), (
+        "Visible and absent controls must be measurably different videos."
+    )
+    print("All tests in `test_make_world_video_ground_truth` passed!")
+
+
+def test_bbox_to_vjepa_tokens_ground_truth(
+    bbox_to_vjepa_tokens: Callable | None = None,
+):
+    bbox_to_vjepa_tokens = bbox_to_vjepa_tokens or _solutions().bbox_to_vjepa_tokens
+    tokens = bbox_to_vjepa_tokens((8, 12, 28, 32))
+    expected = [
+        grid_y * 12 + grid_x
+        for grid_y in range(1, 5)
+        for grid_x in range(4)
+    ]
+    assert tokens == expected, (
+        "The known image-space box should map to the exact padded 4x4 token block."
+    )
+    assert len(tokens) == len(set(tokens)) == 16
+    print("All tests in `test_bbox_to_vjepa_tokens_ground_truth` passed!")
 
 
 def test_jepa_prediction_smoke_test(
@@ -118,8 +166,11 @@ def test_collapse_diagnostics_smoke_test(
     print("All tests in `test_collapse_diagnostics_smoke_test` passed!")
 
 
-def test_collapse_diagnostics_rejects_identical_features():
-    collapsed = collapse_diagnostics_report(
+def test_collapse_diagnostics_rejects_identical_features(
+    collapse_diagnostics_report_fn: Callable | None = None,
+):
+    report_fn = collapse_diagnostics_report_fn or collapse_diagnostics_report
+    collapsed = report_fn(
         t.ones(8, 4),
         min_feature_std=0.1,
         min_effective_rank=2.0,
@@ -167,12 +218,15 @@ def test_state_probe_control_smoke_test(
     print("All tests in `test_state_probe_control_smoke_test` passed!")
 
 
-def test_state_probe_report_rejects_shuffled_labels():
+def test_state_probe_report_rejects_shuffled_labels(
+    world_state_probe_report_fn: Callable | None = None,
+):
+    report_fn = world_state_probe_report_fn or world_state_probe_report
     logits = t.tensor([[4.0, 0.0], [3.0, 0.0], [0.0, 4.0], [0.0, 3.0]])
     labels = t.tensor([0, 0, 1, 1])
     shuffled_labels = t.tensor([1, 1, 0, 0])
-    aligned = world_state_probe_report(logits, labels, min_accuracy=0.9)
-    shuffled = world_state_probe_report(logits, shuffled_labels, min_accuracy=0.9)
+    aligned = report_fn(logits, labels, min_accuracy=0.9)
+    shuffled = report_fn(logits, shuffled_labels, min_accuracy=0.9)
     assert aligned.predicts_state, (
         "The aligned probe report should pass before the shuffled-label control is tested."
     )
@@ -224,15 +278,18 @@ def test_rollout_control_smoke_test(rollout_control_smoke_test: Callable | None 
     print("All tests in `test_rollout_control_smoke_test` passed!")
 
 
-def test_latent_rollout_report_rejects_copy_and_shuffled_controls():
-    good = latent_rollout_report(
+def test_latent_rollout_report_rejects_copy_and_shuffled_controls(
+    latent_rollout_report_fn: Callable | None = None,
+):
+    report_fn = latent_rollout_report_fn or latent_rollout_report
+    good = report_fn(
         rollout_loss=0.10,
         copy_baseline_loss=1.0,
         shuffled_action_loss=0.9,
         max_rollout_to_copy=0.8,
         max_rollout_to_shuffled=0.8,
     )
-    bad = latent_rollout_report(
+    bad = report_fn(
         rollout_loss=0.75,
         copy_baseline_loss=0.8,
         shuffled_action_loss=0.7,
@@ -246,6 +303,31 @@ def test_latent_rollout_report_rejects_copy_and_shuffled_controls():
         "A latent rollout is not a world-model result unless it beats copy and shuffled-action controls."
     )
     print("All tests in `test_latent_rollout_report_rejects_copy_and_shuffled_controls` passed!")
+
+
+def test_causal_latent_patch_report_rejects_random_control(
+    causal_latent_patch_report_fn: Callable | None = None,
+):
+    report_fn = causal_latent_patch_report_fn or causal_latent_patch_report
+    targeted = report_fn(
+        t.tensor([0.82, 0.88, 0.91]),
+        t.tensor([0.01, 0.03, 0.02]),
+        min_object_patch_effect=0.5,
+        min_patch_random_gap=0.4,
+    )
+    matched_random = report_fn(
+        t.tensor([0.82, 0.88, 0.91]),
+        t.tensor([0.75, 0.84, 0.87]),
+        min_object_patch_effect=0.5,
+        min_patch_random_gap=0.4,
+    )
+    assert targeted.causal_patch_passes and targeted.patch_random_gap > 0.8
+    assert not matched_random.causal_patch_passes, (
+        "A target patch is not specific when a same-size random patch has the same effect."
+    )
+    print(
+        "All tests in `test_causal_latent_patch_report_rejects_random_control` passed!"
+    )
 
 
 def test_object_permanence_smoke_test(
@@ -284,15 +366,18 @@ def test_object_permanence_control_smoke_test(
     print("All tests in `test_object_permanence_control_smoke_test` passed!")
 
 
-def test_object_permanence_report_rejects_absent_and_different_object_controls():
-    absent_like = object_permanence_report(
+def test_object_permanence_report_rejects_absent_and_different_object_controls(
+    object_permanence_report_fn: Callable | None = None,
+):
+    report_fn = object_permanence_report_fn or object_permanence_report
+    absent_like = report_fn(
         visible_scores=t.tensor([0.95, 0.9]),
         occluded_scores=t.tensor([0.52, 0.48]),
         absent_scores=t.tensor([0.46, 0.44]),
         min_occluded_score=0.6,
         min_absent_gap=0.4,
     )
-    different_object = object_permanence_report(
+    different_object = report_fn(
         visible_scores=t.tensor([0.95, 0.9]),
         occluded_scores=t.tensor([0.78, 0.76]),
         absent_scores=t.tensor([0.72, 0.7]),
@@ -385,6 +470,39 @@ def test_committed_verification_report_vjepa_world_controls():
     print("All tests in `test_committed_verification_report_vjepa_world_controls` passed!")
 
 
+def validate_vjepa2_signature_visual_payload(signature_result: dict) -> None:
+    """Validate the real videos, latents, and patch effects plotted by the notebook."""
+
+    assert signature_result["preflight_passed"]
+    payload = signature_result.get("visual_payload")
+    assert payload is not None, "The live signature result should retain visual evidence."
+    cases = payload["cases"]
+    assert [case["case_id"] for case in cases] == [
+        "red_square_right",
+        "blue_circle_right",
+    ]
+    for case in cases:
+        assert case["frame_indices"] == [0, 3, 4, 7]
+        assert case["action"] == (8, 0)
+        for key in ("visible_frames", "next_frames", "occluded_frames", "absent_frames"):
+            frames = case[key]
+            assert frames.shape == (4, 3, 96, 96)
+            assert t.isfinite(frames).all()
+        assert not t.equal(case["visible_frames"], case["absent_frames"])
+
+    assert payload["pooled_features"].shape == (200, 1024)
+    assert payload["labels"].shape == payload["x_buckets"].shape == (200,)
+    object_effects = payload["object_patch_effects"]
+    random_effects = payload["random_patch_effects"]
+    assert object_effects.shape == random_effects.shape == (16,)
+    assert object_effects.mean().item() >= random_effects.mean().item() + 0.4
+    assert signature_result["state_probe_margin_over_random"] >= 0.2
+    assert signature_result["latent_rollout_passed"]
+    assert signature_result["real_latent_object_permanence_passed"]
+    assert signature_result["causal_latent_patching_passed"]
+    print("All tests in `validate_vjepa2_signature_visual_payload` passed!")
+
+
 def test_exercise_notebook_declares_full_verification_contract():
     notebook_path = Path(__file__).with_name(
         "14.1_JEPA_and_World_Model_Controls_exercises.ipynb"
@@ -420,5 +538,14 @@ def test_exercise_notebook_declares_full_verification_contract():
     )
     assert "What this does not show" in source, (
         "The learner notebook should state claim boundaries."
+    )
+    assert "## Try It Yourself" in source, (
+        "The learner notebook should let students perturb a real video or control."
+    )
+    assert "run_vjepa2_world_model_signature_result" in source, (
+        "The learner notebook should generate the live V-JEPA 2 evidence panel."
+    )
+    assert "jepa_world_model_live_signature.png" in source, (
+        "The learner notebook should display the real video-latent signature figure."
     )
     print("All tests in `test_exercise_notebook_declares_full_verification_contract` passed!")
