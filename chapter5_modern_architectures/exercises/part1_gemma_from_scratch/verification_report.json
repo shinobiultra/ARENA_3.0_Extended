@@ -67,9 +67,9 @@
       "vocab_size": 31
     }
   ],
-  "date_run": "2026-09-04T07:38:56+00:00",
+  "date_run": "2026-09-04T08:33:31+00:00",
   "evidence_level": "gemma_from_scratch_contract_plus_hf_reference_architecture_parity",
-  "git_commit": "c418cb59",
+  "git_commit": "7cacf244",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-0",
   "known_failures": [],
@@ -210,7 +210,7 @@
   "peak_vram_gb": 0.03133535385131836,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "4ba900427fb17049c7dc39d40400d0d46da608ad49cc14505b592713f9b5e9bb",
+    "combined_sha256": "2499139c253ce45ac2b82e393f3bb99e0f555d98aa446925c7f5a965d5b0b9a4",
     "files": [
       {
         "path": "arena_ext/__init__.py",
@@ -229,13 +229,13 @@
       },
       {
         "path": "chapter5_modern_architectures/exercises/part1_gemma_from_scratch/5.1_Gemma_from_Scratch_exercises.ipynb",
-        "sha256": "99300e05889789a58199d7ca66708b0945cf02a0454f1e15da20f37f15ac8fe8",
-        "size_bytes": 57899
+        "sha256": "53dfef488c65fcc5eaeb35f6f2bd1dc6af232147f7aad756d1fce22597e35786",
+        "size_bytes": 60568
       },
       {
         "path": "chapter5_modern_architectures/exercises/part1_gemma_from_scratch/5.1_Gemma_from_Scratch_solutions.ipynb",
-        "sha256": "503c9ffcb37e198c717ed166a0f435e25fd2be7954bfb534e0e9c6356ed188fd",
-        "size_bytes": 190254
+        "sha256": "e1e93542d3ccf9dd518808df8841b8354d13d771088bf64ec4f24d45909a416a",
+        "size_bytes": 193183
       },
       {
         "path": "chapter5_modern_architectures/exercises/part1_gemma_from_scratch/README.md",
@@ -269,8 +269,8 @@
       },
       {
         "path": "chapter5_modern_architectures/exercises/part1_gemma_from_scratch/tests.py",
-        "sha256": "a1ffa57eb28c2d8d2567c5c89aede4d886f04007a0d72ccb2c437b8112092a5e",
-        "size_bytes": 16771
+        "sha256": "b1e807a1036f9323a8093037d36292ab870bd4581b5e975b96330a87d3ccd798",
+        "size_bytes": 17492
       },
       {
         "path": "chapter5_modern_architectures/exercises/part1_gemma_from_scratch/utils.py",
@@ -284,8 +284,8 @@
       },
       {
         "path": "chapter5_modern_architectures/instructions/pages/01_[5.1]_Gemma_from_Scratch.md",
-        "sha256": "31554676b8be590280db2b3927944b503c4cc6eee011946fee5450441e787817",
-        "size_bytes": 43628
+        "sha256": "80589ea45c06fa6b4d5bbd7850146cb43a90b20f3ad53b6acda996067d676d84",
+        "size_bytes": 44567
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
@@ -300,5 +300,5 @@
     "The reference parity path uses deterministic random tiny weights and generated token IDs only. It does not download gated pretrained Gemma weights, use unsafe prompts, user data, adapters, or external APIs."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 2.926734
+  "wall_clock_seconds": 2.816654
 }

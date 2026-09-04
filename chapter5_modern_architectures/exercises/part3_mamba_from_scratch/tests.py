@@ -303,8 +303,14 @@ def test_state_ablation_is_causal(intervene_on_state: Callable | None = None):
     ablated = solutions.selective_readout(intervene_on_state(a, b, 6, 0.0), c)
     read_positions = case.read_positions
     t.testing.assert_close(ablated[0, read_positions[0]], baseline[0, read_positions[0]])
-    assert ablated[0, read_positions[1]].item() == 0.0
-    assert baseline[0, read_positions[1]].item() == -0.7
+    assert ablated[0, read_positions[1]].item() == 0.0, (
+        "Zeroing the recurrent state after the second write should remove the later -0.7 "
+        f"readout; got {ablated[0, read_positions[1]].item():.3f}."
+    )
+    assert baseline[0, read_positions[1]].item() == -0.7, (
+        "The unedited recurrence should retain the second written value until READ; "
+        f"got {baseline[0, read_positions[1]].item():.3f}."
+    )
     print("All tests in `test_state_ablation_is_causal` passed!")
 
 
@@ -312,11 +318,32 @@ def test_signature_controls_are_informative(run_experiment: Callable | None = No
     if run_experiment is None:
         run_experiment = _solutions().run_selective_copy_experiment
     result = run_experiment()
-    assert result.parity_max_abs_diff <= 1e-12
-    assert result.chunked_max_abs_diff == 0.0
-    assert result.selective_read_mae == 0.0
-    assert result.fixed_decay_read_mae >= 0.25
-    assert result.reset_chunk_read_mae >= 0.20
-    assert result.ablation_effect == 0.7
-    assert result.fixed_decay_reads.std().item() > 0.1
+    assert result.parity_max_abs_diff <= 1e-12, (
+        "Parallel affine composition should match the float64 sequential reference to "
+        f"1e-12; got {result.parity_max_abs_diff:.3e}."
+    )
+    assert result.chunked_max_abs_diff == 0.0, (
+        "Carrying the final state between chunks should exactly reproduce this scalar "
+        f"reference; got max difference {result.chunked_max_abs_diff:.3e}."
+    )
+    assert result.selective_read_mae == 0.0, (
+        "Exact WRITE/hold/READ coefficients should recover every target value; "
+        f"got read MAE {result.selective_read_mae:.3f}."
+    )
+    assert result.fixed_decay_read_mae >= 0.25, (
+        "The fixed-decay control should visibly forget delayed values; "
+        f"got read MAE {result.fixed_decay_read_mae:.3f}."
+    )
+    assert result.reset_chunk_read_mae >= 0.20, (
+        "Resetting state at chunk boundaries should fail when memory crosses a boundary; "
+        f"got read MAE {result.reset_chunk_read_mae:.3f}."
+    )
+    assert result.ablation_effect == 0.7, (
+        "Ablating after the -0.7 write should remove exactly 0.7 from the downstream read; "
+        f"got effect {result.ablation_effect:.3f}."
+    )
+    assert result.fixed_decay_reads.std().item() > 0.1, (
+        "The fixed-decay control should produce delay-dependent errors rather than a "
+        f"constant placeholder; got readout std {result.fixed_decay_reads.std().item():.3f}."
+    )
     print("All tests in `test_signature_controls_are_informative` passed!")

@@ -261,7 +261,10 @@ def test_cpu_training_reduces_loss(train_state_tracker_cpu: Callable | None = No
     assert losses[-1] < losses[0] - 0.25, (
         f"loss should fall during the semantic smoke run; got {losses[0]:.3f} -> {losses[-1]:.3f}"
     )
-    assert next(model.parameters()).device.type == "cpu"
+    assert next(model.parameters()).device.type == "cpu", (
+        "The learner training path should stay CPU-runnable; move the model and generated "
+        "batches to CPU before optimizing."
+    )
     print("All tests in `test_cpu_training_reduces_loss` passed!")
 
 
@@ -283,7 +286,10 @@ def test_collect_recurrent_states_matches_full_forward(
         cached_logits, recurrent_states = collect_recurrent_states(model, tokens)
     t.testing.assert_close(cached_logits, full_logits, atol=1e-5, rtol=1e-5)
     expected_features = model.backbone.config.d_inner * model.backbone.config.d_state
-    assert recurrent_states.shape == (3, 9, expected_features)
+    assert recurrent_states.shape == (3, 9, expected_features), (
+        "Collect one flattened recurrent SSM state per batch item and token; expected "
+        f"(3, 9, {expected_features}), got {tuple(recurrent_states.shape)}."
+    )
     print("All tests in `test_collect_recurrent_states_matches_full_forward` passed!")
 
 
@@ -329,7 +335,10 @@ def test_state_transplant_matches_donor_dynamics(
             "state should exactly reproduce donor continuation logits"
         ),
     )
-    assert not t.allclose(result["random_logits"], result["donor_logits"])
+    assert not t.allclose(result["random_logits"], result["donor_logits"]), (
+        "A matched-norm random edit should not reproduce the donor continuation; if it does, "
+        "check that the random direction is independent of the donor state."
+    )
     print("All tests in `test_state_transplant_matches_donor_dynamics` passed!")
 
 
@@ -344,7 +353,17 @@ def test_find_confident_errors_orders_real_mistakes(
         [[[5.0, 1.0, 0.0], [0.0, 0.0, 6.0], [0.0, 4.0, 1.0], [0.0, 4.0, 3.0]]]
     )
     records = find_confident_errors(tokens, labels, logits, k=2)
-    assert [record["position"] for record in records] == [0, 3]
-    assert records[0]["prefix"] == "("
-    assert records[0]["confidence"] >= records[1]["confidence"]
+    positions = [record["position"] for record in records]
+    assert positions == [0, 3], (
+        "Anomaly hunting should retain only wrong predictions and sort them by confidence; "
+        f"expected positions [0, 3], got {positions}."
+    )
+    assert records[0]["prefix"] == "(", (
+        "Each anomaly should retain the exact prefix ending at its position; "
+        f"expected '(', got {records[0]['prefix']!r}."
+    )
+    assert records[0]["confidence"] >= records[1]["confidence"], (
+        "Confident errors should be returned in descending confidence order; "
+        f"got {records[0]['confidence']:.3f} then {records[1]['confidence']:.3f}."
+    )
     print("All tests in `test_find_confident_errors_orders_real_mistakes` passed!")

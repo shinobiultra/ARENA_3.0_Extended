@@ -295,9 +295,21 @@ def test_feature_discovery_and_heldout_scoring(
     discovery = t.tensor([1, 1, 1, 1, 0, 0, 0, 0], dtype=t.bool)
     selected = select_feature_by_mean_difference(scores, labels, discovery)
     assert selected == 0, "The target feature must be selected from discovery rows only."
-    assert binary_roc_auc(scores[~discovery, selected], labels[~discovery]) == 1.0
-    assert binary_roc_auc(scores[~discovery, 2], labels[~discovery]) == 0.5
-    assert topk_example_indices(scores[~discovery, selected], k=2).tolist() == [0, 1]
+    target_auc = binary_roc_auc(scores[~discovery, selected], labels[~discovery])
+    nuisance_auc = binary_roc_auc(scores[~discovery, 2], labels[~discovery])
+    top_indices = topk_example_indices(scores[~discovery, selected], k=2).tolist()
+    assert target_auc == 1.0, (
+        "The discovery-selected feature should rank every positive held-out example above "
+        f"every negative example; got AUC {target_auc:.3f}."
+    )
+    assert nuisance_auc == 0.5, (
+        "The tied nuisance feature should score at chance under tie-aware AUC; "
+        f"got {nuisance_auc:.3f}."
+    )
+    assert top_indices == [0, 1], (
+        "Top-k inspection should return the two highest-scoring held-out rows in descending "
+        f"order; got {top_indices}."
+    )
     print("All tests in `test_feature_discovery_and_heldout_scoring` passed!")
 
 
@@ -348,10 +360,22 @@ def test_released_gemma_scope_artifact(
 ):
     """Validate the pinned released artifact and one genuine CPU encode/decode pass."""
 
-    assert config["model_name"] == "google/gemma-3-1b-it"
-    assert config["hf_hook_point_in"] == "model.layers.13.output"
-    assert config["architecture"] == "jump_relu"
-    assert config["width"] == 16384
+    assert config["model_name"] == "google/gemma-3-1b-it", (
+        "The SAE must be paired with its declared base model, google/gemma-3-1b-it; "
+        f"got {config.get('model_name')!r}."
+    )
+    assert config["hf_hook_point_in"] == "model.layers.13.output", (
+        "The SAE expects layer-13 residual outputs; steering another hook point would make "
+        f"the feature coordinates invalid. Got {config.get('hf_hook_point_in')!r}."
+    )
+    assert config["architecture"] == "jump_relu", (
+        "This lesson implements the JumpReLU threshold contract, so the released artifact "
+        f"must declare architecture='jump_relu'; got {config.get('architecture')!r}."
+    )
+    assert config["width"] == 16384, (
+        "The pinned SAE should expose 16,384 features; a different width means the config "
+        f"and tensor checkpoint do not match. Got {config.get('width')!r}."
+    )
     expected_shapes = {
         "w_enc": (1152, 16384),
         "w_dec": (16384, 1152),
@@ -359,10 +383,18 @@ def test_released_gemma_scope_artifact(
         "b_dec": (1152,),
         "threshold": (16384,),
     }
-    assert set(expected_shapes).issubset(state)
+    missing_tensors = sorted(set(expected_shapes) - set(state))
+    assert not missing_tensors, (
+        "The released SAE state is missing tensors required for encode/decode: "
+        f"{missing_tensors}."
+    )
     for name, shape in expected_shapes.items():
-        assert tuple(state[name].shape) == shape
-        assert bool(t.isfinite(state[name]).all().item())
+        assert tuple(state[name].shape) == shape, (
+            f"SAE tensor {name!r} should have shape {shape}; got {tuple(state[name].shape)}."
+        )
+        assert bool(t.isfinite(state[name]).all().item()), (
+            f"SAE tensor {name!r} contains NaN or infinite values, so feature scores are invalid."
+        )
 
     candidate_mask = (state["threshold"] > state["b_enc"]) & (
         state["w_enc"].square().sum(dim=0) > 1e-8
@@ -381,8 +413,14 @@ def test_released_gemma_scope_artifact(
         threshold=state["threshold"],
     )
     reconstructed = sae_decode(feature_acts, w_dec=state["w_dec"], b_dec=state["b_dec"])
-    assert feature_acts[0, feature_id].item() > 0
-    assert bool(t.isfinite(reconstructed).all().item())
+    assert feature_acts[0, feature_id].item() > 0, (
+        "The constructed residual should cross the chosen feature's JumpReLU threshold; "
+        "check the encoder orientation, centering term, and strict threshold comparison."
+    )
+    assert bool(t.isfinite(reconstructed).all().item()), (
+        "A finite SAE input should decode to a finite residual; inspect decoder orientation "
+        "and bias broadcasting."
+    )
     print("All tests in `test_released_gemma_scope_artifact` passed!")
 
 

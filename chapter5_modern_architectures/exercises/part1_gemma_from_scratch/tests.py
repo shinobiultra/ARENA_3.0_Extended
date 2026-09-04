@@ -396,7 +396,10 @@ def test_capture_gemma_trace(
         assert trace[stage].shape == (1, 4, model.config.hidden_size), (
             f"Stage {stage} should have residual-stream shape (1, 4, {model.config.hidden_size})."
         )
-    assert trace["logits"].shape == (1, 4, model.config.vocab_size)
+    assert trace["logits"].shape == (1, 4, model.config.vocab_size), (
+        "The final trace entry should contain one vocabulary logit vector per token; "
+        f"got shape {tuple(trace['logits'].shape)}."
+    )
     print("All tests in `test_capture_gemma_trace` passed!")
 
 
@@ -404,23 +407,33 @@ def test_architecture_controls(run_architecture_controls: Callable | None = None
     run_architecture_controls = run_architecture_controls or _solutions().run_architecture_controls
     result = run_architecture_controls()
     profiles = result["profiles"]
-    assert list(profiles) == [
+    expected_profiles = [
         "exact",
         "no embedding scale",
         "no RoPE",
         "wrong GQA order",
     ]
+    assert list(profiles) == expected_profiles, (
+        "Architecture controls should keep a stable plotting order so each failure can be "
+        f"compared with the exact model; expected {expected_profiles}, got {list(profiles)}."
+    )
     assert profiles["exact"]["logits"]["max_abs"] <= 5e-6, (
         "The completed learner model should match the independent reference at the logits."
     )
     assert profiles["no embedding scale"]["embedding"]["relative_rmse"] > 0.5, (
         "Removing Gemma's sqrt(hidden_size) embedding scale should visibly diverge at the embedding."
     )
-    assert profiles["no RoPE"]["embedding"]["max_abs"] == 0.0
+    assert profiles["no RoPE"]["embedding"]["max_abs"] == 0.0, (
+        "Removing RoPE should leave token embeddings unchanged; an embedding mismatch means "
+        "the control changed more than the positional rotation."
+    )
     assert profiles["no RoPE"]["layer_0"]["max_abs"] > 1e-3, (
         "The no-RoPE control should first diverge inside the first decoder layer."
     )
-    assert profiles["wrong GQA order"]["embedding"]["max_abs"] == 0.0
+    assert profiles["wrong GQA order"]["embedding"]["max_abs"] == 0.0, (
+        "Changing grouped-query head order should leave token embeddings unchanged; an "
+        "embedding mismatch means the control is not isolating GQA."
+    )
     assert profiles["wrong GQA order"]["layer_0"]["max_abs"] > 1e-3, (
         "The wrong-head-order control should first diverge inside the first decoder layer."
     )
