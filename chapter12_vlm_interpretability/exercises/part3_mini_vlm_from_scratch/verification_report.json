@@ -51,9 +51,9 @@
       "train_examples": 120
     }
   ],
-  "date_run": "2026-09-04T07:28:09+00:00",
+  "date_run": "2026-09-04T08:46:00+00:00",
   "evidence_level": "exact_visual_token_oracle_plus_cuda_trained_controlled_minivlm",
-  "git_commit": "aedbc197",
+  "git_commit": "b726d692",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-0",
   "known_failures": [],
@@ -474,7 +474,7 @@
   "peak_vram_gb": 0.06935930252075195,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "ab9e3145bb9d3f1643d76d79db1e020b9a3740cc71925050db8a03c993ae3049",
+    "combined_sha256": "e5b438b18b027c7e38a0e86af3a2ee9044c7fb9a9f8135dc7dc3b78d048b2994",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -483,38 +483,38 @@
       },
       {
         "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/12.3_Mini_VLM_from_Scratch_exercises.ipynb",
-        "sha256": "9914399e54990c662c168abfb42b1d48b6ec814cc56eae3b485fdb4543858e14",
-        "size_bytes": 77159
+        "sha256": "088efab00c16c426ebe9d7f3cdadb3b74cf21cc9de16aa5f9c20b13f0ed8eb20",
+        "size_bytes": 78534
       },
       {
         "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/12.3_Mini_VLM_from_Scratch_solutions.ipynb",
-        "sha256": "4fd66c4ee4e32742d0edd1c40cc7c18432b9558f5ef4d6f0b999c8cea5d652cf",
-        "size_bytes": 133592
+        "sha256": "af569665c9e70b58a9a697b13fb082d2b9b2d8d4ebb9b299f45d88ed8dd10075",
+        "size_bytes": 135140
       },
       {
         "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/README.md",
-        "sha256": "f17fcc56224b04cf0cd84e38ee76e964332cbb0b3f9260e94417f5bc7573df7b",
-        "size_bytes": 914
+        "sha256": "d56b2eed538b7ef836aa6f0710bd27742b360f8d9803015fa48a2ec63fd92db2",
+        "size_bytes": 913
       },
       {
         "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/artifacts.lock.yml",
-        "sha256": "e89e893a47e5a0a76fc6534b9a5c40c8e1050ec95883732e14c1608d1c4f99b5",
-        "size_bytes": 2673
+        "sha256": "f797d2ebec087c8249533076d9de57ba581c32abeb1987430302cd3a4602e735",
+        "size_bytes": 2672
       },
       {
         "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/expected_outputs/README.md",
-        "sha256": "701e32944bd84a486e352edc075412a95b09c1398c9f9a8b5673b3ca7a0bdd3b",
-        "size_bytes": 1334
+        "sha256": "2b3763ca6167fe943069af500349442f10ffbb7c8c7fc4c75a854e7c9ae363b4",
+        "size_bytes": 1333
       },
       {
         "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/expected_outputs/reference_metrics.json",
-        "sha256": "eccd777e234c947e3df6297c3da50b3bd39b4cf7c97426b90661fafe5e62025e",
-        "size_bytes": 1139
+        "sha256": "48bb0098676f7129d7482a90f8f9edff759c9f59076b29e4afa7918c36618ac9",
+        "size_bytes": 1138
       },
       {
         "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/expected_outputs/smoke_test.json",
-        "sha256": "2b5f4d752daf08ecbf900b5988c8bfe9fbb3b526245c20f8c53459838060e934",
-        "size_bytes": 345
+        "sha256": "2770f421a1f928c4107cb8c141fb890a4f9a0e5a3a4f36c5a5ab892f1b5b0407",
+        "size_bytes": 344
       },
       {
         "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/solutions.py",
@@ -523,8 +523,8 @@
       },
       {
         "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/tests.py",
-        "sha256": "1095df9aef9e355a6faae274a294003eb8eee83994094eda5fb98e24c8592b35",
-        "size_bytes": 13442
+        "sha256": "c49d1324d9c63a58666cb5a9a2ce1889936ae9eb93fee540d0c6256e7784465a",
+        "size_bytes": 18264
       },
       {
         "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/verification_report.schema.json",
@@ -533,8 +533,8 @@
       },
       {
         "path": "chapter12_vlm_interpretability/instructions/pages/03_[12.3]_Mini_VLM_from_Scratch.md",
-        "sha256": "88dae0252f7d54816d2428946f4df2ab1c57e9f69f9e396250e6c0ac30cdf15e",
-        "size_bytes": 9326
+        "sha256": "ecfc7afc30ecb2003a505331620a0c523da468c486861f8a6250c03182095e50",
+        "size_bytes": 10087
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
@@ -550,5 +550,5 @@
     "The result is scoped to the controlled MiniVLM and is not claimed to transfer to frontier VLMs."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 2.553798
+  "wall_clock_seconds": 2.552641
 }

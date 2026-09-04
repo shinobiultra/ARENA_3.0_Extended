@@ -26,8 +26,13 @@ def test_rendered_scene_is_visible_and_has_bbox(
     solutions = _solutions()
     render_controlled_scene = render_controlled_scene or solutions.render_controlled_scene
     image, bbox = render_controlled_scene("red", "square", "center")
-    assert image.shape == (3, solutions.IMAGE_SIZE, solutions.IMAGE_SIZE)
-    assert bbox == (12, 12, 36, 36)
+    assert image.shape == (3, solutions.IMAGE_SIZE, solutions.IMAGE_SIZE), (
+        f"A rendered scene should have CHW shape (3, {solutions.IMAGE_SIZE}, "
+        f"{solutions.IMAGE_SIZE}); got {tuple(image.shape)}."
+    )
+    assert bbox == (12, 12, 36, 36), (
+        f"The centered object should have bbox (12, 12, 36, 36); got {bbox}."
+    )
     nonwhite = image.lt(0.98).any(dim=0).sum().item()
     assert nonwhite == solutions.OBJECT_SIZE * solutions.OBJECT_SIZE, (
         "A square scene should contain the exact colored object area."
@@ -44,15 +49,36 @@ def test_train_and_heldout_styles_are_disjoint():
     heldout = solutions.build_vqa_batch("heldout")
     train_pairs = {(example.color, example.shape) for example in train.examples}
     heldout_pairs = {(example.color, example.shape) for example in heldout.examples}
-    assert train_pairs == heldout_pairs == {
+    expected_pairs = {
         (color, shape) for color in solutions.COLORS for shape in solutions.SHAPES
     }
-    assert {example.style for example in train.examples} == {solutions.TRAIN_STYLE}
-    assert {example.style for example in heldout.examples} == {solutions.HELDOUT_STYLE}
-    assert solutions.TRAIN_STYLE != solutions.HELDOUT_STYLE
-    assert len(heldout.examples) >= 20
-    assert {example.position for example in train.examples} == set(solutions.POSITIONS)
-    assert {example.position for example in heldout.examples} == set(solutions.POSITIONS)
+    assert train_pairs == heldout_pairs == expected_pairs, (
+        "Train and held-out splits should contain the same complete color-shape support; "
+        f"train={train_pairs}, heldout={heldout_pairs}, expected={expected_pairs}."
+    )
+    train_styles = {example.style for example in train.examples}
+    heldout_styles = {example.style for example in heldout.examples}
+    assert train_styles == {solutions.TRAIN_STYLE}, (
+        f"Training examples should use only {solutions.TRAIN_STYLE!r}; got {train_styles}."
+    )
+    assert heldout_styles == {solutions.HELDOUT_STYLE}, (
+        f"Held-out examples should use only {solutions.HELDOUT_STYLE!r}; got {heldout_styles}."
+    )
+    assert solutions.TRAIN_STYLE != solutions.HELDOUT_STYLE, (
+        "Train and held-out rendering styles must differ for the visual-style generalization test."
+    )
+    assert len(heldout.examples) >= 20, (
+        f"The held-out evaluation needs at least 20 examples; got {len(heldout.examples)}."
+    )
+    train_positions = {example.position for example in train.examples}
+    heldout_positions = {example.position for example in heldout.examples}
+    expected_positions = set(solutions.POSITIONS)
+    assert train_positions == expected_positions, (
+        f"Training examples should cover every object position; got {train_positions}."
+    )
+    assert heldout_positions == expected_positions, (
+        f"Held-out examples should cover every object position; got {heldout_positions}."
+    )
     print("All tests in `test_train_and_heldout_styles_are_disjoint` passed!")
 
 
@@ -64,15 +90,23 @@ def test_visual_token_cache_detaches_and_preserves_patch_grid(
     batch = solutions.build_vqa_batch("train")
     encoder = solutions.FrozenPatchEncoder()
     cache = encode_visual_token_cache(encoder, batch.images)
-    assert cache.shape == (
+    expected_shape = (
         len(batch.examples),
         solutions.PATCH_GRID * solutions.PATCH_GRID,
         solutions.VISION_FEATURE_DIM,
     )
+    assert cache.shape == expected_shape, (
+        f"The visual cache should preserve batch, patch-grid, and feature axes; "
+        f"expected {expected_shape}, got {tuple(cache.shape)}."
+    )
     assert not cache.requires_grad, "The frozen vision-token cache should be detached."
     object_mass = cache[..., 3]
-    assert object_mass.max().item() > 0.9
-    assert object_mass.min().item() == 0.0
+    assert object_mass.max().item() > 0.9, (
+        f"At least one object patch should have occupancy above 0.9; got {object_mass.max().item():.4f}."
+    )
+    assert object_mass.min().item() == 0.0, (
+        f"Pure background patches should have zero occupancy; got {object_mass.min().item():.4f}."
+    )
     print("All tests in `test_visual_token_cache_detaches_and_preserves_patch_grid` passed!")
 
 
@@ -103,7 +137,10 @@ def test_patch_indices_from_bbox_matches_known_grid(
         "The center object should map to the 4x4 patch-token block it overlaps."
     )
     top_indices = patch_indices_from_bbox((12, 0, 36, 24))
-    assert top_indices == (1, 2, 3, 4, 7, 8, 9, 10, 13, 14, 15, 16)
+    expected_top = (1, 2, 3, 4, 7, 8, 9, 10, 13, 14, 15, 16)
+    assert top_indices == expected_top, (
+        f"The top object should map to the expected 3x4 token block; got {top_indices}."
+    )
     print("All tests in `test_patch_indices_from_bbox_matches_known_grid` passed!")
 
 
@@ -115,14 +152,22 @@ def test_patch_visual_tokens_replaces_only_selected_rows(
     clean = t.zeros(2, 5, 3)
     corrupt = t.ones(2, 5, 3)
     patched = patch_visual_tokens(clean, corrupt, (1, 3))
-    assert t.allclose(patched[:, 1], t.ones(2, 3))
-    assert t.allclose(patched[:, 3], t.ones(2, 3))
-    assert t.allclose(patched[:, 0], t.zeros(2, 3))
+    assert t.allclose(patched[:, 1], t.ones(2, 3)), (
+        "Selected row 1 should be replaced by the corrupt cache values."
+    )
+    assert t.allclose(patched[:, 3], t.ones(2, 3)), (
+        "Selected row 3 should be replaced by the corrupt cache values."
+    )
+    assert t.allclose(patched[:, 0], t.zeros(2, 3)), (
+        "Unselected row 0 should preserve the clean cache values."
+    )
     assert t.allclose(clean, t.zeros_like(clean)), "Patching should not mutate the clean cache."
     try:
         patch_visual_tokens(clean, corrupt, (1, 1))
     except ValueError as exc:
-        assert "unique" in str(exc)
+        assert "unique" in str(exc), (
+            f"Duplicate-index errors should explain the uniqueness requirement; got {exc!s}."
+        )
     else:
         raise AssertionError("Duplicate patch indices should be rejected.")
     print("All tests in `test_patch_visual_tokens_replaces_only_selected_rows` passed!")
@@ -137,7 +182,11 @@ def test_multimodal_sequence_has_visual_prefix_and_question_token(
     cache = t.randn(3, solutions.PATCH_GRID * solutions.PATCH_GRID, solutions.VISION_FEATURE_DIM)
     question_ids = t.tensor([0, 1, 0])
     sequence = build_multimodal_sequence(model, cache, question_ids)
-    assert sequence.shape == (3, solutions.PATCH_GRID * solutions.PATCH_GRID + 1, 24)
+    expected_shape = (3, solutions.PATCH_GRID * solutions.PATCH_GRID + 1, 24)
+    assert sequence.shape == expected_shape, (
+        f"The multimodal sequence should append one question token; expected {expected_shape}, "
+        f"got {tuple(sequence.shape)}."
+    )
     assert not t.allclose(sequence[:, -1], sequence[:, 0]), (
         "The final token should be the question token, not another visual token."
     )
@@ -150,10 +199,21 @@ def test_mini_vlm_uses_real_multi_head_cross_attention():
     cache = t.randn(3, solutions.PATCH_GRID**2, solutions.VISION_FEATURE_DIM)
     questions = t.tensor([0, 1, 0])
     logits, activations = model(cache, questions, return_cache=True)
-    assert logits.shape == (3, len(solutions.ANSWER_VOCAB))
-    assert model.num_heads == 4 and model.head_dim == 6
-    assert activations["value_0"].shape == (3, solutions.PATCH_GRID**2, 24)
-    assert activations["value_1"].shape == (3, solutions.PATCH_GRID**2, 24)
+    assert logits.shape == (3, len(solutions.ANSWER_VOCAB)), (
+        f"MiniVLM logits should have one row per example and one column per answer; "
+        f"got {tuple(logits.shape)}."
+    )
+    assert model.num_heads == 4 and model.head_dim == 6, (
+        f"d_model=24 with four heads should give head_dim=6; got "
+        f"num_heads={model.num_heads}, head_dim={model.head_dim}."
+    )
+    expected_value_shape = (3, solutions.PATCH_GRID**2, 24)
+    assert activations["value_0"].shape == expected_value_shape, (
+        f"Layer-0 values should retain every visual-token row; got {tuple(activations['value_0'].shape)}."
+    )
+    assert activations["value_1"].shape == expected_value_shape, (
+        f"Layer-1 values should retain every visual-token row; got {tuple(activations['value_1'].shape)}."
+    )
     print("All tests in `test_mini_vlm_uses_real_multi_head_cross_attention` passed!")
 
 
@@ -167,9 +227,12 @@ def test_vqa_accuracy_and_answer_margin(
     logits = t.tensor([[4.0, 1.0, -1.0], [0.0, 3.0, 2.0]])
     labels = t.tensor([0, 2])
     counters = t.tensor([1, 1])
-    assert vqa_accuracy(logits, labels) == 0.5
+    accuracy = vqa_accuracy(logits, labels)
+    assert accuracy == 0.5, f"The two-example fixture should have accuracy 0.5; got {accuracy}."
     margins = answer_margin(logits, labels, counters)
-    assert t.allclose(margins, t.tensor([3.0, -1.0]))
+    assert t.allclose(margins, t.tensor([3.0, -1.0])), (
+        f"Target-minus-counterfactual margins should be [3.0, -1.0]; got {margins.tolist()}."
+    )
     print("All tests in `test_vqa_accuracy_and_answer_margin` passed!")
 
 
@@ -181,8 +244,12 @@ def test_toy_ground_truth_patch_report_has_exact_controls(
         toy_ground_truth_patch_report or solutions.toy_ground_truth_patch_report
     )
     result = toy_ground_truth_patch_report()
-    assert result["clean_margin"] > 0
-    assert result["corrupt_margin"] < 0
+    assert result["clean_margin"] > 0, (
+        f"The exact clean oracle should prefer the target answer; got margin {result['clean_margin']}."
+    )
+    assert result["corrupt_margin"] < 0, (
+        f"The exact corrupt oracle should prefer the counterfactual; got margin {result['corrupt_margin']}."
+    )
     assert result["object_patch_flips"], (
         "Exact toy object patching should flip the answer margin."
     )
@@ -192,7 +259,9 @@ def test_toy_ground_truth_patch_report_has_exact_controls(
     assert result["random_patch_preserves"], (
         "Exact toy same-size random-region patching should preserve the clean answer margin."
     )
-    assert result["object_beats_background"]
+    assert result["object_beats_background"], (
+        "Exact object-token patching should have a larger causal effect than background patching."
+    )
     print("All tests in `test_toy_ground_truth_patch_report_has_exact_controls` passed!")
 
 
@@ -207,26 +276,45 @@ def check_training_and_baselines(training, baselines: dict[str, float]) -> None:
         if isinstance(training, dict)
         else training.heldout_accuracy
     )
-    assert train_accuracy >= 0.95
-    assert heldout_accuracy >= 0.95
-    assert baselines["joint_accuracy"] >= 0.95
+    assert train_accuracy >= 0.95, (
+        f"The trained MiniVLM should reach at least 0.95 training accuracy; got {train_accuracy:.4f}."
+    )
+    assert heldout_accuracy >= 0.95, (
+        f"Muted-style held-out accuracy should reach at least 0.95; got {heldout_accuracy:.4f}."
+    )
+    assert baselines["joint_accuracy"] >= 0.95, (
+        f"Joint image-question accuracy should reach at least 0.95; got {baselines['joint_accuracy']:.4f}."
+    )
     assert baselines["text_only_accuracy"] <= 0.45, (
         "Question text without pixels should fail image-dependent VQA."
     )
     assert baselines["image_only_accuracy"] <= 0.60, (
         "Pixels without the question should not reliably choose color vs shape answers."
     )
-    assert baselines["random_visual_accuracy"] <= 0.50
+    assert baselines["random_visual_accuracy"] <= 0.50, (
+        "Shuffled visual caches should fail image-dependent VQA; "
+        f"got accuracy {baselines['random_visual_accuracy']:.4f}."
+    )
     print("Training and modality-control checks passed!")
 
 
 def check_patch_report(report: dict[str, object]) -> None:
     assert report["object_patch_flips"], "Object-token patching should flip the answer."
-    assert report["background_patch_preserves"]
-    assert report["random_region_preserves"]
-    assert report["full_sequence_matches_corrupt"]
-    assert report["object_patch_margin"] < 0
-    assert report["background_patch_margin"] > 0
+    assert report["background_patch_preserves"], (
+        "A matched background patch should preserve the clean answer."
+    )
+    assert report["random_region_preserves"], (
+        "A same-size random-region patch should preserve the clean answer."
+    )
+    assert report["full_sequence_matches_corrupt"], (
+        "Patching every visual row should reproduce the corrupt forward pass."
+    )
+    assert report["object_patch_margin"] < 0, (
+        f"Object patching should make the signed margin negative; got {report['object_patch_margin']}."
+    )
+    assert report["background_patch_margin"] > 0, (
+        f"Background patching should leave the signed margin positive; got {report['background_patch_margin']}."
+    )
     print("Object/background/random/full-sequence patch checks passed!")
 
 
@@ -267,10 +355,18 @@ def test_exercise_notebook_exposes_arena_learner_surface():
     for needle in required:
         assert needle in source, f"Notebook is missing learner-surface marker: {needle}"
     assert source.count("### Exercise -") == 8, "12.3 should have exactly 8 graded exercises."
-    assert source.count("<summary>Expected output</summary>") >= 8
-    assert source.count("<summary>Help -") >= 8
-    assert source.count("<summary>Interpretation</summary>") >= 8
-    assert source.count("<summary>Solution</summary>") >= 8
+    assert source.count("<summary>Expected output</summary>") >= 8, (
+        "Each graded exercise should include a visible expected-output dropdown."
+    )
+    assert source.count("<summary>Help -") >= 8, (
+        "Each graded exercise should include a reasoning-oriented help dropdown."
+    )
+    assert source.count("<summary>Interpretation</summary>") >= 8, (
+        "Each graded exercise should explain how to interpret its result."
+    )
+    assert source.count("<summary>Solution</summary>") >= 8, (
+        "Each graded exercise should include a full solution dropdown."
+    )
     print("All tests in `test_exercise_notebook_exposes_arena_learner_surface` passed!")
 
 
@@ -319,5 +415,7 @@ def test_solution_notebook_exposes_taught_implementations():
             and child.attr == name
             for child in ast.walk(node)
         ), f"{name} delegates the taught method to hidden reference code."
-    assert "NotImplementedError" not in code
+    assert "NotImplementedError" not in code, (
+        "The solved notebook should not contain any remaining implementation placeholders."
+    )
     print("All tests in `test_solution_notebook_exposes_taught_implementations` passed!")

@@ -124,9 +124,9 @@
       "text_count": 2
     }
   ],
-  "date_run": "2026-07-02T14:16:47+00:00",
+  "date_run": "2026-09-04T08:45:57+00:00",
   "evidence_level": "synthetic_vlm_ladder_plus_real_clip_siglip_hidden_token_patching_and_qwen25_vl_generation",
-  "git_commit": "82424e63",
+  "git_commit": "b726d692",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-1",
   "known_failures": [],
@@ -3481,7 +3481,7 @@
   "peak_vram_gb": 7.081986904144287,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "c261804feb1cb6018b28da5d1defb16d5791f48bc482d866787e5d8966b2bc30",
+    "combined_sha256": "d66e2bc8a6487480e656c530d84056db7d3804ce3d8e750a75424abd555b33c0",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -3495,13 +3495,13 @@
       },
       {
         "path": "chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls/12.1_CLIP_SigLIP_and_VLM_Controls_exercises.ipynb",
-        "sha256": "5cf8c01579542ffbe6129a9c4ec94a5a7f8e512fb63176a6882b03472b968055",
-        "size_bytes": 25411
+        "sha256": "d37b9fddcaf010d56aef7bdc71514649de797645279244c59ec486187ed61c12",
+        "size_bytes": 25445
       },
       {
         "path": "chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls/12.1_CLIP_SigLIP_and_VLM_Controls_solutions.ipynb",
-        "sha256": "446186798a375e10f55499c40aaae71fdc1b3d3c6b68939095f601f2b1ebcb14",
-        "size_bytes": 30788
+        "sha256": "99b48af9e64698ba1f2f94801a1990d7d1864923ebc14636ae8aa71f7413650f",
+        "size_bytes": 166131
       },
       {
         "path": "chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls/README.md",
@@ -3550,13 +3550,13 @@
       },
       {
         "path": "chapter12_vlm_interpretability/instructions/pages/01_[12.1]_CLIP_SigLIP_and_VLM_Controls.md",
-        "sha256": "f427f8b5d59b79a66e482fba138b9648206c84b39bd92007449f29e8badb9f64",
-        "size_bytes": 21015
+        "sha256": "ecd43b3ea2daa2c2b32a5637bcef1f39a0c1d6085a5cdf0c8b6bfd997634de89",
+        "size_bytes": 20998
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
-        "sha256": "660040f459d07535deb9e0c34ffddb496c13b8770044ae380d3a8e45b0c8fb2b",
-        "size_bytes": 16080
+        "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
+        "size_bytes": 16272
       }
     ],
     "schema_version": 1
@@ -3566,5 +3566,5 @@
     "The real generative VLM path uses safe generated shape images only. The CLIP and SigLIP region-patching path uses deterministic rendered shape images with object, background, and same-size non-overlapping random-region patch controls. The hidden-token path patches real CLIP/SigLIP visual-token activations at `vision_model.embeddings` and requires object tokens to flip the contrastive answer while background, same-size random-token, and full visual-sequence controls behave as expected. The Qwen2.5-VL path verifies grounded generation on the same safe rendered objects."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 12.856948
+  "wall_clock_seconds": 17.342808
 }

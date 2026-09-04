@@ -62,7 +62,9 @@ def test_paired_cosine_rejects_shape_mismatch(paired_cosine: Callable | None = N
 def test_make_world_video_ground_truth(make_world_video: Callable | None = None):
     make_world_video = make_world_video or _solutions().make_world_video
     moving = make_world_video("red_square", 8, 12, dx=8, frames=8, size=96)
-    assert moving.shape == (8, 3, 96, 96)
+    assert moving.shape == (8, 3, 96, 96), (
+        f"The generated world should return eight 96x96 RGB frames; got {tuple(moving.shape)}."
+    )
     red = (moving[:, 0] + 1.0) / 2.0
     xx = t.arange(96).view(1, 1, 96)
     first_x = (red[0] * xx).sum() / red[0].sum()
@@ -102,7 +104,9 @@ def test_bbox_to_vjepa_tokens_ground_truth(
     assert tokens == expected, (
         "The known image-space box should map to the exact padded 4x4 token block."
     )
-    assert len(tokens) == len(set(tokens)) == 16
+    assert len(tokens) == len(set(tokens)) == 16, (
+        f"The padded object box should map to 16 unique V-JEPA tokens; got {tokens}."
+    )
     print("All tests in `test_bbox_to_vjepa_tokens_ground_truth` passed!")
 
 
@@ -321,7 +325,10 @@ def test_causal_latent_patch_report_rejects_random_control(
         min_object_patch_effect=0.5,
         min_patch_random_gap=0.4,
     )
-    assert targeted.causal_patch_passes and targeted.patch_random_gap > 0.8
+    assert targeted.causal_patch_passes and targeted.patch_random_gap > 0.8, (
+        "Strong object-token effects should pass and exceed the matched random-token "
+        f"effect by more than 0.8; got gap {targeted.patch_random_gap:.4f}."
+    )
     assert not matched_random.causal_patch_passes, (
         "A target patch is not specific when a same-size random patch has the same effect."
     )
@@ -473,33 +480,69 @@ def test_committed_verification_report_vjepa_world_controls():
 def validate_vjepa2_signature_visual_payload(signature_result: dict) -> None:
     """Validate the real videos, latents, and patch effects plotted by the notebook."""
 
-    assert signature_result["preflight_passed"]
+    assert signature_result["preflight_passed"], (
+        "The live V-JEPA signature payload should satisfy every scoped preflight gate."
+    )
     payload = signature_result.get("visual_payload")
     assert payload is not None, "The live signature result should retain visual evidence."
     cases = payload["cases"]
-    assert [case["case_id"] for case in cases] == [
+    case_ids = [case["case_id"] for case in cases]
+    assert case_ids == [
         "red_square_right",
         "blue_circle_right",
-    ]
+    ], f"The visual payload should retain both controlled cases; got {case_ids}."
     for case in cases:
-        assert case["frame_indices"] == [0, 3, 4, 7]
-        assert case["action"] == (8, 0)
+        assert case["frame_indices"] == [0, 3, 4, 7], (
+            f"Case {case['case_id']} should retain frames [0, 3, 4, 7]; "
+            f"got {case['frame_indices']}."
+        )
+        assert case["action"] == (8, 0), (
+            f"Case {case['case_id']} should use action (8, 0); got {case['action']}."
+        )
         for key in ("visible_frames", "next_frames", "occluded_frames", "absent_frames"):
             frames = case[key]
-            assert frames.shape == (4, 3, 96, 96)
-            assert t.isfinite(frames).all()
-        assert not t.equal(case["visible_frames"], case["absent_frames"])
+            assert frames.shape == (4, 3, 96, 96), (
+                f"{case['case_id']} {key} should retain four 96x96 RGB frames; "
+                f"got {tuple(frames.shape)}."
+            )
+            assert t.isfinite(frames).all(), (
+                f"{case['case_id']} {key} contains non-finite pixels."
+            )
+        assert not t.equal(case["visible_frames"], case["absent_frames"]), (
+            f"{case['case_id']} must keep visible and absent-object controls distinct."
+        )
 
-    assert payload["pooled_features"].shape == (200, 1024)
-    assert payload["labels"].shape == payload["x_buckets"].shape == (200,)
+    assert payload["pooled_features"].shape == (200, 1024), (
+        f"The world-state suite should retain 200 pooled 1024-d features; "
+        f"got {tuple(payload['pooled_features'].shape)}."
+    )
+    assert payload["labels"].shape == payload["x_buckets"].shape == (200,), (
+        "Object labels and position buckets should align with all 200 videos; "
+        f"got labels={tuple(payload['labels'].shape)}, x_buckets={tuple(payload['x_buckets'].shape)}."
+    )
     object_effects = payload["object_patch_effects"]
     random_effects = payload["random_patch_effects"]
-    assert object_effects.shape == random_effects.shape == (16,)
-    assert object_effects.mean().item() >= random_effects.mean().item() + 0.4
-    assert signature_result["state_probe_margin_over_random"] >= 0.2
-    assert signature_result["latent_rollout_passed"]
-    assert signature_result["real_latent_object_permanence_passed"]
-    assert signature_result["causal_latent_patching_passed"]
+    assert object_effects.shape == random_effects.shape == (16,), (
+        "Object and same-size random patch distributions should each contain 16 effects; "
+        f"got {tuple(object_effects.shape)} and {tuple(random_effects.shape)}."
+    )
+    patch_gap = object_effects.mean().item() - random_effects.mean().item()
+    assert patch_gap >= 0.4, (
+        f"Object-token patches should beat matched random patches by at least 0.4; got {patch_gap:.4f}."
+    )
+    assert signature_result["state_probe_margin_over_random"] >= 0.2, (
+        "The held-out state probe should beat shuffled labels by at least 0.2; "
+        f"got {signature_result['state_probe_margin_over_random']:.4f}."
+    )
+    assert signature_result["latent_rollout_passed"], (
+        "The action-conditioned rollout should beat copy and shuffled-action controls."
+    )
+    assert signature_result["real_latent_object_permanence_passed"], (
+        "Occluded-object latents should stay distinct from absent and different-object controls."
+    )
+    assert signature_result["causal_latent_patching_passed"], (
+        "Object-token latent patches should beat same-size random-token patches."
+    )
     print("All tests in `validate_vjepa2_signature_visual_payload` passed!")
 
 
