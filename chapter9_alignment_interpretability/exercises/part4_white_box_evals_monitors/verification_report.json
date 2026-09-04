@@ -105,9 +105,9 @@
       "train_prompt_count": 36
     }
   ],
-  "date_run": "2026-09-04T07:55:59+00:00",
+  "date_run": "2026-09-04T08:40:31+00:00",
   "evidence_level": "exact_model_organism_ground_truth_plus_pinned_pythia_white_box_monitor_preflight",
-  "git_commit": "d1025a5a",
+  "git_commit": "b115d47a",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-3",
   "known_failures": [],
@@ -375,7 +375,7 @@
   "peak_vram_gb": 0.30931854248046875,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "3bd34cc4b3790a9ca792b0c6b9038a73d5ef50db4b1b8ad31b894545fb3cc2dc",
+    "combined_sha256": "6ea454d6400e6c110eb4bd21878ca32ae0c1719d62da0b9ddbc7921b9310b60d",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -389,13 +389,13 @@
       },
       {
         "path": "chapter9_alignment_interpretability/exercises/part4_white_box_evals_monitors/9.4_White-box_Evals_and_Monitors_exercises.ipynb",
-        "sha256": "560555ff21b57e849efb408ec229e8d6d8fd7af69c2a77bf582b6473472e41a5",
-        "size_bytes": 50357
+        "sha256": "184810a635187946d10d360bacba41d7c388011eecd9b4c2ff5a97457186a326",
+        "size_bytes": 53213
       },
       {
         "path": "chapter9_alignment_interpretability/exercises/part4_white_box_evals_monitors/9.4_White-box_Evals_and_Monitors_solutions.ipynb",
-        "sha256": "1dbb15da430ae94676354f3b9c55610f0a2b6a2e43becaf40da235036f96812d",
-        "size_bytes": 68332
+        "sha256": "01f01b472a39b8819cc1a1bd05439fb158514e06387b8d65b7a9e7642aa24337",
+        "size_bytes": 223041
       },
       {
         "path": "chapter9_alignment_interpretability/exercises/part4_white_box_evals_monitors/README.md",
@@ -429,8 +429,8 @@
       },
       {
         "path": "chapter9_alignment_interpretability/exercises/part4_white_box_evals_monitors/tests.py",
-        "sha256": "5ec2f1600badb4d1fb4b26d9bca6a4216256676ff3def0eb8d4c90f7068ab5d5",
-        "size_bytes": 14403
+        "sha256": "81dbc858701e19a16c318c4ae5fe677467e28828e070f6655365dba5b63c82d3",
+        "size_bytes": 21458
       },
       {
         "path": "chapter9_alignment_interpretability/exercises/part4_white_box_evals_monitors/utils.py",
@@ -444,8 +444,8 @@
       },
       {
         "path": "chapter9_alignment_interpretability/instructions/pages/04_[9.4]_White_box_Evals_and_Monitors.md",
-        "sha256": "b9c3cdfbf5e07b394960aab8823660bb39a26457d61efda8f5e63fb33b50b422",
-        "size_bytes": 37971
+        "sha256": "966787e5356a2a4767ccaaa49a8a25e45f64bbb892b9d1064fc11962334d8f3c",
+        "size_bytes": 40087
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
@@ -460,5 +460,5 @@
     "The real-model monitor path uses safe generated eval-record descriptions, hidden states, and next-token logits only. It performs no generated completions, includes no harmful procedural content, and does not claim a broad harmful-content or deployment monitor benchmark."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 3.700214
+  "wall_clock_seconds": 3.689526
 }

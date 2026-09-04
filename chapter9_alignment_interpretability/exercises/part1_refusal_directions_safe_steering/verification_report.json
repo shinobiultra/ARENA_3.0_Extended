@@ -104,9 +104,9 @@
       "train_prompt_count": 32
     }
   ],
-  "date_run": "2026-07-02T14:32:17+00:00",
+  "date_run": "2026-09-04T08:40:06+00:00",
   "evidence_level": "safe_toy_contract_plus_gt2_public_refusal_direction_replication",
-  "git_commit": "f8930652",
+  "git_commit": "b115d47a",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-2",
   "known_failures": [],
@@ -866,7 +866,7 @@
   "peak_vram_gb": 1.9031662940979004,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "73ac7cfbd64791c1f453aa1816bf3413d496a556dd9bf80aa62795a84b29ea26",
+    "combined_sha256": "505b3ee4b48b70cf64cda8929ca59417406c4a4d80b8f5790217c2efac5b11d5",
     "files": [
       {
         "path": "arena_ext/refusal_steering.py",
@@ -885,8 +885,8 @@
       },
       {
         "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/9.1_Refusal_Directions_and_Safe_Steering_solutions.ipynb",
-        "sha256": "c480bc8750713101cf8785aec5af486f6df1f632cf7d5912e03e86b6383fd068",
-        "size_bytes": 46699
+        "sha256": "ec3db0a17d2508df75e5829505041a7defbe9df9ef1d7cc1fff5fa619dc1ff69",
+        "size_bytes": 305960
       },
       {
         "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/README.md",
@@ -940,8 +940,8 @@
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
-        "sha256": "660040f459d07535deb9e0c34ffddb496c13b8770044ae380d3a8e45b0c8fb2b",
-        "size_bytes": 16080
+        "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
+        "size_bytes": 16272
       }
     ],
     "schema_version": 1
@@ -951,5 +951,5 @@
     "The real-model refusal paths use sanitized category descriptions, hidden states or next-token logit scores, fixed random-direction controls, and aggregate metrics without harmful procedural completions. SAE-feature comparisons are not claimed by this local preflight."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 12.022929
+  "wall_clock_seconds": 8.646441
 }

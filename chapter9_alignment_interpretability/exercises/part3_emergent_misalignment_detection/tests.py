@@ -599,6 +599,7 @@ def test_exercise_notebook_exposes_arena_learner_surface():
         "def control_report(",
         "def run_gpu_test(max_vram_gb: float = 24.0)",
         "test_committed_gpu_report_matches_proxy_drift_contract",
+        "<summary>Help - reveal a hint</summary>",
     ]
     for text in required_strings:
         assert text in source, f"The learner notebook should expose `{text}`."
@@ -626,7 +627,7 @@ def test_solution_notebook_mirrors_progression_and_inlines_taught_methods():
         "## Try It Yourself",
         "## Bonus: Hunt an Anomaly",
         "<summary>Expected output</summary>",
-        "<summary>Help</summary>",
+        "<summary>Help - reveal a hint</summary>",
         "<summary>Interpreting the result</summary>",
         "<summary>Solution</summary>",
     ]:
