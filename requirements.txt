@@ -1,8 +1,17 @@
-# PyTorch with CUDA support
---extra-index-url https://download.pytorch.org/whl/cu118
-torch
-torchvision
-torchaudio
+# PyTorch stable CUDA 13.2 stack, verified with uv on Python 3.14.6.
+# The authoritative extension environment is now pyproject.toml + uv.lock:
+#   BNB_CUDA_VERSION=130 uv sync --locked
+# Direct torch-only repair path, if needed:
+#   uv pip install --python .venv/bin/python torch torchvision --index-url https://download.pytorch.org/whl/cu132
+#
+# torchaudio is intentionally omitted here: the stable cu132 index currently has no
+# Python 3.14 ABI wheel, while torch and torchvision do.
+--index-url https://download.pytorch.org/whl/cu132
+--extra-index-url https://pypi.org/simple
+torch==2.12.1+cu132
+torchvision==0.27.1+cu132
+torchao==0.17.0
+wheel==0.47.0
 
 # ML & DL
 huggingface_hub
@@ -16,9 +25,18 @@ safetensors
 openai>=1.56.2
 sentence-transformers
 peft
+# Current wheel ships CUDA 13.0, not 13.2; use BNB_CUDA_VERSION=130 locally.
 bitsandbytes
+# Mamba fast path: Transformers uses these CUDA extensions when available.
+# For this Python 3.14 + torch cu132 stack these may build from source; if uv
+# build isolation cannot see torch, install them with `uv pip install
+# --no-build-isolation mamba-ssm causal-conv1d` after torch is installed.
+kernels==0.12.3
+mamba-ssm==2.3.2.post1
+causal-conv1d==1.6.2.post1
 
 # Data manipulation and analysis
+numpy==1.26.4  # circuitsvis currently declares numpy<2 on Python >=3.10
 einops
 eindex-callum
 pandas
@@ -29,6 +47,8 @@ umap-learn
 
 # Utilities
 requests
+fsspec==2025.3.0  # pinned by s3fs/datasets/inspect-ai compatibility
+pillow==11.3.0  # moviepy currently declares pillow<12
 pytest
 tqdm
 ipykernel
@@ -59,6 +79,11 @@ streamlit-on-Hover-tabs
 nnsight>=0.3.5
 imageio-ffmpeg
 mediapy
+captum==0.9.0
+shap==0.49.1
+shapiq==1.5.2
+# inseq is isolated for now: current releases pin typeguard<=2.13.3, which
+# conflicts with TransformerLens 2.18.0 on the default Python 3.14/CUDA13 env.
 
 # Chapter 1 (interp)
 transformer_lens>=2.16.1,<3.0.0
@@ -70,20 +95,9 @@ git+https://github.com/neelnanda-io/neel-plotly
 
 # Chapter 2 (RL)
 pygame
-gymnasium[atari, accept-rom-license, other, mujoco-py]==0.29.0
-mujoco
-# Rendering MuJoCo videos additionally needs a system OpenGL backend, which pip cannot provide:
-# `sudo apt-get install libosmesa6`, or without sudo `conda create -n oslibs -c conda-forge
-# "mesalib=24.3.4"` (mesalib >= 25 dropped OSMesa). Backend selection + the conda-lib preload live
-# in part3_ppo/mujoco_rendering.py; see the [2.3] "Installation & Rendering" section. The Python
-# side (PyOpenGL, glfw) comes in as mujoco dependencies, and mp4 encoding uses imageio-ffmpeg.
-# GPU physics for the MuJoCo section (Brax `positional` backend + our torch PPO). Pinned because
-# brax only declares `jax>=0.4.6` (no upper bound), so an unpinned install grabs a newer jax whose
-# removed `device_put_replicated` breaks brax. jax 0.10.1 is the verified-working combo.
-jax[cuda12]==0.10.1
-brax==0.14.2
-# Vectorised Atari emulators (C++) for the Atari bonus section's AtariEnvs.
-envpool==1.2.5
+gymnasium[other]==0.29.0
+# The older Brax/EnvPool/MuJoCo rendering stack is isolated from this Python
+# 3.14 + CUDA 13.2 default environment; see requirements-legacy-rl.txt.
 
 # Chapter 3 (evals)
 inspect_ai

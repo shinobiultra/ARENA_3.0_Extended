@@ -1,0 +1,11 @@
+{
+  "delta": [[6.0, 12.0], [8.0, 16.0]],
+  "delta_rank": 1,
+  "disjoint_templates": true,
+  "heldout_examples": 20,
+  "merge_max_abs_diff_max": 1e-5,
+  "model_id": "roneneldan/TinyStories-1M",
+  "model_revision": "77f1b168e219585646439073245fe87e56b3023e",
+  "train_examples": 30,
+  "unmerge_restoration_max_abs_diff_max": 1e-6
+}

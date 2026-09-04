@@ -1,0 +1,372 @@
+{
+  "accepted": true,
+  "baselines": {
+    "declared_controls": [
+      "raw_bit_linear_baseline",
+      "template_only_linear_baseline",
+      "128_random_label_shuffle_negative_control_probes",
+      "256_isotropic_random_same_dimensional_patch_directions",
+      "learned_direction_ablation",
+      "heldout_nuisance_template_split",
+      "activation_noise_stress_curve"
+    ],
+    "expected_metrics": {
+      "ablation_accuracy_max": 0.6,
+      "accepted": true,
+      "contract_passed": true,
+      "dataset": "balanced_xor_with_heldout_template_nuisance_v1",
+      "direction_cosine_min": 0.98,
+      "exact_ground_truth_checked": true,
+      "heldout_accuracy_min": 0.95,
+      "heldout_example_count": 32,
+      "label_shuffle_accuracy_mean_max": 0.6,
+      "learned_patch_target_accuracy_min": 0.9,
+      "live_intervention_executed": true,
+      "max_allowed_gpu_gb": 24,
+      "model_family": "exact_rotated_parity_model",
+      "noise_accuracy_at_sigma_1_max": 0.9,
+      "paired_accuracy_delta_min": 0.3,
+      "peak_vram_gb_max": 1.0,
+      "preflight_passed": true,
+      "random_patch_target_accuracy_mean_max": 0.2,
+      "raw_bits_accuracy_max": 0.6,
+      "scientific_result_executed": true,
+      "template_only_accuracy_max": 0.6,
+      "tests_passed": true,
+      "train_example_count": 48
+    }
+  },
+  "claim_scope": "A ridge probe fitted to an exact rotated parity model recovers the analytically known distributed XOR direction, generalizes to 32 examples from eight held-out nuisance templates, and transfers counterfactual donor answers by changing only that direction. The claim is limited to method validation on this model organism.",
+  "datasets": [
+    {
+      "examples_per_template": 4,
+      "heldout_example_count": 32,
+      "heldout_templates": [
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "id": "balanced_xor_with_heldout_template_nuisance_v1",
+      "label_rule": "signed_bit_product",
+      "source": "generated_exact_enumeration",
+      "train_example_count": 48,
+      "train_templates": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    }
+  ],
+  "date_run": "2026-09-04T08:48:50+00:00",
+  "evidence_level": "exact_ground_truth_parity_direction_with_heldout_causal_controls",
+  "git_commit": "6502bcac",
+  "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+  "gt_tier": "GT-4",
+  "known_failures": [],
+  "metrics": {
+    "gpu_evidence": {
+      "category": "cuda_section_metric",
+      "placeholder_only": false,
+      "section_specific_metric_keys": [
+        "ablation_accuracy",
+        "ablation_drop",
+        "accepted",
+        "best_random_direction_alignment",
+        "best_random_patch_target_accuracy",
+        "contract_passed",
+        "d_model",
+        "dataset",
+        "direction_cosine",
+        "exact_ground_truth_checked",
+        "exact_patch_target_accuracy",
+        "heldout_accuracy",
+        "heldout_example_count",
+        "heldout_template_count",
+        "label_shuffle_accuracy_mean",
+        "label_shuffle_accuracy_p95",
+        "learned_patch_target_accuracy",
+        "live_intervention_executed",
+        "max_allowed_gpu_gb",
+        "model_family",
+        "noise_accuracies",
+        "noise_accuracy_at_sigma_1",
+        "noise_sigmas",
+        "paired_accuracy_delta",
+        "paired_accuracy_delta_ci_high",
+        "paired_accuracy_delta_ci_low",
+        "preflight_passed",
+        "preregistered_criteria",
+        "random_patch_target_accuracy_mean",
+        "random_patch_target_accuracy_median",
+        "random_patch_target_accuracy_p95",
+        "raw_bits_accuracy",
+        "scientific_result_executed",
+        "template_only_accuracy",
+        "tests_passed",
+        "train_example_count",
+        "train_template_count"
+      ],
+      "uses_cuda": true
+    },
+    "gpu_test": {
+      "ablation_accuracy": 0.5,
+      "ablation_drop": 0.5,
+      "accepted": true,
+      "best_random_direction_alignment": 0.8104840008252583,
+      "best_random_patch_target_accuracy": 1.0,
+      "contract_passed": true,
+      "cuda_available": true,
+      "cuda_version": "13.2",
+      "d_model": 8,
+      "dataset": "balanced_xor_with_heldout_template_nuisance_v1",
+      "device": "NVIDIA GeForce RTX 5090 Laptop GPU",
+      "direction_cosine": 1.0,
+      "exact_ground_truth_checked": true,
+      "exact_patch_target_accuracy": 1.0,
+      "full_path": "Recover the exact distributed XOR direction, evaluate held-out templates, run causal patches, compare isotropic random directions, and stress-test noise.",
+      "gpu_total_memory_gb": 23.45965576171875,
+      "heldout_accuracy": 1.0,
+      "heldout_example_count": 32,
+      "heldout_template_count": 8,
+      "label_shuffle_accuracy_mean": 0.525390625,
+      "label_shuffle_accuracy_p95": 0.8125,
+      "learned_patch_target_accuracy": 1.0,
+      "live_intervention_executed": true,
+      "max_allowed_gpu_gb": 24.0,
+      "model_family": "exact_rotated_parity_model",
+      "noise_accuracies": [
+        1.0,
+        1.0,
+        0.978759765625,
+        0.840576171875,
+        0.685791015625,
+        0.622314453125
+      ],
+      "noise_accuracy_at_sigma_1": 0.840576171875,
+      "noise_sigmas": [
+        0.0,
+        0.25,
+        0.5,
+        1.0,
+        2.0,
+        3.0
+      ],
+      "paired_accuracy_delta": 0.5,
+      "paired_accuracy_delta_ci_high": 0.6875,
+      "paired_accuracy_delta_ci_low": 0.3125,
+      "peak_vram_gb": 0.032520294189453125,
+      "preflight_passed": true,
+      "preregistered_criteria": {
+        "direction_cosine_at_least_0_98": true,
+        "heldout_accuracy_at_least_0_95": true,
+        "patch_beats_random_mean_by_0_70": true,
+        "patch_target_accuracy_at_least_0_90": true,
+        "raw_and_template_baselines_at_most_0_60": true
+      },
+      "random_patch_target_accuracy_mean": 0.056640625,
+      "random_patch_target_accuracy_median": 0.0,
+      "random_patch_target_accuracy_p95": 0.5,
+      "raw_bits_accuracy": 0.5,
+      "scientific_result_executed": true,
+      "template_only_accuracy": 0.5,
+      "tests_passed": true,
+      "torch_version": "2.12.1+cu132",
+      "train_example_count": 48,
+      "train_template_count": 12,
+      "within_vram_budget": true
+    },
+    "notebook_contract": {
+      "ablation_accuracy": 0.5,
+      "ablation_drop": 0.5,
+      "accepted": true,
+      "best_random_direction_alignment": 0.8104840008252584,
+      "best_random_patch_target_accuracy": 1.0,
+      "contract_passed": true,
+      "d_model": 8,
+      "dataset": "balanced_xor_with_heldout_template_nuisance_v1",
+      "direction_cosine": 1.0,
+      "exact_patch_target_accuracy": 1.0,
+      "heldout_accuracy": 1.0,
+      "heldout_example_count": 32,
+      "heldout_template_count": 8,
+      "label_shuffle_accuracy_mean": 0.525390625,
+      "label_shuffle_accuracy_p95": 0.8125,
+      "learned_patch_target_accuracy": 1.0,
+      "model_family": "exact_rotated_parity_model",
+      "noise_accuracies": [
+        1.0,
+        1.0,
+        0.978759765625,
+        0.840576171875,
+        0.685791015625,
+        0.622314453125
+      ],
+      "noise_accuracy_at_sigma_1": 0.840576171875,
+      "noise_sigmas": [
+        0.0,
+        0.25,
+        0.5,
+        1.0,
+        2.0,
+        3.0
+      ],
+      "paired_accuracy_delta": 0.5,
+      "paired_accuracy_delta_ci_high": 0.6875,
+      "paired_accuracy_delta_ci_low": 0.3125,
+      "preregistered_criteria": {
+        "direction_cosine_at_least_0_98": true,
+        "heldout_accuracy_at_least_0_95": true,
+        "patch_beats_random_mean_by_0_70": true,
+        "patch_target_accuracy_at_least_0_90": true,
+        "raw_and_template_baselines_at_most_0_60": true
+      },
+      "random_patch_target_accuracy_mean": 0.056640625,
+      "random_patch_target_accuracy_median": 0.0,
+      "random_patch_target_accuracy_p95": 0.5,
+      "raw_bits_accuracy": 0.5,
+      "template_only_accuracy": 0.5,
+      "tests_passed": true,
+      "train_example_count": 48,
+      "train_template_count": 12
+    }
+  },
+  "models": [
+    {
+      "d_model": 8,
+      "gated": false,
+      "id": "exact_rotated_parity_model",
+      "mechanism": "orthogonally_mixed_exact_xor_feature",
+      "precision": "float64",
+      "revision": "rotation_seed_7",
+      "source": "section_reference_implementation"
+    }
+  ],
+  "negative_controls": {
+    "declared_controls": [
+      "128_random_label_shuffle_negative_control_probes",
+      "256_isotropic_random_same_dimensional_patch_directions"
+    ]
+  },
+  "notebook_id": "10_1_capstone_research_sprint",
+  "ood_tests": {
+    "declared": "required_where_applicable"
+  },
+  "peak_vram_gb": 0.032520294189453125,
+  "report_inputs": {
+    "algorithm": "sha256",
+    "combined_sha256": "3dcbf81bccf37282dd55b351bc5ff484ae05b7b9a2fcea11f987e4dbd02188b8",
+    "files": [
+      {
+        "path": "arena_ext/verification.py",
+        "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
+        "size_bytes": 9276
+      },
+      {
+        "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/10.1_Capstone_Research_Sprint_exercises.ipynb",
+        "sha256": "a8041732d548e982703cfaa1a24112a78daa4184818c4982b6f21628cbbbfcf7",
+        "size_bytes": 51899
+      },
+      {
+        "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/10.1_Capstone_Research_Sprint_solutions.ipynb",
+        "sha256": "2bace620d844dbc372f43c4cbe122e38741feebc9d7ef21740b8f3ec126cdc9a",
+        "size_bytes": 198405
+      },
+      {
+        "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/README.md",
+        "sha256": "516fbe490c5192a45daba6e8799d7beae187cbbb86800336604bfed3475eb794",
+        "size_bytes": 1357
+      },
+      {
+        "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/artifacts.lock.yml",
+        "sha256": "8e09b92c7c95b90b8a2a362f18f088d684d17862e9aa9e0ae5bf20907702c6a3",
+        "size_bytes": 3114
+      },
+      {
+        "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/expected_outputs/README.md",
+        "sha256": "30e5f596751093fcea8df6e61fb57827156fb928a4e61c0768173266e55a63b6",
+        "size_bytes": 853
+      },
+      {
+        "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/expected_outputs/reference_metrics.json",
+        "sha256": "6cc60f9e71f236efd6665991ade5ef04375d382ebc54637a0b06f526bbe34788",
+        "size_bytes": 801
+      },
+      {
+        "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/expected_outputs/smoke_test.json",
+        "sha256": "5b0fa58d77779474d0ee4b74accb8227225cac294f0cb8595380eb0e51aa02d3",
+        "size_bytes": 671
+      },
+      {
+        "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/reports/capstone.md",
+        "sha256": "fd51099c44c2d488053f0334a73b0da338b859c088a18e9a0ea19d5d85caa017",
+        "size_bytes": 1632
+      },
+      {
+        "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/results/failure_cases.jsonl",
+        "sha256": "22133150edf7eeff4ee83cfe7a6f2986e1bdf7e96d24a68506b2f66ea29806b0",
+        "size_bytes": 370
+      },
+      {
+        "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/results/metrics.json",
+        "sha256": "58ae73474c57291cb8847b687280f88fb8868259bd6e51054b7ce2185e5f6e75",
+        "size_bytes": 1533
+      },
+      {
+        "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/scripts/run_capstone.py",
+        "sha256": "e8b4cf60cc8b41edd3c01fe718074e0426663b42de79146823850c759376fff1",
+        "size_bytes": 5780
+      },
+      {
+        "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/solutions.py",
+        "sha256": "d973f53ac9fdddc3f8678c1142948e49e4bfd3b280a1331c23b7922792720c2d",
+        "size_bytes": 15545
+      },
+      {
+        "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/tests.py",
+        "sha256": "205c34757cfcda9d65fdf867507163998c5c11623cad3789e93b7c81bec0af00",
+        "size_bytes": 14480
+      },
+      {
+        "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/utils.py",
+        "sha256": "a5bec2672e23928e8bcaa644f51204eff3e4f7cc0055032c709f01e2fac54283",
+        "size_bytes": 356
+      },
+      {
+        "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/verification_report.schema.json",
+        "sha256": "ecd833883885077ad5d7a0e239d984d01462255e94266212cf195ab4d4e27b3d",
+        "size_bytes": 2669
+      },
+      {
+        "path": "chapter10_capstone_research_sprint/instructions/pages/01_[10.1]_Capstone_Research_Sprint.md",
+        "sha256": "77edc413ba23c164c916ea51b3f4656f7d0fc10573dca6c0c9974ae9283fc33b",
+        "size_bytes": 38177
+      },
+      {
+        "path": "scripts/run_extension_verification_reports.py",
+        "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
+        "size_bytes": 16272
+      }
+    ],
+    "schema_version": 1
+  },
+  "safety_notes": [
+    "No prompts, model downloads, gated weights, external APIs, or user data.",
+    "The exact model organism is generated deterministically and the claim is explicitly scoped to method validation."
+  ],
+  "tests_passed": true,
+  "wall_clock_seconds": 1.164284
+}

@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="360" viewBox="0 0 960 360" role="img" aria-labelledby="title desc">
+  <title id="title">Signature result for [7.1] Logit Lens, Tuned Lens, and Patchscopes</title>
+  <desc id="desc">Aggregate bars and control thresholds for the pinned GELU-1L activation-to-language preflight.</desc>
+  <rect width="960" height="360" fill="#f8fafc"/>
+  <style>
+    .title { font: 700 20px sans-serif; fill: #0f172a; }
+    .label { font: 14px sans-serif; fill: #334155; }
+    .small { font: 12px sans-serif; fill: #475569; }
+    .axis { stroke: #475569; stroke-width: 1.5; }
+    .grid { stroke: #cbd5e1; stroke-width: 1; }
+    .bar1 { fill: #2563eb; }
+    .bar2 { fill: #16a34a; }
+    .bar3 { fill: #94a3b8; }
+    .bar4 { fill: #7c3aed; }
+    .ok { fill: #dcfce7; stroke: #16a34a; stroke-width: 1.5; rx: 8; }
+  </style>
+
+  <text x="36" y="40" class="title">GELU-1L activation-to-language preflight</text>
+  <text x="36" y="66" class="label">A ridge tuned lens improves held-out decoding, and Patchscope activation insertion beats text-only prompts.</text>
+
+  <line x1="78" y1="274" x2="455" y2="274" class="axis"/>
+  <line x1="78" y1="104" x2="78" y2="274" class="axis"/>
+  <line x1="78" y1="189" x2="455" y2="189" class="grid"/>
+  <line x1="78" y1="104" x2="455" y2="104" class="grid"/>
+  <text x="44" y="278" class="small">0.0</text>
+  <text x="44" y="193" class="small">0.5</text>
+  <text x="44" y="108" class="small">1.0</text>
+
+  <rect x="112" y="261" width="54" height="13" class="bar1"/>
+  <rect x="190" y="198" width="54" height="76" class="bar2"/>
+  <rect x="286" y="274" width="54" height="0" class="bar3"/>
+  <rect x="364" y="104" width="54" height="170" class="bar4"/>
+
+  <text x="111" y="252" class="small">0.075</text>
+  <text x="189" y="190" class="small">0.450</text>
+  <text x="285" y="264" class="small">0.000</text>
+  <text x="363" y="96" class="small">1.000</text>
+  <text x="95" y="300" class="small">logit</text>
+  <text x="179" y="300" class="small">tuned</text>
+  <text x="263" y="300" class="small">text-only</text>
+  <text x="346" y="300" class="small">patched</text>
+
+  <text x="78" y="326" class="small">Left two bars: held-out next-token agreement. Right two bars: Patchscope target recovery.</text>
+
+  <rect x="520" y="106" width="382" height="42" class="ok"/>
+  <text x="540" y="132" class="label">final decode error 1.53e-05 <= 1e-04</text>
+
+  <rect x="520" y="160" width="382" height="42" class="ok"/>
+  <text x="540" y="186" class="label">random max confidence 0.0407 <= 0.1</text>
+
+  <rect x="520" y="214" width="382" height="42" class="ok"/>
+  <text x="540" y="240" class="label">patched margin min 0.0648 > 0.01</text>
+
+  <rect x="520" y="268" width="382" height="42" class="ok"/>
+  <text x="540" y="294" class="label">text-only margin max -2.564 <= 0</text>
+</svg>

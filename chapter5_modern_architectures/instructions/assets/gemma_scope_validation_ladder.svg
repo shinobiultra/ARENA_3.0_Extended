@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="330" viewBox="0 0 920 330" role="img" aria-labelledby="title desc">
+  <title id="title">Gemma Scope feature-validation ladder</title>
+  <desc id="desc">A left-to-right diagram showing sparse activations, held-out validation, logit attribution, steering controls, and the real Gemma Scope artifact preflight.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#384152"/>
+    </marker>
+    <style>
+      .box { fill: #f8fafc; stroke: #384152; stroke-width: 2; rx: 8; }
+      .accent { fill: #e8f3ff; stroke: #1d4ed8; stroke-width: 2; rx: 8; }
+      .control { fill: #fff7e6; stroke: #b45309; stroke-width: 2; rx: 8; }
+      .real { fill: #eef8ee; stroke: #15803d; stroke-width: 2; rx: 8; }
+      .title { font: 700 17px system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #111827; }
+      .body { font: 13px system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #1f2937; }
+      .small { font: 12px system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #4b5563; }
+      .arrow { stroke: #384152; stroke-width: 2; fill: none; marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <rect x="24" y="36" width="150" height="110" class="box"/>
+  <text x="44" y="66" class="title">Sparse acts</text>
+  <text x="44" y="92" class="body">feature density</text>
+  <text x="44" y="112" class="body">L0 and dead rate</text>
+  <text x="44" y="132" class="small">not interpretation yet</text>
+  <path d="M 174 91 H 230" class="arrow"/>
+
+  <rect x="230" y="36" width="160" height="110" class="accent"/>
+  <text x="250" y="66" class="title">Held-out test</text>
+  <text x="250" y="92" class="body">positives vs</text>
+  <text x="250" y="112" class="body">matched negatives</text>
+  <text x="250" y="132" class="small">AUC beats controls</text>
+  <path d="M 390 91 H 446" class="arrow"/>
+
+  <rect x="446" y="36" width="160" height="110" class="box"/>
+  <text x="466" y="66" class="title">DLA</text>
+  <text x="466" y="92" class="body">decoder vector</text>
+  <text x="466" y="112" class="body">through W_U</text>
+  <text x="466" y="132" class="small">hypothesis generator</text>
+  <path d="M 526 146 V 188" class="arrow"/>
+
+  <rect x="352" y="188" width="190" height="104" class="control"/>
+  <text x="372" y="218" class="title">Causal controls</text>
+  <text x="372" y="244" class="body">steer vs random dir</text>
+  <text x="372" y="264" class="body">ablate vs baseline</text>
+  <text x="372" y="284" class="small">no top-example-only claims</text>
+  <path d="M 542 240 H 622" class="arrow"/>
+
+  <rect x="622" y="188" width="250" height="104" class="real"/>
+  <text x="642" y="218" class="title">Real artifact preflight</text>
+  <text x="642" y="244" class="body">Gemma Scope layer-13 SAE</text>
+  <text x="642" y="264" class="body">Gemma 3 1B activations</text>
+  <text x="642" y="284" class="small">feature AUC + label shuffle</text>
+
+  <path d="M 606 91 C 690 91 746 128 746 188" class="arrow"/>
+  <text x="640" y="86" class="small">scale only after controls pass</text>
+</svg>

@@ -1,0 +1,19 @@
+{
+  "accepted": true,
+  "claim_scope": "Learner-facing Gemma-from-scratch smoke path: the notebook defines its own RMSNorm, RoPE, grouped-query attention, decoder layer, full causal LM, and tiny Hugging Face reference-parity check. This is architecture parity with deterministic tiny weights, not a claim about gated pretrained Gemma weights.",
+  "evidence_level": "full_decoder_notebook_contract",
+  "gt_tier": "GT-0",
+  "metrics": {
+    "cache_max_abs_diff_max": 1e-05,
+    "reference_logits_max_abs_diff_max": 0.0005,
+    "reference_logits_mse_max": 1e-07,
+    "reference_logits_topk_agreement": 1.0,
+    "generation_matches_reference": true,
+    "reference_model_family": "transformers.GemmaForCausalLM",
+    "reference_weight_key_count": 21
+  },
+  "notebook_id": "5_1_gemma_from_scratch",
+  "section": "5.1",
+  "tests_passed": true,
+  "title": "Gemma from Scratch"
+}

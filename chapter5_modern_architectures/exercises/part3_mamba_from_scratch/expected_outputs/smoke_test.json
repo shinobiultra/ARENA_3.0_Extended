@@ -1,0 +1,10 @@
+{
+  "accepted": true,
+  "claim_scope": "Exact component tests plus strict CPU weight, hidden-state, logits, cache, and greedy-token parity with pinned Mamba-130M-HF; CUDA release evidence is separate.",
+  "evidence_level": "exact_components_and_pinned_real_model_cpu_parity",
+  "gt_tier": "GT-1",
+  "notebook_id": "5_3_mamba_from_scratch",
+  "section": "5.3",
+  "tests_passed": true,
+  "title": "Mamba from Scratch"
+}

@@ -1,0 +1,166 @@
+notebook_id: 7_3_mini_activation_oracles
+section: '7.3'
+title: Mini Activation Oracles
+exercise_metadata:
+  EXERCISE_ID: 7_3_mini_activation_oracles
+  GT_TIER: GT-1
+  DIFFICULTY: 4
+  IMPORTANCE: 3
+  EXPECTED_RUNTIME: seconds on toy contract; minutes on local real-model path
+  REQUIRES_GPU: true
+gt_tier: GT-1
+evidence_level: exact_factor_world_plus_pinned_transformerlens_question_conditioned_oracle_preflight
+claim_scope: 'The learner-facing claim is exact: a low-rank question-conditioned
+  oracle routes three questions over the same mixed activation, beats question-only
+  and activation-only shortcuts, matches a question-specific probe bank and exact
+  feature classifier, survives four named nuisance shifts, abstains off the known
+  factor manifold, and changes exactly the predicted answers under a structural
+  factor patch. A separate pinned TransformerLens gelu-1l CUDA run remains a real
+  residual mechanics preflight. It is not full generative Activation Oracle or
+  AObench evidence.'
+required_gpu_gb: 1
+max_allowed_gpu_gb: 24
+models:
+- id: toy_or_generated_inputs
+  source: generated
+  revision: seed_0
+  precision: float32
+  gated: false
+- id: NeelNanda/GELU_1L512W_C4_Code
+  source: huggingface_via_transformerlens
+  revision: bddc0e332f0ae84279e6a6a45d91b314899e1603
+  precision: float32
+  gated: false
+  claim_scope: residual_direction_mini_activation_oracle_preflight
+  transformerlens_model_name: gelu-1l
+  tokenizer_id: NeelNanda/gpt-neox-tokenizer-digits
+  tokenizer_revision: 0f6671571a20be9756b9991d978047c03b75e749
+datasets:
+- id: 7_3_mini_activation_oracles_toy_inputs
+  source: generated
+  seed: 7303
+  activation_dim: 8
+  causal_factors:
+  - color
+  - shape
+  - color_x_shape
+  questions:
+  - Is the represented object red?
+  - Is the represented object square?
+  - Do its color and shape agree?
+- id: course_safe_residual_direction_activation_oracle_prompts_v1
+  source: generated_prompt_sets
+  seed: 0
+  positive_anchor_prompt: The cat sat on the
+  negative_anchor_prompt: The bird flew over the
+  train_example_count: 8
+  eval_example_count: 8
+  heldout_template_example_count: 8
+  new_name_example_count: 8
+  long_context_example_count: 8
+  adversarial_example_count: 8
+  answer_classes:
+  - negative
+  - positive
+  - abstain
+  question_rows_per_activation: 2
+  target_source: manual_safe_prompt_labels_plus_real_residual_projection_and_question_conditioning
+  hook: blocks.0.hook_resid_post
+  tokenizer: NeelNanda/gpt-neox-tokenizer-digits
+expected_metrics:
+  tests_passed: true
+  accepted: true
+  max_allowed_gpu_gb: 24
+  preflight_passed: true
+  model_name: gelu-1l
+  hf_revision: bddc0e332f0ae84279e6a6a45d91b314899e1603
+  tokenizer_revision: 0f6671571a20be9756b9991d978047c03b75e749
+  bnb_cuda_override: '130'
+  positive_token: ' floor'
+  negative_token: ' top'
+  train_example_count: 8
+  eval_example_count: 8
+  activation_shape:
+  - 16
+  - 512
+  question_count: 2
+  question_conditioned_row_count: 16
+  question_conditioned_train_loss_max: 0.01
+  toy_signature_passed: true
+  toy_train_loss_max: 0.001
+  toy_oracle_accuracy: 1.0
+  toy_text_only_accuracy: 0.5
+  toy_activation_only_linear_accuracy_max: 0.75
+  toy_activation_only_mlp_accuracy_max: 0.75
+  toy_probe_bank_accuracy: 1.0
+  toy_exact_feature_accuracy: 1.0
+  toy_heldout_template_accuracy: 1.0
+  toy_new_names_accuracy: 1.0
+  toy_long_context_accuracy: 1.0
+  toy_adversarial_distractor_accuracy: 1.0
+  toy_random_abstention_rate_min: 0.95
+  toy_patch_before:
+  - 0
+  - 0
+  - 1
+  toy_patch_after:
+  - 1
+  - 0
+  - 0
+  toy_patch_changed_questions:
+  - 0
+  - 2
+  question_id_changes_predictions: 1.0
+  train_accuracy: 1.0
+  oracle_accuracy: 1.0
+  text_only_accuracy: 0.5
+  linear_probe_accuracy: 0.5
+  mlp_probe_accuracy: 0.5
+  sae_classifier_accuracy: 0.5
+  activation_only_probe_accuracy_max_max: 0.75
+  beats_text_only: true
+  beats_or_matches_probe: true
+  heldout_template_accuracy: 1.0
+  new_name_accuracy: 1.0
+  long_context_accuracy: 1.0
+  adversarial_accuracy: 1.0
+  passes_ood: true
+  random_abstention_rate: 1.0
+  random_mean_confidence_max: 0.4
+  random_graceful_failure: true
+  patching_changed_answer: true
+  original_answer: 1
+  patched_answer: 0
+  peak_vram_gb_max: 1.0
+controls:
+- baseline_or_reference_check
+- negative_control_where_applicable
+- shape_dtype_or_exact_value_check
+- toy_activation_question_batch_contract
+- toy_oracle_vs_text_probe_baseline_contract
+- toy_template_split_contract
+- toy_ood_split_contract
+- toy_random_activation_abstention_contract
+- toy_activation_patching_answer_change_contract
+- exact_three_factor_truth_table
+- frozen_base_low_rank_adapter_training
+- question_only_balanced_control
+- activation_only_linear_and_mlp_shortcuts
+- independent_question_specific_linear_probe_bank
+- exact_sparse_feature_classifier_upper_bound
+- structural_color_patch_with_shape_invariance_control
+- off_manifold_random_activation_abstention
+- pinned_transformerlens_gelu1l_question_conditioned_oracle_training
+- balanced_text_only_baseline_accuracy_check
+- independently_trained_activation_only_probe_negative_control
+- independently_trained_activation_only_mlp_negative_control
+- question_id_answer_flip_control
+- heldout_template_new_name_long_context_adversarial_ood_splits
+- low_margin_random_activation_abstention_control
+- clean_corrupt_residual_patch_answer_change
+- generative_lm_oracle_and_aobench_parity_not_claimed
+safety_notes:
+- No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.
+- The real-model path uses safe generic prompts and cached activations/logits from
+  a small public TransformerLens checkpoint. It does not use unsafe prompts, gated
+  weights, generated completions, adapter training, or external API calls.

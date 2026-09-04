@@ -1,0 +1,739 @@
+{
+  "accepted": true,
+  "baselines": {
+    "declared_controls": [
+      "exact_addition_fourier_oracle",
+      "real_checkpoint_save_and_reload",
+      "complete_mod13_finite_domain_evaluation",
+      "stable_accuracy_threshold",
+      "stable_mechanism_threshold",
+      "early_mid_late_legal_mode_intervention",
+      "legal_mode_ablation_control",
+      "random_label_checkpoint_control",
+      "same_size_random_fourier_mask_control",
+      "no_ood_extrapolation_claimed",
+      "large_model_checkpoint_archaeology_not_claimed"
+    ],
+    "expected_metrics": {
+      "accepted": true,
+      "accuracy_stable_from_step": 24,
+      "checkpoint_count": 28,
+      "final_accuracy": 1.0,
+      "final_addition_fourier_score_min": 0.7,
+      "late_legal_mode_ablation_drop_min": 0.9,
+      "late_legal_only_accuracy_min": 0.99,
+      "max_allowed_gpu_gb": 24,
+      "mechanism_stable_from_step": 24,
+      "model_family": "tiny_modular_addition_mlp",
+      "modulus": 13,
+      "peak_vram_gb_max": 0.2,
+      "preflight_passed": true,
+      "random_label_peak_accuracy_max": 0.2,
+      "random_label_peak_fourier_score_max": 0.05,
+      "random_mechanism_peak_score_max": 0.05,
+      "real_checkpoints_reloaded": true,
+      "table_example_count": 169,
+      "tests_passed": true
+    }
+  },
+  "claim_scope": "GT-0 developmental-interpretability model organism: a tiny MLP is trained on the complete mod-13 addition table, real checkpoint files are saved and reloaded, and every metric is recomputed from the reloaded checkpoints. The mechanism metric is the fraction of centered logit-table Fourier power in modes satisfying k_a = k_b = -k_c mod 13. The notebook validates this metric on exact toy ground truth, shows that task accuracy and legal Fourier power rise during training, tests early/mid/late legal-mode keep and ablation interventions, and rejects random-label plus same-size random-Fourier controls. The finite-domain evaluation exhausts all 169 input pairs; no OOD arithmetic generalization or large-model developmental mechanism is claimed.",
+  "datasets": [
+    {
+      "checkpoint_steps": [
+        0,
+        1,
+        2,
+        4,
+        8,
+        12,
+        16,
+        24,
+        32,
+        48,
+        64,
+        96,
+        128,
+        180
+      ],
+      "example_count": 169,
+      "id": "complete_mod13_addition_table_v2",
+      "label_rule": "(left + right) % 13",
+      "modulus": 13,
+      "random_label_control": true,
+      "seed": 0,
+      "source": "generated_finite_table"
+    }
+  ],
+  "date_run": "2026-09-04T08:46:19+00:00",
+  "evidence_level": "exact_fourier_oracle_plus_real_checkpoint_train_save_reload",
+  "git_commit": "b726d692",
+  "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+  "gt_tier": "GT-0",
+  "known_failures": [],
+  "metrics": {
+    "gpu_evidence": {
+      "category": "cuda_section_metric",
+      "placeholder_only": false,
+      "section_specific_metric_keys": [
+        "accuracy_first_crossing_step",
+        "accuracy_stable_from_step",
+        "checkpoint_count",
+        "checkpoint_files_written",
+        "checkpoint_steps",
+        "checkpoint_total_bytes",
+        "complete_finite_domain_evaluated",
+        "final_accuracy",
+        "final_addition_fourier_score",
+        "generalization_scope",
+        "intervention_rows",
+        "late_legal_mode_ablation_drop",
+        "late_legal_only_accuracy",
+        "mechanism_first_crossing_step",
+        "mechanism_stable_from_step",
+        "metrics_table",
+        "model_family",
+        "modulus",
+        "ood_generalization_claimed",
+        "phase_transition_detected",
+        "phase_transition_jump",
+        "phase_transition_step",
+        "preflight_passed",
+        "random_label_accuracy_control_passed",
+        "random_label_accuracy_trajectory",
+        "random_label_addition_fourier_score_trajectory",
+        "random_label_mechanism_control_passed",
+        "random_label_peak_accuracy",
+        "random_label_peak_fourier_score",
+        "random_mechanism_control_passed",
+        "random_mechanism_peak_score",
+        "real_checkpoints_reloaded",
+        "table_example_count",
+        "target_accuracy_trajectory",
+        "target_addition_fourier_score_trajectory",
+        "target_loss_trajectory",
+        "target_random_fourier_score_trajectory"
+      ],
+      "uses_cuda": true
+    },
+    "gpu_test": {
+      "accuracy_first_crossing_step": 24,
+      "accuracy_stable_from_step": 24,
+      "checkpoint_count": 28,
+      "checkpoint_files_written": 28,
+      "checkpoint_steps": [
+        0,
+        1,
+        2,
+        4,
+        8,
+        12,
+        16,
+        24,
+        32,
+        48,
+        64,
+        96,
+        128,
+        180
+      ],
+      "checkpoint_total_bytes": 967204,
+      "complete_finite_domain_evaluated": true,
+      "cuda_available": true,
+      "cuda_version": "13.2",
+      "device": "NVIDIA GeForce RTX 5090 Laptop GPU",
+      "final_accuracy": 1.0,
+      "final_addition_fourier_score": 0.7499501705169678,
+      "full_path": "Train a tiny modular-addition model organism, save and reload real checkpoints, measure legal Fourier power in the finite logit table, causally keep or ablate those modes at early/mid/late checkpoints, and reject random-label plus random-mechanism controls.",
+      "generalization_scope": "Complete finite mod-13 addition table (169/169 input pairs); no held-out OOD extrapolation is claimed.",
+      "gpu_total_memory_gb": 23.45965576171875,
+      "intervention_rows": [
+        {
+          "addition_fourier_score": 0.0001544081897009164,
+          "legal_ablated_accuracy": 0.08284023404121399,
+          "legal_ablation_drop": 0.0,
+          "legal_only_accuracy": 0.0,
+          "original_accuracy": 0.08284023404121399,
+          "phase": "early",
+          "random_ablated_accuracy": 0.08284023404121399,
+          "random_ablation_drop": 0.0,
+          "random_fourier_score": 0.00030711753061041236,
+          "random_only_accuracy": 0.09467455744743347,
+          "step": 0
+        },
+        {
+          "addition_fourier_score": 0.30435144901275635,
+          "legal_ablated_accuracy": 0.0710059180855751,
+          "legal_ablation_drop": 0.5917159542441368,
+          "legal_only_accuracy": 1.0,
+          "original_accuracy": 0.6627218723297119,
+          "phase": "mid",
+          "random_ablated_accuracy": 0.6568047404289246,
+          "random_ablation_drop": 0.0059171319007873535,
+          "random_fourier_score": 0.0008140773279592395,
+          "random_only_accuracy": 0.06508875638246536,
+          "step": 12
+        },
+        {
+          "addition_fourier_score": 0.7499501705169678,
+          "legal_ablated_accuracy": 0.0,
+          "legal_ablation_drop": 1.0,
+          "legal_only_accuracy": 1.0,
+          "original_accuracy": 1.0,
+          "phase": "late",
+          "random_ablated_accuracy": 1.0,
+          "random_ablation_drop": 0.0,
+          "random_fourier_score": 0.0004919799976050854,
+          "random_only_accuracy": 0.08284023404121399,
+          "step": 180
+        }
+      ],
+      "late_legal_mode_ablation_drop": 1.0,
+      "late_legal_only_accuracy": 1.0,
+      "mechanism_first_crossing_step": 24,
+      "mechanism_stable_from_step": 24,
+      "metrics_table": [
+        {
+          "control_or_threshold": ">= 0.99",
+          "passed": true,
+          "quantity": "final target accuracy",
+          "value": 1.0
+        },
+        {
+          "control_or_threshold": ">= 0.65",
+          "passed": true,
+          "quantity": "final addition Fourier score",
+          "value": 0.7499501705169678
+        },
+        {
+          "control_or_threshold": ">= 0.99",
+          "passed": true,
+          "quantity": "late legal-only accuracy",
+          "value": 1.0
+        },
+        {
+          "control_or_threshold": ">= 0.90",
+          "passed": true,
+          "quantity": "late legal-mode ablation drop",
+          "value": 1.0
+        },
+        {
+          "control_or_threshold": "<= 0.20",
+          "passed": true,
+          "quantity": "random-label peak true accuracy",
+          "value": 0.09467455744743347
+        },
+        {
+          "control_or_threshold": "<= 0.05",
+          "passed": true,
+          "quantity": "random-label peak Fourier score",
+          "value": 0.0011615719413384795
+        },
+        {
+          "control_or_threshold": "<= 0.05",
+          "passed": true,
+          "quantity": "same-size random Fourier peak",
+          "value": 0.0008140773279592395
+        }
+      ],
+      "model_family": "tiny_modular_addition_mlp",
+      "modulus": 13,
+      "ood_generalization_claimed": false,
+      "peak_vram_gb": 0.06286430358886719,
+      "phase_transition_detected": true,
+      "phase_transition_jump": 0.14498722553253174,
+      "phase_transition_step": 24,
+      "preflight_passed": true,
+      "random_label_accuracy_control_passed": true,
+      "random_label_accuracy_trajectory": [
+        0.08284023404121399,
+        0.07692307978868484,
+        0.08875739574432373,
+        0.08875739574432373,
+        0.06508875638246536,
+        0.05917159840464592,
+        0.07692307978868484,
+        0.09467455744743347,
+        0.09467455744743347,
+        0.09467455744743347,
+        0.09467455744743347,
+        0.09467455744743347,
+        0.09467455744743347,
+        0.09467455744743347
+      ],
+      "random_label_addition_fourier_score_trajectory": [
+        0.0001544081897009164,
+        0.0002078260004054755,
+        0.00023190311912912875,
+        0.00019377845455892384,
+        0.00011193066893611103,
+        0.00010686201130738482,
+        0.0001669410994509235,
+        0.0002970777568407357,
+        0.00048566420446150005,
+        0.0009303182596340775,
+        0.0010575574124231935,
+        0.0011118572438135743,
+        0.0011344278464093804,
+        0.0011615719413384795
+      ],
+      "random_label_mechanism_control_passed": true,
+      "random_label_peak_accuracy": 0.09467455744743347,
+      "random_label_peak_fourier_score": 0.0011615719413384795,
+      "random_mechanism_control_passed": true,
+      "random_mechanism_peak_score": 0.0008140773279592395,
+      "real_checkpoints_reloaded": true,
+      "table_example_count": 169,
+      "target_accuracy_trajectory": [
+        0.08284023404121399,
+        0.10650888085365295,
+        0.1420118361711502,
+        0.2840236723423004,
+        0.4911242723464966,
+        0.6627218723297119,
+        0.7869822382926941,
+        0.9881656765937805,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "target_addition_fourier_score_trajectory": [
+        0.0001544081897009164,
+        0.003906705882400274,
+        0.020137334242463112,
+        0.08282065391540527,
+        0.19623547792434692,
+        0.30435144901275635,
+        0.4014342427253723,
+        0.546421468257904,
+        0.6457437872886658,
+        0.7203404307365417,
+        0.7363095879554749,
+        0.7438230514526367,
+        0.7466660737991333,
+        0.7499501705169678
+      ],
+      "target_loss_trajectory": [
+        2.5847651958465576,
+        2.5461783409118652,
+        2.511641025543213,
+        2.4431371688842773,
+        2.267301082611084,
+        2.0059003829956055,
+        1.656125783920288,
+        0.8274151682853699,
+        0.22761714458465576,
+        0.015302429907023907,
+        0.004683688748627901,
+        0.0023569478653371334,
+        0.0017126258462667465,
+        0.001128818141296506
+      ],
+      "target_random_fourier_score_trajectory": [
+        0.00030711753061041236,
+        0.0004673879302572459,
+        0.0006032688543200493,
+        0.0006359589169733226,
+        0.0006772865890525281,
+        0.0008140773279592395,
+        0.0007344749756157398,
+        0.0005718091269955039,
+        0.0005439383676275611,
+        0.0005984334275126457,
+        0.00058846699539572,
+        0.0005445127026177943,
+        0.0005166895571164787,
+        0.0004919799976050854
+      ],
+      "torch_version": "2.12.1+cu132",
+      "within_vram_budget": true
+    },
+    "notebook_contract": {
+      "checkpoint_emergence": {
+        "emerged": true,
+        "first_crossing_step": 300,
+        "metric_name": "induction_probe_accuracy",
+        "monotonicity_violations": 0,
+        "peak_step": 500,
+        "peak_value": 0.8600000143051147,
+        "stable_from_step": 300,
+        "threshold": 0.6
+      },
+      "developmental_comparison": {
+        "all_non_control_emerged": true,
+        "earliest_family": "jepa",
+        "emergence_steps": {
+          "autoregressive": 300,
+          "diffusion": 400,
+          "jepa": 200,
+          "mamba": 300,
+          "random_control": null
+        },
+        "latest_family": "diffusion",
+        "random_control_passed": true,
+        "threshold": 0.6
+      },
+      "live_checkpoint_archaeology": {
+        "accuracy_first_crossing_step": 24,
+        "accuracy_stable_from_step": 24,
+        "checkpoint_count": 28,
+        "checkpoint_files_written": 28,
+        "checkpoint_steps": [
+          0,
+          1,
+          2,
+          4,
+          8,
+          12,
+          16,
+          24,
+          32,
+          48,
+          64,
+          96,
+          128,
+          180
+        ],
+        "checkpoint_total_bytes": 967204,
+        "complete_finite_domain_evaluated": true,
+        "device": "cpu",
+        "final_accuracy": 1.0,
+        "final_addition_fourier_score": 0.7499501705169678,
+        "full_path": "Train a tiny modular-addition model organism, save and reload real checkpoints, measure legal Fourier power in the finite logit table, causally keep or ablate those modes at early/mid/late checkpoints, and reject random-label plus random-mechanism controls.",
+        "generalization_scope": "Complete finite mod-13 addition table (169/169 input pairs); no held-out OOD extrapolation is claimed.",
+        "intervention_rows": [
+          {
+            "addition_fourier_score": 0.0001544082333566621,
+            "legal_ablated_accuracy": 0.08284023404121399,
+            "legal_ablation_drop": 0.0,
+            "legal_only_accuracy": 0.0,
+            "original_accuracy": 0.08284023404121399,
+            "phase": "early",
+            "random_ablated_accuracy": 0.08284023404121399,
+            "random_ablation_drop": 0.0,
+            "random_fourier_score": 0.00030711721046827734,
+            "random_only_accuracy": 0.09467455744743347,
+            "step": 0
+          },
+          {
+            "addition_fourier_score": 0.3043513894081116,
+            "legal_ablated_accuracy": 0.0710059180855751,
+            "legal_ablation_drop": 0.5917159542441368,
+            "legal_only_accuracy": 1.0,
+            "original_accuracy": 0.6627218723297119,
+            "phase": "mid",
+            "random_ablated_accuracy": 0.6568047404289246,
+            "random_ablation_drop": 0.0059171319007873535,
+            "random_fourier_score": 0.0008140764548443258,
+            "random_only_accuracy": 0.06508875638246536,
+            "step": 12
+          },
+          {
+            "addition_fourier_score": 0.7499501705169678,
+            "legal_ablated_accuracy": 0.0,
+            "legal_ablation_drop": 1.0,
+            "legal_only_accuracy": 1.0,
+            "original_accuracy": 1.0,
+            "phase": "late",
+            "random_ablated_accuracy": 1.0,
+            "random_ablation_drop": 0.0,
+            "random_fourier_score": 0.0004919822094962001,
+            "random_only_accuracy": 0.08284023404121399,
+            "step": 180
+          }
+        ],
+        "mechanism_first_crossing_step": 24,
+        "mechanism_stable_from_step": 24,
+        "metrics_table": [
+          {
+            "control_or_threshold": ">= 0.99",
+            "passed": true,
+            "quantity": "final target accuracy",
+            "value": 1.0
+          },
+          {
+            "control_or_threshold": ">= 0.65",
+            "passed": true,
+            "quantity": "final addition Fourier score",
+            "value": 0.7499501705169678
+          },
+          {
+            "control_or_threshold": ">= 0.99",
+            "passed": true,
+            "quantity": "late legal-only accuracy",
+            "value": 1.0
+          },
+          {
+            "control_or_threshold": ">= 0.90",
+            "passed": true,
+            "quantity": "late legal-mode ablation drop",
+            "value": 1.0
+          },
+          {
+            "control_or_threshold": "<= 0.20",
+            "passed": true,
+            "quantity": "random-label peak true accuracy",
+            "value": 0.10650887340307236
+          },
+          {
+            "control_or_threshold": "<= 0.05",
+            "passed": true,
+            "quantity": "random-label peak Fourier score",
+            "value": 0.0037886658683419228
+          },
+          {
+            "control_or_threshold": "<= 0.05",
+            "passed": true,
+            "quantity": "same-size random Fourier peak",
+            "value": 0.0008140764548443258
+          }
+        ],
+        "model_family": "tiny_modular_addition_mlp",
+        "modulus": 13,
+        "ood_generalization_claimed": false,
+        "phase_transition_detected": true,
+        "phase_transition_jump": 0.14498722553253174,
+        "phase_transition_step": 24,
+        "preflight_passed": true,
+        "random_label_accuracy_control_passed": true,
+        "random_label_accuracy_trajectory": [
+          0.08284023404121399,
+          0.06508875638246536,
+          0.07692307978868484,
+          0.0710059180855751,
+          0.08284023404121399,
+          0.10650887340307236,
+          0.08284023404121399,
+          0.08875739574432373,
+          0.07692307978868484,
+          0.07692307978868484,
+          0.07692307978868484,
+          0.07692307978868484,
+          0.07692307978868484,
+          0.07692307978868484
+        ],
+        "random_label_addition_fourier_score_trajectory": [
+          0.0001544082333566621,
+          0.00015609883121214807,
+          0.00018444856686983258,
+          0.00026739711756817997,
+          0.00044581625843420625,
+          0.0006733362097293139,
+          0.0010077961487695575,
+          0.0019426709040999413,
+          0.002699614502489567,
+          0.003346560290083289,
+          0.0035480326041579247,
+          0.0036492503713816404,
+          0.003711480414494872,
+          0.0037886658683419228
+        ],
+        "random_label_mechanism_control_passed": true,
+        "random_label_peak_accuracy": 0.10650887340307236,
+        "random_label_peak_fourier_score": 0.0037886658683419228,
+        "random_mechanism_control_passed": true,
+        "random_mechanism_peak_score": 0.0008140764548443258,
+        "real_checkpoints_reloaded": true,
+        "table_example_count": 169,
+        "target_accuracy_trajectory": [
+          0.08284023404121399,
+          0.10650887340307236,
+          0.1420118361711502,
+          0.2840236723423004,
+          0.4911242723464966,
+          0.6627218723297119,
+          0.7869822382926941,
+          0.9881656765937805,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "target_addition_fourier_score_trajectory": [
+          0.0001544082333566621,
+          0.003906705416738987,
+          0.020137330517172813,
+          0.08282065391540527,
+          0.19623544812202454,
+          0.3043513894081116,
+          0.4014342427253723,
+          0.546421468257904,
+          0.645743727684021,
+          0.720340371131897,
+          0.7363097071647644,
+          0.7438230514526367,
+          0.7466660141944885,
+          0.7499501705169678
+        ],
+        "target_loss_trajectory": [
+          2.5847654342651367,
+          2.5461783409118652,
+          2.511641025543213,
+          2.4431369304656982,
+          2.267300844192505,
+          2.0059003829956055,
+          1.656125783920288,
+          0.8274151682853699,
+          0.22761718928813934,
+          0.01530242245644331,
+          0.004683685023337603,
+          0.002356946002691984,
+          0.0017126244492828846,
+          0.0011288110399618745
+        ],
+        "target_random_fourier_score_trajectory": [
+          0.00030711721046827734,
+          0.00046738743549212813,
+          0.0006032685632817447,
+          0.000635959324426949,
+          0.0006772865308448672,
+          0.0008140764548443258,
+          0.0007344745681621134,
+          0.0005718094180338085,
+          0.0005439394153654575,
+          0.0005984348244965076,
+          0.0005884700804017484,
+          0.0005445146816782653,
+          0.000516692060045898,
+          0.0004919822094962001
+        ]
+      },
+      "phase_transition": {
+        "jump": 0.3799999952316284,
+        "metric_name": "induction_probe_accuracy",
+        "phase_transition_detected": true,
+        "post_value": 0.6800000071525574,
+        "pre_value": 0.30000001192092896,
+        "transition_step": 300
+      },
+      "random_control": {
+        "control_passed": true,
+        "max_allowed_value": 0.2,
+        "metric_name": "label_shuffled_probe",
+        "peak_value": 0.11999999731779099
+      }
+    }
+  },
+  "models": [
+    {
+      "gated": false,
+      "id": "exact_mod13_addition_logit_table_v1",
+      "precision": "float32",
+      "revision": "deterministic_mod13_correct5_incorrect_minus5",
+      "source": "generated_finite_table"
+    },
+    {
+      "claim_scope": "checkpoint_archaeology_fourier_mechanism_preflight",
+      "gated": false,
+      "id": "course_tiny_modular_addition_mlp_v2",
+      "learning_rate": 0.005,
+      "optimizer": "AdamW",
+      "precision": "float32",
+      "revision": "seed_0_mod13_embed32_hidden96_steps180",
+      "source": "generated_training_run"
+    }
+  ],
+  "negative_controls": {
+    "declared_controls": [
+      "random_label_checkpoint_control",
+      "same_size_random_fourier_mask_control"
+    ]
+  },
+  "notebook_id": "17_1_checkpoint_archaeology_and_mechanism_emergence",
+  "ood_tests": {
+    "declared": "required_where_applicable"
+  },
+  "peak_vram_gb": 0.06286430358886719,
+  "report_inputs": {
+    "algorithm": "sha256",
+    "combined_sha256": "93f71fd1896ab08a88fa3f6ea52c6744c7bc30893b95ad9fc422e08cec4cdef0",
+    "files": [
+      {
+        "path": "arena_ext/training_dynamics.py",
+        "sha256": "068146be6cb1782ce38d86b1e9db23781c7e84ac98a7b432d40e2ea28b943c59",
+        "size_bytes": 9097
+      },
+      {
+        "path": "arena_ext/verification.py",
+        "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
+        "size_bytes": 9276
+      },
+      {
+        "path": "chapter17_training_dynamics/exercises/part1_checkpoint_archaeology/17.1_Checkpoint_Archaeology_and_Mechanism_Emergence_exercises.ipynb",
+        "sha256": "c048c9b63a4f79857c330cee88a8872cbba0fa8663e7bb6d86667b6f5bfbcce7",
+        "size_bytes": 70256
+      },
+      {
+        "path": "chapter17_training_dynamics/exercises/part1_checkpoint_archaeology/17.1_Checkpoint_Archaeology_and_Mechanism_Emergence_solutions.ipynb",
+        "sha256": "df45653ff98a9735f5e8bef5f464d4086302e02d9160814a170fcea8996967e9",
+        "size_bytes": 222357
+      },
+      {
+        "path": "chapter17_training_dynamics/exercises/part1_checkpoint_archaeology/README.md",
+        "sha256": "a7a8841fd7546eb1f4c766ba5507772c1c0bac9d6f7714bbbd87832261557cd5",
+        "size_bytes": 1623
+      },
+      {
+        "path": "chapter17_training_dynamics/exercises/part1_checkpoint_archaeology/artifacts.lock.yml",
+        "sha256": "6ce2e8d85a8393b08a146fab6e8e9e132f63995dae66d605ac5f88757ec6a4d4",
+        "size_bytes": 3397
+      },
+      {
+        "path": "chapter17_training_dynamics/exercises/part1_checkpoint_archaeology/expected_outputs/README.md",
+        "sha256": "86ac4bb0e4bf3c1743e78f6c72cfd8c40445091cfaef425f7e63d5c8994179bd",
+        "size_bytes": 1799
+      },
+      {
+        "path": "chapter17_training_dynamics/exercises/part1_checkpoint_archaeology/expected_outputs/reference_metrics.json",
+        "sha256": "235344c168b744c2137976cf5af99549d7db73472e09c5b32be8da33fba9e575",
+        "size_bytes": 1179
+      },
+      {
+        "path": "chapter17_training_dynamics/exercises/part1_checkpoint_archaeology/expected_outputs/smoke_test.json",
+        "sha256": "77578be9c762a60094654d0ff37fa1e043f27c7ebafe15b5108771b1f0d75196",
+        "size_bytes": 646
+      },
+      {
+        "path": "chapter17_training_dynamics/exercises/part1_checkpoint_archaeology/solutions.py",
+        "sha256": "130b0fbea5e880791d206a8bcc54422a79d6c5b99282200731b7619b696f8b32",
+        "size_bytes": 31019
+      },
+      {
+        "path": "chapter17_training_dynamics/exercises/part1_checkpoint_archaeology/tests.py",
+        "sha256": "78d2c6098e263b1874519eb8a0e2de86eadd602789691f2a327eb8f87fc20158",
+        "size_bytes": 13948
+      },
+      {
+        "path": "chapter17_training_dynamics/exercises/part1_checkpoint_archaeology/utils.py",
+        "sha256": "f02b7efb6adc7024b1f17d292e84d7039dee9f33a1a099aab63d1beefc517cab",
+        "size_bytes": 2331
+      },
+      {
+        "path": "chapter17_training_dynamics/exercises/part1_checkpoint_archaeology/verification_report.schema.json",
+        "sha256": "ecd833883885077ad5d7a0e239d984d01462255e94266212cf195ab4d4e27b3d",
+        "size_bytes": 2669
+      },
+      {
+        "path": "chapter17_training_dynamics/instructions/pages/01_[17.1]_Checkpoint_Archaeology_and_Mechanism_Emergence.md",
+        "sha256": "eb31be302fe0be9fbfe2245337a828af9755e4697add4e6f5910d963d536ac9e",
+        "size_bytes": 53035
+      },
+      {
+        "path": "scripts/run_extension_verification_reports.py",
+        "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
+        "size_bytes": 16272
+      }
+    ],
+    "schema_version": 1
+  },
+  "safety_notes": [
+    "No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.",
+    "The training path uses only a generated finite modular-addition table and a random-label negative control. It does not use user data, gated weights, or persistent large artifacts."
+  ],
+  "tests_passed": true,
+  "wall_clock_seconds": 7.249725
+}

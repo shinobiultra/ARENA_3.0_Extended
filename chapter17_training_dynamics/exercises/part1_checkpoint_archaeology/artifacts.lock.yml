@@ -1,0 +1,98 @@
+notebook_id: 17_1_checkpoint_archaeology_and_mechanism_emergence
+section: '17.1'
+title: Checkpoint Archaeology and Mechanism Emergence
+exercise_metadata:
+  EXERCISE_ID: 17_1_checkpoint_archaeology_and_mechanism_emergence
+  GT_TIER: GT-0
+  DIFFICULTY: 4
+  IMPORTANCE: 3
+  EXPECTED_RUNTIME: seconds for exact Fourier oracles; about 30 seconds for the CPU
+    train/save/reload notebook contract; parent runner handles CUDA validation
+  REQUIRES_GPU: true
+gt_tier: GT-0
+evidence_level: exact_fourier_oracle_plus_real_checkpoint_train_save_reload
+claim_scope: 'GT-0 developmental-interpretability model organism: a tiny MLP is
+  trained on the complete mod-13 addition table, real checkpoint files are saved
+  and reloaded, and every metric is recomputed from the reloaded checkpoints. The
+  mechanism metric is the fraction of centered logit-table Fourier power in modes
+  satisfying k_a = k_b = -k_c mod 13. The notebook validates this metric on exact
+  toy ground truth, shows that task accuracy and legal Fourier power rise during
+  training, tests early/mid/late legal-mode keep and ablation interventions, and
+  rejects random-label plus same-size random-Fourier controls. The finite-domain
+  evaluation exhausts all 169 input pairs; no OOD arithmetic generalization or
+  large-model developmental mechanism is claimed.'
+required_gpu_gb: 1
+max_allowed_gpu_gb: 24
+models:
+- id: exact_mod13_addition_logit_table_v1
+  source: generated_finite_table
+  revision: deterministic_mod13_correct5_incorrect_minus5
+  precision: float32
+  gated: false
+- id: course_tiny_modular_addition_mlp_v2
+  source: generated_training_run
+  revision: seed_0_mod13_embed32_hidden96_steps180
+  precision: float32
+  gated: false
+  claim_scope: checkpoint_archaeology_fourier_mechanism_preflight
+  optimizer: AdamW
+  learning_rate: 0.005
+datasets:
+- id: complete_mod13_addition_table_v2
+  source: generated_finite_table
+  seed: 0
+  modulus: 13
+  example_count: 169
+  label_rule: (left + right) % 13
+  random_label_control: true
+  checkpoint_steps:
+  - 0
+  - 1
+  - 2
+  - 4
+  - 8
+  - 12
+  - 16
+  - 24
+  - 32
+  - 48
+  - 64
+  - 96
+  - 128
+  - 180
+expected_metrics:
+  tests_passed: true
+  accepted: true
+  max_allowed_gpu_gb: 24
+  preflight_passed: true
+  model_family: tiny_modular_addition_mlp
+  modulus: 13
+  table_example_count: 169
+  checkpoint_count: 28
+  accuracy_stable_from_step: 24
+  mechanism_stable_from_step: 24
+  final_accuracy: 1.0
+  final_addition_fourier_score_min: 0.70
+  late_legal_only_accuracy_min: 0.99
+  late_legal_mode_ablation_drop_min: 0.90
+  random_label_peak_accuracy_max: 0.20
+  random_label_peak_fourier_score_max: 0.05
+  random_mechanism_peak_score_max: 0.05
+  real_checkpoints_reloaded: true
+  peak_vram_gb_max: 0.2
+controls:
+- exact_addition_fourier_oracle
+- real_checkpoint_save_and_reload
+- complete_mod13_finite_domain_evaluation
+- stable_accuracy_threshold
+- stable_mechanism_threshold
+- early_mid_late_legal_mode_intervention
+- legal_mode_ablation_control
+- random_label_checkpoint_control
+- same_size_random_fourier_mask_control
+- no_ood_extrapolation_claimed
+- large_model_checkpoint_archaeology_not_claimed
+safety_notes:
+- No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.
+- The training path uses only a generated finite modular-addition table and a random-label
+  negative control. It does not use user data, gated weights, or persistent large artifacts.

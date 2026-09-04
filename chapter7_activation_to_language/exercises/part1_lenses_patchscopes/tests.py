@@ -1,0 +1,565 @@
+import ast
+import json
+from collections.abc import Callable
+from pathlib import Path
+
+import torch as t
+
+from arena_ext import activation_language as reference
+
+
+def _solutions():
+    from chapter7_activation_to_language.exercises.part1_lenses_patchscopes import solutions
+
+    return solutions
+
+
+def _assert_report_close(actual: object, expected: object, *, msg: str) -> None:
+    actual_dict = actual.__dict__
+    expected_dict = expected.__dict__
+    assert actual_dict.keys() == expected_dict.keys(), (
+        f"{msg} fields should match the independent reference."
+    )
+    for key, expected_value in expected_dict.items():
+        actual_value = actual_dict[key]
+        if isinstance(expected_value, float):
+            assert abs(actual_value - expected_value) < 1e-6, (
+                f"{msg} field {key!r} should be {expected_value}, got {actual_value}."
+            )
+        else:
+            assert actual_value == expected_value, (
+                f"{msg} field {key!r} should be {expected_value!r}, got {actual_value!r}."
+            )
+
+
+def test_logit_lens_and_top_tokens_match_reference(
+    logit_lens: Callable | None = None,
+    top_tokens: Callable | None = None,
+):
+    solutions = _solutions()
+    logit_lens = logit_lens or solutions.logit_lens
+    top_tokens = top_tokens or solutions.top_tokens
+    residual = t.tensor([[1.0, 0.0], [0.0, 1.0]])
+    unembedding = t.tensor([[2.0, 0.0, 1.0], [0.0, 3.0, 1.0]])
+
+    logits = logit_lens(residual, unembedding)
+    expected_logits = reference.logit_lens(residual, unembedding)
+    t.testing.assert_close(
+        logits,
+        expected_logits,
+        msg="Logit lens should project residual_stream @ unembedding.",
+    )
+    top_ids, top_probs = top_tokens(logits, k=1)
+    expected_ids, expected_probs = reference.top_tokens(logits, k=1)
+    t.testing.assert_close(top_ids, expected_ids, msg="Top token ids should match reference.")
+    t.testing.assert_close(
+        top_probs,
+        expected_probs,
+        msg="Top token probabilities should come from softmax(logits).",
+    )
+    assert top_ids.tolist() == [[0], [1]], (
+        "Controlled residual directions should decode to token ids 0 and 1."
+    )
+    print("All tests in `test_logit_lens_and_top_tokens_match_reference` passed!")
+
+
+def test_top_token_table_reports_target_ranks(
+    top_token_table: Callable | None = None,
+):
+    solutions = _solutions()
+    top_token_table = top_token_table or solutions.top_token_table
+    logits = t.tensor([[4.0, 1.0, 0.0], [0.0, 3.0, 2.0]])
+    tokens = [" yes", " no", " maybe"]
+    targets = t.tensor([0, 2])
+    rows = top_token_table(
+        logits,
+        tokens,
+        k=2,
+        target_token_ids=targets,
+        row_labels=["clean prompt", "patched prompt"],
+    )
+    expected = reference.top_token_table(
+        logits,
+        tokens,
+        k=2,
+        target_token_ids=targets,
+        row_labels=["clean prompt", "patched prompt"],
+    )
+    assert rows == expected, "Top-token table should match the independent reference."
+    assert rows[0]["top_tokens"] == [" yes", " no"], (
+        "Rows should contain decoded token strings in probability order."
+    )
+    assert rows[0]["target_rank"] == 1 and rows[1]["target_rank"] == 2, (
+        "Target ranks should be one-indexed ranks within the full vocabulary."
+    )
+    print("All tests in `test_top_token_table_reports_target_ranks` passed!")
+
+
+def test_top_tokens_rejects_invalid_k(top_tokens: Callable | None = None):
+    solutions = _solutions()
+    top_tokens = top_tokens or solutions.top_tokens
+    logits = t.zeros(2, 3)
+    for bad_k in (0, 4):
+        try:
+            top_tokens(logits, k=bad_k)
+        except ValueError:
+            continue
+        raise AssertionError(f"top_tokens should reject k={bad_k}.")
+    print("All tests in `test_top_tokens_rejects_invalid_k` passed!")
+
+
+def test_tuned_lens_improves_over_logit_lens_on_toy_targets(
+    logit_lens: Callable | None = None,
+    tuned_lens: Callable | None = None,
+    lens_accuracy_report: Callable | None = None,
+):
+    solutions = _solutions()
+    logit_lens = logit_lens or solutions.logit_lens
+    tuned_lens = tuned_lens or solutions.tuned_lens
+    lens_accuracy_report = lens_accuracy_report or solutions.lens_accuracy_report
+    residual = t.tensor([[1.0, 0.0], [0.0, 1.0]])
+    unembedding = t.eye(2)
+    lens_weight = t.tensor([[0.0, 1.0], [1.0, 0.0]])
+    targets = t.tensor([1, 0])
+
+    logit_logits = logit_lens(residual, unembedding)
+    tuned_logits = tuned_lens(residual, lens_weight, None, unembedding)
+    reference_tuned = reference.tuned_lens(residual, lens_weight, None, unembedding)
+    t.testing.assert_close(
+        tuned_logits,
+        reference_tuned,
+        msg="Tuned lens should apply residual @ lens_weight before unembedding.",
+    )
+    report = lens_accuracy_report(logit_logits, tuned_logits, targets)
+    expected = reference.lens_accuracy_report(logit_logits, tuned_logits, targets)
+    _assert_report_close(report, expected, msg="Lens accuracy report")
+    assert report.logit_lens_accuracy == 0.0 and report.tuned_lens_accuracy == 1.0, (
+        "The tuned lens should fix both controlled examples while logit lens misses both."
+    )
+    assert report.tuned_lens_improves, "Tuned lens should improve over logit lens."
+    print("All tests in `test_tuned_lens_improves_over_logit_lens_on_toy_targets` passed!")
+
+
+def test_fit_ridge_tuned_lens_and_heldout_eval(
+    fit_ridge_tuned_lens: Callable | None = None,
+    evaluate_lens_on_heldout: Callable | None = None,
+):
+    solutions = _solutions()
+    fit_ridge_tuned_lens = fit_ridge_tuned_lens or solutions.fit_ridge_tuned_lens
+    evaluate_lens_on_heldout = evaluate_lens_on_heldout or solutions.evaluate_lens_on_heldout
+    train = t.tensor([[0.0, 0.0], [1.0, 0.0], [0.0, 1.0], [1.0, 1.0]])
+    true_weight = t.tensor([[0.0, 1.0], [1.0, 0.0]])
+    true_bias = t.tensor([0.5, -0.25])
+    target_residuals = train @ true_weight + true_bias
+    weight, bias = fit_ridge_tuned_lens(train, target_residuals, ridge=0.0)
+    ref_weight, ref_bias = reference.fit_ridge_tuned_lens(
+        train,
+        target_residuals,
+        ridge=0.0,
+    )
+    t.testing.assert_close(weight, ref_weight)
+    t.testing.assert_close(bias, ref_bias)
+    t.testing.assert_close(weight, true_weight)
+    t.testing.assert_close(bias, true_bias)
+
+    heldout = t.tensor([[2.0, 0.0], [0.0, 2.0]])
+    targets = t.tensor([1, 0])
+    report = evaluate_lens_on_heldout(heldout, weight, bias, t.eye(2), targets)
+    expected = reference.evaluate_lens_on_heldout(heldout, weight, bias, t.eye(2), targets)
+    _assert_report_close(report, expected, msg="Held-out tuned-lens report")
+    assert report.logit_lens_accuracy == 0.0 and report.tuned_lens_accuracy == 1.0, (
+        "The fitted affine lens should solve held-out points that logit lens misses."
+    )
+    print("All tests in `test_fit_ridge_tuned_lens_and_heldout_eval` passed!")
+
+
+def test_tuned_lens_uses_bias_and_leading_dims(
+    tuned_lens: Callable | None = None,
+    prediction_accuracy: Callable | None = None,
+):
+    solutions = _solutions()
+    tuned_lens = tuned_lens or solutions.tuned_lens
+    prediction_accuracy = prediction_accuracy or solutions.prediction_accuracy
+    residual = t.tensor([[[1.0, 0.0], [0.0, 1.0]], [[2.0, 1.0], [1.0, 2.0]]])
+    lens_weight = t.eye(2)
+    lens_bias = t.tensor([0.5, -0.25])
+    unembedding = t.tensor([[1.0, 0.0, 1.0], [0.0, 1.0, -1.0]])
+    actual = tuned_lens(residual, lens_weight, lens_bias, unembedding)
+    expected = reference.tuned_lens(residual, lens_weight, lens_bias, unembedding)
+    t.testing.assert_close(
+        actual,
+        expected,
+        msg="Tuned lens should broadcast bias across leading dimensions before unembedding.",
+    )
+    targets = actual.argmax(dim=-1)
+    assert prediction_accuracy(actual, targets) == 1.0, (
+        "prediction_accuracy should handle leading dimensions matching target ids."
+    )
+    print("All tests in `test_tuned_lens_uses_bias_and_leading_dims` passed!")
+
+
+def test_prediction_accuracy_rejects_shape_mismatch(
+    prediction_accuracy: Callable | None = None,
+):
+    solutions = _solutions()
+    prediction_accuracy = prediction_accuracy or solutions.prediction_accuracy
+    try:
+        prediction_accuracy(t.zeros(2, 3), t.zeros(2, 1, dtype=t.long))
+    except ValueError:
+        print("All tests in `test_prediction_accuracy_rejects_shape_mismatch` passed!")
+        return
+    raise AssertionError("prediction_accuracy should reject target shapes that do not match logits leading dimensions.")
+
+
+def test_attention_lens_decodes_attention_weighted_values(
+    attention_lens: Callable | None = None,
+):
+    solutions = _solutions()
+    attention_lens = attention_lens or solutions.attention_lens
+    attention = t.tensor([[[1.0, 0.0], [0.25, 0.75]]])
+    values = t.tensor([[[1.0, 0.0], [0.0, 2.0]]])
+    unembedding = t.eye(2)
+    logits = attention_lens(attention, values, unembedding)
+    expected = reference.attention_lens(attention, values, unembedding)
+    t.testing.assert_close(
+        logits,
+        expected,
+        msg="Attention lens should decode attention_pattern @ value_vectors through unembedding.",
+    )
+    t.testing.assert_close(logits, t.tensor([[[1.0, 0.0], [0.25, 1.5]]]))
+    print("All tests in `test_attention_lens_decodes_attention_weighted_values` passed!")
+
+
+def test_attention_lens_rejects_rank_or_key_mismatch(
+    attention_lens: Callable | None = None,
+):
+    solutions = _solutions()
+    attention_lens = attention_lens or solutions.attention_lens
+    bad_cases = [
+        (t.zeros(2, 2), t.zeros(1, 2, 2), t.eye(2)),
+        (t.zeros(1, 2, 3), t.zeros(1, 2, 2), t.eye(2)),
+    ]
+    for attention, values, unembedding in bad_cases:
+        try:
+            attention_lens(attention, values, unembedding)
+        except ValueError:
+            continue
+        raise AssertionError("attention_lens should reject invalid rank or key/value shapes.")
+    print("All tests in `test_attention_lens_rejects_rank_or_key_mismatch` passed!")
+
+
+def test_patchscope_templates_and_accuracy_report(
+    patchscope_prompt: Callable | None = None,
+    patchscope_accuracy_report: Callable | None = None,
+    replace_final_position_activation: Callable | None = None,
+):
+    solutions = _solutions()
+    patchscope_prompt = patchscope_prompt or solutions.patchscope_prompt
+    patchscope_accuracy_report = (
+        patchscope_accuracy_report or solutions.patchscope_accuracy_report
+    )
+    replace_final_position_activation = (
+        replace_final_position_activation or solutions.replace_final_position_activation
+    )
+    patchscope_logits = t.tensor([[2.0, 0.0], [0.0, 2.0]])
+    text_only_logits = t.tensor([[0.0, 2.0], [0.0, 2.0]])
+    targets = t.tensor([0, 1])
+    assert patchscope_prompt("entity") == "What entity is represented by <ACT>?", (
+        "Entity Patchscope template should name the activation placeholder."
+    )
+    assert patchscope_prompt("next_token") == "What token will <ACT> become next?", (
+        "Next-token Patchscope template should ask for future-token decoding."
+    )
+    assert patchscope_prompt("fact") == "What fact is stored in <ACT>?", (
+        "Fact Patchscope template should ask for factual content."
+    )
+    report = patchscope_accuracy_report(patchscope_logits, text_only_logits, targets)
+    expected = reference.patchscope_accuracy_report(
+        patchscope_logits,
+        text_only_logits,
+        targets,
+    )
+    _assert_report_close(report, expected, msg="Patchscope accuracy report")
+    assert report.patchscope_accuracy == 1.0 and report.text_only_accuracy == 0.5, (
+        "Patchscope logits should beat the text-only baseline on the controlled labels."
+    )
+    assert report.beats_text_only, "Patchscope report should require improvement over text only."
+    activations = t.zeros(1, 3, 2)
+    source_activation = t.tensor([1.0, -1.0])
+    patched = replace_final_position_activation(activations, source_activation)
+    expected_patched = reference.replace_final_position_activation(
+        activations,
+        source_activation,
+    )
+    t.testing.assert_close(
+        patched,
+        expected_patched,
+        msg="Patchscope helper should replace only the final target-prompt position.",
+    )
+    assert patched[0, -1].tolist() == [1.0, -1.0], (
+        "The final target-prompt position should contain the source activation."
+    )
+    assert patched[0, :-1].abs().sum().item() == 0.0, (
+        "Earlier target-prompt positions should be left unchanged."
+    )
+    print("All tests in `test_patchscope_templates_and_accuracy_report` passed!")
+
+
+def test_replace_final_position_activation_rejects_bad_shapes(
+    replace_final_position_activation: Callable | None = None,
+):
+    solutions = _solutions()
+    replace_final_position_activation = (
+        replace_final_position_activation or solutions.replace_final_position_activation
+    )
+    bad_cases = [
+        (t.zeros(3, 2), t.zeros(2)),
+        (t.zeros(2, 3, 2), t.zeros(2)),
+        (t.zeros(1, 3, 2), t.zeros(2, 1)),
+        (t.zeros(1, 3, 2), t.zeros(3)),
+    ]
+    for activations, source_activation in bad_cases:
+        try:
+            replace_final_position_activation(activations, source_activation)
+        except ValueError:
+            continue
+        raise AssertionError("replace_final_position_activation should reject invalid shapes.")
+    print("All tests in `test_replace_final_position_activation_rejects_bad_shapes` passed!")
+
+
+def test_counterfactual_and_random_activation_controls(
+    counterfactual_activation_report: Callable | None = None,
+    random_activation_confidence_report: Callable | None = None,
+):
+    solutions = _solutions()
+    counterfactual_activation_report = (
+        counterfactual_activation_report or solutions.counterfactual_activation_report
+    )
+    random_activation_confidence_report = (
+        random_activation_confidence_report or solutions.random_activation_confidence_report
+    )
+    original = t.tensor([2.0, 0.0])
+    patched = t.tensor([0.0, 3.0])
+    counterfactual = counterfactual_activation_report(original, patched)
+    expected_counterfactual = reference.counterfactual_activation_report(original, patched)
+    _assert_report_close(counterfactual, expected_counterfactual, msg="Counterfactual report")
+    assert counterfactual.changed and counterfactual.original_answer == 0, (
+        "Counterfactual activation should change the decoded argmax answer."
+    )
+
+    random_logits = t.zeros(3, 4)
+    confidence = random_activation_confidence_report(
+        random_logits,
+        max_allowed_confidence=0.3,
+    )
+    expected_confidence = reference.random_activation_confidence_report(
+        random_logits,
+        max_allowed_confidence=0.3,
+    )
+    _assert_report_close(confidence, expected_confidence, msg="Random confidence report")
+    assert abs(confidence.max_confidence - 0.25) < 1e-6 and confidence.passes_low_confidence, (
+        "Uniform random logits over four tokens should have max confidence 0.25."
+    )
+    print("All tests in `test_counterfactual_and_random_activation_controls` passed!")
+
+
+def test_patchscope_eval_bundles_controls(
+    patchscope_eval: Callable | None = None,
+):
+    solutions = _solutions()
+    patchscope_eval = patchscope_eval or solutions.patchscope_eval
+    patchscope_logits = t.tensor([[3.0, 0.0], [0.0, 3.0], [3.0, 0.0]])
+    text_only_logits = t.tensor([[0.0, 3.0], [0.0, 3.0], [0.0, 3.0]])
+    random_logits = t.zeros(4, 5)
+    targets = t.tensor([0, 1, 0])
+    result = patchscope_eval(
+        patchscope_logits,
+        text_only_logits,
+        random_logits,
+        targets,
+        max_allowed_random_confidence=0.25,
+    )
+    expected = reference.patchscope_eval(
+        patchscope_logits,
+        text_only_logits,
+        random_logits,
+        targets,
+        max_allowed_random_confidence=0.25,
+    )
+    assert result == expected, "Patchscope bundle should match the independent reference."
+    assert result["patchscope_accuracy"] == 1.0 and abs(result["text_only_accuracy"] - 1 / 3) < 1e-6, (
+        "Patchscope should beat the text-only prompt on the controlled examples."
+    )
+    assert result["random_passes_low_confidence"] and result["passes"], (
+        "Uniform random logits over five tokens should pass the low-confidence control."
+    )
+    print("All tests in `test_patchscope_eval_bundles_controls` passed!")
+
+
+def test_notebook_contract(run_smoke_test: Callable | None = None):
+    if run_smoke_test is None:
+        run_smoke_test = _solutions().run_smoke_test
+    result = run_smoke_test(cpu=True)
+    assert result["logit_lens"]["top_ids"] == [[0], [1]], (
+        "Notebook contract should include controlled logit-lens top tokens."
+    )
+    assert result["logit_lens"]["top_table"][0]["target_rank"] == 1, (
+        "Notebook contract should include a visible top-token table."
+    )
+    assert result["tuned_lens"]["tuned_lens_improves"], (
+        "Notebook contract should include tuned-lens improvement over logit lens."
+    )
+    assert result["fit_ridge_tuned_lens"]["tuned_lens_accuracy"] == 1.0, (
+        "Notebook contract should include a fitted held-out tuned lens."
+    )
+    assert result["attention_lens"]["logits"] == [[[1.0, 0.0], [0.0, 1.0]]], (
+        "Notebook contract should include an attention-lens decode."
+    )
+    assert result["patchscope"]["beats_text_only"], (
+        "Notebook contract should include Patchscope beating a text-only baseline."
+    )
+    assert result["patchscope_eval"]["passes"], (
+        "Notebook contract should bundle Patchscope, text-only, and random controls."
+    )
+    assert result["counterfactual"]["changed"], (
+        "Notebook contract should include a counterfactual activation changing the answer."
+    )
+    assert result["random_confidence"]["passes_low_confidence"], (
+        "Notebook contract should include a low-confidence random-activation control."
+    )
+    print("All tests in `test_notebook_contract` passed!")
+
+
+def test_layer_rank_and_batch_insertion_helpers():
+    solutions = _solutions()
+    logits = t.tensor(
+        [
+            [[4.0, 2.0, 1.0], [0.0, 3.0, 2.0]],
+            [[1.0, 5.0, 0.0], [0.0, 1.0, 4.0]],
+        ]
+    )
+    targets = t.tensor([1, 2])
+    ranks = solutions.target_token_ranks(logits, targets)
+    assert ranks.tolist() == [[2, 2], [1, 1]], (
+        "Target ranks should be one-indexed independently at every stage and example."
+    )
+
+    hidden = t.zeros(2, 4, 3)
+    source = t.tensor([[1.0, 2.0, 3.0], [-1.0, -2.0, -3.0]])
+    patched = solutions.replace_hidden_state_batch(hidden, source, position=2)
+    t.testing.assert_close(
+        patched[:, 2],
+        source,
+        msg="Each batch row should receive its own source activation.",
+    )
+    assert patched[:, [0, 1, 3]].abs().sum().item() == 0.0, (
+        "Residual insertion should leave every unselected position unchanged."
+    )
+    print("All tests in `test_layer_rank_and_batch_insertion_helpers` passed!")
+
+
+def test_real_pythia_cpu_lens_and_patchscope_progression():
+    solutions = _solutions()
+    result = solutions.run_pythia_cpu_lens_lab(ridge=0.1)
+    lens = result["lens"]
+    patchscope = result["patchscope"]
+
+    assert len(result["heldout_cache"]["prompts"]) == 24, (
+        "The real learner result should use 24 disjoint, meaningful held-out prompts."
+    )
+    logit_medians = lens["logit_ranks"].float().median(dim=1).values
+    tuned_medians = lens["tuned_ranks"].float().median(dim=1).values
+    assert logit_medians[0] > logit_medians[3] > logit_medians[-1] == 1, (
+        "Ordinary logit-lens target ranks should improve from embedding to middle to final stage."
+    )
+    assert int((tuned_medians[:-1] < logit_medians[:-1]).sum().item()) >= 3, (
+        "The ridge lens should improve median target rank at several early or middle stages."
+    )
+    assert bool((tuned_medians[:-1] > logit_medians[:-1]).any()), (
+        "The pinned result should retain the honest anomaly that calibration is not uniformly helpful."
+    )
+    assert patchscope["heldout_count"] == 24, (
+        "Patchscope evaluation should cover the same 24 held-out source prompts."
+    )
+    assert patchscope["patched_accuracy"] >= 0.75, (
+        "Inserted source activations should recover most source targets after one remaining block."
+    )
+    assert patchscope["text_only_accuracy"] <= 0.10, (
+        "The identical target prompt should not recover source-specific targets on its own."
+    )
+    assert patchscope["wrong_source_accuracy"] <= 0.10, (
+        "Cyclic wrong-source activations should fail the source-specific target labels."
+    )
+    assert patchscope["random_accuracy"] <= 0.10, (
+        "Matched-scale random activations should fail the source-specific target labels."
+    )
+    assert patchscope["patched_mean_logprob_gain"] >= 2.0, (
+        "Correct source insertion should materially raise held-out target log-probability."
+    )
+    release_metrics = solutions.summarize_pythia_cpu_lens_lab(result)
+    assert release_metrics == {
+        "learner_cpu_heldout_count": 24,
+        "learner_cpu_embedding_median_target_rank": 18163,
+        "learner_cpu_final_median_target_rank": 1,
+        "learner_cpu_patched_accuracy": patchscope["patched_accuracy"],
+        "learner_cpu_text_only_accuracy": patchscope["text_only_accuracy"],
+        "learner_cpu_wrong_source_accuracy": patchscope["wrong_source_accuracy"],
+        "learner_cpu_random_accuracy": patchscope["random_accuracy"],
+        "learner_cpu_patched_mean_logprob_gain": patchscope["patched_mean_logprob_gain"],
+    }, "Release metrics must be derived from the exact learner-visible experiment."
+    print("All tests in `test_real_pythia_cpu_lens_and_patchscope_progression` passed!")
+
+
+def test_real_pythia_pipeline_is_split_across_learner_cells():
+    section = Path(__file__).resolve().parent
+    paths = (
+        section / "7.1_Logit_Lens_Tuned_Lens_and_Patchscopes_exercises.ipynb",
+        section / "7.1_Logit_Lens_Tuned_Lens_and_Patchscopes_solutions.ipynb",
+    )
+    required_functions = {
+        "cache_pythia_hidden_states",
+        "decode_pythia_stages",
+        "target_token_ranks",
+        "fit_layerwise_ridge_lenses",
+        "evaluate_pythia_lenses",
+        "replace_hidden_state_batch",
+        "run_pythia_with_inserted_residuals",
+        "evaluate_pythia_patchscope",
+    }
+    for path in paths:
+        notebook = json.loads(path.read_text())
+        markdown = "\n".join(
+            "".join(cell.get("source", []))
+            for cell in notebook["cells"]
+            if cell["cell_type"] == "markdown"
+        )
+        code_cells = [
+            "".join(cell.get("source", []))
+            for cell in notebook["cells"]
+            if cell["cell_type"] == "code"
+        ]
+        definition_cells: dict[str, int] = {}
+        for index, source in enumerate(code_cells):
+            tree = ast.parse(source)
+            for node in ast.walk(tree):
+                if isinstance(node, ast.FunctionDef) and node.name in required_functions:
+                    definition_cells[node.name] = index
+        assert set(definition_cells) == required_functions, (
+            "Both notebooks must expose every taught real-model sub-function inline."
+        )
+        assert len(set(definition_cells.values())) >= 5, (
+            "Caching, decoding, fitting, insertion, and controls must remain separate learner steps."
+        )
+        assert max(map(len, code_cells)) < 5_000, (
+            "The real Pythia lesson must not regress to one monolithic implementation cell."
+        )
+        assert "24 disjoint held-out prompts" in markdown, (
+            "The learner-facing claim must name the blind 24-prompt evaluation split."
+        )
+        assert "pythia_lens_patchscope_cpu_signature.png" in "\n".join(code_cells), (
+            "The notebook must generate its own visible Pythia signature figure."
+        )
+        assert "verification_report.json" in "\n".join(code_cells), (
+            "Release evidence may be exposed only as an optional supporting handoff."
+        )
+    print("All tests in `test_real_pythia_pipeline_is_split_across_learner_cells` passed!")

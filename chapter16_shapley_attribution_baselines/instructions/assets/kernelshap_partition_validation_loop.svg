@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="360" viewBox="0 0 920 360" role="img" aria-labelledby="title desc">
+  <title id="title">KernelSHAP and PartitionSHAP validation loop</title>
+  <desc id="desc">A validation loop for full-table KernelSHAP and exact Owen-value PartitionSHAP controls.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f8fafc; }
+      .panel { fill: #ffffff; stroke: #334155; stroke-width: 2; rx: 14; }
+      .text { fill: #0f172a; font-family: Inter, Arial, sans-serif; font-size: 18px; font-weight: 700; }
+      .small { fill: #334155; font-family: Inter, Arial, sans-serif; font-size: 14px; }
+      .kernel { fill: #2563eb; }
+      .partition { fill: #0f766e; }
+      .control { fill: #9a3412; }
+      .arrow { stroke: #475569; stroke-width: 3; fill: none; marker-end: url(#arrowhead); }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#475569"/>
+    </marker>
+  </defs>
+  <rect class="bg" x="0" y="0" width="920" height="360"/>
+  <rect class="panel" x="36" y="76" width="178" height="170"/>
+  <circle class="kernel" cx="70" cy="111" r="12"/>
+  <text class="text" x="92" y="118">Full table</text>
+  <text class="small" x="60" y="152">Start with every</text>
+  <text class="small" x="60" y="173">coalition value</text>
+  <text class="small" x="60" y="194">and exact Shapley</text>
+  <path class="arrow" d="M224 160 H288"/>
+  <rect class="panel" x="300" y="76" width="190" height="170"/>
+  <circle class="kernel" cx="334" cy="111" r="12"/>
+  <text class="text" x="356" y="118">KernelSHAP</text>
+  <text class="small" x="324" y="152">Weighted regression</text>
+  <text class="small" x="324" y="173">with efficiency</text>
+  <text class="small" x="324" y="194">as a hard constraint</text>
+  <path class="arrow" d="M500 160 H564"/>
+  <rect class="panel" x="576" y="76" width="210" height="170"/>
+  <circle class="partition" cx="610" cy="111" r="12"/>
+  <text class="text" x="632" y="118">PartitionSHAP</text>
+  <text class="small" x="600" y="152">Enumerate Owen</text>
+  <text class="small" x="600" y="173">outside-group and</text>
+  <text class="small" x="600" y="194">inside-group orders</text>
+  <path class="arrow" d="M682 258 C620 322 302 322 172 258"/>
+  <rect class="panel" x="345" y="250" width="230" height="78"/>
+  <circle class="control" cx="379" cy="285" r="12"/>
+  <text class="text" x="401" y="292">Controls reject</text>
+  <text class="small" x="366" y="315">shortcut and shuffled-label failures</text>
+</svg>

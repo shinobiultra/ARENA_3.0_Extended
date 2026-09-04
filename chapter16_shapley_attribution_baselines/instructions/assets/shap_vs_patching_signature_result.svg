@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="360" viewBox="0 0 960 360" role="img" aria-labelledby="title desc">
+  <title id="title">SHAP vs activation patching signature result</title>
+  <desc id="desc">Bar chart comparing Shapley and patching effects. Additive model agrees; interaction model has matching top feature but overcounted magnitudes.</desc>
+  <rect width="960" height="360" fill="#fbfaf7"/>
+  <style>
+    .axis{stroke:#243b53;stroke-width:2}
+    .grid{stroke:#d9e2ec;stroke-width:1}
+    .label{font:15px sans-serif;fill:#334e68}
+    .head{font:700 22px sans-serif;fill:#102a43}
+    .small{font:13px sans-serif;fill:#52606d}
+    .shap{fill:#2f80ed}
+    .patch{fill:#f2994a}
+    .note{fill:#ffffff;stroke:#243b53;stroke-width:1.5;rx:8}
+  </style>
+  <text x="40" y="40" class="head">Signature result: agreement on additive structure, overcount on interactions</text>
+  <text x="40" y="68" class="small">Values from the committed CUDA report; patching is full-minus-ablated.</text>
+  <line x1="70" y1="294" x2="430" y2="294" class="axis"/>
+  <line x1="70" y1="92" x2="70" y2="294" class="axis"/>
+  <line x1="70" y1="244" x2="430" y2="244" class="grid"/>
+  <line x1="70" y1="194" x2="430" y2="194" class="grid"/>
+  <line x1="70" y1="144" x2="430" y2="144" class="grid"/>
+  <text x="70" y="326" class="label">Additive model: max error 2.7e-8</text>
+  <rect x="116" y="174" width="26" height="120" class="shap"/>
+  <rect x="146" y="174" width="26" height="120" class="patch"/>
+  <rect x="206" y="134" width="26" height="160" class="shap"/>
+  <rect x="236" y="134" width="26" height="160" class="patch"/>
+  <rect x="296" y="204" width="26" height="90" class="shap"/>
+  <rect x="326" y="204" width="26" height="90" class="patch"/>
+  <text x="118" y="314" class="small">f0</text>
+  <text x="208" y="314" class="small">f2</text>
+  <text x="298" y="314" class="small">f3</text>
+  <line x1="510" y1="294" x2="890" y2="294" class="axis"/>
+  <line x1="510" y1="92" x2="510" y2="294" class="axis"/>
+  <line x1="510" y1="244" x2="890" y2="244" class="grid"/>
+  <line x1="510" y1="194" x2="890" y2="194" class="grid"/>
+  <line x1="510" y1="144" x2="890" y2="144" class="grid"/>
+  <text x="510" y="326" class="label">Interaction model: max disagreement 1.10, overcount 3.40</text>
+  <rect x="556" y="179" width="26" height="115" class="shap"/>
+  <rect x="586" y="124" width="26" height="170" class="patch"/>
+  <rect x="646" y="221" width="26" height="73" class="shap"/>
+  <rect x="676" y="184" width="26" height="110" class="patch"/>
+  <rect x="736" y="159" width="26" height="135" class="shap"/>
+  <rect x="766" y="104" width="26" height="190" class="patch"/>
+  <rect x="826" y="287" width="26" height="7" class="shap"/>
+  <rect x="856" y="264" width="26" height="30" class="patch"/>
+  <text x="558" y="314" class="small">f0</text>
+  <text x="648" y="314" class="small">f1</text>
+  <text x="738" y="314" class="small">f2</text>
+  <text x="828" y="314" class="small">f3</text>
+  <rect x="352" y="92" width="160" height="72" class="note"/>
+  <rect x="372" y="112" width="18" height="18" class="shap"/>
+  <text x="400" y="126" class="label">Shapley</text>
+  <rect x="372" y="136" width="18" height="18" class="patch"/>
+  <text x="400" y="150" class="label">Patching</text>
+</svg>

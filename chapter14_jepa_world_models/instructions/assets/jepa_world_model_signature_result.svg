@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="420" viewBox="0 0 920 420" role="img" aria-labelledby="title desc">
+  <title id="title">V-JEPA2 generated-video signature result</title>
+  <desc id="desc">Bar chart of 14.1 signature metrics: V-JEPA same object margin, occlusion gap, masked prediction loss reduction, state probe margin, and patch gap.</desc>
+  <rect width="920" height="420" fill="#fbfbfd"/>
+  <text x="44" y="44" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700" fill="#172033">Signature result: frozen V-JEPA2 latents pass the generated-video control suite</text>
+  <text x="44" y="73" font-family="Inter, Arial, sans-serif" font-size="14" fill="#535b6c">Each bar is an observed report metric. Each dark tick is the acceptance threshold.</text>
+
+  <g font-family="Inter, Arial, sans-serif" font-size="13" fill="#384050">
+    <text x="56" y="122">same-object margin</text>
+    <text x="56" y="177">occluded-vs-absent gap</text>
+    <text x="56" y="232">masked prediction reduction</text>
+    <text x="56" y="287">probe margin over shuffled</text>
+    <text x="56" y="342">object-token patch gap</text>
+  </g>
+
+  <g transform="translate(250 105)">
+    <line x1="0" y1="0" x2="0" y2="260" stroke="#cfd5df"/>
+    <line x1="0" y1="260" x2="560" y2="260" stroke="#cfd5df"/>
+    <g stroke="#eef1f6">
+      <line x1="112" y1="0" x2="112" y2="260"/>
+      <line x1="224" y1="0" x2="224" y2="260"/>
+      <line x1="336" y1="0" x2="336" y2="260"/>
+      <line x1="448" y1="0" x2="448" y2="260"/>
+      <line x1="560" y1="0" x2="560" y2="260"/>
+    </g>
+    <g font-family="Inter, Arial, sans-serif" font-size="11" fill="#687083">
+      <text x="-4" y="282">0.0</text>
+      <text x="104" y="282">0.2</text>
+      <text x="216" y="282">0.4</text>
+      <text x="328" y="282">0.6</text>
+      <text x="440" y="282">0.8</text>
+      <text x="548" y="282">1.0</text>
+    </g>
+
+    <rect x="0" y="2" width="27.34" height="28" rx="4" fill="#2f80ed"/>
+    <line x1="16.8" y1="-4" x2="16.8" y2="36" stroke="#172033" stroke-width="3"/>
+    <text x="39" y="22" font-family="Inter, Arial, sans-serif" font-size="13" fill="#172033">0.049 observed; threshold 0.030</text>
+
+    <rect x="0" y="57" width="124.86" height="28" rx="4" fill="#00a676"/>
+    <line x1="112" y1="51" x2="112" y2="91" stroke="#172033" stroke-width="3"/>
+    <text x="137" y="77" font-family="Inter, Arial, sans-serif" font-size="13" fill="#172033">0.223 observed; threshold 0.200</text>
+
+    <rect x="0" y="112" width="559.55" height="28" rx="4" fill="#f2994a"/>
+    <line x1="280" y1="106" x2="280" y2="146" stroke="#172033" stroke-width="3"/>
+    <text x="356" y="132" font-family="Inter, Arial, sans-serif" font-size="13" fill="#172033">0.999 observed; threshold 0.500</text>
+
+    <rect x="0" y="167" width="302.4" height="28" rx="4" fill="#9b51e0"/>
+    <line x1="112" y1="161" x2="112" y2="201" stroke="#172033" stroke-width="3"/>
+    <text x="315" y="187" font-family="Inter, Arial, sans-serif" font-size="13" fill="#172033">0.540 observed; threshold 0.200</text>
+
+    <rect x="0" y="222" width="559.98" height="28" rx="4" fill="#eb5757"/>
+    <line x1="224" y1="216" x2="224" y2="256" stroke="#172033" stroke-width="3"/>
+    <text x="356" y="242" font-family="Inter, Arial, sans-serif" font-size="13" fill="#172033">1.000 observed; threshold 0.400</text>
+  </g>
+</svg>

@@ -1,0 +1,54 @@
+{
+  "baselines": {
+    "required": true
+  },
+  "metrics": {
+    "accepted": true,
+    "gt2_refusal_direction_aggregate_metrics_only": true,
+    "gt2_refusal_direction_completion_text_saved": false,
+    "gt2_refusal_direction_dataset_id": "josephmayo/refusal-compliance-pairs",
+    "gt2_refusal_direction_gt2_ready": true,
+    "gt2_refusal_direction_heldout_accuracy_min": 0.9,
+    "gt2_refusal_direction_heldout_prompt_count": 32,
+    "gt2_refusal_direction_label_shuffle_fails": true,
+    "gt2_refusal_direction_layer_sweep_best_accuracy_min": 0.9,
+    "gt2_refusal_direction_paper_equivalent_behavioral_completion_evidence": true,
+    "gt2_refusal_direction_pc1_variance_fraction_min": 0.0,
+    "gt2_refusal_direction_position_sweep_final_beats_first": true,
+    "gt2_refusal_direction_preflight_passed": true,
+    "gt2_refusal_direction_random_direction_fails": true,
+    "gt2_refusal_direction_raw_prompt_text_saved": false,
+    "gt2_refusal_direction_target_beats_random_addition": true,
+    "gt2_refusal_direction_target_beats_random_projection": true,
+    "gt2_refusal_direction_train_prompt_count": 32,
+    "instruction_refusal_allowed_add_delta_min": 1.0,
+    "instruction_refusal_baseline_margin_min": 2.0,
+    "instruction_refusal_generation_used": false,
+    "instruction_refusal_intervention_preflight_passed": true,
+    "instruction_refusal_peak_vram_gb_max": 4.0,
+    "instruction_refusal_projection_delta_max": -1.0,
+    "instruction_refusal_prompt_count": 24,
+    "instruction_refusal_prompt_template_family_count": 3,
+    "instruction_refusal_target_beats_random_addition": true,
+    "instruction_refusal_target_beats_random_projection": true,
+    "label_shuffle_fails": true,
+    "max_allowed_gpu_gb": 24,
+    "real_lm_category_generation_used": false,
+    "real_lm_category_heldout_accuracy_min": 0.9,
+    "real_lm_category_label_shuffle_fails": true,
+    "real_lm_category_min_template_accuracy_min": 0.85,
+    "real_lm_category_min_template_margin_min": 1.0,
+    "real_lm_category_preflight_passed": true,
+    "real_lm_category_prompt_template_family_count": 3,
+    "real_lm_category_random_direction_fails": true,
+    "real_lm_category_total_prompt_count": 24,
+    "tests_passed": true
+  },
+  "negative_controls": {
+    "required_where_applicable": true
+  },
+  "notebook_id": "9_1_refusal_directions_and_safe_steering",
+  "ood_tests": {
+    "required_where_applicable": true
+  }
+}

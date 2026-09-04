@@ -1,0 +1,10 @@
+{
+  "accepted": true,
+  "claim_scope": "Contract check; not a full real-model validation.",
+  "evidence_level": "notebook_contract",
+  "gt_tier": "GT-1",
+  "notebook_id": "13_1_diffusion_and_image_generation_controls",
+  "section": "13.1",
+  "tests_passed": true,
+  "title": "Diffusion and Image-Generation Controls"
+}

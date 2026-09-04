@@ -1,0 +1,115 @@
+notebook_id: 8_3_acdc_and_circuit_metrics
+section: '8.3'
+title: ACDC and Circuit Metrics
+exercise_metadata:
+  EXERCISE_ID: 8_3_acdc_and_circuit_metrics
+  GT_TIER: GT-0
+  DIFFICULTY: 4
+  IMPORTANCE: 5
+  EXPECTED_RUNTIME: 90 minutes for exercises; about 30 seconds for the cached CPU solution run
+  REQUIRES_GPU: false
+gt_tier: GT-0
+evidence_level: exact_nonlinear_ground_truth_acdc_plus_pinned_transformerlens_component_result
+claim_scope: >-
+  The learner-facing signature result is an exact named-node and named-edge
+  nonlinear graph with a declared eight-edge ground-truth circuit. Corrupt-matched
+  edge intervention, iterative greedy deletion with metric recomputation, a full
+  threshold sweep, faithfulness, edgewise minimality, pairwise completeness,
+  exhaustive same-size controls, and three held-out toy regimes are all evaluated
+  exactly. A separate pinned gelu-1l path applies the same greedy algorithm to eight
+  named attention-head result components while the real MLP recomputes, then checks
+  every same-size three-head set and three held-out prompt pairs. This is honest
+  component-level evidence, not a full edge-level IOI or greater-than ACDC replication.
+required_gpu_gb: 0
+max_allowed_gpu_gb: 24
+models:
+- id: exact_nonlinear_named_edge_graph_v1
+  source: generated_analytic_model
+  revision: product_gate_plus_backup_and_matched_decoy_v1
+  precision: float64_python
+  gated: false
+  claim_scope: exact_ground_truth_acdc
+- id: NeelNanda/GELU_1L512W_C4_Code
+  source: huggingface_via_transformerlens
+  revision: bddc0e332f0ae84279e6a6a45d91b314899e1603
+  precision: float32
+  gated: false
+  claim_scope: component_level_attention_head_deletion_with_real_mlp_recomputation
+  transformerlens_model_name: gelu-1l
+  tokenizer_id: NeelNanda/gpt-neox-tokenizer-digits
+  tokenizer_revision: 0f6671571a20be9756b9991d978047c03b75e749
+datasets:
+- id: exact_nonlinear_named_edge_inputs_v1
+  source: generated_analytic_task
+  seed: deterministic
+  clean_metric: 2.5
+  corrupt_metric: 0.1
+  candidate_edge_count: 10
+  ground_truth_edge_count: 8
+- id: course_safe_head_component_prompt_pairs_v1
+  source: generated_prompt_pairs
+  seed: deterministic
+  primary_clean_prompt: The cat sat on the
+  primary_corrupt_prompt: The bird flew over the
+  heldout_pair_count: 3
+  heldout_labels:
+  - dog_vs_plane
+  - child_vs_plane
+  - cup_vs_plane
+  tokenizer: NeelNanda/gpt-neox-tokenizer-digits
+expected_metrics:
+  tests_passed: true
+  accepted: true
+  toy_one_shot_max_abs: 0.0
+  toy_exact_ground_truth_recovered: true
+  toy_kept_edge_count: 8
+  toy_recovery_min: 0.999999
+  toy_min_edge_damage_min: 0.1666
+  toy_max_omitted_subset_gain_max: 0.0
+  toy_same_size_circuit_count: 45
+  toy_same_size_rank: 1
+  toy_same_size_exact_pvalue_max: 0.0223
+  toy_same_size_best_wrong_recovery_max: 0.8334
+  toy_worst_heldout_recovery_min: 0.999999
+  threshold_backup_cliff: 0.17
+  threshold_primary_cliff: 0.84
+  real_model_component_result_passed: true
+  model_name: gelu-1l
+  hf_revision: bddc0e332f0ae84279e6a6a45d91b314899e1603
+  tokenizer_revision: 0f6671571a20be9756b9991d978047c03b75e749
+  head_hook: blocks.0.attn.hook_result
+  mlp_hook: blocks.0.hook_mlp_out
+  target_token: ' floor'
+  distractor_token: ' top'
+  clean_corrupt_gap_min: 6.0
+  real_kept_heads:
+  - L0H0
+  - L0H4
+  - L0H6
+  real_primary_recovery_min: 0.90
+  real_same_size_set_count: 56
+  real_same_size_rank: 1
+  real_same_size_exact_pvalue_max: 0.0179
+  real_same_size_best_other_recovery_max: 0.89
+  real_worst_heldout_recovery_min: 0.75
+  real_mlp_bottleneck_recovery_min: 0.95
+controls:
+- exact clean and corrupt metric endpoints
+- corrupt-matched edge replacement rather than zero ablation
+- deliberately failing one-shot insertion baseline
+- two matched background-decoy edges
+- iterative deletion trace proving metric recomputation
+- two-cliff threshold sweep
+- faithfulness and edgewise minimality
+- pairwise completeness for interacting omitted paths
+- exhaustive same-size random-circuit null over all 45 circuits
+- three exact held-out toy regimes
+- exhaustive real-model same-size random-circuit null over all 56 three-head sets
+- three held-out real prompt pairs
+- downstream MLP clean-output bottleneck control
+safety_notes:
+- No unsafe prompts, adapters, gated weights, or large data artifacts are used.
+- The exact model organism is deterministic and contains no learned empirical claim.
+- The real path reads next-token logits for safe generic prompts and runs on CPU.
+- The real result is limited to named head-result components in one layer; it does not claim a full causal edge circuit.
+- Verification reports support the lesson but are not the learner-facing signature result.

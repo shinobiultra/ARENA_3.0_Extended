@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="620" height="190" viewBox="0 0 620 190" role="img" aria-labelledby="title desc">
+  <title id="title">Grouped-query attention head sharing</title>
+  <desc id="desc">Four query heads share two key/value heads by repeating each KV head for a group of query heads.</desc>
+  <defs>
+    <style>
+      .q { fill: #e0f2fe; stroke: #0369a1; }
+      .kv { fill: #fef3c7; stroke: #b45309; }
+      .line { stroke: #475569; stroke-width: 1.5; }
+      .text { font: 14px sans-serif; fill: #0f172a; text-anchor: middle; dominant-baseline: middle; }
+      .small { font: 12px sans-serif; fill: #475569; text-anchor: middle; dominant-baseline: middle; }
+    </style>
+  </defs>
+  <text x="120" y="28" class="text">Query heads</text>
+  <text x="450" y="28" class="text">Shared K/V heads</text>
+  <rect x="50" y="55" width="70" height="38" rx="8" class="q" /><text x="85" y="74" class="text">Q0</text>
+  <rect x="140" y="55" width="70" height="38" rx="8" class="q" /><text x="175" y="74" class="text">Q1</text>
+  <rect x="50" y="115" width="70" height="38" rx="8" class="q" /><text x="85" y="134" class="text">Q2</text>
+  <rect x="140" y="115" width="70" height="38" rx="8" class="q" /><text x="175" y="134" class="text">Q3</text>
+  <rect x="410" y="55" width="80" height="38" rx="8" class="kv" /><text x="450" y="74" class="text">K/V 0</text>
+  <rect x="410" y="115" width="80" height="38" rx="8" class="kv" /><text x="450" y="134" class="text">K/V 1</text>
+  <line x1="120" y1="74" x2="410" y2="74" class="line" />
+  <line x1="210" y1="74" x2="410" y2="74" class="line" />
+  <line x1="120" y1="134" x2="410" y2="134" class="line" />
+  <line x1="210" y1="134" x2="410" y2="134" class="line" />
+  <text x="310" y="102" class="small">repeat_kv maps 2 KV heads to 4 query groups</text>
+  <text x="310" y="172" class="small">If repeat order is wrong, logits can look plausible but cache/reference parity fails.</text>
+</svg>

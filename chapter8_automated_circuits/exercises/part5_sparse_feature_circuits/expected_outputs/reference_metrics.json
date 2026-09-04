@@ -1,0 +1,33 @@
+{
+  "baselines": {
+    "required": true
+  },
+  "metrics": {
+    "accepted": true,
+    "max_allowed_gpu_gb": 24,
+    "official_artifact_expected_dictionary_count": 19,
+    "official_artifact_ready_for_gt2": true,
+    "official_artifact_remote_manifest_passed": true,
+    "official_sae_feature_attribution_passed": true,
+    "official_sae_state_dict_smoke_passed": true,
+    "official_sparse_feature_circuit_examples": 100,
+    "official_sparse_feature_circuit_faithfulness_min": 0.9,
+    "official_sparse_feature_circuit_faithfulness_passed": true,
+    "official_sparse_feature_circuit_replication_passed": true,
+    "real_model_linearization_error_max": 0.001,
+    "real_model_preflight_passed": true,
+    "real_model_random_control_fails": true,
+    "shift_editing_ood_improvement_min": 0.5,
+    "shift_editing_passed": true,
+    "shift_editing_random_edit_control_fails": true,
+    "shift_editing_target_accuracy_drop_max": 0.05,
+    "tests_passed": true
+  },
+  "negative_controls": {
+    "required_where_applicable": true
+  },
+  "notebook_id": "8_5_sparse_feature_circuits",
+  "ood_tests": {
+    "required_where_applicable": true
+  }
+}

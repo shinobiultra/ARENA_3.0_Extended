@@ -1,0 +1,112 @@
+notebook_id: 16_1_exact_shapley_on_ground_truth_games
+section: '16.1'
+title: Exact Shapley on Ground-Truth Games
+exercise_metadata:
+  EXERCISE_ID: 16_1_exact_shapley_on_ground_truth_games
+  GT_TIER: GT-0
+  DIFFICULTY: 4
+  IMPORTANCE: 5
+  EXPECTED_RUNTIME: seconds on toy contract; minutes on local real-model path
+  REQUIRES_GPU: true
+gt_tier: GT-0
+evidence_level: exact_shapley_contract_plus_cuda_trained_neural_game_preflight
+claim_scope: 'GT-0 exact Shapley preflight: deterministic additive, conjunction, permutation-parity,
+  and leave-one-out interaction contracts are kept for learner exercises, then a CUDA
+  MLP is trained on the complete binary feature table for a known nonlinear coalition
+  game. The report computes exact Shapley values from real model ablations, checks
+  them against the analytic data-generating game, verifies efficiency, and rejects
+  a shuffled-label model that fits its shuffled table but fails the true attribution
+  vector. This proves exact Shapley on a finite trained model organism; it is not
+  a claim about approximate SHAP on large models.'
+required_gpu_gb: 1
+max_allowed_gpu_gb: 24
+models:
+- id: toy_or_generated_inputs
+  source: generated
+  revision: seed_0
+  precision: float32
+  gated: false
+- id: course_cuda_neural_coalition_game_mlp_v1
+  source: generated_training_run
+  revision: seed_1621_players4_hidden64_steps1200
+  precision: float32
+  gated: false
+  claim_scope: trained_exact_shapley_neural_game_preflight
+  optimizer: AdamW
+  learning_rate: 0.05
+datasets:
+- id: 16_1_exact_shapley_on_ground_truth_games_toy_inputs
+  source: generated
+  seed: 0
+- id: complete_binary_feature_game_table_v1
+  source: generated_finite_table
+  seed: 1621
+  num_players: 4
+  example_count: 16
+  coalition_count: 16
+  target_rule: 0.25 + 1.2*x0 - 0.7*x1 + 1.6*x2 + 0.9*x3 + 2.2*x0*x2 - 1.5*x1*x3
+  target_input:
+  - 1
+  - 1
+  - 1
+  - 1
+  baseline_input:
+  - 0
+  - 0
+  - 0
+  - 0
+  analytic_shapley:
+  - 2.3
+  - -1.45
+  - 2.7
+  - 0.15
+  shuffled_label_control: true
+expected_metrics:
+  tests_passed: true
+  accepted: true
+  max_allowed_gpu_gb: 24
+  preflight_passed: true
+  model_family: cuda_trained_neural_coalition_game_mlp
+  num_players: 4
+  coalition_count: 16
+  complete_finite_domain_evaluated: true
+  ood_generalization_claimed: false
+  generalization_scope: complete_binary_feature_table
+  training_example_count: 16
+  training_steps: 1200
+  fit_mse_max: 1.0e-08
+  fit_max_abs_error_max: 0.0001
+  neural_shapley_max_abs_error_max: 0.0001
+  efficiency_error_max: 1.0e-08
+  satisfies_efficiency: true
+  shuffled_control_error_min: 1.0
+  shuffled_control_cosine_max: 0.25
+  shuffled_control_rejected: true
+  peak_vram_gb_max: 1.0
+controls:
+- baseline_or_reference_check
+- negative_control_where_applicable
+- shape_dtype_or_exact_value_check
+- exact_additive_shapley_contract
+- exact_conjunction_efficiency_contract
+- permutation_parity_contract
+- leave_one_out_interaction_overcount_contract
+- real_cuda_training_run
+- complete_binary_feature_table_fit
+- real_model_ablation_coalition_table
+- analytic_shapley_ground_truth_check
+- efficiency_axiom_check_on_trained_model
+- shuffled_label_trained_model_negative_control
+- kernelshap_partitionshap_tokenshap_and_large_model_attribution_not_claimed
+ood_tests:
+  declared: complete_finite_domain_evaluation
+  complete_binary_feature_table_evaluated: true
+  ood_generalization_claimed: false
+  rationale: The 16.1 CUDA evidence trains and evaluates the complete four-feature
+    binary table. Its scope is finite-domain exact Shapley recovery, not extrapolation
+    outside the enumerated game.
+safety_notes:
+- No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.
+- The real training path uses only a generated finite binary feature table and a shuffled-label
+  negative control. It does not use unsafe prompts, user data, external APIs, adapters,
+  gated weights, or large persistent artifacts.

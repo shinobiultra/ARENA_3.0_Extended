@@ -1,0 +1,343 @@
+{
+  "accepted": true,
+  "baselines": {
+    "declared_controls": [
+      "baseline_or_reference_check",
+      "negative_control_where_applicable",
+      "shape_dtype_or_exact_value_check",
+      "masked_token_coalition_contract",
+      "exact_token_shapley_contract",
+      "sampled_tokenshap_contract",
+      "real_cuda_training_run",
+      "complete_masked_token_table_fit",
+      "real_model_masked_token_coalition_values",
+      "exact_tokenshap_vs_analytic_ground_truth",
+      "sampled_tokenshap_vs_exact_model_values",
+      "top_token_rank_preservation",
+      "shapley_efficiency_check_on_trained_token_model",
+      "shuffled_label_trained_model_negative_control",
+      "large_language_model_tokenshap_not_claimed",
+      "exact_necessary_token_oracle",
+      "redundant_pair_and_pair_deletion_control",
+      "distractor_zero_credit_oracle",
+      "leave_one_out_efficiency_failure",
+      "recency_position_control",
+      "permutation_budget_and_seed_sweep",
+      "random_semantic_token_zero_credit_control",
+      "within_mask_size_shuffled_value_control",
+      "subword_grouping_sensitivity",
+      "correlated_support_off_manifold_ambiguity"
+    ],
+    "expected_metrics": {
+      "accepted": true,
+      "baseline_efficiency_error_max": 1e-08,
+      "coalition_count": 16,
+      "exact_shapley_max_abs_error_max": 1e-05,
+      "fit_max_abs_error_max": 1e-05,
+      "fit_mse_max": 1e-10,
+      "max_allowed_gpu_gb": 24,
+      "model_family": "cuda_trained_tiny_token_scorer_mlp",
+      "peak_vram_gb_max": 1.0,
+      "preflight_passed": true,
+      "sampled_max_abs_error_max": 0.1,
+      "sampled_rank_matches": true,
+      "sampled_top_token": "Paris",
+      "satisfies_efficiency": true,
+      "shuffled_control_error_min": 1.0,
+      "shuffled_control_rejected": true,
+      "tests_passed": true,
+      "token_count": 4,
+      "top_token": "Paris",
+      "training_example_count": 16,
+      "training_steps": 1200
+    }
+  },
+  "claim_scope": "The learner result is an exact five-position token game with a necessary token, a redundant pair, a distractor, and a planted interaction. It compares exact and sampled Shapley with leave-one-out and position controls, then demonstrates tokenization and correlated-support failure modes. The separate release-only CUDA preflight retains the older four-position finite scorer contract. It validates implementation plumbing only and is not a claim about LLM attribution faithfulness.",
+  "datasets": [
+    {
+      "id": "16_4_tokenshap_and_tokenshapley_toy_inputs",
+      "seed": 0,
+      "source": "generated"
+    },
+    {
+      "analytic_token_shapley": [
+        0.0,
+        1.0,
+        0.0,
+        2.0
+      ],
+      "coalition_count": 16,
+      "id": "complete_masked_token_coalition_table_v1",
+      "mask_token": "[MASK]",
+      "sampled_permutations": 512,
+      "seed": 1640,
+      "shuffled_label_control": true,
+      "source": "generated_finite_table",
+      "target_rule": "score Paris +1 and capital/Paris interaction +2",
+      "token_count": 4,
+      "tokens": [
+        "The",
+        "capital",
+        "is",
+        "Paris"
+      ]
+    }
+  ],
+  "date_run": "2026-09-04T08:38:12+00:00",
+  "evidence_level": "exact_structured_token_game_plus_cuda_compatibility_preflight",
+  "git_commit": "6a5cb6aa",
+  "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+  "gt_tier": "GT-0",
+  "known_failures": [],
+  "metrics": {
+    "gpu_evidence": {
+      "category": "cuda_section_metric",
+      "placeholder_only": false,
+      "section_specific_metric_keys": [
+        "baseline_efficiency_error",
+        "coalition_count",
+        "exact_shapley_max_abs_error",
+        "fit_max_abs_error",
+        "fit_mse",
+        "model_exact_values",
+        "model_family",
+        "preflight_passed",
+        "sampled_max_abs_error",
+        "sampled_rank_matches",
+        "sampled_top_token",
+        "sampled_values",
+        "satisfies_efficiency",
+        "shuffled_control_error",
+        "shuffled_control_exact_values",
+        "shuffled_control_fit_mse",
+        "shuffled_control_rejected",
+        "token_count",
+        "top_token",
+        "training_example_count",
+        "training_steps",
+        "true_exact_values"
+      ],
+      "uses_cuda": true
+    },
+    "gpu_test": {
+      "baseline_efficiency_error": 0.0,
+      "coalition_count": 16,
+      "cuda_available": true,
+      "cuda_version": "13.2",
+      "device": "NVIDIA GeForce RTX 5090 Laptop GPU",
+      "exact_shapley_max_abs_error": 1.341104507446289e-07,
+      "fit_max_abs_error": 2.384185791015625e-07,
+      "fit_mse": 6.994405055138486e-15,
+      "full_path": "Finite CUDA scorer preflight; the exact learner organism remains the main result.",
+      "gpu_total_memory_gb": 23.45965576171875,
+      "model_exact_values": [
+        -1.7384688059488937e-08,
+        0.9999999975164731,
+        -1.341104507446289e-07,
+        1.9999999006589253
+      ],
+      "model_family": "cuda_trained_tiny_token_scorer_mlp",
+      "peak_vram_gb": 0.06308317184448242,
+      "preflight_passed": true,
+      "sampled_max_abs_error": 0.050781254142445276,
+      "sampled_rank_matches": true,
+      "sampled_top_token": "Paris",
+      "sampled_values": [
+        -1.0943040251731873e-08,
+        1.0507812516589183,
+        -1.4729448594152927e-07,
+        1.9492186532588676
+      ],
+      "satisfies_efficiency": true,
+      "shuffled_control_error": 1.6667118097345033,
+      "shuffled_control_exact_values": [
+        0.8328117753068605,
+        2.8980274995149546e-05,
+        -1.1660857771833737,
+        0.3332881902654966
+      ],
+      "shuffled_control_fit_mse": 5.873272357348469e-07,
+      "shuffled_control_rejected": true,
+      "token_count": 4,
+      "top_token": "Paris",
+      "torch_version": "2.12.1+cu132",
+      "training_example_count": 16,
+      "training_steps": 1200,
+      "true_exact_values": [
+        0.0,
+        1.0,
+        0.0,
+        2.0
+      ],
+      "within_vram_budget": true
+    },
+    "notebook_contract": {
+      "coalitions": {
+        "context_and_target": 3.0,
+        "empty": 0.0,
+        "target_only": 1.0
+      },
+      "exact": {
+        "baseline": {
+          "baseline_score": 0.0,
+          "efficiency_error": 0.0,
+          "full_score": 3.0,
+          "satisfies_efficiency": true,
+          "shapley_sum": 3.0,
+          "total_delta": 3.0
+        },
+        "exact_values": [
+          0.0,
+          1.0,
+          0.0,
+          2.0
+        ],
+        "tokens": [
+          "The",
+          "capital",
+          "is",
+          "Paris"
+        ]
+      },
+      "sampled": {
+        "approximates_exact": true,
+        "exact_values": [
+          0.0,
+          1.0,
+          0.0,
+          2.0
+        ],
+        "max_abs_error": 0.05078125,
+        "rank_matches": true,
+        "sampled_top_token": "Paris",
+        "sampled_values": [
+          0.0,
+          1.05078125,
+          0.0,
+          1.94921875
+        ],
+        "tokens": [
+          "The",
+          "capital",
+          "is",
+          "Paris"
+        ],
+        "top_token": "Paris"
+      }
+    }
+  },
+  "models": [
+    {
+      "gated": false,
+      "id": "toy_or_generated_inputs",
+      "precision": "float32",
+      "revision": "seed_0",
+      "source": "generated"
+    },
+    {
+      "claim_scope": "trained_tokenshap_preflight",
+      "gated": false,
+      "id": "course_cuda_tiny_token_scorer_mlp_v1",
+      "learning_rate": 0.02,
+      "optimizer": "AdamW",
+      "precision": "float32",
+      "revision": "seed_1640_prompt4_embed32_hidden96_steps1200",
+      "source": "generated_training_run"
+    }
+  ],
+  "negative_controls": {
+    "declared_controls": [
+      "negative_control_where_applicable",
+      "shuffled_label_trained_model_negative_control",
+      "random_semantic_token_zero_credit_control"
+    ]
+  },
+  "notebook_id": "16_4_tokenshap_and_tokenshapley",
+  "ood_tests": {
+    "declared": "required_where_applicable"
+  },
+  "peak_vram_gb": 0.06308317184448242,
+  "report_inputs": {
+    "algorithm": "sha256",
+    "combined_sha256": "8ad6b945db37b147296e4cafc09cfe5942bd5d549078fed062caf563587c8f64",
+    "files": [
+      {
+        "path": "arena_ext/verification.py",
+        "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
+        "size_bytes": 9276
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part4_tokenshap_token_shapley/16.4_TokenSHAP_and_TokenShapley_exercises.ipynb",
+        "sha256": "dfdf5974afc2acb125007b06088a72c919ed98f45828e8b5a71b46ccbc8e2bb8",
+        "size_bytes": 48382
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part4_tokenshap_token_shapley/16.4_TokenSHAP_and_TokenShapley_solutions.ipynb",
+        "sha256": "0af39e5127b53792a4668da1a1e7d8dada562d2edb0f43d9993c4d0d0a39fae5",
+        "size_bytes": 70104
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part4_tokenshap_token_shapley/README.md",
+        "sha256": "ae47ec7372a67eaa8d07a12f5926f4434e37c4cd850a605ef12a3eb9e2718dd2",
+        "size_bytes": 2230
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part4_tokenshap_token_shapley/artifacts.lock.yml",
+        "sha256": "69d3491c283680e81bf29a9e904768547ff8907d716eab06e4413f80be5c6e12",
+        "size_bytes": 3693
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part4_tokenshap_token_shapley/expected_outputs/README.md",
+        "sha256": "161f70f03375812fff9b54f6950137df324f88092e21c5fb19870a8eb342b410",
+        "size_bytes": 2631
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part4_tokenshap_token_shapley/expected_outputs/reference_metrics.json",
+        "sha256": "f5f4fd077a923302e0f9b79e6c017efbc83ba59688e1e90c1004af6dfcd8f992",
+        "size_bytes": 947
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part4_tokenshap_token_shapley/expected_outputs/smoke_test.json",
+        "sha256": "cb08aa766e4db0a4828382411367b0fc65594a7608c47ccef141a904f60ed633",
+        "size_bytes": 293
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part4_tokenshap_token_shapley/solutions.py",
+        "sha256": "546e97cd8c9dbcd9f3a5b0dbbc4295601c0d81ae6e33ec17ea1eb19aecf8f1a8",
+        "size_bytes": 23495
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part4_tokenshap_token_shapley/tests.py",
+        "sha256": "8a981b035933cc8125e5da0b61c8ee4b20b854aa000e17d226313dc239d7fcb5",
+        "size_bytes": 16777
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part4_tokenshap_token_shapley/utils.py",
+        "sha256": "31724e90fc6aa0a8d0345c2ca84358b4fe0afd6bf6b93e9f3aaa0a7ef46dba28",
+        "size_bytes": 141
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part4_tokenshap_token_shapley/verification_report.schema.json",
+        "sha256": "ecd833883885077ad5d7a0e239d984d01462255e94266212cf195ab4d4e27b3d",
+        "size_bytes": 2669
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/pages/04_[16.4]_TokenSHAP_and_TokenShapley.md",
+        "sha256": "0259088c914325c4c0c1dc9fc9a402cdb0d8290c110c1d9a44092d6dc3e5dc45",
+        "size_bytes": 36277
+      },
+      {
+        "path": "scripts/run_extension_verification_reports.py",
+        "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
+        "size_bytes": 16272
+      }
+    ],
+    "schema_version": 1
+  },
+  "safety_notes": [
+    "No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.",
+    "The real training path uses only a generated finite masked-token table for a safe four-token prompt and a shuffled-label negative control. It does not use unsafe prompts, user data, external APIs, adapters, gated weights, or large persistent artifacts."
+  ],
+  "tests_passed": true,
+  "wall_clock_seconds": 2.983853
+}

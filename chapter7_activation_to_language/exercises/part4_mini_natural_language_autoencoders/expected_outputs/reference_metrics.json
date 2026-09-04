@@ -1,0 +1,20 @@
+{
+  "model_organism": {
+    "cargo_accuracy": 1.0,
+    "compression_ratio": 0.4,
+    "held_out_phrase_accuracy": 1.0,
+    "nla_behavior_mae": 2.7939677238464355e-06,
+    "nla_reconstruction_mse": 0.015312493778765202,
+    "opposite_phrase_behavior_mae": 6.999996662139893,
+    "opposite_phrase_reconstruction_mse": 5.140307903289795,
+    "prompt_only_behavior_mae": 3.499999523162842,
+    "prompt_only_reconstruction_mse": 1.281249761581421,
+    "route_accuracy": 1.0
+  },
+  "notebook_id": "7_4_mini_natural_language_autoencoders",
+  "real_model_preflight": {
+    "model_name": "gelu-1l",
+    "revision": "bddc0e332f0ae84279e6a6a45d91b314899e1603",
+    "status": "must_be_regenerated_on_cuda_after_learner_surface_rewrite"
+  }
+}

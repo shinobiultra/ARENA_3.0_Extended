@@ -1,0 +1,426 @@
+{
+  "accepted": true,
+  "baselines": {
+    "declared_controls": [
+      "baseline_or_reference_check",
+      "negative_control_where_applicable",
+      "shape_dtype_or_exact_value_check",
+      "toy_additive_agreement_contract",
+      "toy_xor_interaction_disagreement_contract",
+      "real_cuda_neural_game_training_run",
+      "complete_binary_feature_table_fit",
+      "shapley_vs_known_mechanistic_scores",
+      "spearman_and_topk_overlap_checks",
+      "top_feature_deletion_consequence_check",
+      "planted_pair_interaction_recovery",
+      "shuffled_label_trained_model_negative_control",
+      "agreement_matrix_csv_artifact",
+      "deletion_and_insertion_curve_artifacts",
+      "topk_overlap_heatmap_artifact",
+      "method_disagreement_examples_artifact",
+      "large_model_mechanistic_agreement_not_claimed",
+      "one_step_data_shapley_bridge",
+      "learner_visible_signature_panel"
+    ],
+    "expected_metrics": {
+      "accepted": true,
+      "agreement_artifact_count": 5,
+      "agreement_artifacts_written": true,
+      "agreement_case_count_min": 1,
+      "agreement_matrix_rows_min": 7,
+      "agrees_with_mechanistic": true,
+      "coalition_count": 16,
+      "data_player_bridge_pearson_min": 0.99,
+      "data_player_harmful_identified": true,
+      "deletion_curve_points": 5,
+      "disagreement_case_count_min": 1,
+      "fit_max_abs_error_max": 0.0001,
+      "fit_mse_max": 1e-08,
+      "insertion_curve_points": 5,
+      "interaction_max_abs_error_max": 0.0001,
+      "max_allowed_gpu_gb": 24,
+      "model_family": "cuda_trained_neural_coalition_game_mlp",
+      "num_players": 4,
+      "peak_vram_gb_max": 1.0,
+      "preflight_passed": true,
+      "second_interaction_pair": [
+        1,
+        3
+      ],
+      "shuffled_control_rejected": true,
+      "shuffled_control_spearman_max": 0.0,
+      "shuffled_control_topk_overlap": 0.0,
+      "spearman_correlation_min": 0.99,
+      "tests_passed": true,
+      "top_interaction_pair": [
+        0,
+        2
+      ],
+      "topk_heatmap_cols": 4,
+      "topk_heatmap_rows": 4,
+      "topk_overlap": 1.0,
+      "toy_xor_pair_interaction_abs": 2.0,
+      "training_example_count": 16,
+      "training_steps": 1200
+    }
+  },
+  "claim_scope": "GT-0 SHAP/mechanistic-agreement preflight: deterministic additive agreement and XOR interaction-disagreement contracts are kept for learner exercises, then a nonlinear CUDA neural coalition game is trained on the complete binary feature table. The report compares exact Shapley values from real model ablations against known analytic mechanistic feature contributions, checks rank correlation, top-k overlap, deletion consequence, planted pair-interaction recovery, and rejects a shuffled-label model that fails mechanistic agreement. This proves the agreement-testing workflow on a finite trained model organism; it is not a claim about broad mechanistic interpretability agreement in large models.",
+  "datasets": [
+    {
+      "id": "16_8_do_shapley_and_mechanistic_interpretability_agree_toy_inputs",
+      "seed": 0,
+      "source": "generated"
+    },
+    {
+      "coalition_count": 16,
+      "example_count": 16,
+      "id": "complete_binary_feature_game_table_v1",
+      "mechanistic_scores": [
+        2.3,
+        -1.45,
+        2.7,
+        0.15
+      ],
+      "negative_interaction_pair": [
+        1,
+        3
+      ],
+      "num_players": 4,
+      "positive_interaction_pair": [
+        0,
+        2
+      ],
+      "seed": 1621,
+      "shuffled_label_control": true,
+      "source": "generated_finite_table",
+      "target_rule": "0.25 + 1.2*x0 - 0.7*x1 + 1.6*x2 + 0.9*x3 + 2.2*x0*x2 - 1.5*x1*x3"
+    },
+    {
+      "claim_scope": "exact_data_shapley_vs_gradient_dot_bridge",
+      "example_count": 4,
+      "id": "one_step_linear_data_player_bridge_v1",
+      "seed": 0,
+      "source": "generated_finite_training_utility",
+      "train_labels": [
+        1.0,
+        1.0,
+        1.0,
+        -1.0
+      ],
+      "validation_label": 1.0
+    }
+  ],
+  "date_run": "2026-09-04T12:55:33+00:00",
+  "evidence_level": "shap_mech_agreement_contract_plus_cuda_neural_game_preflight",
+  "git_commit": "387be0eb",
+  "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+  "gt_tier": "GT-0",
+  "known_failures": [],
+  "metrics": {
+    "gpu_evidence": {
+      "category": "cuda_section_metric",
+      "placeholder_only": false,
+      "section_specific_metric_keys": [
+        "agreement_artifact_count",
+        "agreement_artifact_paths",
+        "agreement_artifacts_written",
+        "agreement_case_count",
+        "agreement_matrix_rows",
+        "agrees_with_mechanistic",
+        "coalition_count",
+        "data_player_bridge_pearson",
+        "data_player_harmful_identified",
+        "deletion_curve_points",
+        "deletion_drop",
+        "disagreement_case_count",
+        "fit_max_abs_error",
+        "fit_mse",
+        "insertion_curve_points",
+        "interaction_max_abs_error",
+        "mechanistic_scores",
+        "model_family",
+        "num_players",
+        "preflight_passed",
+        "random_baseline_drop",
+        "second_interaction_pair",
+        "second_interaction_value",
+        "shapley_values",
+        "shuffled_control_fit_mse",
+        "shuffled_control_rejected",
+        "shuffled_control_spearman",
+        "shuffled_control_topk_overlap",
+        "spearman_correlation",
+        "top_interaction_pair",
+        "top_interaction_value",
+        "topk_heatmap_cols",
+        "topk_heatmap_rows",
+        "topk_overlap",
+        "toy_xor_pair_interaction_abs",
+        "training_example_count",
+        "training_steps"
+      ],
+      "uses_cuda": true
+    },
+    "gpu_test": {
+      "agreement_artifact_count": 5,
+      "agreement_artifact_paths": [
+        "chapter16_shapley_attribution_baselines/exercises/part8_shapley_mechinterp_agreement/artifacts/agreement_matrix.csv",
+        "chapter16_shapley_attribution_baselines/exercises/part8_shapley_mechinterp_agreement/artifacts/deletion_curves.png",
+        "chapter16_shapley_attribution_baselines/exercises/part8_shapley_mechinterp_agreement/artifacts/insertion_curves.png",
+        "chapter16_shapley_attribution_baselines/exercises/part8_shapley_mechinterp_agreement/artifacts/topk_overlap_heatmap.png",
+        "chapter16_shapley_attribution_baselines/exercises/part8_shapley_mechinterp_agreement/artifacts/method_disagreement_examples.md"
+      ],
+      "agreement_artifacts_written": true,
+      "agreement_case_count": 2,
+      "agreement_matrix_rows": 7,
+      "agrees_with_mechanistic": true,
+      "coalition_count": 16,
+      "cuda_available": true,
+      "cuda_version": "13.2",
+      "data_player_bridge_pearson": 1.0000000000000002,
+      "data_player_harmful_identified": true,
+      "deletion_curve_points": 5,
+      "deletion_drop": 3.8000007420778275,
+      "device": "NVIDIA GeForce RTX 5090 Laptop GPU",
+      "disagreement_case_count": 1,
+      "fit_max_abs_error": 2.384185791015625e-06,
+      "fit_mse": 1.1020073742429304e-12,
+      "full_path": "Train a CUDA nonlinear feature game, compare Shapley scores against known mechanistic contributions, validate pair interactions, and reject shuffled-label agreement.",
+      "gpu_total_memory_gb": 23.45965576171875,
+      "insertion_curve_points": 5,
+      "interaction_max_abs_error": 4.52001889694742e-07,
+      "mechanistic_scores": [
+        2.3,
+        -1.45,
+        2.7,
+        0.15000000000000002
+      ],
+      "model_family": "cuda_trained_neural_coalition_game_mlp",
+      "num_players": 4,
+      "peak_vram_gb": 0.06262922286987305,
+      "preflight_passed": true,
+      "random_baseline_drop": 0.19999943176905313,
+      "second_interaction_pair": [
+        1,
+        3
+      ],
+      "second_interaction_value": -1.5000006978710492,
+      "shapley_values": [
+        2.3000006563961506,
+        -1.450000535696745,
+        2.700000955412785,
+        0.15000034247835475
+      ],
+      "shuffled_control_fit_mse": 1.6053824936079764e-13,
+      "shuffled_control_rejected": true,
+      "shuffled_control_spearman": -0.7999999999999998,
+      "shuffled_control_topk_overlap": 0.0,
+      "spearman_correlation": 0.9999999999999998,
+      "top_interaction_pair": [
+        0,
+        2
+      ],
+      "top_interaction_value": 2.2000004003445306,
+      "topk_heatmap_cols": 4,
+      "topk_heatmap_rows": 4,
+      "topk_overlap": 1.0,
+      "torch_version": "2.12.1+cu132",
+      "toy_xor_pair_interaction_abs": 2.0,
+      "training_example_count": 16,
+      "training_steps": 1200,
+      "within_vram_budget": true
+    },
+    "notebook_contract": {
+      "additive_agreement": {
+        "agrees_with_mechanistic": true,
+        "deletion_drop": 2.0,
+        "mechanistic_scores": [
+          1.0,
+          2.0,
+          0.5
+        ],
+        "mechanistic_top_feature": 1,
+        "patching_effects": [
+          1.0,
+          2.0,
+          0.5
+        ],
+        "random_baseline_drop": 0.75,
+        "shapley_top_feature": 1,
+        "shapley_values": [
+          1.0,
+          2.0,
+          0.5
+        ],
+        "spearman_correlation": 0.9999999999999998,
+        "topk_overlap": 1.0
+      },
+      "data_player_bridge": {
+        "exact_data_shapley": [
+          0.6412037037037037,
+          0.6412037037037037,
+          0.6412037037037037,
+          -1.173611111111111
+        ],
+        "gradient_dot_scores": [
+          4.0,
+          4.0,
+          4.0,
+          -4.0
+        ],
+        "harmful_example": 3,
+        "helpful_example": 0,
+        "identifies_harmful": true,
+        "identifies_helpful_tie": true,
+        "pearson_correlation": 1.0000000000000002
+      },
+      "xor_disagreement": {
+        "interaction_recovers_pair": true,
+        "max_single_feature_value": 0.0,
+        "mechanistic_pair": [
+          0,
+          1
+        ],
+        "ordinary_shapley_misses": true,
+        "pair_interactions": [
+          [
+            0.0,
+            -2.0
+          ],
+          [
+            -2.0,
+            0.0
+          ]
+        ],
+        "recovered_pair_interaction": 2.0,
+        "shapley_values": [
+          0.0,
+          0.0
+        ]
+      }
+    }
+  },
+  "models": [
+    {
+      "gated": false,
+      "id": "toy_or_generated_inputs",
+      "precision": "float32",
+      "revision": "seed_0",
+      "source": "generated"
+    },
+    {
+      "claim_scope": "shapley_mechanistic_agreement_preflight",
+      "gated": false,
+      "id": "course_cuda_neural_coalition_game_mlp_v1",
+      "learning_rate": 0.05,
+      "optimizer": "AdamW",
+      "precision": "float32",
+      "revision": "seed_1621_players4_hidden64_steps1200",
+      "source": "generated_training_run"
+    }
+  ],
+  "negative_controls": {
+    "declared_controls": [
+      "negative_control_where_applicable",
+      "shuffled_label_trained_model_negative_control"
+    ]
+  },
+  "notebook_id": "16_8_do_shapley_and_mechanistic_interpretability_agree",
+  "ood_tests": {
+    "declared": "required_where_applicable"
+  },
+  "peak_vram_gb": 0.06262922286987305,
+  "report_inputs": {
+    "algorithm": "sha256",
+    "combined_sha256": "aaccb90f14ea0672dcdb2caeec78f03cfd55959e9466ffbe7436c9c89efebcd1",
+    "files": [
+      {
+        "path": "arena_ext/shapley_attribution.py",
+        "sha256": "41933e8728654b42e33929346d136327b37d86e28bb884a45dd878dba096c418",
+        "size_bytes": 48062
+      },
+      {
+        "path": "arena_ext/shapley_neural_game.py",
+        "sha256": "09632900a7a6b31d46ec8ed8e39692b4e20618a81ce590369761f3687b9a19be",
+        "size_bytes": 4122
+      },
+      {
+        "path": "arena_ext/verification.py",
+        "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
+        "size_bytes": 9276
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part8_shapley_mechinterp_agreement/16.8_Do_SHAPley_and_Mechanistic_Interpretability_Agree_exercises.ipynb",
+        "sha256": "9f808d5e79c478f00b9e069c2299eb85f77aab5fdc8f7c53c67aeeeef9a9aa9c",
+        "size_bytes": 78700
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part8_shapley_mechinterp_agreement/16.8_Do_SHAPley_and_Mechanistic_Interpretability_Agree_solutions.ipynb",
+        "sha256": "fd2ddaf8830758f11503dfb94ea9b8a6a73c3a72d3cd8061ff5568450249d089",
+        "size_bytes": 482393
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part8_shapley_mechinterp_agreement/README.md",
+        "sha256": "b63218dad26cbf8a54238b56adfc7adddd7edd9a4f73a6f19ff7bcb2dad2a35c",
+        "size_bytes": 1338
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part8_shapley_mechinterp_agreement/artifacts.lock.yml",
+        "sha256": "47d91cb26568bed421d2da3d6d451635437370adb941cedfc2daa6cb0712e45d",
+        "size_bytes": 4435
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part8_shapley_mechinterp_agreement/expected_outputs/README.md",
+        "sha256": "462df1379ca9c622bda63d1f57c12a76e2b41dd3298250f48b07e90e599e8b27",
+        "size_bytes": 1803
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part8_shapley_mechinterp_agreement/expected_outputs/reference_metrics.json",
+        "sha256": "eadefcc9b84af93b33c829cc36322d7f2cb12bb022b2665dbba12d7e81f49b23",
+        "size_bytes": 1455
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part8_shapley_mechinterp_agreement/expected_outputs/smoke_test.json",
+        "sha256": "2a43290dbb65b12d3ae3132e5d664ae80775abeca3424fbd9827351f3e21fb98",
+        "size_bytes": 448
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part8_shapley_mechinterp_agreement/solutions.py",
+        "sha256": "cb1711490b328bad87c0e7708c6d19d71e6e57ad313076a11d713fee75274b18",
+        "size_bytes": 39371
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part8_shapley_mechinterp_agreement/tests.py",
+        "sha256": "7ae202e12f153f8e9a1ba4f3ef42387805764bf182bc4fbfc2d4cf9e5de7a3fa",
+        "size_bytes": 21296
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part8_shapley_mechinterp_agreement/utils.py",
+        "sha256": "31724e90fc6aa0a8d0345c2ca84358b4fe0afd6bf6b93e9f3aaa0a7ef46dba28",
+        "size_bytes": 141
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part8_shapley_mechinterp_agreement/verification_report.schema.json",
+        "sha256": "ecd833883885077ad5d7a0e239d984d01462255e94266212cf195ab4d4e27b3d",
+        "size_bytes": 2669
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/pages/08_[16.8]_Do_SHAPley_and_Mechanistic_Interpretability_Agree.md",
+        "sha256": "65b9957610e570ae0129b8ed57084deb25ae7cad3417c831630d0881d6a49322",
+        "size_bytes": 59821
+      },
+      {
+        "path": "scripts/run_extension_verification_reports.py",
+        "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
+        "size_bytes": 16272
+      }
+    ],
+    "schema_version": 1
+  },
+  "safety_notes": [
+    "No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.",
+    "The real training path uses only a generated finite binary feature table and a shuffled-label negative control. It does not use unsafe prompts, user data, external APIs, adapters, gated weights, or large persistent artifacts."
+  ],
+  "tests_passed": true,
+  "wall_clock_seconds": 3.081264
+}

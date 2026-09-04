@@ -1,0 +1,10 @@
+{
+  "accepted": true,
+  "claim_scope": "Exact two-variable activation-to-phrase-to-activation model organism; the real-model CUDA path is supporting evidence.",
+  "evidence_level": "exact_planted_semantic_ground_truth",
+  "gt_tier": "GT-0",
+  "notebook_id": "7_4_mini_natural_language_autoencoders",
+  "section": "7.4",
+  "tests_passed": true,
+  "title": "Mini Natural Language Autoencoders"
+}

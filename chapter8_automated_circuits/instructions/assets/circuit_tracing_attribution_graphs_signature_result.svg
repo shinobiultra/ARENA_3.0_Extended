@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="420" viewBox="0 0 960 420" role="img" aria-labelledby="title desc">
+  <title id="title">8.4 circuit tracing signature result</title>
+  <desc id="desc">The accepted CUDA preflight highlights a final-position self-edge and shows graph metric checks passing.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#334155"/>
+    </marker>
+    <filter id="shadow" x="-12%" y="-12%" width="124%" height="124%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#0f172a" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+  <rect width="960" height="420" rx="20" fill="#f8fafc"/>
+  <rect x="28" y="28" width="904" height="346" rx="18" fill="#ffffff" filter="url(#shadow)"/>
+  <text x="58" y="68" font-family="Inter, Arial, sans-serif" font-size="25" font-weight="700" fill="#0f172a">Pinned gelu-1l residual-position graph preflight</text>
+  <text x="58" y="96" font-family="Inter, Arial, sans-serif" font-size="14" fill="#475569">Top EAP edge localizes the final residual position, then survives graph-level checks.</text>
+
+  <text x="70" y="135" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="700" fill="#0f172a">EAP edge matrix</text>
+  <g transform="translate(70 154)">
+    <rect x="0" y="0" width="168" height="168" rx="8" fill="#e2e8f0"/>
+    <g fill="#dbeafe" stroke="#ffffff" stroke-width="2">
+      <rect x="0" y="0" width="28" height="28"/><rect x="28" y="0" width="28" height="28"/><rect x="56" y="0" width="28" height="28"/><rect x="84" y="0" width="28" height="28"/><rect x="112" y="0" width="28" height="28"/><rect x="140" y="0" width="28" height="28"/>
+      <rect x="0" y="28" width="28" height="28"/><rect x="28" y="28" width="28" height="28"/><rect x="56" y="28" width="28" height="28"/><rect x="84" y="28" width="28" height="28"/><rect x="112" y="28" width="28" height="28"/><rect x="140" y="28" width="28" height="28"/>
+      <rect x="0" y="56" width="28" height="28"/><rect x="28" y="56" width="28" height="28"/><rect x="56" y="56" width="28" height="28"/><rect x="84" y="56" width="28" height="28"/><rect x="112" y="56" width="28" height="28"/><rect x="140" y="56" width="28" height="28"/>
+      <rect x="0" y="84" width="28" height="28"/><rect x="28" y="84" width="28" height="28"/><rect x="56" y="84" width="28" height="28"/><rect x="84" y="84" width="28" height="28"/><rect x="112" y="84" width="28" height="28"/><rect x="140" y="84" width="28" height="28"/>
+      <rect x="0" y="112" width="28" height="28"/><rect x="28" y="112" width="28" height="28"/><rect x="56" y="112" width="28" height="28"/><rect x="84" y="112" width="28" height="28"/><rect x="112" y="112" width="28" height="28"/><rect x="140" y="112" width="28" height="28"/>
+      <rect x="0" y="140" width="28" height="28"/><rect x="28" y="140" width="28" height="28"/><rect x="56" y="140" width="28" height="28"/><rect x="84" y="140" width="28" height="28"/><rect x="112" y="140" width="28" height="28"/>
+    </g>
+    <rect x="140" y="140" width="28" height="28" fill="#2563eb" stroke="#ffffff" stroke-width="2"/>
+    <text x="149" y="159" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="700" fill="#ffffff">5</text>
+  </g>
+  <text x="103" y="345" font-family="Inter, Arial, sans-serif" font-size="13" fill="#475569">highlighted edge: (5, 5)</text>
+
+  <rect x="328" y="140" width="252" height="196" rx="14" fill="#eff6ff" stroke="#bfdbfe"/>
+  <text x="354" y="173" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="700" fill="#1e3a8a">Selected graph</text>
+  <circle cx="390" cy="238" r="22" fill="#2563eb"/>
+  <text x="365" y="284" font-family="Inter, Arial, sans-serif" font-size="14" fill="#0f172a">position_5</text>
+  <path d="M412 238 C462 178 520 180 526 238 C521 292 466 298 414 246" fill="none" stroke="#1d4ed8" stroke-width="4" marker-end="url(#arrow)"/>
+  <text x="430" y="220" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="700" fill="#1d4ed8">score 6.0313</text>
+  <text x="354" y="314" font-family="Inter, Arial, sans-serif" font-size="13" fill="#334155">top-1 local graph: final-position self-edge</text>
+
+  <rect x="636" y="130" width="236" height="218" rx="14" fill="#f0fdf4" stroke="#bbf7d0"/>
+  <text x="662" y="163" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="700" fill="#166534">Validation checks</text>
+  <text x="662" y="198" font-family="Inter, Arial, sans-serif" font-size="14" fill="#14532d">PASS explained fraction: 1.0000</text>
+  <text x="662" y="226" font-family="Inter, Arial, sans-serif" font-size="14" fill="#14532d">PASS path drop: 6.2771</text>
+  <text x="662" y="254" font-family="Inter, Arial, sans-serif" font-size="14" fill="#14532d">PASS alt margin: 6.2771</text>
+  <text x="662" y="282" font-family="Inter, Arial, sans-serif" font-size="14" fill="#14532d">PASS counterfact: -6.2771</text>
+  <text x="662" y="310" font-family="Inter, Arial, sans-serif" font-size="14" fill="#14532d">PASS peak VRAM: 0.4665 GB</text>
+
+  <rect x="58" y="384" width="844" height="22" rx="11" fill="#fff7ed"/>
+  <text x="76" y="400" font-family="Inter, Arial, sans-serif" font-size="12.5" fill="#9a3412">Scope: residual-position graph mechanics preflight; not sparse-feature/transcoder circuit tracing or IOI-scale discovery.</text>
+</svg>

@@ -1,0 +1,165 @@
+notebook_id: 12_1_clip_siglip_and_vlm_controls
+section: '12.1'
+title: CLIP, SigLIP, and VLM Controls
+exercise_metadata:
+  EXERCISE_ID: 12_1_clip_siglip_and_vlm_controls
+  GT_TIER: GT-1
+  DIFFICULTY: 4
+  IMPORTANCE: 3
+  EXPECTED_RUNTIME: seconds on toy contract; minutes on local real-model path
+  REQUIRES_GPU: true
+gt_tier: GT-1
+evidence_level: synthetic_vlm_ladder_plus_real_clip_siglip_hidden_token_patching_and_qwen25_vl_generation
+claim_scope: GT-1 pinned CLIP and SigLIP rendered-shape retrieval plus real object-region
+  counterfactual patching, real hidden visual-token activation patching at the vision
+  patch-embedding output with object/background/same-size random-token/full-sequence
+  controls, a pinned Qwen2.5-VL 3B rendered-shape generation check, and a controlled
+  synthetic VLM object/color/clothing-style ladder with counterfactual labels, joint/image-only
+  baselines over text-only priors, and object-region patching against background and
+  same-size random controls.
+required_gpu_gb: 8
+max_allowed_gpu_gb: 24
+models:
+- id: toy_or_generated_inputs
+  source: generated
+  revision: seed_0
+  precision: float32
+  gated: false
+- id: openai/clip-vit-base-patch32
+  source: huggingface
+  revision: 3d74acf9a28c67741b2f4f2ea7635f0aaf6f0268
+  precision: float32
+  gated: false
+  claim_scope: rendered_shape_retrieval_region_patching_and_hidden_visual_token_activation_patching
+- id: google/siglip-base-patch16-224
+  source: huggingface
+  revision: 7fd15f0689c79d79e38b1c2e2e2370a7bf2761ed
+  precision: float16
+  gated: false
+  claim_scope: rendered_shape_retrieval_region_patching_and_hidden_visual_token_activation_patching
+- id: Qwen/Qwen2.5-VL-3B-Instruct
+  source: huggingface
+  revision: 66285546d2b821cf421d4f5eb2576359d3770cd3
+  precision: bfloat16
+  gated: false
+  claim_scope: rendered_shape_generation_preflight
+datasets:
+- id: 12_1_clip_siglip_and_vlm_controls_toy_inputs
+  source: generated
+  seed: 0
+- id: course_generated_colored_shapes_v1
+  source: generated
+  seed: 0
+  schema: object_color_bbox_question_answer_counterfactual
+- id: rendered_red_square_blue_circle_clip_preflight_v1
+  source: generated_pil_shapes
+  seed: 0
+  image_count: 2
+  text_count: 2
+expected_metrics:
+  tests_passed: true
+  accepted: true
+  max_allowed_gpu_gb: 24
+  synthetic_scene_count: 4
+  joint_beats_text_only: true
+  text_only_fails_image_questions: true
+  object_beats_background: true
+  object_beats_random: true
+  object_patch_flips_answer: true
+  visual_sequence_patch_passed: true
+  visual_sequence_patch_object_flips_answer: true
+  visual_sequence_patch_full_sequence_matches_corrupt: true
+  real_clip_rendered_shape_preflight_passed: true
+  real_clip_image_to_text_accuracy: 1.0
+  real_clip_text_to_image_accuracy: 1.0
+  real_clip_mean_positive_margin_min: 2.0
+  real_clip_object_patch_flips_answer: true
+  real_clip_background_patch_preserves_answer: true
+  real_clip_object_beats_background: true
+  real_clip_object_beats_random: true
+  real_clip_random_patch_same_size_as_object: true
+  real_clip_random_patch_overlap_area: 0
+  real_clip_random_patch_overlaps_object: false
+  real_clip_visual_token_activation_patching_preflight_passed: true
+  real_clip_activation_patch_object_flips_answer: true
+  real_clip_activation_patch_background_preserves_answer: true
+  real_clip_activation_patch_random_preserves_answer: true
+  real_clip_activation_patch_full_sequence_matches_corrupt: true
+  real_clip_activation_patch_full_sequence_flips_answer: true
+  real_clip_activation_patch_min_object_gap_over_background_min: 4.0
+  real_clip_activation_patch_min_object_gap_over_random_min: 4.0
+  real_clip_activation_patch_full_sequence_max_abs_margin_error_max: 0.001
+  real_clip_activation_patch_object_token_count: 9
+  real_clip_activation_patch_random_token_count: 9
+  real_clip_activation_patch_random_control_same_size: true
+  real_clip_activation_patch_random_control_overlaps_object: false
+  real_clip_activation_patch_hook_point: vision_model.embeddings
+  real_siglip_rendered_shape_preflight_passed: true
+  real_siglip_image_to_text_accuracy: 1.0
+  real_siglip_text_to_image_accuracy: 1.0
+  real_siglip_mean_positive_margin_min: 0.5
+  real_siglip_object_patch_flips_answer: true
+  real_siglip_background_patch_preserves_answer: true
+  real_siglip_object_beats_background: true
+  real_siglip_object_beats_random: true
+  real_siglip_random_patch_same_size_as_object: true
+  real_siglip_random_patch_overlap_area: 0
+  real_siglip_random_patch_overlaps_object: false
+  real_siglip_visual_token_activation_patching_preflight_passed: true
+  real_siglip_activation_patch_object_flips_answer: true
+  real_siglip_activation_patch_background_preserves_answer: true
+  real_siglip_activation_patch_random_preserves_answer: true
+  real_siglip_activation_patch_full_sequence_matches_corrupt: true
+  real_siglip_activation_patch_full_sequence_flips_answer: true
+  real_siglip_activation_patch_min_object_gap_over_background_min: 10.0
+  real_siglip_activation_patch_min_object_gap_over_random_min: 10.0
+  real_siglip_activation_patch_full_sequence_max_abs_margin_error_max: 0.001
+  real_siglip_activation_patch_object_token_count: 36
+  real_siglip_activation_patch_random_token_count: 36
+  real_siglip_activation_patch_random_control_same_size: true
+  real_siglip_activation_patch_random_control_overlaps_object: false
+  real_siglip_activation_patch_hook_point: vision_model.embeddings
+  real_qwen25_vl_generation_preflight_passed: true
+  real_qwen25_vl_accuracy: 1.0
+  real_qwen25_vl_expected_answers:
+  - red square
+  - blue circle
+  real_qwen25_vl_peak_vram_gb_max: 12.0
+controls:
+- baseline_or_reference_check
+- negative_control_where_applicable
+- shape_dtype_or_exact_value_check
+- synthetic_colored_shape_counterfactual_schema
+- synthetic_clothing_garment_color_style_schema
+- clothing_text_prior_corruption_control
+- clothing_random_label_control
+- text_only_prior_failure_baseline
+- image_only_grounding_baseline
+- object_region_patch
+- background_region_patch_control
+- same_size_random_region_patch_control
+- non_overlapping_random_region_patch_control
+- pinned_real_clip_rendered_shape_retrieval
+- pinned_real_clip_object_region_counterfactual_patch
+- pinned_real_clip_hidden_visual_token_activation_patch
+- real_clip_hidden_background_token_activation_patch_control
+- real_clip_hidden_same_size_random_token_activation_patch_control
+- real_clip_full_visual_sequence_activation_patch_control
+- real_clip_local_snapshot_load_no_remote_conversion_thread
+- pinned_real_siglip_safetensors_rendered_shape_retrieval
+- pinned_real_siglip_object_region_counterfactual_patch
+- pinned_real_siglip_hidden_visual_token_activation_patch
+- real_siglip_hidden_background_token_activation_patch_control
+- real_siglip_hidden_same_size_random_token_activation_patch_control
+- real_siglip_full_visual_sequence_activation_patch_control
+- pinned_real_qwen25_vl_rendered_shape_generation
+- qwen25_vl_red_square_blue_circle_counterfactual_control
+safety_notes:
+- No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.
+- The real generative VLM path uses safe generated shape images only. The CLIP and
+  SigLIP region-patching path uses deterministic rendered shape images with object,
+  background, and same-size non-overlapping random-region patch controls. The hidden-token
+  path patches real CLIP/SigLIP visual-token activations at `vision_model.embeddings`
+  and requires object tokens to flip the contrastive answer while background, same-size
+  random-token, and full visual-sequence controls behave as expected. The Qwen2.5-VL
+  path verifies grounded generation on the same safe rendered objects.

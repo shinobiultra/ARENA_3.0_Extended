@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="360" viewBox="0 0 920 360" role="img" aria-labelledby="title desc">
+  <title id="title">Mini NLA signature result</title>
+  <desc id="desc">The phrase bottleneck has lower reconstruction MSE than text-only and prompt-label baselines, preserves latent prediction accuracy, and fails shuffled/blank controls.</desc>
+  <defs>
+    <style>
+      .axis { stroke: #334155; stroke-width: 2; }
+      .grid { stroke: #cbd5e1; stroke-width: 1; }
+      .bar1 { fill: #0ea5e9; }
+      .bar2 { fill: #94a3b8; }
+      .bar3 { fill: #f59e0b; }
+      .bar4 { fill: #ef4444; }
+      .label { font: 14px system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #0f172a; }
+      .small { font: 13px system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #334155; }
+      .title { font: 700 20px system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #0f172a; }
+      .card { fill: #f8fafc; stroke: #334155; stroke-width: 1.5; rx: 8; }
+      .ok { fill: #dcfce7; stroke: #15803d; }
+    </style>
+  </defs>
+  <rect x="24" y="24" width="872" height="312" class="card"/>
+  <text x="54" y="62" class="title">Pinned gelu-1l phrase-bottleneck mini-NLA</text>
+  <text x="54" y="88" class="small">8 held-out residuals, 12 phrase ids, hook blocks.0.hook_resid_post, peak VRAM 0.269 GB</text>
+
+  <line x1="92" y1="270" x2="498" y2="270" class="axis"/>
+  <line x1="92" y1="118" x2="92" y2="270" class="axis"/>
+  <line x1="92" y1="218" x2="498" y2="218" class="grid"/>
+  <line x1="92" y1="166" x2="498" y2="166" class="grid"/>
+
+  <rect x="128" y="183" width="54" height="87" class="bar1"/>
+  <rect x="218" y="125" width="54" height="145" class="bar2"/>
+  <rect x="308" y="157" width="54" height="113" class="bar3"/>
+  <rect x="398" y="28" width="54" height="242" class="bar4"/>
+
+  <text x="155" y="292" text-anchor="middle" class="small">NLA</text>
+  <text x="245" y="292" text-anchor="middle" class="small">text-only</text>
+  <text x="335" y="292" text-anchor="middle" class="small">prompt label</text>
+  <text x="425" y="292" text-anchor="middle" class="small">shuffled</text>
+  <text x="155" y="177" text-anchor="middle" class="small">0.130</text>
+  <text x="245" y="119" text-anchor="middle" class="small">0.216</text>
+  <text x="335" y="151" text-anchor="middle" class="small">0.168</text>
+  <text x="425" y="115" text-anchor="middle" class="small">0.359</text>
+  <text x="72" y="122" text-anchor="end" class="small">MSE</text>
+
+  <rect x="548" y="116" width="292" height="40" class="card ok"/>
+  <text x="568" y="141" class="label">latent accuracy: NLA 1.00 vs text-only 0.50</text>
+  <rect x="548" y="168" width="292" height="40" class="card ok"/>
+  <text x="568" y="193" class="label">cosine 0.940; numeric payload count 0</text>
+  <rect x="548" y="220" width="292" height="40" class="card ok"/>
+  <text x="568" y="245" class="label">counterfactual phrase changed after delta 14.84</text>
+  <text x="548" y="292" class="small">Claim: local discrete phrase-bank NLA preflight, not full Anthropic-scale NLA.</text>
+</svg>

@@ -1,0 +1,8 @@
+task,method_a,method_b,player_type_a,player_type_b,metric,value,interpretation
+additive_control,ExactShapley,MechanisticScores,feature,feature,spearman_rank_correlation,1,Additive ground truth gives full rank agreement.
+neural_coalition_game,ExactShapley,AnalyticMechanisticScores,feature,feature,spearman_rank_correlation,1,Trained model ablations recover the analytic feature ordering.
+neural_coalition_game,ExactShapley,AnalyticMechanisticScores,feature,feature,top2_overlap,1,Top causal features match the analytic mechanism.
+neural_coalition_game,ExactShapley,FeatureDeletion,feature,behavior,deletion_drop_minus_baseline,3.6,Deleting the top Shapley feature hurts more than deleting a non-top baseline.
+neural_coalition_game,ShapleyInteractions,AnalyticPairInteractions,feature_pair,feature_pair,max_abs_error,4.52002e-07,Pair interactions recover the planted positive and negative feature pairs.
+shuffled_label_control,ExactShapley,AnalyticMechanisticScores,feature,feature,spearman_rank_correlation,-0.8,The shuffled-label trained model fails the mechanistic agreement test.
+xor_control,OrdinaryShapley,ShapleyInteractions,feature,feature_pair,disagreement_detected,1,Single-feature Shapley misses XOR while pair interactions recover it.

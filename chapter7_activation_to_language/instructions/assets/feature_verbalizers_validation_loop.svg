@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="330" viewBox="0 0 920 330" role="img" aria-labelledby="title desc">
+  <title id="title">Feature verbalizer validation loop</title>
+  <desc id="desc">A six step loop from feature selection through examples, hypothesis, held-out predictions, counterexamples, and intervention controls.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,5 L0,10 z" fill="#334155"/>
+    </marker>
+    <style>
+      .title { font: 700 20px Inter, Arial, sans-serif; fill: #111827; }
+      .subtitle { font: 500 12px Inter, Arial, sans-serif; fill: #475569; }
+      .box-title { font: 700 13px Inter, Arial, sans-serif; fill: #0f172a; }
+      .box-text { font: 500 11px Inter, Arial, sans-serif; fill: #334155; }
+      .small { font: 600 10px Inter, Arial, sans-serif; fill: #475569; }
+      .arrow { stroke: #334155; stroke-width: 2.2; fill: none; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <rect x="0" y="0" width="920" height="330" rx="0" fill="#f8fafc"/>
+  <text x="28" y="34" class="title">Do not trust the story until it predicts something new</text>
+  <text x="28" y="56" class="subtitle">A feature verbalizer is a hypothesis loop: examples make a story, tests try to break it, interventions ask whether it was causal.</text>
+
+  <g transform="translate(28,88)">
+    <rect x="0" y="0" width="132" height="96" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+    <text x="16" y="25" class="box-title">1. Pick feature</text>
+    <text x="16" y="48" class="box-text">neuron, SAE feature,</text>
+    <text x="16" y="64" class="box-text">transcoder feature,</text>
+    <text x="16" y="80" class="box-text">or residual direction</text>
+  </g>
+
+  <g transform="translate(178,88)">
+    <rect x="0" y="0" width="132" height="96" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+    <text x="16" y="25" class="box-title">2. Gather examples</text>
+    <text x="16" y="48" class="box-text">top, bottom, random,</text>
+    <text x="16" y="64" class="box-text">and near-threshold</text>
+    <text x="16" y="80" class="box-text">contrastive cases</text>
+  </g>
+
+  <g transform="translate(328,88)">
+    <rect x="0" y="0" width="132" height="96" rx="8" fill="#fef3c7" stroke="#d97706" stroke-width="1.5"/>
+    <text x="16" y="25" class="box-title">3. Write hypothesis</text>
+    <text x="16" y="48" class="box-text">short verbal rule</text>
+    <text x="16" y="64" class="box-text">with explicit terms</text>
+    <text x="16" y="80" class="box-text">and scope</text>
+  </g>
+
+  <g transform="translate(478,88)">
+    <rect x="0" y="0" width="132" height="96" rx="8" fill="#fce7f3" stroke="#db2777" stroke-width="1.5"/>
+    <text x="16" y="25" class="box-title">4. Predict held-out</text>
+    <text x="16" y="48" class="box-text">beat baseline</text>
+    <text x="16" y="64" class="box-text">on fresh prompts</text>
+    <text x="16" y="80" class="box-text">and contrastives</text>
+  </g>
+
+  <g transform="translate(628,88)">
+    <rect x="0" y="0" width="132" height="96" rx="8" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.5"/>
+    <text x="16" y="25" class="box-title">5. Find failures</text>
+    <text x="16" y="48" class="box-text">false positives,</text>
+    <text x="16" y="64" class="box-text">false negatives,</text>
+    <text x="16" y="80" class="box-text">then revise</text>
+  </g>
+
+  <g transform="translate(778,88)">
+    <rect x="0" y="0" width="114" height="96" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="1.5"/>
+    <text x="15" y="25" class="box-title">6. Intervene</text>
+    <text x="15" y="48" class="box-text">target direction</text>
+    <text x="15" y="64" class="box-text">must beat a</text>
+    <text x="15" y="80" class="box-text">random control</text>
+  </g>
+
+  <path class="arrow" d="M160 136 H174"/>
+  <path class="arrow" d="M310 136 H324"/>
+  <path class="arrow" d="M460 136 H474"/>
+  <path class="arrow" d="M610 136 H624"/>
+  <path class="arrow" d="M760 136 H774"/>
+
+  <path d="M694 198 C610 268 360 268 246 198" stroke="#64748b" stroke-width="2.2" fill="none" marker-end="url(#arrow)" stroke-dasharray="6 6"/>
+  <text x="326" y="250" class="small">If counterexamples appear, revise the hypothesis and rerun the held-out tests.</text>
+
+  <rect x="70" y="278" width="780" height="34" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="92" y="300" class="subtitle">A readable explanation is only useful after prediction, counterexample, and intervention checks.</text>
+</svg>

@@ -1,0 +1,211 @@
+notebook_id: 7_4_mini_natural_language_autoencoders
+section: '7.4'
+title: Mini Natural Language Autoencoders
+exercise_metadata:
+  EXERCISE_ID: 7_4_mini_natural_language_autoencoders
+  GT_TIER: GT-3
+  DIFFICULTY: 3
+  IMPORTANCE: 3
+  EXPECTED_RUNTIME: seconds on toy contract; minutes on live trainable local real-model path
+  REQUIRES_GPU: false
+gt_tier: GT-3
+evidence_level: exact_planted_semantic_ground_truth_plus_pinned_pythia_cpu_residual_text_bottleneck
+claim_scope: 'The learner-facing GT-0 result proves that a four-phrase compositional
+  bottleneck recovers two planted semantic variables from held-out activations and
+  preserves their exact downstream readout while prompt-only and opposite-phrase
+  controls fail. Every visible prompt is paired with all four latent states, so the
+  text-only information limit is exact. A pinned TransformerLens gelu-1l CUDA run
+  remains supporting GT-3 evidence for a small residual phrase bottleneck. Neither
+  result claims free-form explanation generation, discovery of unknown concepts,
+  arbitrary residual reconstruction, or Anthropic-scale NLA training.'
+learner_claim_scope: 'On 18 disjoint Pythia prompts, a six-phrase linear encoder
+  plus decoder from actual Pythia phrase-token embeddings preserves 0.778 of
+  next-token targets; correct oracle phrases preserve all targets, while no-text,
+  wrong-phrase, and shuffled-label controls fail. This is not free-form generation.'
+required_gpu_gb: 1
+max_allowed_gpu_gb: 24
+models:
+- id: toy_or_generated_inputs
+  source: generated
+  revision: seed_0
+  precision: float32
+  gated: false
+- id: NeelNanda/GELU_1L512W_C4_Code
+  source: huggingface_via_transformerlens
+  revision: bddc0e332f0ae84279e6a6a45d91b314899e1603
+  precision: float32
+  gated: false
+  claim_scope: residual_text_bottleneck_mini_nla_preflight
+  transformerlens_model_name: gelu-1l
+  tokenizer_id: NeelNanda/gpt-neox-tokenizer-digits
+  tokenizer_revision: 0f6671571a20be9756b9991d978047c03b75e749
+- id: EleutherAI/pythia-70m-deduped
+  source: huggingface_local_cache
+  revision: e93a9faa9c77e5d09219f6c868bfc7a1bd65593c
+  precision: float16
+  device: cpu
+  gated: false
+  claim_scope: six_phrase_final_hidden_state_text_bottleneck
+datasets:
+- id: 7_4_exact_courier_state_model_organism
+  source: generated
+  seed: 0
+  train_prompt_count: 6
+  eval_prompt_count: 4
+  paired_hidden_states_per_prompt: 4
+  semantic_variables:
+  - route_north_vs_south
+  - cargo_fragile_vs_standard
+  d_model: 8
+  nuisance_scale: 0.35
+- id: course_safe_residual_text_bottleneck_nla_prompts_v1
+  source: generated_prompt_sets
+  seed: 0
+  positive_anchor_prompt: The cat sat on the
+  negative_anchor_prompt: The bird flew over the
+  train_example_count: 12
+  eval_example_count: 8
+  eval_split: long_context_ood
+  latent_labels:
+  - surface
+  - motion
+  text_bottleneck: discrete_natural_language_phrase_bottleneck
+  phrase_count: 12
+  target_source: manual_safe_prompt_labels_plus_trainable_phrase_bottleneck_reconstruction
+  hook: blocks.0.hook_resid_post
+  tokenizer: NeelNanda/gpt-neox-tokenizer-digits
+- id: pythia_six_phrase_next_token_prompts_v1
+  source: course_authored_safe_prompts
+  train_example_count: 36
+  eval_example_count: 18
+  eval_split: disjoint_blind_prompts
+  phrase_count: 6
+  expected_tokens:
+  - ' a'
+  - ' the'
+  - ','
+  - '-'
+  - '.'
+  - newline
+expected_metrics:
+  tests_passed: true
+  accepted: true
+  toy_phrase_accuracy: 1.0
+  toy_nla_mse_max: 0.02
+  toy_prompt_only_mse_min: 1.0
+  toy_shuffled_phrase_mse_min: 5.0
+  toy_behavior_mae_max: 0.0001
+  toy_prompt_only_behavior_mae_min: 3.0
+  toy_shuffled_behavior_mae_min: 6.0
+  toy_route_accuracy: 1.0
+  toy_cargo_accuracy: 1.0
+  toy_compression_ratio_max: 0.5
+  max_allowed_gpu_gb: 24
+  preflight_passed: true
+  model_name: gelu-1l
+  hf_revision: bddc0e332f0ae84279e6a6a45d91b314899e1603
+  tokenizer_revision: 0f6671571a20be9756b9991d978047c03b75e749
+  bnb_cuda_override: '130'
+  positive_token: ' floor'
+  negative_token: ' top'
+  phrase_count: 12
+  phrase_vocabulary_size: 12
+  text_bottleneck: discrete_natural_language_phrase_bottleneck
+  live_trainable_nla: true
+  report_replay: false
+  trainable_encoder_type: linear_residual_to_phrase_id
+  trainable_decoder_type: phrase_id_embedding_table_to_residual
+  trainable_encoder_parameter_count: 6156
+  trainable_decoder_parameter_count: 6144
+  trainable_encoder_train_accuracy: 1.0
+  trainable_eval_phrase_accuracy_min: 0.75
+  trainable_encoder_final_loss_max: 0.01
+  trainable_decoder_final_mse_max: 0.01
+  trainable_reconstruction_mse_max: 0.15
+  trainable_blank_text_mse_min: 0.2
+  trainable_beats_blank_text: true
+  trainable_phrase_count: 12
+  trainable_training_steps: 300
+  trainable_seed: 0
+  train_example_count: 12
+  eval_example_count: 8
+  activation_shape:
+  - 8
+  - 512
+  explanation_count: 8
+  numeric_literal_count: 0
+  activation_mse_max: 0.15
+  text_only_mse_min: 0.21
+  prompt_label_baseline_mse_min: 0.16
+  mean_cosine_similarity_min: 0.93
+  beats_text_only: true
+  beats_prompt_label_baseline: true
+  probe_logit_mean_abs_error_max: 2.0
+  preserves_latents: true
+  preserves_target_logit_diff: true
+  original_probe_accuracy: 1.0
+  reconstructed_probe_accuracy: 1.0
+  prediction_agreement: 1.0
+  text_only_prediction_accuracy: 0.5
+  nla_prediction_accuracy: 1.0
+  passes_ood: true
+  generated_word_count: 32
+  original_word_count: 64
+  compression_ratio_max: 0.7
+  shorter_than_original: true
+  counterfactual_activation_delta_min: 10.0
+  counterfactual_explanation_changed: true
+  shuffled_reconstruction_mse_min: 0.25
+  shuffled_control_worse: true
+  blank_text_mse_min: 0.2
+  blank_text_control_worse: true
+  peak_vram_gb_max: 1.0
+  learner_cpu_train_count: 36
+  learner_cpu_eval_count: 18
+  learner_cpu_phrase_accuracy_min: 0.75
+  learner_cpu_shuffled_label_accuracy_max: 0.25
+  learner_cpu_reconstructed_target_accuracy_min: 0.75
+  learner_cpu_oracle_phrase_target_accuracy: 1.0
+  learner_cpu_no_text_target_accuracy_max: 0.20
+  learner_cpu_wrong_phrase_target_accuracy: 0.0
+  learner_cpu_reconstruction_mse_max: 2.70
+  learner_cpu_no_text_mse_min: 3.30
+  learner_cpu_wrong_phrase_mse_min: 4.90
+controls:
+- baseline_or_reference_check
+- negative_control_where_applicable
+- shape_dtype_or_exact_value_check
+- toy_nla_batch_contract
+- toy_activation_reconstruction_contract
+- toy_logit_diff_preservation_contract
+- toy_latent_preservation_contract
+- toy_brevity_contract
+- toy_counterfactual_explanation_contract
+- toy_trainable_discrete_nla_bottleneck_contract
+- exact_paired_prompt_information_limit
+- exact_orthogonal_semantic_and_nuisance_directions
+- compositional_word_features_not_phrase_ids
+- opposite_meaning_phrase_control
+- prompt_copy_compression_failure
+- route_only_counterfactual_reflection
+- pinned_transformerlens_gelu1l_live_trainable_phrase_bottleneck_reconstruction
+- no_activation_mean_reconstruction_baseline
+- prompt_label_text_only_reconstruction_baseline
+- direction_probe_logit_diff_preservation
+- long_context_ood_prompt_split
+- numeric_payload_rejection_control
+- shuffled_explanation_text_negative_control
+- blank_explanation_text_negative_control
+- counterfactual_anchor_explanation_change
+- anthropic_scale_nla_training_not_claimed
+- pinned_pythia_actual_final_hidden_states
+- pythia_token_embedding_phrase_features_not_phrase_id_table
+- shuffled_encoder_label_control
+- no_text_global_mean_control
+- cyclic_wrong_phrase_control
+safety_notes:
+- No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.
+- The real-model path uses safe generic prompts and cached activations/logits from
+  a small public TransformerLens checkpoint. It does not use unsafe prompts, gated
+  weights, generated completions, adapter training, external API calls, or claims
+  about arbitrary hidden thoughts.

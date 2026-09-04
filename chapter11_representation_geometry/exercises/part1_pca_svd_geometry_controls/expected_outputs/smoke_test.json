@@ -1,0 +1,10 @@
+{
+  "accepted": true,
+  "claim_scope": "Contract check; not a full real-model validation.",
+  "evidence_level": "notebook_contract",
+  "gt_tier": "GT-0",
+  "notebook_id": "11_1_pca_svd_and_geometry_controls",
+  "section": "11.1",
+  "tests_passed": true,
+  "title": "PCA, SVD, and Geometry Controls"
+}

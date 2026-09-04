@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="280" viewBox="0 0 920 280" role="img" aria-labelledby="title desc">
+  <title id="title">Mamba selective-scan verification ladder</title>
+  <desc id="desc">A left-to-right diagram showing selective discretization, recurrent scan, associative scan, chunked scan, cache parity, and official Mamba checkpoint preflight.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#344054"/>
+    </marker>
+    <style>
+      .box { fill: #f8fafc; stroke: #344054; stroke-width: 1.5; rx: 7; }
+      .accent { fill: #e0f2fe; stroke: #0369a1; stroke-width: 1.5; rx: 7; }
+      .check { fill: #ecfdf3; stroke: #027a48; stroke-width: 1.5; rx: 7; }
+      .title { font: 700 16px Arial, sans-serif; fill: #101828; }
+      .body { font: 13px Arial, sans-serif; fill: #344054; }
+      .small { font: 12px Arial, sans-serif; fill: #475467; }
+      .arrow { stroke: #344054; stroke-width: 1.5; fill: none; marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <rect width="920" height="280" fill="#ffffff"/>
+  <text x="28" y="34" class="title">Mamba from Scratch: what has to match?</text>
+  <text x="28" y="56" class="body">Every faster or cached path is accepted only if it agrees with the simple recurrent reference.</text>
+
+  <rect x="30" y="88" width="130" height="92" class="accent"/>
+  <text x="48" y="116" class="title">Discretize</text>
+  <text x="48" y="140" class="body">A = -exp(A_log)</text>
+  <text x="48" y="160" class="body">a_t in (0, 1]</text>
+
+  <path d="M 165 134 H 205" class="arrow"/>
+  <rect x="210" y="88" width="130" height="92" class="box"/>
+  <text x="230" y="116" class="title">Recurrent</text>
+  <text x="230" y="140" class="body">state_t = a state</text>
+  <text x="230" y="160" class="body">+ b_t</text>
+
+  <path d="M 345 134 H 385" class="arrow"/>
+  <rect x="390" y="58" width="140" height="72" class="check"/>
+  <text x="410" y="86" class="title">Associative</text>
+  <text x="410" y="108" class="body">prefix composition</text>
+  <path d="M 345 134 H 385" class="arrow" transform="translate(0,58)"/>
+  <rect x="390" y="148" width="140" height="72" class="check"/>
+  <text x="410" y="176" class="title">Chunked</text>
+  <text x="410" y="198" class="body">carry last state</text>
+
+  <path d="M 535 94 H 575" class="arrow"/>
+  <path d="M 535 184 H 575" class="arrow"/>
+  <rect x="580" y="88" width="140" height="92" class="box"/>
+  <text x="600" y="116" class="title">Tiny block</text>
+  <text x="600" y="140" class="body">causal conv state</text>
+  <text x="600" y="160" class="body">SSM state cache</text>
+
+  <path d="M 725 134 H 765" class="arrow"/>
+  <rect x="770" y="88" width="120" height="92" class="check"/>
+  <text x="790" y="116" class="title">Real preflight</text>
+  <text x="790" y="140" class="body">Mamba-130M-HF</text>
+  <text x="790" y="160" class="body">CUDA + kernels</text>
+
+  <text x="40" y="238" class="small">Signature evidence: scan max diff <= 1e-6, cache diff <= 1e-5, official logits finite, generation deterministic, fast kernels present.</text>
+</svg>

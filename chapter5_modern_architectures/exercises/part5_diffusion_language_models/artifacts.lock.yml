@@ -1,0 +1,144 @@
+notebook_id: 5_5_diffusion_language_models
+section: '5.5'
+title: Toy Discrete Diffusion Language Models and Local DiffusionGemma Proof
+exercise_metadata:
+  EXERCISE_ID: 5_5_diffusion_language_models
+  GT_TIER: GT-0
+  DIFFICULTY: 3
+  IMPORTANCE: 4
+  EXPECTED_RUNTIME: seconds on toy contract; minutes for CUDA tiny-model/readiness path
+  REQUIRES_GPU: true
+gt_tier: GT-0
+evidence_level: toy_diffusion_contract_plus_visible_cuda_trained_conditional_diffusion_lm_and_diffusiongemma_runtime_proof
+claim_scope: 'GT-0 discrete diffusion language-model ladder: analytic noising, masked
+  denoising loss, remasking, sampler, entropy, and trajectory helpers remain tested
+  on toy fixtures, then a tiny Transformer denoiser is trained on CUDA for a generated
+  conditional copy-pair grammar. The report checks held-out masked-token accuracy,
+  confidence-remasking sampler reconstruction, activation trajectory shape, VRAM,
+  and a separately trained shuffled-label denoiser. The report also checks the pinned DiffusionGemma
+  Transformers config, processor, tokenizer, model class, exact revisions, shard
+  readiness, and vLLM/NVFP4 runtime readiness. It accepts released-checkpoint
+  generation only from complete BF16 generation or from the pinned NVFP4 isolated-vLLM
+  proof artifact; config-only evidence is never accepted as generation.'
+freshness_inputs:
+- scripts/run_diffusiongemma_vllm_probe.py
+- chapter5_modern_architectures/exercises/part5_diffusion_language_models/artifacts/diffusiongemma_vllm_probe.json
+required_gpu_gb: 1
+max_allowed_gpu_gb: 24
+models:
+- id: toy_or_generated_inputs
+  source: generated
+  revision: seed_0
+  precision: float32
+  gated: false
+- id: course_tiny_conditional_diffusion_lm_v1
+  source: generated_training_run
+  revision: seed_5505_steps_1200
+  architecture: 2_layer_transformer_encoder_denoiser
+  precision: float32
+  gated: false
+  claim_scope: gt0_conditional_discrete_diffusion_model_organism
+- id: google/diffusiongemma-26B-A4B-it
+  source: huggingface
+  revision: 0f28bc42f588fbd8f71e08102b1c3960298a1358
+  architecture: DiffusionGemmaForBlockDiffusion
+  precision: bfloat16
+  gated: false
+  claim_scope: pinned_config_processor_and_bf16_shard_readiness
+- id: nvidia/diffusiongemma-26B-A4B-it-NVFP4
+  source: huggingface
+  revision: 2ea837236295d617ac27f8c17d61228081932c40
+  architecture: DiffusionGemmaForBlockDiffusion
+  precision: nvfp4
+  gated: false
+  claim_scope: pinned_nvfp4_shard_and_isolated_vllm_generation_readiness
+datasets:
+- id: 5_5_diffusion_language_models_toy_inputs
+  source: generated
+  seed: 0
+- id: copy_pair_conditional_suffix_grammar_v1
+  source: generated
+  seed: 5505
+  train_example_count: 80
+  heldout_example_count: 20
+  vocab_size: 11
+  mask_token_id: 10
+  sequence_length: 6
+  label_rule: '[a,b] -> [a,a,b,b] suffix'
+  protected_prefix_tokens: 2
+  shuffled_label_control: true
+expected_metrics:
+  tests_passed: true
+  accepted: true
+  max_allowed_gpu_gb: 24
+  preflight_passed: true
+  model_family: tiny_transformer_discrete_diffusion_lm
+  dataset: copy_pair_conditional_suffix_grammar_v1
+  train_example_count: 80
+  heldout_example_count: 20
+  vocab_size: 11
+  mask_token_id: 10
+  sequence_length: 6
+  diffusion_steps: 6
+  training_steps: 1200
+  final_train_denoising_loss_max: 0.05
+  denoising_loss_max: 0.05
+  heldout_masked_accuracy_min: 0.95
+  shuffled_label_accuracy_max: 0.25
+  shuffled_sampler_exact_match_max: 0.10
+  shuffled_control_fails: true
+  sampler_suffix_token_accuracy_min: 0.95
+  sampler_exact_match_min: 0.95
+  activation_trajectory_shape_ok: true
+  entropy_max_max: 1.5
+  diffusiongemma_config_supported: true
+  diffusiongemma_processor_supported: true
+  diffusiongemma_model_class_supported: true
+  diffusiongemma_model_type: diffusion_gemma
+  diffusiongemma_bf16_required_weight_shards: 11
+  diffusiongemma_nvfp4_required_weight_shards: 2
+  diffusiongemma_nvfp4_quant_method: modelopt
+  diffusiongemma_generation_ready: true
+  diffusiongemma_released_checkpoint_generation_proven: true
+  diffusiongemma_bf16_24gb_direct_loading_deferred: true
+  diffusiongemma_nvfp4_isolated_vllm_generation_ready: true
+  diffusiongemma_external_vllm_generation_ready: true
+  diffusiongemma_external_vllm_runtime_isolated: true
+  diffusiongemma_external_vllm_model_matches_nvfp4_revision: true
+  diffusiongemma_external_vllm_output_nonempty: true
+  diffusiongemma_external_vllm_output_mentions_negative_controls: true
+  diffusiongemma_external_vllm_used_chat_template: true
+  diffusiongemma_external_vllm_torch_version: '2.11.0+cu130'
+  diffusiongemma_external_vllm_torch_cuda_version: '13.0'
+  diffusiongemma_external_vllm_vllm_version: '0.24.0'
+  diffusiongemma_external_vllm_cuda_available: true
+  diffusiongemma_vllm_probe_output_nonempty: true
+  diffusiongemma_vllm_probe_torch_version: '2.11.0+cu130'
+  diffusiongemma_vllm_probe_torch_cuda_version: '13.0'
+  diffusiongemma_vllm_probe_vllm_version: '0.24.0'
+  peak_vram_gb_max: 1.0
+controls:
+- baseline_or_reference_check
+- negative_control_where_applicable
+- shape_dtype_or_exact_value_check
+- linear_mask_schedule_contract
+- forward_noising_extreme_timestep_contract
+- masked_denoising_loss_contract
+- confidence_remasking_contract
+- oracle_sampler_contract
+- commitment_time_and_activation_trajectory_contract
+- cuda_trained_tiny_conditional_diffusion_lm
+- heldout_masked_suffix_accuracy
+- confidence_remasking_sampler_exact_match
+- independently_trained_shuffled_label_denoiser
+- pinned_diffusiongemma_config_processor_contract
+- pinned_diffusiongemma_weight_shard_readiness_contract
+- pinned_diffusiongemma_vllm_nvfp4_runtime_readiness_contract
+- pinned_diffusiongemma_nvfp4_isolated_vllm_generation_probe
+safety_notes:
+- No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.
+- The trained diffusion LM path uses generated integer-token copy-pair data only.
+  DiffusionGemma readiness checks use public open-weight metadata and exact pinned
+  revisions. The Google BF16 path is deferred for direct 24GB loading, while the
+  NVIDIA NVFP4 claim is limited to the isolated vLLM proof artifact and does not
+  install vLLM into the main torch 2.12/CUDA 13.2 uv environment.

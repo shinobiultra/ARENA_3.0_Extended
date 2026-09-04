@@ -1,0 +1,106 @@
+notebook_id: 16_7_data_shapley_in_one_training_run
+section: '16.7'
+title: Data Shapley in One Training Run
+exercise_metadata:
+  EXERCISE_ID: 16_7_data_shapley_in_one_training_run
+  GT_TIER: GT-0
+  DIFFICULTY: 4
+  IMPORTANCE: 4
+  EXPECTED_RUNTIME: seconds on toy contract; minutes on local real-model path
+  REQUIRES_GPU: true
+gt_tier: GT-0
+evidence_level: data_shapley_contract_plus_cuda_one_step_training_preflight
+claim_scope: 'GT-0 Data Shapley preflight: deterministic exact, Monte Carlo, and first-order
+  in-run Data Shapley contracts are kept for learner exercises, then a one-step linear
+  regression problem is evaluated on CUDA. The report enumerates all training-example
+  coalitions on GPU, runs an actual full-batch one-step optimizer update, computes
+  per-example autograd gradient-dot scores in the same run, compares exact and sampled
+  Data Shapley values, verifies that the harmful flipped example is identified and
+  deletion improves utility, rejects deterministic random-data and label-shuffled
+  attribution controls, and reports measured runtime overhead for full-update, exact-enumeration,
+  and in-run score paths. This proves the one-training-run attribution mechanics on
+  a finite model organism; it is not a claim about large-dataset TracIn, influence
+  functions, or production data valuation.'
+required_gpu_gb: 1
+max_allowed_gpu_gb: 24
+models:
+- id: toy_or_generated_inputs
+  source: generated
+  revision: seed_0
+  precision: float32
+  gated: false
+- id: course_cuda_one_step_linear_regression_data_shapley_v1
+  source: generated_training_run
+  revision: seed_0_examples4_lr0.5_one_step
+  precision: float64
+  gated: false
+  claim_scope: exact_mc_and_in_run_data_shapley_preflight
+  optimizer: SGD
+  learning_rate: 0.5
+datasets:
+- id: 16_7_data_shapley_in_one_training_run_toy_inputs
+  source: generated
+  seed: 0
+- id: toy_data_shapley_helpful_harmful_examples_v1
+  source: generated_finite_table
+  seed: 0
+  train_x:
+  - - 1.0
+  - - 1.0
+  - - 1.0
+  - - 1.0
+  train_y:
+  - 1.0
+  - 1.0
+  - 1.0
+  - -1.0
+  val_x:
+  - - 1.0
+  val_y:
+  - 1.0
+  harmful_example_index: 3
+  coalition_count: 16
+  monte_carlo_samples: 512
+expected_metrics:
+  tests_passed: true
+  accepted: true
+  max_allowed_gpu_gb: 24
+  preflight_passed: true
+  model_family: cuda_one_step_linear_regression_data_shapley
+  training_example_count: 4
+  coalition_count: 16
+  monte_carlo_samples: 512
+  learning_rate: 0.5
+  sampled_max_abs_error_max: 0.08
+  sampled_approximates_exact: true
+  pearson_correlation_min: 0.99
+  harmful_index: 3
+  identifies_harmful: true
+  identifies_helpful: true
+  harmful_value_max: 0.0
+  harmful_removal_delta_min: 0.1
+  actual_full_batch_one_step_utility: 0.75
+  coalition_full_utility: 0.75
+  peak_vram_gb_max: 1.0
+controls:
+- baseline_or_reference_check
+- negative_control_where_applicable
+- shape_dtype_or_exact_value_check
+- exact_data_shapley_contract
+- monte_carlo_data_shapley_contract
+- in_run_gradient_dot_contract
+- real_cuda_coalition_utility_enumeration
+- actual_full_batch_one_step_training_update
+- autograd_per_example_gradient_scores
+- harmful_example_deletion_check
+- monte_carlo_vs_exact_parity
+- in_run_score_vs_exact_correlation
+- deterministic_random_data_attribution_failure_control
+- deterministic_label_shuffled_attribution_failure_control
+- measured_runtime_overhead_full_exact_in_run_paths
+- large_dataset_data_valuation_not_claimed
+safety_notes:
+- No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.
+- The real training path uses only a generated four-example regression problem with
+  one flipped label. It does not use unsafe prompts, user data, external APIs, adapters,
+  gated weights, or large persistent artifacts.

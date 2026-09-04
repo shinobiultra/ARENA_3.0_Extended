@@ -1,0 +1,14 @@
+{
+  "accepted": true,
+  "claim_scope": "CPU notebook contract for exact finite mod-13 checkpoint archaeology; parent serial CUDA validation not run by this child task.",
+  "evidence_level": "exact_fourier_oracle_plus_cpu_train_save_reload_signature_result",
+  "gt_tier": "GT-0",
+  "notebook_id": "17_1_checkpoint_archaeology_and_mechanism_emergence",
+  "section": "17.1",
+  "tests_passed": true,
+  "title": "Checkpoint Archaeology and Mechanism Emergence",
+  "final_accuracy": 1.0,
+  "final_addition_fourier_score": 0.7499501705169678,
+  "random_label_peak_accuracy": 0.10650887340307236,
+  "random_mechanism_peak_score": 0.0008140764548443258
+}

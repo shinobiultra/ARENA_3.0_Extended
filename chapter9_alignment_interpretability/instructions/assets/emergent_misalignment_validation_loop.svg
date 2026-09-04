@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="340" viewBox="0 0 960 340" role="img" aria-labelledby="title desc">
+  <title id="title">Benign proxy-drift validation loop</title>
+  <desc id="desc">A validation loop from safe proxy prompts to hidden-state detection, behavior-logit alignment, controls, and scoped mitigation.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f7f7f2; }
+      .panel { fill: #ffffff; stroke: #2f3437; stroke-width: 1.4; rx: 8; }
+      .panel2 { fill: #e8f4f2; stroke: #2f3437; stroke-width: 1.4; rx: 8; }
+      .panel3 { fill: #fff1d7; stroke: #2f3437; stroke-width: 1.4; rx: 8; }
+      .panel4 { fill: #eadff6; stroke: #2f3437; stroke-width: 1.4; rx: 8; }
+      .title { font: 700 18px Arial, sans-serif; fill: #202426; }
+      .label { font: 700 13px Arial, sans-serif; fill: #202426; }
+      .body { font: 12px Arial, sans-serif; fill: #374047; }
+      .small { font: 11px Arial, sans-serif; fill: #4b545c; }
+      .arrow { stroke: #2f3437; stroke-width: 1.8; fill: none; marker-end: url(#arrow); }
+      .bad { fill: #c94a4a; }
+      .good { fill: #168a6f; }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 Z" fill="#2f3437"/>
+    </marker>
+  </defs>
+  <rect class="bg" x="0" y="0" width="960" height="340"/>
+  <text class="title" x="40" y="42">9.3 validation loop: safe proxy drift, not harmful finetuning</text>
+
+  <rect class="panel" x="40" y="78" width="150" height="96"/>
+  <text class="label" x="58" y="105">Safe prompts</text>
+  <text class="body" x="58" y="130">neutral policy</text>
+  <text class="body" x="58" y="150">five benign drifts</text>
+
+  <rect class="panel2" x="230" y="78" width="150" height="96"/>
+  <text class="label" x="248" y="105">Pythia states</text>
+  <text class="body" x="248" y="130">final hidden vector</text>
+  <text class="body" x="248" y="150">behavior logits</text>
+
+  <rect class="panel" x="420" y="78" width="150" height="96"/>
+  <text class="label" x="438" y="105">Drift direction</text>
+  <text class="body" x="438" y="130">train threshold</text>
+  <text class="body" x="438" y="150">held-out detector</text>
+
+  <rect class="panel3" x="610" y="78" width="150" height="96"/>
+  <text class="label" x="628" y="105">Controls</text>
+  <text class="body" x="628" y="130">label shuffle fails</text>
+  <text class="body" x="628" y="150">random direction fails</text>
+
+  <rect class="panel4" x="800" y="78" width="120" height="96"/>
+  <text class="label" x="818" y="105">Claim</text>
+  <text class="body" x="818" y="130">GT-3 preflight</text>
+  <text class="body" x="818" y="150">bounded scope</text>
+
+  <path class="arrow" d="M190 126 H228"/>
+  <path class="arrow" d="M380 126 H418"/>
+  <path class="arrow" d="M570 126 H608"/>
+  <path class="arrow" d="M760 126 H798"/>
+
+  <rect class="panel2" x="230" y="226" width="150" height="76"/>
+  <text class="label" x="248" y="253">Behavior proxy</text>
+  <text class="body" x="248" y="276">" helpful" vs " unsafe"</text>
+
+  <rect class="panel3" x="420" y="226" width="150" height="76"/>
+  <text class="label" x="438" y="253">Mitigation</text>
+  <text class="body" x="438" y="276">project drift component</text>
+
+  <rect class="panel" x="610" y="226" width="150" height="76"/>
+  <text class="label" x="628" y="253">Preservation</text>
+  <text class="body" x="628" y="276">neutral shift bounded</text>
+
+  <path class="arrow" d="M495 174 V224"/>
+  <path class="arrow" d="M380 264 H418"/>
+  <path class="arrow" d="M570 264 H608"/>
+
+  <circle class="good" cx="50" cy="314" r="5"/>
+  <text class="small" x="64" y="318">Supported: hidden-state proxy detector with controls.</text>
+  <circle class="bad" cx="388" cy="314" r="5"/>
+  <text class="small" x="402" y="318">Not supported: harmful finetune or broad emergent-misalignment reproduction.</text>
+</svg>

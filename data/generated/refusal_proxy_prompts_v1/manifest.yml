@@ -1,0 +1,25 @@
+dataset_id: course_generated_refusal_proxy_prompts_v1
+seed: 123
+schema_path: data/generated/refusal_proxy_prompts_v1/prompt_schema.json
+records_path: data/generated/refusal_proxy_prompts_v1/prompts.jsonl
+generator_script: generated_template_only
+split_policy:
+  train: 0.60
+  validation: 0.20
+  test: 0.20
+ood_split: template_family_heldout
+counterfactual_mapping: bidirectional_counterfactual_id
+label_function: refusal_expected_for_unsafe_meta_requests_else_compliance_expected
+example_preview:
+  - refusal_0001
+  - refusal_0001_cf
+controls:
+  - label_permutation
+  - template_permutation
+  - spurious_correlation_split
+  - counterfactual_split
+  - random_input_split
+safety_notes:
+  - Sanitized meta-prompts only.
+  - Redacted records must use [REDACTED] plus a 64-character prompt_hash.
+  - Do not add procedural harmful content to prompt artifacts.

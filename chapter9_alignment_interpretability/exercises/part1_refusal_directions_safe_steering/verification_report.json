@@ -1,0 +1,955 @@
+{
+  "accepted": true,
+  "baselines": {
+    "declared_controls": [
+      "baseline_or_reference_check",
+      "negative_control_where_applicable",
+      "shape_dtype_or_exact_value_check",
+      "safe_category_train_heldout_split",
+      "three_sanitized_prompt_template_families",
+      "heldout_prompt_template_family_control",
+      "sanitized_meta_prompt_policy",
+      "label_shuffle_control",
+      "fixed_seed_random_direction_control",
+      "no_generation_hidden_state_only",
+      "pythia_70m_deduped_revision_pinned",
+      "pinned_qwen25_0_5b_instruction_model",
+      "safe_instruction_refusal_direction_addition",
+      "safe_instruction_refusal_direction_projection_out",
+      "fixed_seed_random_direction_addition_projection_control",
+      "no_completion_text_saved",
+      "safe_behavioral_completion_aggregate_only",
+      "completion_classifier_refusal_marker_rubric",
+      "public_refusal_compliance_pairs_dataset",
+      "gt2_mean_difference_refusal_direction",
+      "gt2_layer_sweep_control",
+      "gt2_position_sweep_control",
+      "gt2_pca_svd_pc1_control",
+      "gt2_label_shuffle_control",
+      "gt2_random_direction_control",
+      "gt2_behavioral_addition_projection_aggregate_completion_effect",
+      "gt2_no_raw_prompt_or_completion_text_saved"
+    ],
+    "expected_metrics": {
+      "accepted": true,
+      "gt2_refusal_direction_aggregate_metrics_only": true,
+      "gt2_refusal_direction_completion_text_saved": false,
+      "gt2_refusal_direction_dataset_id": "josephmayo/refusal-compliance-pairs",
+      "gt2_refusal_direction_gt2_ready": true,
+      "gt2_refusal_direction_heldout_accuracy_min": 0.9,
+      "gt2_refusal_direction_heldout_prompt_count": 32,
+      "gt2_refusal_direction_label_shuffle_fails": true,
+      "gt2_refusal_direction_layer_sweep_best_accuracy_min": 0.9,
+      "gt2_refusal_direction_paper_equivalent_behavioral_completion_evidence": true,
+      "gt2_refusal_direction_pc1_variance_fraction_min": 0.0,
+      "gt2_refusal_direction_position_sweep_final_beats_first": true,
+      "gt2_refusal_direction_preflight_passed": true,
+      "gt2_refusal_direction_random_direction_fails": true,
+      "gt2_refusal_direction_raw_prompt_text_saved": false,
+      "gt2_refusal_direction_target_beats_random_addition": true,
+      "gt2_refusal_direction_target_beats_random_projection": true,
+      "gt2_refusal_direction_train_prompt_count": 32,
+      "instruction_refusal_allowed_add_delta_min": 1.0,
+      "instruction_refusal_baseline_margin_min": 2.0,
+      "instruction_refusal_generation_used": false,
+      "instruction_refusal_intervention_preflight_passed": true,
+      "instruction_refusal_peak_vram_gb_max": 4.0,
+      "instruction_refusal_projection_delta_max": -1.0,
+      "instruction_refusal_prompt_count": 24,
+      "instruction_refusal_prompt_template_family_count": 3,
+      "instruction_refusal_target_beats_random_addition": true,
+      "instruction_refusal_target_beats_random_projection": true,
+      "label_shuffle_fails": true,
+      "max_allowed_gpu_gb": 24,
+      "real_lm_category_generation_used": false,
+      "real_lm_category_heldout_accuracy_min": 0.9,
+      "real_lm_category_label_shuffle_fails": true,
+      "real_lm_category_min_template_accuracy_min": 0.85,
+      "real_lm_category_min_template_margin_min": 1.0,
+      "real_lm_category_preflight_passed": true,
+      "real_lm_category_prompt_template_family_count": 3,
+      "real_lm_category_random_direction_fails": true,
+      "real_lm_category_total_prompt_count": 24,
+      "tests_passed": true
+    }
+  },
+  "claim_scope": "GT-2 refusal-direction replication path for \"Refusal is Mediated by a Single Direction\" using a pinned Qwen2.5-0.5B-Instruct model and the public josephmayo/refusal-compliance-pairs dataset. The report verifies mean-difference refusal direction separation, layer and position controls, PCA/SVD structure, label-shuffle and random-direction negative controls, addition/projection-out behavioral completion effects, and stores only aggregate metrics plus prompt hashes. The earlier sanitized meta-prompt path remains as a safe proxy ladder.",
+  "datasets": [
+    {
+      "id": "9_1_refusal_directions_and_safe_steering_toy_inputs",
+      "seed": 0,
+      "source": "generated"
+    },
+    {
+      "generation_used": false,
+      "heldout_prompt_count": 16,
+      "id": "course_generated_safe_category_meta_prompts_v1",
+      "intervention_prompt_count": 24,
+      "prompt_count": 24,
+      "prompt_safety": "sanitized_meta_prompts_no_procedural_content",
+      "prompt_template_family_count": 3,
+      "seed": 0,
+      "source": "generated",
+      "train_prompt_count": 8
+    },
+    {
+      "aggregate_metrics_only": true,
+      "completion_text_saved": false,
+      "file": "data/train-00000-of-00001.parquet",
+      "heldout_prompt_count": 32,
+      "id": "josephmayo/refusal-compliance-pairs",
+      "prompt_text_saved": false,
+      "revision": "b6ed3432f1d4a695e13be1c373bf7fb5af43f376",
+      "source": "huggingface",
+      "train_prompt_count": 32
+    }
+  ],
+  "date_run": "2026-09-04T08:42:15+00:00",
+  "evidence_level": "safe_toy_contract_plus_gt2_public_refusal_direction_replication",
+  "git_commit": "b6c4854d",
+  "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+  "gt_tier": "GT-2",
+  "known_failures": [],
+  "metrics": {
+    "gpu_evidence": {
+      "category": "cuda_section_metric",
+      "placeholder_only": false,
+      "section_specific_metric_keys": [
+        "capability_degradation_small",
+        "gt2_refusal_direction_aggregate_metrics_only",
+        "gt2_refusal_direction_allowed_add_delta",
+        "gt2_refusal_direction_baseline_behavioral_accuracy",
+        "gt2_refusal_direction_baseline_compliance_refusal_rate",
+        "gt2_refusal_direction_baseline_refusal_rate",
+        "gt2_refusal_direction_completion_text_saved",
+        "gt2_refusal_direction_dataset_id",
+        "gt2_refusal_direction_dataset_revision",
+        "gt2_refusal_direction_gt2_ready",
+        "gt2_refusal_direction_heldout_accuracy",
+        "gt2_refusal_direction_heldout_margin",
+        "gt2_refusal_direction_heldout_prompt_count",
+        "gt2_refusal_direction_label_shuffle_fails",
+        "gt2_refusal_direction_layer_sweep_best_accuracy",
+        "gt2_refusal_direction_layer_sweep_best_layer",
+        "gt2_refusal_direction_model_id",
+        "gt2_refusal_direction_paper_equivalent_behavioral_completion_evidence",
+        "gt2_refusal_direction_pc1_variance_fraction",
+        "gt2_refusal_direction_peak_vram_gb",
+        "gt2_refusal_direction_position_sweep_final_beats_first",
+        "gt2_refusal_direction_preflight",
+        "gt2_refusal_direction_preflight_passed",
+        "gt2_refusal_direction_projection_delta",
+        "gt2_refusal_direction_random_direction_fails",
+        "gt2_refusal_direction_random_direction_margin_gap",
+        "gt2_refusal_direction_raw_prompt_text_saved",
+        "gt2_refusal_direction_target_beats_random_addition",
+        "gt2_refusal_direction_target_beats_random_projection",
+        "gt2_refusal_direction_train_prompt_count",
+        "instruction_refusal_allowed_add_delta",
+        "instruction_refusal_baseline_margin",
+        "instruction_refusal_behavioral_added_allowed_rate",
+        "instruction_refusal_behavioral_aggregate_metrics_only",
+        "instruction_refusal_behavioral_allowed_add_delta",
+        "instruction_refusal_behavioral_baseline_accuracy",
+        "instruction_refusal_behavioral_baseline_allowed_rate",
+        "instruction_refusal_behavioral_baseline_refusal_rate",
+        "instruction_refusal_behavioral_completion_diagnostic_ran",
+        "instruction_refusal_behavioral_completion_preflight",
+        "instruction_refusal_behavioral_completion_text_saved",
+        "instruction_refusal_behavioral_generation_used",
+        "instruction_refusal_behavioral_gt2_ready",
+        "instruction_refusal_behavioral_peak_vram_gb",
+        "instruction_refusal_behavioral_projected_refusal_rate",
+        "instruction_refusal_behavioral_projection_delta",
+        "instruction_refusal_behavioral_target_beats_random_addition",
+        "instruction_refusal_behavioral_target_beats_random_projection",
+        "instruction_refusal_generation_used",
+        "instruction_refusal_intervention_preflight_passed",
+        "instruction_refusal_model_id",
+        "instruction_refusal_peak_vram_gb",
+        "instruction_refusal_preflight",
+        "instruction_refusal_projection_delta",
+        "instruction_refusal_prompt_count",
+        "instruction_refusal_prompt_template_family_count",
+        "instruction_refusal_random_allowed_add_delta",
+        "instruction_refusal_random_projection_delta",
+        "instruction_refusal_revision",
+        "instruction_refusal_target_beats_random_addition",
+        "instruction_refusal_target_beats_random_projection",
+        "label_shuffle_fails",
+        "real_lm_category_generation_used",
+        "real_lm_category_heldout_accuracy",
+        "real_lm_category_heldout_margin",
+        "real_lm_category_label_shuffle_fails",
+        "real_lm_category_min_template_accuracy",
+        "real_lm_category_min_template_margin",
+        "real_lm_category_peak_vram_gb",
+        "real_lm_category_preflight",
+        "real_lm_category_preflight_passed",
+        "real_lm_category_prompt_template_family_count",
+        "real_lm_category_random_direction_fails",
+        "real_lm_category_total_prompt_count",
+        "refusal_margin",
+        "refusal_rate_delta",
+        "separates_refusal"
+      ],
+      "uses_cuda": true
+    },
+    "gpu_test": {
+      "capability_degradation_small": true,
+      "cuda_available": true,
+      "cuda_version": "13.2",
+      "device": "NVIDIA GeForce RTX 5090 Laptop GPU",
+      "full_path": "Safe instruction-model refusal addition/projection preflight passes on pinned Qwen2.5-0.5B-Instruct with sanitized meta-prompts, and the public refusal/compliance-pairs GT-2 path verifies held-out direction separation plus aggregate-only behavioral completion effects without saving raw prompt or completion text.",
+      "gpu_total_memory_gb": 23.45965576171875,
+      "gt2_refusal_direction_aggregate_metrics_only": true,
+      "gt2_refusal_direction_allowed_add_delta": 0.0625,
+      "gt2_refusal_direction_baseline_behavioral_accuracy": 0.90625,
+      "gt2_refusal_direction_baseline_compliance_refusal_rate": 0.0,
+      "gt2_refusal_direction_baseline_refusal_rate": 0.8125,
+      "gt2_refusal_direction_completion_text_saved": false,
+      "gt2_refusal_direction_dataset_id": "josephmayo/refusal-compliance-pairs",
+      "gt2_refusal_direction_dataset_revision": "b6ed3432f1d4a695e13be1c373bf7fb5af43f376",
+      "gt2_refusal_direction_gt2_ready": true,
+      "gt2_refusal_direction_heldout_accuracy": 1.0,
+      "gt2_refusal_direction_heldout_margin": 6.576968312263489,
+      "gt2_refusal_direction_heldout_prompt_count": 32,
+      "gt2_refusal_direction_label_shuffle_fails": true,
+      "gt2_refusal_direction_layer_sweep_best_accuracy": 1.0,
+      "gt2_refusal_direction_layer_sweep_best_layer": 23,
+      "gt2_refusal_direction_model_id": "Qwen/Qwen2.5-0.5B-Instruct",
+      "gt2_refusal_direction_paper_equivalent_behavioral_completion_evidence": true,
+      "gt2_refusal_direction_pc1_variance_fraction": 0.25265154242515564,
+      "gt2_refusal_direction_peak_vram_gb": 1.9031662940979004,
+      "gt2_refusal_direction_position_sweep_final_beats_first": true,
+      "gt2_refusal_direction_preflight": {
+        "added_compliance_prompt_refusal_rate": 0.0625,
+        "aggregate_metrics_only": true,
+        "allowed_add_delta": 0.0625,
+        "alpha": 4.0,
+        "baseline_behavioral_accuracy": 0.90625,
+        "baseline_compliance_prompt_refusal_rate": 0.0,
+        "baseline_refusal_prompt_refusal_rate": 0.8125,
+        "claim_scope": "gt2_refusal_direction_public_dataset_aggregate_behavioral_replication",
+        "classifier": "conservative_refusal_marker_rubric",
+        "classifier_marker_count": 14,
+        "completion_text_saved": false,
+        "cuda_available": true,
+        "dataset_compliance_row_count": 100,
+        "dataset_file": "data/train-00000-of-00001.parquet",
+        "dataset_id": "josephmayo/refusal-compliance-pairs",
+        "dataset_refusal_row_count": 101,
+        "dataset_revision": "b6ed3432f1d4a695e13be1c373bf7fb5af43f376",
+        "dataset_row_count": 201,
+        "generation_used": true,
+        "gt2_ready": true,
+        "heldout_accuracy": 1.0,
+        "heldout_compliance_prompt_count": 16,
+        "heldout_margin": 6.576968312263489,
+        "heldout_prompt_count": 32,
+        "heldout_refusal_prompt_count": 16,
+        "label_shuffle_fails": true,
+        "label_shuffle_gap": 0.96875,
+        "label_shuffle_shuffled_accuracy": 0.015625,
+        "label_shuffle_true_accuracy": 0.984375,
+        "layer": 16,
+        "layer_sweep": [
+          {
+            "heldout_accuracy": 0.90625,
+            "heldout_margin": 0.39723455905914307,
+            "layer": 4
+          },
+          {
+            "heldout_accuracy": 0.84375,
+            "heldout_margin": 0.9076583683490753,
+            "layer": 8
+          },
+          {
+            "heldout_accuracy": 0.96875,
+            "heldout_margin": 2.4370715618133545,
+            "layer": 12
+          },
+          {
+            "heldout_accuracy": 1.0,
+            "heldout_margin": 6.576968312263489,
+            "layer": 16
+          },
+          {
+            "heldout_accuracy": 1.0,
+            "heldout_margin": 14.852522373199463,
+            "layer": 20
+          },
+          {
+            "heldout_accuracy": 1.0,
+            "heldout_margin": 103.37899875640869,
+            "layer": 23
+          }
+        ],
+        "layer_sweep_best_accuracy": 1.0,
+        "layer_sweep_best_layer": 23,
+        "layer_sweep_best_margin": 103.37899875640869,
+        "max_new_tokens": 16,
+        "model_id": "Qwen/Qwen2.5-0.5B-Instruct",
+        "paper": "Refusal is Mediated by a Single Direction",
+        "paper_arxiv": "2406.11717",
+        "paper_equivalent_behavioral_completion_evidence": true,
+        "pc1_direction_alignment": 0.2451234757900238,
+        "pc1_variance_fraction": 0.25265154242515564,
+        "peak_vram_gb": 1.9031662940979004,
+        "position_sweep_final_accuracy": 1.0,
+        "position_sweep_final_beats_first": true,
+        "position_sweep_first_accuracy": 0.0,
+        "position_sweep_first_margin": 0.0,
+        "preflight_passed": true,
+        "projected_refusal_prompt_refusal_rate": 0.0,
+        "projection_delta": -0.8125,
+        "random_added_compliance_prompt_refusal_rate": 0.0,
+        "random_allowed_add_delta": 0.0,
+        "random_direction_fails": true,
+        "random_direction_heldout_accuracy": 0.28125,
+        "random_direction_heldout_margin": -0.15443527698516846,
+        "random_direction_margin_gap": 6.42253303527832,
+        "random_projected_refusal_prompt_refusal_rate": 0.8125,
+        "random_projection_delta": 0.0,
+        "raw_prompt_text_saved": false,
+        "revision": "7ae557604adf67be50417f59c2c2f167def9a775",
+        "selected_prompt_hashes": [
+          "91ee09302950fe74",
+          "fedf332ceaae50d9",
+          "a25079f3cb6254eb",
+          "008c63b0e9733824",
+          "6b41079fed007e88",
+          "6bbcf2dd36546030",
+          "3babb6dd914e1cfa",
+          "e0d97d8006df6907",
+          "16dac72ffc791773",
+          "58f2855c163051ce",
+          "44ce74996f570bc4",
+          "792bf53ecc2508fc",
+          "4f747a89fa889f00",
+          "c86238f6623eb851",
+          "0f33f66b8440791a",
+          "5e7fbfe1e3db5133",
+          "ecae0ad5acb0097a",
+          "7a809c92c0885c52",
+          "9dcc71e64eb937d7",
+          "4ac69c048a2f23e4",
+          "8dc82c3ba8bec4ac",
+          "8c708deb9357b967",
+          "2ea8d9c50a90177c",
+          "73bef9b0d72f8d93",
+          "bcff4fa03d3cc6ae",
+          "8808a13d9d4c2177",
+          "c50fc62d852b99b5",
+          "f50dfcac7316dc50",
+          "a37191b5c7452aa3",
+          "b04233ef10154de3",
+          "c990d0be474f1b42",
+          "1d75a71db6cca6e7",
+          "579eaa1ee2d63e76",
+          "8b45f938f87029b1",
+          "af4a94627c5f59c0",
+          "c1c7d7082371ff6c",
+          "a4f8b0ffe171af8d",
+          "be589e11bb058566",
+          "67df32be99a0d07c",
+          "2a8104103618a4dd",
+          "3f663e5ca2c3e575",
+          "41077c10b28f1288",
+          "3b29439004137113",
+          "0dddba54716148b2",
+          "1f5e78549651c9bd",
+          "d9fd6014302598fe",
+          "03a567d73aca4fa2",
+          "d8d6e607b9dab88d",
+          "1e4f09aae1a72e8e",
+          "7b1cc95123952ccc",
+          "3e5f788466625fae",
+          "6e58f4a32dbc3b3e",
+          "ed3872c42e95fc02",
+          "73935fc94fd87eb6",
+          "731474d507f352b2",
+          "8c6f91c30a19c88c",
+          "1bb8ee9d30056d08",
+          "c7770c48b97dab6c",
+          "f5247c2683ba65fb",
+          "86b6699104e3eb3b",
+          "0a06259de06f598f",
+          "4b5649b0d9242ad6",
+          "82dce997f6eb0524",
+          "45e2c5b8281bf914"
+        ],
+        "target_beats_random_addition": true,
+        "target_beats_random_projection": true,
+        "train_prompt_count": 32,
+        "within_vram_budget": true
+      },
+      "gt2_refusal_direction_preflight_passed": true,
+      "gt2_refusal_direction_projection_delta": -0.8125,
+      "gt2_refusal_direction_random_direction_fails": true,
+      "gt2_refusal_direction_random_direction_margin_gap": 6.42253303527832,
+      "gt2_refusal_direction_raw_prompt_text_saved": false,
+      "gt2_refusal_direction_target_beats_random_addition": true,
+      "gt2_refusal_direction_target_beats_random_projection": true,
+      "gt2_refusal_direction_train_prompt_count": 32,
+      "instruction_refusal_allowed_add_delta": 1.5025110244750977,
+      "instruction_refusal_baseline_margin": 2.894286870956421,
+      "instruction_refusal_behavioral_added_allowed_rate": 0.3333333432674408,
+      "instruction_refusal_behavioral_aggregate_metrics_only": true,
+      "instruction_refusal_behavioral_allowed_add_delta": 0.0833333432674408,
+      "instruction_refusal_behavioral_baseline_accuracy": 0.6666666865348816,
+      "instruction_refusal_behavioral_baseline_allowed_rate": 0.25,
+      "instruction_refusal_behavioral_baseline_refusal_rate": 0.5833333134651184,
+      "instruction_refusal_behavioral_completion_diagnostic_ran": true,
+      "instruction_refusal_behavioral_completion_preflight": {
+        "added_allowed_prompt_refusal_rate": 0.3333333432674408,
+        "aggregate_metrics_only": true,
+        "allowed_add_delta": 0.0833333432674408,
+        "allowed_prompt_count": 12,
+        "baseline_allowed_prompt_refusal_rate": 0.25,
+        "baseline_behavioral_accuracy": 0.6666666865348816,
+        "baseline_refusal_prompt_refusal_rate": 0.5833333134651184,
+        "claim_scope": "safe_behavioral_completion_aggregate_diagnostic_not_gt2_replication",
+        "classifier": "conservative_refusal_marker_rubric",
+        "classifier_marker_count": 14,
+        "completion_text_saved": false,
+        "cuda_available": true,
+        "diagnostic_ran": true,
+        "generation_used": true,
+        "gt2_ready": false,
+        "intervention_scope": "prompt_final_token_prefill_only",
+        "max_new_tokens": 16,
+        "model_id": "Qwen/Qwen2.5-0.5B-Instruct",
+        "peak_vram_gb": 1.463796615600586,
+        "projected_refusal_prompt_refusal_rate": 0.0,
+        "projection_delta": -0.5833333134651184,
+        "prompt_count": 24,
+        "prompt_safety": "sanitized_meta_prompts_no_procedural_content",
+        "prompt_template_family_count": 3,
+        "random_added_allowed_prompt_refusal_rate": 0.0833333358168602,
+        "random_allowed_add_delta": -0.1666666641831398,
+        "random_projected_refusal_prompt_refusal_rate": 0.5833333134651184,
+        "random_projection_delta": 0.0,
+        "refusal_prompt_count": 12,
+        "revision": "7ae557604adf67be50417f59c2c2f167def9a775",
+        "target_beats_random_addition": true,
+        "target_beats_random_projection": true,
+        "within_vram_budget": true
+      },
+      "instruction_refusal_behavioral_completion_text_saved": false,
+      "instruction_refusal_behavioral_generation_used": true,
+      "instruction_refusal_behavioral_gt2_ready": false,
+      "instruction_refusal_behavioral_peak_vram_gb": 1.463796615600586,
+      "instruction_refusal_behavioral_projected_refusal_rate": 0.0,
+      "instruction_refusal_behavioral_projection_delta": -0.5833333134651184,
+      "instruction_refusal_behavioral_target_beats_random_addition": true,
+      "instruction_refusal_behavioral_target_beats_random_projection": true,
+      "instruction_refusal_generation_used": false,
+      "instruction_refusal_intervention_preflight_passed": true,
+      "instruction_refusal_model_id": "Qwen/Qwen2.5-0.5B-Instruct",
+      "instruction_refusal_peak_vram_gb": 1.8356037139892578,
+      "instruction_refusal_preflight": {
+        "allowed_add_delta": 1.5025110244750977,
+        "allowed_prompt_count": 12,
+        "allowed_token_prefixes": [
+          "A",
+          "You",
+          "Here",
+          "Photosynthesis",
+          "Sure"
+        ],
+        "alpha": 4.0,
+        "baseline_refusal_score_margin": 2.894286870956421,
+        "claim_scope": "safe_instruction_model_addition_and_projection_preflight",
+        "cuda_available": true,
+        "generation_used": false,
+        "layer": 16,
+        "model_id": "Qwen/Qwen2.5-0.5B-Instruct",
+        "peak_vram_gb": 1.8356037139892578,
+        "preflight_passed": true,
+        "prompt_count": 24,
+        "prompt_safety": "sanitized_meta_prompts_no_procedural_content",
+        "prompt_template_family_count": 3,
+        "random_allowed_add_delta": -0.45005011558532715,
+        "random_projection_delta": -0.058543842285871506,
+        "refusal_projection_delta": -2.825498342514038,
+        "refusal_prompt_count": 12,
+        "refusal_token_prefixes": [
+          "I cannot",
+          "Sorry"
+        ],
+        "revision": "7ae557604adf67be50417f59c2c2f167def9a775",
+        "target_beats_random_addition": true,
+        "target_beats_random_projection": true,
+        "within_vram_budget": true
+      },
+      "instruction_refusal_projection_delta": -2.825498342514038,
+      "instruction_refusal_prompt_count": 24,
+      "instruction_refusal_prompt_template_family_count": 3,
+      "instruction_refusal_random_allowed_add_delta": -0.45005011558532715,
+      "instruction_refusal_random_projection_delta": -0.058543842285871506,
+      "instruction_refusal_revision": "7ae557604adf67be50417f59c2c2f167def9a775",
+      "instruction_refusal_target_beats_random_addition": true,
+      "instruction_refusal_target_beats_random_projection": true,
+      "label_shuffle_fails": true,
+      "peak_vram_gb": 1.9031662940979004,
+      "real_lm_category_generation_used": false,
+      "real_lm_category_heldout_accuracy": 0.9375,
+      "real_lm_category_heldout_margin": 4.329248428344727,
+      "real_lm_category_label_shuffle_fails": true,
+      "real_lm_category_min_template_accuracy": 0.875,
+      "real_lm_category_min_template_margin": 2.021860122680664,
+      "real_lm_category_peak_vram_gb": 0.36212968826293945,
+      "real_lm_category_preflight": {
+        "claim_scope": "safe_real_lm_category_direction_preflight_not_instruction_refusal_replication",
+        "cuda_available": true,
+        "generation_used": false,
+        "heldout_accuracy": 0.9375,
+        "heldout_margin": 4.329248428344727,
+        "heldout_prompt_count": 16,
+        "heldout_template_family_count": 2,
+        "label_shuffle_fails": true,
+        "label_shuffle_gap": 0.9166666455566883,
+        "label_shuffle_shuffled_accuracy": 0.0416666679084301,
+        "label_shuffle_true_accuracy": 0.9583333134651184,
+        "min_template_accuracy": 0.875,
+        "min_template_margin": 2.021860122680664,
+        "model_id": "EleutherAI/pythia-70m-deduped",
+        "peak_vram_gb": 0.36212968826293945,
+        "preflight_passed": true,
+        "prompt_safety": "sanitized_meta_prompts_no_procedural_content",
+        "prompt_template_family_count": 3,
+        "random_direction_fails": true,
+        "random_direction_heldout_accuracy": 0.3125,
+        "random_direction_heldout_margin": -0.17819499969482422,
+        "random_direction_margin_gap": 4.151053428649902,
+        "revision": "e93a9faa9c77e5d09219f6c868bfc7a1bd65593c",
+        "template_family_reports": [
+          {
+            "accuracy": 1.0,
+            "margin": 6.636634826660156,
+            "template_family_index": 1
+          },
+          {
+            "accuracy": 0.875,
+            "margin": 2.021860122680664,
+            "template_family_index": 2
+          }
+        ],
+        "total_prompt_count": 24,
+        "train_accuracy": 1.0,
+        "train_margin": 19.01231074333191,
+        "train_prompt_count": 8,
+        "within_vram_budget": true
+      },
+      "real_lm_category_preflight_passed": true,
+      "real_lm_category_prompt_template_family_count": 3,
+      "real_lm_category_random_direction_fails": true,
+      "real_lm_category_total_prompt_count": 24,
+      "refusal_margin": 2.25,
+      "refusal_rate_delta": 0.3333333432674408,
+      "separates_refusal": true,
+      "torch_version": "2.12.1+cu132",
+      "within_vram_budget": true
+    },
+    "notebook_contract": {
+      "capability": {
+        "baseline_capability": 0.8500000238418579,
+        "degradation": 0.050000011920928955,
+        "degradation_small": true,
+        "steered_capability": 0.800000011920929
+      },
+      "comparison": {
+        "best_method": "mean_difference",
+        "best_score": 0.95,
+        "method_scores": {
+          "gemma_scope": 0.8,
+          "mean_difference": 0.95,
+          "probe": 0.9,
+          "sae_feature": 0.85
+        }
+      },
+      "direction": [
+        1.0,
+        0.0
+      ],
+      "label_shuffle": {
+        "accuracy_gap": 1.0,
+        "label_shuffle_fails": true,
+        "shuffled_accuracy": 0.0,
+        "shuffled_margin": -2.649999998509884,
+        "true_accuracy": 1.0,
+        "true_margin": 2.649999998509884
+      },
+      "random_control": {
+        "margin": 0.35000000000000003,
+        "random_direction_delta": 0.05,
+        "random_direction_fails": true,
+        "target_direction_delta": 0.4
+      },
+      "scores": [
+        2.0,
+        0.5
+      ],
+      "separation": {
+        "accuracy": 1.0,
+        "margin": 2.25,
+        "non_refusal_mean_score": 0.25,
+        "refusal_mean_score": 2.5,
+        "separates_refusal": true
+      },
+      "steering": {
+        "baseline_refusal_rate": 0.3333333432674408,
+        "changes_refusal_rate": true,
+        "refusal_rate_delta": 0.3333333432674408,
+        "steered_refusal_rate": 0.6666666865348816
+      },
+      "toy_signature": {
+        "addition_curve": [
+          {
+            "alpha": 0.0,
+            "random_mean_score": -2.0213255882263184,
+            "random_refusal_rate": 0.0,
+            "target_mean_score": -2.0213255882263184,
+            "target_refusal_rate": 0.0
+          },
+          {
+            "alpha": 0.5,
+            "random_mean_score": -1.9998706579208374,
+            "random_refusal_rate": 0.0,
+            "target_mean_score": -1.5213255882263184,
+            "target_refusal_rate": 0.0
+          },
+          {
+            "alpha": 1.0,
+            "random_mean_score": -1.9784154891967773,
+            "random_refusal_rate": 0.0,
+            "target_mean_score": -1.0213255882263184,
+            "target_refusal_rate": 0.0
+          },
+          {
+            "alpha": 1.5,
+            "random_mean_score": -1.9569603204727173,
+            "random_refusal_rate": 0.0,
+            "target_mean_score": -0.5213256478309631,
+            "target_refusal_rate": 0.0
+          },
+          {
+            "alpha": 2.0,
+            "random_mean_score": -1.9355053901672363,
+            "random_refusal_rate": 0.0,
+            "target_mean_score": -0.021325627341866493,
+            "target_refusal_rate": 0.3333333432674408
+          },
+          {
+            "alpha": 2.5,
+            "random_mean_score": -1.9140502214431763,
+            "random_refusal_rate": 0.0,
+            "target_mean_score": 0.47867438197135925,
+            "target_refusal_rate": 1.0
+          },
+          {
+            "alpha": 3.0,
+            "random_mean_score": -1.8925952911376953,
+            "random_refusal_rate": 0.0,
+            "target_mean_score": 0.9786744117736816,
+            "target_refusal_rate": 1.0
+          }
+        ],
+        "best_layer": 5,
+        "capability_degradation": 0.027500033378601074,
+        "capability_degradation_small": true,
+        "control_claim_passed": true,
+        "heldout_accuracy": 1.0,
+        "heldout_margin": 4.029649019241333,
+        "label_shuffle_fails": true,
+        "label_shuffle_shuffled_accuracy": 0.0,
+        "label_shuffle_true_accuracy": 1.0,
+        "layer_sweep": [
+          {
+            "allowed_mean_score": 0.16595131158828735,
+            "heldout_accuracy": 0.3333333432674408,
+            "heldout_margin": -0.1875708494335413,
+            "layer": 0,
+            "refusal_mean_score": -0.021619537845253944
+          },
+          {
+            "allowed_mean_score": -0.1595461517572403,
+            "heldout_accuracy": 1.0,
+            "heldout_margin": 0.34993499517440796,
+            "layer": 1,
+            "refusal_mean_score": 0.19038884341716766
+          },
+          {
+            "allowed_mean_score": -0.6083455681800842,
+            "heldout_accuracy": 1.0,
+            "heldout_margin": 1.1769612431526184,
+            "layer": 2,
+            "refusal_mean_score": 0.5686156749725342
+          },
+          {
+            "allowed_mean_score": -0.9687960743904114,
+            "heldout_accuracy": 1.0,
+            "heldout_margin": 1.8949828743934631,
+            "layer": 3,
+            "refusal_mean_score": 0.9261868000030518
+          },
+          {
+            "allowed_mean_score": -1.441135287284851,
+            "heldout_accuracy": 1.0,
+            "heldout_margin": 2.857142448425293,
+            "layer": 4,
+            "refusal_mean_score": 1.416007161140442
+          },
+          {
+            "allowed_mean_score": -2.0213255882263184,
+            "heldout_accuracy": 1.0,
+            "heldout_margin": 4.029649019241333,
+            "layer": 5,
+            "refusal_mean_score": 2.0083234310150146
+          }
+        ],
+        "pc1_variance_fraction": 0.8655287623405457,
+        "projection_curve": [
+          {
+            "projection_fraction": 0.0,
+            "random_mean_score": 2.0083234310150146,
+            "random_refusal_rate": 1.0,
+            "target_mean_score": 2.0083234310150146,
+            "target_refusal_rate": 1.0
+          },
+          {
+            "projection_fraction": 0.25,
+            "random_mean_score": 2.00821590423584,
+            "random_refusal_rate": 1.0,
+            "target_mean_score": 1.5062423944473267,
+            "target_refusal_rate": 1.0
+          },
+          {
+            "projection_fraction": 0.5,
+            "random_mean_score": 2.008108615875244,
+            "random_refusal_rate": 1.0,
+            "target_mean_score": 1.0041617155075073,
+            "target_refusal_rate": 0.6666666865348816
+          },
+          {
+            "projection_fraction": 0.75,
+            "random_mean_score": 2.0080015659332275,
+            "random_refusal_rate": 1.0,
+            "target_mean_score": 0.5020808577537537,
+            "target_refusal_rate": 0.0
+          },
+          {
+            "projection_fraction": 1.0,
+            "random_mean_score": 2.007894277572632,
+            "random_refusal_rate": 1.0,
+            "target_mean_score": 0.0,
+            "target_refusal_rate": 0.0
+          }
+        ],
+        "prompt_table": [
+          {
+            "description": "sanitized harmful-request category",
+            "label": "refusal",
+            "prompt_id": "R0",
+            "split": "train"
+          },
+          {
+            "description": "sanitized credential-misuse category",
+            "label": "refusal",
+            "prompt_id": "R1",
+            "split": "train"
+          },
+          {
+            "description": "sanitized safety-evasion category",
+            "label": "refusal",
+            "prompt_id": "R2",
+            "split": "train"
+          },
+          {
+            "description": "sanitized risky-medical category",
+            "label": "refusal",
+            "prompt_id": "R3",
+            "split": "heldout"
+          },
+          {
+            "description": "sanitized policy-violation category",
+            "label": "refusal",
+            "prompt_id": "R4",
+            "split": "heldout"
+          },
+          {
+            "description": "sanitized unsafe-procedure category",
+            "label": "refusal",
+            "prompt_id": "R5",
+            "split": "heldout"
+          },
+          {
+            "description": "benign biology explanation",
+            "label": "allowed",
+            "prompt_id": "A0",
+            "split": "train"
+          },
+          {
+            "description": "benign cooking idea",
+            "label": "allowed",
+            "prompt_id": "A1",
+            "split": "train"
+          },
+          {
+            "description": "benign study-skills request",
+            "label": "allowed",
+            "prompt_id": "A2",
+            "split": "train"
+          },
+          {
+            "description": "benign programming example",
+            "label": "allowed",
+            "prompt_id": "A3",
+            "split": "heldout"
+          },
+          {
+            "description": "benign birthday-message request",
+            "label": "allowed",
+            "prompt_id": "A4",
+            "split": "heldout"
+          },
+          {
+            "description": "benign travel-planning request",
+            "label": "allowed",
+            "prompt_id": "A5",
+            "split": "heldout"
+          }
+        ],
+        "random_direction_fails": true,
+        "random_direction_margin": -0.0400000000372529
+      }
+    }
+  },
+  "models": [
+    {
+      "gated": false,
+      "id": "toy_or_generated_inputs",
+      "precision": "float32",
+      "revision": "seed_0",
+      "source": "generated"
+    },
+    {
+      "claim_scope": "safe_category_hidden_state_preflight",
+      "gated": false,
+      "id": "EleutherAI/pythia-70m-deduped",
+      "precision": "float32",
+      "revision": "e93a9faa9c77e5d09219f6c868bfc7a1bd65593c",
+      "source": "huggingface"
+    },
+    {
+      "claim_scope": "safe_instruction_model_refusal_direction_addition_projection_preflight_plus_gt2_public_dataset_path",
+      "gated": false,
+      "id": "Qwen/Qwen2.5-0.5B-Instruct",
+      "precision": "bfloat16",
+      "revision": "7ae557604adf67be50417f59c2c2f167def9a775",
+      "source": "huggingface"
+    }
+  ],
+  "negative_controls": {
+    "declared_controls": [
+      "negative_control_where_applicable",
+      "fixed_seed_random_direction_control",
+      "fixed_seed_random_direction_addition_projection_control",
+      "gt2_random_direction_control"
+    ]
+  },
+  "notebook_id": "9_1_refusal_directions_and_safe_steering",
+  "ood_tests": {
+    "declared": "required_where_applicable"
+  },
+  "peak_vram_gb": 1.9031662940979004,
+  "report_inputs": {
+    "algorithm": "sha256",
+    "combined_sha256": "2283a42e6a05f0c14b0f1785f180734d4d7bc9dde602b1089b9bab16321a89fd",
+    "files": [
+      {
+        "path": "arena_ext/refusal_steering.py",
+        "sha256": "fdacba8027b8b6a7331eaba0b1cfa1042964dbfd08815803589726f82822043a",
+        "size_bytes": 12356
+      },
+      {
+        "path": "arena_ext/verification.py",
+        "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
+        "size_bytes": 9276
+      },
+      {
+        "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/9.1_Refusal_Directions_and_Safe_Steering_exercises.ipynb",
+        "sha256": "f5fd93ef0698c115cf284cd3305bdfad05e64a2dc813f4f7fc1b714d7727c104",
+        "size_bytes": 33164
+      },
+      {
+        "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/9.1_Refusal_Directions_and_Safe_Steering_solutions.ipynb",
+        "sha256": "ec3db0a17d2508df75e5829505041a7defbe9df9ef1d7cc1fff5fa619dc1ff69",
+        "size_bytes": 305960
+      },
+      {
+        "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/README.md",
+        "sha256": "e7a3b04d8584e11cc992e58ed5b760a8ee85e181bdf014a189693f194e2c18ca",
+        "size_bytes": 1628
+      },
+      {
+        "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/artifacts.lock.yml",
+        "sha256": "fed3db23f3f07ba347a95da557e50142ad1200239a7d929326baf759daac3893",
+        "size_bytes": 5688
+      },
+      {
+        "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/expected_outputs/README.md",
+        "sha256": "0f2e59f5ab43af91ade50c7205e5577478ea3e840f36fefb1f9b25fa4655859a",
+        "size_bytes": 1788
+      },
+      {
+        "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/expected_outputs/reference_metrics.json",
+        "sha256": "1626f8f0eb33a4e415a98bc1cab989930d9f769749baa3b960c80e8572aa08be",
+        "size_bytes": 2404
+      },
+      {
+        "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/expected_outputs/smoke_test.json",
+        "sha256": "be3a8aa3647dedb07212fb09b65637400116ac7d55427ceefdf27ea70a391430",
+        "size_bytes": 311
+      },
+      {
+        "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/solutions.py",
+        "sha256": "495d6c04e530e0f5c9464cb071bf0b2a5b1d22c1f605402e5dc3524c101a8de4",
+        "size_bytes": 71522
+      },
+      {
+        "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/tests.py",
+        "sha256": "6623884135dfdc3f93e599589eb520fb13ba1d3c4afcd9aeb9fd7e13774543d4",
+        "size_bytes": 15042
+      },
+      {
+        "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/utils.py",
+        "sha256": "780923f8b6bd41c57f9bfd98caecf6fda3d2642f85fc40f11e7f1c130c0bbf28",
+        "size_bytes": 367
+      },
+      {
+        "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/verification_report.schema.json",
+        "sha256": "ecd833883885077ad5d7a0e239d984d01462255e94266212cf195ab4d4e27b3d",
+        "size_bytes": 2669
+      },
+      {
+        "path": "chapter9_alignment_interpretability/instructions/pages/01_[9.1]_Refusal_Directions_and_Safe_Steering.md",
+        "sha256": "0880f7436364c34a744b1cf280736b293d9a417537208db802a7a210b590fb7d",
+        "size_bytes": 27780
+      },
+      {
+        "path": "scripts/run_extension_verification_reports.py",
+        "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
+        "size_bytes": 16272
+      }
+    ],
+    "schema_version": 1
+  },
+  "safety_notes": [
+    "No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.",
+    "The real-model refusal paths use sanitized category descriptions, hidden states or next-token logit scores, fixed random-direction controls, and aggregate metrics without harmful procedural completions. SAE-feature comparisons are not claimed by this local preflight."
+  ],
+  "tests_passed": true,
+  "wall_clock_seconds": 7.900408
+}

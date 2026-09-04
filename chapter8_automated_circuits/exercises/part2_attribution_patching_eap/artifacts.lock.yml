@@ -1,0 +1,123 @@
+notebook_id: 8_2_attribution_patching_and_eap
+section: '8.2'
+title: Attribution Patching and EAP
+exercise_metadata:
+  EXERCISE_ID: 8_2_attribution_patching_and_eap
+  GT_TIER: GT-1
+  DIFFICULTY: 4
+  IMPORTANCE: 5
+  EXPECTED_RUNTIME: 90-120 minutes for exercises; minutes on the CUDA preflight
+  REQUIRES_GPU: true
+gt_tier: GT-1
+evidence_level: exact_planted_nonlinear_graph_plus_pinned_transformerlens_gradient_preflight
+claim_scope: 'On an exact planted nonlinear graph, corrupt-point attribution misses
+  a causally important threshold-gated node and edge, while path-integrated attribution
+  improves node and edge correlation and recovers the exact top-k sets. A linear positive
+  control is exact, zero-effect routes remain zero, and a shuffled-delta control fails.
+  The pinned TransformerLens gelu-1l CUDA result is retained only as a real-hook mechanics
+  preflight. This is not an IOI-scale EAP replication or a general faithfulness claim.'
+required_gpu_gb: 1
+max_allowed_gpu_gb: 24
+models:
+- id: planted_nonlinear_attribution_graph_v1
+  source: generated
+  revision: seed_0
+  precision: float64
+  gated: false
+- id: NeelNanda/GELU_1L512W_C4_Code
+  source: huggingface_via_transformerlens
+  revision: bddc0e332f0ae84279e6a6a45d91b314899e1603
+  precision: float32
+  gated: false
+  claim_scope: exact_vs_gradient_activation_patching_preflight
+  transformerlens_model_name: gelu-1l
+  tokenizer_id: NeelNanda/gpt-neox-tokenizer-digits
+  tokenizer_revision: 0f6671571a20be9756b9991d978047c03b75e749
+datasets:
+- id: 8_2_attribution_patching_and_eap_toy_inputs
+  source: generated
+  seed: 0
+- id: course_safe_clean_corrupt_activation_patching_prompts_v1
+  source: generated_prompt_pair
+  seed: 0
+  clean_prompt: The cat sat on the
+  corrupt_prompt: The bird flew over the
+  positive_token: ' floor'
+  negative_token: ' top'
+  tokenizer: NeelNanda/gpt-neox-tokenizer-digits
+  sequence_length: 6
+  integrated_gradient_steps: 5
+expected_metrics:
+  tests_passed: true
+  accepted: true
+  max_allowed_gpu_gb: 24
+  preflight_passed: true
+  model_name: gelu-1l
+  hf_revision: bddc0e332f0ae84279e6a6a45d91b314899e1603
+  tokenizer_revision: 0f6671571a20be9756b9991d978047c03b75e749
+  bnb_cuda_override: '130'
+  hook_name: blocks.0.hook_resid_post
+  sequence_length: 6
+  target_position: 5
+  target_token: ' floor'
+  distractor_token: ' top'
+  clean_corrupt_gap_min: 6.0
+  exact_best_position: 5
+  attribution_best_position: 5
+  ig_best_position: 5
+  exact_final_recovery_min: 0.99
+  attribution_final_recovery_min: 0.9
+  ig_final_recovery_min: 0.95
+  exact_attribution_correlation_min: 0.99
+  exact_attribution_top1_overlap: 1.0
+  exact_ig_correlation_min: 0.99
+  exact_ig_top1_overlap: 1.0
+  eap_edge_score_shape:
+  - 6
+  - 6
+  eap_top_edge_upstream_position: 5
+  eap_top_edge_downstream_position: 5
+  eap_top_edge_score_abs_min: 6.0
+  nonfinal_gradient_norm_max: 0.0
+  final_gradient_norm_min: 1.0
+  integrated_gradient_steps: 5
+  peak_vram_gb_max: 1.0
+  cpu_full_metric_delta: 4.399326441019204
+  cpu_node_attribution_correlation_max: 0.47
+  cpu_node_integrated_correlation_min: 0.95
+  cpu_node_attribution_top2_overlap: 0.5
+  cpu_node_integrated_top2_overlap: 1.0
+  cpu_edge_eap_correlation_max: 0.67
+  cpu_edge_eap_ig_correlation_min: 0.97
+  cpu_edge_eap_top3_overlap: 0.6666666666666666
+  cpu_edge_eap_ig_top3_overlap: 1.0
+  cpu_node_ig_conservation_error_max: 0.0005
+  cpu_edge_ig_conservation_error_max: 0.0005
+  cpu_linear_control_max_error_max: 1.0e-12
+  cpu_shuffled_edge_correlation_max: 0.0
+  cpu_shuffled_edge_top3_overlap: 0.0
+controls:
+- baseline_or_reference_check
+- negative_control_where_applicable
+- shape_dtype_or_exact_value_check
+- toy_attribution_dot_gradient_contract
+- toy_integrated_gradient_contract
+- toy_eap_edge_score_contract
+- toy_exact_vs_approx_correlation_contract
+- toy_false_negative_documentation_contract
+- exact_planted_node_and_edge_ground_truth
+- nonlinear_threshold_false_negative
+- linear_positive_control
+- exact_zero_decoy_sender_and_unused_receiver
+- shuffled_edge_delta_negative_control
+- pinned_transformerlens_gelu1l_exact_patch_scores
+- corrupt_run_gradient_attribution_scores
+- same_hook_integrated_gradient_path_scores
+- eap_position_edge_matrix_top_edge_check
+- non_final_position_zero_gradient_control
+- ioi_scale_eap_replication_not_claimed
+safety_notes:
+- No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.
+- The real-model path uses safe generic prompts and reads logits and gradients from
+  a small public TransformerLens checkpoint. It does not use unsafe prompts, gated
+  weights, or generated completions.

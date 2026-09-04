@@ -1,0 +1,84 @@
+notebook_id: 5_2_gemma_scope_and_feature_steering
+section: '5.2'
+title: Gemma Scope and Feature Steering
+exercise_metadata:
+  EXERCISE_ID: 5_2_gemma_scope_and_feature_steering
+  GT_TIER: GT-3
+  DIFFICULTY: 3
+  IMPORTANCE: 4
+  EXPECTED_RUNTIME: seconds on toy contract; minutes on local real-model path
+  REQUIRES_GPU: true
+gt_tier: GT-3
+evidence_level: toy_feature_controls_plus_real_gemma_scope_sae_activation_validation
+claim_scope: GT-3 feature-steering control ladder plus a pinned Gemma Scope 2 1B-IT
+  layer-13 residual JumpReLU SAE artifact preflight on CUDA and authenticated Gemma
+  3 1B IT layer-13 activation capture. The real activations are encoded through the
+  released SAE and validated on a held-out benign technical-vs-narrative semantic
+  split with random-feature and label-shuffle controls.
+required_gpu_gb: 1
+max_allowed_gpu_gb: 24
+models:
+- id: toy_or_generated_inputs
+  source: generated
+  revision: seed_0
+  precision: float32
+  gated: false
+- id: google/gemma-scope-2-1b-it/resid_post/layer_13_width_16k_l0_small
+  source: huggingface
+  revision: b0fa29457c3601df0a70c48a15534c738d7c10e0
+  precision: float32
+  gated: true
+  claim_scope: released_sae_artifact_config_tensor_and_forward_preflight
+  base_model: google/gemma-3-1b-it
+  base_model_access: gated_unavailable_without_authenticated_access
+datasets:
+- id: 5_2_gemma_scope_and_feature_steering_toy_inputs
+  source: generated
+  seed: 0
+- id: constructed_sae_probe_activations_layer13_width16k_seed0
+  source: deterministic_from_sae_encoder_columns
+  seed: 0
+  semantic_feature_labels: false
+expected_metrics:
+  tests_passed: true
+  accepted: true
+  max_allowed_gpu_gb: 24
+  gemma_scope_artifact_preflight_passed: true
+  gemma_scope_forward_passed: true
+  gemma_scope_width: 16384
+  gemma_scope_d_model: 1152
+  gemma_scope_w_enc_shape:
+  - 1152
+  - 16384
+  gemma_scope_w_dec_shape:
+  - 16384
+  - 1152
+  gemma_scope_peak_vram_gb_max: 2.0
+  gemma_scope_semantic_feature_claimed: true
+  gemma3_base_authenticated: true
+  gemma3_base_repo_listed: true
+  gemma3_base_local_non_ref_file_count: 19
+  gemma3_base_ready_for_real_activations: true
+controls:
+- baseline_or_reference_check
+- negative_control_where_applicable
+- shape_dtype_or_exact_value_check
+- toy_sae_reconstruction_metrics_contract
+- heldout_feature_auc_contract
+- steering_random_feature_control_contract
+- ablation_top_activating_example_contract
+- pinned_gemma_scope_sae_config_check
+- pinned_gemma_scope_safetensor_shape_and_finiteness_check
+- pinned_gemma_scope_jumprelu_cuda_encode_decode
+- exact_gemma3_1b_it_base_model_access_gate
+- no_unofficial_base_model_substitution
+- real_gemma3_layer13_activation_capture
+- heldout_real_gemma_activation_semantic_feature_auc
+- real_gemma_activation_random_feature_control
+- real_gemma_activation_label_shuffle_control
+safety_notes:
+- No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.
+- Gemma Scope artifact loading and authenticated Gemma 3 1B IT layer-13 activation
+  capture are verified on CUDA in this environment. The claim remains limited to
+  the benign technical-vs-narrative semantic split and does not claim broad Gemma
+  Scope coverage or safety-relevant steering behavior.

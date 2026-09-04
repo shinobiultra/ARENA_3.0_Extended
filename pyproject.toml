@@ -1,6 +1,113 @@
+[project]
+name = "arena-3-extended"
+version = "0.1.0"
+requires-python = ">=3.14,<3.15"
+dependencies = [
+    "accelerate>=1.14.0",
+    "anthropic>=0.42.0",
+    "bitsandbytes>=0.49.2",
+    "captum==0.9.0",
+    "causal-conv1d==1.6.2.post1",
+    "circuitsvis",
+    "diffusers>=0.38.0",
+    "docformatter>=1.7.8",
+    "eindex-callum>=0.1.2",
+    "einops>=0.7.0",
+    "frozendict>=2.4.7",
+    "fsspec==2025.3.0",
+    "ftfy>=6.3.1",
+    "gdown>=6.1.0",
+    "gymnasium[other]==0.29.0",
+    "hdbscan>=0.8.44",
+    "huggingface-hub>=0.36.2",
+    "imageio-ffmpeg>=0.6.0",
+    "inspect-ai>=0.3.242",
+    "instructor>=1.15.4",
+    "ipykernel>=7.3.0",
+    "ipywidgets==7.7.1",
+    "jaxtyping>=0.2.38",
+    "jupyter>=1.1.1",
+    "jupyterlab-widgets==1.1.1",
+    "kernels==0.12.3",
+    "mamba-ssm==2.3.2.post1",
+    "matplotlib>=3.11.0",
+    "mediapy>=1.2.6",
+    "nbformat>=5.10.4",
+    "neel-plotly",
+    "nnsight>=0.3.5",
+    "notebook>=7.6.0",
+    "numpy==1.26.4",
+    "numpy-stl>=4.0.0",
+    "nvidia-modelopt>=0.44.0",
+    "openai>=1.56.2",
+    "opencv-python>=4.11.0.86",
+    "pandas>=2.3.3",
+    "peft>=0.19.1",
+    "pillow==11.3.0",
+    "plotly>=6.8.0",
+    "portalocker>=2.0.0",
+    "pre-commit>=4.6.0",
+    "pygame>=2.6.1",
+    "pytest>=9.1.1",
+    "python-dotenv>=1.2.2",
+    "pyyaml>=6.0.3",
+    "requests>=2.34.2",
+    "sae-lens>=6.37.4,<7.0.0",
+    "sae-vis==0.3.7",
+    "safetensors>=0.8.0",
+    "scikit-learn>=1.9.0",
+    "sentence-transformers>=5.6.0",
+    "shap==0.49.1",
+    "shapiq==1.5.2",
+    "streamlit>=1.58.0",
+    "streamlit-antd-components==0.2.5",
+    "streamlit-image-select>=0.6.0",
+    "streamlit-on-hover-tabs>=1.0.1",
+    "tabulate>=0.10.0",
+    "tiktoken>=0.13.0",
+    "torch==2.12.1+cu132",
+    "torchao==0.17.0",
+    "torchinfo>=1.8.0",
+    "torchtext>=0.6.0",
+    "torchvision==0.27.1+cu132",
+    "tqdm>=4.68.3",
+    "transformer-lens>=2.16.1,<3.0.0",
+    "transformers>=5.12.1,<6",
+    "typeguard>=4.5.2",
+    "umap-learn>=0.5.12",
+    "wandb>=0.28.0",
+    "wheel==0.47.0",
+    "wikipedia>=1.4.0",
+]
+
+[[tool.uv.index]]
+name = "pytorch-cu132"
+url = "https://download.pytorch.org/whl/cu132"
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch-cu132" }
+torchvision = { index = "pytorch-cu132" }
+circuitsvis = { git = "https://github.com/callummcdougall/CircuitsVis.git", subdirectory = "python" }
+neel-plotly = { git = "https://github.com/neelnanda-io/neel-plotly" }
+
 [tool.ruff]
 line-length = 100
 
 [tool.ruff.lint]
 ignore = ["E722", "E731", "F722", "E402", "E741"]
 extend-select = ["I"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+addopts = ["--import-mode=importlib"]
+markers = [
+    "unit: fast deterministic unit tests",
+    "cpu: CPU-only smoke or audit tests",
+    "gpu: tests that require a local CUDA device",
+    "slow: long-running tests kept out of hosted PR CI",
+    "requires_model: tests that require downloading or loading model weights",
+    "requires_gated_model: tests that require authenticated gated model access",
+    "requires_large_download: tests that require large external artifacts",
+]

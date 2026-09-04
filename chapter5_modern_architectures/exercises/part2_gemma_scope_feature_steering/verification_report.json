@@ -1,0 +1,471 @@
+{
+  "accepted": true,
+  "baselines": {
+    "declared_controls": [
+      "baseline_or_reference_check",
+      "negative_control_where_applicable",
+      "shape_dtype_or_exact_value_check",
+      "toy_sae_reconstruction_metrics_contract",
+      "heldout_feature_auc_contract",
+      "steering_random_feature_control_contract",
+      "ablation_top_activating_example_contract",
+      "pinned_gemma_scope_sae_config_check",
+      "pinned_gemma_scope_safetensor_shape_and_finiteness_check",
+      "pinned_gemma_scope_jumprelu_cuda_encode_decode",
+      "exact_gemma3_1b_it_base_model_access_gate",
+      "no_unofficial_base_model_substitution",
+      "real_gemma3_layer13_activation_capture",
+      "heldout_real_gemma_activation_semantic_feature_auc",
+      "real_gemma_activation_random_feature_control",
+      "real_gemma_activation_label_shuffle_control"
+    ],
+    "expected_metrics": {
+      "accepted": true,
+      "gemma3_base_authenticated": true,
+      "gemma3_base_local_non_ref_file_count": 19,
+      "gemma3_base_ready_for_real_activations": true,
+      "gemma3_base_repo_listed": true,
+      "gemma_scope_artifact_preflight_passed": true,
+      "gemma_scope_d_model": 1152,
+      "gemma_scope_forward_passed": true,
+      "gemma_scope_peak_vram_gb_max": 2.0,
+      "gemma_scope_semantic_feature_claimed": true,
+      "gemma_scope_w_dec_shape": [
+        16384,
+        1152
+      ],
+      "gemma_scope_w_enc_shape": [
+        1152,
+        16384
+      ],
+      "gemma_scope_width": 16384,
+      "max_allowed_gpu_gb": 24,
+      "tests_passed": true
+    }
+  },
+  "claim_scope": "GT-3 feature-steering control ladder plus a pinned Gemma Scope 2 1B-IT layer-13 residual JumpReLU SAE artifact preflight on CUDA and authenticated Gemma 3 1B IT layer-13 activation capture. The real activations are encoded through the released SAE and validated on a held-out benign technical-vs-narrative semantic split with random-feature and label-shuffle controls.",
+  "datasets": [
+    {
+      "id": "5_2_gemma_scope_and_feature_steering_toy_inputs",
+      "seed": 0,
+      "source": "generated"
+    },
+    {
+      "id": "constructed_sae_probe_activations_layer13_width16k_seed0",
+      "seed": 0,
+      "semantic_feature_labels": false,
+      "source": "deterministic_from_sae_encoder_columns"
+    }
+  ],
+  "date_run": "2026-09-04T08:41:10+00:00",
+  "evidence_level": "toy_feature_controls_plus_real_gemma_scope_sae_activation_validation",
+  "git_commit": "5e16cf8e",
+  "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+  "gt_tier": "GT-3",
+  "known_failures": [],
+  "metrics": {
+    "gpu_evidence": {
+      "category": "cuda_section_metric",
+      "placeholder_only": false,
+      "section_specific_metric_keys": [
+        "feature_auc",
+        "gemma3_base_access_error_type",
+        "gemma3_base_access_report",
+        "gemma3_base_auth_error_type",
+        "gemma3_base_authenticated",
+        "gemma3_base_local_config_available",
+        "gemma3_base_local_non_ref_file_count",
+        "gemma3_base_local_ready_for_real_activations",
+        "gemma3_base_local_tokenizer_available",
+        "gemma3_base_local_weight_available",
+        "gemma3_base_missing_local_patterns",
+        "gemma3_base_missing_remote_patterns",
+        "gemma3_base_ready_for_real_activations",
+        "gemma3_base_remote_config_available",
+        "gemma3_base_remote_ready_for_real_activations",
+        "gemma3_base_remote_tokenizer_available",
+        "gemma3_base_remote_weight_available",
+        "gemma3_base_repo_listed",
+        "gemma_scope_architecture",
+        "gemma_scope_artifact_path",
+        "gemma_scope_artifact_preflight_passed",
+        "gemma_scope_artifact_semantic_feature_claimed",
+        "gemma_scope_d_model",
+        "gemma_scope_forward_passed",
+        "gemma_scope_hook_point",
+        "gemma_scope_model_name",
+        "gemma_scope_peak_vram_gb",
+        "gemma_scope_real_activation_auc_margin",
+        "gemma_scope_real_activation_baseline_auc",
+        "gemma_scope_real_activation_feature_auc",
+        "gemma_scope_real_activation_feature_score_shape",
+        "gemma_scope_real_activation_forward_passed",
+        "gemma_scope_real_activation_label_shuffle_auc",
+        "gemma_scope_real_activation_label_shuffle_control_passed",
+        "gemma_scope_real_activation_layer",
+        "gemma_scope_real_activation_model_id",
+        "gemma_scope_real_activation_peak_vram_gb",
+        "gemma_scope_real_activation_preflight",
+        "gemma_scope_real_activation_preflight_passed",
+        "gemma_scope_real_activation_random_control_feature_id",
+        "gemma_scope_real_activation_residual_shape",
+        "gemma_scope_real_activation_selected_feature_id",
+        "gemma_scope_repo_id",
+        "gemma_scope_revision",
+        "gemma_scope_semantic_feature_claimed",
+        "gemma_scope_w_dec_shape",
+        "gemma_scope_w_enc_shape",
+        "gemma_scope_width",
+        "l0",
+        "reconstruction_mse",
+        "steering_passes_control"
+      ],
+      "uses_cuda": true
+    },
+    "gpu_test": {
+      "cuda_available": true,
+      "cuda_version": "13.2",
+      "device": "NVIDIA GeForce RTX 5090 Laptop GPU",
+      "feature_auc": 1.0,
+      "gemma3_base_access_error_type": null,
+      "gemma3_base_access_report": {
+        "access_error": null,
+        "access_error_type": null,
+        "allow_network": true,
+        "auth_error": null,
+        "auth_error_type": null,
+        "authenticated": true,
+        "cache_dir": "/home/bitwise/.cache/huggingface/hub/models--google--gemma-3-1b-it",
+        "local_config_available": true,
+        "local_non_ref_file_count": 19,
+        "local_ready_for_real_activations": true,
+        "local_tokenizer_available": true,
+        "local_weight_available": true,
+        "missing_local_patterns": [],
+        "missing_remote_patterns": [],
+        "model_id": "google/gemma-3-1b-it",
+        "model_revision": "dcc83ea841ab6100d6b47a070329e1ba4cf78752",
+        "ready_for_real_activations": true,
+        "remote_config_available": true,
+        "remote_ready_for_real_activations": true,
+        "remote_tokenizer_available": true,
+        "remote_weight_available": true,
+        "repo_file_count": 10,
+        "repo_listed": true,
+        "required_d_model": 1152,
+        "required_hook_point": "model.layers.13.output",
+        "required_layer": 13,
+        "semantic_feature_claimed": false
+      },
+      "gemma3_base_auth_error_type": null,
+      "gemma3_base_authenticated": true,
+      "gemma3_base_local_config_available": true,
+      "gemma3_base_local_non_ref_file_count": 19,
+      "gemma3_base_local_ready_for_real_activations": true,
+      "gemma3_base_local_tokenizer_available": true,
+      "gemma3_base_local_weight_available": true,
+      "gemma3_base_missing_local_patterns": [],
+      "gemma3_base_missing_remote_patterns": [],
+      "gemma3_base_ready_for_real_activations": true,
+      "gemma3_base_remote_config_available": true,
+      "gemma3_base_remote_ready_for_real_activations": true,
+      "gemma3_base_remote_tokenizer_available": true,
+      "gemma3_base_remote_weight_available": true,
+      "gemma3_base_repo_listed": true,
+      "gemma_scope_architecture": "jump_relu",
+      "gemma_scope_artifact_path": "resid_post/layer_13_width_16k_l0_small",
+      "gemma_scope_artifact_preflight_passed": true,
+      "gemma_scope_artifact_semantic_feature_claimed": false,
+      "gemma_scope_d_model": 1152,
+      "gemma_scope_forward_passed": true,
+      "gemma_scope_hook_point": "model.layers.13.output",
+      "gemma_scope_model_name": "google/gemma-3-1b-it",
+      "gemma_scope_peak_vram_gb": 0.27362680435180664,
+      "gemma_scope_real_activation_auc_margin": 0.5,
+      "gemma_scope_real_activation_baseline_auc": 0.5,
+      "gemma_scope_real_activation_feature_auc": 1.0,
+      "gemma_scope_real_activation_feature_score_shape": [
+        16,
+        16384
+      ],
+      "gemma_scope_real_activation_forward_passed": true,
+      "gemma_scope_real_activation_label_shuffle_auc": 0.0,
+      "gemma_scope_real_activation_label_shuffle_control_passed": true,
+      "gemma_scope_real_activation_layer": 13,
+      "gemma_scope_real_activation_model_id": "google/gemma-3-1b-it",
+      "gemma_scope_real_activation_peak_vram_gb": 2.236264228820801,
+      "gemma_scope_real_activation_preflight": {
+        "active_features_per_prompt_token": 1627.8597412109375,
+        "artifact_path": "resid_post/layer_13_width_16k_l0_small",
+        "auc_margin": 0.5,
+        "base_access_report": {
+          "access_error": null,
+          "access_error_type": null,
+          "allow_network": true,
+          "auth_error": null,
+          "auth_error_type": null,
+          "authenticated": true,
+          "cache_dir": "/home/bitwise/.cache/huggingface/hub/models--google--gemma-3-1b-it",
+          "local_config_available": true,
+          "local_non_ref_file_count": 19,
+          "local_ready_for_real_activations": true,
+          "local_tokenizer_available": true,
+          "local_weight_available": true,
+          "missing_local_patterns": [],
+          "missing_remote_patterns": [],
+          "model_id": "google/gemma-3-1b-it",
+          "model_revision": "dcc83ea841ab6100d6b47a070329e1ba4cf78752",
+          "ready_for_real_activations": true,
+          "remote_config_available": true,
+          "remote_ready_for_real_activations": true,
+          "remote_tokenizer_available": true,
+          "remote_weight_available": true,
+          "repo_file_count": 10,
+          "repo_listed": true,
+          "required_d_model": 1152,
+          "required_hook_point": "model.layers.13.output",
+          "required_layer": 13,
+          "semantic_feature_claimed": false
+        },
+        "baseline_auc": 0.5,
+        "feature_auc": 1.0,
+        "feature_score_shape": [
+          16,
+          16384
+        ],
+        "heldout_prompt_count": 8,
+        "hook_point": "model.layers.13.output",
+        "label_shuffle_auc": 0.0,
+        "label_shuffle_control_passed": true,
+        "max_length": 64,
+        "model_id": "google/gemma-3-1b-it",
+        "model_layer": 13,
+        "model_revision": "dcc83ea841ab6100d6b47a070329e1ba4cf78752",
+        "narrative_prompt_count": 8,
+        "negative_mean": 102.71952819824219,
+        "passes_random_feature_baseline": true,
+        "peak_vram_gb": 2.236264228820801,
+        "positive_mean": 240.3575439453125,
+        "preflight_passed": true,
+        "prompt_count": 16,
+        "prompted_reconstruction_mse": 6754145.0,
+        "random_control_feature_id": 7121,
+        "real_activation_forward_passed": true,
+        "repo_id": "google/gemma-scope-2-1b-it",
+        "residual_shape": [
+          16,
+          16,
+          1152
+        ],
+        "revision": "b0fa29457c3601df0a70c48a15534c738d7c10e0",
+        "selected_feature_id": 15586,
+        "selected_feature_train_margin": 225.92691040039062,
+        "semantic_axis": "technical_ml_tool_text_vs_narrative_prose",
+        "semantic_feature_claimed": true,
+        "technical_prompt_count": 8,
+        "threshold_accuracy": 0.75,
+        "train_prompt_count": 8,
+        "within_vram_budget": true
+      },
+      "gemma_scope_real_activation_preflight_passed": true,
+      "gemma_scope_real_activation_random_control_feature_id": 7121,
+      "gemma_scope_real_activation_residual_shape": [
+        16,
+        16,
+        1152
+      ],
+      "gemma_scope_real_activation_selected_feature_id": 15586,
+      "gemma_scope_repo_id": "google/gemma-scope-2-1b-it",
+      "gemma_scope_revision": "b0fa29457c3601df0a70c48a15534c738d7c10e0",
+      "gemma_scope_semantic_feature_claimed": true,
+      "gemma_scope_w_dec_shape": [
+        16384,
+        1152
+      ],
+      "gemma_scope_w_enc_shape": [
+        1152,
+        16384
+      ],
+      "gemma_scope_width": 16384,
+      "gpu_total_memory_gb": 23.45965576171875,
+      "l0": 1.5,
+      "peak_vram_gb": 2.236264228820801,
+      "reconstruction_mse": 9.999985923059285e-05,
+      "steering_passes_control": true,
+      "torch_version": "2.12.1+cu132",
+      "within_vram_budget": true
+    },
+    "notebook_contract": {
+      "ablation": {
+        "feature_3_zeroed": true,
+        "top_indices": [
+          8,
+          6,
+          7
+        ],
+        "top_values": [
+          2.0,
+          2.0,
+          2.0
+        ]
+      },
+      "feature_validation": {
+        "auc": 1.0,
+        "negative_mean": 0.10000000149011612,
+        "positive_mean": 0.800000011920929,
+        "separation": 0.7000000104308128,
+        "threshold_accuracy": 1.0
+      },
+      "logit_attribution": [
+        [
+          1.0,
+          3.0
+        ],
+        [
+          4.0,
+          6.0
+        ]
+      ],
+      "metrics": {
+        "dead_feature_fraction": 0.625,
+        "feature_density_mean": 0.25,
+        "l0": 2.0,
+        "loss_recovered": 0.8,
+        "reconstruction_kl": null,
+        "reconstruction_mse": 0.002815335988998413
+      },
+      "steering": {
+        "baseline_mean": 0.20000000298023224,
+        "passes_control": true,
+        "random_delta": 0.033333346247673035,
+        "random_mean": 0.23333334922790527,
+        "steered_delta": 0.3999999612569809,
+        "steered_mean": 0.5999999642372131
+      }
+    }
+  },
+  "models": [
+    {
+      "gated": false,
+      "id": "toy_or_generated_inputs",
+      "precision": "float32",
+      "revision": "seed_0",
+      "source": "generated"
+    },
+    {
+      "base_model": "google/gemma-3-1b-it",
+      "base_model_access": "gated_unavailable_without_authenticated_access",
+      "claim_scope": "released_sae_artifact_config_tensor_and_forward_preflight",
+      "gated": true,
+      "id": "google/gemma-scope-2-1b-it/resid_post/layer_13_width_16k_l0_small",
+      "precision": "float32",
+      "revision": "b0fa29457c3601df0a70c48a15534c738d7c10e0",
+      "source": "huggingface"
+    }
+  ],
+  "negative_controls": {
+    "declared_controls": [
+      "negative_control_where_applicable",
+      "steering_random_feature_control_contract",
+      "real_gemma_activation_random_feature_control"
+    ]
+  },
+  "notebook_id": "5_2_gemma_scope_and_feature_steering",
+  "ood_tests": {
+    "declared": "required_where_applicable"
+  },
+  "peak_vram_gb": 2.236264228820801,
+  "report_inputs": {
+    "algorithm": "sha256",
+    "combined_sha256": "ddb2bbb9ad4a75caf5d36eee36280207439bea056750d6506b2c61c56ab643d4",
+    "files": [
+      {
+        "path": "arena_ext/features.py",
+        "sha256": "174023a8232b6ed60bc97c2894046485c79ff1d27136ee4e57dfc837dcb6e948",
+        "size_bytes": 11262
+      },
+      {
+        "path": "arena_ext/gemma_scope.py",
+        "sha256": "2678245dac629f29a231423cfa80846485cdb4ddd3bfba493861484d349501f7",
+        "size_bytes": 29535
+      },
+      {
+        "path": "arena_ext/verification.py",
+        "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
+        "size_bytes": 9276
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part2_gemma_scope_feature_steering/5.2_Gemma_Scope_and_Feature_Steering_exercises.ipynb",
+        "sha256": "ed832d547fdf7ef16067d9678eea4ca23b7e8d5ccda0fcb5279042fa1d0943de",
+        "size_bytes": 61738
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part2_gemma_scope_feature_steering/5.2_Gemma_Scope_and_Feature_Steering_solutions.ipynb",
+        "sha256": "f04b41017eaa0efab46807334da579488d173a6a670a46447821c43a8ab6b81e",
+        "size_bytes": 337272
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part2_gemma_scope_feature_steering/README.md",
+        "sha256": "cf5c49283fcada8dc3172bb9c53661cbc4ae9baa7c9a3d9a0640b5a4bfbe8eab",
+        "size_bytes": 1119
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part2_gemma_scope_feature_steering/artifacts.lock.yml",
+        "sha256": "ad57616d55115c724dbf56c57e6bc56c092c79e53e1c6ffbaecf477934d985a5",
+        "size_bytes": 3204
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part2_gemma_scope_feature_steering/expected_outputs/README.md",
+        "sha256": "43b7faa1374515cd6b8e8c54421319f1617cdb5117784d3ad15f4ca271cf3f20",
+        "size_bytes": 1784
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part2_gemma_scope_feature_steering/expected_outputs/reference_metrics.json",
+        "sha256": "2d88223e55135bb9036480ca2c1af423f5ddb598e250d33827013fa9ee6522b3",
+        "size_bytes": 879
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part2_gemma_scope_feature_steering/expected_outputs/smoke_test.json",
+        "sha256": "2eeb46e12651e94881ef9be96b12535520d4e9a969c6a7c85699a907ae3d6f92",
+        "size_bytes": 303
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part2_gemma_scope_feature_steering/solutions.py",
+        "sha256": "054cdabaa0a5a56d949260792d8b9aab2946b0839eb506f296a3cab54e547afb",
+        "size_bytes": 20826
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part2_gemma_scope_feature_steering/tests.py",
+        "sha256": "2d1bd2b2720f37c2ff6ed01468bfab53b8d888b0c4a7f6ac7d6008d7b530de3d",
+        "size_bytes": 17189
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part2_gemma_scope_feature_steering/utils.py",
+        "sha256": "d0daf11d0ac63ce35b64053aaf6d81963532462af1fbc595301b72be835b9765",
+        "size_bytes": 363
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part2_gemma_scope_feature_steering/verification_report.schema.json",
+        "sha256": "ecd833883885077ad5d7a0e239d984d01462255e94266212cf195ab4d4e27b3d",
+        "size_bytes": 2669
+      },
+      {
+        "path": "chapter5_modern_architectures/instructions/pages/02_[5.2]_Gemma_Scope_and_Feature_Steering.md",
+        "sha256": "237210da9007b95df3d390153266843872b13847ba8ea1dc9e9a2d78760c159f",
+        "size_bytes": 46459
+      },
+      {
+        "path": "scripts/run_extension_verification_reports.py",
+        "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
+        "size_bytes": 16272
+      }
+    ],
+    "schema_version": 1
+  },
+  "safety_notes": [
+    "No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.",
+    "Gemma Scope artifact loading and authenticated Gemma 3 1B IT layer-13 activation capture are verified on CUDA in this environment. The claim remains limited to the benign technical-vs-narrative semantic split and does not claim broad Gemma Scope coverage or safety-relevant steering behavior."
+  ],
+  "tests_passed": true,
+  "wall_clock_seconds": 5.570199
+}

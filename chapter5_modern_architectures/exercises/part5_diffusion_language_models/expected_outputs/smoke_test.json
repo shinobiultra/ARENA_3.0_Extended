@@ -1,0 +1,10 @@
+{
+  "accepted": true,
+  "claim_scope": "Contract check; not a full real-model validation.",
+  "evidence_level": "notebook_contract",
+  "gt_tier": "GT-0",
+  "notebook_id": "5_5_diffusion_language_models",
+  "section": "5.5",
+  "tests_passed": true,
+  "title": "Diffusion Language Models"
+}

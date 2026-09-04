@@ -1,0 +1,310 @@
+{
+  "accepted": true,
+  "baselines": {
+    "declared_controls": [
+      "baseline_or_reference_check",
+      "negative_control_where_applicable",
+      "shape_dtype_or_exact_value_check",
+      "recurrent_parallel_selective_scan_equivalence",
+      "exact_continuous_time_discretization_oracle",
+      "causal_depthwise_convolution_no_future_leakage",
+      "input_dependent_delta_B_C",
+      "pre_norm_residual_gated_mamba_block",
+      "tiny_stacked_mamba_cache_parity",
+      "strict_243_tensor_mamba_130m_mapping",
+      "official_hidden_state_and_logits_parity",
+      "official_greedy_token_parity",
+      "analytic_causal_attention_memory_control",
+      "finite_receptive_field_convolution_control",
+      "pinned_official_mamba_130m_hf_logits_generation",
+      "batched_vs_single_prompt_top_token_consistency",
+      "deterministic_generation_prefix_preservation",
+      "mamba_ssm_and_causal_conv1d_fast_kernels_required",
+      "exact_state_ablation_control"
+    ],
+    "expected_metrics": {
+      "accepted": true,
+      "cache_max_abs_diff_max": 1e-05,
+      "cache_passed": true,
+      "cpu_mamba_130m_cache_max_abs_diff_max": 0.001,
+      "cpu_mamba_130m_greedy_tokens_match": true,
+      "cpu_mamba_130m_hidden_max_abs_diff_max": 0.003,
+      "cpu_mamba_130m_hidden_max_mean_abs_diff_max": 0.0001,
+      "cpu_mamba_130m_hidden_state_count": 25,
+      "cpu_mamba_130m_logits_max_abs_diff_max": 0.0005,
+      "cpu_mamba_130m_logits_mean_abs_diff_max": 3e-05,
+      "cpu_mamba_130m_logits_top1_agreement": 1.0,
+      "cpu_mamba_130m_mapped_tensor_count": 243,
+      "max_allowed_gpu_gb": 24,
+      "official_mamba_batched_single_top1_agreement": 1.0,
+      "official_mamba_fast_kernel_available": true,
+      "official_mamba_generated_shape": [
+        1,
+        8
+      ],
+      "official_mamba_generation_new_tokens": 4,
+      "official_mamba_generation_tokens_per_second_min": 1.0,
+      "official_mamba_logits_generation_preflight_passed": true,
+      "official_mamba_logits_shape": [
+        2,
+        4,
+        50280
+      ],
+      "official_mamba_logits_std_min": 1.0,
+      "official_mamba_peak_vram_gb_max": 2.0,
+      "official_mamba_prompt_prefix_preserved": true,
+      "scan_max_abs_diff_max": 1e-06,
+      "scan_passed": true,
+      "selective_memory_attention_max_mae_max": 1e-10,
+      "selective_memory_conv_distance_32_mae_min": 0.9,
+      "selective_memory_max_mae": 0.0,
+      "tests_passed": true
+    }
+  },
+  "claim_scope": "GT-1 Mamba implementation contract: the learner implements stable continuous-time discretization, causal depthwise convolution, token-dependent delta/B/C, recurrent and associative selective scans, a gated pre-norm residual Mamba block, recurrent cache, and a stacked tied-embedding LM. On CPU, all 243 tensors from pinned Mamba-130M-HF map strictly with no missing or unexpected keys; 25 hidden-state checkpoints, final logits, cache logits, and greedy tokens match the official implementation within explicit tolerances. The exact selective-memory signature compares recurrent state with causal-attention and finite-convolution controls. CUDA fast-kernel throughput and VRAM remain a separate release contract and were not rerun for this learner-surface rewrite.",
+  "datasets": [
+    {
+      "id": "5_3_mamba_from_scratch_toy_inputs",
+      "seed": 0,
+      "source": "generated"
+    },
+    {
+      "generation_prompt": "Mamba models can",
+      "id": "course_generated_safe_mamba_prompts_v1",
+      "max_new_tokens": 4,
+      "prompt_count": 2,
+      "prompts": [
+        "Mamba models can",
+        "The cat sat on"
+      ],
+      "seed": 0,
+      "source": "generated_prompt_pair"
+    }
+  ],
+  "date_run": "2026-09-04T13:34:39+00:00",
+  "evidence_level": "exact_mamba_components_plus_pinned_130m_weight_output_parity",
+  "git_commit": "8a33dcfd",
+  "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+  "gt_tier": "GT-1",
+  "known_failures": [],
+  "metrics": {
+    "gpu_evidence": {
+      "category": "cuda_section_metric",
+      "placeholder_only": false,
+      "section_specific_metric_keys": [
+        "cache_max_abs_diff",
+        "cache_passed",
+        "official_mamba_batched_single_top1_agreement",
+        "official_mamba_fast_kernel_available",
+        "official_mamba_generated_shape",
+        "official_mamba_generation_new_tokens",
+        "official_mamba_generation_tokens_per_second",
+        "official_mamba_logits_generation_preflight_passed",
+        "official_mamba_logits_shape",
+        "official_mamba_logits_std",
+        "official_mamba_peak_vram_gb",
+        "official_mamba_preflight",
+        "official_mamba_prompt_prefix_preserved",
+        "scan_max_abs_diff",
+        "scan_passed"
+      ],
+      "uses_cuda": true
+    },
+    "gpu_test": {
+      "cache_max_abs_diff": 9.5367431640625e-07,
+      "cache_passed": true,
+      "cuda_available": true,
+      "cuda_version": "13.2",
+      "device": "NVIDIA GeForce RTX 5090 Laptop GPU",
+      "full_path": "Selective-scan/cache parity plus pinned Mamba-130M-HF CUDA preflight.",
+      "gpu_total_memory_gb": 23.45965576171875,
+      "official_mamba_batched_single_top1_agreement": 1.0,
+      "official_mamba_fast_kernel_available": true,
+      "official_mamba_generated_shape": [
+        1,
+        8
+      ],
+      "official_mamba_generation_new_tokens": 4,
+      "official_mamba_generation_tokens_per_second": 15.21671821264847,
+      "official_mamba_logits_generation_preflight_passed": true,
+      "official_mamba_logits_shape": [
+        2,
+        4,
+        50280
+      ],
+      "official_mamba_logits_std": 52.72896194458008,
+      "official_mamba_peak_vram_gb": 0.27759599685668945,
+      "official_mamba_preflight": {
+        "batched_single_top1_agreement": 1.0,
+        "cuda_available": true,
+        "fast_kernel_available": true,
+        "generated_new_token_count": 4,
+        "generated_shape": [
+          1,
+          8
+        ],
+        "generation_tokens_per_second": 15.21671821264847,
+        "logits_shape": [
+          2,
+          4,
+          50280
+        ],
+        "logits_std": 52.72896194458008,
+        "model_id": "state-spaces/mamba-130m-hf",
+        "peak_vram_gb": 0.27759599685668945,
+        "preflight_passed": true,
+        "prompt_prefix_preserved": true,
+        "revision": "1e76775f628fbf1350fbe4dbb3d971ba64af25a1",
+        "within_vram_budget": true
+      },
+      "official_mamba_prompt_prefix_preserved": true,
+      "peak_vram_gb": 0.27759599685668945,
+      "scan_max_abs_diff": 4.76837158203125e-07,
+      "scan_passed": true,
+      "torch_version": "2.12.1+cu132",
+      "within_vram_budget": true
+    },
+    "notebook_contract": {
+      "block_step_parity": {
+        "max_abs_diff": 1.1920928955078125e-07,
+        "passed": true
+      },
+      "cpu_mamba_130m_cache_max_abs_diff": 0.00029754638671875,
+      "cpu_mamba_130m_greedy_tokens_match": true,
+      "cpu_mamba_130m_hidden_max_abs_diff": 9.918212890625e-05,
+      "cpu_mamba_130m_hidden_max_mean_abs_diff": 3.321268422951107e-06,
+      "cpu_mamba_130m_hidden_state_count": 25,
+      "cpu_mamba_130m_logits_max_abs_diff": 0.0001220703125,
+      "cpu_mamba_130m_logits_mean_abs_diff": 2.1163466954021715e-05,
+      "cpu_mamba_130m_logits_top1_agreement": 1.0,
+      "cpu_mamba_130m_mapped_tensor_count": 243,
+      "lm_cache_parity": {
+        "max_abs_diff": 9.5367431640625e-07,
+        "passed": true
+      },
+      "memory_benchmark": {
+        "attention_max_mae": 0.0,
+        "convolution_long_delay_mae": 1.0,
+        "selective_max_mae": 0.0
+      },
+      "scan_parity": {
+        "max_abs_diff": 4.76837158203125e-07,
+        "passed": true
+      },
+      "selective_memory_attention_max_mae": 0.0,
+      "selective_memory_conv_distance_32_mae": 1.0,
+      "selective_memory_max_mae": 0.0
+    }
+  },
+  "models": [
+    {
+      "gated": false,
+      "id": "toy_or_generated_inputs",
+      "precision": "float32",
+      "revision": "seed_0",
+      "source": "generated"
+    },
+    {
+      "claim_scope": "strict_weight_mapping_hidden_logits_cache_generation_parity",
+      "gated": false,
+      "id": "state-spaces/mamba-130m-hf",
+      "precision": "float32 CPU parity; float16 CUDA release preflight",
+      "revision": "1e76775f628fbf1350fbe4dbb3d971ba64af25a1",
+      "source": "huggingface"
+    }
+  ],
+  "negative_controls": {
+    "declared_controls": [
+      "negative_control_where_applicable"
+    ]
+  },
+  "notebook_id": "5_3_mamba_from_scratch",
+  "ood_tests": {
+    "declared": "required_where_applicable"
+  },
+  "peak_vram_gb": 0.27759599685668945,
+  "report_inputs": {
+    "algorithm": "sha256",
+    "combined_sha256": "c217b7f55adebf7ca72381c68e24fe21ff40462e9730e131659d0c2ccb1dfcc3",
+    "files": [
+      {
+        "path": "arena_ext/verification.py",
+        "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
+        "size_bytes": 9276
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part3_mamba_from_scratch/5.3_Mamba_from_Scratch_exercises.ipynb",
+        "sha256": "44e2ae54ffe7283d1a6edc42b98302141cb24774372ed7bf50f2befbfe2e5e1c",
+        "size_bytes": 79001
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part3_mamba_from_scratch/5.3_Mamba_from_Scratch_solutions.ipynb",
+        "sha256": "cb7180b362f384ee5717052cf09b2c7f043eb57fccb75227f8f96655100335f6",
+        "size_bytes": 600578
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part3_mamba_from_scratch/README.md",
+        "sha256": "4b797834b4d73e785cad2a30f4965f69e2f2cb5d91f91ee67577c3191dd5d4c4",
+        "size_bytes": 1316
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part3_mamba_from_scratch/artifacts.lock.yml",
+        "sha256": "1e8e5ff1f2f6201264ecbc34969ba2aa7b52a0a41e6e833f7043c2e8078e8c2f",
+        "size_bytes": 4217
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part3_mamba_from_scratch/expected_outputs/README.md",
+        "sha256": "ba64694350fb447bb74118894ad0ab12b3b285883c25bc3ba9f5e1e4941796f7",
+        "size_bytes": 2451
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part3_mamba_from_scratch/expected_outputs/reference_metrics.json",
+        "sha256": "31ba109418b6a326aceb99a62152c3e0fbf5472371de8d648b5051cd241d3ff8",
+        "size_bytes": 1598
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part3_mamba_from_scratch/expected_outputs/smoke_test.json",
+        "sha256": "db4979fdfee3d01dcaca487895dc580e28e940919c3bd70949465032089de715",
+        "size_bytes": 418
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part3_mamba_from_scratch/solutions.py",
+        "sha256": "4a7959f279bed0cc5efe10fabbe19f9490b13599cea7674d40668092402e819b",
+        "size_bytes": 42080
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part3_mamba_from_scratch/tests.py",
+        "sha256": "f0906eea5700c1ff43e6d6d29f4dee6ab0df550a7fa91411bb20af46cefb62ae",
+        "size_bytes": 18879
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part3_mamba_from_scratch/utils.py",
+        "sha256": "bfa1e1b8a78b71047b74b5ca5201d6803a1895cae6c00625b81dba51cce51b30",
+        "size_bytes": 349
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part3_mamba_from_scratch/verification_report.schema.json",
+        "sha256": "ecd833883885077ad5d7a0e239d984d01462255e94266212cf195ab4d4e27b3d",
+        "size_bytes": 2669
+      },
+      {
+        "path": "chapter5_modern_architectures/instructions/pages/03_[5.3]_Mamba_from_Scratch.md",
+        "sha256": "c4c81b37b9b5224c2257368d3ec27d58add07a7288a4072a36fb424d3e5d0708",
+        "size_bytes": 60151
+      },
+      {
+        "path": "scripts/run_extension_verification_reports.py",
+        "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
+        "size_bytes": 16272
+      }
+    ],
+    "schema_version": 1
+  },
+  "safety_notes": [
+    "No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.",
+    "The official Mamba path uses safe generic prompts and deterministic generation only.",
+    "CPU weight and output parity is learner-visible. The checked-in CUDA report is regenerated by the release harness and records the same pinned-model execution."
+  ],
+  "tests_passed": true,
+  "wall_clock_seconds": 74.179887
+}

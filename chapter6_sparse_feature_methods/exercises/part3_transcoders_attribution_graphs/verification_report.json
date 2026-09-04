@@ -1,0 +1,345 @@
+{
+  "accepted": true,
+  "baselines": {
+    "declared_controls": [
+      "baseline_or_reference_check",
+      "negative_control_where_applicable",
+      "shape_dtype_or_exact_value_check",
+      "exact_colored_shape_mlp_replacement",
+      "exact_reconstruction_decomposition",
+      "known_ten_edge_attribution_graph",
+      "feature_retention_and_ablation_interventions",
+      "fixed_same_size_random_graph",
+      "cyclically_shuffled_feature_ids",
+      "cyclically_shuffled_edge_targets",
+      "decoder_norm_reconstruction_only_baseline",
+      "pinned_gelu1l_mlp_feature_oracle_replacement",
+      "oracle_logits_and_mlp_output_parity",
+      "trained_tiny_relu_transcoder_heldout_reconstruction",
+      "trained_replacement_top1_agreement",
+      "feature_graph_top64_preservation",
+      "low_effect_feature_ablation_negative_control",
+      "full_published_transcoder_artifact_replication_not_claimed"
+    ],
+    "expected_metrics": {
+      "accepted": true,
+      "activation_count": 104,
+      "d_model": 512,
+      "graph_feature_count": 64,
+      "graph_passes_damage_control": true,
+      "graph_preserves_logit_diff": true,
+      "graph_random_damage_max": 0.01,
+      "graph_reproducible": true,
+      "graph_topk_damage_min": 0.1,
+      "hf_revision": "bddc0e332f0ae84279e6a6a45d91b314899e1603",
+      "max_allowed_gpu_gb": 24,
+      "mlp_width": 2048,
+      "model_name": "gelu-1l",
+      "oracle_logits_max_abs_error_max": 5e-05,
+      "oracle_mlp_out_max_abs_error_max": 1e-05,
+      "oracle_preserves_logit_diff": true,
+      "oracle_replacement_kl_max": 1e-06,
+      "peak_vram_gb_max": 1.0,
+      "preflight_passed": true,
+      "preserves_logit_diff": true,
+      "replacement_kl_max": 1e-06,
+      "tests_passed": true,
+      "toy_edge_conservation": 1.0,
+      "toy_edge_decomposition_max_error": 0.0,
+      "toy_graph_ablation_damage": 1.0,
+      "toy_graph_edge_count": 10,
+      "toy_random_ablation_damage": 0.09375,
+      "toy_reconstruction_max_error": 0.0,
+      "toy_shuffled_edge_conservation": 0.0,
+      "toy_target_score": 1.6,
+      "trained_replacement_top1_agreement_min": 0.75,
+      "trained_transcoder_heldout_mse_ratio_max": 0.5,
+      "trained_transcoder_steps": 800,
+      "trained_transcoder_width": 512
+    }
+  },
+  "claim_scope": "The primary GT-0 result is an exact colored-shape ReLU MLP replacement with a known ten-edge attribution graph, signed bias paths, intervention faithfulness, and matched random, shuffled-edge, shuffled-feature, and reconstruction-only controls. A pinned TransformerLens GELU-1L CUDA run remains supporting evidence and is not a published cross-layer-transcoder replication.",
+  "datasets": [
+    {
+      "id": "6_3_transcoders_and_attribution_graphs_toy_inputs",
+      "seed": 0,
+      "source": "generated"
+    },
+    {
+      "activation_count": 104,
+      "feature_hook": "blocks.0.mlp.hook_post",
+      "id": "course_generated_gelu1l_transcoder_prompt_set_v1",
+      "input_hook": "blocks.0.ln2.hook_normalized",
+      "prompt_count": 16,
+      "seed": 6303,
+      "source": "generated_safe_prompts",
+      "target_hook": "blocks.0.hook_mlp_out"
+    }
+  ],
+  "date_run": "2026-09-04T08:21:50+00:00",
+  "evidence_level": "exact_model_organism_plus_pinned_transformerlens_preflight",
+  "git_commit": "d8262edb",
+  "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+  "gt_tier": "GT-0",
+  "known_failures": [],
+  "metrics": {
+    "gpu_evidence": {
+      "category": "cuda_section_metric",
+      "placeholder_only": false,
+      "section_specific_metric_keys": [
+        "activation_count",
+        "d_model",
+        "feature_acts_sum",
+        "graph_feature_count",
+        "graph_passes_damage_control",
+        "graph_preserves_logit_diff",
+        "graph_random_damage",
+        "graph_reproducible",
+        "graph_topk_damage",
+        "hf_revision",
+        "mlp_width",
+        "model_name",
+        "oracle_logits_max_abs_error",
+        "oracle_mlp_out_max_abs_error",
+        "oracle_preserves_logit_diff",
+        "oracle_replacement_kl",
+        "preflight_passed",
+        "preserves_logit_diff",
+        "prompt_count",
+        "replacement_kl",
+        "tokenizer_id",
+        "tokenizer_revision",
+        "trained_replacement_top1_agreement",
+        "trained_transcoder_feature_density",
+        "trained_transcoder_heldout_mse",
+        "trained_transcoder_heldout_mse_ratio",
+        "trained_transcoder_heldout_zero_mse",
+        "trained_transcoder_steps",
+        "trained_transcoder_train_mse",
+        "trained_transcoder_width"
+      ],
+      "uses_cuda": true
+    },
+    "gpu_test": {
+      "activation_count": 104,
+      "cuda_available": true,
+      "cuda_version": "13.2",
+      "d_model": 512,
+      "device": "NVIDIA GeForce RTX 5090 Laptop GPU",
+      "feature_acts_sum": 2360.132568359375,
+      "full_path": "Pinned TransformerLens gelu-1l CUDA preflight: exact MLP-feature oracle replacement, trained tiny ReLU transcoder held-out reconstruction, and feature-level attribution graph with top-feature versus low-effect controls.",
+      "gpu_total_memory_gb": 23.45965576171875,
+      "graph_feature_count": 64,
+      "graph_passes_damage_control": true,
+      "graph_preserves_logit_diff": true,
+      "graph_random_damage": 0.0006456277915276587,
+      "graph_reproducible": true,
+      "graph_topk_damage": 0.8082806468009949,
+      "hf_revision": "bddc0e332f0ae84279e6a6a45d91b314899e1603",
+      "mlp_width": 2048,
+      "model_name": "gelu-1l",
+      "oracle_logits_max_abs_error": 1.811981201171875e-05,
+      "oracle_mlp_out_max_abs_error": 5.7220458984375e-06,
+      "oracle_preserves_logit_diff": true,
+      "oracle_replacement_kl": -2.075782035149132e-08,
+      "peak_vram_gb": 0.36870527267456055,
+      "preflight_passed": true,
+      "preserves_logit_diff": true,
+      "prompt_count": 16,
+      "replacement_kl": -2.075782035149132e-08,
+      "tokenizer_id": "NeelNanda/gpt-neox-tokenizer-digits",
+      "tokenizer_revision": "0f6671571a20be9756b9991d978047c03b75e749",
+      "torch_version": "2.12.1+cu132",
+      "trained_replacement_top1_agreement": 0.9038462042808533,
+      "trained_transcoder_feature_density": 0.4178372919559479,
+      "trained_transcoder_heldout_mse": 0.3504602313041687,
+      "trained_transcoder_heldout_mse_ratio": 0.15014802985561573,
+      "trained_transcoder_heldout_zero_mse": 2.3340981006622314,
+      "trained_transcoder_steps": 800,
+      "trained_transcoder_train_mse": 0.0010637789964675903,
+      "trained_transcoder_width": 512,
+      "within_vram_budget": true
+    },
+    "notebook_contract": {
+      "edge_conservation": 1.0,
+      "edge_decomposition_max_error": 0.0,
+      "faithfulness_curve": [
+        0.78125,
+        0.90625,
+        1.0
+      ],
+      "feature_acts": [
+        0.5,
+        0.0,
+        0.5,
+        0.0,
+        0.5,
+        0.0
+      ],
+      "graph_ablation_damage": 1.0,
+      "graph_edge_count": 10,
+      "graph_feature_ids": [
+        4,
+        0,
+        2
+      ],
+      "input": "red square",
+      "model_organism": "exact_colored_shape_relu_mlp",
+      "pre_acts": [
+        0.5,
+        -0.5,
+        0.5,
+        -0.5,
+        0.5,
+        -1.5
+      ],
+      "random_ablation_damage": 0.09375,
+      "reconstructed_activations": [
+        1.350000023841858,
+        -0.25,
+        0.10000000149011612
+      ],
+      "reconstruction_max_error": 0.0,
+      "reconstruction_only_curve": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "same_size_random_curve": [
+        0.0,
+        0.0,
+        0.09375
+      ],
+      "shuffled_edge_conservation": 0.0,
+      "shuffled_feature_curve": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "target_score": 1.600000023841858,
+      "toy_edge_conservation": 1.0,
+      "toy_edge_decomposition_max_error": 0.0,
+      "toy_graph_ablation_damage": 1.0,
+      "toy_graph_edge_count": 10,
+      "toy_random_ablation_damage": 0.09375,
+      "toy_reconstruction_max_error": 0.0,
+      "toy_shuffled_edge_conservation": 0.0,
+      "toy_target_score": 1.600000023841858
+    }
+  },
+  "models": [
+    {
+      "gated": false,
+      "id": "exact_colored_shape_relu_mlp",
+      "precision": "float32",
+      "revision": "section_6_3_v1",
+      "source": "hand_specified_model_organism"
+    },
+    {
+      "alias": "gelu-1l",
+      "claim_scope": "real_mlp_feature_graph_and_tiny_relu_transcoder_preflight",
+      "gated": false,
+      "id": "NeelNanda/GELU_1L512W_C4_Code",
+      "precision": "float32",
+      "revision": "bddc0e332f0ae84279e6a6a45d91b314899e1603",
+      "source": "huggingface_transformerlens",
+      "tokenizer": "NeelNanda/gpt-neox-tokenizer-digits",
+      "tokenizer_revision": "0f6671571a20be9756b9991d978047c03b75e749"
+    }
+  ],
+  "negative_controls": {
+    "declared_controls": [
+      "negative_control_where_applicable",
+      "fixed_same_size_random_graph",
+      "low_effect_feature_ablation_negative_control"
+    ]
+  },
+  "notebook_id": "6_3_transcoders_and_attribution_graphs",
+  "ood_tests": {
+    "declared": "required_where_applicable"
+  },
+  "peak_vram_gb": 0.36870527267456055,
+  "report_inputs": {
+    "algorithm": "sha256",
+    "combined_sha256": "7c7f9658609081e88f804b69a0ae9f98322ef5c72bff6939768fe6eec9589280",
+    "files": [
+      {
+        "path": "arena_ext/verification.py",
+        "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
+        "size_bytes": 9276
+      },
+      {
+        "path": "chapter6_sparse_feature_methods/exercises/part3_transcoders_attribution_graphs/6.3_Transcoders_and_Attribution_Graphs_exercises.ipynb",
+        "sha256": "e6f87a7cf003a81af3ec628136c296ff1894954f32c31071def6473e58cbd771",
+        "size_bytes": 58482
+      },
+      {
+        "path": "chapter6_sparse_feature_methods/exercises/part3_transcoders_attribution_graphs/6.3_Transcoders_and_Attribution_Graphs_solutions.ipynb",
+        "sha256": "af01d2a4aeed111dca3b57727bc0289636cae3bc47d1d3882df19a933cf7e80e",
+        "size_bytes": 417500
+      },
+      {
+        "path": "chapter6_sparse_feature_methods/exercises/part3_transcoders_attribution_graphs/README.md",
+        "sha256": "756ab097226ee625163ae07db4eb26c57439f09334dbfde8bc62044a5d46a8e4",
+        "size_bytes": 1222
+      },
+      {
+        "path": "chapter6_sparse_feature_methods/exercises/part3_transcoders_attribution_graphs/artifacts.lock.yml",
+        "sha256": "31a48d51f48edd655bfbd7b59614cc51c5ef22fad17a685f1ace82100ad721da",
+        "size_bytes": 3816
+      },
+      {
+        "path": "chapter6_sparse_feature_methods/exercises/part3_transcoders_attribution_graphs/expected_outputs/README.md",
+        "sha256": "43c30b1ef6c566aaf59210a3293ac7d646b68ef9ef5ae0b7a4b18627344c9b70",
+        "size_bytes": 740
+      },
+      {
+        "path": "chapter6_sparse_feature_methods/exercises/part3_transcoders_attribution_graphs/expected_outputs/reference_metrics.json",
+        "sha256": "9cdac02c288f40146da32a44e6382517e4cf53e4c89736d7bac0d36dae757e0e",
+        "size_bytes": 1648
+      },
+      {
+        "path": "chapter6_sparse_feature_methods/exercises/part3_transcoders_attribution_graphs/expected_outputs/smoke_test.json",
+        "sha256": "a718812f2458597e54385390636555e3839afa218581e8d506129667995faca9",
+        "size_bytes": 644
+      },
+      {
+        "path": "chapter6_sparse_feature_methods/exercises/part3_transcoders_attribution_graphs/solutions.py",
+        "sha256": "196566ed25b8faaae8e77cba8ea1cbe6c6844017664fe7590a57cda4fdd60c4d",
+        "size_bytes": 43466
+      },
+      {
+        "path": "chapter6_sparse_feature_methods/exercises/part3_transcoders_attribution_graphs/tests.py",
+        "sha256": "810e27ee14eab2d8055001a16615ef2e6f96a022a5c55613ae0eff0c1824a76c",
+        "size_bytes": 11779
+      },
+      {
+        "path": "chapter6_sparse_feature_methods/exercises/part3_transcoders_attribution_graphs/utils.py",
+        "sha256": "8f2e9130c5821a18ede8b2424118c35cb1216e2ae0b8d4b385976b7a20f4c9a9",
+        "size_bytes": 365
+      },
+      {
+        "path": "chapter6_sparse_feature_methods/exercises/part3_transcoders_attribution_graphs/verification_report.schema.json",
+        "sha256": "ecd833883885077ad5d7a0e239d984d01462255e94266212cf195ab4d4e27b3d",
+        "size_bytes": 2669
+      },
+      {
+        "path": "chapter6_sparse_feature_methods/instructions/pages/03_[6.3]_Transcoders_and_Attribution_Graphs.md",
+        "sha256": "4741330f1c5702656551dd1a39305ca3f346a654f0401bb7d6c0a398facc2e12",
+        "size_bytes": 44397
+      },
+      {
+        "path": "scripts/run_extension_verification_reports.py",
+        "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
+        "size_bytes": 16272
+      }
+    ],
+    "schema_version": 1
+  },
+  "safety_notes": [
+    "No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.",
+    "The real-model path uses safe generic prompts and one small public TransformerLens checkpoint. It does not use unsafe prompts, gated weights, generated completions, or user data."
+  ],
+  "tests_passed": true,
+  "wall_clock_seconds": 5.952713
+}

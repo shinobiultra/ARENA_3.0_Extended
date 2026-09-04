@@ -1,0 +1,818 @@
+{
+  "accepted": true,
+  "baselines": {
+    "declared_controls": [
+      "baseline_or_reference_check",
+      "negative_control_where_applicable",
+      "shape_dtype_or_exact_value_check",
+      "masked_mean_pooling_contract",
+      "paired_embedding_retrieval_contract",
+      "centroid_probe_contract",
+      "tool_masking_contract",
+      "no_call_hallucination_metric",
+      "schema_token_attribution_contract",
+      "authenticated_embeddinggemma_retrieval",
+      "embeddinggemma_permuted_query_document_pair_control",
+      "pinned_public_bge_embedding_retrieval",
+      "permuted_query_document_pair_control",
+      "pinned_public_functiongemma_mobile_actions_eval",
+      "structured_function_name_and_argument_parsing",
+      "held_out_mobile_actions_argument_accuracy",
+      "authenticated_functiongemma_base_cuda_forward"
+    ],
+    "expected_metrics": {
+      "accepted": true,
+      "bge_mean_margin_min": 0.1,
+      "bge_mean_reciprocal_rank": 1.0,
+      "bge_peak_vram_gb_max": 4.0,
+      "bge_permuted_top1_accuracy": 0.0,
+      "bge_preflight_passed": true,
+      "bge_retrieval_top1_accuracy": 1.0,
+      "embeddinggemma_gated_unavailable": false,
+      "functiongemma_eval_example_count": 32,
+      "functiongemma_exact_argument_accuracy_min": 0.85,
+      "functiongemma_failure_count_max": 4,
+      "functiongemma_function_name_accuracy": 1.0,
+      "functiongemma_parse_accuracy": 1.0,
+      "functiongemma_peak_vram_gb_max": 2.0,
+      "functiongemma_preflight_passed": true,
+      "functiongemma_required_argument_accuracy_min": 0.85,
+      "max_allowed_gpu_gb": 24,
+      "synthetic_retrieval_top1_accuracy": 1.0,
+      "synthetic_tool_masking_passed": true,
+      "tests_passed": true
+    }
+  },
+  "claim_scope": "GT-1 specialist-model control ladder plus authenticated Google EmbeddingGemma retrieval on generated query/document pairs with permuted-pair negative controls, a pinned public BGE retrieval comparison, a pinned public FunctionGemma Mobile Actions checkpoint evaluated on real held-out Mobile Actions JSONL rows, and direct CUDA loading of the gated base google/functiongemma-270m-it model on a benign forward pass.",
+  "datasets": [
+    {
+      "id": "5_6_multimodal_embedding_and_function_calling_models_toy_inputs",
+      "seed": 0,
+      "source": "generated"
+    },
+    {
+      "document_count": 4,
+      "id": "course_generated_specialist_embedding_queries_v1",
+      "query_count": 4,
+      "seed": 0,
+      "source": "generated_query_document_pairs",
+      "topics": [
+        "tool_masking",
+        "embedding_retrieval",
+        "vlm_hallucination",
+        "function_call_abstention"
+      ]
+    },
+    {
+      "deterministic_eval_prefix_count": 32,
+      "id": "google/mobile-actions",
+      "license": "cc-by-4.0",
+      "revision": "e920309bc2acbc2e99a5e3201cf37df2b9fd9151",
+      "source": "huggingface_dataset",
+      "split": "eval"
+    }
+  ],
+  "date_run": "2026-09-04T07:54:39+00:00",
+  "evidence_level": "toy_specialist_controls_plus_authenticated_embeddinggemma_and_functiongemma_preflights",
+  "git_commit": "24c1d6bf",
+  "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+  "gt_tier": "GT-1",
+  "known_failures": [],
+  "metrics": {
+    "gpu_evidence": {
+      "category": "cuda_section_metric",
+      "placeholder_only": false,
+      "section_specific_metric_keys": [
+        "bge_mean_margin",
+        "bge_mean_reciprocal_rank",
+        "bge_peak_vram_gb",
+        "bge_permuted_control_fails",
+        "bge_permuted_top1_accuracy",
+        "bge_preflight",
+        "bge_preflight_passed",
+        "bge_retrieval_top1_accuracy",
+        "embeddinggemma_access_error_type",
+        "embeddinggemma_access_report",
+        "embeddinggemma_auth_error_type",
+        "embeddinggemma_authenticated",
+        "embeddinggemma_gated_unavailable",
+        "embeddinggemma_local_non_ref_file_count",
+        "embeddinggemma_mean_margin",
+        "embeddinggemma_mean_reciprocal_rank",
+        "embeddinggemma_missing_local_patterns",
+        "embeddinggemma_missing_remote_patterns",
+        "embeddinggemma_model_id",
+        "embeddinggemma_peak_vram_gb",
+        "embeddinggemma_permuted_control_fails",
+        "embeddinggemma_permuted_top1_accuracy",
+        "embeddinggemma_preflight",
+        "embeddinggemma_preflight_passed",
+        "embeddinggemma_ready_for_direct_loading",
+        "embeddinggemma_remote_download_ready",
+        "embeddinggemma_repo_listed",
+        "embeddinggemma_retrieval_top1_accuracy",
+        "embeddinggemma_revision",
+        "functiongemma_base_access_error_type",
+        "functiongemma_base_access_report",
+        "functiongemma_base_auth_error_type",
+        "functiongemma_base_authenticated",
+        "functiongemma_base_forward_passed",
+        "functiongemma_base_local_non_ref_file_count",
+        "functiongemma_base_missing_local_patterns",
+        "functiongemma_base_missing_remote_patterns",
+        "functiongemma_base_peak_vram_gb",
+        "functiongemma_base_preflight",
+        "functiongemma_base_preflight_passed",
+        "functiongemma_base_ready_for_direct_loading",
+        "functiongemma_base_remote_download_ready",
+        "functiongemma_base_repo_listed",
+        "functiongemma_dataset_id",
+        "functiongemma_dataset_revision",
+        "functiongemma_eval_example_count",
+        "functiongemma_exact_argument_accuracy",
+        "functiongemma_failure_count",
+        "functiongemma_failure_indices",
+        "functiongemma_function_name_accuracy",
+        "functiongemma_mean_generated_tokens",
+        "functiongemma_mean_prompt_tokens",
+        "functiongemma_model_id",
+        "functiongemma_parse_accuracy",
+        "functiongemma_peak_vram_gb",
+        "functiongemma_preflight",
+        "functiongemma_preflight_passed",
+        "functiongemma_required_argument_accuracy",
+        "functiongemma_revision",
+        "masked_disallowed",
+        "retrieval_mean_margin",
+        "retrieval_top1_accuracy",
+        "synthetic_retrieval_top1_accuracy",
+        "synthetic_tool_masking_passed",
+        "tool_prediction"
+      ],
+      "uses_cuda": true
+    },
+    "gpu_test": {
+      "bge_mean_margin": 0.18294523656368256,
+      "bge_mean_reciprocal_rank": 1.0,
+      "bge_peak_vram_gb": 0.15699481964111328,
+      "bge_permuted_control_fails": true,
+      "bge_permuted_top1_accuracy": 0.0,
+      "bge_preflight": {
+        "claim_scope": "pinned_public_bge_embedding_retrieval_comparison_preflight",
+        "cuda_available": true,
+        "document_count": 4,
+        "embedding_dim": 384,
+        "mean_hard_negative_similarity": 0.6397238969802856,
+        "mean_margin": 0.18294523656368256,
+        "mean_positive_similarity": 0.8226691484451294,
+        "mean_reciprocal_rank": 1.0,
+        "model_id": "BAAI/bge-small-en-v1.5",
+        "peak_vram_gb": 0.15699481964111328,
+        "permuted_control_fails": true,
+        "permuted_mean_margin": -0.2344277948141098,
+        "permuted_top1_accuracy": 0.0,
+        "preflight_passed": true,
+        "query_count": 4,
+        "ranks": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "revision": "5c38ec7c405ec4b44b94cc5a9bb96e735b38267a",
+        "top1_accuracy": 1.0,
+        "within_vram_budget": true
+      },
+      "bge_preflight_passed": true,
+      "bge_retrieval_top1_accuracy": 1.0,
+      "cuda_available": true,
+      "cuda_version": "13.2",
+      "device": "NVIDIA GeForce RTX 5090 Laptop GPU",
+      "embeddinggemma_access_error_type": null,
+      "embeddinggemma_access_report": {
+        "access_error": null,
+        "access_error_type": null,
+        "auth_error": null,
+        "auth_error_type": null,
+        "authenticated": true,
+        "cache_dir": "/home/bitwise/.cache/huggingface/hub/models--google--embeddinggemma-300m",
+        "download_patterns": [
+          "config.json",
+          "model.safetensors",
+          "tokenizer.json",
+          "tokenizer_config.json",
+          "special_tokens_map.json",
+          "sentence_bert_config.json",
+          "modules.json",
+          "1_Pooling/config.json",
+          "2_Dense/config.json",
+          "2_Dense/model.safetensors",
+          "3_Dense/config.json",
+          "3_Dense/model.safetensors"
+        ],
+        "local_non_ref_file_count": 37,
+        "local_ready_for_direct_loading": true,
+        "missing_local_patterns": [],
+        "missing_remote_patterns": [],
+        "purpose": "direct EmbeddingGemma retrieval baseline",
+        "ready_for_direct_loading": true,
+        "remote_download_ready": true,
+        "repo_file_count": 19,
+        "repo_id": "google/embeddinggemma-300m",
+        "repo_listed": true,
+        "required_patterns": [
+          "config.json",
+          "model.safetensors",
+          "tokenizer.json"
+        ],
+        "revision": "57c266a740f537b4dc058e1b0cda161fd15afa75"
+      },
+      "embeddinggemma_auth_error_type": null,
+      "embeddinggemma_authenticated": true,
+      "embeddinggemma_gated_unavailable": false,
+      "embeddinggemma_local_non_ref_file_count": 37,
+      "embeddinggemma_mean_margin": 0.22261600196361542,
+      "embeddinggemma_mean_reciprocal_rank": 1.0,
+      "embeddinggemma_missing_local_patterns": [],
+      "embeddinggemma_missing_remote_patterns": [],
+      "embeddinggemma_model_id": "google/embeddinggemma-300m",
+      "embeddinggemma_peak_vram_gb": 1.3116374015808105,
+      "embeddinggemma_permuted_control_fails": true,
+      "embeddinggemma_permuted_top1_accuracy": 0.0,
+      "embeddinggemma_preflight": {
+        "access_report": {
+          "access_error": null,
+          "access_error_type": null,
+          "auth_error": null,
+          "auth_error_type": null,
+          "authenticated": true,
+          "cache_dir": "/home/bitwise/.cache/huggingface/hub/models--google--embeddinggemma-300m",
+          "download_patterns": [
+            "config.json",
+            "model.safetensors",
+            "tokenizer.json",
+            "tokenizer_config.json",
+            "special_tokens_map.json",
+            "sentence_bert_config.json",
+            "modules.json",
+            "1_Pooling/config.json",
+            "2_Dense/config.json",
+            "2_Dense/model.safetensors",
+            "3_Dense/config.json",
+            "3_Dense/model.safetensors"
+          ],
+          "local_non_ref_file_count": 37,
+          "local_ready_for_direct_loading": true,
+          "missing_local_patterns": [],
+          "missing_remote_patterns": [],
+          "purpose": "direct EmbeddingGemma retrieval baseline",
+          "ready_for_direct_loading": true,
+          "remote_download_ready": true,
+          "repo_file_count": 19,
+          "repo_id": "google/embeddinggemma-300m",
+          "repo_listed": true,
+          "required_patterns": [
+            "config.json",
+            "model.safetensors",
+            "tokenizer.json"
+          ],
+          "revision": "57c266a740f537b4dc058e1b0cda161fd15afa75"
+        },
+        "claim_scope": "authenticated_embeddinggemma_retrieval_preflight",
+        "cuda_available": true,
+        "document_count": 4,
+        "embedding_dim": 768,
+        "mean_hard_negative_similarity": 0.35875391960144043,
+        "mean_margin": 0.22261600196361542,
+        "mean_positive_similarity": 0.581369936466217,
+        "mean_reciprocal_rank": 1.0,
+        "model_id": "google/embeddinggemma-300m",
+        "peak_vram_gb": 1.3116374015808105,
+        "permuted_control_fails": true,
+        "permuted_mean_margin": -0.252977192401886,
+        "permuted_top1_accuracy": 0.0,
+        "preflight_passed": true,
+        "query_count": 4,
+        "ranks": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "revision": "57c266a740f537b4dc058e1b0cda161fd15afa75",
+        "top1_accuracy": 1.0,
+        "within_vram_budget": true
+      },
+      "embeddinggemma_preflight_passed": true,
+      "embeddinggemma_ready_for_direct_loading": true,
+      "embeddinggemma_remote_download_ready": true,
+      "embeddinggemma_repo_listed": true,
+      "embeddinggemma_retrieval_top1_accuracy": 1.0,
+      "embeddinggemma_revision": "57c266a740f537b4dc058e1b0cda161fd15afa75",
+      "full_path": "Validated synthetic retrieval and schema/tool masking, authenticated EmbeddingGemma retrieval, pinned public BGE retrieval comparison, pinned public FunctionGemma Mobile Actions generation, and direct gated base FunctionGemma CUDA loading.",
+      "functiongemma_base_access_error_type": null,
+      "functiongemma_base_access_report": {
+        "access_error": null,
+        "access_error_type": null,
+        "auth_error": null,
+        "auth_error_type": null,
+        "authenticated": true,
+        "cache_dir": "/home/bitwise/.cache/huggingface/hub/models--google--functiongemma-270m-it",
+        "download_patterns": [
+          "config.json",
+          "generation_config.json",
+          "tokenizer.json",
+          "tokenizer_config.json",
+          "special_tokens_map.json",
+          "added_tokens.json",
+          "chat_template.jinja",
+          "model.safetensors"
+        ],
+        "local_non_ref_file_count": 20,
+        "local_ready_for_direct_loading": true,
+        "missing_local_patterns": [],
+        "missing_remote_patterns": [],
+        "purpose": "direct FunctionGemma base-model validation",
+        "ready_for_direct_loading": true,
+        "remote_download_ready": true,
+        "repo_file_count": 12,
+        "repo_id": "google/functiongemma-270m-it",
+        "repo_listed": true,
+        "required_patterns": [
+          "config.json",
+          "tokenizer.json",
+          "model.safetensors"
+        ],
+        "revision": "39eccb091651513a5dfb56892d3714c1b5b8276c"
+      },
+      "functiongemma_base_auth_error_type": null,
+      "functiongemma_base_authenticated": true,
+      "functiongemma_base_forward_passed": true,
+      "functiongemma_base_local_non_ref_file_count": 20,
+      "functiongemma_base_missing_local_patterns": [],
+      "functiongemma_base_missing_remote_patterns": [],
+      "functiongemma_base_peak_vram_gb": 0.5388522148132324,
+      "functiongemma_base_preflight": {
+        "access_report": {
+          "access_error": null,
+          "access_error_type": null,
+          "auth_error": null,
+          "auth_error_type": null,
+          "authenticated": true,
+          "cache_dir": "/home/bitwise/.cache/huggingface/hub/models--google--functiongemma-270m-it",
+          "download_patterns": [
+            "config.json",
+            "generation_config.json",
+            "tokenizer.json",
+            "tokenizer_config.json",
+            "special_tokens_map.json",
+            "added_tokens.json",
+            "chat_template.jinja",
+            "model.safetensors"
+          ],
+          "local_non_ref_file_count": 20,
+          "local_ready_for_direct_loading": true,
+          "missing_local_patterns": [],
+          "missing_remote_patterns": [],
+          "purpose": "direct FunctionGemma base-model validation",
+          "ready_for_direct_loading": true,
+          "remote_download_ready": true,
+          "repo_file_count": 12,
+          "repo_id": "google/functiongemma-270m-it",
+          "repo_listed": true,
+          "required_patterns": [
+            "config.json",
+            "tokenizer.json",
+            "model.safetensors"
+          ],
+          "revision": "39eccb091651513a5dfb56892d3714c1b5b8276c"
+        },
+        "cuda_available": true,
+        "forward_passed": true,
+        "model_id": "google/functiongemma-270m-it",
+        "peak_vram_gb": 0.5388522148132324,
+        "preflight_passed": true,
+        "prompt_token_count": 14,
+        "revision": "39eccb091651513a5dfb56892d3714c1b5b8276c",
+        "vocab_size": 262144,
+        "within_vram_budget": true
+      },
+      "functiongemma_base_preflight_passed": true,
+      "functiongemma_base_ready_for_direct_loading": true,
+      "functiongemma_base_remote_download_ready": true,
+      "functiongemma_base_repo_listed": true,
+      "functiongemma_dataset_id": "google/mobile-actions",
+      "functiongemma_dataset_revision": "e920309bc2acbc2e99a5e3201cf37df2b9fd9151",
+      "functiongemma_eval_example_count": 32,
+      "functiongemma_exact_argument_accuracy": 0.875,
+      "functiongemma_failure_count": 4,
+      "functiongemma_failure_indices": [
+        6,
+        7,
+        27,
+        28
+      ],
+      "functiongemma_function_name_accuracy": 1.0,
+      "functiongemma_mean_generated_tokens": 38.9375,
+      "functiongemma_mean_prompt_tokens": 600.40625,
+      "functiongemma_model_id": "litert-community/FunctionGemma_270M_Mobile_Actions",
+      "functiongemma_parse_accuracy": 1.0,
+      "functiongemma_peak_vram_gb": 1.3056421279907227,
+      "functiongemma_preflight": {
+        "base_model": "google/functiongemma-270m-it",
+        "cuda_available": true,
+        "dataset_id": "google/mobile-actions",
+        "dataset_revision": "e920309bc2acbc2e99a5e3201cf37df2b9fd9151",
+        "eval_example_count": 32,
+        "exact_argument_accuracy": 0.875,
+        "example_predictions": [
+          {
+            "exact_arguments_match": true,
+            "expected_function": "create_contact",
+            "index": 0,
+            "predicted_function": "create_contact",
+            "required_arguments": [
+              "first_name",
+              "last_name"
+            ],
+            "required_arguments_match": true
+          },
+          {
+            "exact_arguments_match": true,
+            "expected_function": "send_email",
+            "index": 1,
+            "predicted_function": "send_email",
+            "required_arguments": [
+              "to",
+              "subject"
+            ],
+            "required_arguments_match": true
+          },
+          {
+            "exact_arguments_match": true,
+            "expected_function": "create_contact",
+            "index": 2,
+            "predicted_function": "create_contact",
+            "required_arguments": [
+              "first_name",
+              "last_name"
+            ],
+            "required_arguments_match": true
+          },
+          {
+            "exact_arguments_match": true,
+            "expected_function": "create_calendar_event",
+            "index": 3,
+            "predicted_function": "create_calendar_event",
+            "required_arguments": [
+              "title",
+              "datetime"
+            ],
+            "required_arguments_match": true
+          },
+          {
+            "exact_arguments_match": true,
+            "expected_function": "send_email",
+            "index": 4,
+            "predicted_function": "send_email",
+            "required_arguments": [
+              "to",
+              "subject"
+            ],
+            "required_arguments_match": true
+          },
+          {
+            "exact_arguments_match": true,
+            "expected_function": "turn_on_flashlight",
+            "index": 5,
+            "predicted_function": "turn_on_flashlight",
+            "required_arguments": [],
+            "required_arguments_match": true
+          }
+        ],
+        "failure_count": 4,
+        "failure_examples": [
+          {
+            "exact_arguments_match": false,
+            "expected_arguments": {
+              "query": "art supply store 'Canvas Creations' at 934 Willow Road, Portland, Oregon"
+            },
+            "expected_function": "show_map",
+            "index": 6,
+            "predicted_arguments": {
+              "query": "Canvas Creations at 934 Willow Road, Portland, Oregon"
+            },
+            "predicted_function": "show_map",
+            "required_arguments": [
+              "query"
+            ],
+            "required_arguments_match": false
+          },
+          {
+            "exact_arguments_match": false,
+            "expected_arguments": {
+              "datetime": "2025-07-30T14:00:00",
+              "title": "Meeting with Dr. Chen"
+            },
+            "expected_function": "create_calendar_event",
+            "index": 7,
+            "predicted_arguments": {
+              "datetime": "2025-07-26T14:00:00",
+              "title": "Meeting with Dr. Chen"
+            },
+            "predicted_function": "create_calendar_event",
+            "required_arguments": [
+              "title",
+              "datetime"
+            ],
+            "required_arguments_match": false
+          },
+          {
+            "exact_arguments_match": false,
+            "expected_arguments": {
+              "query": "Ristorante Pizzeria Bellagio Via Tiziano 19, Milano"
+            },
+            "expected_function": "show_map",
+            "index": 27,
+            "predicted_arguments": {
+              "query": "Ristorante Pizzeria Bellagio located at Via Tiziano 19, Milano"
+            },
+            "predicted_function": "show_map",
+            "required_arguments": [
+              "query"
+            ],
+            "required_arguments_match": false
+          },
+          {
+            "exact_arguments_match": false,
+            "expected_arguments": {
+              "query": "The Corner Bakery at 3850 N Sheridan Rd"
+            },
+            "expected_function": "show_map",
+            "index": 28,
+            "predicted_arguments": {
+              "query": "nearest branch of The Corner Bakery cafe at 3850 N Sheridan Rd"
+            },
+            "predicted_function": "show_map",
+            "required_arguments": [
+              "query"
+            ],
+            "required_arguments_match": false
+          }
+        ],
+        "failure_indices": [
+          6,
+          7,
+          27,
+          28
+        ],
+        "function_distribution": {
+          "create_calendar_event": 7,
+          "create_contact": 7,
+          "open_wifi_settings": 1,
+          "send_email": 5,
+          "show_map": 5,
+          "turn_off_flashlight": 2,
+          "turn_on_flashlight": 5
+        },
+        "function_name_accuracy": 1.0,
+        "mean_generated_tokens": 38.9375,
+        "mean_prompt_tokens": 600.40625,
+        "model_id": "litert-community/FunctionGemma_270M_Mobile_Actions",
+        "parse_accuracy": 1.0,
+        "peak_vram_gb": 1.3056421279907227,
+        "preflight_passed": true,
+        "required_argument_accuracy": 0.875,
+        "revision": "e2226c1def35c5443942ebdb90a1da2a9eda836a",
+        "within_vram_budget": true
+      },
+      "functiongemma_preflight_passed": true,
+      "functiongemma_required_argument_accuracy": 0.875,
+      "functiongemma_revision": "e2226c1def35c5443942ebdb90a1da2a9eda836a",
+      "gpu_total_memory_gb": 23.45965576171875,
+      "masked_disallowed": true,
+      "peak_vram_gb": 1.3116374015808105,
+      "retrieval_mean_margin": 1.0,
+      "retrieval_top1_accuracy": 1.0,
+      "synthetic_retrieval_top1_accuracy": 1.0,
+      "synthetic_tool_masking_passed": true,
+      "tool_prediction": 2,
+      "torch_version": "2.12.1+cu132",
+      "within_vram_budget": true
+    },
+    "notebook_contract": {
+      "centroid_probe": {
+        "accuracy": 1.0,
+        "predictions": [
+          0,
+          1
+        ]
+      },
+      "function_call": {
+        "abstention_accuracy": 0.5,
+        "accuracy": 0.75,
+        "hallucination_rate": 0.5,
+        "tool_accuracy": 1.0
+      },
+      "pooling": {
+        "pooled": [
+          [
+            2.0,
+            1.0
+          ],
+          [
+            4.0,
+            6.0
+          ]
+        ]
+      },
+      "retrieval": {
+        "mean_hard_negative_similarity": 0.0,
+        "mean_margin": 1.0,
+        "mean_positive_similarity": 1.0,
+        "mean_reciprocal_rank": 1.0,
+        "ranks": [
+          1,
+          1,
+          1
+        ],
+        "top1_accuracy": 1.0
+      },
+      "router": {
+        "abstention_accuracy": 1.0,
+        "hallucination_rate": 0.0,
+        "overall_accuracy": 1.0,
+        "predictions": [
+          0,
+          1,
+          2,
+          3,
+          3
+        ],
+        "tool_accuracy": 1.0
+      },
+      "schema_attribution": {
+        "attribution": [
+          [
+            0.0,
+            1.0
+          ],
+          [
+            1.0,
+            0.0
+          ]
+        ],
+        "top_schema_ids": [
+          1,
+          0
+        ]
+      },
+      "tool_masking": {
+        "masked_disallowed": true,
+        "prediction": 2
+      }
+    }
+  },
+  "models": [
+    {
+      "gated": false,
+      "id": "toy_or_generated_inputs",
+      "precision": "float32",
+      "revision": "seed_0",
+      "source": "generated"
+    },
+    {
+      "claim_scope": "public_embedding_retrieval_preflight",
+      "gated": false,
+      "id": "BAAI/bge-small-en-v1.5",
+      "precision": "float32",
+      "revision": "5c38ec7c405ec4b44b94cc5a9bb96e735b38267a",
+      "source": "huggingface"
+    },
+    {
+      "base_model": "google/functiongemma-270m-it",
+      "claim_scope": "public_functiongemma_mobile_actions_generation_preflight",
+      "gated": false,
+      "id": "litert-community/FunctionGemma_270M_Mobile_Actions",
+      "precision": "bfloat16",
+      "revision": "e2226c1def35c5443942ebdb90a1da2a9eda836a",
+      "source": "huggingface"
+    },
+    {
+      "claim_scope": "authenticated_embedding_retrieval_preflight",
+      "gated": "manual",
+      "id": "google/embeddinggemma-300m",
+      "local_status": "authenticated_local_access_verified",
+      "precision": "float32",
+      "revision": "57c266a740f537b4dc058e1b0cda161fd15afa75",
+      "source": "huggingface"
+    },
+    {
+      "claim_scope": "authenticated_base_model_cuda_forward_preflight",
+      "gated": "manual",
+      "id": "google/functiongemma-270m-it",
+      "local_status": "authenticated_local_access_verified",
+      "precision": "float32",
+      "revision": "39eccb091651513a5dfb56892d3714c1b5b8276c",
+      "source": "huggingface"
+    }
+  ],
+  "negative_controls": {
+    "declared_controls": [
+      "negative_control_where_applicable"
+    ]
+  },
+  "notebook_id": "5_6_multimodal_embedding_and_function_calling_models",
+  "ood_tests": {
+    "declared": "required_where_applicable"
+  },
+  "peak_vram_gb": 1.3116374015808105,
+  "report_inputs": {
+    "algorithm": "sha256",
+    "combined_sha256": "956e28b4cf199bf6ae8ae715d89ec74ed6518347e0415cc7daa498ba26989617",
+    "files": [
+      {
+        "path": "arena_ext/gated_artifacts.py",
+        "sha256": "ebe80c850c95c3e625559eb99b65186736baa0a094bb2ac77e745a1ed82b7f4a",
+        "size_bytes": 8860
+      },
+      {
+        "path": "arena_ext/verification.py",
+        "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
+        "size_bytes": 9276
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part6_multimodal_embedding_function_models/5.6_Multimodal_Embedding_and_Function_Calling_Models_exercises.ipynb",
+        "sha256": "e7849ef2cc81a12da24972e015725c6e23c2011246ce4c2ff485700657d18af1",
+        "size_bytes": 39813
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part6_multimodal_embedding_function_models/5.6_Multimodal_Embedding_and_Function_Calling_Models_solutions.ipynb",
+        "sha256": "c8404665463ec08901a9e665d915c0194a783b364854f7c19d333fe5a9439251",
+        "size_bytes": 80589
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part6_multimodal_embedding_function_models/README.md",
+        "sha256": "97b584a4a4ee360de17a20c362b52c92a9477748ece88a5d64c4030b0b390a6e",
+        "size_bytes": 1346
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part6_multimodal_embedding_function_models/artifacts.lock.yml",
+        "sha256": "0482310fe694de6215bf10a2a64d15121b63ff9806f1975ce98eac7751a97c83",
+        "size_bytes": 4444
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part6_multimodal_embedding_function_models/expected_outputs/README.md",
+        "sha256": "45cae31cfa4bf5924bb9443a74518d8d7e360c381cf577c69cde9f3ec6dd09d9",
+        "size_bytes": 1801
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part6_multimodal_embedding_function_models/expected_outputs/reference_metrics.json",
+        "sha256": "039cfde511903a940f763b2b171d41424f6223010865ed126c94bf37415c9a08",
+        "size_bytes": 1071
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part6_multimodal_embedding_function_models/expected_outputs/smoke_test.json",
+        "sha256": "979c2e65acfb6ac3c6068b7dad48baaf7e1c190e975392ea4bfd36eb89a73864",
+        "size_bytes": 336
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part6_multimodal_embedding_function_models/solutions.py",
+        "sha256": "296645a8aafba12364385a904a2e67eca1263d7505c44a54acccc3e3bda9949b",
+        "size_bytes": 38827
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part6_multimodal_embedding_function_models/tests.py",
+        "sha256": "fb9dbff4a9bc0f93f513321cbeb662b35ab771b69655ff50e71c0429ca97c9c0",
+        "size_bytes": 13479
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part6_multimodal_embedding_function_models/utils.py",
+        "sha256": "2a4b952af436d57af954dff80c9e5561ef025e3040e3316a89517f9055b43a9d",
+        "size_bytes": 380
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part6_multimodal_embedding_function_models/verification_report.schema.json",
+        "sha256": "ecd833883885077ad5d7a0e239d984d01462255e94266212cf195ab4d4e27b3d",
+        "size_bytes": 2669
+      },
+      {
+        "path": "chapter5_modern_architectures/instructions/pages/06_[5.6]_Multimodal_Embedding_and_Function_Calling_Models.md",
+        "sha256": "e16bb71c01d9cde3122b8e5fef7e7f266189d074a3ad47ebd82ba350c2859235",
+        "size_bytes": 16761
+      },
+      {
+        "path": "scripts/run_extension_verification_reports.py",
+        "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
+        "size_bytes": 16272
+      }
+    ],
+    "schema_version": 1
+  },
+  "safety_notes": [
+    "No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.",
+    "The function-calling preflight uses public Mobile Actions eval rows and benign mobile-tool schemas only. Google EmbeddingGemma and the base google/functiongemma-270m-it repo are manual-gated artifacts with authenticated local access in the current report; the public FunctionGemma Mobile Actions checkpoint remains the behavioral eval path."
+  ],
+  "tests_passed": true,
+  "wall_clock_seconds": 22.944851
+}

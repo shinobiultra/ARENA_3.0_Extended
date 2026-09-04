@@ -1,0 +1,261 @@
+{
+  "accepted": true,
+  "baselines": {
+    "declared_controls": [
+      "baseline_or_reference_check",
+      "negative_control_where_applicable",
+      "shape_dtype_or_exact_value_check",
+      "direct_label_leakage_control",
+      "shifted_no_leak_negative_control",
+      "alternate_feature_index_control",
+      "population_vs_selected_effect_control",
+      "representative_selection_positive_control",
+      "train_vs_heldout_probe_gap_control",
+      "generalizing_probe_positive_control",
+      "random_direction_p95_control",
+      "strong_direction_positive_control"
+    ],
+    "expected_metrics": {
+      "accepted": true,
+      "all_bogus_results_flagged": true,
+      "cherry_pick_inflation_min": 3.0,
+      "input_driven_alternate_fixtures_passed": true,
+      "leakage_gap_min": 0.5,
+      "leaked_feature_accuracy": 1.0,
+      "max_allowed_gpu_gb": 24,
+      "peak_vram_gb_max": 1.0,
+      "preflight_passed": true,
+      "probe_heldout_accuracy": 0.5,
+      "probe_overfit_gap_min": 0.35,
+      "probe_train_accuracy": 1.0,
+      "random_direction_control_rejects_claim": true,
+      "shifted_no_leak_accuracy": 0.0,
+      "tests_passed": true
+    }
+  },
+  "claim_scope": "GT-0 fake-result diagnostics ladder: the notebook keeps deterministic toy reports for label leakage, cherry-picked effects, probe overfit, and random-direction controls, then runs the same diagnostic quantities on CUDA with explicit pass/fail metrics. This is a methodology section, not a real-model interpretability claim.",
+  "datasets": [
+    {
+      "id": "0_6_how_to_know_when_an_interpretability_result_is_fake_toy_inputs",
+      "seed": 0,
+      "source": "generated"
+    },
+    {
+      "failure_modes": [
+        "label_leakage",
+        "cherry_picking",
+        "probe_overfit",
+        "random_direction_failure"
+      ],
+      "id": "course_fake_interpretability_failures_v1",
+      "seed": 606,
+      "source": "generated"
+    }
+  ],
+  "date_run": "2026-09-04T13:00:31+00:00",
+  "evidence_level": "cuda_fake_result_diagnostic_controls_preflight",
+  "git_commit": "fa4ee063",
+  "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+  "gt_tier": "GT-0",
+  "known_failures": [],
+  "metrics": {
+    "gpu_evidence": {
+      "category": "cuda_section_metric",
+      "placeholder_only": false,
+      "section_specific_metric_keys": [
+        "all_bogus_results_flagged",
+        "cherry_pick_inflation",
+        "claimed_direction_effect",
+        "input_driven_alternate_fixtures_passed",
+        "leakage_gap",
+        "leaked_feature_accuracy",
+        "population_median_effect",
+        "preflight_passed",
+        "probe_heldout_accuracy",
+        "probe_overfit_gap",
+        "probe_train_accuracy",
+        "random_direction_control_rejects_claim",
+        "random_direction_effect_gap",
+        "random_p95_effect",
+        "selected_mean_effect",
+        "shifted_no_leak_accuracy"
+      ],
+      "uses_cuda": true
+    },
+    "gpu_test": {
+      "all_bogus_results_flagged": true,
+      "cherry_pick_inflation": 4.1891886689003375,
+      "claimed_direction_effect": 0.0500024579312309,
+      "cuda_available": true,
+      "cuda_version": "13.2",
+      "device": "NVIDIA GeForce RTX 5090 Laptop GPU",
+      "full_path": "CUDA diagnostic preflight for fake-result failure modes: label leakage, cherry-pick inflation, probe overfit, and random-direction control rejection.",
+      "gpu_total_memory_gb": 23.45965576171875,
+      "input_driven_alternate_fixtures_passed": true,
+      "leakage_gap": 1.0,
+      "leaked_feature_accuracy": 1.0,
+      "peak_vram_gb": 0.031256675720214844,
+      "population_median_effect": 0.09000000357627869,
+      "preflight_passed": true,
+      "probe_heldout_accuracy": 0.5,
+      "probe_overfit_gap": 0.5,
+      "probe_train_accuracy": 1.0,
+      "random_direction_control_rejects_claim": true,
+      "random_direction_effect_gap": -0.0683489412991283,
+      "random_p95_effect": 0.1183513992303592,
+      "selected_mean_effect": 1.5499999523162842,
+      "shifted_no_leak_accuracy": 0.0,
+      "torch_version": "2.12.1+cu132",
+      "within_vram_budget": true
+    },
+    "notebook_contract": {
+      "audit": {
+        "all_bogus_results_flagged": true,
+        "cherry_pick_detected": true,
+        "leakage_detected": true,
+        "probe_overfit_detected": true,
+        "random_direction_failure_detected": true
+      },
+      "cherry_pick": {
+        "detects_cherry_picking": true,
+        "inflation_ratio": 4.189188684138882,
+        "population_mean_effect": 0.3700000047683716,
+        "population_median_effect": 0.09000000357627869,
+        "selected_mean_effect": 1.5499998331069946
+      },
+      "contract_passed": true,
+      "leakage": {
+        "accuracy_gap": 1.0,
+        "detects_leakage": true,
+        "leaked_feature_accuracy": 1.0,
+        "leaked_feature_index": 0,
+        "shifted_no_leak_accuracy": 0.0
+      },
+      "probe_overfit": {
+        "detects_overfit": true,
+        "generalization_gap": 0.5,
+        "heldout_accuracy": 0.5,
+        "train_accuracy": 1.0
+      },
+      "random_direction": {
+        "claimed_effect": 0.0500024579312309,
+        "detects_random_direction_failure": true,
+        "effect_gap": -0.0683489412991283,
+        "passes_random_control": false,
+        "random_p95_effect": 0.1183513992303592
+      }
+    }
+  },
+  "models": [
+    {
+      "gated": false,
+      "id": "toy_or_generated_inputs",
+      "precision": "float32",
+      "revision": "seed_0",
+      "source": "generated"
+    },
+    {
+      "claim_scope": "diagnostic_control_model_organism",
+      "gated": false,
+      "id": "course_fake_result_diagnostic_tensors_v1",
+      "precision": "float32",
+      "revision": "seed_606",
+      "source": "generated_cuda_tensors"
+    }
+  ],
+  "negative_controls": {
+    "declared_controls": [
+      "negative_control_where_applicable",
+      "shifted_no_leak_negative_control",
+      "random_direction_p95_control"
+    ]
+  },
+  "notebook_id": "0_6_how_to_know_when_an_interpretability_result_is_fake",
+  "ood_tests": {
+    "declared": "required_where_applicable"
+  },
+  "peak_vram_gb": 0.031256675720214844,
+  "report_inputs": {
+    "algorithm": "sha256",
+    "combined_sha256": "6b1a3531fa9bfb4dcbca2436741f723fbcd40b1fa1d42abaf54f3341fc9ec0c4",
+    "files": [
+      {
+        "path": "arena_ext/verification.py",
+        "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
+        "size_bytes": 9276
+      },
+      {
+        "path": "chapter0_fundamentals/exercises/part6_fake_interpretability_results/0.6_How_to_Know_When_an_Interpretability_Result_Is_Fake_exercises.ipynb",
+        "sha256": "49e107fb244d8d221e91c7ce3e316680890ddc5360f9feaf630a87b49dc6e3b2",
+        "size_bytes": 18456
+      },
+      {
+        "path": "chapter0_fundamentals/exercises/part6_fake_interpretability_results/0.6_How_to_Know_When_an_Interpretability_Result_Is_Fake_solutions.ipynb",
+        "sha256": "8227cf62352b68223b08c74d0ea9439c566088d4e0652c1b59e361ea72f0fb57",
+        "size_bytes": 11574
+      },
+      {
+        "path": "chapter0_fundamentals/exercises/part6_fake_interpretability_results/README.md",
+        "sha256": "a020abf63ec1f62c05e22f4b6c6ad0ae7df70290f26dba7a89dff00007344be9",
+        "size_bytes": 1153
+      },
+      {
+        "path": "chapter0_fundamentals/exercises/part6_fake_interpretability_results/artifacts.lock.yml",
+        "sha256": "cb2a8244545cc21e8fb1b86a927f46c84b72efacd79e59b5ab6230f67259c8cc",
+        "size_bytes": 2573
+      },
+      {
+        "path": "chapter0_fundamentals/exercises/part6_fake_interpretability_results/expected_outputs/README.md",
+        "sha256": "99c760babe697fb5b668ff8ed2e301fe6afb6c0b8d70e7c9ebb3475fbab68ea6",
+        "size_bytes": 1803
+      },
+      {
+        "path": "chapter0_fundamentals/exercises/part6_fake_interpretability_results/expected_outputs/reference_metrics.json",
+        "sha256": "bde7d5b41a91826e856b4cecac26ceb9ca0ae56889766ac6c4b3de38332eba2b",
+        "size_bytes": 791
+      },
+      {
+        "path": "chapter0_fundamentals/exercises/part6_fake_interpretability_results/expected_outputs/smoke_test.json",
+        "sha256": "e6f6d27a2608dc641fa091246b307c1ff9df5a1a6dca6fbc27de74d11111bb36",
+        "size_bytes": 341
+      },
+      {
+        "path": "chapter0_fundamentals/exercises/part6_fake_interpretability_results/solutions.py",
+        "sha256": "ed3b167b3061d6017117fd64b0eb4cb304a6f56011b4d849f1507b10c2f5aafa",
+        "size_bytes": 13608
+      },
+      {
+        "path": "chapter0_fundamentals/exercises/part6_fake_interpretability_results/tests.py",
+        "sha256": "3203678914ad059aac35e838308100fa87a72005887e6841e84e63ddaa8e7679",
+        "size_bytes": 13249
+      },
+      {
+        "path": "chapter0_fundamentals/exercises/part6_fake_interpretability_results/utils.py",
+        "sha256": "31724e90fc6aa0a8d0345c2ca84358b4fe0afd6bf6b93e9f3aaa0a7ef46dba28",
+        "size_bytes": 141
+      },
+      {
+        "path": "chapter0_fundamentals/exercises/part6_fake_interpretability_results/verification_report.schema.json",
+        "sha256": "ecd833883885077ad5d7a0e239d984d01462255e94266212cf195ab4d4e27b3d",
+        "size_bytes": 2669
+      },
+      {
+        "path": "chapter0_fundamentals/instructions/pages/06_[0.6]_How_to_Know_When_an_Interpretability_Result_Is_Fake.md",
+        "sha256": "ac7afaa2951f1189669630c0498412a962fe904734aaa3efcc251055bc14772c",
+        "size_bytes": 22264
+      },
+      {
+        "path": "scripts/run_extension_verification_reports.py",
+        "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
+        "size_bytes": 16272
+      }
+    ],
+    "schema_version": 1
+  },
+  "safety_notes": [
+    "No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.",
+    "This section uses generated numeric tensors only. It does not use real model completions, unsafe prompts, gated weights, or user data."
+  ],
+  "tests_passed": true,
+  "wall_clock_seconds": 1.702933
+}

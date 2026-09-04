@@ -1,0 +1,1034 @@
+{
+  "accepted": true,
+  "baselines": {
+    "declared_controls": [
+      "baseline_or_reference_check",
+      "negative_control_where_applicable",
+      "shape_dtype_or_exact_value_check",
+      "toy_pcd_question_batch_contract",
+      "toy_sparse_concept_encoding_contract",
+      "toy_question_conditioned_decoder_contract",
+      "toy_pcd_baseline_comparison_contract",
+      "toy_concept_stability_contract",
+      "toy_concept_removal_contract",
+      "toy_concept_audit_contract",
+      "pinned_transformerlens_gelu1l_sparse_signed_residual_concepts",
+      "trained_question_conditioned_decoder",
+      "concept_question_interaction_feature_map",
+      "trained_question_agnostic_sparse_probe_baseline",
+      "trained_single_concept_classifier_baseline",
+      "trained_non_interaction_activation_question_baseline",
+      "question_shuffle_negative_control",
+      "long_context_ood_prompt_split",
+      "multi_seed_decoder_stability",
+      "top_concept_removal_control",
+      "active_random_concept_removal_negative_control",
+      "full_activation_oracle_and_broad_pcd_benchmark_not_claimed"
+    ],
+    "expected_metrics": {
+      "accepted": true,
+      "activation_shape": [
+        8,
+        512
+      ],
+      "beats_best_baseline": true,
+      "beats_probe": true,
+      "best_baseline_accuracy": 0.5,
+      "bnb_cuda_override": "130",
+      "concept_density": 0.5,
+      "concept_direction_count": 8,
+      "concept_mean_l0": 4.0,
+      "concept_shape": [
+        8,
+        8
+      ],
+      "concept_top_k": 4,
+      "conditioned_concept_shape": [
+        32,
+        32
+      ],
+      "eval_example_count": 8,
+      "hf_revision": "bddc0e332f0ae84279e6a6a45d91b314899e1603",
+      "max_allowed_gpu_gb": 24,
+      "mean_pairwise_jaccard": 1.0,
+      "model_name": "gelu-1l",
+      "names_expected_cluster": true,
+      "negative_token": " top",
+      "non_interaction_baseline_accuracy": 0.5,
+      "non_interaction_train_accuracy": 0.5,
+      "passes_ood": true,
+      "passes_sparsity": true,
+      "pcd_accuracy": 1.0,
+      "pcd_decoder_train_accuracy": 1.0,
+      "pcd_decoder_train_loss_max": 0.001,
+      "pcd_decoder_training_steps": 700,
+      "pcd_row_count": 32,
+      "pcd_seed_count": 3,
+      "pcd_seed_min_accuracy": 1.0,
+      "peak_vram_gb_max": 1.0,
+      "positive_token": " floor",
+      "preflight_passed": true,
+      "probe_accuracy": 0.5,
+      "probe_train_accuracy": 0.5,
+      "question_count": 4,
+      "question_shuffle_accuracy_max": 0.25,
+      "random_removal_changed": false,
+      "random_removal_delta_max": 1.0,
+      "random_removal_does_less": true,
+      "random_removed_concept_active": true,
+      "row_concept_shape": [
+        32,
+        8
+      ],
+      "sae_classifier_accuracy": 0.5,
+      "sae_classifier_train_accuracy": 0.5,
+      "selected_concept_ids": [
+        0,
+        1
+      ],
+      "selected_concept_names": [
+        "surface_direction",
+        "motion_direction"
+      ],
+      "stable": true,
+      "tests_passed": true,
+      "tokenizer_revision": "0f6671571a20be9756b9991d978047c03b75e749",
+      "top_removal_changed": true,
+      "top_removal_delta_min": 4.0,
+      "train_example_count": 12,
+      "train_pcd_row_count": 48
+    }
+  },
+  "claim_scope": "GT-3 Predictive Concept Decoder preflight: reusable toy question-batch, sparse encoding, question-conditioned decoder, baseline comparison, stability, removal, and concept-audit contracts are kept for learner exercises, then a pinned TransformerLens gelu-1l checkpoint is loaded on CUDA. The report builds signed sparse residual concepts from safe final-token activations, expands them into explicit concept-question interaction features, trains a tiny question-conditioned decoder on the train split, and evaluates four behavioral questions on held-out long-context prompts. It compares against trained question-agnostic sparse-concept, trained single-concept, and trained non-interaction activation+question baselines. It also checks concept sparsity, question-shuffle degradation, multi-seed top-concept stability, auditable top concept names, and active top-concept removal against a low-margin active-control removal. Legacy metric names still use random_removal for compatibility. This is a local PCD mechanics preflight, not a broad PCD benchmark or a full Activation Oracle comparison.",
+  "datasets": [
+    {
+      "claim_scope": "exact_planted_sparse_concept_world_with_balanced_template_controls",
+      "concept_count": 6,
+      "heldout_example_count": 32,
+      "id": "7_5_predictive_concept_decoders_toy_inputs",
+      "pcd_row_count": 128,
+      "question_count": 4,
+      "seed": 0,
+      "source": "generated",
+      "train_example_count": 32
+    },
+    {
+      "concept_top_k": 4,
+      "concepts": [
+        "surface_direction",
+        "motion_direction",
+        "pc1_positive",
+        "pc1_negative",
+        "pc2_positive",
+        "pc2_negative",
+        "pc3_positive",
+        "pc3_negative"
+      ],
+      "eval_example_count": 8,
+      "eval_split": "long_context_ood",
+      "hook": "blocks.0.hook_resid_post",
+      "id": "course_safe_sparse_concept_pcd_prompts_v1",
+      "latent_labels": [
+        "surface",
+        "motion"
+      ],
+      "negative_anchor_prompt": "The bird flew over the",
+      "pcd_row_count": 32,
+      "positive_anchor_prompt": "The cat sat on the",
+      "question_count": 4,
+      "seed": 0,
+      "source": "generated_prompt_sets",
+      "target_source": "manual_safe_prompt_labels_plus_trained_concept_question_decoder",
+      "tokenizer": "NeelNanda/gpt-neox-tokenizer-digits",
+      "train_example_count": 12,
+      "train_pcd_row_count": 48
+    }
+  ],
+  "date_run": "2026-09-04T08:43:01+00:00",
+  "evidence_level": "exact_planted_sparse_concept_pcd_contract_plus_pinned_transformerlens_trained_sparse_concept_decoder_preflight",
+  "git_commit": "66aad913",
+  "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+  "gt_tier": "GT-3",
+  "known_failures": [],
+  "metrics": {
+    "gpu_evidence": {
+      "category": "cuda_section_metric",
+      "placeholder_only": false,
+      "section_specific_metric_keys": [
+        "activation_shape",
+        "baseline_scope",
+        "beats_best_baseline",
+        "beats_probe",
+        "best_baseline_accuracy",
+        "bnb_cuda_override",
+        "concept_density",
+        "concept_direction_count",
+        "concept_mean_l0",
+        "concept_shape",
+        "concept_top_k",
+        "conditioned_concept_shape",
+        "eval_example_count",
+        "eval_prediction_rows",
+        "hf_model_id",
+        "hf_revision",
+        "hook_name",
+        "mean_pairwise_jaccard",
+        "model_name",
+        "names_expected_cluster",
+        "negative_anchor_prompt",
+        "negative_token",
+        "non_interaction_baseline_accuracy",
+        "non_interaction_train_accuracy",
+        "passes_ood",
+        "passes_sparsity",
+        "pcd_accuracy",
+        "pcd_decoder_train_accuracy",
+        "pcd_decoder_train_loss",
+        "pcd_decoder_training_steps",
+        "pcd_row_count",
+        "pcd_seed_count",
+        "pcd_seed_min_accuracy",
+        "positive_anchor_prompt",
+        "positive_token",
+        "preflight_passed",
+        "probe_accuracy",
+        "probe_train_accuracy",
+        "question_count",
+        "question_shuffle_accuracy",
+        "random_removal_changed",
+        "random_removal_delta",
+        "random_removal_does_less",
+        "random_removed_concept_active",
+        "random_removed_concept_id",
+        "removal_row_index",
+        "row_concept_shape",
+        "sae_classifier_accuracy",
+        "sae_classifier_train_accuracy",
+        "selected_concept_ids",
+        "selected_concept_names",
+        "stable",
+        "tokenizer_id",
+        "tokenizer_revision",
+        "top_removal_changed",
+        "top_removal_delta",
+        "top_removed_concept_id",
+        "train_example_count",
+        "train_pcd_row_count"
+      ],
+      "uses_cuda": true
+    },
+    "gpu_test": {
+      "activation_shape": [
+        8,
+        512
+      ],
+      "baseline_scope": "question_agnostic_probe_single_concept_and_non_interaction_question_baselines",
+      "beats_best_baseline": true,
+      "beats_probe": true,
+      "best_baseline_accuracy": 0.5,
+      "bnb_cuda_override": "130",
+      "concept_density": 0.5,
+      "concept_direction_count": 8,
+      "concept_mean_l0": 4.0,
+      "concept_shape": [
+        8,
+        8
+      ],
+      "concept_top_k": 4,
+      "conditioned_concept_shape": [
+        32,
+        32
+      ],
+      "cuda_available": true,
+      "cuda_version": "13.2",
+      "device": "NVIDIA GeForce RTX 5090 Laptop GPU",
+      "eval_example_count": 8,
+      "eval_prediction_rows": [
+        {
+          "answer": 1,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "surface",
+          "pcd_pred": 1,
+          "probe_pred": 0,
+          "prompt": "Yesterday at home, the blanket lay on the",
+          "question": "Will the next token be the surface-associated token?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 0,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "surface",
+          "pcd_pred": 0,
+          "probe_pred": 0,
+          "prompt": "Yesterday at home, the blanket lay on the",
+          "question": "Will the next token be the motion-associated token?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 1,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "surface",
+          "pcd_pred": 1,
+          "probe_pred": 0,
+          "prompt": "Yesterday at home, the blanket lay on the",
+          "question": "Is the hidden state carrying a resting-surface concept?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 0,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "surface",
+          "pcd_pred": 0,
+          "probe_pred": 0,
+          "prompt": "Yesterday at home, the blanket lay on the",
+          "question": "Is the hidden state carrying a motion-or-airborne concept?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 1,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "surface",
+          "pcd_pred": 1,
+          "probe_pred": 0,
+          "prompt": "In the quiet room, the lamp sat on the",
+          "question": "Will the next token be the surface-associated token?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 0,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "surface",
+          "pcd_pred": 0,
+          "probe_pred": 0,
+          "prompt": "In the quiet room, the lamp sat on the",
+          "question": "Will the next token be the motion-associated token?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 1,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "surface",
+          "pcd_pred": 1,
+          "probe_pred": 0,
+          "prompt": "In the quiet room, the lamp sat on the",
+          "question": "Is the hidden state carrying a resting-surface concept?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 0,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "surface",
+          "pcd_pred": 0,
+          "probe_pred": 0,
+          "prompt": "In the quiet room, the lamp sat on the",
+          "question": "Is the hidden state carrying a motion-or-airborne concept?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 1,
+          "dense_noninteraction_pred": 1,
+          "latent_label": "surface",
+          "pcd_pred": 1,
+          "probe_pred": 0,
+          "prompt": "After dinner, the pillow rested on the",
+          "question": "Will the next token be the surface-associated token?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 0,
+          "dense_noninteraction_pred": 1,
+          "latent_label": "surface",
+          "pcd_pred": 0,
+          "probe_pred": 0,
+          "prompt": "After dinner, the pillow rested on the",
+          "question": "Will the next token be the motion-associated token?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 1,
+          "dense_noninteraction_pred": 1,
+          "latent_label": "surface",
+          "pcd_pred": 1,
+          "probe_pred": 0,
+          "prompt": "After dinner, the pillow rested on the",
+          "question": "Is the hidden state carrying a resting-surface concept?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 0,
+          "dense_noninteraction_pred": 1,
+          "latent_label": "surface",
+          "pcd_pred": 0,
+          "probe_pred": 0,
+          "prompt": "After dinner, the pillow rested on the",
+          "question": "Is the hidden state carrying a motion-or-airborne concept?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 1,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "surface",
+          "pcd_pred": 1,
+          "probe_pred": 0,
+          "prompt": "Near the window, the chair sat on the",
+          "question": "Will the next token be the surface-associated token?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 0,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "surface",
+          "pcd_pred": 0,
+          "probe_pred": 0,
+          "prompt": "Near the window, the chair sat on the",
+          "question": "Will the next token be the motion-associated token?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 1,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "surface",
+          "pcd_pred": 1,
+          "probe_pred": 0,
+          "prompt": "Near the window, the chair sat on the",
+          "question": "Is the hidden state carrying a resting-surface concept?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 0,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "surface",
+          "pcd_pred": 0,
+          "probe_pred": 0,
+          "prompt": "Near the window, the chair sat on the",
+          "question": "Is the hidden state carrying a motion-or-airborne concept?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 0,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "motion",
+          "pcd_pred": 0,
+          "probe_pred": 0,
+          "prompt": "At noon outside, the rocket launched into the",
+          "question": "Will the next token be the surface-associated token?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 1,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "motion",
+          "pcd_pred": 1,
+          "probe_pred": 0,
+          "prompt": "At noon outside, the rocket launched into the",
+          "question": "Will the next token be the motion-associated token?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 0,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "motion",
+          "pcd_pred": 0,
+          "probe_pred": 0,
+          "prompt": "At noon outside, the rocket launched into the",
+          "question": "Is the hidden state carrying a resting-surface concept?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 1,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "motion",
+          "pcd_pred": 1,
+          "probe_pred": 0,
+          "prompt": "At noon outside, the rocket launched into the",
+          "question": "Is the hidden state carrying a motion-or-airborne concept?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 0,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "motion",
+          "pcd_pred": 0,
+          "probe_pred": 0,
+          "prompt": "During the game, the ball flew over the",
+          "question": "Will the next token be the surface-associated token?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 1,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "motion",
+          "pcd_pred": 1,
+          "probe_pred": 0,
+          "prompt": "During the game, the ball flew over the",
+          "question": "Will the next token be the motion-associated token?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 0,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "motion",
+          "pcd_pred": 0,
+          "probe_pred": 0,
+          "prompt": "During the game, the ball flew over the",
+          "question": "Is the hidden state carrying a resting-surface concept?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 1,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "motion",
+          "pcd_pred": 1,
+          "probe_pred": 0,
+          "prompt": "During the game, the ball flew over the",
+          "question": "Is the hidden state carrying a motion-or-airborne concept?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 0,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "motion",
+          "pcd_pred": 0,
+          "probe_pred": 0,
+          "prompt": "On the hill, the kite floated above the",
+          "question": "Will the next token be the surface-associated token?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 1,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "motion",
+          "pcd_pred": 1,
+          "probe_pred": 0,
+          "prompt": "On the hill, the kite floated above the",
+          "question": "Will the next token be the motion-associated token?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 0,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "motion",
+          "pcd_pred": 0,
+          "probe_pred": 0,
+          "prompt": "On the hill, the kite floated above the",
+          "question": "Is the hidden state carrying a resting-surface concept?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 1,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "motion",
+          "pcd_pred": 1,
+          "probe_pred": 0,
+          "prompt": "On the hill, the kite floated above the",
+          "question": "Is the hidden state carrying a motion-or-airborne concept?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 0,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "motion",
+          "pcd_pred": 0,
+          "probe_pred": 0,
+          "prompt": "In the hallway, the train rushed through the",
+          "question": "Will the next token be the surface-associated token?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 1,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "motion",
+          "pcd_pred": 1,
+          "probe_pred": 0,
+          "prompt": "In the hallway, the train rushed through the",
+          "question": "Will the next token be the motion-associated token?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 0,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "motion",
+          "pcd_pred": 0,
+          "probe_pred": 0,
+          "prompt": "In the hallway, the train rushed through the",
+          "question": "Is the hidden state carrying a resting-surface concept?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 1,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "motion",
+          "pcd_pred": 1,
+          "probe_pred": 0,
+          "prompt": "In the hallway, the train rushed through the",
+          "question": "Is the hidden state carrying a motion-or-airborne concept?",
+          "single_concept_pred": 0
+        }
+      ],
+      "full_path": "Pinned TransformerLens gelu-1l sparse-concept PCD preflight.",
+      "gpu_total_memory_gb": 23.45965576171875,
+      "hf_model_id": "NeelNanda/GELU_1L512W_C4_Code",
+      "hf_revision": "bddc0e332f0ae84279e6a6a45d91b314899e1603",
+      "hook_name": "blocks.0.hook_resid_post",
+      "mean_pairwise_jaccard": 1.0,
+      "model_name": "gelu-1l",
+      "names_expected_cluster": true,
+      "negative_anchor_prompt": "The bird flew over the",
+      "negative_token": " top",
+      "non_interaction_baseline_accuracy": 0.5,
+      "non_interaction_train_accuracy": 0.5,
+      "passes_ood": true,
+      "passes_sparsity": true,
+      "pcd_accuracy": 1.0,
+      "pcd_decoder_train_accuracy": 1.0,
+      "pcd_decoder_train_loss": 2.9342278139665723e-05,
+      "pcd_decoder_training_steps": 700,
+      "pcd_row_count": 32,
+      "pcd_seed_count": 3,
+      "pcd_seed_min_accuracy": 1.0,
+      "peak_vram_gb": 0.30846214294433594,
+      "positive_anchor_prompt": "The cat sat on the",
+      "positive_token": " floor",
+      "preflight_passed": true,
+      "probe_accuracy": 0.5,
+      "probe_train_accuracy": 0.5,
+      "question_count": 4,
+      "question_shuffle_accuracy": 0.0,
+      "random_removal_changed": false,
+      "random_removal_delta": 0.6363277435302734,
+      "random_removal_does_less": true,
+      "random_removed_concept_active": true,
+      "random_removed_concept_id": 4,
+      "removal_row_index": 20,
+      "row_concept_shape": [
+        32,
+        8
+      ],
+      "sae_classifier_accuracy": 0.5,
+      "sae_classifier_train_accuracy": 0.5,
+      "selected_concept_ids": [
+        0,
+        1
+      ],
+      "selected_concept_names": [
+        "surface_direction",
+        "motion_direction"
+      ],
+      "stable": true,
+      "tokenizer_id": "NeelNanda/gpt-neox-tokenizer-digits",
+      "tokenizer_revision": "0f6671571a20be9756b9991d978047c03b75e749",
+      "top_removal_changed": true,
+      "top_removal_delta": 4.356876850128174,
+      "top_removed_concept_id": 1,
+      "torch_version": "2.12.1+cu132",
+      "train_example_count": 12,
+      "train_pcd_row_count": 48,
+      "within_vram_budget": true
+    },
+    "notebook_contract": {
+      "audit": {
+        "explanation": "Top concepts: refusal feature, safety refusal",
+        "names_expected_cluster": true,
+        "selected_concept_ids": [
+          1,
+          2
+        ],
+        "selected_concept_names": [
+          "refusal feature",
+          "safety refusal"
+        ]
+      },
+      "batch": {
+        "activation_shape": [
+          4,
+          4
+        ],
+        "answer_ids": [
+          1,
+          0,
+          1,
+          0
+        ],
+        "num_questions": 4
+      },
+      "comparison": {
+        "activation_oracle_accuracy": 0.75,
+        "beats_best_baseline": true,
+        "beats_probe": true,
+        "best_baseline_accuracy": 0.75,
+        "pcd_accuracy": 1.0,
+        "probe_accuracy": 0.5,
+        "sae_classifier_accuracy": 0.5
+      },
+      "decoder": [
+        [
+          3.0,
+          0.0
+        ],
+        [
+          0.0,
+          3.0
+        ]
+      ],
+      "decoder_training": {
+        "answer_ids": [
+          1,
+          0,
+          0,
+          1
+        ],
+        "conditioned_shape": [
+          4,
+          4
+        ],
+        "final_loss": 0.0005155664402991533,
+        "predictions": [
+          1,
+          0,
+          0,
+          1
+        ],
+        "train_accuracy": 1.0
+      },
+      "planted": {
+        "baseline_accuracies": [
+          1.0,
+          0.6875,
+          0.5,
+          0.5,
+          0.46875,
+          0.625,
+          0.6875
+        ],
+        "baseline_names": [
+          "PCD",
+          "question-agnostic probe",
+          "text/template shortcut",
+          "shuffled question",
+          "random label",
+          "single concept",
+          "dense non-interaction"
+        ],
+        "baselines": {
+          "best_control_accuracy": 0.6875,
+          "dense_noninteraction_accuracy": 0.6875,
+          "passes_controls": true,
+          "pcd_accuracy": 1.0,
+          "pcd_margin_over_best_control": 0.3125,
+          "question_agnostic_probe_accuracy": 0.6875,
+          "random_label_accuracy": 0.46875,
+          "shuffled_question_accuracy": 0.5,
+          "single_concept_accuracy": 0.625,
+          "text_template_shortcut_accuracy": 0.5
+        },
+        "concept_names": [
+          "surface",
+          "motion",
+          "red",
+          "animal",
+          "template_alpha",
+          "template_beta"
+        ],
+        "heatmap": [
+          [
+            10.926108360290527,
+            -0.04781191796064377,
+            -0.04781275987625122,
+            -0.047811977565288544,
+            -1.6402201652526855,
+            -1.6396064758300781
+          ],
+          [
+            -0.04763418808579445,
+            10.915958404541016,
+            -0.047633975744247437,
+            -0.047634307295084,
+            -1.6313128471374512,
+            -1.6306471824645996
+          ],
+          [
+            -0.017269186675548553,
+            -0.017269350588321686,
+            10.959833145141602,
+            -0.017270049080252647,
+            -1.632516622543335,
+            -1.6325230598449707
+          ],
+          [
+            -0.011878564022481441,
+            -0.011878551915287971,
+            -0.01187859009951353,
+            10.963179588317871,
+            -1.194885015487671,
+            -1.196580410003662
+          ]
+        ],
+        "heatmap_shape": [
+          4,
+          6
+        ],
+        "heldout_examples": 32,
+        "heldout_recovery_error": 2.384185791015625e-07,
+        "prediction_rows_preview": [
+          {
+            "answer": 0,
+            "dense_noninteraction_pred": 0,
+            "pcd_pred": 0,
+            "probe_pred": 0,
+            "prompt": "heldout latent card 00 / template 1",
+            "question": "Is the hidden surface concept active?",
+            "text_template_pred": 0
+          },
+          {
+            "answer": 0,
+            "dense_noninteraction_pred": 0,
+            "pcd_pred": 0,
+            "probe_pred": 0,
+            "prompt": "heldout latent card 00 / template 1",
+            "question": "Is the hidden motion concept active?",
+            "text_template_pred": 1
+          },
+          {
+            "answer": 0,
+            "dense_noninteraction_pred": 0,
+            "pcd_pred": 0,
+            "probe_pred": 0,
+            "prompt": "heldout latent card 00 / template 1",
+            "question": "Is the hidden red concept active?",
+            "text_template_pred": 0
+          },
+          {
+            "answer": 0,
+            "dense_noninteraction_pred": 0,
+            "pcd_pred": 0,
+            "probe_pred": 0,
+            "prompt": "heldout latent card 00 / template 1",
+            "question": "Is the hidden animal concept active?",
+            "text_template_pred": 0
+          },
+          {
+            "answer": 0,
+            "dense_noninteraction_pred": 0,
+            "pcd_pred": 0,
+            "probe_pred": 0,
+            "prompt": "heldout latent card 01 / template 2",
+            "question": "Is the hidden surface concept active?",
+            "text_template_pred": 1
+          },
+          {
+            "answer": 0,
+            "dense_noninteraction_pred": 0,
+            "pcd_pred": 0,
+            "probe_pred": 0,
+            "prompt": "heldout latent card 01 / template 2",
+            "question": "Is the hidden motion concept active?",
+            "text_template_pred": 1
+          },
+          {
+            "answer": 0,
+            "dense_noninteraction_pred": 0,
+            "pcd_pred": 0,
+            "probe_pred": 0,
+            "prompt": "heldout latent card 01 / template 2",
+            "question": "Is the hidden red concept active?",
+            "text_template_pred": 1
+          },
+          {
+            "answer": 0,
+            "dense_noninteraction_pred": 0,
+            "pcd_pred": 0,
+            "probe_pred": 0,
+            "prompt": "heldout latent card 01 / template 2",
+            "question": "Is the hidden animal concept active?",
+            "text_template_pred": 1
+          }
+        ],
+        "question_count": 4,
+        "removal": {
+          "active_control_changed": false,
+          "active_control_concept": "motion",
+          "active_control_does_less": true,
+          "active_control_logit_delta": -0.0273284912109375,
+          "active_control_removed_answer": 1,
+          "original_answer": 1,
+          "prompt": "heldout latent card 30 / template 1",
+          "question": "Is the hidden surface concept active?",
+          "row_index": 120,
+          "target_concept": "surface",
+          "target_logit_delta": 5.451663970947266,
+          "target_removal_changed": true,
+          "target_removed_answer": 0
+        },
+        "train_examples": 32,
+        "train_recovery_error": 2.384185791015625e-07
+      },
+      "removal": {
+        "original_answer": 0,
+        "random_removal_changed": false,
+        "random_removal_delta": 0.5,
+        "random_removal_does_less": true,
+        "random_removed_answer": 0,
+        "top_removal_changed": true,
+        "top_removal_delta": 3.0,
+        "top_removed_answer": 1
+      },
+      "sparse_encoding": {
+        "concepts": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "sparsity": {
+          "density": 0.3333333432674408,
+          "mean_l0": 1.0,
+          "passes_sparsity": true
+        }
+      },
+      "stability": {
+        "mean_pairwise_jaccard": 1.0,
+        "stable": true,
+        "top_concepts_by_seed": [
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            1
+          ]
+        ]
+      }
+    }
+  },
+  "models": [
+    {
+      "gated": false,
+      "id": "toy_or_generated_inputs",
+      "precision": "float32",
+      "revision": "seed_0",
+      "source": "generated"
+    },
+    {
+      "claim_scope": "sparse_concept_question_conditioned_decoder_preflight",
+      "gated": false,
+      "id": "NeelNanda/GELU_1L512W_C4_Code",
+      "precision": "float32",
+      "revision": "bddc0e332f0ae84279e6a6a45d91b314899e1603",
+      "source": "huggingface_via_transformerlens",
+      "tokenizer_id": "NeelNanda/gpt-neox-tokenizer-digits",
+      "tokenizer_revision": "0f6671571a20be9756b9991d978047c03b75e749",
+      "transformerlens_model_name": "gelu-1l"
+    }
+  ],
+  "negative_controls": {
+    "declared_controls": [
+      "negative_control_where_applicable",
+      "question_shuffle_negative_control",
+      "active_random_concept_removal_negative_control"
+    ]
+  },
+  "notebook_id": "7_5_predictive_concept_decoders",
+  "ood_tests": {
+    "declared": "required_where_applicable"
+  },
+  "peak_vram_gb": 0.30846214294433594,
+  "report_inputs": {
+    "algorithm": "sha256",
+    "combined_sha256": "43f78391202b5dd51b9ec932faeccdb96c7df0cd34418d474e61ea9afa872e4a",
+    "files": [
+      {
+        "path": "arena_ext/verification.py",
+        "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
+        "size_bytes": 9276
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part5_predictive_concept_decoders/7.5_Predictive_Concept_Decoders_exercises.ipynb",
+        "sha256": "f733fb9b032136927d9de54e0df5e3e0cd52471060c83914dfc33a9972af5f7e",
+        "size_bytes": 86991
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part5_predictive_concept_decoders/7.5_Predictive_Concept_Decoders_solutions.ipynb",
+        "sha256": "4879bab5b8091624265e71173ed64f2f58c1e73b5352813588506278fdb6547d",
+        "size_bytes": 257103
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part5_predictive_concept_decoders/README.md",
+        "sha256": "b6968c670d933b48172bd4dd87f825a448a681c371d3300967ef86cd8dd71936",
+        "size_bytes": 1189
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part5_predictive_concept_decoders/artifacts.lock.yml",
+        "sha256": "a5bd3d7f1384101f8e660cb035e3fd2426ef7327b810c8f5cbd8d80df65180db",
+        "size_bytes": 6020
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part5_predictive_concept_decoders/expected_outputs/README.md",
+        "sha256": "fe6a0a0b313ff882cf174ce323b17413308340a2d7771ae5c38ef45eeb30dc04",
+        "size_bytes": 1779
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part5_predictive_concept_decoders/expected_outputs/reference_metrics.json",
+        "sha256": "15d84abf29a61d391841721cfef9f8c32d3cbdb9d2ddc81143dca437f110794a",
+        "size_bytes": 6937
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part5_predictive_concept_decoders/expected_outputs/smoke_test.json",
+        "sha256": "4580555a436b731aef4f80aa2a100527425492ad29fa4b82d38876f1531b56b3",
+        "size_bytes": 718
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part5_predictive_concept_decoders/solutions.py",
+        "sha256": "50f258dc0c46514e47fd11b1b282765412b039f35bae069015cb1d5c15c8a2c8",
+        "size_bytes": 69460
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part5_predictive_concept_decoders/tests.py",
+        "sha256": "654125fca7b9ef9553cf9371d65cbb5db5ceceaff183ccc857b6c0e4730c4bb0",
+        "size_bytes": 45192
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part5_predictive_concept_decoders/utils.py",
+        "sha256": "9459a892d12a5fbc0771108b8376e3c6a6b8561898b35ace3c119f90485a23cf",
+        "size_bytes": 358
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part5_predictive_concept_decoders/verification_report.schema.json",
+        "sha256": "ecd833883885077ad5d7a0e239d984d01462255e94266212cf195ab4d4e27b3d",
+        "size_bytes": 2669
+      },
+      {
+        "path": "chapter7_activation_to_language/instructions/pages/05_[7.5]_Predictive_Concept_Decoders.md",
+        "sha256": "bb0a956b60a9fa19263505ee12d7067054642f8a93cddce187248bf0e380e173",
+        "size_bytes": 37567
+      },
+      {
+        "path": "scripts/run_extension_verification_reports.py",
+        "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
+        "size_bytes": 16272
+      }
+    ],
+    "schema_version": 1
+  },
+  "safety_notes": [
+    "No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.",
+    "The real-model path uses safe generic prompts and cached activations/logits from a small public TransformerLens checkpoint. It does not use unsafe prompts, gated weights, generated completions, adapter training, external API calls, or full Activation Oracle comparisons."
+  ],
+  "tests_passed": true,
+  "wall_clock_seconds": 7.253447
+}

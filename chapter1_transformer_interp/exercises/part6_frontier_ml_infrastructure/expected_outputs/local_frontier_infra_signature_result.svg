@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="390" viewBox="0 0 920 390" role="img" aria-labelledby="title desc">
+  <title id="title">Local infrastructure signature result</title>
+  <desc id="desc">Signature result table for Python 3.14, PyTorch CUDA 13.2, BF16 matmul, uv pip check, memory estimate, and peak VRAM.</desc>
+  <rect width="920" height="390" fill="#fbfbfd"/>
+  <text x="44" y="44" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700" fill="#172033">Signature result: uv CUDA 13.2 BF16 infrastructure gate passes</text>
+  <text x="44" y="74" font-family="Inter, Arial, sans-serif" font-size="14" fill="#535b6c">Observed on RTX 5090 Laptop GPU; estimates are reported separately from measured peak allocation.</text>
+  <g font-family="Inter, Arial, sans-serif" font-size="14">
+    <rect x="56" y="110" width="808" height="218" rx="8" fill="#ffffff" stroke="#d5dae5"/>
+    <rect x="56" y="110" width="808" height="38" rx="8" fill="#172033"/>
+    <text x="80" y="135" fill="#ffffff" font-weight="700">Check</text>
+    <text x="394" y="135" fill="#ffffff" font-weight="700">Observed</text>
+    <text x="650" y="135" fill="#ffffff" font-weight="700">Required</text>
+    <g fill="#243044">
+      <text x="80" y="178">Python / PyTorch runtime</text>
+      <text x="394" y="178">3.14.6 / 2.12.1+cu132</text>
+      <text x="650" y="178">3.14 / cu132</text>
+      <text x="80" y="218">CUDA + BF16 device</text>
+      <text x="394" y="218">CUDA 13.2, BF16 true</text>
+      <text x="650" y="218">CUDA 13.2, BF16</text>
+      <text x="80" y="258">BF16 CUDA matmul</text>
+      <text x="394" y="258">[1024,1024], finite</text>
+      <text x="650" y="258">finite BF16 tensor</text>
+      <text x="80" y="298">Peak VRAM / estimate</text>
+      <text x="394" y="298">0.043 GB / 3.660 GB</text>
+      <text x="650" y="298">&lt; 1 GB / &lt; 4 GB</text>
+    </g>
+    <g stroke="#e7eaf1">
+      <line x1="56" y1="190" x2="864" y2="190"/>
+      <line x1="56" y1="230" x2="864" y2="230"/>
+      <line x1="56" y1="270" x2="864" y2="270"/>
+    </g>
+  </g>
+</svg>

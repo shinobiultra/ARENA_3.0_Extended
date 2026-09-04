@@ -1,0 +1,526 @@
+{
+  "accepted": true,
+  "baselines": {
+    "declared_controls": [
+      "exact planted route declared before measurement",
+      "off-route position negative control",
+      "wrong-position donor negative control",
+      "denoising versus noising direction control",
+      "clean-corrupt signed metric calibration",
+      "pinned TransformerLens same-hook position sweep",
+      "non-final wrong-position real-model control",
+      "finite-logit and exact-final-patch parity check"
+    ],
+    "expected_metrics": {
+      "accepted": true,
+      "best_position": 5,
+      "bnb_cuda_override": "130",
+      "clean_corrupt_gap_min": 6.0,
+      "finite_logits": true,
+      "hf_revision": "bddc0e332f0ae84279e6a6a45d91b314899e1603",
+      "hook_name": "blocks.0.hook_resid_post",
+      "localizes_final_position": true,
+      "max_abs_final_patch_logit_error_max": 1e-05,
+      "max_allowed_gpu_gb": 24,
+      "max_wrong_position_control_fraction_max": 0.0001,
+      "model_name": "gelu-1l",
+      "peak_vram_gb_max": 1.0,
+      "preflight_passed": true,
+      "sequence_length": 6,
+      "target_position": 5,
+      "target_recovered_fraction_min": 0.99,
+      "tests_passed": true,
+      "tokenizer_revision": "0f6671571a20be9756b9991d978047c03b75e749",
+      "top_beats_max_wrong_position_control": true,
+      "top_beats_wrong_position_control": true,
+      "toy_denoising_noising_max_error_max": 0.0,
+      "toy_exact_ground_truth_passed": true,
+      "toy_off_route_max_max": 0.0,
+      "toy_route_mean_min": 1.0,
+      "toy_separation_min": 1.0,
+      "toy_topk_overlap_min": 1.0,
+      "toy_wrong_position_donor_max_max": 0.0,
+      "wrong_position_control_fraction_max": 0.0001
+    }
+  },
+  "claim_scope": "Activation patching exactly recovers the planted source-to-query-to-answer route in a deterministic two-hop copy model. Denoising and noising agree exactly; off-route and wrong-position donor controls score zero. A pinned TransformerLens gelu-1l CUDA run separately verifies real hook and device mechanics at final residual position. The real-model preflight is not an IOI-scale circuit claim.",
+  "datasets": [
+    {
+      "clean_prompt": "<BOS> RED BLUE QUERY ?",
+      "corrupt_prompt": "<BOS> BLUE RED QUERY ?",
+      "id": "exact_red_blue_two_hop_copy_pair_v1",
+      "planted_route": [
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          2,
+          4
+        ]
+      ],
+      "seed": "deterministic",
+      "source": "generated_analytic_task"
+    },
+    {
+      "clean_prompt": "The cat sat on the",
+      "corrupt_prompt": "The bird flew over the",
+      "id": "course_safe_clean_corrupt_activation_patching_prompts_v1",
+      "seed": 0,
+      "sequence_length": 6,
+      "source": "generated_prompt_pair",
+      "tokenizer": "NeelNanda/gpt-neox-tokenizer-digits"
+    }
+  ],
+  "date_run": "2026-09-04T08:44:07+00:00",
+  "evidence_level": "exact_toy_ground_truth_plus_pinned_transformerlens_cuda_preflight",
+  "git_commit": "d5d0f7d4",
+  "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+  "gt_tier": "GT-1",
+  "known_failures": [],
+  "metrics": {
+    "gpu_evidence": {
+      "category": "cuda_section_metric",
+      "placeholder_only": false,
+      "section_specific_metric_keys": [
+        "best_position",
+        "best_score",
+        "bnb_cuda_override",
+        "clean_corrupt_gap",
+        "clean_metric",
+        "clean_prompt",
+        "corrupt_metric",
+        "corrupt_prompt",
+        "distractor_token",
+        "distractor_token_id",
+        "finite_logits",
+        "hf_model_id",
+        "hf_revision",
+        "hook_name",
+        "localizes_final_position",
+        "max_abs_final_patch_logit_error",
+        "max_wrong_position_control_fraction",
+        "model_name",
+        "passes_recovery",
+        "patch_scores_by_position",
+        "patched_metric",
+        "preflight_passed",
+        "sequence_length",
+        "target_position",
+        "target_recovered_fraction",
+        "target_token",
+        "target_token_id",
+        "tokenizer_id",
+        "tokenizer_revision",
+        "top_beats_max_wrong_position_control",
+        "top_beats_wrong_position_control",
+        "toy_claim",
+        "toy_clean_metric",
+        "toy_corrupt_metric",
+        "toy_denoising_noising_max_error",
+        "toy_denoising_scores",
+        "toy_exact_ground_truth_passed",
+        "toy_noising_scores",
+        "toy_off_route_max",
+        "toy_route_cells",
+        "toy_route_mean",
+        "toy_separation",
+        "toy_top_cells",
+        "toy_topk_overlap",
+        "toy_wrong_position_donor_max",
+        "toy_wrong_position_donor_scores",
+        "wrong_position_control_fraction"
+      ],
+      "uses_cuda": true
+    },
+    "gpu_test": {
+      "best_position": 5,
+      "best_score": 1.0,
+      "bnb_cuda_override": "130",
+      "clean_corrupt_gap": 6.27708625793457,
+      "clean_metric": 2.567628860473633,
+      "clean_prompt": "The cat sat on the",
+      "corrupt_metric": -3.7094573974609375,
+      "corrupt_prompt": "The bird flew over the",
+      "cuda_available": true,
+      "cuda_version": "13.2",
+      "device": "NVIDIA GeForce RTX 5090 Laptop GPU",
+      "distractor_token": " top",
+      "distractor_token_id": 1708,
+      "finite_logits": true,
+      "full_path": "Pinned TransformerLens gelu-1l residual-stream patching preflight.",
+      "gpu_total_memory_gb": 23.45965576171875,
+      "hf_model_id": "NeelNanda/GELU_1L512W_C4_Code",
+      "hf_revision": "bddc0e332f0ae84279e6a6a45d91b314899e1603",
+      "hook_name": "blocks.0.hook_resid_post",
+      "localizes_final_position": true,
+      "max_abs_final_patch_logit_error": 0.0,
+      "max_wrong_position_control_fraction": 0.0,
+      "model_name": "gelu-1l",
+      "passes_recovery": true,
+      "patch_scores_by_position": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "patched_metric": 2.567628860473633,
+      "peak_vram_gb": 0.2357783317565918,
+      "preflight_passed": true,
+      "sequence_length": 6,
+      "target_position": 5,
+      "target_recovered_fraction": 1.0,
+      "target_token": " floor",
+      "target_token_id": 5100,
+      "tokenizer_id": "NeelNanda/gpt-neox-tokenizer-digits",
+      "tokenizer_revision": "0f6671571a20be9756b9991d978047c03b75e749",
+      "top_beats_max_wrong_position_control": true,
+      "top_beats_wrong_position_control": true,
+      "torch_version": "2.12.1+cu132",
+      "toy_claim": "Activation patching exactly recovers the planted source-to-query-to-answer route.",
+      "toy_clean_metric": 2.0,
+      "toy_corrupt_metric": -2.0,
+      "toy_denoising_noising_max_error": 0.0,
+      "toy_denoising_scores": [
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "toy_exact_ground_truth_passed": true,
+      "toy_noising_scores": [
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "toy_off_route_max": 0.0,
+      "toy_route_cells": [
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          2,
+          4
+        ]
+      ],
+      "toy_route_mean": 1.0,
+      "toy_separation": 1.0,
+      "toy_top_cells": [
+        [
+          0,
+          1
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          1,
+          3
+        ]
+      ],
+      "toy_topk_overlap": 1.0,
+      "toy_wrong_position_donor_max": 0.0,
+      "toy_wrong_position_donor_scores": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "within_vram_budget": true,
+      "wrong_position_control_fraction": 0.0
+    },
+    "notebook_contract": {
+      "accepted": true,
+      "claim": "Activation patching exactly recovers the planted source-to-query-to-answer route.",
+      "clean_metric": 2.0,
+      "contract_passed": true,
+      "corrupt_metric": -2.0,
+      "denoising_noising_max_error": 0.0,
+      "denoising_scores": [
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "exact_ground_truth_passed": true,
+      "noising_scores": [
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "off_route_max": 0.0,
+      "route_cells": [
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          2,
+          4
+        ]
+      ],
+      "route_mean": 1.0,
+      "separation": 1.0,
+      "tests_passed": true,
+      "top_cells": [
+        [
+          0,
+          1
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          1,
+          3
+        ]
+      ],
+      "topk_overlap": 1.0,
+      "wrong_position_donor_max": 0.0,
+      "wrong_position_donor_scores": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ]
+    }
+  },
+  "models": [
+    {
+      "claim_scope": "exact_ground_truth_activation_patching",
+      "gated": false,
+      "id": "exact_two_hop_copy_model",
+      "precision": "float32",
+      "revision": "source_query_answer_v1",
+      "source": "generated_analytic_model"
+    },
+    {
+      "claim_scope": "residual_stream_activation_patching_preflight",
+      "gated": false,
+      "id": "NeelNanda/GELU_1L512W_C4_Code",
+      "precision": "float32",
+      "revision": "bddc0e332f0ae84279e6a6a45d91b314899e1603",
+      "source": "huggingface_via_transformerlens",
+      "tokenizer_id": "NeelNanda/gpt-neox-tokenizer-digits",
+      "tokenizer_revision": "0f6671571a20be9756b9991d978047c03b75e749",
+      "transformerlens_model_name": "gelu-1l"
+    }
+  ],
+  "negative_controls": {
+    "declared_controls": [
+      "off-route position negative control",
+      "wrong-position donor negative control"
+    ]
+  },
+  "notebook_id": "8_1_activation_patching_refresher",
+  "ood_tests": {
+    "declared": "required_where_applicable"
+  },
+  "peak_vram_gb": 0.2357783317565918,
+  "report_inputs": {
+    "algorithm": "sha256",
+    "combined_sha256": "de93402abba7a4ce8cae92201a858de33f635170c797492c11e74fa1309152a3",
+    "files": [
+      {
+        "path": "arena_ext/verification.py",
+        "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
+        "size_bytes": 9276
+      },
+      {
+        "path": "chapter8_automated_circuits/exercises/part1_activation_patching_refresher/8.1_Activation_Patching_Refresher_exercises.ipynb",
+        "sha256": "7aa11a966c3e5b16f8483dd9a8ee72f9af1ead4a3268fad00699df1b0c5cb5dc",
+        "size_bytes": 40380
+      },
+      {
+        "path": "chapter8_automated_circuits/exercises/part1_activation_patching_refresher/8.1_Activation_Patching_Refresher_solutions.ipynb",
+        "sha256": "3a7f5f3aa5ca3f7697cb85592ee5877d654c4175c314c307f46f0f51ea989a74",
+        "size_bytes": 178529
+      },
+      {
+        "path": "chapter8_automated_circuits/exercises/part1_activation_patching_refresher/README.md",
+        "sha256": "e2b37be8446dc521e9b37b3111d20f37da45605dc772885b1e814f173efc8721",
+        "size_bytes": 1630
+      },
+      {
+        "path": "chapter8_automated_circuits/exercises/part1_activation_patching_refresher/artifacts.lock.yml",
+        "sha256": "3dbee09b47644003aeec343b3aa1191a8e20907d0061a634665aa73305834be4",
+        "size_bytes": 3664
+      },
+      {
+        "path": "chapter8_automated_circuits/exercises/part1_activation_patching_refresher/expected_outputs/README.md",
+        "sha256": "d7ae8014610802d6f8011031a805ed09e117bf75616d11fdd6003195246028e7",
+        "size_bytes": 1687
+      },
+      {
+        "path": "chapter8_automated_circuits/exercises/part1_activation_patching_refresher/expected_outputs/reference_metrics.json",
+        "sha256": "e4408b571bc5e87509037ebf757031c21c3d63b5811f07d22102929fb565feee",
+        "size_bytes": 942
+      },
+      {
+        "path": "chapter8_automated_circuits/exercises/part1_activation_patching_refresher/expected_outputs/smoke_test.json",
+        "sha256": "0c51075bb6e3bbaf161c09730bfa71a5aafff6213a8586067121d19b226f86fc",
+        "size_bytes": 558
+      },
+      {
+        "path": "chapter8_automated_circuits/exercises/part1_activation_patching_refresher/solutions.py",
+        "sha256": "1359217b5a6df6622acb42b16435c616b435f2172c0739f38f5892322f5426f6",
+        "size_bytes": 20149
+      },
+      {
+        "path": "chapter8_automated_circuits/exercises/part1_activation_patching_refresher/tests.py",
+        "sha256": "b0cbc86b66ea9276e51ea633e76046efe14bf70dfe9aceeb879e64878663e488",
+        "size_bytes": 13742
+      },
+      {
+        "path": "chapter8_automated_circuits/exercises/part1_activation_patching_refresher/utils.py",
+        "sha256": "377999e1c9fb00a83f26f64e0f5a80bd26f0d7323bc9f8ecffb5dabe8d3de1f4",
+        "size_bytes": 360
+      },
+      {
+        "path": "chapter8_automated_circuits/exercises/part1_activation_patching_refresher/verification_report.schema.json",
+        "sha256": "ecd833883885077ad5d7a0e239d984d01462255e94266212cf195ab4d4e27b3d",
+        "size_bytes": 2669
+      },
+      {
+        "path": "chapter8_automated_circuits/instructions/pages/01_[8.1]_Activation_Patching_Refresher.md",
+        "sha256": "9bd3ed38e02245718e0b5e151806552847304a9d451f0b8fc76704b59a770ef9",
+        "size_bytes": 30727
+      },
+      {
+        "path": "scripts/run_extension_verification_reports.py",
+        "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
+        "size_bytes": 16272
+      }
+    ],
+    "schema_version": 1
+  },
+  "safety_notes": [
+    "No unsafe prompts, adapters, gated weights, or large data artifacts are used.",
+    "The exact model organism is deterministic and contains no learned or simulated empirical claim.",
+    "The real-model preflight reads next-token logits for safe generic prompts only.",
+    "Verification reports support the lesson but are not the learner-facing signature result."
+  ],
+  "tests_passed": true,
+  "wall_clock_seconds": 6.205978
+}

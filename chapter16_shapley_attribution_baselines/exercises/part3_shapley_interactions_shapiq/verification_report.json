@@ -1,0 +1,368 @@
+{
+  "accepted": true,
+  "baselines": {
+    "declared_controls": [
+      "baseline_or_reference_check",
+      "negative_control_where_applicable",
+      "shape_dtype_or_exact_value_check",
+      "additive_zero_interaction_contract",
+      "single_target_pair_interaction_contract",
+      "small_game_shapiq_parity_contract",
+      "real_cuda_training_run",
+      "complete_binary_feature_table_fit",
+      "real_model_ablation_coalition_table",
+      "positive_pair_interaction_recovery",
+      "negative_pair_interaction_recovery",
+      "off_target_interaction_ceiling",
+      "shapiq_sii_parity_on_trained_model_table",
+      "shuffled_label_trained_model_negative_control",
+      "large_model_token_sae_vision_and_multimodal_interactions_not_claimed"
+    ],
+    "expected_metrics": {
+      "accepted": true,
+      "coalition_count": 16,
+      "fit_max_abs_error_max": 0.0001,
+      "fit_mse_max": 1e-08,
+      "interaction_max_abs_error_max": 0.0001,
+      "interaction_signs_recovered": true,
+      "max_allowed_gpu_gb": 24,
+      "max_spurious_interaction_max": 0.0001,
+      "model_family": "cuda_trained_neural_coalition_game_mlp",
+      "negative_interaction_abs_error_max": 0.0001,
+      "num_players": 4,
+      "peak_vram_gb_max": 1.0,
+      "positive_interaction_abs_error_max": 0.0001,
+      "preflight_passed": true,
+      "shapiq_available": true,
+      "shapiq_matches": true,
+      "shapiq_max_abs_error_max": 1e-05,
+      "shuffled_control_interaction_error_min": 1.0,
+      "shuffled_control_rejected": true,
+      "tests_passed": true,
+      "training_example_count": 16,
+      "training_steps": 1200
+    }
+  },
+  "claim_scope": "GT-0 Shapley interaction preflight: deterministic additive, target-pair, and shapiq parity contracts are kept for learner exercises, then a CUDA MLP is trained on the complete binary feature table for the same nonlinear coalition game used by 16.1 and 16.2. The report recovers the planted positive and negative pair interactions from real model ablations, bounds off-target interactions, checks shapiq SII parity on the trained model table, and rejects a shuffled-label interaction control. This proves local pairwise interaction recovery on a finite trained model organism; it is not a claim about large-model token, SAE, vision, or multimodal interaction attribution.",
+  "datasets": [
+    {
+      "id": "16_3_shapley_interactions_with_shapiq_toy_inputs",
+      "seed": 0,
+      "source": "generated"
+    },
+    {
+      "baseline_input": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "coalition_count": 16,
+      "example_count": 16,
+      "id": "complete_binary_feature_game_table_v1",
+      "negative_interaction_pair": [
+        1,
+        3
+      ],
+      "negative_interaction_weight": -1.5,
+      "num_players": 4,
+      "positive_interaction_pair": [
+        0,
+        2
+      ],
+      "positive_interaction_weight": 2.2,
+      "seed": 1621,
+      "shuffled_label_control": true,
+      "source": "generated_finite_table",
+      "target_input": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "target_rule": "0.25 + 1.2*x0 - 0.7*x1 + 1.6*x2 + 0.9*x3 + 2.2*x0*x2 - 1.5*x1*x3"
+    }
+  ],
+  "date_run": "2026-09-04T08:15:00+00:00",
+  "evidence_level": "shapley_interaction_contract_plus_cuda_trained_neural_game_preflight",
+  "git_commit": "b692a4f0",
+  "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+  "gt_tier": "GT-0",
+  "known_failures": [],
+  "metrics": {
+    "gpu_evidence": {
+      "category": "cuda_section_metric",
+      "placeholder_only": false,
+      "section_specific_metric_keys": [
+        "coalition_count",
+        "fit_max_abs_error",
+        "fit_mse",
+        "interaction_max_abs_error",
+        "interaction_signs_recovered",
+        "max_spurious_interaction",
+        "model_family",
+        "negative_interaction_abs_error",
+        "negative_interaction_expected",
+        "negative_interaction_pair",
+        "negative_interaction_value",
+        "num_players",
+        "positive_interaction_abs_error",
+        "positive_interaction_expected",
+        "positive_interaction_pair",
+        "positive_interaction_value",
+        "preflight_passed",
+        "shapiq_available",
+        "shapiq_matches",
+        "shapiq_max_abs_error",
+        "shuffled_control_fit_mse",
+        "shuffled_control_interaction_error",
+        "shuffled_control_rejected",
+        "training_example_count",
+        "training_steps"
+      ],
+      "uses_cuda": true
+    },
+    "gpu_test": {
+      "coalition_count": 16,
+      "cuda_available": true,
+      "cuda_version": "13.2",
+      "device": "NVIDIA GeForce RTX 5090 Laptop GPU",
+      "fit_max_abs_error": 2.384185791015625e-06,
+      "fit_mse": 1.1020073742429304e-12,
+      "full_path": "Train a CUDA MLP on a complete binary feature game, recover planted pair interactions from real model ablations, validate shapiq parity, and reject shuffled-label interactions.",
+      "gpu_total_memory_gb": 23.45965576171875,
+      "interaction_max_abs_error": 4.52001889694742e-07,
+      "interaction_signs_recovered": true,
+      "max_spurious_interaction": 6.606181462605795e-07,
+      "model_family": "cuda_trained_neural_coalition_game_mlp",
+      "negative_interaction_abs_error": 4.4951836275508583e-07,
+      "negative_interaction_expected": -1.5000002483526864,
+      "negative_interaction_pair": [
+        1,
+        3
+      ],
+      "negative_interaction_value": -1.5000006978710492,
+      "num_players": 4,
+      "peak_vram_gb": 0.06262922286987305,
+      "positive_interaction_abs_error": 4.52001889694742e-07,
+      "positive_interaction_expected": 2.199999948342641,
+      "positive_interaction_pair": [
+        0,
+        2
+      ],
+      "positive_interaction_value": 2.2000004003445306,
+      "preflight_passed": true,
+      "shapiq_available": true,
+      "shapiq_matches": true,
+      "shapiq_max_abs_error": 1.1796736254510165e-08,
+      "shuffled_control_fit_mse": 1.6053824936079764e-13,
+      "shuffled_control_interaction_error": 4.383333802223206,
+      "shuffled_control_rejected": true,
+      "torch_version": "2.12.1+cu132",
+      "training_example_count": 16,
+      "training_steps": 1200,
+      "within_vram_budget": true
+    },
+    "notebook_contract": {
+      "additive_interactions": {
+        "max_abs_interaction": 0.0,
+        "pair_interactions": [
+          [
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0
+          ]
+        ]
+      },
+      "shapiq_parity": {
+        "exact_pair_interactions": [
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "matches_shapiq": true,
+        "max_abs_error": 2.499999999999996e-09,
+        "shapiq_available": true,
+        "shapiq_pair_interactions": [
+          [
+            0.0,
+            0.9999999975,
+            -2.4999999999999955e-09
+          ],
+          [
+            0.9999999975,
+            0.0,
+            -2.499999999999996e-09
+          ],
+          [
+            -2.4999999999999955e-09,
+            -2.499999999999996e-09,
+            0.0
+          ]
+        ]
+      },
+      "target_pair": {
+        "max_spurious_interaction": 0.0,
+        "pair_interactions": [
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "recovers_interaction": true,
+        "target_interaction": 1.0,
+        "target_pair": [
+          0,
+          1
+        ]
+      }
+    }
+  },
+  "models": [
+    {
+      "gated": false,
+      "id": "toy_or_generated_inputs",
+      "precision": "float32",
+      "revision": "seed_0",
+      "source": "generated"
+    },
+    {
+      "claim_scope": "trained_pairwise_shapley_interaction_preflight",
+      "gated": false,
+      "id": "course_cuda_neural_coalition_game_mlp_v1",
+      "learning_rate": 0.05,
+      "optimizer": "AdamW",
+      "precision": "float32",
+      "revision": "seed_1621_players4_hidden64_steps1200",
+      "source": "generated_training_run"
+    }
+  ],
+  "negative_controls": {
+    "declared_controls": [
+      "negative_control_where_applicable",
+      "negative_pair_interaction_recovery",
+      "shuffled_label_trained_model_negative_control"
+    ]
+  },
+  "notebook_id": "16_3_shapley_interactions_with_shapiq",
+  "ood_tests": {
+    "declared": "required_where_applicable"
+  },
+  "peak_vram_gb": 0.06262922286987305,
+  "report_inputs": {
+    "algorithm": "sha256",
+    "combined_sha256": "fcd40ca3d29838800b7740dc15b49fc44770efe0b86e947c2d84cc2946c7bb16",
+    "files": [
+      {
+        "path": "arena_ext/verification.py",
+        "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
+        "size_bytes": 9276
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part3_shapley_interactions_shapiq/16.3_Shapley_Interactions_with_shapiq_exercises.ipynb",
+        "sha256": "7cf689a94746ba28d6c0e754bc25e27cef4f2bd179ca801fdec6f514fe1db8c8",
+        "size_bytes": 53021
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part3_shapley_interactions_shapiq/16.3_Shapley_Interactions_with_shapiq_solutions.ipynb",
+        "sha256": "09a997f6089d545ffa608efba888602902de00eda6e652bd4f91fb1f688941b2",
+        "size_bytes": 78556
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part3_shapley_interactions_shapiq/README.md",
+        "sha256": "a66704904925f31765fdb090c0ac6d800764b5855ce2e08d6b329348928cbc44",
+        "size_bytes": 1422
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part3_shapley_interactions_shapiq/artifacts.lock.yml",
+        "sha256": "1309c5541e92fc95412bd3fda49302047aab269cdedf803145f1a2bea6554ad0",
+        "size_bytes": 3761
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part3_shapley_interactions_shapiq/expected_outputs/README.md",
+        "sha256": "1cda45a9d5be76df64243eac4e1d717629021d4722273e3617d5895606f49623",
+        "size_bytes": 1785
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part3_shapley_interactions_shapiq/expected_outputs/reference_metrics.json",
+        "sha256": "347585a8d200f3b3f2148b2031b4cb77e422c19a70b2c1eeb87a9e606de1c9a2",
+        "size_bytes": 1041
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part3_shapley_interactions_shapiq/expected_outputs/smoke_test.json",
+        "sha256": "97cd88fe609fbdd9bf65491628d7ff9ef78446dd265e4a9e4733627af6ac9f01",
+        "size_bytes": 305
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part3_shapley_interactions_shapiq/solutions.py",
+        "sha256": "a3ac383d8537551b93894ac5acbc8121ed82743c9d18f32e4cf5fed46db74b37",
+        "size_bytes": 26724
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part3_shapley_interactions_shapiq/tests.py",
+        "sha256": "db3e0f1a7d098e4674b98fc017d1118266efce7fd71cd52ca9ed48e4af2b9f1f",
+        "size_bytes": 22382
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part3_shapley_interactions_shapiq/utils.py",
+        "sha256": "31724e90fc6aa0a8d0345c2ca84358b4fe0afd6bf6b93e9f3aaa0a7ef46dba28",
+        "size_bytes": 141
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part3_shapley_interactions_shapiq/verification_report.schema.json",
+        "sha256": "ecd833883885077ad5d7a0e239d984d01462255e94266212cf195ab4d4e27b3d",
+        "size_bytes": 2669
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/pages/03_[16.3]_Shapley_Interactions_with_shapiq.md",
+        "sha256": "1b280a09cef23a0f693833dfe16d9b2ad4f3704960cebbc43040cc0b872643a6",
+        "size_bytes": 39913
+      },
+      {
+        "path": "scripts/run_extension_verification_reports.py",
+        "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
+        "size_bytes": 16272
+      }
+    ],
+    "schema_version": 1
+  },
+  "safety_notes": [
+    "No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.",
+    "The real training path uses only a generated finite binary feature table and a shuffled-label negative control. It does not use unsafe prompts, user data, external APIs, adapters, gated weights, or large persistent artifacts."
+  ],
+  "tests_passed": true,
+  "wall_clock_seconds": 3.476301
+}

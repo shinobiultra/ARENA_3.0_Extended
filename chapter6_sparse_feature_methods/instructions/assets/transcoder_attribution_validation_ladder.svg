@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="300" viewBox="0 0 920 300" role="img" aria-labelledby="title desc">
+  <title id="title">Evidence ladder for [6.3] Transcoders and Attribution Graphs</title>
+  <desc id="desc">A four-step validation ladder from MLP replacement to attribution graph controls.</desc>
+  <rect width="920" height="300" fill="#f8fafc"/>
+  <style>
+    .box { fill: #ffffff; stroke: #334155; stroke-width: 2; rx: 10; }
+    .title { font: 700 18px sans-serif; fill: #0f172a; }
+    .body { font: 14px sans-serif; fill: #334155; }
+    .small { font: 12px sans-serif; fill: #475569; }
+    .arrow { stroke: #475569; stroke-width: 2.5; fill: none; marker-end: url(#arrow); }
+    .accent1 { fill: #dbeafe; stroke: #2563eb; }
+    .accent2 { fill: #dcfce7; stroke: #16a34a; }
+    .accent3 { fill: #ffedd5; stroke: #f97316; }
+    .accent4 { fill: #ede9fe; stroke: #7c3aed; }
+  </style>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#475569"/>
+    </marker>
+  </defs>
+
+  <text x="36" y="40" class="title">Transcoder and attribution-graph validation ladder</text>
+  <text x="36" y="64" class="body">A graph is useful only when replacement, behavior, and controls are all visible.</text>
+
+  <rect x="36" y="100" width="185" height="125" class="box accent1"/>
+  <text x="58" y="130" class="title">1. Replace</text>
+  <text x="58" y="158" class="body">MLP input</text>
+  <text x="58" y="180" class="body">to sparse features</text>
+  <text x="58" y="202" class="body">to MLP output</text>
+
+  <rect x="267" y="100" width="185" height="125" class="box accent2"/>
+  <text x="289" y="130" class="title">2. Preserve</text>
+  <text x="289" y="158" class="body">KL and target</text>
+  <text x="289" y="180" class="body">logit difference</text>
+  <text x="289" y="202" class="body">must stay small</text>
+
+  <rect x="498" y="100" width="185" height="125" class="box accent3"/>
+  <text x="520" y="130" class="title">3. Attribute</text>
+  <text x="520" y="158" class="body">Mean feature acts</text>
+  <text x="520" y="180" class="body">times logit effects</text>
+  <text x="520" y="202" class="body">give graph weights</text>
+
+  <rect x="729" y="100" width="155" height="125" class="box accent4"/>
+  <text x="751" y="130" class="title">4. Control</text>
+  <text x="751" y="158" class="body">Top nodes</text>
+  <text x="751" y="180" class="body">damage more than</text>
+  <text x="751" y="202" class="body">low-effect nodes</text>
+
+  <path d="M221 162 C238 162 250 162 267 162" class="arrow"/>
+  <path d="M452 162 C469 162 481 162 498 162" class="arrow"/>
+  <path d="M683 162 C700 162 712 162 729 162" class="arrow"/>
+
+  <text x="36" y="262" class="small">This section proves a scoped GELU-1L preflight, not a published frontier transcoder replication.</text>
+</svg>

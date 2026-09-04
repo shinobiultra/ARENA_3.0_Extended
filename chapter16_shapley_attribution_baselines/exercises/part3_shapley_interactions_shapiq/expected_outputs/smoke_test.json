@@ -1,0 +1,10 @@
+{
+  "accepted": true,
+  "claim_scope": "Contract check; not a full real-model validation.",
+  "evidence_level": "notebook_contract",
+  "gt_tier": "GT-0",
+  "notebook_id": "16_3_shapley_interactions_with_shapiq",
+  "section": "16.3",
+  "tests_passed": true,
+  "title": "Shapley Interactions with shapiq"
+}

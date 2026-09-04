@@ -1,0 +1,16 @@
+{
+  "accepted": true,
+  "claim_scope": "Exact nonlinear named-edge toy ACDC contract; no real-model claim.",
+  "evidence_level": "exact_ground_truth_toy",
+  "gt_tier": "GT-0",
+  "notebook_id": "8_3_acdc_and_circuit_metrics",
+  "section": "8.3",
+  "tests_passed": true,
+  "title": "ACDC and Circuit Metrics",
+  "candidate_edges": 10,
+  "ground_truth_edges": 8,
+  "recovered_edges": 8,
+  "recovery": 1.0,
+  "same_size_rank": 1,
+  "worst_heldout_recovery": 1.0
+}

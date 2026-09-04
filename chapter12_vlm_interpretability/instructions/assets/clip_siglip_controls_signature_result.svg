@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="430" viewBox="0 0 1200 430" role="img" aria-labelledby="title desc">
+  <title id="title">Signature result for CLIP, SigLIP, and VLM controls</title>
+  <desc id="desc">A table-style visualization showing toy CLIP and SigLIP checks, real CLIP and SigLIP retrieval, hidden visual-token object patch gaps, and scoped Qwen2.5-VL rendered-shape answers.</desc>
+  <rect width="1200" height="430" fill="#fbfcfe"/>
+  <style>
+    .title { font: 700 24px sans-serif; fill: #172033; }
+    .label { font: 600 15px sans-serif; fill: #223044; }
+    .value { font: 700 15px sans-serif; fill: #111827; }
+    .small { font: 13px sans-serif; fill: #516174; }
+    .grid { stroke: #d6dde8; stroke-width: 1; }
+    .good { fill: #dff4e7; }
+    .neutral { fill: #e8f1ff; }
+  </style>
+  <text x="40" y="42" class="title">CLIP/SigLIP controls: diagonal retrieval plus causal-style checks</text>
+  <text x="40" y="70" class="small">Toy implementation contract plus pinned CUDA report on RTX 5090 Laptop GPU, PyTorch CUDA 13.2.</text>
+  <rect x="40" y="100" width="1120" height="250" rx="8" fill="#ffffff" stroke="#c9d4e2"/>
+  <line x1="40" y1="148" x2="1160" y2="148" class="grid"/>
+  <line x1="40" y1="192" x2="1160" y2="192" class="grid"/>
+  <line x1="40" y1="236" x2="1160" y2="236" class="grid"/>
+  <line x1="40" y1="280" x2="1160" y2="280" class="grid"/>
+  <line x1="40" y1="324" x2="1160" y2="324" class="grid"/>
+  <line x1="440" y1="100" x2="440" y2="350" class="grid"/>
+  <line x1="710" y1="100" x2="710" y2="350" class="grid"/>
+  <line x1="940" y1="100" x2="940" y2="350" class="grid"/>
+  <text x="62" y="130" class="label">Check</text>
+  <text x="575" y="130" text-anchor="middle" class="label">Metric</text>
+  <text x="825" y="130" text-anchor="middle" class="label">Control</text>
+  <text x="1050" y="130" text-anchor="middle" class="label">Verdict</text>
+  <rect x="441" y="149" width="268" height="42" class="good"/>
+  <text x="62" y="175" class="label">Toy CLIP diagonal margin</text>
+  <text x="575" y="175" text-anchor="middle" class="value">5.000</text>
+  <text x="825" y="175" text-anchor="middle" class="small">strongest negative</text>
+  <text x="1050" y="175" text-anchor="middle" class="small">passes</text>
+  <rect x="441" y="193" width="268" height="42" class="good"/>
+  <text x="62" y="219" class="label">Toy SigLIP pairwise loss</text>
+  <text x="575" y="219" text-anchor="middle" class="value">0.033</text>
+  <text x="825" y="219" text-anchor="middle" class="small">positive and negative pairs</text>
+  <text x="1050" y="219" text-anchor="middle" class="small">passes</text>
+  <rect x="441" y="237" width="268" height="42" class="good"/>
+  <text x="62" y="263" class="label">Real CLIP / SigLIP retrieval</text>
+  <text x="575" y="263" text-anchor="middle" class="value">1.0 / 1.0</text>
+  <text x="825" y="263" text-anchor="middle" class="small">rendered-shape pairs</text>
+  <text x="1050" y="263" text-anchor="middle" class="small">passes</text>
+  <rect x="441" y="281" width="268" height="42" class="neutral"/>
+  <text x="62" y="307" class="label">Hidden-token object patch gap</text>
+  <text x="575" y="307" text-anchor="middle" class="value">14.93 / 31.45</text>
+  <text x="825" y="307" text-anchor="middle" class="small">background/random controls</text>
+  <text x="1050" y="307" text-anchor="middle" class="small">scoped evidence</text>
+  <rect x="441" y="325" width="268" height="24" class="good"/>
+  <text x="62" y="342" class="label">Qwen2.5-VL answers</text>
+  <text x="575" y="342" text-anchor="middle" class="value">red square / blue circle</text>
+  <text x="825" y="342" text-anchor="middle" class="small">safe rendered objects</text>
+  <text x="1050" y="342" text-anchor="middle" class="small">passes</text>
+  <text x="40" y="382" class="small">Claim: the control ladder works on toy and pinned rendered-shape checks.</text>
+  <text x="40" y="404" class="small">Non-claim: broad VLM hallucination or visual-token-flow interpretability is solved here.</text>
+</svg>

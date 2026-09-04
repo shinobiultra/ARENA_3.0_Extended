@@ -1,0 +1,142 @@
+notebook_id: 7_2_feature_verbalizers
+section: '7.2'
+title: Feature Verbalizers
+exercise_metadata:
+  EXERCISE_ID: 7_2_feature_verbalizers
+  GT_TIER: GT-1
+  DIFFICULTY: 4
+  IMPORTANCE: 4
+  EXPECTED_RUNTIME: 60-90 minutes including the pinned local-model CPU loop
+  REQUIRES_GPU: false
+gt_tier: GT-1
+evidence_level: exact_planted_model_organism_plus_pinned_local_qwen_hypothesis_revision_loop
+claim_scope: 'GT-1 feature-verbalizer course section: students first build an
+  exact planted feature whose rule is living animal + resting verb + physical
+  surface - decoy object terms. They gather top/bottom/random/contrastive
+  examples, test an intentionally overbroad resting-word verbalizer, mine
+  revision-split counterexamples, revise to a semantic rule, and evaluate on 24
+  final held-out counterfactual prompts. The revised verbalizer reaches 1.0
+  held-out accuracy, beats text-only/random/example-lookup/base-rate controls,
+  ties the planted activation-score oracle, and predicts a positive
+  feature-direction intervention while an orthogonal random direction has zero
+  effect. A pinned TransformerLens gelu-1l CUDA path remains exposed as the
+  real-transformer escalation, but is not the learner-facing proof surface.'
+learner_claim_scope: 'A pinned local Qwen model selects an initial semantic
+  conjunction from training evidence, revises it after three held-out-from-training
+  counterexamples, and the fixed executable revision reaches 1.0 accuracy on 24
+  untouched rows. This tests constrained hypothesis selection, not free-form explanation.'
+required_gpu_gb: 1
+max_allowed_gpu_gb: 24
+models:
+- id: exact_planted_feature_verbalizer_organism
+  source: generated_exact_text_counterfactuals
+  revision: seed_0
+  precision: float32
+  gated: false
+  claim_scope: living_animal_resting_on_surface_rule_with_decoy_counterexamples
+- id: NeelNanda/GELU_1L512W_C4_Code
+  source: huggingface_via_transformerlens
+  revision: bddc0e332f0ae84279e6a6a45d91b314899e1603
+  precision: float32
+  gated: false
+  claim_scope: residual_direction_verbalizer_cuda_handoff
+  transformerlens_model_name: gelu-1l
+  tokenizer_id: NeelNanda/gpt-neox-tokenizer-digits
+  tokenizer_revision: 0f6671571a20be9756b9991d978047c03b75e749
+- id: Qwen/Qwen2.5-0.5B-Instruct
+  source: huggingface_local_cache
+  revision: 7ae557604adf67be50417f59c2c2f167def9a775
+  precision: bfloat16
+  device: cpu
+  gated: false
+  claim_scope: candidate_hypothesis_selection_and_counterexample_revision_only
+datasets:
+- id: 7_2_exact_planted_feature_counterfactuals_v2
+  source: generated_exact_prompts
+  seed: 0
+  train_example_count: 12
+  revision_example_count: 6
+  heldout_example_count: 24
+  exact_rule: living animal + resting verb + physical surface - decoy object terms
+  counterfactual_types:
+  - positive
+  - decoy_animal
+  - animal_motion
+  - object_resting
+  - no_surface
+  - no_rest
+  - substring_trap
+  - irrelevant
+- id: course_safe_residual_direction_verbalizer_prompts_v1
+  source: generated_prompt_sets
+  seed: 0
+  positive_anchor_prompt: The cat sat on the
+  negative_anchor_prompt: The bird flew over the
+  train_example_count: 8
+  heldout_example_count: 8
+  explanation_terms:
+  - sat
+  - slept
+  - rested
+  target_source: manual_safe_prompt_labels_plus_real_residual_projection
+  hook: blocks.0.hook_resid_post
+  tokenizer: NeelNanda/gpt-neox-tokenizer-digits
+- id: local_qwen_verbalizer_split_v1
+  source: 7_2_exact_planted_feature_counterfactuals_v2
+  train_example_count: 12
+  revision_example_count: 6
+  heldout_example_count: 24
+  heldout_visibility: opened_only_after_revised_hypothesis_is_fixed
+expected_metrics:
+  tests_passed: true
+  accepted: true
+  toy_planted_signature_passed: true
+  toy_train_count: 12
+  toy_revision_count: 6
+  toy_heldout_count: 24
+  toy_initial_accuracy: 0.5416666865348816
+  toy_revised_accuracy: 1.0
+  toy_baseline_accuracy: 0.5416666865348816
+  toy_contrastive_accuracy: 1.0
+  toy_passes_baseline: true
+  toy_survives_contrastive: true
+  toy_counterexamples_mined: 3
+  toy_intervention_delta: 1.25
+  toy_random_direction_delta: 0.0
+  toy_intervention_matches_prediction: true
+  toy_target_beats_random_direction: true
+  toy_brevity_shorter_than_examples: true
+  toy_activation_score_threshold_upper_bound_accuracy: 1.0
+  max_allowed_gpu_gb: 24
+  model_name: gelu-1l
+  hf_revision: bddc0e332f0ae84279e6a6a45d91b314899e1603
+  tokenizer_revision: 0f6671571a20be9756b9991d978047c03b75e749
+  local_model_initial_hypothesis: C
+  local_model_revised_hypothesis: D
+  local_model_revision_counterexample_count: 3
+  local_model_initial_heldout_accuracy: 0.75
+  local_model_revised_heldout_accuracy: 1.0
+controls:
+- exact_planted_feature_oracle
+- train_revision_heldout_disjointness_check
+- top_bottom_random_contrastive_example_collection
+- initial_text_only_resting_word_rule
+- always_negative_base_rate
+- deterministic_random_keyword_rule
+- train_example_lookup
+- activation_score_threshold_upper_bound
+- revision_split_counterexample_mining
+- final_heldout_counterfactuals
+- feature_direction_intervention
+- orthogonal_random_direction_intervention_control
+- pinned_transformerlens_gelu1l_cuda_handoff_not_rerun_by_subtask
+- pinned_local_qwen_next_token_candidate_scoring
+- blind_heldout_strings_absent_from_hypothesis_prompts
+- local_hypothesis_revision_from_three_counterexamples
+safety_notes:
+- No unsafe prompts, adapters, gated weights, raw external data, or API calls are
+  used in the CPU learner path. The local model emits only auditable candidate-key
+  logits; executable rules and exact held-out labels determine every score.
+- The real-model path uses safe generic prompts and a small public
+  TransformerLens checkpoint; parent CUDA verification must rerun it before
+  making GPU-backed release claims.

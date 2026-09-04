@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="300" viewBox="0 0 920 300" role="img" aria-labelledby="title desc">
+  <title id="title">Exact Shapley signature result</title>
+  <desc id="desc">A compact visualization of the 16.1 CUDA exact-Shapley signature result.</desc>
+  <defs>
+    <style>
+      .bg { fill: #fff7ed; }
+      .card { fill: #ffffff; stroke: #9a3412; stroke-width: 2; rx: 12; }
+      .title { fill: #0f172a; font-family: Inter, Arial, sans-serif; font-size: 22px; font-weight: 800; }
+      .label { fill: #334155; font-family: Inter, Arial, sans-serif; font-size: 14px; font-weight: 700; }
+      .value { fill: #0f766e; font-family: Inter, Arial, sans-serif; font-size: 28px; font-weight: 800; }
+      .muted { fill: #475569; font-family: Inter, Arial, sans-serif; font-size: 13px; }
+      .barbg { fill: #fed7aa; }
+      .bar { fill: #0f766e; }
+      .bad { fill: #b45309; }
+    </style>
+  </defs>
+  <rect class="bg" width="920" height="300"/>
+  <text class="title" x="40" y="48">16.1 signature result: exact Shapley survives the trained-model check</text>
+  <rect class="card" x="40" y="80" width="180" height="150"/>
+  <text class="label" x="62" y="112">coalitions</text>
+  <text class="value" x="62" y="152">16 / 16</text>
+  <text class="muted" x="62" y="184">complete finite table</text>
+  <rect class="card" x="260" y="80" width="210" height="150"/>
+  <text class="label" x="282" y="112">model Shapley error</text>
+  <text class="value" x="282" y="152">9.38e-7</text>
+  <rect class="barbg" x="282" y="178" width="150" height="14"/>
+  <rect class="bar" x="282" y="178" width="20" height="14"/>
+  <text class="muted" x="282" y="214">threshold: 1e-4</text>
+  <rect class="card" x="510" y="80" width="190" height="150"/>
+  <text class="label" x="532" y="112">shuffled control</text>
+  <text class="value" x="532" y="152">rejected</text>
+  <text class="muted" x="532" y="184">error 4.6333</text>
+  <text class="muted" x="532" y="205">cosine -0.7646</text>
+  <rect class="card" x="740" y="80" width="140" height="150"/>
+  <text class="label" x="762" y="112">peak VRAM</text>
+  <text class="value" x="762" y="152">0.063</text>
+  <text class="muted" x="762" y="184">GB on RTX 5090</text>
+  <text class="muted" x="40" y="264">Claim scope: finite-domain exact Shapley on a CUDA-trained neural coalition game, not broad approximate SHAP.</text>
+</svg>

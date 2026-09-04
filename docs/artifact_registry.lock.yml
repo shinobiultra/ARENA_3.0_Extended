@@ -1,0 +1,481 @@
+schema_version: 1
+columns:
+- name
+- type
+- provider
+- repo_or_source_id
+- license
+- gated
+- revision
+- local_status
+- max_vram_gb
+- used_in_notebooks
+- gt_tier
+- notes
+artifacts:
+- name: ARENA 3.0 source course
+  type: course_repo
+  provider: GitHub
+  repo_or_source_id: callummcdougall/ARENA_3.0
+  license: MIT
+  gated: 'false'
+  revision: f9f034bdb5b8748f44e8b4533b5c5bea68dc8bc0
+  local_status: REQUIRED
+  max_vram_gb: '0'
+  used_in_notebooks: '1.6'
+  gt_tier: GT-1
+  notes: Original course must remain behaviorally preserved.
+- name: Local PyTorch CUDA 13.2 runtime
+  type: runtime
+  provider: uv environment
+  repo_or_source_id: torch;torchvision;torchao;python
+  license: mixed
+  gated: 'false'
+  revision: python 3.14.6; torch 2.12.1+cu132; torchvision 0.27.1+cu132; torchao 0.17.0
+  local_status: REQUIRED
+  max_vram_gb: '24'
+  used_in_notebooks: '1.6'
+  gt_tier: GT-1
+  notes: Validated on RTX 5090 Laptop GPU with CUDA 13.2, BF16 matmul, and torchao
+    import/CUDA-context checks.
+- name: Course fake-result diagnostics
+  type: dataset
+  provider: generated
+  repo_or_source_id: course_generated_fake_result_diagnostics_v1
+  license: course_generated
+  gated: 'false'
+  revision: seed_0
+  local_status: GENERATED_BY_COURSE
+  max_vram_gb: '0'
+  used_in_notebooks: '0.6'
+  gt_tier: GT-0
+  notes: Deterministic leakage, cherry-pick, probe-overfit, and random-direction controls.
+- name: TransformerLens
+  type: tooling
+  provider: Python
+  repo_or_source_id: TransformerLensOrg/TransformerLens
+  license: MIT
+  gated: 'false'
+  revision: 2.18.0
+  local_status: REQUIRED
+  max_vram_gb: '24'
+  used_in_notebooks: 1.6;7.1;7.2;7.3;7.4;7.5;8.1;8.2;8.3;8.4
+  gt_tier: GT-1
+  notes: Hook and cache interface for transformer model organisms.
+- name: NNsight
+  type: tooling
+  provider: Python
+  repo_or_source_id: ndif-team/nnsight
+  license: Apache-2.0
+  gated: 'false'
+  revision: 0.7.0
+  local_status: REQUIRED
+  max_vram_gb: '24'
+  used_in_notebooks: 8.1;9.1
+  gt_tier: GT-1
+  notes: Intervention tooling for local or remote graph execution.
+- name: SAELens
+  type: tooling
+  provider: Python
+  repo_or_source_id: SAELens
+  license: MIT
+  gated: 'false'
+  revision: 6.44.4
+  local_status: REQUIRED
+  max_vram_gb: '24'
+  used_in_notebooks: 5.2;6.1;6.2;6.3
+  gt_tier: GT-1
+  notes: SAE loading and evaluation tooling.
+- name: Attribution libraries
+  type: tooling
+  provider: Python
+  repo_or_source_id: captum;shap;shapiq;inseq
+  license: mixed
+  gated: 'false'
+  revision: captum 0.9.0; shap 0.49.1; shapiq 1.5.2
+  local_status: REQUIRED
+  max_vram_gb: '24'
+  used_in_notebooks: 8.2;16.1;16.2;16.3;16.4;16.5;16.6;16.7;16.8;future_SHAP
+  gt_tier: GT-0
+  notes: inseq remains isolated because current releases conflict with TransformerLens
+    typeguard.
+- name: PEFT stack
+  type: tooling
+  provider: Python
+  repo_or_source_id: peft;bitsandbytes;accelerate
+  license: mixed
+  gated: 'false'
+  revision: peft 0.19.1; bitsandbytes 0.49.2; accelerate 1.14.0
+  local_status: REQUIRED
+  max_vram_gb: '24'
+  used_in_notebooks: '15.1'
+  gt_tier: GT-1
+  notes: bitsandbytes uses BNB_CUDA_VERSION=130 with CUDA 13.2 torch.
+- name: Diffusers
+  type: tooling
+  provider: Python
+  repo_or_source_id: huggingface/diffusers
+  license: Apache-2.0
+  gated: 'false'
+  revision: 0.38.0
+  local_status: REQUIRED
+  max_vram_gb: '24'
+  used_in_notebooks: '13.1'
+  gt_tier: GT-1
+  notes: Pinned image-generation pipeline stack used for SD-Turbo and SD1.5 safe-shape
+    generation, cross-attention capture, token ablation, and image-quality controls.
+- name: GPT-2 small
+  type: language_model
+  provider: TransformerLens
+  repo_or_source_id: gpt2-small
+  license: MIT
+  gated: 'false'
+  revision: f54c09fd23315a6f9c86f9dc80f725de7d8f9c64
+  local_status: OPTIONAL_FUTURE
+  max_vram_gb: '8'
+  used_in_notebooks: future_IOI_full_replication
+  gt_tier: GT-2
+  notes: Core IOI, induction, patching, and SAE model organism.
+- name: GELU 1L512W C4 Code
+  type: language_model
+  provider: Hugging Face via TransformerLens
+  repo_or_source_id: NeelNanda/GELU_1L512W_C4_Code
+  license: MIT
+  gated: 'false'
+  revision: bddc0e332f0ae84279e6a6a45d91b314899e1603
+  local_status: REQUIRED
+  max_vram_gb: '1'
+  used_in_notebooks: 7.1;7.2;7.3;7.4;7.5;8.1;8.2;8.3;8.4
+  gt_tier: GT-1
+  notes: Pinned small TransformerLens checkpoint used for real residual-stream activation-patching
+    preflight.
+- name: Pythia 70M deduped
+  type: language_model
+  provider: Hugging Face
+  repo_or_source_id: EleutherAI/pythia-70m-deduped
+  license: Apache-2.0
+  gated: 'false'
+  revision: e93a9faa9c77e5d09219f6c868bfc7a1bd65593c
+  local_status: REQUIRED
+  max_vram_gb: '8'
+  used_in_notebooks: 6.3;8.5;9.1;9.2;9.3;9.4;11.1
+  gt_tier: GT-2
+  notes: Small real LM target matched to released Sparse Feature Circuits SAE artifacts,
+    safe 9.1 category hidden-state preflight, 9.2 hidden-answer CoT-faithfulness preflight,
+    9.3 benign proxy-drift hidden-state preflight, 9.4 safe white-box monitor preflight,
+    and 11.1 weekday geometry preflight.
+- name: Qwen2.5 0.5B Instruct
+  type: instruction_model
+  provider: Hugging Face
+  repo_or_source_id: Qwen/Qwen2.5-0.5B-Instruct
+  license: Qwen license
+  gated: 'false'
+  revision: 7ae557604adf67be50417f59c2c2f167def9a775
+  local_status: REQUIRED
+  max_vram_gb: '4'
+  used_in_notebooks: '9.1'
+  gt_tier: GT-2
+  notes: Pinned instruction-model target for 9.1 sanitized no-generation addition/projection-out
+    checks plus the public refusal/compliance GT-2 aggregate completion path with
+    raw prompt and completion text omitted from artifacts.
+- name: Refusal compliance pairs
+  type: dataset
+  provider: Hugging Face
+  repo_or_source_id: josephmayo/refusal-compliance-pairs
+  license: unknown
+  gated: 'false'
+  revision: b6ed3432f1d4a695e13be1c373bf7fb5af43f376
+  local_status: REQUIRED
+  max_vram_gb: '0'
+  used_in_notebooks: '9.1'
+  gt_tier: GT-2
+  notes: Public refusal/compliance prompt-pair dataset used by 9.1 for held-out direction
+    separation, layer/position/PCA controls, and aggregate-only behavioral completion
+    effects; raw prompt text is not saved in course artifacts.
+- name: TinyStories
+  type: dataset_and_model_family
+  provider: Hugging Face
+  repo_or_source_id: roneneldan/TinyStories
+  license: CDLA-Permissive-2.0
+  gated: 'false'
+  revision: f54c09fd23315a6f9c86f9dc80f725de7d8f9c64
+  local_status: REQUIRED
+  max_vram_gb: '8'
+  used_in_notebooks: '15.1'
+  gt_tier: GT-3
+  notes: Small text target for LoRA proxy work.
+- name: BGE small EN v1.5
+  type: embedding_model
+  provider: Hugging Face
+  repo_or_source_id: BAAI/bge-small-en-v1.5
+  license: MIT
+  gated: 'false'
+  revision: 5c38ec7c405ec4b44b94cc5a9bb96e735b38267a
+  local_status: REQUIRED
+  max_vram_gb: '4'
+  used_in_notebooks: '5.6'
+  gt_tier: GT-1
+  notes: Public embedding-model preflight for controlled retrieval and permuted-pair
+    controls.
+- name: EmbeddingGemma 300M
+  type: embedding_model
+  provider: Hugging Face
+  repo_or_source_id: google/embeddinggemma-300m
+  license: Gemma terms
+  gated: manual
+  revision: 57c266a740f537b4dc058e1b0cda161fd15afa75
+  local_status: REQUIRED
+  max_vram_gb: '8'
+  used_in_notebooks: '5.6'
+  gt_tier: GT-1
+  notes: Authenticated EmbeddingGemma retrieval preflight verified in 5.6 on generated
+    query/document pairs with permuted-pair controls.
+- name: FunctionGemma 270M IT
+  type: function_calling_model
+  provider: Hugging Face
+  repo_or_source_id: google/functiongemma-270m-it
+  license: Gemma terms
+  gated: manual
+  revision: 39eccb091651513a5dfb56892d3714c1b5b8276c
+  local_status: REQUIRED
+  max_vram_gb: '8'
+  used_in_notebooks: '5.6'
+  gt_tier: GT-1
+  notes: Authenticated base FunctionGemma repo directly loaded in 5.6 for a benign
+    CUDA forward pass; the public Mobile Actions derivative remains the held-out function-calling
+    evaluation path.
+- name: FunctionGemma 270M Mobile Actions
+  type: function_calling_model
+  provider: Hugging Face
+  repo_or_source_id: litert-community/FunctionGemma_270M_Mobile_Actions
+  license: Gemma terms
+  gated: 'false'
+  revision: e2226c1def35c5443942ebdb90a1da2a9eda836a
+  local_status: REQUIRED
+  max_vram_gb: '2'
+  used_in_notebooks: '5.6'
+  gt_tier: GT-1
+  notes: Public safetensors FunctionGemma derivative used for Mobile Actions function-call
+    generation and structured-argument validation.
+- name: Othello-GPT
+  type: world_model
+  provider: Hugging Face
+  repo_or_source_id: NeelNanda/Othello-GPT-Transformer-Lens
+  license: unknown
+  gated: 'false'
+  revision: 905ca1a68b9f7dff77adc56af1962e5f6fcac274
+  local_status: REQUIRED
+  max_vram_gb: '8'
+  used_in_notebooks: 14.1;16.1;future_SHAP
+  gt_tier: GT-2
+  notes: Board-state world-model interpretability target.
+- name: Gemma 3 1B IT
+  type: language_model
+  provider: Hugging Face
+  repo_or_source_id: google/gemma-3-1b-it
+  license: Gemma terms
+  gated: 'true'
+  revision: dcc83ea841ab6100d6b47a070329e1ba4cf78752
+  local_status: REQUIRED
+  max_vram_gb: '24'
+  used_in_notebooks: 5.1;5.2;6.2
+  gt_tier: GT-1
+  notes: Modern transformer target; use quantization if needed.
+- name: Gemma Scope 2
+  type: sae_artifact
+  provider: Hugging Face
+  repo_or_source_id: google/gemma-scope-2-1b-it
+  license: Gemma terms
+  gated: 'true'
+  revision: b0fa29457c3601df0a70c48a15534c738d7c10e0
+  local_status: REQUIRED
+  max_vram_gb: '2'
+  used_in_notebooks: 5.2;6.2
+  gt_tier: GT-1
+  notes: Pinned 1B-IT layer-13 residual JumpReLU SAE preflight plus authenticated
+    Gemma 3 layer-13 activation validation on a narrow benign semantic split with
+    random-feature and label-shuffle controls.
+- name: Mamba 130M
+  type: sequence_model
+  provider: Hugging Face
+  repo_or_source_id: state-spaces/mamba-130m-hf
+  license: Apache-2.0
+  gated: 'false'
+  revision: 1e76775f628fbf1350fbe4dbb3d971ba64af25a1
+  local_status: REQUIRED
+  max_vram_gb: '8'
+  used_in_notebooks: 5.3;5.4
+  gt_tier: GT-1
+  notes: Safetensors HF checkpoint used for official Mamba logits/generation preflight
+    in 5.3 and hidden-state extraction preflight in 5.4.
+- name: CLIP ViT-B/32
+  type: vision_language_model
+  provider: Hugging Face
+  repo_or_source_id: openai/clip-vit-base-patch32
+  license: MIT
+  gated: 'false'
+  revision: 3d74acf9a28c67741b2f4f2ea7635f0aaf6f0268
+  local_status: REQUIRED
+  max_vram_gb: '8'
+  used_in_notebooks: 12.1;13.1;16.5
+  gt_tier: GT-1
+  notes: Pinned CLIP contrastive baseline used for rendered-shape retrieval, object-region
+    patching, hidden visual-token activation patching, generated-image alignment controls,
+    and VLM SHAP region/modality attribution.
+- name: SigLIP base
+  type: vision_language_model
+  provider: Hugging Face
+  repo_or_source_id: google/siglip-base-patch16-224
+  license: Apache-2.0
+  gated: 'false'
+  revision: 7fd15f0689c79d79e38b1c2e2e2370a7bf2761ed
+  local_status: REQUIRED
+  max_vram_gb: '8'
+  used_in_notebooks: '12.1'
+  gt_tier: GT-1
+  notes: Pinned SigLIP safetensors rendered-shape retrieval, object-region patching,
+    hidden visual-token activation patching, and pairwise loss baseline.
+- name: Qwen2.5-VL 3B Instruct
+  type: generative_vlm
+  provider: Hugging Face
+  repo_or_source_id: Qwen/Qwen2.5-VL-3B-Instruct
+  license: Qwen license
+  gated: 'false'
+  revision: 66285546d2b821cf421d4f5eb2576359d3770cd3
+  local_status: REQUIRED
+  max_vram_gb: '12'
+  used_in_notebooks: '12.1'
+  gt_tier: GT-1
+  notes: Pinned generative VLM rendered-shape generation preflight with red-square
+    and blue-circle counterfactual controls.
+- name: Stable Diffusion Turbo
+  type: image_generation_model
+  provider: Hugging Face
+  repo_or_source_id: stabilityai/sd-turbo
+  license: see_model_card
+  gated: 'false'
+  revision: b261bac6fd2cf515557d5d0707481eafa0485ec2
+  local_status: REQUIRED
+  max_vram_gb: '8'
+  used_in_notebooks: '13.1'
+  gt_tier: GT-1
+  notes: Pinned safetensors SD-Turbo generation preflight scored by real CLIP, with
+    captured cross-attention maps for safe shape-token localization.
+- name: Stable Diffusion v1.5
+  type: image_generation_model
+  provider: Hugging Face
+  repo_or_source_id: stable-diffusion-v1-5/stable-diffusion-v1-5
+  license: CreativeML Open RAIL-M
+  gated: 'false'
+  revision: 451f4fe16113bff5a5d2269ed5ad43b0592e9a14
+  local_status: REQUIRED
+  max_vram_gb: '16'
+  used_in_notebooks: '13.1'
+  gt_tier: GT-1
+  notes: Pinned SD1.5 safe-shape path with DAAM-style cross-attention localization,
+    target-token ablation, random-token controls, image-quality preservation, and
+    white-noise rejection.
+- name: V-JEPA 2 ViT-L
+  type: world_model
+  provider: Hugging Face
+  repo_or_source_id: facebook/vjepa2-vitl-fpc64-256
+  license: CC-BY-NC
+  gated: 'false'
+  revision: b3c1679b7c34d3255ef3547f27c7b226aefab26f
+  local_status: REQUIRED
+  max_vram_gb: '24'
+  used_in_notebooks: '14.1'
+  gt_tier: GT-1
+  notes: Pinned V-JEPA 2 ViT-L feature-extraction preflight target for synthetic video
+    controls.
+- name: Synthetic colored-shapes VLM data
+  type: dataset
+  provider: generated
+  repo_or_source_id: course_generated_colored_shapes_v1
+  license: course_generated
+  gated: 'false'
+  revision: seed_12345
+  local_status: GENERATED_BY_COURSE
+  max_vram_gb: '0'
+  used_in_notebooks: 12.1;future_VLM_geometry
+  gt_tier: GT-3
+  notes: Controlled object/color/count/spatial labels.
+- name: Safe refusal proxy prompts
+  type: dataset
+  provider: generated
+  repo_or_source_id: course_generated_refusal_proxy_prompts_v1
+  license: course_generated
+  gated: 'false'
+  revision: seed_123
+  local_status: GENERATED_BY_COURSE
+  max_vram_gb: '0'
+  used_in_notebooks: 9.1;15.1
+  gt_tier: GT-3
+  notes: Sanitized JSONL prompt pairs with redaction support.
+- name: Safe white-box monitor eval records
+  type: dataset
+  provider: generated
+  repo_or_source_id: course_safe_white_box_monitor_eval_records_v1
+  license: course_generated
+  gated: 'false'
+  revision: seed_0
+  local_status: GENERATED_BY_COURSE
+  max_vram_gb: '0'
+  used_in_notebooks: '9.4'
+  gt_tier: GT-3
+  notes: Safe neutral and benign failure-policy monitor records used by 9.4 for held-out
+    white-box monitor calibration, black-box proxy comparison, false-positive documentation
+    controls, and no-generation CUDA evidence.
+- name: Generated activation-oracle latent questions
+  type: dataset
+  provider: generated
+  repo_or_source_id: activation_oracle_latent_questions_v1
+  license: course_generated
+  gated: 'false'
+  revision: seeds_0_1_2
+  local_status: GENERATED_BY_COURSE
+  max_vram_gb: '0'
+  used_in_notebooks: '10.1'
+  gt_tier: GT-4
+  notes: Balanced latent-bit benchmark for 10.1 with four questions, held-out templates,
+    and explicit scope to a generated model organism.
+- name: Course question-conditioned activation oracle
+  type: model_organism
+  provider: generated_training_run
+  repo_or_source_id: course_question_conditioned_activation_oracle_v1
+  license: course_generated
+  gated: 'false'
+  revision: seeds_0_1_2
+  local_status: GENERATED_BY_COURSE
+  max_vram_gb: '1'
+  used_in_notebooks: '10.1'
+  gt_tier: GT-4
+  notes: CUDA-trained 10.1 two-layer MLP activation oracle with text-only, linear-probe,
+    held-out-template, ablation, patching, random-patch, random-activation, and label-shuffle
+    controls. It is not a released-model claim.
+- name: Course LoRA adapters
+  type: adapter
+  provider: generated
+  repo_or_source_id: rank1_sentiment;rank4_json;safe_proxy_loras
+  license: course_generated
+  gated: 'false'
+  revision: rank1_safe_proxy_seed0_steps160
+  local_status: GENERATED_BY_COURSE
+  max_vram_gb: '24'
+  used_in_notebooks: 15.1;future_PEFT
+  gt_tier: GT-0
+  notes: Section 15.1 trains a generated rank-1 safe proxy adapter with fixed seed,
+    merge parity, random-label control, and same-norm random-adapter control.
+- name: Course modular-addition training checkpoints
+  type: dataset
+  provider: generated
+  repo_or_source_id: course_generated_modular_addition_checkpoints_v1
+  license: course_generated
+  gated: 'false'
+  revision: seed_0_mod13_steps80
+  local_status: GENERATED_BY_COURSE
+  max_vram_gb: '1'
+  used_in_notebooks: '17.1'
+  gt_tier: GT-0
+  notes: Section 17.1 trains a tiny modular-addition MLP on CUDA, saves and reloads
+    checkpoints, and compares true labels against a random-label control.

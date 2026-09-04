@@ -1,0 +1,86 @@
+notebook_id: 16_5_vlm_modality_and_region_shap
+section: '16.5'
+title: VLM Modality and Region SHAP
+exercise_metadata:
+  EXERCISE_ID: 16_5_vlm_modality_and_region_shap
+  GT_TIER: GT-0
+  DIFFICULTY: 3
+  IMPORTANCE: 4
+  EXPECTED_RUNTIME: seconds on toy contract; minutes on local real-model path
+  REQUIRES_GPU: true
+gt_tier: GT-0
+evidence_level: vlm_shap_contract_plus_pinned_clip_rendered_shape_preflight
+claim_scope: 'GT-0 VLM SHAP preflight: deterministic modality and region SHAP contracts
+  are kept for learner exercises, then a pinned CLIP ViT-B/32 checkpoint is run on
+  safe rendered red-square and blue-circle controls. The report computes image/text
+  modality SHAP and structured object/background/OCR-region SHAP from real CLIP logits,
+  verifies modality synergy, object-region localization, efficiency, a target-vs-distractor
+  text margin, and measured VRAM. This proves local VLM SHAP mechanics on deterministic
+  rendered images; it is not a claim about large generative VLM attribution, pixel-level
+  saliency, or real-image benchmark coverage.'
+required_gpu_gb: 2
+max_allowed_gpu_gb: 24
+models:
+- id: toy_or_generated_inputs
+  source: generated
+  revision: seed_0
+  precision: float32
+  gated: false
+- id: openai/clip-vit-base-patch32
+  source: huggingface
+  revision: 3d74acf9a28c67741b2f4f2ea7635f0aaf6f0268
+  precision: float32
+  gated: false
+  claim_scope: rendered_shape_modality_and_region_shap_preflight
+datasets:
+- id: 16_5_vlm_modality_and_region_shap_toy_inputs
+  source: generated
+  seed: 0
+- id: course_rendered_clip_vlm_shap_shapes_v1
+  source: generated_pil_images
+  seed: 0
+  image_size: 224x224
+  modality_target: red square image plus target text
+  modality_distractor: blue circle image plus neutral text
+  region_target_text: a red square
+  region_names:
+  - object
+  - background
+  - ocr_text
+  target_region: object
+  text_controls:
+  - a photo
+  - a red square
+  - a blue circle
+expected_metrics:
+  tests_passed: true
+  accepted: true
+  max_allowed_gpu_gb: 24
+  preflight_passed: true
+  model_id: openai/clip-vit-base-patch32
+  revision: 3d74acf9a28c67741b2f4f2ea7635f0aaf6f0268
+  claim_scope: pinned_real_clip_rendered_vlm_shap_preflight
+  modality_synergy_min: 2.0
+  modality_satisfies_efficiency: true
+  object_margin_min: 1.0
+  region_satisfies_efficiency: true
+  target_distractor_margin_min: 2.0
+  peak_vram_gb_max: 2.0
+controls:
+- baseline_or_reference_check
+- negative_control_where_applicable
+- shape_dtype_or_exact_value_check
+- toy_modality_shap_contract
+- toy_region_shap_contract
+- pinned_real_clip_rendered_shape_logits
+- image_text_modality_coalition_table
+- structured_object_background_ocr_region_coalition_table
+- target_vs_distractor_text_margin
+- object_region_over_background_and_ocr_margin
+- shapley_efficiency_checks_on_clip_tables
+- large_generative_vlm_and_real_image_benchmark_not_claimed
+safety_notes:
+- No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.
+- The real CLIP path uses generated safe rendered shape images and safe shape captions
+  only. It does not use unsafe prompts, user images, external APIs, adapters, gated
+  weights, or persistent real-image data.

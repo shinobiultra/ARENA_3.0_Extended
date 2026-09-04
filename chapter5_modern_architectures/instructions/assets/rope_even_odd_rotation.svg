@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="180" viewBox="0 0 560 180" role="img" aria-labelledby="title desc">
+  <title id="title">RoPE even-odd rotation</title>
+  <desc id="desc">RoPE rotates adjacent even and odd feature pairs by a position-dependent angle while preserving vector norm.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#334155" />
+    </marker>
+    <style>
+      .axis { stroke: #94a3b8; stroke-width: 1; }
+      .vec { stroke: #0f766e; stroke-width: 3; marker-end: url(#arrow); }
+      .rot { stroke: #b45309; stroke-width: 3; marker-end: url(#arrow); }
+      .arc { stroke: #64748b; stroke-width: 1.5; fill: none; }
+      .text { font: 14px sans-serif; fill: #0f172a; }
+      .small { font: 12px sans-serif; fill: #475569; }
+    </style>
+  </defs>
+  <line x1="70" y1="130" x2="230" y2="130" class="axis" />
+  <line x1="150" y1="160" x2="150" y2="30" class="axis" />
+  <path d="M150 130 L214 72" class="vec" />
+  <path d="M150 130 L102 52" class="rot" />
+  <path d="M195 89 A70 70 0 0 0 120 68" class="arc" />
+  <text x="235" y="72" class="text">[x_even, x_odd]</text>
+  <text x="32" y="50" class="text">rotated pair</text>
+  <text x="130" y="66" class="small">position angle</text>
+  <text x="300" y="65" class="text">rotate_half_interleaved</text>
+  <text x="300" y="95" class="small">[x0, x1, x2, x3] -> [-x1, x0, -x3, x2]</text>
+  <text x="300" y="130" class="small">norm is preserved before attention dot products</text>
+</svg>

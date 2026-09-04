@@ -1,0 +1,503 @@
+{
+  "accepted": true,
+  "baselines": {
+    "declared_controls": [
+      "baseline_or_reference_check",
+      "negative_control_where_applicable",
+      "shape_dtype_or_exact_value_check",
+      "toy_activation_question_batch_contract",
+      "toy_oracle_vs_text_probe_baseline_contract",
+      "toy_template_split_contract",
+      "toy_ood_split_contract",
+      "toy_random_activation_abstention_contract",
+      "toy_activation_patching_answer_change_contract",
+      "exact_three_factor_truth_table",
+      "frozen_base_low_rank_adapter_training",
+      "question_only_balanced_control",
+      "activation_only_linear_and_mlp_shortcuts",
+      "independent_question_specific_linear_probe_bank",
+      "exact_sparse_feature_classifier_upper_bound",
+      "structural_color_patch_with_shape_invariance_control",
+      "off_manifold_random_activation_abstention",
+      "pinned_transformerlens_gelu1l_question_conditioned_oracle_training",
+      "balanced_text_only_baseline_accuracy_check",
+      "independently_trained_activation_only_probe_negative_control",
+      "independently_trained_activation_only_mlp_negative_control",
+      "question_id_answer_flip_control",
+      "heldout_template_new_name_long_context_adversarial_ood_splits",
+      "low_margin_random_activation_abstention_control",
+      "clean_corrupt_residual_patch_answer_change",
+      "generative_lm_oracle_and_aobench_parity_not_claimed"
+    ],
+    "expected_metrics": {
+      "accepted": true,
+      "activation_only_probe_accuracy_max_max": 0.75,
+      "activation_shape": [
+        16,
+        512
+      ],
+      "adversarial_accuracy": 1.0,
+      "beats_or_matches_probe": true,
+      "beats_text_only": true,
+      "bnb_cuda_override": "130",
+      "eval_example_count": 8,
+      "heldout_template_accuracy": 1.0,
+      "hf_revision": "bddc0e332f0ae84279e6a6a45d91b314899e1603",
+      "linear_probe_accuracy": 0.5,
+      "long_context_accuracy": 1.0,
+      "max_allowed_gpu_gb": 24,
+      "mlp_probe_accuracy": 0.5,
+      "model_name": "gelu-1l",
+      "negative_token": " top",
+      "new_name_accuracy": 1.0,
+      "oracle_accuracy": 1.0,
+      "original_answer": 1,
+      "passes_ood": true,
+      "patched_answer": 0,
+      "patching_changed_answer": true,
+      "peak_vram_gb_max": 1.0,
+      "positive_token": " floor",
+      "preflight_passed": true,
+      "question_conditioned_row_count": 16,
+      "question_conditioned_train_loss_max": 0.01,
+      "question_count": 2,
+      "question_id_changes_predictions": 1.0,
+      "random_abstention_rate": 1.0,
+      "random_graceful_failure": true,
+      "random_mean_confidence_max": 0.4,
+      "sae_classifier_accuracy": 0.5,
+      "tests_passed": true,
+      "text_only_accuracy": 0.5,
+      "tokenizer_revision": "0f6671571a20be9756b9991d978047c03b75e749",
+      "toy_activation_only_linear_accuracy_max": 0.75,
+      "toy_activation_only_mlp_accuracy_max": 0.75,
+      "toy_adversarial_distractor_accuracy": 1.0,
+      "toy_exact_feature_accuracy": 1.0,
+      "toy_heldout_template_accuracy": 1.0,
+      "toy_long_context_accuracy": 1.0,
+      "toy_new_names_accuracy": 1.0,
+      "toy_oracle_accuracy": 1.0,
+      "toy_patch_after": [
+        1,
+        0,
+        0
+      ],
+      "toy_patch_before": [
+        0,
+        0,
+        1
+      ],
+      "toy_patch_changed_questions": [
+        0,
+        2
+      ],
+      "toy_probe_bank_accuracy": 1.0,
+      "toy_random_abstention_rate_min": 0.95,
+      "toy_signature_passed": true,
+      "toy_text_only_accuracy": 0.5,
+      "toy_train_loss_max": 0.001,
+      "train_accuracy": 1.0,
+      "train_example_count": 8
+    }
+  },
+  "claim_scope": "The learner-facing claim is exact: a low-rank question-conditioned oracle routes three questions over the same mixed activation, beats question-only and activation-only shortcuts, matches a question-specific probe bank and exact feature classifier, survives four named nuisance shifts, abstains off the known factor manifold, and changes exactly the predicted answers under a structural factor patch. A separate pinned TransformerLens gelu-1l CUDA run remains a real residual mechanics preflight. It is not full generative Activation Oracle or AObench evidence.",
+  "datasets": [
+    {
+      "activation_dim": 8,
+      "causal_factors": [
+        "color",
+        "shape",
+        "color_x_shape"
+      ],
+      "id": "7_3_mini_activation_oracles_toy_inputs",
+      "questions": [
+        "Is the represented object red?",
+        "Is the represented object square?",
+        "Do its color and shape agree?"
+      ],
+      "seed": 7303,
+      "source": "generated"
+    },
+    {
+      "adversarial_example_count": 8,
+      "answer_classes": [
+        "negative",
+        "positive",
+        "abstain"
+      ],
+      "eval_example_count": 8,
+      "heldout_template_example_count": 8,
+      "hook": "blocks.0.hook_resid_post",
+      "id": "course_safe_residual_direction_activation_oracle_prompts_v1",
+      "long_context_example_count": 8,
+      "negative_anchor_prompt": "The bird flew over the",
+      "new_name_example_count": 8,
+      "positive_anchor_prompt": "The cat sat on the",
+      "question_rows_per_activation": 2,
+      "seed": 0,
+      "source": "generated_prompt_sets",
+      "target_source": "manual_safe_prompt_labels_plus_real_residual_projection_and_question_conditioning",
+      "tokenizer": "NeelNanda/gpt-neox-tokenizer-digits",
+      "train_example_count": 8
+    }
+  ],
+  "date_run": "2026-09-04T08:42:45+00:00",
+  "evidence_level": "exact_factor_world_plus_pinned_transformerlens_question_conditioned_oracle_preflight",
+  "git_commit": "66aad913",
+  "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+  "gt_tier": "GT-1",
+  "known_failures": [],
+  "metrics": {
+    "gpu_evidence": {
+      "category": "cuda_section_metric",
+      "placeholder_only": false,
+      "section_specific_metric_keys": [
+        "activation_only_probe_accuracy_max",
+        "activation_shape",
+        "adversarial_accuracy",
+        "answer_classes",
+        "beats_or_matches_probe",
+        "beats_text_only",
+        "bnb_cuda_override",
+        "eval_example_count",
+        "heldout_template_accuracy",
+        "hf_model_id",
+        "hf_revision",
+        "hook_name",
+        "linear_probe_accuracy",
+        "long_context_accuracy",
+        "mlp_probe_accuracy",
+        "model_name",
+        "negative_anchor_prompt",
+        "negative_token",
+        "new_name_accuracy",
+        "oracle_accuracy",
+        "original_answer",
+        "passes_ood",
+        "patched_answer",
+        "patching_changed_answer",
+        "positive_anchor_prompt",
+        "positive_token",
+        "preflight_passed",
+        "question_conditioned_row_count",
+        "question_conditioned_train_loss",
+        "question_count",
+        "question_id_changes_predictions",
+        "random_abstention_rate",
+        "random_graceful_failure",
+        "random_mean_confidence",
+        "sae_classifier_accuracy",
+        "text_only_accuracy",
+        "tokenizer_id",
+        "tokenizer_revision",
+        "toy_activation_only_linear_accuracy",
+        "toy_activation_only_mlp_accuracy",
+        "toy_adversarial_distractor_accuracy",
+        "toy_exact_feature_accuracy",
+        "toy_heldout_template_accuracy",
+        "toy_long_context_accuracy",
+        "toy_new_names_accuracy",
+        "toy_oracle_accuracy",
+        "toy_patch_after",
+        "toy_patch_before",
+        "toy_patch_changed_questions",
+        "toy_probe_bank_accuracy",
+        "toy_random_abstention_rate",
+        "toy_signature_passed",
+        "toy_text_only_accuracy",
+        "toy_train_loss",
+        "train_accuracy",
+        "train_example_count"
+      ],
+      "uses_cuda": true
+    },
+    "gpu_test": {
+      "activation_only_probe_accuracy_max": 0.5,
+      "activation_shape": [
+        16,
+        512
+      ],
+      "adversarial_accuracy": 1.0,
+      "answer_classes": [
+        "negative",
+        "positive",
+        "abstain"
+      ],
+      "beats_or_matches_probe": true,
+      "beats_text_only": true,
+      "bnb_cuda_override": "130",
+      "cuda_available": true,
+      "cuda_version": "13.2",
+      "device": "NVIDIA GeForce RTX 5090 Laptop GPU",
+      "eval_example_count": 8,
+      "full_path": "Pinned TransformerLens gelu-1l residual-direction mini Activation Oracle preflight.",
+      "gpu_total_memory_gb": 23.45965576171875,
+      "heldout_template_accuracy": 1.0,
+      "hf_model_id": "NeelNanda/GELU_1L512W_C4_Code",
+      "hf_revision": "bddc0e332f0ae84279e6a6a45d91b314899e1603",
+      "hook_name": "blocks.0.hook_resid_post",
+      "linear_probe_accuracy": 0.5,
+      "long_context_accuracy": 1.0,
+      "mlp_probe_accuracy": 0.5,
+      "model_name": "gelu-1l",
+      "negative_anchor_prompt": "The bird flew over the",
+      "negative_token": " top",
+      "new_name_accuracy": 1.0,
+      "oracle_accuracy": 1.0,
+      "original_answer": 1,
+      "passes_ood": true,
+      "patched_answer": 0,
+      "patching_changed_answer": true,
+      "peak_vram_gb": 0.26896047592163086,
+      "positive_anchor_prompt": "The cat sat on the",
+      "positive_token": " floor",
+      "preflight_passed": true,
+      "question_conditioned_row_count": 16,
+      "question_conditioned_train_loss": 0.00013348489301279187,
+      "question_count": 2,
+      "question_id_changes_predictions": 1.0,
+      "random_abstention_rate": 1.0,
+      "random_graceful_failure": true,
+      "random_mean_confidence": 0.35591307282447815,
+      "sae_classifier_accuracy": 0.5,
+      "text_only_accuracy": 0.5,
+      "tokenizer_id": "NeelNanda/gpt-neox-tokenizer-digits",
+      "tokenizer_revision": "0f6671571a20be9756b9991d978047c03b75e749",
+      "torch_version": "2.12.1+cu132",
+      "toy_activation_only_linear_accuracy": 0.75,
+      "toy_activation_only_mlp_accuracy": 0.75,
+      "toy_adversarial_distractor_accuracy": 1.0,
+      "toy_exact_feature_accuracy": 1.0,
+      "toy_heldout_template_accuracy": 1.0,
+      "toy_long_context_accuracy": 1.0,
+      "toy_new_names_accuracy": 1.0,
+      "toy_oracle_accuracy": 1.0,
+      "toy_patch_after": [
+        1,
+        0,
+        0
+      ],
+      "toy_patch_before": [
+        0,
+        0,
+        1
+      ],
+      "toy_patch_changed_questions": [
+        0,
+        2
+      ],
+      "toy_probe_bank_accuracy": 1.0,
+      "toy_random_abstention_rate": 0.98828125,
+      "toy_signature_passed": true,
+      "toy_text_only_accuracy": 0.5,
+      "toy_train_loss": 3.4756747027131496e-06,
+      "train_accuracy": 1.0,
+      "train_example_count": 8,
+      "within_vram_budget": true
+    },
+    "notebook_contract": {
+      "batch": {
+        "activation_shape": [
+          3,
+          3
+        ],
+        "answer_ids": [
+          1,
+          0,
+          1
+        ],
+        "num_questions": 7
+      },
+      "comparison": {
+        "beats_or_matches_probe": true,
+        "beats_text_only": true,
+        "linear_probe_accuracy": 1.0,
+        "mlp_probe_accuracy": 0.5,
+        "oracle_accuracy": 1.0,
+        "sae_classifier_accuracy": 0.5,
+        "text_only_accuracy": 0.5
+      },
+      "model_organism": {
+        "baseline_accuracies": {
+          "LoRA oracle": 1.0,
+          "activation-only MLP": 0.75,
+          "activation-only linear": 0.75,
+          "exact feature classifier": 1.0,
+          "linear probe bank": 1.0,
+          "text only": 0.5
+        },
+        "claim": "question-conditioned low-rank routing beats shortcut baselines",
+        "ood_accuracies": {
+          "adversarial_distractor": 1.0,
+          "heldout_template": 1.0,
+          "long_context": 1.0,
+          "new_names": 1.0
+        },
+        "patch_after": [
+          1,
+          0,
+          0
+        ],
+        "patch_before": [
+          0,
+          0,
+          1
+        ],
+        "patch_changed_questions": [
+          0,
+          2
+        ],
+        "random_abstention_rate": 0.98828125,
+        "train_loss": 3.4756747027131496e-06
+      },
+      "ood": {
+        "adversarial_accuracy": 1.0,
+        "heldout_template_accuracy": 1.0,
+        "long_context_accuracy": 1.0,
+        "new_name_accuracy": 1.0,
+        "passes_ood": true
+      },
+      "patching": {
+        "changed": true,
+        "original_answer": 0,
+        "patched_answer": 1
+      },
+      "questions": [
+        "What token is represented?",
+        "Is this activation from code?",
+        "Is the prompt asking a question?",
+        "Which of two names is the indirect object?",
+        "Is the model about to refuse?",
+        "Is this a truthful or false factual completion?",
+        "Which synthetic latent variable is active?"
+      ],
+      "random_activation": {
+        "abstention_rate": 1.0,
+        "mean_confidence": 0.35591307282447815,
+        "passes_graceful_failure": true
+      },
+      "template_split": {
+        "0": 1.0,
+        "1": 0.5
+      }
+    }
+  },
+  "models": [
+    {
+      "gated": false,
+      "id": "toy_or_generated_inputs",
+      "precision": "float32",
+      "revision": "seed_0",
+      "source": "generated"
+    },
+    {
+      "claim_scope": "residual_direction_mini_activation_oracle_preflight",
+      "gated": false,
+      "id": "NeelNanda/GELU_1L512W_C4_Code",
+      "precision": "float32",
+      "revision": "bddc0e332f0ae84279e6a6a45d91b314899e1603",
+      "source": "huggingface_via_transformerlens",
+      "tokenizer_id": "NeelNanda/gpt-neox-tokenizer-digits",
+      "tokenizer_revision": "0f6671571a20be9756b9991d978047c03b75e749",
+      "transformerlens_model_name": "gelu-1l"
+    }
+  ],
+  "negative_controls": {
+    "declared_controls": [
+      "negative_control_where_applicable",
+      "toy_random_activation_abstention_contract",
+      "off_manifold_random_activation_abstention",
+      "independently_trained_activation_only_probe_negative_control",
+      "independently_trained_activation_only_mlp_negative_control",
+      "low_margin_random_activation_abstention_control"
+    ]
+  },
+  "notebook_id": "7_3_mini_activation_oracles",
+  "ood_tests": {
+    "declared": "required_where_applicable"
+  },
+  "peak_vram_gb": 0.26896047592163086,
+  "report_inputs": {
+    "algorithm": "sha256",
+    "combined_sha256": "116b63714c7c2771877e5a52889ae88e81d0e16e386db9f27e7d5f6a3fe9d8d0",
+    "files": [
+      {
+        "path": "arena_ext/verification.py",
+        "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
+        "size_bytes": 9276
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part3_mini_activation_oracles/7.3_Mini_Activation_Oracles_exercises.ipynb",
+        "sha256": "19d971ff84f7f39c2d527770c982aaa6de30d47430ef89baf117baab6f98a2ac",
+        "size_bytes": 51818
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part3_mini_activation_oracles/7.3_Mini_Activation_Oracles_solutions.ipynb",
+        "sha256": "10423c30b5687687d1dc0c236f4e85587f08918f5fdac3d2668eae63c165cf4d",
+        "size_bytes": 211992
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part3_mini_activation_oracles/README.md",
+        "sha256": "5bd4fed191004fd79ba15859374608eaa89fcbd8327b2ef16a1ceeafedccabaf",
+        "size_bytes": 1826
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part3_mini_activation_oracles/artifacts.lock.yml",
+        "sha256": "ee26c68859b7f2b1ba27f65a8729d710c40958617097e3a301d10fa7b8773ba7",
+        "size_bytes": 5696
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part3_mini_activation_oracles/expected_outputs/README.md",
+        "sha256": "848ac0a8aa6fde1276959075368f1f41b8e693defc759e3fa28587e5dc14973a",
+        "size_bytes": 2213
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part3_mini_activation_oracles/expected_outputs/reference_metrics.json",
+        "sha256": "38685012289cd06ee69cdb95ee803ee08426b0efca888eed6e0a2d4309a301e7",
+        "size_bytes": 2265
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part3_mini_activation_oracles/expected_outputs/smoke_test.json",
+        "sha256": "5b44c5811cdb6b869c25e1a54ab5f9dc653d517438e3ed94e1969e3dc71cf0ab",
+        "size_bytes": 396
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part3_mini_activation_oracles/solutions.py",
+        "sha256": "c7b65c677c1559e6c11842ded22075dc9a150922a82d576964bb4c06ede817d1",
+        "size_bytes": 49904
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part3_mini_activation_oracles/tests.py",
+        "sha256": "e3598cad3d95aa9f6407794f00dab41ee5cbb7fc24bfb146827db4fdd8c9d0c6",
+        "size_bytes": 32616
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part3_mini_activation_oracles/utils.py",
+        "sha256": "f2dd992dbb401bffb32aa9b4be60bbe38385dedebf2d321c1de418224af200df",
+        "size_bytes": 354
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part3_mini_activation_oracles/verification_report.schema.json",
+        "sha256": "ecd833883885077ad5d7a0e239d984d01462255e94266212cf195ab4d4e27b3d",
+        "size_bytes": 2669
+      },
+      {
+        "path": "chapter7_activation_to_language/instructions/pages/03_[7.3]_Mini_Activation_Oracles.md",
+        "sha256": "efab984246d17efe325318815c639f0a8dd41416c1df2ddc1ebbedb50d5758e0",
+        "size_bytes": 39048
+      },
+      {
+        "path": "scripts/run_extension_verification_reports.py",
+        "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
+        "size_bytes": 16272
+      }
+    ],
+    "schema_version": 1
+  },
+  "safety_notes": [
+    "No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.",
+    "The real-model path uses safe generic prompts and cached activations/logits from a small public TransformerLens checkpoint. It does not use unsafe prompts, gated weights, generated completions, adapter training, or external API calls."
+  ],
+  "tests_passed": true,
+  "wall_clock_seconds": 6.815925
+}

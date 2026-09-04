@@ -1,0 +1,555 @@
+{
+  "accepted": true,
+  "baselines": {
+    "declared_controls": [
+      "exact_additive_visual_token_ground_truth",
+      "strict_causal_mask_future_token_invariance",
+      "heldout_muted_rendering_style",
+      "text_only_zero_visual_tokens",
+      "image_only_zero_question_state",
+      "shuffled_visual_examples",
+      "counterfactual_object_token_patch",
+      "same_size_background_token_patch",
+      "seeded_same_size_random_region_patch",
+      "full_visual_sequence_counterfactual_patch",
+      "color_and_shape_counterfactual_pairs"
+    ],
+    "expected_metrics": {
+      "accepted": true,
+      "color_background_patch_preserves": true,
+      "color_full_sequence_matches_corrupt": true,
+      "color_object_patch_flips": true,
+      "color_random_region_preserves": true,
+      "heldout_accuracy_min": 0.95,
+      "heldout_example_count": 120,
+      "image_only_accuracy_max": 0.6,
+      "joint_accuracy_min": 0.95,
+      "max_allowed_gpu_gb": 24,
+      "random_visual_accuracy_max": 0.5,
+      "shape_background_patch_preserves": true,
+      "shape_full_sequence_matches_corrupt": true,
+      "shape_object_patch_flips": true,
+      "shape_random_region_preserves": true,
+      "signature_accepted": true,
+      "tests_passed": true,
+      "text_only_accuracy_max": 0.45,
+      "toy_background_patch_preserves": true,
+      "toy_object_patch_flips": true,
+      "toy_random_patch_preserves": true,
+      "train_accuracy_min": 0.95,
+      "train_example_count": 120
+    }
+  },
+  "claim_scope": "A frozen patch encoder plus a learned connector and two-layer multi-head visual-prefix causal self-attention decoder solves held-out muted-style controlled VQA; counterfactual object-token patches causally flip color and shape answers while text-only, image-only, shuffled-visual, background-region, and same-size random-region controls fail or preserve the clean answer as predicted.",
+  "datasets": [
+    {
+      "heldout_examples": 120,
+      "id": "arena_controlled_colored_shape_vqa_v1",
+      "revision": "exact_source_in_report_inputs",
+      "seed": 123,
+      "source": "generated_by_course_renderer",
+      "split": "solid_train_muted_style_heldout",
+      "train_examples": 120
+    }
+  ],
+  "date_run": "2026-09-04T13:47:25+00:00",
+  "evidence_level": "exact_visual_token_oracle_plus_cuda_trained_controlled_minivlm",
+  "git_commit": "92e510aa",
+  "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+  "gt_tier": "GT-0",
+  "known_failures": [],
+  "metrics": {
+    "gpu_evidence": {
+      "category": "cuda_section_metric",
+      "placeholder_only": false,
+      "section_specific_metric_keys": [
+        "color_background_patch_preserves",
+        "color_clean_margin",
+        "color_full_sequence_matches_corrupt",
+        "color_object_patch_flips",
+        "color_object_patch_margin",
+        "color_random_region_preserves",
+        "heldout_accuracy",
+        "heldout_example_count",
+        "image_only_accuracy",
+        "joint_accuracy",
+        "random_visual_accuracy",
+        "shape_background_patch_preserves",
+        "shape_clean_margin",
+        "shape_full_sequence_matches_corrupt",
+        "shape_object_patch_flips",
+        "shape_object_patch_margin",
+        "shape_random_region_preserves",
+        "signature_accepted",
+        "text_only_accuracy",
+        "toy_background_patch_preserves",
+        "toy_object_patch_flips",
+        "toy_random_patch_preserves",
+        "train_accuracy",
+        "train_example_count"
+      ],
+      "uses_cuda": true
+    },
+    "gpu_test": {
+      "color_background_patch_preserves": true,
+      "color_clean_margin": 8.05743408203125,
+      "color_full_sequence_matches_corrupt": true,
+      "color_object_patch_flips": true,
+      "color_object_patch_margin": -7.470999717712402,
+      "color_random_region_preserves": true,
+      "cuda_available": true,
+      "cuda_version": "13.2",
+      "device": "NVIDIA GeForce RTX 5090 Laptop GPU",
+      "full_path": "CUDA-trained MiniVLM with object/background/random visual-token patching.",
+      "gpu_total_memory_gb": 23.45965576171875,
+      "heldout_accuracy": 1.0,
+      "heldout_example_count": 120,
+      "image_only_accuracy": 0.21666668355464935,
+      "joint_accuracy": 1.0,
+      "peak_vram_gb": 0.10298442840576172,
+      "random_visual_accuracy": 0.2916666865348816,
+      "shape_background_patch_preserves": true,
+      "shape_clean_margin": 8.308001518249512,
+      "shape_full_sequence_matches_corrupt": true,
+      "shape_object_patch_flips": true,
+      "shape_object_patch_margin": -8.400757789611816,
+      "shape_random_region_preserves": true,
+      "signature_accepted": true,
+      "text_only_accuracy": 0.2916666865348816,
+      "torch_version": "2.12.1+cu132",
+      "toy_background_patch_preserves": true,
+      "toy_object_patch_flips": true,
+      "toy_random_patch_preserves": true,
+      "train_accuracy": 1.0,
+      "train_example_count": 120,
+      "within_vram_budget": true
+    },
+    "notebook_contract": {
+      "accepted": true,
+      "baselines": {
+        "image_only_accuracy": 0.21666668355464935,
+        "joint_accuracy": 1.0,
+        "random_visual_accuracy": 0.2916666865348816,
+        "text_only_accuracy": 0.2916666865348816
+      },
+      "color_patch": {
+        "background_indices": [
+          5,
+          6,
+          11,
+          12,
+          17,
+          19,
+          24,
+          25,
+          29,
+          31,
+          32,
+          34
+        ],
+        "background_patch_margin": 7.495734214782715,
+        "background_patch_preserves": true,
+        "clean_example": {
+          "answer": "red",
+          "bbox": [
+            12,
+            0,
+            36,
+            24
+          ],
+          "color": "red",
+          "counterfactual_answer": "blue",
+          "image_id": "patch_muted_top_red_square_color",
+          "position": "top",
+          "question": "What color is the object?",
+          "question_type": "color",
+          "shape": "square",
+          "split": "patch",
+          "style": "muted"
+        },
+        "clean_margin": 7.495734214782715,
+        "corrupt_example": {
+          "answer": "blue",
+          "bbox": [
+            12,
+            0,
+            36,
+            24
+          ],
+          "color": "blue",
+          "counterfactual_answer": "green",
+          "image_id": "patch_muted_top_blue_square_color",
+          "position": "top",
+          "question": "What color is the object?",
+          "question_type": "color",
+          "shape": "square",
+          "split": "patch",
+          "style": "muted"
+        },
+        "corrupt_margin": -6.872373580932617,
+        "counterfactual_answer": "blue",
+        "full_sequence_matches_corrupt": true,
+        "full_sequence_patch_margin": -6.872373580932617,
+        "object_indices": [
+          1,
+          2,
+          3,
+          4,
+          7,
+          8,
+          9,
+          10,
+          13,
+          14,
+          15,
+          16
+        ],
+        "object_patch_flips": true,
+        "object_patch_margin": -6.872373580932617,
+        "question_type": "color",
+        "random_indices": [
+          6,
+          12,
+          18,
+          19,
+          23,
+          25,
+          26,
+          29,
+          30,
+          32,
+          33,
+          35
+        ],
+        "random_region_patch_margin": 7.495734214782715,
+        "random_region_preserves": true,
+        "rows": [
+          {
+            "condition": "clean",
+            "predicted_answer": "red",
+            "target_minus_counterfactual": 7.495734214782715
+          },
+          {
+            "condition": "corrupt",
+            "predicted_answer": "blue",
+            "target_minus_counterfactual": -6.872373580932617
+          },
+          {
+            "condition": "full_sequence_patch",
+            "predicted_answer": "blue",
+            "target_minus_counterfactual": -6.872373580932617
+          },
+          {
+            "condition": "object_patch",
+            "predicted_answer": "blue",
+            "target_minus_counterfactual": -6.872373580932617
+          },
+          {
+            "condition": "background_patch",
+            "predicted_answer": "red",
+            "target_minus_counterfactual": 7.495734214782715
+          },
+          {
+            "condition": "same_size_random_region_patch",
+            "predicted_answer": "red",
+            "target_minus_counterfactual": 7.495734214782715
+          }
+        ],
+        "stage": "cache",
+        "target_answer": "red"
+      },
+      "heldout_accuracy": 1.0,
+      "shape_patch": {
+        "background_indices": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          7,
+          12,
+          13,
+          17,
+          23,
+          24,
+          30
+        ],
+        "background_patch_margin": 7.7462849617004395,
+        "background_patch_preserves": true,
+        "clean_example": {
+          "answer": "square",
+          "bbox": [
+            12,
+            24,
+            36,
+            48
+          ],
+          "color": "green",
+          "counterfactual_answer": "circle",
+          "image_id": "patch_muted_bottom_green_square_shape",
+          "position": "bottom",
+          "question": "What shape is the object?",
+          "question_type": "shape",
+          "shape": "square",
+          "split": "patch",
+          "style": "muted"
+        },
+        "clean_margin": 7.7462849617004395,
+        "corrupt_example": {
+          "answer": "circle",
+          "bbox": [
+            12,
+            24,
+            36,
+            48
+          ],
+          "color": "green",
+          "counterfactual_answer": "triangle",
+          "image_id": "patch_muted_bottom_green_circle_shape",
+          "position": "bottom",
+          "question": "What shape is the object?",
+          "question_type": "shape",
+          "shape": "circle",
+          "split": "patch",
+          "style": "muted"
+        },
+        "corrupt_margin": -7.798384666442871,
+        "counterfactual_answer": "circle",
+        "full_sequence_matches_corrupt": true,
+        "full_sequence_patch_margin": -7.798384666442871,
+        "object_indices": [
+          19,
+          20,
+          21,
+          22,
+          25,
+          26,
+          27,
+          28,
+          31,
+          32,
+          33,
+          34
+        ],
+        "object_patch_flips": true,
+        "object_patch_margin": -7.798384666442871,
+        "question_type": "shape",
+        "random_indices": [
+          2,
+          4,
+          6,
+          7,
+          11,
+          13,
+          14,
+          17,
+          18,
+          24,
+          29,
+          35
+        ],
+        "random_region_patch_margin": 7.7462849617004395,
+        "random_region_preserves": true,
+        "rows": [
+          {
+            "condition": "clean",
+            "predicted_answer": "square",
+            "target_minus_counterfactual": 7.7462849617004395
+          },
+          {
+            "condition": "corrupt",
+            "predicted_answer": "circle",
+            "target_minus_counterfactual": -7.798384666442871
+          },
+          {
+            "condition": "full_sequence_patch",
+            "predicted_answer": "circle",
+            "target_minus_counterfactual": -7.798384666442871
+          },
+          {
+            "condition": "object_patch",
+            "predicted_answer": "circle",
+            "target_minus_counterfactual": -7.798384666442871
+          },
+          {
+            "condition": "background_patch",
+            "predicted_answer": "square",
+            "target_minus_counterfactual": 7.7462849617004395
+          },
+          {
+            "condition": "same_size_random_region_patch",
+            "predicted_answer": "square",
+            "target_minus_counterfactual": 7.7462849617004395
+          }
+        ],
+        "stage": "cache",
+        "target_answer": "square"
+      },
+      "toy_oracle": {
+        "background_indices": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          11,
+          17,
+          18,
+          23,
+          24,
+          29,
+          30,
+          32,
+          33,
+          34,
+          35
+        ],
+        "background_patch_margin": 20.0,
+        "background_patch_preserves": true,
+        "claim_scope": "exact_toy_visual_token_contribution_game",
+        "clean_margin": 20.0,
+        "corrupt_margin": -20.0,
+        "object_beats_background": true,
+        "object_indices": [
+          7,
+          8,
+          9,
+          10,
+          13,
+          14,
+          15,
+          16,
+          19,
+          20,
+          21,
+          22,
+          25,
+          26,
+          27,
+          28
+        ],
+        "object_patch_flips": true,
+        "object_patch_margin": -20.0,
+        "random_indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          11,
+          17,
+          18,
+          23,
+          29,
+          30,
+          31,
+          32,
+          34,
+          35
+        ],
+        "random_patch_margin": 20.0,
+        "random_patch_preserves": true
+      }
+    }
+  },
+  "models": [
+    {
+      "claim_scope": "controlled_muted_style_vqa_and_visual_token_patching",
+      "gated": false,
+      "id": "arena_controlled_minivlm_v1",
+      "precision": "float32",
+      "revision": "exact_source_in_report_inputs",
+      "source": "course_implementation"
+    }
+  ],
+  "negative_controls": {
+    "declared_controls": [
+      "seeded_same_size_random_region_patch"
+    ]
+  },
+  "notebook_id": "12_3_mini_vlm_from_scratch",
+  "ood_tests": {
+    "declared": "required_where_applicable"
+  },
+  "peak_vram_gb": 0.10298442840576172,
+  "report_inputs": {
+    "algorithm": "sha256",
+    "combined_sha256": "b4f9dd3a040c5bc7e9eb582808986b029f9b4e8d4784f0f9e36f85ed12a01665",
+    "files": [
+      {
+        "path": "arena_ext/verification.py",
+        "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
+        "size_bytes": 9276
+      },
+      {
+        "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/12.3_Mini_VLM_from_Scratch_exercises.ipynb",
+        "sha256": "be3ef4029bad6556528493df8ec89cb82aa1720a63bfdb65cd455f4c6025feed",
+        "size_bytes": 73543
+      },
+      {
+        "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/12.3_Mini_VLM_from_Scratch_solutions.ipynb",
+        "sha256": "ee019d39a9fe8dc096be0f17e1069b63f4874efa2851e8417c274ec7d8203b28",
+        "size_bytes": 149904
+      },
+      {
+        "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/README.md",
+        "sha256": "c72e3ea0afd2ca6d237719588b25f310bd26be68872c9ba367d087a04db3fd4b",
+        "size_bytes": 1314
+      },
+      {
+        "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/artifacts.lock.yml",
+        "sha256": "3212bdef9415667bbc95a4e5529dd2ccab698135d5aac7ed5c2ea63f1deee2e4",
+        "size_bytes": 2720
+      },
+      {
+        "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/expected_outputs/README.md",
+        "sha256": "c70a08c0adfe15f5c2b15134967f5aa4ffa702ed00352e26d882aeaa01cd0a0a",
+        "size_bytes": 1470
+      },
+      {
+        "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/expected_outputs/reference_metrics.json",
+        "sha256": "48bb0098676f7129d7482a90f8f9edff759c9f59076b29e4afa7918c36618ac9",
+        "size_bytes": 1138
+      },
+      {
+        "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/expected_outputs/smoke_test.json",
+        "sha256": "2770f421a1f928c4107cb8c141fb890a4f9a0e5a3a4f36c5a5ab892f1b5b0407",
+        "size_bytes": 344
+      },
+      {
+        "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/solutions.py",
+        "sha256": "e395c39c086fff5b2fe5653129230f66c8686eb00774c3dd1f6d067f96bf5eed",
+        "size_bytes": 49890
+      },
+      {
+        "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/tests.py",
+        "sha256": "73a9847bdad56fa92dd9442e910a3fc3ef0f0ac00ac96bfd1bdd3dda8521d0bf",
+        "size_bytes": 23444
+      },
+      {
+        "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/verification_report.schema.json",
+        "sha256": "eedf3b35e65ac172cc1dde2405c006f8db031b400052912ec87731b7032ce02a",
+        "size_bytes": 1695
+      },
+      {
+        "path": "chapter12_vlm_interpretability/instructions/pages/03_[12.3]_Mini_VLM_from_Scratch.md",
+        "sha256": "aa7e2134ae0acb7ae1ac8d763e6baf489838abd1b1699124fa567973943cc380",
+        "size_bytes": 54083
+      },
+      {
+        "path": "scripts/run_extension_verification_reports.py",
+        "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
+        "size_bytes": 16272
+      }
+    ],
+    "schema_version": 1
+  },
+  "safety_notes": [
+    "All images are deterministic course-generated colored shapes.",
+    "No gated weights, external user data, unsafe prompts, or large artifacts are used.",
+    "The result is scoped to the controlled MiniVLM and is not claimed to transfer to frontier VLMs."
+  ],
+  "tests_passed": true,
+  "wall_clock_seconds": 7.242842
+}
