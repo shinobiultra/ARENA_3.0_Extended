@@ -105,9 +105,9 @@
       "train_prompt_count": 36
     }
   ],
-  "date_run": "2026-09-04T07:52:39+00:00",
+  "date_run": "2026-09-04T07:55:59+00:00",
   "evidence_level": "exact_model_organism_ground_truth_plus_pinned_pythia_white_box_monitor_preflight",
-  "git_commit": "a0c119cf",
+  "git_commit": "d1025a5a",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-3",
   "known_failures": [],
@@ -460,5 +460,5 @@
     "The real-model monitor path uses safe generated eval-record descriptions, hidden states, and next-token logits only. It performs no generated completions, includes no harmful procedural content, and does not claim a broad harmful-content or deployment monitor benchmark."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 3.882598
+  "wall_clock_seconds": 3.700214
 }
