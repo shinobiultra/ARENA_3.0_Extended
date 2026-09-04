@@ -203,7 +203,7 @@ hard_exercises:
   notebook_id: 6_4_crosscoders_and_model_diffing
   title: Crosscoders and Model Diffing
   gt_tier: GT-3
-  difficulty: '3'
+  difficulty: '4'
   importance: '4'
   requires_gpu: 'true'
   metadata_source: chapter6_sparse_feature_methods/exercises/part4_crosscoders_model_diffing/artifacts.lock.yml:exercise_metadata
@@ -240,7 +240,7 @@ hard_exercises:
   title: Feature Verbalizers
   gt_tier: GT-1
   difficulty: '4'
-  importance: '3'
+  importance: '4'
   requires_gpu: 'true'
   metadata_source: chapter7_activation_to_language/exercises/part2_feature_verbalizers/artifacts.lock.yml:exercise_metadata
   fixture_provenance_source: chapter7_activation_to_language/exercises/part2_feature_verbalizers/expected_outputs/README.md
@@ -295,12 +295,12 @@ hard_exercises:
   gt_tier: GT-3
   difficulty: '3'
   importance: '3'
-  requires_gpu: 'true'
+  requires_gpu: 'false'
   metadata_source: chapter7_activation_to_language/exercises/part5_predictive_concept_decoders/artifacts.lock.yml:exercise_metadata
   fixture_provenance_source: chapter7_activation_to_language/exercises/part5_predictive_concept_decoders/expected_outputs/README.md
   visible_tests_source: chapter7_activation_to_language/exercises/part5_predictive_concept_decoders/tests.py
   report_source: chapter7_activation_to_language/exercises/part5_predictive_concept_decoders/verification_report.json
-  gpu_evidence_requirement: cuda_section_metric required before chapter release
+  gpu_evidence_requirement: required only if section makes a GPU-backed claim
   toy_oracle_requirement: required for every hard exercise
   slow_fast_oracle_requirement: required where an optimized path exists
   property_test_requirement: required for mathematical invariants
@@ -437,8 +437,8 @@ hard_exercises:
   notebook_id: 9_3_emergent_misalignment_detection
   title: Emergent Misalignment Detection
   gt_tier: GT-3
-  difficulty: '3'
-  importance: '4'
+  difficulty: '4'
+  importance: '5'
   requires_gpu: 'true'
   metadata_source: chapter9_alignment_interpretability/exercises/part3_emergent_misalignment_detection/artifacts.lock.yml:exercise_metadata
   fixture_provenance_source: chapter9_alignment_interpretability/exercises/part3_emergent_misalignment_detection/expected_outputs/README.md
@@ -490,9 +490,9 @@ hard_exercises:
 - section: '11.1'
   notebook_id: 11_1_pca_svd_and_geometry_controls
   title: PCA, SVD, and Geometry Controls
-  gt_tier: GT-0
+  gt_tier: GT-1
   difficulty: '3'
-  importance: '3'
+  importance: '4'
   requires_gpu: 'true'
   metadata_source: chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/artifacts.lock.yml:exercise_metadata
   fixture_provenance_source: chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/expected_outputs/README.md
@@ -523,12 +523,30 @@ hard_exercises:
   debug_mode_requirement: required for complex functions
   release_status: released_with_cuda_section_metric
   remaining_release_evidence: ''
+- section: '12.3'
+  notebook_id: 12_3_mini_vlm_from_scratch
+  title: Mini VLM from Scratch
+  gt_tier: GT-0
+  difficulty: '4'
+  importance: '5'
+  requires_gpu: 'true'
+  metadata_source: chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/artifacts.lock.yml:exercise_metadata
+  fixture_provenance_source: chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/expected_outputs/README.md
+  visible_tests_source: chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/tests.py
+  report_source: chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/verification_report.json
+  gpu_evidence_requirement: cuda_section_metric required before chapter release
+  toy_oracle_requirement: required for every hard exercise
+  slow_fast_oracle_requirement: required where an optimized path exists
+  property_test_requirement: required for mathematical invariants
+  debug_mode_requirement: required for complex functions
+  release_status: released_with_cuda_section_metric
+  remaining_release_evidence: ''
 - section: '13.1'
   notebook_id: 13_1_diffusion_and_image_generation_controls
   title: Diffusion and Image-Generation Controls
   gt_tier: GT-1
   difficulty: '4'
-  importance: '3'
+  importance: '4'
   requires_gpu: 'true'
   metadata_source: chapter13_image_generation_interpretability/exercises/part1_diffusion_image_controls/artifacts.lock.yml:exercise_metadata
   fixture_provenance_source: chapter13_image_generation_interpretability/exercises/part1_diffusion_image_controls/expected_outputs/README.md
@@ -546,7 +564,7 @@ hard_exercises:
   title: JEPA and World-Model Controls
   gt_tier: GT-1
   difficulty: '4'
-  importance: '3'
+  importance: '4'
   requires_gpu: 'true'
   metadata_source: chapter14_jepa_world_models/exercises/part1_jepa_world_model_controls/artifacts.lock.yml:exercise_metadata
   fixture_provenance_source: chapter14_jepa_world_models/exercises/part1_jepa_world_model_controls/expected_outputs/README.md

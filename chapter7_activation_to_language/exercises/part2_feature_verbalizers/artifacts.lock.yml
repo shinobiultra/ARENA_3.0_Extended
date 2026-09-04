@@ -7,7 +7,7 @@ exercise_metadata:
   DIFFICULTY: 4
   IMPORTANCE: 4
   EXPECTED_RUNTIME: 60-90 minutes for CPU exercises; several minutes for parent CUDA gelu-1l preflight
-  REQUIRES_GPU: false for the planted learner path; true for the real TransformerLens escalation
+  REQUIRES_GPU: true
 gt_tier: GT-1
 evidence_level: exact_planted_model_organism_plus_pinned_transformerlens_residual_direction_handoff
 claim_scope: 'GT-1 feature-verbalizer course section: students first build an

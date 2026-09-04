@@ -127,6 +127,7 @@ prototype implementation surface plus forty-one polished ARENA-style sections:
 [10.1 Capstone Research Sprint](chapter10_capstone_research_sprint/instructions/pages/01_%5B10.1%5D_Capstone_Research_Sprint.md),
 [11.1 PCA, SVD, and Geometry Controls](chapter11_representation_geometry/instructions/pages/01_%5B11.1%5D_PCA_SVD_and_Geometry_Controls.md),
 [12.1 CLIP, SigLIP, and VLM Controls](chapter12_vlm_interpretability/instructions/pages/01_%5B12.1%5D_CLIP_SigLIP_and_VLM_Controls.md),
+[12.3 Mini VLM from Scratch](chapter12_vlm_interpretability/instructions/pages/03_%5B12.3%5D_Mini_VLM_from_Scratch.md),
 [13.1 Diffusion and Image-Generation Controls](chapter13_image_generation_interpretability/instructions/pages/01_%5B13.1%5D_Diffusion_and_Image_Generation_Controls.md),
 [14.1 JEPA and World-Model Controls](chapter14_jepa_world_models/instructions/pages/01_%5B14.1%5D_JEPA_and_World_Model_Controls.md),
 [15.1 LoRA, DoRA, and Adapter Controls](chapter15_peft_misalignment/instructions/pages/01_%5B15.1%5D_LoRA_DoRA_and_Adapter_Controls.md),

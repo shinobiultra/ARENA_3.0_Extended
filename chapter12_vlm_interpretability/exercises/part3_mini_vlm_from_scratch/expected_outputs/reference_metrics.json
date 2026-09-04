@@ -1,0 +1,38 @@
+{
+  "notebook_id": "12_3_mini_vlm_from_scratch",
+  "metrics": {
+    "accepted": true,
+    "signature_accepted": true,
+    "train_example_count": 120,
+    "heldout_example_count": 120,
+    "train_accuracy_min": 0.95,
+    "heldout_accuracy_min": 0.95,
+    "joint_accuracy_min": 0.95,
+    "text_only_accuracy_max": 0.45,
+    "image_only_accuracy_max": 0.6,
+    "random_visual_accuracy_max": 0.5,
+    "color_object_patch_flips": true,
+    "color_background_patch_preserves": true,
+    "color_random_region_preserves": true,
+    "color_full_sequence_matches_corrupt": true,
+    "shape_object_patch_flips": true,
+    "shape_background_patch_preserves": true,
+    "shape_random_region_preserves": true,
+    "shape_full_sequence_matches_corrupt": true,
+    "toy_object_patch_flips": true,
+    "toy_background_patch_preserves": true,
+    "toy_random_patch_preserves": true,
+    "max_allowed_gpu_gb": 24
+  },
+  "baselines": {
+    "text_only_max": 0.45,
+    "image_only_max": 0.6,
+    "shuffled_visual_max": 0.5
+  },
+  "negative_controls": {
+    "required_where_applicable": true
+  },
+  "ood_tests": {
+    "muted_style_heldout_required": true
+  }
+}

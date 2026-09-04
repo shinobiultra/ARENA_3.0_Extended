@@ -1,0 +1,73 @@
+notebook_id: 12_3_mini_vlm_from_scratch
+section: '12.3'
+title: Mini VLM from Scratch
+exercise_metadata:
+  EXERCISE_ID: 12_3_mini_vlm_from_scratch
+  GT_TIER: GT-0
+  DIFFICULTY: 4
+  IMPORTANCE: 5
+  EXPECTED_RUNTIME: 60-90 minutes; complete release verification trains for 260 CUDA steps
+  REQUIRES_GPU: true
+gt_tier: GT-0
+evidence_level: exact_visual_token_oracle_plus_cuda_trained_controlled_minivlm
+claim_scope: A frozen patch encoder plus a learned projector and two-layer multi-head
+  cross-attention decoder solves held-out muted-style controlled VQA; counterfactual
+  object-token patches causally flip color and shape answers while text-only,
+  image-only, shuffled-visual, background-region, and same-size random-region
+  controls fail or preserve the clean answer as predicted.
+required_gpu_gb: 1
+max_allowed_gpu_gb: 24
+models:
+- id: arena_controlled_minivlm_v1
+  source: course_implementation
+  revision: exact_source_in_report_inputs
+  precision: float32
+  gated: false
+  claim_scope: controlled_muted_style_vqa_and_visual_token_patching
+datasets:
+- id: arena_controlled_colored_shape_vqa_v1
+  source: generated_by_course_renderer
+  revision: exact_source_in_report_inputs
+  seed: 23
+  train_examples: 120
+  heldout_examples: 120
+  split: solid_train_muted_style_heldout
+expected_metrics:
+  tests_passed: true
+  accepted: true
+  max_allowed_gpu_gb: 24
+  signature_accepted: true
+  train_example_count: 120
+  heldout_example_count: 120
+  train_accuracy_min: 0.95
+  heldout_accuracy_min: 0.95
+  joint_accuracy_min: 0.95
+  text_only_accuracy_max: 0.45
+  image_only_accuracy_max: 0.60
+  random_visual_accuracy_max: 0.50
+  color_object_patch_flips: true
+  color_background_patch_preserves: true
+  color_random_region_preserves: true
+  color_full_sequence_matches_corrupt: true
+  shape_object_patch_flips: true
+  shape_background_patch_preserves: true
+  shape_random_region_preserves: true
+  shape_full_sequence_matches_corrupt: true
+  toy_object_patch_flips: true
+  toy_background_patch_preserves: true
+  toy_random_patch_preserves: true
+controls:
+- exact_additive_visual_token_ground_truth
+- heldout_muted_rendering_style
+- text_only_zero_visual_tokens
+- image_only_zero_question_state
+- shuffled_visual_examples
+- counterfactual_object_token_patch
+- same_size_background_token_patch
+- seeded_same_size_random_region_patch
+- full_visual_sequence_counterfactual_patch
+- color_and_shape_counterfactual_pairs
+safety_notes:
+- All images are deterministic course-generated colored shapes.
+- No gated weights, external user data, unsafe prompts, or large artifacts are used.
+- The result is scoped to the controlled MiniVLM and is not claimed to transfer to frontier VLMs.
