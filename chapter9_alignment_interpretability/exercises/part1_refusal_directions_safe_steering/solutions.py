@@ -712,6 +712,7 @@ def qwen25_instruction_refusal_intervention_preflight(
     tokenizer = AutoTokenizer.from_pretrained(model_id, revision=revision)
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
+    tokenizer.padding_side = "left"
     prompts = REFUSAL_CATEGORY_PROMPTS + ALLOWED_CATEGORY_PROMPTS
     refusal_prompt_count = len(REFUSAL_CATEGORY_PROMPTS)
     allowed_prompt_count = len(ALLOWED_CATEGORY_PROMPTS)
@@ -897,6 +898,7 @@ def qwen25_behavioral_completion_refusal_preflight(
     tokenizer = AutoTokenizer.from_pretrained(model_id, revision=revision)
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
+    tokenizer.padding_side = "left"
     prompts = REFUSAL_CATEGORY_PROMPTS + ALLOWED_CATEGORY_PROMPTS
     refusal_prompt_count = len(REFUSAL_CATEGORY_PROMPTS)
     allowed_prompt_count = len(ALLOWED_CATEGORY_PROMPTS)
