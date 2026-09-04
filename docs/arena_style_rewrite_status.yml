@@ -32,7 +32,7 @@ sections:
   '5.6':
     status: course_ready
     page: chapter5_modern_architectures/instructions/pages/06_[5.6]_Multimodal_Embedding_and_Function_Calling_Models.md
-    notes: ARENA-style rewrite with embedding/function-calling evidence-ladder diagram, retrieval/tool-validation/parser/schema progression, help/interpretation dropdowns, signature result, limitations, and paired notebook surfaces.
+    notes: "ARENA-style embedding-router progression from masked pooling and cosine retrieval through confidence/margin abstention, tool availability, and separately scored routing behavior. The visible exact organism reaches 1.0 tool and abstention accuracy with zero hallucinations; a shuffled-schema control has 0.0 tool accuracy, while always-call has 0.0 abstention accuracy and 1.0 hallucination rate. Ten focused tests and all 11 solution cells pass, with expected/help/solution/interpretation dropdowns, parameterized play cells, and anomaly cases. CUDA 13.2 verification gives 4/4 top-1 and MRR 1.0 for both authenticated EmbeddingGemma and pinned BGE while permuted pairs score 0.0; pinned FunctionGemma parses and names all 32 held-out Mobile Actions calls correctly, with 0.875 exact/required argument accuracy and four disclosed failures. Authenticated base FunctionGemma forward also passes; peak VRAM is 1.312 GB. Limits include the hand-declared toy lexicon, uncalibrated abstention thresholds, and no compositional or real-model abstention slice."
   '6.1':
     status: course_ready
     page: chapter6_sparse_feature_methods/instructions/pages/01_[6.1]_SAE_Variants.md

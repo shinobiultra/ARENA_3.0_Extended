@@ -1,21 +1,27 @@
-# [5.6] Embedding Retrieval and Function-Calling Controls Verification Assets
+# [5.6] Embedding Routing for Reliable Function Calls
 
-Generated support files for the roadmap verification contract.
+This section asks one concrete question: when is request-to-schema embedding
+similarity strong enough to justify a tool call?
 
-- `5.6_Multimodal_Embedding_and_Function_Calling_Models_exercises.ipynb`
-  is the learner-facing notebook with local stubs for masked mean pooling,
-  retrieval metrics, centroid probes, tool masking, FunctionGemma call parsing,
-  function-call reports, and schema-token attribution.
-- `5.6_Multimodal_Embedding_and_Function_Calling_Models_solutions.ipynb`
-  validates the section-local reference implementation against the visible
-  tests and checks the committed CUDA report highlights.
-- `artifacts.lock.yml` pins the current artifact contract.
-- `verification_report.schema.json` defines the required final report.
-- `expected_outputs/smoke_test.json` records the smoke-test contract.
-- `expected_outputs/reference_metrics.json` records baseline/control slots.
+The learner-facing notebooks begin with an exact three-axis semantic encoder and
+16 English requests. Students implement masked pooling, cosine retrieval,
+confidence-and-margin abstention, availability masking, and separate tool/no-call
+metrics. The notebook then generates a labeled retrieval heatmap and compares it
+against shuffled-schema and always-call controls.
 
-The current graded run includes pinned public BGE and FunctionGemma Mobile
-Actions checkpoints, the pinned Mobile Actions dataset revision, authenticated
-direct EmbeddingGemma retrieval, authenticated base FunctionGemma CUDA loading,
-dtype/device metadata, and measured VRAM. Manual-gated Google artifacts are
-claimed only after their local authentication/readiness checks pass.
+The real-model escalation runs pinned `BAAI/bge-small-en-v1.5` retrieval on CPU
+with the same student-written metrics. The existing EmbeddingGemma and
+FunctionGemma CUDA paths remain release verification evidence; they are not the
+lesson's signature result.
+
+Files:
+
+- `5.6_Multimodal_Embedding_and_Function_Calling_Models_exercises.ipynb`:
+  student implementation and play cells.
+- `5.6_Multimodal_Embedding_and_Function_Calling_Models_solutions.ipynb`:
+  inline solved implementation, executed CPU outputs, controls, and real BGE
+  comparison.
+- `tests.py`: immediate semantic tests for each core operation.
+- `solutions.py`: section-local reference implementations and the preserved
+  pinned release verification path.
+- `verification_report.json`: supporting serialized CUDA evidence only.

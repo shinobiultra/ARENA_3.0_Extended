@@ -196,6 +196,69 @@ def test_function_call_report_separates_tool_and_abstention_errors(
     print("All tests in `test_function_call_report_separates_tool_and_abstention_errors` passed!")
 
 
+def test_route_with_abstention_uses_confidence_margin_and_availability(
+    route_with_abstention: Callable | None = None,
+):
+    solutions = _solutions()
+    route_with_abstention = route_with_abstention or solutions.route_with_abstention
+    similarity = t.tensor(
+        [
+            [0.90, 0.10, 0.00],
+            [0.71, 0.70, 0.10],
+            [0.55, 0.20, 0.10],
+            [0.20, 0.80, 0.70],
+        ]
+    )
+    original = similarity.clone()
+    allowed_tools = t.tensor(
+        [
+            [True, True, True],
+            [True, True, True],
+            [True, True, True],
+            [True, False, True],
+        ]
+    )
+    predictions = route_with_abstention(
+        similarity,
+        threshold=0.60,
+        min_margin=0.15,
+        no_call_id=3,
+        allowed_tools=allowed_tools,
+    )
+    assert predictions.tolist() == [0, 3, 3, 2], (
+        "The router should accept a clear winner, abstain on a near tie and low score, "
+        "and exclude an unavailable high-scoring tool."
+    )
+    t.testing.assert_close(similarity, original, msg="Routing must not mutate caller scores.")
+    print(
+        "All tests in "
+        "`test_route_with_abstention_uses_confidence_margin_and_availability` passed!"
+    )
+
+
+def test_routing_report_separates_selection_and_abstention(
+    routing_report: Callable | None = None,
+):
+    solutions = _solutions()
+    routing_report = routing_report or solutions.routing_report
+    predictions = t.tensor([0, 1, 2, 3, 0, 3])
+    labels = t.tensor([0, 2, 2, 3, 3, 3])
+    report = routing_report(predictions, labels, no_call_id=3)
+    assert abs(report.overall_accuracy - 4 / 6) < 1e-6, (
+        "Overall accuracy should include both tool-required and no-call rows."
+    )
+    assert abs(report.tool_accuracy - 2 / 3) < 1e-6, (
+        "Tool accuracy should be computed only where a tool is required."
+    )
+    assert abs(report.abstention_accuracy - 2 / 3) < 1e-6, (
+        "Abstention accuracy should be computed only on no-call labels."
+    )
+    assert abs(report.hallucination_rate - 1 / 3) < 1e-6, (
+        "Hallucination rate should count tool predictions on no-call labels."
+    )
+    print("All tests in `test_routing_report_separates_selection_and_abstention` passed!")
+
+
 def test_parse_function_call_text_extracts_name_and_arguments(
     parse_function_call_text: Callable | None = None,
 ):
@@ -260,6 +323,12 @@ def test_notebook_contract(run_smoke_test: Callable | None = None):
     )
     assert result["function_call"]["hallucination_rate"] == 0.5, (
         "Notebook contract should include no-call hallucination diagnostics."
+    )
+    assert result["router"]["predictions"] == [0, 1, 2, 3, 3], (
+        "Notebook contract should include confidence and ambiguity abstention."
+    )
+    assert result["router"]["overall_accuracy"] == 1.0, (
+        "Exact toy router should recover its known ground truth."
     )
     assert result["schema_attribution"]["top_schema_ids"] == [1, 0], (
         "Notebook contract should include schema-direction attribution diagnostics."

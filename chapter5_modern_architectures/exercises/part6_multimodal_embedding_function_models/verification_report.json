@@ -72,9 +72,9 @@
       "split": "eval"
     }
   ],
-  "date_run": "2026-07-02T12:42:44+00:00",
+  "date_run": "2026-09-04T07:54:39+00:00",
   "evidence_level": "toy_specialist_controls_plus_authenticated_embeddinggemma_and_functiongemma_preflights",
-  "git_commit": "3a539d48",
+  "git_commit": "24c1d6bf",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-1",
   "known_failures": [],
@@ -154,7 +154,7 @@
     "gpu_test": {
       "bge_mean_margin": 0.18294523656368256,
       "bge_mean_reciprocal_rank": 1.0,
-      "bge_peak_vram_gb": 0.18824481964111328,
+      "bge_peak_vram_gb": 0.15699481964111328,
       "bge_permuted_control_fails": true,
       "bge_permuted_top1_accuracy": 0.0,
       "bge_preflight": {
@@ -167,7 +167,7 @@
         "mean_positive_similarity": 0.8226691484451294,
         "mean_reciprocal_rank": 1.0,
         "model_id": "BAAI/bge-small-en-v1.5",
-        "peak_vram_gb": 0.18824481964111328,
+        "peak_vram_gb": 0.15699481964111328,
         "permuted_control_fails": true,
         "permuted_mean_margin": -0.2344277948141098,
         "permuted_top1_accuracy": 0.0,
@@ -236,7 +236,7 @@
       "embeddinggemma_missing_local_patterns": [],
       "embeddinggemma_missing_remote_patterns": [],
       "embeddinggemma_model_id": "google/embeddinggemma-300m",
-      "embeddinggemma_peak_vram_gb": 1.2177495956420898,
+      "embeddinggemma_peak_vram_gb": 1.3116374015808105,
       "embeddinggemma_permuted_control_fails": true,
       "embeddinggemma_permuted_top1_accuracy": 0.0,
       "embeddinggemma_preflight": {
@@ -287,7 +287,7 @@
         "mean_positive_similarity": 0.581369936466217,
         "mean_reciprocal_rank": 1.0,
         "model_id": "google/embeddinggemma-300m",
-        "peak_vram_gb": 1.2177495956420898,
+        "peak_vram_gb": 1.3116374015808105,
         "permuted_control_fails": true,
         "permuted_mean_margin": -0.252977192401886,
         "permuted_top1_accuracy": 0.0,
@@ -351,7 +351,7 @@
       "functiongemma_base_local_non_ref_file_count": 20,
       "functiongemma_base_missing_local_patterns": [],
       "functiongemma_base_missing_remote_patterns": [],
-      "functiongemma_base_peak_vram_gb": 0.5691256523132324,
+      "functiongemma_base_peak_vram_gb": 0.5388522148132324,
       "functiongemma_base_preflight": {
         "access_report": {
           "access_error": null,
@@ -390,7 +390,7 @@
         "cuda_available": true,
         "forward_passed": true,
         "model_id": "google/functiongemma-270m-it",
-        "peak_vram_gb": 0.5691256523132324,
+        "peak_vram_gb": 0.5388522148132324,
         "preflight_passed": true,
         "prompt_token_count": 14,
         "revision": "39eccb091651513a5dfb56892d3714c1b5b8276c",
@@ -417,7 +417,7 @@
       "functiongemma_mean_prompt_tokens": 600.40625,
       "functiongemma_model_id": "litert-community/FunctionGemma_270M_Mobile_Actions",
       "functiongemma_parse_accuracy": 1.0,
-      "functiongemma_peak_vram_gb": 1.211754322052002,
+      "functiongemma_peak_vram_gb": 1.3056421279907227,
       "functiongemma_preflight": {
         "base_model": "google/functiongemma-270m-it",
         "cuda_available": true,
@@ -580,7 +580,7 @@
         "mean_prompt_tokens": 600.40625,
         "model_id": "litert-community/FunctionGemma_270M_Mobile_Actions",
         "parse_accuracy": 1.0,
-        "peak_vram_gb": 1.211754322052002,
+        "peak_vram_gb": 1.3056421279907227,
         "preflight_passed": true,
         "required_argument_accuracy": 0.875,
         "revision": "e2226c1def35c5443942ebdb90a1da2a9eda836a",
@@ -591,7 +591,7 @@
       "functiongemma_revision": "e2226c1def35c5443942ebdb90a1da2a9eda836a",
       "gpu_total_memory_gb": 23.45965576171875,
       "masked_disallowed": true,
-      "peak_vram_gb": 1.2177495956420898,
+      "peak_vram_gb": 1.3116374015808105,
       "retrieval_mean_margin": 1.0,
       "retrieval_top1_accuracy": 1.0,
       "synthetic_retrieval_top1_accuracy": 1.0,
@@ -637,6 +637,19 @@
           1
         ],
         "top1_accuracy": 1.0
+      },
+      "router": {
+        "abstention_accuracy": 1.0,
+        "hallucination_rate": 0.0,
+        "overall_accuracy": 1.0,
+        "predictions": [
+          0,
+          1,
+          2,
+          3,
+          3
+        ],
+        "tool_accuracy": 1.0
       },
       "schema_attribution": {
         "attribution": [
@@ -713,10 +726,10 @@
   "ood_tests": {
     "declared": "required_where_applicable"
   },
-  "peak_vram_gb": 1.2177495956420898,
+  "peak_vram_gb": 1.3116374015808105,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "b5a81a19d8a66ecb155ffd330107fdfac20bcbda75e1a084010ccc5bf2105dbb",
+    "combined_sha256": "956e28b4cf199bf6ae8ae715d89ec74ed6518347e0415cc7daa498ba26989617",
     "files": [
       {
         "path": "arena_ext/gated_artifacts.py",
@@ -730,18 +743,18 @@
       },
       {
         "path": "chapter5_modern_architectures/exercises/part6_multimodal_embedding_function_models/5.6_Multimodal_Embedding_and_Function_Calling_Models_exercises.ipynb",
-        "sha256": "a254a2c4608ac6c8f557d78356e312da7f96f17d7ffc47f18f332195cb3d499d",
-        "size_bytes": 23060
+        "sha256": "e7849ef2cc81a12da24972e015725c6e23c2011246ce4c2ff485700657d18af1",
+        "size_bytes": 39813
       },
       {
         "path": "chapter5_modern_architectures/exercises/part6_multimodal_embedding_function_models/5.6_Multimodal_Embedding_and_Function_Calling_Models_solutions.ipynb",
-        "sha256": "bddb585472e0bccbb08595779377ac73340126d97e0b2c99d9edc4f85ebef853",
-        "size_bytes": 8097
+        "sha256": "c8404665463ec08901a9e665d915c0194a783b364854f7c19d333fe5a9439251",
+        "size_bytes": 80589
       },
       {
         "path": "chapter5_modern_architectures/exercises/part6_multimodal_embedding_function_models/README.md",
-        "sha256": "c88520d9d4c2c52f376d1f81956143c2ede77d9e4be6649c4d18bcb6a751cfd8",
-        "size_bytes": 1287
+        "sha256": "97b584a4a4ee360de17a20c362b52c92a9477748ece88a5d64c4030b0b390a6e",
+        "size_bytes": 1346
       },
       {
         "path": "chapter5_modern_architectures/exercises/part6_multimodal_embedding_function_models/artifacts.lock.yml",
@@ -765,13 +778,13 @@
       },
       {
         "path": "chapter5_modern_architectures/exercises/part6_multimodal_embedding_function_models/solutions.py",
-        "sha256": "c00fac9f25cf9d8d1339c32f2816d16097bc35ea182dc4477834419ab7a8a066",
-        "size_bytes": 35828
+        "sha256": "296645a8aafba12364385a904a2e67eca1263d7505c44a54acccc3e3bda9949b",
+        "size_bytes": 38827
       },
       {
         "path": "chapter5_modern_architectures/exercises/part6_multimodal_embedding_function_models/tests.py",
-        "sha256": "2cc9779bfdeabd749b14b24e6456bd35184947acd92df93f0a99edcc43b13366",
-        "size_bytes": 10949
+        "sha256": "fb9dbff4a9bc0f93f513321cbeb662b35ab771b69655ff50e71c0429ca97c9c0",
+        "size_bytes": 13479
       },
       {
         "path": "chapter5_modern_architectures/exercises/part6_multimodal_embedding_function_models/utils.py",
@@ -785,13 +798,13 @@
       },
       {
         "path": "chapter5_modern_architectures/instructions/pages/06_[5.6]_Multimodal_Embedding_and_Function_Calling_Models.md",
-        "sha256": "dd111518f6d94fc277124fcb0956a684efdd86214ae1a5eb9ae4a980f42cb672",
-        "size_bytes": 28974
+        "sha256": "e16bb71c01d9cde3122b8e5fef7e7f266189d074a3ad47ebd82ba350c2859235",
+        "size_bytes": 16761
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
-        "sha256": "660040f459d07535deb9e0c34ffddb496c13b8770044ae380d3a8e45b0c8fb2b",
-        "size_bytes": 16080
+        "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
+        "size_bytes": 16272
       }
     ],
     "schema_version": 1
@@ -801,5 +814,5 @@
     "The function-calling preflight uses public Mobile Actions eval rows and benign mobile-tool schemas only. Google EmbeddingGemma and the base google/functiongemma-270m-it repo are manual-gated artifacts with authenticated local access in the current report; the public FunctionGemma Mobile Actions checkpoint remains the behavioral eval path."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 25.319104
+  "wall_clock_seconds": 22.944851
 }

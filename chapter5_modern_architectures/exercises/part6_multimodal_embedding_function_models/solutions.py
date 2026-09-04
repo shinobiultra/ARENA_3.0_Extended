@@ -69,6 +69,14 @@ class FunctionCallReport:
 
 
 @dataclass(frozen=True)
+class RouterReport:
+    overall_accuracy: float
+    tool_accuracy: float
+    abstention_accuracy: float
+    hallucination_rate: float
+
+
+@dataclass(frozen=True)
 class ParsedFunctionCall:
     name: str | None
     arguments: dict[str, str]
@@ -145,6 +153,62 @@ def retrieval_ranks(similarity: t.Tensor, target_indices: t.Tensor) -> t.Tensor:
     order = similarity.argsort(dim=-1, descending=True)
     matches = order.eq(target_indices[:, None])
     return matches.float().argmax(dim=-1).long() + 1
+
+
+def route_with_abstention(
+    similarity: t.Tensor,
+    *,
+    threshold: float,
+    min_margin: float,
+    no_call_id: int,
+    allowed_tools: t.Tensor | None = None,
+) -> t.Tensor:
+    """Choose a tool only when its score and lead over the runner-up are sufficient."""
+
+    if similarity.ndim != 2 or similarity.shape[1] < 2:
+        raise ValueError("similarity must have shape (requests, at least_two_tools).")
+    if no_call_id < similarity.shape[1]:
+        raise ValueError("no_call_id must not overlap a tool index.")
+
+    scores = similarity.clone()
+    if allowed_tools is not None:
+        if allowed_tools.shape == (scores.shape[1],):
+            allowed = allowed_tools.to(device=scores.device, dtype=t.bool).expand_as(scores)
+        elif allowed_tools.shape == scores.shape:
+            allowed = allowed_tools.to(device=scores.device, dtype=t.bool)
+        else:
+            raise ValueError("allowed_tools must have shape (tools,) or (requests, tools).")
+        scores.masked_fill_(~allowed, -t.inf)
+
+    top_values, top_indices = scores.topk(k=2, dim=-1)
+    confident = top_values[:, 0] >= threshold
+    unambiguous = (top_values[:, 0] - top_values[:, 1]) >= min_margin
+    no_call = t.full_like(top_indices[:, 0], no_call_id)
+    return t.where(confident & unambiguous, top_indices[:, 0], no_call)
+
+
+def routing_report(
+    predictions: t.Tensor,
+    labels: t.Tensor,
+    *,
+    no_call_id: int,
+) -> RouterReport:
+    """Separate tool selection from abstention and hallucination behavior."""
+
+    if predictions.shape != labels.shape or predictions.ndim != 1:
+        raise ValueError("predictions and labels must be one-dimensional and have equal shape.")
+    tool_mask = labels.ne(no_call_id)
+    no_call_mask = labels.eq(no_call_id)
+    if not tool_mask.any() or not no_call_mask.any():
+        raise ValueError("labels must contain both tool and no-call examples.")
+
+    correct = predictions.eq(labels)
+    return RouterReport(
+        overall_accuracy=correct.float().mean().item(),
+        tool_accuracy=correct[tool_mask].float().mean().item(),
+        abstention_accuracy=correct[no_call_mask].float().mean().item(),
+        hallucination_rate=predictions[no_call_mask].ne(no_call_id).float().mean().item(),
+    )
 
 
 def embedding_retrieval_report(
@@ -327,6 +391,29 @@ def function_call_smoke_test() -> dict:
     )
     labels = t.tensor([0, 1, 2, 2])
     return function_call_report(logits, labels, no_call_id=2).__dict__
+
+
+def router_smoke_test() -> dict:
+    similarity = t.tensor(
+        [
+            [1.0, 0.0, 0.0],
+            [0.0, 1.0, 0.0],
+            [0.0, 0.0, 1.0],
+            [0.0, 0.0, 0.0],
+            [2**-0.5, 0.0, 2**-0.5],
+        ]
+    )
+    labels = t.tensor([0, 1, 2, 3, 3])
+    predictions = route_with_abstention(
+        similarity,
+        threshold=0.6,
+        min_margin=0.15,
+        no_call_id=3,
+    )
+    return {
+        "predictions": predictions.tolist(),
+        **routing_report(predictions, labels, no_call_id=3).__dict__,
+    }
 
 
 def schema_attribution_smoke_test() -> dict:
@@ -733,6 +820,7 @@ def run_smoke_test(cpu: bool = True) -> dict:
         "centroid_probe": centroid_probe_smoke_test(),
         "tool_masking": tool_masking_smoke_test(),
         "function_call": function_call_smoke_test(),
+        "router": router_smoke_test(),
         "schema_attribution": schema_attribution_smoke_test(),
     }
 
