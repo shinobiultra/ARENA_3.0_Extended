@@ -52,9 +52,9 @@
       "source": "generated"
     }
   ],
-  "date_run": "2026-07-02T12:41:57+00:00",
+  "date_run": "2026-09-04T13:00:31+00:00",
   "evidence_level": "cuda_fake_result_diagnostic_controls_preflight",
-  "git_commit": "3a539d48",
+  "git_commit": "fa4ee063",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-0",
   "known_failures": [],
@@ -177,7 +177,7 @@
   "peak_vram_gb": 0.031256675720214844,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "1d78f9146ccfdf6890015fba6645d76fea59718d309ae98463bcbd4122ecc3c0",
+    "combined_sha256": "6b1a3531fa9bfb4dcbca2436741f723fbcd40b1fa1d42abaf54f3341fc9ec0c4",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -246,8 +246,8 @@
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
-        "sha256": "660040f459d07535deb9e0c34ffddb496c13b8770044ae380d3a8e45b0c8fb2b",
-        "size_bytes": 16080
+        "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
+        "size_bytes": 16272
       }
     ],
     "schema_version": 1
@@ -257,5 +257,5 @@
     "This section uses generated numeric tensors only. It does not use real model completions, unsafe prompts, gated weights, or user data."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 1.038965
+  "wall_clock_seconds": 1.702933
 }

@@ -66,9 +66,9 @@
       "source": "torch.randn"
     }
   ],
-  "date_run": "2026-07-02T12:41:57+00:00",
+  "date_run": "2026-09-04T13:00:59+00:00",
   "evidence_level": "local_cuda132_pytorch_runtime_and_bf16_tensor_preflight",
-  "git_commit": "3a539d48",
+  "git_commit": "fa4ee063",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-1",
   "known_failures": [],
@@ -122,10 +122,10 @@
       "gpu_total_memory_gb": 23.45965576171875,
       "peak_vram_gb": 0.04296875,
       "python_major_minor": "3.14",
-      "python_version": "3.14.6",
+      "python_version": "3.14.2",
       "torch_version": "2.12.1+cu132",
       "torchvision_version": "0.27.1+cu132",
-      "uv_pip_check_output": "Checked 340 packages in 1ms\nAll installed packages are compatible",
+      "uv_pip_check_output": "Checked 340 packages in 2ms\nAll installed packages are compatible",
       "uv_pip_check_passed": true,
       "uv_pip_check_returncode": 0,
       "warnings": [],
@@ -138,7 +138,7 @@
           "mlp_out"
         ],
         "num_records": 2,
-        "root": "/tmp/tmpoqa049vz",
+        "root": "/tmp/tmpbj0xaft5",
         "total_values": 28
       },
       "budget": {
@@ -156,8 +156,8 @@
         "flash_attn_available": false,
         "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
         "gpu_total_memory_gb": 23.45965576171875,
-        "platform": "Linux-7.1.2-3-cachyos-x86_64-with-glibc2.43",
-        "python": "3.14.6",
+        "platform": "Linux-7.2.2-1-cachyos-x86_64-with-glibc2.44",
+        "python": "3.14.2",
         "torch": "2.12.1+cu132",
         "xformers_available": false
       },
@@ -197,7 +197,7 @@
   "peak_vram_gb": 0.04296875,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "05c5f3eb6ec22326925dbea8a0aa7203b45ab8fc3c7d34a7237e88409d5be267",
+    "combined_sha256": "48b274384165e1cf387f904b9788e6f0a1285086b7559a2d0fcac45f7073772c",
     "files": [
       {
         "path": "arena_ext/__init__.py",
@@ -271,8 +271,8 @@
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
-        "sha256": "660040f459d07535deb9e0c34ffddb496c13b8770044ae380d3a8e45b0c8fb2b",
-        "size_bytes": 16080
+        "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
+        "size_bytes": 16272
       }
     ],
     "schema_version": 1
@@ -282,5 +282,5 @@
     "The runtime preflight allocates only deterministic synthetic tensors. No model weights, unsafe prompts, or user data are used in this check."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 0.515172
+  "wall_clock_seconds": 4.76239
 }
