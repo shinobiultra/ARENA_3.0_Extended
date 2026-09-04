@@ -36,7 +36,7 @@ sections:
   '6.1':
     status: course_ready
     page: chapter6_sparse_feature_methods/instructions/pages/01_[6.1]_SAE_Variants.md
-    notes: ARENA-style rewrite with SAE-variant validation ladder diagram, sparse-rule/reconstruction/planted-feature/AUC/steering progression, help/interpretation dropdowns, signature result, limitations, and paired notebook surfaces.
+    notes: "ARENA-style comparison of ReLU-L1, TopK, gated, and JumpReLU SAEs with six control-bearing panels, seven tested learner exercises, inline encoder/objective/metric/intervention implementations, expected/help/solution/interpretation dropdowns, parameter sweeps, and anomaly hunting. On exact planted sparse ground truth, all variants beat the train-mean reconstruction baseline, held-out AUCs are 0.884-0.946 versus shuffled labels near 0.5, causal steering is 0.445-0.731 versus numerical-zero orthogonal controls, and the lowest reconstruction error does not imply the best dictionary recovery. Seven focused tests and all 13 solution cells pass. CUDA 13.2 verification trains a width-256 TopK-16 SAE on pinned Pythia-70M hidden states: held-out MSE 1.134 versus zero 1.375, permuted-decoder MSE ratio 1.436, exact L0 16, safe-logit delta 1.478 versus near-zero orthogonal projection, and 0.391 GB peak VRAM. No individual feature cleanly separates the train or topic-disjoint held-out labels (AUC 0.641/0.438); this is preserved as a negative result, so the real path claims SAE mechanics rather than semantic feature interpretation."
   '6.2':
     status: course_ready
     page: chapter6_sparse_feature_methods/instructions/pages/02_[6.2]_Gemma_Scope_Deep_Dive.md

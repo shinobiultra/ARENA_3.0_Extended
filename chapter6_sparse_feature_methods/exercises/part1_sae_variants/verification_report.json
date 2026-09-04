@@ -16,12 +16,13 @@
       "permuted_decoder_negative_control",
       "nondegenerate_density_check",
       "heldout_topic_feature_auc_check",
+      "train_vs_topic_disjoint_heldout_semantic_negative_result",
       "orthogonal_random_decoder_projection_steering_control",
       "semantic_feature_interpretation_not_claimed"
     ],
     "expected_metrics": {
       "accepted": true,
-      "best_feature_auc_min": 0.95,
+      "best_feature_auc_max": 0.65,
       "d_model": 512,
       "density_nondegenerate": true,
       "generation_used": false,
@@ -42,13 +43,16 @@
       "sae_k": 16,
       "sae_width": 256,
       "safe_logit_delta_min": 0.5,
+      "semantic_feature_claimed": false,
+      "semantic_feature_negative_result": true,
       "tests_passed": true,
       "train_prompt_count": 64,
+      "train_selected_feature_auc_max": 0.75,
       "training_steps": 800,
       "zero_baseline_mse_min": 1.3
     }
   },
-  "claim_scope": "GT-1 SAE-variant preflight: reusable ReLU/L1, TopK, Gated, JumpReLU, planted-dictionary, feature-AUC, and decoder-steering toy contracts are kept for learner exercises, then a pinned Pythia-70M-deduped checkpoint is loaded on CUDA. The report trains a 256-feature TopK-16 SAE on safe generated final-token hidden states, validates held-out normalized reconstruction against a zero baseline, checks a permuted-decoder negative control, requires nondegenerate sparse density and held-out feature-label AUC, and tests that adding a learned decoder vector moves the matching decoder-projection score more than an orthogonal random direction. This is a local SAE mechanics preflight, not a full GPT-2/Gemma SAE benchmark or a semantic feature-interpretation claim.",
+  "claim_scope": "GT-1 SAE-variant preflight: reusable ReLU/L1, TopK, Gated, JumpReLU, planted-dictionary, feature-AUC, and decoder-steering toy contracts are kept for learner exercises, then a pinned Pythia-70M-deduped checkpoint is loaded on CUDA. The report trains a 256-feature TopK-16 SAE on safe generated final-token hidden states, validates held-out normalized reconstruction against a zero baseline, checks a permuted-decoder negative control, requires nondegenerate sparse density, records held-out feature-label AUC, and tests that adding a learned decoder vector moves the matching decoder-projection score more than an orthogonal random direction. No individual SAE feature cleanly separates the labels on train or on the topic-disjoint held-out set, and this is retained as an explicit negative result. This is a local SAE mechanics preflight, not a full GPT-2/Gemma SAE benchmark or a semantic feature-interpretation claim.",
   "datasets": [
     {
       "id": "6_1_sae_variants_toy_inputs",
@@ -89,9 +93,9 @@
       "train_prompt_count": 64
     }
   ],
-  "date_run": "2026-07-02T12:42:46+00:00",
-  "evidence_level": "toy_sae_contract_plus_pinned_pythia_hidden_state_topk_sae_preflight",
-  "git_commit": "3a539d48",
+  "date_run": "2026-09-04T08:11:42+00:00",
+  "evidence_level": "toy_sae_contract_plus_pinned_pythia_topk_sae_mechanics_and_semantic_negative_result",
+  "git_commit": "d2a439c4",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-1",
   "known_failures": [],
@@ -130,27 +134,30 @@
         "safe_logit_target_effect_abs",
         "safe_logit_token",
         "safe_logit_token_id",
+        "semantic_feature_claimed",
+        "semantic_feature_negative_result",
         "train_prompt_count",
         "train_reconstruction_mse",
+        "train_selected_feature_auc",
         "training_steps",
         "zero_baseline_mse"
       ],
       "uses_cuda": true
     },
     "gpu_test": {
-      "best_feature_auc": 0.984375,
-      "best_feature_id": 214,
-      "best_feature_negative_mean": 0.25281351804733276,
+      "best_feature_auc": 0.4375,
+      "best_feature_id": 5,
+      "best_feature_negative_mean": 0.30059006810188293,
       "best_feature_polarity": "technical",
-      "best_feature_positive_mean": 2.4432568550109863,
+      "best_feature_positive_mean": 0.0,
       "cuda_available": true,
       "cuda_version": "13.2",
       "d_model": 512,
-      "decoder_projection_random_delta": 2.384185791015625e-07,
-      "decoder_projection_steered_delta": 4.9999998807907104,
+      "decoder_projection_random_delta": 5.960464477539063e-08,
+      "decoder_projection_steered_delta": 5.000000506639481,
       "density_nondegenerate": true,
       "device": "NVIDIA GeForce RTX 5090 Laptop GPU",
-      "full_path": "Pinned Pythia-70M hidden-state TopK SAE training preflight on CUDA, with held-out reconstruction improvement, permuted-decoder control, nondegenerate feature density, feature-label AUC, decoder-projection steering control, and safe vocabulary-logit movement.",
+      "full_path": "Pinned Pythia-70M final-token hidden states, train-split normalization, a width-256 TopK-16 SAE, held-out reconstruction, permuted-decoder, held-out topic AUC, and orthogonal-direction intervention controls.",
       "generation_used": false,
       "gpu_total_memory_gb": 23.45965576171875,
       "heldout_dead_feature_fraction": 0.5859375,
@@ -161,7 +168,7 @@
       "hidden_layer": -1,
       "model_id": "EleutherAI/pythia-70m-deduped",
       "passes_decoder_steering_control": true,
-      "peak_vram_gb": 0.42262840270996094,
+      "peak_vram_gb": 0.39137840270996094,
       "permuted_decoder_mse": 1.6290857791900635,
       "preflight_passed": true,
       "random_decoder_control_passed": true,
@@ -170,96 +177,86 @@
       "revision": "e93a9faa9c77e5d09219f6c868bfc7a1bd65593c",
       "sae_k": 16,
       "sae_width": 256,
-      "safe_logit_delta": 1.5416259765625,
-      "safe_logit_target_effect_abs": 0.3083135187625885,
-      "safe_logit_token": " Python",
-      "safe_logit_token_id": 13814,
+      "safe_logit_delta": 1.47802734375,
+      "safe_logit_target_effect_abs": 0.2955751419067383,
+      "safe_logit_token": " data",
+      "safe_logit_token_id": 941,
+      "semantic_feature_claimed": false,
+      "semantic_feature_negative_result": true,
       "torch_version": "2.12.1+cu132",
       "train_prompt_count": 64,
       "train_reconstruction_mse": 1.5270816220436245e-05,
+      "train_selected_feature_auc": 0.640625,
       "training_steps": 800,
       "within_vram_budget": true,
       "zero_baseline_mse": 1.3747169971466064
     },
     "notebook_contract": {
-      "dictionary_recovery": {
-        "best_learned_for_true": [
-          0,
-          2,
-          0
-        ],
-        "duplicate_fraction": 0.33333333333333337,
-        "mean_best_cosine": 0.6666666865348816,
-        "recovered_fraction": 0.6666666865348816
-      },
-      "encoders": {
-        "gated": [
-          [
-            1.0,
-            0.0,
-            0.0,
-            3.0
-          ]
-        ],
-        "jumprelu": [
-          [
-            1.0,
-            0.0,
-            0.0,
-            3.0
-          ]
-        ],
-        "relu_l1": [
-          [
-            0.5,
-            0.0,
-            0.0,
-            2.5
-          ]
-        ],
-        "topk": [
-          [
-            1.0,
-            0.0,
-            0.0,
-            3.0
-          ]
-        ]
-      },
-      "feature_auc": {
-        "auc": 1.0,
-        "feature_id": 1
-      },
-      "reconstruction": {
-        "dead_feature_fraction": 0.0,
-        "feature_density_mean": 0.5,
-        "l0": 1.0,
-        "name": "identity",
-        "reconstruction_mse": 0.0
-      },
-      "steering": {
-        "baseline_mean": 0.0,
-        "passes_control": true,
-        "random_delta": 0.0,
-        "random_mean": 0.0,
-        "steered_delta": 2.0,
-        "steered_mean": 2.0
-      },
-      "toy_superposition": {
-        "activation_shape": [
-          32,
-          3
-        ],
-        "density_nondegenerate": true,
-        "dictionary_shape": [
-          6,
-          3
-        ],
-        "feature_shape": [
-          32,
-          6
-        ]
-      }
+      "random_decoder_recovery": 0.125,
+      "true_l0": 1.26953125,
+      "variants": [
+        {
+          "ablation_drop": 0.8346325159072876,
+          "dead_fraction": 0.0,
+          "heldout_auc": 0.9455334544181824,
+          "heldout_mse": 0.005551374051719904,
+          "l0": 2.494140625,
+          "mean_best_cosine": 0.8922302722930908,
+          "mean_density": 0.311767578125,
+          "random_ablation_drop": 6.933179363954878e-09,
+          "random_steering_delta": -1.6904033728337708e-09,
+          "recovered_fraction": 1.0,
+          "shuffled_auc": 0.5216540396213531,
+          "steering_delta": 0.6959096193313599,
+          "variant": "relu_l1"
+        },
+        {
+          "ablation_drop": 0.8831427097320557,
+          "dead_fraction": 0.125,
+          "heldout_auc": 0.8843907713890076,
+          "heldout_mse": 0.02169720269739628,
+          "l0": 2.0,
+          "mean_best_cosine": 0.9484832882881165,
+          "mean_density": 0.25,
+          "random_ablation_drop": 2.2351741790771484e-08,
+          "random_steering_delta": -1.6904033728337708e-09,
+          "recovered_fraction": 1.0,
+          "shuffled_auc": 0.5020833611488342,
+          "steering_delta": 0.7305867075920105,
+          "variant": "topk"
+        },
+        {
+          "ablation_drop": 0.8375438451766968,
+          "dead_fraction": 0.0,
+          "heldout_auc": 0.9277146458625793,
+          "heldout_mse": 0.0030537396669387817,
+          "l0": 3.078125,
+          "mean_best_cosine": 0.8287972807884216,
+          "mean_density": 0.384765625,
+          "random_ablation_drop": -4.760093208489025e-09,
+          "random_steering_delta": -1.6904033728337708e-09,
+          "recovered_fraction": 0.625,
+          "shuffled_auc": 0.49368685483932495,
+          "steering_delta": 0.5413494110107422,
+          "variant": "gated"
+        },
+        {
+          "ablation_drop": 0.5260285139083862,
+          "dead_fraction": 0.125,
+          "heldout_auc": 0.8902304172515869,
+          "heldout_mse": 0.009714462794363499,
+          "l0": 1.572265625,
+          "mean_best_cosine": 0.866719126701355,
+          "mean_density": 0.196533203125,
+          "random_ablation_drop": 9.313225746154785e-09,
+          "random_steering_delta": -1.6904033728337708e-09,
+          "recovered_fraction": 0.75,
+          "shuffled_auc": 0.4814551770687103,
+          "steering_delta": 0.4445853531360626,
+          "variant": "jumprelu"
+        }
+      ],
+      "zero_baseline_mse": 0.19576002657413483
     }
   },
   "models": [
@@ -284,6 +281,7 @@
     "declared_controls": [
       "negative_control_where_applicable",
       "permuted_decoder_negative_control",
+      "train_vs_topic_disjoint_heldout_semantic_negative_result",
       "orthogonal_random_decoder_projection_steering_control"
     ]
   },
@@ -291,10 +289,10 @@
   "ood_tests": {
     "declared": "required_where_applicable"
   },
-  "peak_vram_gb": 0.42262840270996094,
+  "peak_vram_gb": 0.39137840270996094,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "9fa1b34522d1ddf5efab0102b4c9a2c24e71d4f010f06aeacd696f737ca539fa",
+    "combined_sha256": "59eb2048563a458781d69fbb03d93a95c57a8898c520c7cbdab69c1e0fac22f9",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -303,23 +301,23 @@
       },
       {
         "path": "chapter6_sparse_feature_methods/exercises/part1_sae_variants/6.1_SAE_Variants_exercises.ipynb",
-        "sha256": "deeb43838af6556f87a9be0dfdeef791dbea69ad34f7489e70c28f4effdadd66",
-        "size_bytes": 20211
+        "sha256": "2ed855b7d18fd751087dab92947c70743861ab2620384d1ffa39ff0a47104630",
+        "size_bytes": 45156
       },
       {
         "path": "chapter6_sparse_feature_methods/exercises/part1_sae_variants/6.1_SAE_Variants_solutions.ipynb",
-        "sha256": "3893fd80083ba46500edf6cd00ef0a63649d13d75554b2a84e118036fb8054ad",
-        "size_bytes": 9300
+        "sha256": "2701b477b9d9522cd0af85445fca10d23792948333b4a8b58cb0c41f785df4d2",
+        "size_bytes": 205901
       },
       {
         "path": "chapter6_sparse_feature_methods/exercises/part1_sae_variants/README.md",
-        "sha256": "8fca6f93229acabe6b5f4505f3c0b2585709a00dd7bf3589ccb16d6d905d904c",
-        "size_bytes": 1264
+        "sha256": "d396487b478220d130692aec14c920217e4cbd0b5729f8fcbaf65e88533af110",
+        "size_bytes": 1342
       },
       {
         "path": "chapter6_sparse_feature_methods/exercises/part1_sae_variants/artifacts.lock.yml",
-        "sha256": "02410f5f51f59451c64e6cd306c449b1b3e95c0c3afc329e44b85857047b8d7e",
-        "size_bytes": 4030
+        "sha256": "c9d5ba38b382196955d048cac0ef997ce244b18ccb38fa7be931a32b24a9444d",
+        "size_bytes": 4384
       },
       {
         "path": "chapter6_sparse_feature_methods/exercises/part1_sae_variants/expected_outputs/README.md",
@@ -338,13 +336,13 @@
       },
       {
         "path": "chapter6_sparse_feature_methods/exercises/part1_sae_variants/solutions.py",
-        "sha256": "e28c9d66dcb0dda4cfe2c14bc3de2b8e3321b48ade755d4244f63112f0d123d9",
-        "size_bytes": 29412
+        "sha256": "5db2eaab9b7e6c8d74b6420307cdbef77fce50e9c4c4b29189867232bfa5dbdc",
+        "size_bytes": 47413
       },
       {
         "path": "chapter6_sparse_feature_methods/exercises/part1_sae_variants/tests.py",
-        "sha256": "8e9da3d2d55eaf4ae173ffb8aad7205328350a79dc9826fa4718cd65aee859ba",
-        "size_bytes": 12513
+        "sha256": "c919d68880177cd05bfd36406e11e08cf5c4f0001513bf162fbe81665b92fd4e",
+        "size_bytes": 8629
       },
       {
         "path": "chapter6_sparse_feature_methods/exercises/part1_sae_variants/utils.py",
@@ -358,13 +356,13 @@
       },
       {
         "path": "chapter6_sparse_feature_methods/instructions/pages/01_[6.1]_SAE_Variants.md",
-        "sha256": "cd569f4d4e99cbc30c19568b637b0346eb1c5f354e5f9de29d32a59c863941b6",
-        "size_bytes": 30510
+        "sha256": "40731587566000a9ee49b704b9cbffe517d2bf5be1fe6580854864fcdf1d56ff",
+        "size_bytes": 34713
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
-        "sha256": "660040f459d07535deb9e0c34ffddb496c13b8770044ae380d3a8e45b0c8fb2b",
-        "size_bytes": 16080
+        "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
+        "size_bytes": 16272
       }
     ],
     "schema_version": 1
@@ -374,5 +372,5 @@
     "The real-model path uses safe generated topic prompts and hidden-state extraction from a small public Pythia checkpoint. It does not use unsafe prompts, gated weights, generated completions, user data, or raw large activation artifacts."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 1.572246
+  "wall_clock_seconds": 4.583959
 }

@@ -1,9 +1,8 @@
+"""Immediate semantic tests for the [6.1] learner exercises."""
+
 from collections.abc import Callable
 
 import torch as t
-
-from arena_ext import features as feature_reference
-from arena_ext import sae_variants as reference
 
 
 def _solutions():
@@ -12,298 +11,218 @@ def _solutions():
     return solutions
 
 
-def test_encoder_variants_match_reference_and_sparsity_rules(
+def test_planted_sparse_ground_truth(
+    make_planted_dictionary: Callable | None = None,
+    sample_planted_batch: Callable | None = None,
+):
+    solutions = _solutions()
+    make_planted_dictionary = make_planted_dictionary or solutions.make_planted_dictionary
+    sample_planted_batch = sample_planted_batch or solutions.sample_planted_batch
+    dictionary = make_planted_dictionary(n_features=5, d_model=3, seed=4)
+    batch = sample_planted_batch(
+        dictionary,
+        n_examples=128,
+        feature_probability=0.25,
+        noise_std=0.0,
+        seed=5,
+    )
+    assert batch.activations.shape == (128, 3), "Activations must have shape (examples, d_model)."
+    assert batch.feature_acts.shape == (128, 5), "Feature acts must have shape (examples, features)."
+    t.testing.assert_close(dictionary.norm(dim=-1), t.ones(5))
+    t.testing.assert_close(batch.activations, batch.feature_acts @ dictionary)
+    t.testing.assert_close(batch.labels, batch.feature_acts[:, 0] > 0)
+    assert 0 < int(batch.labels.sum()) < batch.labels.numel(), (
+        "The controlled batch must contain both target-positive and target-negative examples."
+    )
+    print("All tests in `test_planted_sparse_ground_truth` passed!")
+
+
+def test_encoder_rules_and_jumprelu_gradient(
     relu_l1_encode: Callable | None = None,
     topk_encode: Callable | None = None,
     gated_encode: Callable | None = None,
     jumprelu_encode: Callable | None = None,
+    JumpReLU=None,
 ):
     solutions = _solutions()
     relu_l1_encode = relu_l1_encode or solutions.relu_l1_encode
     topk_encode = topk_encode or solutions.topk_encode
     gated_encode = gated_encode or solutions.gated_encode
     jumprelu_encode = jumprelu_encode or solutions.jumprelu_encode
-    pre_acts = t.tensor([[1.0, -1.0, 0.2, 3.0], [0.1, 2.0, -0.5, 0.4]])
-    gate_logits = t.tensor([[1.0, 1.0, -1.0, 1.0], [-1.0, 2.0, 1.0, 0.0]])
+    JumpReLU = JumpReLU or solutions.JumpReLU
+    pre = t.tensor([[1.0, -1.0, 0.2, 3.0], [0.1, 2.0, -0.5, 0.4]])
+    gate = t.tensor([[1.0, 1.0, -1.0, 1.0], [-1.0, 2.0, 1.0, 0.0]])
+    t.testing.assert_close(relu_l1_encode(pre), t.tensor([[1.0, 0.0, 0.2, 3.0], [0.1, 2.0, 0.0, 0.4]]))
+    t.testing.assert_close(topk_encode(pre, k=2), t.tensor([[1.0, 0.0, 0.0, 3.0], [0.0, 2.0, 0.0, 0.4]]))
+    t.testing.assert_close(gated_encode(pre, gate), t.tensor([[1.0, 0.0, 0.0, 3.0], [0.0, 2.0, 0.0, 0.0]]))
+    t.testing.assert_close(jumprelu_encode(pre, 0.5, 0.1), t.tensor([[1.0, 0.0, 0.0, 3.0], [0.0, 2.0, 0.0, 0.0]]))
 
-    relu_l1 = relu_l1_encode(pre_acts, l1_coefficient=0.5)
-    topk = topk_encode(pre_acts, k=2)
-    gated = gated_encode(pre_acts, gate_logits)
-    jumprelu = jumprelu_encode(pre_acts, threshold=0.5)
-
-    t.testing.assert_close(
-        relu_l1,
-        reference.relu_l1_encode(pre_acts, l1_coefficient=0.5),
-        msg="ReLU/L1 encoder should subtract the L1 threshold before clamping at zero.",
-    )
-    t.testing.assert_close(
-        topk,
-        reference.topk_encode(pre_acts, k=2),
-        msg="TopK encoder should keep only the k largest nonnegative features per row.",
-    )
-    t.testing.assert_close(
-        gated,
-        reference.gated_encode(pre_acts, gate_logits),
-        msg="Gated encoder should require both positive magnitude and an open gate.",
-    )
-    t.testing.assert_close(
-        jumprelu,
-        reference.jumprelu_encode(pre_acts, threshold=0.5),
-        msg="JumpReLU should preserve values only after the threshold is crossed.",
-    )
-    assert topk.gt(0).sum(dim=-1).tolist() == [2, 2], (
-        "TopK should keep exactly two active positive entries in each controlled row."
-    )
-    assert gated[1, 3].item() == 0.0, (
-        "Gate logits exactly at the threshold should not open the gated feature."
-    )
-    print("All tests in `test_encoder_variants_match_reference_and_sparsity_rules` passed!")
+    values = t.tensor([[0.8, 1.0, 1.2]], requires_grad=True)
+    threshold = t.ones(3, requires_grad=True)
+    JumpReLU.apply(values, threshold, 0.5).sum().backward()
+    t.testing.assert_close(values.grad, t.tensor([[0.0, 0.0, 1.0]]))
+    t.testing.assert_close(threshold.grad, t.tensor([-2.0, -2.0, -2.0]))
+    print("All tests in `test_encoder_rules_and_jumprelu_gradient` passed!")
 
 
-def test_decode_and_metrics_match_identity_contract(
+def test_variant_loss_terms(sparse_autoencoder_loss: Callable | None = None):
+    solutions = _solutions()
+    sparse_autoencoder_loss = sparse_autoencoder_loss or solutions.sparse_autoencoder_loss
+    activations = t.zeros(2, 2)
+    reconstruction = t.ones(2, 2)
+    feature_acts = t.tensor([[1.0, 0.0], [0.0, 2.0]])
+    base = dict(reconstruction=reconstruction, feature_acts=feature_acts, pre_acts=feature_acts)
+    relu_output = solutions.SAEForward(**base)
+    relu = sparse_autoencoder_loss(
+        relu_output,
+        activations,
+        variant="relu_l1",
+        sparsity_coefficient=0.1,
+    )
+    topk = sparse_autoencoder_loss(
+        relu_output,
+        activations,
+        variant="topk",
+        sparsity_coefficient=0.1,
+    )
+    gated = sparse_autoencoder_loss(
+        solutions.SAEForward(
+            **base,
+            gate_pre_acts=t.tensor([[1.0, -1.0], [0.5, 0.0]]),
+            auxiliary_reconstruction=t.zeros(2, 2),
+        ),
+        activations,
+        variant="gated",
+        sparsity_coefficient=0.1,
+    )
+    jump = sparse_autoencoder_loss(
+        solutions.SAEForward(**base, jump_threshold=t.tensor([0.5, 0.5])),
+        activations,
+        variant="jumprelu",
+        sparsity_coefficient=0.1,
+        jump_bandwidth=0.1,
+    )
+    t.testing.assert_close(relu.reconstruction, t.tensor(1.0))
+    t.testing.assert_close(relu.sparsity, t.tensor(1.5))
+    t.testing.assert_close(relu.total, t.tensor(1.15))
+    t.testing.assert_close(topk.total, t.tensor(1.0))
+    t.testing.assert_close(gated.sparsity, t.tensor(0.75))
+    t.testing.assert_close(gated.total, t.tensor(1.075))
+    t.testing.assert_close(jump.sparsity, t.tensor(1.0))
+    t.testing.assert_close(jump.total, t.tensor(1.1))
+    print("All tests in `test_variant_loss_terms` passed!")
+
+
+def test_metrics_recovery_and_heldout_auc(
     decode_features: Callable | None = None,
-    sae_variant_metrics: Callable | None = None,
-    feature_density: Callable | None = None,
-    l0: Callable | None = None,
-    dead_feature_fraction: Callable | None = None,
+    dictionary_recovery_report: Callable | None = None,
+    best_feature_auc: Callable | None = None,
+    evaluate_selected_auc: Callable | None = None,
 ):
     solutions = _solutions()
     decode_features = decode_features or solutions.decode_features
-    sae_variant_metrics = sae_variant_metrics or solutions.sae_variant_metrics
-    feature_density = feature_density or solutions.feature_density
-    l0 = l0 or solutions.l0
-    dead_feature_fraction = dead_feature_fraction or solutions.dead_feature_fraction
-    feature_acts = t.tensor([[1.0, 0.0, 2.0], [0.0, 2.0, 0.0]])
-    decoder = t.eye(3)
-    activations = decode_features(feature_acts, decoder)
-    t.testing.assert_close(
-        activations,
-        reference.decode_features(feature_acts, decoder),
-        msg="Decoding should multiply feature activations by decoder rows.",
-    )
-    metrics = sae_variant_metrics(
-        "identity",
-        activations=activations,
-        reconstructed_activations=activations,
-        feature_acts=feature_acts,
-    )
-    reference_metrics = reference.sae_variant_metrics(
-        "identity",
-        activations=activations,
-        reconstructed_activations=activations,
-        feature_acts=feature_acts,
-    )
-    assert metrics.__dict__ == reference_metrics.__dict__, (
-        "SAE metrics should match reconstruction MSE, L0, density, and dead-feature reference."
-    )
-    t.testing.assert_close(
-        feature_density(feature_acts),
-        t.tensor([0.5, 0.5, 0.5]),
-        msg="Feature density should be per-feature firing rate over examples.",
-    )
-    assert l0(feature_acts) == 1.5, "L0 should average the number of active features per row."
-    assert dead_feature_fraction(feature_acts) == 0.0, (
-        "No feature should be dead when every column fires at least once."
-    )
-    assert metrics.reconstruction_mse == 0.0, (
-        "Identity decoder should have zero reconstruction error."
-    )
-    print("All tests in `test_decode_and_metrics_match_identity_contract` passed!")
-
-
-def test_toy_superposition_batch_has_planted_sparse_structure(
-    make_toy_superposition_batch: Callable | None = None,
-    density_is_nondegenerate: Callable | None = None,
-):
-    solutions = _solutions()
-    make_toy_superposition_batch = (
-        make_toy_superposition_batch or solutions.make_toy_superposition_batch
-    )
-    density_is_nondegenerate = density_is_nondegenerate or solutions.density_is_nondegenerate
-    batch = make_toy_superposition_batch(
-        batch=32,
-        n_features=6,
-        d_model=3,
-        feature_probability=0.25,
-        seed=0,
-    )
-    reference_batch = reference.make_toy_superposition_batch(
-        batch=32,
-        n_features=6,
-        d_model=3,
-        feature_probability=0.25,
-        seed=0,
-    )
-    t.testing.assert_close(
-        batch.feature_acts,
-        reference_batch.feature_acts,
-        msg="Toy superposition feature activations should be deterministic under the seed.",
-    )
-    t.testing.assert_close(
-        batch.activations,
-        batch.feature_acts @ batch.dictionary,
-        msg="Toy activations should be sparse features mixed through the planted dictionary.",
-    )
-    t.testing.assert_close(
-        batch.dictionary.norm(dim=-1),
-        t.ones(batch.dictionary.shape[0]),
-        msg="Planted dictionary rows should be unit norm.",
-    )
-    assert list(batch.feature_acts.shape) == [32, 6], (
-        "Toy feature activations should have shape (batch, n_features)."
-    )
-    assert list(batch.activations.shape) == [32, 3], (
-        "Toy activations should have shape (batch, d_model)."
-    )
-    assert density_is_nondegenerate(batch.feature_acts), (
-        "Toy sparse features should contain some active entries without firing everywhere."
-    )
-    print("All tests in `test_toy_superposition_batch_has_planted_sparse_structure` passed!")
-
-
-def test_dictionary_recovery_detects_duplicates_and_missing_features(
-    dictionary_recovery_report: Callable | None = None,
-):
-    solutions = _solutions()
     dictionary_recovery_report = dictionary_recovery_report or solutions.dictionary_recovery_report
-    true_dictionary = t.eye(3)
-    learned_decoder = t.tensor(
-        [
-            [1.0, 0.0, 0.0],
-            [1.0, 0.0, 0.0],
-            [0.0, 1.0, 0.0],
-        ]
-    )
-    report = dictionary_recovery_report(learned_decoder, true_dictionary, threshold=0.9)
-    reference_report = reference.dictionary_recovery_report(
-        learned_decoder,
-        true_dictionary,
+    best_feature_auc = best_feature_auc or solutions.best_feature_auc
+    evaluate_selected_auc = evaluate_selected_auc or solutions.evaluate_selected_auc
+    feature_acts = t.tensor([[1.0, 0.0, 2.0], [0.0, 2.0, 0.0]])
+    t.testing.assert_close(decode_features(feature_acts, t.eye(3)), feature_acts)
+    recovery = dictionary_recovery_report(
+        t.tensor([[1.0, 0.0, 0.0], [1.0, 0.0, 0.0], [0.0, 1.0, 0.0]]),
+        t.eye(3),
         threshold=0.9,
     )
-    assert abs(report.recovered_fraction - reference_report.recovered_fraction) < 1e-6, (
-        "Recovered fraction should match the cosine-threshold reference."
+    assert abs(recovery.recovered_fraction - 2 / 3) < 1e-6, (
+        "Recovery must count planted directions, so the missing e2 direction leaves 2/3 recovered."
     )
-    assert abs(report.recovered_fraction - (2 / 3)) < 1e-6, (
-        "The duplicated decoder should recover two of three true feature directions."
+    assert abs(recovery.duplicate_fraction - 1 / 3) < 1e-6, (
+        "Two learned rows map to e0, so one of three decoder rows is a duplicate."
     )
-    assert abs(report.duplicate_fraction - (1 / 3)) < 1e-6, (
-        "Duplicate fraction should detect that two learned rows map to the same true feature."
+    train_features = t.tensor([[0.0, 0.1], [0.0, 0.2], [2.0, 0.1], [3.0, 0.2]])
+    heldout_features = t.tensor([[0.1, 4.0], [0.2, 3.0], [2.1, 2.0], [3.1, 1.0]])
+    labels = t.tensor([False, False, True, True])
+    selection = best_feature_auc(train_features, labels)
+    assert selection.feature_id == 0, "Feature selection must use the perfectly predictive train feature."
+    assert selection.auc == 1.0, "The controlled train feature should separate both classes exactly."
+    assert evaluate_selected_auc(heldout_features, labels, selection) == 1.0, (
+        "The frozen train-selected feature and polarity must transfer to held-out data."
     )
-    t.testing.assert_close(
-        report.best_learned_for_true,
-        t.tensor([0, 2, 0]),
-        msg="The missing third true feature should fall back to the first tied learned row.",
-    )
-    print("All tests in `test_dictionary_recovery_detects_duplicates_and_missing_features` passed!")
+    print("All tests in `test_metrics_recovery_and_heldout_auc` passed!")
 
 
-def test_best_feature_auc_handles_predictive_and_antipredictive_features(
-    roc_auc_binary: Callable | None = None,
-    best_feature_auc: Callable | None = None,
+def test_causal_interventions_beat_equal_strength_random_controls(
+    causal_intervention_report: Callable | None = None,
 ):
     solutions = _solutions()
-    roc_auc_binary = roc_auc_binary or solutions.roc_auc_binary
-    best_feature_auc = best_feature_auc or solutions.best_feature_auc
-    feature_acts = t.tensor(
-        [
-            [0.1, 0.0, 2.0],
-            [0.2, 0.0, 1.8],
-            [0.1, 1.0, 0.2],
-            [0.2, 2.0, 0.1],
-        ]
+    causal_intervention_report = causal_intervention_report or solutions.causal_intervention_report
+    dictionary = t.eye(3)
+    heldout = solutions.sample_planted_batch(
+        dictionary,
+        n_examples=256,
+        feature_probability=0.4,
+        noise_std=0.0,
+        seed=8,
     )
-    labels = t.tensor([0, 0, 1, 1], dtype=t.bool)
-    auc_report = best_feature_auc(feature_acts, labels)
-    reference_report = reference.best_feature_auc(feature_acts, labels)
-    assert auc_report.__dict__ == reference_report.__dict__, (
-        "Best feature AUC should match the independent rank-statistic implementation."
+    model = solutions.SparseAutoencoder(
+        heldout.activations,
+        solutions.SAETrainConfig(variant="relu_l1", d_sae=3, steps=1),
     )
-    assert auc_report.feature_id in {1, 2}, (
-        "The best feature should be one of the perfectly separating directions."
+    with t.no_grad():
+        model.w_dec.copy_(t.eye(3))
+        model.w_enc.copy_(t.eye(3))
+        model.b_enc.zero_()
+        model.b_dec.zero_()
+    report = causal_intervention_report(model, heldout)
+    assert report.target_feature_id == 0, "Identity decoder row zero must match planted feature zero."
+    assert abs(report.steering_delta - 0.75) < 1e-6, (
+        "Unit-norm matched steering at coefficient 0.75 must move the target projection by 0.75."
     )
-    assert auc_report.auc == 1.0, (
-        "Both a predictive and an antipredictive feature should count as perfect separation."
+    assert abs(report.random_steering_delta) < 1e-6, (
+        "The orthogonal random steering direction must not move the target projection."
     )
-    assert roc_auc_binary(feature_acts[:, 1], labels) == 1.0, (
-        "Feature 1 should rank positives above negatives."
+    assert report.ablation_drop > 0.8, (
+        "Removing the matched decoded contribution must substantially reduce the target projection."
     )
-    assert roc_auc_binary(feature_acts[:, 2], labels) == 0.0, (
-        "Feature 2 should rank positives below negatives before polarity correction."
+    assert abs(report.random_ablation_drop) < 1e-6, (
+        "The equal-coefficient orthogonal ablation control must have negligible target effect."
     )
-    print("All tests in `test_best_feature_auc_handles_predictive_and_antipredictive_features` passed!")
+    print("All tests in `test_causal_interventions_beat_equal_strength_random_controls` passed!")
 
 
-def test_decoder_steering_changes_last_position_and_reports_control(
-    apply_decoder_steering: Callable | None = None,
-    steering_comparison_report: Callable | None = None,
-):
+def test_end_to_end_variant_comparison(run_variant_comparison: Callable | None = None):
     solutions = _solutions()
-    apply_decoder_steering = apply_decoder_steering or solutions.apply_decoder_steering
-    steering_comparison_report = (
-        steering_comparison_report or solutions.steering_comparison_report
+    run_variant_comparison = run_variant_comparison or solutions.run_variant_comparison
+    comparison = run_variant_comparison(steps=450, train_examples=2048, heldout_examples=1024)
+    assert set(comparison.results) == set(solutions.VARIANTS), (
+        "The comparison must evaluate ReLU-L1, TopK, gated, and JumpReLU."
     )
-    activations = t.zeros(2, 3, 3)
-    decoder_vectors = t.eye(3)
-    steered = apply_decoder_steering(activations, decoder_vectors, [1], 2.0)
-    all_position_steered = apply_decoder_steering(
-        activations,
-        decoder_vectors,
-        [1],
-        2.0,
-        positions="all",
+    assert comparison.true_l0 > 0, "The planted dataset must contain active latent features."
+    for result in comparison.results.values():
+        assert result.metrics.reconstruction_mse < comparison.zero_baseline_mse, (
+            f"{result.name} must reconstruct held-out activations better than the train-mean baseline."
+        )
+        assert 0.35 < result.shuffled_auc < 0.65, (
+            f"{result.name} shuffled-label AUC should remain near chance."
+        )
+        assert abs(result.intervention.steering_delta) > abs(result.intervention.random_steering_delta) + 0.2, (
+            f"{result.name} matched steering must beat its equal-strength orthogonal control."
+        )
+        assert abs(result.intervention.ablation_drop) > abs(result.intervention.random_ablation_drop) + 0.1, (
+            f"{result.name} matched ablation must beat its equal-coefficient random-direction control."
+        )
+    assert max(r.recovery.recovered_fraction for r in comparison.results.values()) >= 0.75, (
+        "At least one variant must recover three quarters of the planted dictionary."
     )
-    random_control = apply_decoder_steering(activations, decoder_vectors, [2], 0.1)
-
-    t.testing.assert_close(
-        steered,
-        feature_reference.apply_decoder_steering(activations, decoder_vectors, [1], 2.0),
-        msg="Default decoder steering should add the selected decoder vector at the last position.",
+    assert max(r.heldout_auc for r in comparison.results.values()) >= 0.9, (
+        "At least one train-selected feature must exceed 0.9 held-out AUC."
     )
-    assert steered[:, :-1, :].abs().sum().item() == 0.0, (
-        "Default steering should leave non-final positions unchanged."
-    )
-    assert all_position_steered[:, :, 1].eq(2.0).all().item(), (
-        "All-position steering should add the steering direction at every sequence position."
-    )
-    report = steering_comparison_report(
-        baseline_scores=activations[:, -1, 1],
-        steered_scores=steered[:, -1, 1],
-        random_control_scores=random_control[:, -1, 1],
-    )
-    reference_report = feature_reference.steering_comparison_report(
-        baseline_scores=activations[:, -1, 1],
-        steered_scores=steered[:, -1, 1],
-        random_control_scores=random_control[:, -1, 1],
-    )
-    assert report.__dict__ == reference_report.__dict__, (
-        "Steering report should match the reference baseline/steered/random deltas."
-    )
-    assert report.steered_delta > 0.0 and report.random_delta == 0.0, (
-        "Target decoder steering should move the target score while random control should not."
-    )
-    assert report.passes_control, (
-        "Steered delta magnitude should exceed the random-control delta magnitude."
-    )
-    print("All tests in `test_decoder_steering_changes_last_position_and_reports_control` passed!")
+    print("All tests in `test_end_to_end_variant_comparison` passed!")
 
 
 def test_notebook_contract(run_smoke_test: Callable | None = None):
-    if run_smoke_test is None:
-        run_smoke_test = _solutions().run_smoke_test
-    result = run_smoke_test(cpu=True)
-    assert result["reconstruction"]["reconstruction_mse"] == 0.0, (
-        "Notebook contract should include an exact identity-decoder reconstruction."
-    )
-    assert result["toy_superposition"]["density_nondegenerate"], (
-        "Notebook contract should include a nondegenerate toy sparse-feature batch."
-    )
-    assert result["dictionary_recovery"]["recovered_fraction"] > 0.6, (
-        "Notebook contract should include planted dictionary recovery diagnostics."
-    )
-    assert result["feature_auc"]["auc"] == 1.0, (
-        "Notebook contract should include held-out feature-label AUC."
-    )
-    assert result["steering"]["passes_control"], (
-        "Notebook contract should include decoder-vector steering against a random control."
-    )
+    solutions = _solutions()
+    run_smoke_test = run_smoke_test or solutions.run_smoke_test
+    report = run_smoke_test(cpu=True)
+    assert len(report["variants"]) == 4, "The smoke report must include all four SAE variants."
+    assert report["zero_baseline_mse"] > 0, "The reconstruction baseline must be nondegenerate."
+    assert report["true_l0"] > 0, "The smoke dataset must contain active planted features."
     print("All tests in `test_notebook_contract` passed!")
