@@ -53,16 +53,24 @@ def test_mask_tokens_and_coalition_values_preserve_positions(
     structured_token_score = structured_token_score or sol.structured_token_score
 
     masked = mask_tokens(LAB_TOKENS, frozenset({1, 4}))
-    assert masked == (MASK_TOKEN, "approve", MASK_TOKEN, MASK_TOKEN, "transfer")
+    assert masked == (MASK_TOKEN, "approve", MASK_TOKEN, MASK_TOKEN, "transfer"), (
+        "Masking should preserve token positions and reveal only coalition members."
+    )
     values = token_coalition_values(LAB_TOKENS, structured_token_score)
-    assert len(values) == 32 and values[frozenset()] == 0.0
+    assert len(values) == 32 and values[frozenset()] == 0.0, (
+        "Five tokens require all 2^5 coalitions and a zero empty-coalition baseline."
+    )
     assert values[frozenset({4})] == 4.0, "The necessary transfer token supplies the base score."
     assert values[frozenset({1, 2, 3})] == 0.0, "Nothing should score without transfer."
-    assert values[frozenset(range(5))] == 9.0
+    assert values[frozenset(range(5))] == 9.0, (
+        "The full prompt should recover the structured scorer's total value."
+    )
     try:
         mask_tokens(LAB_TOKENS, {5})
     except ValueError as exc:
-        assert "out-of-range" in str(exc)
+        assert "out-of-range" in str(exc), (
+            "Invalid token positions should produce a diagnostic range error."
+        )
     else:
         raise AssertionError("An invalid token position should raise ValueError.")
     print("All tests in `test_mask_tokens_and_coalition_values_preserve_positions` passed!")
@@ -82,7 +90,9 @@ def test_exact_shapley_recovers_known_token_roles(
     expected = t.tensor([0.0, 1 / 3, 1 / 3, 1.5, 41 / 6], dtype=t.float64)
     _assert_close(observed, expected, message="Exact token Shapley oracle")
     _assert_close(observed, _independent_exact(values, 5), message="Permutation oracle")
-    assert abs(float(observed.sum()) - 9.0) < 1e-9
+    assert abs(float(observed.sum()) - 9.0) < 1e-9, (
+        "Exact token Shapley values should satisfy efficiency."
+    )
     print("All tests in `test_exact_shapley_recovers_known_token_roles` passed!")
 
 
@@ -100,7 +110,9 @@ def test_sampled_shapley_matches_exact_and_is_seeded(
     second = sampled_permutation_shapley_values(values, num_players=5, num_samples=2048, seed=7)
     exact = _independent_exact(values, 5)
     _assert_close(first, second, message="Seeded Monte Carlo determinism")
-    assert float((first - exact).abs().max()) < 0.08
+    assert float((first - exact).abs().max()) < 0.08, (
+        "The seeded 2,048-permutation estimate should approximate exact Shapley values."
+    )
     assert abs(float(first.sum()) - 9.0) < 1e-9, "Each sampled ordering must telescope to efficiency."
     print("All tests in `test_sampled_shapley_matches_exact_and_is_seeded` passed!")
 
@@ -136,7 +148,9 @@ def test_pair_differences_reveal_redundancy_and_synergy(
     redundancy = discrete_pair_interaction(values, (1, 2), context={3, 4}, num_players=5)
     synergy = discrete_pair_interaction(values, (3, 4), context=frozenset(), num_players=5)
     distractor = discrete_pair_interaction(values, (0, 4), context=frozenset(), num_players=5)
-    assert redundancy == -2.0 and synergy == 3.0 and distractor == 0.0
+    assert redundancy == -2.0 and synergy == 3.0 and distractor == 0.0, (
+        "Pair differences should separate redundant, synergistic, and irrelevant token pairs."
+    )
     print("All tests in `test_pair_differences_reveal_redundancy_and_synergy` passed!")
 
 
@@ -166,8 +180,12 @@ def test_grouped_players_expose_tokenization_dependence(
         [0.0, 1 / 3, 1 / 3, 1.5, 41 / 6],
         message="Grouped-concept Shapley oracle",
     )
-    assert abs(float(token_shapley[4:6].sum()) - 46 / 6) < 1e-9
-    assert abs(float(group_shapley[4]) - 41 / 6) < 1e-9
+    assert abs(float(token_shapley[4:6].sum()) - 46 / 6) < 1e-9, (
+        "Separate subword players should receive the split-token oracle credit."
+    )
+    assert abs(float(group_shapley[4]) - 41 / 6) < 1e-9, (
+        "Grouping subwords should recover the word-level concept credit."
+    )
     print("All tests in `test_grouped_players_expose_tokenization_dependence` passed!")
 
 
@@ -184,10 +202,18 @@ def test_correlated_support_does_not_identify_attribution(
         lambda tokens: structured_token_score(tokens, redundant_mode="and"),
         pair=(1, 2),
     )
-    assert audit.observed_max_abs_difference == 0.0
-    assert audit.off_manifold_max_abs_difference == 2.0
-    assert abs(audit.attribution_max_abs_difference - 2 / 3) < 1e-9
-    assert not audit.identified_from_observed_support
+    assert audit.observed_max_abs_difference == 0.0, (
+        "The two games should be indistinguishable on observed correlated support."
+    )
+    assert audit.off_manifold_max_abs_difference == 2.0, (
+        "The games should disagree on masked coalitions outside observed support."
+    )
+    assert abs(audit.attribution_max_abs_difference - 2 / 3) < 1e-9, (
+        "Off-manifold ambiguity should change at least one attribution by the analytic amount."
+    )
+    assert not audit.identified_from_observed_support, (
+        "Observed correlated support alone must not identify the token attribution."
+    )
     _assert_close(
         audit.synergy_shapley,
         [0.0, 2 / 3, 2 / 3, 1.5, 37 / 6],
@@ -212,9 +238,15 @@ def test_sampling_convergence_reports_seed_distribution(
         budgets=(4, 16, 64, 1024),
         seeds=tuple(range(40)),
     )
-    assert [row["budget"] for row in rows] == [4, 16, 64, 1024]
-    assert rows[-1]["mean_max_abs_error"] < rows[0]["mean_max_abs_error"]
-    assert rows[-1]["p90_max_abs_error"] < 0.2
+    assert [row["budget"] for row in rows] == [4, 16, 64, 1024], (
+        "The convergence audit should retain every requested sampling budget."
+    )
+    assert rows[-1]["mean_max_abs_error"] < rows[0]["mean_max_abs_error"], (
+        "Increasing the permutation budget should reduce mean approximation error."
+    )
+    assert rows[-1]["p90_max_abs_error"] < 0.2, (
+        "The 1,024-permutation estimate should be reliable across seeds."
+    )
     print("All tests in `test_sampling_convergence_reports_seed_distribution` passed!")
 
 
@@ -249,7 +281,9 @@ def test_random_token_and_shuffled_value_controls_fail(
         before = sorted(value for coalition, value in values.items() if len(coalition) == size)
         after = sorted(value for coalition, value in shuffled.items() if len(coalition) == size)
         assert before == after, f"The size-{size} score distribution must be preserved."
-    assert shuffled[frozenset()] == 0.0 and shuffled[frozenset(range(5))] == 9.0
+    assert shuffled[frozenset()] == 0.0 and shuffled[frozenset(range(5))] == 9.0, (
+        "The shuffled control should preserve the empty and full coalition endpoints."
+    )
 
     exact = exact_shapley_values(values, num_players=5)
     shuffled_exact = exact_shapley_values(shuffled, num_players=5)
@@ -262,17 +296,27 @@ def test_random_token_and_shuffled_value_controls_fail(
         seeds=tuple(range(20)),
         reference_values=exact,
     )
-    assert control_rows[-1]["mean_max_abs_error"] >= 1.0
+    assert control_rows[-1]["mean_max_abs_error"] >= 1.0, (
+        "More samples must not repair a semantically shuffled coalition table."
+    )
     print("All tests in `test_random_token_and_shuffled_value_controls_fail` passed!")
 
 
 def test_release_smoke_contract_remains_compatible(run_smoke_test: Callable | None = None):
     run_smoke_test = run_smoke_test or _solutions().run_smoke_test
     result = run_smoke_test(cpu=True)
-    assert result["coalitions"] == {"empty": 0.0, "target_only": 1.0, "context_and_target": 3.0}
-    assert result["exact"]["exact_values"] == [0.0, 1.0, 0.0, 2.0]
-    assert result["exact"]["baseline"]["satisfies_efficiency"]
-    assert result["sampled"]["approximates_exact"]
+    assert result["coalitions"] == {"empty": 0.0, "target_only": 1.0, "context_and_target": 3.0}, (
+        "The release smoke test should retain the documented coalition values."
+    )
+    assert result["exact"]["exact_values"] == [0.0, 1.0, 0.0, 2.0], (
+        "The release smoke test should retain the documented exact attribution vector."
+    )
+    assert result["exact"]["baseline"]["satisfies_efficiency"], (
+        "The release exact baseline should satisfy Shapley efficiency."
+    )
+    assert result["sampled"]["approximates_exact"], (
+        "The release sampled estimator should remain within its exact-value tolerance."
+    )
     print("All tests in `test_release_smoke_contract_remains_compatible` passed!")
 
 
@@ -280,10 +324,22 @@ def test_committed_gpu_report_matches_token_shapley_contract(result: dict | None
     if result is None:
         report = json.loads((Path(__file__).resolve().parent / "verification_report.json").read_text())
         result = report["metrics"]["gpu_test"]
-    assert result["cuda_available"] and result["preflight_passed"]
-    assert result["model_family"] == "cuda_trained_tiny_token_scorer_mlp"
-    assert result["token_count"] == 4 and result["coalition_count"] == 16
-    assert result["exact_shapley_max_abs_error"] <= 1e-5
-    assert result["sampled_max_abs_error"] <= 0.1 and result["sampled_rank_matches"]
-    assert result["shuffled_control_error"] >= 1.0 and result["shuffled_control_rejected"]
+    assert result["cuda_available"] and result["preflight_passed"], (
+        "The committed preflight should record a successful CUDA execution."
+    )
+    assert result["model_family"] == "cuda_trained_tiny_token_scorer_mlp", (
+        "The report should identify the trained CUDA token-scoring model family."
+    )
+    assert result["token_count"] == 4 and result["coalition_count"] == 16, (
+        "The CUDA preflight should evaluate every coalition of its four token players."
+    )
+    assert result["exact_shapley_max_abs_error"] <= 1e-5, (
+        "Exact CUDA-model Shapley values should match the known attribution oracle."
+    )
+    assert result["sampled_max_abs_error"] <= 0.1 and result["sampled_rank_matches"], (
+        "The sampled CUDA attribution should preserve the exact ranking within tolerance."
+    )
+    assert result["shuffled_control_error"] >= 1.0 and result["shuffled_control_rejected"], (
+        "The CUDA report should visibly reject its shuffled-value semantic control."
+    )
     print("All tests in `test_committed_gpu_report_matches_token_shapley_contract` passed!")
