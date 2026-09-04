@@ -128,7 +128,7 @@ sections:
   '15.1':
     status: course_ready
     page: chapter15_peft_misalignment/instructions/pages/01_[15.1]_LoRA_DoRA_and_Adapter_Controls.md
-    notes: ARENA-style LoRA/DoRA mechanics lesson with validation-loop and signature-result diagrams, help/interpretation dropdowns, paired notebooks, exact rank/SVD and merge-parity tests, limitations, and scoped CUDA safe-proxy evidence.
+    notes: ARENA-style LoRA/DoRA model-organism lesson with nine visible implementation exercises, exact rank/SVD/merge checks, real CUDA LoRA/DoRA/full training, held-out and OOD examples, weight/activation direction audits, random-label and same-norm controls, editable play cell, anomaly hunt, and safe-proxy claim limits.
   '16.1':
     status: course_ready
     page: chapter16_shapley_attribution_baselines/instructions/pages/01_[16.1]_Exact_Shapley_on_Ground_Truth_Games.md

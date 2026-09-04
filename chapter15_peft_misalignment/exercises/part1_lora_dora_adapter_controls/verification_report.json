@@ -65,9 +65,9 @@
       "target_direction": "feature_0"
     }
   ],
-  "date_run": "2026-07-02T12:44:53+00:00",
+  "date_run": "2026-09-04T06:45:19+00:00",
   "evidence_level": "exact_lora_dora_controls_plus_matched_lora_dora_full_finetune_proxy_preflight",
-  "git_commit": "3a539d48",
+  "git_commit": "38c9f5b1",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-0",
   "known_failures": [],
@@ -295,7 +295,7 @@
   "peak_vram_gb": 0.06264543533325195,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "35cb5a76ee3a40938d7ea7837f983ab5cfe63735659ebc23438071cb410c9777",
+    "combined_sha256": "871397f8b2f961f0245d3dbcb54016fa299914b30af714c139d56e2cd6cd953a",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -304,18 +304,18 @@
       },
       {
         "path": "chapter15_peft_misalignment/exercises/part1_lora_dora_adapter_controls/15.1_LoRA_DoRA_and_Adapter_Controls_exercises.ipynb",
-        "sha256": "2d4cc46cb5a1e8bcf65b374cf57aa350cc162c6d0604eecaf338bbe682afb134",
-        "size_bytes": 31633
+        "sha256": "d2202ea15784979d2eb60b6b23ff355f4f5e9198ded12a0f3b05816f2e6ef326",
+        "size_bytes": 82898
       },
       {
         "path": "chapter15_peft_misalignment/exercises/part1_lora_dora_adapter_controls/15.1_LoRA_DoRA_and_Adapter_Controls_solutions.ipynb",
-        "sha256": "a4f39f8024797c4cb59ba7f65eee2f2316db338e6c01cb9e5d8d1c13ac094d88",
-        "size_bytes": 41082
+        "sha256": "061f049c174985ce51a57475e2e310e6d21dcada7b285bade5d5eb3fcdfde1d3",
+        "size_bytes": 118794
       },
       {
         "path": "chapter15_peft_misalignment/exercises/part1_lora_dora_adapter_controls/README.md",
-        "sha256": "579ca866cc932b8f8238042428b26073a08b0476fe1b4696f23883d177f40cc9",
-        "size_bytes": 1630
+        "sha256": "fbaa12c1ba1801dc133897ded41df524d5cb352032b90d6350ef6cbda847ea02",
+        "size_bytes": 1892
       },
       {
         "path": "chapter15_peft_misalignment/exercises/part1_lora_dora_adapter_controls/artifacts.lock.yml",
@@ -339,13 +339,13 @@
       },
       {
         "path": "chapter15_peft_misalignment/exercises/part1_lora_dora_adapter_controls/solutions.py",
-        "sha256": "c22b8d09446284f636b86c463b3ac9ebb4dae37ba69fadd0468d12b2f732ac38",
-        "size_bytes": 29138
+        "sha256": "c902de16342364c9dea43eda8826c6d877b1078c19192dbb4429f9bd99c3912f",
+        "size_bytes": 51116
       },
       {
         "path": "chapter15_peft_misalignment/exercises/part1_lora_dora_adapter_controls/tests.py",
-        "sha256": "e2bd0fd5b2bccc68e9dea043251f66d6fddd8b2198557bc45fe41cdb0e62a63a",
-        "size_bytes": 20199
+        "sha256": "560d324a997b59557d1590cd480063d3708ed61f0b30b05df5c9c42f3b46d814",
+        "size_bytes": 26381
       },
       {
         "path": "chapter15_peft_misalignment/exercises/part1_lora_dora_adapter_controls/utils.py",
@@ -359,8 +359,8 @@
       },
       {
         "path": "chapter15_peft_misalignment/instructions/pages/01_[15.1]_LoRA_DoRA_and_Adapter_Controls.md",
-        "sha256": "0583e896265ecc40a50aa820ff2444971825865b6ba19e260aab6c3caae705e1",
-        "size_bytes": 29459
+        "sha256": "6cd3695dc28a15e7484c51c2176dc5346bd70c6dec7386a9bf0c45fbbfb70c6e",
+        "size_bytes": 61723
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
@@ -375,5 +375,5 @@
     "The trained adapter path uses generated Gaussian binary labels only. No unsafe adapters, refusal-suppression adapters, or user-facing harmful prompt completions are trained or distributed. The LoRA, DoRA, and full-finetune comparison is limited to the generated safe proxy task."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 0.591309
+  "wall_clock_seconds": 3.499094
 }

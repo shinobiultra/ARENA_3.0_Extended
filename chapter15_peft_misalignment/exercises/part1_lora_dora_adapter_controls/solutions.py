@@ -4,6 +4,7 @@
 from dataclasses import dataclass
 import sys
 from pathlib import Path
+from typing import Any, Literal
 
 import torch as t
 from torch import nn
@@ -269,6 +270,577 @@ class FullFinetuneClassifier(nn.Module):
 
     def forward(self, inputs: t.Tensor) -> t.Tensor:
         return inputs @ self.weight.T + self.bias
+
+
+class ProxyLoRAClassifier(nn.Module):
+    """Frozen distractor classifier plus a trainable LoRA adapter."""
+
+    def __init__(self, input_dim: int = 8, rank: int = 1, alpha: float = 4.0):
+        super().__init__()
+        if rank <= 0:
+            raise ValueError("rank must be positive.")
+        base_weight = t.zeros(2, input_dim)
+        base_weight[0, 1] = 1.0
+        base_weight[1, 1] = -1.0
+        self.register_buffer("base_weight", base_weight)
+        self.register_buffer("base_bias", t.zeros(2))
+        self.lora_a = nn.Parameter(0.02 * t.randn(rank, input_dim))
+        self.lora_b = nn.Parameter(t.zeros(2, rank))
+        self.alpha = float(alpha)
+
+    def delta_weight(self) -> t.Tensor:
+        return lora_delta(self.lora_a, self.lora_b, alpha=self.alpha)
+
+    def merged_weight(self) -> t.Tensor:
+        return self.base_weight + self.delta_weight()
+
+    def forward(self, inputs: t.Tensor) -> t.Tensor:
+        return inputs @ self.merged_weight().T + self.base_bias
+
+
+class ProxyDoRAClassifier(nn.Module):
+    """Frozen distractor classifier plus a trainable DoRA adapter."""
+
+    def __init__(self, input_dim: int = 8, rank: int = 1, alpha: float = 4.0):
+        super().__init__()
+        if rank <= 0:
+            raise ValueError("rank must be positive.")
+        base_weight = t.zeros(2, input_dim)
+        base_weight[0, 1] = 1.0
+        base_weight[1, 1] = -1.0
+        self.register_buffer("base_weight", base_weight)
+        self.register_buffer("base_bias", t.zeros(2))
+        self.lora_a = nn.Parameter(0.02 * t.randn(rank, input_dim))
+        self.lora_b = nn.Parameter(t.zeros(2, rank))
+        self.log_magnitude = nn.Parameter(base_weight.norm(dim=-1).clamp_min(1e-6).log())
+        self.alpha = float(alpha)
+
+    def delta_weight(self) -> t.Tensor:
+        return lora_delta(self.lora_a, self.lora_b, alpha=self.alpha)
+
+    def magnitude(self) -> t.Tensor:
+        return self.log_magnitude.exp()
+
+    def recomposed_weight(self) -> t.Tensor:
+        return dora_recompose_weight(self.base_weight, self.delta_weight(), self.magnitude())
+
+    def merged_weight(self) -> t.Tensor:
+        return self.recomposed_weight()
+
+    def forward(self, inputs: t.Tensor) -> t.Tensor:
+        return inputs @ self.recomposed_weight().T + self.base_bias
+
+
+class ProxyFullFinetuneClassifier(nn.Module):
+    """Full linear finetune initialized from the same distractor baseline."""
+
+    def __init__(self, input_dim: int = 8):
+        super().__init__()
+        base_weight = t.zeros(2, input_dim)
+        base_weight[0, 1] = 1.0
+        base_weight[1, 1] = -1.0
+        self.register_buffer("base_weight", base_weight)
+        self.register_buffer("base_bias", t.zeros(2))
+        self.weight = nn.Parameter(base_weight.clone())
+        self.bias = nn.Parameter(t.zeros(2))
+
+    def delta_weight(self) -> t.Tensor:
+        return self.weight - self.base_weight
+
+    def merged_weight(self) -> t.Tensor:
+        return self.weight
+
+    def forward(self, inputs: t.Tensor) -> t.Tensor:
+        return inputs @ self.weight.T + self.bias
+
+
+def make_proxy_batch(
+    *,
+    batch: int,
+    seed: int,
+    device: t.device | str | None = None,
+    random_labels: bool = False,
+    ood_shift: float = 0.0,
+    protected_shift: float = 0.0,
+) -> tuple[t.Tensor, t.Tensor]:
+    """Generate the safe planted-direction task used in the learner notebook."""
+
+    if batch <= 0:
+        raise ValueError("batch must be positive.")
+    device = t.device("cpu") if device is None else t.device(device)
+    generator = t.Generator(device=device).manual_seed(seed)
+    inputs = t.randn(batch, 8, device=device, generator=generator)
+    labels = (inputs[:, 0] > 0).long()
+    if random_labels:
+        labels = t.randint(0, 2, labels.shape, device=device, generator=generator)
+    if ood_shift:
+        signed_label = labels.float().mul(2).sub(1)
+        inputs[:, 1] = float(ood_shift) * signed_label
+    if protected_shift:
+        protected_sign = t.randint(0, 2, labels.shape, device=device, generator=generator)
+        inputs[:, 2] = float(protected_shift) * protected_sign.float().mul(2).sub(1)
+    return inputs, labels
+
+
+def proxy_trainable_parameter_count(model: nn.Module) -> int:
+    return sum(parameter.numel() for parameter in model.parameters() if parameter.requires_grad)
+
+
+def _unit_basis(width: int, index: int, *, device: t.device) -> t.Tensor:
+    direction = t.zeros(width, device=device)
+    direction[index] = 1.0
+    return direction
+
+
+def _decision_direction(weight: t.Tensor) -> t.Tensor:
+    if weight.ndim != 2 or weight.shape[0] != 2:
+        raise ValueError("proxy classifier weight must have shape (2, input_dim).")
+    return weight[1] - weight[0]
+
+
+def _cosine_with_basis(vector: t.Tensor, index: int) -> float:
+    basis = _unit_basis(vector.shape[0], index, device=vector.device)
+    return float(nn.functional.cosine_similarity(vector.float(), basis, dim=0).item())
+
+
+def _model_weight_for_proxy(model: nn.Module) -> t.Tensor:
+    if hasattr(model, "recomposed_weight"):
+        return model.recomposed_weight()
+    if hasattr(model, "merged_weight"):
+        return model.merged_weight()
+    raise TypeError(f"unsupported proxy model type: {type(model)!r}")
+
+
+def singular_value_spectrum(model: nn.Module) -> list[float]:
+    """Return singular values of the learned adapter/update matrix."""
+
+    weight = _model_weight_for_proxy(model)
+    delta = weight - model.base_weight
+    return [float(value) for value in t.linalg.svdvals(delta.float()).detach().cpu()]
+
+
+def _margin_feature_correlation(
+    delta_margin: t.Tensor,
+    inputs: t.Tensor,
+    feature: int,
+) -> float:
+    centered_margin = delta_margin.float() - delta_margin.float().mean()
+    centered_feature = inputs[:, feature].float() - inputs[:, feature].float().mean()
+    denom = centered_margin.norm() * centered_feature.norm()
+    if float(denom.item()) <= 1e-8:
+        return 0.0
+    return float((centered_margin @ centered_feature / denom).item())
+
+
+def evaluate_proxy_adapter(
+    model: nn.Module,
+    *,
+    seed: int = 12345,
+    batch: int = 2048,
+    ood_shift: float = 0.0,
+    protected_shift: float = 0.0,
+) -> dict[str, Any]:
+    """Evaluate behavior, weight direction, and activation-space drift."""
+
+    device = next(model.parameters()).device
+    inputs, labels = make_proxy_batch(
+        batch=batch,
+        seed=seed,
+        device=device,
+        ood_shift=ood_shift,
+        protected_shift=protected_shift,
+    )
+    with t.inference_mode():
+        logits = model(inputs)
+        base_logits = inputs @ model.base_weight.T + model.base_bias
+    predictions = logits.argmax(dim=-1)
+    base_predictions = base_logits.argmax(dim=-1)
+    accuracy = float(predictions.eq(labels).float().mean().item())
+    baseline_accuracy = float(base_predictions.eq(labels).float().mean().item())
+    weight = _model_weight_for_proxy(model)
+    delta = weight - model.base_weight
+    decision = _decision_direction(weight)
+    base_decision = _decision_direction(model.base_weight)
+    margin = logits[:, 1] - logits[:, 0]
+    base_margin = base_logits[:, 1] - base_logits[:, 0]
+    delta_margin = margin - base_margin
+    target_cosine = _cosine_with_basis(decision, 0)
+    distractor_abs_cosine = abs(_cosine_with_basis(decision, 1))
+    protected_abs_cosine = abs(_cosine_with_basis(decision, 2))
+    base_target_cosine = _cosine_with_basis(base_decision, 0)
+    protected_direction = _unit_basis(delta.shape[-1], 2, device=device)
+    protected_projection = intruder_dimension_report(
+        delta,
+        protected_direction,
+        max_projection_fraction=0.2,
+    )
+    return {
+        "accuracy": accuracy,
+        "baseline_accuracy": baseline_accuracy,
+        "accuracy_delta": accuracy - baseline_accuracy,
+        "target_direction_cosine": target_cosine,
+        "baseline_target_direction_cosine": base_target_cosine,
+        "distractor_abs_cosine": distractor_abs_cosine,
+        "protected_abs_cosine": protected_abs_cosine,
+        "protected_projection_fraction": protected_projection.projection_fraction,
+        "protected_direction_flagged": protected_projection.intruder_detected,
+        "activation_target_corr": _margin_feature_correlation(delta_margin, inputs, 0),
+        "activation_distractor_abs_corr": abs(
+            _margin_feature_correlation(delta_margin, inputs, 1)
+        ),
+        "activation_protected_abs_corr": abs(
+            _margin_feature_correlation(delta_margin, inputs, 2)
+        ),
+        "update_norm": float(delta.float().norm().item()),
+        "update_rank": int(t.linalg.matrix_rank(delta.float(), tol=1e-4).item()),
+        "singular_values": singular_value_spectrum(model),
+    }
+
+
+def train_proxy_adapter(
+    *,
+    method: Literal["lora", "dora", "full"] = "lora",
+    rank: int = 1,
+    alpha: float = 4.0,
+    seed: int = 0,
+    data_seed: int = 0,
+    steps: int = 120,
+    batch_size: int = 256,
+    lr: float | None = None,
+    random_labels: bool = False,
+    device: t.device | str | None = None,
+    eval_every: int = 10,
+) -> tuple[nn.Module, dict[str, Any]]:
+    """Train a real adapter on the planted target-direction proxy task."""
+
+    if steps <= 0:
+        raise ValueError("steps must be positive.")
+    device = t.device("cpu") if device is None else t.device(device)
+    t.manual_seed(seed)
+    if method == "lora":
+        model: nn.Module = ProxyLoRAClassifier(rank=rank, alpha=alpha).to(device)
+        default_lr = 0.1
+    elif method == "dora":
+        model = ProxyDoRAClassifier(rank=rank, alpha=alpha).to(device)
+        default_lr = 0.1
+    elif method == "full":
+        model = ProxyFullFinetuneClassifier().to(device)
+        default_lr = 0.05
+    else:
+        raise ValueError("method must be 'lora', 'dora', or 'full'.")
+
+    optimizer = t.optim.AdamW(model.parameters(), lr=default_lr if lr is None else lr, weight_decay=0.0)
+    trace: dict[str, Any] = {
+        "method": method,
+        "rank": rank,
+        "alpha": float(alpha),
+        "seed": seed,
+        "data_seed": data_seed,
+        "random_labels": bool(random_labels),
+        "step": [],
+        "loss": [],
+        "train_accuracy": [],
+        "eval_accuracy": [],
+        "target_direction_cosine": [],
+        "protected_abs_cosine": [],
+    }
+    checkpoint_steps = set(range(eval_every, steps + 1, eval_every)) | {1, steps}
+
+    for step in range(1, steps + 1):
+        inputs, labels = make_proxy_batch(
+            batch=batch_size,
+            seed=data_seed * 1000 + step,
+            device=device,
+            random_labels=random_labels,
+        )
+        logits = model(inputs)
+        loss = nn.functional.cross_entropy(logits, labels)
+        optimizer.zero_grad(set_to_none=True)
+        loss.backward()
+        optimizer.step()
+
+        if step in checkpoint_steps:
+            with t.inference_mode():
+                train_accuracy = float(logits.argmax(dim=-1).eq(labels).float().mean().item())
+            eval_report = evaluate_proxy_adapter(model, seed=9000 + step, batch=1024)
+            trace["step"].append(step)
+            trace["loss"].append(float(loss.detach().item()))
+            trace["train_accuracy"].append(train_accuracy)
+            trace["eval_accuracy"].append(eval_report["accuracy"])
+            trace["target_direction_cosine"].append(eval_report["target_direction_cosine"])
+            trace["protected_abs_cosine"].append(eval_report["protected_abs_cosine"])
+
+    trace["final_loss"] = trace["loss"][-1]
+    trace["trainable_parameters"] = proxy_trainable_parameter_count(model)
+    return model, trace
+
+
+def _random_delta_metrics(
+    base_weight: t.Tensor,
+    random_delta: t.Tensor,
+    *,
+    seed: int,
+    batch: int,
+    ood_shift: float = 0.0,
+) -> dict[str, Any]:
+    device = base_weight.device
+    inputs, labels = make_proxy_batch(
+        batch=batch,
+        seed=seed,
+        device=device,
+        ood_shift=ood_shift,
+    )
+    with t.inference_mode():
+        logits = inputs @ (base_weight + random_delta).T
+        base_logits = inputs @ base_weight.T
+    decision = _decision_direction(base_weight + random_delta)
+    delta_margin = (logits[:, 1] - logits[:, 0]) - (base_logits[:, 1] - base_logits[:, 0])
+    return {
+        "accuracy": float(logits.argmax(dim=-1).eq(labels).float().mean().item()),
+        "target_direction_cosine": _cosine_with_basis(decision, 0),
+        "distractor_abs_cosine": abs(_cosine_with_basis(decision, 1)),
+        "protected_abs_cosine": abs(_cosine_with_basis(decision, 2)),
+        "activation_target_corr": _margin_feature_correlation(delta_margin, inputs, 0),
+        "activation_protected_abs_corr": abs(
+            _margin_feature_correlation(delta_margin, inputs, 2)
+        ),
+        "update_rank": int(t.linalg.matrix_rank(random_delta.float(), tol=1e-4).item()),
+        "update_norm": float(random_delta.float().norm().item()),
+        "singular_values": [
+            float(value) for value in t.linalg.svdvals(random_delta.detach().float()).cpu()
+        ],
+    }
+
+
+def same_norm_random_adapter_control(
+    learned_model: nn.Module,
+    *,
+    seed: int = 777,
+    eval_seed: int = 54321,
+    batch: int = 2048,
+) -> dict[str, Any]:
+    """Evaluate a random update scaled to the learned adapter's Frobenius norm."""
+
+    device = next(learned_model.parameters()).device
+    learned_delta = _model_weight_for_proxy(learned_model) - learned_model.base_weight
+    generator = t.Generator(device=device).manual_seed(seed)
+    random_delta = t.randn(learned_delta.shape, device=device, generator=generator)
+    random_delta = random_delta / random_delta.norm().clamp_min(1e-8) * learned_delta.norm()
+    in_distribution = _random_delta_metrics(
+        learned_model.base_weight,
+        random_delta,
+        seed=eval_seed,
+        batch=batch,
+    )
+    ood = _random_delta_metrics(
+        learned_model.base_weight,
+        random_delta,
+        seed=eval_seed + 1,
+        batch=batch,
+        ood_shift=0.75,
+    )
+    return {
+        "method": "same-norm random adapter",
+        "is_control": True,
+        "accuracy": in_distribution["accuracy"],
+        "ood_accuracy": ood["accuracy"],
+        "target_direction_cosine": in_distribution["target_direction_cosine"],
+        "distractor_abs_cosine": in_distribution["distractor_abs_cosine"],
+        "protected_abs_cosine": in_distribution["protected_abs_cosine"],
+        "activation_target_corr": in_distribution["activation_target_corr"],
+        "activation_protected_abs_corr": in_distribution["activation_protected_abs_corr"],
+        "update_rank": in_distribution["update_rank"],
+        "update_norm": in_distribution["update_norm"],
+        "singular_values": in_distribution["singular_values"],
+        "control_fails": in_distribution["accuracy"] <= 0.75,
+    }
+
+
+def behavior_example_table(
+    model: nn.Module,
+    *,
+    seed: int = 31415,
+    rows: int = 10,
+    ood_shift: float = 0.75,
+) -> list[dict[str, Any]]:
+    """Create example-level evidence comparing baseline and adapter predictions."""
+
+    device = next(model.parameters()).device
+    inputs, labels = make_proxy_batch(
+        batch=rows,
+        seed=seed,
+        device=device,
+        ood_shift=ood_shift,
+        protected_shift=1.25,
+    )
+    with t.inference_mode():
+        adapter_logits = model(inputs)
+        base_logits = inputs @ model.base_weight.T + model.base_bias
+    adapter_margin = adapter_logits[:, 1] - adapter_logits[:, 0]
+    base_margin = base_logits[:, 1] - base_logits[:, 0]
+    table: list[dict[str, Any]] = []
+    for i in range(rows):
+        table.append(
+            {
+                "example": i,
+                "target_x0": round(float(inputs[i, 0].item()), 3),
+                "distractor_x1": round(float(inputs[i, 1].item()), 3),
+                "protected_x2": round(float(inputs[i, 2].item()), 3),
+                "label": int(labels[i].item()),
+                "baseline_pred": int(base_logits[i].argmax().item()),
+                "adapter_pred": int(adapter_logits[i].argmax().item()),
+                "baseline_margin": round(float(base_margin[i].item()), 3),
+                "adapter_margin": round(float(adapter_margin[i].item()), 3),
+            }
+        )
+    return table
+
+
+def compare_proxy_methods(
+    *,
+    rank: int = 1,
+    alpha: float = 4.0,
+    seed: int = 0,
+    data_seed: int = 0,
+    steps: int = 120,
+    device: t.device | str | None = None,
+) -> dict[str, Any]:
+    """Train matched LoRA, DoRA, and full-finetune runs plus two controls."""
+
+    device = t.device("cpu") if device is None else t.device(device)
+    trained: dict[str, tuple[nn.Module, dict[str, Any]]] = {}
+    for offset, method in enumerate(("lora", "dora", "full")):
+        trained[method] = train_proxy_adapter(
+            method=method, rank=rank, alpha=alpha, seed=seed + offset, data_seed=data_seed,
+            steps=steps, device=device
+        )
+    random_label_model, random_label_trace = train_proxy_adapter(
+        method="lora",
+        rank=rank,
+        alpha=alpha,
+        seed=seed + 11,
+        data_seed=data_seed,
+        steps=steps,
+        random_labels=True,
+        device=device,
+    )
+
+    rows: list[dict[str, Any]] = []
+    traces: dict[str, dict[str, Any]] = {}
+    models: dict[str, nn.Module] = {}
+    for method, (model, trace) in trained.items():
+        eval_report = evaluate_proxy_adapter(model, seed=12345, batch=2048)
+        ood_report = evaluate_proxy_adapter(model, seed=12346, batch=2048, ood_shift=0.75)
+        row = {
+            "method": method,
+            "is_control": False,
+            "trainable_parameters": trace["trainable_parameters"],
+            "final_loss": trace["final_loss"],
+            "accuracy": eval_report["accuracy"],
+            "ood_accuracy": ood_report["accuracy"],
+            "target_direction_cosine": eval_report["target_direction_cosine"],
+            "distractor_abs_cosine": eval_report["distractor_abs_cosine"],
+            "protected_abs_cosine": eval_report["protected_abs_cosine"],
+            "activation_target_corr": eval_report["activation_target_corr"],
+            "activation_protected_abs_corr": eval_report["activation_protected_abs_corr"],
+            "update_rank": eval_report["update_rank"],
+            "update_norm": eval_report["update_norm"],
+            "singular_values": eval_report["singular_values"],
+        }
+        rows.append(row)
+        traces[method] = trace
+        models[method] = model
+
+    random_label_eval = evaluate_proxy_adapter(random_label_model, seed=12345, batch=2048)
+    random_label_ood = evaluate_proxy_adapter(
+        random_label_model,
+        seed=12346,
+        batch=2048,
+        ood_shift=0.75,
+    )
+    rows.append(
+        {
+            "method": "random-label LoRA",
+            "is_control": True,
+            "trainable_parameters": random_label_trace["trainable_parameters"],
+            "final_loss": random_label_trace["final_loss"],
+            "accuracy": random_label_eval["accuracy"],
+            "ood_accuracy": random_label_ood["accuracy"],
+            "target_direction_cosine": random_label_eval["target_direction_cosine"],
+            "distractor_abs_cosine": random_label_eval["distractor_abs_cosine"],
+            "protected_abs_cosine": random_label_eval["protected_abs_cosine"],
+            "activation_target_corr": random_label_eval["activation_target_corr"],
+            "activation_protected_abs_corr": random_label_eval["activation_protected_abs_corr"],
+            "update_rank": random_label_eval["update_rank"],
+            "update_norm": random_label_eval["update_norm"],
+            "singular_values": random_label_eval["singular_values"],
+            "control_fails": random_label_eval["accuracy"] <= 0.65,
+        }
+    )
+    traces["random-label LoRA"] = random_label_trace
+    random_control = same_norm_random_adapter_control(models["lora"], seed=777, eval_seed=54321)
+    random_control["trainable_parameters"] = 0
+    random_control["final_loss"] = float("nan")
+    rows.append(random_control)
+
+    merge_inputs, _ = make_proxy_batch(batch=512, seed=456, device=device)
+    lora_model = models["lora"]
+    merge_parity = lora_merge_max_abs_diff(
+        merge_inputs,
+        lora_model.base_weight,
+        lora_model.lora_a,
+        lora_model.lora_b,
+        alpha=lora_model.alpha,
+    )
+    return {
+        "rank": rank,
+        "alpha": float(alpha),
+        "seed": seed,
+        "steps": steps,
+        "rows": rows,
+        "traces": traces,
+        "lora_singular_values": rows[0]["singular_values"],
+        "merge_max_abs_diff": merge_parity,
+        "behavior_examples": behavior_example_table(models["lora"]),
+    }
+
+
+def build_signature_payload(
+    *,
+    rank: int = 1,
+    alpha: float = 4.0,
+    seed: int = 0,
+    steps: int = 120,
+    device: t.device | str | None = None,
+) -> dict[str, Any]:
+    """Return the data needed for the notebook's visible signature panel."""
+
+    comparison = compare_proxy_methods(
+        rank=rank,
+        alpha=alpha,
+        seed=seed,
+        steps=steps,
+        device=device,
+    )
+    rows = comparison["rows"]
+    learned_rows = [row for row in rows if not row["is_control"]]
+    controls = [row for row in rows if row["is_control"]]
+    signature_passed = (
+        min(row["accuracy"] for row in learned_rows) >= 0.95
+        and min(row["ood_accuracy"] for row in learned_rows) >= 0.90
+        and min(row["target_direction_cosine"] for row in learned_rows) >= 0.95
+        and max(row["protected_abs_cosine"] for row in learned_rows) <= 0.20
+        and controls[0]["control_fails"]
+        and controls[1]["control_fails"]
+        and comparison["merge_max_abs_diff"] <= 1e-5
+    )
+    comparison["signature_passed"] = signature_passed
+    comparison["claim"] = (
+        "On this generated safe proxy, matched LoRA/DoRA/full-finetune adapters "
+        "learn the planted target direction while random-label and same-norm random "
+        "adapter controls fail."
+    )
+    return comparison
 
 
 # %%

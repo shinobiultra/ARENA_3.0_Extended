@@ -397,6 +397,118 @@ def test_notebook_contract(run_smoke_test: Callable | None = None):
     print("All tests in `test_notebook_contract` passed!")
 
 
+def test_proxy_batch_has_planted_target_and_ood_conflict(
+    make_proxy_batch: Callable | None = None,
+):
+    make_proxy_batch = make_proxy_batch or _solutions().make_proxy_batch
+    inputs, labels = make_proxy_batch(batch=1024, seed=0)
+    assert inputs.shape == (1024, 8), (
+        "The proxy batch should expose 8 activation-like coordinates per example."
+    )
+    assert t.equal(labels, (inputs[:, 0] > 0).long()), (
+        "Labels must be planted in feature 0 so the ground-truth mechanism is inspectable."
+    )
+
+    ood_inputs, ood_labels = make_proxy_batch(batch=1024, seed=1, ood_shift=0.75)
+    base_weight = t.zeros(2, 8)
+    base_weight[0, 1] = 1.0
+    base_weight[1, 1] = -1.0
+    base_accuracy = (ood_inputs @ base_weight.T).argmax(dim=-1).eq(ood_labels).float().mean()
+    assert float(base_accuracy.item()) <= 0.05, (
+        "The OOD split should put the frozen distractor direction in conflict with the label."
+    )
+    print("All tests in `test_proxy_batch_has_planted_target_and_ood_conflict` passed!")
+
+
+def test_train_proxy_adapter_returns_learning_trace_on_cpu(
+    train_proxy_adapter: Callable | None = None,
+    evaluate_proxy_adapter: Callable | None = None,
+):
+    solutions = _solutions()
+    train_proxy_adapter = train_proxy_adapter or solutions.train_proxy_adapter
+    evaluate_proxy_adapter = evaluate_proxy_adapter or solutions.evaluate_proxy_adapter
+    model, trace = train_proxy_adapter(method="lora", rank=1, alpha=4.0, seed=0, steps=60)
+    report = evaluate_proxy_adapter(model, seed=12345, batch=2048)
+
+    assert trace["method"] == "lora" and trace["rank"] == 1, (
+        "The training trace should preserve the learner's method and rank settings."
+    )
+    assert len(trace["step"]) >= 3 and trace["loss"][0] > trace["loss"][-1], (
+        "The trace should expose a real decreasing training curve."
+    )
+    assert report["accuracy"] >= 0.95 and report["baseline_accuracy"] <= 0.65, (
+        "The trained LoRA adapter should solve the planted target task while the frozen baseline fails."
+    )
+    assert report["target_direction_cosine"] >= 0.95, (
+        "The learned decision direction should align with the planted target feature."
+    )
+    assert report["protected_abs_cosine"] <= 0.2, (
+        "The learned adapter should not drift strongly into the protected feature direction."
+    )
+    assert report["activation_target_corr"] >= 0.95, (
+        "The margin drift should be explained by the target activation coordinate."
+    )
+    print("All tests in `test_train_proxy_adapter_returns_learning_trace_on_cpu` passed!")
+
+
+def test_same_norm_random_adapter_control_fails_on_cpu(
+    train_proxy_adapter: Callable | None = None,
+    same_norm_random_adapter_control: Callable | None = None,
+):
+    solutions = _solutions()
+    train_proxy_adapter = train_proxy_adapter or solutions.train_proxy_adapter
+    same_norm_random_adapter_control = (
+        same_norm_random_adapter_control or solutions.same_norm_random_adapter_control
+    )
+    model, _trace = train_proxy_adapter(method="lora", rank=1, alpha=4.0, seed=0, steps=60)
+    control = same_norm_random_adapter_control(model, seed=777, eval_seed=54321)
+
+    assert control["control_fails"], (
+        "A same-norm random adapter should not be accepted as a learned mechanism."
+    )
+    assert control["update_norm"] > 0.0, (
+        "The control should be a real nonzero update scaled to the learned update norm."
+    )
+    assert control["protected_abs_cosine"] > 0.2 or control["accuracy"] <= 0.75, (
+        "The control should visibly fail by behavior or protected-direction drift."
+    )
+    print("All tests in `test_same_norm_random_adapter_control_fails_on_cpu` passed!")
+
+
+def test_signature_payload_exposes_matched_methods_and_controls(
+    build_signature_payload: Callable | None = None,
+):
+    build_signature_payload = build_signature_payload or _solutions().build_signature_payload
+    payload = build_signature_payload(rank=1, alpha=4.0, seed=0, steps=80)
+    rows = {row["method"]: row for row in payload["rows"]}
+
+    assert payload["signature_passed"], (
+        "The signature payload should pass only when learned methods pass and controls fail."
+    )
+    assert {"lora", "dora", "full", "random-label LoRA", "same-norm random adapter"} <= rows.keys(), (
+        "The payload should contain matched LoRA, DoRA, full-finetune, and both controls."
+    )
+    assert rows["lora"]["trainable_parameters"] < rows["full"]["trainable_parameters"], (
+        "LoRA should use fewer trainable parameters than the matched full finetune."
+    )
+    assert rows["random-label LoRA"]["control_fails"], (
+        "The random-label LoRA control should fail the held-out task."
+    )
+    assert rows["same-norm random adapter"]["control_fails"], (
+        "The same-norm random adapter control should fail the held-out task."
+    )
+    assert payload["merge_max_abs_diff"] <= 1e-5, (
+        "The visible signature result should include merge/unmerge parity."
+    )
+    assert len(payload["lora_singular_values"]) == 2 and payload["lora_singular_values"][0] > 1.0, (
+        "The learned LoRA spectrum should expose the nonzero rank-one update."
+    )
+    assert len(payload["behavior_examples"]) >= 6, (
+        "The learner should see concrete example-level baseline and adapter predictions."
+    )
+    print("All tests in `test_signature_payload_exposes_matched_methods_and_controls` passed!")
+
+
 def test_committed_verification_report_trained_peft_controls(
     report: dict[str, Any] | None = None,
 ):
@@ -494,6 +606,25 @@ def test_exercise_notebook_declares_full_verification_contract():
     assert "def run_full_experiment(max_vram_gb: float = 24.0)" in source, (
         "The learner notebook should expose the full experiment surface."
     )
+    assert source.count("### Exercise") >= 6, (
+        "15.1 should have at least six learner-facing exercises with immediate tests."
+    )
+    for required in [
+        "def train_proxy_adapter(",
+        "def evaluate_proxy_adapter(",
+        "def same_norm_random_adapter_control(",
+        "def build_signature_payload(",
+        "lora_dora_adapter_controls_signature_panel.png",
+        "lora_dora_adapter_controls_behavior_table.png",
+        'build_signature_payload(rank=1, alpha=4.0, seed=0, steps=80, device="cuda")',
+        "Try It Yourself",
+        "PLAY_RANK",
+        "PLAY_ALPHA",
+        "PLAY_SEED",
+        "PLAY_METHOD",
+        "Anomaly Hunt",
+    ]:
+        assert required in source, f"The learner notebook is missing `{required}`."
     assert "test_committed_verification_report_trained_peft_controls" in source, (
         "The learner notebook should end by checking the committed trained-PEFT report."
     )
