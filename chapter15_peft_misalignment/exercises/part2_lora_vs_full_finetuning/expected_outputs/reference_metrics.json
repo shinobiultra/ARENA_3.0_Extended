@@ -1,0 +1,91 @@
+{
+  "claim": "Matched PEFT and full finetuning can solve this held-out-template task while producing measurably different weight spectra and activation mechanisms.",
+  "controls_required": [
+    "base",
+    "lora_r1",
+    "lora_r4",
+    "full",
+    "random_labels",
+    "same_norm_random",
+    "random_activation_direction",
+    "protected_next_token_replay"
+  ],
+  "heldout_examples_min": 20,
+  "learner_signature_asset": "lora_full_signature_panel.png",
+  "measured_cpu_reference": {
+    "batch_size": 12,
+    "behavior_accuracy": {
+      "base": 0.5,
+      "full": 1.0,
+      "lora_r1": 0.55,
+      "lora_r4": 1.0,
+      "random_labels": 0.3,
+      "same_norm_random": 0.5
+    },
+    "causal_target_probability_drop": {
+      "full": 0.0014,
+      "lora_r1": 0.01927,
+      "lora_r4": 0.06607,
+      "random_labels": 0.03713,
+      "same_norm_random": 0.01365
+    },
+    "effective_rank": {
+      "full": 9.1912,
+      "lora_r1": 1.6306,
+      "lora_r4": 1.5143,
+      "random_labels": 2.6212,
+      "same_norm_random": 7.1146
+    },
+    "lora_r4_random_direction_drop": 0.00466,
+    "protected_nll_change": {
+      "full": -1.55466,
+      "lora_r1": -1.36055,
+      "lora_r4": -1.29033,
+      "random_labels": -1.43777,
+      "same_norm_random": 8.7698
+    },
+    "seed": 0,
+    "steps": 16,
+    "wall_clock_seconds": 277.06
+  },
+  "measured_cuda_reference": {
+    "batch_size": 16,
+    "behavior_accuracy": {
+      "base": 0.5,
+      "full": 1.0,
+      "lora_r1": 1.0,
+      "lora_r4": 1.0,
+      "random_labels": 0.6,
+      "same_norm_random": 0.5
+    },
+    "causal_target_probability_drop": {
+      "full": 0.001014,
+      "lora_r1": 0.383759,
+      "lora_r4": 0.332934,
+      "random_labels": -0.012211,
+      "same_norm_random": 0.067694
+    },
+    "effective_rank": {
+      "full": 9.305778,
+      "lora_r1": 1.261297,
+      "lora_r4": 2.500621,
+      "random_labels": 1.434586,
+      "same_norm_random": 7.114558
+    },
+    "gpu": "NVIDIA GeForce RTX 5090 Laptop GPU",
+    "lora_r4_random_direction_drop": -0.000156,
+    "peak_vram_gb": 0.536889,
+    "protected_nll_change": {
+      "full": -1.555303,
+      "lora_r1": -1.531451,
+      "lora_r4": -1.551694,
+      "random_labels": -1.519571,
+      "same_norm_random": 14.504203
+    },
+    "seed": 0,
+    "steps": 96,
+    "torch": "2.12.1+cu132",
+    "cuda": "13.2"
+  },
+  "pipeline_preflight_is_signature_result": false
+}

@@ -1511,14 +1511,14 @@ requirements:
   - id: peft.lora_from_scratch
     topic: LoRA from scratch in transformer attention and MLP projections
     chapter: 9 Finetuning, LoRA, DoRA, and misalignment
-    section: "15.1"
-    status: TOY_ONLY
+    section: "15.2"
+    status: PREFLIGHT_ONLY
     roadmap_refs: [Extension-Roadmap.md:4939-4967, Extension-Roadmap.md:5362-5380]
-    course_sections: ["15.1"]
+    course_sections: ["15.1", "15.2"]
     method_registry_names: ["LoRA, DoRA, and adapter interpretability"]
-    evidence: [chapter15_peft_misalignment/exercises/part1_lora_dora_adapter_controls]
-    reason: Exact low-rank update, rank, merge, and training mechanics are taught on a small linear organism.
-    blocker: No transformer Q/K/V/O or MLP LoRA insertion and training exercise exists.
+    evidence: [chapter15_peft_misalignment/exercises/part1_lora_dora_adapter_controls, chapter15_peft_misalignment/exercises/part2_lora_vs_full_finetuning]
+    reason: Students implement scaled low-rank updates, transparent GPT-Neo Q/V adapter injection, freezing, merge parity, matched training, and real-transformer update extraction.
+    blocker: The roadmap also requires K/O and MLP projection variants; the current real-transformer lab deliberately covers Q/V only.
 
   - id: peft.dora_from_scratch
     topic: DoRA magnitude-direction decomposition from scratch
@@ -1533,22 +1533,24 @@ requirements:
   - id: peft.lora_vs_full_finetuning
     topic: LoRA versus DoRA versus full finetuning on matched transformer tasks
     chapter: 9 Finetuning, LoRA, DoRA, and misalignment
-    section: "15.1"
-    status: TOY_ONLY
+    section: "15.2"
+    status: PREFLIGHT_ONLY
     roadmap_refs: [Extension-Roadmap.md:4992-5047, Extension-Roadmap.md:5362-5380]
-    evidence: [chapter15_peft_misalignment/exercises/part1_lora_dora_adapter_controls]
-    reason: A matched eight-dimensional classifier comparison records task performance and update spectra.
-    blocker: The roadmap requires transformer adapters, OOD behavior, and crosscoder feature differences.
+    course_sections: ["15.1", "15.2"]
+    evidence: [chapter15_peft_misalignment/exercises/part1_lora_dora_adapter_controls, chapter15_peft_misalignment/exercises/part2_lora_vs_full_finetuning]
+    reason: Pinned TinyStories-1M LoRA and full finetuning use matched data, steps, behavior metrics, protected replay, weight spectra, activation drift, and causal ablations.
+    blocker: DoRA remains a toy organism, and the real-transformer comparison does not yet include crosscoder feature differences or a substantial semantic OOD suite.
 
   - id: peft.adapter_svd_intruder_dimensions
     topic: Adapter SVD, effective rank, subspace overlap, and intruder dimensions
     chapter: 9 Finetuning, LoRA, DoRA, and misalignment
-    section: "15.1"
-    status: TOY_ONLY
+    section: "15.2"
+    status: PREFLIGHT_ONLY
     roadmap_refs: [Extension-Roadmap.md:4992-5047, Extension-Roadmap.md:5362-5380]
-    evidence: [chapter15_peft_misalignment/exercises/part1_lora_dora_adapter_controls]
-    reason: The toy section plots singular spectra and effective rank.
-    blocker: No pretrained-transformer weight-delta spectrum or intruder-dimension replication exists.
+    course_sections: ["15.1", "15.2"]
+    evidence: [chapter15_peft_misalignment/exercises/part1_lora_dora_adapter_controls, chapter15_peft_misalignment/exercises/part2_lora_vs_full_finetuning]
+    reason: Students extract and compare actual pretrained-transformer Q/V weight-delta singular spectra and effective ranks across LoRA, full, random-label, and same-norm controls.
+    blocker: The section does not yet measure base/update subspace overlap or explicitly identify intruder dimensions.
 
   - id: peft.qlora
     topic: QLoRA quantized adapter training
@@ -1563,12 +1565,13 @@ requirements:
   - id: peft.safe_lora_misalignment_proxy
     topic: Safe LoRA-induced broad behavior drift and causal activation direction
     chapter: 9 Finetuning, LoRA, DoRA, and misalignment
-    section: "15.1"
-    status: TOY_ONLY
+    section: "15.2"
+    status: PREFLIGHT_ONLY
     roadmap_refs: [Extension-Roadmap.md:5049-5129, Extension-Roadmap.md:5362-5380]
-    evidence: [chapter15_peft_misalignment/exercises/part1_lora_dora_adapter_controls]
-    reason: A generated rank-one safe proxy classifier tests target, shuffled-label, and random-adapter effects.
-    blocker: No language-model behavior drift, checkpoint phase transition, or projection-out study exists.
+    course_sections: ["15.1", "15.2"]
+    evidence: [chapter15_peft_misalignment/exercises/part1_lora_dora_adapter_controls, chapter15_peft_misalignment/exercises/part2_lora_vs_full_finetuning]
+    reason: A real pretrained language model is adapted on a safe codebook task and audited with protected-prompt NLL, activation drift, dominant-direction projection, random labels, and same-norm adapters.
+    blocker: The safe task does not establish broad behavioral drift or a checkpoint phase transition, and only one layer and seed are studied.
 
   - id: peft.vlm_lora
     topic: VLM LoRA visual instruction-tuning interpretability

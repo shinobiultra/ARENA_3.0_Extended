@@ -1,0 +1,324 @@
+{
+  "accepted": true,
+  "baselines": {
+    "declared_controls": [
+      "exact_toy_b_times_a_rank_oracle",
+      "pretrained_base_model",
+      "rank_1_lora",
+      "rank_4_lora",
+      "matched_full_model_finetuning",
+      "fixed_seed_random_label_lora",
+      "same_norm_random_rank_4_update",
+      "matched_random_activation_direction",
+      "disjoint_heldout_prompt_templates",
+      "unrelated_tinystories_next_token_replay",
+      "merge_unmerge_logit_parity",
+      "trainable_parameter_count",
+      "actual_q_proj_and_v_proj_weight_svd",
+      "layer_6_activation_drift_svd",
+      "dominant_drift_projection_ablation"
+    ],
+    "expected_metrics": {
+      "accepted": true,
+      "dominant_direction_drop_margin_min": 0.005,
+      "full_heldout_accuracy_min": 0.85,
+      "heldout_examples_min": 20,
+      "lora_r1_heldout_accuracy_min": 0.75,
+      "lora_r4_heldout_accuracy_min": 0.85,
+      "lora_update_effective_rank_max": 8.1,
+      "max_allowed_gpu_gb": 24,
+      "protected_nll_change_max": 1.5,
+      "random_label_control_accuracy_max": 0.7,
+      "same_norm_random_control_accuracy_max": 0.7,
+      "tests_passed": true,
+      "within_vram_budget": true
+    }
+  },
+  "claim_scope": "A pinned 3.7M-parameter pretrained TinyStories GPT-Neo model is adapted on a safe generated marker-to-color next-token task with disjoint held-out templates. Rank-1 LoRA, rank-4 LoRA, and full-model finetuning use the same examples, batches, step counts, objective, and protected-task replay, with explicit method-specific learning rates. The learner compares behavior, selected real-transformer update spectra, layer-6 activation drift, and causal removal of the dominant adapter-induced direction against base, random-label, same-norm random low-rank, and random-direction controls. This is template-generalization evidence, not a broad PEFT equivalence claim.",
+  "datasets": [
+    {
+      "heldout_examples": 20,
+      "heldout_scope": "same_subjects_disjoint_prompt_templates",
+      "heldout_templates": 2,
+      "id": "course_generated_marker_codebook_v1",
+      "seed": 0,
+      "source": "generated_safe_prompts",
+      "training_examples": 30,
+      "training_templates": 3
+    },
+    {
+      "examples": 4,
+      "id": "course_generated_tinystories_replay_v1",
+      "purpose": "unrelated_capability_protection_and_measurement",
+      "seed": "deterministic",
+      "source": "generated_safe_next_token_pairs"
+    }
+  ],
+  "date_run": "2026-09-04T14:10:32+00:00",
+  "evidence_level": "pinned_pretrained_transformer_matched_peft_and_full_finetuning_comparison",
+  "git_commit": "8f47077d",
+  "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+  "gt_tier": "GT-1",
+  "known_failures": [],
+  "metrics": {
+    "gpu_evidence": {
+      "category": "cuda_section_metric",
+      "placeholder_only": false,
+      "section_specific_metric_keys": [
+        "accepted",
+        "behavior",
+        "causal_intervention",
+        "checks",
+        "dominant_direction_drop_margin",
+        "effective_rank",
+        "full_heldout_accuracy",
+        "heldout_examples",
+        "lora_r1_heldout_accuracy",
+        "lora_r4_heldout_accuracy",
+        "lora_update_effective_rank",
+        "model_id",
+        "model_revision",
+        "protected_nll_change",
+        "protected_nll_change_by_method",
+        "random_label_control_accuracy",
+        "same_norm_random_control_accuracy",
+        "top_drift_variance_fraction",
+        "wall_clock_seconds"
+      ],
+      "uses_cuda": true
+    },
+    "gpu_test": {
+      "accepted": true,
+      "behavior": {
+        "base": {
+          "accuracy": 0.5,
+          "target_probability": 0.46461987495422363
+        },
+        "full": {
+          "accuracy": 1.0,
+          "target_probability": 0.9998518824577332
+        },
+        "lora_r1": {
+          "accuracy": 1.0,
+          "target_probability": 0.9271678924560547
+        },
+        "lora_r4": {
+          "accuracy": 1.0,
+          "target_probability": 0.9837644696235657
+        },
+        "random_labels": {
+          "accuracy": 0.6000000238418579,
+          "target_probability": 0.5697365403175354
+        },
+        "same_norm_random": {
+          "accuracy": 0.5,
+          "target_probability": 0.5146152377128601
+        }
+      },
+      "causal_intervention": {
+        "full": {
+          "accuracy_drop": 0.0,
+          "random_direction_drop": -8.940696716308594e-07,
+          "target_probability_drop": 0.00101393461227417
+        },
+        "lora_r1": {
+          "accuracy_drop": 0.5,
+          "random_direction_drop": 0.0026311874389648438,
+          "target_probability_drop": 0.3837593197822571
+        },
+        "lora_r4": {
+          "accuracy_drop": 0.25,
+          "random_direction_drop": -0.00015628337860107422,
+          "target_probability_drop": 0.3329339027404785
+        },
+        "random_labels": {
+          "accuracy_drop": -0.050000011920928955,
+          "random_direction_drop": 0.0016908049583435059,
+          "target_probability_drop": -0.0122109055519104
+        },
+        "same_norm_random": {
+          "accuracy_drop": 0.09999999403953552,
+          "random_direction_drop": 0.0022780895233154297,
+          "target_probability_drop": 0.0676942765712738
+        }
+      },
+      "checks": {
+        "dominant_direction_drop_margin_min": true,
+        "full_heldout_accuracy_min": true,
+        "lora_r1_heldout_accuracy_min": true,
+        "lora_r4_heldout_accuracy_min": true,
+        "lora_update_effective_rank_max": true,
+        "protected_nll_change_max": true,
+        "random_label_control_accuracy_max": true,
+        "same_norm_random_control_accuracy_max": true,
+        "within_vram_budget": true
+      },
+      "cuda_available": true,
+      "cuda_version": "13.2",
+      "dominant_direction_drop_margin": 0.3330901861190796,
+      "effective_rank": {
+        "full": 9.305777549743652,
+        "lora_r1": 1.2612965106964111,
+        "lora_r4": 2.5006213188171387,
+        "random_labels": 1.4345858097076416,
+        "same_norm_random": 7.11455774307251
+      },
+      "full_heldout_accuracy": 1.0,
+      "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+      "gpu_total_memory_gb": 23.45965576171875,
+      "heldout_examples": 20,
+      "lora_r1_heldout_accuracy": 1.0,
+      "lora_r4_heldout_accuracy": 1.0,
+      "lora_update_effective_rank": 2.5006213188171387,
+      "model_id": "roneneldan/TinyStories-1M",
+      "model_revision": "77f1b168e219585646439073245fe87e56b3023e",
+      "peak_vram_gb": 0.5368890762329102,
+      "protected_nll_change": -1.5516942022368312,
+      "protected_nll_change_by_method": {
+        "base": 0.0,
+        "full": -1.5553033959185996,
+        "lora_r1": -1.5314508266746998,
+        "lora_r4": -1.5516942022368312,
+        "random_labels": -1.5195714309811592,
+        "same_norm_random": 14.504202842712402
+      },
+      "random_label_control_accuracy": 0.6000000238418579,
+      "same_norm_random_control_accuracy": 0.5,
+      "top_drift_variance_fraction": {
+        "full": 0.5399203300476074,
+        "lora_r1": 0.6829003691673279,
+        "lora_r4": 0.6608856320381165,
+        "random_labels": 0.36674216389656067,
+        "same_norm_random": 0.9323996901512146
+      },
+      "torch_version": "2.12.1+cu132",
+      "wall_clock_seconds": 17.191851284999757,
+      "within_vram_budget": true
+    },
+    "notebook_contract": {
+      "cpu": false,
+      "delta": [
+        [
+          6.0,
+          12.0
+        ],
+        [
+          8.0,
+          16.0
+        ]
+      ],
+      "delta_rank": 1,
+      "disjoint_templates": true,
+      "heldout_examples": 20,
+      "merge_max_abs_diff": 4.76837158203125e-07,
+      "model_id": "roneneldan/TinyStories-1M",
+      "model_revision": "77f1b168e219585646439073245fe87e56b3023e",
+      "train_examples": 30,
+      "unmerge_restoration_max_abs_diff": 3.8743019104003906e-07
+    }
+  },
+  "models": [
+    {
+      "architecture": "GPTNeoForCausalLM",
+      "claim_scope": "small_pretrained_decoder_for_transparent_attention_lora",
+      "gated": false,
+      "id": "roneneldan/TinyStories-1M",
+      "license": "unspecified_in_model_card",
+      "parameters": 3745984,
+      "precision": "float32",
+      "revision": "77f1b168e219585646439073245fe87e56b3023e",
+      "source": "huggingface"
+    }
+  ],
+  "negative_controls": {
+    "declared_controls": [
+      "fixed_seed_random_label_lora",
+      "same_norm_random_rank_4_update",
+      "matched_random_activation_direction"
+    ]
+  },
+  "notebook_id": "15_2_lora_vs_full_finetuning",
+  "ood_tests": {
+    "declared": "required_where_applicable"
+  },
+  "peak_vram_gb": 0.5368890762329102,
+  "report_inputs": {
+    "algorithm": "sha256",
+    "combined_sha256": "33498ce24fe713398e4b02160d832a1cb0570d96b2d46a4ac497e4586fbaf200",
+    "files": [
+      {
+        "path": "arena_ext/verification.py",
+        "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
+        "size_bytes": 9276
+      },
+      {
+        "path": "chapter15_peft_misalignment/exercises/part2_lora_vs_full_finetuning/15.2_LoRA_vs_Full_Finetuning_exercises.ipynb",
+        "sha256": "06665c86a4d0367a69ec83de80a3520f4451b97e3b5c9d01d313a881d0bd8db4",
+        "size_bytes": 82937
+      },
+      {
+        "path": "chapter15_peft_misalignment/exercises/part2_lora_vs_full_finetuning/15.2_LoRA_vs_Full_Finetuning_solutions.ipynb",
+        "sha256": "1c0070c7208655d80c330ccd4230453ff5d3d67bd9ea7c3412148729b44d2d88",
+        "size_bytes": 436923
+      },
+      {
+        "path": "chapter15_peft_misalignment/exercises/part2_lora_vs_full_finetuning/README.md",
+        "sha256": "20288efd6197727a94c3b88b5f031ac3139277cfea509155f85ff12fa24d9435",
+        "size_bytes": 1682
+      },
+      {
+        "path": "chapter15_peft_misalignment/exercises/part2_lora_vs_full_finetuning/artifacts.lock.yml",
+        "sha256": "58229971d3b9eb1cdd5d13fdeaa215ee6b4fba038982be3ecaf7c99141e245f1",
+        "size_bytes": 3144
+      },
+      {
+        "path": "chapter15_peft_misalignment/exercises/part2_lora_vs_full_finetuning/expected_outputs/README.md",
+        "sha256": "e1dfb9ee94e295f47c59f8361a9cfa7e9b3477407c320df529565e06b365b400",
+        "size_bytes": 1029
+      },
+      {
+        "path": "chapter15_peft_misalignment/exercises/part2_lora_vs_full_finetuning/expected_outputs/reference_metrics.json",
+        "sha256": "1e602551e8d3fb40581754f44ca16fd87c2d62c0499d7b268b72ffe133795b3d",
+        "size_bytes": 2384
+      },
+      {
+        "path": "chapter15_peft_misalignment/exercises/part2_lora_vs_full_finetuning/expected_outputs/smoke_test.json",
+        "sha256": "befcae7f68369118b8f1f23fefbcb37cc4fcab887ca62f4a0c22168b9dd1e561",
+        "size_bytes": 330
+      },
+      {
+        "path": "chapter15_peft_misalignment/exercises/part2_lora_vs_full_finetuning/solutions.py",
+        "sha256": "715e9b1e87bd79a61495863c3d21e5df673713f72f1549c39d7a8e0019cff426",
+        "size_bytes": 35039
+      },
+      {
+        "path": "chapter15_peft_misalignment/exercises/part2_lora_vs_full_finetuning/tests.py",
+        "sha256": "e1476508d53a4f3aaddfe411b2ca43e3ffa509884599f7f0a3ea0b00762dd765",
+        "size_bytes": 13822
+      },
+      {
+        "path": "chapter15_peft_misalignment/exercises/part2_lora_vs_full_finetuning/verification_report.schema.json",
+        "sha256": "a4a318a388b0c0646ce90a4e9d589140b2fb1c1e260f363acfc67c661281621c",
+        "size_bytes": 1755
+      },
+      {
+        "path": "chapter15_peft_misalignment/instructions/pages/02_[15.2]_LoRA_vs_Full_Finetuning.md",
+        "sha256": "2550a3e689535d527eb4ebfaa19580bb6479f119dcab730a88ba8eac04c14002",
+        "size_bytes": 62025
+      },
+      {
+        "path": "scripts/run_extension_verification_reports.py",
+        "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
+        "size_bytes": 16272
+      }
+    ],
+    "schema_version": 1
+  },
+  "safety_notes": [
+    "All adaptation prompts are generated benign codebook examples; no harmful prompts or refusal suppression are used.",
+    "No user data, gated model, unsafe adapter, or generated completion corpus is stored.",
+    "Full finetuning is deliberately limited to a 3.7M-parameter public teaching model."
+  ],
+  "tests_passed": true,
+  "wall_clock_seconds": 18.818613
+}

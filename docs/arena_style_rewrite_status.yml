@@ -133,6 +133,10 @@ sections:
     status: course_ready
     page: chapter15_peft_misalignment/instructions/pages/01_[15.1]_LoRA_DoRA_and_Adapter_Controls.md
     notes: ARENA-style LoRA/DoRA model-organism lesson with nine visible implementation exercises, exact rank/SVD/merge checks, real CUDA LoRA/DoRA/full training, held-out and OOD examples, weight/activation direction audits, random-label and same-norm controls, editable play cell, anomaly hunt, and safe-proxy claim limits.
+  '15.2':
+    status: course_ready
+    page: chapter15_peft_misalignment/instructions/pages/02_[15.2]_LoRA_vs_Full_Finetuning.md
+    notes: "ARENA-style real-transformer comparison with nine progressive exercises covering exact low-rank updates, transparent GPT-Neo Q/V LoRA injection, freezing and merge parity, disjoint-template task construction, matched training, actual weight-update spectra, activation-drift recovery, causal direction ablation, and same-norm random adapters. On 20 held-out prompts from pinned TinyStories-1M, the full 96-step CUDA 13.2 run reaches accuracy 1.00/1.00/1.00 for rank-1 LoRA/rank-4 LoRA/full finetuning versus 0.60 random labels and 0.50 same-norm random adapters. The rank-4 update has effective rank 2.501 versus 9.306 for full finetuning, and ablating its dominant activation-drift direction reduces target probability by 0.333 more than a matched random direction, at 0.537 GB peak VRAM. Fifteen semantic tests and all 31 solution cells pass; expected/help/solution/interpretation dropdowns, a play cell, anomaly hunting, and a four-panel signature result are present. Claims are limited to one small decoder, one Q/V layer, one safe generated task, and disjoint-template rather than broad semantic generalization."
   '16.1':
     status: course_ready
     page: chapter16_shapley_attribution_baselines/instructions/pages/01_[16.1]_Exact_Shapley_on_Ground_Truth_Games.md
