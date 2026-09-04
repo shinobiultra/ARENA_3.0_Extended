@@ -493,6 +493,53 @@ def test_committed_gpu_report_requires_sd15_strict_controls(report: dict | None 
     print("All tests in `test_committed_gpu_report_requires_sd15_strict_controls` passed!")
 
 
+def validate_sd15_signature_visual_payload(signature_result: dict) -> None:
+    """Validate the live PIL images and attention maps used by the learner notebook."""
+
+    assert signature_result["preflight_passed"], (
+        "The live visual payload should only be displayed after every strict SD1.5 gate passes."
+    )
+    visual_cases = signature_result.get("visual_cases", [])
+    case_reports = {
+        case["case_id"]: case for case in signature_result["case_reports"]
+    }
+    assert len(visual_cases) == len(case_reports) == 2, (
+        "The signature result should contain both preregistered shape cases."
+    )
+    for visual in visual_cases:
+        case_id = visual["case_id"]
+        report = case_reports[case_id]
+        assert visual["original_image"].size == (512, 512), (
+            f"{case_id} should retain the full 512x512 generated image."
+        )
+        assert visual["target_ablated_image"].size == (512, 512), (
+            f"{case_id} should retain the same-seed target-token ablation."
+        )
+        assert visual["control_ablated_image"].size == (512, 512), (
+            f"{case_id} should retain the same-seed control-token ablation."
+        )
+        assert visual["target_attention"].shape == visual["control_attention"].shape == (
+            64,
+            64,
+        ), f"{case_id} target and control attention maps should share a 64x64 grid."
+        assert visual["region_mask"].shape == (64, 64), (
+            f"{case_id} color-region mask should align with the attention grid."
+        )
+        assert t.isfinite(visual["target_attention"]).all(), (
+            f"{case_id} target attention map should contain finite values."
+        )
+        assert report["target_control_gap"] > 0, (
+            f"{case_id} target attention should beat the control token in-region."
+        )
+        assert report["target_drop"] >= 0.05, (
+            f"{case_id} target-token removal should erase measurable target color."
+        )
+        assert report["target_drop"] >= report["random_control_drop"] + 0.05, (
+            f"{case_id} target-token removal should beat the control edit by margin."
+        )
+    print("All tests in `validate_sd15_signature_visual_payload` passed!")
+
+
 def test_exercise_notebook_declares_full_verification_contract():
     notebook_path = Path(__file__).with_name(
         "13.1_Diffusion_and_Image_Generation_Controls_exercises.ipynb"
@@ -516,5 +563,14 @@ def test_exercise_notebook_declares_full_verification_contract():
     )
     assert "test_committed_gpu_report_requires_sd15_strict_controls" in source, (
         "The learner notebook should end by checking the committed SD1.5 report."
+    )
+    assert "## Try It Yourself" in source, (
+        "The learner notebook should expose editable attention and ablation controls."
+    )
+    assert "run_sd15_image_generation_signature_result" in source, (
+        "The learner notebook should run the live SD1.5 signature result."
+    )
+    assert "diffusion_image_generation_signature.png" in source, (
+        "The learner notebook should generate and display the SD1.5 evidence panel."
     )
     print("All tests in `test_exercise_notebook_declares_full_verification_contract` passed!")

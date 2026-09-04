@@ -494,7 +494,11 @@ def _target_color_region_mask_64(image, target_color: str) -> t.Tensor:
     )
 
 
-def sd15_daam_token_ablation_experiment(max_vram_gb: float = 24.0) -> dict:
+def sd15_daam_token_ablation_experiment(
+    max_vram_gb: float = 24.0,
+    *,
+    include_visuals: bool = False,
+) -> dict:
     """Run strict SD1.5 DAAM-style attention, ablation, quality, and noise controls."""
 
     if not t.cuda.is_available():
@@ -529,6 +533,7 @@ def sd15_daam_token_ablation_experiment(max_vram_gb: float = 24.0) -> dict:
     token_ablation_reports = []
     image_quality_reports = []
     white_noise_reports = []
+    visual_cases = []
     attention_resolutions: set[int] = set()
     for case in REAL_SD15_CASES:
         token_groups = {
@@ -687,6 +692,19 @@ def sd15_daam_token_ablation_experiment(max_vram_gb: float = 24.0) -> dict:
                 "white_noise_rejected": noise_report.white_noise_rejected,
             }
         )
+        if include_visuals:
+            visual_cases.append(
+                {
+                    "case_id": case["case_id"],
+                    "original_image": original_image,
+                    "target_ablated_image": target_ablated_image,
+                    "control_ablated_image": control_ablated_image,
+                    "target_attention": target_attention,
+                    "control_attention": control_attention,
+                    "region_mask": region_mask,
+                    "white_noise": white_noise,
+                }
+            )
 
     strict_report = sd15_strict_acceptance_report(
         daam_reports=daam_reports,
@@ -735,7 +753,7 @@ def sd15_daam_token_ablation_experiment(max_vram_gb: float = 24.0) -> dict:
     del inputs, output, clip_model, processor, pipe, original_images
     t.cuda.empty_cache()
 
-    return {
+    result = {
         "cuda_available": True,
         "model_id": REAL_SD15_MODEL_ID,
         "revision": REAL_SD15_REVISION,
@@ -801,6 +819,20 @@ def sd15_daam_token_ablation_experiment(max_vram_gb: float = 24.0) -> dict:
             and peak_vram_gb <= max_vram_gb
         ),
     }
+    if include_visuals:
+        result["visual_cases"] = visual_cases
+    return result
+
+
+def run_sd15_image_generation_signature_result(
+    max_vram_gb: float = 24.0,
+) -> dict:
+    """Run the strict SD1.5 experiment and retain learner-facing visual evidence."""
+
+    return sd15_daam_token_ablation_experiment(
+        max_vram_gb=max_vram_gb,
+        include_visuals=True,
+    )
 
 
 def run_smoke_test(cpu: bool = True) -> dict:
