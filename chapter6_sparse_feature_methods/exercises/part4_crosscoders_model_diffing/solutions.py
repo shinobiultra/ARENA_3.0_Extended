@@ -16,6 +16,34 @@ root_dir = next(p for p in [Path.cwd(), *Path.cwd().parents] if (p / chapter).ex
 if str(root_dir) not in sys.path:
     sys.path.append(str(root_dir))
 
+from arena_ext.crosscoders import (  # noqa: E402 - path setup is notebook-local.
+    CrosscoderInterventionReport,
+    PlantedCrosscoderData,
+    PlantedFeatureMatchReport,
+    SparseCrosscoder,
+    SparseCrosscoderForward,
+    SparseCrosscoderLoss,
+    SparseCrosscoderReconstructionReport,
+    TrainedSparseCrosscoder,
+    ablate_latents,
+    behavior_baseline_table,
+    crosscoder_intervention_report,
+    evaluate_sparse_crosscoder_reconstruction,
+    latent_ownership_table,
+    make_planted_crosscoder_data,
+    make_train_heldout_split,
+    match_learned_to_planted_features,
+    model_behavior_delta_from_reconstruction,
+    run_crosscoder_signature_result,
+    shared_only_reconstruction,
+    signed_auc_binary,
+    sparse_crosscoder_loss,
+    svd_delta_direction_scores,
+    svd_pair_reconstruction_mse,
+    top_activating_examples,
+    train_sparse_crosscoder,
+)
+
 MAIN = __name__ == "__main__"
 FeatureOwner = Literal["shared", "model_a", "model_b"]
 
@@ -362,13 +390,7 @@ def delta_scores_smoke_test() -> dict:
 
 def run_smoke_test(cpu: bool = True) -> dict:
     _ = cpu
-    return {
-        "reconstruction": crosscoder_reconstruction_smoke_test(),
-        "specificity": feature_specificity_smoke_test(),
-        "behavior_delta": behavior_delta_smoke_test(),
-        "ablation": ablation_delta_smoke_test(),
-        "delta_scores": delta_scores_smoke_test(),
-    }
+    return run_crosscoder_signature_result(steps=300)
 
 
 def _load_transformerlens_model_on_cuda(name: str, revision: str):

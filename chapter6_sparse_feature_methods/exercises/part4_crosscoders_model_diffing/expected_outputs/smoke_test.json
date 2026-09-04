@@ -1,10 +1,24 @@
 {
   "accepted": true,
-  "claim_scope": "Contract check; not a full real-model validation.",
-  "evidence_level": "notebook_contract",
+  "claim_scope": "CPU learned sparse crosscoder on exact planted paired-model ground truth.",
+  "evidence_level": "planted_sparse_crosscoder_train_recover_predict_intervene",
   "gt_tier": "GT-3",
   "notebook_id": "6_4_crosscoders_and_model_diffing",
   "section": "6.4",
   "tests_passed": true,
-  "title": "Crosscoders and Model Diffing"
+  "title": "Crosscoders and Model Diffing",
+  "metrics": {
+    "n_examples": 1024,
+    "n_heldout": 256,
+    "heldout_reconstruction_mse": 0.00018322996038477868,
+    "zero_reconstruction_mse": 0.1602308675646782,
+    "ownership_accuracy": 1.0,
+    "min_correlation": 0.9832897782325745,
+    "target_model_b_latent": 3,
+    "target_reduction": 0.8340778350830078,
+    "same_norm_random_reduction": -0.10768866539001465,
+    "orthogonal_reduction": -0.09647762775421143,
+    "learned_behavior_auc": 0.9689255356788635,
+    "label_shuffle_behavior_auc": 0.543559193611145
+  }
 }

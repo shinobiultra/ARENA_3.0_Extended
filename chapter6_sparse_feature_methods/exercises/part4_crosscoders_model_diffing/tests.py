@@ -2,8 +2,6 @@ from collections.abc import Callable
 
 import torch as t
 
-from arena_ext import crosscoders as reference
-
 
 def _solutions():
     from chapter6_sparse_feature_methods.exercises.part4_crosscoders_model_diffing import (
@@ -13,185 +11,201 @@ def _solutions():
     return solutions
 
 
-def _assert_report_close(actual: object, expected: object, *, msg: str) -> None:
-    actual_dict = actual.__dict__
-    expected_dict = expected.__dict__
-    assert actual_dict.keys() == expected_dict.keys(), (
-        f"{msg} fields should match the independent reference."
-    )
-    for key, expected_value in expected_dict.items():
-        actual_value = actual_dict[key]
-        if isinstance(expected_value, float):
-            assert abs(actual_value - expected_value) < 1e-6, (
-                f"{msg} field {key!r} should be {expected_value}, got {actual_value}."
-            )
-        else:
-            assert actual_value == expected_value, (
-                f"{msg} field {key!r} should be {expected_value!r}, got {actual_value!r}."
-            )
-
-
-def test_decode_crosscoder_reconstructs_shared_and_specific_spaces(
-    decode_crosscoder: Callable | None = None,
-    crosscoder_reconstruction_report: Callable | None = None,
+def test_make_planted_crosscoder_data_has_exact_ground_truth(
+    make_planted_crosscoder_data: Callable | None = None,
 ):
     solutions = _solutions()
-    decode_crosscoder = decode_crosscoder or solutions.decode_crosscoder
-    crosscoder_reconstruction_report = (
-        crosscoder_reconstruction_report or solutions.crosscoder_reconstruction_report
+    make_planted_crosscoder_data = (
+        make_planted_crosscoder_data or solutions.make_planted_crosscoder_data
     )
-    shared = t.tensor([[1.0, 0.0], [0.0, 1.0]])
-    model_a_specific = t.tensor([[2.0], [3.0]])
-    model_b_specific = t.tensor([[4.0], [5.0]])
-    shared_decoder = t.eye(2)
-    model_a_decoder = t.tensor([[1.0, 0.0]])
-    model_b_decoder = t.tensor([[0.0, 1.0]])
+    data = make_planted_crosscoder_data(n_examples=128, d_model=12, noise_std=0.0)
 
-    actual = decode_crosscoder(
-        shared,
-        model_a_specific,
-        model_b_specific,
-        shared_decoder,
-        shared_decoder,
-        model_a_decoder,
-        model_b_decoder,
+    expected_a = data.true_latents @ data.true_decoder_a
+    expected_b = data.true_latents @ data.true_decoder_b
+    t.testing.assert_close(data.model_a_activations, expected_a)
+    t.testing.assert_close(data.model_b_activations, expected_b)
+    assert data.feature_owners == ("shared", "shared", "model_a", "model_b")
+    assert t.count_nonzero(data.true_decoder_b[2]).item() == 0
+    assert t.count_nonzero(data.true_decoder_a[3]).item() == 0
+    assert 0.3 <= data.behavior_labels.float().mean().item() <= 0.7
+    assert data.train_idx.numel() + data.heldout_idx.numel() == 128
+    print("All tests in `test_make_planted_crosscoder_data_has_exact_ground_truth` passed!")
+
+
+def test_sparse_crosscoder_forward_and_loss_shapes(
+    SparseCrosscoder: type | None = None,
+    sparse_crosscoder_loss: Callable | None = None,
+    make_planted_crosscoder_data: Callable | None = None,
+):
+    solutions = _solutions()
+    SparseCrosscoder = SparseCrosscoder or solutions.SparseCrosscoder
+    sparse_crosscoder_loss = sparse_crosscoder_loss or solutions.sparse_crosscoder_loss
+    make_planted_crosscoder_data = (
+        make_planted_crosscoder_data or solutions.make_planted_crosscoder_data
     )
-    expected = reference.decode_crosscoder(
-        shared,
-        model_a_specific,
-        model_b_specific,
-        shared_decoder,
-        shared_decoder,
-        model_a_decoder,
-        model_b_decoder,
+
+    data = make_planted_crosscoder_data(n_examples=64, d_model=12)
+    model = SparseCrosscoder(d_model=12, n_latents=6, seed=2)
+    output = model(data.model_a_activations[:16], data.model_b_activations[:16])
+    assert output.model_a_feature_acts.shape == (16, 6)
+    assert output.model_b_feature_acts.shape == (16, 6)
+    assert output.reconstructed_model_a.shape == (16, 12)
+    assert output.reconstructed_model_b.shape == (16, 12)
+    assert output.model_a_feature_acts.min().item() >= 0
+    assert output.model_b_feature_acts.min().item() >= 0
+
+    loss = sparse_crosscoder_loss(
+        output,
+        data.model_a_activations[:16],
+        data.model_b_activations[:16],
+        l1_coefficient=0.008,
     )
     t.testing.assert_close(
-        actual.reconstructed_model_a,
-        expected.reconstructed_model_a,
-        msg="Model A reconstruction should combine shared and model-A-specific decoders.",
+        loss.total_loss,
+        loss.reconstruction_loss + 0.008 * loss.l1_loss,
     )
-    t.testing.assert_close(
-        actual.reconstructed_model_b,
-        expected.reconstructed_model_b,
-        msg="Model B reconstruction should combine shared and model-B-specific decoders.",
-    )
-    target_a = t.tensor([[3.0, 0.0], [3.0, 1.0]])
-    target_b = t.tensor([[1.0, 4.0], [0.0, 6.0]])
-    actual_report = crosscoder_reconstruction_report(target_a, target_b, actual)
-    expected_report = reference.crosscoder_reconstruction_report(target_a, target_b, expected)
-    _assert_report_close(actual_report, expected_report, msg="Reconstruction report")
-    assert actual_report.shared_reconstructs_both, (
-        "Exact toy decoders should reconstruct both activation spaces within tolerance."
-    )
-    print("All tests in `test_decode_crosscoder_reconstructs_shared_and_specific_spaces` passed!")
+    assert loss.reconstruction_loss.item() > 0
+    print("All tests in `test_sparse_crosscoder_forward_and_loss_shapes` passed!")
 
 
-def test_feature_specificity_classifies_shared_model_a_and_model_b(
-    feature_specificity_report: Callable | None = None,
-    classify_features_by_specificity: Callable | None = None,
+def test_train_sparse_crosscoder_reduces_heldout_reconstruction(
+    train_sparse_crosscoder: Callable | None = None,
+    evaluate_sparse_crosscoder_reconstruction: Callable | None = None,
+    make_planted_crosscoder_data: Callable | None = None,
 ):
     solutions = _solutions()
-    feature_specificity_report = (
-        feature_specificity_report or solutions.feature_specificity_report
+    train_sparse_crosscoder = train_sparse_crosscoder or solutions.train_sparse_crosscoder
+    evaluate_sparse_crosscoder_reconstruction = (
+        evaluate_sparse_crosscoder_reconstruction
+        or solutions.evaluate_sparse_crosscoder_reconstruction
     )
-    classify_features_by_specificity = (
-        classify_features_by_specificity or solutions.classify_features_by_specificity
+    make_planted_crosscoder_data = (
+        make_planted_crosscoder_data or solutions.make_planted_crosscoder_data
     )
-    model_a = t.tensor([[1.0, 3.0, 0.1], [1.0, 2.0, 0.2]])
-    model_b = t.tensor([[1.1, 0.2, 4.0], [1.0, 0.1, 5.0]])
-    owners = classify_features_by_specificity(model_a, model_b, shared_threshold=0.2)
-    expected_owners = reference.classify_features_by_specificity(
-        model_a,
-        model_b,
-        shared_threshold=0.2,
-    )
-    assert owners == expected_owners == ["shared", "model_a", "model_b"], (
-        "Specificity classification should distinguish shared, model-A, and model-B features."
-    )
-    actual_report = feature_specificity_report(model_a, model_b, 2, shared_threshold=0.2)
-    expected_report = reference.feature_specificity_report(
-        model_a,
-        model_b,
-        2,
-        shared_threshold=0.2,
-    )
-    _assert_report_close(actual_report, expected_report, msg="Feature specificity report")
-    assert actual_report.owner == "model_b" and actual_report.specificity > 0, (
-        "Feature 2 should be model-B-specific because its mean activation is higher in model B."
-    )
-    print("All tests in `test_feature_specificity_classifies_shared_model_a_and_model_b` passed!")
+
+    data = make_planted_crosscoder_data(n_examples=512, d_model=12)
+    trained = train_sparse_crosscoder(data, steps=120, log_every=40)
+    first_mse = trained.history[0]["heldout_reconstruction_mse"]
+    final_mse = trained.history[-1]["heldout_reconstruction_mse"]
+    report = evaluate_sparse_crosscoder_reconstruction(trained.model, data)
+    assert final_mse < 0.02 * first_mse
+    assert report.beats_zero_baseline
+    assert report.heldout_reconstruction_mse < 0.002
+    print("All tests in `test_train_sparse_crosscoder_reduces_heldout_reconstruction` passed!")
 
 
-def test_behavior_delta_prediction_uses_signed_auc_and_means(
-    behavior_delta_prediction_report: Callable | None = None,
-    roc_auc_binary: Callable | None = None,
+def test_latent_ownership_table_classifies_specificity(
+    latent_ownership_table: Callable | None = None,
 ):
     solutions = _solutions()
-    behavior_delta_prediction_report = (
-        behavior_delta_prediction_report or solutions.behavior_delta_prediction_report
+    latent_ownership_table = latent_ownership_table or solutions.latent_ownership_table
+    forward = solutions.SparseCrosscoderForward(
+        model_a_feature_acts=t.tensor(
+            [
+                [1.0, 2.0, 0.1],
+                [1.2, 2.5, 0.0],
+                [0.8, 2.2, 0.2],
+            ]
+        ),
+        model_b_feature_acts=t.tensor(
+            [
+                [1.1, 0.2, 3.0],
+                [1.0, 0.1, 3.5],
+                [0.9, 0.0, 4.0],
+            ]
+        ),
+        reconstructed_model_a=t.zeros(3, 2),
+        reconstructed_model_b=t.zeros(3, 2),
     )
-    roc_auc_binary = roc_auc_binary or solutions.roc_auc_binary
-    scores = t.tensor([0.1, 0.2, 0.9, 1.0])
-    labels = t.tensor([0, 0, 1, 1], dtype=t.bool)
-    actual = behavior_delta_prediction_report(scores, labels, feature_id=7)
-    expected = reference.behavior_delta_prediction_report(scores, labels, feature_id=7)
-    _assert_report_close(actual, expected, msg="Behavior-delta prediction report")
-    assert actual.feature_id == 7 and actual.auc == 1.0 and actual.passes_threshold, (
-        "Predictive feature scores should perfectly separate positive behavior deltas."
-    )
+    rows = latent_ownership_table(forward, shared_threshold=0.15)
+    assert [row["predicted_owner"] for row in rows] == ["shared", "model_a", "model_b"]
+    print("All tests in `test_latent_ownership_table_classifies_specificity` passed!")
 
-    inverted = behavior_delta_prediction_report(-scores, labels, feature_id=8)
-    assert inverted.auc == 1.0 and inverted.passes_threshold, (
-        "Signed AUC should treat an antipredictive feature as a valid direction with opposite sign."
-    )
-    assert roc_auc_binary(-scores, labels) == 0.0, (
-        "Raw AUC should reveal the inverted ranking before signed-AUC correction."
-    )
-    print("All tests in `test_behavior_delta_prediction_uses_signed_auc_and_means` passed!")
 
-
-def test_toy_behavior_delta_scores_are_model_b_minus_model_a(
-    toy_behavior_delta_scores: Callable | None = None,
+def test_feature_matching_recovers_planted_owners(
+    train_sparse_crosscoder: Callable | None = None,
+    match_learned_to_planted_features: Callable | None = None,
+    make_planted_crosscoder_data: Callable | None = None,
 ):
     solutions = _solutions()
-    toy_behavior_delta_scores = toy_behavior_delta_scores or solutions.toy_behavior_delta_scores
-    model_a_scores = t.tensor([0.25, 0.5])
-    model_b_scores = t.tensor([0.75, 0.25])
-    actual = toy_behavior_delta_scores(model_a_scores, model_b_scores)
-    expected = reference.toy_behavior_delta_scores(model_a_scores, model_b_scores)
-    t.testing.assert_close(
-        actual,
-        expected,
-        msg="Paired behavior deltas should be model B minus model A.",
+    train_sparse_crosscoder = train_sparse_crosscoder or solutions.train_sparse_crosscoder
+    match_learned_to_planted_features = (
+        match_learned_to_planted_features or solutions.match_learned_to_planted_features
     )
-    t.testing.assert_close(actual, t.tensor([0.5, -0.25]))
-    print("All tests in `test_toy_behavior_delta_scores_are_model_b_minus_model_a` passed!")
+    make_planted_crosscoder_data = (
+        make_planted_crosscoder_data or solutions.make_planted_crosscoder_data
+    )
+
+    data = make_planted_crosscoder_data(n_examples=512, d_model=12)
+    trained = train_sparse_crosscoder(data, steps=120, log_every=60)
+    match = match_learned_to_planted_features(trained.model, data)
+    assert match.ownership_accuracy == 1.0
+    assert match.min_correlation > 0.9
+    assert match.predicted_owners == match.true_owners
+    print("All tests in `test_feature_matching_recovers_planted_owners` passed!")
 
 
-def test_crosscoder_ablation_requires_target_to_beat_random_control(
-    crosscoder_ablation_report: Callable | None = None,
+def test_behavior_baselines_include_real_controls(
+    train_sparse_crosscoder: Callable | None = None,
+    match_learned_to_planted_features: Callable | None = None,
+    behavior_baseline_table: Callable | None = None,
+    make_planted_crosscoder_data: Callable | None = None,
 ):
     solutions = _solutions()
-    crosscoder_ablation_report = crosscoder_ablation_report or solutions.crosscoder_ablation_report
-    baseline = t.tensor([1.0, 1.0])
-    ablated = t.tensor([0.2, 0.3])
-    random_ablated = t.tensor([0.8, 0.9])
-    actual = crosscoder_ablation_report(baseline, ablated, random_ablated)
-    expected = reference.crosscoder_ablation_report(baseline, ablated, random_ablated)
-    _assert_report_close(actual, expected, msg="Crosscoder ablation report")
-    assert abs(actual.delta_reduction - 0.75) < 1e-6, (
-        "Target ablation should reduce the absolute behavior delta by 0.75."
+    train_sparse_crosscoder = train_sparse_crosscoder or solutions.train_sparse_crosscoder
+    match_learned_to_planted_features = (
+        match_learned_to_planted_features or solutions.match_learned_to_planted_features
     )
-    assert abs(actual.random_reduction - 0.15) < 1e-6 and actual.passes_control, (
-        "Target ablation should beat the random matched-feature ablation."
+    behavior_baseline_table = behavior_baseline_table or solutions.behavior_baseline_table
+    make_planted_crosscoder_data = (
+        make_planted_crosscoder_data or solutions.make_planted_crosscoder_data
     )
 
-    failed = crosscoder_ablation_report(baseline, random_ablated, ablated)
-    assert not failed.passes_control, (
-        "Ablation should fail the control when the random feature has the larger reduction."
+    data = make_planted_crosscoder_data(n_examples=512, d_model=12)
+    trained = train_sparse_crosscoder(data, steps=120, log_every=60)
+    match = match_learned_to_planted_features(trained.model, data)
+    rows = behavior_baseline_table(trained.model, data, match)
+    by_method = {row["method"]: row for row in rows}
+    learned_auc = by_method["learned sparse crosscoder target latent"]["behavior_auc"]
+    shuffled_auc = by_method["label-shuffled target latent"]["behavior_auc"]
+    shared_only_auc = by_method["shared-only learned latents"]["behavior_auc"]
+    assert learned_auc > 0.95
+    assert shuffled_auc < learned_auc - 0.25
+    assert shared_only_auc < learned_auc - 0.15
+    assert (
+        by_method["zero reconstruction"]["heldout_reconstruction_mse"]
+        > by_method["learned sparse crosscoder target latent"]["heldout_reconstruction_mse"]
     )
+    print("All tests in `test_behavior_baselines_include_real_controls` passed!")
+
+
+def test_targeted_ablation_beats_same_norm_and_orthogonal_controls(
+    train_sparse_crosscoder: Callable | None = None,
+    match_learned_to_planted_features: Callable | None = None,
+    crosscoder_intervention_report: Callable | None = None,
+    make_planted_crosscoder_data: Callable | None = None,
+):
+    solutions = _solutions()
+    train_sparse_crosscoder = train_sparse_crosscoder or solutions.train_sparse_crosscoder
+    match_learned_to_planted_features = (
+        match_learned_to_planted_features or solutions.match_learned_to_planted_features
+    )
+    crosscoder_intervention_report = (
+        crosscoder_intervention_report or solutions.crosscoder_intervention_report
+    )
+    make_planted_crosscoder_data = (
+        make_planted_crosscoder_data or solutions.make_planted_crosscoder_data
+    )
+
+    data = make_planted_crosscoder_data(n_examples=512, d_model=12)
+    trained = train_sparse_crosscoder(data, steps=120, log_every=60)
+    match = match_learned_to_planted_features(trained.model, data)
+    report = crosscoder_intervention_report(trained.model, data, match)
+    assert report.passes_controls
+    assert report.target_reduction > report.same_norm_random_reduction + 0.25
+    assert report.target_reduction > report.orthogonal_reduction + 0.25
     print(
-        "All tests in `test_crosscoder_ablation_requires_target_to_beat_random_control` passed!"
+        "All tests in `test_targeted_ablation_beats_same_norm_and_orthogonal_controls` passed!"
     )
 
 
@@ -199,19 +213,22 @@ def test_notebook_contract(run_smoke_test: Callable | None = None):
     if run_smoke_test is None:
         run_smoke_test = _solutions().run_smoke_test
     result = run_smoke_test(cpu=True)
-    assert result["reconstruction"]["report"]["shared_reconstructs_both"], (
-        "Notebook contract should include exact shared-plus-specific reconstruction."
+    assert result["contract_passed"], "The learned crosscoder signature result should pass."
+    assert result["dataset"]["n_heldout"] >= 128
+    assert result["reconstruction"]["heldout_reconstruction_mse"] < 3e-4
+    assert result["feature_match"]["ownership_accuracy"] == 1.0
+    assert result["feature_match"]["min_correlation"] > 0.9
+    assert result["intervention"]["passes_controls"]
+    learned_auc = next(
+        row["behavior_auc"]
+        for row in result["baselines"]
+        if row["method"] == "learned sparse crosscoder target latent"
     )
-    assert result["specificity"]["owners"] == ["shared", "model_a", "model_b"], (
-        "Notebook contract should classify shared, model-A, and model-B features."
+    shuffled_auc = next(
+        row["behavior_auc"]
+        for row in result["baselines"]
+        if row["method"] == "label-shuffled target latent"
     )
-    assert result["behavior_delta"]["passes_threshold"], (
-        "Notebook contract should include behavior-delta prediction above threshold."
-    )
-    assert result["ablation"]["passes_control"], (
-        "Notebook contract should include target ablation beating random control."
-    )
-    assert result["delta_scores"]["behavior_deltas"] == [0.5, -0.25], (
-        "Notebook contract should define paired deltas as model B minus model A."
-    )
+    assert learned_auc > 0.93
+    assert shuffled_auc < learned_auc - 0.2
     print("All tests in `test_notebook_contract` passed!")
