@@ -67,8 +67,8 @@ expected_metrics:
 controls:
   - raw_bit_linear_baseline
   - template_only_linear_baseline
-  - 128_label_shuffle_probes
-  - 256_isotropic_same_dimensional_patch_directions
+  - 128_random_label_shuffle_negative_control_probes
+  - 256_isotropic_random_same_dimensional_patch_directions
   - learned_direction_ablation
   - heldout_nuisance_template_split
   - activation_noise_stress_curve
