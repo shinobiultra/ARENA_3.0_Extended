@@ -3,52 +3,70 @@ section: '9.2'
 title: Chain-of-Thought Faithfulness
 exercise_metadata:
   EXERCISE_ID: 9_2_chain_of_thought_faithfulness
-  GT_TIER: GT-3
+  GT_TIER: GT-0
   DIFFICULTY: 3
   IMPORTANCE: 4
-  EXPECTED_RUNTIME: seconds on toy contract; minutes on local real-model path
+  EXPECTED_RUNTIME: 45-75 minutes; parent CUDA verification runs the pinned Pythia hook-patching path
   REQUIRES_GPU: true
-gt_tier: GT-3
-evidence_level: toy_cot_contract_plus_pinned_pythia_hidden_answer_preflight
-claim_scope: GT-3 chain-of-thought faithfulness preflight. The toy probe, patching,
-  text-baseline, feature-detector, and condition-comparison contracts are preserved,
-  and the graded CUDA path loads pinned Pythia-70M-deduped on safe A/B private-answer
-  prompts. It trains a thresholded hidden-answer direction on 24 prompts, evaluates
-  8 held-out prompts, includes a label-shuffled probe control, patches hidden state
-  through embed_out, and reports condition-level A/B logit accuracies. This is not
-  a broad chain-of-thought faithfulness benchmark or reasoning-model claim.
-required_gpu_gb: 1
+gt_tier: GT-0
+evidence_level: exact_toy_ground_truth_plus_pinned_pythia_negative_hook_patching_result
+claim_scope: >-
+  GT-0 chain-of-thought faithfulness model organism. The learner-facing path
+  proves the probe, layer-position heatmap, and causal patch metrics on an exact
+  toy CoT circuit with known ground truth. The CUDA path also loads pinned
+  Pythia-70M-deduped on 40 held-out safe A/B prompts, captures real hidden states,
+  and performs true forward-pass residual patching. That real-model experiment is
+  retained as a negative result: the private answer is text-visible, text-only
+  recall is perfect, and target patches do not beat the matched random-donor
+  control. It therefore supports only execution and falsification, not a Pythia
+  CoT-faithfulness claim or a claim about latent beliefs absent from the prompt.
+required_gpu_gb: 2
 max_allowed_gpu_gb: 24
 models:
-- id: toy_or_generated_inputs
+- id: exact_toy_cot_circuit
   source: generated
-  revision: seed_0
+  revision: seedless_deterministic_v2
   precision: float32
   gated: false
+  claim_scope: exact toy ground truth for hidden-answer probes and final-position causal patches
 - id: EleutherAI/pythia-70m-deduped
   source: huggingface
   revision: e93a9faa9c77e5d09219f6c868bfc7a1bd65593c
   precision: float32
   gated: false
-  claim_scope: hidden_answer_cot_faithfulness_preflight
+  claim_scope: executed negative control for A/B probing and true hook-based residual patching
   answer_tokens:
   - ' A'
   - ' B'
 datasets:
-- id: 9_2_chain_of_thought_faithfulness_toy_inputs
+- id: 9_2_exact_toy_cot_circuit_v2
   source: generated
-  seed: 0
-- id: course_safe_private_answer_cot_prompts_v1
+  seed: deterministic
+  examples: 24
+  layers: 4
+  positions:
+  - bos
+  - private_answer
+  - rationale_answer
+  - final_prompt
+  ground_truth: final_prompt layer >= 2 is the causal answer stream
+- id: course_safe_private_answer_cot_prompts_v2
   source: generated_prompt_sets
-  seed: 0
-  train_prompt_count: 24
-  heldout_prompt_count: 8
+  seed: deterministic
+  train_prompt_count: 40
+  heldout_prompt_count: 40
   train_nouns:
-  - private option
-  - secret choice
-  - hidden label
+  - private card
+  - sealed label
+  - hidden option
+  - secret answer
+  - internal choice
   heldout_nouns:
-  - internal answer
+  - latent card
+  - masked label
+  - covered option
+  - quiet answer
+  - stored choice
   conditions:
   - no_cot
   - faithful_cot
@@ -57,63 +75,54 @@ datasets:
   answer_classes:
   - A
   - B
-  unfaithful_case_count: 4
   generation_used: false
-  target_source: manual_safe_private_answer_labels_plus_real_hidden_state_projection
-  hidden_layer: -1
+  target_source: manual_safe_private_answer_labels_plus_real_hidden_state_projection_and_hook_patching
+  semantic_positions:
+  - private_answer
+  - rationale_answer
+  - final_prompt
 expected_metrics:
   tests_passed: true
   accepted: true
   max_allowed_gpu_gb: 24
-  preflight_passed: true
+  experiment_completed: true
+  preflight_passed: false
+  real_model_claim_supported: false
+  negative_result_detected: true
   model_name: EleutherAI/pythia-70m-deduped
   hf_revision: e93a9faa9c77e5d09219f6c868bfc7a1bd65593c
-  hidden_layer: -1
-  answer_token_ids:
-  - 329
-  - 378
   answer_tokens:
   - ' A'
   - ' B'
-  train_prompt_count: 24
-  heldout_prompt_count: 8
-  hidden_state_shape:
-  - 8
-  - 512
-  feature_detector_improves: true
-  feature_detector_accuracy: 1.0
-  baseline_detector_accuracy: 0.75
-  detector_recall: 1.0
-  text_only_recall: 0.5
-  text_only_misses_cases: true
-  hidden_answer_accuracy: 1.0
-  final_answer_agreement: 0.5
-  model_answer_accuracy: 0.625
-  label_shuffled_probe_accuracy: 0.0
-  patching_changed_output: true
-  original_answer: 0
-  patched_answer: 1
-  predicts_hidden_answer: true
-  unfaithful_case_count: 4
-  peak_vram_gb_max: 1.0
+  train_prompt_count_min: 40
+  heldout_prompt_count_min: 40
+  hidden_answer_accuracy_min: 0.7
+  final_answer_agreement_max: 0.8
+  label_shuffled_probe_accuracy_max: 0.65
+  text_only_recall_min: 0.95
+  text_only_misses_cases: false
+  target_beats_controls: false
+  patch_target_control_gap_max: 0.01
+  within_vram_budget: true
 controls:
-- baseline_or_reference_check
-- negative_control_where_applicable
-- shape_dtype_or_exact_value_check
-- toy_pre_final_answer_probe_contract
-- toy_hidden_answer_patching_contract
-- toy_cot_text_baseline_contract
-- toy_feature_detector_contract
-- toy_condition_comparison_contract
+- exact_toy_ground_truth_circuit
+- toy_label_shuffled_probe_negative_control
+- toy_text_only_patch_control
+- toy_random_direction_patch_control
+- toy_random_donor_patch_control
+- toy_irrelevant_position_patch_control
 - pinned_pythia70m_hidden_answer_direction_probe
 - heldout_private_answer_template_split
-- visible_rationale_posthoc_lexical_baseline
+- visible_rationale_text_only_baseline
 - label_shuffled_hidden_direction_negative_control
-- lm_head_hidden_state_patch_control
+- random_direction_activation_patch_control
+- random_donor_activation_patch_control
+- irrelevant_position_activation_patch_control
+- pythia_negative_result_text_only_and_random_donor_controls_do_not_separate
 - no_completion_generation_hidden_state_and_logits_only
 - broad_cot_faithfulness_benchmark_not_claimed
 safety_notes:
 - No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.
-- The real-model CoT-faithfulness path uses safe synthetic A/B prompts, hidden states,
-  and answer-token logits only. It performs no generated completions, contains no
-  harmful content, and does not claim results on arbitrary reasoning traces.
+- The real-model CoT-faithfulness path uses safe synthetic A/B prompts, hidden
+  states, answer-token logits, and PyTorch forward hooks only. It performs no
+  generated completions and does not claim results on arbitrary reasoning traces.

@@ -96,7 +96,7 @@ sections:
   '9.2':
     status: course_ready
     page: chapter9_alignment_interpretability/instructions/pages/02_[9.2]_Chain_of_Thought_Faithfulness.md
-    notes: ARENA-style rewrite with CoT faithfulness validation loop, hidden-answer probe/readout-patch/text-baseline/feature-detector/condition-split progression, help and interpretation dropdowns, pinned Pythia-70M hidden-answer signature result, limitations, and paired notebook surfaces.
+    notes: "ARENA-style CoT-faithfulness lab with eight progressive implementation exercises, immediate semantic tests, expected/help/solution/interpretation dropdowns, a 24-example exact toy organism, a visible layer-position probe heatmap, causal residual patching, matched controls, play cells, and anomaly hunting. The exact organism obtains hidden-answer probe accuracy 1.0 versus 0.0 under label shuffling; its targeted causal patch flips 100% of answers and beats the strongest control by a donor-margin gap of 8.0. All 15 solution code cells execute and nine focused CPU tests pass. CUDA 13.2 verification loads pinned EleutherAI/pythia-70m-deduped revision e93a9faa9c77e5d09219f6c868bfc7a1bd65593c and records hidden-answer accuracy 0.775 versus 0.225 under label shuffling at 0.320 GB peak VRAM. That real-model result is deliberately negative: text-only recall is 1.0 and the targeted patch ties the matched random-donor control with a 0.0 gap, so it supports hook execution and falsification rather than a Pythia CoT-faithfulness claim."
   '9.3':
     status: course_ready
     page: chapter9_alignment_interpretability/instructions/pages/03_[9.3]_Emergent_Misalignment_Detection.md
@@ -144,7 +144,7 @@ sections:
   '16.3':
     status: course_ready
     page: chapter16_shapley_attribution_baselines/instructions/pages/03_[16.3]_Shapley_Interactions_with_shapiq.md
-    notes: ARENA-style pairwise Shapley interaction lesson with exact finite-table SII implementation, additive zero-interaction and off-target controls, shapiq parity, planted positive/negative interaction report evidence, local validation-loop and signature-result diagrams, paired notebooks, and scoped CUDA trained-neural-game evidence.
+    notes: "ARENA-style Shapley-interaction lab with seven learner exercises, complete coalition-table ground truth, local SII and permutation-sampling implementations, immediate semantic tests, expected/help/solution/interpretation dropdowns, a four-panel signature result, parameterized interaction play, and higher-order anomaly hunting. The planted pair has SII 3.0, rises to 4.0 under a known triple term, and all off-target/additive-control interactions are below 1e-9; pinned shapiq parity is within 6.75e-9. Sampling MAE falls from about 0.70 at budget 2 to 0.039 at 256, while within-size value permutation remains wrong by 3.88 and large individual Shapley values identify the wrong pair. Fifteen focused tests and all 13 solution cells pass. CUDA 13.2 trains a neural coalition game, recovers positive and negative interactions within 4.52e-7, matches shapiq within 1.18e-8, rejects shuffled interactions by 4.38, and peaks at 0.063 GB VRAM."
   '16.4':
     status: course_ready
     page: chapter16_shapley_attribution_baselines/instructions/pages/04_[16.4]_TokenSHAP_and_TokenShapley.md

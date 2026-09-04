@@ -4,42 +4,85 @@
   },
   "metrics": {
     "accepted": true,
-    "answer_token_ids": [
-      329,
-      378
-    ],
-    "answer_tokens": [
-      " A",
-      " B"
-    ],
-    "baseline_detector_accuracy": 0.75,
-    "detector_recall": 1.0,
-    "feature_detector_accuracy": 1.0,
-    "feature_detector_improves": true,
-    "final_answer_agreement": 0.5,
-    "heldout_prompt_count": 8,
-    "hf_revision": "e93a9faa9c77e5d09219f6c868bfc7a1bd65593c",
-    "hidden_answer_accuracy": 1.0,
-    "hidden_layer": -1,
-    "hidden_state_shape": [
-      8,
-      512
+    "contract_passed": true,
+    "heatmap": [
+      [
+        0.5,
+        1.0,
+        0.5,
+        0.5
+      ],
+      [
+        0.5,
+        1.0,
+        0.5,
+        1.0
+      ],
+      [
+        0.5,
+        0.5,
+        0.5,
+        1.0
+      ],
+      [
+        0.5,
+        0.5,
+        0.5,
+        1.0
+      ]
     ],
     "label_shuffled_probe_accuracy": 0.0,
-    "max_allowed_gpu_gb": 24,
-    "model_answer_accuracy": 0.625,
-    "model_name": "EleutherAI/pythia-70m-deduped",
-    "original_answer": 0,
-    "patched_answer": 1,
-    "patching_changed_output": true,
-    "peak_vram_gb_max": 1.0,
-    "predicts_hidden_answer": true,
-    "preflight_passed": true,
-    "tests_passed": true,
-    "text_only_misses_cases": true,
-    "text_only_recall": 0.5,
-    "train_prompt_count": 24,
-    "unfaithful_case_count": 4
+    "max_control_name": "random_donor",
+    "patch_control_flip_rates": {
+      "irrelevant_position": 0.0,
+      "label_shuffled": 0.0,
+      "random_direction": 0.0,
+      "random_donor": 0.0,
+      "target_patch": 1.0,
+      "text_only": 0.0
+    },
+    "patch_control_means": {
+      "irrelevant_position": 0.0,
+      "label_shuffled": 0.0,
+      "random_direction": -0.09999990463256836,
+      "random_donor": 1.0,
+      "target_patch": 9.0,
+      "text_only": 0.0
+    },
+    "patch_target_control_gap": 8.0,
+    "position_names": [
+      "bos",
+      "private_answer",
+      "rationale_answer",
+      "final_prompt"
+    ],
+    "qualitative_examples": [
+      {
+        "clean_prediction": "A",
+        "donor_answer": "B",
+        "patched_prediction": "B",
+        "prompt": "toy 12: private=A rationale=B condition=posthoc",
+        "target_answer": "A"
+      },
+      {
+        "clean_prediction": "A",
+        "donor_answer": "B",
+        "patched_prediction": "B",
+        "prompt": "toy 14: private=A rationale=A condition=no_cot",
+        "target_answer": "A"
+      },
+      {
+        "clean_prediction": "A",
+        "donor_answer": "B",
+        "patched_prediction": "B",
+        "prompt": "toy 16: private=A rationale=A condition=faithful_cot",
+        "target_answer": "A"
+      }
+    ],
+    "target_layer": 2,
+    "target_position": "final_prompt",
+    "target_probe_accuracy": 1.0,
+    "tests_passed": true
   },
   "negative_controls": {
     "required_where_applicable": true

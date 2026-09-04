@@ -1,11 +1,10 @@
-from collections.abc import Callable
+from collections.abc import Callable, Mapping
 import json
 from pathlib import Path
 from typing import Any
 
+import pytest
 import torch as t
-
-import arena_ext.cot_faithfulness as reference
 
 
 def _solutions():
@@ -20,36 +19,8 @@ def _section_dir() -> Path:
     return Path(__file__).resolve().parent
 
 
-def _gpu_report() -> dict:
-    report = json.loads((_section_dir() / "verification_report.json").read_text())
-    return report["metrics"]["gpu_test"]
-
-
-def _as_dict(report: object) -> dict[str, Any]:
-    if isinstance(report, dict):
-        return report
-    return report.__dict__
-
-
-def _assert_close(actual: Any, expected: Any, *, name: str) -> None:
-    if isinstance(expected, dict):
-        assert isinstance(actual, dict), f"{name} should be a dictionary-like report."
-        assert actual.keys() == expected.keys(), (
-            f"{name} fields should match the independent reference implementation."
-        )
-        for key, expected_value in expected.items():
-            _assert_close(actual[key], expected_value, name=f"{name}.{key}")
-        return
-    if isinstance(expected, float):
-        assert abs(actual - expected) < 1e-6, (
-            f"{name} should be {expected}, got {actual}."
-        )
-        return
-    assert actual == expected, f"{name} should be {expected!r}, got {actual!r}."
-
-
-def _assert_report_close(actual: object, expected: object, *, msg: str) -> None:
-    _assert_close(_as_dict(actual), _as_dict(expected), name=msg)
+def _assert_close(actual: Any, expected: float, *, name: str) -> None:
+    assert abs(float(actual) - expected) < 1e-6, f"{name} should be {expected}, got {actual}."
 
 
 def test_prediction_accuracy_checks_top1_predictions(
@@ -58,274 +29,223 @@ def test_prediction_accuracy_checks_top1_predictions(
     prediction_accuracy = prediction_accuracy or _solutions().prediction_accuracy
     logits = t.tensor([[3.0, -1.0], [-0.5, 2.0], [1.0, 4.0], [2.0, 0.0]])
     labels = t.tensor([0, 1, 0, 0])
-    assert abs(prediction_accuracy(logits, labels) - 0.75) < 1e-6, (
-        "prediction_accuracy should compare argmax predictions against every target label."
+    _assert_close(
+        prediction_accuracy(logits, labels),
+        0.75,
+        name="prediction_accuracy",
     )
-    try:
+    with pytest.raises(ValueError, match="leading dimensions"):
         prediction_accuracy(t.zeros(2, 3), t.zeros(3, dtype=t.long))
-    except ValueError as exc:
-        assert "leading dimensions" in str(exc), (
-            "Shape errors should explain that target ids match the logits leading dimensions."
-        )
-    else:
-        raise AssertionError("prediction_accuracy should reject mismatched target shapes.")
-    try:
+    with pytest.raises(ValueError, match="finite"):
         prediction_accuracy(t.tensor([[float("nan"), 0.0]]), t.tensor([0]))
-    except ValueError as exc:
-        assert "finite" in str(exc), "Non-finite logits should be rejected."
-    else:
-        raise AssertionError("prediction_accuracy should reject non-finite logits.")
+    with pytest.raises(ValueError, match="answer ids"):
+        prediction_accuracy(t.zeros(1, 2), t.tensor([2]))
     print("All tests in `test_prediction_accuracy_checks_top1_predictions` passed!")
 
 
-def test_pre_final_answer_probe_report_predicts_hidden_answer(
-    pre_final_answer_probe_report: Callable | None = None,
+def test_answer_logit_diff_tracks_b_minus_a(answer_logit_diff: Callable | None = None):
+    answer_logit_diff = answer_logit_diff or _solutions().answer_logit_diff
+    logits = t.tensor([[2.0, 5.0], [4.0, 1.0]])
+    diff = answer_logit_diff(logits)
+    assert t.allclose(diff, t.tensor([3.0, -3.0]))
+    with pytest.raises(ValueError, match=r"\[A, B\]"):
+        answer_logit_diff(t.zeros(2, 3))
+    print("All tests in `test_answer_logit_diff_tracks_b_minus_a` passed!")
+
+
+def test_mean_difference_probe_recovers_toy_hidden_answer(
+    fit_mean_difference_probe: Callable | None = None,
+    probe_logits_from_direction: Callable | None = None,
 ):
-    pre_final_answer_probe_report = (
-        pre_final_answer_probe_report or _solutions().pre_final_answer_probe_report
-    )
-    probe_logits = t.tensor([[2.0, 0.0], [0.0, 2.0], [2.0, 0.0]])
-    hidden_answer_ids = t.tensor([0, 1, 0])
-    final_answer_ids = t.tensor([0, 0, 0])
-    report = pre_final_answer_probe_report(
-        probe_logits,
-        hidden_answer_ids,
-        final_answer_ids,
-        min_hidden_accuracy=1.0,
-    )
-    expected = reference.pre_final_answer_probe_report(
-        probe_logits,
-        hidden_answer_ids,
-        final_answer_ids,
-        min_hidden_accuracy=1.0,
-    )
-    _assert_report_close(report, expected, msg="Pre-final answer probe report")
-    assert report.hidden_answer_accuracy == 1.0, (
-        "The probe should perfectly recover hidden answers in this fixture."
-    )
-    assert abs(report.final_answer_agreement - (2 / 3)) < 1e-6, (
-        "Only two of three probe predictions agree with the final visible answer."
-    )
-    assert report.predicts_hidden_answer, (
-        "The report should pass when hidden-answer accuracy clears the configured threshold."
-    )
-    try:
-        pre_final_answer_probe_report(
-            t.empty(0, 2),
-            t.empty(0, dtype=t.long),
-            t.empty(0, dtype=t.long),
-        )
-    except ValueError as exc:
-        assert "non-empty" in str(exc), "Empty probe batches should be rejected."
-    else:
-        raise AssertionError("pre_final_answer_probe_report should reject empty batches.")
-    print("All tests in `test_pre_final_answer_probe_report_predicts_hidden_answer` passed!")
+    s = _solutions()
+    fit_mean_difference_probe = fit_mean_difference_probe or s.fit_mean_difference_probe
+    probe_logits_from_direction = probe_logits_from_direction or s.probe_logits_from_direction
+    batch = s.make_toy_cot_batch(num_pairs=8)
+    final_position = batch.position_names.index("final_prompt")
+    hidden_states = batch.activations[:, 2, final_position, :]
+    probe = fit_mean_difference_probe(hidden_states, batch.hidden_answer_ids)
+    logits = probe_logits_from_direction(hidden_states, probe)
+    assert s.prediction_accuracy(logits, batch.hidden_answer_ids) == 1.0
+    shuffled_probe = fit_mean_difference_probe(hidden_states, batch.hidden_answer_ids.roll(1))
+    shuffled_logits = probe_logits_from_direction(hidden_states, shuffled_probe)
+    assert s.prediction_accuracy(shuffled_logits, batch.hidden_answer_ids) <= 0.5
+    with pytest.raises(ValueError, match="both answer classes"):
+        fit_mean_difference_probe(hidden_states[:4], t.zeros(4, dtype=t.long))
+    print("All tests in `test_mean_difference_probe_recovers_toy_hidden_answer` passed!")
 
 
-def test_hidden_answer_patching_report_flags_answer_flip(
-    hidden_answer_patching_report: Callable | None = None,
+def test_layer_position_heatmap_finds_toy_answer_stream(
+    layer_position_probe_heatmap: Callable | None = None,
 ):
-    hidden_answer_patching_report = (
-        hidden_answer_patching_report or _solutions().hidden_answer_patching_report
+    s = _solutions()
+    layer_position_probe_heatmap = layer_position_probe_heatmap or s.layer_position_probe_heatmap
+    batch = s.make_toy_cot_batch(num_pairs=12)
+    train = t.arange(0, 12)
+    eval_idx = t.arange(12, 24)
+    heatmap = layer_position_probe_heatmap(
+        batch.activations[train],
+        batch.hidden_answer_ids[train],
+        batch.activations[eval_idx],
+        batch.hidden_answer_ids[eval_idx],
     )
-    original_logits = t.tensor([3.0, 0.0])
-    patched_logits = t.tensor([0.0, 3.0])
-    report = hidden_answer_patching_report(original_logits, patched_logits)
-    expected = reference.hidden_answer_patching_report(original_logits, patched_logits)
-    _assert_report_close(report, expected, msg="Hidden-answer patching report")
-    assert report.original_answer == 0 and report.patched_answer == 1, (
-        "The report should record the original and patched answer-token argmaxes."
-    )
-    assert report.changed_output, (
-        "Patching should be marked causal only when the answer token changes."
-    )
-    try:
-        hidden_answer_patching_report(t.tensor([float("inf"), 0.0]), t.tensor([0.0, 1.0]))
-    except ValueError as exc:
-        assert "finite" in str(exc), "Non-finite answer logits should be rejected."
-    else:
-        raise AssertionError("hidden_answer_patching_report should reject non-finite logits.")
-    print("All tests in `test_hidden_answer_patching_report_flags_answer_flip` passed!")
+    final_position = batch.position_names.index("final_prompt")
+    rationale_position = batch.position_names.index("rationale_answer")
+    assert heatmap.shape == (4, 4)
+    assert heatmap[2, final_position] == 1.0
+    assert heatmap[3, final_position] == 1.0
+    assert heatmap[0, rationale_position] <= 0.5
+    print("All tests in `test_layer_position_heatmap_finds_toy_answer_stream` passed!")
 
 
-def test_cot_text_baseline_report_keeps_recall_gap(
-    cot_text_baseline_report: Callable | None = None,
+def test_replace_position_in_layer_output_patches_tensor_and_tuple(
+    replace_position_in_layer_output: Callable | None = None,
 ):
-    cot_text_baseline_report = (
-        cot_text_baseline_report or _solutions().cot_text_baseline_report
+    replace_position_in_layer_output = (
+        replace_position_in_layer_output or _solutions().replace_position_in_layer_output
     )
-    labels = t.tensor([1, 0, 1, 0], dtype=t.bool)
-    detector = t.tensor([1, 0, 1, 0], dtype=t.bool)
-    text_only = t.tensor([0, 0, 1, 0], dtype=t.bool)
-    report = cot_text_baseline_report(detector, text_only, labels)
-    expected = reference.cot_text_baseline_report(detector, text_only, labels)
-    _assert_report_close(report, expected, msg="CoT text-baseline report")
-    assert report.detector_recall == 1.0, (
-        "The white-box detector should recover both unfaithful examples."
-    )
-    assert report.text_only_recall == 0.5, (
-        "The text-only baseline should miss one of the two unfaithful examples."
-    )
-    assert report.text_only_misses_cases, (
-        "The report should mark the text-only baseline as weaker than the detector."
-    )
-    try:
-        cot_text_baseline_report(t.zeros(3), t.zeros(3), t.zeros(3))
-    except ValueError as exc:
-        assert "positive label" in str(exc), "Recall should reject an all-negative batch."
-    else:
-        raise AssertionError("cot_text_baseline_report should reject batches with no positives.")
-    print("All tests in `test_cot_text_baseline_report_keeps_recall_gap` passed!")
+    hidden = t.zeros(2, 4, 3)
+    donor = t.tensor([1.0, 2.0, 3.0])
+    patched = replace_position_in_layer_output(hidden, donor, token_position=2)
+    assert t.allclose(patched[:, 2, :], donor.expand(2, -1))
+    assert t.allclose(hidden, t.zeros_like(hidden)), "The hook helper should clone before editing."
+
+    tuple_output = (hidden, "cache")
+    tuple_patched = replace_position_in_layer_output(tuple_output, donor, token_position=-1)
+    assert isinstance(tuple_patched, tuple)
+    assert tuple_patched[1] == "cache"
+    assert t.allclose(tuple_patched[0][:, -1, :], donor.expand(2, -1))
+    with pytest.raises(ValueError, match="outside"):
+        replace_position_in_layer_output(hidden, donor, token_position=9)
+    print("All tests in `test_replace_position_in_layer_output_patches_tensor_and_tuple` passed!")
 
 
-def test_feature_detector_report_scores_thresholded_predictions(
-    feature_detector_report: Callable | None = None,
+def test_toy_forward_patch_has_exact_causal_ground_truth(
+    toy_forward_patch_answer_logits: Callable | None = None,
 ):
-    feature_detector_report = feature_detector_report or _solutions().feature_detector_report
-    labels = t.tensor([1, 0, 1, 0], dtype=t.bool)
-    feature_scores = t.tensor([0.9, 0.1, 0.8, 0.2])
-    baseline_scores = t.tensor([0.2, 0.1, 0.6, 0.2])
-    report = feature_detector_report(
-        feature_scores,
-        baseline_scores,
-        labels,
-        threshold=0.5,
+    s = _solutions()
+    toy_forward_patch_answer_logits = toy_forward_patch_answer_logits or s.toy_forward_patch_answer_logits
+    batch = s.make_toy_cot_batch(num_pairs=12)
+    final_position = batch.position_names.index("final_prompt")
+    rationale_position = batch.position_names.index("rationale_answer")
+    target = t.tensor([12, 14, 16])
+    donor = target + 1
+    target_ids = batch.hidden_answer_ids[target]
+    donor_ids = batch.hidden_answer_ids[donor]
+    clean_logits = s.toy_answer_logits(batch)[target]
+    clean_margin = s.signed_margin_toward_donor(clean_logits, target_ids, donor_ids)
+    patched_logits = toy_forward_patch_answer_logits(
+        batch,
+        target,
+        donor,
+        layer_index=2,
+        position_index=final_position,
     )
-    expected = reference.feature_detector_report(
-        feature_scores,
-        baseline_scores,
-        labels,
-        threshold=0.5,
+    irrelevant_logits = toy_forward_patch_answer_logits(
+        batch,
+        target,
+        donor,
+        layer_index=2,
+        position_index=rationale_position,
     )
-    _assert_report_close(report, expected, msg="Feature-detector report")
-    assert report.feature_accuracy == 1.0, (
-        "The feature detector should classify every toy unfaithfulness label correctly."
-    )
-    assert report.baseline_accuracy == 0.75, (
-        "The baseline score should make exactly one mistake in this fixture."
-    )
-    assert report.improves_detection, (
-        "The feature detector should be accepted only if it beats the baseline."
-    )
-    try:
-        feature_detector_report(
-            t.tensor([0.9, float("nan")]),
-            t.tensor([0.1, 0.2]),
-            t.tensor([1, 0], dtype=t.bool),
-        )
-    except ValueError as exc:
-        assert "finite" in str(exc), "Non-finite feature scores should be rejected."
-    else:
-        raise AssertionError("feature_detector_report should reject non-finite scores.")
-    print("All tests in `test_feature_detector_report_scores_thresholded_predictions` passed!")
+    patched_margin = s.signed_margin_toward_donor(patched_logits, target_ids, donor_ids)
+    irrelevant_margin = s.signed_margin_toward_donor(irrelevant_logits, target_ids, donor_ids)
+    assert patched_logits.argmax(dim=-1).eq(donor_ids).all()
+    assert (patched_margin - clean_margin).min() > 5.0
+    assert t.allclose(irrelevant_margin, clean_margin)
+    print("All tests in `test_toy_forward_patch_has_exact_causal_ground_truth` passed!")
 
 
-def test_cot_condition_comparison_report_tracks_gaps(
-    cot_condition_comparison_report: Callable | None = None,
+def test_patch_control_summary_requires_target_beats_controls(
+    patch_control_summary: Callable | None = None,
 ):
-    cot_condition_comparison_report = (
-        cot_condition_comparison_report or _solutions().cot_condition_comparison_report
-    )
-    condition_correct = {
-        "no_cot": t.tensor([1, 0, 1], dtype=t.float32),
-        "faithful_cot": t.tensor([1, 1, 1], dtype=t.float32),
-        "biased_cot": t.tensor([1, 0, 0], dtype=t.float32),
-        "posthoc": t.tensor([1, 1, 0], dtype=t.float32),
+    patch_control_summary = patch_control_summary or _solutions().patch_control_summary
+    effects = {
+        "target_patch": t.tensor([2.0, 2.5, 3.0]),
+        "text_only": t.tensor([0.0, 0.0, 0.0]),
+        "label_shuffled": t.tensor([0.1, 0.0, -0.1]),
+        "random_direction": t.tensor([0.2, 0.1, 0.0]),
+        "random_donor": t.tensor([0.5, 0.2, 0.1]),
+        "irrelevant_position": t.tensor([0.0, 0.0, 0.0]),
     }
-    report = cot_condition_comparison_report(condition_correct)
-    expected = reference.cot_condition_comparison_report(condition_correct)
-    _assert_report_close(report, expected, msg="CoT condition-comparison report")
-    assert report.condition_accuracies["faithful_cot"] == 1.0, (
-        "Faithful CoT should have perfect toy accuracy in this comparison."
-    )
-    assert abs(report.biased_gap - (1 / 3)) < 1e-6, (
-        "The biased gap should be post-hoc accuracy minus biased-CoT accuracy."
-    )
-    assert abs(report.posthoc_gap - (1 / 3)) < 1e-6, (
-        "The post-hoc gap should be faithful-CoT accuracy minus post-hoc accuracy."
-    )
-    try:
-        cot_condition_comparison_report({"faithful_cot": t.ones(1)})
-    except ValueError as exc:
-        assert "all CoT conditions" in str(exc), (
-            "Missing-condition errors should say that all CoT conditions are required."
-        )
-    else:
-        raise AssertionError("cot_condition_comparison_report should require all conditions.")
-    condition_correct["posthoc"] = t.tensor([float("nan")])
-    try:
-        cot_condition_comparison_report(condition_correct)
-    except ValueError as exc:
-        assert "finite" in str(exc), "Non-finite condition tensors should be rejected."
-    else:
-        raise AssertionError("cot_condition_comparison_report should reject non-finite tensors.")
-    print("All tests in `test_cot_condition_comparison_report_tracks_gaps` passed!")
+    flips = {
+        name: (values > 1.0)
+        for name, values in effects.items()
+    }
+    report = patch_control_summary(effects, flips, min_target_control_gap=1.0)
+    assert report.target_beats_controls
+    assert report.max_control_name == "random_donor"
+    assert report.flip_rates["target_patch"] == 1.0
+    with pytest.raises(ValueError, match="target_patch"):
+        patch_control_summary({"text_only": t.zeros(2)}, {"text_only": t.zeros(2)})
+    print("All tests in `test_patch_control_summary_requires_target_beats_controls` passed!")
 
 
 def test_notebook_contract(run_smoke_test: Callable | None = None):
     run_smoke_test = run_smoke_test or _solutions().run_smoke_test
     result = run_smoke_test(cpu=True)
-    assert result["probe"]["predicts_hidden_answer"], (
-        "The notebook contract should include a passing hidden-answer probe."
-    )
-    assert result["patching"]["changed_output"], (
-        "The notebook contract should include a causal answer-patching check."
-    )
-    assert result["text_baseline"]["text_only_misses_cases"], (
-        "The notebook contract should include the weaker text-only baseline."
-    )
-    assert result["feature_detector"]["improves_detection"], (
-        "The notebook contract should include feature-detector improvement."
-    )
-    assert result["condition_comparison"]["biased_gap"] > 0, (
-        "The notebook contract should include a positive biased-CoT gap."
-    )
-    assert result["condition_comparison"]["posthoc_gap"] > 0, (
-        "The toy notebook contract should include a positive post-hoc gap."
-    )
+    assert result["accepted"] and result["contract_passed"] and result["tests_passed"]
+    assert result["target_probe_accuracy"] == 1.0
+    assert result["label_shuffled_probe_accuracy"] <= 0.5
+    assert result["patch_control_flip_rates"]["target_patch"] == 1.0
+    assert result["patch_control_flip_rates"]["irrelevant_position"] == 0.0
+    assert result["patch_target_control_gap"] >= 1.0
+    assert len(result["qualitative_examples"]) >= 3
     print("All tests in `test_notebook_contract` passed!")
 
 
-def test_committed_gpu_report_uses_real_text_only_baseline(result: dict | None = None):
-    result = result or _gpu_report()
-    assert result["cuda_available"] and result["preflight_passed"], (
-        "The committed report should come from the CUDA Pythia CoT preflight."
-    )
-    assert result["text_only_baseline_rule"] == "visible_posthoc_lexical_cue_only", (
-        "The text-only baseline should be a visible lexical rule, not a hardcoded zero vector."
-    )
-    assert result["text_only_recall"] == 0.5, (
-        "The visible-text baseline should catch only explicit post-hoc cases."
-    )
-    assert result["detector_recall"] == 1.0 and result["text_only_misses_cases"], (
-        "The hidden-state detector should still beat the visible-text baseline."
-    )
-    assert result["baseline_detector_accuracy"] == 0.75, (
-        "The baseline detector accuracy should reflect the real lexical baseline."
-    )
-    print("All tests in `test_committed_gpu_report_uses_real_text_only_baseline` passed!")
+def test_live_gpu_signature_result(result: Mapping[str, Any] | None = None):
+    if result is None:
+        pytest.skip("Pass a live run_gpu_test result from the parent CUDA verification run.")
+    assert result["cuda_available"] and result["experiment_completed"]
+    assert result["model_name"] == "EleutherAI/pythia-70m-deduped"
+    assert result["hf_revision"] == "e93a9faa9c77e5d09219f6c868bfc7a1bd65593c"
+    assert result["heldout_prompt_count"] >= 20
+    assert result["hidden_answer_accuracy"] >= 0.7
+    assert result["label_shuffled_probe_accuracy"] <= 0.65
+    assert result["text_only_recall"] >= result["detector_recall"]
+    assert not result["text_only_misses_cases"]
+    assert not result["target_beats_controls"]
+    assert result["patch_control_means"]["target_patch"] <= result["patch_control_means"]["random_donor"]
+    assert result["patch_target_control_gap"] <= 0.01
+    assert result["negative_result_detected"]
+    assert not result["real_model_claim_supported"]
+    assert not result["preflight_passed"]
+    assert "true forward-pass residual activation patching" in result["full_path"]
+    assert len(result["probe_heatmap"]) >= 2
+    assert len(result["qualitative_examples"]) >= 4
+    print("All tests in `test_live_gpu_signature_result` passed!")
 
 
-def test_exercise_notebook_declares_full_verification_contract():
+def test_exercise_notebook_declares_arena_pedagogy():
     notebook_path = _section_dir() / "9.2_Chain_of_Thought_Faithfulness_exercises.ipynb"
     notebook = json.loads(notebook_path.read_text())
-    source = "\n".join(
-        "".join(cell.get("source", [])) for cell in notebook.get("cells", [])
-    )
+    source = "\n".join("".join(cell.get("source", [])) for cell in notebook.get("cells", []))
 
-    assert "REQUIRES_GPU = True" in source, (
-        "The learner notebook should not advertise CPU-only scope for this GT-3 section."
-    )
-    assert "def run_smoke_test(cpu: bool = True)" in source, (
-        "The learner notebook should expose the CPU contract surface."
-    )
-    assert "def run_gpu_test(max_vram_gb: float = 24.0)" in source, (
-        "The learner notebook should expose the GPU verification surface."
-    )
-    assert "def run_full_experiment(max_vram_gb: float = 24.0)" in source, (
-        "The learner notebook should expose the full experiment surface."
-    )
-    assert "test_committed_gpu_report_uses_real_text_only_baseline" in source, (
-        "The learner notebook should end by checking the committed CoT faithfulness report."
-    )
-    print("All tests in `test_exercise_notebook_declares_full_verification_contract` passed!")
+    required_strings = [
+        "By the end of this notebook",
+        "exact toy ground truth",
+        "Exercise 1",
+        "Exercise 2",
+        "Exercise 3",
+        "Exercise 4",
+        "Exercise 5",
+        "Exercise 6",
+        "layer-position heatmap",
+        "true forward-pass residual activation patching",
+        "text-only",
+        "label-shuffled",
+        "random-direction",
+        "random-donor",
+        "irrelevant-position",
+        "Try It Yourself",
+        "Anomaly hunt",
+        "def run_smoke_test(cpu: bool = True)",
+        "def run_gpu_test(max_vram_gb: float = 24.0)",
+        "test_live_gpu_signature_result",
+    ]
+    for required in required_strings:
+        assert required in source, f"The learner notebook should include {required!r}."
+    assert source.count("<summary>Expected output</summary>") >= 6
+    assert source.count("<summary>Help") >= 6
+    assert source.count("<summary>Solution") >= 6
+    print("All tests in `test_exercise_notebook_declares_arena_pedagogy` passed!")
