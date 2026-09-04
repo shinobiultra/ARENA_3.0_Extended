@@ -141,9 +141,9 @@
       "train_example_count": 8
     }
   ],
-  "date_run": "2026-09-04T07:48:37+00:00",
+  "date_run": "2026-09-04T07:55:51+00:00",
   "evidence_level": "exact_factor_world_plus_pinned_transformerlens_question_conditioned_oracle_preflight",
-  "git_commit": "f452ee98",
+  "git_commit": "d1025a5a",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-1",
   "known_failures": [],
@@ -499,5 +499,5 @@
     "The real-model path uses safe generic prompts and cached activations/logits from a small public TransformerLens checkpoint. It does not use unsafe prompts, gated weights, generated completions, adapter training, or external API calls."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 54.625827
+  "wall_clock_seconds": 10.553198
 }
