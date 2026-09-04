@@ -86,9 +86,9 @@
       ]
     }
   ],
-  "date_run": "2026-07-02T12:45:06+00:00",
+  "date_run": "2026-09-04T12:55:25+00:00",
   "evidence_level": "data_shapley_contract_plus_cuda_one_step_training_preflight",
-  "git_commit": "3a539d48",
+  "git_commit": "387be0eb",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-0",
   "known_failures": [],
@@ -226,13 +226,13 @@
       "random_data_in_run_signal_correlation": 0.21317629654669076,
       "random_data_max_abs_signal_correlation": 0.21317629654669076,
       "random_data_signal_correlation": 0.01479098203169305,
-      "runtime_exact_enumeration_seconds": 0.0016714980702943194,
-      "runtime_exact_vs_full_update_overhead_ratio": 2.0158600576916377,
-      "runtime_full_update_seconds": 0.0008291736640728686,
+      "runtime_exact_enumeration_seconds": 0.0014552915624994611,
+      "runtime_exact_vs_full_update_overhead_ratio": 2.503708405976264,
+      "runtime_full_update_seconds": 0.0005812544140626486,
       "runtime_in_run_faster_than_exact": true,
-      "runtime_in_run_scores_seconds": 0.0007654687734373056,
-      "runtime_in_run_vs_exact_ratio": 0.45795372847934,
-      "runtime_in_run_vs_full_update_overhead_ratio": 0.9231706295124629,
+      "runtime_in_run_scores_seconds": 0.0007003345312508458,
+      "runtime_in_run_vs_exact_ratio": 0.48123314207087287,
+      "runtime_in_run_vs_full_update_overhead_ratio": 1.2048674630372143,
       "runtime_measurement_repeats": 128,
       "runtime_overhead_reported": true,
       "sampled_approximates_exact": true,
@@ -248,10 +248,24 @@
       "within_vram_budget": true
     },
     "notebook_contract": {
+      "clean_label_control": {
+        "exact_values": [
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ],
+        "has_negative_value": false,
+        "labels": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
       "exact": {
-        "addition_test_passes": true,
-        "baseline_utility": 0.0,
         "deletion_test_passes": true,
+        "efficiency_error": 2.220446049250313e-16,
         "exact_values": [
           0.6412037037037037,
           0.6412037037037037,
@@ -261,11 +275,9 @@
         "full_utility": 0.75,
         "harmful_index": 3,
         "harmful_removal_delta": 0.25,
-        "harmful_value": -1.173611111111111,
-        "helpful_addition_utility": 1.0,
-        "helpful_index": 0,
-        "helpful_value": 0.6412037037037037
+        "harmful_value": -1.173611111111111
       },
+      "first_proxy_rank_failure_lr": 1.95,
       "in_run": {
         "correlates_with_exact": true,
         "exact_values": [
@@ -275,11 +287,8 @@
           -1.173611111111111
         ],
         "harmful_index": 3,
-        "helpful_index": 0,
         "identifies_harmful": true,
-        "identifies_helpful": true,
         "in_run_harmful_index": 3,
-        "in_run_helpful_index": 0,
         "in_run_scores": [
           4.0,
           4.0,
@@ -287,41 +296,6 @@
           -4.0
         ],
         "pearson_correlation": 1.0000000000000002
-      },
-      "label_shuffle_control": {
-        "exact_values": [
-          0.6412037037037037,
-          -1.173611111111111,
-          0.6412037037037037,
-          0.6412037037037037
-        ],
-        "harmful_index": 1,
-        "helpful_index": 0,
-        "in_run_harmful_index": 1,
-        "in_run_helpful_index": 0,
-        "in_run_scores": [
-          4.0,
-          -4.0,
-          4.0,
-          4.0
-        ],
-        "in_run_signal_correlation": -0.33333333333333337,
-        "label_permutation": [
-          0,
-          3,
-          2,
-          1
-        ],
-        "label_shuffled_attribution_fails": true,
-        "max_abs_signal_correlation": 0.33333333333333337,
-        "original_harmful_index": 3,
-        "shuffled_train_y": [
-          1.0,
-          -1.0,
-          1.0,
-          1.0
-        ],
-        "signal_correlation": -0.3333333333333333
       },
       "monte_carlo": {
         "approximates_exact": true,
@@ -338,43 +312,168 @@
           0.6402994791666671,
           0.6860894097222234,
           -1.2377387152777803
-        ],
-        "top_example_matches": true
+        ]
       },
-      "random_data_control": {
+      "relocated_corruption_control": {
         "exact_values": [
-          0.28363340470515136,
-          -2.0551571094120584,
-          1.582333627654534,
-          -0.1075920094113099
+          0.6412037037037037,
+          -1.173611111111111,
+          0.6412037037037037,
+          0.6412037037037037
         ],
         "harmful_index": 1,
-        "helpful_index": 2,
-        "in_run_harmful_index": 1,
-        "in_run_helpful_index": 2,
         "in_run_scores": [
-          -0.027620552876855387,
-          -4.574240379055673,
-          5.241643511197963,
-          -1.5370450983470834
+          4.0,
+          -4.0,
+          4.0,
+          4.0
         ],
-        "in_run_signal_correlation": 0.21317629654669087,
-        "max_abs_signal_correlation": 0.21317629654669087,
-        "original_harmful_index": 3,
-        "original_helpful_index": 0,
-        "random_data_attribution_fails": true,
-        "seed": 13,
-        "signal_correlation": 0.014790982031693076
+        "labels": [
+          1.0,
+          -1.0,
+          1.0,
+          1.0
+        ],
+        "proxy_harmful_index": 1
       },
-      "runtime_overhead": {
-        "runtime_exact_enumeration_seconds": 0.0005600958828324565,
-        "runtime_exact_vs_full_update_overhead_ratio": 15.448839972548656,
-        "runtime_full_update_seconds": 3.625488281500111e-05,
-        "runtime_in_run_scores_seconds": 2.014735156308234e-05,
-        "runtime_in_run_vs_exact_ratio": 0.03597125453091232,
-        "runtime_in_run_vs_full_update_overhead_ratio": 0.5557141548598803,
-        "runtime_measurement_repeats": 128,
-        "runtime_overhead_reported": true
+      "training_run_lab": {
+        "budget": {
+          "budgets": [
+            4,
+            16,
+            64,
+            256
+          ],
+          "harmful_hit_rate": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "max_max_error": [
+            0.4693954835638126,
+            0.3920499704978099,
+            0.23341162447738018,
+            0.0686869219526659
+          ],
+          "mean_max_error": [
+            0.2727532016805954,
+            0.15616368873151773,
+            0.09894371634661242,
+            0.043709033211048284
+          ],
+          "min_max_error": [
+            0.14946870102358756,
+            0.04319566675884695,
+            0.029208960881086155,
+            0.02364431554407667
+          ]
+        },
+        "duplicate_gap": 0.0,
+        "efficiency_error": 9.992007221626409e-16,
+        "exact_values": [
+          0.1883070437112247,
+          0.1883070437112247,
+          0.1617386027321338,
+          0.15184833086204583,
+          0.1928129463496942,
+          0.17838310257782203,
+          -0.6180514150010005,
+          0.06486622628028536
+        ],
+        "full_utility": 0.5082118812234312,
+        "harmful_index": 6,
+        "harmful_removal_delta": 0.13277582808274047,
+        "influence_correlation": 0.9722895904467013,
+        "influence_values": [
+          0.019405251257923584,
+          0.019405251257923584,
+          0.011139935151188938,
+          0.042001189136277206,
+          0.03838849742710332,
+          0.031619433839348704,
+          -0.12341410685224383,
+          -0.012015592621078604
+        ],
+        "leave_one_out_correlation": 0.9383288083711586,
+        "leave_one_out_values": [
+          0.022480075365741814,
+          0.022480075365741814,
+          0.014878038447883934,
+          0.07952147568931373,
+          0.045116961779346876,
+          0.035220372779199094,
+          -0.13277582808274047,
+          0.006747624469170765
+        ],
+        "matched_removal_delta": -0.022480075365741814,
+        "one_run_correlation": 0.9954717305316614,
+        "one_run_values": [
+          0.18754959080990438,
+          0.18754959080990438,
+          0.17059583812151008,
+          0.2080216174597646,
+          0.19212220912734568,
+          0.17508668294788773,
+          -0.7084487583811444,
+          0.12089843479743552
+        ],
+        "sampled_max_abs_error": 0.02364431554407667,
+        "sampled_values": [
+          0.17356768984668888,
+          0.17937302741894096,
+          0.18538291827621048,
+          0.14431093921762642,
+          0.19444015336207296,
+          0.17596794405099622,
+          -0.6183076525469708,
+          0.07347686159786533
+        ],
+        "shuffled_label_control": {
+          "correlation": -0.1973504144798456,
+          "labels": [
+            0.0,
+            1.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0
+          ],
+          "original_exact": [
+            0.1883070437112247,
+            0.1883070437112247,
+            0.1617386027321338,
+            0.15184833086204583,
+            0.1928129463496942,
+            0.17838310257782203,
+            -0.6180514150010005,
+            0.06486622628028536
+          ],
+          "original_harmful_index": 6,
+          "permutation": [
+            6,
+            1,
+            2,
+            3,
+            4,
+            5,
+            0,
+            7
+          ],
+          "shuffled_exact": [
+            -0.6180514150010004,
+            0.18830704371122475,
+            0.16173860273213375,
+            0.15184833086204583,
+            0.19281294634969415,
+            0.17838310257782203,
+            0.18830704371122473,
+            0.06486622628028534
+          ],
+          "shuffled_harmful_index": 0
+        }
       }
     }
   },
@@ -410,13 +509,8 @@
   "peak_vram_gb": 0.06251144409179688,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "ba4c82fa7dd9960ea83d43168fd7b627932719a1e325bcf6f52b25066cf6dd43",
+    "combined_sha256": "29c9580e3ace9c14c9ad3d974c235f83819bd570db7b4fee9451b2cae40b7072",
     "files": [
-      {
-        "path": "arena_ext/shapley_attribution.py",
-        "sha256": "41933e8728654b42e33929346d136327b37d86e28bb884a45dd878dba096c418",
-        "size_bytes": 48062
-      },
       {
         "path": "arena_ext/verification.py",
         "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
@@ -424,18 +518,18 @@
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part7_data_shapley_in_one_training_run/16.7_Data_Shapley_in_One_Training_Run_exercises.ipynb",
-        "sha256": "487f0202d5728a296f1b60b2428f9df2c7d6530114a23e33e707fd738717d742",
-        "size_bytes": 23298
+        "sha256": "8a0a87b14177056bf62e2b49cb75e572b74f41433167deb19f9012669f480ffb",
+        "size_bytes": 58016
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part7_data_shapley_in_one_training_run/16.7_Data_Shapley_in_One_Training_Run_solutions.ipynb",
-        "sha256": "fa80b386331351b72e90cce9ad4992e1220a5f6ae4813a75f8819c1e115b7ad7",
-        "size_bytes": 41720
+        "sha256": "3cd344ac37156b84dda1eaa5f81db31cc9a50aace8c44c271160b2ab805bc87a",
+        "size_bytes": 80714
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part7_data_shapley_in_one_training_run/README.md",
-        "sha256": "56016bd7f9567ff51b65264e43ea57e71d436b4294ca5b537eb705332a8144ae",
-        "size_bytes": 1000
+        "sha256": "66245ef4997801bd13af396b00ebe81aef23e4e055a13267478efcd1ab6da6f2",
+        "size_bytes": 2045
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part7_data_shapley_in_one_training_run/artifacts.lock.yml",
@@ -444,28 +538,28 @@
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part7_data_shapley_in_one_training_run/expected_outputs/README.md",
-        "sha256": "ca43361c3454f7766d3c29e38cf638fbeca054c46155b0396609829998e00c81",
-        "size_bytes": 1785
+        "sha256": "d6837f12538076599572170cb8dfb0cb253e62ca9bb28681bcfde1317d5cb1b0",
+        "size_bytes": 1121
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part7_data_shapley_in_one_training_run/expected_outputs/reference_metrics.json",
-        "sha256": "a4d24045f8eaae7dd35eec0878b8e1a3e339af6300693743a39fbda9648977e3",
-        "size_bytes": 930
+        "sha256": "de25877d88977d38927695069519bfd21e2f6e8bc6c4b243e60677f591aa099b",
+        "size_bytes": 2846
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part7_data_shapley_in_one_training_run/expected_outputs/smoke_test.json",
-        "sha256": "1bea93a5ee794658c779d87f23c90bd6f2424af86f8d8faa6b675f5f7ccc9363",
-        "size_bytes": 305
+        "sha256": "6d6b36ddf4e4463c847404065d3ede3afdfcbcaec2e061fad49390800f1d699a",
+        "size_bytes": 738
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part7_data_shapley_in_one_training_run/solutions.py",
-        "sha256": "380baea644bd28f8e054a06e2afb72a4b5301578c7c8d681fa2ea099dc189975",
-        "size_bytes": 23239
+        "sha256": "d0b2780413cb8b84e747933c92983f7d6203c7b3f169d27f576d183a48c79d11",
+        "size_bytes": 49814
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part7_data_shapley_in_one_training_run/tests.py",
-        "sha256": "e4b44b5b4efd5acfc2cdce32e63e4a550bd481552eb1932efee480f848c42ac0",
-        "size_bytes": 14096
+        "sha256": "0c7d33ab4827a63f29155a444c59b013e8be439f4fa18a37b671209e0bab9852",
+        "size_bytes": 23753
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part7_data_shapley_in_one_training_run/utils.py",
@@ -479,13 +573,13 @@
       },
       {
         "path": "chapter16_shapley_attribution_baselines/instructions/pages/07_[16.7]_Data_Shapley_in_One_Training_Run.md",
-        "sha256": "a368d6593f808524e2da8eed1efa207841bdfce0086601ecaaa6a0b5960cb487",
-        "size_bytes": 12915
+        "sha256": "bda2dde297d7cdbd53d83937768d6b74b329a131818b34f39b389504be310e93",
+        "size_bytes": 44466
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
-        "sha256": "660040f459d07535deb9e0c34ffddb496c13b8770044ae380d3a8e45b0c8fb2b",
-        "size_bytes": 16080
+        "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
+        "size_bytes": 16272
       }
     ],
     "schema_version": 1
@@ -495,5 +589,5 @@
     "The real training path uses only a generated four-example regression problem with one flipped label. It does not use unsafe prompts, user data, external APIs, adapters, gated weights, or large persistent artifacts."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 0.894387
+  "wall_clock_seconds": 4.565739
 }

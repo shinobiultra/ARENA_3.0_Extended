@@ -1,10 +1,25 @@
 {
   "accepted": true,
-  "claim_scope": "Contract check; not a full real-model validation.",
-  "evidence_level": "notebook_contract",
+  "evidence_level": "exact_finite_training_game",
   "gt_tier": "GT-0",
   "notebook_id": "16_7_data_shapley_in_one_training_run",
   "section": "16.7",
   "tests_passed": true,
-  "title": "Data Shapley in One Training Run"
+  "toy_oracle_precedes_training_game": true,
+  "student_implemented_core_functions": true,
+  "signature_result_generated_in_notebook": true,
+  "signature_result_linked_in_notebook": true,
+  "report_loaded_by_notebook": false,
+  "semantic_controls": [
+    "toy_deletion",
+    "duplicate_symmetry",
+    "random_order_budget",
+    "opposite_fixed_orders",
+    "influence",
+    "leave_one_out",
+    "matched_deletion",
+    "shuffled_label_relocation"
+  ],
+  "training_run_exact_coalitions": 256,
+  "training_run_one_run_correlation_min": 0.995
 }
