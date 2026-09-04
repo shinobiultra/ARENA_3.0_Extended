@@ -14,7 +14,7 @@
       "cuda_trained_tiny_conditional_diffusion_lm",
       "heldout_masked_suffix_accuracy",
       "confidence_remasking_sampler_exact_match",
-      "shuffled_label_negative_control",
+      "independently_trained_shuffled_label_denoiser",
       "pinned_diffusiongemma_config_processor_contract",
       "pinned_diffusiongemma_weight_shard_readiness_contract",
       "pinned_diffusiongemma_vllm_nvfp4_runtime_readiness_contract",
@@ -65,13 +65,14 @@
       "sequence_length": 6,
       "shuffled_control_fails": true,
       "shuffled_label_accuracy_max": 0.25,
+      "shuffled_sampler_exact_match_max": 0.1,
       "tests_passed": true,
       "train_example_count": 80,
       "training_steps": 1200,
       "vocab_size": 11
     }
   },
-  "claim_scope": "GT-0 discrete diffusion language-model ladder: analytic noising, masked denoising loss, remasking, sampler, entropy, and trajectory helpers remain tested on toy fixtures, then a tiny Transformer denoiser is trained on CUDA for a generated conditional copy-pair grammar. The report checks held-out masked-token accuracy, confidence-remasking sampler reconstruction, activation trajectory shape, VRAM, and shuffled-label controls. The report also checks the pinned DiffusionGemma Transformers config, processor, tokenizer, model class, exact revisions, shard readiness, and vLLM/NVFP4 runtime readiness. It accepts released-checkpoint generation only from complete BF16 generation or from the pinned NVFP4 isolated-vLLM proof artifact; config-only evidence is never accepted as generation.",
+  "claim_scope": "GT-0 discrete diffusion language-model ladder: analytic noising, masked denoising loss, remasking, sampler, entropy, and trajectory helpers remain tested on toy fixtures, then a tiny Transformer denoiser is trained on CUDA for a generated conditional copy-pair grammar. The report checks held-out masked-token accuracy, confidence-remasking sampler reconstruction, activation trajectory shape, VRAM, and a separately trained shuffled-label denoiser. The report also checks the pinned DiffusionGemma Transformers config, processor, tokenizer, model class, exact revisions, shard readiness, and vLLM/NVFP4 runtime readiness. It accepts released-checkpoint generation only from complete BF16 generation or from the pinned NVFP4 isolated-vLLM proof artifact; config-only evidence is never accepted as generation.",
   "datasets": [
     {
       "id": "5_5_diffusion_language_models_toy_inputs",
@@ -92,9 +93,9 @@
       "vocab_size": 11
     }
   ],
-  "date_run": "2026-07-02T12:42:18+00:00",
-  "evidence_level": "toy_diffusion_contract_plus_cuda_trained_conditional_diffusion_lm_and_diffusiongemma_readiness_preflight",
-  "git_commit": "3a539d48",
+  "date_run": "2026-09-04T05:26:00+00:00",
+  "evidence_level": "toy_diffusion_contract_plus_visible_cuda_trained_conditional_diffusion_lm_and_diffusiongemma_runtime_proof",
+  "git_commit": "fb48618e",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-0",
   "known_failures": [],
@@ -185,7 +186,9 @@
         "sampler_suffix_token_accuracy",
         "sequence_length",
         "shuffled_control_fails",
+        "shuffled_control_train_loss",
         "shuffled_label_accuracy",
+        "shuffled_sampler_exact_match",
         "suffix_commitment_mean_step",
         "train_example_count",
         "training_steps",
@@ -198,7 +201,7 @@
       "cuda_available": true,
       "cuda_version": "13.2",
       "dataset": "copy_pair_conditional_suffix_grammar_v1",
-      "denoising_loss": 4.540066947811283e-05,
+      "denoising_loss": 4.1020550270332024e-05,
       "device": "NVIDIA GeForce RTX 5090 Laptop GPU",
       "diffusion_steps": 6,
       "diffusiongemma_architectures": [
@@ -269,30 +272,32 @@
       "diffusiongemma_vllm_probe_vllm_version": "0.24.0",
       "diffusiongemma_vllm_version": null,
       "entropy_by_step": [
-        0.0005964919691905379,
-        0.0006552134873345494,
-        0.000672996393404901,
-        0.0007893565925769508,
-        0.0007827585795894265,
-        0.004964969586580992
+        0.0005466366419568658,
+        0.000593469652812928,
+        0.0005943218129687011,
+        0.0007553352043032646,
+        0.0007123493705876172,
+        0.009910212829709053
       ],
-      "entropy_max": 0.7565640807151794,
-      "final_train_denoising_loss": 8.31351790111512e-05,
-      "full_path": "CUDA-trained tiny conditional discrete diffusion LM on a generated copy-pair grammar, with protected-prefix denoising, held-out masked accuracy, confidence-remasking sampler reconstruction, activation trajectory checks, and shuffled-label controls. This does not claim DiffusionGemma checkpoint parity.",
+      "entropy_max": 0.927965521812439,
+      "final_train_denoising_loss": 7.121130329323933e-05,
+      "full_path": "CUDA-trained tiny conditional discrete diffusion LM on a generated copy-pair grammar, with protected-prefix denoising, held-out masked accuracy, confidence-remasking sampler reconstruction, activation trajectory checks, and a separately trained shuffled-label control. This does not claim DiffusionGemma checkpoint parity.",
       "gpu_total_memory_gb": 23.45965576171875,
       "heldout_example_count": 20,
       "heldout_masked_accuracy": 1.0,
-      "initial_denoising_loss": 2.605313301086426,
+      "initial_denoising_loss": 2.5629329681396484,
       "mask_token_id": 10,
       "model_family": "tiny_transformer_discrete_diffusion_lm",
-      "peak_vram_gb": 0.07370853424072266,
+      "peak_vram_gb": 0.074859619140625,
       "preflight_passed": true,
       "sampler_exact_match": 1.0,
       "sampler_suffix_token_accuracy": 1.0,
       "sequence_length": 6,
       "shuffled_control_fails": true,
-      "shuffled_label_accuracy": 0.0714285746216774,
-      "suffix_commitment_mean_step": 1.6875,
+      "shuffled_control_train_loss": 0.032307252287864685,
+      "shuffled_label_accuracy": 0.08749999850988388,
+      "shuffled_sampler_exact_match": 0.0,
+      "suffix_commitment_mean_step": 3.850000023841858,
       "torch_version": "2.12.1+cu132",
       "train_example_count": 80,
       "training_steps": 1200,
@@ -398,18 +403,17 @@
   ],
   "negative_controls": {
     "declared_controls": [
-      "negative_control_where_applicable",
-      "shuffled_label_negative_control"
+      "negative_control_where_applicable"
     ]
   },
   "notebook_id": "5_5_diffusion_language_models",
   "ood_tests": {
     "declared": "required_where_applicable"
   },
-  "peak_vram_gb": 0.07370853424072266,
+  "peak_vram_gb": 0.074859619140625,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "8da04ea6bfff691ed84ddb15ac9cb159399957ccfe7d65a40513aa984e98da34",
+    "combined_sha256": "95c97e49f841564ff9740102df168220cf405719360fc17067eb65863a60c84b",
     "files": [
       {
         "path": "arena_ext/diffusion_lm.py",
@@ -428,23 +432,23 @@
       },
       {
         "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/5.5_Diffusion_Language_Models_exercises.ipynb",
-        "sha256": "51aa5fabdbc2ee4529a640aa382646a7ccd11342124cff250c1f8c38c6d6fc70",
-        "size_bytes": 26560
+        "sha256": "fa52cea93d644ca291ca1c6bf7aa4c2c931c933a237ec4ce3fdc908ee278bac5",
+        "size_bytes": 58444
       },
       {
         "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/5.5_Diffusion_Language_Models_solutions.ipynb",
-        "sha256": "5198c1517ee31568f3873dd75ca2867b0b7d182c5329e4b402422923a31f8606",
-        "size_bytes": 8773
+        "sha256": "d278935cc56e396b0d2a3ec192423f4e23000b526012cc454c397e08d0c538ea",
+        "size_bytes": 88811
       },
       {
         "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/README.md",
-        "sha256": "6af67899d3ee0251dab150fb8abb2c73a9e09d038aaa5291b58c884f13861f09",
-        "size_bytes": 2483
+        "sha256": "368ba4fe83ddfdab68c152882dc355aa63334ab81339078c15c0262af67ae732",
+        "size_bytes": 1607
       },
       {
         "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/artifacts.lock.yml",
-        "sha256": "74c9603ffb7fb66a5315fda63ba84dcf9ea25c54580c54a937e4a8129b36de4d",
-        "size_bytes": 6056
+        "sha256": "f4273ab1832df38e3f58d4d854bf722efb8244550c142e69787d883443f3028c",
+        "size_bytes": 6134
       },
       {
         "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/artifacts/diffusiongemma_vllm_probe.json",
@@ -453,13 +457,13 @@
       },
       {
         "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/expected_outputs/README.md",
-        "sha256": "28295a1a60c61a017cadaf3a6cbae8057f7d9fc3d84c35a9b844504ba68d6e50",
-        "size_bytes": 1951
+        "sha256": "a19f05c1bced04bdbeff2877c3b186838745483e627afd54b367e534f7f4d7b7",
+        "size_bytes": 2061
       },
       {
         "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/expected_outputs/reference_metrics.json",
-        "sha256": "437fd7174776bb10afd218ffbd40ee34d94a9cec1f4748cf8f008b5bfb35c442",
-        "size_bytes": 2498
+        "sha256": "7f0232bda622b67e49a299342228b9c166935422eacf23be2ae4493b815a762a",
+        "size_bytes": 2543
       },
       {
         "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/expected_outputs/smoke_test.json",
@@ -468,13 +472,13 @@
       },
       {
         "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/solutions.py",
-        "sha256": "23532d65966c67126927c54febbf0156328ac4958fd8b27b8c1af4299e89053c",
-        "size_bytes": 29537
+        "sha256": "0b396cf7b8c3e0eb2bc4f21766d03e3cc43a1f3f6ca5d63b30b4483301d42424",
+        "size_bytes": 37412
       },
       {
         "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/tests.py",
-        "sha256": "695ea6bd324ca569b2e0c23dd402f3a9ac2a516c03799bf0b80d4fb88bb09e9f",
-        "size_bytes": 13215
+        "sha256": "21a0b2177a764dac045e7289460e057098f316a2d91f3bd74c764757f6a51513",
+        "size_bytes": 21613
       },
       {
         "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/utils.py",
@@ -488,8 +492,8 @@
       },
       {
         "path": "chapter5_modern_architectures/instructions/pages/05_[5.5]_Diffusion_Language_Models.md",
-        "sha256": "f82ce9b1f071b50a8f8faf57e61d03e13beaf32293f3a13456716415748da639",
-        "size_bytes": 28201
+        "sha256": "7c37c62003b33406932be4ef07d1730b64744fcfcf8b3f7b351712ffd41e8b0f",
+        "size_bytes": 44674
       },
       {
         "path": "scripts/run_diffusiongemma_vllm_probe.py",
@@ -509,5 +513,5 @@
     "The trained diffusion LM path uses generated integer-token copy-pair data only. DiffusionGemma readiness checks use public open-weight metadata and exact pinned revisions. The Google BF16 path is deferred for direct 24GB loading, while the NVIDIA NVFP4 claim is limited to the isolated vLLM proof artifact and does not install vLLM into the main torch 2.12/CUDA 13.2 uv environment."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 8.955338
+  "wall_clock_seconds": 14.101087
 }

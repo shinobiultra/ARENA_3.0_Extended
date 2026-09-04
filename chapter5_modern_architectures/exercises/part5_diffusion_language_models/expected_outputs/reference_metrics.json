@@ -47,6 +47,7 @@
     "sequence_length": 6,
     "shuffled_control_fails": true,
     "shuffled_label_accuracy_max": 0.25,
+    "shuffled_sampler_exact_match_max": 0.1,
     "tests_passed": true,
     "train_example_count": 80,
     "training_steps": 1200,

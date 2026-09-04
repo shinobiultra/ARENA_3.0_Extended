@@ -9,13 +9,13 @@ exercise_metadata:
   EXPECTED_RUNTIME: seconds on toy contract; minutes for CUDA tiny-model/readiness path
   REQUIRES_GPU: true
 gt_tier: GT-0
-evidence_level: toy_diffusion_contract_plus_cuda_trained_conditional_diffusion_lm_and_diffusiongemma_readiness_preflight
+evidence_level: toy_diffusion_contract_plus_visible_cuda_trained_conditional_diffusion_lm_and_diffusiongemma_runtime_proof
 claim_scope: 'GT-0 discrete diffusion language-model ladder: analytic noising, masked
   denoising loss, remasking, sampler, entropy, and trajectory helpers remain tested
   on toy fixtures, then a tiny Transformer denoiser is trained on CUDA for a generated
   conditional copy-pair grammar. The report checks held-out masked-token accuracy,
   confidence-remasking sampler reconstruction, activation trajectory shape, VRAM,
-  and shuffled-label controls. The report also checks the pinned DiffusionGemma
+  and a separately trained shuffled-label denoiser. The report also checks the pinned DiffusionGemma
   Transformers config, processor, tokenizer, model class, exact revisions, shard
   readiness, and vLLM/NVFP4 runtime readiness. It accepts released-checkpoint
   generation only from complete BF16 generation or from the pinned NVFP4 isolated-vLLM
@@ -85,6 +85,7 @@ expected_metrics:
   denoising_loss_max: 0.05
   heldout_masked_accuracy_min: 0.95
   shuffled_label_accuracy_max: 0.25
+  shuffled_sampler_exact_match_max: 0.10
   shuffled_control_fails: true
   sampler_suffix_token_accuracy_min: 0.95
   sampler_exact_match_min: 0.95
@@ -129,7 +130,7 @@ controls:
 - cuda_trained_tiny_conditional_diffusion_lm
 - heldout_masked_suffix_accuracy
 - confidence_remasking_sampler_exact_match
-- shuffled_label_negative_control
+- independently_trained_shuffled_label_denoiser
 - pinned_diffusiongemma_config_processor_contract
 - pinned_diffusiongemma_weight_shard_readiness_contract
 - pinned_diffusiongemma_vllm_nvfp4_runtime_readiness_contract

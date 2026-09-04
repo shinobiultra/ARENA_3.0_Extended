@@ -172,11 +172,13 @@ def test_oracle_diffusion_sampler_recovers_target(
 
 def test_commitment_edit_distance_and_activation_trajectory(
     commitment_times: Callable | None = None,
+    stable_commitment_times: Callable | None = None,
     edit_distance: Callable | None = None,
     validate_activation_trajectory: Callable | None = None,
 ):
     solutions = _solutions()
     commitment_times = commitment_times or solutions.commitment_times
+    stable_commitment_times = stable_commitment_times or solutions.stable_commitment_times
     edit_distance = edit_distance or solutions.edit_distance
     validate_activation_trajectory = (
         validate_activation_trajectory or solutions.validate_activation_trajectory
@@ -194,6 +196,23 @@ def test_commitment_edit_distance_and_activation_trajectory(
         commitment_times(trajectory, mask_token_id=0),
         t.tensor([[1, 2, 3]]),
         msg="Commitment time should be the first trajectory index where a token is unmasked.",
+    )
+    unstable_trajectory = t.tensor(
+        [
+            [[1, 0, 0]],
+            [[2, 2, 0]],
+            [[1, 2, 0]],
+            [[1, 2, 3]],
+        ]
+    )
+    t.testing.assert_close(
+        stable_commitment_times(
+            unstable_trajectory,
+            target_tokens=t.tensor([[1, 2, 3]]),
+            mask_token_id=0,
+        ),
+        t.tensor([[2, 1, 3]]),
+        msg="Stable commitment should ignore early guesses that are later changed or remasked.",
     )
     assert edit_distance([1, 2, 3], [1, 4, 3, 5]) == 2, (
         "Edit distance should count one substitution and one insertion in this example."
@@ -213,6 +232,39 @@ def test_commitment_edit_distance_and_activation_trajectory(
     print("All tests in `test_commitment_edit_distance_and_activation_trajectory` passed!")
 
 
+def test_copy_pair_dataset_and_conditional_suffix_noising(
+    copy_pair_dataset: Callable | None = None,
+    conditional_suffix_noising: Callable | None = None,
+    linear_mask_schedule: Callable | None = None,
+):
+    solutions = _solutions()
+    copy_pair_dataset = copy_pair_dataset or solutions.copy_pair_dataset
+    conditional_suffix_noising = (
+        conditional_suffix_noising or solutions.conditional_suffix_noising
+    )
+    linear_mask_schedule = linear_mask_schedule or solutions.linear_mask_schedule
+    clean = copy_pair_dataset(t.device("cpu"))
+    assert clean.shape == (100, 6), "The exact grammar should enumerate all 100 prefixes."
+    t.testing.assert_close(clean[:, 2], clean[:, 0])
+    t.testing.assert_close(clean[:, 3], clean[:, 0])
+    t.testing.assert_close(clean[:, 4], clean[:, 1])
+    t.testing.assert_close(clean[:, 5], clean[:, 1])
+
+    schedule = linear_mask_schedule(
+        2,
+        mask_token_id=10,
+        min_mask_prob=0.0,
+        max_mask_prob=1.0,
+    )
+    noisy, mask, timesteps = conditional_suffix_noising(clean[:8], schedule)
+    t.testing.assert_close(noisy[:, :2], clean[:8, :2])
+    assert not mask[:, :2].any(), "Condition tokens must never contribute to denoising loss."
+    assert noisy[:, 2:].eq(10).all(), "At maximal noise every suffix token should be masked."
+    assert mask[:, 2:].all(), "The suffix loss mask should match the maximal corruption."
+    assert timesteps.eq(1).all(), "A two-step schedule has one nonzero training timestep."
+    print("All tests in `test_copy_pair_dataset_and_conditional_suffix_noising` passed!")
+
+
 def test_tiny_conditional_diffusion_lm_forward_shape(TinyConditionalDiffusionLM: type | None = None):
     solutions = _solutions()
     TinyConditionalDiffusionLM = TinyConditionalDiffusionLM or solutions.TinyConditionalDiffusionLM
@@ -225,6 +277,146 @@ def test_tiny_conditional_diffusion_lm_forward_shape(TinyConditionalDiffusionLM:
         f"Diffusion LM logits should have shape (batch, seq, vocab), got {tuple(logits.shape)}."
     )
     print("All tests in `test_tiny_conditional_diffusion_lm_forward_shape` passed!")
+
+
+def test_tiny_training_loop_learns_copy_pair_batch(
+    train_tiny_diffusion_model: Callable | None = None,
+    TinyConditionalDiffusionLM: type | None = None,
+    copy_pair_dataset: Callable | None = None,
+    linear_mask_schedule: Callable | None = None,
+):
+    solutions = _solutions()
+    train_tiny_diffusion_model = (
+        train_tiny_diffusion_model or solutions.train_tiny_diffusion_model
+    )
+    TinyConditionalDiffusionLM = TinyConditionalDiffusionLM or solutions.TinyConditionalDiffusionLM
+    copy_pair_dataset = copy_pair_dataset or solutions.copy_pair_dataset
+    linear_mask_schedule = linear_mask_schedule or solutions.linear_mask_schedule
+    assert t.cuda.is_available(), "The section training exercise requires CUDA."
+    device = t.device("cuda")
+    rows = copy_pair_dataset(device)[:32]
+    schedule = linear_mask_schedule(
+        4,
+        mask_token_id=10,
+        min_mask_prob=0.25,
+        max_mask_prob=1.0,
+    )
+    t.manual_seed(55)
+    model = TinyConditionalDiffusionLM(num_steps=4, d_model=32).to(device)
+    history = train_tiny_diffusion_model(
+        model,
+        rows,
+        schedule,
+        steps=120,
+        record_every=20,
+        seed=55,
+    )
+    assert history["steps"] == [1, 20, 40, 60, 80, 100, 120], (
+        "The training helper should record the requested checkpoints, including the first step."
+    )
+    assert history["losses"][-1] <= 0.10, (
+        "The tiny denoiser should fit the deterministic 32-example grammar batch."
+    )
+    assert history["losses"][-1] <= 0.10 * history["losses"][0], (
+        "Training loss should fall by at least one order of magnitude."
+    )
+    print("All tests in `test_tiny_training_loop_learns_copy_pair_batch` passed!")
+
+
+def test_conditional_diffusion_sample_preserves_prefix_and_records_steps(
+    conditional_diffusion_sample: Callable | None = None,
+    TinyConditionalDiffusionLM: type | None = None,
+    copy_pair_dataset: Callable | None = None,
+    linear_mask_schedule: Callable | None = None,
+):
+    solutions = _solutions()
+    conditional_diffusion_sample = (
+        conditional_diffusion_sample or solutions.conditional_diffusion_sample
+    )
+    TinyConditionalDiffusionLM = TinyConditionalDiffusionLM or solutions.TinyConditionalDiffusionLM
+    copy_pair_dataset = copy_pair_dataset or solutions.copy_pair_dataset
+    linear_mask_schedule = linear_mask_schedule or solutions.linear_mask_schedule
+    rows = copy_pair_dataset(t.device("cpu"))[:2]
+    schedule = linear_mask_schedule(
+        4,
+        mask_token_id=10,
+        min_mask_prob=0.25,
+        max_mask_prob=1.0,
+    )
+    model = TinyConditionalDiffusionLM(num_steps=4, d_model=32).eval()
+    with t.inference_mode():
+        sampled, trajectory, entropy, activations = conditional_diffusion_sample(
+            model,
+            rows,
+            schedule,
+        )
+    assert sampled.shape == rows.shape, "Sampling must preserve the batch and sequence dimensions."
+    assert trajectory.shape == (4, 2, 6), (
+        "The trajectory should contain one complete token state per reverse step."
+    )
+    t.testing.assert_close(trajectory[:, :, :2], rows[None, :, :2].expand(4, -1, -1))
+    assert len(entropy) == 4, "The sampler should record one entropy value per reverse step."
+    assert len(activations) == 4, (
+        "The sampler should retain one hidden-state tensor per reverse step."
+    )
+    print(
+        "All tests in `test_conditional_diffusion_sample_preserves_prefix_and_records_steps` passed!"
+    )
+
+
+def test_toy_diffusion_signature_result(run_signature_result: Callable | None = None):
+    if run_signature_result is None:
+        run_signature_result = _solutions().run_toy_diffusion_signature_result
+    result = run_signature_result(max_vram_gb=24.0)
+    main = result["main"]
+    shuffled = result["shuffled_control"]
+
+    assert result["cuda_available"] is True, "The signature experiment must execute on CUDA."
+    assert result["cuda_version"] == "13.2", (
+        "The main uv environment should use the pinned CUDA 13.2 torch build."
+    )
+    assert result["heldout_example_count"] == 20, (
+        "The fixed split should reserve twenty unseen digit-pair conditions."
+    )
+    assert main["heldout_masked_accuracy"] >= 0.95, (
+        "The trained denoiser should reconstruct fully masked held-out suffixes."
+    )
+    assert main["sampler_suffix_token_accuracy"] >= 0.95, (
+        "Iterative sampling should recover held-out suffix tokens above threshold."
+    )
+    assert main["sampler_exact_match"] >= 0.95, (
+        "Nearly every held-out sequence should be reconstructed exactly."
+    )
+    assert shuffled["sampler_suffix_token_accuracy"] <= 0.25, (
+        "A denoiser trained on shuffled suffix labels should not recover the true grammar."
+    )
+    assert shuffled["sampler_exact_match"] <= 0.10, (
+        "The shuffled-label control should almost never reconstruct a complete held-out target."
+    )
+    assert (
+        main["sampler_suffix_token_accuracy"]
+        - shuffled["sampler_suffix_token_accuracy"]
+        >= 0.70
+    ), "The learned grammar should beat the separately trained shuffled-label control."
+    assert main["mask_fraction_by_step"][-1] == 0.0, (
+        "The final reverse step should leave no suffix masks."
+    )
+    assert len(set(round(x, 2) for x in main["stable_commitment_mean_by_position"][2:])) >= 2, (
+        "The signature result should expose nontrivial per-position commitment timing."
+    )
+    assert result["example"]["main_output"] == result["example"]["target"], (
+        "The visible main-model example should end at its exact ground-truth sequence."
+    )
+    assert result["example"]["shuffled_output"] != result["example"]["target"], (
+        "The visible shuffled-label example should fail on the same held-out target."
+    )
+    assert result["preflight_passed"] is True, (
+        "Every behavioral and resource criterion in the signature preflight should pass."
+    )
+    assert result["within_vram_budget"] is True, (
+        "The complete two-model signature experiment must remain within the 24 GB budget."
+    )
+    print("All tests in `test_toy_diffusion_signature_result` passed!")
 
 
 def test_notebook_contract(run_smoke_test: Callable | None = None):

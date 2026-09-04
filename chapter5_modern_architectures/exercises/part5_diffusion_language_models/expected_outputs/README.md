@@ -1,4 +1,4 @@
-# [5.5] Toy Discrete Diffusion Language Models and Local DiffusionGemma Proof Expected Outputs
+# [5.5] Discrete Diffusion LMs: Watching Tokens Commit Expected Outputs
 
 This directory contains frozen fixtures for the learner-facing notebook contract. These fixtures are intentionally small where possible: they protect visible exercise behavior. Real-model evidence, when claimed by a section, is pinned in `artifacts.lock.yml` and measured in `verification_report.json`.
 
@@ -8,7 +8,7 @@ This directory contains frozen fixtures for the learner-facing notebook contract
 
 ## Trusted implementation
 
-The fixture schema and baseline/control slots are produced by the course asset generator. Numeric report values come from the checked-in `solutions.py` implementation for this section when the report runner executes `run_smoke_test` and `run_gpu_test`.
+The fixture schema and baseline/control slots are produced by the course asset generator. Numeric report values come from the checked-in `solutions.py` implementation for this section when the report runner executes `run_smoke_test` and `run_gpu_test`. The CUDA path trains both the grammar model and a separate shuffled-label denoiser; the control is not a post-hoc label permutation.
 
 ## Random seed
 

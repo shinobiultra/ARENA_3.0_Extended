@@ -228,6 +228,26 @@ def commitment_times(tokens_over_steps: t.Tensor, mask_token_id: int) -> t.Tenso
     return t.where(any_unmasked, first, t.full_like(first, -1))
 
 
+def stable_commitment_times(
+    tokens_over_steps: t.Tensor,
+    target_tokens: t.Tensor,
+    mask_token_id: int,
+) -> t.Tensor:
+    """Return the first step after which every later token stays correct and visible."""
+
+    if tokens_over_steps.ndim != 3:
+        raise ValueError("tokens_over_steps must have shape (steps, batch, seq).")
+    if target_tokens.shape != tokens_over_steps.shape[1:]:
+        raise ValueError("target_tokens must have shape (batch, seq).")
+    correct_and_visible = tokens_over_steps.eq(target_tokens.unsqueeze(0)) & tokens_over_steps.ne(
+        mask_token_id
+    )
+    stable = correct_and_visible.flip(0).cumprod(dim=0).bool().flip(0)
+    ever_stable = stable.any(dim=0)
+    first_stable = stable.float().argmax(dim=0).long()
+    return t.where(ever_stable, first_stable, t.full_like(first_stable, -1))
+
+
 def edit_distance(a: list[int], b: list[int]) -> int:
     """Levenshtein edit distance for token lists."""
 
@@ -400,7 +420,9 @@ class TinyConditionalDiffusionLM(nn.Module):
         return self.unembed(self.transformer(hidden))
 
 
-def _copy_pair_dataset(device: t.device) -> t.Tensor:
+def copy_pair_dataset(device: t.device) -> t.Tensor:
+    """Enumerate the exact grammar ``[a, b] -> [a, b, a, a, b, b]``."""
+
     rows = []
     for first in range(10):
         for second in range(10):
@@ -408,10 +430,12 @@ def _copy_pair_dataset(device: t.device) -> t.Tensor:
     return t.tensor(rows, dtype=t.long, device=device)
 
 
-def _conditional_suffix_noising(
+def conditional_suffix_noising(
     clean_tokens: t.Tensor,
-    schedule,
+    schedule: DiscreteDiffusionSchedule,
 ) -> tuple[t.Tensor, t.Tensor, t.Tensor]:
+    """Noise only the predicted suffix while preserving the two-token condition."""
+
     timesteps = t.randint(
         1,
         schedule.num_steps,
@@ -438,11 +462,53 @@ def _conditional_suffix_noising(
     return noisy, mask, timesteps
 
 
-def _conditional_diffusion_sample(
+def train_tiny_diffusion_model(
+    model: TinyConditionalDiffusionLM,
+    train_tokens: t.Tensor,
+    schedule: DiscreteDiffusionSchedule,
+    *,
+    steps: int = TINY_DIFFUSION_TRAIN_STEPS,
+    learning_rate: float = 2e-3,
+    seed: int = 5505,
+    record_every: int = 25,
+) -> dict[str, list[float] | list[int]]:
+    """Train one conditional denoiser and retain a compact, plottable loss curve."""
+
+    if steps <= 0:
+        raise ValueError("steps must be positive.")
+    if record_every <= 0:
+        raise ValueError("record_every must be positive.")
+    t.manual_seed(seed)
+    if train_tokens.is_cuda:
+        t.cuda.manual_seed_all(seed)
+    model.train()
+    optimizer = t.optim.AdamW(model.parameters(), lr=learning_rate, weight_decay=1e-4)
+    recorded_steps: list[int] = []
+    losses: list[float] = []
+    for step in range(steps):
+        noisy, mask, timesteps = conditional_suffix_noising(train_tokens, schedule)
+        logits = model(noisy, timesteps)
+        loss = masked_denoising_loss(logits, train_tokens, mask)
+        optimizer.zero_grad(set_to_none=True)
+        loss.backward()
+        optimizer.step()
+        if step == 0 or (step + 1) % record_every == 0 or step + 1 == steps:
+            recorded_steps.append(step + 1)
+            losses.append(float(loss.detach().item()))
+    model.eval()
+    return {"steps": recorded_steps, "losses": losses}
+
+
+def conditional_diffusion_sample(
     model: TinyConditionalDiffusionLM,
     prefixes_and_targets: t.Tensor,
-    schedule,
+    schedule: DiscreteDiffusionSchedule,
+    *,
+    remask: str = "confidence",
+    generator: t.Generator | None = None,
 ) -> tuple[t.Tensor, t.Tensor, list[float], list[t.Tensor]]:
+    """Denoise the suffix from all masks while keeping the condition fixed."""
+
     current = t.full_like(prefixes_and_targets, schedule.mask_token_id)
     current[:, :2] = prefixes_and_targets[:, :2]
     entropy_by_step = []
@@ -469,25 +535,102 @@ def _conditional_diffusion_sample(
         if step == 0:
             current = predictions
         else:
-            remasked_suffix = confidence_remask(
-                logits[:, 2:],
-                predictions[:, 2:],
-                mask_token_id=schedule.mask_token_id,
-                next_mask_fraction=float(schedule.mask_probs[step - 1].item()),
-            )
+            next_mask_fraction = float(schedule.mask_probs[step - 1].item())
+            if remask == "confidence":
+                remasked_suffix = confidence_remask(
+                    logits[:, 2:],
+                    predictions[:, 2:],
+                    mask_token_id=schedule.mask_token_id,
+                    next_mask_fraction=next_mask_fraction,
+                )
+            elif remask == "uniform":
+                remasked_suffix = uniform_remask(
+                    predictions[:, 2:],
+                    mask_token_id=schedule.mask_token_id,
+                    next_mask_fraction=next_mask_fraction,
+                    generator=generator,
+                )
+            else:
+                raise ValueError("remask must be 'confidence' or 'uniform'.")
             current = t.cat([prefixes_and_targets[:, :2], remasked_suffix], dim=1)
         trajectory.append(current.clone())
     return current, t.stack(trajectory), entropy_by_step, activations
 
 
-def run_trained_tiny_diffusion_lm_preflight(max_vram_gb: float = 24.0) -> dict:
+def _evaluate_tiny_diffusion_model(
+    model: TinyConditionalDiffusionLM,
+    heldout_tokens: t.Tensor,
+    schedule: DiscreteDiffusionSchedule,
+) -> dict:
+    """Evaluate the hardest corruption and the complete iterative sampler."""
+
+    fully_masked = heldout_tokens.clone()
+    fully_masked[:, 2:] = schedule.mask_token_id
+    timesteps = t.full(
+        (heldout_tokens.shape[0],),
+        schedule.num_steps - 1,
+        device=heldout_tokens.device,
+        dtype=t.long,
+    )
+    suffix_mask = t.zeros_like(heldout_tokens, dtype=t.bool)
+    suffix_mask[:, 2:] = True
+    logits = model(fully_masked, timesteps)
+    heldout_loss = masked_denoising_loss(logits, heldout_tokens, suffix_mask)
+    heldout_predictions = logits.argmax(dim=-1)
+    heldout_masked_accuracy = (
+        heldout_predictions[suffix_mask].eq(heldout_tokens[suffix_mask]).float().mean().item()
+    )
+    sampled, trajectory, entropy_by_step, activations = conditional_diffusion_sample(
+        model,
+        heldout_tokens,
+        schedule,
+    )
+    suffix_accuracy_by_step = (
+        trajectory[:, :, 2:].eq(heldout_tokens[None, :, 2:]).float().mean(dim=(1, 2))
+    )
+    mask_fraction_by_step = trajectory[:, :, 2:].eq(schedule.mask_token_id).float().mean(dim=(1, 2))
+    stable_commitment = stable_commitment_times(
+        trajectory,
+        heldout_tokens,
+        schedule.mask_token_id,
+    )
+    return {
+        "heldout_loss": float(heldout_loss.item()),
+        "heldout_masked_accuracy": heldout_masked_accuracy,
+        "sampler_suffix_token_accuracy": sampled[:, 2:]
+        .eq(heldout_tokens[:, 2:])
+        .float()
+        .mean()
+        .item(),
+        "sampler_exact_match": sampled.eq(heldout_tokens).all(dim=1).float().mean().item(),
+        "sampled": sampled,
+        "trajectory": trajectory,
+        "entropy_by_step": entropy_by_step,
+        "suffix_accuracy_by_step": suffix_accuracy_by_step.tolist(),
+        "mask_fraction_by_step": mask_fraction_by_step.tolist(),
+        "stable_commitment_times": stable_commitment,
+        "activations": activations,
+        "activation_trajectory_shape_ok": validate_activation_trajectory(
+            activations,
+            expected_steps=schedule.num_steps,
+            batch=heldout_tokens.shape[0],
+            seq_len=heldout_tokens.shape[1],
+        ),
+        "entropy_max": float(token_entropy(logits).max().item()),
+    }
+
+
+def run_toy_diffusion_signature_result(max_vram_gb: float = 24.0) -> dict:
+    """Train the real toy grammar and a separately trained shuffled-label control."""
+
     if not t.cuda.is_available():
-        raise RuntimeError("CUDA is required for the 5.5 trained diffusion LM preflight.")
+        raise RuntimeError("CUDA is required for the 5.5 signature experiment.")
 
     device = t.device("cuda")
     t.cuda.reset_peak_memory_stats()
     t.manual_seed(5505)
-    all_data = _copy_pair_dataset(device)
+    t.cuda.manual_seed_all(5505)
+    all_data = copy_pair_dataset(device)
     permutation = t.randperm(all_data.shape[0], device=device)
     train_tokens = all_data[permutation[:80]]
     heldout_tokens = all_data[permutation[80:]]
@@ -499,106 +642,145 @@ def run_trained_tiny_diffusion_lm_preflight(max_vram_gb: float = 24.0) -> dict:
     )
 
     model = TinyConditionalDiffusionLM().to(device)
-    optimizer = t.optim.AdamW(model.parameters(), lr=2e-3, weight_decay=1e-4)
-    initial_loss = None
-    final_train_loss = None
-    for _ in range(TINY_DIFFUSION_TRAIN_STEPS):
-        noisy, mask, timesteps = _conditional_suffix_noising(train_tokens, schedule)
-        logits = model(noisy, timesteps)
-        loss = masked_denoising_loss(logits, train_tokens, mask)
-        if initial_loss is None:
-            initial_loss = float(loss.item())
-        optimizer.zero_grad(set_to_none=True)
-        loss.backward()
-        optimizer.step()
-        final_train_loss = float(loss.item())
+    main_curve = train_tiny_diffusion_model(model, train_tokens, schedule, seed=5505)
 
-    model.eval()
+    t.manual_seed(5506)
+    shuffled_tokens = train_tokens.clone()
+    shuffled_tokens[:, 2:] = train_tokens[t.randperm(train_tokens.shape[0], device=device), 2:]
+    shuffled_model = TinyConditionalDiffusionLM().to(device)
+    shuffled_curve = train_tiny_diffusion_model(
+        shuffled_model,
+        shuffled_tokens,
+        schedule,
+        seed=5506,
+    )
+
     with t.no_grad():
-        noised_heldout, heldout_mask, heldout_timesteps = _conditional_suffix_noising(
-            heldout_tokens,
-            schedule,
-        )
-        heldout_logits = model(noised_heldout, heldout_timesteps)
-        heldout_loss = masked_denoising_loss(heldout_logits, heldout_tokens, heldout_mask)
-        heldout_predictions = heldout_logits.argmax(dim=-1)
-        heldout_masked_accuracy = (
-            heldout_predictions[heldout_mask].eq(heldout_tokens[heldout_mask]).float().mean().item()
-        )
-        shuffled_targets = heldout_tokens[t.randperm(heldout_tokens.shape[0], device=device)]
-        shuffled_label_accuracy = (
-            heldout_predictions[heldout_mask].eq(shuffled_targets[heldout_mask]).float().mean().item()
-        )
-        sampled, trajectory, entropy_by_step, activations = _conditional_diffusion_sample(
-            model,
-            heldout_tokens,
-            schedule,
-        )
-        sampler_suffix_token_accuracy = (
-            sampled[:, 2:].eq(heldout_tokens[:, 2:]).float().mean().item()
-        )
-        sampler_exact_match = sampled.eq(heldout_tokens).all(dim=1).float().mean().item()
-        committed = commitment_times(trajectory, mask_token_id=TINY_DIFFUSION_MASK_TOKEN_ID)
-        suffix_commitment_mean = committed[:, 2:].float().mean().item()
-        trajectory_shape_ok = validate_activation_trajectory(
-            activations,
-            expected_steps=TINY_DIFFUSION_STEPS,
-            batch=heldout_tokens.shape[0],
-            seq_len=TINY_DIFFUSION_SEQ_LEN,
-        )
-        entropy = token_entropy(heldout_logits)
+        main_eval = _evaluate_tiny_diffusion_model(model, heldout_tokens, schedule)
+        shuffled_eval = _evaluate_tiny_diffusion_model(shuffled_model, heldout_tokens, schedule)
 
     t.cuda.synchronize()
     peak_vram_gb = t.cuda.max_memory_allocated() / 1024**3
     within_vram_budget = peak_vram_gb <= max_vram_gb
     preflight_passed = (
-        final_train_loss is not None
-        and initial_loss is not None
-        and final_train_loss <= 0.05
-        and final_train_loss <= 0.05 * initial_loss
-        and float(heldout_loss.item()) <= 0.05
-        and heldout_masked_accuracy >= 0.95
-        and shuffled_label_accuracy <= 0.25
-        and sampler_suffix_token_accuracy >= 0.95
-        and sampler_exact_match >= 0.95
-        and trajectory_shape_ok
+        main_curve["losses"][-1] <= 0.05
+        and main_curve["losses"][-1] <= 0.05 * main_curve["losses"][0]
+        and main_eval["heldout_loss"] <= 0.05
+        and main_eval["heldout_masked_accuracy"] >= 0.95
+        and main_eval["sampler_suffix_token_accuracy"] >= 0.95
+        and main_eval["sampler_exact_match"] >= 0.95
+        and shuffled_eval["sampler_suffix_token_accuracy"] <= 0.25
+        and shuffled_eval["sampler_exact_match"] <= 0.10
+        and main_eval["activation_trajectory_shape_ok"]
+        and shuffled_eval["activation_trajectory_shape_ok"]
         and within_vram_budget
     )
-    del model
-    t.cuda.empty_cache()
-    return {
+    example_index = 0
+    result = {
+        "claim": (
+            "A CUDA-trained discrete diffusion LM reconstructs the held-out copy-pair "
+            "grammar while a separately trained shuffled-label denoiser fails."
+        ),
         "cuda_available": True,
         "device": t.cuda.get_device_name(0),
-        "model_family": "tiny_transformer_discrete_diffusion_lm",
+        "torch_version": t.__version__,
+        "cuda_version": t.version.cuda,
         "dataset": "copy_pair_conditional_suffix_grammar_v1",
         "train_example_count": int(train_tokens.shape[0]),
         "heldout_example_count": int(heldout_tokens.shape[0]),
+        "training_steps": TINY_DIFFUSION_TRAIN_STEPS,
+        "diffusion_timesteps": list(reversed(range(schedule.num_steps))),
+        "schedule_mask_probs": schedule.mask_probs.tolist(),
+        "main": {
+            "loss_curve": main_curve,
+            "heldout_loss": main_eval["heldout_loss"],
+            "heldout_masked_accuracy": main_eval["heldout_masked_accuracy"],
+            "sampler_suffix_token_accuracy": main_eval["sampler_suffix_token_accuracy"],
+            "sampler_exact_match": main_eval["sampler_exact_match"],
+            "entropy_by_step": main_eval["entropy_by_step"],
+            "suffix_accuracy_by_step": main_eval["suffix_accuracy_by_step"],
+            "mask_fraction_by_step": main_eval["mask_fraction_by_step"],
+            "stable_commitment_mean_by_position": main_eval["stable_commitment_times"]
+            .float()
+            .mean(dim=0)
+            .tolist(),
+        },
+        "shuffled_control": {
+            "loss_curve": shuffled_curve,
+            "heldout_loss": shuffled_eval["heldout_loss"],
+            "heldout_masked_accuracy": shuffled_eval["heldout_masked_accuracy"],
+            "sampler_suffix_token_accuracy": shuffled_eval["sampler_suffix_token_accuracy"],
+            "sampler_exact_match": shuffled_eval["sampler_exact_match"],
+            "entropy_by_step": shuffled_eval["entropy_by_step"],
+            "suffix_accuracy_by_step": shuffled_eval["suffix_accuracy_by_step"],
+            "mask_fraction_by_step": shuffled_eval["mask_fraction_by_step"],
+        },
+        "example": {
+            "prefix": heldout_tokens[example_index, :2].tolist(),
+            "target": heldout_tokens[example_index].tolist(),
+            "main_output": main_eval["sampled"][example_index].tolist(),
+            "main_trajectory": main_eval["trajectory"][:, example_index].tolist(),
+            "shuffled_output": shuffled_eval["sampled"][example_index].tolist(),
+            "shuffled_trajectory": shuffled_eval["trajectory"][:, example_index].tolist(),
+        },
+        "activation_trajectory_shape_ok": bool(
+            main_eval["activation_trajectory_shape_ok"]
+            and shuffled_eval["activation_trajectory_shape_ok"]
+        ),
+        "entropy_max": main_eval["entropy_max"],
+        "peak_vram_gb": peak_vram_gb,
+        "within_vram_budget": within_vram_budget,
+        "preflight_passed": bool(preflight_passed),
+    }
+    del model, shuffled_model
+    t.cuda.empty_cache()
+    return result
+
+
+def run_trained_tiny_diffusion_lm_preflight(max_vram_gb: float = 24.0) -> dict:
+    result = run_toy_diffusion_signature_result(max_vram_gb=max_vram_gb)
+    main = result["main"]
+    shuffled = result["shuffled_control"]
+    return {
+        "cuda_available": result["cuda_available"],
+        "device": result["device"],
+        "model_family": "tiny_transformer_discrete_diffusion_lm",
+        "dataset": result["dataset"],
+        "train_example_count": result["train_example_count"],
+        "heldout_example_count": result["heldout_example_count"],
         "vocab_size": TINY_DIFFUSION_VOCAB_SIZE,
         "mask_token_id": TINY_DIFFUSION_MASK_TOKEN_ID,
         "sequence_length": TINY_DIFFUSION_SEQ_LEN,
         "diffusion_steps": TINY_DIFFUSION_STEPS,
-        "training_steps": TINY_DIFFUSION_TRAIN_STEPS,
-        "initial_denoising_loss": initial_loss,
-        "final_train_denoising_loss": final_train_loss,
-        "denoising_loss": float(heldout_loss.item()),
-        "heldout_masked_accuracy": heldout_masked_accuracy,
-        "shuffled_label_accuracy": shuffled_label_accuracy,
-        "shuffled_control_fails": shuffled_label_accuracy <= 0.25,
-        "sampler_suffix_token_accuracy": sampler_suffix_token_accuracy,
-        "sampler_exact_match": sampler_exact_match,
-        "suffix_commitment_mean_step": suffix_commitment_mean,
-        "activation_trajectory_shape_ok": trajectory_shape_ok,
-        "entropy_by_step": entropy_by_step,
-        "entropy_max": float(entropy.max().item()),
-        "peak_vram_gb": peak_vram_gb,
-        "within_vram_budget": within_vram_budget,
-        "preflight_passed": preflight_passed,
+        "training_steps": result["training_steps"],
+        "initial_denoising_loss": main["loss_curve"]["losses"][0],
+        "final_train_denoising_loss": main["loss_curve"]["losses"][-1],
+        "denoising_loss": main["heldout_loss"],
+        "heldout_masked_accuracy": main["heldout_masked_accuracy"],
+        "shuffled_label_accuracy": shuffled["sampler_suffix_token_accuracy"],
+        "shuffled_sampler_exact_match": shuffled["sampler_exact_match"],
+        "shuffled_control_train_loss": shuffled["loss_curve"]["losses"][-1],
+        "shuffled_control_fails": shuffled["sampler_suffix_token_accuracy"] <= 0.25,
+        "sampler_suffix_token_accuracy": main["sampler_suffix_token_accuracy"],
+        "sampler_exact_match": main["sampler_exact_match"],
+        "suffix_commitment_mean_step": sum(
+            main["stable_commitment_mean_by_position"][2:]
+        )
+        / 4,
+        "activation_trajectory_shape_ok": result["activation_trajectory_shape_ok"],
+        "entropy_by_step": main["entropy_by_step"],
+        "entropy_max": result["entropy_max"],
+        "peak_vram_gb": result["peak_vram_gb"],
+        "within_vram_budget": result["within_vram_budget"],
+        "preflight_passed": result["preflight_passed"],
+        "torch_version": result["torch_version"],
+        "cuda_version": result["cuda_version"],
         "full_path": (
             "CUDA-trained tiny conditional discrete diffusion LM on a generated "
             "copy-pair grammar, with protected-prefix denoising, held-out masked "
             "accuracy, confidence-remasking sampler reconstruction, activation "
-            "trajectory checks, and shuffled-label controls. This does not claim "
-            "DiffusionGemma checkpoint parity."
+            "trajectory checks, and a separately trained shuffled-label control. "
+            "This does not claim DiffusionGemma checkpoint parity."
         ),
     }
 

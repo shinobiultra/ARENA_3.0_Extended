@@ -1,43 +1,29 @@
-# [5.5] Toy Discrete Diffusion Language Models and Local DiffusionGemma Proof Verification Assets
+# [5.5] Discrete Diffusion LMs: Watching Tokens Commit
 
-Generated support files for the roadmap verification contract.
+This section teaches discrete diffusion by making the learner build and inspect
+the full toy path. The exercise notebook implements the masking schedule,
+forward corruption, masked loss, confidence and uniform remasking, an oracle
+sampler, stable commitment time, the exact copy-pair dataset, CUDA training, and
+conditional trajectory capture.
 
-- `5.5_Diffusion_Language_Models_exercises.ipynb` is the learner-facing
-  notebook with local stubs for noising, denoising loss, remasking, sampling,
-  diagnostics, and the tiny denoiser wrapper.
-- `5.5_Diffusion_Language_Models_solutions.ipynb` validates the section-local
-  reference implementation against the visible tests.
-- `artifacts.lock.yml` pins the current smoke-test artifact contract, the
-  CUDA-trained tiny conditional diffusion LM preflight, and the exact
-  DiffusionGemma real-model readiness contract.
-- `verification_report.schema.json` defines the required final report.
-- `expected_outputs/smoke_test.json` records the smoke-test contract.
-- `expected_outputs/reference_metrics.json` records baseline/control slots.
+The signature experiment trains two identical tiny Transformer denoisers:
 
-The real graded path is `run_gpu_test`: it trains a tiny Transformer denoiser on
-a generated copy-pair grammar, checks held-out masked-token accuracy, verifies
-confidence-remasking sampler reconstruction, records activation-trajectory
-shape checks, and rejects a shuffled-label control. It also checks pinned
-`google/diffusiongemma-26B-A4B-it` and
-`nvidia/diffusiongemma-26B-A4B-it-NVFP4` metadata, exact revisions,
-Transformers loader support, local shard readiness, and NVFP4 runtime
-readiness. Config/tokenizer support is not accepted as released-checkpoint
-generation evidence; the current report must surface
-`diffusiongemma_generation_ready`, the isolated vLLM proof fields, and any
-remaining blockers directly.
+- the main model receives the exact grammar `[a, b] -> [a, b, a, a, b, b]`;
+- the control receives suffix labels permuted across training prefixes.
 
-Prepare the 24GB-local quantized artifact with:
+The executed solution notebook shows loss curves, held-out accuracy, entropy by
+denoising step, stable commitment by token position, and side-by-side token
+trajectories. The main model must reach at least 95% held-out exact match while
+the independently trained shuffled-label model must remain below 25% suffix
+accuracy. A `Try It Yourself` cell lets learners change the prefix, remasking
+rule, and seed.
 
-```bash
-BNB_CUDA_VERSION=130 uv run python scripts/prepare_diffusiongemma_artifacts.py --artifact nvfp4 --json
-BNB_CUDA_VERSION=130 uv run python scripts/prepare_diffusiongemma_artifacts.py --artifact nvfp4 --download --require-local --max-workers 1
-```
+`verification_report.json` records the same CUDA experiment as supporting
+evidence. The final notebook cell separately displays the pinned real
+DiffusionGemma NVFP4 generation artifact. That artifact proves one local
+released-checkpoint generation on the RTX 5090 Laptop GPU; it does not claim
+denoising-step activation capture or diffusion patching.
 
-The pinned NVFP4 checkpoint advertises `quant_method: modelopt`. The main uv
-environment keeps torch `2.12.1+cu132` and CUDA `13.2` and intentionally does
-not install vLLM, because public vLLM `0.24.0` resolves to torch `2.11.0+cu130`.
-The current released-checkpoint proof is therefore captured in
-`artifacts/diffusiongemma_vllm_probe.json` from an isolated vLLM environment:
-it loads the pinned NVIDIA NVFP4 revision, runs on the RTX 5090 Laptop GPU, and
-generates a non-empty answer. The Google BF16 direct-loading path remains
-deferred for the 24GB tier.
+The main `uv` environment remains on torch `2.12.1+cu132` and CUDA `13.2`.
+Public vLLM `0.24.0` requires torch `2.11.0+cu130`, so the NVFP4 proof remains
+in its isolated runtime rather than changing the course environment.
