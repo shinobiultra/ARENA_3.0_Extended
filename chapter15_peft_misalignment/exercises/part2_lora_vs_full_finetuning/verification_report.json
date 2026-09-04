@@ -54,9 +54,9 @@
       "source": "generated_safe_next_token_pairs"
     }
   ],
-  "date_run": "2026-09-04T14:10:32+00:00",
+  "date_run": "2026-09-04T14:13:05+00:00",
   "evidence_level": "pinned_pretrained_transformer_matched_peft_and_full_finetuning_comparison",
-  "git_commit": "8f47077d",
+  "git_commit": "31a94948",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-1",
   "known_failures": [],
@@ -192,7 +192,7 @@
         "same_norm_random": 0.9323996901512146
       },
       "torch_version": "2.12.1+cu132",
-      "wall_clock_seconds": 17.191851284999757,
+      "wall_clock_seconds": 13.248414410000805,
       "within_vram_budget": true
     },
     "notebook_contract": {
@@ -214,7 +214,7 @@
       "model_id": "roneneldan/TinyStories-1M",
       "model_revision": "77f1b168e219585646439073245fe87e56b3023e",
       "train_examples": 30,
-      "unmerge_restoration_max_abs_diff": 3.8743019104003906e-07
+      "unmerge_restoration_max_abs_diff": 8.344650268554688e-07
     }
   },
   "models": [
@@ -244,7 +244,7 @@
   "peak_vram_gb": 0.5368890762329102,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "33498ce24fe713398e4b02160d832a1cb0570d96b2d46a4ac497e4586fbaf200",
+    "combined_sha256": "c29e4e417cc890c063485795856d460f975b7e45feda1dfeb9e699815e64c52d",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -263,8 +263,8 @@
       },
       {
         "path": "chapter15_peft_misalignment/exercises/part2_lora_vs_full_finetuning/README.md",
-        "sha256": "20288efd6197727a94c3b88b5f031ac3139277cfea509155f85ff12fa24d9435",
-        "size_bytes": 1682
+        "sha256": "0c1e808b86e269037960d884c30f50bdb6cc6a50326330ce87f551535f6ba7b7",
+        "size_bytes": 1751
       },
       {
         "path": "chapter15_peft_misalignment/exercises/part2_lora_vs_full_finetuning/artifacts.lock.yml",
@@ -320,5 +320,5 @@
     "Full finetuning is deliberately limited to a 3.7M-parameter public teaching model."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 18.818613
+  "wall_clock_seconds": 15.292542
 }

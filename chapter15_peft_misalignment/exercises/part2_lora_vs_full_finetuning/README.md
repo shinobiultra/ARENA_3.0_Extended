@@ -19,8 +19,9 @@ Verification files:
   CPU and serialized CUDA execution.
 - `artifacts.lock.yml` pins the model, revision, task, controls, and claim.
 - `expected_outputs/` records exact toy and bounded reference expectations.
-- `verification_report.schema.json` defines the eventual parent-generated CUDA
-  report. A report supports the learner result; it is not the lesson.
+- `verification_report.schema.json` defines the parent-generated CUDA report;
+  the committed report binds its measurements to these files by content hash.
+  A report supports the learner result; it is not the lesson.
 
 The signature panel compares held-out behavior, actual selected-transformer
 weight spectra, layer-6 activation drift, and causal projection ablation. It
