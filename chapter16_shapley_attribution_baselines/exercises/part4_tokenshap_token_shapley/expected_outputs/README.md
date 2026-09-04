@@ -18,6 +18,22 @@ The generated artifact lock uses `seed: 0` for toy/generated inputs unless a sec
 
 Integer, token, boolean, and schema-contract checks require exact equality. Float32 toy checks should use `rtol=1e-5` and `atol=1e-6` unless the section file documents a stricter tolerance. bf16 or quantized real-model checks must update the section artifact lock and report with explicit behavioral tolerances.
 
+## Learner signature landmarks
+
+The notebook's independent exact organism uses five token positions and 32
+coalitions. The expected Shapley vector is
+`[0, 1/3, 1/3, 1.5, 41/6]`, with exact efficiency at `9.0`. The
+leave-one-out control is `[0, 0, 0, 3, 9]` and therefore sums to `12.0`.
+At 1024 sampled permutations, the fixed 40-seed convergence audit has mean
+maximum error `0.0538574` and 90th-percentile maximum error `0.0903646`.
+Replacing `urgent` with `banana` gives
+`[0, 1/3, 1/3, 0, 16/3]`, while shuffling coalition values within each
+mask-size bucket preserves the empty and full scores but produces exact values
+`[25/12, 29/12, 3/2, 11/6, 7/6]`; its maximum error against the semantic
+oracle is `17/3 = 5.6667`.
+These values are produced by the learner-visible functions and exact tests;
+they are not read from `verification_report.json`.
+
 ## When to regenerate
 
 Regenerate these fixtures when the section title, GT tier, artifact lock schema, verification report schema, expected baseline/control slots, or trusted toy implementation changes. Do not regenerate merely to hide a failing check; update the implementation or the declared claim scope first.

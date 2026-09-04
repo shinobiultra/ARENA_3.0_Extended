@@ -9,15 +9,14 @@ exercise_metadata:
   EXPECTED_RUNTIME: seconds on toy contract; minutes on local real-model path
   REQUIRES_GPU: true
 gt_tier: GT-0
-evidence_level: tokenshap_contract_plus_cuda_trained_token_scorer_preflight
-claim_scope: 'GT-0 TokenSHAP preflight: deterministic masked-token coalition, exact
-  TokenShapley, and sampled TokenSHAP contracts are kept for learner exercises, then
-  a CUDA embedding MLP is trained on the complete masked coalition table for the four-position
-  prompt ''The capital is Paris''. The report computes exact and sampled TokenSHAP
-  from real model outputs, checks them against the analytic token game, verifies efficiency
-  and top-token ranking, and rejects a shuffled-label token-scorer control. This proves
-  local token-position SHAP mechanics on a finite trained model organism; it is not
-  a claim about sampled TokenSHAP on a large language model.'
+evidence_level: exact_structured_token_game_plus_cuda_compatibility_preflight
+claim_scope: >-
+  The learner result is an exact five-position token game with a necessary token,
+  a redundant pair, a distractor, and a planted interaction. It compares exact and
+  sampled Shapley with leave-one-out and position controls, then demonstrates
+  tokenization and correlated-support failure modes. The separate release-only CUDA
+  preflight retains the older four-position finite scorer contract. It validates
+  implementation plumbing only and is not a claim about LLM attribution faithfulness.
 required_gpu_gb: 1
 max_allowed_gpu_gb: 24
 models:
@@ -95,6 +94,16 @@ controls:
 - shapley_efficiency_check_on_trained_token_model
 - shuffled_label_trained_model_negative_control
 - large_language_model_tokenshap_not_claimed
+- exact_necessary_token_oracle
+- redundant_pair_and_pair_deletion_control
+- distractor_zero_credit_oracle
+- leave_one_out_efficiency_failure
+- recency_position_control
+- permutation_budget_and_seed_sweep
+- random_semantic_token_zero_credit_control
+- within_mask_size_shuffled_value_control
+- subword_grouping_sensitivity
+- correlated_support_off_manifold_ambiguity
 safety_notes:
 - No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.
 - The real training path uses only a generated finite masked-token table for a safe

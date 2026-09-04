@@ -16,7 +16,17 @@
       "top_token_rank_preservation",
       "shapley_efficiency_check_on_trained_token_model",
       "shuffled_label_trained_model_negative_control",
-      "large_language_model_tokenshap_not_claimed"
+      "large_language_model_tokenshap_not_claimed",
+      "exact_necessary_token_oracle",
+      "redundant_pair_and_pair_deletion_control",
+      "distractor_zero_credit_oracle",
+      "leave_one_out_efficiency_failure",
+      "recency_position_control",
+      "permutation_budget_and_seed_sweep",
+      "random_semantic_token_zero_credit_control",
+      "within_mask_size_shuffled_value_control",
+      "subword_grouping_sensitivity",
+      "correlated_support_off_manifold_ambiguity"
     ],
     "expected_metrics": {
       "accepted": true,
@@ -42,7 +52,7 @@
       "training_steps": 1200
     }
   },
-  "claim_scope": "GT-0 TokenSHAP preflight: deterministic masked-token coalition, exact TokenShapley, and sampled TokenSHAP contracts are kept for learner exercises, then a CUDA embedding MLP is trained on the complete masked coalition table for the four-position prompt 'The capital is Paris'. The report computes exact and sampled TokenSHAP from real model outputs, checks them against the analytic token game, verifies efficiency and top-token ranking, and rejects a shuffled-label token-scorer control. This proves local token-position SHAP mechanics on a finite trained model organism; it is not a claim about sampled TokenSHAP on a large language model.",
+  "claim_scope": "The learner result is an exact five-position token game with a necessary token, a redundant pair, a distractor, and a planted interaction. It compares exact and sampled Shapley with leave-one-out and position controls, then demonstrates tokenization and correlated-support failure modes. The separate release-only CUDA preflight retains the older four-position finite scorer contract. It validates implementation plumbing only and is not a claim about LLM attribution faithfulness.",
   "datasets": [
     {
       "id": "16_4_tokenshap_and_tokenshapley_toy_inputs",
@@ -73,9 +83,9 @@
       ]
     }
   ],
-  "date_run": "2026-07-02T12:45:02+00:00",
-  "evidence_level": "tokenshap_contract_plus_cuda_trained_token_scorer_preflight",
-  "git_commit": "3a539d48",
+  "date_run": "2026-09-04T08:34:50+00:00",
+  "evidence_level": "exact_structured_token_game_plus_cuda_compatibility_preflight",
+  "git_commit": "66566601",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-0",
   "known_failures": [],
@@ -115,38 +125,38 @@
       "cuda_available": true,
       "cuda_version": "13.2",
       "device": "NVIDIA GeForce RTX 5090 Laptop GPU",
-      "exact_shapley_max_abs_error": 3.228584932735146e-08,
-      "fit_max_abs_error": 1.4901161193847656e-08,
-      "fit_mse": 6.938893903907228e-17,
-      "full_path": "Train a CUDA token-position scorer on every masked coalition, compute exact and sampled TokenSHAP from real model outputs, and reject shuffled-label token attributions.",
+      "exact_shapley_max_abs_error": 1.341104507446289e-07,
+      "fit_max_abs_error": 2.384185791015625e-07,
+      "fit_mse": 6.994405055138486e-15,
+      "full_path": "Finite CUDA scorer preflight; the exact learner organism remains the main result.",
       "gpu_total_memory_gb": 23.45965576171875,
       "model_exact_values": [
-        2.2351741790771484e-08,
-        0.9999999950329462,
-        -1.4901161193847653e-08,
-        1.9999999677141507
+        -1.7384688059488937e-08,
+        0.9999999975164731,
+        -1.341104507446289e-07,
+        1.9999999006589253
       ],
       "model_family": "cuda_trained_tiny_token_scorer_mlp",
       "peak_vram_gb": 0.06308317184448242,
       "preflight_passed": true,
-      "sampled_max_abs_error": 0.0507812562476222,
+      "sampled_max_abs_error": 0.050781254142445276,
       "sampled_rank_matches": true,
       "sampled_top_token": "Paris",
       "sampled_values": [
-        2.2962922230362892e-08,
-        1.0507812451687641,
-        -9.400537237524986e-09,
-        1.9492187114665285
+        -1.0943040251731873e-08,
+        1.0507812516589183,
+        -1.4729448594152927e-07,
+        1.9492186532588676
       ],
       "satisfies_efficiency": true,
-      "shuffled_control_error": 1.8333331793546677,
+      "shuffled_control_error": 1.6667118097345033,
       "shuffled_control_exact_values": [
-        -0.1666667660077412,
-        -0.1666666393478711,
-        0.16666645059982943,
-        0.16666682064533245
+        0.8328117753068605,
+        2.8980274995149546e-05,
+        -1.1660857771833737,
+        0.3332881902654966
       ],
-      "shuffled_control_fit_mse": 8.808231921619836e-14,
+      "shuffled_control_fit_mse": 5.873272357348469e-07,
       "shuffled_control_rejected": true,
       "token_count": 4,
       "top_token": "Paris",
@@ -238,7 +248,8 @@
   "negative_controls": {
     "declared_controls": [
       "negative_control_where_applicable",
-      "shuffled_label_trained_model_negative_control"
+      "shuffled_label_trained_model_negative_control",
+      "random_semantic_token_zero_credit_control"
     ]
   },
   "notebook_id": "16_4_tokenshap_and_tokenshapley",
@@ -248,7 +259,7 @@
   "peak_vram_gb": 0.06308317184448242,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "3b49f7bff8fcf7dac4ded0f73e4f2fbe44f8f5bb7208536f40804358517aca7b",
+    "combined_sha256": "19a14c141fb6e53dc199d635f4128493f68b1e4eccb8c86f9a13b05c67f1fc85",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -257,28 +268,28 @@
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part4_tokenshap_token_shapley/16.4_TokenSHAP_and_TokenShapley_exercises.ipynb",
-        "sha256": "5c3106c0ecd13b1319e7f9ce358cddddcbfe1bf61f3f1229d193fa753a01610e",
-        "size_bytes": 27031
+        "sha256": "dfdf5974afc2acb125007b06088a72c919ed98f45828e8b5a71b46ccbc8e2bb8",
+        "size_bytes": 48382
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part4_tokenshap_token_shapley/16.4_TokenSHAP_and_TokenShapley_solutions.ipynb",
-        "sha256": "9677f7e23ee376569c8e2ef34a38ca3cf44b79674263a3cfffccd3d32110e615",
-        "size_bytes": 35090
+        "sha256": "0af39e5127b53792a4668da1a1e7d8dada562d2edb0f43d9993c4d0d0a39fae5",
+        "size_bytes": 70104
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part4_tokenshap_token_shapley/README.md",
-        "sha256": "01a656eeeef01b216b685faf537b989b64d6218677be8852486fa8d25806c970",
-        "size_bytes": 1003
+        "sha256": "ae47ec7372a67eaa8d07a12f5926f4434e37c4cd850a605ef12a3eb9e2718dd2",
+        "size_bytes": 2230
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part4_tokenshap_token_shapley/artifacts.lock.yml",
-        "sha256": "2c7376a66ca145d7eca8f05596487b656e939c8f1c4402e09ca43b3dfe7949bf",
-        "size_bytes": 3489
+        "sha256": "69d3491c283680e81bf29a9e904768547ff8907d716eab06e4413f80be5c6e12",
+        "size_bytes": 3693
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part4_tokenshap_token_shapley/expected_outputs/README.md",
-        "sha256": "970a48fa5f81c9342ff02246726ba196c4d5e40437cd8ba67dbfc8dd70ffc240",
-        "size_bytes": 1779
+        "sha256": "161f70f03375812fff9b54f6950137df324f88092e21c5fb19870a8eb342b410",
+        "size_bytes": 2631
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part4_tokenshap_token_shapley/expected_outputs/reference_metrics.json",
@@ -292,13 +303,13 @@
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part4_tokenshap_token_shapley/solutions.py",
-        "sha256": "6e95a7482ca984ce6749a2417f678fecb020d4cb91a15c1c209687d7ce703ffd",
-        "size_bytes": 16654
+        "sha256": "546e97cd8c9dbcd9f3a5b0dbbc4295601c0d81ae6e33ec17ea1eb19aecf8f1a8",
+        "size_bytes": 23495
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part4_tokenshap_token_shapley/tests.py",
-        "sha256": "05ffaf044af07f4c1c7d054bf2330f8b1b864f1d82eaa07782ed54289f136cf7",
-        "size_bytes": 10914
+        "sha256": "d39045f03ce9f484cfe590d827f73a3ba483f27693a5174707e5ffed844cd2c0",
+        "size_bytes": 14202
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part4_tokenshap_token_shapley/utils.py",
@@ -312,13 +323,13 @@
       },
       {
         "path": "chapter16_shapley_attribution_baselines/instructions/pages/04_[16.4]_TokenSHAP_and_TokenShapley.md",
-        "sha256": "394ecd22edf1883910fe95312e2f31cf419931ea185e31d9e085f352a9ca970a",
-        "size_bytes": 27986
+        "sha256": "0259088c914325c4c0c1dc9fc9a402cdb0d8290c110c1d9a44092d6dc3e5dc45",
+        "size_bytes": 36277
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
-        "sha256": "660040f459d07535deb9e0c34ffddb496c13b8770044ae380d3a8e45b0c8fb2b",
-        "size_bytes": 16080
+        "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
+        "size_bytes": 16272
       }
     ],
     "schema_version": 1
@@ -328,5 +339,5 @@
     "The real training path uses only a generated finite masked-token table for a safe four-token prompt and a shuffled-label negative control. It does not use unsafe prompts, user data, external APIs, adapters, gated weights, or large persistent artifacts."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 2.157706
+  "wall_clock_seconds": 3.026737
 }
