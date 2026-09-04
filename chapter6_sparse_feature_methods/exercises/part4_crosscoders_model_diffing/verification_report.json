@@ -13,7 +13,7 @@
       "target_model_b_specific_latent_ablation",
       "same_norm_random_direction_ablation_control",
       "orthogonal_direction_ablation_control",
-      "optional_pinned_transformerlens_paired_residual_preflight"
+      "pinned_transformerlens_paired_residual_preflight"
     ],
     "expected_metrics": {
       "accepted": true,
@@ -32,7 +32,7 @@
       "zero_reconstruction_mse_min": 0.1
     }
   },
-  "claim_scope": "A CPU-trained sparse crosscoder on exact planted paired-model activations recovers shared and model-specific feature ownership on held-out examples, predicts a planted model-B behavior delta, and passes targeted ablation controls against same-norm random and orthogonal directions. The optional pinned GELU-1L vs SoLU-1L TransformerLens CUDA path is bounded real paired-model context, not the learner-facing signature result and not a full real-model trained-crosscoder replication.\n",
+  "claim_scope": "A CPU-trained sparse crosscoder on exact planted paired-model activations recovers shared and model-specific feature ownership on held-out examples, predicts a planted model-B behavior delta, and passes targeted ablation controls against same-norm random and orthogonal directions. The separate pinned GELU-1L vs SoLU-1L TransformerLens CUDA path is bounded real paired-model context, not the learner-facing signature result and not a full real-model trained-crosscoder replication.\n",
   "datasets": [
     {
       "d_model": 12,
@@ -49,7 +49,7 @@
       "train_fraction": 0.75
     },
     {
-      "claim_scope": "optional parent GPU preflight only",
+      "claim_scope": "parent-run GPU preflight only",
       "everyday_prompt_count": 8,
       "id": "course_generated_gelu_solu_model_diff_prompts_v1",
       "seed": 6404,
@@ -58,9 +58,9 @@
       "technical_prompt_count": 8
     }
   ],
-  "date_run": "2026-09-04T08:00:52+00:00",
-  "evidence_level": "planted_sparse_crosscoder_train_recover_predict_intervene_plus_optional_transformerlens_preflight",
-  "git_commit": "624d6bdf",
+  "date_run": "2026-09-04T08:02:19+00:00",
+  "evidence_level": "planted_sparse_crosscoder_train_recover_predict_intervene_plus_pinned_transformerlens_preflight",
+  "git_commit": "fe8ec66e",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-3",
   "known_failures": [],
@@ -388,7 +388,7 @@
     },
     {
       "alias": "gelu-1l",
-      "claim_scope": "optional parent GPU residual-stream preflight only",
+      "claim_scope": "parent-run GPU residual-stream preflight only",
       "gated": false,
       "id": "NeelNanda/GELU_1L512W_C4_Code",
       "precision": "float32",
@@ -399,7 +399,7 @@
     },
     {
       "alias": "solu-1l",
-      "claim_scope": "optional parent GPU residual-stream preflight only",
+      "claim_scope": "parent-run GPU residual-stream preflight only",
       "gated": false,
       "id": "NeelNanda/SoLU_1L512W_C4_Code",
       "precision": "float32",
@@ -422,7 +422,7 @@
   "peak_vram_gb": 0.5133085250854492,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "2351220c787fef6b35fb9b1b883dc638b04ba3e5c95de64efdff593b0abbcf5f",
+    "combined_sha256": "06b1544ef5272622cb8a838a980f7b9519c76e84e8bfb596bf7db27bf053d42d",
     "files": [
       {
         "path": "arena_ext/crosscoders.py",
@@ -456,8 +456,8 @@
       },
       {
         "path": "chapter6_sparse_feature_methods/exercises/part4_crosscoders_model_diffing/artifacts.lock.yml",
-        "sha256": "86151b30d93ff91a255dbb06af62e271ae8575c476a73e3cee32aa480f0e536e",
-        "size_bytes": 3688
+        "sha256": "45e7758106cf885eccfe66cdb593d168204c72d798fc1d74ecb510c03337f531",
+        "size_bytes": 3657
       },
       {
         "path": "chapter6_sparse_feature_methods/exercises/part4_crosscoders_model_diffing/expected_outputs/README.md",
@@ -510,8 +510,8 @@
   "safety_notes": [
     "No unsafe prompts, unsafe adapters, raw gated weights, or user data.",
     "The learner-facing signature uses generated exact planted activations on CPU.",
-    "The optional paired-model path uses safe generic prompts and small public TransformerLens checkpoints."
+    "The paired-model GPU path uses safe generic prompts and small public TransformerLens checkpoints."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 18.043899
+  "wall_clock_seconds": 7.700543
 }

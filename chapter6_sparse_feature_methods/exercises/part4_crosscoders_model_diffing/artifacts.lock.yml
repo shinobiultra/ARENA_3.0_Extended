@@ -9,12 +9,12 @@ exercise_metadata:
   EXPECTED_RUNTIME: 60-90 minutes; CPU signature run takes about 5-15 seconds
   REQUIRES_GPU: true
 gt_tier: GT-3
-evidence_level: planted_sparse_crosscoder_train_recover_predict_intervene_plus_optional_transformerlens_preflight
+evidence_level: planted_sparse_crosscoder_train_recover_predict_intervene_plus_pinned_transformerlens_preflight
 claim_scope: >
   A CPU-trained sparse crosscoder on exact planted paired-model activations recovers
   shared and model-specific feature ownership on held-out examples, predicts a
   planted model-B behavior delta, and passes targeted ablation controls against
-  same-norm random and orthogonal directions. The optional pinned GELU-1L vs
+  same-norm random and orthogonal directions. The separate pinned GELU-1L vs
   SoLU-1L TransformerLens CUDA path is bounded real paired-model context, not the
   learner-facing signature result and not a full real-model trained-crosscoder
   replication.
@@ -35,7 +35,7 @@ models:
   tokenizer_revision: 0f6671571a20be9756b9991d978047c03b75e749
   precision: float32
   gated: false
-  claim_scope: optional parent GPU residual-stream preflight only
+  claim_scope: parent-run GPU residual-stream preflight only
 - id: NeelNanda/SoLU_1L512W_C4_Code
   alias: solu-1l
   source: huggingface_transformerlens
@@ -44,7 +44,7 @@ models:
   tokenizer_revision: 0f6671571a20be9756b9991d978047c03b75e749
   precision: float32
   gated: false
-  claim_scope: optional parent GPU residual-stream preflight only
+  claim_scope: parent-run GPU residual-stream preflight only
 datasets:
 - id: 6_4_planted_sparse_crosscoder_pairs_v2
   source: generated_exact_ground_truth
@@ -63,7 +63,7 @@ datasets:
   technical_prompt_count: 8
   everyday_prompt_count: 8
   target_hook: blocks.0.hook_resid_post
-  claim_scope: optional parent GPU preflight only
+  claim_scope: parent-run GPU preflight only
 expected_metrics:
   tests_passed: true
   accepted: true
@@ -91,8 +91,8 @@ controls:
 - target_model_b_specific_latent_ablation
 - same_norm_random_direction_ablation_control
 - orthogonal_direction_ablation_control
-- optional_pinned_transformerlens_paired_residual_preflight
+- pinned_transformerlens_paired_residual_preflight
 safety_notes:
 - No unsafe prompts, unsafe adapters, raw gated weights, or user data.
 - The learner-facing signature uses generated exact planted activations on CPU.
-- The optional paired-model path uses safe generic prompts and small public TransformerLens checkpoints.
+- The paired-model GPU path uses safe generic prompts and small public TransformerLens checkpoints.
