@@ -64,9 +64,9 @@
       "target_feature": "signed task label feature"
     }
   ],
-  "date_run": "2026-09-04T08:04:26+00:00",
+  "date_run": "2026-09-04T08:44:44+00:00",
   "evidence_level": "toy_ladder_plus_real_pythia_official_sae_sfc_faithfulness_and_shift_editing",
-  "git_commit": "afafa780",
+  "git_commit": "d5d0f7d4",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-0",
   "known_failures": [],
@@ -863,7 +863,7 @@
   "peak_vram_gb": 0.5876307487487793,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "6c5ac538db075b6f7e4cedf2bf0b8324632a87b2dc1f1f5afb39a814d83f6f11",
+    "combined_sha256": "568081bf8145dc7b325b994c75dbc40b663d8bc1d1512fd41fc4bf97fe316712",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -872,13 +872,13 @@
       },
       {
         "path": "chapter8_automated_circuits/exercises/part5_sparse_feature_circuits/8.5_Sparse_Feature_Circuits_exercises.ipynb",
-        "sha256": "311c8a328b06bec75ab6fb6c680869656c5e90a72af4e00d24dbd621140a860e",
-        "size_bytes": 92963
+        "sha256": "b7789bbcb42478d5f268adadacffdb2f91659c7cc98a4caad9ce6afbda3a211a",
+        "size_bytes": 94490
       },
       {
         "path": "chapter8_automated_circuits/exercises/part5_sparse_feature_circuits/8.5_Sparse_Feature_Circuits_solutions.ipynb",
-        "sha256": "3f46940fdf8441aebe0bf4309c2218ebc0545649b97546fa443dd86fcd5e2370",
-        "size_bytes": 373324
+        "sha256": "d3a64fbacd82ba50fae4506d821ecbf507720be6c1bb13b6e8ffb51bb686eed1",
+        "size_bytes": 375109
       },
       {
         "path": "chapter8_automated_circuits/exercises/part5_sparse_feature_circuits/README.md",
@@ -912,8 +912,8 @@
       },
       {
         "path": "chapter8_automated_circuits/exercises/part5_sparse_feature_circuits/tests.py",
-        "sha256": "54a97990f39714068500bd8f7ca2327d5c5847f6edffd18a7d464f8ba3edb3d2",
-        "size_bytes": 38919
+        "sha256": "3b8e8c82f7eabdd5450435fee9603c88b67f253aff436c78d968ade212a49fa2",
+        "size_bytes": 38922
       },
       {
         "path": "chapter8_automated_circuits/exercises/part5_sparse_feature_circuits/utils.py",
@@ -927,8 +927,8 @@
       },
       {
         "path": "chapter8_automated_circuits/instructions/pages/05_[8.5]_Sparse_Feature_Circuits.md",
-        "sha256": "d0e8adb6de4aaf4f2c51033254217167f7b6868e17d867e83bef11c13ead5cea",
-        "size_bytes": 73322
+        "sha256": "7e42e7213427186f303c77f158c8933c4b50140d08c1fb63683ea029234e4857",
+        "size_bytes": 73635
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
@@ -944,5 +944,5 @@
     "The real Sparse Feature Circuits path uses the pinned official repo, downloaded Pythia-70M-deduped SAE dictionaries, generated safe subject-verb data from the official split, and held-out faithfulness. The SHIFT-style editing exercise uses generated sparse features only; it does not use Bias-in-Bios or sensitive demographic text."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 13.416351
+  "wall_clock_seconds": 11.990068
 }

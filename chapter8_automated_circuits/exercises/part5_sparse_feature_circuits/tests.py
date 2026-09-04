@@ -716,7 +716,7 @@ def test_exercise_notebook_exposes_arena_style_sparse_feature_surface():
     text = "\n".join("".join(cell.get("source", [])) for cell in notebook["cells"])
     required_markers = [
         "By the end of this notebook",
-        "Core question",
+        "## Core Question",
         "exact planted sparse-feature graph",
         "### Exercise - implement `toy_sae_encode`",
         "### Exercise - implement `exact_planted_node_patch_scores`",

@@ -94,9 +94,9 @@
       "tokenizer": "NeelNanda/gpt-neox-tokenizer-digits"
     }
   ],
-  "date_run": "2026-09-04T07:35:29+00:00",
+  "date_run": "2026-09-04T08:44:15+00:00",
   "evidence_level": "exact_planted_nonlinear_graph_plus_pinned_transformerlens_gradient_preflight",
-  "git_commit": "ef814b20",
+  "git_commit": "d5d0f7d4",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-1",
   "known_failures": [],
@@ -345,7 +345,7 @@
   "peak_vram_gb": 0.46827173233032227,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "e1b596ae13c4b1543d6c310ef8380d262da7de1c7e6a4a826cfbf614ef190db1",
+    "combined_sha256": "a60029d3581eacf0a5438da417cf3a4b67759233b8d3a724ef481a51c41d58ec",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -354,13 +354,13 @@
       },
       {
         "path": "chapter8_automated_circuits/exercises/part2_attribution_patching_eap/8.2_Attribution_Patching_and_EAP_exercises.ipynb",
-        "sha256": "d391723bf2c89d49b0a45961d59e1f0957a2ade9987fb62c98cff680eb05f551",
-        "size_bytes": 44799
+        "sha256": "1528946d690e007162387bce9dec7eb0287e9e5dfe1f8670de59eeea9d1552c4",
+        "size_bytes": 46671
       },
       {
         "path": "chapter8_automated_circuits/exercises/part2_attribution_patching_eap/8.2_Attribution_Patching_and_EAP_solutions.ipynb",
-        "sha256": "a026c20ee3d2fa0d54a533e9be8e698576ef2dfcd8d112b7cf398bb8ed1c2a43",
-        "size_bytes": 265668
+        "sha256": "24bec122d744a05dc65910ba66e8379afeed57c5fd9c4564e0e40954fb810aee",
+        "size_bytes": 267798
       },
       {
         "path": "chapter8_automated_circuits/exercises/part2_attribution_patching_eap/README.md",
@@ -394,8 +394,8 @@
       },
       {
         "path": "chapter8_automated_circuits/exercises/part2_attribution_patching_eap/tests.py",
-        "sha256": "4c86d4d56487ba0f3237b5ee9f8342570d6f4e470400ee8616742c1d8b7b79b3",
-        "size_bytes": 11866
+        "sha256": "5d97ad460a80074623db34a0ae755d4925d30510283d73dee35ce55eb0ad3294",
+        "size_bytes": 16211
       },
       {
         "path": "chapter8_automated_circuits/exercises/part2_attribution_patching_eap/utils.py",
@@ -409,8 +409,8 @@
       },
       {
         "path": "chapter8_automated_circuits/instructions/pages/02_[8.2]_Attribution_Patching_and_EAP.md",
-        "sha256": "433b9e8bdf1408e05b5e8af33cb6ccd6f029590bdb86381a9a46209e1ac0b1be",
-        "size_bytes": 33951
+        "sha256": "9d070c52f6a3c86c1da9704d3cfa2db91fa809da608b5349d8fa99724eddfac8",
+        "size_bytes": 34581
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
@@ -425,5 +425,5 @@
     "The real-model path uses safe generic prompts and reads logits and gradients from a small public TransformerLens checkpoint. It does not use unsafe prompts, gated weights, or generated completions."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 11.320629
+  "wall_clock_seconds": 5.918997
 }
