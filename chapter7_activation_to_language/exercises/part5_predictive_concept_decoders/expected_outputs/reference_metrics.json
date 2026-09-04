@@ -1,6 +1,185 @@
 {
+  "notebook_id": "7_5_predictive_concept_decoders",
   "baselines": {
     "required": true
+  },
+  "negative_controls": {
+    "required_where_applicable": true
+  },
+  "ood_tests": {
+    "required_where_applicable": true
+  },
+  "planted_signature": {
+    "train_examples": 32,
+    "heldout_examples": 32,
+    "question_count": 4,
+    "concept_names": [
+      "surface",
+      "motion",
+      "red",
+      "animal",
+      "template_alpha",
+      "template_beta"
+    ],
+    "train_recovery_error": 2.384185791015625e-07,
+    "heldout_recovery_error": 2.384185791015625e-07,
+    "heatmap_shape": [
+      4,
+      6
+    ],
+    "heatmap": [
+      [
+        10.926108360290527,
+        -0.04781191796064377,
+        -0.04781275987625122,
+        -0.047811977565288544,
+        -1.6402201652526855,
+        -1.6396064758300781
+      ],
+      [
+        -0.04763418808579445,
+        10.915958404541016,
+        -0.047633975744247437,
+        -0.047634307295084,
+        -1.6313128471374512,
+        -1.6306471824645996
+      ],
+      [
+        -0.017269186675548553,
+        -0.017269350588321686,
+        10.959833145141602,
+        -0.017270049080252647,
+        -1.632516622543335,
+        -1.6325230598449707
+      ],
+      [
+        -0.011878564022481441,
+        -0.011878551915287971,
+        -0.01187859009951353,
+        10.963179588317871,
+        -1.194885015487671,
+        -1.196580410003662
+      ]
+    ],
+    "baselines": {
+      "pcd_accuracy": 1.0,
+      "question_agnostic_probe_accuracy": 0.6875,
+      "text_template_shortcut_accuracy": 0.5,
+      "shuffled_question_accuracy": 0.5,
+      "random_label_accuracy": 0.46875,
+      "single_concept_accuracy": 0.625,
+      "dense_noninteraction_accuracy": 0.6875,
+      "best_control_accuracy": 0.6875,
+      "pcd_margin_over_best_control": 0.3125,
+      "passes_controls": true
+    },
+    "baseline_names": [
+      "PCD",
+      "question-agnostic probe",
+      "text/template shortcut",
+      "shuffled question",
+      "random label",
+      "single concept",
+      "dense non-interaction"
+    ],
+    "baseline_accuracies": [
+      1.0,
+      0.6875,
+      0.5,
+      0.5,
+      0.46875,
+      0.625,
+      0.6875
+    ],
+    "removal": {
+      "row_index": 120,
+      "prompt": "heldout latent card 30 / template 1",
+      "question": "Is the hidden surface concept active?",
+      "target_concept": "surface",
+      "active_control_concept": "motion",
+      "original_answer": 1,
+      "target_removed_answer": 0,
+      "active_control_removed_answer": 1,
+      "target_logit_delta": 5.451663970947266,
+      "active_control_logit_delta": -0.0273284912109375,
+      "target_removal_changed": true,
+      "active_control_changed": false,
+      "active_control_does_less": true
+    },
+    "prediction_rows_preview": [
+      {
+        "prompt": "heldout latent card 00 / template 1",
+        "question": "Is the hidden surface concept active?",
+        "answer": 0,
+        "pcd_pred": 0,
+        "probe_pred": 0,
+        "text_template_pred": 0,
+        "dense_noninteraction_pred": 0
+      },
+      {
+        "prompt": "heldout latent card 00 / template 1",
+        "question": "Is the hidden motion concept active?",
+        "answer": 0,
+        "pcd_pred": 0,
+        "probe_pred": 0,
+        "text_template_pred": 1,
+        "dense_noninteraction_pred": 0
+      },
+      {
+        "prompt": "heldout latent card 00 / template 1",
+        "question": "Is the hidden red concept active?",
+        "answer": 0,
+        "pcd_pred": 0,
+        "probe_pred": 0,
+        "text_template_pred": 0,
+        "dense_noninteraction_pred": 0
+      },
+      {
+        "prompt": "heldout latent card 00 / template 1",
+        "question": "Is the hidden animal concept active?",
+        "answer": 0,
+        "pcd_pred": 0,
+        "probe_pred": 0,
+        "text_template_pred": 0,
+        "dense_noninteraction_pred": 0
+      },
+      {
+        "prompt": "heldout latent card 01 / template 2",
+        "question": "Is the hidden surface concept active?",
+        "answer": 0,
+        "pcd_pred": 0,
+        "probe_pred": 0,
+        "text_template_pred": 1,
+        "dense_noninteraction_pred": 0
+      },
+      {
+        "prompt": "heldout latent card 01 / template 2",
+        "question": "Is the hidden motion concept active?",
+        "answer": 0,
+        "pcd_pred": 0,
+        "probe_pred": 0,
+        "text_template_pred": 1,
+        "dense_noninteraction_pred": 0
+      },
+      {
+        "prompt": "heldout latent card 01 / template 2",
+        "question": "Is the hidden red concept active?",
+        "answer": 0,
+        "pcd_pred": 0,
+        "probe_pred": 0,
+        "text_template_pred": 1,
+        "dense_noninteraction_pred": 0
+      },
+      {
+        "prompt": "heldout latent card 01 / template 2",
+        "question": "Is the hidden animal concept active?",
+        "answer": 0,
+        "pcd_pred": 0,
+        "probe_pred": 0,
+        "text_template_pred": 1,
+        "dense_noninteraction_pred": 0
+      }
+    ]
   },
   "metrics": {
     "accepted": true,
@@ -74,12 +253,5 @@
     "top_removal_delta_min": 4.0,
     "train_example_count": 12,
     "train_pcd_row_count": 48
-  },
-  "negative_controls": {
-    "required_where_applicable": true
-  },
-  "notebook_id": "7_5_predictive_concept_decoders",
-  "ood_tests": {
-    "required_where_applicable": true
   }
 }

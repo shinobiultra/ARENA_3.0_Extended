@@ -1,4 +1,7 @@
+import ast
+import json
 from collections.abc import Callable
+from pathlib import Path
 
 import torch as t
 
@@ -638,6 +641,334 @@ def test_concept_audit_controls_reject_bad_inputs(
     )
 
 
+def test_make_planted_pcd_world_has_exact_sparse_ground_truth(
+    make_planted_pcd_world: Callable | None = None,
+):
+    make_planted_pcd_world = make_planted_pcd_world or _solutions().make_planted_pcd_world
+    world = make_planted_pcd_world(seed=0)
+    expected = reference.make_planted_pcd_world(seed=0)
+    assert world.question_texts == expected.question_texts, (
+        "The planted question bank should be stable and learner-readable."
+    )
+    assert world.concept_names == expected.concept_names, (
+        "Concept names should expose the planted audit surface."
+    )
+    assert world.train_activations.shape == expected.train_activations.shape == (32, 12), (
+        "The planted world should use 32 balanced train examples in dense activation space."
+    )
+    assert world.heldout_activations.shape == expected.heldout_activations.shape == (32, 12), (
+        "The planted world should use a separate 32-example held-out split."
+    )
+    recovered = world.heldout_activations @ world.concept_directions
+    assert t.allclose(recovered, world.heldout_true_concepts, atol=1e-5, rtol=1e-5), (
+        "The planted concept directions should recover the hidden sparse concepts exactly."
+    )
+    assert not any(name in " ".join(world.heldout_prompts).lower() for name in ("surface", "motion", "red", "animal")), (
+        "Toy prompt text should not leak the hidden concept labels."
+    )
+    print("All tests in `test_make_planted_pcd_world_has_exact_sparse_ground_truth` passed!")
+
+
+def test_build_planted_question_rows_aligns_every_question(
+    build_planted_question_rows: Callable | None = None,
+):
+    build_planted_question_rows = (
+        build_planted_question_rows or _solutions().build_planted_question_rows
+    )
+    concepts = reference.make_planted_pcd_world(seed=0).heldout_true_concepts
+    row_concepts, question_embeddings, question_ids, answer_ids = build_planted_question_rows(
+        concepts,
+    )
+    expected_rows = concepts.shape[0] * len(reference.PLANTED_PCD_QUESTIONS)
+    assert row_concepts.shape == (expected_rows, concepts.shape[1]), (
+        "Every held-out activation should be repeated under every behavioral question."
+    )
+    assert question_embeddings.shape == (expected_rows, len(reference.PLANTED_PCD_QUESTIONS)), (
+        "Question embeddings should be one-hot and row-aligned."
+    )
+    assert question_ids[:8].tolist() == [0, 1, 2, 3, 0, 1, 2, 3], (
+        "Question ids should cycle within each example before moving to the next example."
+    )
+    assert answer_ids.float().mean().item() == 0.5, (
+        "Each planted question should be balanced on held-out rows, so question-only shortcuts fail."
+    )
+    assert answer_ids[:4].tolist() == concepts[0, :4].long().tolist(), (
+        "Answers for one example should be its planted concept bits under the four questions."
+    )
+    print("All tests in `test_build_planted_question_rows_aligns_every_question` passed!")
+
+
+def test_planted_pcd_experiment_beats_requested_controls(
+    run_planted_pcd_experiment: Callable | None = None,
+):
+    run_planted_pcd_experiment = (
+        run_planted_pcd_experiment or _solutions().run_planted_pcd_experiment
+    )
+    result = run_planted_pcd_experiment(seed=0, steps=350, lr=0.08)
+    report = result["baseline_report"]
+    expected_keys = {
+        "PCD",
+        "question-agnostic probe",
+        "text/template shortcut",
+        "shuffled question",
+        "random label",
+        "single concept",
+        "dense non-interaction",
+    }
+    assert set(result["baseline_names"]) == expected_keys, (
+        "The planted signature result should include every requested control."
+    )
+    assert result["train_recovery_error"] < 1e-5 and result["heldout_recovery_error"] < 1e-5, (
+        "The toy world should start from exact planted sparse-concept ground truth."
+    )
+    assert report.pcd_accuracy == 1.0 and report.passes_controls, (
+        "The question-conditioned PCD should solve held-out questions and pass the control margin."
+    )
+    assert report.question_agnostic_probe_accuracy <= 0.75, (
+        "A question-agnostic probe should fail on repeated concept rows with different questions."
+    )
+    assert report.text_template_shortcut_accuracy <= 0.75, (
+        "Text/template shortcuts should fail because the toy prompts do not reveal hidden concepts."
+    )
+    assert report.shuffled_question_accuracy <= 0.75, (
+        "Shuffling questions should break the learned concept-question alignment."
+    )
+    assert report.random_label_accuracy <= 0.75, (
+        "Random-label training should not produce a convincing held-out result."
+    )
+    assert report.single_concept_accuracy <= 0.75, (
+        "A single concept should not solve a four-question bottleneck."
+    )
+    assert report.dense_noninteraction_accuracy <= 0.75, (
+        "Dense additive activation+question features should not replace interaction slots."
+    )
+    heatmap = result["heatmap"]
+    assert heatmap.shape == (4, 6), (
+        "The signature heatmap should be [question, concept], including nuisance concepts."
+    )
+    top_concepts = heatmap[:, :4].argmax(dim=1).tolist()
+    assert top_concepts == [0, 1, 2, 3], (
+        "The learned interaction weights should put each question on its planted concept."
+    )
+    assert len(result["prediction_rows"]) == 128, (
+        "The held-out table should expose all 32 examples under all 4 questions."
+    )
+    print("All tests in `test_planted_pcd_experiment_beats_requested_controls` passed!")
+
+
+def test_pcd_baseline_sweep_report_scores_all_controls(
+    pcd_baseline_sweep_report: Callable | None = None,
+):
+    pcd_baseline_sweep_report = (
+        pcd_baseline_sweep_report or _solutions().pcd_baseline_sweep_report
+    )
+    answer_ids = t.tensor([0, 1, 0, 1, 1, 0, 1, 0])
+
+    def logits_from_preds(preds: list[int]) -> t.Tensor:
+        logits = t.zeros(len(preds), 2)
+        logits[t.arange(len(preds)), t.tensor(preds)] = 4.0
+        return logits
+
+    report = pcd_baseline_sweep_report(
+        pcd_logits=logits_from_preds([0, 1, 0, 1, 1, 0, 1, 0]),
+        question_agnostic_probe_logits=logits_from_preds([0, 0, 0, 0, 1, 1, 1, 1]),
+        text_template_shortcut_logits=logits_from_preds([0, 0, 0, 0, 0, 0, 0, 0]),
+        shuffled_question_logits=logits_from_preds([1, 0, 1, 0, 0, 1, 0, 1]),
+        random_label_logits=logits_from_preds([0, 1, 1, 0, 0, 1, 1, 0]),
+        single_concept_logits=logits_from_preds([0, 1, 0, 0, 1, 0, 0, 0]),
+        dense_noninteraction_logits=logits_from_preds([0, 1, 1, 1, 1, 0, 0, 0]),
+        answer_ids=answer_ids,
+        min_margin=0.20,
+    )
+    expected = reference.pcd_baseline_sweep_report(
+        pcd_logits=logits_from_preds([0, 1, 0, 1, 1, 0, 1, 0]),
+        question_agnostic_probe_logits=logits_from_preds([0, 0, 0, 0, 1, 1, 1, 1]),
+        text_template_shortcut_logits=logits_from_preds([0, 0, 0, 0, 0, 0, 0, 0]),
+        shuffled_question_logits=logits_from_preds([1, 0, 1, 0, 0, 1, 0, 1]),
+        random_label_logits=logits_from_preds([0, 1, 1, 0, 0, 1, 1, 0]),
+        single_concept_logits=logits_from_preds([0, 1, 0, 0, 1, 0, 0, 0]),
+        dense_noninteraction_logits=logits_from_preds([0, 1, 1, 1, 1, 0, 0, 0]),
+        answer_ids=answer_ids,
+        min_margin=0.20,
+    )
+    _assert_report_close(report, expected, msg="PCD baseline sweep report")
+    assert report.pcd_accuracy == 1.0 and report.best_control_accuracy == 0.75, (
+        "The report should score the PCD and independently take the best control accuracy."
+    )
+    assert report.passes_controls and abs(report.pcd_margin_over_best_control - 0.25) < 1e-6, (
+        "The report should require a positive margin over the best non-PCD control."
+    )
+    tied = pcd_baseline_sweep_report(
+        pcd_logits=logits_from_preds([0, 1, 1, 1, 1, 0, 0, 0]),
+        question_agnostic_probe_logits=logits_from_preds([0, 1, 1, 1, 1, 0, 0, 0]),
+        text_template_shortcut_logits=logits_from_preds([0, 0, 0, 0, 0, 0, 0, 0]),
+        shuffled_question_logits=logits_from_preds([1, 0, 1, 0, 0, 1, 0, 1]),
+        random_label_logits=logits_from_preds([0, 1, 1, 0, 0, 1, 1, 0]),
+        single_concept_logits=logits_from_preds([0, 1, 0, 0, 1, 0, 0, 0]),
+        dense_noninteraction_logits=logits_from_preds([0, 1, 1, 1, 1, 0, 0, 0]),
+        answer_ids=answer_ids,
+        min_margin=0.20,
+    )
+    assert not tied.passes_controls, (
+        "A dense or probe control matching the PCD should fail the PCD-name claim."
+    )
+    print("All tests in `test_pcd_baseline_sweep_report_scores_all_controls` passed!")
+
+
+def test_targeted_concept_removal_report_scores_active_control(
+    targeted_concept_removal_report: Callable | None = None,
+):
+    targeted_concept_removal_report = (
+        targeted_concept_removal_report or _solutions().targeted_concept_removal_report
+    )
+    solutions = _solutions()
+    row_concepts = t.tensor([[1.0, 1.0]])
+    question_ids = t.tensor([0])
+    question_embeddings = t.tensor([[1.0, 0.0]])
+    decoder_weight = t.zeros(6, 2)
+    decoder_weight[0, 1] = 5.0
+    decoder_weight[1, 1] = 0.25
+    decoder_weight[4, 0] = 1.0
+    decoder_bias = t.tensor([1.5, -1.5])
+    report = targeted_concept_removal_report(
+        row_concepts,
+        question_ids,
+        question_embeddings,
+        decoder_weight,
+        decoder_bias,
+        prompts=("heldout latent card 00 / template 0",),
+        question_texts=("Is the hidden surface concept active?", "Is the hidden motion concept active?"),
+        concept_names=("surface", "motion"),
+        example_index=0,
+        question_id=0,
+        target_concept_id=0,
+        active_control_concept_id=1,
+    )
+    expected = solutions.TargetedConceptRemovalReport(
+        row_index=0,
+        prompt="heldout latent card 00 / template 0",
+        question="Is the hidden surface concept active?",
+        target_concept="surface",
+        active_control_concept="motion",
+        original_answer=1,
+        target_removed_answer=0,
+        active_control_removed_answer=1,
+        target_logit_delta=5.0,
+        active_control_logit_delta=0.25,
+        target_removal_changed=True,
+        active_control_changed=False,
+        active_control_does_less=True,
+    )
+    _assert_report_close(report, expected, msg="Targeted concept removal report")
+    try:
+        targeted_concept_removal_report(
+            row_concepts,
+            question_ids,
+            question_embeddings,
+            decoder_weight,
+            decoder_bias,
+            prompts=("heldout latent card 00 / template 0",),
+            question_texts=("Is the hidden surface concept active?", "Is the hidden motion concept active?"),
+            concept_names=("surface", "motion"),
+            example_index=0,
+            question_id=0,
+            target_concept_id=0,
+            active_control_concept_id=5,
+        )
+    except ValueError as exc:
+        assert "out of range" in str(exc), (
+            "Bad active-control ids should fail before a misleading removal chart is made."
+        )
+    else:
+        raise AssertionError("Out-of-range active-control concept ids should raise ValueError.")
+    print("All tests in `test_targeted_concept_removal_report_scores_active_control` passed!")
+
+
+def test_targeted_concept_removal_beats_active_control(
+    run_planted_pcd_experiment: Callable | None = None,
+):
+    run_planted_pcd_experiment = (
+        run_planted_pcd_experiment or _solutions().run_planted_pcd_experiment
+    )
+    result = run_planted_pcd_experiment(seed=0, steps=350, lr=0.08)
+    removal = result["removal_report"]
+    assert removal.target_concept == "surface" and removal.active_control_concept == "motion", (
+        "The removal case should name the target and matched active control concepts."
+    )
+    assert removal.target_removal_changed, (
+        "Removing the targeted concept should change the answer on the selected held-out row."
+    )
+    assert not removal.active_control_changed, (
+        "Removing a matched active non-target concept should preserve the answer."
+    )
+    assert removal.active_control_does_less, (
+        "The active control removal should damage the target logit less than targeted removal."
+    )
+    print("All tests in `test_targeted_concept_removal_beats_active_control` passed!")
+
+
+def test_gelu1l_prompt_prediction_table_uses_direct_rows_or_honest_aggregate(
+    gelu1l_prompt_prediction_table: Callable | None = None,
+):
+    gelu1l_prompt_prediction_table = (
+        gelu1l_prompt_prediction_table or _solutions().gelu1l_prompt_prediction_table
+    )
+    direct = {
+        "metrics": {
+            "gpu_test": {
+                "eval_prediction_rows": [
+                    {
+                        "prompt": "p",
+                        "question": "q",
+                        "answer": 1,
+                        "pcd_pred": 1,
+                    }
+                ]
+            }
+        }
+    }
+    assert gelu1l_prompt_prediction_table(direct) == direct["metrics"]["gpu_test"]["eval_prediction_rows"], (
+        "Fresh GPU reports with direct row logits should be returned unchanged."
+    )
+    aggregate = {
+        "metrics": {
+            "gpu_test": {
+                "pcd_accuracy": 1.0,
+                "pcd_row_count": 32,
+                "eval_example_count": 8,
+                "question_count": 4,
+                "preflight_passed": True,
+            }
+        }
+    }
+    rows = gelu1l_prompt_prediction_table(aggregate)
+    assert len(rows) == 32 and rows[0]["source"].startswith("aggregate_report"), (
+        "Older aggregate-only reports should be converted honestly and marked as aggregate-derived."
+    )
+    try:
+        bad_aggregate = {
+            "metrics": {
+                "gpu_test": {
+                    "pcd_accuracy": 0.875,
+                    "pcd_row_count": 32,
+                    "eval_example_count": 8,
+                    "question_count": 4,
+                    "preflight_passed": True,
+                }
+            }
+        }
+        gelu1l_prompt_prediction_table(bad_aggregate)
+    except ValueError as exc:
+        assert "aggregate PCD accuracy is 1.0" in str(exc), (
+            "The helper must not invent per-row correctness when aggregate accuracy is imperfect."
+        )
+    else:
+        raise AssertionError("Imperfect aggregate accuracy should raise ValueError.")
+    print(
+        "All tests in `test_gelu1l_prompt_prediction_table_uses_direct_rows_or_honest_aggregate` passed!"
+    )
+
+
 def test_notebook_contract(run_smoke_test: Callable | None = None):
     if run_smoke_test is None:
         run_smoke_test = _solutions().run_smoke_test
@@ -675,4 +1006,80 @@ def test_notebook_contract(run_smoke_test: Callable | None = None):
     assert result["audit"]["names_expected_cluster"], (
         "Notebook contract should include a concept-name audit."
     )
+    planted = result["planted"]
+    assert planted["train_examples"] == 32 and planted["heldout_examples"] == 32, (
+        "Notebook contract should start with a balanced planted train/held-out world."
+    )
+    assert planted["train_recovery_error"] < 1e-5 and planted["heldout_recovery_error"] < 1e-5, (
+        "Notebook contract should prove the toy concept bottleneck has exact ground truth."
+    )
+    assert planted["heatmap_shape"] == [4, 6], (
+        "Notebook contract should include a notebook-generated concept-question heatmap."
+    )
+    assert planted["baselines"]["pcd_accuracy"] == 1.0, (
+        "Notebook contract should expose the held-out PCD accuracy."
+    )
+    assert planted["baselines"]["passes_controls"], (
+        "Notebook contract should require the PCD to beat all listed controls."
+    )
+    assert planted["removal"]["target_removal_changed"], (
+        "Notebook contract should include targeted concept removal."
+    )
+    assert planted["removal"]["active_control_does_less"], (
+        "Notebook contract should include a matched active-control removal."
+    )
+    assert len(planted["prediction_rows_preview"]) > 0, (
+        "Notebook contract should expose held-out prediction rows, not only aggregate metrics."
+    )
     print("All tests in `test_notebook_contract` passed!")
+
+
+def test_solution_notebook_exposes_taught_implementations():
+    notebook_path = Path(__file__).with_name(
+        "7.5_Predictive_Concept_Decoders_solutions.ipynb"
+    )
+    notebook = json.loads(notebook_path.read_text())
+    markdown = "\n".join(
+        "".join(cell.get("source", ""))
+        if isinstance(cell.get("source", ""), list)
+        else cell.get("source", "")
+        for cell in notebook["cells"]
+        if cell.get("cell_type") == "markdown"
+    )
+    function_names: set[str] = set()
+    for cell in notebook["cells"]:
+        if cell.get("cell_type") != "code":
+            continue
+        source = cell.get("source", "")
+        if isinstance(source, list):
+            source = "".join(source)
+        tree = ast.parse(source)
+        function_names.update(
+            node.name for node in tree.body if isinstance(node, ast.FunctionDef)
+        )
+
+    required_functions = {
+        "make_planted_pcd_world",
+        "build_planted_question_rows",
+        "sparse_concept_encode",
+        "question_conditioned_concept_features",
+        "question_conditioned_decoder_logits",
+        "train_question_conditioned_decoder",
+        "pcd_baseline_sweep_report",
+        "targeted_concept_removal_report",
+        "run_planted_pcd_experiment",
+        "gelu1l_prompt_prediction_table",
+        "run_smoke_test",
+    }
+    missing = sorted(required_functions - function_names)
+    assert not missing, (
+        "The solution notebook must expose the taught implementations inline; "
+        f"missing {missing}."
+    )
+    assert "## Learning Objectives" in markdown
+    assert "## Signature Result" in markdown
+    assert "## Try It Yourself" in markdown
+    assert "<summary>Expected output</summary>" in markdown
+    assert "<summary>Solution</summary>" in markdown
+    assert "<summary>Help" in markdown
+    assert "<summary>Interpretation</summary>" in markdown

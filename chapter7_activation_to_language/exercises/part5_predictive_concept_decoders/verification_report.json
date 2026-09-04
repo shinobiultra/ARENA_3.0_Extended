@@ -102,9 +102,15 @@
   "claim_scope": "GT-3 Predictive Concept Decoder preflight: reusable toy question-batch, sparse encoding, question-conditioned decoder, baseline comparison, stability, removal, and concept-audit contracts are kept for learner exercises, then a pinned TransformerLens gelu-1l checkpoint is loaded on CUDA. The report builds signed sparse residual concepts from safe final-token activations, expands them into explicit concept-question interaction features, trains a tiny question-conditioned decoder on the train split, and evaluates four behavioral questions on held-out long-context prompts. It compares against trained question-agnostic sparse-concept, trained single-concept, and trained non-interaction activation+question baselines. It also checks concept sparsity, question-shuffle degradation, multi-seed top-concept stability, auditable top concept names, and active top-concept removal against a low-margin active-control removal. Legacy metric names still use random_removal for compatibility. This is a local PCD mechanics preflight, not a broad PCD benchmark or a full Activation Oracle comparison.",
   "datasets": [
     {
+      "claim_scope": "exact_planted_sparse_concept_world_with_balanced_template_controls",
+      "concept_count": 6,
+      "heldout_example_count": 32,
       "id": "7_5_predictive_concept_decoders_toy_inputs",
+      "pcd_row_count": 128,
+      "question_count": 4,
       "seed": 0,
-      "source": "generated"
+      "source": "generated",
+      "train_example_count": 32
     },
     {
       "concept_top_k": 4,
@@ -138,9 +144,9 @@
       "train_pcd_row_count": 48
     }
   ],
-  "date_run": "2026-07-02T12:43:11+00:00",
-  "evidence_level": "toy_pcd_contract_plus_pinned_transformerlens_trained_sparse_concept_decoder_preflight",
-  "git_commit": "3a539d48",
+  "date_run": "2026-09-04T07:04:42+00:00",
+  "evidence_level": "exact_planted_sparse_concept_pcd_contract_plus_pinned_transformerlens_trained_sparse_concept_decoder_preflight",
+  "git_commit": "6e61c49e",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-3",
   "known_failures": [],
@@ -162,6 +168,7 @@
         "concept_top_k",
         "conditioned_concept_shape",
         "eval_example_count",
+        "eval_prediction_rows",
         "hf_model_id",
         "hf_revision",
         "hook_name",
@@ -236,6 +243,328 @@
       "cuda_version": "13.2",
       "device": "NVIDIA GeForce RTX 5090 Laptop GPU",
       "eval_example_count": 8,
+      "eval_prediction_rows": [
+        {
+          "answer": 1,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "surface",
+          "pcd_pred": 1,
+          "probe_pred": 0,
+          "prompt": "Yesterday at home, the blanket lay on the",
+          "question": "Will the next token be the surface-associated token?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 0,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "surface",
+          "pcd_pred": 0,
+          "probe_pred": 0,
+          "prompt": "Yesterday at home, the blanket lay on the",
+          "question": "Will the next token be the motion-associated token?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 1,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "surface",
+          "pcd_pred": 1,
+          "probe_pred": 0,
+          "prompt": "Yesterday at home, the blanket lay on the",
+          "question": "Is the hidden state carrying a resting-surface concept?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 0,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "surface",
+          "pcd_pred": 0,
+          "probe_pred": 0,
+          "prompt": "Yesterday at home, the blanket lay on the",
+          "question": "Is the hidden state carrying a motion-or-airborne concept?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 1,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "surface",
+          "pcd_pred": 1,
+          "probe_pred": 0,
+          "prompt": "In the quiet room, the lamp sat on the",
+          "question": "Will the next token be the surface-associated token?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 0,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "surface",
+          "pcd_pred": 0,
+          "probe_pred": 0,
+          "prompt": "In the quiet room, the lamp sat on the",
+          "question": "Will the next token be the motion-associated token?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 1,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "surface",
+          "pcd_pred": 1,
+          "probe_pred": 0,
+          "prompt": "In the quiet room, the lamp sat on the",
+          "question": "Is the hidden state carrying a resting-surface concept?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 0,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "surface",
+          "pcd_pred": 0,
+          "probe_pred": 0,
+          "prompt": "In the quiet room, the lamp sat on the",
+          "question": "Is the hidden state carrying a motion-or-airborne concept?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 1,
+          "dense_noninteraction_pred": 1,
+          "latent_label": "surface",
+          "pcd_pred": 1,
+          "probe_pred": 0,
+          "prompt": "After dinner, the pillow rested on the",
+          "question": "Will the next token be the surface-associated token?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 0,
+          "dense_noninteraction_pred": 1,
+          "latent_label": "surface",
+          "pcd_pred": 0,
+          "probe_pred": 0,
+          "prompt": "After dinner, the pillow rested on the",
+          "question": "Will the next token be the motion-associated token?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 1,
+          "dense_noninteraction_pred": 1,
+          "latent_label": "surface",
+          "pcd_pred": 1,
+          "probe_pred": 0,
+          "prompt": "After dinner, the pillow rested on the",
+          "question": "Is the hidden state carrying a resting-surface concept?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 0,
+          "dense_noninteraction_pred": 1,
+          "latent_label": "surface",
+          "pcd_pred": 0,
+          "probe_pred": 0,
+          "prompt": "After dinner, the pillow rested on the",
+          "question": "Is the hidden state carrying a motion-or-airborne concept?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 1,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "surface",
+          "pcd_pred": 1,
+          "probe_pred": 0,
+          "prompt": "Near the window, the chair sat on the",
+          "question": "Will the next token be the surface-associated token?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 0,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "surface",
+          "pcd_pred": 0,
+          "probe_pred": 0,
+          "prompt": "Near the window, the chair sat on the",
+          "question": "Will the next token be the motion-associated token?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 1,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "surface",
+          "pcd_pred": 1,
+          "probe_pred": 0,
+          "prompt": "Near the window, the chair sat on the",
+          "question": "Is the hidden state carrying a resting-surface concept?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 0,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "surface",
+          "pcd_pred": 0,
+          "probe_pred": 0,
+          "prompt": "Near the window, the chair sat on the",
+          "question": "Is the hidden state carrying a motion-or-airborne concept?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 0,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "motion",
+          "pcd_pred": 0,
+          "probe_pred": 0,
+          "prompt": "At noon outside, the rocket launched into the",
+          "question": "Will the next token be the surface-associated token?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 1,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "motion",
+          "pcd_pred": 1,
+          "probe_pred": 0,
+          "prompt": "At noon outside, the rocket launched into the",
+          "question": "Will the next token be the motion-associated token?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 0,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "motion",
+          "pcd_pred": 0,
+          "probe_pred": 0,
+          "prompt": "At noon outside, the rocket launched into the",
+          "question": "Is the hidden state carrying a resting-surface concept?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 1,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "motion",
+          "pcd_pred": 1,
+          "probe_pred": 0,
+          "prompt": "At noon outside, the rocket launched into the",
+          "question": "Is the hidden state carrying a motion-or-airborne concept?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 0,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "motion",
+          "pcd_pred": 0,
+          "probe_pred": 0,
+          "prompt": "During the game, the ball flew over the",
+          "question": "Will the next token be the surface-associated token?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 1,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "motion",
+          "pcd_pred": 1,
+          "probe_pred": 0,
+          "prompt": "During the game, the ball flew over the",
+          "question": "Will the next token be the motion-associated token?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 0,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "motion",
+          "pcd_pred": 0,
+          "probe_pred": 0,
+          "prompt": "During the game, the ball flew over the",
+          "question": "Is the hidden state carrying a resting-surface concept?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 1,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "motion",
+          "pcd_pred": 1,
+          "probe_pred": 0,
+          "prompt": "During the game, the ball flew over the",
+          "question": "Is the hidden state carrying a motion-or-airborne concept?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 0,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "motion",
+          "pcd_pred": 0,
+          "probe_pred": 0,
+          "prompt": "On the hill, the kite floated above the",
+          "question": "Will the next token be the surface-associated token?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 1,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "motion",
+          "pcd_pred": 1,
+          "probe_pred": 0,
+          "prompt": "On the hill, the kite floated above the",
+          "question": "Will the next token be the motion-associated token?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 0,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "motion",
+          "pcd_pred": 0,
+          "probe_pred": 0,
+          "prompt": "On the hill, the kite floated above the",
+          "question": "Is the hidden state carrying a resting-surface concept?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 1,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "motion",
+          "pcd_pred": 1,
+          "probe_pred": 0,
+          "prompt": "On the hill, the kite floated above the",
+          "question": "Is the hidden state carrying a motion-or-airborne concept?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 0,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "motion",
+          "pcd_pred": 0,
+          "probe_pred": 0,
+          "prompt": "In the hallway, the train rushed through the",
+          "question": "Will the next token be the surface-associated token?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 1,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "motion",
+          "pcd_pred": 1,
+          "probe_pred": 0,
+          "prompt": "In the hallway, the train rushed through the",
+          "question": "Will the next token be the motion-associated token?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 0,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "motion",
+          "pcd_pred": 0,
+          "probe_pred": 0,
+          "prompt": "In the hallway, the train rushed through the",
+          "question": "Is the hidden state carrying a resting-surface concept?",
+          "single_concept_pred": 0
+        },
+        {
+          "answer": 1,
+          "dense_noninteraction_pred": 0,
+          "latent_label": "motion",
+          "pcd_pred": 1,
+          "probe_pred": 0,
+          "prompt": "In the hallway, the train rushed through the",
+          "question": "Is the hidden state carrying a motion-or-airborne concept?",
+          "single_concept_pred": 0
+        }
+      ],
       "full_path": "Pinned TransformerLens gelu-1l sparse-concept PCD preflight.",
       "gpu_total_memory_gb": 23.45965576171875,
       "hf_model_id": "NeelNanda/GELU_1L512W_C4_Code",
@@ -257,7 +586,7 @@
       "pcd_row_count": 32,
       "pcd_seed_count": 3,
       "pcd_seed_min_accuracy": 1.0,
-      "peak_vram_gb": 0.33971214294433594,
+      "peak_vram_gb": 0.30846214294433594,
       "positive_anchor_prompt": "The cat sat on the",
       "positive_token": " floor",
       "preflight_passed": true,
@@ -361,6 +690,178 @@
         ],
         "train_accuracy": 1.0
       },
+      "planted": {
+        "baseline_accuracies": [
+          1.0,
+          0.6875,
+          0.5,
+          0.5,
+          0.46875,
+          0.625,
+          0.6875
+        ],
+        "baseline_names": [
+          "PCD",
+          "question-agnostic probe",
+          "text/template shortcut",
+          "shuffled question",
+          "random label",
+          "single concept",
+          "dense non-interaction"
+        ],
+        "baselines": {
+          "best_control_accuracy": 0.6875,
+          "dense_noninteraction_accuracy": 0.6875,
+          "passes_controls": true,
+          "pcd_accuracy": 1.0,
+          "pcd_margin_over_best_control": 0.3125,
+          "question_agnostic_probe_accuracy": 0.6875,
+          "random_label_accuracy": 0.46875,
+          "shuffled_question_accuracy": 0.5,
+          "single_concept_accuracy": 0.625,
+          "text_template_shortcut_accuracy": 0.5
+        },
+        "concept_names": [
+          "surface",
+          "motion",
+          "red",
+          "animal",
+          "template_alpha",
+          "template_beta"
+        ],
+        "heatmap": [
+          [
+            10.926108360290527,
+            -0.04781191796064377,
+            -0.04781275987625122,
+            -0.047811977565288544,
+            -1.6402201652526855,
+            -1.6396064758300781
+          ],
+          [
+            -0.04763418808579445,
+            10.915958404541016,
+            -0.047633975744247437,
+            -0.047634307295084,
+            -1.6313128471374512,
+            -1.6306471824645996
+          ],
+          [
+            -0.017269186675548553,
+            -0.017269350588321686,
+            10.959833145141602,
+            -0.017270049080252647,
+            -1.632516622543335,
+            -1.6325230598449707
+          ],
+          [
+            -0.011878564022481441,
+            -0.011878551915287971,
+            -0.01187859009951353,
+            10.963179588317871,
+            -1.194885015487671,
+            -1.196580410003662
+          ]
+        ],
+        "heatmap_shape": [
+          4,
+          6
+        ],
+        "heldout_examples": 32,
+        "heldout_recovery_error": 2.384185791015625e-07,
+        "prediction_rows_preview": [
+          {
+            "answer": 0,
+            "dense_noninteraction_pred": 0,
+            "pcd_pred": 0,
+            "probe_pred": 0,
+            "prompt": "heldout latent card 00 / template 1",
+            "question": "Is the hidden surface concept active?",
+            "text_template_pred": 0
+          },
+          {
+            "answer": 0,
+            "dense_noninteraction_pred": 0,
+            "pcd_pred": 0,
+            "probe_pred": 0,
+            "prompt": "heldout latent card 00 / template 1",
+            "question": "Is the hidden motion concept active?",
+            "text_template_pred": 1
+          },
+          {
+            "answer": 0,
+            "dense_noninteraction_pred": 0,
+            "pcd_pred": 0,
+            "probe_pred": 0,
+            "prompt": "heldout latent card 00 / template 1",
+            "question": "Is the hidden red concept active?",
+            "text_template_pred": 0
+          },
+          {
+            "answer": 0,
+            "dense_noninteraction_pred": 0,
+            "pcd_pred": 0,
+            "probe_pred": 0,
+            "prompt": "heldout latent card 00 / template 1",
+            "question": "Is the hidden animal concept active?",
+            "text_template_pred": 0
+          },
+          {
+            "answer": 0,
+            "dense_noninteraction_pred": 0,
+            "pcd_pred": 0,
+            "probe_pred": 0,
+            "prompt": "heldout latent card 01 / template 2",
+            "question": "Is the hidden surface concept active?",
+            "text_template_pred": 1
+          },
+          {
+            "answer": 0,
+            "dense_noninteraction_pred": 0,
+            "pcd_pred": 0,
+            "probe_pred": 0,
+            "prompt": "heldout latent card 01 / template 2",
+            "question": "Is the hidden motion concept active?",
+            "text_template_pred": 1
+          },
+          {
+            "answer": 0,
+            "dense_noninteraction_pred": 0,
+            "pcd_pred": 0,
+            "probe_pred": 0,
+            "prompt": "heldout latent card 01 / template 2",
+            "question": "Is the hidden red concept active?",
+            "text_template_pred": 1
+          },
+          {
+            "answer": 0,
+            "dense_noninteraction_pred": 0,
+            "pcd_pred": 0,
+            "probe_pred": 0,
+            "prompt": "heldout latent card 01 / template 2",
+            "question": "Is the hidden animal concept active?",
+            "text_template_pred": 1
+          }
+        ],
+        "question_count": 4,
+        "removal": {
+          "active_control_changed": false,
+          "active_control_concept": "motion",
+          "active_control_does_less": true,
+          "active_control_logit_delta": -0.0273284912109375,
+          "active_control_removed_answer": 1,
+          "original_answer": 1,
+          "prompt": "heldout latent card 30 / template 1",
+          "question": "Is the hidden surface concept active?",
+          "row_index": 120,
+          "target_concept": "surface",
+          "target_logit_delta": 5.451663970947266,
+          "target_removal_changed": true,
+          "target_removed_answer": 0
+        },
+        "train_examples": 32,
+        "train_recovery_error": 2.384185791015625e-07
+      },
       "removal": {
         "original_answer": 0,
         "random_removal_changed": false,
@@ -446,10 +947,10 @@
   "ood_tests": {
     "declared": "required_where_applicable"
   },
-  "peak_vram_gb": 0.33971214294433594,
+  "peak_vram_gb": 0.30846214294433594,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "e27d86d627bd7e4acc43a9c7c926ca2ccc567b044edd27f7ad1076783ee2f9db",
+    "combined_sha256": "dbf1ad304f373019af8ec369d2c26c200602082c6f023d195a9a76e4a7a6850c",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -458,13 +959,13 @@
       },
       {
         "path": "chapter7_activation_to_language/exercises/part5_predictive_concept_decoders/7.5_Predictive_Concept_Decoders_exercises.ipynb",
-        "sha256": "04588ae89e5aab6e6dc44a7bb3d465b0d82ce9775c1af986e2d18618e448046c",
-        "size_bytes": 21325
+        "sha256": "d5fee845324df488b8e0fae3ffbe1244abe10c5329bb953c59383d3ec6399a7f",
+        "size_bytes": 84907
       },
       {
         "path": "chapter7_activation_to_language/exercises/part5_predictive_concept_decoders/7.5_Predictive_Concept_Decoders_solutions.ipynb",
-        "sha256": "57bbbe4a4627e4af007097c20345cebab33d10327d726e64f5b4f1914f999394",
-        "size_bytes": 11484
+        "sha256": "bccbf18138de396060fc8fa560a8347def5ec676212367dbb17fcd4eeedd80a6",
+        "size_bytes": 254420
       },
       {
         "path": "chapter7_activation_to_language/exercises/part5_predictive_concept_decoders/README.md",
@@ -473,8 +974,8 @@
       },
       {
         "path": "chapter7_activation_to_language/exercises/part5_predictive_concept_decoders/artifacts.lock.yml",
-        "sha256": "2a693665963e8e561b502b96f20bcc3f52b82885a28444a5ef50958a6bf033c4",
-        "size_bytes": 5771
+        "sha256": "a5bd3d7f1384101f8e660cb035e3fd2426ef7327b810c8f5cbd8d80df65180db",
+        "size_bytes": 6020
       },
       {
         "path": "chapter7_activation_to_language/exercises/part5_predictive_concept_decoders/expected_outputs/README.md",
@@ -483,23 +984,23 @@
       },
       {
         "path": "chapter7_activation_to_language/exercises/part5_predictive_concept_decoders/expected_outputs/reference_metrics.json",
-        "sha256": "4fdd6afff97350087b32e753796dae3d808d0102a3804c82e8d694ef0cb1aa30",
-        "size_bytes": 2181
+        "sha256": "15d84abf29a61d391841721cfef9f8c32d3cbdb9d2ddc81143dca437f110794a",
+        "size_bytes": 6937
       },
       {
         "path": "chapter7_activation_to_language/exercises/part5_predictive_concept_decoders/expected_outputs/smoke_test.json",
-        "sha256": "0f81b332d3cd8e6df931e6dae9674bb88fa2490bd3097e7a924c14204f657a26",
-        "size_bytes": 293
+        "sha256": "4580555a436b731aef4f80aa2a100527425492ad29fa4b82d38876f1531b56b3",
+        "size_bytes": 718
       },
       {
         "path": "chapter7_activation_to_language/exercises/part5_predictive_concept_decoders/solutions.py",
-        "sha256": "2fdc6827a51aa78334f00f99cfc1fca8a97e44d6cf95c20cd88f07c17244054c",
-        "size_bytes": 42100
+        "sha256": "50f258dc0c46514e47fd11b1b282765412b039f35bae069015cb1d5c15c8a2c8",
+        "size_bytes": 69460
       },
       {
         "path": "chapter7_activation_to_language/exercises/part5_predictive_concept_decoders/tests.py",
-        "sha256": "1b128ceae2da969382f1bc01a24c19fb3aab6fbd423ba690d412af34b09955e9",
-        "size_bytes": 26629
+        "sha256": "edb069f42ec5eadb4a16b59c2977747bb0410218d96623d3783e8fcf41c702d4",
+        "size_bytes": 44282
       },
       {
         "path": "chapter7_activation_to_language/exercises/part5_predictive_concept_decoders/utils.py",
@@ -513,8 +1014,8 @@
       },
       {
         "path": "chapter7_activation_to_language/instructions/pages/05_[7.5]_Predictive_Concept_Decoders.md",
-        "sha256": "c61039ddf11922fac27ee39ce61cb9285645c01a1b2d31b8a1cea3c8d9d8575c",
-        "size_bytes": 43630
+        "sha256": "c0147964930956cf13e491afecd3ad08c4972b244ce797a27657a9ad051077ae",
+        "size_bytes": 36184
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
@@ -529,5 +1030,5 @@
     "The real-model path uses safe generic prompts and cached activations/logits from a small public TransformerLens checkpoint. It does not use unsafe prompts, gated weights, generated completions, adapter training, external API calls, or full Activation Oracle comparisons."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 3.803255
+  "wall_clock_seconds": 14.220433
 }

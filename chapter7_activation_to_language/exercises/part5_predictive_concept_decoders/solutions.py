@@ -57,6 +57,21 @@ TL_PCD_QUESTIONS = (
     "Is the hidden state carrying a resting-surface concept?",
     "Is the hidden state carrying a motion-or-airborne concept?",
 )
+PLANTED_PCD_QUESTIONS = (
+    "Is the hidden surface concept active?",
+    "Is the hidden motion concept active?",
+    "Is the hidden red concept active?",
+    "Is the hidden animal concept active?",
+)
+PLANTED_CONCEPT_NAMES = (
+    "surface",
+    "motion",
+    "red",
+    "animal",
+    "template_alpha",
+    "template_beta",
+)
+PLANTED_QUESTION_TO_CONCEPT = (0, 1, 2, 3)
 
 
 # %%
@@ -119,6 +134,52 @@ class DecoderTrainingReport:
     train_accuracy: float
     steps: int
     seed: int
+
+
+@dataclass(frozen=True)
+class PlantedPCDWorld:
+    train_activations: t.Tensor
+    heldout_activations: t.Tensor
+    train_true_concepts: t.Tensor
+    heldout_true_concepts: t.Tensor
+    concept_directions: t.Tensor
+    train_template_ids: t.Tensor
+    heldout_template_ids: t.Tensor
+    question_texts: tuple[str, ...]
+    concept_names: tuple[str, ...]
+    train_prompts: tuple[str, ...]
+    heldout_prompts: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class PCDBaselineSweepReport:
+    pcd_accuracy: float
+    question_agnostic_probe_accuracy: float
+    text_template_shortcut_accuracy: float
+    shuffled_question_accuracy: float
+    random_label_accuracy: float
+    single_concept_accuracy: float
+    dense_noninteraction_accuracy: float
+    best_control_accuracy: float
+    pcd_margin_over_best_control: float
+    passes_controls: bool
+
+
+@dataclass(frozen=True)
+class TargetedConceptRemovalReport:
+    row_index: int
+    prompt: str
+    question: str
+    target_concept: str
+    active_control_concept: str
+    original_answer: int
+    target_removed_answer: int
+    active_control_removed_answer: int
+    target_logit_delta: float
+    active_control_logit_delta: float
+    target_removal_changed: bool
+    active_control_changed: bool
+    active_control_does_less: bool
 
 
 def _prediction_accuracy(logits: t.Tensor, labels: t.Tensor) -> float:
@@ -488,6 +549,617 @@ def concept_audit_report(
     )
 
 
+def _dense_orthonormal_columns(
+    *,
+    d_model: int,
+    columns: int,
+    seed: int,
+) -> t.Tensor:
+    if d_model < columns:
+        raise ValueError("d_model must be at least as large as the requested column count.")
+    generator = t.Generator(device="cpu").manual_seed(seed)
+    matrix = t.randn(d_model, d_model, generator=generator)
+    q, _r = t.linalg.qr(matrix)
+    return q[:, :columns].float()
+
+
+def make_planted_pcd_world(
+    *,
+    seed: int = 0,
+    d_model: int = 12,
+) -> PlantedPCDWorld:
+    """Create an exact sparse-concept world with dense-looking activations."""
+
+    question_count = len(PLANTED_PCD_QUESTIONS)
+    target_concept_count = len(PLANTED_QUESTION_TO_CONCEPT)
+    concept_count = len(PLANTED_CONCEPT_NAMES)
+    if d_model < concept_count + 2:
+        raise ValueError("d_model must leave room for planted concepts and null directions.")
+
+    rows = []
+    for index in range(2**target_concept_count):
+        rows.append([(index >> bit) & 1 for bit in range(target_concept_count)])
+    base_targets = t.tensor(rows, dtype=t.float32).repeat_interleave(2, dim=0)
+    replicate_ids = t.arange(base_targets.shape[0]) % 2
+
+    concept_basis = _dense_orthonormal_columns(
+        d_model=d_model,
+        columns=concept_count + 2,
+        seed=seed,
+    )
+    concept_directions = concept_basis[:, :concept_count]
+    null_directions = concept_basis[:, concept_count : concept_count + 2]
+
+    def build_split(split_name: str, offset: int) -> tuple[t.Tensor, t.Tensor, t.Tensor, tuple[str, ...]]:
+        template_ids = (replicate_ids + offset) % question_count
+        nuisance = t.stack(
+            [
+                replicate_ids.float(),
+                1.0 - replicate_ids.float(),
+            ],
+            dim=1,
+        )
+        concepts = t.cat([base_targets, nuisance], dim=1)
+        null_features = t.stack(
+            [
+                ((t.arange(base_targets.shape[0]) + offset) % 5).float() / 10.0,
+                ((t.arange(base_targets.shape[0]) * 2 + offset) % 7).float() / 10.0,
+            ],
+            dim=1,
+        )
+        activations = concepts @ concept_directions.T + 0.1 * null_features @ null_directions.T
+        prompts = tuple(
+            f"{split_name} latent card {i:02d} / template {int(template_id.item())}"
+            for i, template_id in enumerate(template_ids)
+        )
+        return activations.float(), concepts.float(), template_ids.long(), prompts
+
+    train_activations, train_concepts, train_templates, train_prompts = build_split(
+        "train",
+        offset=0,
+    )
+    heldout_activations, heldout_concepts, heldout_templates, heldout_prompts = build_split(
+        "heldout",
+        offset=1,
+    )
+
+    recovered_train = train_activations @ concept_directions
+    recovered_heldout = heldout_activations @ concept_directions
+    if not t.allclose(recovered_train, train_concepts, atol=1e-5, rtol=1e-5):
+        raise RuntimeError("planted train concepts are not exactly recoverable.")
+    if not t.allclose(recovered_heldout, heldout_concepts, atol=1e-5, rtol=1e-5):
+        raise RuntimeError("planted held-out concepts are not exactly recoverable.")
+
+    return PlantedPCDWorld(
+        train_activations=train_activations,
+        heldout_activations=heldout_activations,
+        train_true_concepts=train_concepts,
+        heldout_true_concepts=heldout_concepts,
+        concept_directions=concept_directions,
+        train_template_ids=train_templates,
+        heldout_template_ids=heldout_templates,
+        question_texts=PLANTED_PCD_QUESTIONS,
+        concept_names=PLANTED_CONCEPT_NAMES,
+        train_prompts=train_prompts,
+        heldout_prompts=heldout_prompts,
+    )
+
+
+def build_planted_question_rows(
+    concepts: t.Tensor,
+    *,
+    question_to_concept: tuple[int, ...] = PLANTED_QUESTION_TO_CONCEPT,
+) -> tuple[t.Tensor, t.Tensor, t.Tensor, t.Tensor]:
+    """Repeat concept rows under each question and label with the planted answer."""
+
+    if concepts.ndim != 2:
+        raise ValueError("concepts must have shape (examples, n_concepts).")
+    if concepts.shape[0] == 0 or concepts.shape[1] == 0:
+        raise ValueError("concepts must be nonempty.")
+    if len(question_to_concept) == 0:
+        raise ValueError("question_to_concept must be nonempty.")
+    if min(question_to_concept) < 0 or max(question_to_concept) >= concepts.shape[1]:
+        raise ValueError("question_to_concept must index concept columns.")
+
+    question_count = len(question_to_concept)
+    row_concepts = concepts.repeat_interleave(question_count, dim=0).float()
+    question_ids = t.arange(question_count, device=concepts.device).repeat(concepts.shape[0])
+    question_embeddings = t.eye(question_count, device=concepts.device).repeat(concepts.shape[0], 1)
+    answer_matrix = concepts[:, list(question_to_concept)].round().long().clamp(0, 1)
+    answer_ids = answer_matrix.reshape(-1)
+    return row_concepts, question_embeddings, question_ids.long(), answer_ids.long()
+
+
+def _fit_eval_decoder(
+    train_features: t.Tensor,
+    train_questions: t.Tensor,
+    train_answers: t.Tensor,
+    heldout_features: t.Tensor,
+    heldout_questions: t.Tensor,
+    *,
+    steps: int,
+    lr: float,
+    seed: int,
+    weight_decay: float = 0.0,
+) -> tuple[t.Tensor, t.Tensor, DecoderTrainingReport, t.Tensor]:
+    decoder_weight, decoder_bias, report = train_question_conditioned_decoder(
+        train_features,
+        train_questions,
+        train_answers,
+        steps=steps,
+        lr=lr,
+        seed=seed,
+        weight_decay=weight_decay,
+    )
+    heldout_logits = question_conditioned_decoder_logits(
+        heldout_features,
+        heldout_questions,
+        decoder_weight,
+        decoder_bias=decoder_bias,
+    )
+    return decoder_weight, decoder_bias, report, heldout_logits
+
+
+def _template_features(template_ids: t.Tensor, *, question_count: int) -> t.Tensor:
+    if template_ids.ndim != 1:
+        raise ValueError("template_ids must have shape (examples,).")
+    repeated_templates = template_ids.long().repeat_interleave(question_count)
+    return F.one_hot(repeated_templates, num_classes=question_count).float()
+
+
+def concept_question_weight_heatmap(
+    decoder_weight: t.Tensor,
+    *,
+    question_count: int,
+    concept_count: int,
+) -> t.Tensor:
+    """Return class-1 minus class-0 interaction weights as [question, concept]."""
+
+    if decoder_weight.ndim != 2 or decoder_weight.shape[1] < 2:
+        raise ValueError("decoder_weight must have shape (features, at least two classes).")
+    interaction_width = question_count * concept_count
+    if decoder_weight.shape[0] < interaction_width:
+        raise ValueError("decoder_weight is too narrow for the requested interaction map.")
+    weights = decoder_weight[:interaction_width, 1] - decoder_weight[:interaction_width, 0]
+    return weights.reshape(question_count, concept_count)
+
+
+def pcd_baseline_sweep_report(
+    *,
+    pcd_logits: t.Tensor,
+    question_agnostic_probe_logits: t.Tensor,
+    text_template_shortcut_logits: t.Tensor,
+    shuffled_question_logits: t.Tensor,
+    random_label_logits: t.Tensor,
+    single_concept_logits: t.Tensor,
+    dense_noninteraction_logits: t.Tensor,
+    answer_ids: t.Tensor,
+    min_margin: float = 0.20,
+) -> PCDBaselineSweepReport:
+    """Score the PCD and every control from independent logits."""
+
+    pcd_accuracy = _prediction_accuracy(pcd_logits, answer_ids)
+    probe_accuracy = _prediction_accuracy(question_agnostic_probe_logits, answer_ids)
+    text_accuracy = _prediction_accuracy(text_template_shortcut_logits, answer_ids)
+    shuffled_accuracy = _prediction_accuracy(shuffled_question_logits, answer_ids)
+    random_label_accuracy = _prediction_accuracy(random_label_logits, answer_ids)
+    single_concept_accuracy = _prediction_accuracy(single_concept_logits, answer_ids)
+    dense_accuracy = _prediction_accuracy(dense_noninteraction_logits, answer_ids)
+    best_control = max(
+        probe_accuracy,
+        text_accuracy,
+        shuffled_accuracy,
+        random_label_accuracy,
+        single_concept_accuracy,
+        dense_accuracy,
+    )
+    margin = pcd_accuracy - best_control
+    return PCDBaselineSweepReport(
+        pcd_accuracy=pcd_accuracy,
+        question_agnostic_probe_accuracy=probe_accuracy,
+        text_template_shortcut_accuracy=text_accuracy,
+        shuffled_question_accuracy=shuffled_accuracy,
+        random_label_accuracy=random_label_accuracy,
+        single_concept_accuracy=single_concept_accuracy,
+        dense_noninteraction_accuracy=dense_accuracy,
+        best_control_accuracy=best_control,
+        pcd_margin_over_best_control=margin,
+        passes_controls=pcd_accuracy == 1.0 and margin >= min_margin,
+    )
+
+
+def targeted_concept_removal_report(
+    row_concepts: t.Tensor,
+    question_ids: t.Tensor,
+    question_embeddings: t.Tensor,
+    decoder_weight: t.Tensor,
+    decoder_bias: t.Tensor,
+    *,
+    prompts: tuple[str, ...],
+    question_texts: tuple[str, ...],
+    concept_names: tuple[str, ...],
+    example_index: int,
+    question_id: int,
+    target_concept_id: int,
+    active_control_concept_id: int,
+) -> TargetedConceptRemovalReport:
+    """Remove the named concept and compare against a matched active control concept."""
+
+    question_count = len(question_texts)
+    n_concepts = len(concept_names)
+    row_index = example_index * question_count + question_id
+    if row_concepts.ndim != 2:
+        raise ValueError("row_concepts must have shape (rows, concepts).")
+    if row_index < 0 or row_index >= row_concepts.shape[0]:
+        raise ValueError("requested removal row is out of range.")
+    if row_concepts.shape[1] != n_concepts:
+        raise ValueError("row_concepts width must match concept_names.")
+    if not 0 <= target_concept_id < n_concepts:
+        raise ValueError("target_concept_id is out of range.")
+    if not 0 <= active_control_concept_id < n_concepts:
+        raise ValueError("active_control_concept_id is out of range.")
+    if row_concepts[row_index, target_concept_id].item() <= 0:
+        raise ValueError("target concept must be active in the selected row.")
+    if row_concepts[row_index, active_control_concept_id].item() <= 0:
+        raise ValueError("active control concept must be active in the selected row.")
+
+    def logits_after_removal(concept_id: int | None) -> t.Tensor:
+        patched = row_concepts[row_index : row_index + 1].clone()
+        if concept_id is not None:
+            patched[0, concept_id] = 0.0
+        features = question_conditioned_concept_features(
+            patched,
+            question_ids[row_index : row_index + 1],
+            question_count,
+        )
+        return question_conditioned_decoder_logits(
+            features,
+            question_embeddings[row_index : row_index + 1],
+            decoder_weight,
+            decoder_bias=decoder_bias,
+        )[0]
+
+    original_logits = logits_after_removal(None)
+    target_removed_logits = logits_after_removal(target_concept_id)
+    active_removed_logits = logits_after_removal(active_control_concept_id)
+    original_answer = int(original_logits.argmax().item())
+    target_removed_answer = int(target_removed_logits.argmax().item())
+    active_removed_answer = int(active_removed_logits.argmax().item())
+    target_delta = original_logits[original_answer] - target_removed_logits[original_answer]
+    active_delta = original_logits[original_answer] - active_removed_logits[original_answer]
+    return TargetedConceptRemovalReport(
+        row_index=row_index,
+        prompt=prompts[example_index],
+        question=question_texts[question_id],
+        target_concept=concept_names[target_concept_id],
+        active_control_concept=concept_names[active_control_concept_id],
+        original_answer=original_answer,
+        target_removed_answer=target_removed_answer,
+        active_control_removed_answer=active_removed_answer,
+        target_logit_delta=float(target_delta.item()),
+        active_control_logit_delta=float(active_delta.item()),
+        target_removal_changed=original_answer != target_removed_answer,
+        active_control_changed=original_answer != active_removed_answer,
+        active_control_does_less=abs(float(active_delta.item())) < abs(float(target_delta.item())),
+    )
+
+
+def run_planted_pcd_experiment(
+    *,
+    seed: int = 0,
+    steps: int = 450,
+    lr: float = 0.08,
+) -> dict:
+    """Train/evaluate PCD and controls on the exact planted sparse-concept world."""
+
+    world = make_planted_pcd_world(seed=seed)
+    train_encoded = sparse_concept_encode(
+        world.train_activations,
+        world.concept_directions,
+        threshold=0.5,
+    )
+    heldout_encoded = sparse_concept_encode(
+        world.heldout_activations,
+        world.concept_directions,
+        threshold=0.5,
+    )
+    train_recovery_error = float((train_encoded - world.train_true_concepts).abs().max().item())
+    heldout_recovery_error = float((heldout_encoded - world.heldout_true_concepts).abs().max().item())
+
+    train_rows, train_questions, train_question_ids, train_answers = build_planted_question_rows(
+        train_encoded,
+    )
+    heldout_rows, heldout_questions, heldout_question_ids, heldout_answers = (
+        build_planted_question_rows(heldout_encoded)
+    )
+    question_count = len(world.question_texts)
+    concept_count = len(world.concept_names)
+
+    train_features = question_conditioned_concept_features(
+        train_rows,
+        train_question_ids,
+        question_count,
+    )
+    heldout_features = question_conditioned_concept_features(
+        heldout_rows,
+        heldout_question_ids,
+        question_count,
+    )
+    decoder_weight, decoder_bias, pcd_training, pcd_logits = _fit_eval_decoder(
+        train_features,
+        train_questions,
+        train_answers,
+        heldout_features,
+        heldout_questions,
+        steps=steps,
+        lr=lr,
+        seed=seed,
+    )
+
+    zero_train_questions = t.zeros(train_rows.shape[0], 0)
+    zero_heldout_questions = t.zeros(heldout_rows.shape[0], 0)
+    _probe_weight, _probe_bias, probe_training, probe_logits = _fit_eval_decoder(
+        train_rows,
+        zero_train_questions,
+        train_answers,
+        heldout_rows,
+        zero_heldout_questions,
+        steps=steps,
+        lr=lr,
+        seed=seed + 1,
+    )
+
+    train_template_features = _template_features(world.train_template_ids, question_count=question_count)
+    heldout_template_features = _template_features(world.heldout_template_ids, question_count=question_count)
+    _text_weight, _text_bias, text_training, text_logits = _fit_eval_decoder(
+        train_template_features,
+        train_questions,
+        train_answers,
+        heldout_template_features,
+        heldout_questions,
+        steps=steps,
+        lr=lr,
+        seed=seed + 2,
+    )
+
+    shuffled_question_ids = heldout_question_ids.roll(shifts=1, dims=0)
+    shuffled_questions = heldout_questions.roll(shifts=1, dims=0)
+    shuffled_features = question_conditioned_concept_features(
+        heldout_rows,
+        shuffled_question_ids,
+        question_count,
+    )
+    shuffled_logits = question_conditioned_decoder_logits(
+        shuffled_features,
+        shuffled_questions,
+        decoder_weight,
+        decoder_bias=decoder_bias,
+    )
+
+    generator = t.Generator(device="cpu").manual_seed(seed + 3)
+    random_train_answers = train_answers[t.randperm(train_answers.numel(), generator=generator)]
+    _rand_weight, _rand_bias, random_training, random_label_logits = _fit_eval_decoder(
+        train_features,
+        train_questions,
+        random_train_answers,
+        heldout_features,
+        heldout_questions,
+        steps=steps,
+        lr=lr,
+        seed=seed + 3,
+    )
+
+    single_train_features = question_conditioned_concept_features(
+        train_rows[:, :1],
+        train_question_ids,
+        question_count,
+    )
+    single_heldout_features = question_conditioned_concept_features(
+        heldout_rows[:, :1],
+        heldout_question_ids,
+        question_count,
+    )
+    _single_weight, _single_bias, single_training, single_logits = _fit_eval_decoder(
+        single_train_features,
+        train_questions,
+        train_answers,
+        single_heldout_features,
+        heldout_questions,
+        steps=steps,
+        lr=lr,
+        seed=seed + 4,
+    )
+
+    train_dense_rows = world.train_activations.repeat_interleave(question_count, dim=0)
+    heldout_dense_rows = world.heldout_activations.repeat_interleave(question_count, dim=0)
+    _dense_weight, _dense_bias, dense_training, dense_logits = _fit_eval_decoder(
+        train_dense_rows,
+        train_questions,
+        train_answers,
+        heldout_dense_rows,
+        heldout_questions,
+        steps=steps,
+        lr=lr,
+        seed=seed + 5,
+    )
+
+    baseline_report = pcd_baseline_sweep_report(
+        pcd_logits=pcd_logits,
+        question_agnostic_probe_logits=probe_logits,
+        text_template_shortcut_logits=text_logits,
+        shuffled_question_logits=shuffled_logits,
+        random_label_logits=random_label_logits,
+        single_concept_logits=single_logits,
+        dense_noninteraction_logits=dense_logits,
+        answer_ids=heldout_answers,
+    )
+    heatmap = concept_question_weight_heatmap(
+        decoder_weight,
+        question_count=question_count,
+        concept_count=concept_count,
+    )
+    removal_example_index = int(
+        (heldout_encoded[:, : len(PLANTED_QUESTION_TO_CONCEPT)] > 0).all(dim=1).nonzero()[0].item()
+    )
+    removal = targeted_concept_removal_report(
+        heldout_rows,
+        heldout_question_ids,
+        heldout_questions,
+        decoder_weight,
+        decoder_bias,
+        prompts=world.heldout_prompts,
+        question_texts=world.question_texts,
+        concept_names=world.concept_names,
+        example_index=removal_example_index,
+        question_id=0,
+        target_concept_id=0,
+        active_control_concept_id=1,
+    )
+    baseline_names = (
+        "PCD",
+        "question-agnostic probe",
+        "text/template shortcut",
+        "shuffled question",
+        "random label",
+        "single concept",
+        "dense non-interaction",
+    )
+    baseline_accuracies = (
+        baseline_report.pcd_accuracy,
+        baseline_report.question_agnostic_probe_accuracy,
+        baseline_report.text_template_shortcut_accuracy,
+        baseline_report.shuffled_question_accuracy,
+        baseline_report.random_label_accuracy,
+        baseline_report.single_concept_accuracy,
+        baseline_report.dense_noninteraction_accuracy,
+    )
+    prediction_rows = planted_prediction_rows(
+        world,
+        heldout_answers=heldout_answers,
+        pcd_logits=pcd_logits,
+        probe_logits=probe_logits,
+        text_template_logits=text_logits,
+        dense_noninteraction_logits=dense_logits,
+    )
+    return {
+        "world": world,
+        "train_encoded": train_encoded,
+        "heldout_encoded": heldout_encoded,
+        "train_recovery_error": train_recovery_error,
+        "heldout_recovery_error": heldout_recovery_error,
+        "train_rows": train_rows,
+        "heldout_rows": heldout_rows,
+        "train_question_ids": train_question_ids,
+        "heldout_question_ids": heldout_question_ids,
+        "train_questions": train_questions,
+        "heldout_questions": heldout_questions,
+        "train_answers": train_answers,
+        "heldout_answers": heldout_answers,
+        "decoder_weight": decoder_weight,
+        "decoder_bias": decoder_bias,
+        "pcd_training": pcd_training,
+        "probe_training": probe_training,
+        "text_training": text_training,
+        "random_training": random_training,
+        "single_training": single_training,
+        "dense_training": dense_training,
+        "pcd_logits": pcd_logits,
+        "probe_logits": probe_logits,
+        "text_template_logits": text_logits,
+        "shuffled_question_logits": shuffled_logits,
+        "random_label_logits": random_label_logits,
+        "single_concept_logits": single_logits,
+        "dense_noninteraction_logits": dense_logits,
+        "baseline_report": baseline_report,
+        "baseline_names": baseline_names,
+        "baseline_accuracies": baseline_accuracies,
+        "heatmap": heatmap,
+        "removal_report": removal,
+        "prediction_rows": prediction_rows,
+    }
+
+
+def planted_prediction_rows(
+    world: PlantedPCDWorld,
+    *,
+    heldout_answers: t.Tensor,
+    pcd_logits: t.Tensor,
+    probe_logits: t.Tensor,
+    text_template_logits: t.Tensor,
+    dense_noninteraction_logits: t.Tensor,
+) -> list[dict[str, object]]:
+    """Create a learner-facing held-out table for the planted world."""
+
+    question_count = len(world.question_texts)
+    rows: list[dict[str, object]] = []
+    pcd_preds = pcd_logits.argmax(dim=-1)
+    probe_preds = probe_logits.argmax(dim=-1)
+    text_preds = text_template_logits.argmax(dim=-1)
+    dense_preds = dense_noninteraction_logits.argmax(dim=-1)
+    for row_index, answer in enumerate(heldout_answers.tolist()):
+        example_index = row_index // question_count
+        question_id = row_index % question_count
+        rows.append(
+            {
+                "prompt": world.heldout_prompts[example_index],
+                "question": world.question_texts[question_id],
+                "answer": int(answer),
+                "pcd_pred": int(pcd_preds[row_index].item()),
+                "probe_pred": int(probe_preds[row_index].item()),
+                "text_template_pred": int(text_preds[row_index].item()),
+                "dense_noninteraction_pred": int(dense_preds[row_index].item()),
+            }
+        )
+    return rows
+
+
+def gelu1l_prompt_prediction_table(report: dict) -> list[dict[str, object]]:
+    """Extract direct gelu-1l rows when present; otherwise make an honest aggregate table."""
+
+    metrics = report.get("metrics", {}).get("gpu_test", report)
+    direct_rows = metrics.get("eval_prediction_rows")
+    if direct_rows is not None:
+        return list(direct_rows)
+
+    required = {
+        "pcd_accuracy",
+        "pcd_row_count",
+        "eval_example_count",
+        "question_count",
+        "preflight_passed",
+    }
+    missing = sorted(key for key in required if key not in metrics)
+    if missing:
+        raise ValueError(f"report is missing required aggregate fields: {missing}")
+    if metrics["eval_example_count"] != len(TL_EVAL_EXAMPLES):
+        raise ValueError("aggregate report eval count does not match the pinned prompt list.")
+    if metrics["question_count"] != len(TL_PCD_QUESTIONS):
+        raise ValueError("aggregate report question count does not match the pinned question bank.")
+    if metrics["pcd_row_count"] != len(TL_EVAL_EXAMPLES) * len(TL_PCD_QUESTIONS):
+        raise ValueError("aggregate report row count does not match prompts times questions.")
+    if metrics["pcd_accuracy"] != 1.0:
+        raise ValueError("cannot infer per-row PCD correctness unless aggregate PCD accuracy is 1.0.")
+
+    rows = []
+    for prompt_index, (prompt, label) in enumerate(TL_EVAL_EXAMPLES):
+        for question_id, question in enumerate(TL_PCD_QUESTIONS):
+            answer = int(
+                (question_id in (0, 2) and label == "surface")
+                or (question_id in (1, 3) and label == "motion")
+            )
+            rows.append(
+                {
+                    "prompt": prompt,
+                    "latent_label": label,
+                    "question": question,
+                    "answer": answer,
+                    "pcd_pred": answer,
+                    "source": "aggregate_report_pcd_accuracy_1.0_no_baseline_row_logits",
+                }
+            )
+    return rows
+
+
 def batch_smoke_test() -> dict:
     activations = t.eye(4)
     question_ids = t.tensor([0, 1, 2, 3])
@@ -612,6 +1284,9 @@ def audit_smoke_test() -> dict:
 
 def run_smoke_test(cpu: bool = True) -> dict:
     _ = cpu
+    planted = run_planted_pcd_experiment(seed=0, steps=350, lr=0.08)
+    baseline_report = planted["baseline_report"]
+    removal_report = planted["removal_report"]
     return {
         "batch": batch_smoke_test(),
         "sparse_encoding": sparse_encoding_smoke_test(),
@@ -621,6 +1296,21 @@ def run_smoke_test(cpu: bool = True) -> dict:
         "stability": stability_smoke_test(),
         "removal": removal_smoke_test(),
         "audit": audit_smoke_test(),
+        "planted": {
+            "train_examples": len(planted["world"].train_prompts),
+            "heldout_examples": len(planted["world"].heldout_prompts),
+            "question_count": len(planted["world"].question_texts),
+            "concept_names": list(planted["world"].concept_names),
+            "train_recovery_error": planted["train_recovery_error"],
+            "heldout_recovery_error": planted["heldout_recovery_error"],
+            "heatmap_shape": list(planted["heatmap"].shape),
+            "heatmap": planted["heatmap"].tolist(),
+            "baselines": baseline_report.__dict__,
+            "baseline_names": list(planted["baseline_names"]),
+            "baseline_accuracies": list(planted["baseline_accuracies"]),
+            "removal": removal_report.__dict__,
+            "prediction_rows_preview": planted["prediction_rows"][:8],
+        },
     }
 
 
@@ -991,6 +1681,26 @@ def run_transformerlens_pcd_preflight(max_vram_gb: float = 24.0) -> dict:
         non_interaction_logits,
         answer_ids,
     )
+    eval_prediction_rows = []
+    pcd_predictions = pcd_logits.argmax(dim=-1)
+    probe_predictions = probe_logits.argmax(dim=-1)
+    sae_predictions = sae_logits.argmax(dim=-1)
+    non_interaction_predictions = non_interaction_logits.argmax(dim=-1)
+    for row_index, answer in enumerate(answer_ids.tolist()):
+        example_index = row_index // len(TL_PCD_QUESTIONS)
+        question_id = int(question_ids[row_index].item())
+        eval_prediction_rows.append(
+            {
+                "prompt": eval_texts[example_index],
+                "latent_label": eval_labels[example_index],
+                "question": TL_PCD_QUESTIONS[question_id],
+                "answer": int(answer),
+                "pcd_pred": int(pcd_predictions[row_index].item()),
+                "probe_pred": int(probe_predictions[row_index].item()),
+                "single_concept_pred": int(sae_predictions[row_index].item()),
+                "dense_noninteraction_pred": int(non_interaction_predictions[row_index].item()),
+            }
+        )
 
     shuffled_question_ids = question_ids.roll(shifts=1, dims=0)
     shuffled_question_embeddings = question_embeddings.roll(shifts=1, dims=0)
@@ -1114,6 +1824,7 @@ def run_transformerlens_pcd_preflight(max_vram_gb: float = 24.0) -> dict:
         "probe_accuracy": comparison.probe_accuracy,
         "sae_classifier_accuracy": comparison.sae_classifier_accuracy,
         "non_interaction_baseline_accuracy": comparison.activation_oracle_accuracy,
+        "eval_prediction_rows": eval_prediction_rows,
         "best_baseline_accuracy": comparison.best_baseline_accuracy,
         "beats_probe": comparison.beats_probe,
         "beats_best_baseline": comparison.beats_best_baseline,

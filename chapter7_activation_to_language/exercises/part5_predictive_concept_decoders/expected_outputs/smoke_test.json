@@ -1,10 +1,20 @@
 {
   "accepted": true,
-  "claim_scope": "Contract check; not a full real-model validation.",
-  "evidence_level": "notebook_contract",
-  "gt_tier": "GT-3",
-  "notebook_id": "7_5_predictive_concept_decoders",
   "section": "7.5",
+  "title": "Predictive Concept Decoders",
+  "notebook_id": "7_5_predictive_concept_decoders",
+  "gt_tier": "GT-3",
+  "evidence_level": "exact_planted_sparse_concept_pcd_contract_plus_pinned_gelu1l_preflight",
+  "claim_scope": "CPU planted-world contract checks concept-question interactions against six controls; live gelu-1l CUDA verification is run by the parent gate.",
   "tests_passed": true,
-  "title": "Predictive Concept Decoders"
+  "planted": {
+    "train_examples": 32,
+    "heldout_examples": 32,
+    "question_count": 4,
+    "pcd_accuracy": 1.0,
+    "best_control_accuracy": 0.6875,
+    "pcd_margin_over_best_control": 0.3125,
+    "target_removal_changed": true,
+    "active_control_does_less": true
+  }
 }

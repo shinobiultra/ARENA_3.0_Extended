@@ -6,10 +6,10 @@ exercise_metadata:
   GT_TIER: GT-3
   DIFFICULTY: 3
   IMPORTANCE: 3
-  EXPECTED_RUNTIME: seconds on toy contract; minutes on local real-model path
-  REQUIRES_GPU: true
+  EXPECTED_RUNTIME: 45-75 minutes for CPU exercises; parent gate runs local CUDA verification separately
+  REQUIRES_GPU: false
 gt_tier: GT-3
-evidence_level: toy_pcd_contract_plus_pinned_transformerlens_trained_sparse_concept_decoder_preflight
+evidence_level: exact_planted_sparse_concept_pcd_contract_plus_pinned_transformerlens_trained_sparse_concept_decoder_preflight
 claim_scope: 'GT-3 Predictive Concept Decoder preflight: reusable toy question-batch,
   sparse encoding, question-conditioned decoder, baseline comparison, stability, removal,
   and concept-audit contracts are kept for learner exercises, then a pinned TransformerLens
@@ -44,6 +44,12 @@ datasets:
 - id: 7_5_predictive_concept_decoders_toy_inputs
   source: generated
   seed: 0
+  train_example_count: 32
+  heldout_example_count: 32
+  question_count: 4
+  pcd_row_count: 128
+  concept_count: 6
+  claim_scope: exact_planted_sparse_concept_world_with_balanced_template_controls
 - id: course_safe_sparse_concept_pcd_prompts_v1
   source: generated_prompt_sets
   seed: 0
