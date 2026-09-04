@@ -359,7 +359,7 @@ def run_real_clip_vlm_shap_preflight(
             "pytorch_model.bin",
         ],
     )
-    processor = CLIPProcessor.from_pretrained(local_snapshot, use_fast=False)
+    processor = CLIPProcessor.from_pretrained(local_snapshot, backend="pil")
     model = CLIPModel.from_pretrained(local_snapshot, use_safetensors=False).to(device)
     model.eval()
 

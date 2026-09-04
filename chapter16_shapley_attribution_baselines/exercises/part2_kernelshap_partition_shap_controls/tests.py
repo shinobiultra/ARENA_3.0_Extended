@@ -317,9 +317,13 @@ def test_exact_dividend_game_oracle(
     }
     values = game_from_dividends(6, dividends)
     oracle = shapley_from_dividends(6, dividends)
-    assert len(values) == 64
-    assert values[frozenset()] == 0.0
-    assert abs(values[frozenset(range(6))] - 2.2) < 1e-12
+    assert len(values) == 64, "A six-player game must enumerate all 2^6 coalitions."
+    assert values[frozenset()] == 0.0, (
+        "The dividend game should retain the zero empty-coalition baseline."
+    )
+    assert abs(values[frozenset(range(6))] - 2.2) < 1e-12, (
+        "The grand-coalition value should equal the sum of all declared dividends."
+    )
     _assert_tensor_close(
         oracle,
         t.tensor([1.2, 0.4, 1.1, -0.2, 0.1, -0.4], dtype=t.float64),
@@ -332,14 +336,24 @@ def test_coalition_sampler_controls(sample_interior_coalitions: Callable):
     paired = sample_interior_coalitions(6, budget=12, seed=7, strategy="paired_kernel")
     repeated = sample_interior_coalitions(6, budget=12, seed=7, strategy="paired_kernel")
     uniform = sample_interior_coalitions(6, budget=12, seed=7, strategy="uniform")
-    assert paired == repeated
-    assert len(paired) == len(set(paired)) == 12
-    assert len(uniform) == len(set(uniform)) == 12
+    assert paired == repeated, "The paired sampler should be deterministic for a fixed seed."
+    assert len(paired) == len(set(paired)) == 12, (
+        "The paired sampler should return the requested number of unique coalitions."
+    )
+    assert len(uniform) == len(set(uniform)) == 12, (
+        "The uniform sampler should return the requested number of unique coalitions."
+    )
     full = frozenset(range(6))
-    assert all((full - coalition) in paired for coalition in paired)
+    assert all((full - coalition) in paired for coalition in paired), (
+        "Every paired-kernel sample should include its complement."
+    )
     complete = sample_interior_coalitions(6, budget=62, seed=7, strategy="uniform")
-    assert len(complete) == 62
-    assert all(0 < len(coalition) < 6 for coalition in complete)
+    assert len(complete) == 62, (
+        "The complete interior sample should contain all 2^6 - 2 non-endpoint coalitions."
+    )
+    assert all(0 < len(coalition) < 6 for coalition in complete), (
+        "Interior sampling must exclude the empty and grand coalitions."
+    )
     print("All tests in `test_coalition_sampler_controls` passed!")
 
 
@@ -363,7 +377,9 @@ def test_sampled_kernelshap_convergence_control(
     oracle = shapley_from_dividends(6, dividends)
     full_sample = sample_interior_coalitions(6, budget=62, seed=0, strategy="uniform")
     full_estimate = kernelshap_values(values, num_players=6, coalitions=full_sample)
-    assert float((full_estimate - oracle).abs().max().item()) < 1e-9
+    assert float((full_estimate - oracle).abs().max().item()) < 1e-9, (
+        "Full-table KernelSHAP should recover the independent exact oracle."
+    )
     paired_errors = []
     uniform_errors = []
     for seed in range(12):
@@ -371,7 +387,9 @@ def test_sampled_kernelshap_convergence_control(
             sample = sample_interior_coalitions(6, budget=24, seed=seed, strategy=strategy)
             estimate = kernelshap_values(values, num_players=6, coalitions=sample)
             errors.append(float((estimate - oracle).abs().max().item()))
-    assert sum(paired_errors) / len(paired_errors) < sum(uniform_errors) / len(uniform_errors)
+    assert sum(paired_errors) / len(paired_errors) < sum(uniform_errors) / len(uniform_errors), (
+        "Complement-paired sampling should beat uniform sampling on average at equal budget."
+    )
     print("All tests in `test_sampled_kernelshap_convergence_control` passed!")
 
 
@@ -400,7 +418,9 @@ def test_partition_alignment_and_random_control(
         t.tensor([1.5, 0.25, 0.95, -0.125, 0.175, -0.55], dtype=t.float64),
         msg="Misaligned PartitionSHAP values",
     )
-    assert abs(float((misaligned - oracle).abs().max().item()) - 0.3) < 1e-9
+    assert abs(float((misaligned - oracle).abs().max().item()) - 0.3) < 1e-9, (
+        "The fixed misaligned partition should shift credit by the analytic 0.3 maximum."
+    )
     print("All tests in `test_partition_alignment_and_random_control` passed!")
 
 

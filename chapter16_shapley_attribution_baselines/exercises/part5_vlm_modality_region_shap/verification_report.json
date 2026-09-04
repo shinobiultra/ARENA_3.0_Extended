@@ -59,9 +59,9 @@
       ]
     }
   ],
-  "date_run": "2026-09-04T06:41:29+00:00",
+  "date_run": "2026-09-04T08:50:16+00:00",
   "evidence_level": "vlm_shap_contract_plus_pinned_clip_rendered_shape_preflight",
-  "git_commit": "b6278637",
+  "git_commit": "8dd07755",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-0",
   "known_failures": [],
@@ -198,7 +198,7 @@
   "peak_vram_gb": 0.6205921173095703,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "189191ebfc3cd271482f7f7fb9a891257c3b968feba3b2222932ff3d2f0eca35",
+    "combined_sha256": "cecc567bdc2f6f83809906d6b5c4227579a9a15eb201ead1619e957250039cbe",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -207,13 +207,13 @@
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part5_vlm_modality_region_shap/16.5_VLM_Modality_and_Region_SHAP_exercises.ipynb",
-        "sha256": "ccc1bd99bee18aa99f11b3201e702ec387d20d259bd3474a2ea2993b8746e14f",
-        "size_bytes": 48918
+        "sha256": "adaf3b75c62c54e134aa3bf24da66fb5f7046e4b6a8d0fa66ec3085f1d5cfe02",
+        "size_bytes": 49027
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part5_vlm_modality_region_shap/16.5_VLM_Modality_and_Region_SHAP_solutions.ipynb",
-        "sha256": "abdc1f378a8efbe50c4b28b16e6a0e9bfcf0497598f06affae818a771181fe14",
-        "size_bytes": 102572
+        "sha256": "9147035dd6ad3dcc81d13ce3c28a5c4764915afc81cfbc1d4aed6de832d0c1dd",
+        "size_bytes": 102681
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part5_vlm_modality_region_shap/README.md",
@@ -242,13 +242,13 @@
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part5_vlm_modality_region_shap/solutions.py",
-        "sha256": "48451db267f775f0f7f5f9f3036c933753046f3900c8ba1472262e2c57269a5f",
-        "size_bytes": 17114
+        "sha256": "bffd994594200fa38c724d4ea8b206c2473f67f2d964669e498479d139885c8c",
+        "size_bytes": 17113
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part5_vlm_modality_region_shap/tests.py",
-        "sha256": "16f3a67a0e1106d1833f894e228791df61ebeaf9913cf882ae2bbdcf461e67c6",
-        "size_bytes": 16416
+        "sha256": "8760e1123863cc617ddc57e7864041f931690c853dc9ab4dd4f307f4f1d2ceda",
+        "size_bytes": 18495
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part5_vlm_modality_region_shap/utils.py",
@@ -262,13 +262,13 @@
       },
       {
         "path": "chapter16_shapley_attribution_baselines/instructions/pages/05_[16.5]_VLM_Modality_and_Region_SHAP.md",
-        "sha256": "880515a3fea2df5506043e502c8488ee6e363b02351649da66026ce2eae8a936",
-        "size_bytes": 35881
+        "sha256": "566d482cdc2cb44c3c4dac448c97df7a83a207fad82b861fdf5c10e97195bc3c",
+        "size_bytes": 35951
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
-        "sha256": "660040f459d07535deb9e0c34ffddb496c13b8770044ae380d3a8e45b0c8fb2b",
-        "size_bytes": 16080
+        "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
+        "size_bytes": 16272
       }
     ],
     "schema_version": 1
@@ -278,5 +278,5 @@
     "The real CLIP path uses generated safe rendered shape images and safe shape captions only. It does not use unsafe prompts, user images, external APIs, adapters, gated weights, or persistent real-image data."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 3.221184
+  "wall_clock_seconds": 3.763474
 }

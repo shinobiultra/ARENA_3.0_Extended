@@ -75,7 +75,9 @@ def test_all_coalitions_and_normalization(
         "Three players must produce all 2**3 distinct coalitions. Common bug: "
         "omitting the empty or full coalition."
     )
-    assert coalitions[0] == frozenset() and coalitions[-1] == frozenset({0, 1, 2})
+    assert coalitions[0] == frozenset() and coalitions[-1] == frozenset({0, 1, 2}), (
+        "Coalition enumeration should include both the empty and grand coalitions."
+    )
 
     complete = {tuple(sorted(coalition)): float(index) for index, coalition in enumerate(coalitions)}
     normalized = normalize(complete, num_players=3)
@@ -88,7 +90,9 @@ def test_all_coalitions_and_normalization(
     try:
         normalize(incomplete, num_players=3)
     except ValueError as exc:
-        assert "missing" in str(exc)
+        assert "missing" in str(exc), (
+            "Incomplete games should produce a diagnostic missing-coalition error."
+        )
     else:
         raise AssertionError("An incomplete game must fail before Shapley values are computed.")
     print("All tests in `test_all_coalitions_and_normalization` passed!")
@@ -230,11 +234,19 @@ def test_render_region_clip_image_has_exact_components(
     assert empty.size == object_only.size == background_only.size == all_components.size == (
         224,
         224,
+    ), "Every rendered intervention should use CLIP's documented 224x224 canvas."
+    assert empty.getpixel((10, 10)) == (255, 255, 255), (
+        "The empty coalition should render a white background."
     )
-    assert empty.getpixel((10, 10)) == (255, 255, 255)
-    assert background_only.getpixel((10, 10)) == (230, 230, 230)
-    assert object_only.getpixel((112, 100)) == (255, 0, 0)
-    assert all_components.getpixel((112, 100)) == (255, 0, 0)
+    assert background_only.getpixel((10, 10)) == (230, 230, 230), (
+        "The background intervention should change the registered background pixel."
+    )
+    assert object_only.getpixel((112, 100)) == (255, 0, 0), (
+        "The object-only intervention should render the target red square."
+    )
+    assert all_components.getpixel((112, 100)) == (255, 0, 0), (
+        "Adding background and OCR must not erase the target object."
+    )
 
     images = [
         render(
@@ -336,28 +348,62 @@ def test_notebook_contract(run_smoke_test: Callable | None = None):
 def validate_real_clip_vlm_shap_visual_payload(signature_result: dict) -> None:
     """Validate the actual rendered coalitions and scores shown in the notebook."""
 
-    assert signature_result["preflight_passed"]
+    assert signature_result["preflight_passed"], (
+        "The visual payload is valid only after the pinned CLIP preflight passes."
+    )
     payload = signature_result.get("visual_payload")
     assert payload is not None, "The live signature result should retain visual evidence."
-    assert payload["target_image"].size == payload["distractor_image"].size == (224, 224)
-    assert payload["target_image"].tobytes() != payload["distractor_image"].tobytes()
+    assert payload["target_image"].size == payload["distractor_image"].size == (224, 224), (
+        "Target and distractor images should share the same registered canvas size."
+    )
+    assert payload["target_image"].tobytes() != payload["distractor_image"].tobytes(), (
+        "The target-vs-distractor control must compare genuinely different images."
+    )
 
-    assert len(payload["modality_coalitions"]) == len(payload["modality_images"]) == 4
-    assert len(payload["modality_texts"]) == len(payload["modality_scores"]) == 4
-    assert set(payload["modality_coalitions"]) == set(reference.all_coalitions(2))
-    assert t.isfinite(t.tensor(payload["modality_scores"])).all()
+    assert len(payload["modality_coalitions"]) == len(payload["modality_images"]) == 4, (
+        "Two modality players require images for all four coalitions."
+    )
+    assert len(payload["modality_texts"]) == len(payload["modality_scores"]) == 4, (
+        "Every modality coalition should retain its text intervention and CLIP score."
+    )
+    assert set(payload["modality_coalitions"]) == set(reference.all_coalitions(2)), (
+        "The modality payload should cover the complete two-player game."
+    )
+    assert t.isfinite(t.tensor(payload["modality_scores"])).all(), (
+        "All pinned CLIP modality scores should be finite."
+    )
 
-    assert len(payload["region_coalitions"]) == len(payload["region_images"]) == 8
-    assert len(payload["region_scores"]) == 8
-    assert set(payload["region_coalitions"]) == set(reference.all_coalitions(3))
-    assert len({image.tobytes() for image in payload["region_images"]}) == 8
-    assert t.isfinite(t.tensor(payload["region_scores"])).all()
+    assert len(payload["region_coalitions"]) == len(payload["region_images"]) == 8, (
+        "Three region players require rendered images for all eight coalitions."
+    )
+    assert len(payload["region_scores"]) == 8, (
+        "Every rendered region coalition should have one pinned CLIP score."
+    )
+    assert set(payload["region_coalitions"]) == set(reference.all_coalitions(3)), (
+        "The region payload should cover the complete three-player game."
+    )
+    assert len({image.tobytes() for image in payload["region_images"]}) == 8, (
+        "Every object/background/OCR coalition should be visually distinct."
+    )
+    assert t.isfinite(t.tensor(payload["region_scores"])).all(), (
+        "All pinned CLIP region scores should be finite."
+    )
 
-    assert signature_result["modality_synergy"] >= 2.0
-    assert signature_result["object_margin"] >= 1.0
-    assert signature_result["target_distractor_margin"] >= 2.0
-    assert signature_result["modality_satisfies_efficiency"]
-    assert signature_result["region_satisfies_efficiency"]
+    assert signature_result["modality_synergy"] >= 2.0, (
+        "The image-text interaction should clear the preregistered synergy margin."
+    )
+    assert signature_result["object_margin"] >= 1.0, (
+        "The target object attribution should beat background and OCR controls."
+    )
+    assert signature_result["target_distractor_margin"] >= 2.0, (
+        "The target caption score should beat the distractor caption control."
+    )
+    assert signature_result["modality_satisfies_efficiency"], (
+        "Modality Shapley values should satisfy efficiency on the complete CLIP table."
+    )
+    assert signature_result["region_satisfies_efficiency"], (
+        "Region Shapley values should satisfy efficiency on the complete CLIP table."
+    )
     print("All tests in `validate_real_clip_vlm_shap_visual_payload` passed!")
 
 
