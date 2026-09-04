@@ -1,11 +1,18 @@
-import json
-from collections.abc import Callable, Mapping
-from pathlib import Path
+"""Semantic tests for [16.6] SHAP vs Activation Patching."""
 
+from collections.abc import Callable
+
+import pytest
 import torch as t
 
-
-Coalition = frozenset[int]
+TOKEN_LABELS = ("RED", "SQUARE", "BRIGHT", "FILLER")
+HIDDEN_LABELS = (
+    "red_direct",
+    "square_direct",
+    "bright_direct",
+    "filler_direct",
+    "red_x_square_gate",
+)
 
 
 def _solutions():
@@ -16,230 +23,305 @@ def _solutions():
     return solutions
 
 
-def _additive_table(weights: t.Tensor) -> dict[Coalition, float]:
-    players = range(int(weights.numel()))
-    table: dict[Coalition, float] = {}
-    for mask in range(2 ** int(weights.numel())):
-        coalition = frozenset(player for player in players if mask & (1 << player))
-        table[coalition] = float(weights[list(coalition)].sum().item()) if coalition else 0.0
-    return table
+def test_exact_model_oracle(
+    encode_tokens: Callable | None = None,
+    score_from_hidden: Callable | None = None,
+    exact_model: Callable | None = None,
+):
+    solutions = _solutions()
+    encode_tokens = encode_tokens or solutions.encode_tokens
+    score_from_hidden = score_from_hidden or solutions.score_from_hidden
+    exact_model = exact_model or solutions.exact_model
+    clean = t.ones(4, dtype=t.float64)
+    corrupt = t.zeros_like(clean)
+    hidden = encode_tokens(clean)
+    assert hidden.shape == (5,), "The encoder must append one interaction unit to four token units."
+    assert t.equal(hidden, t.ones(5, dtype=t.float64)), (
+        "Clean RED+SQUARE must turn on the post-ReLU interaction unit exactly."
+    )
+    assert score_from_hidden(hidden).item() == pytest.approx(4.25, abs=1e-12), (
+        "The hidden readout must sum the direct terms and the 2.4 gate contribution."
+    )
+    clean_score, cache = exact_model(clean, return_cache=True)
+    assert clean_score.item() == pytest.approx(4.25, abs=1e-12), (
+        "The complete clean token input must produce the declared 4.25 score."
+    )
+    assert exact_model(corrupt).item() == 0.0, "The all-zero corrupt baseline must score zero."
+    assert set(cache) == {"token_activations", "post_relu_hidden"}, (
+        "The model cache must expose the named token and post-ReLU activation levels."
+    )
+    assert cache["post_relu_hidden"][-1].item() == 1.0, (
+        "RED and SQUARE together must activate the ReLU interaction unit."
+    )
+    without_square = t.tensor([1.0, 0.0, 1.0, 1.0], dtype=t.float64)
+    assert exact_model(without_square).item() == pytest.approx(1.25, abs=1e-12), (
+        "Removing SQUARE must switch off the interaction gate."
+    )
+    print("All tests in `test_exact_model_oracle` passed!")
 
 
-def test_all_coalitions_contract(all_coalitions: Callable | None = None):
-    all_coalitions = all_coalitions or _solutions().all_coalitions
-    coalitions = all_coalitions(3)
-    assert len(coalitions) == 8, "Three players should produce 2**3 coalitions."
-    assert coalitions[0] == frozenset(), "The empty coalition should be present."
-    assert frozenset({0, 1, 2}) in coalitions, "The full coalition should be present."
-    assert len(set(coalitions)) == 8, "Coalitions should be unique."
-    print("All tests in `test_all_coalitions_contract` passed!")
+def test_coalition_value_table_oracle(
+    all_coalitions: Callable | None = None,
+    coalition_value_table: Callable | None = None,
+    exact_model: Callable | None = None,
+):
+    solutions = _solutions()
+    all_coalitions = all_coalitions or solutions.all_coalitions
+    coalition_value_table = coalition_value_table or solutions.coalition_value_table
+    exact_model = exact_model or solutions.exact_model
+    coalitions = all_coalitions(4)
+    assert len(coalitions) == 16 and len(set(coalitions)) == 16, (
+        "Four players require all 16 distinct coalitions."
+    )
+    assert coalitions[0] == frozenset(), "Coalition enumeration must include the empty baseline first."
+    clean = t.ones(4, dtype=t.float64)
+    corrupt = t.zeros_like(clean)
+    values = coalition_value_table(clean, corrupt, exact_model)
+    assert set(values) == set(coalitions), "The value table must evaluate every coalition exactly once."
+    assert values[frozenset()] == 0.0, "The empty clean coalition must reproduce the corrupt score."
+    assert values[frozenset({0, 1})] == pytest.approx(4.0, abs=1e-12), (
+        "RED and SQUARE must include both direct terms and the interaction gate."
+    )
+    assert values[frozenset({0, 2})] == pytest.approx(1.25, abs=1e-12), (
+        "RED and BRIGHT must not activate the RED x SQUARE gate."
+    )
+    assert values[frozenset(range(4))] == pytest.approx(4.25, abs=1e-12), (
+        "The full coalition must reproduce the complete clean score."
+    )
+    print("All tests in `test_coalition_value_table_oracle` passed!")
 
 
-def test_exact_shapley_values_additive_toy(
+def test_exact_shapley_token_ground_truth(
+    coalition_value_table: Callable | None = None,
     exact_shapley_values: Callable | None = None,
+    exact_model: Callable | None = None,
 ):
-    exact_shapley_values = exact_shapley_values or _solutions().exact_shapley_values
-    weights = t.tensor([1.0, 2.0, 0.5], dtype=t.float64)
-    values = _additive_table(weights)
-    shapley = exact_shapley_values(values, num_players=3)
-    assert isinstance(shapley, t.Tensor), "Exact Shapley should return a tensor."
-    assert shapley.dtype == t.float64, "Use float64 for exact finite-game arithmetic."
-    assert t.allclose(shapley, weights), (
-        "In an additive game, exact Shapley values should recover the feature weights."
+    solutions = _solutions()
+    coalition_value_table = coalition_value_table or solutions.coalition_value_table
+    exact_shapley_values = exact_shapley_values or solutions.exact_shapley_values
+    exact_model = exact_model or solutions.exact_model
+    clean = t.ones(4, dtype=t.float64)
+    corrupt = t.zeros_like(clean)
+    values = coalition_value_table(clean, corrupt, exact_model)
+    shapley = exact_shapley_values(values, num_players=4)
+    oracle = t.tensor([2.2, 1.8, 0.25, 0.0], dtype=t.float64)
+    assert shapley.dtype == t.float64, "Exact Shapley should retain float64 oracle precision."
+    assert t.allclose(shapley, oracle, atol=1e-12, rtol=0), (
+        "Token Shapley must split the symmetric 2.4 interaction equally between RED and SQUARE."
     )
-    print("All tests in `test_exact_shapley_values_additive_toy` passed!")
+    assert shapley.sum().item() == pytest.approx(4.25, abs=1e-12), (
+        "Shapley must allocate the complete clean-minus-corrupt score."
+    )
+    incomplete = dict(values)
+    incomplete.pop(frozenset({0, 1}))
+    with pytest.raises(ValueError, match="complete"):
+        exact_shapley_values(incomplete, num_players=4)
+    print("All tests in `test_exact_shapley_token_ground_truth` passed!")
 
 
-def test_activation_patching_effects_full_minus_ablated(
+def test_token_activation_patching_ground_truth(
     activation_patching_effects: Callable | None = None,
+    exact_model: Callable | None = None,
 ):
-    activation_patching_effects = activation_patching_effects or _solutions().activation_patching_effects
-    weights = t.tensor([1.0, 2.0, 0.5], dtype=t.float64)
-    patching = activation_patching_effects(_additive_table(weights), num_players=3)
-    assert t.allclose(patching, weights), (
-        "Full-minus-ablated patching should recover additive feature weights."
+    solutions = _solutions()
+    activation_patching_effects = (
+        activation_patching_effects or solutions.activation_patching_effects
     )
-
-    and_values = {
-        frozenset(): 0.0,
-        frozenset({0}): 0.0,
-        frozenset({1}): 0.0,
-        frozenset({0, 1}): 1.0,
-    }
-    and_patching = activation_patching_effects(and_values, num_players=2)
-    assert t.allclose(and_patching, t.tensor([1.0, 1.0], dtype=t.float64)), (
-        "In an AND game, ablating either necessary feature removes the full effect."
+    exact_model = exact_model or solutions.exact_model
+    clean = t.ones(4, dtype=t.float64)
+    corrupt = t.zeros_like(clean)
+    effects = activation_patching_effects(clean, corrupt, exact_model)
+    oracle = t.tensor([3.4, 3.0, 0.25, 0.0], dtype=t.float64)
+    assert t.allclose(effects, oracle, atol=1e-12, rtol=0), (
+        "Single-site noising must remove each direct term and any full-context gate contribution."
     )
-    print("All tests in `test_activation_patching_effects_full_minus_ablated` passed!")
+    assert effects.sum().item() == pytest.approx(6.65, abs=1e-12), (
+        "Token patching must visibly overcount the shared gate contribution."
+    )
+    assert effects[-1].item() == 0.0, "FILLER is the exact wrong-location control."
+    assert t.equal(clean, t.ones_like(clean)), "Patching must not mutate the clean cache."
+    print("All tests in `test_token_activation_patching_ground_truth` passed!")
 
 
-def test_shapley_patching_comparison_report_additive(
-    shapley_patching_comparison_report: Callable | None = None,
+def test_alignment_reorders_and_rejects_mismatched_units(
+    align_named_attributions: Callable | None = None,
 ):
-    shapley_patching_comparison_report = (
-        shapley_patching_comparison_report or _solutions().shapley_patching_comparison_report
+    align_named_attributions = align_named_attributions or _solutions().align_named_attributions
+    reference = t.tensor([2.2, 1.8, 0.25, 0.0])
+    candidate_labels = ("FILLER", "BRIGHT", "SQUARE", "RED")
+    candidate = t.tensor([0.0, 0.25, 1.8, 2.2])
+    labels, aligned_reference, aligned_candidate = align_named_attributions(
+        TOKEN_LABELS, reference, candidate_labels, candidate
     )
-    weights = t.tensor([1.0, 2.0, 0.5], dtype=t.float64)
-    result = shapley_patching_comparison_report(_additive_table(weights), num_players=3)
-    assert result["agrees_with_shapley"], (
-        "The additive control should make Shapley and patching agree exactly."
+    assert labels == TOKEN_LABELS, "Alignment must preserve reference-label order."
+    assert t.allclose(aligned_reference, aligned_candidate), (
+        "Name-based reordering must recover equal values from a permuted candidate vector."
     )
-    assert result["top_feature_agrees"], "Both methods should identify feature 1 as top."
-    assert result["max_abs_error"] == 0.0, "The additive toy oracle should have zero error."
-    assert t.allclose(result["shapley_values"], weights), (
-        "The comparison report should preserve the additive Shapley vector."
-    )
-    assert t.allclose(result["patching_effects"], weights), (
-        "The comparison report should preserve the additive patching vector."
-    )
-    print("All tests in `test_shapley_patching_comparison_report_additive` passed!")
+    with pytest.raises(ValueError, match="different player sets"):
+        align_named_attributions(TOKEN_LABELS, reference, HIDDEN_LABELS, t.ones(5))
+    print("All tests in `test_alignment_reorders_and_rejects_mismatched_units` passed!")
 
 
-def test_interaction_patching_failure_report_and_control(
-    interaction_patching_failure_report: Callable | None = None,
+def test_aligned_token_disagreement_and_hidden_agreement(
+    coalition_value_table: Callable | None = None,
+    exact_shapley_values: Callable | None = None,
+    activation_patching_effects: Callable | None = None,
+    attribution_comparison: Callable | None = None,
+    encode_tokens: Callable | None = None,
+    score_from_hidden: Callable | None = None,
+    exact_model: Callable | None = None,
 ):
-    interaction_patching_failure_report = (
-        interaction_patching_failure_report or _solutions().interaction_patching_failure_report
+    solutions = _solutions()
+    coalition_value_table = coalition_value_table or solutions.coalition_value_table
+    exact_shapley_values = exact_shapley_values or solutions.exact_shapley_values
+    activation_patching_effects = (
+        activation_patching_effects or solutions.activation_patching_effects
     )
-    and_values = {
-        frozenset(): 0.0,
-        frozenset({0}): 0.0,
-        frozenset({1}): 0.0,
-        frozenset({0, 1}): 1.0,
-    }
-    result = interaction_patching_failure_report(and_values, num_players=2)
-    assert result["documents_overcount"], (
-        "The two-feature AND game should explicitly document patching overcount."
+    attribution_comparison = attribution_comparison or solutions.attribution_comparison
+    encode_tokens = encode_tokens or solutions.encode_tokens
+    score_from_hidden = score_from_hidden or solutions.score_from_hidden
+    exact_model = exact_model or solutions.exact_model
+
+    clean_tokens = t.ones(4, dtype=t.float64)
+    corrupt_tokens = t.zeros_like(clean_tokens)
+    token_values = coalition_value_table(clean_tokens, corrupt_tokens, exact_model)
+    token_shapley = exact_shapley_values(token_values, num_players=4)
+    token_patching = activation_patching_effects(clean_tokens, corrupt_tokens, exact_model)
+    token_result = attribution_comparison(
+        TOKEN_LABELS,
+        token_shapley,
+        TOKEN_LABELS,
+        token_patching,
+        output_delta=4.25,
+    )
+    assert token_result["max_abs_error"] == pytest.approx(1.2, abs=1e-12), (
+        "Each interaction parent must differ by half the 2.4 gate contribution."
+    )
+    assert token_result["candidate_efficiency_gap"] == pytest.approx(2.4, abs=1e-12), (
+        "Token patching must count the shared interaction one extra time."
+    )
+    assert token_result["top_agrees"], (
+        "Top-1 agreement is deliberately insufficient to establish method agreement."
+    )
+
+    clean_hidden = encode_tokens(clean_tokens)
+    corrupt_hidden = encode_tokens(corrupt_tokens)
+    hidden_values = coalition_value_table(clean_hidden, corrupt_hidden, score_from_hidden)
+    hidden_shapley = exact_shapley_values(hidden_values, num_players=5)
+    hidden_patching = activation_patching_effects(
+        clean_hidden, corrupt_hidden, score_from_hidden
+    )
+    hidden_result = attribution_comparison(
+        HIDDEN_LABELS,
+        hidden_shapley,
+        HIDDEN_LABELS,
+        hidden_patching,
+        output_delta=4.25,
+    )
+    oracle = t.tensor([1.0, 0.6, 0.25, 0.0, 2.4], dtype=t.float64)
+    assert t.allclose(hidden_shapley, oracle, atol=1e-12, rtol=0), (
+        "Hidden Shapley must recover the additive direct-unit and explicit-gate readout weights."
+    )
+    assert t.allclose(hidden_patching, oracle, atol=1e-12, rtol=0), (
+        "Hidden-unit patching must match the additive readout oracle."
+    )
+    assert hidden_result["max_abs_error"] < 1e-12, (
+        "Aligned hidden-unit Shapley and patching must agree to numerical precision."
+    )
+    assert abs(hidden_result["candidate_efficiency_gap"]) < 1e-12, (
+        "Hidden patching must conserve the complete output delta."
+    )
+    print("All tests in `test_aligned_token_disagreement_and_hidden_agreement` passed!")
+
+
+def test_shuffled_and_random_controls(
+    shuffled_label_control: Callable | None = None,
+    random_direction_patching_effects: Callable | None = None,
+):
+    solutions = _solutions()
+    shuffled_label_control = shuffled_label_control or solutions.shuffled_label_control
+    random_direction_patching_effects = (
+        random_direction_patching_effects or solutions.random_direction_patching_effects
+    )
+    shapley = t.tensor([2.2, 1.8, 0.25, 0.0], dtype=t.float64)
+    patching = t.tensor([3.4, 3.0, 0.25, 0.0], dtype=t.float64)
+    shuffled = shuffled_label_control(patching, (2, 0, 3, 1))
+    shuffled_cosine = t.nn.functional.cosine_similarity(shapley, shuffled, dim=0)
+    assert shuffled.tolist() == [0.25, 3.4, 0.0, 3.0], (
+        "The fixed permutation must shuffle values while leaving token labels in place."
+    )
+    assert shuffled_cosine.item() == pytest.approx(0.5147262229810324, abs=1e-12), (
+        "The shuffled-value control must visibly reduce alignment with token Shapley."
+    )
+
+    clean_hidden = t.ones(5, dtype=t.float64)
+    weights = t.tensor([1.0, 0.6, 0.25, 0.0, 2.4], dtype=t.float64)
+    effects = random_direction_patching_effects(
+        clean_hidden, weights, target_delta_norm=1.0, num_samples=512, seed=1666
+    ).abs()
+    assert effects.shape == (512,), "The random-direction control must return one effect per draw."
+    assert effects.mean().item() == pytest.approx(0.9943479120912706, abs=1e-12), (
+        "The seeded matched-norm random control mean has an exact regression oracle."
+    )
+    assert t.quantile(effects, 0.95).item() == pytest.approx(
+        2.165827819479382, abs=1e-12
+    ), "The seeded random-direction p95 must remain below the true 2.4 gate effect."
+    assert float((effects < 2.4).double().mean().item()) == pytest.approx(
+        0.986328125, abs=1e-12
+    ), "The matched gate must exceed 98.6 percent of seeded random directions."
+    print("All tests in `test_shuffled_and_random_controls` passed!")
+
+
+def test_interaction_sweep_exact_oracle(
+    interaction_sweep: Callable | None = None,
+):
+    interaction_sweep = interaction_sweep or _solutions().interaction_sweep
+    strengths = t.tensor([0.0, 0.4, 1.2, 2.4, 3.2], dtype=t.float64)
+    result = interaction_sweep(strengths)
+    assert t.allclose(result["interaction_strength"], strengths), (
+        "The sweep must preserve the requested interaction-strength grid."
+    )
+    assert t.allclose(result["token_credit_overcount"], strengths, atol=1e-12, rtol=0), (
+        "Token patching overcount must equal the planted interaction strength."
     )
     assert t.allclose(
-        result["shapley_values"],
-        t.tensor([0.5, 0.5], dtype=t.float64),
-    ), "Shapley should split the AND interaction evenly."
-    assert t.allclose(
-        result["patching_effects"],
-        t.tensor([1.0, 1.0], dtype=t.float64),
-    ), "Patching should give each necessary AND feature the full effect."
-    assert result["overcount"] == 1.0, "Patching should overcount total credit by 1.0."
-
-    additive = _additive_table(t.tensor([1.0, 2.0], dtype=t.float64))
-    additive_result = interaction_patching_failure_report(additive, num_players=2)
-    assert not additive_result["documents_overcount"], (
-        "The overcount detector should not fire on an additive control."
+        result["token_max_abs_error"], strengths / 2, atol=1e-12, rtol=0
+    ), "Each symmetric interaction parent must differ by half the interaction strength."
+    assert float(result["hidden_max_abs_error"].max().item()) < 1e-12, (
+        "Hidden-level agreement must remain exact across the full interaction sweep."
     )
-    print("All tests in `test_interaction_patching_failure_report_and_control` passed!")
+    print("All tests in `test_interaction_sweep_exact_oracle` passed!")
 
 
-def _jsonable_report(report: Mapping) -> dict:
-    result = dict(report)
-    for key, value in list(result.items()):
-        if hasattr(value, "tolist"):
-            result[key] = value.tolist()
-    return result
-
-
-def test_additive_agreement_smoke_test(
-    additive_agreement_smoke_test: Callable | None = None,
-):
-    additive_agreement_smoke_test = (
-        additive_agreement_smoke_test or _solutions().additive_agreement_smoke_test
-    )
-    result = additive_agreement_smoke_test()
-    assert result["agrees_with_shapley"], (
-        "In an additive game, full-minus-ablated patching effects should equal Shapley values."
-    )
-    assert result["top_feature_agrees"], (
-        "The top feature should agree between Shapley and patching in the additive control."
-    )
-    assert result["shapley_values"] == [1.0, 2.0, 0.5], (
-        "The additive game's Shapley values should recover the feature weights exactly."
-    )
-    assert result["patching_effects"] == [1.0, 2.0, 0.5], (
-        "The additive game's patching effects should recover the feature weights exactly."
-    )
-    print("All tests in `test_additive_agreement_smoke_test` passed!")
-
-
-def test_interaction_failure_smoke_test(
-    interaction_failure_smoke_test: Callable | None = None,
-):
-    interaction_failure_smoke_test = (
-        interaction_failure_smoke_test or _solutions().interaction_failure_smoke_test
-    )
-    result = interaction_failure_smoke_test()
-    assert result["documents_overcount"], (
-        "The two-feature AND game should explicitly document patching overcount."
-    )
-    assert result["shapley_values"] == [0.5, 0.5], (
-        "Shapley should split the AND interaction equally between the two necessary features."
-    )
-    assert result["patching_effects"] == [1.0, 1.0], (
-        "Full-minus-ablated patching should assign the full AND effect to each necessary feature."
-    )
-    assert result["overcount"] == 1.0, (
-        "Patching should overcount the total interaction credit by 1.0 in this fixture."
-    )
-    print("All tests in `test_interaction_failure_smoke_test` passed!")
-
-
-def test_notebook_contract(run_smoke_test: Callable | None = None):
+def test_notebook_claim_contract(run_smoke_test: Callable | None = None):
     run_smoke_test = run_smoke_test or _solutions().run_smoke_test
     result = run_smoke_test(cpu=True)
-    assert result["additive_agreement"]["agrees_with_shapley"], (
-        "The notebook contract should include the additive agreement control."
+    assert result["random_control_count"] == 512, (
+        "The learner contract should retain its exact 512-direction regression oracle."
     )
-    assert result["interaction_failure"]["documents_overcount"], (
-        "The notebook contract should include the interaction overcount failure mode."
+    assert result["claim_passed"], "The exact organism and all three controls must support the claim."
+    assert result["clean_score"] == pytest.approx(4.25, abs=1e-12), (
+        "The smoke result must retain the exact clean-score oracle."
     )
-    print("All tests in `test_notebook_contract` passed!")
-
-
-def test_committed_gpu_report_records_agreement_and_disagreement_controls():
-    report_path = Path(__file__).with_name("verification_report.json")
-    report = json.loads(report_path.read_text())
-    assert report["accepted"], "The committed 16.6 report should be accepted."
-    assert report["gt_tier"] == "GT-0", "This section is exact finite-game ground truth."
-
-    gpu = report["metrics"]["gpu_test"]
-    assert gpu["preflight_passed"], "The CUDA model-organism preflight should pass."
-    assert gpu["cuda_version"] == "13.2", "The report should use the CUDA 13.2 torch wheel."
-    assert gpu["additive_model_family"] == "cuda_trained_linear_additive_model", (
-        "The positive-control CUDA path should train the additive linear model."
+    assert result["token_shapley"] == pytest.approx([2.2, 1.8, 0.25, 0.0], abs=1e-12), (
+        "The smoke result must expose exact token Shapley values."
     )
-    assert gpu["interaction_model_family"] == "cuda_trained_neural_coalition_game_mlp", (
-        "The disagreement CUDA path should train the nonlinear interaction model."
+    assert result["token_patching"] == pytest.approx([3.4, 3.0, 0.25, 0.0], abs=1e-12), (
+        "The smoke result must expose exact token patching effects."
     )
-    assert gpu["additive_training_example_count"] == 16, (
-        "The additive model should be evaluated on the full four-player binary table."
+    assert result["token_credit_overcount"] == pytest.approx(2.4, abs=1e-12), (
+        "The smoke result must expose the full interaction overcount."
     )
-    assert gpu["interaction_training_example_count"] == 16, (
-        "The interaction model should be evaluated on the full four-player binary table."
+    assert result["hidden_max_abs_error"] < 1e-12, (
+        "The hidden additive control must agree to numerical precision."
     )
-    assert gpu["additive_agrees_with_shapley"], (
-        "The trained additive model should be the positive agreement control."
+    assert result["wrong_location_effect"] == 0.0, (
+        "The FILLER wrong-location patch must remain exactly inert."
     )
-    assert gpu["additive_fit_mse"] < 1e-10, (
-        "The additive control should fit the complete finite table nearly exactly."
+    assert result["shuffled_label_cosine"] < 0.7, (
+        "The shuffled-value control must fail alignment with token Shapley."
     )
-    assert gpu["additive_max_abs_error"] < 1e-5, (
-        "The trained additive model should make Shapley and patching nearly identical."
+    assert result["target_gate_effect"] > result["random_direction_p95_abs_effect"], (
+        "The true gate patch must beat the p95 matched-random effect."
     )
-    assert not gpu["interaction_agrees_with_shapley"], (
-        "The interaction model should preserve the disagreement case."
-    )
-    assert gpu["interaction_fit_mse"] < 1e-8, (
-        "The interaction control should fit the complete finite table nearly exactly."
-    )
-    assert gpu["interaction_max_abs_error"] >= 1.0, (
-        "The interaction model should produce a large Shapley-vs-patching disagreement."
-    )
-    assert gpu["interaction_abs_overcount"] >= 2.0, (
-        "The interaction model should preserve absolute patching overcount."
-    )
-    assert gpu["interaction_top_feature_agrees"], (
-        "The top feature can agree even while the attribution magnitudes disagree."
-    )
-    assert gpu["peak_vram_gb"] < 1.0, (
-        "The 16.6 model-organism preflight should stay far below the 24GB budget."
-    )
-    assert gpu["within_vram_budget"], "The committed report should satisfy the VRAM budget."
-    print("All tests in `test_committed_gpu_report_records_agreement_and_disagreement_controls` passed!")
+    print("All tests in `test_notebook_claim_contract` passed!")

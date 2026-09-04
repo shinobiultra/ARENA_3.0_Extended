@@ -1,18 +1,25 @@
-# [16.6] SHAP vs Activation Patching Verification Assets
+# [16.6] SHAP vs Activation Patching
 
-Generated support files for the roadmap verification contract and the real CUDA
-SHAP-vs-patching model-organism preflight.
+This learner lab asks one concrete question: when SHAP and activation patching
+disagree, did a method fail or did the experiment change its causal players?
 
-- `artifacts.lock.yml` pins the current smoke-test artifact contract plus
-  additive and interaction CUDA training runs.
-- `16.6_SHAP_vs_Activation_Patching_exercises.ipynb` is the local learner
-  notebook with stubs and visible tests.
-- `16.6_SHAP_vs_Activation_Patching_solutions.ipynb` runs the reference
-  implementation, visible tests, and committed CUDA report checks.
-- `verification_report.schema.json` defines the required final report.
-- `expected_outputs/smoke_test.json` records the smoke-test contract.
-- `expected_outputs/reference_metrics.json` records baseline/control slots.
+The notebooks expose a four-token ReLU organism with exact token and hidden-unit
+ground truth. Students implement coalition evaluation, exact Shapley values,
+cached-activation patching, strict unit alignment, matched controls, and an
+interaction sweep. The primary result is generated visibly in the notebook and
+saved as `shap_vs_activation_patching_exact_signature.png`.
 
-The graded GPU path in `solutions.py` trains an additive linear model and a
-nonlinear neural coalition game, then compares exact Shapley values with
-full-minus-ablated patching effects from real model outputs.
+The exact result is:
+
+- token Shapley: `[2.20, 1.80, 0.25, 0.00]`;
+- token noising patch losses: `[3.40, 3.00, 0.25, 0.00]`;
+- token patching credit overcount: `2.40`;
+- post-ReLU hidden Shapley and patching: `[1.00, 0.60, 0.25, 0.00, 2.40]`;
+- wrong-location effect: `0.00`;
+- shuffled-label cosine: `0.515`;
+- matched-random p95: `2.166`, below the true gate effect `2.400`.
+
+`verification_report.json` is supporting release evidence and becomes stale
+when learner or solution inputs change. The repository report runner must
+regenerate it on CUDA before release; the notebook never loads it as teaching
+content.

@@ -14,6 +14,16 @@
       "additive_agreement_positive_control",
       "interaction_disagreement_negative_control",
       "absolute_credit_overcount_check",
+      "exact_relu_gate_ground_truth",
+      "token_player_efficiency_check",
+      "post_relu_hidden_player_agreement_check",
+      "zero_interaction_additive_baseline",
+      "wrong_location_filler_patch",
+      "fixed_label_shuffle_control",
+      "512_matched_l2_random_hidden_directions_seed_1666_learner_oracle",
+      "1024_matched_l2_random_hidden_directions_seed_1666_cuda_release_control",
+      "interaction_strength_falsification_sweep",
+      "strict_player_label_alignment",
       "large_transformer_activation_patching_not_claimed"
     ],
     "expected_metrics": {
@@ -25,6 +35,15 @@
       "additive_model_family": "cuda_trained_linear_additive_model",
       "additive_training_example_count": 16,
       "additive_training_steps": 1000,
+      "exact_hidden_max_abs_error_max": 1e-12,
+      "exact_organism_claim_passed": true,
+      "exact_random_control_count": 1024,
+      "exact_random_direction_p95_abs_effect_max": 2.2,
+      "exact_shuffled_label_cosine_max": 0.7,
+      "exact_target_gate_effect_min": 2.399999,
+      "exact_token_credit_overcount_max": 2.400001,
+      "exact_token_credit_overcount_min": 2.399999,
+      "exact_wrong_location_effect_max": 1e-12,
       "interaction_abs_overcount_min": 2.0,
       "interaction_agrees_with_shapley": false,
       "interaction_fit_max_abs_error_max": 0.0001,
@@ -40,12 +59,28 @@
       "tests_passed": true
     }
   },
-  "claim_scope": "GT-0 SHAP-vs-patching preflight: deterministic additive-agreement and interaction-overcount contracts are kept for learner exercises, then two CUDA model organisms are trained on complete binary feature tables. A linear additive model verifies that exact Shapley and full-minus-ablated patching effects agree when the learned function is additive. A nonlinear neural coalition game verifies that interaction-heavy learned behavior makes patching effects disagree with Shapley and overcount absolute credit. This proves the method comparison on real model outputs from finite trained systems; it is not a claim about large transformer activation patching.",
+  "claim_scope": "GT-0 SHAP-vs-patching learner result: an exact four-token ReLU organism exposes both token-location activations and five post-ReLU hidden units. Exact token SHAP allocates the 4.25 clean-minus-corrupt effect efficiently, while full-context token noising patching overcounts by the planted 2.4 interaction contribution. When both methods use the same post-ReLU hidden units, they agree to float64 precision. Wrong-location, shuffled-label, matched-random, and zero-interaction controls are measured. Supporting CUDA preflight trains additive and nonlinear finite model organisms; no general large-transformer equivalence claim is made.",
   "datasets": [
     {
-      "id": "16_6_shap_vs_activation_patching_toy_inputs",
-      "seed": 0,
-      "source": "generated"
+      "clean_tokens": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "corrupt_tokens": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "example_count": 16,
+      "id": "exact_red_square_token_coalitions_v1",
+      "num_players": 4,
+      "patching_effect": "clean_output_minus_output_after_one_corrupt_activation_patch",
+      "seed": "deterministic",
+      "source": "generated_complete_finite_table",
+      "target_rule": "1.0*RED + 0.6*SQUARE + 0.25*BRIGHT + 2.4*ReLU(RED+SQUARE-1)"
     },
     {
       "additive_target_rule": "0.25 + 1.2*x0 - 0.7*x1 + 1.6*x2 + 0.9*x3",
@@ -58,9 +93,9 @@
       "source": "generated_finite_table"
     }
   ],
-  "date_run": "2026-07-02T12:45:04+00:00",
-  "evidence_level": "shap_vs_patching_contract_plus_cuda_model_organism_preflight",
-  "git_commit": "3a539d48",
+  "date_run": "2026-09-04T08:38:57+00:00",
+  "evidence_level": "exact_activation_organism_plus_cuda_model_organism_preflight",
+  "git_commit": "1aa4dc81",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-0",
   "known_failures": [],
@@ -78,6 +113,14 @@
         "additive_shapley_values",
         "additive_training_example_count",
         "additive_training_steps",
+        "exact_hidden_max_abs_error",
+        "exact_organism_claim_passed",
+        "exact_random_control_count",
+        "exact_random_direction_p95_abs_effect",
+        "exact_shuffled_label_cosine",
+        "exact_target_gate_effect",
+        "exact_token_credit_overcount",
+        "exact_wrong_location_effect",
         "interaction_abs_overcount",
         "interaction_agrees_with_shapley",
         "interaction_fit_max_abs_error",
@@ -116,7 +159,15 @@
       "cuda_available": true,
       "cuda_version": "13.2",
       "device": "NVIDIA GeForce RTX 5090 Laptop GPU",
-      "full_path": "Train additive and interaction CUDA model organisms, then compare exact Shapley values with full-minus-ablated patching effects from real model outputs.",
+      "exact_hidden_max_abs_error": 8.881784197001252e-16,
+      "exact_organism_claim_passed": true,
+      "exact_random_control_count": 1024,
+      "exact_random_direction_p95_abs_effect": 2.187158495413317,
+      "exact_shuffled_label_cosine": 0.5147262229810325,
+      "exact_target_gate_effect": 2.4,
+      "exact_token_credit_overcount": 2.4000000000000004,
+      "exact_wrong_location_effect": 0.0,
+      "full_path": "Run the exact token/hidden intervention organism on CUDA, then train additive and interaction model organisms and compare exact Shapley with patching.",
       "gpu_total_memory_gb": 23.45965576171875,
       "interaction_abs_overcount": 3.4000007435679445,
       "interaction_agrees_with_shapley": false,
@@ -139,46 +190,65 @@
       "interaction_top_feature_agrees": true,
       "interaction_training_example_count": 16,
       "interaction_training_steps": 1200,
-      "peak_vram_gb": 0.06259441375732422,
+      "peak_vram_gb": 0.0626373291015625,
       "preflight_passed": true,
       "torch_version": "2.12.1+cu132",
       "within_vram_budget": true
     },
     "notebook_contract": {
-      "additive_agreement": {
-        "agrees_with_shapley": true,
-        "max_abs_error": 0.0,
-        "patching_effects": [
-          1.0,
-          2.0,
-          0.5
-        ],
-        "patching_top_feature": 1,
-        "shapley_top_feature": 1,
-        "shapley_values": [
-          1.0,
-          2.0,
-          0.5
-        ],
-        "top_feature_agrees": true
-      },
-      "interaction_failure": {
-        "documents_overcount": true,
-        "overcount": 1.0,
-        "patching_effects": [
-          1.0,
-          1.0
-        ],
-        "patching_total": 2.0,
-        "shapley_total": 1.0,
-        "shapley_values": [
-          0.5,
-          0.5
-        ]
-      }
+      "claim_passed": true,
+      "clean_score": 4.25,
+      "corrupt_score": 0.0,
+      "hidden_max_abs_error": 8.881784197001252e-16,
+      "hidden_patching": [
+        1.0,
+        0.6000000000000001,
+        0.25,
+        0.0,
+        2.4
+      ],
+      "hidden_shapley": [
+        1.0000000000000002,
+        0.6000000000000002,
+        0.25000000000000006,
+        0.0,
+        2.400000000000001
+      ],
+      "output_delta": 4.25,
+      "random_control_count": 512,
+      "random_direction_mean_abs_effect": 0.9657786525376575,
+      "random_direction_p95_abs_effect": 2.2101338828496067,
+      "shuffled_label_cosine": 0.5147262229810325,
+      "target_gate_effect": 2.4,
+      "target_gate_random_percentile": 0.984375,
+      "token_cosine_similarity": 0.9987772325235401,
+      "token_credit_overcount": 2.4000000000000004,
+      "token_max_abs_error": 1.2000000000000002,
+      "token_patching": [
+        3.4,
+        3.0,
+        0.25,
+        0.0
+      ],
+      "token_shapley": [
+        2.1999999999999997,
+        1.8,
+        0.25,
+        0.0
+      ],
+      "token_top_agrees": true,
+      "wrong_location_effect": 0.0
     }
   },
   "models": [
+    {
+      "claim_scope": "learner_signature_result_with_exact_token_and_hidden_ground_truth",
+      "gated": false,
+      "id": "exact_relu_token_interaction_organism_v1",
+      "precision": "float64",
+      "revision": "red_square_gate_strength_2_4_threshold_1_0",
+      "source": "generated_exact_model"
+    },
     {
       "gated": false,
       "id": "toy_or_generated_inputs",
@@ -210,17 +280,19 @@
   "negative_controls": {
     "declared_controls": [
       "negative_control_where_applicable",
-      "interaction_disagreement_negative_control"
+      "interaction_disagreement_negative_control",
+      "512_matched_l2_random_hidden_directions_seed_1666_learner_oracle",
+      "1024_matched_l2_random_hidden_directions_seed_1666_cuda_release_control"
     ]
   },
   "notebook_id": "16_6_shap_vs_activation_patching",
   "ood_tests": {
     "declared": "required_where_applicable"
   },
-  "peak_vram_gb": 0.06259441375732422,
+  "peak_vram_gb": 0.0626373291015625,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "e461dfeffc305723f2ab3f22c4313e4597bd52883688b0f2eeb314f9db252e7c",
+    "combined_sha256": "971d713d0ba63a58e91612127558be3b155b8217c95783f438e54bd35432826f",
     "files": [
       {
         "path": "arena_ext/shapley_attribution.py",
@@ -239,33 +311,33 @@
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part6_shap_vs_activation_patching/16.6_SHAP_vs_Activation_Patching_exercises.ipynb",
-        "sha256": "ad135af652855d2dce6b2c5033531f9c6f808441154e05bb4ab2cc86643cc736",
-        "size_bytes": 21887
+        "sha256": "e183f67d3c8447b078f9e690c237ab97547a0003042cdee195a57d0fe9f7f57f",
+        "size_bytes": 52984
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part6_shap_vs_activation_patching/16.6_SHAP_vs_Activation_Patching_solutions.ipynb",
-        "sha256": "d5ff7df40f35e327678c851faa43a1bd1c138ae62826c2a2b6428450b4efd6a9",
-        "size_bytes": 28073
+        "sha256": "c9c2c56fc83ab1a37c749babbf0193a065f3038719aec27ce861d6d5dd3830cd",
+        "size_bytes": 67707
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part6_shap_vs_activation_patching/README.md",
-        "sha256": "b4420f3c26ffc5739557e059c08a7101d4c006f0bda681683f74cf4c74ab4670",
-        "size_bytes": 985
+        "sha256": "a6e0b0fe88bb3a4cb9d26f2bed52a541e094e8b4425aa6f6e01abc762b24a92d",
+        "size_bytes": 1184
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part6_shap_vs_activation_patching/artifacts.lock.yml",
-        "sha256": "b6a05ef4d4e7a0b3cc97e77fbb6111c6fb062d589b98e4ac7551032e922e1e52",
-        "size_bytes": 3849
+        "sha256": "e0db3350741c7cf17c15a9153600df74f7426a05d221d2151ba6a96bbc4a0440",
+        "size_bytes": 5171
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part6_shap_vs_activation_patching/expected_outputs/README.md",
-        "sha256": "269ecc2155e06d0f95b71533b9e473741f3b8722632ce3f993d4b4d9ae55fdd3",
-        "size_bytes": 1780
+        "sha256": "af2e34269359f9d5105d6ae846920313263f62faf959319f4d6a2fe894a4e912",
+        "size_bytes": 1966
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part6_shap_vs_activation_patching/expected_outputs/reference_metrics.json",
-        "sha256": "35baeef067cf8a56b2186388ff0e2b518f9a0542426db938db6f3be027913cfe",
-        "size_bytes": 1114
+        "sha256": "6b88136c5be3f4d85d6232062e2024250f7f606e1b8849f2e45a80eb622c86f3",
+        "size_bytes": 847
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part6_shap_vs_activation_patching/expected_outputs/smoke_test.json",
@@ -274,13 +346,13 @@
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part6_shap_vs_activation_patching/solutions.py",
-        "sha256": "7196ab25d9c0ed52f9e47c2c4276e34c3a359dfe379de747c239dc4bbdbd5996",
-        "size_bytes": 11364
+        "sha256": "9d87a0fbfad0e2c95b92a2dbf03e56c5f036baa5af05a219d6a2d7b3fc901f71",
+        "size_bytes": 23335
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part6_shap_vs_activation_patching/tests.py",
-        "sha256": "0f780c8ea7034568f18792adcd213080e728a627809ac93938007b29e8275300",
-        "size_bytes": 10808
+        "sha256": "741b0096ededfb4a9b902c0c04545c6c51353b79f99bb728f207dfa9f7c42dc3",
+        "size_bytes": 15310
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part6_shap_vs_activation_patching/utils.py",
@@ -294,13 +366,13 @@
       },
       {
         "path": "chapter16_shapley_attribution_baselines/instructions/pages/06_[16.6]_SHAP_vs_Activation_Patching.md",
-        "sha256": "bb1d81b07cffd0795bb5e19f3729cbefcf50d24f533fb89022a4898b4dc1121c",
-        "size_bytes": 14729
+        "sha256": "db499eabf57b200adbe4ec1c90d4ebec8e25eff335c9f2be3a600cc1f3acc946",
+        "size_bytes": 40909
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
-        "sha256": "660040f459d07535deb9e0c34ffddb496c13b8770044ae380d3a8e45b0c8fb2b",
-        "size_bytes": 16080
+        "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
+        "size_bytes": 16272
       }
     ],
     "schema_version": 1
@@ -310,5 +382,5 @@
     "The real training path uses only generated finite binary feature tables. It does not use unsafe prompts, user data, external APIs, adapters, gated weights, or large persistent artifacts."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 1.169234
+  "wall_clock_seconds": 3.896541
 }

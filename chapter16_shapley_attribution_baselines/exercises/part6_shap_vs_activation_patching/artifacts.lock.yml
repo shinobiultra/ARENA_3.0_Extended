@@ -9,18 +9,25 @@ exercise_metadata:
   EXPECTED_RUNTIME: seconds on toy contract; minutes on local real-model path
   REQUIRES_GPU: true
 gt_tier: GT-0
-evidence_level: shap_vs_patching_contract_plus_cuda_model_organism_preflight
-claim_scope: 'GT-0 SHAP-vs-patching preflight: deterministic additive-agreement and
-  interaction-overcount contracts are kept for learner exercises, then two CUDA model
-  organisms are trained on complete binary feature tables. A linear additive model
-  verifies that exact Shapley and full-minus-ablated patching effects agree when the
-  learned function is additive. A nonlinear neural coalition game verifies that interaction-heavy
-  learned behavior makes patching effects disagree with Shapley and overcount absolute
-  credit. This proves the method comparison on real model outputs from finite trained
-  systems; it is not a claim about large transformer activation patching.'
+evidence_level: exact_activation_organism_plus_cuda_model_organism_preflight
+claim_scope: >-
+  GT-0 SHAP-vs-patching learner result: an exact four-token ReLU organism exposes
+  both token-location activations and five post-ReLU hidden units. Exact token SHAP
+  allocates the 4.25 clean-minus-corrupt effect efficiently, while full-context
+  token noising patching overcounts by the planted 2.4 interaction contribution.
+  When both methods use the same post-ReLU hidden units, they agree to float64
+  precision. Wrong-location, shuffled-label, matched-random, and zero-interaction
+  controls are measured. Supporting CUDA preflight trains additive and nonlinear
+  finite model organisms; no general large-transformer equivalence claim is made.
 required_gpu_gb: 1
 max_allowed_gpu_gb: 24
 models:
+- id: exact_relu_token_interaction_organism_v1
+  source: generated_exact_model
+  revision: red_square_gate_strength_2_4_threshold_1_0
+  precision: float64
+  gated: false
+  claim_scope: learner_signature_result_with_exact_token_and_hidden_ground_truth
 - id: toy_or_generated_inputs
   source: generated
   revision: seed_0
@@ -43,9 +50,15 @@ models:
   optimizer: AdamW
   learning_rate: 0.05
 datasets:
-- id: 16_6_shap_vs_activation_patching_toy_inputs
-  source: generated
-  seed: 0
+- id: exact_red_square_token_coalitions_v1
+  source: generated_complete_finite_table
+  seed: deterministic
+  num_players: 4
+  example_count: 16
+  clean_tokens: [1.0, 1.0, 1.0, 1.0]
+  corrupt_tokens: [0.0, 0.0, 0.0, 0.0]
+  target_rule: 1.0*RED + 0.6*SQUARE + 0.25*BRIGHT + 2.4*ReLU(RED+SQUARE-1)
+  patching_effect: clean_output_minus_output_after_one_corrupt_activation_patch
 - id: complete_binary_feature_games_additive_and_interaction_v1
   source: generated_finite_table
   seed: 1660_additive_1621_interaction
@@ -60,6 +73,15 @@ expected_metrics:
   accepted: true
   max_allowed_gpu_gb: 24
   preflight_passed: true
+  exact_organism_claim_passed: true
+  exact_token_credit_overcount_min: 2.399999
+  exact_token_credit_overcount_max: 2.400001
+  exact_hidden_max_abs_error_max: 1.0e-12
+  exact_wrong_location_effect_max: 1.0e-12
+  exact_shuffled_label_cosine_max: 0.7
+  exact_random_control_count: 1024
+  exact_random_direction_p95_abs_effect_max: 2.2
+  exact_target_gate_effect_min: 2.399999
   additive_model_family: cuda_trained_linear_additive_model
   additive_training_example_count: 16
   additive_training_steps: 1000
@@ -90,6 +112,16 @@ controls:
 - additive_agreement_positive_control
 - interaction_disagreement_negative_control
 - absolute_credit_overcount_check
+- exact_relu_gate_ground_truth
+- token_player_efficiency_check
+- post_relu_hidden_player_agreement_check
+- zero_interaction_additive_baseline
+- wrong_location_filler_patch
+- fixed_label_shuffle_control
+- 512_matched_l2_random_hidden_directions_seed_1666_learner_oracle
+- 1024_matched_l2_random_hidden_directions_seed_1666_cuda_release_control
+- interaction_strength_falsification_sweep
+- strict_player_label_alignment
 - large_transformer_activation_patching_not_claimed
 safety_notes:
 - No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.
