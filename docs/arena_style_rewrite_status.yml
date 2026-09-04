@@ -76,7 +76,7 @@ sections:
   '8.2':
     status: course_ready
     page: chapter8_automated_circuits/instructions/pages/02_[8.2]_Attribution_Patching_and_EAP.md
-    notes: ARENA-style rewrite with attribution/EAP validation diagrams, exact-vs-approx patching progression, correlation/top-k/runtime/false-negative contracts, help/interpretation dropdowns, signature result, limitations, and paired notebook surfaces.
+    notes: Seven-exercise ARENA lesson on an exact nonlinear causal graph. Students implement exact node and edge patching, corrupt-point attribution, path integrated gradients, EAP, and EAP-IG; the visible signature exposes a 1.40 gated-route false negative missed by ordinary AP/EAP and recovered by integration, with exact-zero decoys, a linear positive control, and shuffled-delta failure. A separate gelu-1l CUDA mechanics preflight verifies final-position localization for exact, attribution, IG, and EAP paths.
   '8.3':
     status: course_ready
     page: chapter8_automated_circuits/instructions/pages/03_[8.3]_ACDC_and_Circuit_Metrics.md
