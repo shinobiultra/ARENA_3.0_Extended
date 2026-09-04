@@ -1,3 +1,4 @@
+import ast
 from collections.abc import Callable, Mapping
 import json
 from pathlib import Path
@@ -59,6 +60,140 @@ def test_same_size_random_region_control_is_non_overlapping():
         "The deterministic random-control helper should never return the object bbox itself."
     )
     print("All tests in `test_same_size_random_region_control_is_non_overlapping` passed!")
+
+
+def test_extract_contrastive_embeddings_normalizes_both_towers(
+    extract_contrastive_embeddings: Callable[..., tuple[t.Tensor, t.Tensor]] | None = None,
+):
+    solutions = _solutions()
+    extract_contrastive_embeddings = (
+        extract_contrastive_embeddings or solutions.extract_contrastive_embeddings
+    )
+
+    class ExactDualEncoder(t.nn.Module):
+        def get_image_features(self, *, pixel_values: t.Tensor) -> t.Tensor:
+            return pixel_values @ t.tensor([[3.0, 0.0], [0.0, 4.0]])
+
+        def get_text_features(
+            self,
+            *,
+            input_ids: t.Tensor,
+            attention_mask: t.Tensor | None = None,
+        ) -> t.Tensor:
+            if attention_mask is None:
+                raise AssertionError("The text tower should receive the attention mask.")
+            return input_ids.float() * attention_mask.float()
+
+    batch = {
+        "pixel_values": t.eye(2),
+        "input_ids": t.tensor([[3, 0], [0, 4]]),
+        "attention_mask": t.ones(2, 2),
+    }
+    image, text = extract_contrastive_embeddings(ExactDualEncoder(), batch)
+    assert t.allclose(image, t.eye(2)), (
+        f"The exact image tower should normalize to the basis vectors; got {image}."
+    )
+    assert t.allclose(text, t.eye(2)), (
+        f"The exact text tower should normalize to the basis vectors; got {text}."
+    )
+    print("All tests in `test_extract_contrastive_embeddings_normalizes_both_towers` passed!")
+
+
+def test_bidirectional_retrieval_metrics_uses_both_directions(
+    bidirectional_retrieval_metrics: Callable[..., dict[str, object]] | None = None,
+):
+    solutions = _solutions()
+    bidirectional_retrieval_metrics = (
+        bidirectional_retrieval_metrics or solutions.bidirectional_retrieval_metrics
+    )
+    image = t.tensor([[1.0, 0.0], [0.0, 1.0]])
+    text = t.tensor([[1.0, 0.0], [0.0, 1.0]])
+    result = bidirectional_retrieval_metrics(image, text, logit_scale=5.0)
+    assert result["image_to_text_accuracy"] == 1.0, (
+        "Each image should retrieve its paired caption in the exact basis oracle."
+    )
+    assert result["text_to_image_accuracy"] == 1.0, (
+        "Each caption should retrieve its paired image in the exact basis oracle."
+    )
+    _assert_close(
+        float(result["mean_positive_margin"]),
+        5.0,
+        msg="The diagonal-to-off-diagonal retrieval margin is exact.",
+    )
+    print("All tests in `test_bidirectional_retrieval_metrics_uses_both_directions` passed!")
+
+
+def test_hook_cache_and_hidden_patch_are_causal(
+    capture_module_output: Callable[..., tuple[object, t.Tensor]] | None = None,
+    patch_hidden_token_rows: Callable[..., t.Tensor] | None = None,
+):
+    solutions = _solutions()
+    capture_module_output = capture_module_output or solutions.capture_module_output
+    patch_hidden_token_rows = patch_hidden_token_rows or solutions.patch_hidden_token_rows
+    module = t.nn.Linear(2, 2, bias=False)
+    with t.no_grad():
+        module.weight.copy_(t.eye(2))
+    values = t.tensor([[[1.0, 0.0], [0.0, 2.0], [3.0, 0.0]]])
+    result, cached = capture_module_output(module, lambda: module(values))
+    assert isinstance(result, t.Tensor) and t.allclose(cached, values), (
+        "The hook should capture the real module output from exactly one forward pass."
+    )
+    corrupt = -values
+    patched = patch_hidden_token_rows(cached, corrupt, (1,))
+    assert t.allclose(patched[:, 1], corrupt[:, 1]), (
+        "The selected hidden token should be replaced by its corrupt counterpart."
+    )
+    assert t.allclose(patched[:, (0, 2)], cached[:, (0, 2)]), (
+        "Unselected hidden tokens should remain exactly clean."
+    )
+    assert not module._forward_hooks, "Hook handles must be removed after capture."
+    print("All tests in `test_hook_cache_and_hidden_patch_are_causal` passed!")
+
+
+def test_causal_patch_metrics_separates_object_from_controls(
+    causal_patch_metrics: Callable[..., dict[str, object]] | None = None,
+):
+    solutions = _solutions()
+    causal_patch_metrics = causal_patch_metrics or solutions.causal_patch_metrics
+    clean = t.tensor([[6.0, 1.0], [0.0, 5.0]])
+    corrupt = t.tensor([[0.0, 5.0], [6.0, 0.0]])
+    result = causal_patch_metrics(
+        clean,
+        corrupt,
+        {
+            "object": corrupt,
+            "background": clean,
+            "same_size_random": clean,
+            "full_sequence": corrupt,
+        },
+        target_indices=t.tensor([0, 1]),
+        counterfactual_indices=t.tensor([1, 0]),
+    )
+    rows = {row["condition"]: row for row in result["rows"]}
+    assert rows["object"]["all_flip"] and rows["full_sequence"]["all_flip"], (
+        "Object and full-sequence patches should flip both exact-oracle examples."
+    )
+    assert not rows["background"]["all_flip"] and not rows["same_size_random"]["all_flip"], (
+        "Matched control patches should preserve both exact-oracle examples."
+    )
+    assert rows["object"]["mean_effect"] > rows["background"]["mean_effect"], (
+        "The causal object effect should exceed the background control."
+    )
+    print("All tests in `test_causal_patch_metrics_separates_object_from_controls` passed!")
+
+
+def test_trim_generated_tokens_removes_prompt_prefix(
+    trim_generated_tokens: Callable[..., list[t.Tensor]] | None = None,
+):
+    solutions = _solutions()
+    trim_generated_tokens = trim_generated_tokens or solutions.trim_generated_tokens
+    prompts = t.tensor([[10, 11, 12], [20, 21, 0]])
+    generated = t.tensor([[10, 11, 12, 31, 32], [20, 21, 0, 41, 42]])
+    trimmed = trim_generated_tokens(prompts, generated)
+    assert [row.tolist() for row in trimmed] == [[31, 32], [41, 42]], (
+        "Qwen answer decoding should remove the entire padded prompt width from each row."
+    )
+    print("All tests in `test_trim_generated_tokens_removes_prompt_prefix` passed!")
 
 
 def test_contrastive_smoke_test(
@@ -499,19 +634,83 @@ def test_exercise_notebook_declares_full_verification_contract():
     assert "REQUIRES_GPU = True" in source, (
         "The learner notebook should not advertise CPU-only scope for this GT-1 VLM section."
     )
-    assert "def run_smoke_test(cpu: bool = True)" in source, (
-        "The learner notebook should expose the CPU contract surface."
+    required = [
+        "def extract_contrastive_embeddings",
+        "def bidirectional_retrieval_metrics",
+        "def bbox_to_visual_tokens",
+        "def capture_module_output",
+        "def patch_hidden_token_rows",
+        "def run_with_activation_patch",
+        "def causal_patch_metrics",
+        "def generate_qwen_answers",
+        "run_real_contrastive_study",
+        "Set RUN_REAL_MODELS=True to regenerate",
+    ]
+    for needle in required:
+        assert needle in source, f"The learner notebook is missing the visible method surface: {needle}"
+    assert source.count("### Exercise ") == 10, (
+        "12.1 should present ten graded exercises from toy ground truth through real-model generation."
     )
-    assert "def run_gpu_test(max_vram_gb: float = 24.0)" in source, (
-        "The learner notebook should expose the GPU verification surface."
+    assert source.count("<summary>Expected output</summary>") >= 10, (
+        "Every graded exercise should state its expected output."
     )
-    assert "def run_full_experiment(max_vram_gb: float = 24.0)" in source, (
-        "The learner notebook should expose the full experiment surface."
+    assert source.count("<summary>Help -") >= 10, (
+        "Every graded exercise should include reasoning-oriented help."
     )
-    assert "test_committed_verification_report_real_model_controls" in source, (
-        "The learner notebook should end by checking the committed real-model report."
+    assert source.count("<summary>Solution</summary>") >= 10, (
+        "Every graded exercise should include a visible solution dropdown."
+    )
+    assert source.count("<summary>Interpretation</summary>") >= 10, (
+        "Every graded exercise should explain how to interpret the result."
     )
     print("All tests in `test_exercise_notebook_declares_full_verification_contract` passed!")
+
+
+def test_solution_notebook_keeps_real_vlm_methods_visible():
+    notebook_path = _section_dir() / "12.1_CLIP_SigLIP_and_VLM_Controls_solutions.ipynb"
+    notebook = json.loads(notebook_path.read_text())
+    code_source = "\n".join(
+        "".join(cell.get("source", []))
+        for cell in notebook["cells"]
+        if cell.get("cell_type") == "code"
+    )
+    tree = ast.parse(code_source)
+    taught = {
+        "clip_contrastive_logits",
+        "contrastive_alignment_report",
+        "siglip_pairwise_loss",
+        "train_toy_clip_projectors",
+        "extract_contrastive_embeddings",
+        "bidirectional_retrieval_metrics",
+        "patch_image_region",
+        "bbox_to_visual_tokens",
+        "capture_module_output",
+        "patch_hidden_token_rows",
+        "run_with_activation_patch",
+        "causal_patch_metrics",
+        "trim_generated_tokens",
+        "generate_qwen_answers",
+    }
+    definitions = {
+        node.name: node
+        for node in ast.walk(tree)
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+    }
+    assert taught <= definitions.keys(), (
+        f"Solved notebook is missing visible implementations: {taught - definitions.keys()}"
+    )
+    for name in taught:
+        assert not any(
+            isinstance(child, ast.Raise)
+            and isinstance(child.exc, ast.Call)
+            and isinstance(child.exc.func, ast.Name)
+            and child.exc.func.id == "NotImplementedError"
+            for child in ast.walk(definitions[name])
+        ), f"{name} remains a placeholder in the solved notebook."
+    assert "reference_solutions" not in code_source and "reference." not in code_source, (
+        "The solved notebook must run taught VLM methods directly, not delegate to solutions.py."
+    )
+    print("All tests in `test_solution_notebook_keeps_real_vlm_methods_visible` passed!")
 
 
 def test_committed_verification_report_real_model_controls(

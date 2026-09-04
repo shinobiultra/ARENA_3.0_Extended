@@ -2,6 +2,7 @@
 """Reference solutions for [12.1] CLIP, SigLIP, and VLM Controls."""
 
 import sys
+from collections.abc import Callable, Mapping
 from pathlib import Path
 
 import torch as t
@@ -123,6 +124,196 @@ SHAPE_RANDOM_CONTROL_BBOX = _same_size_random_control_bbox(
     SHAPE_OBJECT_BBOX,
     seed=SHAPE_RANDOM_CONTROL_SEED,
 )
+
+
+def extract_contrastive_embeddings(
+    model,
+    batch: Mapping[str, t.Tensor],
+) -> tuple[t.Tensor, t.Tensor]:
+    """Extract normalized image and text embeddings from a CLIP-like model."""
+
+    if "pixel_values" not in batch or "input_ids" not in batch:
+        raise KeyError("batch must contain pixel_values and input_ids.")
+    image_output = model.get_image_features(pixel_values=batch["pixel_values"])
+    text_kwargs = {"input_ids": batch["input_ids"]}
+    if "attention_mask" in batch:
+        text_kwargs["attention_mask"] = batch["attention_mask"]
+    text_output = model.get_text_features(**text_kwargs)
+    image_embeddings = (
+        image_output if isinstance(image_output, t.Tensor) else image_output.pooler_output
+    )
+    text_embeddings = (
+        text_output if isinstance(text_output, t.Tensor) else text_output.pooler_output
+    )
+    image_embeddings = image_embeddings.float()
+    text_embeddings = text_embeddings.float()
+    return (
+        image_embeddings / image_embeddings.norm(dim=-1, keepdim=True).clamp_min(1e-8),
+        text_embeddings / text_embeddings.norm(dim=-1, keepdim=True).clamp_min(1e-8),
+    )
+
+
+def bidirectional_retrieval_metrics(
+    image_embeddings: t.Tensor,
+    text_embeddings: t.Tensor,
+    *,
+    logit_scale: float = 1.0,
+    logit_bias: float | t.Tensor = 0.0,
+) -> dict[str, object]:
+    """Return the full retrieval matrix, both accuracies, and the positive margin."""
+
+    logits = clip_contrastive_logits(
+        image_embeddings,
+        text_embeddings,
+        logit_scale=logit_scale,
+    )
+    logits = logits + t.as_tensor(logit_bias, device=logits.device, dtype=logits.dtype)
+    report = contrastive_alignment_report(
+        logits,
+        min_accuracy=0.0,
+        min_positive_margin=float("-inf"),
+    )
+    return {
+        "logits": logits,
+        "image_to_text_accuracy": report.image_to_text_accuracy,
+        "text_to_image_accuracy": report.text_to_image_accuracy,
+        "mean_positive_margin": report.mean_positive_margin,
+    }
+
+
+def capture_module_output(
+    module: t.nn.Module,
+    forward_fn: Callable[[], object],
+) -> tuple[object, t.Tensor]:
+    """Run ``forward_fn`` once and return its result plus one hooked activation."""
+
+    captured: list[t.Tensor] = []
+
+    def save_output(_module, _args, output):
+        if not isinstance(output, t.Tensor):
+            raise TypeError("the selected hook point must return a tensor.")
+        captured.append(output.detach())
+
+    handle = module.register_forward_hook(save_output)
+    try:
+        result = forward_fn()
+    finally:
+        handle.remove()
+    if len(captured) != 1:
+        raise RuntimeError(f"expected one hooked activation, captured {len(captured)}.")
+    return result, captured[0]
+
+
+def patch_hidden_token_rows(
+    clean_activations: t.Tensor,
+    corrupt_activations: t.Tensor,
+    token_indices: tuple[int, ...] | list[int],
+) -> t.Tensor:
+    """Replace selected clean sequence rows with counterfactual rows."""
+
+    if clean_activations.shape != corrupt_activations.shape:
+        raise ValueError("clean and corrupt activations must have the same shape.")
+    if clean_activations.ndim != 3:
+        raise ValueError("activations must have shape (batch, tokens, hidden).")
+    index = t.tensor(tuple(int(i) for i in token_indices), device=clean_activations.device)
+    if index.numel() == 0:
+        raise ValueError("token_indices must be nonempty.")
+    if index.min() < 0 or index.max() >= clean_activations.shape[1]:
+        raise ValueError("token index out of range.")
+    if index.unique().numel() != index.numel():
+        raise ValueError("token_indices must be unique.")
+    patched = clean_activations.clone()
+    patched[:, index] = corrupt_activations[:, index].to(patched)
+    return patched
+
+
+def run_with_activation_patch(
+    model,
+    embedding_module: t.nn.Module,
+    clean_inputs: Mapping[str, t.Tensor],
+    corrupt_pixel_values: t.Tensor,
+    token_indices: tuple[int, ...] | list[int],
+) -> t.Tensor:
+    """Patch hidden visual rows during a clean CLIP-like forward pass."""
+
+    with t.inference_mode():
+        corrupt_activations = embedding_module(corrupt_pixel_values)
+
+    def patch_hook(_module, _args, clean_activations):
+        return patch_hidden_token_rows(clean_activations, corrupt_activations, token_indices)
+
+    handle = embedding_module.register_forward_hook(patch_hook)
+    try:
+        with t.inference_mode():
+            return model(**dict(clean_inputs)).logits_per_image.detach().float().cpu()
+    finally:
+        handle.remove()
+
+
+def causal_patch_metrics(
+    clean_logits: t.Tensor,
+    corrupt_logits: t.Tensor,
+    patched_logits: Mapping[str, t.Tensor],
+    *,
+    target_indices: t.Tensor,
+    counterfactual_indices: t.Tensor,
+) -> dict[str, object]:
+    """Score target-minus-counterfactual margins for patch and control conditions."""
+
+    def margins(logits: t.Tensor) -> t.Tensor:
+        rows = t.arange(logits.shape[0], device=logits.device)
+        return logits[rows, target_indices.to(logits.device)] - logits[
+            rows, counterfactual_indices.to(logits.device)
+        ]
+
+    clean = margins(clean_logits)
+    corrupt = margins(corrupt_logits)
+    rows = []
+    for condition, logits in patched_logits.items():
+        patched = margins(logits)
+        rows.append(
+            {
+                "condition": condition,
+                "mean_margin": float(patched.mean().item()),
+                "mean_effect": float((clean - patched).mean().item()),
+                "all_flip": bool((patched < 0).all().item()),
+            }
+        )
+    return {
+        "clean_margins": clean.tolist(),
+        "corrupt_margins": corrupt.tolist(),
+        "rows": rows,
+    }
+
+
+def trim_generated_tokens(
+    input_ids: t.Tensor,
+    generated_ids: t.Tensor,
+) -> list[t.Tensor]:
+    """Remove the padded prompt prefix from each generated token sequence."""
+
+    if input_ids.ndim != 2 or generated_ids.ndim != 2:
+        raise ValueError("input_ids and generated_ids must both be rank-2 tensors.")
+    if input_ids.shape[0] != generated_ids.shape[0]:
+        raise ValueError("input_ids and generated_ids must have the same batch size.")
+    return [
+        output[len(prompt) :]
+        for prompt, output in zip(input_ids, generated_ids)
+    ]
+
+
+def decode_qwen_answers(
+    processor,
+    input_ids: t.Tensor,
+    generated_ids: t.Tensor,
+) -> list[str]:
+    """Remove each prompt prefix and decode only Qwen's generated answer tokens."""
+
+    trimmed = trim_generated_tokens(input_ids, generated_ids)
+    return [
+        answer.strip().lower()
+        for answer in processor.batch_decode(trimmed, skip_special_tokens=True)
+    ]
 
 
 # %%

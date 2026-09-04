@@ -3,6 +3,7 @@
   "baselines": {
     "declared_controls": [
       "exact_additive_visual_token_ground_truth",
+      "strict_causal_mask_future_token_invariance",
       "heldout_muted_rendering_style",
       "text_only_zero_visual_tokens",
       "image_only_zero_question_state",
@@ -39,21 +40,21 @@
       "train_example_count": 120
     }
   },
-  "claim_scope": "A frozen patch encoder plus a learned projector and two-layer multi-head cross-attention decoder solves held-out muted-style controlled VQA; counterfactual object-token patches causally flip color and shape answers while text-only, image-only, shuffled-visual, background-region, and same-size random-region controls fail or preserve the clean answer as predicted.",
+  "claim_scope": "A frozen patch encoder plus a learned connector and two-layer multi-head visual-prefix causal self-attention decoder solves held-out muted-style controlled VQA; counterfactual object-token patches causally flip color and shape answers while text-only, image-only, shuffled-visual, background-region, and same-size random-region controls fail or preserve the clean answer as predicted.",
   "datasets": [
     {
       "heldout_examples": 120,
       "id": "arena_controlled_colored_shape_vqa_v1",
       "revision": "exact_source_in_report_inputs",
-      "seed": 23,
+      "seed": 123,
       "source": "generated_by_course_renderer",
       "split": "solid_train_muted_style_heldout",
       "train_examples": 120
     }
   ],
-  "date_run": "2026-09-04T08:46:00+00:00",
+  "date_run": "2026-09-04T13:47:25+00:00",
   "evidence_level": "exact_visual_token_oracle_plus_cuda_trained_controlled_minivlm",
-  "git_commit": "b726d692",
+  "git_commit": "92e510aa",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-0",
   "known_failures": [],
@@ -91,10 +92,10 @@
     },
     "gpu_test": {
       "color_background_patch_preserves": true,
-      "color_clean_margin": 8.527935028076172,
+      "color_clean_margin": 8.05743408203125,
       "color_full_sequence_matches_corrupt": true,
       "color_object_patch_flips": true,
-      "color_object_patch_margin": -8.07336139678955,
+      "color_object_patch_margin": -7.470999717712402,
       "color_random_region_preserves": true,
       "cuda_available": true,
       "cuda_version": "13.2",
@@ -103,15 +104,15 @@
       "gpu_total_memory_gb": 23.45965576171875,
       "heldout_accuracy": 1.0,
       "heldout_example_count": 120,
-      "image_only_accuracy": 0.1666666716337204,
+      "image_only_accuracy": 0.21666668355464935,
       "joint_accuracy": 1.0,
-      "peak_vram_gb": 0.06935930252075195,
+      "peak_vram_gb": 0.10298442840576172,
       "random_visual_accuracy": 0.2916666865348816,
       "shape_background_patch_preserves": true,
-      "shape_clean_margin": 8.281471252441406,
+      "shape_clean_margin": 8.308001518249512,
       "shape_full_sequence_matches_corrupt": true,
       "shape_object_patch_flips": true,
-      "shape_object_patch_margin": -7.3593668937683105,
+      "shape_object_patch_margin": -8.400757789611816,
       "shape_random_region_preserves": true,
       "signature_accepted": true,
       "text_only_accuracy": 0.2916666865348816,
@@ -126,7 +127,7 @@
     "notebook_contract": {
       "accepted": true,
       "baselines": {
-        "image_only_accuracy": 0.1666666716337204,
+        "image_only_accuracy": 0.21666668355464935,
         "joint_accuracy": 1.0,
         "random_visual_accuracy": 0.2916666865348816,
         "text_only_accuracy": 0.2916666865348816
@@ -146,7 +147,7 @@
           32,
           34
         ],
-        "background_patch_margin": 7.956674098968506,
+        "background_patch_margin": 7.495734214782715,
         "background_patch_preserves": true,
         "clean_example": {
           "answer": "red",
@@ -166,7 +167,7 @@
           "split": "patch",
           "style": "muted"
         },
-        "clean_margin": 7.956674098968506,
+        "clean_margin": 7.495734214782715,
         "corrupt_example": {
           "answer": "blue",
           "bbox": [
@@ -185,10 +186,10 @@
           "split": "patch",
           "style": "muted"
         },
-        "corrupt_margin": -7.411350250244141,
+        "corrupt_margin": -6.872373580932617,
         "counterfactual_answer": "blue",
         "full_sequence_matches_corrupt": true,
-        "full_sequence_patch_margin": -7.411350250244141,
+        "full_sequence_patch_margin": -6.872373580932617,
         "object_indices": [
           1,
           2,
@@ -204,7 +205,7 @@
           16
         ],
         "object_patch_flips": true,
-        "object_patch_margin": -7.411350250244141,
+        "object_patch_margin": -6.872373580932617,
         "question_type": "color",
         "random_indices": [
           6,
@@ -220,38 +221,38 @@
           33,
           35
         ],
-        "random_region_patch_margin": 7.956674098968506,
+        "random_region_patch_margin": 7.495734214782715,
         "random_region_preserves": true,
         "rows": [
           {
             "condition": "clean",
             "predicted_answer": "red",
-            "target_minus_counterfactual": 7.956674098968506
+            "target_minus_counterfactual": 7.495734214782715
           },
           {
             "condition": "corrupt",
             "predicted_answer": "blue",
-            "target_minus_counterfactual": -7.411350250244141
+            "target_minus_counterfactual": -6.872373580932617
           },
           {
             "condition": "full_sequence_patch",
             "predicted_answer": "blue",
-            "target_minus_counterfactual": -7.411350250244141
+            "target_minus_counterfactual": -6.872373580932617
           },
           {
             "condition": "object_patch",
             "predicted_answer": "blue",
-            "target_minus_counterfactual": -7.411350250244141
+            "target_minus_counterfactual": -6.872373580932617
           },
           {
             "condition": "background_patch",
             "predicted_answer": "red",
-            "target_minus_counterfactual": 7.956674098968506
+            "target_minus_counterfactual": 7.495734214782715
           },
           {
             "condition": "same_size_random_region_patch",
             "predicted_answer": "red",
-            "target_minus_counterfactual": 7.956674098968506
+            "target_minus_counterfactual": 7.495734214782715
           }
         ],
         "stage": "cache",
@@ -273,7 +274,7 @@
           24,
           30
         ],
-        "background_patch_margin": 7.860771179199219,
+        "background_patch_margin": 7.7462849617004395,
         "background_patch_preserves": true,
         "clean_example": {
           "answer": "square",
@@ -293,7 +294,7 @@
           "split": "patch",
           "style": "muted"
         },
-        "clean_margin": 7.860771179199219,
+        "clean_margin": 7.7462849617004395,
         "corrupt_example": {
           "answer": "circle",
           "bbox": [
@@ -312,10 +313,10 @@
           "split": "patch",
           "style": "muted"
         },
-        "corrupt_margin": -6.750149250030518,
+        "corrupt_margin": -7.798384666442871,
         "counterfactual_answer": "circle",
         "full_sequence_matches_corrupt": true,
-        "full_sequence_patch_margin": -6.750149250030518,
+        "full_sequence_patch_margin": -7.798384666442871,
         "object_indices": [
           19,
           20,
@@ -331,7 +332,7 @@
           34
         ],
         "object_patch_flips": true,
-        "object_patch_margin": -6.750149250030518,
+        "object_patch_margin": -7.798384666442871,
         "question_type": "shape",
         "random_indices": [
           2,
@@ -347,38 +348,38 @@
           29,
           35
         ],
-        "random_region_patch_margin": 7.860771179199219,
+        "random_region_patch_margin": 7.7462849617004395,
         "random_region_preserves": true,
         "rows": [
           {
             "condition": "clean",
             "predicted_answer": "square",
-            "target_minus_counterfactual": 7.860771179199219
+            "target_minus_counterfactual": 7.7462849617004395
           },
           {
             "condition": "corrupt",
             "predicted_answer": "circle",
-            "target_minus_counterfactual": -6.750149250030518
+            "target_minus_counterfactual": -7.798384666442871
           },
           {
             "condition": "full_sequence_patch",
             "predicted_answer": "circle",
-            "target_minus_counterfactual": -6.750149250030518
+            "target_minus_counterfactual": -7.798384666442871
           },
           {
             "condition": "object_patch",
             "predicted_answer": "circle",
-            "target_minus_counterfactual": -6.750149250030518
+            "target_minus_counterfactual": -7.798384666442871
           },
           {
             "condition": "background_patch",
             "predicted_answer": "square",
-            "target_minus_counterfactual": 7.860771179199219
+            "target_minus_counterfactual": 7.7462849617004395
           },
           {
             "condition": "same_size_random_region_patch",
             "predicted_answer": "square",
-            "target_minus_counterfactual": 7.860771179199219
+            "target_minus_counterfactual": 7.7462849617004395
           }
         ],
         "stage": "cache",
@@ -471,10 +472,10 @@
   "ood_tests": {
     "declared": "required_where_applicable"
   },
-  "peak_vram_gb": 0.06935930252075195,
+  "peak_vram_gb": 0.10298442840576172,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "e5b438b18b027c7e38a0e86af3a2ee9044c7fb9a9f8135dc7dc3b78d048b2994",
+    "combined_sha256": "b4f9dd3a040c5bc7e9eb582808986b029f9b4e8d4784f0f9e36f85ed12a01665",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -483,28 +484,28 @@
       },
       {
         "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/12.3_Mini_VLM_from_Scratch_exercises.ipynb",
-        "sha256": "088efab00c16c426ebe9d7f3cdadb3b74cf21cc9de16aa5f9c20b13f0ed8eb20",
-        "size_bytes": 78534
+        "sha256": "be3ef4029bad6556528493df8ec89cb82aa1720a63bfdb65cd455f4c6025feed",
+        "size_bytes": 73543
       },
       {
         "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/12.3_Mini_VLM_from_Scratch_solutions.ipynb",
-        "sha256": "af569665c9e70b58a9a697b13fb082d2b9b2d8d4ebb9b299f45d88ed8dd10075",
-        "size_bytes": 135140
+        "sha256": "ee019d39a9fe8dc096be0f17e1069b63f4874efa2851e8417c274ec7d8203b28",
+        "size_bytes": 149904
       },
       {
         "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/README.md",
-        "sha256": "d56b2eed538b7ef836aa6f0710bd27742b360f8d9803015fa48a2ec63fd92db2",
-        "size_bytes": 913
+        "sha256": "c72e3ea0afd2ca6d237719588b25f310bd26be68872c9ba367d087a04db3fd4b",
+        "size_bytes": 1314
       },
       {
         "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/artifacts.lock.yml",
-        "sha256": "f797d2ebec087c8249533076d9de57ba581c32abeb1987430302cd3a4602e735",
-        "size_bytes": 2672
+        "sha256": "3212bdef9415667bbc95a4e5529dd2ccab698135d5aac7ed5c2ea63f1deee2e4",
+        "size_bytes": 2720
       },
       {
         "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/expected_outputs/README.md",
-        "sha256": "2b3763ca6167fe943069af500349442f10ffbb7c8c7fc4c75a854e7c9ae363b4",
-        "size_bytes": 1333
+        "sha256": "c70a08c0adfe15f5c2b15134967f5aa4ffa702ed00352e26d882aeaa01cd0a0a",
+        "size_bytes": 1470
       },
       {
         "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/expected_outputs/reference_metrics.json",
@@ -518,13 +519,13 @@
       },
       {
         "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/solutions.py",
-        "sha256": "0808428fa4d8c0261247f69f91319f7178c13ebbbe8deecd6d3233a877f37fed",
-        "size_bytes": 48172
+        "sha256": "e395c39c086fff5b2fe5653129230f66c8686eb00774c3dd1f6d067f96bf5eed",
+        "size_bytes": 49890
       },
       {
         "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/tests.py",
-        "sha256": "c49d1324d9c63a58666cb5a9a2ce1889936ae9eb93fee540d0c6256e7784465a",
-        "size_bytes": 18264
+        "sha256": "73a9847bdad56fa92dd9442e910a3fc3ef0f0ac00ac96bfd1bdd3dda8521d0bf",
+        "size_bytes": 23444
       },
       {
         "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/verification_report.schema.json",
@@ -533,8 +534,8 @@
       },
       {
         "path": "chapter12_vlm_interpretability/instructions/pages/03_[12.3]_Mini_VLM_from_Scratch.md",
-        "sha256": "ecfc7afc30ecb2003a505331620a0c523da468c486861f8a6250c03182095e50",
-        "size_bytes": 10087
+        "sha256": "aa7e2134ae0acb7ae1ac8d763e6baf489838abd1b1699124fa567973943cc380",
+        "size_bytes": 54083
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
@@ -550,5 +551,5 @@
     "The result is scoped to the controlled MiniVLM and is not claimed to transfer to frontier VLMs."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 2.552641
+  "wall_clock_seconds": 7.242842
 }

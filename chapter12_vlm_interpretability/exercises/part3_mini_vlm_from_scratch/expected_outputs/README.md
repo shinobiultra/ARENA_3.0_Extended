@@ -9,14 +9,16 @@ contract and the complete 260-step CUDA experiment.
 
 ## Trusted implementation
 
-`solutions.py` is the trusted implementation. Its exact additive visual-token
+`solutions.py` is the release implementation. Its exact additive visual-token
 oracle establishes the patching ground truth before the learned MiniVLM result.
-The learned path uses the same visible functions as the solved notebook.
+The solved notebook independently exposes the same patch encoder, connector,
+causal decoder, losses, controls, and intervention functions; none of these
+taught methods is delegated back to the release module.
 
 ## Random seed
 
 The renderer, train/held-out split, parameter initialization, training order,
-shuffled-visual control, and random-region control use deterministic seed `23`
+shuffled-visual control, and random-region control use deterministic seed `123`
 or an explicitly derived local seed.
 
 ## Allowed tolerances

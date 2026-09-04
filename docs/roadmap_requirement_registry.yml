@@ -832,8 +832,8 @@ requirements:
     course_sections: ["12.1"]
     method_registry_names: ["CLIP, SigLIP, and VLM controls"]
     evidence: [chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls]
-    reason: The learner surface implements normalized contrastive mechanics on controlled scenes.
-    blocker: It does not train a complete image/text encoder pair from scratch through retrieval convergence.
+    reason: Section 12.1 makes students implement normalized all-pairs logits, bidirectional retrieval metrics, and separate trainable image/text projections through exact controlled-scene retrieval convergence.
+    blocker: The toy path starts from engineered image and caption features rather than training complete pixel and token encoders from scratch.
 
   - id: vlm.siglip_loss_from_scratch
     topic: SigLIP sigmoid contrastive loss from scratch
@@ -849,11 +849,11 @@ requirements:
     topic: Real CLIP and SigLIP feature extraction, retrieval, and controls
     chapter: 6 Vision-language interpretability
     section: "12.1"
-    status: PREFLIGHT_ONLY
+    status: TAUGHT
     roadmap_refs: [Extension-Roadmap.md:3566-3673, Extension-Roadmap.md:6334-6362]
     evidence: [chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls]
-    reason: Pinned real CLIP/SigLIP rendered-shape retrieval and hidden-token patching reports exist.
-    blocker: Core model hooking and evaluation remain delegated rather than decomposed into learner exercises.
+    reason: Section 12.1 makes students extract both towers, compute bidirectional retrieval, map object boxes to patch tokens, capture and replace hidden token rows, and evaluate pinned CLIP/SigLIP object patches against background, same-size random, and full-sequence controls.
+    blocker: null
 
   - id: vlm.clip_siglip_feature_geometry
     topic: CLIP and SigLIP feature geometry
@@ -889,12 +889,12 @@ requirements:
     topic: Mini VLM patch encoder, connector, image tokens, causal decoder, and losses from scratch
     chapter: 6 Vision-language interpretability
     section: "12.3"
-    status: TOY_ONLY
+    status: TAUGHT
     roadmap_refs: [Extension-Roadmap.md:3692-3758, Extension-Roadmap.md:6277-6332]
     course_sections: ["12.3"]
     evidence: [chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch]
-    reason: A working controlled mini-VLM and exact grounding tasks exist.
-    blocker: The architecture is largely supplied rather than built by students in a progressive from-scratch sequence.
+    reason: Section 12.3 now makes students progressively build the frozen patch encoder, visual connector, multimodal sequence, causal decoder, complete MiniVLM, loss, training loop, controls, and activation-patching analysis.
+    blocker: null
 
   - id: vlm.paligemma_adapter
     topic: PaliGemma local loading and interpretability adapter

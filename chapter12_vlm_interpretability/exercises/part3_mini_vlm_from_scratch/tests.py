@@ -82,13 +82,41 @@ def test_train_and_heldout_styles_are_disjoint():
     print("All tests in `test_train_and_heldout_styles_are_disjoint` passed!")
 
 
+def test_frozen_patch_encoder_extracts_rgb_and_occupancy(
+    FrozenPatchEncoder: type[t.nn.Module] | None = None,
+):
+    solutions = _solutions()
+    encoder_cls = FrozenPatchEncoder or solutions.FrozenPatchEncoder
+    image, _ = solutions.render_controlled_scene("red", "square", "center")
+    tokens = encoder_cls()(image.unsqueeze(0))
+    assert tokens.shape == (
+        1,
+        solutions.PATCH_GRID**2,
+        solutions.VISION_FEATURE_DIM,
+    ), f"The patch encoder should return [batch, patch, rgb+occupancy]; got {tuple(tokens.shape)}."
+    occupancy = tokens[0, :, 3]
+    assert occupancy.max().item() == 1.0, (
+        "A fully covered object patch should have exact occupancy 1.0."
+    )
+    assert occupancy.min().item() == 0.0, (
+        "A pure background patch should have exact occupancy 0.0."
+    )
+    red_object_tokens = tokens[0, occupancy == 1.0, 0]
+    assert red_object_tokens.mean().item() > 0.9, (
+        "Object-patch mean RGB should preserve the rendered red channel."
+    )
+    print("All tests in `test_frozen_patch_encoder_extracts_rgb_and_occupancy` passed!")
+
+
 def test_visual_token_cache_detaches_and_preserves_patch_grid(
     encode_visual_token_cache: Callable[..., t.Tensor] | None = None,
+    FrozenPatchEncoder: type[t.nn.Module] | None = None,
 ):
     solutions = _solutions()
     encode_visual_token_cache = encode_visual_token_cache or solutions.encode_visual_token_cache
     batch = solutions.build_vqa_batch("train")
-    encoder = solutions.FrozenPatchEncoder()
+    encoder_cls = FrozenPatchEncoder or solutions.FrozenPatchEncoder
+    encoder = encoder_cls()
     cache = encode_visual_token_cache(encoder, batch.images)
     expected_shape = (
         len(batch.examples),
@@ -108,6 +136,49 @@ def test_visual_token_cache_detaches_and_preserves_patch_grid(
         f"Pure background patches should have zero occupancy; got {object_mass.min().item():.4f}."
     )
     print("All tests in `test_visual_token_cache_detaches_and_preserves_patch_grid` passed!")
+
+
+def test_visual_connector_projects_every_patch(
+    VisualConnector: type[t.nn.Module] | None = None,
+):
+    solutions = _solutions()
+    connector_cls = VisualConnector or solutions.VisualConnector
+    connector = connector_cls(solutions.VISION_FEATURE_DIM, 24)
+    cache = t.randn(3, solutions.PATCH_GRID**2, solutions.VISION_FEATURE_DIM)
+    projected = connector(cache)
+    assert projected.shape == (3, solutions.PATCH_GRID**2, 24), (
+        "The connector should change only the feature width while preserving batch and patch axes; "
+        f"got {tuple(projected.shape)}."
+    )
+    assert hasattr(connector, "proj") and hasattr(connector, "norm"), (
+        "The connector should visibly expose a learned projection and normalization step."
+    )
+    print("All tests in `test_visual_connector_projects_every_patch` passed!")
+
+
+def test_causal_decoder_block_cannot_read_future_tokens(
+    CausalDecoderBlock: type[t.nn.Module] | None = None,
+):
+    solutions = _solutions()
+    block_cls = CausalDecoderBlock or solutions.CausalDecoderBlock
+    t.manual_seed(0)
+    block = block_cls(24, 4).eval()
+    sequence = t.randn(2, 7, 24)
+    changed_future = sequence.clone()
+    changed_future[:, -1] += 100.0
+    with t.no_grad():
+        clean, values, attention = block(sequence)
+        changed, _, _ = block(changed_future)
+    assert t.allclose(clean[:, :-1], changed[:, :-1], atol=1e-5), (
+        "Earlier visual-prefix positions must not change when only the final question token changes."
+    )
+    assert values.shape == sequence.shape, (
+        f"The inspectable value stream should preserve sequence shape; got {tuple(values.shape)}."
+    )
+    assert t.allclose(attention.triu(diagonal=1), t.zeros_like(attention), atol=1e-7), (
+        "The causal attention matrix must put zero probability above the diagonal."
+    )
+    print("All tests in `test_causal_decoder_block_cannot_read_future_tokens` passed!")
 
 
 def test_patch_indices_from_bbox_matches_known_grid(
@@ -178,7 +249,13 @@ def test_multimodal_sequence_has_visual_prefix_and_question_token(
 ):
     solutions = _solutions()
     build_multimodal_sequence = build_multimodal_sequence or solutions.build_multimodal_sequence
-    model = solutions.MiniVLM(d_model=24, num_heads=4)
+    class SequenceShell(t.nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.visual_connector = solutions.VisualConnector(solutions.VISION_FEATURE_DIM, 24)
+            self.question_embed = t.nn.Embedding(len(solutions.QUESTION_TYPES) + 1, 24)
+
+    model = SequenceShell()
     cache = t.randn(3, solutions.PATCH_GRID * solutions.PATCH_GRID, solutions.VISION_FEATURE_DIM)
     question_ids = t.tensor([0, 1, 0])
     sequence = build_multimodal_sequence(model, cache, question_ids)
@@ -193,9 +270,12 @@ def test_multimodal_sequence_has_visual_prefix_and_question_token(
     print("All tests in `test_multimodal_sequence_has_visual_prefix_and_question_token` passed!")
 
 
-def test_mini_vlm_uses_real_multi_head_cross_attention():
+def test_mini_vlm_uses_visual_prefix_causal_attention(
+    MiniVLM: type[t.nn.Module] | None = None,
+):
     solutions = _solutions()
-    model = solutions.MiniVLM(d_model=24, num_heads=4)
+    model_cls = MiniVLM or solutions.MiniVLM
+    model = model_cls(d_model=24, num_heads=4)
     cache = t.randn(3, solutions.PATCH_GRID**2, solutions.VISION_FEATURE_DIM)
     questions = t.tensor([0, 1, 0])
     logits, activations = model(cache, questions, return_cache=True)
@@ -214,7 +294,10 @@ def test_mini_vlm_uses_real_multi_head_cross_attention():
     assert activations["value_1"].shape == expected_value_shape, (
         f"Layer-1 values should retain every visual-token row; got {tuple(activations['value_1'].shape)}."
     )
-    print("All tests in `test_mini_vlm_uses_real_multi_head_cross_attention` passed!")
+    assert activations["attention_0"].shape == (3, 4, solutions.PATCH_GRID**2 + 1), (
+        "The final answer position should expose one attention distribution per head over the full prefix."
+    )
+    print("All tests in `test_mini_vlm_uses_visual_prefix_causal_attention` passed!")
 
 
 def test_vqa_accuracy_and_answer_margin(
@@ -234,6 +317,31 @@ def test_vqa_accuracy_and_answer_margin(
         f"Target-minus-counterfactual margins should be [3.0, -1.0]; got {margins.tolist()}."
     )
     print("All tests in `test_vqa_accuracy_and_answer_margin` passed!")
+
+
+def test_mini_vlm_loss_is_next_answer_cross_entropy(
+    mini_vlm_loss: Callable[..., t.Tensor] | None = None,
+    MiniVLM: type[t.nn.Module] | None = None,
+):
+    solutions = _solutions()
+    mini_vlm_loss = mini_vlm_loss or solutions.mini_vlm_loss
+    model_cls = MiniVLM or solutions.MiniVLM
+    t.manual_seed(1)
+    model = model_cls(d_model=24, num_heads=4)
+    cache = t.randn(4, solutions.PATCH_GRID**2, solutions.VISION_FEATURE_DIM)
+    questions = t.tensor([0, 1, 0, 1])
+    labels = t.tensor([0, 4, 1, 5])
+    logits = model(cache, questions)
+    expected = t.nn.functional.cross_entropy(logits, labels)
+    actual = mini_vlm_loss(model, cache, questions, labels)
+    assert t.allclose(actual, expected), (
+        "The training loss should be cross entropy on the answer logits at the final causal position."
+    )
+    actual.backward()
+    assert model.visual_connector.proj.weight.grad is not None, (
+        "The answer loss must backpropagate through the learned visual connector."
+    )
+    print("All tests in `test_mini_vlm_loss_is_next_answer_cross_entropy` passed!")
 
 
 def test_toy_ground_truth_patch_report_has_exact_controls(
@@ -342,10 +450,14 @@ def test_exercise_notebook_exposes_arena_learner_surface():
         "By the end of this notebook",
         "## Core Question",
         "## Cold Open",
-        "### Exercise - build the visual-token cache",
-        "### Exercise - map a bounding box to visual-token indices",
-        "### Exercise - exact toy object patching",
-        "### Exercise - train and evaluate the MiniVLM",
+        "### Exercise 1 - Build the frozen patch encoder",
+        "### Exercise 3 - Learn the visual connector",
+        "### Exercise 4 - Insert image tokens before the question token",
+        "### Exercise 6 - Implement one causal decoder block",
+        "### Exercise 7 - Assemble the MiniVLM",
+        "### Exercise 8 - Implement answer metrics and the training loss",
+        "### Exercise 10 - Establish exact patching ground truth",
+        "### Exercise 11 - Train and falsify the MiniVLM",
         "## Signature Result",
         "## Try It Yourself",
         "## Bonus: Hunt an Anomaly",
@@ -354,17 +466,17 @@ def test_exercise_notebook_exposes_arena_learner_surface():
     ]
     for needle in required:
         assert needle in source, f"Notebook is missing learner-surface marker: {needle}"
-    assert source.count("### Exercise -") == 8, "12.3 should have exactly 8 graded exercises."
-    assert source.count("<summary>Expected output</summary>") >= 8, (
+    assert source.count("### Exercise ") == 12, "12.3 should have exactly 12 graded exercises."
+    assert source.count("<summary>Expected output</summary>") >= 12, (
         "Each graded exercise should include a visible expected-output dropdown."
     )
-    assert source.count("<summary>Help -") >= 8, (
+    assert source.count("<summary>Help -") >= 12, (
         "Each graded exercise should include a reasoning-oriented help dropdown."
     )
-    assert source.count("<summary>Interpretation</summary>") >= 8, (
+    assert source.count("<summary>Interpretation</summary>") >= 12, (
         "Each graded exercise should explain how to interpret its result."
     )
-    assert source.count("<summary>Solution</summary>") >= 8, (
+    assert source.count("<summary>Solution</summary>") >= 12, (
         "Each graded exercise should include a full solution dropdown."
     )
     print("All tests in `test_exercise_notebook_exposes_arena_learner_surface` passed!")
@@ -380,10 +492,15 @@ def test_solution_notebook_exposes_taught_implementations():
     )
     tree = ast.parse(code)
     taught = {
+        "FrozenPatchEncoder",
+        "VisualConnector",
+        "CausalDecoderBlock",
+        "MiniVLM",
         "encode_visual_token_cache",
         "build_multimodal_sequence",
         "vqa_accuracy",
         "answer_margin",
+        "mini_vlm_loss",
         "patch_indices_from_bbox",
         "patch_visual_tokens",
         "toy_ground_truth_patch_report",
@@ -396,7 +513,7 @@ def test_solution_notebook_exposes_taught_implementations():
     definitions = {
         node.name: node
         for node in ast.walk(tree)
-        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+        if isinstance(node, (ast.ClassDef, ast.FunctionDef, ast.AsyncFunctionDef))
     }
     assert taught <= definitions.keys(), f"Missing inline solution bodies: {taught - definitions.keys()}"
     for name in taught:

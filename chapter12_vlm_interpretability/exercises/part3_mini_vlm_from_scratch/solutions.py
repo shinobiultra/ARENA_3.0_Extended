@@ -371,8 +371,76 @@ def _replace_token_rows(
     return patched
 
 
+class VisualConnector(nn.Module):
+    """Map frozen vision features into the decoder residual-stream width."""
+
+    def __init__(self, vision_feature_dim: int, d_model: int):
+        super().__init__()
+        self.proj = nn.Linear(vision_feature_dim, d_model)
+        self.norm = nn.LayerNorm(d_model)
+
+    def forward(self, visual_cache: t.Tensor) -> t.Tensor:
+        if visual_cache.ndim != 3:
+            raise ValueError("visual_cache must have shape (batch, tokens, features).")
+        return self.norm(self.proj(visual_cache.float()))
+
+
+class CausalDecoderBlock(nn.Module):
+    """One pre-norm causal self-attention block with an inspectable value stream."""
+
+    def __init__(self, d_model: int, num_heads: int):
+        super().__init__()
+        if d_model % num_heads != 0:
+            raise ValueError("d_model must be divisible by num_heads.")
+        self.d_model = d_model
+        self.num_heads = num_heads
+        self.head_dim = d_model // num_heads
+        self.ln1 = nn.LayerNorm(d_model)
+        self.q_proj = nn.Linear(d_model, d_model)
+        self.k_proj = nn.Linear(d_model, d_model)
+        self.v_proj = nn.Linear(d_model, d_model)
+        self.out_proj = nn.Linear(d_model, d_model)
+        self.ln2 = nn.LayerNorm(d_model)
+        self.mlp = nn.Sequential(
+            nn.Linear(d_model, 4 * d_model),
+            nn.GELU(),
+            nn.Linear(4 * d_model, d_model),
+        )
+
+    def forward(
+        self,
+        sequence: t.Tensor,
+        *,
+        replacement_values: t.Tensor | None = None,
+        patch_indices: tuple[int, ...] = (),
+    ) -> tuple[t.Tensor, t.Tensor, t.Tensor]:
+        batch, seq_len, _ = sequence.shape
+        normalized = self.ln1(sequence)
+
+        def split_heads(values: t.Tensor) -> t.Tensor:
+            return values.reshape(batch, seq_len, self.num_heads, self.head_dim).transpose(1, 2)
+
+        queries = split_heads(self.q_proj(normalized))
+        keys = split_heads(self.k_proj(normalized))
+        values = self.v_proj(normalized)
+        cached_values = values.detach()
+        if replacement_values is not None:
+            values = _replace_token_rows(values, patch_indices, replacement_values)
+        values_by_head = split_heads(values)
+        scores = queries @ keys.transpose(-1, -2) / self.head_dim**0.5
+        causal_mask = t.triu(
+            t.ones(seq_len, seq_len, dtype=t.bool, device=sequence.device),
+            diagonal=1,
+        )
+        attention = scores.masked_fill(causal_mask, float("-inf")).softmax(dim=-1)
+        context = (attention @ values_by_head).transpose(1, 2).reshape(batch, seq_len, self.d_model)
+        sequence = sequence + self.out_proj(context)
+        sequence = sequence + self.mlp(self.ln2(sequence))
+        return sequence, cached_values, attention.detach()
+
+
 class MiniVLM(nn.Module):
-    """Tiny cross-attention decoder over visual patch tokens and one question token."""
+    """Tiny visual-prefix causal decoder which predicts from the final question token."""
 
     def __init__(
         self,
@@ -392,21 +460,10 @@ class MiniVLM(nn.Module):
         self.num_layers = num_layers
         self.num_heads = num_heads
         self.head_dim = d_model // num_heads
-        self.visual_projector = nn.Linear(vision_feature_dim, d_model)
+        self.visual_connector = VisualConnector(vision_feature_dim, d_model)
         self.question_embed = nn.Embedding(len(QUESTION_TYPES) + 1, d_model)
-        self.query_layers = nn.ModuleList([nn.Linear(d_model, d_model) for _ in range(num_layers)])
-        self.key_layers = nn.ModuleList([nn.Linear(d_model, d_model) for _ in range(num_layers)])
-        self.value_layers = nn.ModuleList([nn.Linear(d_model, d_model) for _ in range(num_layers)])
-        self.update_layers = nn.ModuleList(
-            [
-                nn.Sequential(
-                    nn.LayerNorm(2 * d_model),
-                    nn.Linear(2 * d_model, 2 * d_model),
-                    nn.GELU(),
-                    nn.Linear(2 * d_model, d_model),
-                )
-                for _ in range(num_layers)
-            ]
+        self.decoder_blocks = nn.ModuleList(
+            [CausalDecoderBlock(d_model, num_heads) for _ in range(num_layers)]
         )
         self.final_norm = nn.LayerNorm(d_model)
         self.answer_head = nn.Linear(d_model, num_answers)
@@ -436,7 +493,7 @@ class MiniVLM(nn.Module):
         if stage == "cache":
             visual_cache = _replace_token_rows(visual_cache, patch_indices, replacement)  # type: ignore[arg-type]
 
-        visual_tokens = self.visual_projector(visual_cache.float())
+        visual_tokens = self.visual_connector(visual_cache)
         cache: dict[str, t.Tensor] = {}
         if return_cache:
             cache["cache"] = visual_cache.detach()
@@ -447,42 +504,19 @@ class MiniVLM(nn.Module):
         question_tokens = self.question_embed(question_ids.to(visual_cache.device))
         if ablate_question:
             question_tokens = t.zeros_like(question_tokens)
-        question_state = question_tokens
-        batch_size, num_visual_tokens, _ = visual_tokens.shape
-        scale = self.head_dim**0.5
-        for layer_index in range(self.num_layers):
-            query = self.query_layers[layer_index](question_state)
-            keys = self.key_layers[layer_index](visual_tokens)
-            values = self.value_layers[layer_index](visual_tokens)
+        sequence = t.cat([visual_tokens, question_tokens.unsqueeze(1)], dim=1)
+        for layer_index, block in enumerate(self.decoder_blocks):
             layer_stage = f"value_{layer_index}"
+            sequence, values, attention = block(
+                sequence,
+                replacement_values=replacement if stage == layer_stage else None,  # type: ignore[arg-type]
+                patch_indices=patch_indices,
+            )
             if return_cache:
-                cache[layer_stage] = values.detach()
-            if stage == layer_stage:
-                values = _replace_token_rows(values, patch_indices, replacement)  # type: ignore[arg-type]
-            query = query.reshape(batch_size, self.num_heads, 1, self.head_dim)
-            keys = keys.reshape(
-                batch_size,
-                num_visual_tokens,
-                self.num_heads,
-                self.head_dim,
-            ).transpose(1, 2)
-            values_by_head = values.reshape(
-                batch_size,
-                num_visual_tokens,
-                self.num_heads,
-                self.head_dim,
-            ).transpose(1, 2)
-            attention = (query @ keys.transpose(-1, -2) / scale).softmax(dim=-1)
-            context = (attention @ values_by_head).transpose(1, 2).reshape(
-                batch_size,
-                self.d_model,
-            )
-            update = self.update_layers[layer_index](
-                t.cat([question_state, context], dim=-1)
-            )
-            question_state = question_state + update
+                cache[layer_stage] = values[:, : self.num_visual_tokens]
+                cache[f"attention_{layer_index}"] = attention[:, :, -1, :].detach()
 
-        answer_state = self.final_norm(question_state)
+        answer_state = self.final_norm(sequence[:, -1])
         logits = self.answer_head(answer_state)
         if return_cache:
             return logits, cache
@@ -496,7 +530,7 @@ def build_multimodal_sequence(
 ) -> t.Tensor:
     """Project visual tokens and append the question token."""
 
-    visual_tokens = model.visual_projector(visual_cache.float())
+    visual_tokens = model.visual_connector(visual_cache)
     question_tokens = model.question_embed(question_ids.to(visual_tokens.device)).unsqueeze(1)
     return t.cat([visual_tokens, question_tokens], dim=1)
 
@@ -526,6 +560,20 @@ def answer_margin(
         counterfactual_labels.to(logits.device).reshape(-1, 1),
     ).squeeze(1)
     return target - counter
+
+
+def mini_vlm_loss(
+    model: MiniVLM,
+    visual_cache: t.Tensor,
+    question_ids: t.Tensor,
+    labels: t.Tensor,
+) -> t.Tensor:
+    """Return next-answer cross entropy from the final causal question position."""
+
+    logits = model(visual_cache, question_ids)
+    if not isinstance(logits, t.Tensor):
+        raise TypeError("MiniVLM must return logits when return_cache=False.")
+    return F.cross_entropy(logits, labels.to(logits.device))
 
 
 def toy_ground_truth_patch_report(
@@ -615,9 +663,7 @@ def train_mini_vlm(
     optimizer = t.optim.AdamW(model.parameters(), lr=lr, weight_decay=1e-4)
     losses: list[float] = []
     for step in range(steps):
-        logits = model(train_cache, train_questions)
-        assert isinstance(logits, t.Tensor)
-        loss = F.cross_entropy(logits, train_labels)
+        loss = mini_vlm_loss(model, train_cache, train_questions, train_labels)
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()

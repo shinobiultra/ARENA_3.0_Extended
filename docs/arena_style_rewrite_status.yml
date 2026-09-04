@@ -116,11 +116,11 @@ sections:
   '12.1':
     status: course_ready
     page: chapter12_vlm_interpretability/instructions/pages/01_[12.1]_CLIP_SigLIP_and_VLM_Controls.md
-    notes: ARENA-style rewrite with CLIP/SigLIP validation-loop and signature-result diagrams, normalized contrastive logits, bidirectional retrieval margins, SigLIP pairwise loss, controlled colored-shape counterfactual scenes, localized visual-token attribution, scoped real CLIP/SigLIP/Qwen CUDA report evidence, limitations, and paired notebook surfaces.
+    notes: "ARENA-style ten-exercise progression from normalized CLIP logits, bidirectional retrieval, SigLIP loss, tiny-CLIP training, and failed caption controls to learner-written real embedding extraction, box-to-token geometry, hook/cache handling, hidden-token intervention, causal metrics, and Qwen continuation decoding. Twenty-five focused tests and all 22 solution cells pass. CUDA 13.2 verification gives pinned CLIP/SigLIP bidirectional retrieval 1.000/1.000, object-token gaps over background and same-size random controls of 14.93/31.45, exact Qwen2.5-VL-3B answers for both controlled scenes, and 7.082 GB peak VRAM. Qwen supports grounded generation only; it is not used to claim hidden-token localization."
   '12.3':
     status: course_ready
     page: chapter12_vlm_interpretability/instructions/pages/03_[12.3]_Mini_VLM_from_Scratch.md
-    notes: Eight-exercise ARENA progression from frozen visual-token caching and exact object-patch ground truth to a trained multi-head cross-attention MiniVLM. The visible signature panel and layer-position heatmap show perfect held-out muted-style VQA, failed modality and shuffled-visual controls, and counterfactual object-token answer flips while background and same-size random regions preserve the clean answer; the full result is independently rerun on CUDA 13.2.
+    notes: "ARENA-style twelve-exercise build of a frozen patch encoder, detached token cache, connector, multimodal sequence, exact row replacement, causal decoder block, complete MiniVLM, metrics/loss, box-to-token mapping, exact patching oracle, training controls, and trained activation patching. Sixteen focused tests and all 27 solution cells pass. CUDA 13.2 training reaches 1.000 held-out muted-style VQA while text-only, image-only, and shuffled-visual controls score 0.292, 0.217, and 0.292; color and shape object patches flip the answer while background and same-size random regions preserve it, at 0.103 GB peak VRAM. The claim is limited to the controlled course model, not transfer to frontier VLMs."
   '13.1':
     status: course_ready
     page: chapter13_image_generation_interpretability/instructions/pages/01_[13.1]_Diffusion_and_Image_Generation_Controls.md
