@@ -18,7 +18,11 @@
       "unpatched_neutral_prompt_text_only_baseline",
       "counterfactual_clean_corrupt_residual_decode_change",
       "small_random_activation_low_confidence_control",
-      "released_tuned_lens_benchmark_not_claimed"
+      "released_tuned_lens_benchmark_not_claimed",
+      "pinned_pythia_six_layer_cpu_cache",
+      "disjoint_24_prompt_heldout_split",
+      "cyclic_wrong_source_activation_control",
+      "matched_scale_random_activation_control"
     ],
     "expected_metrics": {
       "accepted": true,
@@ -37,6 +41,14 @@
       "heldout_position_count": 40,
       "heldout_prompt_count": 6,
       "hf_revision": "bddc0e332f0ae84279e6a6a45d91b314899e1603",
+      "learner_cpu_embedding_median_target_rank": 18163,
+      "learner_cpu_final_median_target_rank": 1,
+      "learner_cpu_heldout_count": 24,
+      "learner_cpu_patched_accuracy_min": 0.75,
+      "learner_cpu_patched_mean_logprob_gain_min": 2.0,
+      "learner_cpu_random_accuracy_max": 0.1,
+      "learner_cpu_text_only_accuracy_max": 0.1,
+      "learner_cpu_wrong_source_accuracy_max": 0.1,
       "logit_lens_accuracy_max": 0.2,
       "max_allowed_gpu_gb": 24,
       "model_name": "gelu-1l",
@@ -80,11 +92,20 @@
       "target_source": "model_final_logits_argmax",
       "tokenizer": "NeelNanda/gpt-neox-tokenizer-digits",
       "train_prompt_count": 16
+    },
+    {
+      "heldout_prompt_count": 24,
+      "id": "pythia_lens_patchscope_cpu_prompts_v1",
+      "patch_block": 5,
+      "source": "course_authored_safe_prompts",
+      "target_prompt": "The hidden next token is",
+      "target_source": "pinned_model_final_logits_argmax",
+      "train_prompt_count": 48
     }
   ],
-  "date_run": "2026-09-04T08:42:29+00:00",
-  "evidence_level": "toy_lens_contract_plus_pinned_transformerlens_affine_lens_patchscope_preflight",
-  "git_commit": "b6c4854d",
+  "date_run": "2026-09-04T13:59:22+00:00",
+  "evidence_level": "toy_lens_contract_plus_pinned_pythia_cpu_lens_patchscope_lab_plus_transformerlens_preflight",
+  "git_commit": "080743f7",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-1",
   "known_failures": [],
@@ -105,6 +126,14 @@
         "heldout_prompt_count",
         "hf_model_id",
         "hf_revision",
+        "learner_cpu_embedding_median_target_rank",
+        "learner_cpu_final_median_target_rank",
+        "learner_cpu_heldout_count",
+        "learner_cpu_patched_accuracy",
+        "learner_cpu_patched_mean_logprob_gain",
+        "learner_cpu_random_accuracy",
+        "learner_cpu_text_only_accuracy",
+        "learner_cpu_wrong_source_accuracy",
         "logit_lens_accuracy",
         "model_name",
         "patchscope_accuracy",
@@ -150,6 +179,14 @@
       "heldout_prompt_count": 6,
       "hf_model_id": "NeelNanda/GELU_1L512W_C4_Code",
       "hf_revision": "bddc0e332f0ae84279e6a6a45d91b314899e1603",
+      "learner_cpu_embedding_median_target_rank": 18163,
+      "learner_cpu_final_median_target_rank": 1,
+      "learner_cpu_heldout_count": 24,
+      "learner_cpu_patched_accuracy": 0.875,
+      "learner_cpu_patched_mean_logprob_gain": 7.729530334472656,
+      "learner_cpu_random_accuracy": 0.0,
+      "learner_cpu_text_only_accuracy": 0.0,
+      "learner_cpu_wrong_source_accuracy": 0.0,
       "logit_lens_accuracy": 0.07500000298023224,
       "model_name": "gelu-1l",
       "patchscope_accuracy": 1.0,
@@ -344,13 +381,23 @@
       "tokenizer_id": "NeelNanda/gpt-neox-tokenizer-digits",
       "tokenizer_revision": "0f6671571a20be9756b9991d978047c03b75e749",
       "transformerlens_model_name": "gelu-1l"
+    },
+    {
+      "claim_scope": "six_layer_decoding_ridge_lens_and_activation_insertion_learner_lab",
+      "device": "cpu",
+      "gated": false,
+      "id": "EleutherAI/pythia-70m-deduped",
+      "precision": "float32",
+      "revision": "e93a9faa9c77e5d09219f6c868bfc7a1bd65593c",
+      "source": "huggingface_local_cache"
     }
   ],
   "negative_controls": {
     "declared_controls": [
       "negative_control_where_applicable",
       "toy_random_activation_confidence_contract",
-      "small_random_activation_low_confidence_control"
+      "small_random_activation_low_confidence_control",
+      "matched_scale_random_activation_control"
     ]
   },
   "notebook_id": "7_1_logit_lens_tuned_lens_and_patchscopes",
@@ -360,7 +407,7 @@
   "peak_vram_gb": 0.2957010269165039,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "e9558980a81b7e55d7ea5a9b5770140f292ad595a7de9e91abe812cf07a56fe7",
+    "combined_sha256": "27a819d977c0ed8ade70694c8f6c9c6aa1a673866bb430177fbb354028e8d441",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -369,13 +416,13 @@
       },
       {
         "path": "chapter7_activation_to_language/exercises/part1_lenses_patchscopes/7.1_Logit_Lens_Tuned_Lens_and_Patchscopes_exercises.ipynb",
-        "sha256": "33b8de41f776c265da17ea97c65ab94f67e38fd37c2fc2529405f9f901934d78",
-        "size_bytes": 55221
+        "sha256": "c2f3c4b5c8e1f2f0a7001cfb654494e2a3629da864f29037df99eaf2f252afde",
+        "size_bytes": 70459
       },
       {
         "path": "chapter7_activation_to_language/exercises/part1_lenses_patchscopes/7.1_Logit_Lens_Tuned_Lens_and_Patchscopes_solutions.ipynb",
-        "sha256": "ea69ca28ac447efa1defb4f1cdebbf3ceb151d7b4f26fdfb3ad605921d940d19",
-        "size_bytes": 67734
+        "sha256": "356405f1142fa83febc9fa5343581269f040646d58d130dbb44e9e20a7a35a63",
+        "size_bytes": 254127
       },
       {
         "path": "chapter7_activation_to_language/exercises/part1_lenses_patchscopes/README.md",
@@ -384,13 +431,13 @@
       },
       {
         "path": "chapter7_activation_to_language/exercises/part1_lenses_patchscopes/artifacts.lock.yml",
-        "sha256": "47c40cb862ca4e9123e812d9b36863d3588aff19b1e5f70c8dc790b71a4ec0b3",
-        "size_bytes": 4487
+        "sha256": "d1ec0ee2d72c4de0c832f81c88a6da7c408a0e0d99e75e7ac1c81d41bc199463",
+        "size_bytes": 5839
       },
       {
         "path": "chapter7_activation_to_language/exercises/part1_lenses_patchscopes/expected_outputs/README.md",
-        "sha256": "16fed3296e0b30e547f2c8a0b585d8555cd166fb2edcd06cbdb3791d5e40c3d5",
-        "size_bytes": 1791
+        "sha256": "1b41aa4f5da5d1ec6742d9fcf7323c057b85aeb2a359bc5ec6a19b245d90e3f7",
+        "size_bytes": 2357
       },
       {
         "path": "chapter7_activation_to_language/exercises/part1_lenses_patchscopes/expected_outputs/reference_metrics.json",
@@ -404,13 +451,13 @@
       },
       {
         "path": "chapter7_activation_to_language/exercises/part1_lenses_patchscopes/solutions.py",
-        "sha256": "b0e53803da3f4c2826691e36bcb2b218d3a1689d68aa12facb793ffe62b18b73",
-        "size_bytes": 28126
+        "sha256": "6ff068b44e9e3ce849a6cc0209864a8d753eede31a09aa0d0a9b39f027795d18",
+        "size_bytes": 44300
       },
       {
         "path": "chapter7_activation_to_language/exercises/part1_lenses_patchscopes/tests.py",
-        "sha256": "06229d44c566131e4521db2fabe4a2698e00292505e13d7d2c2fc46ccfc7d96b",
-        "size_bytes": 17947
+        "sha256": "050ee10559be1add41aa9c22b20fbe3136d29bb87cfa4990c1b89adc205aaab5",
+        "size_bytes": 24184
       },
       {
         "path": "chapter7_activation_to_language/exercises/part1_lenses_patchscopes/utils.py",
@@ -424,8 +471,8 @@
       },
       {
         "path": "chapter7_activation_to_language/instructions/pages/01_[7.1]_Logit_Lens_Tuned_Lens_and_Patchscopes.md",
-        "sha256": "e74831b75078660bfc24ddf67d4b8f20e1bb086bc12c9f3a7a8c4610401b9e37",
-        "size_bytes": 25255
+        "sha256": "a070a4249197a3744a6ca0f922c173ab854c2120f262b822b294a36898e2546b",
+        "size_bytes": 41919
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
@@ -440,5 +487,5 @@
     "The real-model path uses safe generic prompts and reads cached activations, logits, and attention values from a small public TransformerLens checkpoint. It does not use unsafe prompts, gated weights, or generated completions."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 5.47651
+  "wall_clock_seconds": 11.878218
 }

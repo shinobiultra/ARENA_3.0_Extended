@@ -1,4 +1,7 @@
+import ast
+import json
 from collections.abc import Callable
+from pathlib import Path
 
 import torch as t
 
@@ -425,3 +428,138 @@ def test_notebook_contract(run_smoke_test: Callable | None = None):
         "Notebook contract should include a low-confidence random-activation control."
     )
     print("All tests in `test_notebook_contract` passed!")
+
+
+def test_layer_rank_and_batch_insertion_helpers():
+    solutions = _solutions()
+    logits = t.tensor(
+        [
+            [[4.0, 2.0, 1.0], [0.0, 3.0, 2.0]],
+            [[1.0, 5.0, 0.0], [0.0, 1.0, 4.0]],
+        ]
+    )
+    targets = t.tensor([1, 2])
+    ranks = solutions.target_token_ranks(logits, targets)
+    assert ranks.tolist() == [[2, 2], [1, 1]], (
+        "Target ranks should be one-indexed independently at every stage and example."
+    )
+
+    hidden = t.zeros(2, 4, 3)
+    source = t.tensor([[1.0, 2.0, 3.0], [-1.0, -2.0, -3.0]])
+    patched = solutions.replace_hidden_state_batch(hidden, source, position=2)
+    t.testing.assert_close(
+        patched[:, 2],
+        source,
+        msg="Each batch row should receive its own source activation.",
+    )
+    assert patched[:, [0, 1, 3]].abs().sum().item() == 0.0, (
+        "Residual insertion should leave every unselected position unchanged."
+    )
+    print("All tests in `test_layer_rank_and_batch_insertion_helpers` passed!")
+
+
+def test_real_pythia_cpu_lens_and_patchscope_progression():
+    solutions = _solutions()
+    result = solutions.run_pythia_cpu_lens_lab(ridge=0.1)
+    lens = result["lens"]
+    patchscope = result["patchscope"]
+
+    assert len(result["heldout_cache"]["prompts"]) == 24, (
+        "The real learner result should use 24 disjoint, meaningful held-out prompts."
+    )
+    logit_medians = lens["logit_ranks"].float().median(dim=1).values
+    tuned_medians = lens["tuned_ranks"].float().median(dim=1).values
+    assert logit_medians[0] > logit_medians[3] > logit_medians[-1] == 1, (
+        "Ordinary logit-lens target ranks should improve from embedding to middle to final stage."
+    )
+    assert int((tuned_medians[:-1] < logit_medians[:-1]).sum().item()) >= 3, (
+        "The ridge lens should improve median target rank at several early or middle stages."
+    )
+    assert bool((tuned_medians[:-1] > logit_medians[:-1]).any()), (
+        "The pinned result should retain the honest anomaly that calibration is not uniformly helpful."
+    )
+    assert patchscope["heldout_count"] == 24, (
+        "Patchscope evaluation should cover the same 24 held-out source prompts."
+    )
+    assert patchscope["patched_accuracy"] >= 0.75, (
+        "Inserted source activations should recover most source targets after one remaining block."
+    )
+    assert patchscope["text_only_accuracy"] <= 0.10, (
+        "The identical target prompt should not recover source-specific targets on its own."
+    )
+    assert patchscope["wrong_source_accuracy"] <= 0.10, (
+        "Cyclic wrong-source activations should fail the source-specific target labels."
+    )
+    assert patchscope["random_accuracy"] <= 0.10, (
+        "Matched-scale random activations should fail the source-specific target labels."
+    )
+    assert patchscope["patched_mean_logprob_gain"] >= 2.0, (
+        "Correct source insertion should materially raise held-out target log-probability."
+    )
+    release_metrics = solutions.summarize_pythia_cpu_lens_lab(result)
+    assert release_metrics == {
+        "learner_cpu_heldout_count": 24,
+        "learner_cpu_embedding_median_target_rank": 18163,
+        "learner_cpu_final_median_target_rank": 1,
+        "learner_cpu_patched_accuracy": patchscope["patched_accuracy"],
+        "learner_cpu_text_only_accuracy": patchscope["text_only_accuracy"],
+        "learner_cpu_wrong_source_accuracy": patchscope["wrong_source_accuracy"],
+        "learner_cpu_random_accuracy": patchscope["random_accuracy"],
+        "learner_cpu_patched_mean_logprob_gain": patchscope["patched_mean_logprob_gain"],
+    }, "Release metrics must be derived from the exact learner-visible experiment."
+    print("All tests in `test_real_pythia_cpu_lens_and_patchscope_progression` passed!")
+
+
+def test_real_pythia_pipeline_is_split_across_learner_cells():
+    section = Path(__file__).resolve().parent
+    paths = (
+        section / "7.1_Logit_Lens_Tuned_Lens_and_Patchscopes_exercises.ipynb",
+        section / "7.1_Logit_Lens_Tuned_Lens_and_Patchscopes_solutions.ipynb",
+    )
+    required_functions = {
+        "cache_pythia_hidden_states",
+        "decode_pythia_stages",
+        "target_token_ranks",
+        "fit_layerwise_ridge_lenses",
+        "evaluate_pythia_lenses",
+        "replace_hidden_state_batch",
+        "run_pythia_with_inserted_residuals",
+        "evaluate_pythia_patchscope",
+    }
+    for path in paths:
+        notebook = json.loads(path.read_text())
+        markdown = "\n".join(
+            "".join(cell.get("source", []))
+            for cell in notebook["cells"]
+            if cell["cell_type"] == "markdown"
+        )
+        code_cells = [
+            "".join(cell.get("source", []))
+            for cell in notebook["cells"]
+            if cell["cell_type"] == "code"
+        ]
+        definition_cells: dict[str, int] = {}
+        for index, source in enumerate(code_cells):
+            tree = ast.parse(source)
+            for node in ast.walk(tree):
+                if isinstance(node, ast.FunctionDef) and node.name in required_functions:
+                    definition_cells[node.name] = index
+        assert set(definition_cells) == required_functions, (
+            "Both notebooks must expose every taught real-model sub-function inline."
+        )
+        assert len(set(definition_cells.values())) >= 5, (
+            "Caching, decoding, fitting, insertion, and controls must remain separate learner steps."
+        )
+        assert max(map(len, code_cells)) < 5_000, (
+            "The real Pythia lesson must not regress to one monolithic implementation cell."
+        )
+        assert "24 disjoint held-out prompts" in markdown, (
+            "The learner-facing claim must name the blind 24-prompt evaluation split."
+        )
+        assert "pythia_lens_patchscope_cpu_signature.png" in "\n".join(code_cells), (
+            "The notebook must generate its own visible Pythia signature figure."
+        )
+        assert "verification_report.json" in "\n".join(code_cells), (
+            "Release evidence may be exposed only as an optional supporting handoff."
+        )
+    print("All tests in `test_real_pythia_pipeline_is_split_across_learner_cells` passed!")

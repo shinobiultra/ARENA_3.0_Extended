@@ -379,6 +379,13 @@ def test_solution_notebook_exposes_taught_implementations():
         "word_compression_ratio",
         "counterfactual_route_flip",
         "build_signature_payload",
+        "cache_pythia_text_bottleneck_dataset",
+        "fit_real_residual_phrase_encoder",
+        "predict_residual_phrases",
+        "pythia_phrase_text_features",
+        "fit_phrase_text_decoder",
+        "decode_phrase_text_features",
+        "evaluate_pythia_text_bottleneck",
     }
     tree = ast.parse(code)
     defined = {node.name for node in ast.walk(tree) if isinstance(node, ast.FunctionDef)}
@@ -389,7 +396,7 @@ def test_solution_notebook_exposes_taught_implementations():
     assert "solutions." not in code and "import solutions" not in code, (
         'The solution notebook must keep taught implementations, learner aids, and the visible signature result inline.'
     )
-    assert markdown.count("### Exercise -") == 8, (
+    assert markdown.count("### Exercise -") == 12, (
         'The solution notebook must keep taught implementations, learner aids, and the visible signature result inline.'
     )
     print("All tests in `test_solution_notebook_exposes_taught_implementations` passed!")
@@ -408,36 +415,122 @@ def test_learner_surfaces_have_complete_progression():
     for path in (EXERCISE_NOTEBOOK, SOLUTION_NOTEBOOK):
         markdown, code = _notebook_text(path)
         assert all(marker in markdown for marker in required_markers), f"Missing progression marker in {path.name}"
-        assert markdown.count("### Exercise -") == 8, (
-            'Each NLA learner surface must contain all eight exercises and their expected, help, interpretation, and solution aids.'
+        assert markdown.count("### Exercise -") == 12, (
+            'Each NLA learner surface must contain all twelve exercises and their expected, help, interpretation, and solution aids.'
         )
-        assert markdown.count("<summary>Expected output</summary>") == 8, (
-            'Each NLA learner surface must contain all eight exercises and their expected, help, interpretation, and solution aids.'
+        assert markdown.count("<summary>Expected output</summary>") == 12, (
+            'Each NLA learner surface must contain all twelve exercises and their expected, help, interpretation, and solution aids.'
         )
-        assert markdown.count("<summary>Help") == 8, (
-            'Each NLA learner surface must contain all eight exercises and their expected, help, interpretation, and solution aids.'
+        assert markdown.count("<summary>Help") == 12, (
+            'Each NLA learner surface must contain all twelve exercises and their expected, help, interpretation, and solution aids.'
         )
-        assert markdown.count("<summary>Interpretation</summary>") == 8, (
-            'Each NLA learner surface must contain all eight exercises and their expected, help, interpretation, and solution aids.'
+        assert markdown.count("<summary>Interpretation</summary>") == 12, (
+            'Each NLA learner surface must contain all twelve exercises and their expected, help, interpretation, and solution aids.'
         )
-        assert markdown.count("<summary>Solution</summary>") == 8, (
-            'Each NLA learner surface must contain all eight exercises and their expected, help, interpretation, and solution aids.'
+        assert markdown.count("<summary>Solution</summary>") == 12, (
+            'Each NLA learner surface must contain all twelve exercises and their expected, help, interpretation, and solution aids.'
         )
         for cell in json.loads(path.read_text())["cells"]:
             if cell.get("cell_type") == "code":
                 ast.parse("".join(cell.get("source", [])))
         assert code.count("verification_report.json") == 1, (
-            'Each NLA learner surface must contain all eight exercises and their expected, help, interpretation, and solution aids.'
+            'The report may appear once as optional release evidence, never as the learner result.'
         )
 
     page = PAGE.read_text()
     assert all(marker in page for marker in required_markers), (
         'Each NLA learner surface must contain all eight exercises and their expected, help, interpretation, and solution aids.'
     )
-    assert page.count("### Exercise -") == 8, (
-        'Each NLA learner surface must contain all eight exercises and their expected, help, interpretation, and solution aids.'
+    assert page.count("### Exercise -") == 12, (
+        'Each NLA learner surface must contain all twelve exercises and their expected, help, interpretation, and solution aids.'
     )
     assert "mini_nla_signature_result.png" in page, (
         'Each NLA learner surface must contain all eight exercises and their expected, help, interpretation, and solution aids.'
     )
+    assert "pythia_real_text_bottleneck.png" in page, (
+        "The page must display the real Pythia text-bottleneck signature figure."
+    )
     print("All tests in `test_learner_surfaces_have_complete_progression` passed!")
+
+
+def test_real_phrase_features_use_pythia_token_embeddings():
+    solutions = _solutions()
+    tokenizer, model = solutions.load_pythia_text_bottleneck_model()
+    features = solutions.pythia_phrase_text_features(
+        tokenizer,
+        model,
+        solutions.PYTHIA_NLA_PHRASES,
+    )
+    assert features.shape == (6, model.config.hidden_size), (
+        "Every phrase must become one full-width Pythia embedding feature."
+    )
+    assert t.linalg.matrix_rank(features).item() == 6, (
+        "The six phrase embeddings must remain distinguishable to the decoder."
+    )
+    token_ids = tokenizer.encode(
+        solutions.PYTHIA_NLA_PHRASES[0],
+        add_special_tokens=False,
+        return_tensors="pt",
+    )
+    with t.inference_mode():
+        expected = model.get_input_embeddings()(token_ids).mean(dim=1).squeeze(0).float()
+    t.testing.assert_close(features[0], expected)
+    print("All tests in `test_real_phrase_features_use_pythia_token_embeddings` passed!")
+
+
+def test_real_pythia_residual_text_bottleneck_beats_controls():
+    solutions = _solutions()
+    tokenizer, model = solutions.load_pythia_text_bottleneck_model()
+    dataset = solutions.cache_pythia_text_bottleneck_dataset(tokenizer, model)
+    report = solutions.evaluate_pythia_text_bottleneck(tokenizer, model, dataset)
+
+    assert dataset.train_residuals.shape == (36, model.config.hidden_size), (
+        "The real encoder must train on all 36 precommitted Pythia residuals."
+    )
+    assert dataset.eval_residuals.shape == (18, model.config.hidden_size), (
+        "The real result must retain the complete 18-prompt blind split."
+    )
+    assert report.phrase_accuracy >= 0.75, (
+        "Real residuals must support useful held-out phrase recovery."
+    )
+    assert report.shuffled_label_accuracy <= 0.25, (
+        "Shuffled labels must not be recoverable by the same encoder capacity."
+    )
+    assert report.reconstruction_mse < report.no_text_mse < report.shuffled_phrase_mse, (
+        "Reconstruction error must order learned text, no text, then wrong text."
+    )
+    assert report.oracle_phrase_mse < report.no_text_mse, (
+        "Correct natural-language phrases must beat the global-mean residual."
+    )
+    assert report.reconstructed_target_accuracy >= 0.75, (
+        "The end-to-end text bottleneck must preserve most next-token behavior."
+    )
+    assert report.oracle_phrase_target_accuracy == 1.0, (
+        "The text decoder must preserve every target when supplied the correct phrase."
+    )
+    assert report.no_text_target_accuracy <= 0.20, (
+        "The no-text mean must fail most class-specific next-token targets."
+    )
+    assert report.shuffled_phrase_target_accuracy == 0.0, (
+        "Cyclic wrong phrases must recover none of the intended token classes."
+    )
+    assert len(report.rows) == 18, (
+        "The notebook must expose one auditable row per held-out prompt."
+    )
+    release_metrics = solutions.summarize_pythia_text_bottleneck_lab(
+        {"dataset": dataset, "report": report}
+    )
+    assert release_metrics == {
+        "learner_cpu_train_count": 36,
+        "learner_cpu_eval_count": 18,
+        "learner_cpu_phrase_accuracy": report.phrase_accuracy,
+        "learner_cpu_shuffled_label_accuracy": report.shuffled_label_accuracy,
+        "learner_cpu_reconstructed_target_accuracy": report.reconstructed_target_accuracy,
+        "learner_cpu_oracle_phrase_target_accuracy": report.oracle_phrase_target_accuracy,
+        "learner_cpu_no_text_target_accuracy": report.no_text_target_accuracy,
+        "learner_cpu_wrong_phrase_target_accuracy": report.shuffled_phrase_target_accuracy,
+        "learner_cpu_reconstruction_mse": report.reconstruction_mse,
+        "learner_cpu_no_text_mse": report.no_text_mse,
+        "learner_cpu_wrong_phrase_mse": report.shuffled_phrase_mse,
+    }, "Release metrics must be derived from the exact learner-visible experiment."
+    print("All tests in `test_real_pythia_residual_text_bottleneck_beats_controls` passed!")

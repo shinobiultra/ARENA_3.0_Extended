@@ -27,7 +27,12 @@
       "shuffled_explanation_text_negative_control",
       "blank_explanation_text_negative_control",
       "counterfactual_anchor_explanation_change",
-      "anthropic_scale_nla_training_not_claimed"
+      "anthropic_scale_nla_training_not_claimed",
+      "pinned_pythia_actual_final_hidden_states",
+      "pythia_token_embedding_phrase_features_not_phrase_id_table",
+      "shuffled_encoder_label_control",
+      "no_text_global_mean_control",
+      "cyclic_wrong_phrase_control"
     ],
     "expected_metrics": {
       "accepted": true,
@@ -48,6 +53,17 @@
       "explanation_count": 8,
       "generated_word_count": 32,
       "hf_revision": "bddc0e332f0ae84279e6a6a45d91b314899e1603",
+      "learner_cpu_eval_count": 18,
+      "learner_cpu_no_text_mse_min": 3.3,
+      "learner_cpu_no_text_target_accuracy_max": 0.2,
+      "learner_cpu_oracle_phrase_target_accuracy": 1.0,
+      "learner_cpu_phrase_accuracy_min": 0.75,
+      "learner_cpu_reconstructed_target_accuracy_min": 0.75,
+      "learner_cpu_reconstruction_mse_max": 2.7,
+      "learner_cpu_shuffled_label_accuracy_max": 0.25,
+      "learner_cpu_train_count": 36,
+      "learner_cpu_wrong_phrase_mse_min": 4.9,
+      "learner_cpu_wrong_phrase_target_accuracy": 0.0,
       "live_trainable_nla": true,
       "max_allowed_gpu_gb": 24,
       "mean_cosine_similarity_min": 0.93,
@@ -139,11 +155,27 @@
       "text_bottleneck": "discrete_natural_language_phrase_bottleneck",
       "tokenizer": "NeelNanda/gpt-neox-tokenizer-digits",
       "train_example_count": 12
+    },
+    {
+      "eval_example_count": 18,
+      "eval_split": "disjoint_blind_prompts",
+      "expected_tokens": [
+        " a",
+        " the",
+        ",",
+        "-",
+        ".",
+        "newline"
+      ],
+      "id": "pythia_six_phrase_next_token_prompts_v1",
+      "phrase_count": 6,
+      "source": "course_authored_safe_prompts",
+      "train_example_count": 36
     }
   ],
-  "date_run": "2026-09-04T08:42:52+00:00",
-  "evidence_level": "exact_planted_semantic_ground_truth_plus_live_transformerlens_phrase_bottleneck_preflight",
-  "git_commit": "66aad913",
+  "date_run": "2026-09-04T14:01:59+00:00",
+  "evidence_level": "exact_planted_semantic_ground_truth_plus_pinned_pythia_cpu_residual_text_bottleneck",
+  "git_commit": "080743f7",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-3",
   "known_failures": [],
@@ -169,6 +201,17 @@
         "hf_model_id",
         "hf_revision",
         "hook_name",
+        "learner_cpu_eval_count",
+        "learner_cpu_no_text_mse",
+        "learner_cpu_no_text_target_accuracy",
+        "learner_cpu_oracle_phrase_target_accuracy",
+        "learner_cpu_phrase_accuracy",
+        "learner_cpu_reconstructed_target_accuracy",
+        "learner_cpu_reconstruction_mse",
+        "learner_cpu_shuffled_label_accuracy",
+        "learner_cpu_train_count",
+        "learner_cpu_wrong_phrase_mse",
+        "learner_cpu_wrong_phrase_target_accuracy",
         "live_trainable_nla",
         "mean_cosine_similarity",
         "model_name",
@@ -244,6 +287,17 @@
       "hf_model_id": "NeelNanda/GELU_1L512W_C4_Code",
       "hf_revision": "bddc0e332f0ae84279e6a6a45d91b314899e1603",
       "hook_name": "blocks.0.hook_resid_post",
+      "learner_cpu_eval_count": 18,
+      "learner_cpu_no_text_mse": 3.3440053462982178,
+      "learner_cpu_no_text_target_accuracy": 0.1666666716337204,
+      "learner_cpu_oracle_phrase_target_accuracy": 1.0,
+      "learner_cpu_phrase_accuracy": 0.7777777910232544,
+      "learner_cpu_reconstructed_target_accuracy": 0.7777777910232544,
+      "learner_cpu_reconstruction_mse": 2.6187543869018555,
+      "learner_cpu_shuffled_label_accuracy": 0.1111111119389534,
+      "learner_cpu_train_count": 36,
+      "learner_cpu_wrong_phrase_mse": 4.939769268035889,
+      "learner_cpu_wrong_phrase_target_accuracy": 0.0,
       "live_trainable_nla": true,
       "mean_cosine_similarity": 0.9397513270378113,
       "model_name": "gelu-1l",
@@ -328,6 +382,15 @@
       "tokenizer_id": "NeelNanda/gpt-neox-tokenizer-digits",
       "tokenizer_revision": "0f6671571a20be9756b9991d978047c03b75e749",
       "transformerlens_model_name": "gelu-1l"
+    },
+    {
+      "claim_scope": "six_phrase_final_hidden_state_text_bottleneck",
+      "device": "cpu",
+      "gated": false,
+      "id": "EleutherAI/pythia-70m-deduped",
+      "precision": "float16",
+      "revision": "e93a9faa9c77e5d09219f6c868bfc7a1bd65593c",
+      "source": "huggingface_local_cache"
     }
   ],
   "negative_controls": {
@@ -344,7 +407,7 @@
   "peak_vram_gb": 0.2618422508239746,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "3320ed22d82281155a463f25578149d724a710ed90f2d992ab0c525c4d317307",
+    "combined_sha256": "977de75e1a3896e89de1fdb5ad570d851b388a772d940363b4ede5ac8385ff4f",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -353,13 +416,13 @@
       },
       {
         "path": "chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/7.4_Mini_Natural_Language_Autoencoders_exercises.ipynb",
-        "sha256": "08c6dfc69bdc95e93424b3093a59f3476221f0d69775a756006b145ba4ee4a04",
-        "size_bytes": 54754
+        "sha256": "24f353d8849ad93eb35f382881ea1b529c90672f64fa1e8317b9f026f6470a2b",
+        "size_bytes": 88520
       },
       {
         "path": "chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/7.4_Mini_Natural_Language_Autoencoders_solutions.ipynb",
-        "sha256": "26d06087f112fa8a7107c7931e0e82f509cefe586717931d0e8124dbf68e1d6e",
-        "size_bytes": 186422
+        "sha256": "efcd93dc5a222be0da7a54c606025603f833279134877c638648643c5d47de3a",
+        "size_bytes": 325422
       },
       {
         "path": "chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/README.md",
@@ -368,13 +431,13 @@
       },
       {
         "path": "chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/artifacts.lock.yml",
-        "sha256": "824b1e5e0e5b368a23eeedd7fa545354059e1c5c82601727da9595d369fe33da",
-        "size_bytes": 6257
+        "sha256": "6d2ed34fb8fd10809a1069b192e935b619087342e0d76b71b61748d83dfb6370",
+        "size_bytes": 7740
       },
       {
         "path": "chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/expected_outputs/README.md",
-        "sha256": "15fb4a528a36503e7f467d617611b38c1091ba05906e8fd01377ffd1bde3e111",
-        "size_bytes": 1796
+        "sha256": "1c9d0c903cd427496ceecf809d1a877a363b5d4b638babc589a0b6228be1f232",
+        "size_bytes": 2365
       },
       {
         "path": "chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/expected_outputs/reference_metrics.json",
@@ -388,13 +451,13 @@
       },
       {
         "path": "chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/solutions.py",
-        "sha256": "def365b3763d515e32bd33d7d1d7e2b5ceaf97ca05feb250f3f7702814c9a6f9",
-        "size_bytes": 53373
+        "sha256": "ad49cd86adf2df687c612f86947d51c04de887a54517b9a2bee8da572cf714d0",
+        "size_bytes": 70399
       },
       {
         "path": "chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/tests.py",
-        "sha256": "01bc1bbe117239d9655fa4fb0fb12213511481bf927d0bb55e39c0fce3618d10",
-        "size_bytes": 22304
+        "sha256": "ea5407b52a56826655d4d472a302d43dca89bc2a6ecf6ec54553e446548f199d",
+        "size_bytes": 26718
       },
       {
         "path": "chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/utils.py",
@@ -408,8 +471,8 @@
       },
       {
         "path": "chapter7_activation_to_language/instructions/pages/04_[7.4]_Mini_Natural_Language_Autoencoders.md",
-        "sha256": "68ff976553998b47307db1a867498d95efc2e42d397c879ce3bfc4eb8057359a",
-        "size_bytes": 41842
+        "sha256": "75f6b7c163ef316cb10323947c87cf22ab04b949b4817d9c3aad498ef65eba08",
+        "size_bytes": 57037
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
@@ -424,5 +487,5 @@
     "The real-model path uses safe generic prompts and cached activations/logits from a small public TransformerLens checkpoint. It does not use unsafe prompts, gated weights, generated completions, adapter training, external API calls, or claims about arbitrary hidden thoughts."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 5.524322
+  "wall_clock_seconds": 7.578105
 }

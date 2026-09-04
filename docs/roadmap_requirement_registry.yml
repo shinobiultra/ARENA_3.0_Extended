@@ -433,35 +433,35 @@ requirements:
     topic: Logit lens, tuned lens, and attention lens
     chapter: 5 Activation-to-language
     section: "7.1"
-    status: PREFLIGHT_ONLY
+    status: TAUGHT
     roadmap_refs: [Extension-Roadmap.md:625-654, Extension-Roadmap.md:2866-2870]
     course_sections: ["7.1"]
     method_registry_names: ["Logit lens, tuned lens, and Patchscopes"]
     evidence: [chapter7_activation_to_language/exercises/part1_lenses_patchscopes]
-    reason: Exact lens mechanics and a bounded GELU-1L real-model surface exist.
-    blocker: The real-model pipeline remains monolithic and the attention-lens progression is incomplete.
+    reason: Students implement logit, ridge-tuned, and attention lenses in separate steps, then evaluate pinned Pythia and GELU-1L checkpoints with held-out targets and visible layer sweeps.
+    blocker: null
 
   - id: activation.patchscopes
     topic: Patchscopes with semantic held-out evaluation and text-only/random controls
     chapter: 5 Activation-to-language
     section: "7.1"
-    status: PREFLIGHT_ONLY
+    status: TAUGHT
     roadmap_refs: [Extension-Roadmap.md:629-654]
     evidence: [chapter7_activation_to_language/exercises/part1_lenses_patchscopes]
-    reason: The notebook includes activation insertion and a small real-model Patchscope preflight.
-    blocker: Evaluation is below the roadmap's substantial held-out semantic task and lacks a full 20-plus-example learner-run study.
+    reason: Students implement batched residual insertion and evaluate 24 disjoint Pythia prompts against text-only, cyclic wrong-source, and matched-scale random controls; a separate GELU-1L CUDA path confirms the mechanism.
+    blocker: null
 
   - id: activation.feature_verbalizers
     topic: Feature verbalizers with hypothesis generation, held-out scoring, counterexamples, and revision
     chapter: 5 Activation-to-language
     section: "7.2"
-    status: TOY_ONLY
+    status: PREFLIGHT_ONLY
     roadmap_refs: [Extension-Roadmap.md:656-690]
     course_sections: ["7.2"]
     method_registry_names: [Feature verbalizers]
     evidence: [chapter7_activation_to_language/exercises/part2_feature_verbalizers]
-    reason: A deterministic toy explanation/prediction loop demonstrates validation mechanics.
-    blocker: No local-LLM hypothesis generation, blind held-out scoring, or iterative counterexample revision exists.
+    reason: Exact ground truth is followed by a pinned local Qwen candidate-selection loop, blind held-out scoring, three-counterexample revision, and a real residual-direction intervention test.
+    blocker: The local language model scores precommitted hypotheses rather than generating and operationalizing a free-form explanation.
 
   - id: activation.mini_activation_oracle
     topic: Mini Activation Oracle with question-conditioned activation answers
@@ -491,13 +491,13 @@ requirements:
     topic: Mini Natural Language Autoencoder with a learned text bottleneck
     chapter: 5 Activation-to-language
     section: "7.4"
-    status: PREFLIGHT_ONLY
+    status: TAUGHT
     roadmap_refs: [Extension-Roadmap.md:753-784]
     course_sections: ["7.4"]
     method_registry_names: [Mini Natural Language Autoencoders]
     evidence: [chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders]
-    reason: A phrase-bottleneck residual reconstruction preflight exists on a small real model.
-    blocker: The text vocabulary is tiny and the notebook does not train a free-form learned natural-language bottleneck.
+    reason: Students train a miniature activation-to-text-to-activation bottleneck first on exact semantic ground truth and then on pinned Pythia residuals with actual phrase-token embeddings, behavior metrics, counterfactuals, and no-text, wrong-phrase, and shuffled-label controls.
+    blocker: null
 
   - id: activation.full_scale_natural_language_autoencoders
     topic: Full-scale Natural Language Autoencoder training

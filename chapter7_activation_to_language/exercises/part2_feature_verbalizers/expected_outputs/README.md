@@ -21,3 +21,7 @@ Integer, token, boolean, and schema-contract checks require exact equality. Floa
 ## When to regenerate
 
 Regenerate these fixtures when the section title, GT tier, artifact lock schema, verification report schema, expected baseline/control slots, or trusted toy implementation changes. Do not regenerate merely to hide a failing check; update the implementation or the declared claim scope first.
+
+## Learner-visible CPU signature
+
+Pinned local `Qwen/Qwen2.5-0.5B-Instruct` first selects candidate `C`, the exact living-animal/resting/surface conjunction. Three revision-split non-living-replica counterexamples change its choice to candidate `D`. The executable rule improves from `75%` to `100%` on 24 held-out examples that appear in neither model prompt, and it beats always-inactive, train-example lookup, and random-keyword controls. Candidate logits, counterexamples, and every held-out row are displayed in the notebook.

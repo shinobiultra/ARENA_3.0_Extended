@@ -64,6 +64,87 @@ TL_PATCHSCOPE_PAIRS = [
     ("The team won the game by scoring a", "The team lost the game after missing a"),
 ]
 
+PYTHIA_MODEL_ID = "EleutherAI/pythia-70m-deduped"
+PYTHIA_REVISION = "e93a9faa9c77e5d09219f6c868bfc7a1bd65593c"
+PYTHIA_PATCH_BLOCK = 5
+PYTHIA_TARGET_PROMPT = "The hidden next token is"
+PYTHIA_LENS_TRAIN_PROMPTS = [
+    "The cat sat on the",
+    "The bird flew over the",
+    "To make tea, boil the",
+    "To make bread, bake the",
+    "The recipe calls for sugar and",
+    "The recipe calls for salt and",
+    "The chef cooked a",
+    "The teacher taught a",
+    "The river flows into the",
+    "The road leads into the",
+    "The programmer wrote a",
+    "The singer sang a",
+    "A king lives in a",
+    "A student learns in a",
+    "The train arrived at the",
+    "The plane landed at the",
+    "A doctor works in a",
+    "A pilot flies an",
+    "The book was placed on the",
+    "The cup was filled with",
+    "The child opened the",
+    "The artist painted a",
+    "The musician played the",
+    "The gardener planted a",
+    "The dog chased the",
+    "The mouse hid under the",
+    "The computer stored the",
+    "The browser opened a",
+    "The server returned a",
+    "The function accepted an",
+    "The loop repeated the",
+    "The database contained a",
+    "The scientist measured the",
+    "The telescope observed a",
+    "The weather forecast predicted",
+    "The newspaper reported the",
+    "The clock showed the",
+    "The map displayed the",
+    "The letter was sent to the",
+    "The package arrived at the",
+    "The river crossed the",
+    "The bridge connected the",
+    "The lesson explained the",
+    "The example demonstrated the",
+    "The question asked for a",
+    "The answer included the",
+    "The command printed the",
+    "The script created a",
+]
+PYTHIA_LENS_HELDOUT_PROMPTS = [
+    "Water freezes at zero degrees",
+    "Two plus two equals",
+    "A triangle has three",
+    "There are seven days in a",
+    "The primary colors include red, blue, and",
+    "A stop sign is usually colored",
+    "Birds can fly through the",
+    "Fish live in the",
+    "A polygon with three sides is a",
+    "The largest ocean is the",
+    "A young dog is called a",
+    "A young cat is called a",
+    "A male parent is a",
+    "A female parent is a",
+    "A programmer writes source",
+    "In Python, a list literal uses square",
+    "In HTML, a link uses the tag",
+    "A boolean value can be true or",
+    "A loop repeats a block of",
+    "A database stores structured",
+    "A compass points north, south, east, and",
+    "The four seasons include spring, summer, autumn, and",
+    "The three states of matter are solid, liquid, and",
+    "A byte contains eight",
+]
+
 
 # %%
 @dataclass(frozen=True)
@@ -507,6 +588,347 @@ def run_smoke_test(cpu: bool = True) -> dict:
     }
 
 
+def load_pythia_cpu_model():
+    """Load the pinned six-layer learner model and tokenizer on CPU."""
+
+    from transformers import AutoModelForCausalLM, AutoTokenizer
+
+    tokenizer = AutoTokenizer.from_pretrained(
+        PYTHIA_MODEL_ID,
+        revision=PYTHIA_REVISION,
+        local_files_only=True,
+    )
+    tokenizer.pad_token = tokenizer.eos_token
+    tokenizer.padding_side = "left"
+    model = AutoModelForCausalLM.from_pretrained(
+        PYTHIA_MODEL_ID,
+        revision=PYTHIA_REVISION,
+        local_files_only=True,
+        dtype=t.float32,
+    ).to("cpu")
+    model.eval()
+    return model, tokenizer
+
+
+def cache_pythia_hidden_states(model, tokenizer, prompts: list[str]) -> dict[str, object]:
+    """Cache every residual stage for final positions and all non-padding tokens."""
+
+    if len(prompts) == 0 or any(not prompt.strip() for prompt in prompts):
+        raise ValueError("prompts must contain at least one nonempty string.")
+    encoded = tokenizer(prompts, return_tensors="pt", padding=True)
+    with t.inference_mode():
+        output = model(**encoded, output_hidden_states=True)
+    hidden_states = tuple(hidden.detach().float() for hidden in output.hidden_states)
+    token_mask = encoded.attention_mask.bool()
+    return {
+        "prompts": tuple(prompts),
+        "input_ids": encoded.input_ids,
+        "attention_mask": encoded.attention_mask,
+        "last_hidden": t.stack([hidden[:, -1] for hidden in hidden_states]),
+        "token_hidden": t.stack([hidden[token_mask] for hidden in hidden_states]),
+        "final_logits": output.logits[:, -1].detach().float(),
+        "stage_names": ("embedding",)
+        + tuple(f"block {index}" for index in range(1, len(hidden_states))),
+    }
+
+
+def _apply_pythia_final_norm(model, hidden: t.Tensor) -> t.Tensor:
+    norm = model.gpt_neox.final_layer_norm
+    return F.layer_norm(
+        hidden.float(),
+        (hidden.shape[-1],),
+        norm.weight.detach().float(),
+        norm.bias.detach().float(),
+        norm.eps,
+    )
+
+
+def decode_pythia_stages(
+    model,
+    staged_hidden: t.Tensor,
+    *,
+    final_logits: t.Tensor | None = None,
+) -> t.Tensor:
+    """Apply the model's final norm and unembedding to each residual stage."""
+
+    if staged_hidden.ndim != 3:
+        raise ValueError("staged_hidden must have shape [stage, example, d_model].")
+    if staged_hidden.shape[-1] != model.config.hidden_size:
+        raise ValueError("staged_hidden d_model must match the model hidden size.")
+    unembedding = model.embed_out.weight.detach().float()
+    decoded = []
+    for stage_index, hidden in enumerate(staged_hidden):
+        if stage_index == staged_hidden.shape[0] - 1:
+            normalized = hidden.float()
+        else:
+            normalized = _apply_pythia_final_norm(model, hidden)
+        decoded.append(F.linear(normalized, unembedding))
+    logits = t.stack(decoded)
+    if final_logits is not None:
+        if final_logits.shape != logits[-1].shape:
+            raise ValueError("final_logits must match one decoded stage.")
+        logits[-1] = final_logits.float()
+    return logits
+
+
+def target_token_ranks(logits: t.Tensor, target_token_ids: t.Tensor) -> t.Tensor:
+    """Return one-indexed target ranks for logits shaped [stage, example, vocab]."""
+
+    if logits.ndim != 3 or target_token_ids.shape != logits.shape[1:2]:
+        raise ValueError("expected logits [stage, example, vocab] and one target per example.")
+    target_logits = logits.gather(
+        dim=-1,
+        index=target_token_ids[None, :, None].expand(logits.shape[0], -1, 1),
+    )
+    return (logits > target_logits).sum(dim=-1) + 1
+
+
+def fit_layerwise_ridge_lenses(
+    staged_train_hidden: t.Tensor,
+    *,
+    ridge: float = 0.1,
+) -> tuple[tuple[t.Tensor, t.Tensor], ...]:
+    """Fit one affine map per non-final stage to the final normalized residual."""
+
+    if staged_train_hidden.ndim != 3:
+        raise ValueError("staged_train_hidden must have shape [stage, token, d_model].")
+    if staged_train_hidden.shape[0] < 2:
+        raise ValueError("at least two residual stages are required.")
+    if ridge <= 0:
+        raise ValueError("ridge must be positive.")
+    target = staged_train_hidden[-1].float()
+    return tuple(
+        fit_ridge_tuned_lens(source.float(), target, ridge=ridge)
+        for source in staged_train_hidden[:-1]
+    )
+
+
+def evaluate_pythia_lenses(
+    model,
+    tokenizer,
+    train_cache: dict[str, object],
+    heldout_cache: dict[str, object],
+    *,
+    ridge: float = 0.1,
+) -> dict[str, object]:
+    """Evaluate ordinary and fitted lenses at every stage on held-out prompts."""
+
+    weights = fit_layerwise_ridge_lenses(train_cache["token_hidden"], ridge=ridge)
+    logit_logits = decode_pythia_stages(
+        model,
+        heldout_cache["last_hidden"],
+        final_logits=heldout_cache["final_logits"],
+    )
+    tuned_stages = []
+    unembedding = model.embed_out.weight.detach().float()
+    for source, (weight, bias) in zip(
+        heldout_cache["last_hidden"][:-1],
+        weights,
+        strict=True,
+    ):
+        tuned_stages.append(F.linear(source.float() @ weight + bias, unembedding))
+    tuned_stages.append(heldout_cache["final_logits"].float())
+    tuned_logits = t.stack(tuned_stages)
+    target_ids = heldout_cache["final_logits"].argmax(dim=-1)
+    logit_ranks = target_token_ranks(logit_logits, target_ids)
+    tuned_ranks = target_token_ranks(tuned_logits, target_ids)
+    logit_accuracy = logit_ranks.eq(1).float().mean(dim=1)
+    tuned_accuracy = tuned_ranks.eq(1).float().mean(dim=1)
+    rows = []
+    for index, prompt in enumerate(heldout_cache["prompts"]):
+        rows.append(
+            {
+                "prompt": prompt,
+                "target": tokenizer.decode([int(target_ids[index])]),
+                "embedding top": tokenizer.decode([int(logit_logits[0, index].argmax())]),
+                "middle top": tokenizer.decode(
+                    [int(logit_logits[len(logit_logits) // 2, index].argmax())]
+                ),
+                "final top": tokenizer.decode([int(logit_logits[-1, index].argmax())]),
+                "embedding rank": int(logit_ranks[0, index]),
+                "middle rank": int(logit_ranks[len(logit_ranks) // 2, index]),
+                "final rank": int(logit_ranks[-1, index]),
+            }
+        )
+    return {
+        "weights": weights,
+        "target_ids": target_ids,
+        "logit_logits": logit_logits,
+        "tuned_logits": tuned_logits,
+        "logit_ranks": logit_ranks,
+        "tuned_ranks": tuned_ranks,
+        "logit_accuracy": logit_accuracy,
+        "tuned_accuracy": tuned_accuracy,
+        "stage_names": heldout_cache["stage_names"],
+        "rows": rows,
+    }
+
+
+def replace_hidden_state_batch(
+    hidden_states: t.Tensor,
+    source_activations: t.Tensor,
+    *,
+    position: int = -1,
+) -> t.Tensor:
+    """Replace one sequence position with one source activation per batch row."""
+
+    if hidden_states.ndim != 3 or source_activations.ndim != 2:
+        raise ValueError("expected hidden_states [batch, seq, d_model] and sources [batch, d_model].")
+    if hidden_states.shape[0] != source_activations.shape[0]:
+        raise ValueError("hidden-state and source batches must match.")
+    if hidden_states.shape[-1] != source_activations.shape[-1]:
+        raise ValueError("hidden-state and source d_model dimensions must match.")
+    patched = hidden_states.clone()
+    patched[:, position] = source_activations.to(patched)
+    return patched
+
+
+def run_pythia_with_inserted_residuals(
+    model,
+    tokenizer,
+    source_activations: t.Tensor,
+    *,
+    target_prompt: str = PYTHIA_TARGET_PROMPT,
+    block_index: int = PYTHIA_PATCH_BLOCK,
+) -> t.Tensor:
+    """Insert a batch of source residuals into one target prompt and return logits."""
+
+    if not 0 <= block_index < len(model.gpt_neox.layers):
+        raise ValueError("block_index is outside the model.")
+    target_prompts = [target_prompt] * source_activations.shape[0]
+    encoded = tokenizer(target_prompts, return_tensors="pt", padding=True)
+
+    def insert_hook(module, args, kwargs):
+        _ = module
+        patched = replace_hidden_state_batch(args[0], source_activations)
+        return (patched, *args[1:]), kwargs
+
+    handle = model.gpt_neox.layers[block_index].register_forward_pre_hook(
+        insert_hook,
+        with_kwargs=True,
+    )
+    try:
+        with t.inference_mode():
+            logits = model(**encoded).logits[:, -1].detach().float()
+    finally:
+        handle.remove()
+    return logits
+
+
+def evaluate_pythia_patchscope(
+    model,
+    tokenizer,
+    heldout_cache: dict[str, object],
+    *,
+    block_index: int = PYTHIA_PATCH_BLOCK,
+    seed: int = 0,
+) -> dict[str, object]:
+    """Compare source insertion with text-only, wrong-source, and random controls."""
+
+    source_activations = heldout_cache["last_hidden"][block_index].float()
+    target_ids = heldout_cache["final_logits"].argmax(dim=-1)
+    patched_logits = run_pythia_with_inserted_residuals(
+        model,
+        tokenizer,
+        source_activations,
+        block_index=block_index,
+    )
+    target_prompts = [PYTHIA_TARGET_PROMPT] * len(target_ids)
+    encoded = tokenizer(target_prompts, return_tensors="pt", padding=True)
+    with t.inference_mode():
+        text_only_logits = model(**encoded).logits[:, -1].detach().float()
+    wrong_logits = run_pythia_with_inserted_residuals(
+        model,
+        tokenizer,
+        source_activations.roll(1, dims=0),
+        block_index=block_index,
+    )
+    generator = t.Generator().manual_seed(seed)
+    random_activations = (
+        t.randn(source_activations.shape, generator=generator)
+        * source_activations.std()
+        + source_activations.mean()
+    )
+    random_logits = run_pythia_with_inserted_residuals(
+        model,
+        tokenizer,
+        random_activations,
+        block_index=block_index,
+    )
+
+    def accuracy(logits: t.Tensor) -> float:
+        return logits.argmax(dim=-1).eq(target_ids).float().mean().item()
+
+    def target_logprob(logits: t.Tensor) -> t.Tensor:
+        return F.log_softmax(logits, dim=-1).gather(1, target_ids[:, None]).squeeze(1)
+
+    baseline_logprob = target_logprob(text_only_logits)
+    rows = []
+    for index, prompt in enumerate(heldout_cache["prompts"]):
+        rows.append(
+            {
+                "source prompt": prompt,
+                "source target": tokenizer.decode([int(target_ids[index])]),
+                "patched top": tokenizer.decode([int(patched_logits[index].argmax())]),
+                "text-only top": tokenizer.decode([int(text_only_logits[index].argmax())]),
+                "wrong-source top": tokenizer.decode([int(wrong_logits[index].argmax())]),
+                "patched correct": bool(patched_logits[index].argmax() == target_ids[index]),
+                "text-only correct": bool(text_only_logits[index].argmax() == target_ids[index]),
+            }
+        )
+    return {
+        "block_index": block_index,
+        "heldout_count": len(target_ids),
+        "patched_accuracy": accuracy(patched_logits),
+        "text_only_accuracy": accuracy(text_only_logits),
+        "wrong_source_accuracy": accuracy(wrong_logits),
+        "random_accuracy": accuracy(random_logits),
+        "patched_mean_logprob_gain": (target_logprob(patched_logits) - baseline_logprob).mean().item(),
+        "wrong_source_mean_logprob_gain": (target_logprob(wrong_logits) - baseline_logprob).mean().item(),
+        "random_mean_logprob_gain": (target_logprob(random_logits) - baseline_logprob).mean().item(),
+        "rows": rows,
+    }
+
+
+def run_pythia_cpu_lens_lab(*, ridge: float = 0.1) -> dict[str, object]:
+    """Run the learner-visible six-layer lens and insertion experiment on CPU."""
+
+    model, tokenizer = load_pythia_cpu_model()
+    train_cache = cache_pythia_hidden_states(model, tokenizer, PYTHIA_LENS_TRAIN_PROMPTS)
+    heldout_cache = cache_pythia_hidden_states(model, tokenizer, PYTHIA_LENS_HELDOUT_PROMPTS)
+    lens = evaluate_pythia_lenses(model, tokenizer, train_cache, heldout_cache, ridge=ridge)
+    patchscope = evaluate_pythia_patchscope(model, tokenizer, heldout_cache)
+    return {
+        "model": model,
+        "tokenizer": tokenizer,
+        "train_cache": train_cache,
+        "heldout_cache": heldout_cache,
+        "lens": lens,
+        "patchscope": patchscope,
+    }
+
+
+def summarize_pythia_cpu_lens_lab(result: dict[str, object]) -> dict[str, float | int]:
+    """Flatten the learner-visible Pythia result into release metrics."""
+
+    heldout_cache = result["heldout_cache"]
+    lens = result["lens"]
+    patchscope = result["patchscope"]
+    logit_medians = lens["logit_ranks"].float().median(dim=1).values
+    return {
+        "learner_cpu_heldout_count": len(heldout_cache["prompts"]),
+        "learner_cpu_embedding_median_target_rank": int(logit_medians[0].item()),
+        "learner_cpu_final_median_target_rank": int(logit_medians[-1].item()),
+        "learner_cpu_patched_accuracy": float(patchscope["patched_accuracy"]),
+        "learner_cpu_text_only_accuracy": float(patchscope["text_only_accuracy"]),
+        "learner_cpu_wrong_source_accuracy": float(patchscope["wrong_source_accuracy"]),
+        "learner_cpu_random_accuracy": float(patchscope["random_accuracy"]),
+        "learner_cpu_patched_mean_logprob_gain": float(
+            patchscope["patched_mean_logprob_gain"]
+        ),
+    }
+
+
 def _load_gelu1l_model_on_cuda():
     os.environ.setdefault("BNB_CUDA_VERSION", TL_BNB_CUDA_OVERRIDE)
     logging.getLogger("bitsandbytes.cextension").setLevel(logging.ERROR)
@@ -753,7 +1175,11 @@ def run_transformerlens_lens_patchscope_preflight(max_vram_gb: float = 24.0) -> 
 
 
 def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
-    return run_transformerlens_lens_patchscope_preflight(max_vram_gb=max_vram_gb)
+    gpu_result = run_transformerlens_lens_patchscope_preflight(max_vram_gb=max_vram_gb)
+    if not gpu_result.get("cuda_available", False):
+        return gpu_result
+    learner_result = run_pythia_cpu_lens_lab(ridge=0.1)
+    return gpu_result | summarize_pythia_cpu_lens_lab(learner_result)
 
 
 def run_full_experiment(max_vram_gb: float = 24.0) -> dict:

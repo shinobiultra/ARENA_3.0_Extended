@@ -21,3 +21,7 @@ Integer, token, boolean, and schema-contract checks require exact equality. Floa
 ## When to regenerate
 
 Regenerate these fixtures when the section title, GT tier, artifact lock schema, verification report schema, expected baseline/control slots, or trusted toy implementation changes. Do not regenerate merely to hide a failing check; update the implementation or the declared claim scope first.
+
+## Learner-visible CPU signature
+
+The solved notebook recomputes a pinned `EleutherAI/pythia-70m-deduped` result from local weights. On 24 disjoint held-out prompts, ordinary median target rank falls from `18163` at the embedding to `1` at the final stage. Correct block-5 activation insertion recovers at least `75%` of source targets and gains at least `2` mean target log-probability nats; text-only, cyclic wrong-source, and matched-scale random controls remain at or below `10%`. The ridge lens is expected to improve several early stages but not every stage.

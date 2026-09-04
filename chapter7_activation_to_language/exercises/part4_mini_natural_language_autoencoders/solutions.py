@@ -958,6 +958,110 @@ ANTIPODAL_PHRASE = {
     "route south; cargo standard": "route north; cargo fragile",
 }
 
+PYTHIA_NLA_MODEL_ID = "EleutherAI/pythia-70m-deduped"
+PYTHIA_NLA_REVISION = "e93a9faa9c77e5d09219f6c868bfc7a1bd65593c"
+PYTHIA_NLA_PHRASES = (
+    "indefinite article a comes next",
+    "definite article the comes next",
+    "comma punctuation comes next",
+    "hyphen punctuation comes next",
+    "period punctuation comes next",
+    "line break comes next",
+)
+PYTHIA_NLA_EXPECTED_TOKENS = (" a", " the", ",", "-", ".", "\n")
+PYTHIA_NLA_PROMPT_GROUPS = (
+    (
+        (
+            "The chemical symbol for water is",
+            "The square root of nine is",
+            "One hundred divided by ten is",
+            "Spring comes after",
+            "The last letter of the alphabet is",
+            "The first letter of the alphabet is",
+        ),
+        (
+            "The planet closest to the Sun is",
+            "The author of Hamlet was",
+            "The language spoken in Spain is",
+        ),
+    ),
+    (
+        (
+            "The day after Monday is",
+            "The day before Friday is",
+            "Plants need sunlight and",
+            "The opposite of left is",
+            "The opposite of up is",
+            "The opposite of true is",
+        ),
+        (
+            "The opposite of yes is",
+            "The number after nine is",
+            "The capital of Japan is",
+        ),
+    ),
+    (
+        (
+            "Water freezes at zero degrees",
+            "A Python function begins with the keyword",
+            "The fraction one half equals zero point",
+            "The freezing point of water is zero degrees",
+            "The acronym GPU stands for graphics processing",
+            "The acronym CSS stands for cascading style",
+        ),
+        (
+            "One kilometer contains one thousand",
+            "One kilogram contains one thousand",
+            "Ice melts at zero degrees",
+        ),
+    ),
+    (
+        (
+            "One minute contains sixty",
+            "One hour contains sixty",
+            "The Git command that shows changes is git",
+            "The Git command that creates a commit is git",
+            "The Git command that lists branches is git",
+            "The Git command that switches branches is git",
+        ),
+        (
+            "The Git command that fetches changes is git",
+            "The Git command that pushes changes is git",
+            "One meter contains one hundred",
+        ),
+    ),
+    (
+        (
+            "A dozen means twelve",
+            "The boiling point of water is one hundred degrees",
+            "The acronym HTML stands for hypertext markup",
+            "The acronym JSON stands for JavaScript object notation",
+            "The acronym URL stands for uniform resource locator",
+            "The acronym SQL stands for structured query language",
+        ),
+        (
+            "The acronym PDF stands for portable document format",
+            "The acronym HTTP stands for hypertext transfer protocol",
+            "The acronym USB stands for universal serial bus",
+        ),
+    ),
+    (
+        (
+            "The file extension for Python is",
+            "The file extension for Markdown is",
+            "The file extension for JSON is",
+            "The file extension for TOML is",
+            "The file extension for CSV is",
+            "The file extension for C is",
+        ),
+        (
+            "The file extension for C++ is",
+            "The file extension for Go is",
+            "The file extension for XML is",
+        ),
+    ),
+)
+
 
 @dataclass(frozen=True)
 class PlantedNLADataset:
@@ -990,6 +1094,33 @@ class BehaviorPreservation:
     cargo_accuracy: float
     behavior_sign_accuracy: float
     nla_beats_controls: bool
+
+
+@dataclass(frozen=True)
+class PythiaTextBottleneckDataset:
+    train_residuals: t.Tensor
+    eval_residuals: t.Tensor
+    train_phrase_ids: t.Tensor
+    eval_phrase_ids: t.Tensor
+    train_prompts: tuple[str, ...]
+    eval_prompts: tuple[str, ...]
+    phrase_texts: tuple[str, ...]
+    target_token_ids: t.Tensor
+
+
+@dataclass(frozen=True)
+class PythiaTextBottleneckReport:
+    phrase_accuracy: float
+    shuffled_label_accuracy: float
+    reconstruction_mse: float
+    oracle_phrase_mse: float
+    no_text_mse: float
+    shuffled_phrase_mse: float
+    reconstructed_target_accuracy: float
+    oracle_phrase_target_accuracy: float
+    no_text_target_accuracy: float
+    shuffled_phrase_target_accuracy: float
+    rows: tuple[dict[str, object], ...]
 
 
 def latent_phrase(latent_bits: t.Tensor) -> str:
@@ -1338,6 +1469,315 @@ def build_signature_payload(*, nuisance_scale: float = 0.35) -> dict:
     }
 
 
+def load_pythia_text_bottleneck_model():
+    """Load the pinned six-layer model used by the real CPU lesson."""
+
+    from transformers import AutoModelForCausalLM, AutoTokenizer
+
+    tokenizer = AutoTokenizer.from_pretrained(
+        PYTHIA_NLA_MODEL_ID,
+        revision=PYTHIA_NLA_REVISION,
+        local_files_only=True,
+    )
+    tokenizer.pad_token = tokenizer.eos_token
+    tokenizer.padding_side = "left"
+    model = AutoModelForCausalLM.from_pretrained(
+        PYTHIA_NLA_MODEL_ID,
+        revision=PYTHIA_NLA_REVISION,
+        local_files_only=True,
+        dtype=t.float16,
+    ).cpu().eval()
+    return tokenizer, model
+
+
+def cache_pythia_text_bottleneck_dataset(
+    tokenizer,
+    model,
+) -> PythiaTextBottleneckDataset:
+    """Cache real final residuals for six held-out next-token concepts."""
+
+    train_prompts: list[str] = []
+    eval_prompts: list[str] = []
+    train_ids: list[int] = []
+    eval_ids: list[int] = []
+    for phrase_id, (train_group, eval_group) in enumerate(PYTHIA_NLA_PROMPT_GROUPS):
+        train_prompts.extend(train_group)
+        eval_prompts.extend(eval_group)
+        train_ids.extend([phrase_id] * len(train_group))
+        eval_ids.extend([phrase_id] * len(eval_group))
+
+    def cache(prompts: list[str]) -> tuple[t.Tensor, t.Tensor]:
+        tokens = tokenizer(prompts, return_tensors="pt", padding=True)
+        with t.inference_mode():
+            outputs = model(**tokens, output_hidden_states=True)
+        residuals = outputs.hidden_states[-1][:, -1].detach().float()
+        predictions = outputs.logits[:, -1].argmax(dim=-1).detach()
+        return residuals, predictions
+
+    train_residuals, train_predictions = cache(train_prompts)
+    eval_residuals, eval_predictions = cache(eval_prompts)
+    train_expected = t.tensor(
+        [tokenizer.encode(PYTHIA_NLA_EXPECTED_TOKENS[index], add_special_tokens=False)[0] for index in train_ids]
+    )
+    eval_expected = t.tensor(
+        [tokenizer.encode(PYTHIA_NLA_EXPECTED_TOKENS[index], add_special_tokens=False)[0] for index in eval_ids]
+    )
+    if not t.equal(train_predictions.cpu(), train_expected):
+        raise RuntimeError("Pinned Pythia no longer produces the curated training targets.")
+    if not t.equal(eval_predictions.cpu(), eval_expected):
+        raise RuntimeError("Pinned Pythia no longer produces the curated held-out targets.")
+    return PythiaTextBottleneckDataset(
+        train_residuals=train_residuals,
+        eval_residuals=eval_residuals,
+        train_phrase_ids=t.tensor(train_ids),
+        eval_phrase_ids=t.tensor(eval_ids),
+        train_prompts=tuple(train_prompts),
+        eval_prompts=tuple(eval_prompts),
+        phrase_texts=PYTHIA_NLA_PHRASES,
+        target_token_ids=eval_expected,
+    )
+
+
+def fit_real_residual_phrase_encoder(
+    train_residuals: t.Tensor,
+    train_phrase_ids: t.Tensor,
+    *,
+    phrase_count: int,
+    ridge: float = 1.0,
+) -> tuple[t.Tensor, t.Tensor, t.Tensor]:
+    """Learn a ridge residual -> natural-language phrase classifier."""
+
+    if train_residuals.ndim != 2 or train_phrase_ids.shape != (len(train_residuals),):
+        raise ValueError("training residuals and phrase ids must align.")
+    if phrase_count < 2 or ridge <= 0:
+        raise ValueError("phrase_count and ridge must be positive.")
+    mean = train_residuals.float().mean(dim=0)
+    features = F.normalize(train_residuals.float() - mean, dim=-1)
+    labels = F.one_hot(train_phrase_ids.long(), num_classes=phrase_count).float()
+    dual = features @ features.T + ridge * t.eye(len(features))
+    weight = features.T @ t.linalg.solve(dual, labels)
+    bias = labels.mean(dim=0) - features.mean(dim=0) @ weight
+    return weight, bias, mean
+
+
+def predict_residual_phrases(
+    residuals: t.Tensor,
+    weight: t.Tensor,
+    bias: t.Tensor,
+    mean: t.Tensor,
+) -> tuple[t.Tensor, t.Tensor]:
+    """Return phrase logits and phrase ids for cached residuals."""
+
+    if residuals.ndim != 2 or residuals.shape[1] != weight.shape[0]:
+        raise ValueError("residuals and encoder weight must share d_model.")
+    features = F.normalize(residuals.float() - mean, dim=-1)
+    logits = features @ weight + bias
+    return logits, logits.argmax(dim=-1)
+
+
+def pythia_phrase_text_features(
+    tokenizer,
+    model,
+    phrases: list[str] | tuple[str, ...],
+) -> t.Tensor:
+    """Represent each explanation by the mean of its actual token embeddings."""
+
+    if not phrases or any(not phrase.strip() for phrase in phrases):
+        raise ValueError("phrases must contain nonempty natural-language text.")
+    embedding = model.get_input_embeddings()
+    rows = []
+    with t.inference_mode():
+        for phrase in phrases:
+            token_ids = tokenizer.encode(phrase, add_special_tokens=False, return_tensors="pt")
+            rows.append(embedding(token_ids).mean(dim=1).squeeze(0).float())
+    return t.stack(rows)
+
+
+def fit_phrase_text_decoder(
+    phrase_features: t.Tensor,
+    train_phrase_ids: t.Tensor,
+    train_residuals: t.Tensor,
+    *,
+    ridge: float = 0.0,
+) -> tuple[t.Tensor, t.Tensor]:
+    """Fit natural-language embedding -> class-mean residual by least squares."""
+
+    if phrase_features.ndim != 2 or train_residuals.ndim != 2:
+        raise ValueError("phrase features and residuals must be matrices.")
+    if train_phrase_ids.shape != (len(train_residuals),):
+        raise ValueError("train_phrase_ids must align with train_residuals.")
+    if ridge < 0:
+        raise ValueError("ridge must be non-negative.")
+    class_means = []
+    for phrase_id in range(len(phrase_features)):
+        mask = train_phrase_ids == phrase_id
+        if not bool(mask.any()):
+            raise ValueError("every phrase needs at least one training residual.")
+        class_means.append(train_residuals[mask].float().mean(dim=0))
+    targets = t.stack(class_means)
+    design = t.cat([phrase_features.float(), t.ones(len(phrase_features), 1)], dim=1)
+    if ridge == 0:
+        parameters = t.linalg.lstsq(design, targets, driver="gelsd").solution
+    else:
+        eye = t.eye(design.shape[1], device=design.device)
+        eye[-1, -1] = 0.0
+        parameters = t.linalg.solve(design.T @ design + ridge * eye, design.T @ targets)
+    return parameters[:-1], parameters[-1]
+
+
+def decode_phrase_text_features(
+    phrase_features: t.Tensor,
+    phrase_ids: t.Tensor,
+    decoder_weight: t.Tensor,
+    decoder_bias: t.Tensor,
+) -> t.Tensor:
+    """Decode selected natural-language embeddings back to residual space."""
+
+    if phrase_ids.ndim != 1:
+        raise ValueError("phrase_ids must be a vector.")
+    return phrase_features[phrase_ids.long()] @ decoder_weight + decoder_bias
+
+
+def _pythia_logits_from_residuals(model, residuals: t.Tensor) -> t.Tensor:
+    """Unembed reconstructed final-normalized Pythia hidden states."""
+
+    dtype = model.get_output_embeddings().weight.dtype
+    with t.inference_mode():
+        return model.embed_out(residuals.to(dtype)).float()
+
+
+def evaluate_pythia_text_bottleneck(
+    tokenizer,
+    model,
+    dataset: PythiaTextBottleneckDataset,
+    *,
+    seed: int = 0,
+) -> PythiaTextBottleneckReport:
+    """Evaluate the real learned text bottleneck and three matched controls."""
+
+    phrase_count = len(dataset.phrase_texts)
+    encoder_weight, encoder_bias, encoder_mean = fit_real_residual_phrase_encoder(
+        dataset.train_residuals,
+        dataset.train_phrase_ids,
+        phrase_count=phrase_count,
+    )
+    _, predicted_ids = predict_residual_phrases(
+        dataset.eval_residuals,
+        encoder_weight,
+        encoder_bias,
+        encoder_mean,
+    )
+
+    generator = t.Generator().manual_seed(seed + 1)
+    shuffled_train_ids = dataset.train_phrase_ids[t.randperm(len(dataset.train_phrase_ids), generator=generator)]
+    shuffled_weight, shuffled_bias, shuffled_mean = fit_real_residual_phrase_encoder(
+        dataset.train_residuals,
+        shuffled_train_ids,
+        phrase_count=phrase_count,
+    )
+    _, shuffled_label_predictions = predict_residual_phrases(
+        dataset.eval_residuals,
+        shuffled_weight,
+        shuffled_bias,
+        shuffled_mean,
+    )
+
+    phrase_features = pythia_phrase_text_features(tokenizer, model, dataset.phrase_texts)
+    decoder_weight, decoder_bias = fit_phrase_text_decoder(
+        phrase_features,
+        dataset.train_phrase_ids,
+        dataset.train_residuals,
+    )
+    reconstruction = decode_phrase_text_features(
+        phrase_features, predicted_ids, decoder_weight, decoder_bias
+    )
+    oracle_reconstruction = decode_phrase_text_features(
+        phrase_features, dataset.eval_phrase_ids, decoder_weight, decoder_bias
+    )
+    no_text = dataset.train_residuals.mean(dim=0, keepdim=True).expand_as(dataset.eval_residuals)
+    wrong_ids = (dataset.eval_phrase_ids + 1) % phrase_count
+    shuffled_phrase = decode_phrase_text_features(
+        phrase_features, wrong_ids, decoder_weight, decoder_bias
+    )
+
+    def target_accuracy(residuals: t.Tensor) -> tuple[float, t.Tensor]:
+        predictions = _pythia_logits_from_residuals(model, residuals).argmax(dim=-1)
+        accuracy = predictions.eq(dataset.target_token_ids).float().mean().item()
+        return accuracy, predictions
+
+    reconstructed_accuracy, reconstructed_tokens = target_accuracy(reconstruction)
+    oracle_accuracy, _ = target_accuracy(oracle_reconstruction)
+    no_text_accuracy, _ = target_accuracy(no_text)
+    shuffled_accuracy, _ = target_accuracy(shuffled_phrase)
+    rows = tuple(
+        {
+            "prompt": prompt,
+            "true_phrase": dataset.phrase_texts[int(true_id)],
+            "predicted_phrase": dataset.phrase_texts[int(predicted_id)],
+            "target_token": tokenizer.decode([int(target_id)]),
+            "reconstructed_token": tokenizer.decode([int(reconstructed_id)]),
+            "correct": bool(true_id == predicted_id),
+        }
+        for prompt, true_id, predicted_id, target_id, reconstructed_id in zip(
+            dataset.eval_prompts,
+            dataset.eval_phrase_ids.tolist(),
+            predicted_ids.tolist(),
+            dataset.target_token_ids.tolist(),
+            reconstructed_tokens.tolist(),
+        )
+    )
+    return PythiaTextBottleneckReport(
+        phrase_accuracy=predicted_ids.eq(dataset.eval_phrase_ids).float().mean().item(),
+        shuffled_label_accuracy=shuffled_label_predictions.eq(dataset.eval_phrase_ids).float().mean().item(),
+        reconstruction_mse=F.mse_loss(reconstruction, dataset.eval_residuals).item(),
+        oracle_phrase_mse=F.mse_loss(oracle_reconstruction, dataset.eval_residuals).item(),
+        no_text_mse=F.mse_loss(no_text, dataset.eval_residuals).item(),
+        shuffled_phrase_mse=F.mse_loss(shuffled_phrase, dataset.eval_residuals).item(),
+        reconstructed_target_accuracy=reconstructed_accuracy,
+        oracle_phrase_target_accuracy=oracle_accuracy,
+        no_text_target_accuracy=no_text_accuracy,
+        shuffled_phrase_target_accuracy=shuffled_accuracy,
+        rows=rows,
+    )
+
+
+def run_pythia_text_bottleneck_lab() -> dict:
+    """Run the learner-visible real residual -> text -> residual experiment."""
+
+    tokenizer, model = load_pythia_text_bottleneck_model()
+    dataset = cache_pythia_text_bottleneck_dataset(tokenizer, model)
+    report = evaluate_pythia_text_bottleneck(tokenizer, model, dataset)
+    return {"tokenizer": tokenizer, "model": model, "dataset": dataset, "report": report}
+
+
+def summarize_pythia_text_bottleneck_lab(
+    result: dict[str, object],
+) -> dict[str, float | int]:
+    """Flatten the learner-visible Pythia experiment into release metrics."""
+
+    dataset = result["dataset"]
+    report = result["report"]
+    return {
+        "learner_cpu_train_count": len(dataset.train_residuals),
+        "learner_cpu_eval_count": len(dataset.eval_residuals),
+        "learner_cpu_phrase_accuracy": float(report.phrase_accuracy),
+        "learner_cpu_shuffled_label_accuracy": float(report.shuffled_label_accuracy),
+        "learner_cpu_reconstructed_target_accuracy": float(
+            report.reconstructed_target_accuracy
+        ),
+        "learner_cpu_oracle_phrase_target_accuracy": float(
+            report.oracle_phrase_target_accuracy
+        ),
+        "learner_cpu_no_text_target_accuracy": float(report.no_text_target_accuracy),
+        "learner_cpu_wrong_phrase_target_accuracy": float(
+            report.shuffled_phrase_target_accuracy
+        ),
+        "learner_cpu_reconstruction_mse": float(report.reconstruction_mse),
+        "learner_cpu_no_text_mse": float(report.no_text_mse),
+        "learner_cpu_wrong_phrase_mse": float(report.shuffled_phrase_mse),
+    }
+
+
 def run_smoke_test(cpu: bool = True) -> dict:
     """Return the compact exact-ground-truth contract used by report generation."""
 
@@ -1372,7 +1812,11 @@ def run_smoke_test(cpu: bool = True) -> dict:
 
 
 def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
-    return run_transformerlens_nla_preflight(max_vram_gb=max_vram_gb)
+    gpu_result = run_transformerlens_nla_preflight(max_vram_gb=max_vram_gb)
+    if not gpu_result.get("cuda_available", False):
+        return gpu_result
+    learner_result = run_pythia_text_bottleneck_lab()
+    return gpu_result | summarize_pythia_text_bottleneck_lab(learner_result)
 
 
 def run_full_experiment(max_vram_gb: float = 24.0) -> dict:

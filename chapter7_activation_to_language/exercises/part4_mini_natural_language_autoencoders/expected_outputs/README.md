@@ -21,3 +21,7 @@ Integer, token, boolean, and schema-contract checks require exact equality. Floa
 ## When to regenerate
 
 Regenerate these fixtures when the section title, GT tier, artifact lock schema, verification report schema, expected baseline/control slots, or trusted toy implementation changes. Do not regenerate merely to hide a failing check; update the implementation or the declared claim scope first.
+
+## Learner-visible CPU signature
+
+After the exact courier-state theorem, the solved notebook caches 36 training and 18 held-out final hidden states from pinned `EleutherAI/pythia-70m-deduped`. A learned six-phrase encoder reaches `77.8%` held-out phrase and reconstructed-token accuracy. An oracle correct phrase recovers `100%` of target token classes, while no text reaches `16.7%` and cyclic wrong phrases reach `0%`. Residual MSE is approximately `2.62` for learned text, `3.34` for no text, and `4.94` for wrong phrases; a shuffled-label encoder reaches `11.1%`.

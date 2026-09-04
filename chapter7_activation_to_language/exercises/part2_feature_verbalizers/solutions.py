@@ -125,6 +125,8 @@ TL_VERBALIZER_HELDOUT_EXAMPLES = [
     ("The rocket launched into the", False),
 ]
 TL_DIRECTION_SCALE = 2.0
+LOCAL_VERBALIZER_MODEL_ID = "Qwen/Qwen2.5-0.5B-Instruct"
+LOCAL_VERBALIZER_REVISION = "7ae557604adf67be50417f59c2c2f167def9a775"
 
 
 @dataclass(frozen=True)
@@ -204,6 +206,51 @@ class PlantedInterventionReport:
     matches_prediction: bool
     beats_random_direction: bool
     evaluated_examples: int
+
+
+@dataclass(frozen=True)
+class LocalHypothesisCandidate:
+    key: str
+    description: str
+    rule: ExplanationRule
+
+
+INITIAL_LOCAL_HYPOTHESES = (
+    LocalHypothesisCandidate(
+        "A",
+        "fires on resting words",
+        ExplanationRule("resting words", ("resting",)),
+    ),
+    LocalHypothesisCandidate(
+        "B",
+        "fires on living animals that are resting",
+        ExplanationRule("living animal resting", ("animal", "resting")),
+    ),
+    LocalHypothesisCandidate(
+        "C",
+        "fires on living animals resting on physical surfaces",
+        ExplanationRule(
+            "living animal resting on a physical surface",
+            ("animal", "resting", "surface"),
+        ),
+    ),
+)
+REVISED_LOCAL_HYPOTHESES = (
+    LocalHypothesisCandidate(
+        "C",
+        "living animals resting on physical surfaces",
+        INITIAL_LOCAL_HYPOTHESES[-1].rule,
+    ),
+    LocalHypothesisCandidate(
+        "D",
+        "living animals resting on physical surfaces, excluding non-living replicas such as toys, plush objects, statues, and wooden objects",
+        ExplanationRule(
+            "living animal resting on a physical surface; exclude non-living replicas",
+            ("animal", "resting", "surface"),
+            tuple(sorted(DECOY_TERMS)),
+        ),
+    ),
+)
 
 
 _PLANTED_EXAMPLE_SPECS: tuple[tuple[str, SplitKind, str], ...] = (
@@ -943,6 +990,221 @@ def run_smoke_test(cpu: bool = True) -> dict:
     }
 
 
+def load_local_verbalizer_model():
+    """Load the pinned local instruction model used to choose hypotheses."""
+
+    from transformers import AutoModelForCausalLM, AutoTokenizer
+
+    tokenizer = AutoTokenizer.from_pretrained(
+        LOCAL_VERBALIZER_MODEL_ID,
+        revision=LOCAL_VERBALIZER_REVISION,
+        local_files_only=True,
+    )
+    model = AutoModelForCausalLM.from_pretrained(
+        LOCAL_VERBALIZER_MODEL_ID,
+        revision=LOCAL_VERBALIZER_REVISION,
+        local_files_only=True,
+        dtype=t.bfloat16,
+    ).to("cpu")
+    model.eval()
+    return model, tokenizer
+
+
+def build_local_hypothesis_prompt(
+    examples: tuple[PlantedFeatureExample, ...] | list[PlantedFeatureExample],
+    candidates: tuple[LocalHypothesisCandidate, ...],
+    *,
+    previous_hypothesis: str | None = None,
+    counterexamples: tuple[dict[str, object], ...] = (),
+) -> str:
+    """Create an auditable prompt for initial selection or counterexample revision."""
+
+    if not examples:
+        raise ValueError("examples must be nonempty.")
+    if not candidates or len({candidate.key for candidate in candidates}) != len(candidates):
+        raise ValueError("candidates must have unique keys.")
+    options = "\n".join(
+        f"{candidate.key}. {candidate.description}" for candidate in candidates
+    )
+    if previous_hypothesis is None:
+        rows = "\n".join(
+            f"- {example.text} => {'ACTIVE' if example.label else 'INACTIVE'}"
+            for example in examples
+        )
+        return (
+            "Infer the latent feature from evidence. Choose the shortest option consistent "
+            "with every row.\n"
+            f"{rows}\n\n{options}\n\nAnswer with one letter only:"
+        )
+    if not counterexamples:
+        raise ValueError("revision prompts require at least one counterexample.")
+    error_rows = "\n".join(
+        f"- {row['text']} => {'ACTIVE' if row['label'] else 'INACTIVE'}"
+        for row in counterexamples
+    )
+    count_text = "three" if len(counterexamples) == 3 else str(len(counterexamples))
+    return (
+        f"An earlier feature hypothesis was: \"{previous_hypothesis.removeprefix('fires on ')}\". "
+        f"It wrongly predicts ACTIVE for all {count_text} blind counterexamples:\n"
+        f"{error_rows}\n"
+        "Choose the revision that fixes this shared failure without dropping the "
+        "original conjunction.\n"
+        f"{options}\nAnswer with one letter only:"
+    )
+
+
+def score_local_hypothesis_candidates(
+    model,
+    tokenizer,
+    prompt: str,
+    candidates: tuple[LocalHypothesisCandidate, ...],
+) -> tuple[dict[str, object], ...]:
+    """Score candidate keys at the local model's next-token distribution."""
+
+    rendered = tokenizer.apply_chat_template(
+        [{"role": "user", "content": prompt}],
+        tokenize=False,
+        add_generation_prompt=True,
+    )
+    encoded = tokenizer(rendered, return_tensors="pt")
+    with t.inference_mode():
+        logits = model(**encoded).logits[0, -1].detach().float()
+    candidate_token_ids = []
+    for candidate in candidates:
+        token_ids = tokenizer.encode(candidate.key, add_special_tokens=False)
+        if len(token_ids) != 1:
+            raise ValueError(f"candidate key {candidate.key!r} must tokenize to one token.")
+        candidate_token_ids.append(token_ids[0])
+    candidate_logits = logits[t.tensor(candidate_token_ids)]
+    probabilities = candidate_logits.softmax(dim=0)
+    return tuple(
+        {
+            "key": candidate.key,
+            "hypothesis": candidate.description,
+            "logit": float(logit),
+            "probability_among_candidates": float(probability),
+        }
+        for candidate, logit, probability in zip(
+            candidates,
+            candidate_logits.tolist(),
+            probabilities.tolist(),
+            strict=True,
+        )
+    )
+
+
+def select_local_hypothesis(
+    candidates: tuple[LocalHypothesisCandidate, ...],
+    scores: tuple[dict[str, object], ...],
+) -> LocalHypothesisCandidate:
+    """Return the candidate with the largest local-model score."""
+
+    if len(candidates) != len(scores):
+        raise ValueError("candidates and scores must align.")
+    score_by_key = {str(row["key"]): float(row["logit"]) for row in scores}
+    if set(score_by_key) != {candidate.key for candidate in candidates}:
+        raise ValueError("score keys must match candidate keys exactly.")
+    return max(candidates, key=lambda candidate: score_by_key[candidate.key])
+
+
+def run_local_feature_hypothesis_lab(model, tokenizer) -> dict[str, object]:
+    """Run a local-model hypothesis, blind revision, and held-out scoring loop."""
+
+    split = split_planted_feature_dataset(make_planted_feature_dataset())
+    initial_prompt = build_local_hypothesis_prompt(
+        split.train,
+        INITIAL_LOCAL_HYPOTHESES,
+    )
+    initial_scores = score_local_hypothesis_candidates(
+        model,
+        tokenizer,
+        initial_prompt,
+        INITIAL_LOCAL_HYPOTHESES,
+    )
+    initial = select_local_hypothesis(INITIAL_LOCAL_HYPOTHESES, initial_scores)
+    revision_predictions = semantic_rule_predictions(
+        [example.text for example in split.revision],
+        initial.rule,
+    )
+    counterexamples = mine_counterexamples(
+        split.revision,
+        revision_predictions,
+        max_examples=len(split.revision),
+    )
+    revision_prompt = build_local_hypothesis_prompt(
+        split.revision,
+        REVISED_LOCAL_HYPOTHESES,
+        previous_hypothesis=initial.description,
+        counterexamples=counterexamples,
+    )
+    revision_scores = score_local_hypothesis_candidates(
+        model,
+        tokenizer,
+        revision_prompt,
+        REVISED_LOCAL_HYPOTHESES,
+    )
+    revised = select_local_hypothesis(REVISED_LOCAL_HYPOTHESES, revision_scores)
+
+    heldout_texts = [example.text for example in split.heldout]
+    heldout_labels = t.tensor([example.label for example in split.heldout], dtype=t.bool)
+    initial_predictions = semantic_rule_predictions(heldout_texts, initial.rule)
+    revised_predictions = semantic_rule_predictions(heldout_texts, revised.rule)
+    lookup_predictions = examples_only_lookup_predictions(split.train, split.heldout)
+    random_predictions = random_keyword_predictions(heldout_texts, seed=11, k=3)
+    controls = (
+        {"method": "always inactive", "accuracy": _accuracy(t.zeros_like(heldout_labels), heldout_labels)},
+        {"method": "train-example lookup", "accuracy": _accuracy(lookup_predictions, heldout_labels)},
+        {"method": "random keyword rule", "accuracy": _accuracy(random_predictions, heldout_labels)},
+        {"method": "initial local hypothesis", "accuracy": _accuracy(initial_predictions, heldout_labels)},
+        {"method": "revised local hypothesis", "accuracy": _accuracy(revised_predictions, heldout_labels)},
+    )
+    heldout_rows = tuple(
+        {
+            "text": example.text,
+            "kind": example.counterfactual_type,
+            "label": example.label,
+            "initial": bool(initial_prediction),
+            "revised": bool(revised_prediction),
+        }
+        for example, initial_prediction, revised_prediction in zip(
+            split.heldout,
+            initial_predictions.tolist(),
+            revised_predictions.tolist(),
+            strict=True,
+        )
+    )
+    return {
+        "model_id": LOCAL_VERBALIZER_MODEL_ID,
+        "revision": LOCAL_VERBALIZER_REVISION,
+        "initial_prompt": initial_prompt,
+        "initial_scores": initial_scores,
+        "initial_hypothesis": initial,
+        "revision_prompt": revision_prompt,
+        "revision_scores": revision_scores,
+        "revised_hypothesis": revised,
+        "counterexamples": counterexamples,
+        "heldout_count": len(split.heldout),
+        "initial_accuracy": _accuracy(initial_predictions, heldout_labels),
+        "revised_accuracy": _accuracy(revised_predictions, heldout_labels),
+        "controls": controls,
+        "heldout_rows": heldout_rows,
+    }
+
+
+def summarize_local_feature_hypothesis_lab(
+    result: dict[str, object],
+) -> dict[str, str | float | int]:
+    """Flatten the learner-visible local-model loop into release metrics."""
+
+    return {
+        "local_model_initial_hypothesis": result["initial_hypothesis"].key,
+        "local_model_revised_hypothesis": result["revised_hypothesis"].key,
+        "local_model_revision_counterexample_count": len(result["counterexamples"]),
+        "local_model_initial_heldout_accuracy": float(result["initial_accuracy"]),
+        "local_model_revised_heldout_accuracy": float(result["revised_accuracy"]),
+    }
+
+
 def _load_gelu1l_model_on_cuda():
     os.environ.setdefault("BNB_CUDA_VERSION", TL_BNB_CUDA_OVERRIDE)
     logging.getLogger("bitsandbytes.cextension").setLevel(logging.ERROR)
@@ -1227,7 +1489,12 @@ def _attach_planted_signature_metrics(gpu_result: dict, planted_result: dict) ->
 def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
     gpu_result = run_transformerlens_feature_verbalizer_preflight(max_vram_gb=max_vram_gb)
     planted_result = run_planted_feature_verbalizer_signature_result(seed=0)
-    return _attach_planted_signature_metrics(gpu_result, planted_result)
+    result = _attach_planted_signature_metrics(gpu_result, planted_result)
+    if not gpu_result.get("cuda_available", False):
+        return result
+    local_model, local_tokenizer = load_local_verbalizer_model()
+    local_result = run_local_feature_hypothesis_lab(local_model, local_tokenizer)
+    return result | summarize_local_feature_hypothesis_lab(local_result)
 
 
 def run_full_experiment(max_vram_gb: float = 24.0) -> dict:

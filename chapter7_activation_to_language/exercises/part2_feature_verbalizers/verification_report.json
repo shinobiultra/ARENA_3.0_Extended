@@ -14,11 +14,19 @@
       "final_heldout_counterfactuals",
       "feature_direction_intervention",
       "orthogonal_random_direction_intervention_control",
-      "pinned_transformerlens_gelu1l_cuda_handoff_not_rerun_by_subtask"
+      "pinned_transformerlens_gelu1l_cuda_handoff_not_rerun_by_subtask",
+      "pinned_local_qwen_next_token_candidate_scoring",
+      "blind_heldout_strings_absent_from_hypothesis_prompts",
+      "local_hypothesis_revision_from_three_counterexamples"
     ],
     "expected_metrics": {
       "accepted": true,
       "hf_revision": "bddc0e332f0ae84279e6a6a45d91b314899e1603",
+      "local_model_initial_heldout_accuracy": 0.75,
+      "local_model_initial_hypothesis": "C",
+      "local_model_revised_heldout_accuracy": 1.0,
+      "local_model_revised_hypothesis": "D",
+      "local_model_revision_counterexample_count": 3,
       "max_allowed_gpu_gb": 24,
       "model_name": "gelu-1l",
       "tests_passed": true,
@@ -79,11 +87,19 @@
       "target_source": "manual_safe_prompt_labels_plus_real_residual_projection",
       "tokenizer": "NeelNanda/gpt-neox-tokenizer-digits",
       "train_example_count": 8
+    },
+    {
+      "heldout_example_count": 24,
+      "heldout_visibility": "opened_only_after_revised_hypothesis_is_fixed",
+      "id": "local_qwen_verbalizer_split_v1",
+      "revision_example_count": 6,
+      "source": "7_2_exact_planted_feature_counterfactuals_v2",
+      "train_example_count": 12
     }
   ],
-  "date_run": "2026-09-04T08:42:36+00:00",
-  "evidence_level": "exact_planted_model_organism_plus_pinned_transformerlens_residual_direction_handoff",
-  "git_commit": "66aad913",
+  "date_run": "2026-09-04T14:01:02+00:00",
+  "evidence_level": "exact_planted_model_organism_plus_pinned_local_qwen_hypothesis_revision_loop",
+  "git_commit": "080743f7",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-1",
   "known_failures": [],
@@ -111,6 +127,11 @@
         "hf_revision",
         "intervention_delta",
         "learned_terms_from_train",
+        "local_model_initial_heldout_accuracy",
+        "local_model_initial_hypothesis",
+        "local_model_revised_heldout_accuracy",
+        "local_model_revised_hypothesis",
+        "local_model_revision_counterexample_count",
         "matches_intervention_prediction",
         "model_name",
         "negative_mean_score",
@@ -203,6 +224,11 @@
       "hf_revision": "bddc0e332f0ae84279e6a6a45d91b314899e1603",
       "intervention_delta": 0.7724781036376953,
       "learned_terms_from_train": true,
+      "local_model_initial_heldout_accuracy": 0.75,
+      "local_model_initial_hypothesis": "C",
+      "local_model_revised_heldout_accuracy": 1.0,
+      "local_model_revised_hypothesis": "D",
+      "local_model_revision_counterexample_count": 3,
       "matches_intervention_prediction": true,
       "model_name": "gelu-1l",
       "negative_mean_score": -4.954327583312988,
@@ -758,6 +784,15 @@
       "tokenizer_id": "NeelNanda/gpt-neox-tokenizer-digits",
       "tokenizer_revision": "0f6671571a20be9756b9991d978047c03b75e749",
       "transformerlens_model_name": "gelu-1l"
+    },
+    {
+      "claim_scope": "candidate_hypothesis_selection_and_counterexample_revision_only",
+      "device": "cpu",
+      "gated": false,
+      "id": "Qwen/Qwen2.5-0.5B-Instruct",
+      "precision": "bfloat16",
+      "revision": "7ae557604adf67be50417f59c2c2f167def9a775",
+      "source": "huggingface_local_cache"
     }
   ],
   "negative_controls": {
@@ -775,7 +810,7 @@
   "peak_vram_gb": 0.23641014099121094,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "87f2ab0662040073a62fbec641c6abb9d8b88275827bf9f7c6d8e1bfd6d474ef",
+    "combined_sha256": "c1ef2c67dad89126cfef5c974cbe0600185873a34ca0340394017cfccf0f6c87",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -784,13 +819,13 @@
       },
       {
         "path": "chapter7_activation_to_language/exercises/part2_feature_verbalizers/7.2_Feature_Verbalizers_exercises.ipynb",
-        "sha256": "8e48b0625770adbe1b46f9eaff7b3a19854d48547fca5965faf29e1399fc6a27",
-        "size_bytes": 76875
+        "sha256": "e91a36a2718362eb74657eaf1fb5a6707b1c91eea7d0825a1611e66572dd71ca",
+        "size_bytes": 98476
       },
       {
         "path": "chapter7_activation_to_language/exercises/part2_feature_verbalizers/7.2_Feature_Verbalizers_solutions.ipynb",
-        "sha256": "862328aed0614bb5bebe1e71752a8ec6729f83b470676d1e0d40741feacf5928",
-        "size_bytes": 282224
+        "sha256": "6a60da20d3aa7951f3510f6be9a80ded9111982b9fb0ad802e0cc280e7aeb52b",
+        "size_bytes": 397817
       },
       {
         "path": "chapter7_activation_to_language/exercises/part2_feature_verbalizers/README.md",
@@ -799,13 +834,13 @@
       },
       {
         "path": "chapter7_activation_to_language/exercises/part2_feature_verbalizers/artifacts.lock.yml",
-        "sha256": "cf2f74f7aaa0293dfd592ba9a02ed17e39b17ef7a698abb5c974758627e6e30f",
-        "size_bytes": 4473
+        "sha256": "17de752eca55aa86fea79d921c2a7fcfe822ca8f60cf50b30d071bc4f44f3d06",
+        "size_bytes": 5728
       },
       {
         "path": "chapter7_activation_to_language/exercises/part2_feature_verbalizers/expected_outputs/README.md",
-        "sha256": "54bf763cfac098caca298ad50b91dc601c9529da1875640459ccd5a843dcd043",
-        "size_bytes": 1771
+        "sha256": "6215c4b97af35677dbc258762bcc03b2aedf353c4cb980d94b47a7264b5f18ca",
+        "size_bytes": 2303
       },
       {
         "path": "chapter7_activation_to_language/exercises/part2_feature_verbalizers/expected_outputs/reference_metrics.json",
@@ -819,13 +854,13 @@
       },
       {
         "path": "chapter7_activation_to_language/exercises/part2_feature_verbalizers/solutions.py",
-        "sha256": "9bd4efb2abb283f1935d38a083677201dcad87a3c92d8d9261c4a1abb92741af",
-        "size_bytes": 47854
+        "sha256": "44bc8b2311fd8d0b1d0f594c763acb3e0084e5fc76be9c9e174798f80aca85ac",
+        "size_bytes": 58170
       },
       {
         "path": "chapter7_activation_to_language/exercises/part2_feature_verbalizers/tests.py",
-        "sha256": "6915f87cccdbe0028a314fc0c027b2a7ffae4a2c5c5bee28a77ac45cc28d79b8",
-        "size_bytes": 35186
+        "sha256": "f57348bd028c597b6437106c8bfc00902520f5b64d29b5a500ea396ebc26d3aa",
+        "size_bytes": 38778
       },
       {
         "path": "chapter7_activation_to_language/exercises/part2_feature_verbalizers/utils.py",
@@ -839,8 +874,8 @@
       },
       {
         "path": "chapter7_activation_to_language/instructions/pages/02_[7.2]_Feature_Verbalizers.md",
-        "sha256": "b8fde0e1787ade00445039d3e72e554307502617069ea4f596c37318c616a091",
-        "size_bytes": 58799
+        "sha256": "04426d1d11daec5302cfb39aa5b3312b783f2962b589e92ba4eb9c73d908e18b",
+        "size_bytes": 69865
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
@@ -851,9 +886,9 @@
     "schema_version": 1
   },
   "safety_notes": [
-    "No unsafe prompts, adapters, gated weights, raw external data, API calls, or generated model completions are used in the CPU learner path.",
+    "No unsafe prompts, adapters, gated weights, raw external data, or API calls are used in the CPU learner path. The local model emits only auditable candidate-key logits; executable rules and exact held-out labels determine every score.",
     "The real-model path uses safe generic prompts and a small public TransformerLens checkpoint; parent CUDA verification must rerun it before making GPU-backed release claims."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 5.495767
+  "wall_clock_seconds": 11.953494
 }

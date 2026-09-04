@@ -672,6 +672,11 @@ def test_exercise_notebook_exposes_arena_learner_surface():
         "fig, axes = plt.subplots(1, 3",
         "The static image is only a preview",
         "feature_verbalizers_planted_signature.png",
+        "Real Local-Model Hypothesis Loop",
+        "build an auditable local-model hypothesis prompt",
+        "score candidate hypotheses with a pinned local language model",
+        "revise on counterexamples, then open the blind held-out split",
+        "local_feature_hypothesis_revision.png",
     ]
     missing = [needle for needle in required_strings if needle not in text]
     assert not missing, f"Exercise notebook is missing ARENA learner-surface pieces: {missing}"
@@ -773,6 +778,10 @@ def test_solution_notebook_mirrors_progression_and_inlines_taught_implementation
         "explanation_brevity_report",
         "run_planted_feature_verbalizer_signature_result",
         "run_smoke_test",
+        "build_local_hypothesis_prompt",
+        "score_local_hypothesis_candidates",
+        "select_local_hypothesis",
+        "run_local_feature_hypothesis_lab",
     }
     defined_functions: set[str] = set()
     for index, source in enumerate(solution_code):
@@ -792,3 +801,67 @@ def test_solution_notebook_mirrors_progression_and_inlines_taught_implementation
     print(
         "All tests in `test_solution_notebook_mirrors_progression_and_inlines_taught_implementations` passed!"
     )
+
+
+def test_local_hypothesis_prompt_keeps_blind_rows_hidden():
+    solutions = _solutions()
+    split = solutions.split_planted_feature_dataset(solutions.make_planted_feature_dataset())
+    prompt = solutions.build_local_hypothesis_prompt(
+        split.train,
+        solutions.INITIAL_LOCAL_HYPOTHESES,
+    )
+    assert all(example.text in prompt for example in split.train), (
+        "The initial prompt must show every labeled training example."
+    )
+    assert all(example.text not in prompt for example in split.heldout), (
+        "Initial local-model hypothesis selection must not see the blind held-out rows."
+    )
+    assert {candidate.key for candidate in solutions.INITIAL_LOCAL_HYPOTHESES} == {"A", "B", "C"}, (
+        "The initial candidate menu must remain the pinned A/B/C progression."
+    )
+    print("All tests in `test_local_hypothesis_prompt_keeps_blind_rows_hidden` passed!")
+
+
+def test_real_local_model_revises_hypothesis_on_counterexamples():
+    solutions = _solutions()
+    model, tokenizer = solutions.load_local_verbalizer_model()
+    result = solutions.run_local_feature_hypothesis_lab(model, tokenizer)
+
+    assert result["model_id"] == "Qwen/Qwen2.5-0.5B-Instruct", (
+        "The learner loop must use the pinned local Qwen checkpoint."
+    )
+    assert result["initial_hypothesis"].key == "C", (
+        "The pinned local model should infer the exact conjunction before seeing decoy negatives."
+    )
+    assert result["revised_hypothesis"].key == "D", (
+        "The pinned local model should revise the conjunction after seeing shared decoy failures."
+    )
+    assert len(result["counterexamples"]) == 3, (
+        "Revision must be motivated by exactly three coherent decoy failures."
+    )
+    assert result["heldout_count"] == 24, (
+        "Blind scoring must retain all 24 held-out examples."
+    )
+    assert result["initial_accuracy"] == 0.75, (
+        "The initial conjunction must visibly fail on held-out decoys."
+    )
+    assert result["revised_accuracy"] == 1.0, (
+        "The counterexample-driven revision must repair the complete blind split."
+    )
+    control_scores = {row["method"]: row["accuracy"] for row in result["controls"]}
+    assert result["revised_accuracy"] > max(
+        control_scores["always inactive"],
+        control_scores["train-example lookup"],
+        control_scores["random keyword rule"],
+    ), "The revised local hypothesis must beat all text-only shortcut controls."
+    assert all("verification_report" not in key for key in result), (
+        "The local-model result must be computed live rather than replayed from a report."
+    )
+    assert solutions.summarize_local_feature_hypothesis_lab(result) == {
+        "local_model_initial_hypothesis": "C",
+        "local_model_revised_hypothesis": "D",
+        "local_model_revision_counterexample_count": 3,
+        "local_model_initial_heldout_accuracy": 0.75,
+        "local_model_revised_heldout_accuracy": 1.0,
+    }, "Release metrics must be derived from the exact local-model experiment."
+    print("All tests in `test_real_local_model_revises_hypothesis_on_counterexamples` passed!")
