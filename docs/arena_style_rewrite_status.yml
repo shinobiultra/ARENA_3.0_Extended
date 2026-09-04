@@ -72,7 +72,7 @@ sections:
   '8.1':
     status: course_ready
     page: chapter8_automated_circuits/instructions/pages/01_[8.1]_Activation_Patching_Refresher.md
-    notes: ARENA-style rewrite with activation-patching validation diagrams, clean/corrupt metric and patching progression, recovery/localization/control contracts, help/interpretation dropdowns, signature result, limitations, and paired notebook surfaces.
+    notes: Eight-exercise ARENA lesson on a declared two-hop copy circuit. Students implement the signed metric, normalized recovery, exact patching, denoising and noising sweeps, wrong-position donor controls, and localization metrics; the visible heatmap exactly recovers the three planted route cells with zero off-route response. A separately scoped gelu-1l CUDA preflight verifies real residual-hook mechanics with perfect final-position recovery and zero wrong-position controls.
   '8.2':
     status: course_ready
     page: chapter8_automated_circuits/instructions/pages/02_[8.2]_Attribution_Patching_and_EAP.md
