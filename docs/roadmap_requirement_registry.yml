@@ -1071,12 +1071,14 @@ requirements:
   - id: image.denoising_time_causal_patching
     topic: Denoising-time activation and latent patching
     chapter: 7 Image-generation interpretability
-    section: unassigned
-    status: UNIMPLEMENTED
+    section: "13.2"
+    status: PREFLIGHT_ONLY
     roadmap_refs: [Extension-Roadmap.md:4086-4143, Extension-Roadmap.md:6364-6402]
-    evidence: []
-    reason: Denoising-step causal patching is a required image-generation notebook.
-    blocker: No U-Net/DiT activation cache across timesteps or clean/corrupt denoising intervention exists.
+    course_sections: ["13.2"]
+    method_registry_names: [Denoising-time activation and latent patching]
+    evidence: [chapter13_image_generation_interpretability/exercises/part2_denoising_time_causal_patching]
+    reason: Section 13.2 teaches exact activation caching and causal patching across layers and timesteps, then runs pinned SD1.5 same-seed latent-state interventions with time, region, and random-latent controls.
+    blocker: The released-model path patches scheduler latent states rather than internal U-Net/DiT activations and is limited to two selected color counterfactuals without multi-seed robustness.
 
   - id: image.diffusion_concept_directions
     topic: Diffusion activation and latent concept directions

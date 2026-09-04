@@ -1,0 +1,482 @@
+{
+  "accepted": true,
+  "baselines": {
+    "declared_controls": [
+      "exact_forward_noising_oracle",
+      "exact_object_region_mask",
+      "matched_seed_unpatched_baseline",
+      "same_size_random_channel_patch",
+      "same_size_random_location_patch",
+      "wrong_timestep_patch",
+      "shuffled_label_donor_patch",
+      "untrained_model_patch",
+      "pixel_space_patch_upper_bound",
+      "pinned_sd15_same_seed_donor_recipient",
+      "complete_noninitial_ddim_timestep_sweep",
+      "wrong_time_sd15_latent_patch",
+      "wrong_region_sd15_latent_patch",
+      "scale_matched_random_sd15_latent_patch"
+    ],
+    "expected_metrics": {
+      "accepted": true,
+      "best_layer": "concept",
+      "best_recovery_min": 0.85,
+      "best_selectivity_min": 0.8,
+      "best_timestep": 1,
+      "cuda_available": true,
+      "dataset_size": 24,
+      "diffusion_steps": 8,
+      "heatmap_cell_count": 32,
+      "layer_count": 4,
+      "max_allowed_gpu_gb": 24,
+      "pixel_patch_recovery": 1.0,
+      "random_channel_selectivity_max": 0.1,
+      "sd15_accepted": true,
+      "sd15_case_count": 2,
+      "sd15_min_best_clip_recovery_min": 0.1,
+      "sd15_min_best_regional_selectivity_min": 0.05,
+      "sd15_min_target_control_margin_min": 0.05,
+      "sd15_num_inference_steps_min": 20,
+      "shuffled_label_selectivity_max": 0.02,
+      "tests_passed": true,
+      "training_loss_ratio_max": 0.05,
+      "untrained_model_selectivity_max": 0.0,
+      "within_vram_budget": true,
+      "wrong_timestep_selectivity_max": 0.02
+    }
+  },
+  "claim_scope": "A fully specified generated image world validates analytic forward noising, end-to-end denoiser training, layer-by-timestep activation caching, and causal replacement at an exact object-feature bottleneck. The executed signature transfers a red square into a matched-seed blue-circle trajectory and beats equal-size channel, location, timestep, shuffled-label, unpatched, and untrained-model controls. A pinned SD1.5 CUDA experiment additionally sweeps all 19 non-initial DDIM intervention times for two same-seed color counterfactuals and shows the selected donor-latent patch beating unpatched, wrong-time, wrong-region, and scale-matched random-latent controls. This is a scoped latent-state color-transfer result, not a full UNet circuit claim.",
+  "datasets": [
+    {
+      "examples": 24,
+      "id": "generated_shape_color_position_world_v1",
+      "image_shape": [
+        3,
+        16,
+        16
+      ],
+      "labels": [
+        "shape",
+        "color",
+        "row",
+        "column"
+      ],
+      "seed": 0,
+      "source": "exact_course_generator"
+    }
+  ],
+  "date_run": "2026-09-04T14:34:31+00:00",
+  "evidence_level": "cuda_verified_toy_ground_truth_and_pinned_sd15_latent_patching",
+  "git_commit": "49ca1c18",
+  "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+  "gt_tier": "GT-0",
+  "known_failures": [],
+  "metrics": {
+    "gpu_evidence": {
+      "category": "cuda_section_metric",
+      "placeholder_only": false,
+      "section_specific_metric_keys": [
+        "accepted",
+        "dataset_size",
+        "diffusion_steps",
+        "heatmap_cell_count",
+        "layer_count",
+        "pixel_patch_recovery",
+        "random_channel_selectivity",
+        "sd15",
+        "sd15_accepted",
+        "sd15_case_count",
+        "sd15_min_best_clip_recovery",
+        "sd15_min_best_regional_selectivity",
+        "sd15_min_target_control_margin",
+        "sd15_num_inference_steps",
+        "shuffled_label_selectivity",
+        "toy",
+        "untrained_model_selectivity",
+        "wrong_timestep_selectivity"
+      ],
+      "uses_cuda": true
+    },
+    "gpu_test": {
+      "accepted": true,
+      "cuda_available": true,
+      "cuda_version": "13.2",
+      "dataset_size": 24,
+      "diffusion_steps": 8,
+      "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+      "gpu_total_memory_gb": 23.45965576171875,
+      "heatmap_cell_count": 32,
+      "layer_count": 4,
+      "peak_vram_gb": 3.2346906661987305,
+      "pixel_patch_recovery": 1.0,
+      "random_channel_selectivity": 0.07079106010496616,
+      "sd15": {
+        "accepted": true,
+        "cases": [
+          {
+            "best_clip_recovery": 0.6536844959581614,
+            "best_regional_selectivity": 0.2220655260594271,
+            "best_scheduler_timestep": 851,
+            "best_step_index": 2,
+            "case_id": "red_into_blue_square",
+            "clip_recoveries": [
+              0.5985512433509398,
+              0.6536844959581614,
+              0.21984626497954424,
+              0.13929519173986257,
+              0.1171228128163082,
+              0.15127640389646865,
+              0.2350360856381753,
+              0.4347549416472343,
+              0.39584623202351704,
+              0.3273447062321544,
+              0.37243218631011477,
+              0.3628145998108421,
+              0.4002725172661715,
+              0.4454346330528113,
+              0.4510696290581046,
+              0.4618801752776,
+              0.4730987946575372,
+              0.46605468616532636,
+              0.46006613983872385
+            ],
+            "random_latent_recovery": 0.22108890106431006,
+            "regional_recoveries": [
+              0.2890224804884979,
+              0.4846554277451418,
+              0.6588727216739971,
+              0.7517159487185185,
+              0.7616865524997103,
+              0.7587094393290297,
+              0.8097510527560543,
+              0.8544248293289186,
+              0.8676079541215816,
+              0.8841151373066904,
+              0.8888223576338901,
+              0.8948566537515893,
+              0.9013858523554276,
+              0.9096421581776883,
+              0.9124024028075611,
+              0.9133296535150862,
+              0.913776969681578,
+              0.9140844157184058,
+              0.9112115226193745
+            ],
+            "regional_selectivities": [
+              0.021231179476458695,
+              0.2220655260594271,
+              0.4179024081249554,
+              0.5266906972107595,
+              0.5893067756642687,
+              0.5915839609421507,
+              0.6595696102568935,
+              0.7115527938255312,
+              0.7339431971082607,
+              0.756165199128628,
+              0.765668477395357,
+              0.7741573523895516,
+              0.7829903301186035,
+              0.7933557090433385,
+              0.797867309500066,
+              0.800114803089366,
+              0.8013655079110434,
+              0.8023176750386649,
+              0.7996839232250531
+            ],
+            "seed": 4,
+            "target_beats_controls": true,
+            "target_control_margin": 0.1936183561194375,
+            "unpatched_recovery": 0.0,
+            "wrong_region_recovery": -0.43929027256815417,
+            "wrong_timestep_recovery": 0.46006613983872385
+          },
+          {
+            "best_clip_recovery": 0.5049675850674304,
+            "best_regional_selectivity": 0.22201977337668655,
+            "best_scheduler_timestep": 751,
+            "best_step_index": 4,
+            "case_id": "blue_into_red_circle",
+            "clip_recoveries": [
+              -0.11676035147975057,
+              0.27240216484827423,
+              0.4008360254879845,
+              0.5049675850674304,
+              0.41953867038879933,
+              0.3617765962617674,
+              0.3600470599221766,
+              0.3950243394254296,
+              0.455664508988116,
+              0.38694691865821046,
+              0.30556226388231345,
+              0.3316725600008267,
+              0.33197453038629626,
+              0.3486284459164916,
+              0.36067243331870047,
+              0.35223869515113637,
+              0.33191482521502474,
+              0.3194039127554358,
+              0.29204248711841796
+            ],
+            "random_latent_recovery": 0.15139394352273522,
+            "regional_recoveries": [
+              0.081377506167014,
+              0.3355716736133163,
+              0.2818048774407782,
+              0.40712365175555465,
+              0.5233689482388397,
+              0.5775091280159433,
+              0.6264162747293482,
+              0.6664614844198471,
+              0.6838884990447289,
+              0.69717637467202,
+              0.7131401924942271,
+              0.727886393190303,
+              0.7431736885118378,
+              0.7586633347803016,
+              0.7738425345518236,
+              0.7901460767262657,
+              0.8032698476811274,
+              0.8093919721797422,
+              0.8136219500335992
+            ],
+            "regional_selectivities": [
+              -0.19504603752462113,
+              0.0868279905135696,
+              0.05445905319914002,
+              0.22201977337668655,
+              0.36227553440903626,
+              0.43022326425880986,
+              0.5006988434225093,
+              0.5511379110689407,
+              0.5784410577052361,
+              0.6104828940611725,
+              0.633994917437865,
+              0.6579161058077003,
+              0.6804126574206246,
+              0.7018503145211596,
+              0.7214886234500055,
+              0.7409564868086059,
+              0.7560618067284449,
+              0.763153270389171,
+              0.7669711342784703
+            ],
+            "seed": 2,
+            "target_beats_controls": true,
+            "target_control_margin": 0.2129250979490125,
+            "unpatched_recovery": 0.0,
+            "wrong_region_recovery": -0.2574092778008901,
+            "wrong_timestep_recovery": 0.29204248711841796
+          }
+        ],
+        "clip_model_id": "openai/clip-vit-base-patch32",
+        "clip_revision": "3d74acf9a28c67741b2f4f2ea7635f0aaf6f0268",
+        "cuda_version": "13.2",
+        "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+        "model_id": "stable-diffusion-v1-5/stable-diffusion-v1-5",
+        "num_inference_steps": 20,
+        "peak_vram_gb": 3.2346906661987305,
+        "revision": "451f4fe16113bff5a5d2269ed5ad43b0592e9a14",
+        "runtime_seconds": 54.11245172800045,
+        "torch_version": "2.12.1+cu132",
+        "within_vram_budget": true
+      },
+      "sd15_accepted": true,
+      "sd15_case_count": 2,
+      "sd15_min_best_clip_recovery": 0.5049675850674304,
+      "sd15_min_best_regional_selectivity": 0.22201977337668655,
+      "sd15_min_target_control_margin": 0.1936183561194375,
+      "sd15_num_inference_steps": 20,
+      "shuffled_label_selectivity": 3.1580223549099173e-05,
+      "torch_version": "2.12.1+cu132",
+      "toy": {
+        "accepted": true,
+        "best_layer": "concept",
+        "best_outside_change": 0.015585462562739849,
+        "best_recovery": 0.9936832189559937,
+        "best_selectivity": 0.9780977563932538,
+        "best_timestep": 1,
+        "controls": {
+          "matched_seed_unpatched": {
+            "outside_change": 0.0,
+            "recovery": 0.0,
+            "selectivity": 0.0
+          },
+          "pixel_patch_upper_bound": {
+            "outside_change": 0.0,
+            "recovery": 1.0,
+            "selectivity": 1.0
+          },
+          "same_size_random_channels": {
+            "outside_change": 0.007929062470793724,
+            "recovery": 0.07872012257575989,
+            "selectivity": 0.07079106010496616
+          },
+          "same_size_random_location": {
+            "outside_change": 0.2876709997653961,
+            "recovery": 0.0,
+            "selectivity": -0.2876709997653961
+          },
+          "shuffled_labels": {
+            "outside_change": 1.343373969575623e-05,
+            "recovery": 4.5013963244855404e-05,
+            "selectivity": 3.1580223549099173e-05
+          },
+          "untrained_model": {
+            "outside_change": 0.010688896290957928,
+            "recovery": -0.10196737200021744,
+            "selectivity": -0.11265626829117537
+          },
+          "wrong_timestep": {
+            "outside_change": 0.00010640321124810725,
+            "recovery": 2.577486611698987e-06,
+            "selectivity": -0.00010382572463640827
+          }
+        },
+        "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+        "heatmap_max": 0.9780977368354797,
+        "heatmap_min": -0.029543252661824226,
+        "max_vram_gb": 24.0,
+        "peak_vram_gb": 0.06702995300292969,
+        "runtime_seconds": 2.974002966999251,
+        "training_final_loss": 0.002254420053213835,
+        "training_first_loss": 0.59244375705719,
+        "training_loss_ratio": 0.0038052895761988936
+      },
+      "untrained_model_selectivity": -0.11265626829117537,
+      "within_vram_budget": true,
+      "wrong_timestep_selectivity": -0.00010382572463640827
+    },
+    "notebook_contract": {
+      "alpha_bar_t0": 1.0,
+      "dataset_size": 24,
+      "image_shape": [
+        2,
+        3,
+        16,
+        16
+      ],
+      "mask_pixels": [
+        25,
+        21
+      ],
+      "tests_passed": true
+    }
+  },
+  "models": [
+    {
+      "claim_scope": "required_gt0_cpu_signature",
+      "gated": false,
+      "id": "arena_generated_hookable_object_denoiser_v1",
+      "precision": "float32",
+      "revision": "exact_architecture_in_solutions_py",
+      "source": "course_implementation"
+    },
+    {
+      "claim_scope": "pinned_real_cuda_ddim_latent_state_patching",
+      "gated": false,
+      "id": "stable-diffusion-v1-5/stable-diffusion-v1-5",
+      "precision": "float16",
+      "revision": "451f4fe16113bff5a5d2269ed5ad43b0592e9a14",
+      "source": "huggingface"
+    },
+    {
+      "claim_scope": "pinned_real_cuda_donor_minus_recipient_scoring",
+      "gated": false,
+      "id": "openai/clip-vit-base-patch32",
+      "precision": "float32",
+      "revision": "3d74acf9a28c67741b2f4f2ea7635f0aaf6f0268",
+      "source": "huggingface"
+    }
+  ],
+  "negative_controls": {
+    "declared_controls": [
+      "same_size_random_channel_patch",
+      "same_size_random_location_patch",
+      "scale_matched_random_sd15_latent_patch"
+    ]
+  },
+  "notebook_id": "13_2_denoising_time_causal_patching",
+  "ood_tests": {
+    "declared": "required_where_applicable"
+  },
+  "peak_vram_gb": 3.2346906661987305,
+  "report_inputs": {
+    "algorithm": "sha256",
+    "combined_sha256": "20764a0082bb700feb8b3b587da5f16f68cf2148ac3016890a49e048beb587f3",
+    "files": [
+      {
+        "path": "arena_ext/verification.py",
+        "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
+        "size_bytes": 9276
+      },
+      {
+        "path": "chapter13_image_generation_interpretability/exercises/part2_denoising_time_causal_patching/13.2_Denoising-Time_Causal_Patching_exercises.ipynb",
+        "sha256": "33885aa0ad52e808c96e4b4ddbbead5b57efd1d3b74c59df9975c9ec04bf05e0",
+        "size_bytes": 92402
+      },
+      {
+        "path": "chapter13_image_generation_interpretability/exercises/part2_denoising_time_causal_patching/13.2_Denoising-Time_Causal_Patching_solutions.ipynb",
+        "sha256": "1546f6933b68a6871f5b7908949a3490b819045597bc7f18a0740c9c91c14d1e",
+        "size_bytes": 2529374
+      },
+      {
+        "path": "chapter13_image_generation_interpretability/exercises/part2_denoising_time_causal_patching/README.md",
+        "sha256": "ad03fa429dbc8592606fd244c48c3b786e3901337d0763ed44ecb7e8c3c3265e",
+        "size_bytes": 2979
+      },
+      {
+        "path": "chapter13_image_generation_interpretability/exercises/part2_denoising_time_causal_patching/artifacts.lock.yml",
+        "sha256": "6f7069e846fea7a36f6b27968b272f51c75973bbdb97d87b84e3b4d54f2cbe1f",
+        "size_bytes": 3577
+      },
+      {
+        "path": "chapter13_image_generation_interpretability/exercises/part2_denoising_time_causal_patching/expected_outputs/README.md",
+        "sha256": "c1b529fd4cf3f7eb173fb0e3dfd06c8a0f2421a314b4c7364a024a38146ebef4",
+        "size_bytes": 1794
+      },
+      {
+        "path": "chapter13_image_generation_interpretability/exercises/part2_denoising_time_causal_patching/expected_outputs/reference_metrics.json",
+        "sha256": "0f795ea582408498a8ac35addfb4282c138b22cd7f1912fc10f819142ee35080",
+        "size_bytes": 2938
+      },
+      {
+        "path": "chapter13_image_generation_interpretability/exercises/part2_denoising_time_causal_patching/expected_outputs/smoke_test.json",
+        "sha256": "2f63f51f024478d50c1243572f0cab209e6a1fff0b3fa69193aca5b897c278a1",
+        "size_bytes": 298
+      },
+      {
+        "path": "chapter13_image_generation_interpretability/exercises/part2_denoising_time_causal_patching/solutions.py",
+        "sha256": "a4b31aaac19e48850766f08357a2b06271541fe35bc01fd9cbbd0a4f91bd41e3",
+        "size_bytes": 61317
+      },
+      {
+        "path": "chapter13_image_generation_interpretability/exercises/part2_denoising_time_causal_patching/tests.py",
+        "sha256": "5434406d69fac0f470fa1526631ec55381d8d793e9f379f144abc09171379b32",
+        "size_bytes": 33253
+      },
+      {
+        "path": "chapter13_image_generation_interpretability/exercises/part2_denoising_time_causal_patching/verification_report.schema.json",
+        "sha256": "26796a8d4ec575b42d6f9d0aef9c7d6df353c3388b5b18546e354d9c96ce6456",
+        "size_bytes": 2027
+      },
+      {
+        "path": "chapter13_image_generation_interpretability/instructions/pages/02_[13.2]_Denoising-Time_Causal_Patching.md",
+        "sha256": "968e35915856ecc62c92eb4d07b7f839e559e28e0a969d096b16dcdebd52892a",
+        "size_bytes": 70641
+      },
+      {
+        "path": "scripts/run_extension_verification_reports.py",
+        "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
+        "size_bytes": 16272
+      }
+    ],
+    "schema_version": 1
+  },
+  "safety_notes": [
+    "The required model and data are generated locally and contain only geometric objects.",
+    "The SD1.5 prompts contain only simple color and shape descriptions.",
+    "No gated data, unsafe prompts, or downloaded training corpus is used."
+  ],
+  "tests_passed": true,
+  "wall_clock_seconds": 59.53215
+}
