@@ -14,10 +14,18 @@
       " unsafe"
     ],
     "black_box_behavior_proxy_accuracy": 1.0,
+    "black_box_behavior_detection_step": 4,
+    "behavior_alignment_correlation_min": 0.99,
+    "behavior_proxy_accuracy": 1.0,
+    "control_claim_passed": true,
+    "controls_pass": true,
     "detector_accuracy": 1.0,
+    "direction_cosine_to_ground_truth_min": 0.999,
     "drift_alignment_correlation_min": 0.7,
     "drift_kind_count": 5,
     "drift_score_margin_min": 1.0,
+    "final_heldout_accuracy": 1.0,
+    "final_heldout_margin_min": 2.5,
     "generation_used": false,
     "heldout_context_count": 4,
     "heldout_prompt_count": 24,
@@ -29,6 +37,7 @@
     ],
     "label_shuffled_detector_accuracy_max": 0.75,
     "max_allowed_gpu_gb": 24,
+    "mitigation_capability_loss_max": 0.05,
     "mitigation_drift_delta_reduction_min": 1.0,
     "mitigation_neutral_delta_shift_max": 0.1,
     "mitigation_passes": true,
@@ -39,7 +48,11 @@
     "random_direction_accuracy_max": 0.55,
     "tests_passed": true,
     "train_context_count": 6,
-    "train_prompt_count": 36
+    "train_prompt_count": 36,
+    "white_box_catches_earlier": true,
+    "white_box_catches_known_onset": true,
+    "white_box_detection_step": 3,
+    "known_onset_step": 3
   },
   "negative_controls": {
     "required_where_applicable": true

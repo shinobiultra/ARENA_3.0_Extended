@@ -4,21 +4,24 @@ title: Emergent Misalignment Detection
 exercise_metadata:
   EXERCISE_ID: 9_3_emergent_misalignment_detection
   GT_TIER: GT-3
-  DIFFICULTY: 3
-  IMPORTANCE: 4
-  EXPECTED_RUNTIME: seconds on toy contract; minutes on local real-model path
+  DIFFICULTY: 4
+  IMPORTANCE: 5
+  EXPECTED_RUNTIME: 60-75 minutes for exercises; minutes on local real-model path
   REQUIRES_GPU: true
 gt_tier: GT-3
-evidence_level: toy_proxy_drift_contract_plus_pinned_pythia_hidden_state_preflight
+evidence_level: known_onset_toy_proxy_drift_organism_plus_pinned_pythia_hidden_state_preflight
 claim_scope: GT-3 emergent-misalignment detection preflight using benign proxy drifts
-  only. The toy detector, crosscoder-style proxy alignment, mitigation, and early-warning
-  contracts are preserved, and the graded CUDA path loads pinned Pythia-70M-deduped
-  on safe generated prompt pairs. It trains a thresholded hidden-state drift direction
-  on 36 prompts, evaluates 24 held-out prompts across five benign proxy kinds, compares
-  label-shuffled and fixed random directions, aligns proxy feature scores with a safe
-  next-token behavior proxy, and tests projection-style mitigation through the LM
-  head. This is not a trained crosscoder, not a harmful finetune, not an emergent-misalignment
-  reproduction, and not a claim about arbitrary unsafe behavior.
+  only. The learner path starts from a generated model organism with paired neutral
+  and proxy-drift examples, known causal direction, known onset at checkpoint 3,
+  delayed behavior proxy detection at checkpoint 4, failed random-direction and
+  label-shuffled controls, and bounded projection-mitigation capability cost. The
+  graded CUDA path loads pinned Pythia-70M-deduped on safe generated prompt pairs.
+  It trains a thresholded hidden-state drift direction on 36 prompts, evaluates 24
+  held-out prompts across five benign proxy kinds, compares label-shuffled and fixed
+  random directions, aligns proxy feature scores with a safe next-token behavior
+  proxy, and tests projection-style mitigation through the LM head. This is not a
+  trained crosscoder, not a harmful finetune, not an emergent-misalignment reproduction,
+  and not a claim about arbitrary unsafe behavior.
 required_gpu_gb: 1
 max_allowed_gpu_gb: 24
 models:
@@ -40,6 +43,17 @@ datasets:
 - id: 9_3_emergent_misalignment_detection_toy_inputs
   source: generated
   seed: 0
+  context_count: 4
+  prompt_count: 40
+  train_prompt_count: 30
+  heldout_prompt_count: 10
+  checkpoint_count: 6
+  hidden_state_shape:
+  - 40
+  - 6
+  known_onset_step: 3
+  known_drift_direction: activation_dimension_0
+  behavior_proxy_detection_step: 4
 - id: course_safe_proxy_drift_prompts_v1
   source: generated_prompt_sets
   seed: 0
@@ -93,15 +107,32 @@ expected_metrics:
   predicts_heldout_drift: true
   generation_used: false
   peak_vram_gb_max: 1.0
+  known_onset_step: 3
+  white_box_detection_step: 3
+  black_box_behavior_detection_step: 4
+  white_box_catches_known_onset: true
+  white_box_catches_earlier: true
+  direction_cosine_to_ground_truth_min: 0.999
+  final_heldout_accuracy: 1.0
+  final_heldout_margin_min: 2.5
+  behavior_alignment_correlation_min: 0.99
+  behavior_proxy_accuracy: 1.0
+  control_claim_passed: true
+  controls_pass: true
+  mitigation_capability_loss_max: 0.05
 controls:
 - baseline_or_reference_check
 - negative_control_where_applicable
 - shape_dtype_or_exact_value_check
 - toy_safe_proxy_kind_contract
+- toy_known_onset_ground_truth_contract
+- toy_activation_difference_direction_recovery
 - toy_heldout_drift_detector_contract
-- toy_crosscoder_alignment_contract
-- toy_mitigation_contract
-- toy_early_warning_contract
+- toy_timeline_early_warning_contract
+- toy_behavior_proxy_alignment_contract
+- toy_projection_mitigation_capability_cost_contract
+- toy_random_direction_negative_control
+- toy_label_shuffled_negative_control
 - pinned_pythia70m_proxy_drift_direction_probe
 - heldout_context_split
 - label_shuffled_drift_direction_negative_control

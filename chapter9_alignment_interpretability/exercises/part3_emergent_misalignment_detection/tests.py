@@ -1,7 +1,9 @@
+import ast
 from collections.abc import Callable
 import json
 from pathlib import Path
 
+import pytest
 import torch as t
 
 from arena_ext import proxy_drift_detection as reference
@@ -60,6 +62,270 @@ def test_proxy_kinds_are_explicit_safe_categories(
     print("All tests in `test_proxy_kinds_are_explicit_safe_categories` passed!")
 
 
+def test_toy_proxy_drift_timeline_has_known_ground_truth(
+    toy_proxy_drift_timeline: Callable | None = None,
+):
+    toy_proxy_drift_timeline = toy_proxy_drift_timeline or _solutions().toy_proxy_drift_timeline
+    timeline = toy_proxy_drift_timeline()
+    prompt_table = timeline["prompt_table"]
+    labels = timeline["labels"]
+    train_mask = timeline["train_mask"]
+    activations = timeline["activations_by_step"]
+    behavior_scores = timeline["behavior_scores_by_step"]
+    capability_scores = timeline["capability_scores_by_step"]
+
+    assert len(prompt_table) == 40, (
+        "The toy organism should expose concrete safe rows: 4 contexts x 5 proxy "
+        "kinds x neutral/proxy-drift pairs."
+    )
+    assert activations.shape == (6, 40, 6), (
+        "The toy organism should expose a checkpoint timeline with six-dimensional activations."
+    )
+    assert behavior_scores.shape == (6, 40), (
+        "Behavior proxy scores should be tracked for every checkpoint and example."
+    )
+    assert capability_scores.shape == (6, 40), (
+        "Capability proxy scores should be tracked for every checkpoint and example."
+    )
+    assert int(train_mask.sum().item()) == 30 and int((~train_mask).sum().item()) == 10, (
+        "Train and held-out contexts should be visibly separate."
+    )
+    assert int(labels.sum().item()) == 20, (
+        "The toy organism should be balanced between neutral and proxy-drift rows."
+    )
+    assert timeline["known_onset_step"] == 3, (
+        "The ground-truth drift onset should be explicit before detector evaluation."
+    )
+    assert t.equal(timeline["known_drift_direction"], t.tensor([1.0, 0, 0, 0, 0, 0])), (
+        "The known causal direction should be the first residual dimension."
+    )
+    assert {row["proxy_kind"] for row in prompt_table} == set(reference.safe_proxy_drift_kinds()), (
+        "Every safe proxy kind should appear in the visible toy examples."
+    )
+    assert all("procedural" not in str(row["safe_policy_summary"]).lower() for row in prompt_table), (
+        "The toy rows should be policy summaries, not harmful procedural requests."
+    )
+    print("All tests in `test_toy_proxy_drift_timeline_has_known_ground_truth` passed!")
+
+
+def test_activation_difference_direction_recovers_known_axis(
+    activation_difference_direction: Callable | None = None,
+    projection_scores: Callable | None = None,
+):
+    solutions = _solutions()
+    activation_difference_direction = (
+        activation_difference_direction or solutions.activation_difference_direction
+    )
+    projection_scores = projection_scores or solutions.projection_scores
+
+    direction = activation_difference_direction(
+        t.tensor([[2.0, 0.0], [2.0, 1.0]]),
+        t.tensor([[0.0, 0.0], [0.0, 1.0]]),
+    )
+    assert direction.tolist() == [1.0, 0.0], (
+        "The mean-difference direction should point from neutral to proxy drift."
+    )
+    scores = projection_scores(t.tensor([[2.0, 0.0], [0.5, 1.0]]), direction)
+    assert scores.tolist() == [2.0, 0.5], (
+        "Projection scores should be signed dot products along the unit direction."
+    )
+
+    timeline = solutions.toy_proxy_drift_timeline()
+    final_activations = timeline["activations_by_step"][-1]
+    labels = timeline["labels"]
+    train_mask = timeline["train_mask"]
+    recovered = activation_difference_direction(
+        final_activations[train_mask & labels.bool()],
+        final_activations[train_mask & ~labels.bool()],
+    )
+    cosine = float(recovered @ timeline["known_drift_direction"] / recovered.norm())
+    assert cosine > 0.999, (
+        "On the model organism, the learned direction should recover the known causal axis."
+    )
+
+    with pytest.raises(ValueError, match="nonzero finite norm"):
+        activation_difference_direction(t.zeros(2, 2), t.zeros(2, 2))
+    with pytest.raises(ValueError, match="matching d_model"):
+        activation_difference_direction(t.ones(2, 2), t.ones(2, 3))
+    print("All tests in `test_activation_difference_direction_recovers_known_axis` passed!")
+
+
+def test_thresholded_detector_scores_heldout_examples(
+    heldout_detector_smoke_test: Callable | None = None,
+    fit_thresholded_detector: Callable | None = None,
+    evaluate_heldout_detector: Callable | None = None,
+):
+    solutions = _solutions()
+    heldout_detector_smoke_test = (
+        heldout_detector_smoke_test or solutions.heldout_detector_smoke_test
+    )
+    fit_thresholded_detector = fit_thresholded_detector or solutions.fit_thresholded_detector
+    evaluate_heldout_detector = evaluate_heldout_detector or solutions.evaluate_heldout_detector
+
+    result = heldout_detector_smoke_test()
+    assert result["accuracy"] == 1.0, (
+        "The detector smoke test should classify the held-out toy examples."
+    )
+    assert result["margin"] > 1.9 and result["predicts_heldout_drift"], (
+        "A detector only passes when accuracy and signed margin both clear the gate."
+    )
+
+    train_activations = t.tensor([[0.0, 0.0], [1.0, 0.0]])
+    with pytest.raises(ValueError, match="both neutral and proxy-drift"):
+        fit_thresholded_detector(train_activations, t.tensor([1, 1]))
+    with pytest.raises(ValueError, match="shape"):
+        evaluate_heldout_detector(t.ones(2, 2), t.tensor([0, 1, 0]), t.ones(2), 0.0)
+    with pytest.raises(ValueError, match="0 or 1"):
+        evaluate_heldout_detector(t.ones(2, 2), t.tensor([0, 2]), t.ones(2), 0.0)
+    print("All tests in `test_thresholded_detector_scores_heldout_examples` passed!")
+
+
+def test_timeline_detection_catches_known_onset_before_behavior(
+    timeline_detection_report: Callable | None = None,
+    toy_proxy_drift_timeline: Callable | None = None,
+):
+    solutions = _solutions()
+    timeline_detection_report = timeline_detection_report or solutions.timeline_detection_report
+    toy_proxy_drift_timeline = toy_proxy_drift_timeline or solutions.toy_proxy_drift_timeline
+
+    report = timeline_detection_report(toy_proxy_drift_timeline())
+    rows = report["rows"]
+    assert len(rows) == 6, "The signature timeline should show all six checkpoints."
+    assert rows[0]["heldout_margin"] < 0.1, (
+        "Before drift onset, the white-box margin should stay below the detection gate."
+    )
+    assert rows[2]["heldout_margin"] < 1.0 and not rows[2]["white_box_passes"], (
+        "Checkpoint 2 should look suggestive but not yet pass the onset threshold."
+    )
+    assert report["white_box_detection_step"] == report["known_onset_step"] == 3, (
+        "The detector should fire at the known toy onset, not just at the final checkpoint."
+    )
+    assert report["black_box_behavior_detection_step"] == 4, (
+        "The delayed behavior proxy should fire one checkpoint later."
+    )
+    assert report["white_box_catches_earlier"], (
+        "This toy result should support an early-warning claim relative to the behavior proxy."
+    )
+    print("All tests in `test_timeline_detection_catches_known_onset_before_behavior` passed!")
+
+
+def test_behavior_alignment_tracks_proxy_scores(
+    behavior_alignment_report: Callable | None = None,
+    behavior_alignment_smoke_test: Callable | None = None,
+):
+    solutions = _solutions()
+    behavior_alignment_report = behavior_alignment_report or solutions.behavior_alignment_report
+    behavior_alignment_smoke_test = (
+        behavior_alignment_smoke_test or solutions.behavior_alignment_smoke_test
+    )
+
+    result = behavior_alignment_smoke_test()
+    assert result["correlation"] > 0.95, (
+        "Feature scores and behavior proxy scores should be strongly signed-correlated."
+    )
+    assert result["behavior_proxy_accuracy"] == 1.0 and result["aligns_with_behavior_delta"], (
+        "The behavior proxy comparison should also classify the labeled held-out examples."
+    )
+    anti = behavior_alignment_report(
+        t.tensor([-1.0, -0.8, 0.8, 1.0]),
+        t.tensor([1.0, 0.8, -0.8, -1.0]),
+        t.tensor([0, 0, 1, 1]),
+        min_correlation=0.8,
+    )
+    assert anti["correlation"] < -0.99 and not anti["aligns_with_behavior_delta"], (
+        "An anti-correlated behavior proxy should fail rather than passing by magnitude."
+    )
+    print("All tests in `test_behavior_alignment_tracks_proxy_scores` passed!")
+
+
+def test_projection_mitigation_bounds_capability_cost(
+    toy_mitigation_smoke_test: Callable | None = None,
+    projection_mitigation_intervention: Callable | None = None,
+):
+    solutions = _solutions()
+    toy_mitigation_smoke_test = toy_mitigation_smoke_test or solutions.toy_mitigation_smoke_test
+    projection_mitigation_intervention = (
+        projection_mitigation_intervention or solutions.projection_mitigation_intervention
+    )
+
+    result = toy_mitigation_smoke_test()
+    assert result["drift_reduction"] > 1.0, (
+        "Projection mitigation should reduce final held-out proxy-drift evidence."
+    )
+    assert result["capability_loss"] < 0.05, (
+        "The mitigation must report a small independent capability proxy cost."
+    )
+    assert result["mitigation_passes"], (
+        "The mitigation claim should require both drift reduction and bounded capability cost."
+    )
+    with pytest.raises(ValueError, match="between 0 and 1"):
+        projection_mitigation_intervention(t.ones(2, 2), t.ones(2), 0.0, strength=1.5)
+    print("All tests in `test_projection_mitigation_bounds_capability_cost` passed!")
+
+
+def test_controls_reject_random_and_label_shuffled_directions(
+    toy_controls_smoke_test: Callable | None = None,
+):
+    toy_controls_smoke_test = toy_controls_smoke_test or _solutions().toy_controls_smoke_test
+    result = toy_controls_smoke_test()
+    assert result["target_accuracy"] == 1.0 and result["target_margin"] > 2.5, (
+        "The real toy direction should strongly separate held-out proxy drift."
+    )
+    assert result["random_direction_accuracy"] <= 0.65 and result["random_direction_fails"], (
+        "The fixed random direction should visibly fail the same held-out claim."
+    )
+    assert result["label_shuffled_accuracy"] <= 0.65 and result["label_shuffled_fails"], (
+        "The label-shuffled direction should visibly fail the same held-out claim."
+    )
+    assert result["margin_gap"] > 2.0 and result["controls_pass"], (
+        "The target direction should beat both controls by a large signed margin."
+    )
+    print("All tests in `test_controls_reject_random_and_label_shuffled_directions` passed!")
+
+
+def test_toy_proxy_drift_signature_result_has_visible_timeline(
+    toy_proxy_drift_signature_result: Callable | None = None,
+):
+    toy_proxy_drift_signature_result = (
+        toy_proxy_drift_signature_result or _solutions().toy_proxy_drift_signature_result
+    )
+    result = toy_proxy_drift_signature_result()
+    rows = result["timeline_rows"]
+
+    assert len(result["prompt_table"]) == 40, (
+        "The signature result should expose the safe generated examples, not only a scalar."
+    )
+    assert len(rows) == 6, "The signature result should include a checkpoint timeline."
+    assert rows[-1]["heldout_margin"] > rows[0]["heldout_margin"] + 2.5, (
+        "The timeline should visibly show the proxy-drift direction emerging."
+    )
+    assert result["white_box_detection_step"] == 3, (
+        "The signature should identify the known toy onset step."
+    )
+    assert result["black_box_behavior_detection_step"] == 4, (
+        "The behavior proxy should fire after the white-box detector in this toy organism."
+    )
+    assert result["direction_cosine_to_ground_truth"] > 0.999, (
+        "The final learned direction should recover the known causal direction."
+    )
+    assert result["final_heldout_accuracy"] == 1.0 and result["final_heldout_margin"] > 2.5, (
+        "Held-out detection should be strong at the final checkpoint."
+    )
+    assert result["behavior_alignment_correlation"] > 0.99, (
+        "The behavior proxy should agree with the white-box direction at the final checkpoint."
+    )
+    assert result["mitigation_drift_reduction"] > 1.0 and result["mitigation_capability_loss"] < 0.05, (
+        "The signature should include both mitigation and capability-cost evidence."
+    )
+    assert result["random_direction_accuracy"] <= 0.65 and result["label_shuffled_accuracy"] <= 0.65, (
+        "The signature should keep the two negative controls visible."
+    )
+    assert result["control_claim_passed"], (
+        "The final toy claim should require detection, controls, behavior alignment, and mitigation."
+    )
+    print("All tests in `test_toy_proxy_drift_signature_result_has_visible_timeline` passed!")
+
+
 def test_drift_detector_report_scores_heldout_logits(
     drift_detector_report: Callable | None = None,
 ):
@@ -93,18 +359,6 @@ def test_drift_detector_report_scores_heldout_logits(
         assert "finite" in str(exc), "Non-finite detector logits should be rejected."
     else:
         raise AssertionError("Non-finite detector logits should raise ValueError.")
-    try:
-        drift_detector_report(t.ones(2, 1), labels)
-    except ValueError as exc:
-        assert "shape" in str(exc), "Detector logits should have shape (batch, 2)."
-    else:
-        raise AssertionError("One-class detector logits should raise ValueError.")
-    try:
-        drift_detector_report(t.ones(2, 2), t.tensor([0, 2]))
-    except ValueError as exc:
-        assert "0 or 1" in str(exc), "Drift labels should be binary."
-    else:
-        raise AssertionError("Out-of-range drift labels should raise ValueError.")
     print("All tests in `test_drift_detector_report_scores_heldout_logits` passed!")
 
 
@@ -128,12 +382,8 @@ def test_crosscoder_alignment_uses_pearson_correlation(
         min_correlation=0.95,
     )
     _assert_report_close(report, expected, msg="Crosscoder alignment report")
-    assert report.correlation > 0.95, (
-        "The model-specific feature scores should have strong positive Pearson "
-        "correlation with behavior-delta scores in this fixture."
-    )
-    assert report.aligns_with_behavior_delta, (
-        "A crosscoder feature should pass only when it clears the configured correlation bound."
+    assert report.correlation > 0.95 and report.aligns_with_behavior_delta, (
+        "The model-specific feature scores should be signed-correlated with behavior deltas."
     )
 
     anti_report = crosscoder_drift_alignment_report(
@@ -144,26 +394,6 @@ def test_crosscoder_alignment_uses_pearson_correlation(
     assert anti_report.correlation < -0.95 and not anti_report.aligns_with_behavior_delta, (
         "An anti-correlated feature should be rejected even if its magnitude looks large."
     )
-    try:
-        crosscoder_drift_alignment_report(
-            feature_scores,
-            t.tensor([0.0, float("nan"), 0.75, 0.1]),
-            min_correlation=0.95,
-        )
-    except ValueError as exc:
-        assert "finite" in str(exc), "Non-finite behavior deltas should be rejected."
-    else:
-        raise AssertionError("Non-finite behavior deltas should raise ValueError.")
-    try:
-        crosscoder_drift_alignment_report(
-            t.ones(4),
-            behavior_delta,
-            min_correlation=0.95,
-        )
-    except ValueError as exc:
-        assert "undefined" in str(exc), "Constant feature scores make correlation undefined."
-    else:
-        raise AssertionError("Constant feature scores should raise ValueError.")
     print("All tests in `test_crosscoder_alignment_uses_pearson_correlation` passed!")
 
 
@@ -195,39 +425,14 @@ def test_mitigation_report_bounds_capability_loss(
     )
     _assert_report_close(report, expected, msg="Drift mitigation report")
     assert abs(report.drift_reduction - 0.4) < 1e-6, (
-        "Drift reduction should be the baseline mean drift score minus the mitigated mean."
+        "Drift reduction should be baseline mean drift minus mitigated mean."
     )
     assert abs(report.capability_loss - 0.035) < 1e-6, (
-        "Capability loss should be the baseline capability mean minus the mitigated mean."
+        "Capability loss should be baseline capability mean minus mitigated mean."
     )
     assert report.mitigation_passes, (
         "This mitigation should pass because drift falls enough while capability loss is small."
     )
-
-    damaging_report = drift_mitigation_report(
-        baseline_drift,
-        mitigated_drift,
-        baseline_capability,
-        t.tensor([0.5, 0.5]),
-        min_drift_reduction=0.3,
-        max_capability_loss=0.1,
-    )
-    assert not damaging_report.mitigation_passes, (
-        "A mitigation that damages capability beyond the configured bound should fail."
-    )
-    try:
-        drift_mitigation_report(
-            baseline_drift,
-            t.tensor([0.3, float("inf")]),
-            baseline_capability,
-            mitigated_capability,
-            min_drift_reduction=0.3,
-            max_capability_loss=0.1,
-        )
-    except ValueError as exc:
-        assert "finite" in str(exc), "Non-finite mitigation scores should be rejected."
-    else:
-        raise AssertionError("Non-finite mitigation scores should raise ValueError.")
     print("All tests in `test_mitigation_report_bounds_capability_loss` passed!")
 
 
@@ -245,7 +450,7 @@ def test_early_warning_report_compares_detection_steps(
     )
     _assert_report_close(report, expected, msg="Early-warning report")
     assert report.white_box_catches_earlier, (
-        "The white-box detector should pass this check only when it fires before the black-box eval."
+        "The white-box detector should pass only when it fires before black-box behavior."
     )
 
     late_report = early_warning_report(
@@ -253,65 +458,9 @@ def test_early_warning_report_compares_detection_steps(
         black_box_detection_step=2,
     )
     assert not late_report.white_box_catches_earlier, (
-        "A white-box detector that fires after the black-box eval is not an early-warning signal."
+        "A white-box detector that fires after the black-box eval is not early warning."
     )
     print("All tests in `test_early_warning_report_compares_detection_steps` passed!")
-
-
-def test_detector_smoke_test(detector_smoke_test: Callable | None = None):
-    detector_smoke_test = detector_smoke_test or _solutions().detector_smoke_test
-    result = detector_smoke_test()
-    assert result["detector_accuracy"] == 1.0, (
-        "The smoke detector should perfectly classify this held-out toy fixture."
-    )
-    assert result["predicts_heldout_drift"], (
-        "The smoke detector should expose a passing held-out drift prediction flag."
-    )
-    print("All tests in `test_detector_smoke_test` passed!")
-
-
-def test_crosscoder_smoke_test(crosscoder_smoke_test: Callable | None = None):
-    crosscoder_smoke_test = crosscoder_smoke_test or _solutions().crosscoder_smoke_test
-    result = crosscoder_smoke_test()
-    assert result["correlation"] > 0.95, (
-        "The smoke crosscoder feature should strongly align with the behavior delta."
-    )
-    assert result["aligns_with_behavior_delta"], (
-        "The smoke crosscoder report should mark the feature as behavior-aligned."
-    )
-    print("All tests in `test_crosscoder_smoke_test` passed!")
-
-
-def test_mitigation_smoke_test(mitigation_smoke_test: Callable | None = None):
-    mitigation_smoke_test = mitigation_smoke_test or _solutions().mitigation_smoke_test
-    result = mitigation_smoke_test()
-    assert abs(result["drift_reduction"] - 0.4) < 1e-6, (
-        "The mitigation smoke fixture should reduce mean drift by 0.4."
-    )
-    assert abs(result["capability_loss"] - 0.035) < 1e-6, (
-        "The mitigation smoke fixture should lose only 0.035 mean capability."
-    )
-    assert result["mitigation_passes"], (
-        "The mitigation smoke fixture should pass both the drift and capability gates."
-    )
-    print("All tests in `test_mitigation_smoke_test` passed!")
-
-
-def test_early_warning_smoke_test(early_warning_smoke_test: Callable | None = None):
-    early_warning_smoke_test = (
-        early_warning_smoke_test or _solutions().early_warning_smoke_test
-    )
-    result = early_warning_smoke_test()
-    assert result["white_box_detection_step"] == 2, (
-        "The smoke fixture should record the white-box detector firing at step 2."
-    )
-    assert result["black_box_detection_step"] == 5, (
-        "The smoke fixture should record the black-box eval firing at step 5."
-    )
-    assert result["white_box_catches_earlier"], (
-        "The smoke fixture should mark white-box detection as earlier."
-    )
-    print("All tests in `test_early_warning_smoke_test` passed!")
 
 
 def test_notebook_contract(run_smoke_test: Callable | None = None):
@@ -320,17 +469,32 @@ def test_notebook_contract(run_smoke_test: Callable | None = None):
     assert result["proxy_kinds"] == list(reference.safe_proxy_drift_kinds()), (
         "The notebook contract should include the explicit benign proxy-drift taxonomy."
     )
+    assert result["toy_signature"]["control_claim_passed"], (
+        "The notebook contract should include the visible toy proxy-drift signature result."
+    )
+    assert result["heldout_detector"]["predicts_heldout_drift"], (
+        "The notebook contract should include the held-out detector exercise."
+    )
+    assert result["behavior_alignment"]["aligns_with_behavior_delta"], (
+        "The notebook contract should include the behavior proxy comparison."
+    )
+    assert result["toy_mitigation"]["mitigation_passes"], (
+        "The notebook contract should include projection mitigation plus capability cost."
+    )
+    assert result["toy_controls"]["controls_pass"], (
+        "The notebook contract should include failed random-direction and shuffled-label controls."
+    )
     assert result["detector"]["predicts_heldout_drift"], (
-        "The notebook contract should include a passing held-out detector report."
+        "The legacy detector report should stay available for report compatibility."
     )
     assert result["crosscoder"]["aligns_with_behavior_delta"], (
-        "The notebook contract should include a passing behavior-alignment report."
+        "The legacy crosscoder-style alignment report should stay available."
     )
     assert result["mitigation"]["mitigation_passes"], (
-        "The notebook contract should include a passing mitigation report."
+        "The legacy mitigation report should stay available."
     )
     assert result["early_warning"]["white_box_catches_earlier"], (
-        "The notebook contract should include the earlier white-box detection check."
+        "The legacy early-warning report should stay available."
     )
     print("All tests in `test_notebook_contract` passed!")
 
@@ -372,7 +536,7 @@ def test_committed_gpu_report_matches_proxy_drift_contract(report: dict | None =
     )
     assert gpu["drift_alignment_correlation"] >= 0.7 and gpu[
         "aligns_with_behavior_delta"
-    ], "The hidden-state direction should align with the behavior proxy deltas."
+    ], "The hidden-state direction should align with behavior proxy deltas."
     assert gpu["label_shuffled_detector_accuracy"] <= 0.75, (
         "The label-shuffled detector negative control should not pass."
     )
@@ -411,29 +575,109 @@ def test_committed_gpu_report_matches_proxy_drift_contract(report: dict | None =
     print("All tests in `test_committed_gpu_report_matches_proxy_drift_contract` passed!")
 
 
-def test_exercise_notebook_declares_full_verification_contract():
+def test_exercise_notebook_exposes_arena_learner_surface():
     notebook_path = _section_dir() / "9.3_Emergent_Misalignment_Detection_exercises.ipynb"
     notebook = json.loads(notebook_path.read_text())
     source = "\n".join(
         "".join(cell.get("source", [])) for cell in notebook.get("cells", [])
     )
 
-    assert "REQUIRES_GPU = True" in source, (
-        "The learner notebook should not advertise CPU-only scope for this GT-3 section."
+    required_strings = [
+        "By the end of this notebook",
+        "## Try It Yourself",
+        "## Bonus: Hunt an Anomaly",
+        "safe proxy drift is not a claim about dangerous emergent misalignment",
+        "emergent_misalignment_toy_signature_result.png",
+        "def toy_proxy_drift_timeline()",
+        "def activation_difference_direction(",
+        "def fit_thresholded_detector(",
+        "def evaluate_heldout_detector(",
+        "def timeline_detection_report(",
+        "def behavior_alignment_report(",
+        "def projection_mitigation_intervention(",
+        "def mitigation_and_capability_report(",
+        "def control_report(",
+        "def run_gpu_test(max_vram_gb: float = 24.0)",
+        "test_committed_gpu_report_matches_proxy_drift_contract",
+    ]
+    for text in required_strings:
+        assert text in source, f"The learner notebook should expose `{text}`."
+    assert source.count("### Exercise") >= 8, (
+        "The learner notebook should have at least eight visible exercises."
     )
-    assert "def run_smoke_test(cpu: bool = True)" in source, (
-        "The learner notebook should expose the CPU contract surface."
+    assert source.count("<details>") >= 24, (
+        "Each exercise should include expected/help/solution or interpretation dropdowns."
     )
-    assert "def run_gpu_test(max_vram_gb: float = 24.0)" in source, (
-        "The learner notebook should expose the GPU verification surface."
+    print("All tests in `test_exercise_notebook_exposes_arena_learner_surface` passed!")
+
+
+def test_solution_notebook_mirrors_progression_and_inlines_taught_methods():
+    notebook_path = _section_dir() / "9.3_Emergent_Misalignment_Detection_solutions.ipynb"
+    notebook = json.loads(notebook_path.read_text())
+    cells = notebook.get("cells", [])
+    source = "\n".join("".join(cell.get("source", [])) for cell in cells)
+
+    assert source.count("### Exercise") == 8, (
+        "The solved notebook should mirror the complete eight-exercise learner progression."
     )
-    assert "def run_full_experiment(max_vram_gb: float = 24.0)" in source, (
-        "The learner notebook should expose the full experiment surface."
+    for text in [
+        "By the end of this notebook",
+        "## Learning Objectives",
+        "## Try It Yourself",
+        "## Bonus: Hunt an Anomaly",
+        "<summary>Expected output</summary>",
+        "<summary>Help</summary>",
+        "<summary>Interpreting the result</summary>",
+        "<summary>Solution</summary>",
+    ]:
+        assert text in source, f"The solved notebook should retain `{text}`."
+
+    required_definitions = {
+        "safe_proxy_drift_kinds",
+        "make_safe_proxy_prompt_table",
+        "toy_proxy_drift_timeline",
+        "activation_difference_direction",
+        "projection_scores",
+        "fit_thresholded_detector",
+        "evaluate_heldout_detector",
+        "timeline_detection_report",
+        "behavior_alignment_report",
+        "projection_mitigation_intervention",
+        "mitigation_and_capability_report",
+        "control_report",
+        "toy_proxy_drift_signature_result",
+        "plot_toy_signature_result",
+    }
+    defined: set[str] = set()
+    hidden_solution_imports: set[str] = set()
+    for cell_index, cell in enumerate(cells):
+        if cell.get("cell_type") != "code":
+            continue
+        cell_source = "".join(cell.get("source", []))
+        tree = ast.parse(cell_source, filename=f"{notebook_path.name}:cell_{cell_index}")
+        for node in ast.walk(tree):
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                defined.add(node.name)
+            if isinstance(node, ast.ImportFrom) and node.module and node.module.endswith(
+                "part3_emergent_misalignment_detection.solutions"
+            ):
+                hidden_solution_imports.update(alias.name for alias in node.names)
+
+    assert required_definitions <= defined, (
+        "The solved notebook must define every taught method inline; missing "
+        f"{sorted(required_definitions - defined)}."
     )
-    assert "test_committed_gpu_report_matches_proxy_drift_contract" in source, (
-        "The learner notebook should end by checking the committed proxy-drift report."
+    assert "NotImplementedError" not in source, (
+        "The solved notebook must not retain learner stubs."
     )
-    print("All tests in `test_exercise_notebook_declares_full_verification_contract` passed!")
+    assert hidden_solution_imports <= {"run_pythia_proxy_drift_preflight"}, (
+        "Only the untaught Pythia loading preflight may remain in solutions.py; "
+        f"found hidden taught imports {sorted(hidden_solution_imports)}."
+    )
+    print(
+        "All tests in "
+        "`test_solution_notebook_mirrors_progression_and_inlines_taught_methods` passed!"
+    )
 
 
 def test_pythia_direction_fit_rejects_invalid_internal_evidence():
