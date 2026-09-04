@@ -1,14 +1,15 @@
 {
   "accepted": true,
-  "claim_scope": "Learner-facing smoke path: the notebook builds the capstone planning scaffold and audits a committed CUDA mini activation-oracle report. The live result itself is pinned in artifacts.lock.yml and verification_report.json.",
-  "evidence_level": "capstone_planning_contract_plus_live_report_audit",
-  "gt_tier": "GT-4",
-  "metrics": {
-    "ablation_drop_mean_min": 0.2,
-    "heldout_template_accuracy_mean_min": 0.9,
-    "oracle_accuracy_mean_min": 0.9,
-    "seed_count": 3
+  "claim_scope": "An exact rotated parity model contains a known distributed XOR direction; a ridge probe recovers it and supports held-out counterfactual intervention beyond matched controls.",
+  "criteria": {
+    "direction_cosine_min": 0.98,
+    "heldout_accuracy_min": 0.95,
+    "patch_advantage_over_random_mean_min": 0.7,
+    "patch_target_accuracy_min": 0.9,
+    "raw_and_template_accuracy_max": 0.6
   },
+  "evidence_level": "exact_ground_truth_cpu_study_with_heldout_causal_controls",
+  "gt_tier": "GT-4",
   "notebook_id": "10_1_capstone_research_sprint",
   "section": "10.1",
   "tests_passed": true,

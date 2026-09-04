@@ -108,7 +108,7 @@ sections:
   '10.1':
     status: course_ready
     page: chapter10_capstone_research_sprint/instructions/pages/01_[10.1]_Capstone_Research_Sprint.md
-    notes: ARENA-style rewrite with paper-style capstone validation loop, planning/baseline/causal/reproducibility/readiness progression, help and interpretation dropdowns, CUDA mini activation-oracle signature result, limitations, and paired notebook surfaces.
+    notes: "ARENA-style exact-model-organism capstone with a preregistered claim, eight learner-implemented and immediately tested subfunctions, expected/help/solution/interpretation dropdowns, 19 of 19 executed solution cells, play and anomaly-hunting cells, and a compact research write-up. The signature result recovers the hidden rotated-XOR direction with cosine 1.000, reaches held-out accuracy 1.000 across eight unseen nuisance templates, transfers donor answers with target accuracy 1.000, and falls to chance after directional ablation. Raw-bit and template-only baselines are 0.500, 128 shuffled-label probes average 0.525, and 256 same-dimensional random patch directions average 0.057; a separate control figure exposes the strongest accidental random alignment instead of hiding it. Eight focused tests pass. CUDA 13.2 verification passes with Torch 2.12.1+cu132 on the RTX 5090 at 0.033 GB peak VRAM. Claims remain limited to exact method validation on this model organism, not a released-model mechanistic discovery."
   '11.1':
     status: course_ready
     page: chapter11_representation_geometry/instructions/pages/01_[11.1]_PCA_SVD_and_Geometry_Controls.md

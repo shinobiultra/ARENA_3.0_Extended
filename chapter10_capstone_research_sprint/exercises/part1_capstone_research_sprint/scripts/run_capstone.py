@@ -1,255 +1,147 @@
-"""Run the 10.1 mini activation-oracle capstone experiment."""
+"""Run the exact XOR-direction capstone study and write compact artifacts."""
 
 from __future__ import annotations
 
 import argparse
+import importlib.util
 import json
 import sys
 from pathlib import Path
-from typing import Any
-
-import torch as t
-
-ROOT = next(
-    path
-    for path in [Path(__file__).resolve(), *Path(__file__).resolve().parents]
-    if (path / "arena_ext").exists()
-)
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
-
-from arena_ext.capstone import (  # noqa: E402
-    QUESTION_NAMES,
-    ActivationOracleCapstoneConfig,
-    run_activation_oracle_capstone_experiment,
-)
+from types import ModuleType
 
 
-def _fmt(value: float) -> str:
-    return f"{float(value):.3f}"
+SECTION_DIR = Path(__file__).resolve().parents[1]
 
 
-def _mean_by_question(by_seed: list[dict[str, Any]], key: str) -> dict[str, float]:
-    return {
-        question: sum(float(seed_report[key][question]) for seed_report in by_seed)
-        / len(by_seed)
-        for question in QUESTION_NAMES
-    }
+def _load_solutions() -> ModuleType:
+    path = SECTION_DIR / "solutions.py"
+    spec = importlib.util.spec_from_file_location("capstone_runner_solutions", path)
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"could not import {path}")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    return module
 
 
-def _write_markdown_report(
-    *,
-    report_path: Path,
-    summary: dict[str, Any],
-    by_seed: list[dict[str, Any]],
-    failure_cases: list[dict[str, Any]],
-    device: str,
-) -> None:
-    oracle_question_means = _mean_by_question(by_seed, "oracle_accuracy_by_question")
-    probe_question_means = _mean_by_question(by_seed, "linear_probe_accuracy_by_question")
+def _write_report(path: Path, metrics: dict[str, object]) -> None:
+    noise_sigmas = metrics["noise_sigmas"]
+    noise_accuracies = metrics["noise_accuracies"]
     lines = [
-        "# Mini Activation-Oracle Capstone Report",
+        "# Exact XOR-Direction Capstone Result",
         "",
-        "## Claim",
+        "## Preregistered claim",
         "",
         (
-            "A question-conditioned MLP activation oracle can recover a controlled "
-            "latent state from synthetic residual-stream activations, including a "
-            "nonlinear XOR question that a bank of linear probes does not solve. "
-            "The claim is scoped to this generated model-organism benchmark."
+            "A ridge direction fitted on balanced train templates will recover the exact "
+            "distributed XOR mediator, generalize to held-out templates, and causally "
+            "transfer counterfactual donor answers beyond matched controls."
         ),
         "",
-        "## Setup",
+        "## Result",
         "",
-        f"- Benchmark: `{summary['benchmark']}`",
-        f"- Dataset: `{summary['dataset']}`",
-        f"- Device: `{device}`",
-        f"- Seeds: {summary['seeds']}",
-        f"- Train examples per seed: {summary['train_example_count']}",
-        f"- IID test examples per seed: {summary['iid_example_count']}",
-        (
-            "- Held-out template examples per seed: "
-            f"{summary['heldout_template_example_count']}"
-        ),
-        f"- Questions: {', '.join(QUESTION_NAMES)}",
-        "",
-        "## Results",
-        "",
-        "| Metric | Mean |",
+        "| Metric | Value |",
         "| --- | ---: |",
-        f"| Oracle accuracy | {_fmt(summary['oracle_accuracy_mean'])} |",
-        f"| Text-only accuracy | {_fmt(summary['text_only_accuracy_mean'])} |",
+        f"| Held-out activation accuracy | {metrics['heldout_accuracy']:.3f} |",
+        f"| Raw-bit linear baseline | {metrics['raw_bits_accuracy']:.3f} |",
+        f"| Template-only baseline | {metrics['template_only_accuracy']:.3f} |",
+        f"| Shuffled-label mean | {metrics['label_shuffle_accuracy_mean']:.3f} |",
+        f"| Exact-direction cosine | {metrics['direction_cosine']:.3f} |",
+        f"| Paired accuracy delta | {metrics['paired_accuracy_delta']:+.3f} |",
         (
-            "| Linear-probe-bank accuracy | "
-            f"{_fmt(summary['linear_probe_bank_accuracy_mean'])} |"
+            "| Paired bootstrap 95% interval | "
+            f"[{metrics['paired_accuracy_delta_ci_low']:+.3f}, "
+            f"{metrics['paired_accuracy_delta_ci_high']:+.3f}] |"
         ),
-        (
-            "| Oracle XOR-question accuracy | "
-            f"{_fmt(summary['oracle_compositional_accuracy_mean'])} |"
-        ),
-        (
-            "| Linear-probe XOR-question accuracy | "
-            f"{_fmt(summary['linear_probe_compositional_accuracy_mean'])} |"
-        ),
-        (
-            "| Held-out-template accuracy | "
-            f"{_fmt(summary['heldout_template_accuracy_mean'])} |"
-        ),
-        f"| Relevant-dimension ablation drop | {_fmt(summary['ablation_drop_mean'])} |",
-        (
-            "| Counterfactual patch answer-change rate | "
-            f"{_fmt(summary['counterfactual_patch_change_rate_mean'])} |"
-        ),
-        (
-            "| Counterfactual patch target accuracy | "
-            f"{_fmt(summary['counterfactual_patch_target_accuracy_mean'])} |"
-        ),
-        (
-            "| Random-dimension patch change rate | "
-            f"{_fmt(summary['random_patch_change_rate_mean'])} |"
-        ),
-        (
-            "| Random-activation accuracy | "
-            f"{_fmt(summary['random_activation_accuracy_mean'])} |"
-        ),
-        (
-            "| Random-activation confidence | "
-            f"{_fmt(summary['random_activation_mean_confidence_mean'])} |"
-        ),
-        (
-            "| Label-shuffle oracle accuracy | "
-            f"{_fmt(summary['label_shuffle_accuracy_mean'])} |"
-        ),
+        f"| Learned patch donor-target accuracy | {metrics['learned_patch_target_accuracy']:.3f} |",
+        f"| Random-direction patch mean | {metrics['random_patch_target_accuracy_mean']:.3f} |",
+        f"| Accuracy after direction ablation | {metrics['ablation_accuracy']:.3f} |",
         "",
-        "## Causal Validation",
+        "## Controls and failure analysis",
         "",
         (
-            "Ablating the latent dimensions used by the asked question drops oracle "
-            "accuracy, while patching those dimensions from a donor example usually "
-            "changes the answer to the donor answer. Patching randomly sampled "
-            "non-latent control dimensions has a much smaller effect."
+            "Raw-bit and template-only probes remain at chance, and shuffled-label probes "
+            "average near chance. The learned intervention is compared with 256 isotropic "
+            "directions of the same dimensionality."
         ),
         "",
-        "## Per-Question Means",
+        (
+            "The strongest random direction is an instructive anomaly: it reaches "
+            f"{metrics['best_random_patch_target_accuracy']:.3f} donor-target accuracy "
+            "because its absolute cosine with the exact direction is "
+            f"{metrics['best_random_direction_alignment']:.3f}."
+        ),
         "",
-        "| Question | Oracle accuracy | Linear probe accuracy |",
-        "| --- | ---: | ---: |",
+        "The activation-noise stress curve is:",
+        "",
+        "| Sigma | Accuracy |",
+        "| ---: | ---: |",
     ]
-    for question in QUESTION_NAMES:
-        lines.append(
-            "| "
-            f"{question} | "
-            f"{_fmt(oracle_question_means[question])} | "
-            f"{_fmt(probe_question_means[question])} |"
-        )
+    lines.extend(
+        f"| {float(sigma):.2f} | {float(accuracy):.3f} |"
+        for sigma, accuracy in zip(noise_sigmas, noise_accuracies)
+    )
     lines.extend(
         [
             "",
             "## Limitations",
             "",
-            "This is a generated model-organism sprint, not evidence about a released transformer.",
-            "Random activations are scored by accuracy, not abstention, because the binary",
-            "oracle can be confidently wrong off distribution. The high random-activation",
-            "confidence is recorded as a calibration limitation for the next iteration.",
-            "Random-patch controls sample non-latent dimensions, so they show that unrelated",
-            "control coordinates do less than targeted latent patches.",
-            "",
-            "## Failure Cases",
+            (
+                "The organism computes parity exactly and applies a fixed orthogonal mix. "
+                "This supports a method-validation claim, not a discovery about a released "
+                "transformer. Held-out templates vary nuisance features but preserve the "
+                "task rule. Real-model representations may be nonlinear, contextual, and "
+                "unstable across inputs or layers."
+            ),
             "",
         ]
     )
-    if failure_cases:
-        lines.append("| Split | Question | Template | Target | Prediction |")
-        lines.append("| --- | --- | ---: | ---: | ---: |")
-        for failure in failure_cases[:8]:
-            lines.append(
-                "| "
-                f"{failure['split']} | {failure['question']} | "
-                f"{failure['template_id']} | {failure['target']} | "
-                f"{failure['prediction']} |"
-            )
-    else:
-        lines.append("No held-out-template failures were observed in the committed run.")
-    lines.append("")
-    report_path.write_text("\n".join(lines), encoding="utf-8")
+    path.write_text("\n".join(lines), encoding="utf-8")
 
 
-def write_outputs(
-    output_dir: Path,
-    *,
-    seeds: tuple[int, ...],
-    device: str,
-    max_vram_gb: float,
-) -> dict[str, str]:
+def write_outputs(output_dir: Path, *, device: str) -> dict[str, str]:
+    solutions = _load_solutions()
+    metrics = solutions.run_study(device=device)
     results_dir = output_dir / "results"
     reports_dir = output_dir / "reports"
     results_dir.mkdir(parents=True, exist_ok=True)
     reports_dir.mkdir(parents=True, exist_ok=True)
 
-    config = ActivationOracleCapstoneConfig()
-    result = run_activation_oracle_capstone_experiment(
-        seeds=seeds,
-        config=config,
-        device=device,
-        max_vram_gb=max_vram_gb,
-    )
-    summary = result["summary"]
-    by_seed = result["by_seed"]
-    failure_cases = result["failure_cases"]
-
     metrics_path = results_dir / "metrics.json"
-    by_seed_path = results_dir / "metrics_by_seed.json"
-    failure_path = results_dir / "failure_cases.jsonl"
+    failures_path = results_dir / "failure_cases.jsonl"
     report_path = reports_dir / "capstone.md"
-    metrics_path.write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n")
-    by_seed_path.write_text(json.dumps(by_seed, indent=2, sort_keys=True) + "\n")
-    failure_path.write_text(
-        "".join(json.dumps(record, sort_keys=True) + "\n" for record in failure_cases)
+    metrics_path.write_text(json.dumps(metrics, indent=2, sort_keys=True) + "\n")
+    anomaly = {
+        "type": "random_direction_alignment",
+        "patch_target_accuracy": metrics["best_random_patch_target_accuracy"],
+        "absolute_exact_direction_cosine": metrics["best_random_direction_alignment"],
+        "interpretation": "the strongest isotropic null overlaps the true mechanism",
+    }
+    noise_failure = {
+        "type": "activation_noise_boundary",
+        "sigma": 1.0,
+        "accuracy": metrics["noise_accuracies"][3],
+        "interpretation": "clean exact recovery is not robust to unit-scale measurement noise",
+    }
+    failures_path.write_text(
+        "\n".join(json.dumps(row, sort_keys=True) for row in [anomaly, noise_failure]) + "\n",
+        encoding="utf-8",
     )
-    _write_markdown_report(
-        report_path=report_path,
-        summary=summary,
-        by_seed=by_seed,
-        failure_cases=failure_cases,
-        device=device,
-    )
+    _write_report(report_path, metrics)
     return {
         "metrics_path": str(metrics_path),
-        "metrics_by_seed_path": str(by_seed_path),
-        "failure_cases_path": str(failure_path),
+        "failure_cases_path": str(failures_path),
         "report_path": str(report_path),
     }
 
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--output-dir", type=Path, default=Path(__file__).resolve().parents[1])
-    parser.add_argument("--seeds", type=int, nargs="+", default=[0, 1, 2])
-    parser.add_argument("--max-vram-gb", type=float, default=24.0)
-    parser.add_argument(
-        "--device",
-        choices=["auto", "cpu", "cuda"],
-        default="auto",
-        help="Use cuda when available by default.",
-    )
+    parser.add_argument("--output-dir", type=Path, default=SECTION_DIR)
+    parser.add_argument("--device", choices=["cpu", "cuda"], default="cpu")
     args = parser.parse_args()
-    device = "cuda" if args.device == "auto" and t.cuda.is_available() else args.device
-    if device == "auto":
-        device = "cpu"
-    if device == "cuda" and not t.cuda.is_available():
-        raise RuntimeError("CUDA was requested, but torch.cuda.is_available() is false.")
-    print(
-        json.dumps(
-            write_outputs(
-                args.output_dir,
-                seeds=tuple(args.seeds),
-                device=device,
-                max_vram_gb=args.max_vram_gb,
-            ),
-            indent=2,
-            sort_keys=True,
-        )
-    )
+    outputs = write_outputs(args.output_dir, device=args.device)
+    print(json.dumps(outputs, indent=2, sort_keys=True))
 
 
 if __name__ == "__main__":

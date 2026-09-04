@@ -1,60 +1,41 @@
-# Mini Activation-Oracle Capstone Report
+# Exact XOR-Direction Capstone Result
 
-## Claim
+## Preregistered claim
 
-A question-conditioned MLP activation oracle can recover a controlled latent state from synthetic residual-stream activations, including a nonlinear XOR question that a bank of linear probes does not solve. The claim is scoped to this generated model-organism benchmark.
+A ridge direction fitted on balanced train templates will recover the exact distributed XOR mediator, generalize to held-out templates, and causally transfer counterfactual donor answers beyond matched controls.
 
-## Setup
+## Result
 
-- Benchmark: `synthetic_activation_oracle_latent_questions_v1`
-- Dataset: `balanced_latent_bits_with_heldout_template_nuisance_v1`
-- Device: `cuda`
-- Seeds: [0, 1, 2]
-- Train examples per seed: 576
-- IID test examples per seed: 576
-- Held-out template examples per seed: 384
-- Questions: color_bit, shape_bit, material_bit, color_xor_shape
-
-## Results
-
-| Metric | Mean |
+| Metric | Value |
 | --- | ---: |
-| Oracle accuracy | 1.000 |
-| Text-only accuracy | 0.500 |
-| Linear-probe-bank accuracy | 0.878 |
-| Oracle XOR-question accuracy | 1.000 |
-| Linear-probe XOR-question accuracy | 0.514 |
-| Held-out-template accuracy | 1.000 |
-| Relevant-dimension ablation drop | 0.480 |
-| Counterfactual patch answer-change rate | 1.000 |
-| Counterfactual patch target accuracy | 1.000 |
-| Random-dimension patch change rate | 0.000 |
-| Random-activation accuracy | 0.495 |
-| Random-activation confidence | 0.918 |
-| Label-shuffle oracle accuracy | 0.481 |
+| Held-out activation accuracy | 1.000 |
+| Raw-bit linear baseline | 0.500 |
+| Template-only baseline | 0.500 |
+| Shuffled-label mean | 0.525 |
+| Exact-direction cosine | 1.000 |
+| Paired accuracy delta | +0.500 |
+| Paired bootstrap 95% interval | [+0.312, +0.688] |
+| Learned patch donor-target accuracy | 1.000 |
+| Random-direction patch mean | 0.057 |
+| Accuracy after direction ablation | 0.500 |
 
-## Causal Validation
+## Controls and failure analysis
 
-Ablating the latent dimensions used by the asked question drops oracle accuracy, while patching those dimensions from a donor example usually changes the answer to the donor answer. Patching randomly sampled non-latent control dimensions has a much smaller effect.
+Raw-bit and template-only probes remain at chance, and shuffled-label probes average near chance. The learned intervention is compared with 256 isotropic directions of the same dimensionality.
 
-## Per-Question Means
+The strongest random direction is an instructive anomaly: it reaches 1.000 donor-target accuracy because its absolute cosine with the exact direction is 0.810.
 
-| Question | Oracle accuracy | Linear probe accuracy |
-| --- | ---: | ---: |
-| color_bit | 1.000 | 1.000 |
-| shape_bit | 1.000 | 1.000 |
-| material_bit | 1.000 | 1.000 |
-| color_xor_shape | 1.000 | 0.514 |
+The activation-noise stress curve is:
+
+| Sigma | Accuracy |
+| ---: | ---: |
+| 0.00 | 1.000 |
+| 0.25 | 1.000 |
+| 0.50 | 0.979 |
+| 1.00 | 0.841 |
+| 2.00 | 0.686 |
+| 3.00 | 0.622 |
 
 ## Limitations
 
-This is a generated model-organism sprint, not evidence about a released transformer.
-Random activations are scored by accuracy, not abstention, because the binary
-oracle can be confidently wrong off distribution. The high random-activation
-confidence is recorded as a calibration limitation for the next iteration.
-Random-patch controls sample non-latent dimensions, so they show that unrelated
-control coordinates do less than targeted latent patches.
-
-## Failure Cases
-
-No held-out-template failures were observed in the committed run.
+The organism computes parity exactly and applies a fixed orthogonal mix. This supports a method-validation claim, not a discovery about a released transformer. Held-out templates vary nuisance features but preserve the task rule. Real-model representations may be nonlinear, contextual, and unstable across inputs or layers.

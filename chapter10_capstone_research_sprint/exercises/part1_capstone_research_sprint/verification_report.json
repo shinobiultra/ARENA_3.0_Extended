@@ -2,95 +2,78 @@
   "accepted": true,
   "baselines": {
     "declared_controls": [
-      "baseline_or_reference_check",
-      "negative_control_where_applicable",
-      "shape_dtype_or_exact_value_check",
-      "baseline_suite_completeness_check",
-      "causal_validation_suite_completeness_check",
-      "reproducibility_metadata_check",
-      "writeup_path_check",
-      "cuda_training_run_per_seed",
-      "text_only_question_prior_baseline",
-      "linear_probe_bank_baseline",
-      "heldout_template_ood_split",
-      "relevant_latent_dimension_ablation",
-      "counterfactual_latent_dimension_patching",
-      "random_dimension_patch_control",
-      "random_activation_accuracy_control",
-      "label_shuffle_negative_control"
+      "raw_bit_linear_baseline",
+      "template_only_linear_baseline",
+      "128_label_shuffle_probes",
+      "256_isotropic_same_dimensional_patch_directions",
+      "learned_direction_ablation",
+      "heldout_nuisance_template_split",
+      "activation_noise_stress_curve"
     ],
     "expected_metrics": {
-      "ablation_drop_mean_min": 0.2,
+      "ablation_accuracy_max": 0.6,
       "accepted": true,
-      "baseline_suite_complete": true,
-      "causal_controls_passed": true,
-      "causal_validation_complete": true,
-      "compositional_oracle_beats_linear_probe": true,
-      "counterfactual_patch_change_rate_mean_min": 0.7,
-      "counterfactual_patch_target_accuracy_mean_min": 0.9,
-      "dataset": "balanced_latent_bits_with_heldout_template_nuisance_v1",
-      "heldout_template_accuracy_mean_min": 0.9,
-      "heldout_template_example_count": 384,
-      "iid_example_count": 576,
-      "label_shuffle_accuracy_mean_max": 0.65,
-      "label_shuffle_control_passed": true,
-      "linear_probe_compositional_accuracy_mean_max": 0.75,
-      "live_training_executed": true,
+      "contract_passed": true,
+      "dataset": "balanced_xor_with_heldout_template_nuisance_v1",
+      "direction_cosine_min": 0.98,
+      "exact_ground_truth_checked": true,
+      "heldout_accuracy_min": 0.95,
+      "heldout_example_count": 32,
+      "label_shuffle_accuracy_mean_max": 0.6,
+      "learned_patch_target_accuracy_min": 0.9,
+      "live_intervention_executed": true,
       "max_allowed_gpu_gb": 24,
-      "metrics_by_seed_file_valid": true,
-      "model_family": "question_conditioned_mlp_activation_oracle",
-      "ood_passed": true,
-      "oracle_accuracy_mean_min": 0.9,
-      "oracle_beats_linear_probe_bank": true,
-      "oracle_beats_text_only": true,
-      "oracle_compositional_accuracy_mean_min": 0.9,
+      "model_family": "exact_rotated_parity_model",
+      "noise_accuracy_at_sigma_1_max": 0.9,
+      "paired_accuracy_delta_min": 0.3,
       "peak_vram_gb_max": 1.0,
       "preflight_passed": true,
-      "random_activation_accuracy_mean_max": 0.65,
-      "random_activation_control_passed": true,
-      "random_patch_change_rate_mean_max": 0.15,
-      "ready": true,
-      "reproducible": true,
-      "seed_count": 3,
+      "random_patch_target_accuracy_mean_max": 0.2,
+      "raw_bits_accuracy_max": 0.6,
+      "scientific_result_executed": true,
+      "template_only_accuracy_max": 0.6,
       "tests_passed": true,
-      "text_only_accuracy_mean": 0.5,
-      "train_example_count": 576
+      "train_example_count": 48
     }
   },
-  "claim_scope": "GT-4 mini capstone sprint: the section keeps the capstone planning scaffold, then runs a real CUDA-trained question-conditioned activation oracle on a generated latent-state benchmark. The claim is scoped to this model-organism: the oracle beats text-only and linear-probe baselines, solves a nonlinear XOR question, generalizes to held-out templates, and passes ablation, counterfactual patching, random-patch, random-activation, and label-shuffle controls. It does not claim a released-model mechanistic discovery.",
+  "claim_scope": "A ridge probe fitted to an exact rotated parity model recovers the analytically known distributed XOR direction, generalizes to 32 examples from eight held-out nuisance templates, and transfers counterfactual donor answers by changing only that direction. The claim is limited to method validation on this model organism.",
   "datasets": [
     {
-      "id": "10_1_capstone_research_sprint_toy_inputs",
-      "seed": 0,
-      "source": "generated"
-    },
-    {
-      "d_model": 12,
-      "examples_per_template": 48,
+      "examples_per_template": 4,
+      "heldout_example_count": 32,
       "heldout_templates": [
-        3,
-        4
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
       ],
-      "id": "activation_oracle_latent_questions_v1",
-      "label_rule": "color_bit, shape_bit, material_bit, and color_xor_shape",
-      "question_count": 4,
-      "seed_count": 3,
-      "seeds": [
-        0,
-        1,
-        2
-      ],
-      "source": "generated",
+      "id": "balanced_xor_with_heldout_template_nuisance_v1",
+      "label_rule": "signed_bit_product",
+      "source": "generated_exact_enumeration",
+      "train_example_count": 48,
       "train_templates": [
         0,
         1,
-        2
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
       ]
     }
   ],
-  "date_run": "2026-07-02T12:43:54+00:00",
-  "evidence_level": "cuda_trained_activation_oracle_capstone_with_controls",
-  "git_commit": "3a539d48",
+  "date_run": "2026-09-04T08:29:59+00:00",
+  "evidence_level": "exact_ground_truth_parity_direction_with_heldout_causal_controls",
+  "git_commit": "e728427d",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-4",
   "known_failures": [],
@@ -99,247 +82,191 @@
       "category": "cuda_section_metric",
       "placeholder_only": false,
       "section_specific_metric_keys": [
-        "ablation_drop_mean",
-        "artifact_paths_exist",
-        "baseline_suite_complete",
-        "benchmark",
-        "capstone_pipeline_executed",
-        "causal_controls_passed",
-        "causal_validation_complete",
-        "compositional_oracle_beats_linear_probe",
-        "counterfactual_patch_change_rate_mean",
-        "counterfactual_patch_target_accuracy_mean",
+        "ablation_accuracy",
+        "ablation_drop",
+        "accepted",
+        "best_random_direction_alignment",
+        "best_random_patch_target_accuracy",
+        "contract_passed",
         "d_model",
         "dataset",
-        "failure_cases_file_exists",
-        "heldout_template_accuracy_mean",
-        "heldout_template_example_count",
-        "heldout_templates",
-        "iid_example_count",
+        "direction_cosine",
+        "exact_ground_truth_checked",
+        "exact_patch_target_accuracy",
+        "heldout_accuracy",
+        "heldout_example_count",
+        "heldout_template_count",
         "label_shuffle_accuracy_mean",
-        "label_shuffle_control_passed",
-        "linear_probe_bank_accuracy_mean",
-        "linear_probe_compositional_accuracy_mean",
-        "live_training_executed",
+        "label_shuffle_accuracy_p95",
+        "learned_patch_target_accuracy",
+        "live_intervention_executed",
         "max_allowed_gpu_gb",
-        "metrics_by_seed_file_valid",
-        "metrics_file_valid",
         "model_family",
-        "n_questions",
-        "ood_passed",
-        "oracle_accuracy_mean",
-        "oracle_accuracy_min",
-        "oracle_beats_linear_probe_bank",
-        "oracle_beats_text_only",
-        "oracle_compositional_accuracy_mean",
+        "noise_accuracies",
+        "noise_accuracy_at_sigma_1",
+        "noise_sigmas",
+        "paired_accuracy_delta",
+        "paired_accuracy_delta_ci_high",
+        "paired_accuracy_delta_ci_low",
         "preflight_passed",
-        "question_names",
-        "random_activation_accuracy_mean",
-        "random_activation_control_passed",
-        "random_activation_mean_confidence_mean",
-        "random_patch_change_rate_mean",
-        "ready",
-        "reproducible",
-        "script_paths_exist",
-        "seed_count",
-        "seeds",
-        "text_only_accuracy_mean",
+        "preregistered_criteria",
+        "random_patch_target_accuracy_mean",
+        "random_patch_target_accuracy_median",
+        "random_patch_target_accuracy_p95",
+        "raw_bits_accuracy",
+        "scientific_result_executed",
+        "template_only_accuracy",
+        "tests_passed",
         "train_example_count",
-        "train_templates",
-        "unique_seed_count",
-        "writeup_file_valid"
+        "train_template_count"
       ],
       "uses_cuda": true
     },
     "gpu_test": {
-      "ablation_drop_mean": 0.48032404979070026,
-      "artifact_paths_exist": true,
-      "baseline_suite_complete": true,
-      "benchmark": "synthetic_activation_oracle_latent_questions_v1",
-      "capstone_pipeline_executed": true,
-      "causal_controls_passed": true,
-      "causal_validation_complete": true,
-      "compositional_oracle_beats_linear_probe": true,
-      "counterfactual_patch_change_rate_mean": 1.0,
-      "counterfactual_patch_target_accuracy_mean": 1.0,
+      "ablation_accuracy": 0.5,
+      "ablation_drop": 0.5,
+      "accepted": true,
+      "best_random_direction_alignment": 0.8104840008252583,
+      "best_random_patch_target_accuracy": 1.0,
+      "contract_passed": true,
       "cuda_available": true,
       "cuda_version": "13.2",
-      "d_model": 12,
-      "dataset": "balanced_latent_bits_with_heldout_template_nuisance_v1",
+      "d_model": 8,
+      "dataset": "balanced_xor_with_heldout_template_nuisance_v1",
       "device": "NVIDIA GeForce RTX 5090 Laptop GPU",
-      "failure_cases_file_exists": true,
-      "full_path": "Train a question-conditioned activation oracle on CUDA, compare it against text-only and linear-probe baselines, then run OOD, ablation, counterfactual patching, random-patch, random-activation, and label-shuffle controls.",
+      "direction_cosine": 1.0,
+      "exact_ground_truth_checked": true,
+      "exact_patch_target_accuracy": 1.0,
+      "full_path": "Recover the exact distributed XOR direction, evaluate held-out templates, run causal patches, compare isotropic random directions, and stress-test noise.",
       "gpu_total_memory_gb": 23.45965576171875,
-      "heldout_template_accuracy_mean": 1.0,
-      "heldout_template_example_count": 384,
-      "heldout_templates": [
-        3,
-        4
-      ],
-      "iid_example_count": 576,
-      "label_shuffle_accuracy_mean": 0.48148147265116376,
-      "label_shuffle_control_passed": true,
-      "linear_probe_bank_accuracy_mean": 0.8784722288449606,
-      "linear_probe_compositional_accuracy_mean": 0.5138888955116272,
-      "live_training_executed": true,
+      "heldout_accuracy": 1.0,
+      "heldout_example_count": 32,
+      "heldout_template_count": 8,
+      "label_shuffle_accuracy_mean": 0.525390625,
+      "label_shuffle_accuracy_p95": 0.8125,
+      "learned_patch_target_accuracy": 1.0,
+      "live_intervention_executed": true,
       "max_allowed_gpu_gb": 24.0,
-      "metrics_by_seed_file_valid": true,
-      "metrics_file_valid": true,
-      "model_family": "question_conditioned_mlp_activation_oracle",
-      "n_questions": 4,
-      "ood_passed": true,
-      "oracle_accuracy_mean": 1.0,
-      "oracle_accuracy_min": 1.0,
-      "oracle_beats_linear_probe_bank": true,
-      "oracle_beats_text_only": true,
-      "oracle_compositional_accuracy_mean": 1.0,
-      "peak_vram_gb": 0.0634922981262207,
+      "model_family": "exact_rotated_parity_model",
+      "noise_accuracies": [
+        1.0,
+        1.0,
+        0.978759765625,
+        0.840576171875,
+        0.685791015625,
+        0.622314453125
+      ],
+      "noise_accuracy_at_sigma_1": 0.840576171875,
+      "noise_sigmas": [
+        0.0,
+        0.25,
+        0.5,
+        1.0,
+        2.0,
+        3.0
+      ],
+      "paired_accuracy_delta": 0.5,
+      "paired_accuracy_delta_ci_high": 0.6875,
+      "paired_accuracy_delta_ci_low": 0.3125,
+      "peak_vram_gb": 0.032520294189453125,
       "preflight_passed": true,
-      "question_names": [
-        "color_bit",
-        "shape_bit",
-        "material_bit",
-        "color_xor_shape"
-      ],
-      "random_activation_accuracy_mean": 0.4947916666666667,
-      "random_activation_control_passed": true,
-      "random_activation_mean_confidence_mean": 0.9181055227915446,
-      "random_patch_change_rate_mean": 0.0,
-      "ready": true,
-      "reproducible": true,
-      "script_paths_exist": true,
-      "seed_count": 3,
-      "seeds": [
-        0,
-        1,
-        2
-      ],
-      "text_only_accuracy_mean": 0.5,
+      "preregistered_criteria": {
+        "direction_cosine_at_least_0_98": true,
+        "heldout_accuracy_at_least_0_95": true,
+        "patch_beats_random_mean_by_0_70": true,
+        "patch_target_accuracy_at_least_0_90": true,
+        "raw_and_template_baselines_at_most_0_60": true
+      },
+      "random_patch_target_accuracy_mean": 0.056640625,
+      "random_patch_target_accuracy_median": 0.0,
+      "random_patch_target_accuracy_p95": 0.5,
+      "raw_bits_accuracy": 0.5,
+      "scientific_result_executed": true,
+      "template_only_accuracy": 0.5,
+      "tests_passed": true,
       "torch_version": "2.12.1+cu132",
-      "train_example_count": 576,
-      "train_templates": [
-        0,
-        1,
-        2
-      ],
-      "unique_seed_count": 3,
-      "within_vram_budget": true,
-      "writeup_file_valid": true
+      "train_example_count": 48,
+      "train_template_count": 12,
+      "within_vram_budget": true
     },
     "notebook_contract": {
-      "baselines": {
-        "complete": true,
-        "missing_baselines": [],
-        "present_baselines": [
-          "probe",
-          "text_only",
-          "random_control"
-        ],
-        "required_baselines": [
-          "probe",
-          "text_only",
-          "random_control"
-        ]
+      "ablation_accuracy": 0.5,
+      "ablation_drop": 0.5,
+      "accepted": true,
+      "best_random_direction_alignment": 0.8104840008252584,
+      "best_random_patch_target_accuracy": 1.0,
+      "contract_passed": true,
+      "d_model": 8,
+      "dataset": "balanced_xor_with_heldout_template_nuisance_v1",
+      "direction_cosine": 1.0,
+      "exact_patch_target_accuracy": 1.0,
+      "heldout_accuracy": 1.0,
+      "heldout_example_count": 32,
+      "heldout_template_count": 8,
+      "label_shuffle_accuracy_mean": 0.525390625,
+      "label_shuffle_accuracy_p95": 0.8125,
+      "learned_patch_target_accuracy": 1.0,
+      "model_family": "exact_rotated_parity_model",
+      "noise_accuracies": [
+        1.0,
+        1.0,
+        0.978759765625,
+        0.840576171875,
+        0.685791015625,
+        0.622314453125
+      ],
+      "noise_accuracy_at_sigma_1": 0.840576171875,
+      "noise_sigmas": [
+        0.0,
+        0.25,
+        0.5,
+        1.0,
+        2.0,
+        3.0
+      ],
+      "paired_accuracy_delta": 0.5,
+      "paired_accuracy_delta_ci_high": 0.6875,
+      "paired_accuracy_delta_ci_low": 0.3125,
+      "preregistered_criteria": {
+        "direction_cosine_at_least_0_98": true,
+        "heldout_accuracy_at_least_0_95": true,
+        "patch_beats_random_mean_by_0_70": true,
+        "patch_target_accuracy_at_least_0_90": true,
+        "raw_and_template_baselines_at_most_0_60": true
       },
-      "plan": {
-        "baselines": [
-          "probe",
-          "text_only",
-          "random_control"
-        ],
-        "benchmark": "held-out activation questions",
-        "causal_validations": [
-          "ablation",
-          "patching",
-          "random_control",
-          "ood"
-        ],
-        "mechanistic_claim": "question conditioning uses latent state features",
-        "reproducible_scripts": [
-          "scripts/run_capstone.py"
-        ],
-        "research_question": "Do mini Activation Oracles beat probes?",
-        "writeup_path": "reports/capstone.md"
-      },
-      "readiness": {
-        "baseline_suite_complete": true,
-        "causal_validation_complete": true,
-        "has_benchmark": true,
-        "has_mechanistic_claim": true,
-        "has_research_question": true,
-        "has_writeup_path": true,
-        "ready": true,
-        "reproducibility_complete": true
-      },
-      "reproducibility": {
-        "artifact_paths": [
-          "results/metrics.json"
-        ],
-        "reproducible": true,
-        "script_paths": [
-          "scripts/run_capstone.py"
-        ],
-        "seeds": [
-          0,
-          1,
-          2
-        ]
-      },
-      "validations": {
-        "complete": true,
-        "has_ablation": true,
-        "has_ood": true,
-        "has_patching": true,
-        "has_random_control": true,
-        "validations": [
-          "ablation",
-          "patching",
-          "random_control",
-          "ood"
-        ]
-      }
+      "random_patch_target_accuracy_mean": 0.056640625,
+      "random_patch_target_accuracy_median": 0.0,
+      "random_patch_target_accuracy_p95": 0.5,
+      "raw_bits_accuracy": 0.5,
+      "template_only_accuracy": 0.5,
+      "tests_passed": true,
+      "train_example_count": 48,
+      "train_template_count": 12
     }
   },
   "models": [
     {
+      "d_model": 8,
       "gated": false,
-      "id": "toy_or_generated_inputs",
-      "precision": "float32",
-      "revision": "seed_0",
-      "source": "generated"
-    },
-    {
-      "architecture": "2_layer_mlp_question_conditioned_binary_oracle",
-      "claim_scope": "generated_latent_state_model_organism_only",
-      "gated": false,
-      "id": "course_question_conditioned_activation_oracle_v1",
-      "precision": "float32",
-      "revision": "seeds_0_1_2",
-      "source": "generated_training_run"
+      "id": "exact_rotated_parity_model",
+      "mechanism": "orthogonally_mixed_exact_xor_feature",
+      "precision": "float64",
+      "revision": "rotation_seed_7",
+      "source": "section_reference_implementation"
     }
   ],
   "negative_controls": {
-    "declared_controls": [
-      "negative_control_where_applicable",
-      "random_dimension_patch_control",
-      "random_activation_accuracy_control",
-      "label_shuffle_negative_control"
-    ]
+    "declared_controls": []
   },
   "notebook_id": "10_1_capstone_research_sprint",
   "ood_tests": {
     "declared": "required_where_applicable"
   },
-  "peak_vram_gb": 0.0634922981262207,
+  "peak_vram_gb": 0.032520294189453125,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "4cfd5a79f9604518cede23e33351be7e5282b0006c7b157c912603afbb67bfa3",
+    "combined_sha256": "92e7dbfd8512665b890a42c24792269b5da26467c7f7d363d4479c307811d87f",
     "files": [
-      {
-        "path": "arena_ext/capstone.py",
-        "sha256": "ba33e2e8987dd43974df15ce025f8dcc73ca3ad5cadd83bf9f8d81e1bedef486",
-        "size_bytes": 31473
-      },
       {
         "path": "arena_ext/verification.py",
         "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
@@ -347,73 +274,68 @@
       },
       {
         "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/10.1_Capstone_Research_Sprint_exercises.ipynb",
-        "sha256": "8ce597321eb92242ae7bf508eefbb8467fcc78e161029dbe11ae46fbf82d84c9",
-        "size_bytes": 41191
+        "sha256": "a8041732d548e982703cfaa1a24112a78daa4184818c4982b6f21628cbbbfcf7",
+        "size_bytes": 51899
       },
       {
         "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/10.1_Capstone_Research_Sprint_solutions.ipynb",
-        "sha256": "4cc4208acc897d85efb3b0ab5266bef95bb55d1f4ad4887fdf7d82e53aa07138",
-        "size_bytes": 52533
+        "sha256": "2bace620d844dbc372f43c4cbe122e38741feebc9d7ef21740b8f3ec126cdc9a",
+        "size_bytes": 198405
       },
       {
         "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/README.md",
-        "sha256": "8a0aa84172dc26e56141a2d9046670ef02b9f7fdd1815cdd53bd566562ccbcc1",
-        "size_bytes": 1492
+        "sha256": "516fbe490c5192a45daba6e8799d7beae187cbbb86800336604bfed3475eb794",
+        "size_bytes": 1357
       },
       {
         "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/artifacts.lock.yml",
-        "sha256": "371162521f3d55b5cf5a3eb63d99c87ccf13f542b1074b037a5b0f48d6ed9c0b",
-        "size_bytes": 4395
+        "sha256": "9e037762712aee6a005f96cd4fbf3a5c5d1ce9e50a2693c1acaedde0d2decff6",
+        "size_bytes": 3083
       },
       {
         "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/expected_outputs/README.md",
-        "sha256": "1554a67837354039ef3519bf127a3f030043cf97f8f557dce032ab3b49cfffd1",
-        "size_bytes": 1777
+        "sha256": "30e5f596751093fcea8df6e61fb57827156fb928a4e61c0768173266e55a63b6",
+        "size_bytes": 853
       },
       {
         "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/expected_outputs/reference_metrics.json",
-        "sha256": "2e15ca245e8d4fd3c9034a2230b55b44b27a666b940c602120ed1f68fde0df7e",
-        "size_bytes": 1641
+        "sha256": "6cc60f9e71f236efd6665991ade5ef04375d382ebc54637a0b06f526bbe34788",
+        "size_bytes": 801
       },
       {
         "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/expected_outputs/smoke_test.json",
-        "sha256": "6d97ded10c2756fc9829d679bad9963b6309e6b8748c9200141060fce4d089cd",
-        "size_bytes": 652
+        "sha256": "5b0fa58d77779474d0ee4b74accb8227225cac294f0cb8595380eb0e51aa02d3",
+        "size_bytes": 671
       },
       {
         "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/reports/capstone.md",
-        "sha256": "a58251512cda0199749f8019e0d7577bdb9082dc6424188fd6e1ab020453f751",
-        "size_bytes": 2334
+        "sha256": "fd51099c44c2d488053f0334a73b0da338b859c088a18e9a0ea19d5d85caa017",
+        "size_bytes": 1632
       },
       {
         "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/results/failure_cases.jsonl",
-        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-        "size_bytes": 0
+        "sha256": "22133150edf7eeff4ee83cfe7a6f2986e1bdf7e96d24a68506b2f66ea29806b0",
+        "size_bytes": 370
       },
       {
         "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/results/metrics.json",
-        "sha256": "54ab1d526cee06550901609d6b55f55ba44d4009912dd61b16e39f1633811ce3",
-        "size_bytes": 1674
-      },
-      {
-        "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/results/metrics_by_seed.json",
-        "sha256": "2d9c2946047319594509f2358d9da0f23593f43cfc43ef3b01d8fbeab101abf9",
-        "size_bytes": 4644
+        "sha256": "58ae73474c57291cb8847b687280f88fb8868259bd6e51054b7ce2185e5f6e75",
+        "size_bytes": 1533
       },
       {
         "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/scripts/run_capstone.py",
-        "sha256": "2dd39b18f9a250e1c56c1e79ba8b27e03e45269224e5363948ea56d32513ec86",
-        "size_bytes": 8776
+        "sha256": "e8b4cf60cc8b41edd3c01fe718074e0426663b42de79146823850c759376fff1",
+        "size_bytes": 5780
       },
       {
         "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/solutions.py",
-        "sha256": "fd30d5eff4f32dbbbf263c3a5ab9829c2ecc80e77dc1dcd69eddfeba354c9eef",
-        "size_bytes": 15018
+        "sha256": "d973f53ac9fdddc3f8678c1142948e49e4bfd3b280a1331c23b7922792720c2d",
+        "size_bytes": 15545
       },
       {
         "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/tests.py",
-        "sha256": "a178b02136adf46ed871975f73e790fd0a6ff7a444dde0123b6920a08294ece8",
-        "size_bytes": 15577
+        "sha256": "8eed28e6a995ec4612a415ad22797689595a15d90c4cba17410db2115168375c",
+        "size_bytes": 11155
       },
       {
         "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/utils.py",
@@ -427,21 +349,21 @@
       },
       {
         "path": "chapter10_capstone_research_sprint/instructions/pages/01_[10.1]_Capstone_Research_Sprint.md",
-        "sha256": "c5e17661f42bfed18ab0d8b74e72409a38ea44d6dd7501b60fd342a65a24d441",
-        "size_bytes": 29313
+        "sha256": "77edc413ba23c164c916ea51b3f4656f7d0fc10573dca6c0c9974ae9283fc33b",
+        "size_bytes": 38177
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
-        "sha256": "660040f459d07535deb9e0c34ffddb496c13b8770044ae380d3a8e45b0c8fb2b",
-        "size_bytes": 16080
+        "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
+        "size_bytes": 16272
       }
     ],
     "schema_version": 1
   },
   "safety_notes": [
-    "No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.",
-    "This section trains on generated numeric latent-state activations only. It does not use unsafe prompts, gated weights, model completions, external APIs, or user data. The report explicitly scopes the claim to the generated benchmark."
+    "No prompts, model downloads, gated weights, external APIs, or user data.",
+    "The exact model organism is generated deterministically and the claim is explicitly scoped to method validation."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 3.59538
+  "wall_clock_seconds": 1.186092
 }

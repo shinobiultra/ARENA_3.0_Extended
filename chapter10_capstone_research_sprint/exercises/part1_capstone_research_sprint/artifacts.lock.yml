@@ -5,117 +5,73 @@ exercise_metadata:
   EXERCISE_ID: 10_1_capstone_research_sprint
   GT_TIER: GT-4
   DIFFICULTY: 5
-  IMPORTANCE: 3
-  EXPECTED_RUNTIME: seconds on toy contract
+  IMPORTANCE: 5
+  EXPECTED_RUNTIME: under 10 seconds for the reference CPU run
   REQUIRES_GPU: true
 gt_tier: GT-4
-evidence_level: cuda_trained_activation_oracle_capstone_with_controls
-claim_scope: 'GT-4 mini capstone sprint: the section keeps the capstone planning
-  scaffold, then runs a real CUDA-trained question-conditioned activation oracle
-  on a generated latent-state benchmark. The claim is scoped to this model-organism:
-  the oracle beats text-only and linear-probe baselines, solves a nonlinear XOR
-  question, generalizes to held-out templates, and passes ablation, counterfactual
-  patching, random-patch, random-activation, and label-shuffle controls. It does
-  not claim a released-model mechanistic discovery.'
+evidence_level: exact_ground_truth_parity_direction_with_heldout_causal_controls
+claim_scope: >-
+  A ridge probe fitted to an exact rotated parity model recovers the analytically
+  known distributed XOR direction, generalizes to 32 examples from eight held-out
+  nuisance templates, and transfers counterfactual donor answers by changing only
+  that direction. The claim is limited to method validation on this model organism.
 required_gpu_gb: 1
 max_allowed_gpu_gb: 24
 freshness_inputs:
-- arena_ext/capstone.py
-- chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/scripts/run_capstone.py
-- chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/results/metrics.json
-- chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/results/metrics_by_seed.json
-- chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/results/failure_cases.jsonl
-- chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/reports/capstone.md
+  - chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/solutions.py
+  - chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/scripts/run_capstone.py
+  - chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/results/metrics.json
+  - chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/results/failure_cases.jsonl
+  - chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/reports/capstone.md
 models:
-- id: toy_or_generated_inputs
-  source: generated
-  revision: seed_0
-  precision: float32
-  gated: false
-- id: course_question_conditioned_activation_oracle_v1
-  source: generated_training_run
-  revision: seeds_0_1_2
-  precision: float32
-  gated: false
-  architecture: 2_layer_mlp_question_conditioned_binary_oracle
-  claim_scope: generated_latent_state_model_organism_only
+  - id: exact_rotated_parity_model
+    source: section_reference_implementation
+    revision: rotation_seed_7
+    precision: float64
+    gated: false
+    d_model: 8
+    mechanism: orthogonally_mixed_exact_xor_feature
 datasets:
-- id: 10_1_capstone_research_sprint_toy_inputs
-  source: generated
-  seed: 0
-- id: activation_oracle_latent_questions_v1
-  source: generated
-  seeds:
-  - 0
-  - 1
-  - 2
-  d_model: 12
-  question_count: 4
-  train_templates:
-  - 0
-  - 1
-  - 2
-  heldout_templates:
-  - 3
-  - 4
-  examples_per_template: 48
-  seed_count: 3
-  label_rule: color_bit, shape_bit, material_bit, and color_xor_shape
+  - id: balanced_xor_with_heldout_template_nuisance_v1
+    source: generated_exact_enumeration
+    train_templates: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+    heldout_templates: [12, 13, 14, 15, 16, 17, 18, 19]
+    examples_per_template: 4
+    train_example_count: 48
+    heldout_example_count: 32
+    label_rule: signed_bit_product
 expected_metrics:
   tests_passed: true
   accepted: true
   max_allowed_gpu_gb: 24
   preflight_passed: true
-  live_training_executed: true
-  baseline_suite_complete: true
-  causal_validation_complete: true
-  ready: true
-  reproducible: true
-  seed_count: 3
-  model_family: question_conditioned_mlp_activation_oracle
-  dataset: balanced_latent_bits_with_heldout_template_nuisance_v1
-  train_example_count: 576
-  iid_example_count: 576
-  heldout_template_example_count: 384
-  oracle_accuracy_mean_min: 0.9
-  oracle_compositional_accuracy_mean_min: 0.9
-  text_only_accuracy_mean: 0.5
-  linear_probe_compositional_accuracy_mean_max: 0.75
-  heldout_template_accuracy_mean_min: 0.9
-  oracle_beats_text_only: true
-  oracle_beats_linear_probe_bank: true
-  compositional_oracle_beats_linear_probe: true
-  ood_passed: true
-  ablation_drop_mean_min: 0.2
-  counterfactual_patch_change_rate_mean_min: 0.7
-  counterfactual_patch_target_accuracy_mean_min: 0.9
-  random_patch_change_rate_mean_max: 0.15
-  random_activation_accuracy_mean_max: 0.65
-  random_activation_control_passed: true
-  label_shuffle_accuracy_mean_max: 0.65
-  label_shuffle_control_passed: true
-  causal_controls_passed: true
-  metrics_by_seed_file_valid: true
+  scientific_result_executed: true
+  exact_ground_truth_checked: true
+  live_intervention_executed: true
+  contract_passed: true
+  model_family: exact_rotated_parity_model
+  dataset: balanced_xor_with_heldout_template_nuisance_v1
+  train_example_count: 48
+  heldout_example_count: 32
+  heldout_accuracy_min: 0.95
+  raw_bits_accuracy_max: 0.6
+  template_only_accuracy_max: 0.6
+  label_shuffle_accuracy_mean_max: 0.6
+  direction_cosine_min: 0.98
+  paired_accuracy_delta_min: 0.3
+  ablation_accuracy_max: 0.6
+  learned_patch_target_accuracy_min: 0.9
+  random_patch_target_accuracy_mean_max: 0.2
+  noise_accuracy_at_sigma_1_max: 0.9
   peak_vram_gb_max: 1.0
 controls:
-- baseline_or_reference_check
-- negative_control_where_applicable
-- shape_dtype_or_exact_value_check
-- baseline_suite_completeness_check
-- causal_validation_suite_completeness_check
-- reproducibility_metadata_check
-- writeup_path_check
-- cuda_training_run_per_seed
-- text_only_question_prior_baseline
-- linear_probe_bank_baseline
-- heldout_template_ood_split
-- relevant_latent_dimension_ablation
-- counterfactual_latent_dimension_patching
-- random_dimension_patch_control
-- random_activation_accuracy_control
-- label_shuffle_negative_control
+  - raw_bit_linear_baseline
+  - template_only_linear_baseline
+  - 128_label_shuffle_probes
+  - 256_isotropic_same_dimensional_patch_directions
+  - learned_direction_ablation
+  - heldout_nuisance_template_split
+  - activation_noise_stress_curve
 safety_notes:
-- No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.
-- This section trains on generated numeric latent-state activations only. It does
-  not use unsafe prompts, gated weights, model completions, external APIs, or user
-  data. The report explicitly scopes the claim to the generated benchmark.
+  - No prompts, model downloads, gated weights, external APIs, or user data.
+  - The exact model organism is generated deterministically and the claim is explicitly scoped to method validation.

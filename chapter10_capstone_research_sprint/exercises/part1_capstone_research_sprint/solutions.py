@@ -1,436 +1,415 @@
 # %%
-"""Reference solutions for [10.1] Capstone Research Sprint."""
+"""Reference implementation for [10.1] Capstone Research Sprint.
 
-import json
-import subprocess
-import sys
+The section studies one exact model organism. A parity feature is mixed through
+an eight-dimensional activation space, then read out by a known causal
+direction. Learners recover that direction from train templates and test it on
+held-out templates with counterfactual activation patching.
+"""
+
+from __future__ import annotations
+
 from dataclasses import dataclass
-from pathlib import Path
+from typing import Iterable
 
 import torch as t
+from torch import Tensor
 
 
 MAIN = __name__ == "__main__"
-CAPSTONE_DIR = Path(__file__).resolve().parent
+D_MODEL = 8
+ROTATION_SEED = 7
+TRAIN_TEMPLATES = tuple(range(12))
+HELDOUT_TEMPLATES = tuple(range(12, 20))
 
 
 # %%
 @dataclass(frozen=True)
-class CapstonePlan:
-    research_question: str
-    benchmark: str
-    baselines: tuple[str, ...]
-    mechanistic_claim: str
-    causal_validations: tuple[str, ...]
-    reproducible_scripts: tuple[str, ...]
-    writeup_path: str
+class ParityBatch:
+    """Inputs, exact latent features, hidden activations, and XOR labels."""
+
+    bits: Tensor
+    template_ids: Tensor
+    latent_features: Tensor
+    activations: Tensor
+    labels: Tensor
 
 
-@dataclass(frozen=True)
-class BaselineSuiteReport:
-    required_baselines: tuple[str, ...]
-    present_baselines: tuple[str, ...]
-    missing_baselines: tuple[str, ...]
-    complete: bool
+def make_rotation(seed: int = ROTATION_SEED, device: str | t.device = "cpu") -> Tensor:
+    """Create the fixed orthogonal mixing matrix on CPU, then move it to device."""
+
+    generator = t.Generator(device="cpu").manual_seed(seed)
+    raw = t.randn(D_MODEL, D_MODEL, generator=generator, dtype=t.float64)
+    q, r = t.linalg.qr(raw)
+    signs = t.sign(t.diag(r))
+    signs[signs == 0] = 1
+    return (q * signs.unsqueeze(0)).to(device)
 
 
-@dataclass(frozen=True)
-class CausalValidationSuiteReport:
-    validations: tuple[str, ...]
-    has_ablation: bool
-    has_patching: bool
-    has_random_control: bool
-    has_ood: bool
-    complete: bool
+def template_nuisance(template_ids: Tensor) -> Tensor:
+    """Five deterministic template features that never determine the label."""
+
+    ids = template_ids.to(dtype=t.float64)
+    scaled = (ids - 9.5) / 9.5
+    alternating = t.where(template_ids.remainder(2) == 0, 1.0, -1.0).to(ids)
+    return t.stack(
+        [ids.sin(), ids.cos(), scaled, alternating, (2 * ids + 1).sin()],
+        dim=-1,
+    )
 
 
-@dataclass(frozen=True)
-class ReproducibilityReport:
-    script_paths: tuple[str, ...]
-    seeds: tuple[int, ...]
-    artifact_paths: tuple[str, ...]
-    reproducible: bool
+def make_parity_batch(template_ids: Iterable[int], rotation: Tensor) -> ParityBatch:
+    """Enumerate all four bit pairs for each template and run the exact encoder."""
+
+    template_ids = tuple(int(template_id) for template_id in template_ids)
+    if not template_ids:
+        raise ValueError("template_ids must contain at least one template")
+    device = rotation.device
+    bit_block = t.tensor(
+        [[-1.0, -1.0], [-1.0, 1.0], [1.0, -1.0], [1.0, 1.0]],
+        dtype=t.float64,
+        device=device,
+    )
+    bits = bit_block.repeat(len(template_ids), 1)
+    ids = t.tensor(template_ids, dtype=t.long, device=device).repeat_interleave(4)
+    parity = bits[:, 0] * bits[:, 1]
+    nuisance = template_nuisance(ids)
+    latent_features = t.cat([bits, parity[:, None], nuisance], dim=1)
+    activations = latent_features @ rotation.T
+    labels = (parity > 0).long()
+    return ParityBatch(bits, ids, latent_features, activations, labels)
 
 
-@dataclass(frozen=True)
-class CapstoneReadinessReport:
-    has_research_question: bool
-    has_benchmark: bool
-    has_mechanistic_claim: bool
-    baseline_suite_complete: bool
-    causal_validation_complete: bool
-    reproducibility_complete: bool
-    has_writeup_path: bool
-    ready: bool
+def predict_from_direction(activations: Tensor, direction: Tensor) -> Tensor:
+    """Apply the model organism's binary linear readout convention."""
+
+    scores = activations @ direction
+    scores = t.where(scores.abs() < 1e-10, t.zeros_like(scores), scores)
+    return (scores >= 0).long()
 
 
 # %%
-def build_capstone_plan(
+def fit_ridge_direction(features: Tensor, labels: Tensor, ridge: float = 1e-3) -> Tensor:
+    """Fit a linear direction to signed binary labels with a closed-form ridge solve."""
+
+    if features.ndim != 2 or labels.shape != (features.shape[0],):
+        raise ValueError("expected features [batch, d] and labels [batch]")
+    if ridge < 0:
+        raise ValueError("ridge must be non-negative")
+    target = labels.to(features.dtype) * 2 - 1
+    identity = t.eye(features.shape[1], dtype=features.dtype, device=features.device)
+    return t.linalg.solve(features.T @ features + ridge * identity, features.T @ target)
+
+
+def direction_accuracy(features: Tensor, labels: Tensor, direction: Tensor) -> float:
+    """Return binary classification accuracy for a direction."""
+
+    return float((predict_from_direction(features, direction) == labels).double().mean())
+
+
+def shuffled_label_baseline(
+    train_features: Tensor,
+    train_labels: Tensor,
+    test_features: Tensor,
+    test_labels: Tensor,
     *,
-    research_question: str,
-    benchmark: str,
-    baselines: list[str],
-    mechanistic_claim: str,
-    causal_validations: list[str],
-    reproducible_scripts: list[str],
-    writeup_path: str,
-) -> CapstonePlan:
-    """Bundle a paper-style capstone plan after normalizing blank fields."""
+    n_shuffles: int = 128,
+    seed: int = 11,
+) -> Tensor:
+    """Fit probes to permuted train labels and return held-out accuracies."""
 
-    return CapstonePlan(
-        research_question=research_question.strip(),
-        benchmark=benchmark.strip(),
-        baselines=tuple(baseline.strip() for baseline in baselines if baseline.strip()),
-        mechanistic_claim=mechanistic_claim.strip(),
-        causal_validations=tuple(
-            validation.strip() for validation in causal_validations if validation.strip()
-        ),
-        reproducible_scripts=tuple(
-            script.strip() for script in reproducible_scripts if script.strip()
-        ),
-        writeup_path=writeup_path.strip(),
-    )
-
-
-def baseline_suite_report(
-    present_baselines: list[str],
-    *,
-    required_baselines: tuple[str, ...] = ("probe", "text_only", "random_control"),
-) -> BaselineSuiteReport:
-    """Check whether the capstone includes each required baseline exactly once."""
-
-    present = tuple(baseline.strip() for baseline in present_baselines if baseline.strip())
-    present_set = set(present)
-    required_set = set(required_baselines)
-    missing = tuple(baseline for baseline in required_baselines if baseline not in present_set)
-    has_duplicates = len(present_set) != len(present)
-    has_unknown = not present_set <= required_set
-    return BaselineSuiteReport(
-        required_baselines=required_baselines,
-        present_baselines=present,
-        missing_baselines=missing,
-        complete=len(missing) == 0 and not has_duplicates and not has_unknown,
-    )
-
-
-def causal_validation_suite_report(
-    validations: list[str],
-) -> CausalValidationSuiteReport:
-    """Check whether causal, random-control, and OOD validations are present."""
-
-    normalized = tuple(
-        validation.strip().lower() for validation in validations if validation.strip()
-    )
-    validation_set = set(normalized)
-    has_ablation = "ablation" in validation_set
-    has_patching = "patching" in validation_set or "counterfactual_patching" in validation_set
-    has_random_control = "random_control" in validation_set
-    has_ood = "ood" in validation_set or "heldout_templates" in validation_set
-    complete = has_ablation and has_patching and has_random_control and has_ood
-    return CausalValidationSuiteReport(
-        validations=normalized,
-        has_ablation=has_ablation,
-        has_patching=has_patching,
-        has_random_control=has_random_control,
-        has_ood=has_ood,
-        complete=complete,
-    )
-
-
-def reproducibility_report(
-    *,
-    script_paths: list[str],
-    seeds: list[int],
-    artifact_paths: list[str],
-    root: str | Path | None = None,
-) -> ReproducibilityReport:
-    """Check whether runnable scripts, seeds, and output artifacts exist."""
-
-    scripts = tuple(path.strip() for path in script_paths if path.strip())
-    artifacts = tuple(path.strip() for path in artifact_paths if path.strip())
-    seed_tuple = tuple(
-        seed for seed in seeds if isinstance(seed, int) and not isinstance(seed, bool)
-    )
-    seeds_valid = len(seed_tuple) == len(seeds) and len(set(seed_tuple)) == len(seed_tuple)
-    root_path = Path.cwd() if root is None else Path(root)
-    paths_are_relative = all(
-        not Path(path).is_absolute() and ".." not in Path(path).parts
-        for path in (*scripts, *artifacts)
-    )
-    scripts_exist = paths_are_relative and all((root_path / script).is_file() for script in scripts)
-    artifacts_exist = paths_are_relative and all(
-        (root_path / artifact).is_file() for artifact in artifacts
-    )
-    return ReproducibilityReport(
-        script_paths=scripts,
-        seeds=seed_tuple,
-        artifact_paths=artifacts,
-        reproducible=bool(
-            scripts
-            and seed_tuple
-            and artifacts
-            and seeds_valid
-            and scripts_exist
-            and artifacts_exist
-        ),
-    )
-
-
-def capstone_readiness_report(
-    plan: CapstonePlan,
-    baselines: BaselineSuiteReport,
-    validations: CausalValidationSuiteReport,
-    reproducibility: ReproducibilityReport,
-) -> CapstoneReadinessReport:
-    """Gate a capstone plan before treating it as paper-style evidence."""
-
-    has_question = bool(plan.research_question)
-    has_benchmark = bool(plan.benchmark)
-    has_claim = bool(plan.mechanistic_claim)
-    has_writeup = bool(plan.writeup_path)
-    ready = (
-        has_question
-        and has_benchmark
-        and has_claim
-        and baselines.complete
-        and validations.complete
-        and reproducibility.reproducible
-        and has_writeup
-    )
-    return CapstoneReadinessReport(
-        has_research_question=has_question,
-        has_benchmark=has_benchmark,
-        has_mechanistic_claim=has_claim,
-        baseline_suite_complete=baselines.complete,
-        causal_validation_complete=validations.complete,
-        reproducibility_complete=reproducibility.reproducible,
-        has_writeup_path=has_writeup,
-        ready=ready,
-    )
+    generator = t.Generator(device="cpu").manual_seed(seed)
+    scores = []
+    for _ in range(n_shuffles):
+        permutation = t.randperm(len(train_labels), generator=generator).to(train_labels.device)
+        direction = fit_ridge_direction(train_features, train_labels[permutation])
+        scores.append(direction_accuracy(test_features, test_labels, direction))
+    return t.tensor(scores, dtype=t.float64)
 
 
 # %%
-def _example_plan() -> CapstonePlan:
-    return build_capstone_plan(
-        research_question="Do mini Activation Oracles beat probes?",
-        benchmark="held-out activation questions",
-        baselines=["probe", "text_only", "random_control"],
-        mechanistic_claim="question conditioning uses latent state features",
-        causal_validations=["ablation", "patching", "random_control", "ood"],
-        reproducible_scripts=["scripts/run_capstone.py"],
-        writeup_path="reports/capstone.md",
+def paired_bootstrap_delta_ci(
+    method_correct: Tensor,
+    baseline_correct: Tensor,
+    *,
+    n_resamples: int = 2_000,
+    seed: int = 0,
+) -> tuple[float, float, float]:
+    """Bootstrap a paired accuracy difference and return estimate, 95% interval."""
+
+    if method_correct.shape != baseline_correct.shape or method_correct.ndim != 1:
+        raise ValueError("correctness tensors must be one-dimensional and equally sized")
+    delta = method_correct.to(t.float64) - baseline_correct.to(t.float64)
+    generator = t.Generator(device="cpu").manual_seed(seed)
+    sample_indices = t.randint(
+        len(delta),
+        (n_resamples, len(delta)),
+        generator=generator,
+        device="cpu",
+    ).to(delta.device)
+    bootstrap = delta[sample_indices].mean(dim=1).cpu()
+    low, high = t.quantile(bootstrap, t.tensor([0.025, 0.975], dtype=t.float64))
+    return float(delta.mean()), float(low), float(high)
+
+
+# %%
+def counterfactual_donor_indices(batch: ParityBatch) -> Tensor:
+    """Pair each example with the same template and first bit, but flipped second bit."""
+
+    indices = []
+    for row in range(len(batch.labels)):
+        matches = (
+            (batch.template_ids == batch.template_ids[row])
+            & (batch.bits[:, 0] == batch.bits[row, 0])
+            & (batch.bits[:, 1] == -batch.bits[row, 1])
+        )
+        found = t.nonzero(matches, as_tuple=False).flatten()
+        if len(found) != 1:
+            raise RuntimeError("each recipient must have exactly one counterfactual donor")
+        indices.append(found[0])
+    return t.stack(indices)
+
+
+def patch_along_direction(
+    recipient_activations: Tensor,
+    donor_activations: Tensor,
+    direction: Tensor,
+) -> Tensor:
+    """Replace the recipient's projection along direction with the donor's projection."""
+
+    unit = direction / direction.norm()
+    coefficient_delta = (donor_activations - recipient_activations) @ unit
+    return recipient_activations + coefficient_delta[:, None] * unit
+
+
+def patch_target_accuracy(
+    batch: ParityBatch,
+    donor_indices: Tensor,
+    patch_direction: Tensor,
+    readout_direction: Tensor,
+) -> float:
+    """Measure whether a patch makes the model match the donor's answer."""
+
+    patched = patch_along_direction(
+        batch.activations,
+        batch.activations[donor_indices],
+        patch_direction,
     )
+    predictions = predict_from_direction(patched, readout_direction)
+    return float((predictions == batch.labels[donor_indices]).double().mean())
 
 
-def plan_smoke_test() -> dict:
-    return _example_plan().__dict__
+def random_direction_controls(
+    batch: ParityBatch,
+    donor_indices: Tensor,
+    readout_direction: Tensor,
+    *,
+    n_directions: int = 256,
+    seed: int = 13,
+) -> tuple[Tensor, Tensor]:
+    """Return patch scores and exact-direction alignments for isotropic controls."""
 
-
-def baseline_smoke_test() -> dict:
-    plan = _example_plan()
-    return baseline_suite_report(list(plan.baselines)).__dict__
-
-
-def validation_smoke_test() -> dict:
-    plan = _example_plan()
-    return causal_validation_suite_report(list(plan.causal_validations)).__dict__
-
-
-def reproducibility_smoke_test() -> dict:
-    plan = _example_plan()
-    return reproducibility_report(
-        script_paths=list(plan.reproducible_scripts),
-        seeds=[0, 1, 2],
-        artifact_paths=["results/metrics.json"],
-        root=CAPSTONE_DIR,
-    ).__dict__
-
-
-def readiness_smoke_test() -> dict:
-    plan = _example_plan()
-    baselines = baseline_suite_report(list(plan.baselines))
-    validations = causal_validation_suite_report(list(plan.causal_validations))
-    reproducibility = reproducibility_report(
-        script_paths=list(plan.reproducible_scripts),
-        seeds=[0, 1, 2],
-        artifact_paths=["results/metrics.json"],
-        root=CAPSTONE_DIR,
+    generator = t.Generator(device="cpu").manual_seed(seed)
+    directions = t.randn(
+        n_directions,
+        batch.activations.shape[1],
+        generator=generator,
+        dtype=t.float64,
     )
-    return capstone_readiness_report(
-        plan,
-        baselines,
-        validations,
-        reproducibility,
-    ).__dict__
-
-
-def run_smoke_test(cpu: bool = True) -> dict:
-    _ = cpu
-    return {
-        "plan": plan_smoke_test(),
-        "baselines": baseline_smoke_test(),
-        "validations": validation_smoke_test(),
-        "reproducibility": reproducibility_smoke_test(),
-        "readiness": readiness_smoke_test(),
-    }
-
-
-def _mean_metric(by_seed: list[dict], key: str) -> float:
-    return sum(float(seed_report[key]) for seed_report in by_seed) / len(by_seed)
-
-
-def _close_enough(left: float, right: float, *, atol: float = 1e-6) -> bool:
-    return abs(float(left) - float(right)) <= atol
-
-
-def _metrics_by_seed_file_valid(by_seed: list[dict], metrics: dict) -> bool:
-    required_keys = {
-        "seed",
-        "oracle_accuracy",
-        "text_only_accuracy",
-        "linear_probe_bank_accuracy",
-        "linear_probe_compositional_accuracy",
-        "heldout_template_accuracy",
-        "ablation_drop",
-        "counterfactual_patch_change_rate",
-        "counterfactual_patch_target_accuracy",
-        "random_patch_change_rate",
-        "random_activation_accuracy",
-        "label_shuffle_accuracy",
-    }
-    if not isinstance(by_seed, list) or len(by_seed) != metrics.get("seed_count"):
-        return False
-    if [int(seed_report.get("seed", -1)) for seed_report in by_seed] != metrics.get("seeds"):
-        return False
-    if not all(required_keys <= set(seed_report) for seed_report in by_seed):
-        return False
-    summary_pairs = {
-        "oracle_accuracy_mean": "oracle_accuracy",
-        "text_only_accuracy_mean": "text_only_accuracy",
-        "linear_probe_bank_accuracy_mean": "linear_probe_bank_accuracy",
-        "linear_probe_compositional_accuracy_mean": "linear_probe_compositional_accuracy",
-        "heldout_template_accuracy_mean": "heldout_template_accuracy",
-        "ablation_drop_mean": "ablation_drop",
-        "counterfactual_patch_change_rate_mean": "counterfactual_patch_change_rate",
-        "counterfactual_patch_target_accuracy_mean": "counterfactual_patch_target_accuracy",
-        "random_patch_change_rate_mean": "random_patch_change_rate",
-        "random_activation_accuracy_mean": "random_activation_accuracy",
-        "label_shuffle_accuracy_mean": "label_shuffle_accuracy",
-    }
-    return all(
-        _close_enough(metrics[summary_key], _mean_metric(by_seed, seed_key))
-        for summary_key, seed_key in summary_pairs.items()
-    )
-
-
-def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
-    if not t.cuda.is_available():
-        raise RuntimeError("CUDA is required for the 10.1 capstone experiment preflight.")
-
-    t.cuda.reset_peak_memory_stats()
-    subprocess.run(
+    directions = directions / directions.norm(dim=1, keepdim=True)
+    directions = directions.to(batch.activations.device)
+    exact_unit = readout_direction / readout_direction.norm()
+    scores = t.tensor(
         [
-            sys.executable,
-            str(CAPSTONE_DIR / "scripts" / "run_capstone.py"),
-            "--output-dir",
-            str(CAPSTONE_DIR),
-            "--device",
-            "cuda",
-            "--max-vram-gb",
-            str(max_vram_gb),
+            patch_target_accuracy(batch, donor_indices, direction, readout_direction)
+            for direction in directions
         ],
-        check=True,
-        capture_output=True,
-        text=True,
+        dtype=t.float64,
     )
-    plan = _example_plan()
-    baselines = baseline_suite_report(list(plan.baselines))
-    validations = causal_validation_suite_report(list(plan.causal_validations))
-    reproducibility = reproducibility_report(
-        script_paths=list(plan.reproducible_scripts),
-        seeds=[0, 1, 2],
-        artifact_paths=["results/metrics.json"],
-        root=CAPSTONE_DIR,
+    alignments = (directions @ exact_unit).abs().cpu()
+    return scores, alignments
+
+
+# %%
+def noise_sweep_accuracy(
+    activations: Tensor,
+    labels: Tensor,
+    direction: Tensor,
+    sigmas: Tensor,
+    *,
+    repeats: int = 128,
+    seed: int = 123,
+) -> Tensor:
+    """Measure probe accuracy as isotropic activation noise increases."""
+
+    generator = t.Generator(device="cpu").manual_seed(seed)
+    expanded = activations.repeat_interleave(repeats, dim=0)
+    expanded_labels = labels.repeat_interleave(repeats)
+    standard_noise = t.randn(
+        expanded.shape,
+        generator=generator,
+        dtype=activations.dtype,
+        device="cpu",
+    ).to(activations.device)
+    accuracies = []
+    for sigma in sigmas:
+        noisy = expanded + float(sigma) * standard_noise
+        accuracies.append(direction_accuracy(noisy, expanded_labels, direction))
+    return t.tensor(accuracies, dtype=t.float64)
+
+
+# %%
+def run_study(device: str | t.device = "cpu") -> dict[str, object]:
+    """Run the complete preregistered parity-direction study."""
+
+    rotation = make_rotation(device=device)
+    exact_direction = rotation[:, 2]
+    train = make_parity_batch(TRAIN_TEMPLATES, rotation)
+    heldout = make_parity_batch(HELDOUT_TEMPLATES, rotation)
+
+    learned_direction = fit_ridge_direction(train.activations, train.labels)
+    raw_direction = fit_ridge_direction(train.bits, train.labels)
+    template_direction = fit_ridge_direction(train.latent_features[:, 3:], train.labels)
+
+    heldout_predictions = predict_from_direction(heldout.activations, learned_direction)
+    raw_predictions = predict_from_direction(heldout.bits, raw_direction)
+    heldout_accuracy = float((heldout_predictions == heldout.labels).double().mean())
+    raw_accuracy = float((raw_predictions == heldout.labels).double().mean())
+    template_accuracy = direction_accuracy(
+        heldout.latent_features[:, 3:], heldout.labels, template_direction
     )
-    readiness = capstone_readiness_report(plan, baselines, validations, reproducibility)
-    metrics_path = CAPSTONE_DIR / "results" / "metrics.json"
-    by_seed_path = CAPSTONE_DIR / "results" / "metrics_by_seed.json"
-    failure_cases_path = CAPSTONE_DIR / "results" / "failure_cases.jsonl"
-    writeup_path = CAPSTONE_DIR / "reports" / "capstone.md"
-    metrics = json.loads(metrics_path.read_text())
-    by_seed = json.loads(by_seed_path.read_text())
-    metrics_file_valid = bool(
-        metrics.get("preflight_passed")
-        and metrics.get("seed_count") == 3
-        and metrics.get("oracle_accuracy_mean", 0.0) >= 0.90
-        and metrics.get("oracle_beats_text_only")
-        and metrics.get("oracle_beats_linear_probe_bank")
-        and metrics.get("compositional_oracle_beats_linear_probe")
-        and metrics.get("ood_passed")
-        and metrics.get("causal_controls_passed")
-        and metrics.get("random_activation_control_passed")
-        and metrics.get("label_shuffle_control_passed")
+    shuffle_scores = shuffled_label_baseline(
+        train.activations,
+        train.labels,
+        heldout.activations,
+        heldout.labels,
     )
-    writeup = writeup_path.read_text()
-    writeup_file_valid = (
-        "Mini Activation-Oracle Capstone Report" in writeup
-        and "Counterfactual patch" in writeup
-        and "Limitations" in writeup
+
+    learned_unit = learned_direction / learned_direction.norm()
+    exact_unit = exact_direction / exact_direction.norm()
+    direction_cosine = float((learned_unit @ exact_unit).abs())
+    bootstrap_delta, bootstrap_low, bootstrap_high = paired_bootstrap_delta_ci(
+        heldout_predictions == heldout.labels,
+        raw_predictions == heldout.labels,
     )
-    t.cuda.synchronize()
-    peak_vram_gb = max(
-        t.cuda.max_memory_allocated() / 1024**3,
-        float(metrics.get("peak_vram_gb", 0.0)),
+
+    donor_indices = counterfactual_donor_indices(heldout)
+    learned_patch_accuracy = patch_target_accuracy(
+        heldout, donor_indices, learned_direction, exact_direction
     )
-    failure_cases_exist = failure_cases_path.is_file()
-    metrics_by_seed_file_valid = _metrics_by_seed_file_valid(by_seed, metrics)
+    exact_patch_accuracy = patch_target_accuracy(
+        heldout, donor_indices, exact_direction, exact_direction
+    )
+    random_patch_scores, random_alignments = random_direction_controls(
+        heldout, donor_indices, exact_direction
+    )
+
+    ablated = heldout.activations - (heldout.activations @ learned_unit)[:, None] * learned_unit
+    ablation_accuracy = direction_accuracy(ablated, heldout.labels, exact_direction)
+    sigmas = t.tensor([0.0, 0.25, 0.5, 1.0, 2.0, 3.0], dtype=t.float64)
+    noise_accuracies = noise_sweep_accuracy(
+        heldout.activations,
+        heldout.labels,
+        learned_direction,
+        sigmas,
+    )
+
+    criteria = {
+        "heldout_accuracy_at_least_0_95": heldout_accuracy >= 0.95,
+        "direction_cosine_at_least_0_98": direction_cosine >= 0.98,
+        "raw_and_template_baselines_at_most_0_60": max(raw_accuracy, template_accuracy) <= 0.60,
+        "patch_target_accuracy_at_least_0_90": learned_patch_accuracy >= 0.90,
+        "patch_beats_random_mean_by_0_70": (
+            learned_patch_accuracy - float(random_patch_scores.mean()) >= 0.70
+        ),
+    }
     return {
-        **metrics,
+        "model_family": "exact_rotated_parity_model",
+        "dataset": "balanced_xor_with_heldout_template_nuisance_v1",
+        "d_model": D_MODEL,
+        "train_template_count": len(TRAIN_TEMPLATES),
+        "heldout_template_count": len(HELDOUT_TEMPLATES),
+        "train_example_count": len(train.labels),
+        "heldout_example_count": len(heldout.labels),
+        "heldout_accuracy": heldout_accuracy,
+        "raw_bits_accuracy": raw_accuracy,
+        "template_only_accuracy": template_accuracy,
+        "label_shuffle_accuracy_mean": float(shuffle_scores.mean()),
+        "label_shuffle_accuracy_p95": float(t.quantile(shuffle_scores, 0.95)),
+        "direction_cosine": direction_cosine,
+        "paired_accuracy_delta": bootstrap_delta,
+        "paired_accuracy_delta_ci_low": bootstrap_low,
+        "paired_accuracy_delta_ci_high": bootstrap_high,
+        "ablation_accuracy": ablation_accuracy,
+        "ablation_drop": heldout_accuracy - ablation_accuracy,
+        "exact_patch_target_accuracy": exact_patch_accuracy,
+        "learned_patch_target_accuracy": learned_patch_accuracy,
+        "random_patch_target_accuracy_mean": float(random_patch_scores.mean()),
+        "random_patch_target_accuracy_median": float(random_patch_scores.median()),
+        "random_patch_target_accuracy_p95": float(t.quantile(random_patch_scores, 0.95)),
+        "best_random_patch_target_accuracy": float(random_patch_scores.max()),
+        "best_random_direction_alignment": float(
+            random_alignments[random_patch_scores.argmax()]
+        ),
+        "noise_sigmas": [float(value) for value in sigmas],
+        "noise_accuracies": [float(value) for value in noise_accuracies],
+        "noise_accuracy_at_sigma_1": float(noise_accuracies[3]),
+        "preregistered_criteria": criteria,
+        "contract_passed": all(criteria.values()),
+        "tests_passed": all(criteria.values()),
+        "accepted": all(criteria.values()),
+    }
+
+
+def run_smoke_test(cpu: bool = True) -> dict[str, object]:
+    """Run the complete small study on CPU for notebook and CI checks."""
+
+    _ = cpu
+    return run_study(device="cpu")
+
+
+def run_gpu_test(max_vram_gb: float = 24.0) -> dict[str, object]:
+    """Repeat the exact study on CUDA for the serialized extension report."""
+
+    if not t.cuda.is_available():
+        raise RuntimeError("CUDA is required for the 10.1 GPU verification path.")
+    t.cuda.reset_peak_memory_stats()
+    result = run_study(device="cuda")
+    t.cuda.synchronize()
+    peak_vram_gb = t.cuda.max_memory_allocated() / 1024**3
+    within_budget = peak_vram_gb <= max_vram_gb
+    return {
+        **result,
         "cuda_available": True,
         "device": t.cuda.get_device_name(0),
-        "baseline_suite_complete": baselines.complete,
-        "causal_validation_complete": validations.complete,
-        "reproducible": reproducibility.reproducible,
-        "script_paths_exist": all(
-            (CAPSTONE_DIR / script).is_file() for script in plan.reproducible_scripts
-        ),
-        "artifact_paths_exist": all(
-            (CAPSTONE_DIR / artifact).is_file() for artifact in reproducibility.artifact_paths
-        )
-        and by_seed_path.is_file()
-        and failure_cases_exist
-        and writeup_path.is_file(),
-        "capstone_pipeline_executed": True,
-        "live_training_executed": True,
-        "metrics_file_valid": metrics_file_valid,
-        "writeup_file_valid": writeup_file_valid,
-        "metrics_by_seed_file_valid": metrics_by_seed_file_valid,
-        "failure_cases_file_exists": failure_cases_exist,
-        "ready": readiness.ready,
+        "scientific_result_executed": True,
+        "exact_ground_truth_checked": result["direction_cosine"] >= 0.98,
+        "live_intervention_executed": result["learned_patch_target_accuracy"] >= 0.90,
         "peak_vram_gb": peak_vram_gb,
-        "within_vram_budget": peak_vram_gb <= max_vram_gb,
-        "preflight_passed": (
-            readiness.ready
-            and metrics_file_valid
-            and writeup_file_valid
-            and metrics_by_seed_file_valid
-            and len(by_seed) == 3
-            and peak_vram_gb <= max_vram_gb
-        ),
+        "within_vram_budget": within_budget,
+        "max_allowed_gpu_gb": max_vram_gb,
+        "preflight_passed": bool(result["contract_passed"] and within_budget),
         "full_path": (
-            "Train a question-conditioned activation oracle on CUDA, compare it "
-            "against text-only and linear-probe baselines, then run OOD, ablation, "
-            "counterfactual patching, random-patch, random-activation, and "
-            "label-shuffle controls."
+            "Recover the exact distributed XOR direction, evaluate held-out templates, "
+            "run causal patches, compare isotropic random directions, and stress-test noise."
         ),
     }
 
 
-def run_full_experiment(max_vram_gb: float = 24.0) -> dict:
-    """Run the validated experiment path used by the verification report."""
+def run_full_experiment(max_vram_gb: float = 24.0) -> dict[str, object]:
+    """Run the serialized CUDA verification path."""
 
     return run_gpu_test(max_vram_gb=max_vram_gb)
 
 
 if MAIN:
-    print(run_smoke_test())
+    metrics = run_smoke_test(cpu=True)
+    for key in (
+        "heldout_accuracy",
+        "raw_bits_accuracy",
+        "direction_cosine",
+        "learned_patch_target_accuracy",
+        "random_patch_target_accuracy_mean",
+        "contract_passed",
+    ):
+        print(f"{key}: {metrics[key]}")

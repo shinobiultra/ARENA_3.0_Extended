@@ -1,348 +1,266 @@
-from collections.abc import Callable
+"""Semantic and learner-surface tests for [10.1] Capstone Research Sprint."""
+
+from __future__ import annotations
+
+import ast
+import importlib.util
 import json
+import sys
 from pathlib import Path
+from typing import Callable
 
-
-def _solutions():
-    from chapter10_capstone_research_sprint.exercises.part1_capstone_research_sprint import (
-        solutions,
-    )
-
-    return solutions
+import nbformat
+import torch as t
+from PIL import Image
 
 
 def _section_dir() -> Path:
     return Path(__file__).resolve().parent
 
 
-def _gpu_report() -> dict:
-    report = json.loads((_section_dir() / "verification_report.json").read_text())
-    return report["metrics"]["gpu_test"]
+def _solutions():
+    module_name = "chapter10_capstone_research_sprint_reference_solutions"
+    if module_name in sys.modules:
+        return sys.modules[module_name]
+    path = _section_dir() / "solutions.py"
+    spec = importlib.util.spec_from_file_location(module_name, path)
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"could not import solutions from {path}")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[module_name] = module
+    spec.loader.exec_module(module)
+    return module
 
 
-def _asdict(report: object) -> dict:
-    return report.__dict__
-
-
-def test_build_capstone_plan_normalizes_blank_fields(
-    build_capstone_plan: Callable | None = None,
-):
-    build_capstone_plan = build_capstone_plan or _solutions().build_capstone_plan
-    actual = build_capstone_plan(
-        research_question="  Do mini Activation Oracles beat probes?  ",
-        benchmark=" held-out activation questions ",
-        baselines=[" probe ", "", "text_only", "random_control"],
-        mechanistic_claim=" question conditioning uses latent state features ",
-        causal_validations=["ablation", "", "patching", "random_control", "ood"],
-        reproducible_scripts=[" scripts/run_capstone.py ", ""],
-        writeup_path=" reports/capstone.md ",
-    )
-    assert _asdict(actual) == {
-        "research_question": "Do mini Activation Oracles beat probes?",
-        "benchmark": "held-out activation questions",
-        "baselines": ("probe", "text_only", "random_control"),
-        "mechanistic_claim": "question conditioning uses latent state features",
-        "causal_validations": ("ablation", "patching", "random_control", "ood"),
-        "reproducible_scripts": ("scripts/run_capstone.py",),
-        "writeup_path": "reports/capstone.md",
-    }, "The capstone plan should strip blanks, drop blank list entries, and preserve order."
-    assert actual.baselines == ("probe", "text_only", "random_control"), (
-        "Blank baselines should be dropped and nonblank baselines should be stripped."
-    )
-    assert actual.reproducible_scripts == ("scripts/run_capstone.py",), (
-        "The readiness gate should record clean script paths, not raw user input."
-    )
-    print("All tests in `test_build_capstone_plan_normalizes_blank_fields` passed!")
-
-
-def test_baseline_suite_report_identifies_missing_required_baseline(
-    baseline_suite_report: Callable | None = None,
-):
-    baseline_suite_report = baseline_suite_report or _solutions().baseline_suite_report
-    actual = baseline_suite_report(["probe", "random_control"])
-    assert _asdict(actual) == {
-        "required_baselines": ("probe", "text_only", "random_control"),
-        "present_baselines": ("probe", "random_control"),
-        "missing_baselines": ("text_only",),
-        "complete": False,
-    }, "The baseline report should name missing required baselines and fail completeness."
-    assert actual.missing_baselines == ("text_only",), (
-        "A capstone without the text-only baseline should not pass the baseline gate."
-    )
-    assert not actual.complete, (
-        "Baseline completeness should be false until every required baseline is present."
-    )
-    duplicate = baseline_suite_report(["probe", "probe", "text_only", "random_control"])
-    assert not duplicate.complete, (
-        "A duplicated baseline should not count as an exactly-once baseline suite."
-    )
-    unknown = baseline_suite_report(["probe", "text_only", "random_control", "fancy_judge"])
-    assert not unknown.complete, (
-        "An undeclared extra baseline should not silently pass the fixed baseline contract."
-    )
-    print("All tests in `test_baseline_suite_report_identifies_missing_required_baseline` passed!")
-
-
-def test_baseline_smoke_test_has_required_controls(
-    baseline_smoke_test: Callable | None = None,
-):
-    baseline_smoke_test = baseline_smoke_test or _solutions().baseline_smoke_test
-    result = baseline_smoke_test()
-    assert result["required_baselines"] == ("probe", "text_only", "random_control"), (
-        "The example capstone should require probe, text-only, and random-control baselines."
-    )
-    assert result["present_baselines"] == ("probe", "text_only", "random_control"), (
-        "The example capstone should include every required baseline."
-    )
-    assert result["missing_baselines"] == (), (
-        "The example capstone should have no missing baseline controls."
-    )
-    assert result["complete"], "The example baseline suite should pass."
-    print("All tests in `test_baseline_smoke_test_has_required_controls` passed!")
-
-
-def test_causal_validation_suite_report_accepts_equivalent_names(
-    causal_validation_suite_report: Callable | None = None,
-):
-    causal_validation_suite_report = (
-        causal_validation_suite_report or _solutions().causal_validation_suite_report
-    )
-    actual = causal_validation_suite_report(
-        ["ablation", "", "counterfactual_patching", "random_control", "heldout_templates"],
-    )
-    assert _asdict(actual) == {
-        "validations": (
-            "ablation",
-            "counterfactual_patching",
-            "random_control",
-            "heldout_templates",
-        ),
-        "has_ablation": True,
-        "has_patching": True,
-        "has_random_control": True,
-        "has_ood": True,
-        "complete": True,
-    }, "Equivalent validation names should normalize into a complete causal/OOD suite."
-    assert actual.has_patching and actual.has_ood and actual.complete, (
-        "Counterfactual patching and held-out templates should satisfy the patching/OOD gates."
-    )
-    missing_ood = causal_validation_suite_report(["ablation", "patching", "random_control"])
-    assert not missing_ood.complete and not missing_ood.has_ood, (
-        "A causal validation suite without an OOD or held-out-template check should fail."
-    )
-    print("All tests in `test_causal_validation_suite_report_accepts_equivalent_names` passed!")
-
-
-def test_reproducibility_report_requires_scripts_seeds_and_artifacts(
-    reproducibility_report: Callable | None = None,
-):
-    reproducibility_report = reproducibility_report or _solutions().reproducibility_report
-    root = _section_dir()
-    actual = reproducibility_report(
-        script_paths=[" scripts/run_capstone.py "],
-        seeds=[0, 1, 2],
-        artifact_paths=[" results/metrics.json "],
-        root=root,
-    )
-    assert _asdict(actual) == {
-        "script_paths": ("scripts/run_capstone.py",),
-        "seeds": (0, 1, 2),
-        "artifact_paths": ("results/metrics.json",),
-        "reproducible": True,
-    }, "Existing repo-relative scripts, unique integer seeds, and artifacts should pass."
-    assert actual.reproducible, (
-        "Scripts, seeds, and existing artifact paths should pass the reproducibility gate."
-    )
-    no_artifacts = reproducibility_report(
-        script_paths=["scripts/run_capstone.py"],
-        seeds=[0],
-        artifact_paths=[],
-        root=root,
-    )
-    assert not no_artifacts.reproducible, (
-        "A run with no declared artifacts should fail the reproducibility gate."
-    )
-    missing_script = reproducibility_report(
-        script_paths=["scripts/missing_capstone.py"],
-        seeds=[0],
-        artifact_paths=["results/metrics.json"],
-        root=root,
-    )
-    assert not missing_script.reproducible, (
-        "A declared script path must exist; string metadata alone is not reproducibility."
-    )
-    duplicate_seed = reproducibility_report(
-        script_paths=["scripts/run_capstone.py"],
-        seeds=[0, 0, 1],
-        artifact_paths=["results/metrics.json"],
-        root=root,
-    )
-    assert not duplicate_seed.reproducible, (
-        "Three runs with a repeated seed should not count as independent multi-seed evidence."
-    )
-    invalid_seed = reproducibility_report(
-        script_paths=["scripts/run_capstone.py"],
-        seeds=[0, True],
-        artifact_paths=["results/metrics.json"],
-        root=root,
-    )
-    assert invalid_seed.seeds == (0,) and not invalid_seed.reproducible, (
-        "Boolean or coerced seed values should not be accepted as explicit integer seeds."
-    )
-    absolute_path = reproducibility_report(
-        script_paths=[str(root / "scripts" / "run_capstone.py")],
-        seeds=[0],
-        artifact_paths=["results/metrics.json"],
-        root=root,
-    )
-    assert not absolute_path.reproducible, (
-        "Reproducibility metadata should use repo-relative paths, not machine-specific paths."
-    )
-    print("All tests in `test_reproducibility_report_requires_scripts_seeds_and_artifacts` passed!")
-
-
-def test_capstone_readiness_report_requires_every_gate(
-    build_capstone_plan: Callable | None = None,
-    baseline_suite_report: Callable | None = None,
-    causal_validation_suite_report: Callable | None = None,
-    reproducibility_report: Callable | None = None,
-    capstone_readiness_report: Callable | None = None,
-):
+def test_make_parity_batch_has_exact_ground_truth(
+    make_parity_batch: Callable | None = None,
+    make_rotation: Callable | None = None,
+) -> None:
     solutions = _solutions()
-    build_capstone_plan = build_capstone_plan or solutions.build_capstone_plan
-    baseline_suite_report = baseline_suite_report or solutions.baseline_suite_report
-    causal_validation_suite_report = (
-        causal_validation_suite_report or solutions.causal_validation_suite_report
-    )
-    reproducibility_report = reproducibility_report or solutions.reproducibility_report
-    capstone_readiness_report = capstone_readiness_report or solutions.capstone_readiness_report
+    make_parity_batch = make_parity_batch or solutions.make_parity_batch
+    make_rotation = make_rotation or solutions.make_rotation
+    rotation = make_rotation()
+    batch = make_parity_batch([0, 1, 2], rotation)
 
-    plan = build_capstone_plan(
-        research_question="Do mini Activation Oracles beat probes?",
-        benchmark="held-out activation questions",
-        baselines=["probe", "text_only", "random_control"],
-        mechanistic_claim="question conditioning uses latent state features",
-        causal_validations=["ablation", "patching", "random_control", "ood"],
-        reproducible_scripts=["scripts/run_capstone.py"],
-        writeup_path="reports/capstone.md",
-    )
-    baselines = baseline_suite_report(list(plan.baselines))
-    validations = causal_validation_suite_report(list(plan.causal_validations))
-    reproducibility = reproducibility_report(
-        script_paths=list(plan.reproducible_scripts),
-        seeds=[0, 1, 2],
-        artifact_paths=["results/metrics.json"],
-        root=_section_dir(),
-    )
-    actual = capstone_readiness_report(plan, baselines, validations, reproducibility)
-    assert _asdict(actual) == {
-        "has_research_question": True,
-        "has_benchmark": True,
-        "has_mechanistic_claim": True,
-        "baseline_suite_complete": True,
-        "causal_validation_complete": True,
-        "reproducibility_complete": True,
-        "has_writeup_path": True,
-        "ready": True,
-    }, "The readiness report should expose every gate and pass only when all gates pass."
-    assert actual.ready, "A complete plan should pass the capstone readiness gate."
+    assert batch.bits.shape == (12, 2)
+    assert batch.latent_features.shape == (12, 8)
+    assert batch.activations.shape == (12, 8)
+    assert batch.labels.shape == (12,)
+    assert batch.activations.dtype == t.float64
+    assert t.allclose(rotation.T @ rotation, t.eye(8, dtype=t.float64), atol=1e-10)
+    assert t.equal(batch.latent_features[:, 2], batch.bits[:, 0] * batch.bits[:, 1])
+    for template_id in [0, 1, 2]:
+        template_rows = batch.template_ids == template_id
+        assert int(template_rows.sum()) == 4
+        assert int(batch.labels[template_rows].sum()) == 2
 
-    incomplete_baselines = baseline_suite_report(["probe", "random_control"])
-    blocked = capstone_readiness_report(plan, incomplete_baselines, validations, reproducibility)
-    assert not blocked.ready and not blocked.baseline_suite_complete, (
-        "Readiness should fail when a required baseline is missing."
-    )
-    print("All tests in `test_capstone_readiness_report_requires_every_gate` passed!")
+    exact_direction = rotation[:, 2]
+    expected_signed_label = batch.labels.to(t.float64) * 2 - 1
+    assert t.allclose(batch.activations @ exact_direction, expected_signed_label, atol=1e-10)
+    print("All tests in `test_make_parity_batch_has_exact_ground_truth` passed!")
 
 
-def test_notebook_contract(run_smoke_test: Callable | None = None):
-    run_smoke_test = run_smoke_test or _solutions().run_smoke_test
-    result = run_smoke_test(cpu=True)
-    assert result["plan"]["research_question"] == "Do mini Activation Oracles beat probes?", (
-        "The notebook contract should keep the example research question fixed."
+def test_ridge_probe_recovers_exact_direction_and_rejects_raw_baseline(
+    make_parity_batch: Callable | None = None,
+    make_rotation: Callable | None = None,
+    fit_ridge_direction: Callable | None = None,
+    direction_accuracy: Callable | None = None,
+) -> None:
+    solutions = _solutions()
+    make_parity_batch = make_parity_batch or solutions.make_parity_batch
+    make_rotation = make_rotation or solutions.make_rotation
+    fit_ridge_direction = fit_ridge_direction or solutions.fit_ridge_direction
+    direction_accuracy = direction_accuracy or solutions.direction_accuracy
+
+    rotation = make_rotation()
+    train = make_parity_batch(range(12), rotation)
+    heldout = make_parity_batch(range(12, 20), rotation)
+    learned = fit_ridge_direction(train.activations, train.labels)
+    exact = rotation[:, 2]
+    cosine = float(t.nn.functional.cosine_similarity(learned, exact, dim=0).abs())
+    assert cosine > 0.999, "The ridge probe should recover the known distributed XOR direction."
+    assert direction_accuracy(heldout.activations, heldout.labels, learned) == 1.0
+
+    raw_probe = fit_ridge_direction(train.bits, train.labels)
+    raw_accuracy = direction_accuracy(heldout.bits, heldout.labels, raw_probe)
+    assert raw_accuracy == 0.5, "A linear classifier on the two raw bits cannot solve XOR."
+
+    try:
+        fit_ridge_direction(train.activations[:, None], train.labels)
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("The probe should reject non-matrix features.")
+    print(
+        "All tests in `test_ridge_probe_recovers_exact_direction_and_rejects_raw_baseline` passed!"
     )
-    assert result["plan"]["benchmark"] == "held-out activation questions", (
-        "The notebook contract should expose the benchmark used in the verification report."
-    )
-    assert result["baselines"]["complete"], (
-        "The notebook contract should include a complete baseline suite."
-    )
-    assert result["validations"]["complete"], (
-        "The notebook contract should include ablation, patching, random control, and OOD checks."
-    )
-    assert result["reproducibility"]["reproducible"], (
-        "The notebook contract should record scripts, seeds, and output artifacts."
-    )
-    assert result["readiness"]["ready"], (
-        "The notebook contract should pass the capstone readiness gate."
-    )
-    print("All tests in `test_notebook_contract` passed!")
 
 
-def test_committed_gpu_report_matches_artifact_contract():
-    gpu = _gpu_report()
-    assert gpu["cuda_available"], "The committed report should come from a CUDA run."
-    assert gpu["baseline_suite_complete"], (
-        "The CUDA report should show the baseline suite was complete."
+def test_paired_bootstrap_uses_example_pairs(
+    paired_bootstrap_delta_ci: Callable | None = None,
+) -> None:
+    paired_bootstrap_delta_ci = (
+        paired_bootstrap_delta_ci or _solutions().paired_bootstrap_delta_ci
     )
-    assert gpu["causal_validation_complete"], (
-        "The CUDA report should show the causal validation suite was complete."
+    method = t.tensor([True, True, True, True, True, True, True, True])
+    baseline = t.tensor([True, False, True, False, True, False, True, False])
+    estimate, low, high = paired_bootstrap_delta_ci(
+        method, baseline, n_resamples=2_000, seed=3
     )
-    assert gpu["reproducible"], (
-        "The CUDA report should show scripts, seeds, and artifacts were recorded."
+    assert estimate == 0.5
+    assert 0.0 <= low <= estimate <= high <= 1.0
+    assert (estimate, low, high) == paired_bootstrap_delta_ci(
+        method, baseline, n_resamples=2_000, seed=3
     )
-    assert gpu["script_paths_exist"] and gpu["artifact_paths_exist"], (
-        "The CUDA report should prove declared scripts and artifacts exist on disk."
+    try:
+        paired_bootstrap_delta_ci(method, baseline[:-1])
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("The bootstrap should require aligned example pairs.")
+    print("All tests in `test_paired_bootstrap_uses_example_pairs` passed!")
+
+
+def test_directional_patch_replaces_only_the_named_projection(
+    patch_along_direction: Callable | None = None,
+) -> None:
+    patch_along_direction = patch_along_direction or _solutions().patch_along_direction
+    recipient = t.tensor([[1.0, 2.0, 3.0], [-2.0, 0.5, 4.0]], dtype=t.float64)
+    donor = t.tensor([[-4.0, 7.0, 8.0], [3.0, -1.0, 2.0]], dtype=t.float64)
+    direction = t.tensor([2.0, 0.0, 0.0], dtype=t.float64)
+    patched = patch_along_direction(recipient, donor, direction)
+
+    unit = direction / direction.norm()
+    recipient_residual = recipient - (recipient @ unit)[:, None] * unit
+    patched_residual = patched - (patched @ unit)[:, None] * unit
+    assert t.allclose(patched @ unit, donor @ unit)
+    assert t.allclose(patched_residual, recipient_residual)
+    assert t.allclose(patched[:, 1:], recipient[:, 1:])
+    print("All tests in `test_directional_patch_replaces_only_the_named_projection` passed!")
+
+
+def test_noise_sweep_is_reproducible_and_exposes_failure(
+    noise_sweep_accuracy: Callable | None = None,
+) -> None:
+    solutions = _solutions()
+    noise_sweep_accuracy = noise_sweep_accuracy or solutions.noise_sweep_accuracy
+    rotation = solutions.make_rotation()
+    heldout = solutions.make_parity_batch(range(12, 20), rotation)
+    direction = rotation[:, 2]
+    sigmas = t.tensor([0.0, 0.5, 1.0, 2.0, 3.0], dtype=t.float64)
+    first = noise_sweep_accuracy(
+        heldout.activations, heldout.labels, direction, sigmas, repeats=128, seed=123
     )
-    assert gpu["capstone_pipeline_executed"], (
-        "The CUDA report should execute the capstone pipeline."
+    second = noise_sweep_accuracy(
+        heldout.activations, heldout.labels, direction, sigmas, repeats=128, seed=123
     )
-    assert gpu["live_training_executed"], (
-        "The CUDA report should come from a trained activation-oracle experiment."
+    assert t.equal(first, second)
+    assert first[0] == 1.0
+    assert bool(t.all(first[:-1] >= first[1:])), "The fixed-noise stress curve should be monotone."
+    assert first[-1] < 0.70, "Strong activation noise should reveal the method's failure boundary."
+    print("All tests in `test_noise_sweep_is_reproducible_and_exposes_failure` passed!")
+
+
+def test_complete_cpu_study_meets_preregistered_claim() -> None:
+    result = _solutions().run_smoke_test(cpu=True)
+    assert result["model_family"] == "exact_rotated_parity_model"
+    assert result["train_example_count"] == 48
+    assert result["heldout_example_count"] == 32
+    assert result["heldout_accuracy"] == 1.0
+    assert result["raw_bits_accuracy"] == 0.5
+    assert result["template_only_accuracy"] == 0.5
+    assert result["direction_cosine"] > 0.999
+    assert result["learned_patch_target_accuracy"] == 1.0
+    assert result["ablation_accuracy"] == 0.5
+    assert result["random_patch_target_accuracy_mean"] < 0.20
+    assert result["best_random_patch_target_accuracy"] >= 0.5
+    assert result["contract_passed"] and result["accepted"]
+    print("All tests in `test_complete_cpu_study_meets_preregistered_claim` passed!")
+
+
+def test_committed_cpu_artifacts_match_the_live_study() -> None:
+    section_dir = _section_dir()
+    live = _solutions().run_study(device="cpu")
+    committed = json.loads((section_dir / "results/metrics.json").read_text())
+    assert committed == live, "Committed metrics should be a direct deterministic study output."
+
+    failures = [
+        json.loads(line)
+        for line in (section_dir / "results/failure_cases.jsonl").read_text().splitlines()
+        if line.strip()
+    ]
+    assert [failure["type"] for failure in failures] == [
+        "random_direction_alignment",
+        "activation_noise_boundary",
+    ]
+    report = (section_dir / "reports/capstone.md").read_text()
+    assert "## Preregistered claim" in report
+    assert "## Controls and failure analysis" in report
+    assert "0.057" in report and "0.841" in report
+    print("All tests in `test_committed_cpu_artifacts_match_the_live_study` passed!")
+
+
+def test_notebooks_have_a_complete_live_research_arc() -> None:
+    section_dir = _section_dir()
+    exercise_path = section_dir / "10.1_Capstone_Research_Sprint_exercises.ipynb"
+    solution_path = section_dir / "10.1_Capstone_Research_Sprint_solutions.ipynb"
+    for path in [exercise_path, solution_path]:
+        notebook = nbformat.read(path, as_version=4)
+        text = "\n".join(cell.source for cell in notebook.cells)
+        for marker in [
+            "By the end of this notebook",
+            "Preregistered claim",
+            "Exact ground truth",
+            "Expected output",
+            "<summary>Help",
+            "<summary>Interpretation",
+            "<summary>Solution",
+            "Signature Result",
+            "Try It Yourself",
+            "Anomaly Hunting",
+            "Compact Write-up",
+            "Limitations",
+            "Reading links",
+            "random direction",
+        ]:
+            assert marker in text, f"{path.name} is missing learner-surface marker {marker!r}."
+        assert text.count("### Exercise") >= 5
+        assert "json.loads" not in text
+        assert '["metrics"]["gpu_test"]' not in text
+        for index, cell in enumerate(notebook.cells):
+            if cell.cell_type == "code":
+                ast.parse(cell.source, filename=f"{path}:{index}")
+
+    exercise_code = "\n".join(
+        cell.source
+        for cell in nbformat.read(exercise_path, as_version=4).cells
+        if cell.cell_type == "code"
     )
-    assert gpu["metrics_file_valid"] and gpu["writeup_file_valid"], (
-        "The CUDA report should validate the generated metrics and writeup artifacts."
+    solution_code = "\n".join(
+        cell.source
+        for cell in nbformat.read(solution_path, as_version=4).cells
+        if cell.cell_type == "code"
     )
-    assert gpu["metrics_by_seed_file_valid"] and gpu["seed_count"] == 3, (
-        "The CUDA report should record per-seed metrics for three seeds."
-    )
-    assert gpu.get("unique_seed_count", gpu["seed_count"]) == gpu["seed_count"], (
-        "The CUDA report should count independent seed ids, not duplicate seed reports."
-    )
-    assert gpu["oracle_accuracy_mean"] >= 0.9, (
-        "The activation oracle should solve the IID held-out questions."
-    )
-    assert gpu["oracle_beats_text_only"], (
-        "The oracle should beat the text-only question-prior baseline."
-    )
-    assert gpu["oracle_beats_linear_probe_bank"], (
-        "The oracle should beat the bank of activation-only linear probes overall."
-    )
-    assert gpu["compositional_oracle_beats_linear_probe"], (
-        "The question-conditioned oracle should beat linear probes on the XOR question."
-    )
-    assert gpu["heldout_template_accuracy_mean"] >= 0.9 and gpu["ood_passed"], (
-        "The capstone report should include a passing held-out-template OOD split."
-    )
-    assert gpu["ablation_drop_mean"] > 0.2 and gpu["causal_controls_passed"], (
-        "Ablating relevant latent dimensions should damage oracle accuracy."
-    )
-    assert gpu["counterfactual_patch_target_accuracy_mean"] >= 0.9, (
-        "Counterfactual latent patching should usually recover the donor answer."
-    )
-    assert gpu["random_patch_change_rate_mean"] <= 0.15, (
-        "Random-dimension patching should be weaker than targeted patching."
-    )
-    assert gpu["random_activation_control_passed"], (
-        "The random-activation control should not solve the benchmark."
-    )
-    assert gpu["label_shuffle_control_passed"], (
-        "The label-shuffle control should not solve the benchmark."
-    )
-    assert gpu["ready"] and gpu["preflight_passed"], (
-        "The CUDA report should pass the live capstone preflight."
-    )
-    assert gpu["peak_vram_gb"] <= 1.0 and gpu["within_vram_budget"], (
-        "The 10.1 live capstone preflight should stay under the 1 GB artifact budget."
-    )
-    print("All tests in `test_committed_gpu_report_matches_artifact_contract` passed!")
+    assert exercise_code.count("raise NotImplementedError") >= 5
+    assert "raise NotImplementedError" not in solution_code
+    assert "fit_ridge_direction" in exercise_code
+    assert "patch_along_direction" in exercise_code
+    assert "plt.subplots" in solution_code
+
+    page = (
+        section_dir.parents[1]
+        / "instructions/pages/01_[10.1]_Capstone_Research_Sprint.md"
+    ).read_text()
+    assert "Preregistered claim" in page
+    assert "Signature Result" in page
+    assert "capstone_parity_signature_result.png" in page
+
+    for asset_name in [
+        "capstone_parity_signature_result.png",
+        "capstone_random_direction_anomaly.png",
+    ]:
+        asset_path = section_dir.parents[1] / "instructions/assets" / asset_name
+        with Image.open(asset_path) as image:
+            assert image.width >= 1000 and image.height >= 600
+            assert image.convert("RGB").getbbox() is not None
+    print("All tests in `test_notebooks_have_a_complete_live_research_arc` passed!")

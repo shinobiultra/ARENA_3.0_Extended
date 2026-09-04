@@ -1,0 +1,2 @@
+{"absolute_exact_direction_cosine": 0.8104840008252584, "interpretation": "the strongest isotropic null overlaps the true mechanism", "patch_target_accuracy": 1.0, "type": "random_direction_alignment"}
+{"accuracy": 0.840576171875, "interpretation": "clean exact recovery is not robust to unit-scale measurement noise", "sigma": 1.0, "type": "activation_noise_boundary"}
