@@ -103,6 +103,14 @@ REAL_SD15_CASES = (
 )
 
 
+@dataclass(frozen=True)
+class ShuffledRegionControlReport:
+    matched_region_mass: float
+    shuffled_region_mass: float
+    margin: float
+    shuffled_control_fails: bool
+
+
 # %%
 def attention_region_smoke_test() -> dict:
     attention_map = t.tensor([[0.1, 0.1], [0.2, 0.6]])
@@ -145,6 +153,67 @@ def prompt_region_smoke_test() -> dict:
         control_region_score=0.75,
         min_target_drop=0.4,
         min_control_margin=0.2,
+    ).__dict__
+
+
+def shuffled_region_label_control(
+    attention_maps: t.Tensor,
+    region_masks: t.Tensor,
+    shuffled_indices: t.Tensor,
+    *,
+    min_margin: float = 0.25,
+) -> ShuffledRegionControlReport:
+    """Compare preregistered map-region pairs with a shuffled-label assignment."""
+
+    if attention_maps.ndim != 3:
+        raise ValueError("attention_maps must have shape (examples, height, width).")
+    if region_masks.shape != attention_maps.shape:
+        raise ValueError("region_masks must match attention_maps shape.")
+    n_examples = attention_maps.shape[0]
+    if shuffled_indices.shape != (n_examples,):
+        raise ValueError("shuffled_indices must contain one index per example.")
+    expected = t.arange(n_examples, device=shuffled_indices.device)
+    if not t.equal(shuffled_indices.sort().values, expected):
+        raise ValueError("shuffled_indices must be a permutation of the examples.")
+
+    normalized = attention_maps.float().clamp_min(0)
+    totals = normalized.flatten(1).sum(dim=1)
+    if (totals <= 0).any():
+        raise ValueError("every attention map must contain positive mass.")
+    normalized = normalized / totals[:, None, None]
+    masks = region_masks.bool()
+    if not masks.flatten(1).any(dim=1).all():
+        raise ValueError("every region mask must select at least one position.")
+
+    matched = (normalized * masks).flatten(1).sum(dim=1).mean().item()
+    shuffled_masks = masks[shuffled_indices.to(masks.device)]
+    shuffled = (normalized * shuffled_masks).flatten(1).sum(dim=1).mean().item()
+    margin = matched - shuffled
+    return ShuffledRegionControlReport(
+        matched_region_mass=matched,
+        shuffled_region_mass=shuffled,
+        margin=margin,
+        shuffled_control_fails=margin >= min_margin,
+    )
+
+
+def shuffled_region_control_smoke_test() -> dict:
+    maps = t.zeros(4, 8, 8)
+    masks = t.zeros(4, 8, 8, dtype=t.bool)
+    quadrants = (
+        (slice(0, 4), slice(0, 4)),
+        (slice(0, 4), slice(4, 8)),
+        (slice(4, 8), slice(0, 4)),
+        (slice(4, 8), slice(4, 8)),
+    )
+    for index, region in enumerate(quadrants):
+        maps[index][region] = 1.0
+        masks[index][region] = True
+    return shuffled_region_label_control(
+        maps,
+        masks,
+        t.tensor([1, 2, 3, 0]),
+        min_margin=0.75,
     ).__dict__
 
 
@@ -213,14 +282,15 @@ class CrossAttentionCaptureProcessor:
 
         attention_probs = attn.get_attention_scores(query, key, attention_mask)
         if is_cross_attention and self.name.endswith("attn2.processor"):
-            query_length = attention_probs.shape[1]
-            side = math.isqrt(query_length)
-            if side * side == query_length and query_length >= 64:
-                mean_attention = attention_probs.detach().float().mean(dim=0)
-                for group_name, token_indices in self.store.token_groups.items():
-                    group_attention = mean_attention[:, token_indices].mean(dim=-1)
-                    self.store.maps[group_name].append(group_attention.reshape(side, side).cpu())
-                self.store.resolutions.append(side)
+            captured = capture_token_group_attention(
+                attention_probs,
+                self.store.token_groups,
+                min_query_positions=64,
+            )
+            for group_name, attention_map in captured.items():
+                self.store.maps[group_name].append(attention_map)
+            if captured:
+                self.store.resolutions.append(next(iter(captured.values())).shape[0])
 
         hidden_states = t.bmm(attention_probs, value)
         hidden_states = attn.batch_to_head_dim(hidden_states)
@@ -238,7 +308,9 @@ class CrossAttentionCaptureProcessor:
         return hidden_states / attn.rescale_output_factor
 
 
-def _token_positions_for_terms(tokenizer, prompt: str, terms: tuple[str, ...]) -> list[int]:
+def token_positions_for_terms(tokenizer, prompt: str, terms: tuple[str, ...]) -> list[int]:
+    """Locate every complete target term in the padded prompt token sequence."""
+
     input_ids = tokenizer(
         prompt,
         padding="max_length",
@@ -258,7 +330,69 @@ def _token_positions_for_terms(tokenizer, prompt: str, terms: tuple[str, ...]) -
     return sorted(set(positions))
 
 
-def _aggregate_attention_maps(maps: list[t.Tensor], *, output_size: int = 64) -> t.Tensor:
+def _token_positions_for_terms(tokenizer, prompt: str, terms: tuple[str, ...]) -> list[int]:
+    return token_positions_for_terms(tokenizer, prompt, terms)
+
+
+def capture_token_group_attention(
+    attention_probs: t.Tensor,
+    token_groups: dict[str, list[int]],
+    *,
+    min_query_positions: int = 1,
+) -> dict[str, t.Tensor]:
+    """Reduce batch/head attention probabilities to one spatial map per token group."""
+
+    if attention_probs.ndim != 3:
+        raise ValueError("attention_probs must have shape (batch_heads, queries, keys).")
+    query_length = attention_probs.shape[1]
+    side = math.isqrt(query_length)
+    if side * side != query_length or query_length < min_query_positions:
+        return {}
+    mean_attention = attention_probs.detach().float().mean(dim=0)
+    captured: dict[str, t.Tensor] = {}
+    for group_name, token_indices in token_groups.items():
+        if not token_indices:
+            raise ValueError(f"token group {group_name!r} must not be empty.")
+        if min(token_indices) < 0 or max(token_indices) >= attention_probs.shape[-1]:
+            raise ValueError(f"token group {group_name!r} indexes outside the key sequence.")
+        group_attention = mean_attention[:, token_indices].mean(dim=-1)
+        captured[group_name] = group_attention.reshape(side, side).cpu()
+    return captured
+
+
+def register_cross_attention_capture(
+    pipe,
+    prompt: str,
+    *,
+    target_terms: tuple[str, ...],
+    control_terms: tuple[str, ...],
+) -> CrossAttentionCaptureStore:
+    """Install visible DAAM-style processors for target and control prompt tokens."""
+
+    token_groups = {
+        "target": token_positions_for_terms(pipe.tokenizer, prompt, target_terms),
+        "control": token_positions_for_terms(pipe.tokenizer, prompt, control_terms),
+    }
+    store = CrossAttentionCaptureStore.for_groups(token_groups)
+    install_cross_attention_processors(pipe.unet, store)
+    return store
+
+
+def install_cross_attention_processors(unet, store: CrossAttentionCaptureStore) -> int:
+    """Install capture processors on every real UNet attention module."""
+
+    processors = {
+        name: CrossAttentionCaptureProcessor(name, store)
+        for name in unet.attn_processors
+    }
+    processor_count = len(processors)
+    unet.set_attn_processor(processors)
+    return processor_count
+
+
+def aggregate_attention_maps(maps: list[t.Tensor], *, output_size: int = 64) -> t.Tensor:
+    """Resize, average, and normalize captured cross-attention maps."""
+
     if not maps:
         raise RuntimeError("no cross-attention maps were captured")
     resized = [
@@ -275,6 +409,57 @@ def _aggregate_attention_maps(maps: list[t.Tensor], *, output_size: int = 64) ->
     if total.item() <= 0:
         raise RuntimeError("captured cross-attention map has no positive mass")
     return aggregate / total
+
+
+def _aggregate_attention_maps(maps: list[t.Tensor], *, output_size: int = 64) -> t.Tensor:
+    return aggregate_attention_maps(maps, output_size=output_size)
+
+
+def build_same_seed_prompt_interventions(case: dict) -> dict[str, dict[str, int | str]]:
+    """Construct original, target-ablated, and control-ablated generation specs."""
+
+    seed = int(case["seed"])
+    return {
+        "original": {"prompt": str(case["prompt"]), "seed": seed},
+        "target_ablated": {
+            "prompt": str(case["target_ablated_prompt"]),
+            "seed": seed,
+        },
+        "control_ablated": {
+            "prompt": str(case["control_ablated_prompt"]),
+            "seed": seed,
+        },
+    }
+
+
+def generate_same_seed_prompt_interventions(
+    pipe,
+    case: dict,
+    *,
+    negative_prompt: str,
+    device: str | t.device,
+    num_inference_steps: int = 20,
+    guidance_scale: float = 9.0,
+    height: int = 512,
+    width: int = 512,
+) -> dict[str, object]:
+    """Run the three prompt conditions with identical initial noise."""
+
+    images: dict[str, object] = {}
+    for condition, spec in build_same_seed_prompt_interventions(case).items():
+        generator = t.Generator(device=device).manual_seed(int(spec["seed"]))
+        images[condition] = pipe(
+            str(spec["prompt"]),
+            negative_prompt=negative_prompt,
+            num_inference_steps=num_inference_steps,
+            guidance_scale=guidance_scale,
+            height=height,
+            width=width,
+            generator=generator,
+        ).images[0]
+        if condition == "original":
+            pipe.unet.set_default_attn_processor()
+    return images
 
 
 def _generated_shape_region_mask(image, region_kind: str, *, output_size: int = 64) -> t.Tensor:
@@ -494,6 +679,164 @@ def _target_color_region_mask_64(image, target_color: str) -> t.Tensor:
     )
 
 
+def load_pinned_sd15_pipeline(device: str | t.device):
+    """Load only the pinned SD1.5 checkpoint; the experiment remains learner code."""
+
+    import logging
+
+    os.environ.setdefault("BNB_CUDA_VERSION", "130")
+    logging.getLogger("bitsandbytes").setLevel(logging.ERROR)
+    logging.getLogger("bitsandbytes.cextension").setLevel(logging.ERROR)
+    from diffusers import StableDiffusionPipeline
+
+    pipe = StableDiffusionPipeline.from_pretrained(
+        REAL_SD15_MODEL_ID,
+        revision=REAL_SD15_REVISION,
+        torch_dtype=t.float16,
+        variant="fp16",
+        use_safetensors=True,
+        safety_checker=None,
+        requires_safety_checker=False,
+    ).to(device)
+    pipe.set_progress_bar_config(disable=True)
+    return pipe
+
+
+def load_pinned_clip_components(device: str | t.device):
+    """Load the pinned CLIP scorer without hiding its downstream metric computation."""
+
+    from huggingface_hub import snapshot_download
+    from transformers import CLIPModel, CLIPProcessor
+
+    local_snapshot = snapshot_download(
+        REAL_CLIP_MODEL_ID,
+        revision=REAL_CLIP_REVISION,
+        allow_patterns=[
+            "config.json",
+            "preprocessor_config.json",
+            "tokenizer.json",
+            "tokenizer_config.json",
+            "special_tokens_map.json",
+            "vocab.json",
+            "merges.txt",
+            "pytorch_model.bin",
+        ],
+    )
+    processor = CLIPProcessor.from_pretrained(local_snapshot, use_fast=False)
+    model = CLIPModel.from_pretrained(
+        local_snapshot,
+        use_safetensors=False,
+    ).to(device)
+    model.eval()
+    return model, processor
+
+
+def evaluate_sd15_case(
+    case: dict,
+    store: CrossAttentionCaptureStore,
+    generations: dict[str, object],
+) -> dict:
+    """Evaluate one generated case using visible localization and causal controls."""
+
+    original_image = generations["original"]
+    target_ablated_image = generations["target_ablated"]
+    control_ablated_image = generations["control_ablated"]
+    target_attention = aggregate_attention_maps(store.maps["target"])
+    control_attention = aggregate_attention_maps(store.maps["control"])
+    target_color = str(case["target_color"])
+    region_mask = _target_color_region_mask_64(original_image, target_color)
+    mask_fraction = region_mask.float().mean().item()
+    daam = daam_region_report(
+        target_region_mass=_attention_region_mass(target_attention, region_mask),
+        control_region_mass=_attention_region_mass(control_attention, region_mask),
+        mask_fraction=mask_fraction,
+        captured_map_count=len(store.maps["target"]),
+        min_target_control_gap=0.005,
+        min_lift_over_mask_fraction=0.01,
+        min_captured_map_count=32,
+    )
+    token = token_ablation_region_report(
+        original_region_score=_target_color_region_fraction(original_image, target_color),
+        target_ablated_region_score=_target_color_region_fraction(
+            target_ablated_image, target_color
+        ),
+        random_control_region_score=_target_color_region_fraction(
+            control_ablated_image, target_color
+        ),
+        min_target_drop=0.05,
+        min_random_margin=0.05,
+    )
+    quality = image_quality_report(
+        _pil_rgb_tensor(original_image),
+        target_color=target_color,  # type: ignore[arg-type]
+        min_target_region_fraction=0.02,
+        max_high_frequency_energy=0.12,
+    )
+    white_noise = t.randint(
+        0,
+        256,
+        _pil_rgb_tensor(original_image).shape,
+        generator=t.Generator(device="cpu").manual_seed(1000 + int(case["seed"])),
+    )
+    noise = white_noise_image_control_report(
+        quality,
+        white_noise,
+        target_color=target_color,  # type: ignore[arg-type]
+        max_high_frequency_energy=0.12,
+        min_noise_gap=0.12,
+    )
+    return {
+        "daam_report": daam,
+        "token_report": token,
+        "quality_report": quality,
+        "noise_report": noise,
+        "case_report": {
+            "case_id": case["case_id"],
+            "seed": case["seed"],
+            "prompt": case["prompt"],
+            "target_ablated_prompt": case["target_ablated_prompt"],
+            "control_ablated_prompt": case["control_ablated_prompt"],
+            "target_terms": list(case["target_terms"]),
+            "control_terms": list(case["control_terms"]),
+            "target_token_positions": store.token_groups["target"],
+            "control_token_positions": store.token_groups["control"],
+            "target_color": target_color,
+            "mask_fraction": mask_fraction,
+            "attention_resolutions": sorted(set(store.resolutions)),
+            "captured_cross_attention_map_count": len(store.maps["target"]),
+            "target_region_mass": daam.target_region_mass,
+            "control_region_mass": daam.control_region_mass,
+            "target_control_gap": daam.target_control_gap,
+            "target_lift_over_mask_fraction": daam.target_lift_over_mask_fraction,
+            "daam_localized": daam.daam_localized,
+            "original_region_score": token.original_region_score,
+            "target_ablated_region_score": token.target_ablated_region_score,
+            "control_region_score": token.random_control_region_score,
+            "target_drop": token.target_drop,
+            "random_control_drop": token.random_control_drop,
+            "target_ablation_passed": token.target_ablation_passed,
+            "random_token_ablation_weaker": token.random_token_ablation_weaker,
+            "target_region_fraction": quality.target_region_fraction,
+            "rgb_std": quality.rgb_std,
+            "high_frequency_energy": quality.high_frequency_energy,
+            "saturation_fraction": quality.saturation_fraction,
+            "image_quality_preserved": quality.image_quality_preserved,
+            "white_noise_high_frequency_energy": noise.white_noise_high_frequency_energy,
+            "white_noise_rejected": noise.white_noise_rejected,
+        },
+        "visual": {
+            "case_id": case["case_id"],
+            "original_image": original_image,
+            "target_ablated_image": target_ablated_image,
+            "control_ablated_image": control_ablated_image,
+            "target_attention": target_attention,
+            "control_attention": control_attention,
+            "region_mask": region_mask,
+            "white_noise": white_noise,
+        },
+    }
+
+
 def sd15_daam_token_ablation_experiment(
     max_vram_gb: float = 24.0,
     *,
@@ -510,22 +853,9 @@ def sd15_daam_token_ablation_experiment(
     logging.getLogger("bitsandbytes").setLevel(logging.ERROR)
     logging.getLogger("bitsandbytes.cextension").setLevel(logging.ERROR)
 
-    from diffusers import StableDiffusionPipeline
-    from huggingface_hub import snapshot_download
-    from transformers import CLIPModel, CLIPProcessor
-
     device = t.device("cuda")
     t.cuda.reset_peak_memory_stats()
-    pipe = StableDiffusionPipeline.from_pretrained(
-        REAL_SD15_MODEL_ID,
-        revision=REAL_SD15_REVISION,
-        torch_dtype=t.float16,
-        variant="fp16",
-        use_safetensors=True,
-        safety_checker=None,
-        requires_safety_checker=False,
-    ).to(device)
-    pipe.set_progress_bar_config(disable=True)
+    pipe = load_pinned_sd15_pipeline(device)
 
     original_images = []
     case_reports = []
@@ -713,26 +1043,7 @@ def sd15_daam_token_ablation_experiment(
         white_noise_reports=white_noise_reports,
     )
 
-    local_clip_snapshot = snapshot_download(
-        REAL_CLIP_MODEL_ID,
-        revision=REAL_CLIP_REVISION,
-        allow_patterns=[
-            "config.json",
-            "preprocessor_config.json",
-            "tokenizer.json",
-            "tokenizer_config.json",
-            "special_tokens_map.json",
-            "vocab.json",
-            "merges.txt",
-            "pytorch_model.bin",
-        ],
-    )
-    processor = CLIPProcessor.from_pretrained(local_clip_snapshot, use_fast=False)
-    clip_model = CLIPModel.from_pretrained(
-        local_clip_snapshot,
-        use_safetensors=False,
-    ).to(device)
-    clip_model.eval()
+    clip_model, processor = load_pinned_clip_components(device)
     inputs = processor(
         text=[str(case["clip_text"]) for case in REAL_SD15_CASES],
         images=original_images,
@@ -842,6 +1153,7 @@ def run_smoke_test(cpu: bool = True) -> dict:
         "denoising_circuit": denoising_circuit_smoke_test(),
         "latent_direction": latent_direction_smoke_test(),
         "prompt_region": prompt_region_smoke_test(),
+        "shuffled_region_control": shuffled_region_control_smoke_test(),
     }
 
 
@@ -864,6 +1176,7 @@ def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
         min_effect=0.5,
         min_random_margin=0.2,
     )
+    shuffled = shuffled_region_control_smoke_test()
     t.cuda.synchronize()
     synthetic_peak_vram_gb = t.cuda.max_memory_allocated() / 1024**3
     sd_turbo = sd_turbo_clip_alignment_preflight(max_vram_gb=max_vram_gb)
@@ -882,6 +1195,8 @@ def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
         "latent_random_delta": latent.random_delta,
         "has_directional_effect": latent.has_directional_effect,
         "latent_direction_effect": latent.has_directional_effect,
+        "shuffled_region_control_passed": shuffled["shuffled_control_fails"],
+        "shuffled_region_control_margin": shuffled["margin"],
         "sd_turbo_preflight_passed": sd_turbo["preflight_passed"],
         "sd_turbo_image_to_text_accuracy": sd_turbo["image_to_text_accuracy"],
         "sd_turbo_text_to_image_accuracy": sd_turbo["text_to_image_accuracy"],

@@ -9,16 +9,14 @@ exercise_metadata:
   EXPECTED_RUNTIME: 75-105 minutes; about 15 seconds for the live CUDA result
   REQUIRES_GPU: true
 gt_tier: GT-1
-evidence_level: toy_prompt_region_controls_plus_pinned_sd15_daam_token_ablation_quality_preflight
+evidence_level: learner_visible_sd15_hooks_interventions_metrics_plus_exact_shuffled_region_control
 claim_scope: GT-1 toy diffusion/image-generation interpretability controls plus a
   required pinned safetensors Stable Diffusion 1.5 safe-shape preflight. The SD1.5
-  path captures DAAM-style cross-attention maps for color/shape tokens, verifies target-token
-  attention over generated color regions against unrelated-token controls, ablates
-  target prompt tokens over random/control-token ablations, preserves simple image-quality
-  metrics, rejects white-noise controls, and scores generated images with pinned CLIP.
-  The learner notebook renders the generated images, measured attention overlays,
-  same-seed counterfactuals, white-noise failures, and metric controls directly. A
-  pinned SD-Turbo/CLIP attention preflight remains supplemental.
+  path uses learner-visible token-group capture, Diffusers processor registration,
+  same-seed target/control prompt interventions, localization and quality metrics,
+  and an exact shuffled-region-label negative control. It verifies target-token
+  attention over generated color regions, rejects white noise, and scores generated
+  images with pinned CLIP. A pinned SD-Turbo/CLIP attention preflight remains supplemental.
 required_gpu_gb: 8
 max_allowed_gpu_gb: 24
 models:
@@ -109,6 +107,8 @@ expected_metrics:
   sd15_clip_text_to_image_accuracy: 1.0
   sd15_clip_mean_positive_margin_min: 2.0
   sd15_peak_vram_gb_max: 8.0
+  shuffled_region_control_passed: true
+  shuffled_region_control_margin_min: 0.75
 controls:
 - baseline_or_reference_check
 - negative_control_where_applicable
@@ -129,6 +129,7 @@ controls:
 - sd15_random_token_ablation_control
 - sd15_image_quality_metric
 - sd15_white_noise_control
+- shuffled_label_negative_control
 safety_notes:
 - No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.
 - The real-model paths use safe generated shape prompts only. The required SD1.5 path

@@ -20,4 +20,7 @@ The current graded path uses pinned Stable Diffusion 1.5, supplemental pinned
 SD-Turbo, and pinned CLIP revisions on CUDA. The acceptance path uses safe
 generated shape prompts, CLIP alignment scoring, captured SD1.5 DAAM-style
 cross-attention maps, target-token ablation over random/control-token ablations,
-simple image-quality metrics, and white-noise rejection.
+simple image-quality metrics, white-noise rejection, and an exact shuffled-region-label
+negative control. Checkpoint loading is shared plumbing; learners implement the
+cross-attention capture, processor registration, same-seed interventions, and case
+evaluation directly in the notebook.

@@ -46,6 +46,8 @@
     "sd_turbo_peak_vram_gb_max": 8.0,
     "sd_turbo_preflight_passed": true,
     "sd_turbo_text_to_image_accuracy": 1.0,
+    "shuffled_region_control_margin_min": 0.75,
+    "shuffled_region_control_passed": true,
     "tests_passed": true
   },
   "negative_controls": {

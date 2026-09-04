@@ -180,6 +180,201 @@ def test_prompt_region_report_requires_target_drop(
     print("All tests in `test_prompt_region_report_requires_target_drop` passed!")
 
 
+def test_shuffled_region_label_control_rejects_mismatched_regions(
+    shuffled_region_label_control: Callable | None = None,
+):
+    shuffled_region_label_control = (
+        shuffled_region_label_control or _solutions().shuffled_region_label_control
+    )
+    maps = t.zeros(4, 8, 8)
+    masks = t.zeros(4, 8, 8, dtype=t.bool)
+    quadrants = (
+        (slice(0, 4), slice(0, 4)),
+        (slice(0, 4), slice(4, 8)),
+        (slice(4, 8), slice(0, 4)),
+        (slice(4, 8), slice(4, 8)),
+    )
+    for index, region in enumerate(quadrants):
+        maps[index][region] = 1.0
+        masks[index][region] = True
+
+    report = shuffled_region_label_control(
+        maps,
+        masks,
+        t.tensor([1, 2, 3, 0]),
+        min_margin=0.75,
+    )
+    assert abs(_value(report, "matched_region_mass") - 1.0) < 1e-6, (
+        "Each exact attention map should put all mass inside its preregistered region."
+    )
+    assert abs(_value(report, "shuffled_region_mass")) < 1e-6, (
+        "Cyclically shuffling disjoint region labels should remove all matched mass."
+    )
+    assert _value(report, "shuffled_control_fails"), (
+        "The shuffled-label negative control should fail by the preregistered margin."
+    )
+    print("All tests in `test_shuffled_region_label_control_rejects_mismatched_regions` passed!")
+
+
+def test_visible_attention_capture_and_registration(
+    token_positions_for_terms: Callable | None = None,
+    capture_token_group_attention: Callable | None = None,
+    install_cross_attention_processors: Callable | None = None,
+):
+    import logging
+
+    logging.getLogger("bitsandbytes").setLevel(logging.CRITICAL)
+    logging.getLogger("bitsandbytes.cextension").setLevel(logging.CRITICAL)
+    from diffusers import UNet2DConditionModel
+    from transformers import CLIPTokenizer
+
+    solutions = _solutions()
+    token_positions_for_terms = (
+        token_positions_for_terms or solutions.token_positions_for_terms
+    )
+    capture_token_group_attention = (
+        capture_token_group_attention or solutions.capture_token_group_attention
+    )
+    install_cross_attention_processors = (
+        install_cross_attention_processors
+        or solutions.install_cross_attention_processors
+    )
+
+    tokenizer = CLIPTokenizer.from_pretrained(
+        solutions.REAL_CLIP_MODEL_ID,
+        revision=solutions.REAL_CLIP_REVISION,
+        local_files_only=True,
+    )
+    prompt = str(solutions.REAL_SD15_CASES[0]["prompt"])
+    target_positions = token_positions_for_terms(tokenizer, prompt, ("red", "square"))
+    control_positions = token_positions_for_terms(tokenizer, prompt, ("geometric",))
+    assert target_positions and control_positions, (
+        "The pinned real CLIP tokenizer should locate both target and control terms."
+    )
+    assert set(target_positions).isdisjoint(control_positions), (
+        "Target color/shape tokens and the unrelated control token must remain distinct."
+    )
+
+    probs = t.zeros(2, 64, 8)
+    probs[:, :, 2] = t.arange(64).reshape(1, 64)
+    probs[:, :, 3] = t.arange(64).reshape(1, 64) + 2
+    probs[:, :, 4] = 0.5
+    captured = capture_token_group_attention(
+        probs,
+        {"target": [2, 3], "control": [4]},
+        min_query_positions=64,
+    )
+    assert captured["target"].shape == (8, 8), (
+        "A 64-position diffusion attention query should reshape to an 8x8 spatial map."
+    )
+    assert abs(captured["target"][0, 0].item() - 1.0) < 1e-6, (
+        "Token-group capture should average the selected key positions and attention heads."
+    )
+
+    unet = UNet2DConditionModel(
+        sample_size=8,
+        in_channels=4,
+        out_channels=4,
+        layers_per_block=1,
+        block_out_channels=(16, 32),
+        down_block_types=("CrossAttnDownBlock2D", "DownBlock2D"),
+        up_block_types=("UpBlock2D", "CrossAttnUpBlock2D"),
+        cross_attention_dim=32,
+        attention_head_dim=4,
+        norm_num_groups=8,
+    )
+    store = solutions.CrossAttentionCaptureStore.for_groups(
+        {"target": target_positions, "control": control_positions}
+    )
+    expected_count = len(unet.attn_processors)
+    installed_count = install_cross_attention_processors(unet, store)
+    assert installed_count == expected_count, (
+        "Every UNet attention processor should be replaced so all cross-attention resolutions are observable."
+    )
+    assert all(
+        type(processor).__name__ == "CrossAttentionCaptureProcessor"
+        and processor.store is store
+        for processor in unet.attn_processors.values()
+    ), "The real tiny UNet should expose the course capture processor at every attention site."
+    print("All tests in `test_visible_attention_capture_and_registration` passed!")
+
+
+def test_same_seed_prompt_interventions_are_matched(
+    build_same_seed_prompt_interventions: Callable | None = None,
+):
+    solutions = _solutions()
+    build_same_seed_prompt_interventions = (
+        build_same_seed_prompt_interventions
+        or solutions.build_same_seed_prompt_interventions
+    )
+    case = solutions.REAL_SD15_CASES[0]
+    specs = build_same_seed_prompt_interventions(case)
+    assert {spec["seed"] for spec in specs.values()} == {case["seed"]}, (
+        "Original, target-ablated, and control-ablated generations must reuse identical initial noise."
+    )
+    assert specs["target_ablated"]["prompt"] != specs["control_ablated"]["prompt"], (
+        "Target and control interventions must edit different preregistered prompt terms."
+    )
+
+    assert list(specs) == ["original", "target_ablated", "control_ablated"], (
+        "The intervention plan should make the original, target edit, and control edit explicit."
+    )
+    print("All tests in `test_same_seed_prompt_interventions_are_matched` passed!")
+
+
+def test_evaluate_sd15_case_combines_attention_intervention_and_quality(
+    evaluate_sd15_case: Callable | None = None,
+):
+    from PIL import Image
+
+    solutions = _solutions()
+    evaluate_sd15_case = evaluate_sd15_case or solutions.evaluate_sd15_case
+    original = t.full((64, 64, 3), 255, dtype=t.uint8)
+    original[16:48, 16:48] = t.tensor([255, 0, 0], dtype=t.uint8)
+    target_ablated = t.full_like(original, 255)
+    control_ablated = original.clone()
+
+    target_map = t.zeros(8, 8)
+    target_map[2:6, 2:6] = 1.0
+    control_map = t.zeros(8, 8)
+    control_map[:2, :2] = 1.0
+    store = solutions.CrossAttentionCaptureStore(
+        token_groups={"target": [2, 3], "control": [4]},
+        maps={"target": [target_map] * 32, "control": [control_map] * 32},
+        resolutions=[8] * 64,
+    )
+    case = {
+        **solutions.REAL_SD15_CASES[0],
+        "seed": 4,
+    }
+    result = evaluate_sd15_case(
+        case,
+        store,
+        {
+            "original": Image.fromarray(original.numpy()),
+            "target_ablated": Image.fromarray(target_ablated.numpy()),
+            "control_ablated": Image.fromarray(control_ablated.numpy()),
+        },
+    )
+    report = result["case_report"]
+    assert report["daam_localized"], (
+        "The exact target map should localize to the independently defined red region."
+    )
+    assert report["target_ablation_passed"], (
+        "Removing the red target term should erase the exact red region in this fixture."
+    )
+    assert report["random_token_ablation_weaker"], (
+        "The same-seed control edit should preserve the exact red region."
+    )
+    assert report["image_quality_preserved"], (
+        "The structured red-square image should pass the nonblank and frequency gates."
+    )
+    assert report["white_noise_rejected"], (
+        "The generated-case evaluator must apply the white-noise quality control."
+    )
+    print("All tests in `test_evaluate_sd15_case_combines_attention_intervention_and_quality` passed!")
+
+
 def test_sd15_toy_control_reports(
     daam_region_report: Callable | None = None,
     token_ablation_region_report: Callable | None = None,
@@ -377,6 +572,9 @@ def test_notebook_contract(run_smoke_test: Callable | None = None):
     assert result["prompt_region"]["prompt_region_causal"], (
         "The notebook contract should include the prompt-region causal check."
     )
+    assert result["shuffled_region_control"]["shuffled_control_fails"], (
+        "The notebook contract should include a shuffled region-label negative control."
+    )
     print("All tests in `test_notebook_contract` passed!")
 
 
@@ -481,6 +679,7 @@ def test_committed_gpu_report_requires_sd15_strict_controls(report: dict | None 
         "sd15_random_token_ablation_control",
         "sd15_image_quality_metric",
         "sd15_white_noise_control",
+        "shuffled_label_negative_control",
     }
     require_metric(
         required_controls <= controls,
@@ -567,8 +766,23 @@ def test_exercise_notebook_declares_full_verification_contract():
     assert "## Try It Yourself" in source, (
         "The learner notebook should expose editable attention and ablation controls."
     )
-    assert "run_sd15_image_generation_signature_result" in source, (
-        "The learner notebook should run the live SD1.5 signature result."
+    assert "run_sd15_image_generation_signature_result" not in source, (
+        "The learner notebook should not delegate its real method to one hidden runner."
+    )
+    assert "def capture_token_group_attention" in source, (
+        "The learner notebook should expose token-group activation capture."
+    )
+    assert "def register_cross_attention_capture" in source, (
+        "The learner notebook should expose real Diffusers hook registration."
+    )
+    assert "def build_same_seed_prompt_interventions" in source, (
+        "The learner notebook should construct its own matched target and control edits."
+    )
+    assert "def evaluate_sd15_case" in source, (
+        "The learner notebook should compute real localization, ablation, and quality metrics."
+    )
+    assert "load_pinned_sd15_pipeline" in source, (
+        "Only pinned checkpoint loading should remain delegated to reference plumbing."
     )
     assert "diffusion_image_generation_signature.png" in source, (
         "The learner notebook should generate and display the SD1.5 evidence panel."

@@ -651,7 +651,7 @@ def test_exercise_notebook_declares_full_verification_contract():
     )
 
     assert "REQUIRES_GPU = True" in source, (
-        "The learner notebook should not advertise CPU-only scope for this GT-1 geometry section."
+        "The learner notebook should retain the GPU requirement for the bounded Pythia preflight."
     )
     assert "def run_smoke_test(cpu: bool = True)" in source, (
         "The learner notebook should expose the CPU contract surface."

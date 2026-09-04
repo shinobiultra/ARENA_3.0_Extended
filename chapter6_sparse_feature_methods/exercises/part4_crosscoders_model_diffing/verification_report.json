@@ -58,9 +58,9 @@
       "technical_prompt_count": 8
     }
   ],
-  "date_run": "2026-09-04T08:02:19+00:00",
+  "date_run": "2026-09-04T13:23:21+00:00",
   "evidence_level": "planted_sparse_crosscoder_train_recover_predict_intervene_plus_pinned_transformerlens_preflight",
-  "git_commit": "fe8ec66e",
+  "git_commit": "34da1071",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-3",
   "known_failures": [],
@@ -422,7 +422,7 @@
   "peak_vram_gb": 0.5133085250854492,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "06b1544ef5272622cb8a838a980f7b9519c76e84e8bfb596bf7db27bf053d42d",
+    "combined_sha256": "5e1405182248772b9324e501628ab723e60495a314f33150e7c2ce454e4b4ca6",
     "files": [
       {
         "path": "arena_ext/crosscoders.py",
@@ -441,13 +441,13 @@
       },
       {
         "path": "chapter6_sparse_feature_methods/exercises/part4_crosscoders_model_diffing/6.4_Crosscoders_and_Model_Diffing_exercises.ipynb",
-        "sha256": "9cbff200d484001f461a7eaf077b75a997136b4298fe9b1d8572a4b54a958862",
-        "size_bytes": 65968
+        "sha256": "6d2cca1ba395f8dd7f9a2b6bce6104d8786bb1a3f99a093bb883f78c56c371c7",
+        "size_bytes": 66440
       },
       {
         "path": "chapter6_sparse_feature_methods/exercises/part4_crosscoders_model_diffing/6.4_Crosscoders_and_Model_Diffing_solutions.ipynb",
-        "sha256": "735a9f3f553b2247688004418fd1a693ecfe86ec345460e893c6289da57d0152",
-        "size_bytes": 304965
+        "sha256": "dee173c9126170dc5b12a33d1983d6929398bd5105e791c23900687e2a23a482",
+        "size_bytes": 305437
       },
       {
         "path": "chapter6_sparse_feature_methods/exercises/part4_crosscoders_model_diffing/README.md",
@@ -481,8 +481,8 @@
       },
       {
         "path": "chapter6_sparse_feature_methods/exercises/part4_crosscoders_model_diffing/tests.py",
-        "sha256": "a6e2e9d079de1b1d557bef00a60bbd56fb3f087e74000321968bda2271dc1ac0",
-        "size_bytes": 10106
+        "sha256": "5648f3c673f335172ed2e6545e284a15d7edfc574ad08728b97eb571b72d1df3",
+        "size_bytes": 13468
       },
       {
         "path": "chapter6_sparse_feature_methods/exercises/part4_crosscoders_model_diffing/utils.py",
@@ -496,8 +496,8 @@
       },
       {
         "path": "chapter6_sparse_feature_methods/instructions/pages/04_[6.4]_Crosscoders_and_Model_Diffing.md",
-        "sha256": "10cdcb5a19d14df26d1d322f5c93f7e9cde956fe375781694c7005443cf76bdb",
-        "size_bytes": 52201
+        "sha256": "f98f00fbbbc9fdff816a075321e913c5654401e7c2553880a8d8f1649088b607",
+        "size_bytes": 51453
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
@@ -513,5 +513,5 @@
     "The paired-model GPU path uses safe generic prompts and small public TransformerLens checkpoints."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 7.700543
+  "wall_clock_seconds": 22.347881
 }

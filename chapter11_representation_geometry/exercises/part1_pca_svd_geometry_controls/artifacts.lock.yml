@@ -3,13 +3,13 @@ section: '11.1'
 title: PCA, SVD, and Geometry Controls
 exercise_metadata:
   EXERCISE_ID: 11_1_pca_svd_and_geometry_controls
-  GT_TIER: GT-1
+  GT_TIER: GT-0
   DIFFICULTY: 3
   IMPORTANCE: 4
   EXPECTED_RUNTIME: 70-100 minutes; about 15 seconds for the live CUDA result
   REQUIRES_GPU: true
-gt_tier: GT-1
-evidence_level: gt1_live_pythia_calendar_geometry_with_toy_ground_truth_and_controls
+gt_tier: GT-0
+evidence_level: gt0_toy_geometry_plus_real_lm_calendar_template_centering_preflight
 claim_scope: A known cyclic toy task validates train-only PCA, template centering,
   kNN, and ridge coordinate probing before a pinned Pythia-70M-deduped experiment.
   The live real-model path shows raw template-dominated transfer failures and
