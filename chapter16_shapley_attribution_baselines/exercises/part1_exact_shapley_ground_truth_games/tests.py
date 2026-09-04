@@ -314,3 +314,102 @@ def test_committed_gpu_report_records_exact_shapley_preflight():
         "The report claim scope should avoid overclaiming approximate SHAP behavior."
     )
     print("All tests in `test_committed_gpu_report_records_exact_shapley_preflight` passed!")
+
+
+def test_complete_table_normalization(
+    all_coalitions: Callable | None = None,
+    normalize_coalition_values: Callable | None = None,
+    coalition_values_from_function: Callable | None = None,
+):
+    all_coalitions = all_coalitions or _solutions().all_coalitions
+    normalize_coalition_values = normalize_coalition_values or _solutions().normalize_coalition_values
+    coalition_values_from_function = (
+        coalition_values_from_function or _solutions().coalition_values_from_function
+    )
+    values = coalition_values_from_function(3, lambda coalition: len(coalition) ** 2)
+    normalized = normalize_coalition_values(values, num_players=3)
+    assert tuple(normalized) == all_coalitions(3)
+    assert normalized[frozenset()] == 0.0
+    assert normalized[frozenset({0, 1, 2})] == 9.0
+    incomplete = dict(values)
+    incomplete.pop(frozenset({0, 2}))
+    try:
+        normalize_coalition_values(incomplete, num_players=3)
+    except ValueError as exc:
+        assert "missing" in str(exc).lower() and "coalition" in str(exc).lower()
+    else:
+        raise AssertionError("Incomplete coalition tables must raise ValueError.")
+    print("All tests in `test_complete_table_normalization` passed!")
+
+
+def test_dividend_game_and_analytic_oracle(
+    game_from_dividends: Callable | None = None,
+    shapley_from_dividends: Callable | None = None,
+):
+    game_from_dividends = game_from_dividends or _solutions().game_from_dividends
+    shapley_from_dividends = shapley_from_dividends or _solutions().shapley_from_dividends
+    dividends = {
+        frozenset({0}): 0.8,
+        frozenset({1}): -0.2,
+        frozenset({2}): 0.4,
+        frozenset({3}): 0.1,
+        frozenset({0, 1}): 1.2,
+        frozenset({1, 2}): -0.6,
+        frozenset({2, 3}): 0.9,
+        frozenset({0, 1, 2}): 1.5,
+    }
+    values = game_from_dividends(4, dividends, baseline=0.3)
+    oracle = shapley_from_dividends(4, dividends)
+    assert len(values) == 16
+    _assert_close(values[frozenset()], 0.3, msg="Empty-coalition baseline")
+    _assert_close(values[frozenset(range(4))], 4.4, msg="Full-coalition value")
+    _assert_tensor_close(
+        oracle,
+        t.tensor([1.9, 0.6, 1.05, 0.55], dtype=t.float64),
+        msg="Dividend Shapley oracle",
+    )
+    print("All tests in `test_dividend_game_and_analytic_oracle` passed!")
+
+
+def test_weighted_marginal_rows(marginal_contribution_rows: Callable | None = None):
+    marginal_contribution_rows = (
+        marginal_contribution_rows or _solutions().marginal_contribution_rows
+    )
+    values = {
+        frozenset(): 0.0,
+        frozenset({0}): 1.0,
+        frozenset({1}): 0.0,
+        frozenset({0, 1}): 3.0,
+    }
+    rows = marginal_contribution_rows(values, num_players=2, player=0)
+    assert len(rows) == 2
+    _assert_close(sum(row[2] for row in rows), 1.0, msg="Marginal-row weight sum")
+    assert rows[0][0] == frozenset() and rows[0][1] == 1.0
+    assert rows[1][0] == frozenset({1}) and rows[1][1] == 3.0
+    weighted = sum(marginal * weight for _, marginal, weight in rows)
+    _assert_close(weighted, 2.0, msg="Weighted marginal average")
+    print("All tests in `test_weighted_marginal_rows` passed!")
+
+
+def test_interaction_scale_sweep(interaction_scale_sweep: Callable | None = None):
+    interaction_scale_sweep = interaction_scale_sweep or _solutions().interaction_scale_sweep
+    result = interaction_scale_sweep(t.tensor([0.0, 0.5, 1.0, 2.0], dtype=t.float64))
+    t.testing.assert_close(
+        result["shapley_efficiency_error"],
+        t.zeros(4, dtype=t.float64),
+        atol=1e-9,
+        rtol=0,
+    )
+    t.testing.assert_close(
+        result["leave_one_out_overcount"],
+        t.tensor([0.0, 2.25, 4.5, 9.0], dtype=t.float64),
+        atol=1e-9,
+        rtol=0,
+    )
+    t.testing.assert_close(
+        result["oracle_max_error"],
+        t.zeros(4, dtype=t.float64),
+        atol=1e-9,
+        rtol=0,
+    )
+    print("All tests in `test_interaction_scale_sweep` passed!")

@@ -30,6 +30,20 @@ MAIN = __name__ == "__main__"
 
 Coalition = frozenset[int]
 
+DIRECT_DIVIDENDS = {
+    frozenset({0}): 0.8,
+    frozenset({1}): -0.2,
+    frozenset({2}): 0.4,
+    frozenset({3}): 0.1,
+}
+INTERACTION_DIVIDENDS = {
+    frozenset({0, 1}): 1.2,
+    frozenset({1, 2}): -0.6,
+    frozenset({2, 3}): 0.9,
+    frozenset({0, 1, 2}): 1.5,
+}
+BASELINE_VALUE = 0.3
+
 NEURAL_GAME_MAX_SHAPLEY_ERROR = 1e-4
 NEURAL_GAME_MAX_FIT_MSE = 1e-8
 NEURAL_GAME_RANDOM_CONTROL_MIN_ERROR = 1.0
@@ -78,11 +92,16 @@ def normalize_coalition_values(
     """Normalize coalition keys and require a complete value table."""
 
     values = {frozenset(key): float(value) for key, value in coalition_values.items()}
-    expected = set(all_coalitions(num_players))
+    ordered = all_coalitions(num_players)
+    expected = set(ordered)
     missing = expected - set(values)
-    if missing:
-        raise ValueError(f"coalition value table is missing {len(missing)} coalitions.")
-    return values
+    extra = set(values) - expected
+    if missing or extra:
+        raise ValueError(
+            "coalition table has "
+            f"missing coalitions={len(missing)} and extra coalitions={len(extra)}"
+        )
+    return {coalition: values[coalition] for coalition in ordered}
 
 
 def coalition_values_from_function(
@@ -94,6 +113,77 @@ def coalition_values_from_function(
     return {coalition: float(value_fn(coalition)) for coalition in all_coalitions(num_players)}
 
 
+def scaled_dividends(interaction_scale: float = 1.0) -> dict[Coalition, float]:
+    """Scale interaction dividends while holding direct effects fixed."""
+
+    return DIRECT_DIVIDENDS | {
+        term: float(interaction_scale) * value
+        for term, value in INTERACTION_DIVIDENDS.items()
+    }
+
+
+def game_from_dividends(
+    num_players: int,
+    dividends: Mapping[Coalition | tuple[int, ...], float],
+    baseline: float = 0.0,
+) -> dict[Coalition, float]:
+    """Construct a complete game from explicit Harsanyi dividends."""
+
+    normalized = {frozenset(term): float(value) for term, value in dividends.items()}
+    if any(not term for term in normalized):
+        raise ValueError("Use baseline for the empty dividend.")
+    if any(player < 0 or player >= num_players for term in normalized for player in term):
+        raise ValueError("Dividend contains a player outside the game.")
+    return coalition_values_from_function(
+        num_players,
+        lambda coalition: float(baseline)
+        + sum(value for term, value in normalized.items() if term.issubset(coalition)),
+    )
+
+
+def shapley_from_dividends(
+    num_players: int,
+    dividends: Mapping[Coalition | tuple[int, ...], float],
+) -> t.Tensor:
+    """Return the analytic oracle obtained by splitting each dividend equally."""
+
+    result = t.zeros(num_players, dtype=t.float64)
+    for raw_term, raw_dividend in dividends.items():
+        term = frozenset(raw_term)
+        if not term:
+            raise ValueError("The empty dividend is a baseline, not player credit.")
+        for player in term:
+            result[player] += float(raw_dividend) / len(term)
+    return result
+
+
+def marginal_contribution_rows(
+    coalition_values: Mapping[Coalition | tuple[int, ...], float],
+    *,
+    num_players: int,
+    player: int,
+) -> tuple[tuple[Coalition, float, float], ...]:
+    """List each marginal context and its exact permutation weight."""
+
+    if player < 0 or player >= num_players:
+        raise ValueError("player must index this game.")
+    values = normalize_coalition_values(coalition_values, num_players=num_players)
+    denominator = math.factorial(num_players)
+    rows = []
+    for coalition in all_coalitions(num_players):
+        if player in coalition:
+            continue
+        size = len(coalition)
+        weight = (
+            math.factorial(size)
+            * math.factorial(num_players - size - 1)
+            / denominator
+        )
+        marginal = values[coalition | {player}] - values[coalition]
+        rows.append((coalition, marginal, weight))
+    return tuple(rows)
+
+
 def exact_shapley_values(
     coalition_values: Mapping[Coalition | tuple[int, ...], float],
     *,
@@ -101,18 +191,16 @@ def exact_shapley_values(
 ) -> t.Tensor:
     """Compute exact Shapley values by summing weighted marginal effects."""
 
-    values = normalize_coalition_values(coalition_values, num_players=num_players)
-    factorial = math.factorial
-    denominator = factorial(num_players)
     shapley = t.zeros(num_players, dtype=t.float64)
     for player in range(num_players):
-        others = [item for item in range(num_players) if item != player]
-        for size in range(num_players):
-            weight = factorial(size) * factorial(num_players - size - 1) / denominator
-            for group in itertools.combinations(others, size):
-                coalition = frozenset(group)
-                with_player = coalition | {player}
-                shapley[player] += weight * (values[with_player] - values[coalition])
+        shapley[player] = sum(
+            marginal * weight
+            for _, marginal, weight in marginal_contribution_rows(
+                coalition_values,
+                num_players=num_players,
+                player=player,
+            )
+        )
     return shapley
 
 
@@ -224,6 +312,33 @@ def interaction_gap_report(
         overcount=overcount,
         detects_interaction_overcount=overcount >= min_overcount,
     )
+
+
+def interaction_scale_sweep(scales: t.Tensor) -> dict[str, t.Tensor]:
+    """Compare exact Shapley and leave-one-out as interactions are scaled."""
+
+    scales = scales.detach().flatten().double()
+    efficiency_errors = []
+    oracle_errors = []
+    overcounts = []
+    for scale in scales.tolist():
+        dividends = scaled_dividends(scale)
+        values = game_from_dividends(4, dividends, baseline=BASELINE_VALUE)
+        exact = exact_shapley_values(values, num_players=4)
+        oracle = shapley_from_dividends(4, dividends)
+        efficiency_errors.append(
+            shapley_efficiency_report(values, num_players=4).efficiency_error
+        )
+        oracle_errors.append((exact - oracle).abs().max().item())
+        overcounts.append(
+            leave_one_out_values(values, num_players=4).sum().item()
+            - exact.sum().item()
+        )
+    return {
+        "shapley_efficiency_error": t.tensor(efficiency_errors, dtype=t.float64),
+        "oracle_max_error": t.tensor(oracle_errors, dtype=t.float64),
+        "leave_one_out_overcount": t.tensor(overcounts, dtype=t.float64),
+    }
 
 
 # %%

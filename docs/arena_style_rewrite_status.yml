@@ -136,7 +136,7 @@ sections:
   '16.1':
     status: course_ready
     page: chapter16_shapley_attribution_baselines/instructions/pages/01_[16.1]_Exact_Shapley_on_Ground_Truth_Games.md
-    notes: ARENA-style exact-Shapley lesson with finite coalition-table validation loop, signature-result diagram, help/interpretation dropdowns, paired notebooks, exact formula/permutation/efficiency/interaction exercises, limitations, and scoped CUDA trained-neural-game evidence with complete finite-domain claim boundaries.
+    notes: "ARENA-style exact-Shapley lab with a complete four-player dividend game, student implementations of coalition tables, exact factorial weighting, permutation averaging, efficiency, marginal-context distributions, and leave-one-out controls, plus immediate semantic tests, expected/help/solution/interpretation dropdowns, a play cell, and anomaly hunting. The visible signature result matches exact Shapley to the dividend oracle at [1.90, 0.60, 1.05, 0.55] while leave-one-out overcounts interactions; the interaction sweep and additive control explain the failure mechanistically. Sixteen focused tests pass and all 11 solution code cells execute. CUDA 13.2 verification trains a neural coalition game on all 16 coalitions, recovers exact Shapley within 9.38e-7 with zero efficiency error, rejects a shuffled-label attribution with error 4.63, and peaks at 0.063 GB under Torch 2.12.1+cu132. Claims are limited to complete finite-domain method validation, not approximate SHAP on large models."
   '16.2':
     status: course_ready
     page: chapter16_shapley_attribution_baselines/instructions/pages/02_[16.2]_KernelSHAP_and_PartitionSHAP_Controls.md
