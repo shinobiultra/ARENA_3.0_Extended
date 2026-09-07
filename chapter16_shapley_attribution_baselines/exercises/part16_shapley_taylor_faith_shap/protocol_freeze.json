@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "frozen_at_utc": "2026-09-07T08:36:26.864806+00:00",
+  "execution_scope": "development_only",
+  "independent_approval": false,
+  "independent_recheck": "pending",
+  "publication_authorized": false,
+  "sha256": {
+    "protocol.md": "c0d738cf953743f17b74ca5ced74c15330b8b3be7d7d128563ba36096986ee37",
+    "data_manifest.json": "192eacd0f1dd137c627d1c4aec58b1eb17c3c31753ff9c496ed1e04717c9651e",
+    "interaction_data.py": "9418e01edb3cbc0f812716d2686d4a2d40ceb753112a87b1d18536a19ca2420f"
+  },
+  "pre_run_resolution_sha256": "0a6f19aa82ec5691a7ad38382d7e6a3a82a7cdc52aeaae28a01bf13ab587b923",
+  "native_fits_before_freeze": 0,
+  "native_game_runs_before_freeze": 0,
+  "native_attribution_runs_before_freeze": 0,
+  "audit_loads_before_freeze": 0
+}

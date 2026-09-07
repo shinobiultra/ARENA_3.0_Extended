@@ -1,1200 +1,1337 @@
-# Configuration for ARENA material
-# This file is the single source of truth for chapter/section metadata
-# Used by both the Heroku Django app, Streamlit pages, and the conversion tool
-
-# =============================================================================
-# CONVERSION TOOL MAPPINGS (used by main.py)
-# Maps section numbers to streamlit page names and exercise directories
-# =============================================================================
 conversion_map:
-  # Chapter 0
-  "0.0":
-    streamlit_page: "00_[0.0]_Prerequisites"
-    exercise_dir: "part0_prereqs"
-  "0.1":
-    streamlit_page: "01_[0.1]_Ray_Tracing"
-    exercise_dir: "part1_ray_tracing"
-  "0.2":
-    streamlit_page: "02_[0.2]_CNNs_&_ResNets"
-    exercise_dir: "part2_cnns"
-  "0.3":
-    streamlit_page: "03_[0.3]_Optimization"
-    exercise_dir: "part3_optimization"
-  "0.4":
-    streamlit_page: "04_[0.4]_Backprop"
-    exercise_dir: "part4_backprop"
-  "0.5":
-    streamlit_page: "05_[0.5]_VAEs_&_GANs"
-    exercise_dir: "part5_vaes_and_gans"
-  "0.6":
-    streamlit_page: "06_[0.6]_How_to_Know_When_an_Interpretability_Result_Is_Fake"
-    exercise_dir: "part6_fake_interpretability_results"
-
-  # Chapter 1
-  "1.1":
-    streamlit_page: "01_[1.1]_Transformer_from_Scratch"
-    exercise_dir: "part1_transformer_from_scratch"
-  "1.2":
-    streamlit_page: "02_[1.2]_Intro_to_Mech_Interp"
-    exercise_dir: "part2_intro_to_mech_interp"
-  "1.3.1":
-    streamlit_page: "11_[1.3.1]_Linear_Probes"
-    exercise_dir: "part31_linear_probes"
-  "1.3.2":
-    streamlit_page: "12_[1.3.2]_Function_Vectors_&_Model_Steering"
-    exercise_dir: "part32_function_vectors_and_model_steering"
-  "1.3.3":
-    streamlit_page: "13_[1.3.3]_Interpretability_with_SAEs"
-    exercise_dir: "part33_interp_with_saes"
-  "1.3.4":
-    streamlit_page: "14_[1.3.4]_Activation_Oracles"
-    exercise_dir: "part34_activation_oracles"
-  "1.4.1":
-    streamlit_page: "21_[1.4.1]_Indirect_Object_Identification"
-    exercise_dir: "part41_indirect_object_identification"
-  "1.4.2":
-    streamlit_page: "22_[1.4.2]_SAE_Circuits"
-    exercise_dir: "part42_sae_circuits"
-  "1.5.1":
-    streamlit_page: "31_[1.5.1]_Balanced_Bracket_Classifier"
-    exercise_dir: "part51_balanced_bracket_classifier"
-  "1.5.2":
-    streamlit_page: "32_[1.5.2]_Grokking_&_Modular_Arithmetic"
-    exercise_dir: "part52_grokking_and_modular_arithmetic"
-  "1.5.3":
-    streamlit_page: "33_[1.5.3]_OthelloGPT"
-    exercise_dir: "part53_othellogpt"
-  "1.5.4":
-    streamlit_page: "34_[1.5.4]_Toy_Models_of_Superposition_&_SAEs"
-    exercise_dir: "part54_toy_models_of_superposition_and_saes"
-  "1.6":
-    streamlit_page: "40_[1.6]_Local_Frontier_ML_Infrastructure"
-    exercise_dir: "part6_frontier_ml_infrastructure"
-  # Chapter 2
-  "2.1":
-    streamlit_page: "01_[2.1]_Intro_to_RL"
-    exercise_dir: "part1_intro_to_rl"
-  "2.2":
-    streamlit_page: "02_[2.2]_DQN_&_VPG"
-    exercise_dir: "part2_q_learning_and_policy_gradient"
-  "2.3":
-    streamlit_page: "03_[2.3]_PPO"
-    exercise_dir: "part3_ppo"
-  "2.4":
-    streamlit_page: "04_[2.4]_RLHF"
-    exercise_dir: "part4_rlhf"
-  "2.5":
-    streamlit_page: "05_[2.5]_MCTS_&_AlphaZero"
-    exercise_dir: "part5_mcts_alphazero"
-
-  # Chapter 3
-  "3.1":
-    streamlit_page: "01_[3.1]_Intro_to_Evals"
-    exercise_dir: "part1_intro_to_evals"
-  "3.2":
-    streamlit_page: "02_[3.2]_Dataset_Generation"
-    exercise_dir: "part2_dataset_generation"
-  "3.3":
-    streamlit_page: "03_[3.3]_Running_Evals_with_Inspect"
-    exercise_dir: "part3_running_evals_with_inspect"
-  "3.4":
-    streamlit_page: "04_[3.4]_LLM_Agents"
-    exercise_dir: "part4_llm_agents"
-  "3.5":
-    streamlit_page: "05_[3.5]_AI_Control"
-    exercise_dir: "part5_ai_control"
-  # Chapter 4
-  "4.1":
-    streamlit_page: "01_[4.1]_Emergent_Misalignment"
-    exercise_dir: "part1_emergent_misalignment"
-  "4.2":
-    streamlit_page: "02_[4.2]_Science_of_Misalignment"
-    exercise_dir: "part2_science_of_misalignment"
-  "4.3":
-    streamlit_page: "03_[4.3]_Interpreting_Reasoning_Models"
-    exercise_dir: "part3_interpreting_reasoning_models"
-  "4.4":
-    streamlit_page: "04_[4.4]_LLM_Psychology_&_Persona_Vectors"
-    exercise_dir: "part4_persona_vectors"
-  "4.5":
-    streamlit_page: "05_[4.5]_Investigator_Agents"
-    exercise_dir: "part5_investigator_agents"
-  # Chapter 5
-  "5.1":
-    streamlit_page: "01_[5.1]_Gemma_from_Scratch"
-    exercise_dir: "part1_gemma_from_scratch"
-  "5.2":
-    streamlit_page: "02_[5.2]_Gemma_Scope_and_Feature_Steering"
-    exercise_dir: "part2_gemma_scope_feature_steering"
-  "5.3":
-    streamlit_page: "03_[5.3]_Mamba_from_Scratch"
-    exercise_dir: "part3_mamba_from_scratch"
-  "5.4":
-    streamlit_page: "04_[5.4]_Mamba_State_Tracking"
-    exercise_dir: "part4_mamba_state_tracking"
-  "5.5":
-    streamlit_page: "05_[5.5]_Diffusion_Language_Models"
-    exercise_dir: "part5_diffusion_language_models"
-  "5.6":
-    streamlit_page: "06_[5.6]_Multimodal_Embedding_and_Function_Calling_Models"
-    exercise_dir: "part6_multimodal_embedding_function_models"
-  # Chapter 6
-  "6.1":
-    streamlit_page: "01_[6.1]_SAE_Variants"
-    exercise_dir: "part1_sae_variants"
-  "6.2":
-    streamlit_page: "02_[6.2]_Gemma_Scope_Deep_Dive"
-    exercise_dir: "part2_gemma_scope_deep_dive"
-  "6.3":
-    streamlit_page: "03_[6.3]_Transcoders_and_Attribution_Graphs"
-    exercise_dir: "part3_transcoders_attribution_graphs"
-  "6.4":
-    streamlit_page: "04_[6.4]_Crosscoders_and_Model_Diffing"
-    exercise_dir: "part4_crosscoders_model_diffing"
-  # Chapter 7
-  "7.1":
-    streamlit_page: "01_[7.1]_Logit_Lens_Tuned_Lens_and_Patchscopes"
-    exercise_dir: "part1_lenses_patchscopes"
-  "7.2":
-    streamlit_page: "02_[7.2]_Feature_Verbalizers"
-    exercise_dir: "part2_feature_verbalizers"
-  "7.3":
-    streamlit_page: "03_[7.3]_Mini_Activation_Oracles"
-    exercise_dir: "part3_mini_activation_oracles"
-  "7.4":
-    streamlit_page: "04_[7.4]_Mini_Natural_Language_Autoencoders"
-    exercise_dir: "part4_mini_natural_language_autoencoders"
-  "7.5":
-    streamlit_page: "05_[7.5]_Predictive_Concept_Decoders"
-    exercise_dir: "part5_predictive_concept_decoders"
-  # Chapter 8
-  "8.1":
-    streamlit_page: "01_[8.1]_Activation_Patching_Refresher"
-    exercise_dir: "part1_activation_patching_refresher"
-  "8.2":
-    streamlit_page: "02_[8.2]_Attribution_Patching_and_EAP"
-    exercise_dir: "part2_attribution_patching_eap"
-  "8.3":
-    streamlit_page: "03_[8.3]_ACDC_and_Circuit_Metrics"
-    exercise_dir: "part3_acdc_circuit_metrics"
-  "8.4":
-    streamlit_page: "04_[8.4]_Circuit_Tracing_with_Attribution_Graphs"
-    exercise_dir: "part4_circuit_tracing_attribution_graphs"
-  "8.5":
-    streamlit_page: "05_[8.5]_Sparse_Feature_Circuits"
-    exercise_dir: "part5_sparse_feature_circuits"
-  # Chapter 9
-  "9.1":
-    streamlit_page: "01_[9.1]_Refusal_Directions_and_Safe_Steering"
-    exercise_dir: "part1_refusal_directions_safe_steering"
-  "9.2":
-    streamlit_page: "02_[9.2]_Chain_of_Thought_Faithfulness"
-    exercise_dir: "part2_cot_faithfulness"
-  "9.3":
-    streamlit_page: "03_[9.3]_Emergent_Misalignment_Detection"
-    exercise_dir: "part3_emergent_misalignment_detection"
-  "9.4":
-    streamlit_page: "04_[9.4]_White_box_Evals_and_Monitors"
-    exercise_dir: "part4_white_box_evals_monitors"
-  # Chapter 10
-  "10.1":
-    streamlit_page: "01_[10.1]_Capstone_Research_Sprint"
-    exercise_dir: "part1_capstone_research_sprint"
-  # Chapter 11
-  "11.1":
-    streamlit_page: "01_[11.1]_PCA_SVD_and_Geometry_Controls"
-    exercise_dir: "part1_pca_svd_geometry_controls"
-  # Chapter 12
-  "12.1":
-    streamlit_page: "01_[12.1]_CLIP_SigLIP_and_VLM_Controls"
-    exercise_dir: "part1_clip_siglip_vlm_controls"
-  "12.3":
-    streamlit_page: "03_[12.3]_Mini_VLM_from_Scratch"
-    exercise_dir: "part3_mini_vlm_from_scratch"
-  # Chapter 13
-  "13.1":
-    streamlit_page: "01_[13.1]_Diffusion_and_Image_Generation_Controls"
-    exercise_dir: "part1_diffusion_image_controls"
-  # Chapter 14
-  "14.1":
-    streamlit_page: "01_[14.1]_JEPA_and_World_Model_Controls"
-    exercise_dir: "part1_jepa_world_model_controls"
-  # Chapter 15
-  "15.1":
-    streamlit_page: "01_[15.1]_LoRA_DoRA_and_Adapter_Controls"
-    exercise_dir: "part1_lora_dora_adapter_controls"
-  # Chapter 16
-  "16.1":
-    streamlit_page: "01_[16.1]_Exact_Shapley_on_Ground_Truth_Games"
-    exercise_dir: "part1_exact_shapley_ground_truth_games"
-  "16.2":
-    streamlit_page: "02_[16.2]_KernelSHAP_and_PartitionSHAP_Controls"
-    exercise_dir: "part2_kernelshap_partition_shap_controls"
-  "16.3":
-    streamlit_page: "03_[16.3]_Shapley_Interactions_with_shapiq"
-    exercise_dir: "part3_shapley_interactions_shapiq"
-  "16.4":
-    streamlit_page: "04_[16.4]_TokenSHAP_and_TokenShapley"
-    exercise_dir: "part4_tokenshap_token_shapley"
-  "16.5":
-    streamlit_page: "05_[16.5]_VLM_Modality_and_Region_SHAP"
-    exercise_dir: "part5_vlm_modality_region_shap"
-  "16.6":
-    streamlit_page: "06_[16.6]_SHAP_vs_Activation_Patching"
-    exercise_dir: "part6_shap_vs_activation_patching"
-  "16.7":
-    streamlit_page: "07_[16.7]_Data_Shapley_in_One_Training_Run"
-    exercise_dir: "part7_data_shapley_in_one_training_run"
-  "16.8":
-    streamlit_page: "08_[16.8]_Do_SHAPley_and_Mechanistic_Interpretability_Agree"
-    exercise_dir: "part8_shapley_mechinterp_agreement"
-  # Chapter 17
-  "17.1":
-    streamlit_page: "01_[17.1]_Checkpoint_Archaeology_and_Mechanism_Emergence"
-    exercise_dir: "part1_checkpoint_archaeology"
-
-# =============================================================================
-# CHAPTER NAME MAPPINGS (used by main.py and Streamlit)
-# =============================================================================
+  '0.0':
+    streamlit_page: 00_[0.0]_Prerequisites
+    exercise_dir: part0_prereqs
+  '0.1':
+    streamlit_page: 01_[0.1]_Ray_Tracing
+    exercise_dir: part1_ray_tracing
+  '0.2':
+    streamlit_page: 02_[0.2]_CNNs_&_ResNets
+    exercise_dir: part2_cnns
+  '0.3':
+    streamlit_page: 03_[0.3]_Optimization
+    exercise_dir: part3_optimization
+  '0.4':
+    streamlit_page: 04_[0.4]_Backprop
+    exercise_dir: part4_backprop
+  '0.5':
+    streamlit_page: 05_[0.5]_VAEs_&_GANs
+    exercise_dir: part5_vaes_and_gans
+  '1.1':
+    streamlit_page: 01_[1.1]_Transformer_from_Scratch
+    exercise_dir: part1_transformer_from_scratch
+  '1.2':
+    streamlit_page: 02_[1.2]_Intro_to_Mech_Interp
+    exercise_dir: part2_intro_to_mech_interp
+  1.3.1:
+    streamlit_page: 11_[1.3.1]_Linear_Probes
+    exercise_dir: part31_linear_probes
+  1.3.2:
+    streamlit_page: 12_[1.3.2]_Function_Vectors_&_Model_Steering
+    exercise_dir: part32_function_vectors_and_model_steering
+  1.3.3:
+    streamlit_page: 13_[1.3.3]_Interpretability_with_SAEs
+    exercise_dir: part33_interp_with_saes
+  1.3.4:
+    streamlit_page: 14_[1.3.4]_Activation_Oracles
+    exercise_dir: part34_activation_oracles
+  1.4.1:
+    streamlit_page: 21_[1.4.1]_Indirect_Object_Identification
+    exercise_dir: part41_indirect_object_identification
+  1.4.2:
+    streamlit_page: 22_[1.4.2]_SAE_Circuits
+    exercise_dir: part42_sae_circuits
+  1.5.1:
+    streamlit_page: 31_[1.5.1]_Balanced_Bracket_Classifier
+    exercise_dir: part51_balanced_bracket_classifier
+  1.5.2:
+    streamlit_page: 32_[1.5.2]_Grokking_&_Modular_Arithmetic
+    exercise_dir: part52_grokking_and_modular_arithmetic
+  1.5.3:
+    streamlit_page: 33_[1.5.3]_OthelloGPT
+    exercise_dir: part53_othellogpt
+  1.5.4:
+    streamlit_page: 34_[1.5.4]_Toy_Models_of_Superposition_&_SAEs
+    exercise_dir: part54_toy_models_of_superposition_and_saes
+  '2.1':
+    streamlit_page: 01_[2.1]_Intro_to_RL
+    exercise_dir: part1_intro_to_rl
+  '2.2':
+    streamlit_page: 02_[2.2]_DQN_&_VPG
+    exercise_dir: part2_q_learning_and_policy_gradient
+  '2.3':
+    streamlit_page: 03_[2.3]_PPO
+    exercise_dir: part3_ppo
+  '2.4':
+    streamlit_page: 04_[2.4]_RLHF
+    exercise_dir: part4_rlhf
+  '2.5':
+    streamlit_page: 05_[2.5]_MCTS_&_AlphaZero
+    exercise_dir: part5_mcts_alphazero
+  '3.1':
+    streamlit_page: 01_[3.1]_Intro_to_Evals
+    exercise_dir: part1_intro_to_evals
+  '3.2':
+    streamlit_page: 02_[3.2]_Dataset_Generation
+    exercise_dir: part2_dataset_generation
+  '3.3':
+    streamlit_page: 03_[3.3]_Running_Evals_with_Inspect
+    exercise_dir: part3_running_evals_with_inspect
+  '3.4':
+    streamlit_page: 04_[3.4]_LLM_Agents
+    exercise_dir: part4_llm_agents
+  '3.5':
+    streamlit_page: 05_[3.5]_AI_Control
+    exercise_dir: part5_ai_control
+  '4.1':
+    streamlit_page: 01_[4.1]_Emergent_Misalignment
+    exercise_dir: part1_emergent_misalignment
+  '4.2':
+    streamlit_page: 02_[4.2]_Science_of_Misalignment
+    exercise_dir: part2_science_of_misalignment
+  '4.3':
+    streamlit_page: 03_[4.3]_Interpreting_Reasoning_Models
+    exercise_dir: part3_interpreting_reasoning_models
+  '4.4':
+    streamlit_page: 04_[4.4]_LLM_Psychology_&_Persona_Vectors
+    exercise_dir: part4_persona_vectors
+  '4.5':
+    streamlit_page: 05_[4.5]_Investigator_Agents
+    exercise_dir: part5_investigator_agents
+  '0.6':
+    streamlit_page: 06_[0.6]_How_to_Know_When_an_Interpretability_Result_Is_Fake
+    exercise_dir: part6_fake_interpretability_results
+  '1.6':
+    streamlit_page: 40_[1.6]_Local_Frontier_ML_Infrastructure
+    exercise_dir: part6_frontier_ml_infrastructure
+  '5.1':
+    streamlit_page: 01_[5.1]_Gemma_from_Scratch
+    exercise_dir: part1_gemma_from_scratch
+  '5.2':
+    streamlit_page: 02_[5.2]_Gemma_Scope_and_Feature_Steering
+    exercise_dir: part2_gemma_scope_feature_steering
+  '5.3':
+    streamlit_page: 03_[5.3]_Mamba_from_Scratch
+    exercise_dir: part3_mamba_from_scratch
+  '5.4':
+    streamlit_page: 04_[5.4]_Mamba_State_Tracking
+    exercise_dir: part4_mamba_state_tracking
+  '5.5':
+    streamlit_page: 05_[5.5]_Diffusion_Language_Models
+    exercise_dir: part5_diffusion_language_models
+  '5.6':
+    streamlit_page: 06_[5.6]_Multimodal_Embedding_and_Function_Calling_Models
+    exercise_dir: part6_multimodal_embedding_function_models
+  '5.7':
+    streamlit_page: 07_[5.7]_Mamba-2_and_Structured_State-Space_Duality
+    exercise_dir: part7_mamba2_ssd
+  '6.1':
+    streamlit_page: 01_[6.1]_SAE_Variants
+    exercise_dir: part1_sae_variants
+  '6.2':
+    streamlit_page: 02_[6.2]_Gemma_Scope_Deep_Dive
+    exercise_dir: part2_gemma_scope_deep_dive
+  '6.3':
+    streamlit_page: 03_[6.3]_Transcoders_and_Attribution_Graphs
+    exercise_dir: part3_transcoders_attribution_graphs
+  '6.4':
+    streamlit_page: 04_[6.4]_Crosscoders_and_Model_Diffing
+    exercise_dir: part4_crosscoders_model_diffing
+  '7.1':
+    streamlit_page: 01_[7.1]_Logit_Lens_Tuned_Lens_and_Patchscopes
+    exercise_dir: part1_lenses_patchscopes
+  '7.2':
+    streamlit_page: 02_[7.2]_Feature_Verbalizers
+    exercise_dir: part2_feature_verbalizers
+  '7.3':
+    streamlit_page: 03_[7.3]_Mini_Activation_Oracles
+    exercise_dir: part3_mini_activation_oracles
+  '7.4':
+    streamlit_page: 04_[7.4]_Mini_Natural_Language_Autoencoders
+    exercise_dir: part4_mini_natural_language_autoencoders
+  '7.5':
+    streamlit_page: 05_[7.5]_Predictive_Concept_Decoders
+    exercise_dir: part5_predictive_concept_decoders
+  '8.1':
+    streamlit_page: 01_[8.1]_Activation_Patching_Refresher
+    exercise_dir: part1_activation_patching_refresher
+  '8.2':
+    streamlit_page: 02_[8.2]_Attribution_Patching_and_EAP
+    exercise_dir: part2_attribution_patching_eap
+  '8.3':
+    streamlit_page: 03_[8.3]_ACDC_and_Circuit_Metrics
+    exercise_dir: part3_acdc_circuit_metrics
+  '8.4':
+    streamlit_page: 04_[8.4]_Circuit_Tracing_with_Attribution_Graphs
+    exercise_dir: part4_circuit_tracing_attribution_graphs
+  '8.5':
+    streamlit_page: 05_[8.5]_Sparse_Feature_Circuits
+    exercise_dir: part5_sparse_feature_circuits
+  '9.1':
+    streamlit_page: 01_[9.1]_Refusal_Directions_and_Safe_Steering
+    exercise_dir: part1_refusal_directions_safe_steering
+  '9.2':
+    streamlit_page: 02_[9.2]_Chain_of_Thought_Faithfulness
+    exercise_dir: part2_cot_faithfulness
+  '9.3':
+    streamlit_page: 03_[9.3]_Emergent_Misalignment_Detection
+    exercise_dir: part3_emergent_misalignment_detection
+  '9.4':
+    streamlit_page: 04_[9.4]_White_box_Evals_and_Monitors
+    exercise_dir: part4_white_box_evals_monitors
+  '10.1':
+    streamlit_page: 01_[10.1]_Capstone_Research_Sprint
+    exercise_dir: part1_capstone_research_sprint
+  '11.1':
+    streamlit_page: 01_[11.1]_PCA_SVD_and_Geometry_Controls
+    exercise_dir: part1_pca_svd_geometry_controls
+  '11.2':
+    streamlit_page: 02_[11.2]_CCA_SVCCA_and_Representation_Alignment
+    exercise_dir: part2_cca_svcca_alignment
+  '11.3':
+    streamlit_page: 03_[11.3]_Causal_Abstraction_and_Distributed_Alignment_Search
+    exercise_dir: part3_causal_abstraction_das
+  '11.4':
+    streamlit_page: 04_[11.4]_Concept_Erasure
+    exercise_dir: part4_concept_erasure
+  '11.5':
+    streamlit_page: 05_[11.5]_Contrast_Consistent_Search
+    exercise_dir: part5_contrast_consistent_search
+  '12.1':
+    streamlit_page: 01_[12.1]_CLIP_SigLIP_and_VLM_Controls
+    exercise_dir: part1_clip_siglip_vlm_controls
+  '12.3':
+    streamlit_page: 03_[12.3]_Mini_VLM_from_Scratch
+    exercise_dir: part3_mini_vlm_from_scratch
+  '13.1':
+    streamlit_page: 01_[13.1]_Diffusion_and_Image_Generation_Controls
+    exercise_dir: part1_diffusion_image_controls
+  '13.2':
+    streamlit_page: 02_[13.2]_Denoising-Time_Causal_Patching
+    exercise_dir: part2_denoising_time_causal_patching
+  '14.1':
+    streamlit_page: 01_[14.1]_JEPA_and_World_Model_Controls
+    exercise_dir: part1_jepa_world_model_controls
+  '14.2':
+    streamlit_page: 02_[14.2]_I-JEPA_from_Scratch
+    exercise_dir: part2_ijepa_from_scratch
+  '15.1':
+    streamlit_page: 01_[15.1]_LoRA_DoRA_and_Adapter_Controls
+    exercise_dir: part1_lora_dora_adapter_controls
+  '15.2':
+    streamlit_page: 02_[15.2]_LoRA_vs_Full_Finetuning
+    exercise_dir: part2_lora_vs_full_finetuning
+  '16.1':
+    streamlit_page: 01_[16.1]_Exact_Shapley_on_Ground_Truth_Games
+    exercise_dir: part1_exact_shapley_ground_truth_games
+  '16.2':
+    streamlit_page: 02_[16.2]_KernelSHAP_and_PartitionSHAP_Controls
+    exercise_dir: part2_kernelshap_partition_shap_controls
+  '16.3':
+    streamlit_page: 03_[16.3]_Shapley_Interactions_with_shapiq
+    exercise_dir: part3_shapley_interactions_shapiq
+  '16.4':
+    streamlit_page: 04_[16.4]_TokenSHAP_and_TokenShapley
+    exercise_dir: part4_tokenshap_token_shapley
+  '16.5':
+    streamlit_page: 05_[16.5]_VLM_Modality_and_Region_SHAP
+    exercise_dir: part5_vlm_modality_region_shap
+  '16.6':
+    streamlit_page: 06_[16.6]_SHAP_vs_Activation_Patching
+    exercise_dir: part6_shap_vs_activation_patching
+  '16.7':
+    streamlit_page: 07_[16.7]_Data_Shapley_in_One_Training_Run
+    exercise_dir: part7_data_shapley_in_one_training_run
+  '16.8':
+    streamlit_page: 08_[16.8]_Do_SHAPley_and_Mechanistic_Interpretability_Agree
+    exercise_dir: part8_shapley_mechinterp_agreement
+  '16.9':
+    streamlit_page: 09_[16.9]_Influence_Functions_and_TracIn
+    exercise_dir: part9_influence_and_tracin
+  '16.10':
+    streamlit_page: 10_[16.10]_Datamodels
+    exercise_dir: part10_datamodels
+  '16.11':
+    streamlit_page: 11_[16.11]_Dataset_Cartography
+    exercise_dir: part11_dataset_cartography
+  '17.1':
+    streamlit_page: 01_[17.1]_Checkpoint_Archaeology_and_Mechanism_Emergence
+    exercise_dir: part1_checkpoint_archaeology
+  '16.12':
+    streamlit_page: 12_[16.12]_SAGE_Global_Importance
+    exercise_dir: part12_sage_global_importance
+  '16.13':
+    streamlit_page: 13_[16.13]_TreeSHAP_from_First_Principles
+    exercise_dir: part13_treeshap
+  '16.14':
+    streamlit_page: 14_[16.14]_DeepSHAP_When_Does_Fast_Attribution_Match_Exact_SHAP
+    exercise_dir: part14_deepshap
+  '16.15':
+    streamlit_page: 15_[16.15]_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate
+    exercise_dir: part15_gradientshap
+  '16.17':
+    streamlit_page: 17_[16.17]_One_Query_Many_Interactions
+    exercise_dir: part17_shapiq_estimators
 chapter_names:
-  0: "chapter0_fundamentals"
-  1: "chapter1_transformer_interp"
-  2: "chapter2_rl"
-  3: "chapter3_llm_evals"
-  4: "chapter4_alignment_science"
-  5: "chapter5_modern_architectures"
-  6: "chapter6_sparse_feature_methods"
-  7: "chapter7_activation_to_language"
-  8: "chapter8_automated_circuits"
-  9: "chapter9_alignment_interpretability"
-  10: "chapter10_capstone_research_sprint"
-  11: "chapter11_representation_geometry"
-  12: "chapter12_vlm_interpretability"
-  13: "chapter13_image_generation_interpretability"
-  14: "chapter14_jepa_world_models"
-  15: "chapter15_peft_misalignment"
-  16: "chapter16_shapley_attribution_baselines"
-  17: "chapter17_training_dynamics"
-
+  0: chapter0_fundamentals
+  1: chapter1_transformer_interp
+  2: chapter2_rl
+  3: chapter3_llm_evals
+  4: chapter4_alignment_science
+  5: chapter5_modern_architectures
+  6: chapter6_sparse_feature_methods
+  7: chapter7_activation_to_language
+  8: chapter8_automated_circuits
+  9: chapter9_alignment_interpretability
+  10: chapter10_capstone_research_sprint
+  11: chapter11_representation_geometry
+  12: chapter12_vlm_interpretability
+  13: chapter13_image_generation_interpretability
+  14: chapter14_jepa_world_models
+  15: chapter15_peft_misalignment
+  16: chapter16_shapley_attribution_baselines
+  17: chapter17_training_dynamics
 chapter_names_long:
-  0: "Chapter 0 - Fundamentals"
-  1: "Chapter 1 - Transformer Interp"
-  2: "Chapter 2 - Reinforcement Learning"
-  3: "Chapter 3 - LLM Evaluations"
-  4: "Chapter 4 - Alignment Science"
-  5: "Chapter 5 - Modern Architectures"
-  6: "Chapter 6 - Sparse Feature Methods"
-  7: "Chapter 7 - Activation to Language"
-  8: "Chapter 8 - Automated Circuits"
-  9: "Chapter 9 - Alignment Interpretability"
-  10: "Chapter 10 - Capstone Research Sprint"
-  11: "Chapter 11 - Representation Geometry"
-  12: "Chapter 12 - VLM Interpretability"
-  13: "Chapter 13 - Image-Generation Interpretability"
-  14: "Chapter 14 - JEPAs and World Models"
-  15: "Chapter 15 - PEFT and Misalignment"
-  16: "Chapter 16 - Shapley Attribution Baselines"
-  17: "Chapter 17 - Training Dynamics"
-
-# =============================================================================
-# CHAPTER METADATA (used by Heroku Django app)
-# Full chapter and section information for the web app
-# =============================================================================
+  0: Chapter 0 - Fundamentals
+  1: Chapter 1 - Transformer Interp
+  2: Chapter 2 - Reinforcement Learning
+  3: Chapter 3 - LLM Evaluations
+  4: Chapter 4 - Alignment Science
+  5: Chapter 5 - Modern Architectures
+  6: Chapter 6 - Sparse Feature Methods
+  7: Chapter 7 - Activation to Language
+  8: Chapter 8 - Automated Circuits
+  9: Chapter 9 - Alignment Interpretability
+  10: Chapter 10 - Capstone Research Sprint
+  11: Chapter 11 - Representation Geometry
+  12: Chapter 12 - VLM Interpretability
+  13: Chapter 13 - Image-Generation Interpretability
+  14: Chapter 14 - JEPAs and World Models
+  15: Chapter 15 - PEFT and Misalignment
+  16: Chapter 16 - Shapley Attribution Baselines
+  17: Chapter 17 - Training Dynamics
 chapters:
   chapter0_fundamentals:
-    title: "Chapter 0: Fundamentals"
-    short_title: "Fundamentals"
-    short_description: "Build your foundation in deep learning, from prerequisites through CNNs, optimization, backpropagation, and generative models."
-    description: "Build your foundation in deep learning, from prerequisites through CNNs, optimization, backpropagation, and generative models."
-    color: "#DC2626"
-    icon: "foundation"
-    header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-01.png"
+    title: 'Chapter 0: Fundamentals'
+    short_title: Fundamentals
+    short_description: Build your foundation in deep learning, from prerequisites through CNNs, optimization, backpropagation, and generative models.
+    description: Build your foundation in deep learning, from prerequisites through CNNs, optimization, backpropagation, and generative models.
+    color: '#DC2626'
+    icon: foundation
+    header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-01.png
     sections:
-      - id: "00_prereqs"
-        number: "0.0"
-        title: "Prerequisites"
-        exercise_dir: "part0_prereqs"
-        page_file: "00_[0.0]_Prerequisites.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-00.png"
-        streamlit_description: "These exercises go through some prerequisites for the rest of the chapter. A lot of reading material is provided. There are also some exercises on the `einops` and `einsum` libraries, as well as basic tensor manipulation - topics which will be very useful for subsequent exercises."
-        streamlit_description_short: "Essential PyTorch basics, einops/einsum libraries, and tensor manipulation fundamentals."
-      - id: "01_ray_tracing"
-        number: "0.1"
-        title: "Ray Tracing"
-        exercise_dir: "part1_ray_tracing"
-        page_file: "01_[0.1]_Ray_Tracing.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-01.png"
-        streamlit_description: "These exercises take you through the basics of PyTorch: how to write batched operations and do simple linear algebra. They also take you through the basic ideas behind raytracing, and how to render your own 3D mesh."
-        streamlit_description_short: "Learn batched operations and linear algebra by rendering 3D meshes with raytracing."
-      - id: "02_cnns"
-        number: "0.2"
-        title: "CNNs & ResNets"
-        exercise_dir: "part2_cnns"
-        page_file: "02_[0.2]_CNNs_&_ResNets.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-02.png"
-        streamlit_description: "This section is designed to get you familiar with basic neural networks: how they are structured, the basic operations like linear layers and convolutions which go into making them, and why they work as well as they do. You'll start by building your own very simple neural network to classify MNIST digits, but by the end of these exercises you'll be building and training your own ResNet to classify images from the CIFAR-10 dataset."
-        streamlit_description_short: "Build neural networks from scratch, from MNIST classifiers to ResNets for CIFAR-10."
-      - id: "03_optimization"
-        number: "0.3"
-        title: "Optimization"
-        exercise_dir: "part3_optimization"
-        page_file: "03_[0.3]_Optimization.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-03.png"
-        streamlit_description: "In these exercises, we explore various optimization algorithms and their roles in training deep learning models. We will delve into the inner workings of SGD, RMSprop, and Adam, and learn how to implement them. We'll also take a look at Weights and Biases, a tool that can be used to track and visualize the training process, and test different values of hyperparameters to find the most effective ones."
-        streamlit_description_short: "Implement SGD, RMSprop & Adam optimizers, and use Weights & Biases for experiment tracking."
-      - id: "04_backprop"
-        number: "0.4"
-        title: "Backpropagation"
-        exercise_dir: "part4_backprop"
-        page_file: "04_[0.4]_Backprop.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-04.png"
-        streamlit_description: "In this section, you're going to build your very own system that can run the backpropagation algorithm in essentially the same way as PyTorch does. By the end of the day, you'll be able to train a multi-layer perceptron neural network, using your own backprop system!"
-        streamlit_description_short: "Build your own autograd system from scratch and train MLPs with custom backpropagation."
-      - id: "05_vaes_gans"
-        number: "0.5"
-        title: "VAEs & GANs"
-        exercise_dir: "part5_vaes_and_gans"
-        page_file: "05_[0.5]_VAEs_&_GANs.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-05.png"
-        streamlit_description: "These exercises take you through two very important architectures for image generation: generative adversarial networks (GANs) and variational autoencoders (VAEs). Both are important when it comes to understanding more complex image-generation architectures such as diffusion models, and autoencoders are also used widely in many contexts (we'll encounter them later in the course!)."
-        streamlit_description_short: "Implement GANs and VAEs, foundational architectures for generative image models."
-      - id: "06_fake_interpretability_results"
-        number: "0.6"
-        title: "How to Know When an Interpretability Result Is Fake"
-        exercise_dir: "part6_fake_interpretability_results"
-        page_file: "06_[0.6]_How_to_Know_When_an_Interpretability_Result_Is_Fake.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-00.png"
-        status: "Fake-result diagnostic GT-0 controls added"
-        streamlit_description: "Build deterministic diagnostics for leakage, cherry-picked examples, probe overfitting, and random-direction steering failures."
-        streamlit_description_short: "Learn diagnostics for bogus interpretability results."
-
+    - id: 00_prereqs
+      number: '0.0'
+      title: Prerequisites
+      exercise_dir: part0_prereqs
+      page_file: 00_[0.0]_Prerequisites.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-00.png
+      streamlit_description: These exercises go through some prerequisites for the rest of the chapter. A lot of reading material is provided. There are also some exercises on the `einops` and `einsum` libraries, as well as basic tensor manipulation - topics which will be very useful for subsequent exercises.
+      streamlit_description_short: Essential PyTorch basics, einops/einsum libraries, and tensor manipulation fundamentals.
+    - id: 01_ray_tracing
+      number: '0.1'
+      title: Ray Tracing
+      exercise_dir: part1_ray_tracing
+      page_file: 01_[0.1]_Ray_Tracing.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-01.png
+      streamlit_description: 'These exercises take you through the basics of PyTorch: how to write batched operations and do simple linear algebra. They also take you through the basic ideas behind raytracing, and how to render your own 3D mesh.'
+      streamlit_description_short: Learn batched operations and linear algebra by rendering 3D meshes with raytracing.
+    - id: 02_cnns
+      number: '0.2'
+      title: CNNs & ResNets
+      exercise_dir: part2_cnns
+      page_file: 02_[0.2]_CNNs_&_ResNets.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-02.png
+      streamlit_description: 'This section is designed to get you familiar with basic neural networks: how they are structured, the basic operations like linear layers and convolutions which go into making them, and why they work as well as they do. You''ll start by building your own very simple neural network to classify MNIST digits, but by the end of these exercises you''ll be building and training your own ResNet to classify images from the CIFAR-10 dataset.'
+      streamlit_description_short: Build neural networks from scratch, from MNIST classifiers to ResNets for CIFAR-10.
+    - id: 03_optimization
+      number: '0.3'
+      title: Optimization
+      exercise_dir: part3_optimization
+      page_file: 03_[0.3]_Optimization.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-03.png
+      streamlit_description: In these exercises, we explore various optimization algorithms and their roles in training deep learning models. We will delve into the inner workings of SGD, RMSprop, and Adam, and learn how to implement them. We'll also take a look at Weights and Biases, a tool that can be used to track and visualize the training process, and test different values of hyperparameters to find the most effective ones.
+      streamlit_description_short: Implement SGD, RMSprop & Adam optimizers, and use Weights & Biases for experiment tracking.
+    - id: 04_backprop
+      number: '0.4'
+      title: Backpropagation
+      exercise_dir: part4_backprop
+      page_file: 04_[0.4]_Backprop.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-04.png
+      streamlit_description: In this section, you're going to build your very own system that can run the backpropagation algorithm in essentially the same way as PyTorch does. By the end of the day, you'll be able to train a multi-layer perceptron neural network, using your own backprop system!
+      streamlit_description_short: Build your own autograd system from scratch and train MLPs with custom backpropagation.
+    - id: 05_vaes_gans
+      number: '0.5'
+      title: VAEs & GANs
+      exercise_dir: part5_vaes_and_gans
+      page_file: 05_[0.5]_VAEs_&_GANs.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-05.png
+      streamlit_description: 'These exercises take you through two very important architectures for image generation: generative adversarial networks (GANs) and variational autoencoders (VAEs). Both are important when it comes to understanding more complex image-generation architectures such as diffusion models, and autoencoders are also used widely in many contexts (we''ll encounter them later in the course!).'
+      streamlit_description_short: Implement GANs and VAEs, foundational architectures for generative image models.
+    - id: 06_fake_interpretability_results
+      number: '0.6'
+      title: How to Know When an Interpretability Result Is Fake
+      exercise_dir: part6_fake_interpretability_results
+      page_file: 06_[0.6]_How_to_Know_When_an_Interpretability_Result_Is_Fake.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-00.png
+      status: Fake-result diagnostic GT-0 controls added
+      streamlit_description: Build deterministic diagnostics for leakage, cherry-picked examples, probe overfitting, and random-direction steering failures.
+      streamlit_description_short: Learn diagnostics for bogus interpretability results.
   chapter1_transformer_interp:
-    title: "Chapter 1: Transformer Interpretability"
-    short_title: "Interpretability"
-    short_description: "Dive deep into language model interpretability, from linear probes and SAEs to circuit analysis and toy models."
-    description: "Dive deep into language model interpretability, from linear probes and SAEs to circuit analysis and toy models."
-    color: "#D97706"
-    icon: "microscope"
-    header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-14-1.png"
+    title: 'Chapter 1: Transformer Interpretability'
+    short_title: Interpretability
+    short_description: Dive deep into language model interpretability, from linear probes and SAEs to circuit analysis and toy models.
+    description: Dive deep into language model interpretability, from linear probes and SAEs to circuit analysis and toy models.
+    color: '#D97706'
+    icon: microscope
+    header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-14-1.png
     sections:
-      # Core sections (1.1, 1.2)
-      - id: "01_transformers"
-        number: "1.1"
-        title: "Transformers from Scratch"
-        exercise_dir: "part1_transformer_from_scratch"
-        page_file: "01_[1.1]_Transformer_from_Scratch.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-11.png"
-        status: "All exercises complete and verified"
-        streamlit_description: "This section takes you through building a transformer from scratch, and demonstrates how to load the weights from a pretrained GPT-2 model (while also demystifying a lot of the jargon that may have intimidated you). By the end, you'll have a working GPT model."
-        streamlit_description_short: "Build a transformer from scratch and load pretrained GPT-2 weights."
-      - id: "02_intro_mech_interp"
-        number: "1.2"
-        title: "Intro to Mech Interp"
-        exercise_dir: "part2_intro_to_mech_interp"
-        page_file: "02_[1.2]_Intro_to_Mech_Interp.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-12.png"
-        status: "All exercises complete and verified"
-        streamlit_description: "In this section, you'll be introduced to TransformerLens: a library for performing interpretability research on transformer language models. You'll learn how to use TransformerLens to extract activations, apply hooks and find important attention heads."
-        streamlit_description_short: "Learn TransformerLens to extract activations, apply hooks & find important attention heads."
-
-      # Group 1.3: Probing and Representations
-      - id: "1_3_overview"
-        number: "1.3"
-        title: "Probing and Representations"
-        is_group: true
-        local_path: "1_3_probing_and_representations.md"
-        children: ["11_probing", "12_function_vectors", "13_saes"]
-        streamlit_description: "This section explores various techniques for understanding what representations neural networks learn. You'll work with linear probes, function vectors for model steering, and sparse autoencoders (SAEs)."
-      - id: "11_probing"
-        number: "1.3.1"
-        title: "Linear Probes"
-        exercise_dir: "part31_linear_probes"
-        page_file: "11_[1.3.1]_Linear_Probes.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/refs/heads/main/img/header-31.png"
-        parent: "1_3_overview"
-        status: "All exercises complete and verified"
-        streamlit_description: "In this section, you'll learn how to train linear probes. We'll work on a model trained to play Coup, and discover that we can use linear probes to uncover when it's lying."
-        streamlit_description_short: "Train linear probes to detect deception in a model playing the game Coup."
-      - id: "12_function_vectors"
-        number: "1.3.2"
-        title: "Function Vectors & Model Steering"
-        exercise_dir: "part32_function_vectors_and_model_steering"
-        page_file: "12_[1.3.2]_Function_Vectors_&_Model_Steering.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-14-2.png"
-        parent: "1_3_overview"
-        status: "All exercises complete and verified"
-        streamlit_description: "These exercises serve as an exploration of the following question: can we steer a model to produce different outputs / have a different behaviour, by intervening on the model's forward pass using vectors found by non gradient descent-based methods? The exercises also take you through use of the `nnsight` library."
-        streamlit_description_short: "Steer model behaviour using activation interventions and the nnsight library."
-      - id: "13_saes"
-        number: "1.3.3"
-        title: "Interpretability with SAEs"
-        exercise_dir: "part33_interp_with_saes"
-        page_file: "13_[1.3.3]_Interpretability_with_SAEs.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png"
-        parent: "1_3_overview"
-        status: "All exercises complete and verified"
-        streamlit_description: "These exercises take you through practical interpretability work with sparse autoencoders. You'll use the SAELens library to load pretrained SAEs, investigate learned features, and perform attribution and steering using SAE latents."
-        streamlit_description_short: "Use SAEs to decompose LLM activation space, monitor cognition & steer behaviour."
-      - id: "14_activation_oracles"
-        number: "1.3.4"
-        title: "Activation Oracles"
-        exercise_dir: "part34_activation_oracles"
-        page_file: "14_[1.3.4]_Activation_Oracles.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/refs/heads/main/img/header-63c.png"
-        parent: "1_3_overview"
-        status: "All exercises complete and verified"
-        streamlit_description: "In this section, you'll implement activation oracles, a technique for interpreting model activations by training small auxiliary models to predict the answer to a wide set of questions. You'll use these to recover hidden knowledge contained within taboo model organisms, and uncover a model's forward-predictions."
-        streamlit_description_short: "Implement activation oracles to reveal hidden knowledge and uncover forward-predictions."
-
-      # Group 1.4: Circuits in LLMs
-      - id: "1_4_overview"
-        number: "1.4"
-        title: "Circuits in LLMs"
-        is_group: true
-        local_path: "1_4_circuits_in_llms.md"
-        children: ["21_ioi", "22_sae_circuits"]
-        streamlit_description: "This section focuses on identifying and understanding specific circuits within language models. You'll work through the IOI circuit and explore SAE-based circuit analysis."
-      - id: "21_ioi"
-        number: "1.4.1"
-        title: "Indirect Object Identification"
-        exercise_dir: "part41_indirect_object_identification"
-        page_file: "21_[1.4.1]_Indirect_Object_Identification.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-14-1.png"
-        parent: "1_4_overview"
-        status: "All exercises complete and verified"
-        streamlit_description: "This notebook / document is built around the Interpretability in the Wild paper, in which the authors aim to understand the indirect object identification circuit in GPT-2 small. This circuit is resposible for the model's ability to complete sentences like 'John and Mary went to the shops, John gave a bag to' with the correct token 'Mary'."
-        streamlit_description_short: "Reverse-engineer the IOI circuit in GPT-2 small following 'Interpretability in the Wild'."
-      - id: "22_sae_circuits"
-        number: "1.4.2"
-        title: "SAE Circuits"
-        exercise_dir: "part42_sae_circuits"
-        page_file: "22_[1.4.2]_SAE_Circuits.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png"
-        parent: "1_4_overview"
-        status: "All exercises complete and verified"
-        streamlit_description: "In this section, you'll apply SAEs to circuit analysis. You'll learn how to use SAEs to decompose model computations and trace features through the model's layers."
-        streamlit_description_short: "Apply SAEs to circuit analysis, decomposing computations and tracing features through layers."
-
-      # Group 1.5: Toy Models
-      - id: "1_5_overview"
-        number: "1.5"
-        title: "Toy Models"
-        is_group: true
-        local_path: "1_5_toy_models.md"
-        children: ["31_brackets", "32_grokking", "33_othellogpt", "34_superposition"]
-        streamlit_description: "When models are trained on synthetic, algorithmic tasks, they often learn to do some clean, interpretable computation inside. This section explores several such toy models to build intuition for interpretability."
-      - id: "31_brackets"
-        number: "1.5.1"
-        title: "Balanced Bracket Classifier"
-        exercise_dir: "part51_balanced_bracket_classifier"
-        page_file: "31_[1.5.1]_Balanced_Bracket_Classifier.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-15-1.png"
-        parent: "1_5_overview"
-        status: "All exercises complete and verified"
-        streamlit_description: "In these exercises, we'll interpret a 3-layer transformer which was trained to perform bracket classification, i.e. taking a string of parentheses like '(())()' and trying to output a prediction of 'balanced' or 'unbalanced'. We will find an algorithmic solution for solving this problem, and reverse-engineer one of the circuits in our model."
-        streamlit_description_short: "Reverse-engineer the algorithm learned by a bracket-balancing transformer."
-      - id: "32_grokking"
-        number: "1.5.2"
-        title: "Grokking & Modular Arithmetic"
-        exercise_dir: "part52_grokking_and_modular_arithmetic"
-        page_file: "32_[1.5.2]_Grokking_&_Modular_Arithmetic.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-15-2.png"
-        parent: "1_5_overview"
-        status: "All exercises complete and verified"
-        streamlit_description: "Our goal for these exercises is to reverse-engineer a one-layer transformer trained on modular addition! It turns out that the circuit responsible for this involves discrete Fourier transforms and trigonometric identities. We'll also look at the model's training over time, and find evidence of grokking."
-        streamlit_description_short: "Discover Fourier circuits in modular arithmetic models and observe grokking in action."
-      - id: "33_othellogpt"
-        number: "1.5.3"
-        title: "OthelloGPT"
-        exercise_dir: "part53_othellogpt"
-        page_file: "33_[1.5.3]_OthelloGPT.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-15-3.png"
-        parent: "1_5_overview"
-        status: "All exercises complete and verified"
-        streamlit_description: "These exercises explore the OthelloGPT model, which is a GPT-2-like model trained on the Othello dataset. The paper Emergent World Representations investigates whether the model has an interpretable board state. We will reproduce and extend these results."
-        streamlit_description_short: "Investigate emergent world representations in a GPT model trained on Othello games."
-      - id: "34_superposition"
-        number: "1.5.4"
-        title: "Superposition & SAEs"
-        exercise_dir: "part54_toy_models_of_superposition_and_saes"
-        page_file: "34_[1.5.4]_Toy_Models_of_Superposition_&_SAEs.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-1.png"
-        parent: "1_5_overview"
-        status: "All exercises complete and verified"
-        streamlit_description: "Superposition is the phenomena observed in which models represent more features than they have parameters. In this section you'll learn about the mathematical underpinnings of superposition, by replicating the key results from Anthropic's Toy Models of Superposition paper. You'll also build the sparse autoencoder (SAE) architecture and train it to recover features."
-        streamlit_description_short: "Replicate Anthropic's superposition paper and train SAEs to recover features."
-      # Special section: Monthly Algorithmic Problems (not a numbered section)
-      - id: "monthly_algorithmic"
-        title: "Monthly Algorithmic Problems"
-        is_special: true
-        page_file: "39_[1.5.X]_Monthly_Algorithmic_Problems.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/alg-combined.png"
-        streamlit_img_url: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/alg-combined.png"
-        streamlit_description: "At the end of this section, we have a series of 7 algorithmic problems, a series which ran periodically between mid 2023 and late 2024. These are designed to test some of the skills and tools you'll have gathered during the rest of this section. Note that these are better thought of as fun challenges / hackathon-type problems, as opposed to opportunities to learn about specific topics or tools, so we recommend not attempting them while you're working through the ARENA material during any kind of structured program (except as a hackathon)."
-        streamlit_description_short: "7 algorithmic challenges to test your interpretability skills in hackathon format."
-
-      - id: "40_frontier_infra"
-        number: "1.6"
-        title: "Local Frontier ML Infrastructure"
-        exercise_dir: "part6_frontier_ml_infrastructure"
-        page_file: "40_[1.6]_Local_Frontier_ML_Infrastructure.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-14-1.png"
-        status: "Infrastructure harness added"
-        streamlit_description: "Build the local-first verification harness for frontier-extension notebooks: environment checks, VRAM estimates, HF parity metrics, generation parity, activation storage, and smoke-test contracts."
-        streamlit_description_short: "Reusable verification harness for local frontier-model notebooks."
-
+    - id: 01_transformers
+      number: '1.1'
+      title: Transformers from Scratch
+      exercise_dir: part1_transformer_from_scratch
+      page_file: 01_[1.1]_Transformer_from_Scratch.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-11.png
+      status: All exercises complete and verified
+      streamlit_description: This section takes you through building a transformer from scratch, and demonstrates how to load the weights from a pretrained GPT-2 model (while also demystifying a lot of the jargon that may have intimidated you). By the end, you'll have a working GPT model.
+      streamlit_description_short: Build a transformer from scratch and load pretrained GPT-2 weights.
+    - id: 02_intro_mech_interp
+      number: '1.2'
+      title: Intro to Mech Interp
+      exercise_dir: part2_intro_to_mech_interp
+      page_file: 02_[1.2]_Intro_to_Mech_Interp.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-12.png
+      status: All exercises complete and verified
+      streamlit_description: 'In this section, you''ll be introduced to TransformerLens: a library for performing interpretability research on transformer language models. You''ll learn how to use TransformerLens to extract activations, apply hooks and find important attention heads.'
+      streamlit_description_short: Learn TransformerLens to extract activations, apply hooks & find important attention heads.
+    - id: 1_3_overview
+      number: '1.3'
+      title: Probing and Representations
+      is_group: true
+      local_path: 1_3_probing_and_representations.md
+      children:
+      - 11_probing
+      - 12_function_vectors
+      - 13_saes
+      streamlit_description: This section explores various techniques for understanding what representations neural networks learn. You'll work with linear probes, function vectors for model steering, and sparse autoencoders (SAEs).
+    - id: 11_probing
+      number: 1.3.1
+      title: Linear Probes
+      exercise_dir: part31_linear_probes
+      page_file: 11_[1.3.1]_Linear_Probes.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/refs/heads/main/img/header-31.png
+      parent: 1_3_overview
+      status: All exercises complete and verified
+      streamlit_description: In this section, you'll learn how to train linear probes. We'll work on a model trained to play Coup, and discover that we can use linear probes to uncover when it's lying.
+      streamlit_description_short: Train linear probes to detect deception in a model playing the game Coup.
+    - id: 12_function_vectors
+      number: 1.3.2
+      title: Function Vectors & Model Steering
+      exercise_dir: part32_function_vectors_and_model_steering
+      page_file: 12_[1.3.2]_Function_Vectors_&_Model_Steering.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-14-2.png
+      parent: 1_3_overview
+      status: All exercises complete and verified
+      streamlit_description: 'These exercises serve as an exploration of the following question: can we steer a model to produce different outputs / have a different behaviour, by intervening on the model''s forward pass using vectors found by non gradient descent-based methods? The exercises also take you through use of the `nnsight` library.'
+      streamlit_description_short: Steer model behaviour using activation interventions and the nnsight library.
+    - id: 13_saes
+      number: 1.3.3
+      title: Interpretability with SAEs
+      exercise_dir: part33_interp_with_saes
+      page_file: 13_[1.3.3]_Interpretability_with_SAEs.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png
+      parent: 1_3_overview
+      status: All exercises complete and verified
+      streamlit_description: These exercises take you through practical interpretability work with sparse autoencoders. You'll use the SAELens library to load pretrained SAEs, investigate learned features, and perform attribution and steering using SAE latents.
+      streamlit_description_short: Use SAEs to decompose LLM activation space, monitor cognition & steer behaviour.
+    - id: 14_activation_oracles
+      number: 1.3.4
+      title: Activation Oracles
+      exercise_dir: part34_activation_oracles
+      page_file: 14_[1.3.4]_Activation_Oracles.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/refs/heads/main/img/header-63c.png
+      parent: 1_3_overview
+      status: All exercises complete and verified
+      streamlit_description: In this section, you'll implement activation oracles, a technique for interpreting model activations by training small auxiliary models to predict the answer to a wide set of questions. You'll use these to recover hidden knowledge contained within taboo model organisms, and uncover a model's forward-predictions.
+      streamlit_description_short: Implement activation oracles to reveal hidden knowledge and uncover forward-predictions.
+    - id: 1_4_overview
+      number: '1.4'
+      title: Circuits in LLMs
+      is_group: true
+      local_path: 1_4_circuits_in_llms.md
+      children:
+      - 21_ioi
+      - 22_sae_circuits
+      streamlit_description: This section focuses on identifying and understanding specific circuits within language models. You'll work through the IOI circuit and explore SAE-based circuit analysis.
+    - id: 21_ioi
+      number: 1.4.1
+      title: Indirect Object Identification
+      exercise_dir: part41_indirect_object_identification
+      page_file: 21_[1.4.1]_Indirect_Object_Identification.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-14-1.png
+      parent: 1_4_overview
+      status: All exercises complete and verified
+      streamlit_description: This notebook / document is built around the Interpretability in the Wild paper, in which the authors aim to understand the indirect object identification circuit in GPT-2 small. This circuit is resposible for the model's ability to complete sentences like 'John and Mary went to the shops, John gave a bag to' with the correct token 'Mary'.
+      streamlit_description_short: Reverse-engineer the IOI circuit in GPT-2 small following 'Interpretability in the Wild'.
+    - id: 22_sae_circuits
+      number: 1.4.2
+      title: SAE Circuits
+      exercise_dir: part42_sae_circuits
+      page_file: 22_[1.4.2]_SAE_Circuits.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png
+      parent: 1_4_overview
+      status: All exercises complete and verified
+      streamlit_description: In this section, you'll apply SAEs to circuit analysis. You'll learn how to use SAEs to decompose model computations and trace features through the model's layers.
+      streamlit_description_short: Apply SAEs to circuit analysis, decomposing computations and tracing features through layers.
+    - id: 1_5_overview
+      number: '1.5'
+      title: Toy Models
+      is_group: true
+      local_path: 1_5_toy_models.md
+      children:
+      - 31_brackets
+      - 32_grokking
+      - 33_othellogpt
+      - 34_superposition
+      streamlit_description: When models are trained on synthetic, algorithmic tasks, they often learn to do some clean, interpretable computation inside. This section explores several such toy models to build intuition for interpretability.
+    - id: 31_brackets
+      number: 1.5.1
+      title: Balanced Bracket Classifier
+      exercise_dir: part51_balanced_bracket_classifier
+      page_file: 31_[1.5.1]_Balanced_Bracket_Classifier.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-15-1.png
+      parent: 1_5_overview
+      status: All exercises complete and verified
+      streamlit_description: In these exercises, we'll interpret a 3-layer transformer which was trained to perform bracket classification, i.e. taking a string of parentheses like '(())()' and trying to output a prediction of 'balanced' or 'unbalanced'. We will find an algorithmic solution for solving this problem, and reverse-engineer one of the circuits in our model.
+      streamlit_description_short: Reverse-engineer the algorithm learned by a bracket-balancing transformer.
+    - id: 32_grokking
+      number: 1.5.2
+      title: Grokking & Modular Arithmetic
+      exercise_dir: part52_grokking_and_modular_arithmetic
+      page_file: 32_[1.5.2]_Grokking_&_Modular_Arithmetic.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-15-2.png
+      parent: 1_5_overview
+      status: All exercises complete and verified
+      streamlit_description: Our goal for these exercises is to reverse-engineer a one-layer transformer trained on modular addition! It turns out that the circuit responsible for this involves discrete Fourier transforms and trigonometric identities. We'll also look at the model's training over time, and find evidence of grokking.
+      streamlit_description_short: Discover Fourier circuits in modular arithmetic models and observe grokking in action.
+    - id: 33_othellogpt
+      number: 1.5.3
+      title: OthelloGPT
+      exercise_dir: part53_othellogpt
+      page_file: 33_[1.5.3]_OthelloGPT.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-15-3.png
+      parent: 1_5_overview
+      status: All exercises complete and verified
+      streamlit_description: These exercises explore the OthelloGPT model, which is a GPT-2-like model trained on the Othello dataset. The paper Emergent World Representations investigates whether the model has an interpretable board state. We will reproduce and extend these results.
+      streamlit_description_short: Investigate emergent world representations in a GPT model trained on Othello games.
+    - id: 34_superposition
+      number: 1.5.4
+      title: Superposition & SAEs
+      exercise_dir: part54_toy_models_of_superposition_and_saes
+      page_file: 34_[1.5.4]_Toy_Models_of_Superposition_&_SAEs.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-1.png
+      parent: 1_5_overview
+      status: All exercises complete and verified
+      streamlit_description: Superposition is the phenomena observed in which models represent more features than they have parameters. In this section you'll learn about the mathematical underpinnings of superposition, by replicating the key results from Anthropic's Toy Models of Superposition paper. You'll also build the sparse autoencoder (SAE) architecture and train it to recover features.
+      streamlit_description_short: Replicate Anthropic's superposition paper and train SAEs to recover features.
+    - id: monthly_algorithmic
+      title: Monthly Algorithmic Problems
+      is_special: true
+      page_file: 39_[1.5.X]_Monthly_Algorithmic_Problems.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/alg-combined.png
+      streamlit_img_url: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/alg-combined.png
+      streamlit_description: At the end of this section, we have a series of 7 algorithmic problems, a series which ran periodically between mid 2023 and late 2024. These are designed to test some of the skills and tools you'll have gathered during the rest of this section. Note that these are better thought of as fun challenges / hackathon-type problems, as opposed to opportunities to learn about specific topics or tools, so we recommend not attempting them while you're working through the ARENA material during any kind of structured program (except as a hackathon).
+      streamlit_description_short: 7 algorithmic challenges to test your interpretability skills in hackathon format.
+    - id: 40_frontier_infra
+      number: '1.6'
+      title: Local Frontier ML Infrastructure
+      exercise_dir: part6_frontier_ml_infrastructure
+      page_file: 40_[1.6]_Local_Frontier_ML_Infrastructure.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-14-1.png
+      status: Infrastructure harness added
+      streamlit_description: 'Build the local-first verification harness for frontier-extension notebooks: environment checks, VRAM estimates, HF parity metrics, generation parity, activation storage, and smoke-test contracts.'
+      streamlit_description_short: Reusable verification harness for local frontier-model notebooks.
   chapter2_rl:
-    title: "Chapter 2: Reinforcement Learning"
-    short_title: "RL"
-    short_description: "Take a whirlwind tour through RL, starting from tabular learning and Atari, and ending with some of the cutting-edge techniques used in current LLM post-training."
-    description: "Take a whirlwind tour through RL, starting from tabular learning and Atari, and ending with some of the cutting-edge techniques used in current LLM post-training."
-    color: "#059669"
-    icon: "gamepad"
-    header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-24.png"
+    title: 'Chapter 2: Reinforcement Learning'
+    short_title: RL
+    short_description: Take a whirlwind tour through RL, starting from tabular learning and Atari, and ending with some of the cutting-edge techniques used in current LLM post-training.
+    description: Take a whirlwind tour through RL, starting from tabular learning and Atari, and ending with some of the cutting-edge techniques used in current LLM post-training.
+    color: '#059669'
+    icon: gamepad
+    header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-24.png
     sections:
-      - id: "01_intro_rl"
-        number: "2.1"
-        title: "Intro to RL"
-        exercise_dir: "part1_intro_to_rl"
-        page_file: "01_[2.1]_Intro_to_RL.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-21.png"
-        status: "All exercises complete and verified"
-        streamlit_description: "This section is designed to bring you up to speed with the basics of reinforcement learning. Before we cover the big topics like PPO and RLHF, we need to build a strong foundation by understanding what RL is and what kinds of problems it was designed to solve."
-        streamlit_description_short: "RL fundamentals: MDPs, policies, value functions, and multi-armed bandits."
-      - id: "02_dqn_vpg"
-        number: "2.2"
-        title: "DQN & VPG"
-        exercise_dir: "part2_q_learning_and_policy_gradient"
-        python_file: "solutions_dqn.py"
-        page_file: "02_[2.2]_DQN_&_VPG.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-22.png"
-        status: "All exercises complete and verified"
-        streamlit_description: "In this section, you'll implement Deep Q-Learning (DQN) and Vanilla Policy Gradient (VPG). DQN was used in a landmark paper Playing Atari with Deep Reinforcement Learning, and VPG forms the basis for more advanced policy gradient methods like PPO."
-        streamlit_description_short: "Implement DQN and Vanilla Policy Gradient for CartPole and beyond."
-      - id: "03_ppo"
-        number: "2.3"
-        title: "PPO"
-        exercise_dir: "part3_ppo"
-        page_file: "03_[2.3]_PPO.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-23.png"
-        status: "All exercises complete and verified"
-        streamlit_description: "Proximal Policy Optimization (PPO) is a cutting-edge reinforcement learning algorithm. In this section, you'll build your own agent to perform PPO on the CartPole environment. By the end, you should be able to train your agent to near perfect performance."
-        streamlit_description_short: "Build a PPO agent from scratch and train it to master CartPole."
-      - id: "04_rlhf"
-        number: "2.4"
-        title: "RLHF"
-        exercise_dir: "part4_rlhf"
-        page_file: "04_[2.4]_RLHF.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-24.png"
-        status: "All exercises complete and verified"
-        streamlit_description: "This section is designed to take you through a full implementation of RLHF (Reinforcement Learning from Human Feedback). Much of this follows on directly from the PPO implementation, with only a few minor adjustments and new concepts."
-        streamlit_description_short: "Implement RLHF end-to-end, applying PPO to language model finetuning."
-      - id: "05_mcts_alphazero"
-        number: "2.5"
-        title: "MCTS & AlphaZero"
-        exercise_dir: "part5_mcts_alphazero"
-        page_file: "05_[2.5]_MCTS_&_AlphaZero.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-25.png"
-        status: "Exercises mostly verified, but may need some polishing and testing"
-        streamlit_description: "In this section, you'll implement the Monte Carlo Tree Search (MCTS) algorithm as used by AlphaZero to train game-playing agents. You'll then apply this agent to play connect four."
-        streamlit_description_short: "Implement MCTS and AlphaZero to train agents for complex games."
-
+    - id: 01_intro_rl
+      number: '2.1'
+      title: Intro to RL
+      exercise_dir: part1_intro_to_rl
+      page_file: 01_[2.1]_Intro_to_RL.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-21.png
+      status: All exercises complete and verified
+      streamlit_description: This section is designed to bring you up to speed with the basics of reinforcement learning. Before we cover the big topics like PPO and RLHF, we need to build a strong foundation by understanding what RL is and what kinds of problems it was designed to solve.
+      streamlit_description_short: 'RL fundamentals: MDPs, policies, value functions, and multi-armed bandits.'
+    - id: 02_dqn_vpg
+      number: '2.2'
+      title: DQN & VPG
+      exercise_dir: part2_q_learning_and_policy_gradient
+      python_file: solutions_dqn.py
+      page_file: 02_[2.2]_DQN_&_VPG.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-22.png
+      status: All exercises complete and verified
+      streamlit_description: In this section, you'll implement Deep Q-Learning (DQN) and Vanilla Policy Gradient (VPG). DQN was used in a landmark paper Playing Atari with Deep Reinforcement Learning, and VPG forms the basis for more advanced policy gradient methods like PPO.
+      streamlit_description_short: Implement DQN and Vanilla Policy Gradient for CartPole and beyond.
+    - id: 03_ppo
+      number: '2.3'
+      title: PPO
+      exercise_dir: part3_ppo
+      page_file: 03_[2.3]_PPO.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-23.png
+      status: All exercises complete and verified
+      streamlit_description: Proximal Policy Optimization (PPO) is a cutting-edge reinforcement learning algorithm. In this section, you'll build your own agent to perform PPO on the CartPole environment. By the end, you should be able to train your agent to near perfect performance.
+      streamlit_description_short: Build a PPO agent from scratch and train it to master CartPole.
+    - id: 04_rlhf
+      number: '2.4'
+      title: RLHF
+      exercise_dir: part4_rlhf
+      page_file: 04_[2.4]_RLHF.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-24.png
+      status: All exercises complete and verified
+      streamlit_description: This section is designed to take you through a full implementation of RLHF (Reinforcement Learning from Human Feedback). Much of this follows on directly from the PPO implementation, with only a few minor adjustments and new concepts.
+      streamlit_description_short: Implement RLHF end-to-end, applying PPO to language model finetuning.
+    - id: 05_mcts_alphazero
+      number: '2.5'
+      title: MCTS & AlphaZero
+      exercise_dir: part5_mcts_alphazero
+      page_file: 05_[2.5]_MCTS_&_AlphaZero.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-25.png
+      status: Exercises mostly verified, but may need some polishing and testing
+      streamlit_description: In this section, you'll implement the Monte Carlo Tree Search (MCTS) algorithm as used by AlphaZero to train game-playing agents. You'll then apply this agent to play connect four.
+      streamlit_description_short: Implement MCTS and AlphaZero to train agents for complex games.
   chapter3_llm_evals:
-    title: "Chapter 3: LLM Evaluations"
-    short_title: "Evals"
-    short_description: "Learn to build and run evaluations for large language models, including dataset generation and LLM agents."
-    description: "Learn to build and run evaluations for large language models, including dataset generation and LLM agents."
-    color: "#2563EB"
-    icon: "clipboard-check"
-    header_image: "https://raw.githubusercontent.com/callummcdougall/computational-thread-art/master/example_images/misc/robot-magnifying-glass.png"
+    title: 'Chapter 3: LLM Evaluations'
+    short_title: Evals
+    short_description: Learn to build and run evaluations for large language models, including dataset generation and LLM agents.
+    description: Learn to build and run evaluations for large language models, including dataset generation and LLM agents.
+    color: '#2563EB'
+    icon: clipboard-check
+    header_image: https://raw.githubusercontent.com/callummcdougall/computational-thread-art/master/example_images/misc/robot-magnifying-glass.png
     sections:
-      - id: "01_intro_evals"
-        number: "3.1"
-        title: "Intro to Evals"
-        exercise_dir: "part1_intro_to_evals"
-        page_file: "01_[3.1]_Intro_to_Evals.md"
-        header_image: "https://raw.githubusercontent.com/callummcdougall/computational-thread-art/master/example_images/misc/robot-hal.png"
-        status: "All exercises complete and verified"
-        streamlit_description: "In this section, we will focus on designing a threat model and specification for a chosen model property. This section goes over the first, and hardest, step of real eval research: working out what to measure and how to measure it."
-        streamlit_description_short: "Design threat models and specifications for evaluating model properties."
-      - id: "02_dataset_gen"
-        number: "3.2"
-        title: "Dataset Generation"
-        exercise_dir: "part2_dataset_generation"
-        page_file: "02_[3.2]_Dataset_Generation.md"
-        header_image: "https://raw.githubusercontent.com/callummcdougall/computational-thread-art/master/example_images/misc/robot-papers.png"
-        status: "All exercises complete and verified"
-        streamlit_description: "The goal of this section is to learn how to use LLMs to generate and refine an evaluation dataset. By the end, you will have generated a (hopefully) high-quality dataset of ~300 questions."
-        streamlit_description_short: "Use LLMs to generate and refine high-quality evaluation datasets."
-      - id: "03_running_evals"
-        number: "3.3"
-        title: "Running Evals with Inspect"
-        exercise_dir: "part3_running_evals_with_inspect"
-        page_file: "03_[3.3]_Running_Evals_with_Inspect.md"
-        header_image: "https://raw.githubusercontent.com/callummcdougall/computational-thread-art/master/example_images/misc/robot-magnifying-glass.png"
-        status: "All exercises complete and verified"
-        streamlit_description: "This section will introduce you to the process of running an evaluation using the Inspect library. This is a library that has been built by UK AISI for ease-of-use, and to standardise LLM evaluations."
-        streamlit_description_short: "Run standardised LLM evaluations using UK AISI's Inspect library."
-      - id: "04_llm_agents"
-        number: "3.4"
-        title: "LLM Agents"
-        exercise_dir: "part4_llm_agents"
-        page_file: "04_[3.4]_LLM_Agents.md"
-        header_image: "https://raw.githubusercontent.com/callummcdougall/computational-thread-art/master/example_images/misc/robot-typewriter.png"
-        status: "All exercises complete and verified"
-        streamlit_description: "This set of exercises involves working with LLM agents. LLM agents consist of a scaffolding programs interacting with an LLM API. You'll build agents that can play tasks like the Wikipedia Racing game."
-        streamlit_description_short: "Build LLM agents with scaffolding to play Wikipedia Racing and other tasks."
-      - id: "05_ai_control"
-        number: "3.5"
-        title: "AI Control"
-        exercise_dir: "part5_ai_control"
-        page_file: "05_[3.5]_AI_Control.md"
-        header_image: "https://raw.githubusercontent.com/callummcdougall/computational-thread-art/master/example_images/misc/robot-magnifying-glass.png"
-        status: "All exercises complete and verified"
-        streamlit_description: "This section will introduce you to monitoring and controlling AI systems. You'll learn how to implement some simple control protocols for AI systems writing code in a simulated environment"
-        streamlit_description_short: "Learn to monitor and control AI systems in a simulated environment."
-
+    - id: 01_intro_evals
+      number: '3.1'
+      title: Intro to Evals
+      exercise_dir: part1_intro_to_evals
+      page_file: 01_[3.1]_Intro_to_Evals.md
+      header_image: https://raw.githubusercontent.com/callummcdougall/computational-thread-art/master/example_images/misc/robot-hal.png
+      status: All exercises complete and verified
+      streamlit_description: 'In this section, we will focus on designing a threat model and specification for a chosen model property. This section goes over the first, and hardest, step of real eval research: working out what to measure and how to measure it.'
+      streamlit_description_short: Design threat models and specifications for evaluating model properties.
+    - id: 02_dataset_gen
+      number: '3.2'
+      title: Dataset Generation
+      exercise_dir: part2_dataset_generation
+      page_file: 02_[3.2]_Dataset_Generation.md
+      header_image: https://raw.githubusercontent.com/callummcdougall/computational-thread-art/master/example_images/misc/robot-papers.png
+      status: All exercises complete and verified
+      streamlit_description: The goal of this section is to learn how to use LLMs to generate and refine an evaluation dataset. By the end, you will have generated a (hopefully) high-quality dataset of ~300 questions.
+      streamlit_description_short: Use LLMs to generate and refine high-quality evaluation datasets.
+    - id: 03_running_evals
+      number: '3.3'
+      title: Running Evals with Inspect
+      exercise_dir: part3_running_evals_with_inspect
+      page_file: 03_[3.3]_Running_Evals_with_Inspect.md
+      header_image: https://raw.githubusercontent.com/callummcdougall/computational-thread-art/master/example_images/misc/robot-magnifying-glass.png
+      status: All exercises complete and verified
+      streamlit_description: This section will introduce you to the process of running an evaluation using the Inspect library. This is a library that has been built by UK AISI for ease-of-use, and to standardise LLM evaluations.
+      streamlit_description_short: Run standardised LLM evaluations using UK AISI's Inspect library.
+    - id: 04_llm_agents
+      number: '3.4'
+      title: LLM Agents
+      exercise_dir: part4_llm_agents
+      page_file: 04_[3.4]_LLM_Agents.md
+      header_image: https://raw.githubusercontent.com/callummcdougall/computational-thread-art/master/example_images/misc/robot-typewriter.png
+      status: All exercises complete and verified
+      streamlit_description: This set of exercises involves working with LLM agents. LLM agents consist of a scaffolding programs interacting with an LLM API. You'll build agents that can play tasks like the Wikipedia Racing game.
+      streamlit_description_short: Build LLM agents with scaffolding to play Wikipedia Racing and other tasks.
+    - id: 05_ai_control
+      number: '3.5'
+      title: AI Control
+      exercise_dir: part5_ai_control
+      page_file: 05_[3.5]_AI_Control.md
+      header_image: https://raw.githubusercontent.com/callummcdougall/computational-thread-art/master/example_images/misc/robot-magnifying-glass.png
+      status: All exercises complete and verified
+      streamlit_description: This section will introduce you to monitoring and controlling AI systems. You'll learn how to implement some simple control protocols for AI systems writing code in a simulated environment
+      streamlit_description_short: Learn to monitor and control AI systems in a simulated environment.
   chapter4_alignment_science:
-    title: "Chapter 4: Alignment Science"
-    short_title: "Alignment Science"
-    short_description: "Case studies in misalignment, covering a range of topics and techniques (both white-box and black-box)."
-    description: "This chapter contains a variety of different exercises. Most of them don't fit neatly into either interpretability or evals, and all of them are bear directly on real AI safety research. This chapter's grouping was loosely inspired by Anthropic's 'Alignment Science' research thread, which you can read <a href='https://alignment.anthropic.com/'>here</a>."
-    color: "#4F46E5"
-    icon: "compass"
-    header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/refs/heads/main/img/header-65.png"
+    title: 'Chapter 4: Alignment Science'
+    short_title: Alignment Science
+    short_description: Case studies in misalignment, covering a range of topics and techniques (both white-box and black-box).
+    description: This chapter contains a variety of different exercises. Most of them don't fit neatly into either interpretability or evals, and all of them are bear directly on real AI safety research. This chapter's grouping was loosely inspired by Anthropic's 'Alignment Science' research thread, which you can read <a href='https://alignment.anthropic.com/'>here</a>.
+    color: '#4F46E5'
+    icon: compass
+    header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/refs/heads/main/img/header-65.png
     sections:
-      - id: "1_emergent_misalignment"
-        number: "4.1"
-        title: "Emergent Misalignment"
-        exercise_dir: "part1_emergent_misalignment"
-        page_file: "01_[4.1]_Emergent_Misalignment.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/refs/heads/main/img/header-61c.png"
-        status: "All exercises complete and verified"
-        streamlit_description: "In this section, you'll investigate emergent misalignment in larger language models. You'll explore model organisms of misalignment and see how they store representations & can be steered on and evaluated."
-        streamlit_description_short: "Study emergent misalignment in finetuned models."
-      - id: "2_science_misalignment"
-        number: "4.2"
-        title: "Science of Misalignment"
-        exercise_dir: "part2_science_of_misalignment"
-        page_file: "02_[4.2]_Science_of_Misalignment.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/refs/heads/main/img/header-62b.png"
-        status: "All exercises complete and verified"
-        streamlit_description: "In this section you'll explore the science of misalignment & how to investigate compelling examples of misalignment, through 2 case studies: shutdown resistance and alignment faking."
-        streamlit_description_short: "Two case studies in black-box investigation to understand and characterize seemingly misaligned behaviour."
-      - id: "3_reasoning_models"
-        number: "4.3"
-        title: "Interpreting Reasoning Models"
-        exercise_dir: "part3_interpreting_reasoning_models"
-        page_file: "03_[4.3]_Interpreting_Reasoning_Models.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/refs/heads/main/img/header-64.png"
-        status: "All exercises complete and verified"
-        streamlit_description: "Apply interpretability techniques to chain-of-thought reasoning models, investigating and characterizing the parts of reasoning which are most causally important on downstream output."
-        streamlit_description_short: "Apply interpretability techniques to chain-of-thought reasoning models."
-      - id: "4_persona_vectors"
-        number: "4.4"
-        title: "LLM Psychology & Persona Vectors"
-        exercise_dir: "part4_persona_vectors"
-        page_file: "04_[4.4]_LLM_Psychology_&_Persona_Vectors.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/refs/heads/main/img/header-65.png"
-        status: "All exercises complete and verified"
-        streamlit_description: "Perform internals-based analysis on the representations learned by language models, exploring the different personas they can adopt during multi-turn conversations (and the way they can sometimes exhibit dangerous persona drift)."
-        streamlit_description_short: "Explore persona vectors and psychological properties of language models."
-      - id: "5_investigator_agents"
-        number: "4.5"
-        title: "Investigator Agents"
-        exercise_dir: "part5_investigator_agents"
-        page_file: "05_[4.5]_Investigator_Agents.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/refs/heads/main/img/header-65b.png"
-        status: "All exercises complete and verified"
-        streamlit_description: "Explore the use of AI agents for investigating and characterizing strange or safety-relevant behaviours. Build these systems by hand, and learn how to use Anthropic's `petri` and `bloom` libraries."
-        streamlit_description_short: "Use AI agents for investigating model behaviours (including petri & bloom)."
-
+    - id: 1_emergent_misalignment
+      number: '4.1'
+      title: Emergent Misalignment
+      exercise_dir: part1_emergent_misalignment
+      page_file: 01_[4.1]_Emergent_Misalignment.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/refs/heads/main/img/header-61c.png
+      status: All exercises complete and verified
+      streamlit_description: In this section, you'll investigate emergent misalignment in larger language models. You'll explore model organisms of misalignment and see how they store representations & can be steered on and evaluated.
+      streamlit_description_short: Study emergent misalignment in finetuned models.
+    - id: 2_science_misalignment
+      number: '4.2'
+      title: Science of Misalignment
+      exercise_dir: part2_science_of_misalignment
+      page_file: 02_[4.2]_Science_of_Misalignment.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/refs/heads/main/img/header-62b.png
+      status: All exercises complete and verified
+      streamlit_description: 'In this section you''ll explore the science of misalignment & how to investigate compelling examples of misalignment, through 2 case studies: shutdown resistance and alignment faking.'
+      streamlit_description_short: Two case studies in black-box investigation to understand and characterize seemingly misaligned behaviour.
+    - id: 3_reasoning_models
+      number: '4.3'
+      title: Interpreting Reasoning Models
+      exercise_dir: part3_interpreting_reasoning_models
+      page_file: 03_[4.3]_Interpreting_Reasoning_Models.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/refs/heads/main/img/header-64.png
+      status: All exercises complete and verified
+      streamlit_description: Apply interpretability techniques to chain-of-thought reasoning models, investigating and characterizing the parts of reasoning which are most causally important on downstream output.
+      streamlit_description_short: Apply interpretability techniques to chain-of-thought reasoning models.
+    - id: 4_persona_vectors
+      number: '4.4'
+      title: LLM Psychology & Persona Vectors
+      exercise_dir: part4_persona_vectors
+      page_file: 04_[4.4]_LLM_Psychology_&_Persona_Vectors.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/refs/heads/main/img/header-65.png
+      status: All exercises complete and verified
+      streamlit_description: Perform internals-based analysis on the representations learned by language models, exploring the different personas they can adopt during multi-turn conversations (and the way they can sometimes exhibit dangerous persona drift).
+      streamlit_description_short: Explore persona vectors and psychological properties of language models.
+    - id: 5_investigator_agents
+      number: '4.5'
+      title: Investigator Agents
+      exercise_dir: part5_investigator_agents
+      page_file: 05_[4.5]_Investigator_Agents.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/refs/heads/main/img/header-65b.png
+      status: All exercises complete and verified
+      streamlit_description: Explore the use of AI agents for investigating and characterizing strange or safety-relevant behaviours. Build these systems by hand, and learn how to use Anthropic's `petri` and `bloom` libraries.
+      streamlit_description_short: Use AI agents for investigating model behaviours (including petri & bloom).
   chapter5_modern_architectures:
-    title: "Chapter 5: Modern Architectures"
-    short_title: "Modern Architectures"
-    short_description: "Local-first labs for modern model families, starting with a verified Gemma-style decoder implementation."
-    description: "This extension chapter keeps the original ARENA style while adding frontier architecture literacy: implement the model family, test it against reference behavior, and only then use it for interpretability."
-    color: "#2563EB"
-    icon: "cpu"
-    header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-11.png"
+    title: 'Chapter 5: Modern Architectures'
+    short_title: Modern Architectures
+    short_description: Local-first labs for modern model families, starting with a verified Gemma-style decoder implementation.
+    description: 'This extension chapter keeps the original ARENA style while adding frontier architecture literacy: implement the model family, test it against reference behavior, and only then use it for interpretability.'
+    color: '#2563EB'
+    icon: cpu
+    header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-11.png
     sections:
-      - id: "1_gemma_from_scratch"
-        number: "5.1"
-        title: "Gemma from Scratch"
-        exercise_dir: "part1_gemma_from_scratch"
-        page_file: "01_[5.1]_Gemma_from_Scratch.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-11.png"
-        status: "Tiny implementation and cache-parity tests added"
-        streamlit_description: "Implement a Gemma-style decoder with RMSNorm, RoPE, grouped-query attention, sliding-window causal masks, SwiGLU, tied embeddings, and KV-cache parity checks."
-        streamlit_description_short: "Build and verify a tiny Gemma-style decoder."
-      - id: "2_gemma_scope_feature_steering"
-        number: "5.2"
-        title: "Gemma Scope and Feature Steering"
-        exercise_dir: "part2_gemma_scope_feature_steering"
-        page_file: "02_[5.2]_Gemma_Scope_and_Feature_Steering.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png"
-        status: "Synthetic metrics and validation harness added"
-        streamlit_description: "Use released Gemma Scope-style sparse feature artifacts with rigorous validation: SAE metrics, direct logit attribution, held-out feature AUC, steering controls, and ablation controls."
-        streamlit_description_short: "Validate sparse features with metrics, held-out examples, steering, and ablation."
-      - id: "3_mamba_from_scratch"
-        number: "5.3"
-        title: "Mamba from Scratch"
-        exercise_dir: "part3_mamba_from_scratch"
-        page_file: "03_[5.3]_Mamba_from_Scratch.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-11.png"
-        status: "Selective-scan and recurrent-state parity harness added"
-        streamlit_description: "Implement Mamba-style selective scans, causal convolution, a tiny Mamba block, and recurrent-state inference, with recurrent/parallel/chunked equivalence checks."
-        streamlit_description_short: "Build and verify selective-scan SSMs and tiny Mamba recurrent inference."
-      - id: "4_mamba_state_tracking"
-        number: "5.4"
-        title: "Mamba State Tracking"
-        exercise_dir: "part4_mamba_state_tracking"
-        page_file: "04_[5.4]_Mamba_State_Tracking.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-15-3.png"
-        status: "Synthetic state-tracking benchmark harness added"
-        streamlit_description: "Build parity and bracket-depth model organisms, fit probes to latent states, test held-out position generalization, and verify causal state interventions against random controls."
-        streamlit_description_short: "Probe and intervene on synthetic state-tracking representations."
-      - id: "5_diffusion_language_models"
-        number: "5.5"
-        title: "Toy Discrete Diffusion Language Models and Local DiffusionGemma Proof"
-        exercise_dir: "part5_diffusion_language_models"
-        page_file: "05_[5.5]_Diffusion_Language_Models.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-05.png"
-        status: "Toy discrete diffusion harness added"
-        streamlit_description: "Implement toy discrete noising, masked denoising loss, confidence remasking, oracle sampling, entropy/commitment metrics, and activation-trajectory checks before loading a released diffusion LM."
-        streamlit_description_short: "Build and verify toy discrete diffusion LM mechanics."
-      - id: "6_multimodal_embedding_function_models"
-        number: "5.6"
-        title: "Embedding Retrieval and Function-Calling Controls"
-        exercise_dir: "part6_multimodal_embedding_function_models"
-        page_file: "06_[5.6]_Multimodal_Embedding_and_Function_Calling_Models.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png"
-        status: "Synthetic specialist-model validation harness added"
-        streamlit_description: "Validate specialist model families with masked embedding pooling, paired retrieval metrics, centroid probes, tool masking, no-call hallucination checks, and schema-token attribution controls."
-        streamlit_description_short: "Build and verify embedding retrieval and function-call validation tools."
-
+    - id: 1_gemma_from_scratch
+      number: '5.1'
+      title: Gemma from Scratch
+      exercise_dir: part1_gemma_from_scratch
+      page_file: 01_[5.1]_Gemma_from_Scratch.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-11.png
+      status: Tiny implementation and cache-parity tests added
+      streamlit_description: Implement a Gemma-style decoder with RMSNorm, RoPE, grouped-query attention, sliding-window causal masks, SwiGLU, tied embeddings, and KV-cache parity checks.
+      streamlit_description_short: Build and verify a tiny Gemma-style decoder.
+    - id: 2_gemma_scope_feature_steering
+      number: '5.2'
+      title: Gemma Scope and Feature Steering
+      exercise_dir: part2_gemma_scope_feature_steering
+      page_file: 02_[5.2]_Gemma_Scope_and_Feature_Steering.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png
+      status: Synthetic metrics and validation harness added
+      streamlit_description: 'Use released Gemma Scope-style sparse feature artifacts with rigorous validation: SAE metrics, direct logit attribution, held-out feature AUC, steering controls, and ablation controls.'
+      streamlit_description_short: Validate sparse features with metrics, held-out examples, steering, and ablation.
+    - id: 3_mamba_from_scratch
+      number: '5.3'
+      title: Mamba from Scratch
+      exercise_dir: part3_mamba_from_scratch
+      page_file: 03_[5.3]_Mamba_from_Scratch.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-11.png
+      status: Selective-scan and recurrent-state parity harness added
+      streamlit_description: Implement Mamba-style selective scans, causal convolution, a tiny Mamba block, and recurrent-state inference, with recurrent/parallel/chunked equivalence checks.
+      streamlit_description_short: Build and verify selective-scan SSMs and tiny Mamba recurrent inference.
+    - id: 4_mamba_state_tracking
+      number: '5.4'
+      title: Mamba State Tracking
+      exercise_dir: part4_mamba_state_tracking
+      page_file: 04_[5.4]_Mamba_State_Tracking.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-15-3.png
+      status: Synthetic state-tracking benchmark harness added
+      streamlit_description: Build parity and bracket-depth model organisms, fit probes to latent states, test held-out position generalization, and verify causal state interventions against random controls.
+      streamlit_description_short: Probe and intervene on synthetic state-tracking representations.
+    - id: 5_diffusion_language_models
+      number: '5.5'
+      title: 'Discrete Diffusion LMs: From Copying Digits to Generating Words'
+      exercise_dir: part5_diffusion_language_models
+      page_file: 05_[5.5]_Diffusion_Language_Models.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-05.png
+      status: Toy discrete diffusion harness added
+      streamlit_description: Implement toy discrete noising, masked denoising loss, confidence remasking, oracle sampling, entropy/commitment metrics, and activation-trajectory checks before loading a released diffusion LM.
+      streamlit_description_short: Build and verify toy discrete diffusion LM mechanics.
+    - id: 6_multimodal_embedding_function_models
+      number: '5.6'
+      title: Embedding Retrieval and Function-Calling Controls
+      exercise_dir: part6_multimodal_embedding_function_models
+      page_file: 06_[5.6]_Multimodal_Embedding_and_Function_Calling_Models.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png
+      status: Synthetic specialist-model validation harness added
+      streamlit_description: Validate specialist model families with masked embedding pooling, paired retrieval metrics, centroid probes, tool masking, no-call hallucination checks, and schema-token attribution controls.
+      streamlit_description_short: Build and verify embedding retrieval and function-call validation tools.
+    - id: 7_mamba2_ssd
+      number: '5.7'
+      title: Mamba-2 and Structured State-Space Duality
+      exercise_dir: part7_mamba2_ssd
+      page_file: 07_[5.7]_Mamba-2_and_Structured_State-Space_Duality.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-11.png
+      status: Mamba-2 and SSD from-scratch learner lab added
+      streamlit_description: Implement semiseparable sequence transforms in recurrent, quadratic, and chunked forms; build grouped Mamba-2 blocks and cache decoding; then validate delayed recall, controls, scaling, fused-operator parity, and a pinned Mamba-2 checkpoint.
+      streamlit_description_short: Build Mamba-2 and verify structured state-space duality.
   chapter6_sparse_feature_methods:
-    title: "Chapter 6: Sparse Feature Methods"
-    short_title: "Sparse Feature Methods"
-    short_description: "Local-first sparse feature labs for SAE variants, released feature artifacts, transcoders, attribution graphs, and crosscoders."
-    description: "This extension chapter upgrades ARENA's toy superposition and SAE material into a frontier sparse-feature methods track with variant comparisons, validation controls, and feature-level causal tests."
-    color: "#7C3AED"
-    icon: "microscope"
-    header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png"
+    title: 'Chapter 6: Sparse Feature Methods'
+    short_title: Sparse Feature Methods
+    short_description: Local-first sparse feature labs for SAE variants, released feature artifacts, transcoders, attribution graphs, and crosscoders.
+    description: This extension chapter upgrades ARENA's toy superposition and SAE material into a frontier sparse-feature methods track with variant comparisons, validation controls, and feature-level causal tests.
+    color: '#7C3AED'
+    icon: microscope
+    header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png
     sections:
-      - id: "1_sae_variants"
-        number: "6.1"
-        title: "SAE Variants"
-        exercise_dir: "part1_sae_variants"
-        page_file: "01_[6.1]_SAE_Variants.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png"
-        status: "ARENA-style SAE mechanics and Pythia TopK preflight section added"
-        streamlit_description: "Compare ReLU/L1, TopK, Gated, and JumpReLU SAE encoders with reconstruction metrics, planted-dictionary recovery checks, feature AUC validation, density checks, and decoder-vector steering controls."
-        streamlit_description_short: "Build SAE variants, validate controls, and inspect a Pythia TopK SAE preflight."
-      - id: "2_gemma_scope_deep_dive"
-        number: "6.2"
-        title: "Gemma Scope Deep Dive"
-        exercise_dir: "part2_gemma_scope_deep_dive"
-        page_file: "02_[6.2]_Gemma_Scope_Deep_Dive.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png"
-        status: "ARENA-style Gemma Scope artifact and activation validation section added"
-        streamlit_description: "Validate a pinned Gemma Scope residual SAE artifact with metadata checks, prompt-score reductions, held-out AUC controls, base-vs-instruction deltas, ablation, steering safety, direct logit attribution, and authenticated Gemma 3 activation evidence."
-        streamlit_description_short: "Validate released Gemma Scope features with held-out controls and real Gemma activations."
-      - id: "3_transcoders_attribution_graphs"
-        number: "6.3"
-        title: "Transcoders and Attribution Graphs"
-        exercise_dir: "part3_transcoders_attribution_graphs"
-        page_file: "03_[6.3]_Transcoders_and_Attribution_Graphs.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png"
-        status: "ARENA-style transcoder and attribution-graph validation section added"
-        streamlit_description: "Build ReLU transcoder replacements, verify KL and target-logit preservation, construct signed attribution graphs, check reproducibility and graph-damage controls, and inspect a pinned TransformerLens gelu-1l CUDA preflight."
-        streamlit_description_short: "Validate transcoder replacements and attribution graphs with GELU-1L controls."
-      - id: "4_crosscoders_model_diffing"
-        number: "6.4"
-        title: "Crosscoders and Model Diffing"
-        exercise_dir: "part4_crosscoders_model_diffing"
-        page_file: "04_[6.4]_Crosscoders_and_Model_Diffing.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png"
-        status: "ARENA-style crosscoder and model-diffing validation section added"
-        streamlit_description: "Build shared/model-specific crosscoder reconstructions, classify feature ownership, validate behavior-delta prediction, test paired score deltas and direction-removal controls, and inspect a pinned GELU-1L vs SoLU-1L CUDA preflight."
-        streamlit_description_short: "Validate crosscoder model-diffing features with paired GELU/SoLU controls."
-
+    - id: 1_sae_variants
+      number: '6.1'
+      title: SAE Variants
+      exercise_dir: part1_sae_variants
+      page_file: 01_[6.1]_SAE_Variants.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png
+      status: ARENA-style SAE mechanics and Pythia TopK preflight section added
+      streamlit_description: Compare ReLU/L1, TopK, Gated, and JumpReLU SAE encoders with reconstruction metrics, planted-dictionary recovery checks, feature AUC validation, density checks, and decoder-vector steering controls.
+      streamlit_description_short: Build SAE variants, validate controls, and inspect a Pythia TopK SAE preflight.
+    - id: 2_gemma_scope_deep_dive
+      number: '6.2'
+      title: Gemma Scope Deep Dive
+      exercise_dir: part2_gemma_scope_deep_dive
+      page_file: 02_[6.2]_Gemma_Scope_Deep_Dive.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png
+      status: ARENA-style Gemma Scope artifact and activation validation section added
+      streamlit_description: Validate a pinned Gemma Scope residual SAE artifact with metadata checks, prompt-score reductions, held-out AUC controls, base-vs-instruction deltas, ablation, steering safety, direct logit attribution, and authenticated Gemma 3 activation evidence.
+      streamlit_description_short: Validate released Gemma Scope features with held-out controls and real Gemma activations.
+    - id: 3_transcoders_attribution_graphs
+      number: '6.3'
+      title: Transcoders and Attribution Graphs
+      exercise_dir: part3_transcoders_attribution_graphs
+      page_file: 03_[6.3]_Transcoders_and_Attribution_Graphs.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png
+      status: ARENA-style transcoder and attribution-graph validation section added
+      streamlit_description: Build ReLU transcoder replacements, verify KL and target-logit preservation, construct signed attribution graphs, check reproducibility and graph-damage controls, and inspect a pinned TransformerLens gelu-1l CUDA preflight.
+      streamlit_description_short: Validate transcoder replacements and attribution graphs with GELU-1L controls.
+    - id: 4_crosscoders_model_diffing
+      number: '6.4'
+      title: Crosscoders and Model Diffing
+      exercise_dir: part4_crosscoders_model_diffing
+      page_file: 04_[6.4]_Crosscoders_and_Model_Diffing.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png
+      status: ARENA-style crosscoder and model-diffing validation section added
+      streamlit_description: Build shared/model-specific crosscoder reconstructions, classify feature ownership, validate behavior-delta prediction, test paired score deltas and direction-removal controls, and inspect a pinned GELU-1L vs SoLU-1L CUDA preflight.
+      streamlit_description_short: Validate crosscoder model-diffing features with paired GELU/SoLU controls.
   chapter7_activation_to_language:
-    title: "Chapter 7: Activation to Language"
-    short_title: "Activation to Language"
-    short_description: "Local-first activation-to-language labs for lenses, Patchscopes, feature verbalizers, activation oracles, NLAs, and predictive concept decoders."
-    description: "This extension chapter turns model activations into auditable language-facing hypotheses, with held-out accuracy, counterfactual, random-activation, and baseline controls."
-    color: "#0891B2"
-    icon: "microscope"
-    header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-14-1.png"
+    title: 'Chapter 7: Activation to Language'
+    short_title: Activation to Language
+    short_description: Local-first activation-to-language labs for lenses, Patchscopes, feature verbalizers, activation oracles, NLAs, and predictive concept decoders.
+    description: This extension chapter turns model activations into auditable language-facing hypotheses, with held-out accuracy, counterfactual, random-activation, and baseline controls.
+    color: '#0891B2'
+    icon: microscope
+    header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-14-1.png
     sections:
-      - id: "1_lenses_patchscopes"
-        number: "7.1"
-        title: "Logit Lens, Tuned Lens, and Patchscopes"
-        exercise_dir: "part1_lenses_patchscopes"
-        page_file: "01_[7.1]_Logit_Lens_Tuned_Lens_and_Patchscopes.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-14-1.png"
-        status: "ARENA-style activation-to-language lens and Patchscope validation section added"
-        streamlit_description: "Build logit lens, tuned lens, attention lens, Patchscope templates, final-position activation insertion, counterfactual and random-activation controls, and inspect a pinned TransformerLens gelu-1l CUDA preflight with held-out lens decoding and Patchscope text-only baselines."
-        streamlit_description_short: "Validate activation-to-language lenses and Patchscopes with GELU-1L controls."
-      - id: "2_feature_verbalizers"
-        number: "7.2"
-        title: "Feature Verbalizers"
-        exercise_dir: "part2_feature_verbalizers"
-        page_file: "02_[7.2]_Feature_Verbalizers.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-14-1.png"
-        status: "ARENA-style feature-verbalizer validation section added"
-        streamlit_description: "Build a feature-verbalizer loop with top, bottom, random, and contrastive examples, train-only explanation terms, held-out predictions, counterexamples, revisions, intervention-direction checks, brevity controls, and a pinned GELU-1L residual-direction CUDA preflight."
-        streamlit_description_short: "Validate feature verbalizers with held-out and intervention controls."
-      - id: "3_mini_activation_oracles"
-        number: "7.3"
-        title: "Mini Activation Oracles"
-        exercise_dir: "part3_mini_activation_oracles"
-        page_file: "03_[7.3]_Mini_Activation_Oracles.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-14-1.png"
-        status: "ARENA-style mini Activation Oracle validation section added"
-        streamlit_description: "Build question-conditioned activation rows, train a tiny mini Activation Oracle, compare against text-only and activation-only baselines, report held-out/OOD splits, test random-activation abstention and clean-to-corrupt activation substitution, and inspect a pinned GELU-1L CUDA preflight."
-        streamlit_description_short: "Validate mini Activation Oracles with question-conditioned GELU-1L controls."
-      - id: "4_mini_natural_language_autoencoders"
-        number: "7.4"
-        title: "Mini Natural Language Autoencoders"
-        exercise_dir: "part4_mini_natural_language_autoencoders"
-        page_file: "04_[7.4]_Mini_Natural_Language_Autoencoders.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-14-1.png"
-        status: "ARENA-style mini Natural Language Autoencoder phrase-bottleneck validation section added"
-        streamlit_description: "Build aligned activation/text rows, train a discrete residual-to-phrase-id encoder and phrase-id-to-residual decoder, compare reconstruction against text-only and prompt-label baselines, preserve target logit-diff and probe latents, reject prompt-copying/numeric payload/shuffled/blank controls, and inspect a pinned GELU-1L CUDA phrase-bottleneck preflight."
-        streamlit_description_short: "Validate mini NLA phrase bottlenecks with GELU-1L reconstruction and control checks."
-      - id: "5_predictive_concept_decoders"
-        number: "7.5"
-        title: "Predictive Concept Decoders"
-        exercise_dir: "part5_predictive_concept_decoders"
-        page_file: "05_[7.5]_Predictive_Concept_Decoders.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-14-1.png"
-        status: "ARENA-style predictive concept decoder sparse-bottleneck validation section added"
-        streamlit_description: "Build aligned activation/question rows, sparse concept encoders, explicit concept-question interaction features, trained question-conditioned decoders, PCD-vs-baseline comparisons, question-shuffle controls, concept sparsity and seed stability checks, top-vs-low-margin active removal controls, concept naming audits, and a pinned GELU-1L CUDA sparse-concept PCD preflight."
-        streamlit_description_short: "Validate mini PCD sparse-concept bottlenecks with GELU-1L question-conditioned controls."
-
+    - id: 1_lenses_patchscopes
+      number: '7.1'
+      title: Logit Lens, Tuned Lens, and Patchscopes
+      exercise_dir: part1_lenses_patchscopes
+      page_file: 01_[7.1]_Logit_Lens_Tuned_Lens_and_Patchscopes.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-14-1.png
+      status: ARENA-style activation-to-language lens and Patchscope validation section added
+      streamlit_description: Build logit lens, tuned lens, attention lens, Patchscope templates, final-position activation insertion, counterfactual and random-activation controls, and inspect a pinned TransformerLens gelu-1l CUDA preflight with held-out lens decoding and Patchscope text-only baselines.
+      streamlit_description_short: Validate activation-to-language lenses and Patchscopes with GELU-1L controls.
+    - id: 2_feature_verbalizers
+      number: '7.2'
+      title: Feature Verbalizers
+      exercise_dir: part2_feature_verbalizers
+      page_file: 02_[7.2]_Feature_Verbalizers.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-14-1.png
+      status: ARENA-style feature-verbalizer validation section added
+      streamlit_description: Build a feature-verbalizer loop with top, bottom, random, and contrastive examples, train-only explanation terms, held-out predictions, counterexamples, revisions, intervention-direction checks, brevity controls, and a pinned GELU-1L residual-direction CUDA preflight.
+      streamlit_description_short: Validate feature verbalizers with held-out and intervention controls.
+    - id: 3_mini_activation_oracles
+      number: '7.3'
+      title: Mini Activation Oracles
+      exercise_dir: part3_mini_activation_oracles
+      page_file: 03_[7.3]_Mini_Activation_Oracles.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-14-1.png
+      status: ARENA-style mini Activation Oracle validation section added
+      streamlit_description: Build question-conditioned activation rows, train a tiny mini Activation Oracle, compare against text-only and activation-only baselines, report held-out/OOD splits, test random-activation abstention and clean-to-corrupt activation substitution, and inspect a pinned GELU-1L CUDA preflight.
+      streamlit_description_short: Validate mini Activation Oracles with question-conditioned GELU-1L controls.
+    - id: 4_mini_natural_language_autoencoders
+      number: '7.4'
+      title: Mini Natural Language Autoencoders
+      exercise_dir: part4_mini_natural_language_autoencoders
+      page_file: 04_[7.4]_Mini_Natural_Language_Autoencoders.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-14-1.png
+      status: ARENA-style order-sensitive mini Natural Language Autoencoder validation section added
+      streamlit_description: Build a 24-token activation verbalizer and paper-style normalized reconstructor on pinned Pythia-70m states, hold token multisets fixed while word order carries causal factors, and compare the contextual language path against bag-of-tokens, factor, prototype, lexical-relabel, shuffled-target, identity, locality, and text-edit controls on CUDA 13.2.
+      streamlit_description_short: Test an order-sensitive mini NLA against a matched bag-of-tokens bypass.
+    - id: 5_predictive_concept_decoders
+      number: '7.5'
+      title: Predictive Concept Decoders
+      exercise_dir: part5_predictive_concept_decoders
+      page_file: 05_[7.5]_Predictive_Concept_Decoders.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-14-1.png
+      status: ARENA-style predictive concept decoder sparse-bottleneck validation section added
+      streamlit_description: Build aligned activation/question rows, sparse concept encoders, explicit concept-question interaction features, trained question-conditioned decoders, PCD-vs-baseline comparisons, question-shuffle controls, concept sparsity and seed stability checks, top-vs-low-margin active removal controls, concept naming audits, and a pinned GELU-1L CUDA sparse-concept PCD preflight.
+      streamlit_description_short: Validate mini PCD sparse-concept bottlenecks with GELU-1L question-conditioned controls.
   chapter8_automated_circuits:
-    title: "Chapter 8: Automated Circuits"
-    short_title: "Automated Circuits"
-    short_description: "Local-first automated-circuit labs for activation patching, attribution patching, EAP, ACDC-style metrics, and circuit tracing."
-    description: "This extension chapter turns classic activation patching into reusable circuit-discovery infrastructure, then builds toward attribution patching, automated search, and sparse-feature circuit tracing."
-    color: "#0F766E"
-    icon: "workflow"
-    header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png"
+    title: 'Chapter 8: Automated Circuits'
+    short_title: Automated Circuits
+    short_description: Local-first automated-circuit labs for activation patching, attribution patching, EAP, ACDC-style metrics, and circuit tracing.
+    description: This extension chapter turns classic activation patching into reusable circuit-discovery infrastructure, then builds toward attribution patching, automated search, and sparse-feature circuit tracing.
+    color: '#0F766E'
+    icon: workflow
+    header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png
     sections:
-      - id: "1_activation_patching_refresher"
-        number: "8.1"
-        title: "Activation Patching Refresher"
-        exercise_dir: "part1_activation_patching_refresher"
-        page_file: "01_[8.1]_Activation_Patching_Refresher.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png"
-        status: "Reusable activation patching validation harness added"
-        streamlit_description: "Build and verify clean/corrupt logit-diff metrics, activation-slice patching, recovered-fraction reports, per-component patching sweeps, target-component localization, and random patch controls."
-        streamlit_description_short: "Build and verify reusable activation patching controls."
-      - id: "2_attribution_patching_eap"
-        number: "8.2"
-        title: "Attribution Patching and EAP"
-        exercise_dir: "part2_attribution_patching_eap"
-        page_file: "02_[8.2]_Attribution_Patching_and_EAP.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png"
-        status: "Attribution patching and EAP validation harness added"
-        streamlit_description: "Build and verify first-order attribution patching, integrated-gradient patch scores, EAP-style edge scores, exact-vs-approx score correlation, top-k overlap, runtime speedup, and documented false negatives."
-        streamlit_description_short: "Build and verify attribution patching and EAP controls."
-      - id: "3_acdc_circuit_metrics"
-        number: "8.3"
-        title: "ACDC and Circuit Metrics"
-        exercise_dir: "part3_acdc_circuit_metrics"
-        page_file: "03_[8.3]_ACDC_and_Circuit_Metrics.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png"
-        status: "ACDC-style pruning and circuit metric harness added"
-        streamlit_description: "Build and verify ACDC-style edge pruning, circuit faithfulness, minimality, completeness, same-size random circuit baselines, and held-out prompt-template OOD checks."
-        streamlit_description_short: "Build and verify ACDC-style circuit quality metrics."
-      - id: "4_circuit_tracing_attribution_graphs"
-        number: "8.4"
-        title: "Circuit Tracing with Attribution Graphs"
-        exercise_dir: "part4_circuit_tracing_attribution_graphs"
-        page_file: "04_[8.4]_Circuit_Tracing_with_Attribution_Graphs.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png"
-        status: "Circuit tracing attribution-graph validation harness added"
-        streamlit_description: "Build and verify local attribution graphs over sparse-feature or transcoder nodes, target-metric explanation, top-path perturbation tests, alternative graph baselines, and summary-predicted counterfactuals."
-        streamlit_description_short: "Build and verify circuit tracing attribution-graph controls."
-      - id: "5_sparse_feature_circuits"
-        number: "8.5"
-        title: "Sparse Feature Circuits"
-        exercise_dir: "part5_sparse_feature_circuits"
-        page_file: "05_[8.5]_Sparse_Feature_Circuits.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png"
-        status: "Sparse Feature Circuit validation ladder and official artifact evidence added"
-        streamlit_description: "Build and verify a Sparse Feature Circuit ladder with exact node/edge patching, EAP-vs-EAP-IG comparison, graph thresholding, same-size random controls, generated SHIFT-style editing, released SAE smoke checks, official saved-graph evidence, and held-out faithfulness report inspection."
-        streamlit_description_short: "Build and verify Sparse Feature Circuit validation controls."
-
+    - id: 1_activation_patching_refresher
+      number: '8.1'
+      title: Activation Patching Refresher
+      exercise_dir: part1_activation_patching_refresher
+      page_file: 01_[8.1]_Activation_Patching_Refresher.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png
+      status: Reusable activation patching validation harness added
+      streamlit_description: Build and verify clean/corrupt logit-diff metrics, activation-slice patching, recovered-fraction reports, per-component patching sweeps, target-component localization, and random patch controls.
+      streamlit_description_short: Build and verify reusable activation patching controls.
+    - id: 2_attribution_patching_eap
+      number: '8.2'
+      title: Attribution Patching and EAP
+      exercise_dir: part2_attribution_patching_eap
+      page_file: 02_[8.2]_Attribution_Patching_and_EAP.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png
+      status: Attribution patching and EAP validation harness added
+      streamlit_description: Build and verify first-order attribution patching, integrated-gradient patch scores, EAP-style edge scores, exact-vs-approx score correlation, top-k overlap, runtime speedup, and documented false negatives.
+      streamlit_description_short: Build and verify attribution patching and EAP controls.
+    - id: 3_acdc_circuit_metrics
+      number: '8.3'
+      title: ACDC and Circuit Metrics
+      exercise_dir: part3_acdc_circuit_metrics
+      page_file: 03_[8.3]_ACDC_and_Circuit_Metrics.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png
+      status: ACDC-style pruning and circuit metric harness added
+      streamlit_description: Build and verify ACDC-style edge pruning, circuit faithfulness, minimality, completeness, same-size random circuit baselines, and held-out prompt-template OOD checks.
+      streamlit_description_short: Build and verify ACDC-style circuit quality metrics.
+    - id: 4_circuit_tracing_attribution_graphs
+      number: '8.4'
+      title: Circuit Tracing with Attribution Graphs
+      exercise_dir: part4_circuit_tracing_attribution_graphs
+      page_file: 04_[8.4]_Circuit_Tracing_with_Attribution_Graphs.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png
+      status: Circuit tracing attribution-graph validation harness added
+      streamlit_description: Build and verify local attribution graphs over sparse-feature or transcoder nodes, target-metric explanation, top-path perturbation tests, alternative graph baselines, and summary-predicted counterfactuals.
+      streamlit_description_short: Build and verify circuit tracing attribution-graph controls.
+    - id: 5_sparse_feature_circuits
+      number: '8.5'
+      title: Sparse Feature Circuits
+      exercise_dir: part5_sparse_feature_circuits
+      page_file: 05_[8.5]_Sparse_Feature_Circuits.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png
+      status: Sparse Feature Circuit validation ladder and official artifact evidence added
+      streamlit_description: Build and verify a Sparse Feature Circuit ladder with exact node/edge patching, EAP-vs-EAP-IG comparison, graph thresholding, same-size random controls, generated SHIFT-style editing, released SAE smoke checks, official saved-graph evidence, and held-out faithfulness report inspection.
+      streamlit_description_short: Build and verify Sparse Feature Circuit validation controls.
   chapter9_alignment_interpretability:
-    title: "Chapter 9: Alignment Interpretability"
-    short_title: "Alignment Interpretability"
-    short_description: "Local-first white-box alignment labs for refusal directions, CoT faithfulness, safe proxy drift detection, and monitors."
-    description: "This extension chapter keeps black-box evals in place while adding white-box interpretability tools for safe steering, hidden reasoning checks, benign drift proxies, and calibrated monitors."
-    color: "#BE123C"
-    icon: "shield-check"
-    header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-14-1.png"
+    title: 'Chapter 9: Alignment Interpretability'
+    short_title: Alignment Interpretability
+    short_description: Local-first white-box alignment labs for refusal directions, CoT faithfulness, safe proxy drift detection, and monitors.
+    description: This extension chapter keeps black-box evals in place while adding white-box interpretability tools for safe steering, hidden reasoning checks, benign drift proxies, and calibrated monitors.
+    color: '#BE123C'
+    icon: shield-check
+    header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-14-1.png
     sections:
-      - id: "1_refusal_directions_safe_steering"
-        number: "9.1"
-        title: "Refusal Directions and Safe Steering"
-        exercise_dir: "part1_refusal_directions_safe_steering"
-        page_file: "01_[9.1]_Refusal_Directions_and_Safe_Steering.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-14-1.png"
-        status: "Safe refusal-direction steering validation harness added"
-        streamlit_description: "Build and verify mean-difference refusal directions, direction projection scores, refusal-vs-non-refusal separation, safe refusal-rate steering changes, capability degradation bounds, random-direction controls, and candidate-method comparisons."
-        streamlit_description_short: "Build and verify safe refusal-direction steering controls."
-      - id: "2_cot_faithfulness"
-        number: "9.2"
-        title: "Chain-of-Thought Faithfulness"
-        exercise_dir: "part2_cot_faithfulness"
-        page_file: "02_[9.2]_Chain_of_Thought_Faithfulness.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-14-1.png"
-        status: "Toy CoT faithfulness validation harness added"
-        streamlit_description: "Build and verify hidden-answer probes before final tokens, hidden-answer patching, CoT text-only baseline misses, feature-level unfaithfulness detectors, and no-CoT/faithful/biased/post-hoc condition comparisons."
-        streamlit_description_short: "Build and verify CoT faithfulness probes and detectors."
-      - id: "3_emergent_misalignment_detection"
-        number: "9.3"
-        title: "Emergent Misalignment Detection"
-        exercise_dir: "part3_emergent_misalignment_detection"
-        page_file: "03_[9.3]_Emergent_Misalignment_Detection.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-14-1.png"
-        status: "Safe proxy drift-detection validation harness added"
-        streamlit_description: "Build and verify benign proxy drift categories, held-out white-box drift detection, crosscoder feature alignment with behavior deltas, drift mitigation with capability-loss bounds, and early white-box detection versus black-box eval timing."
-        streamlit_description_short: "Build and verify safe proxy drift-detection controls."
-      - id: "4_white_box_evals_monitors"
-        number: "9.4"
-        title: "White-box Evals and Monitors"
-        exercise_dir: "part4_white_box_evals_monitors"
-        page_file: "04_[9.4]_White_box_Evals_and_Monitors.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-14-1.png"
-        status: "White-box monitor validation harness added"
-        streamlit_description: "Build and verify white-box monitor dashboard rows, AUROC calibration, failures caught beyond black-box baselines, false-positive documentation, and held-out feature-explanation validation."
-        streamlit_description_short: "Build and verify calibrated white-box monitor controls."
-
+    - id: 1_refusal_directions_safe_steering
+      number: '9.1'
+      title: Refusal Directions and Safe Steering
+      exercise_dir: part1_refusal_directions_safe_steering
+      page_file: 01_[9.1]_Refusal_Directions_and_Safe_Steering.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-14-1.png
+      status: Safe refusal-direction steering validation harness added
+      streamlit_description: Build and verify mean-difference refusal directions, direction projection scores, refusal-vs-non-refusal separation, safe refusal-rate steering changes, capability degradation bounds, random-direction controls, and candidate-method comparisons.
+      streamlit_description_short: Build and verify safe refusal-direction steering controls.
+    - id: 2_cot_faithfulness
+      number: '9.2'
+      title: Chain-of-Thought Faithfulness
+      exercise_dir: part2_cot_faithfulness
+      page_file: 02_[9.2]_Chain_of_Thought_Faithfulness.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-14-1.png
+      status: Toy CoT faithfulness validation harness added
+      streamlit_description: Build and verify hidden-answer probes before final tokens, hidden-answer patching, CoT text-only baseline misses, feature-level unfaithfulness detectors, and no-CoT/faithful/biased/post-hoc condition comparisons.
+      streamlit_description_short: Build and verify CoT faithfulness probes and detectors.
+    - id: 3_emergent_misalignment_detection
+      number: '9.3'
+      title: Emergent Misalignment Detection
+      exercise_dir: part3_emergent_misalignment_detection
+      page_file: 03_[9.3]_Emergent_Misalignment_Detection.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-14-1.png
+      status: Safe proxy drift-detection validation harness added
+      streamlit_description: Build and verify benign proxy drift categories, held-out white-box drift detection, crosscoder feature alignment with behavior deltas, drift mitigation with capability-loss bounds, and early white-box detection versus black-box eval timing.
+      streamlit_description_short: Build and verify safe proxy drift-detection controls.
+    - id: 4_white_box_evals_monitors
+      number: '9.4'
+      title: White-box Evals and Monitors
+      exercise_dir: part4_white_box_evals_monitors
+      page_file: 04_[9.4]_White_box_Evals_and_Monitors.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-14-1.png
+      status: White-box monitor validation harness added
+      streamlit_description: Build and verify white-box monitor dashboard rows, AUROC calibration, failures caught beyond black-box baselines, false-positive documentation, and held-out feature-explanation validation.
+      streamlit_description_short: Build and verify calibrated white-box monitor controls.
   chapter10_capstone_research_sprint:
-    title: "Chapter 10: Capstone Research Sprint"
-    short_title: "Capstone Research Sprint"
-    short_description: "A paper-style local research sprint with a question, benchmark, baselines, mechanistic claim, causal validation, scripts, and writeup."
-    description: "This final extension chapter turns the course into a publishable mini-project workflow with explicit baselines, causal validation, OOD checks, reproducibility, and a clear mechanistic claim."
-    color: "#CA8A04"
-    icon: "graduation-cap"
-    header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png"
+    title: 'Chapter 10: Capstone Research Sprint'
+    short_title: Capstone Research Sprint
+    short_description: A paper-style local research sprint with a question, benchmark, baselines, mechanistic claim, causal validation, scripts, and writeup.
+    description: This final extension chapter turns the course into a publishable mini-project workflow with explicit baselines, causal validation, OOD checks, reproducibility, and a clear mechanistic claim.
+    color: '#CA8A04'
+    icon: graduation-cap
+    header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png
     sections:
-      - id: "1_capstone_research_sprint"
-        number: "10.1"
-        title: "Capstone Research Sprint"
-        exercise_dir: "part1_capstone_research_sprint"
-        page_file: "01_[10.1]_Capstone_Research_Sprint.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png"
-        status: "Paper-style capstone readiness harness added"
-        streamlit_description: "Build and verify a capstone plan with one research question, benchmark, baseline suite, mechanistic claim, causal validation suite, reproducible scripts, seeds, artifacts, and writeup path."
-        streamlit_description_short: "Build and verify a paper-style capstone readiness contract."
-
+    - id: 1_capstone_research_sprint
+      number: '10.1'
+      title: Capstone Research Sprint
+      exercise_dir: part1_capstone_research_sprint
+      page_file: 01_[10.1]_Capstone_Research_Sprint.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png
+      status: Paper-style capstone readiness harness added
+      streamlit_description: Build and verify a capstone plan with one research question, benchmark, baseline suite, mechanistic claim, causal validation suite, reproducible scripts, seeds, artifacts, and writeup path.
+      streamlit_description_short: Build and verify a paper-style capstone readiness contract.
   chapter11_representation_geometry:
-    title: "Chapter 11: Representation Geometry"
-    short_title: "Representation Geometry"
-    short_description: "Local-first representation-geometry labs for PCA, SVD, UMAP/t-SNE-style controls, causal directions, seed stability, and white-noise baselines."
-    description: "This extension chapter turns representation plots into falsifiable geometry claims with held-out label prediction, controls, seed and hyperparameter stability, trustworthiness, neighborhood preservation, and causal direction tests."
-    color: "#4F46E5"
-    icon: "scatter-chart"
-    header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png"
+    title: 'Chapter 11: Representation Geometry'
+    short_title: Representation Geometry
+    short_description: Local-first representation-geometry labs for PCA, SVD, UMAP/t-SNE-style controls, causal directions, seed stability, and white-noise baselines.
+    description: This extension chapter turns representation plots into falsifiable geometry claims with held-out label prediction, controls, seed and hyperparameter stability, trustworthiness, neighborhood preservation, and causal direction tests.
+    color: '#4F46E5'
+    icon: scatter-chart
+    header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png
     sections:
-      - id: "1_pca_svd_geometry_controls"
-        number: "11.1"
-        title: "PCA, SVD, and Geometry Controls"
-        exercise_dir: "part1_pca_svd_geometry_controls"
-        page_file: "01_[11.1]_PCA_SVD_and_Geometry_Controls.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png"
-        status: "Representation geometry validation harness added"
-        streamlit_description: "Build and verify centered PCA/SVD projections, held-out label prediction, white-noise controls, UMAP seed and hyperparameter sweeps, trustworthiness, neighborhood preservation, random-token controls, and causal direction effects over random controls."
-        streamlit_description_short: "Build and verify PCA/SVD geometry controls."
-
+    - id: 1_pca_svd_geometry_controls
+      number: '11.1'
+      title: PCA, SVD, and Geometry Controls
+      exercise_dir: part1_pca_svd_geometry_controls
+      page_file: 01_[11.1]_PCA_SVD_and_Geometry_Controls.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png
+      status: Representation geometry validation harness added
+      streamlit_description: Build and verify centered PCA/SVD projections, held-out label prediction, white-noise controls, UMAP seed and hyperparameter sweeps, trustworthiness, neighborhood preservation, random-token controls, and causal direction effects over random controls.
+      streamlit_description_short: Build and verify PCA/SVD geometry controls.
+    - id: 2_cca_svcca_alignment
+      number: '11.2'
+      title: CCA, SVCCA, and Representation Alignment
+      exercise_dir: part2_cca_svcca_alignment
+      page_file: 02_[11.2]_CCA_SVCCA_and_Representation_Alignment.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png
+      status: ARENA-style alignment and native GPT-2 donor study
+      streamlit_description: Derive whitening and canonical coordinates, expose noise overfitting and low-variance task loss, then test actual GPT-2 donor transport with rank sweeps, Procrustes, ridge, random edits and failed examples.
+      streamlit_description_short: Align representations and test whether their changes transfer.
+    - id: 3_causal_abstraction_das
+      number: '11.3'
+      title: Causal Abstraction and Distributed Alignment Search
+      exercise_dir: part3_causal_abstraction_das
+      page_file: 03_[11.3]_Causal_Abstraction_and_Distributed_Alignment_Search.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png
+      status: ARENA-style exact causal model and native GPT-2 alignment study
+      streamlit_description: Build structural and subspace interchanges, expose a perfectly predictive unused feature, then learn a frozen GPT-2 role intervention with independent gradients, held-out names and templates, all seeds, random subspaces and observational baselines.
+      streamlit_description_short: Learn an intervention and test whether it transfers the intended role.
+    - id: 4_concept_erasure
+      number: '11.4'
+      title: Concept Erasure
+      exercise_dir: part4_concept_erasure
+      page_file: 04_[11.4]_Concept_Erasure.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png
+      status: ARENA-style affine erasure and native GPT-2 intervention study
+      streamlit_description: Derive LEACE from centered moments, compare exact constrained oracles and refitted readers, then inspect GPT-2 token changes and collateral damage with every random rank and magnitude control.
+      streamlit_description_short: Erase a representation and test what the model still knows.
+    - id: 5_contrast_consistent_search
+      number: '11.5'
+      title: Contrast-Consistent Search
+      exercise_dir: part5_contrast_consistent_search
+      page_file: 05_[11.5]_Contrast_Consistent_Search.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png
+      status: ARENA-style consistency objective and native GPT-2 competing-opinion study
+      streamlit_description: Implement the original CCS loss, independent restarts and calibration, construct equally consistent competing features, then trace customer sentiment versus another opinion through frozen GPT-2 with every seed, random direction and actual token output retained.
+      streamlit_description_short: Learn a consistent feature and test whose opinion it follows.
   chapter12_vlm_interpretability:
-    title: "Chapter 12: VLM Interpretability"
-    short_title: "VLM Interpretability"
-    short_description: "Local-first vision-language interpretability labs for CLIP/SigLIP mechanics, visual-token attribution, hallucination controls, and modality arbitration."
-    description: "This extension chapter turns VLM demos into testable claims with paired retrieval, visual-token localization, hidden visual-token activation patching, object hallucination probes, and image/text conflict controls."
-    color: "#0891B2"
-    icon: "image"
-    header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-15-3.png"
+    title: 'Chapter 12: VLM Interpretability'
+    short_title: VLM Interpretability
+    short_description: Local-first vision-language interpretability labs for CLIP/SigLIP mechanics, visual-token attribution, hallucination controls, and modality arbitration.
+    description: This extension chapter turns VLM demos into testable claims with paired retrieval, visual-token localization, hidden visual-token activation patching, object hallucination probes, and image/text conflict controls.
+    color: '#0891B2'
+    icon: image
+    header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-15-3.png
     sections:
-      - id: "1_clip_siglip_vlm_controls"
-        number: "12.1"
-        title: "CLIP, SigLIP, and VLM Controls"
-        exercise_dir: "part1_clip_siglip_vlm_controls"
-        page_file: "01_[12.1]_CLIP_SigLIP_and_VLM_Controls.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-15-3.png"
-        status: "VLM contrastive, grounding, and activation-patching controls added"
-        streamlit_description: "Build and verify CLIP-style contrastive retrieval, SigLIP-style pairwise loss, visual-token attribution locality, hidden visual-token activation patching, object hallucination probes, and visual-vs-text modality arbitration."
-        streamlit_description_short: "Build and verify local VLM interpretability controls."
-      - id: "3_mini_vlm_from_scratch"
-        number: "12.3"
-        title: "Mini VLM from Scratch"
-        exercise_dir: "part3_mini_vlm_from_scratch"
-        page_file: "03_[12.3]_Mini_VLM_from_Scratch.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-15-3.png"
-        status: "ARENA-style controlled MiniVLM and causal visual-token patching lab added"
-        streamlit_description: "Build a frozen patch encoder plus multi-head cross-attention MiniVLM, test muted-style VQA generalization, and causally patch object tokens against text-only, image-only, shuffled-visual, background, and same-size random-region controls."
-        streamlit_description_short: "Build and causally inspect a MiniVLM from scratch."
-
+    - id: 1_clip_siglip_vlm_controls
+      number: '12.1'
+      title: CLIP, SigLIP, and VLM Controls
+      exercise_dir: part1_clip_siglip_vlm_controls
+      page_file: 01_[12.1]_CLIP_SigLIP_and_VLM_Controls.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-15-3.png
+      status: VLM contrastive, grounding, and activation-patching controls added
+      streamlit_description: Build and verify CLIP-style contrastive retrieval, SigLIP-style pairwise loss, visual-token attribution locality, hidden visual-token activation patching, object hallucination probes, and visual-vs-text modality arbitration.
+      streamlit_description_short: Build and verify local VLM interpretability controls.
+    - id: 3_mini_vlm_from_scratch
+      number: '12.3'
+      title: Mini VLM from Scratch
+      exercise_dir: part3_mini_vlm_from_scratch
+      page_file: 03_[12.3]_Mini_VLM_from_Scratch.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-15-3.png
+      status: ARENA-style controlled MiniVLM and causal visual-token patching lab added
+      streamlit_description: Build a frozen patch encoder plus multi-head cross-attention MiniVLM, test muted-style VQA generalization, and causally patch object tokens against text-only, image-only, shuffled-visual, background, and same-size random-region controls.
+      streamlit_description_short: Build and causally inspect a MiniVLM from scratch.
   chapter13_image_generation_interpretability:
-    title: "Chapter 13: Image-Generation Interpretability"
-    short_title: "Image-Generation Interpretability"
-    short_description: "Local-first image-generation interpretability labs for diffusion attention maps, SD1.5 DAAM-style controls, denoising circuits, latent directions, and prompt-to-region causal controls."
-    description: "This extension chapter turns diffusion and image-token interpretations into testable claims with region-selective attention, denoising ablations, latent-direction controls, prompt-token causal tests, and pinned SD1.5 safe-shape verification."
-    color: "#DB2777"
-    icon: "image-plus"
-    header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-05.png"
+    title: 'Chapter 13: Image-Generation Interpretability'
+    short_title: Image-Generation Interpretability
+    short_description: Local-first image-generation interpretability labs for diffusion attention maps, SD1.5 DAAM-style controls, denoising circuits, latent directions, and prompt-to-region causal controls.
+    description: This extension chapter turns diffusion and image-token interpretations into testable claims with region-selective attention, denoising ablations, latent-direction controls, prompt-token causal tests, and pinned SD1.5 safe-shape verification.
+    color: '#DB2777'
+    icon: image-plus
+    header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-05.png
     sections:
-      - id: "1_diffusion_image_controls"
-        number: "13.1"
-        title: "Diffusion and Image-Generation Controls"
-        exercise_dir: "part1_diffusion_image_controls"
-        page_file: "01_[13.1]_Diffusion_and_Image_Generation_Controls.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-05.png"
-        status: "Image-generation interpretability controls added"
-        streamlit_description: "Build and verify diffusion attention region maps, denoising-circuit ablation specificity, latent-direction effects over random controls, prompt-token-to-region causal drops, and a pinned SD1.5 DAAM-style token-ablation verification path."
-        streamlit_description_short: "Build and verify image-generation interpretability controls."
-
+    - id: 1_diffusion_image_controls
+      number: '13.1'
+      title: Diffusion and Image-Generation Controls
+      exercise_dir: part1_diffusion_image_controls
+      page_file: 01_[13.1]_Diffusion_and_Image_Generation_Controls.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-05.png
+      status: Image-generation interpretability controls added
+      streamlit_description: Build and verify diffusion attention region maps, denoising-circuit ablation specificity, latent-direction effects over random controls, prompt-token-to-region causal drops, and a pinned SD1.5 DAAM-style token-ablation verification path.
+      streamlit_description_short: Build and verify image-generation interpretability controls.
+    - id: 2_denoising_time_causal_patching
+      number: '13.2'
+      title: Denoising-Time Causal Patching
+      exercise_dir: part2_denoising_time_causal_patching
+      page_file: 02_[13.2]_Denoising-Time_Causal_Patching.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-05.png
+      status: ARENA-style denoising-time activation and latent-patching lab added
+      streamlit_description: Build a hookable denoiser against exact ground truth, localize a causal layer-by-timestep bottleneck, and test pinned SD1.5 same-seed latent interventions against wrong-time, wrong-region, and matched-random controls.
+      streamlit_description_short: Localize and test causal interventions across diffusion time.
   chapter14_jepa_world_models:
-    title: "Chapter 14: JEPAs and World Models"
-    short_title: "JEPAs and World Models"
-    short_description: "Local-first JEPA and world-model labs for target-embedding prediction, latent state probes, transition heads, object permanence, and causal latent patching."
-    description: "This extension chapter turns JEPA and world-model claims into testable representation contracts with held-out target prediction, frozen-latent state probes, action-conditioned transition checks, occlusion controls, and causal token patching."
-    color: "#16A34A"
-    icon: "network"
-    header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-15-3.png"
+    title: 'Chapter 14: JEPAs and World Models'
+    short_title: JEPAs and World Models
+    short_description: Local-first JEPA and world-model labs for target-embedding prediction, latent state probes, transition heads, object permanence, and causal latent patching.
+    description: This extension chapter turns JEPA and world-model claims into testable representation contracts with held-out target prediction, frozen-latent state probes, action-conditioned transition checks, occlusion controls, and causal token patching.
+    color: '#16A34A'
+    icon: network
+    header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-15-3.png
     sections:
-      - id: "1_jepa_world_model_controls"
-        number: "14.1"
-        title: "JEPA and World-Model Controls"
-        exercise_dir: "part1_jepa_world_model_controls"
-        page_file: "01_[14.1]_JEPA_and_World_Model_Controls.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-15-3.png"
-        status: "JEPA and world-model controls added"
-        streamlit_description: "Build and verify JEPA target-embedding prediction, held-out world-state probes, frozen-latent masked prediction, action-conditioned rollout, object permanence under occlusion, and causal latent-token patching."
-        streamlit_description_short: "Build and verify JEPA and world-model controls."
-
+    - id: 1_jepa_world_model_controls
+      number: '14.1'
+      title: JEPA and World-Model Controls
+      exercise_dir: part1_jepa_world_model_controls
+      page_file: 01_[14.1]_JEPA_and_World_Model_Controls.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-15-3.png
+      status: JEPA and world-model controls added
+      streamlit_description: Build and verify JEPA target-embedding prediction, held-out world-state probes, frozen-latent masked prediction, action-conditioned rollout, object permanence under occlusion, and causal latent-token patching.
+      streamlit_description_short: Build and verify JEPA and world-model controls.
+    - id: 2_ijepa_from_scratch
+      number: '14.2'
+      title: I-JEPA from Scratch
+      exercise_dir: part2_ijepa_from_scratch
+      page_file: 02_[14.2]_I-JEPA_from_Scratch.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-15-3.png
+      status: I-JEPA from-scratch learner lab added
+      streamlit_description: Build an image JEPA from patchification and contiguous block masking through online and EMA target encoders, latent prediction, collapse diagnostics, held-out probes, and no-EMA controls.
+      streamlit_description_short: Build and validate I-JEPA from scratch.
   chapter15_peft_misalignment:
-    title: "Chapter 15: PEFT and Misalignment"
-    short_title: "PEFT and Misalignment"
-    short_description: "Local-first LoRA, DoRA, and adapter interpretability labs for low-rank deltas, magnitude controls, protected directions, and mechanism-preservation checks."
-    description: "This extension chapter turns PEFT adapter-mechanics claims into testable contracts with exact low-rank math, DoRA recomposition checks, monitored-direction controls, generated safe-proxy checks, and accuracy-vs-mechanism comparisons."
-    color: "#7C3AED"
-    icon: "sliders"
-    header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-15-3.png"
+    title: 'Chapter 15: PEFT and Misalignment'
+    short_title: PEFT and Misalignment
+    short_description: Local-first LoRA, DoRA, and adapter interpretability labs for low-rank deltas, magnitude controls, protected directions, and mechanism-preservation checks.
+    description: This extension chapter turns PEFT adapter-mechanics claims into testable contracts with exact low-rank math, DoRA recomposition checks, monitored-direction controls, generated safe-proxy checks, and accuracy-vs-mechanism comparisons.
+    color: '#7C3AED'
+    icon: sliders
+    header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-15-3.png
     sections:
-      - id: "1_lora_dora_adapter_controls"
-        number: "15.1"
-        title: "LoRA, DoRA, and Adapter Controls"
-        exercise_dir: "part1_lora_dora_adapter_controls"
-        page_file: "01_[15.1]_LoRA_DoRA_and_Adapter_Controls.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-15-3.png"
-        status: "PEFT adapter controls added"
-        streamlit_description: "Build and verify LoRA low-rank deltas, DoRA row-magnitude recomposition, protected-direction projection controls, and mechanism-preservation checks for adapter comparisons."
-        streamlit_description_short: "Build and verify LoRA, DoRA, and adapter controls."
-
+    - id: 1_lora_dora_adapter_controls
+      number: '15.1'
+      title: LoRA, DoRA, and Adapter Controls
+      exercise_dir: part1_lora_dora_adapter_controls
+      page_file: 01_[15.1]_LoRA_DoRA_and_Adapter_Controls.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-15-3.png
+      status: PEFT adapter controls added
+      streamlit_description: Build and verify LoRA low-rank deltas, DoRA row-magnitude recomposition, protected-direction projection controls, and mechanism-preservation checks for adapter comparisons.
+      streamlit_description_short: Build and verify LoRA, DoRA, and adapter controls.
+    - id: 2_lora_vs_full_finetuning
+      number: '15.2'
+      title: LoRA vs Full Finetuning
+      exercise_dir: part2_lora_vs_full_finetuning
+      page_file: 02_[15.2]_LoRA_vs_Full_Finetuning.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-15-3.png
+      status: LoRA versus full-finetuning mechanism lab added
+      streamlit_description: Train rank-1 LoRA, rank-4 LoRA, and full finetuning on a pinned transformer, then compare held-out behavior, weight-update spectra, activation drift, causal direction ablations, and matched negative controls.
+      streamlit_description_short: Compare LoRA and full finetuning through behavior and mechanism.
   chapter16_shapley_attribution_baselines:
-    title: "Chapter 16: Shapley Attribution Baselines"
-    short_title: "Shapley Attribution Baselines"
-    short_description: "Local-first SHAP/Shapley attribution-baseline labs for exact games, approximation parity, token attribution, interactions, and causal-patching comparisons."
-    description: "This extension chapter treats Shapley methods as rigorous attribution baselines and foils for mechanistic claims, starting from exact ground-truth games before moving to approximate SHAP and patching comparisons."
-    color: "#9333EA"
-    icon: "split"
-    header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png"
+    title: 'Chapter 16: Shapley Attribution Baselines'
+    short_title: Shapley Attribution Baselines
+    short_description: Local-first SHAP/Shapley attribution-baseline labs for exact games, approximation parity, token attribution, interactions, and causal-patching comparisons.
+    description: This extension chapter treats Shapley methods as rigorous attribution baselines and foils for mechanistic claims, starting from exact ground-truth games before moving to approximate SHAP and patching comparisons.
+    color: '#9333EA'
+    icon: split
+    header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png
     sections:
-      - id: "1_exact_shapley_ground_truth_games"
-        number: "16.1"
-        title: "Exact Shapley on Ground-Truth Games"
-        exercise_dir: "part1_exact_shapley_ground_truth_games"
-        page_file: "01_[16.1]_Exact_Shapley_on_Ground_Truth_Games.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png"
-        status: "Exact Shapley GT-0 baseline added"
-        streamlit_description: "Build and verify exact Shapley values on complete coalition-value tables, additive ground-truth games, permutation parity checks, and interaction-heavy negative controls."
-        streamlit_description_short: "Build and verify exact Shapley attribution baselines."
-      - id: "2_kernelshap_partition_shap_controls"
-        number: "16.2"
-        title: "KernelSHAP and PartitionSHAP Controls"
-        exercise_dir: "part2_kernelshap_partition_shap_controls"
-        page_file: "02_[16.2]_KernelSHAP_and_PartitionSHAP_Controls.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png"
-        status: "KernelSHAP and PartitionSHAP GT-0 controls added"
-        streamlit_description: "Build and verify KernelSHAP weighted-regression parity and PartitionSHAP/Owen grouped-credit controls against exact Shapley on complete coalition tables."
-        streamlit_description_short: "Build and verify KernelSHAP and PartitionSHAP controls."
-      - id: "3_shapley_interactions_shapiq"
-        number: "16.3"
-        title: "Shapley Interactions with shapiq"
-        exercise_dir: "part3_shapley_interactions_shapiq"
-        page_file: "03_[16.3]_Shapley_Interactions_with_shapiq.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png"
-        status: "Shapley interaction GT-0 controls added"
-        streamlit_description: "Build exact second-order Shapley interaction controls, isolate one target pair interaction, and compare complete-table SII values against shapiq."
-        streamlit_description_short: "Build and verify Shapley interaction controls with shapiq."
-      - id: "4_tokenshap_token_shapley"
-        number: "16.4"
-        title: "TokenSHAP and TokenShapley"
-        exercise_dir: "part4_tokenshap_token_shapley"
-        page_file: "04_[16.4]_TokenSHAP_and_TokenShapley.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png"
-        status: "TokenSHAP GT-0 controls added"
-        streamlit_description: "Build exact token-position Shapley values from masked coalition tables, then check sampled permutation TokenSHAP against exact toy prompt attribution."
-        streamlit_description_short: "Build and verify token-level Shapley attribution controls."
-      - id: "5_vlm_modality_region_shap"
-        number: "16.5"
-        title: "VLM Modality and Region SHAP"
-        exercise_dir: "part5_vlm_modality_region_shap"
-        page_file: "05_[16.5]_VLM_Modality_and_Region_SHAP.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png"
-        status: "VLM modality and region SHAP GT-0 controls added"
-        streamlit_description: "Build exact modality-level and structured image-region Shapley controls for VLM audit baselines, including synergy and background negative controls."
-        streamlit_description_short: "Build and verify VLM modality and region SHAP controls."
-      - id: "6_shap_vs_activation_patching"
-        number: "16.6"
-        title: "SHAP vs Activation Patching"
-        exercise_dir: "part6_shap_vs_activation_patching"
-        page_file: "06_[16.6]_SHAP_vs_Activation_Patching.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png"
-        status: "SHAP vs patching GT-0 comparison added"
-        streamlit_description: "Compare exact Shapley values with full-minus-ablated patching effects on additive agreement controls and interaction-heavy overcount controls."
-        streamlit_description_short: "Compare SHAP and activation patching on exact controls."
-      - id: "7_data_shapley_in_one_training_run"
-        number: "16.7"
-        title: "Data Shapley in One Training Run"
-        exercise_dir: "part7_data_shapley_in_one_training_run"
-        page_file: "07_[16.7]_Data_Shapley_in_One_Training_Run.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png"
-        status: "Data Shapley GT-0 controls added"
-        streamlit_description: "Compute exact, Monte Carlo, and in-run first-order Data Shapley scores on a tiny one-step training problem with helpful and harmful examples."
-        streamlit_description_short: "Build and verify in-run Data Shapley controls."
-      - id: "8_shapley_mechinterp_agreement"
-        number: "16.8"
-        title: "Do SHAPley and Mechanistic Interpretability Agree?"
-        exercise_dir: "part8_shapley_mechinterp_agreement"
-        page_file: "08_[16.8]_Do_SHAPley_and_Mechanistic_Interpretability_Agree.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png"
-        status: "SHAPley/mechinterp agreement GT-0 controls added"
-        streamlit_description: "Compare Shapley, patching, and mechanistic ground-truth rankings through rank metrics, deletion consequences, and XOR interaction failures."
-        streamlit_description_short: "Test when SHAPley and mechanistic attributions agree or disagree."
-
+    - id: 1_exact_shapley_ground_truth_games
+      number: '16.1'
+      title: Exact Shapley on Ground-Truth Games
+      exercise_dir: part1_exact_shapley_ground_truth_games
+      page_file: 01_[16.1]_Exact_Shapley_on_Ground_Truth_Games.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png
+      status: Exact Shapley GT-0 baseline added
+      streamlit_description: Build and verify exact Shapley values on complete coalition-value tables, additive ground-truth games, permutation parity checks, and interaction-heavy negative controls.
+      streamlit_description_short: Build and verify exact Shapley attribution baselines.
+    - id: 2_kernelshap_partition_shap_controls
+      number: '16.2'
+      title: KernelSHAP and PartitionSHAP Controls
+      exercise_dir: part2_kernelshap_partition_shap_controls
+      page_file: 02_[16.2]_KernelSHAP_and_PartitionSHAP_Controls.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png
+      status: KernelSHAP and PartitionSHAP GT-0 controls added
+      streamlit_description: Build and verify KernelSHAP weighted-regression parity and PartitionSHAP/Owen grouped-credit controls against exact Shapley on complete coalition tables.
+      streamlit_description_short: Build and verify KernelSHAP and PartitionSHAP controls.
+    - id: 3_shapley_interactions_shapiq
+      number: '16.3'
+      title: Shapley Interactions with shapiq
+      exercise_dir: part3_shapley_interactions_shapiq
+      page_file: 03_[16.3]_Shapley_Interactions_with_shapiq.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png
+      status: Shapley interaction GT-0 controls added
+      streamlit_description: Build exact second-order Shapley interaction controls, isolate one target pair interaction, and compare complete-table SII values against shapiq.
+      streamlit_description_short: Build and verify Shapley interaction controls with shapiq.
+    - id: 4_tokenshap_token_shapley
+      number: '16.4'
+      title: TokenSHAP and TokenShapley
+      exercise_dir: part4_tokenshap_token_shapley
+      page_file: 04_[16.4]_TokenSHAP_and_TokenShapley.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png
+      status: TokenSHAP GT-0 controls added
+      streamlit_description: Build exact token-position Shapley values from masked coalition tables, then check sampled permutation TokenSHAP against exact toy prompt attribution.
+      streamlit_description_short: Build and verify token-level Shapley attribution controls.
+    - id: 5_vlm_modality_region_shap
+      number: '16.5'
+      title: VLM Modality and Region SHAP
+      exercise_dir: part5_vlm_modality_region_shap
+      page_file: 05_[16.5]_VLM_Modality_and_Region_SHAP.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png
+      status: VLM modality and region SHAP GT-0 controls added
+      streamlit_description: Build exact modality-level and structured image-region Shapley controls for VLM audit baselines, including synergy and background negative controls.
+      streamlit_description_short: Build and verify VLM modality and region SHAP controls.
+    - id: 6_shap_vs_activation_patching
+      number: '16.6'
+      title: SHAP vs Activation Patching
+      exercise_dir: part6_shap_vs_activation_patching
+      page_file: 06_[16.6]_SHAP_vs_Activation_Patching.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png
+      status: SHAP vs patching GT-0 comparison added
+      streamlit_description: Compare exact Shapley values with full-minus-ablated patching effects on additive agreement controls and interaction-heavy overcount controls.
+      streamlit_description_short: Compare SHAP and activation patching on exact controls.
+    - id: 7_data_shapley_in_one_training_run
+      number: '16.7'
+      title: Data Shapley in One Training Run
+      exercise_dir: part7_data_shapley_in_one_training_run
+      page_file: 07_[16.7]_Data_Shapley_in_One_Training_Run.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png
+      status: Data Shapley GT-0 controls added
+      streamlit_description: Compute exact, Monte Carlo, and in-run first-order Data Shapley scores on a tiny one-step training problem with helpful and harmful examples.
+      streamlit_description_short: Build and verify in-run Data Shapley controls.
+    - id: 8_shapley_mechinterp_agreement
+      number: '16.8'
+      title: Do SHAPley and Mechanistic Interpretability Agree?
+      exercise_dir: part8_shapley_mechinterp_agreement
+      page_file: 08_[16.8]_Do_SHAPley_and_Mechanistic_Interpretability_Agree.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png
+      status: SHAPley/mechinterp agreement GT-0 controls added
+      streamlit_description: Compare Shapley, patching, and mechanistic ground-truth rankings through rank metrics, deletion consequences, and XOR interaction failures.
+      streamlit_description_short: Test when SHAPley and mechanistic attributions agree or disagree.
+    - id: 9_influence_and_tracin
+      number: '16.9'
+      title: Influence Functions and TracIn
+      exercise_dir: part9_influence_and_tracin
+      page_file: 09_[16.9]_Influence_Functions_and_TracIn.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png
+      status: ARENA-style derivatives, training paths and actual digit retraining
+      streamlit_description: Derive influence and TracIn, implement affine ghost products, then inspect actual helpful and harmful digit images with independent refits, every checkpoint choice and matched random deletions.
+      streamlit_description_short: Trace training examples and test their effects by retraining.
+    - id: 10_datamodels
+      number: '16.10'
+      title: Datamodels
+      exercise_dir: part10_datamodels
+      page_file: 10_[16.10]_Datamodels.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png
+      status: ARENA-style subset prediction and actual counterfactual retraining
+      streamlit_description: Implement Datamodels from training-set membership to classifier margins, then inspect held-out subset predictions, image coefficients, sample complexity and targeted deletions against matched random refits.
+      streamlit_description_short: Predict training outcomes and test data counterfactuals.
+    - id: 11_dataset_cartography
+      number: '16.11'
+      title: Dataset Cartography
+      exercise_dir: part11_dataset_cartography
+      page_file: 11_[16.11]_Dataset_Cartography.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png
+      status: ARENA-style learning histories and real data-selection retraining
+      streamlit_description: Implement data maps, inspect actual image histories and label errors, then train selected and class-matched random subsets across all seeds and optimizer budgets.
+      streamlit_description_short: Map learning histories and test which data to keep.
+    - id: 12_sage_global_importance
+      number: '16.12'
+      title: 'SAGE: Which Features Help a Model Predict?'
+      exercise_dir: part12_sage_global_importance
+      page_file: 12_[16.12]_SAGE_Global_Importance.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png
+      status: ARENA-style conditional and global performance attribution
+      streamlit_description: Implement conditional and marginal SAGE, explain real regressor performance, compare local attributions, and test sampling, background and held-out feature rankings.
+      streamlit_description_short: Which features help a model predict accurately?
+    - id: 13_treeshap_from_first_principles
+      number: '16.13'
+      title: TreeSHAP from First Principles
+      exercise_dir: part13_treeshap
+      page_file: 13_[16.13]_TreeSHAP_from_First_Principles.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png
+      status: ARENA-style exact tree attribution with retained reference failure
+      streamlit_description: Implement TreeSHAP's path recurrence, explain fresh concrete-strength tree ensembles, and compare exact games, backgrounds, Saabas and deletion controls while retaining the raw SHAP threshold-routing failure.
+      streamlit_description_short: Build exact TreeSHAP and test which game it explains.
+    - id: 14_deepshap_when_does_fast_attribution_match_exact_shap
+      number: '16.14'
+      title: 'DeepSHAP: When Does Fast Attribution Match Exact SHAP?'
+      exercise_dir: part14_deepshap
+      page_file: 14_[16.14]_DeepSHAP_When_Does_Fast_Attribution_Match_Exact_SHAP.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png
+      status: ARENA-style neural attribution approximation with exact games
+      streamlit_description: Implement Rescale-style DeepSHAP for affine/ReLU networks, compare every held-out attribution with exact games and an author reference, and test backgrounds, replacement curves and known approximation failures.
+      streamlit_description_short: Test when fast neural attribution matches exact SHAP.
+    - id: 15_expected_gradients_which_expectation_does_gradientshap_estimate
+      number: '16.15'
+      title: 'Expected Gradients: Which Expectation Does GradientSHAP Estimate?'
+      exercise_dir: part15_gradientshap
+      page_file: 15_[16.15]_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png
+      status: ARENA-style Expected Gradients with complete sampling and controls
+      streamlit_description: Build Expected Gradients from explicit samples, compare Monte Carlo error with changing targets, and test all-row attribution, backgrounds, noise and replacements.
+      streamlit_description_short: Which expectation does GradientSHAP estimate?
+    - id: 17_one_query_many_interactions
+      number: '16.17'
+      title: One Query, Many Interactions
+      exercise_dir: part17_shapiq_estimators
+      page_file: 17_[16.17]_One_Query_Many_Interactions.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png
+      status: ARENA-style pair interaction estimators with complete query controls
+      streamlit_description: Build SHAP-IQ and pairwise KernelSHAP-IQ, compare the same queried model responses against exact SII, and explore sampling uncertainty, duplicate queries and unidentified regression directions.
+      streamlit_description_short: How much interaction accuracy does each query buy?
   chapter17_training_dynamics:
-    title: "Chapter 17: Training Dynamics"
-    short_title: "Training Dynamics"
-    short_description: "Developmental interpretability labs for checkpoint archaeology, mechanism emergence, phase transitions, and model-family timing comparisons."
-    description: "This extension chapter turns training-dynamics claims into explicit checkpoint contracts: stable emergence thresholds, phase-transition metrics, random controls, and cross-family comparisons before real checkpoint archaeology."
-    color: "#2563EB"
-    icon: "timeline"
-    header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-15-2.png"
+    title: 'Chapter 17: Training Dynamics'
+    short_title: Training Dynamics
+    short_description: Developmental interpretability labs for checkpoint archaeology, mechanism emergence, phase transitions, and model-family timing comparisons.
+    description: 'This extension chapter turns training-dynamics claims into explicit checkpoint contracts: stable emergence thresholds, phase-transition metrics, random controls, and cross-family comparisons before real checkpoint archaeology.'
+    color: '#2563EB'
+    icon: timeline
+    header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-15-2.png
     sections:
-      - id: "1_checkpoint_archaeology"
-        number: "17.1"
-        title: "Checkpoint Archaeology and Mechanism Emergence"
-        exercise_dir: "part1_checkpoint_archaeology"
-        page_file: "01_[17.1]_Checkpoint_Archaeology_and_Mechanism_Emergence.md"
-        header_image: "https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-15-2.png"
-        status: "Training-dynamics GT-0 checkpoint controls added"
-        streamlit_description: "Build and verify checkpoint emergence metrics, phase-transition detection, random controls, and AR/JEPA/diffusion/Mamba developmental timing comparisons on deterministic toy trajectories."
-        streamlit_description_short: "Build and verify checkpoint archaeology controls."
+    - id: 1_checkpoint_archaeology
+      number: '17.1'
+      title: Checkpoint Archaeology and Mechanism Emergence
+      exercise_dir: part1_checkpoint_archaeology
+      page_file: 01_[17.1]_Checkpoint_Archaeology_and_Mechanism_Emergence.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-15-2.png
+      status: Training-dynamics GT-0 checkpoint controls added
+      streamlit_description: Build and verify checkpoint emergence metrics, phase-transition detection, random controls, and AR/JEPA/diffusion/Mamba developmental timing comparisons on deterministic toy trajectories.
+      streamlit_description_short: Build and verify checkpoint archaeology controls.

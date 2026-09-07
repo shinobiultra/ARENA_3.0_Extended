@@ -1,0 +1,48 @@
+{
+  "source_directory": "/home/bitwise/.cache/arena_extended/treeshap/native-dev-v1",
+  "archive_sha256": "0d4316f98222a51fc870afe8261ca6207eea11834f51f6e483ebf99e932a4b44",
+  "members": {
+    "fitted.joblib": {
+      "sha256": "8498c07c565be40c75ade6ae2da89976176a42ac34b85589409a70ace2cd960b",
+      "size_bytes": 1940932
+    },
+    "source_snapshot/author_reference.json": {
+      "sha256": "c02421610e81d11b4f38baa88d86d463d147ed9a195eeba8fa230ffb35efd5f3",
+      "size_bytes": 651
+    },
+    "source_snapshot/data_manifest.json": {
+      "sha256": "0e829e5632b8b3fec9cdd54393e361fe58f7ea3e40d4e753399c4372509eeb38",
+      "size_bytes": 12657
+    },
+    "source_snapshot/protocol.md": {
+      "sha256": "a62ed351750e5e1c4e77f8d651ecef040267b4df795940052ec73b73017159c7",
+      "size_bytes": 5981
+    },
+    "source_snapshot/protocol_freeze.json": {
+      "sha256": "eb895e76b1ca62e8e654bb1334524be14a8e9b55a14045d427bf001f7558ba00",
+      "size_bytes": 477
+    },
+    "source_snapshot/treeshap_data.py": {
+      "sha256": "329b983afd4b12be1786507a4b585d057e722cfa888adaa99457f2222b82ffe3",
+      "size_bytes": 1784
+    },
+    "source_snapshot/treeshap_methods.py": {
+      "sha256": "9e41bc7e8f950a34d7a68b72eeb757c69cc35c5f55463dce69699bb63138fcb2",
+      "size_bytes": 9586
+    },
+    "source_snapshot/treeshap_methods_tests.py": {
+      "sha256": "9663ec014644b07cfe92fb227e3b218524ae86b5b4a95959446034afe0dac5f4",
+      "size_bytes": 8514
+    },
+    "source_snapshot/treeshap_study.py": {
+      "sha256": "3a3292b028aa6a4831519b25c6babb4b49fe4302e6188a3e9d73fcf75ede79ae",
+      "size_bytes": 8545
+    },
+    "state.json": {
+      "sha256": "f66737145584c1fe451a4b35225c179a01ce525e465a08b4322bbe4bc897b57f",
+      "size_bytes": 767
+    }
+  },
+  "large_tensors_retained_externally": {},
+  "readback_verified": true
+}

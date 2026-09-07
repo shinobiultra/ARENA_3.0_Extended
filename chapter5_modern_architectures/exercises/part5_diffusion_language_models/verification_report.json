@@ -18,7 +18,21 @@
       "pinned_diffusiongemma_config_processor_contract",
       "pinned_diffusiongemma_weight_shard_readiness_contract",
       "pinned_diffusiongemma_vllm_nvfp4_runtime_readiness_contract",
-      "pinned_diffusiongemma_nvfp4_isolated_vllm_generation_probe"
+      "pinned_diffusiongemma_nvfp4_isolated_vllm_generation_probe",
+      "finite_absorbing_forward_chain_bound_and_gradient_oracle",
+      "visible_token_carryover_adversarial_logits",
+      "greedy_confidence_and_predictive_entropy_oracle",
+      "explicit_attention_value_and_gradient_oracle",
+      "causal_cached_uncached_generation_parity",
+      "independent_clipped_adamw_update_oracle",
+      "three_matched_initialization_and_batch_seeds",
+      "within_task_shuffled_supervision",
+      "untrained_diffusion_and_causal_models",
+      "selected_and_final_update_checkpoints",
+      "all_declared_sampler_temperature_block_budgets",
+      "fixed_final_denominators_with_special_token_errors",
+      "synchronized_cached_ar_latency_with_trace_storage_disabled",
+      "fresh_seed_zero_refit_and_21504_exact_generations"
     ],
     "expected_metrics": {
       "accepted": true,
@@ -67,12 +81,29 @@
       "shuffled_label_accuracy_max": 0.25,
       "shuffled_sampler_exact_match_max": 0.1,
       "tests_passed": true,
+      "text_all_controls_retained": true,
+      "text_all_fresh_outcomes_match_learner": true,
+      "text_figures": 12,
+      "text_final_used_for_selection": false,
+      "text_fresh_generated_examples": 21504,
+      "text_fresh_generation_conditions": 42,
+      "text_fresh_training_runs": 4,
+      "text_generated_examples": 64512,
+      "text_generation_conditions": 126,
+      "text_max_trace_numeric_error_max": 0.0001,
+      "text_max_weight_error_max": 0.0001,
+      "text_natural_language_quality_established": false,
+      "text_own_answer_code_cells": 43,
+      "text_play_conditions": 9,
+      "text_timing_conditions": 78,
+      "text_timing_repetitions": 390,
+      "text_training_runs": 12,
       "train_example_count": 80,
       "training_steps": 1200,
       "vocab_size": 11
     }
   },
-  "claim_scope": "GT-0 discrete diffusion language-model ladder: analytic noising, masked denoising loss, remasking, sampler, entropy, and trajectory helpers remain tested on toy fixtures, then a tiny Transformer denoiser is trained on CUDA for a generated conditional copy-pair grammar. The report checks held-out masked-token accuracy, confidence-remasking sampler reconstruction, activation trajectory shape, VRAM, and a separately trained shuffled-label denoiser. The report also checks the pinned DiffusionGemma Transformers config, processor, tokenizer, model class, exact revisions, shard readiness, and vLLM/NVFP4 runtime readiness. It accepts released-checkpoint generation only from complete BF16 generation or from the pinned NVFP4 isolated-vLLM proof artifact; config-only evidence is never accepted as generation.",
+  "claim_scope": "Exact copy warm-up and finite absorbing diffusion derivation, followed by a 90-cell own-answer text learner with three seeds, twelve matched fits, 126 final generation conditions, twelve visible figures and cached-AR timing. Frozen tasks are parentheses, addition, context-dependent QA and pinned TinyStories. All shuffled/untrained controls, late-checkpoint sensitivity and weak natural-text outputs remain visible. Separate CUDA refits four models and regenerates 42 seed-zero configurations. The DiffusionGemma NVFP4 artifact remains a one-prompt generation proof; released-model time-state capture and patching are unfinished.",
   "datasets": [
     {
       "id": "5_5_diffusion_language_models_toy_inputs",
@@ -91,11 +122,36 @@
       "source": "generated",
       "train_example_count": 80,
       "vocab_size": 11
+    },
+    {
+      "development_rows": 128,
+      "final_rows": 128,
+      "id": "roneneldan/TinyStories",
+      "license": "cdla-sharing-1.0",
+      "revision": "f54c09fd23315a6f9c86f9dc80f725de7d8f9c64",
+      "source": "huggingface",
+      "tokenizer_fit": "training_only_byte_level_BPE_768",
+      "train_rows": 4096
+    },
+    {
+      "answer_length_supplied": false,
+      "context_slots": 40,
+      "development_per_task": 128,
+      "final_per_task": 128,
+      "id": "fixed_parentheses_addition_context_qa",
+      "seeds": [
+        101,
+        102,
+        103
+      ],
+      "source": "generated",
+      "target_slots": 24,
+      "train_per_task": 512
     }
   ],
-  "date_run": "2026-09-04T13:01:23+00:00",
-  "evidence_level": "toy_diffusion_contract_plus_visible_cuda_trained_conditional_diffusion_lm_and_diffusiongemma_runtime_proof",
-  "git_commit": "fa4ee063",
+  "date_run": "2026-09-05T11:33:09+00:00",
+  "evidence_level": "own_answer_trained_string_and_real_text_diffusion_vs_cached_ar_with_fresh_cuda_regeneration",
+  "git_commit": "8eab192b",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-0",
   "known_failures": [],
@@ -190,6 +246,31 @@
         "shuffled_label_accuracy",
         "shuffled_sampler_exact_match",
         "suffix_commitment_mean_step",
+        "text_all_controls_retained",
+        "text_all_fresh_outcomes_match_learner",
+        "text_data_directory",
+        "text_figures",
+        "text_final_used_for_selection",
+        "text_fresh_cuda_directory",
+        "text_fresh_elapsed_seconds",
+        "text_fresh_generated_examples",
+        "text_fresh_generation_conditions",
+        "text_fresh_raw_files_sha256",
+        "text_fresh_training_runs",
+        "text_generated_examples",
+        "text_generation_conditions",
+        "text_learner_directory",
+        "text_max_trace_numeric_error",
+        "text_max_weight_error",
+        "text_natural_language_quality_established",
+        "text_own_answer_code_cells",
+        "text_peak_vram_gb",
+        "text_play_conditions",
+        "text_primary_task_means",
+        "text_story_reference_diagnostics",
+        "text_timing_conditions",
+        "text_timing_repetitions",
+        "text_training_runs",
         "train_example_count",
         "training_steps",
         "vocab_size"
@@ -288,7 +369,7 @@
       "initial_denoising_loss": 2.5629329681396484,
       "mask_token_id": 10,
       "model_family": "tiny_transformer_discrete_diffusion_lm",
-      "peak_vram_gb": 0.074859619140625,
+      "peak_vram_gb": 0.12670373916625977,
       "preflight_passed": true,
       "sampler_exact_match": 1.0,
       "sampler_suffix_token_accuracy": 1.0,
@@ -298,6 +379,120 @@
       "shuffled_label_accuracy": 0.08749999850988388,
       "shuffled_sampler_exact_match": 0.0,
       "suffix_commitment_mean_step": 3.850000023841858,
+      "text_all_controls_retained": true,
+      "text_all_fresh_outcomes_match_learner": true,
+      "text_data_directory": "/tmp/diffusion-text-data-candidate-v3",
+      "text_figures": 12,
+      "text_final_used_for_selection": false,
+      "text_fresh_cuda_directory": "/tmp/arena-diffusion-text-report-um7v_99l/fresh_cuda",
+      "text_fresh_elapsed_seconds": 139.647114276886,
+      "text_fresh_generated_examples": 21504,
+      "text_fresh_generation_conditions": 42,
+      "text_fresh_raw_files_sha256": {
+        "autoregressive-endpoint-ar-greedy.json.gz": "506cbb97daae4f49f15705f73876f456332c0cfb5d0f75fa4ee920f1a48eec6a",
+        "autoregressive-fresh-fit.json.gz": "99febb6c8bed18fe3341daf04b09b414477dbceb6b9c17db0e76d3541afe3920",
+        "autoregressive-selected-ar-greedy.json.gz": "6e0233b751a91a42f6d17090bde969e8195335f17e61728331cf48d124d39a82",
+        "autoregressive-selected-ar-warm.json.gz": "932fd772437383d4e40aebd1708256e1119e70b4e58f6bcc37cf3dac183a7d9a",
+        "autoregressive-shuffled-endpoint-ar-greedy.json.gz": "8d095f2f80aaf4b242158456b034f1698e1b820771d1cb6b513475df103c695a",
+        "autoregressive-shuffled-fresh-fit.json.gz": "79ac163e7f8ec5f030efbef51326ab9e81d2a68921c5b1113410f56a6f475d93",
+        "autoregressive-shuffled-selected-ar-greedy.json.gz": "076d268c6b4171756fb9b122cf981e9c98027f4c446ae6a18511362692633efd",
+        "autoregressive-shuffled-selected-ar-warm.json.gz": "2775e4f9a21d57a88b10418cfbe0a630f0b89a22473d01a31a6a7c6ee6cbddf1",
+        "autoregressive-untrained-ar-greedy.json.gz": "ba213954f0eeb083b98372961198dbbf748ece2a32bcefbb2d7e6900bb75edb9",
+        "diffusion-endpoint-ancestral-16-greedy.json.gz": "06a3f05488e471c63876b488cda2e882684d058f716d6f5b0bf91132e93ba2df",
+        "diffusion-fresh-fit.json.gz": "720b18ea778ba97b46aa8933b91b6c71d33b315b6e8a83c92375e79dc7f49f15",
+        "diffusion-selected-ancestral-1-greedy.json.gz": "ceab1052d5cb5867077055008902fac869461d3f2d885c9eb8dd47b417a85dc9",
+        "diffusion-selected-ancestral-16-greedy.json.gz": "06a3f05488e471c63876b488cda2e882684d058f716d6f5b0bf91132e93ba2df",
+        "diffusion-selected-ancestral-4-greedy.json.gz": "05d68437db3f7e00b7208caf66051858aa67594d3e555e99bff60f3b9a3cf68a",
+        "diffusion-selected-ancestral-8-greedy.json.gz": "172132100dd2e80ddbce46503d0546764cba44d7db333d15a22029b9b1f44b05",
+        "diffusion-selected-confidence-1-greedy.json.gz": "9f0d3b613cb6f19336041c2367594319b30462250472f91a1610bdb0cf18aa09",
+        "diffusion-selected-confidence-16-annealed.json.gz": "2b3973bf13dcd76a7814c9bd9e4e3cee4e6eace4a696ebd17bb21602cf471b64",
+        "diffusion-selected-confidence-16-greedy.json.gz": "52a9aa37a84eed7c97d9175d416be6eb557b6648f5acc9634c7006bedea0470e",
+        "diffusion-selected-confidence-16-warm.json.gz": "0142816da4b637fe90d97eae43b1d8c8cbbaedc137e55eda51e4f15f600fa3e5",
+        "diffusion-selected-confidence-4-greedy.json.gz": "6829a3fbf7dff96976e0863cc04790c8f8395400fc3f8333c89b321daecda5b2",
+        "diffusion-selected-confidence-8-greedy.json.gz": "90d96bedf3d2bd05eb76e5d9966ee14b680670a200f1eb75ddcd0f31369d5050",
+        "diffusion-selected-confidence-block4-4.json.gz": "81b4455e327b98aa76abd55611228fa5ea292ba1690d6a36257379057f00fdec",
+        "diffusion-selected-confidence-block8-4.json.gz": "3b2e6c241a3a057683d39f379573f64c63fc12501064026f2786dce8f52efcc7",
+        "diffusion-selected-uniform-1-greedy.json.gz": "05bd660f2dfdae27a62149a450d158b611651bf34f4d8438357190a4b58a51ff",
+        "diffusion-selected-uniform-16-greedy.json.gz": "3cf31e0a4c2475c95c3170b1f9774c5cb51dc0d4c0a2fe4dea5bcd32569c9363",
+        "diffusion-selected-uniform-4-greedy.json.gz": "8b0854dd3f62a9a0e3231409ccbebd853de59de966007d073938e5bdba18c113",
+        "diffusion-selected-uniform-8-greedy.json.gz": "c21b68631c5ebe498f9505b06362933a4efadf9e83627a8707d6664cea0a3940",
+        "diffusion-shuffled-endpoint-ancestral-16-greedy.json.gz": "916d0a004d11594caa414259bbfa5f31513ffd96bc7af1c699ff231284629454",
+        "diffusion-shuffled-fresh-fit.json.gz": "56d54992c687b9cd1bc2860a6acdd190f1a49fb48b308a1d779ad319439e9885",
+        "diffusion-shuffled-selected-ancestral-1-greedy.json.gz": "eb408a4614a3161934145b09eb5250d4b70df2d91baf8889710047dba6a2ed96",
+        "diffusion-shuffled-selected-ancestral-16-greedy.json.gz": "916d0a004d11594caa414259bbfa5f31513ffd96bc7af1c699ff231284629454",
+        "diffusion-shuffled-selected-ancestral-4-greedy.json.gz": "2ee81e3697751fa5dbdaf27edcdc69419f011efbbdd04fafec07c967f6b98ad5",
+        "diffusion-shuffled-selected-ancestral-8-greedy.json.gz": "cc2786a2a90da1d73b17c90c65d0569e3221aff01861951d5ead0015dc7d2ce1",
+        "diffusion-shuffled-selected-confidence-1-greedy.json.gz": "30d0c321d04deb2340b03b120d582a0d8d9ef74f8cfdb10f531f559dba59694f",
+        "diffusion-shuffled-selected-confidence-16-annealed.json.gz": "64f30a43e8598f0c0575705267160e5f6b8f9646e953c402eebade8dd53e4d94",
+        "diffusion-shuffled-selected-confidence-16-greedy.json.gz": "ffd1337e9b8407c95a71f9e1d055387d2d7a695d62d8ed5e1e844b8d010aca85",
+        "diffusion-shuffled-selected-confidence-16-warm.json.gz": "57a4f55810bb09d9a0770bfcd83e02ea1377598f6eb3989ff4721b98de1b1e5b",
+        "diffusion-shuffled-selected-confidence-4-greedy.json.gz": "41886f654307d659838964e78e0bf1ec2efc98d368b557150d8d5edf9801747b",
+        "diffusion-shuffled-selected-confidence-8-greedy.json.gz": "ff795206d63907359cda6f54c87b465783604a1edd5821562ad020cc8227c68d",
+        "diffusion-shuffled-selected-confidence-block4-4.json.gz": "e6a3a8ddf682013724100c40ad713789a7027540e8f96781497e39ba8c4bc457",
+        "diffusion-shuffled-selected-confidence-block8-4.json.gz": "70eea3ff08a8c60c519b7a480e37698795422ff2820c4278febfae7687e3a6bf",
+        "diffusion-shuffled-selected-uniform-1-greedy.json.gz": "0ca0a475b8fdc61a6b24a38ee826ba9c552b0678edd4f017e2d27b3afacab255",
+        "diffusion-shuffled-selected-uniform-16-greedy.json.gz": "ca856d34df7dfd2e8c34f8787682c5deb4462e849979bf2d6051687f275fa684",
+        "diffusion-shuffled-selected-uniform-4-greedy.json.gz": "af6c3fc8a77dae3c25b919b5d9070bbcdd9513d2b01ddf65957dea6c2632a567",
+        "diffusion-shuffled-selected-uniform-8-greedy.json.gz": "aecdf8d983eec4704f504ebf81922b91a2fc809518b0c88b9af7730f72b7dcd3",
+        "diffusion-untrained-ancestral-16-greedy.json.gz": "dca9238b5866896492dff782372c89dff3f97661f8b9dcc37949c01d62dcd0c1"
+      },
+      "text_fresh_training_runs": 4,
+      "text_generated_examples": 64512,
+      "text_generation_conditions": 126,
+      "text_learner_directory": "/tmp/diffusion-text-full-own-answer-release-v1",
+      "text_max_trace_numeric_error": 0.0,
+      "text_max_weight_error": 0.0,
+      "text_natural_language_quality_established": false,
+      "text_own_answer_code_cells": 43,
+      "text_peak_vram_gb": 0.12670373916625977,
+      "text_play_conditions": 9,
+      "text_primary_task_means": {
+        "autoregressive": {
+          "arithmetic": 0.13802083333333334,
+          "parentheses": 0.4739583333333333,
+          "qa": 0.2916666666666667
+        },
+        "autoregressive-shuffled": {
+          "arithmetic": 0.028645833333333332,
+          "parentheses": 0.046875,
+          "qa": 0.109375
+        },
+        "diffusion": {
+          "arithmetic": 0.578125,
+          "parentheses": 0.2109375,
+          "qa": 0.28125
+        },
+        "diffusion-shuffled": {
+          "arithmetic": 0.018229166666666668,
+          "parentheses": 0.044270833333333336,
+          "qa": 0.11458333333333333
+        }
+      },
+      "text_story_reference_diagnostics": {
+        "autoregressive": {
+          "eos_rate": 0.0026041666666666665,
+          "mean_reference_token_edit_distance": 22.778645833333332,
+          "reference_token_match_rate": 0.0
+        },
+        "autoregressive-shuffled": {
+          "eos_rate": 0.0,
+          "mean_reference_token_edit_distance": 23.098958333333332,
+          "reference_token_match_rate": 0.0
+        },
+        "diffusion": {
+          "eos_rate": 0.005208333333333333,
+          "mean_reference_token_edit_distance": 22.515625,
+          "reference_token_match_rate": 0.0
+        },
+        "diffusion-shuffled": {
+          "eos_rate": 0.0,
+          "mean_reference_token_edit_distance": 23.166666666666668,
+          "reference_token_match_rate": 0.0
+        }
+      },
+      "text_timing_conditions": 78,
+      "text_timing_repetitions": 390,
+      "text_training_runs": 12,
       "torch_version": "2.12.1+cu132",
       "train_example_count": 80,
       "training_steps": 1200,
@@ -383,6 +578,14 @@
       "source": "generated_training_run"
     },
     {
+      "architecture": "two_layer_width64_four_head_bidirectional_or_causal_transformer",
+      "gated": false,
+      "id": "course_text_transformer_203264_parameters",
+      "precision": "float32",
+      "revision": "seeds_0_1_2_updates_12000",
+      "source": "learner_training_run"
+    },
+    {
       "architecture": "DiffusionGemmaForBlockDiffusion",
       "claim_scope": "pinned_config_processor_and_bf16_shard_readiness",
       "gated": false,
@@ -410,10 +613,10 @@
   "ood_tests": {
     "declared": "required_where_applicable"
   },
-  "peak_vram_gb": 0.074859619140625,
+  "peak_vram_gb": 0.12670373916625977,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "0024f5e2d59f9703149989a65ed3e7cbf5f27676ec65aab1c0aa06530a090b1e",
+    "combined_sha256": "6de8f92fb8a2ba1ec1c4ae6af4922a6b63c188d342c3b4676516cb7809ea5aeb",
     "files": [
       {
         "path": "arena_ext/diffusion_lm.py",
@@ -432,23 +635,23 @@
       },
       {
         "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/5.5_Diffusion_Language_Models_exercises.ipynb",
-        "sha256": "fa52cea93d644ca291ca1c6bf7aa4c2c931c933a237ec4ce3fdc908ee278bac5",
-        "size_bytes": 58444
+        "sha256": "88bc2959e27e1146f24403c2137d3d8e92e8af719ca92ab6aa6d02eedd330953",
+        "size_bytes": 169486
       },
       {
         "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/5.5_Diffusion_Language_Models_solutions.ipynb",
-        "sha256": "d278935cc56e396b0d2a3ec192423f4e23000b526012cc454c397e08d0c538ea",
-        "size_bytes": 88811
+        "sha256": "a9b6e4e838868643e6830fa848f88e70c349b167999ba1c71f2c131bd6e9dfd0",
+        "size_bytes": 1946118
       },
       {
         "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/README.md",
-        "sha256": "368ba4fe83ddfdab68c152882dc355aa63334ab81339078c15c0262af67ae732",
-        "size_bytes": 1607
+        "sha256": "cd40e26cdffd704f337910ef6e1d877ce4ac75a38cb035d124d6ba289882db4c",
+        "size_bytes": 3320
       },
       {
         "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/artifacts.lock.yml",
-        "sha256": "f4273ab1832df38e3f58d4d854bf722efb8244550c142e69787d883443f3028c",
-        "size_bytes": 6134
+        "sha256": "ca7dbea802f535e0e7ca46124fd63caac63a62f5337ff7398c28cecb66d8d793",
+        "size_bytes": 11196
       },
       {
         "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/artifacts/diffusiongemma_vllm_probe.json",
@@ -456,9 +659,34 @@
         "size_bytes": 1128
       },
       {
+        "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/build_notebooks.py",
+        "sha256": "84dccbf658d582a70e92a37c8a4c303db22b8ac5a7a61fe0fc0b4a7be646f40a",
+        "size_bytes": 4310
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/execute_learner.py",
+        "sha256": "83becea6be6a5dbbe26983aa582c16c303124420935088207bf6f81e2d62fbf5",
+        "size_bytes": 6068
+      },
+      {
         "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/expected_outputs/README.md",
-        "sha256": "a19f05c1bced04bdbeff2877c3b186838745483e627afd54b367e534f7f4d7b7",
-        "size_bytes": 2061
+        "sha256": "d6c064d36d837454540231a833f1f046a3d882c27863d2a2285662bb3112e9d3",
+        "size_bytes": 3627
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/expected_outputs/checkpoint_selection.json",
+        "sha256": "3ceccd40102718ef1eee8d5be6e02ad94b6948498f0cd58e4f4cbbc801f40297",
+        "size_bytes": 3494
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/expected_outputs/completed_text_study.json.gz",
+        "sha256": "dba28eeedf9bc7d6c9f928d9a01c3d893461aadd4fe5fa1e5df33863082bc2eb",
+        "size_bytes": 7304827
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/expected_outputs/protocol.json",
+        "sha256": "8379ec83e3877e945782c8cb31749e9ac595ce03dcec20c1df6f51d8038dc652",
+        "size_bytes": 4449
       },
       {
         "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/expected_outputs/reference_metrics.json",
@@ -471,14 +699,114 @@
         "size_bytes": 289
       },
       {
+        "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/expected_outputs/text_data/manifest.json",
+        "sha256": "0f3013cb7291627a9bee8788430ecab21b69a7ee57823b6aa8a881694aa607f2",
+        "size_bytes": 973
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/expected_outputs/text_learner_execution.json",
+        "sha256": "865279066de52d012138ac5a1a5ac25c7f5678daa069e6822b707aa3b09d6688",
+        "size_bytes": 15798
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/expected_outputs/verification_ladder.md",
+        "sha256": "78876e46ffef5f5ffcc3682a31732242a9cc99c0ef03edb3fde85ddc47e9406f",
+        "size_bytes": 2610
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/lesson.md",
+        "sha256": "666c84478d991b048e838d24a3eb362412f85d54fd5a305db35f8110804a0a00",
+        "size_bytes": 135183
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/publish_study.py",
+        "sha256": "399c2b7af7e727fe464a4bcbc2a416d82b2c078af361488c043bb67d42b41803",
+        "size_bytes": 5441
+      },
+      {
         "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/solutions.py",
-        "sha256": "0b396cf7b8c3e0eb2bc4f21766d03e3cc43a1f3f6ca5d63b30b4483301d42424",
-        "size_bytes": 37412
+        "sha256": "aa974117f30651c63f3ee231220620e57e6d7a0635fff8e50e076d2db6e3ac16",
+        "size_bytes": 37588
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/study_cuda.py",
+        "sha256": "36d5e533fd6949a56bc34ee98ac16e582b37e34c031e34494fae0155fd691346",
+        "size_bytes": 9507
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/study_evidence.py",
+        "sha256": "393be13a8c1bce83b70a22cb4026f632829749d7f9ad861aa99e1a933b68aa73",
+        "size_bytes": 18346
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/study_evidence_tests.py",
+        "sha256": "217f0e020fc8fbf16bf18979d20353f7ab6c553a1f671f837362819d7e885d5e",
+        "size_bytes": 3970
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/study_release.py",
+        "sha256": "531e1d18752f0f6f62339d9a40a448ac71e94590eaa76b169666a879725c4c37",
+        "size_bytes": 4329
       },
       {
         "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/tests.py",
         "sha256": "21a0b2177a764dac045e7289460e057098f316a2d91f3bd74c764757f6a51513",
         "size_bytes": 21613
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/text_data.py",
+        "sha256": "fb96f68b8b133b1266f9916cf1f24badd8734a5542076f8c484bc05660040def",
+        "size_bytes": 12194
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/text_data_tests.py",
+        "sha256": "6ff55c107ffec491e4f4e03091c20caca4ebb4a1115274c23efb189d81b5a443",
+        "size_bytes": 5126
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/text_diffusion_methods.py",
+        "sha256": "5dccdbe7f011865ef50e0889a11692718b7af13d94553b0ad92856ae9fa23643",
+        "size_bytes": 10927
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/text_diffusion_tests.py",
+        "sha256": "3ec53073ec4f8549d41779c26f81a2e749d4cc06652af89efc021154905d98eb",
+        "size_bytes": 14953
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/text_evaluation.py",
+        "sha256": "ff3770872347dfdfd66026a285f7803d6371c78f10471d647ceb864d52b26e7f",
+        "size_bytes": 8901
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/text_evaluation_tests.py",
+        "sha256": "948aca96586aee5abd060dfe2df638e073d1c7d97ce9fb2bd170dbf13f843ec3",
+        "size_bytes": 4262
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/text_model.py",
+        "sha256": "bd78b9c14e0b894552f02a2eb8d364b0e9f49a2f5e05689d4979388fe74b0694",
+        "size_bytes": 7039
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/text_model_tests.py",
+        "sha256": "5ee4d1a9e77510a410e436ae14702367b6dcf6745648dd5a0942c1809817b97d",
+        "size_bytes": 9759
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/text_plotting.py",
+        "sha256": "5aae257cec2005f716523dcba4456e4cb11c3862eb22f336399babb81756ef9e",
+        "size_bytes": 12151
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/text_training.py",
+        "sha256": "6ad5727e71aa130534ecb6f2d040b1ed5db1e2434fdda2dd049f29811904de62",
+        "size_bytes": 9498
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/text_training_tests.py",
+        "sha256": "7d42ad8566e6cbeff35e7a21549ae8ba124a6b2cdfee87c05ac2ce4713146671",
+        "size_bytes": 7788
       },
       {
         "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/utils.py",
@@ -491,9 +819,69 @@
         "size_bytes": 2669
       },
       {
+        "path": "chapter5_modern_architectures/instructions/assets/diffusion_copy_controls.png",
+        "sha256": "f82d870b5d1900da03341b8df469932a5ca578fe8229ed42d6f44021b48a9f08",
+        "size_bytes": 147414
+      },
+      {
+        "path": "chapter5_modern_architectures/instructions/assets/diffusion_copy_trajectory.png",
+        "sha256": "0f4d5419bb1ab916dc743e8a2d5de74fb0e26f89ff530ca3ba7b1bc0b5ff8f69",
+        "size_bytes": 64068
+      },
+      {
+        "path": "chapter5_modern_architectures/instructions/assets/diffusion_text_arithmetic_gallery.png",
+        "sha256": "c0f0bbc36ff84d92686ecfebefbbeecbe66f6b1ee885f045c2a14fbb29d4834d",
+        "size_bytes": 76240
+      },
+      {
+        "path": "chapter5_modern_architectures/instructions/assets/diffusion_text_budget_quality.png",
+        "sha256": "f947be9cb0dae76df5969443886bb84da883b3c3a0cf68eda1b90e0bb912d556",
+        "size_bytes": 171171
+      },
+      {
+        "path": "chapter5_modern_architectures/instructions/assets/diffusion_text_cost_quality.png",
+        "sha256": "60d35003f9aad778251a0418346cd9dc22bc54df3656be4e482fb5026c2a9e96",
+        "size_bytes": 108652
+      },
+      {
+        "path": "chapter5_modern_architectures/instructions/assets/diffusion_text_entropy_commitment.png",
+        "sha256": "ced2923dc0a7598252d53c7a3d5822fe0a6d8818932bdc4fd7833aa973f87d8c",
+        "size_bytes": 147861
+      },
+      {
+        "path": "chapter5_modern_architectures/instructions/assets/diffusion_text_schedule_play.png",
+        "sha256": "9e46e363b80f67c18824800de5662687d2cf7a7f5ac295c746cf6584ec98180d",
+        "size_bytes": 189982
+      },
+      {
+        "path": "chapter5_modern_architectures/instructions/assets/diffusion_text_story_gallery.png",
+        "sha256": "a4cc2cc23a6563af145cb767bccb77e6053011d891d0029a41b0e1582b3c8590",
+        "size_bytes": 176028
+      },
+      {
+        "path": "chapter5_modern_architectures/instructions/assets/diffusion_text_task_controls.png",
+        "sha256": "622487ed1105c4af496c160cb22b388d7979ea75d22f75ac5bb49c435048682a",
+        "size_bytes": 142219
+      },
+      {
+        "path": "chapter5_modern_architectures/instructions/assets/diffusion_text_temperature_blocks.png",
+        "sha256": "59a7af1c4a4765a7e7a42e4d119b80933d46a75ab5a5f9d5b5f214f84b2a8805",
+        "size_bytes": 150150
+      },
+      {
+        "path": "chapter5_modern_architectures/instructions/assets/diffusion_text_training.png",
+        "sha256": "6b8a750e70013d6147c2dd1d8004d468a25215e40a9588b076cda90de4eb10e3",
+        "size_bytes": 189019
+      },
+      {
+        "path": "chapter5_modern_architectures/instructions/assets/diffusion_text_trajectory.png",
+        "sha256": "3a52f6f07c652205db71c8f7d03ae8cf3aad9efe0ece4a72bd7379c8ef5fd4d7",
+        "size_bytes": 216846
+      },
+      {
         "path": "chapter5_modern_architectures/instructions/pages/05_[5.5]_Diffusion_Language_Models.md",
-        "sha256": "7c37c62003b33406932be4ef07d1730b64744fcfcf8b3f7b351712ffd41e8b0f",
-        "size_bytes": 44674
+        "sha256": "0843e3df57eeab30e990337f50f540cf65e408504accd08dc927d597b46b4ed5",
+        "size_bytes": 134032
       },
       {
         "path": "scripts/run_diffusiongemma_vllm_probe.py",
@@ -509,9 +897,10 @@
     "schema_version": 1
   },
   "safety_notes": [
-    "No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.",
-    "The trained diffusion LM path uses generated integer-token copy-pair data only. DiffusionGemma readiness checks use public open-weight metadata and exact pinned revisions. The Google BF16 path is deferred for direct 24GB loading, while the NVIDIA NVFP4 claim is limited to the isolated vLLM proof artifact and does not install vLLM into the main torch 2.12/CUDA 13.2 uv environment."
+    "Original ARENA chapters remain unchanged.",
+    "TinyStories, training-only tokenization and splits are pinned; all target positions start masked at generation.",
+    "NVFP4 stays in its isolated runtime; released-model hidden-state capture and patching remain unfinished."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 17.505134
+  "wall_clock_seconds": 160.636202
 }

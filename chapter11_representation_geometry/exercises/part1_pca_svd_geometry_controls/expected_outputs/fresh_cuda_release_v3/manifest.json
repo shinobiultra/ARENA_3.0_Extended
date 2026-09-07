@@ -1,0 +1,17 @@
+{
+  "source_directory": "/home/bitwise/.cache/arena_extended/geometry/fresh_reproductions/run-hp2xauhn/fresh_cuda",
+  "archive_sha256": "edc8dae19ec8d4197f7eb01dcb3793e2fb6bd69ee87fe1b04d313a1a25044fcc",
+  "members_sha256": {
+    "actual_outcomes.json.gz": "9c089f11df6372efdac5713127184f7e8e8c314c04e9d46e8899346fce236131",
+    "reproduction.json": "d303b3c9c7f26c5aad508c12b56951150d4171890e9c9c93cee4f6e8817f1a99",
+    "source_snapshot/geometry_cuda.py": "2eb46b7f72902ff28dfc537a9d4f4e01cae778099573a7878ff8834d4e286d60",
+    "source_snapshot/geometry_data.py": "cc8045803c8437d859e44d60fe45414c9e2e95b5246fdb62ae0f8d7b8192037b",
+    "source_snapshot/geometry_evidence.py": "7d800a28bafeaae39926b098842f5edcb20d6d8f9a1b40caad3f7271e788c548",
+    "source_snapshot/geometry_methods.py": "a821887870ebc8e8b38bc5e94aadab6a93a431758b1f22248bf8b8967ff47aed",
+    "source_snapshot/geometry_protocol.json": "4a4816aaeaa734d5ba3a3ba8860b70e1338fdc4d5388255a6414944f43408f78",
+    "source_snapshot/geometry_study.py": "c3cdf723ec7e7e557d3e960f29eeb45e73148059cce12d706ed2b3e785a772c6",
+    "verification_report.json": "0c7bd4d4ac6f50165313fddb132b77f9f8f91b808d5ca2e9dcdb527896b52bce"
+  },
+  "large_tensors_retained_in_source_directory": {},
+  "all_archive_members_read_back_and_verified": true
+}

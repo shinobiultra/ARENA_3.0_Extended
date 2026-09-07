@@ -18,6 +18,7 @@ claim_scope: >-
 required_gpu_gb: 1
 max_allowed_gpu_gb: 24
 freshness_inputs:
+  - arena_ext/notebook_checks.py
   - chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/solutions.py
   - chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/scripts/run_capstone.py
   - chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/results/metrics.json

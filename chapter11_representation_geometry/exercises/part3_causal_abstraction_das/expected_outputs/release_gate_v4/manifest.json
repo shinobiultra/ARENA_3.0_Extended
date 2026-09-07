@@ -1,0 +1,26 @@
+{
+  "files_sha256": {
+    "integration-tests-release-v3.log": "cea00ace0f999d3404efe81598bf3a3df5e036ad341d325cc2895d39cbe724da",
+    "course-surface-tests-v2.log": "a29ea94dccf5f415ad32514367464d62af090be83df2b92e82a25ce5a19389bf",
+    "normal-report-release-v4.log": "44fe7c71dae4c53490874d3c6b07358c8331a801e6b70aa5a01d5f765790877a",
+    "audit_arena_style_depth-release-v4.log": "c210a93adda80735ea8f25228d57e3f263d880fcc103524ffa5be08b45d5c626",
+    "audit_original_arena_preservation-release-v4.log": "64b624f238e1fcf5274393d408fbadd249711574e1c129f168cac0470daf4d2c",
+    "audit_report_evidence_contracts-release-v4.log": "4741a8be7778dcd98f052e1ed5fe75354609457be58668bb3761ccfd7ead8941",
+    "publish-release-v3.log": "98ddf7fffdb6230ab8b89753ba1811ed8a38cab4eea86bc6d0e0477be45e5b63",
+    "audit_course_surface-release-v1.log": "f15653a4a28f0dd9f5c3f38adee722bc8a63547e35389ae020f88a008658e95c",
+    "extension-assets-tests-v1.log": "0e049ab1591621df63f6283560d012ee550accf4d352a15a81cd621a48d70cca",
+    "audit_original_arena_preservation-release-v1.log": "b712e50f55a3f7d79cb0f5e44b085ce29b25d600e02f77978612bb40d0c7a253",
+    "audit_hard_exercise_ladders-release-v1.log": "ccfefe5f3f25154ead91bcf76f6a0a55190b2d065569027c1a4e6f989f009153",
+    "integration-tests-release-v4.log": "b1ca1f5bba3ea1882e8ba0b21ba4222653bf8360276f2bd66ecba532308ffc55",
+    "audit_course_surface-release-v4.log": "a2e00c3825989a7411fcd96c79f159ef679acf0f5afc8514ff159bdc7ddf7fed",
+    "audit_report_evidence_contracts-release-v1.log": "8e62bbb0a41876977028bc9693b21de1c219bc8083af2f5452093bd6e2bbe1e5",
+    "audit_arena_style_depth-release-v1.log": "ef4b854e0ab15446df895bcb54e9f6cae9a3225d67523b0f09a21e61859b8e5b",
+    "audit_hard_exercise_ladders-release-v4.log": "893d6f51a3f00fcfb65efb3a05341e0119f2edf269e91850fb99dbe6dfbf56f9",
+    "extension-assets-tests-v2.log": "ae4f27472bef2d08df86c2f50e7d89213710d5230def64ee871654cd77f890fb",
+    "verification_report.json": "eec56b278ebe6f1251b9a08c840c19583503cbd654b0e7fac72aa69bbfd53f9a",
+    "audit_roadmap_final_completeness-release-v4.log": "08a13bd86812973e39eaa5d774c0ff3b07f5ca5e4a10eec14e12c43e620375bf",
+    "audit_roadmap_final_completeness-release-v1.log": "7f1aaae095d0d6ebfb49861a2c7b92762f9b44e75b617782c1b445d9bd515952",
+    "validation.json": "3a7fabb6e851c968b16f975130bc504588662c9fed1bb86d4b52107e587d49f6"
+  },
+  "normal_report_sha256": "eec56b278ebe6f1251b9a08c840c19583503cbd654b0e7fac72aa69bbfd53f9a"
+}

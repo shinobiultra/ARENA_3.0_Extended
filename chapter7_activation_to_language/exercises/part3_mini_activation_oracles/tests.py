@@ -1,3 +1,5 @@
+
+from arena_ext.notebook_checks import unfinished_definitions
 import ast
 import json
 from collections.abc import Callable
@@ -737,7 +739,7 @@ def test_solution_notebook_exposes_taught_implementations():
     assert code.count("verification_report.json") == 1, (
         'The solution notebook must keep taught implementations, learner aids, and the visible signature result inline.'
     )
-    assert "raise NotImplementedError" not in code, (
+    assert not unfinished_definitions(code), (
         'The solution notebook must keep taught implementations, learner aids, and the visible signature result inline.'
     )
     assert markdown.count("### Exercise") >= 7, (

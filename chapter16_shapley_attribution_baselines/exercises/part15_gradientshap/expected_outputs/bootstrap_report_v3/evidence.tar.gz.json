@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "status": "PASS",
+  "label": "bootstrap_normal_report_v3",
+  "archive": "/home/bitwise/Documents/ARENA_3.0_Extended/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/expected_outputs/bootstrap_report_v3/evidence.tar.gz",
+  "sha256": "268d4b62034958b156c7b6d9ea67c1ad7fc0401948cbf2402d0ca5a7f611c511",
+  "size_bytes": 7633463,
+  "verified_included_files": 58,
+  "verified_external_files": 0,
+  "historical_status": {
+    "report_sha256": "cba34a9396f575e5fa2b506df9e50b66b1fc41e5b2ef2fcd6b60111716bafc14",
+    "report_accepted": true,
+    "tests_passed": true,
+    "report_input_count": 56,
+    "report_inputs_combined_sha256": "3071d2493a3689f2252249c7be8e216f488d2fa18fb0b42da4fbe395b3a7bb61",
+    "fresh_reproduction_sha256": "27577d7beea59dc1408ed83aa690e7629b74ff5673a18fefc2d71f648d61fb54",
+    "bootstrap_log_sha256": "88065acebb19cdee6c2b64e17895e34102b4db7b18eb1c742ecec9eda27e75e9"
+  },
+  "external_files": {}
+}

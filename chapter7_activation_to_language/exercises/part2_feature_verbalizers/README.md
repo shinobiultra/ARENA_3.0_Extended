@@ -1,30 +1,39 @@
 # [7.2] Feature Verbalizers
 
-This section teaches the complete explain, predict, falsify, and revise loop on
-an exact planted feature before escalating to a real transformer direction.
+This section asks one question: does a layer-3 Pythia-70m direction deserve the
+verbalizer "the subject noun is plural"?
 
-- `7.2_Feature_Verbalizers_exercises.ipynb` contains seven graded exercises.
-  Students implement the planted oracle, example selection, executable semantic
-  rules, counterexample mining, controls, intervention scoring, and final result.
-- `7.2_Feature_Verbalizers_solutions.ipynb` mirrors the learner progression with
-  every taught implementation inline and an executed three-panel signature
-  result plus the full held-out prompt table.
-- `tests.py` gives immediate semantic feedback and enforces notebook structure,
-  visible toy ground truth, inline solutions, and parseable code cells.
-- `solutions.py` is the importable reference and contains the serialized CUDA
-  escalation; it is not the learner-facing implementation surface.
-- `artifacts.lock.yml`, `expected_outputs/`, and `verification_report.json`
-  preserve supporting release evidence. They are not the lesson.
+Students implement a transparent mean-difference decoder, exact component
+replacement, real residual caching, executable semantic hypotheses, matched
+baselines, the exhaustive `2**12` matched-pair label-swap null, real transformer
+hooks, and separate distributions of 64 coefficient-matched orthogonal
+interventions. A stronger causal control uses 256 directions from fixed-seed
+within-pair training-label swaps, with identical per-example edit sizes.
+The signature performs both singular-to-plural and
+plural-to-singular edits. The play cell applies the same real hook to
+learner-chosen nouns.
 
-The exact CPU result uses 12 training, 6 revision, and 24 final held-out prompts.
-The revised verbalizer reaches 1.0 held-out and contrastive accuracy, while the
-initial text-only story reaches 0.542 and the base-rate, random-keyword, and
-lookup controls each reach 0.667. Adding the planted feature direction changes
-the score by 1.25; an orthogonal direction changes it by 0.0.
+The result is intentionally honest about its weak points. Target held-out
+accuracy is `1.0`, but 548 of 4,096 pair-preserving null fits also reach `1.0`
+(`p=0.134`, p95 `1.0`). Decoding alone is therefore not significant. The suffix
+rule is perfect on regular and nonce nouns and fails only on irregulars. Ten
+held-out nouns are multi-token; the exact-ID lookup baseline uses their final
+tokenizer IDs and has zero train/held-out ID overlap.
 
-The real-model handoff loads the pinned
-`NeelNanda/GELU_1L512W_C4_Code` checkpoint through TransformerLens on CUDA,
-constructs a residual direction from safe final-token activations, validates a
-held-out keyword explanation, and compares target-direction steering with an
-orthogonal random direction. That evidence must be rerun by the parent CUDA pass
-after learner-facing changes.
+The real path loads pinned `EleutherAI/pythia-70m` offline on CUDA 13.2. The
+number edit changes the downstream `are - is` margin by `8.48` against a
+64-direction p95 of `1.09`. The reverse edit changes it by `9.62` against its
+own matched-null p95 of `1.85`.
+
+`verification_report.json` is supporting release evidence only. Neither the
+notebooks nor their figure load results from it. Original ARENA is unchanged.
+
+The stronger paired causal null gives forward/reverse p-values about 0.016 and
+0.008. Validation evidence tables expose irregular-plural counterexamples to
+the suffix explanation before the held-out evaluation. Candidate descriptions
+are human-written executable predicates; automatic free-form verbalization is
+still outside this lab's demonstrated scope.
+
+Build from `build_notebooks.py`, execute the completed learner in a fresh
+kernel, then run the tests and `scripts/run_extension_verification_reports.py
+--section 7.2`. Both CUDA and explicit CPU paths use the same pinned model.

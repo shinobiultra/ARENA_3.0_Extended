@@ -1,0 +1,160 @@
+{
+  "status": "PASS",
+  "learner_directory": "/home/bitwise/.cache/arena_extended/data_attribution/own-full-v3",
+  "learner_execution_sha256": "96c8891618c027a180198d8f77f7285590d15fc99e63b16a5ab390b6b2779502",
+  "source_inputs": {
+    "chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/lesson.md": "14b97971acd7ccdbfce9ca061ae157a9d05ef198635f608ab7b9e42678a9cbfd",
+    "chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/attribution_methods.py": "f6f0712d185182b7e43a6bc8bb8b6e401e019e33326f0e59d2d75dda522df046",
+    "chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/attribution_methods_tests.py": "ab63b3b07e7c4561395a0c24e28b64417028aabbe6a9816ec0ff60e3ed3d278d",
+    "chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/attribution_data.py": "eaa4954f3255d3f82082dc30baef1051f03c0cad4afab806e9cb16d810101ab3",
+    "chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/attribution_data_tests.py": "f404a3faf21e89b78dea6f8255264a498c58881061c040c6ee501035a75092a8",
+    "chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/attribution_study.py": "79a42aaa4f75776740bffae13241c745754efe076dc0d05fd87294ca775e9cf9",
+    "chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/attribution_study_tests.py": "2eb483bb9023473de306903cacd3cb227cef8b7b8695c48e6768f4593faef5ce",
+    "chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/attribution_reference.py": "bd342601bc81ba5e5b3f3bc193900643f089b9d8e8f6cdd22022cc0688ed8303",
+    "chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/attribution_play.py": "14d4d4d5d44a5eb838978311cdd2c5b50954d483980fd27b3cecdfb79009281f",
+    "chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/data_manifest.json": "a009ed80855932e774a427cc0b727cb30cfdfa7c228b1d5d7b7dee8f569b0a7c",
+    "chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/native_protocol.md": "d81dfe265f76f0275a9752adb68c74a7e560a76f5ffc644ea4040cfbc8c8deed",
+    "chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/build_notebooks.py": "7f7cadc73dbb319b85b9c76b3caf10727c3c8f2eea587d0974bea4c50bca6850",
+    "chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/execute_learner.py": "f78797f417eb76ecd74b7a49f0b8d9fed5c7bb8cc7329b0e08161e9c4b816ea2",
+    "chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/reproduce_native.py": "db9ceda4b56d549fb448f8bcd003d034db7502b0e5696c49af030065c5a862d0"
+  },
+  "native_model_retrained": true,
+  "reference_refits": 930,
+  "sgd_paths": 6,
+  "sgd_updates": 30720,
+  "comparisons": {
+    "tensors": 1048,
+    "tensor_elements": 16726855,
+    "scalars": 7272,
+    "max_absolute_error": 0.0
+  },
+  "elapsed_seconds": 1.4635666470021533,
+  "independent_scipy_checks": [
+    {
+      "condition": "clean",
+      "case": "base",
+      "parameter_error": 5.927480728473711e-13,
+      "residual": 2.891740666366438e-14
+    },
+    {
+      "condition": "clean",
+      "case": "loo_0",
+      "parameter_error": 2.0712598303163077e-14,
+      "residual": 2.8291171488836753e-15
+    },
+    {
+      "condition": "clean",
+      "case": "loo_1",
+      "parameter_error": 2.0378143616994748e-13,
+      "residual": 7.53563877964325e-15
+    },
+    {
+      "condition": "clean",
+      "case": "loo_2",
+      "parameter_error": 7.874256802153923e-13,
+      "residual": 4.193607267000132e-14
+    },
+    {
+      "condition": "clean",
+      "case": "half_weight",
+      "parameter_error": 4.005823450725643e-14,
+      "residual": 2.2280354644577116e-15
+    },
+    {
+      "condition": "corrupted",
+      "case": "base",
+      "parameter_error": 2.1162127605833803e-11,
+      "residual": 1.2802259252708836e-14
+    },
+    {
+      "condition": "corrupted",
+      "case": "loo_0",
+      "parameter_error": 2.0628970753833187e-11,
+      "residual": 1.6095631771850805e-14
+    },
+    {
+      "condition": "corrupted",
+      "case": "loo_1",
+      "parameter_error": 7.964157111572945e-12,
+      "residual": 2.804527443611704e-14
+    },
+    {
+      "condition": "corrupted",
+      "case": "loo_2",
+      "parameter_error": 2.3606144816668007e-11,
+      "residual": 3.3229061863204734e-14
+    },
+    {
+      "condition": "corrupted",
+      "case": "half_weight",
+      "parameter_error": 2.0771995234980523e-11,
+      "residual": 1.8486080721746845e-14
+    }
+  ],
+  "exploratory_refits": 33,
+  "separate_refit_checks": 6,
+  "data_manifest_sha256": "a009ed80855932e774a427cc0b727cb30cfdfa7c228b1d5d7b7dee8f569b0a7c",
+  "artifacts": {
+    "native/query_play.pt": {
+      "sha256": "b3c2bf6276e344fa71fa685549847bdd5443f592fc9786e738ddaf7c8f2bc8be",
+      "size_bytes": 169397
+    },
+    "native/clean/sgd_seed_1.pt": {
+      "sha256": "6c1bbef13e440bc0e2f48559f019f5bfc5beb70ff4faec2dc2e28a99eae14b0c",
+      "size_bytes": 2747514
+    },
+    "native/clean/complete_fits.pt": {
+      "sha256": "0122c9da735f617a682406284f52edc3e2c8aca026cca976723463798dca3b19",
+      "size_bytes": 10634623
+    },
+    "native/clean/sgd_seed_2.pt": {
+      "sha256": "d9b3d8b6b21eda33704d8c847f23a7aec9d12ee6f3bf0a85c23bbc3f82cbd416",
+      "size_bytes": 2747514
+    },
+    "native/clean/final_measurements.pt": {
+      "sha256": "f302414c145ec0a78985170526869d86bcf75072fbd285ffb74f8c877197eeff",
+      "size_bytes": 34847605
+    },
+    "native/clean/sgd_seed_0.pt": {
+      "sha256": "4b5716b28527b402e461efadb27d767d43b216b1798a4aa02721520d66f7b980",
+      "size_bytes": 2747514
+    },
+    "native/clean/ranking_measurements.pt": {
+      "sha256": "8eb1c780e7bd42f15b128ee8f54b723db8271902302f9981338b1e14d47b9c89",
+      "size_bytes": 28169173
+    },
+    "native/clean/reference_fits.pt": {
+      "sha256": "f4b425e0607d80ed1c52a5fd30c85142cc97cc1a03a2f4f17953e0b735b6b404",
+      "size_bytes": 955201
+    },
+    "native/corrupted/sgd_seed_1.pt": {
+      "sha256": "f51d7399ccce64ddda9cf8a7bacbc630df1e5cc116c2e684daa8b04e29e191fc",
+      "size_bytes": 2747514
+    },
+    "native/corrupted/complete_fits.pt": {
+      "sha256": "aab8eb5bf62f6e244d755d8e45fc7c9995cec40c155725cb8abbb0b9a55c0abe",
+      "size_bytes": 10515903
+    },
+    "native/corrupted/sgd_seed_2.pt": {
+      "sha256": "5f4b258fd5578e80813d5ce680ef7406157fb1e5affb4b99b95855c65b49778a",
+      "size_bytes": 2747514
+    },
+    "native/corrupted/final_measurements.pt": {
+      "sha256": "db75c857f8f9c9028d498259e49b7f6ca736e47eb8905f5a380f4427ef0fe3f9",
+      "size_bytes": 34847605
+    },
+    "native/corrupted/sgd_seed_0.pt": {
+      "sha256": "a0d47f40b59f80d02cf10bfc20f048890a29bed5fd5dbf80bc8ab66ebe6a1a4e",
+      "size_bytes": 2747514
+    },
+    "native/corrupted/ranking_measurements.pt": {
+      "sha256": "21c1cd9695f3e8b5de22916bbff0b72e33aef8673b6694a44d8a55b785fc7990",
+      "size_bytes": 28169173
+    },
+    "native/corrupted/reference_fits.pt": {
+      "sha256": "7595c1bba41ef260905cfc38a2e8c9400db9c0692b3d13adcb1a7dd48604a225",
+      "size_bytes": 836417
+    }
+  },
+  "changed_sources": []
+}

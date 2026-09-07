@@ -1,0 +1,105 @@
+roadmap_requirements_checked=205
+roadmap_status_deferred=13
+roadmap_status_preflight_only=36
+roadmap_status_taught=41
+roadmap_status_toy_only=20
+roadmap_status_unimplemented=95
+report_requirements_checked=24
+legacy_requirements_checked=2
+roadmap_final_completeness_blockers=95
+ROADMAP_FINAL_COMPLETENESS=FAIL
+- roadmap status: foundations.research_process_notebooks: UNIMPLEMENTED - No learner-facing research-log and hypothesis-tracker progression exists.
+- roadmap status: modern.gemma_quantized_inference: UNIMPLEMENTED - No Gemma quantized inference notebook or BF16-versus-int4 feature robustness study exists.
+- roadmap status: modern.llama_like_decoder: UNIMPLEMENTED - No Llama-specific decoder, RoPE/GQA parity, or checkpoint-loading exercise exists.
+- roadmap status: modern.medgemma_safety_case: UNIMPLEMENTED - No MedGemma safety/evaluation notebook exists.
+- roadmap status: modern.mixture_of_experts: UNIMPLEMENTED - The original positive-specialization contract is rejected and the candidate is outside the course release; real-model expert-feature inspection and independent review remain missing.
+- roadmap status: modern.rwkv: UNIMPLEMENTED - No RWKV implementation, weight loading, or interpretability lab exists.
+- roadmap status: modern.retnet: UNIMPLEMENTED - No retention implementation or recurrent/parallel equivalence lab exists.
+- roadmap status: modern.recurrent_gemma_griffin: UNIMPLEMENTED - No Griffin recurrence, local-attention hybrid, or checkpoint notebook exists.
+- roadmap status: modern.hyena: UNIMPLEMENTED - No Hyena operator implementation or interpretability comparison exists.
+- roadmap status: modern.xlstm: UNIMPLEMENTED - No xLSTM implementation or state-analysis notebook exists.
+- roadmap status: modern.linear_attention: UNIMPLEMENTED - No linear-attention implementation or transformer comparison exists.
+- roadmap status: modern.hybrid_attention_ssm_rnn: UNIMPLEMENTED - No hybrid model lab or shared-mechanism comparison exists.
+- roadmap status: sparse.batchtopk_sae: UNIMPLEMENTED - No BatchTopK implementation or comparison exists.
+- roadmap status: sparse.attention_output_sae: UNIMPLEMENTED - No attention-output SAE training or feature analysis notebook exists.
+- roadmap status: sparse.skip_transcoders: UNIMPLEMENTED - No skip-transcoder implementation or comparison exists.
+- roadmap status: sparse.feature_dashboards: UNIMPLEMENTED - No learner-facing searchable feature dashboard is integrated.
+- roadmap status: activation.maia: UNIMPLEMENTED - No MAIA hypothesis-generation and experiment loop exists.
+- roadmap status: activation.openmaia: UNIMPLEMENTED - No local agent, experiment API, or held-out hypothesis validator exists.
+- roadmap status: representation.feature_manifolds: UNIMPLEMENTED - No learner notebook fits and causally validates feature manifolds.
+- roadmap status: representation.ccs: UNIMPLEMENTED - No CCS implementation or unsupervised concept-direction comparison exists.
+- roadmap status: representation.concept_erasure: UNIMPLEMENTED - No concept-erasure implementation or side-effect evaluation exists.
+- roadmap status: circuits.atp_star: UNIMPLEMENTED - Independent review, strict CUDA evidence, release registration, and the paper's subset-sampling false-negative diagnostic remain missing.
+- roadmap status: circuits.causal_scrubbing: UNIMPLEMENTED - No causal-scrubbing hypothesis or resampling intervention lab exists.
+- roadmap status: circuits.feature_circuit_method_comparison: UNIMPLEMENTED - No unified real-task comparison across the circuit discovery methods exists.
+- roadmap status: circuits.vlm_sparse_feature_circuits: UNIMPLEMENTED - No VLM SAE-error graph or image-region-to-answer feature circuit exists.
+- roadmap status: vlm.clip_siglip_saes: UNIMPLEMENTED - No CLIP/SigLIP SAE training, released SAE loading, or causal feature steering notebook exists.
+- roadmap status: vlm.paligemma_adapter: UNIMPLEMENTED - No PaliGemma loader, visual-token cache, or causal experiment exists.
+- roadmap status: vlm.llava_onevision_adapter: UNIMPLEMENTED - No LLaVA-OneVision adapter or visual-token experiment exists.
+- roadmap status: vlm.molmo_adapter: UNIMPLEMENTED - No Molmo adapter, hook surface, or mechanism lab exists.
+- roadmap status: vlm.real_object_hallucination_arbitration: UNIMPLEMENTED - The real preflight intervenes only on neutral-prior image pairs; actual hallucination repair, stage-specific probe and patch controls, and independent review remain missing.
+- roadmap status: vlm.multimodal_saes: UNIMPLEMENTED - No VLM SAE dataset, training, reconstruction frontier, or causal steering exists.
+- roadmap status: vlm.multimodal_transcoders: UNIMPLEMENTED - No projector or decoder-layer transcoder is trained or interpreted.
+- roadmap status: vlm.multimodal_crosscoders: UNIMPLEMENTED - No multimodal crosscoder or shared-versus-model-specific feature intervention exists.
+- roadmap status: vlm.patchscopes_and_verbalizers: UNIMPLEMENTED - No image-token decoding, caption-scope, or held-out visual explanation notebook exists.
+- roadmap status: vlm.dino_dense_features: UNIMPLEMENTED - No DINO feature extraction, probe, patching, or controlled comparison exists.
+- roadmap status: vlm.sam_segmentation_features: UNIMPLEMENTED - No segmentation feature or causal mask-representation notebook exists.
+- roadmap status: vlm.videomae_videoprism_comparison: UNIMPLEMENTED - No matched video feature benchmark or causal comparison exists.
+- roadmap status: image.dit_concept_attention: UNIMPLEMENTED - No DiT model, ConceptAttention implementation, or mask-overlap comparison exists.
+- roadmap status: image.diffusion_saes_difflens: UNIMPLEMENTED - No diffusion activation dataset, SAE, feature analysis, or controlled mitigation exists.
+- roadmap status: image.diffusion_lora: UNIMPLEMENTED - No course-trained diffusion LoRA, spectral analysis, or causal strength sweep exists.
+- roadmap status: image.autoregressive_image_tokens: UNIMPLEMENTED - No VQ tokenizer, image-token transformer, logit lens, or patching notebook exists.
+- roadmap status: jepa.vjepa_from_scratch: UNIMPLEMENTED - The requested temporal-shuffle and context/target/object-crop intervention studies and broader state probes remain incomplete; no matched-context future-specific prediction result or independent course acceptance is established.
+- roadmap status: jepa.vljepa: UNIMPLEMENTED - No embedding-prediction VLM, selective decoder, or caption retrieval experiment exists.
+- roadmap status: jepa.audio_jepa: UNIMPLEMENTED - No spectrogram patching, masking, latent prediction, or audio probe notebook exists.
+- roadmap status: jepa.mc_jepa: UNIMPLEMENTED - No Moving-MNIST/bouncing-ball motion-content model or cross-patching test exists.
+- roadmap status: jepa.3d_jepa: UNIMPLEMENTED - No point-cloud JEPA adapter or interpretation exercise exists.
+- roadmap status: jepa.us_jepa: UNIMPLEMENTED - No ultrasound JEPA adapter or safety-scoped analysis exists.
+- roadmap status: jepa.time_series_jepa: UNIMPLEMENTED - No time-series latent-prediction adapter or state-probe exercise exists.
+- roadmap status: jepa.mjepa: UNIMPLEMENTED - No cross-modal JEPA implementation or audio-visual feature study exists.
+- roadmap status: jepa.bijepa: UNIMPLEMENTED - No BiJEPA adapter or cycle-consistency verification exists.
+- roadmap status: jepa.llm_jepa: UNIMPLEMENTED - No language latent-prediction implementation or autoregressive comparison exists.
+- roadmap status: jepa.demo_jepa: UNIMPLEMENTED - No demonstration-conditioned JEPA implementation or trajectory benchmark exists.
+- roadmap status: jepa.sparse_jepa: UNIMPLEMENTED - No sparse JEPA objective or sparse-latent analysis exists.
+- roadmap status: world.maze_transformers: UNIMPLEMENTED - An unreleased learner-executed 14.4 candidate now trains an exact-BFS next-action policy and tests probes and residual patches. Manhattan and same-action donor controls do not support the stronger internal-search or route-specific-state claims; full maze-topology reconstruction, adjacency-head analysis, and independent course acceptance remain incomplete.
+- roadmap status: world.sudoku_transformers: UNIMPLEMENTED - No Sudoku trace model, candidate probes, or naked-single circuit exercise exists.
+- roadmap status: world.dreamer_lite: UNIMPLEMENTED - No RSSM training, state probing, imagined rollout, or intervention notebook exists.
+- roadmap status: world.tdmpc2_lite: UNIMPLEMENTED - No latent trajectory optimizer, physical-state probe, or intervention exercise exists.
+- roadmap status: world.iris_lite: UNIMPLEMENTED - No discrete image tokenizer, rollout transformer, or state interpretation notebook exists.
+- roadmap status: world.microscope_ai: UNIMPLEMENTED - No scientific model organism, concept-discovery workflow, or validated novel predictor exercise exists.
+- roadmap status: organisms.tracr_rasp: UNIMPLEMENTED - No RASP program, Tracr compilation, or known-circuit recovery exercise exists.
+- roadmap status: organisms.bouncing_balls_moving_mnist: UNIMPLEMENTED - No generator, trained predictive model, or causal state-patching exercise exists.
+- roadmap status: organisms.tiny_rl_worlds: UNIMPLEMENTED - No MiniGrid/CartPole/Crafter world model, state probe, or latent intervention exists.
+- roadmap status: peft.qlora: UNIMPLEMENTED - The unchanged BF16 dequantized-matmul parity gate fails at 0.03125 versus 0.01; the candidate remains unreleased. It does not replace the core LoRA/DoRA/subspace roadmap study.
+- roadmap status: peft.vlm_lora: UNIMPLEMENTED - No VLM adapter training, visual/text residual shift, or causal adapter-direction experiment exists.
+- roadmap status: alignment.truthfulness_directions: UNIMPLEMENTED - No truthfulness dataset, direction extraction, held-out validation, or causal intervention exists.
+- roadmap status: alignment.rome_model_editing: UNIMPLEMENTED - Independent review and release registration remain missing; official ROME covariance, random-prefix, and value-objective parity are not established.
+- roadmap status: alignment.memit_model_editing: UNIMPLEMENTED - No MEMIT implementation, multi-edit benchmark, locality, or forgetting analysis exists.
+- roadmap status: alignment.unlearning: UNIMPLEMENTED - No unlearning algorithm, retain/forget split, white-box leakage test, or side-effect evaluation exists.
+- roadmap status: alignment.red_teaming_with_internals: UNIMPLEMENTED - No safety-scoped internal-monitor red-team protocol exists.
+- roadmap status: alignment.world_model_safety: UNIMPLEMENTED - No world-model failure or unsafe-planning monitor exercise exists.
+- roadmap status: intrinsic.concept_bottleneck_models: UNIMPLEMENTED - No concept bottleneck training, concept supervision, or intervention notebook exists.
+- roadmap status: intrinsic.sparse_modular_training: UNIMPLEMENTED - No architecture trained for modularity and no causal modularity evaluation exists.
+- roadmap status: intrinsic.interchange_intervention_training: UNIMPLEMENTED - No IIT objective, abstraction mapping, or intervention consistency test exists.
+- roadmap status: intrinsic.backpack_language_models: UNIMPLEMENTED - No Backpack architecture, sense-vector analysis, or steering exercise exists.
+- roadmap status: intrinsic.kans_sparse_trees: UNIMPLEMENTED - No interpretable-by-design baseline notebook exists.
+- roadmap status: ui.neuronpedia: UNIMPLEMENTED - No notebook-to-Neuronpedia learner workflow or pinned feature links are integrated.
+- roadmap status: ui.sae_vis: UNIMPLEMENTED - No generated sae-vis dashboard or learner analysis workflow exists.
+- roadmap status: ui.circuit_tracer_frontend: UNIMPLEMENTED - No interactive attribution-graph frontend exists.
+- roadmap status: shapley.treeshap: UNIMPLEMENTED - No tree path algorithm, exact parity, or tree-model attribution lab exists.
+- roadmap status: shapley.deepshap: UNIMPLEMENTED - No DeepSHAP implementation or ground-truth causal comparison exists.
+- roadmap status: shapley.gradientshap: UNIMPLEMENTED - No GradientSHAP implementation, baseline-distribution study, or causal comparison exists.
+- roadmap status: shapley.sage: UNIMPLEMENTED - No SAGE implementation or global-versus-local comparison exists.
+- roadmap status: shapley.shapley_taylor_faith_shap: UNIMPLEMENTED - No Shapley-Taylor or Faith-Shap implementation and parity comparison exists.
+- roadmap status: shapley.spex_proxyspex: UNIMPLEMENTED - No sparse interaction recovery, query complexity, or LLM comparison notebook exists.
+- roadmap status: data_attribution.influence_functions: UNIMPLEMENTED - No inverse-Hessian influence implementation or retraining validation exists.
+- roadmap status: data_attribution.tracin: UNIMPLEMENTED - No TracIn implementation, checkpoint scoring, or deletion/retraining validation exists.
+- roadmap status: data_attribution.datamodels: UNIMPLEMENTED - No subset-training response model or influence approximation notebook exists.
+- roadmap status: data_attribution.dataset_cartography: UNIMPLEMENTED - No confidence/variability training-dynamics map or data pruning exercise exists.
+- roadmap status: data_attribution.training_run_simulations: UNIMPLEMENTED - No simulated retraining accountant or validated approximation exists.
+- roadmap status: data_attribution.ghostsuite: UNIMPLEMENTED - No per-example ghost-gradient implementation or reference comparison exists.
+- roadmap status: training.induction_head_emergence: UNIMPLEMENTED - No checkpointed transformer induction task or emerging-head circuit analysis exists.
+- roadmap status: training.lora_phase_transitions: UNIMPLEMENTED - No checkpointed language-model LoRA trajectory or direction-emergence analysis exists.
+- roadmap status: training.finetuning_diffs: UNIMPLEMENTED - No pretrained-to-finetuned checkpoint sequence or causal feature/circuit diff exists.
+- roadmap status: training.capability_emergence: UNIMPLEMENTED - No checkpointed capability benchmark and mechanism onset analysis exists.
+- roadmap status: training.cross_architecture_dynamics: UNIMPLEMENTED - No matched task, checkpoint schedule, or cross-architecture developmental metric suite exists.

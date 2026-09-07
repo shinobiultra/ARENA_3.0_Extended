@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from arena_ext.notebook_checks import unfinished_definitions
+
 import ast
 import json
 import tempfile
@@ -280,10 +282,10 @@ def test_notebook_learner_surface_and_code_cells_compile():
         for cell in nbformat.read(solution_path, as_version=4).cells
         if cell.cell_type == "code"
     )
-    assert "raise NotImplementedError" in exercise_text, (
+    assert unfinished_definitions(exercise_text), (
         "The exercise notebook should leave real student implementation work."
     )
-    assert "raise NotImplementedError" not in solution_text, (
+    assert not unfinished_definitions(solution_text), (
         "The solution notebook should contain complete reference implementations."
     )
     print("All tests in `test_notebook_learner_surface_and_code_cells_compile` passed!")

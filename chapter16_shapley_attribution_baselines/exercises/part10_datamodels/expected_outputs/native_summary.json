@@ -1,0 +1,14 @@
+{
+  "native_directory": "/home/bitwise/.cache/arena_extended/datamodels/own-full-v3/figures/native-9otfrd6o/study",
+  "classifier_refits": 10753,
+  "separate_refits": 6,
+  "independent_scipy_optima": 10,
+  "independent_lasso_fits": 12,
+  "play_refits": 18,
+  "train_images": 128,
+  "query_images": 64,
+  "heldout_subsets_per_fraction": 256,
+  "selection_used_test_responses": false,
+  "max_classifier_gradient": 9.998313635350975e-11,
+  "base_query_correct": 64
+}

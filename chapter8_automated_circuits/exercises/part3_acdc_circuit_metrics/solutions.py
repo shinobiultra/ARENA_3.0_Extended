@@ -1041,8 +1041,8 @@ def run_smoke_test(cpu: bool = True) -> dict[str, object]:
     return run_toy_study()
 
 
-def run_gpu_test(max_vram_gb: float = 24.0) -> dict[str, object]:
-    """Run the exact toy study and the pinned real-model study on CUDA."""
+def run_warmup_gpu_test(max_vram_gb: float = 24.0) -> dict[str, object]:
+    """Run the exact toy and pinned one-layer component warm-ups on CUDA."""
 
     if not t.cuda.is_available():
         raise RuntimeError("Section 8.3 CUDA verification requires an available GPU.")
@@ -1104,7 +1104,50 @@ def run_gpu_test(max_vram_gb: float = 24.0) -> dict[str, object]:
     return result
 
 
+def run_gpu_test(max_vram_gb: float = 24.0) -> dict[str, object]:
+    """Validate the fresh learner searches, then remeasure frozen circuits on CUDA.
+
+    This requires the full execution record written by execute_learner.py.
+    Use run_full_experiment to execute all student methods and searches again.
+    """
+    from chapter8_automated_circuits.exercises.part3_acdc_circuit_metrics.edge_evidence import (
+        run_frozen_edge_cuda_recheck,
+    )
+
+    warmup = run_warmup_gpu_test(max_vram_gb=max_vram_gb)
+    full_edge = run_frozen_edge_cuda_recheck(max_vram_gb=max_vram_gb)
+    return {
+        **warmup,
+        "accepted": bool(warmup["accepted"] and full_edge["accepted"]),
+        "full_path": "Exact nonlinear and component warm-ups; full GPT-2 additive-edge searches and attribution, failed IOI development selection with diagnostics, and greater-than controlled transfer.",
+        "peak_vram_gb": max(warmup["peak_vram_gb"], full_edge["peak_vram_gb"], full_edge["learner_search_peak_vram_gb"]),
+        "full_edge": full_edge,
+        "full_edge_graph_verified": full_edge["full_edge_graph"],
+        "full_edge_legal_edges": full_edge["legal_additive_edges"],
+        "full_edge_random_controls_rechecked": full_edge["fresh_random_circuits_rechecked"],
+        "full_edge_learner_executed": full_edge["completed_learner_fresh_searches"],
+        "full_edge_max_endpoint_error": full_edge["max_full_empty_logit_error"],
+        "full_edge_max_behavior_recheck_error": full_edge["max_live_vs_learner_behavior_error"],
+    }
+
+
 def run_full_experiment(max_vram_gb: float = 24.0) -> dict[str, object]:
+    """Execute every learner answer and fresh search, publish outputs, then recheck.
+
+    Expect several hours for the complete threshold sweep. Interactive notebook
+    checkpoints are not reused by this full validation route.
+    """
+    import subprocess
+    import tempfile
+
+    if not t.cuda.is_available():
+        raise RuntimeError("The complete 8.3 experiment requires CUDA")
+    here = Path(__file__).resolve().parent
+    output = Path(tempfile.mkdtemp(prefix="arena-acdc-full-")) / "execution"
+    subprocess.run([sys.executable, str(here / "build_notebooks.py")], cwd=root_dir, check=True)
+    subprocess.run([sys.executable, "-u", str(here / "execute_learner.py"),
+                    "--scope", "full", "--output-directory", str(output), "--publish"],
+                   cwd=root_dir, check=True)
     return run_gpu_test(max_vram_gb=max_vram_gb)
 
 

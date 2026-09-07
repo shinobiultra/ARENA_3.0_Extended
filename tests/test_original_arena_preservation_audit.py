@@ -29,6 +29,8 @@ def test_preservation_audit_allows_explicit_additive_original_sections():
 
 
 def test_preservation_audit_allows_extension_chapters_and_compatibility_files():
+    assert is_allowed_preservation_change("HANDOFF.md")
+    assert not is_allowed_preservation_change("chapter1_transformer_interp/HANDOFF.md")
     assert is_allowed_preservation_change("chapter16_shapley_attribution_baselines/README.md")
     assert is_allowed_preservation_change("arena_ext/gated_artifacts.py")
     assert is_allowed_preservation_change(".github/workflows/extension-quality.yml")

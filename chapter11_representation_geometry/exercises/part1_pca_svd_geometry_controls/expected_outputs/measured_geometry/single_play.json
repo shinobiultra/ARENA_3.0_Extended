@@ -1,0 +1,76 @@
+{
+  "source": {
+    "id": "final/weekday/template0/start0/offset1",
+    "family": "weekday",
+    "split": "final",
+    "template_index": 0,
+    "start": 0,
+    "offset": 1,
+    "answer": 1,
+    "prompt": "Consider the weekdays. One day from Monday is",
+    "source_span": [
+      36,
+      42
+    ]
+  },
+  "shift": 2,
+  "radius": 1.0,
+  "measurements": [
+    {
+      "condition": "baseline",
+      "calendar_logits": [
+        8.75,
+        13.875,
+        10.6875,
+        9.75,
+        10.4375,
+        9.25,
+        9.8125
+      ],
+      "top_token_id": 11187,
+      "top_token_text": "Tuesday"
+    },
+    {
+      "condition": "pure_coordinate",
+      "calendar_logits": [
+        10.125,
+        11.3125,
+        10.3125,
+        8.4375,
+        12.9375,
+        9.8125,
+        10.5
+      ],
+      "top_token_id": 8085,
+      "top_token_text": "Friday"
+    },
+    {
+      "condition": "author_raw_mean_ablated",
+      "calendar_logits": [
+        11.0625,
+        10.375,
+        11.5,
+        9.9375,
+        13.875,
+        10.875,
+        11.25
+      ],
+      "top_token_id": 8085,
+      "top_token_text": "Friday"
+    },
+    {
+      "condition": "mean_only",
+      "calendar_logits": [
+        12.6875,
+        12.0625,
+        12.4375,
+        10.9375,
+        13.0,
+        11.625,
+        11.25
+      ],
+      "top_token_id": 8085,
+      "top_token_text": "Friday"
+    }
+  ]
+}

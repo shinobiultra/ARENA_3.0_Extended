@@ -12,9 +12,11 @@ generated scaffold.
 from __future__ import annotations
 
 import argparse
+import ast
 import csv
 import json
 import re
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -22,6 +24,8 @@ import yaml
 
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 CONFIG_PATH = ROOT / "infrastructure/core/config.yaml"
 REGISTRY_COLUMNS = [
     "name",
@@ -1561,27 +1565,17 @@ METHOD_ROWS: list[dict[str, str]] = [
     },
     {
         "method_name": "Discrete diffusion language modeling",
-        "paper": "Diffusion Language Models",
-        "year": "2022",
+        "paper": "Masked Diffusion Language Models",
+        "year": "2024",
         "category": "architecture",
         "model_family": "diffusion_lm",
         "has_code": "true",
         "has_weights": "partial",
         "local_24gb_status": "LOCAL_GREEN",
         "implementation_status": "REQUIRED_IMPLEMENT",
-        "verification_status": (
-            "IMPLEMENTED_CUDA_TRAINED_TINY_DIFFUSION_LM_AND_DIFFUSIONGEMMA_READINESS_PREFLIGHT"
-        ),
-        "baseline_status": "HAS_EXACT_CONTROLS_AND_NVFP4_GENERATION_PROOF",
-        "notes": (
-            "Section 5.5; toy noising/denoising/remasking/sampler contracts plus a CUDA-"
-            "trained tiny conditional discrete diffusion LM on a generated copy-pair "
-            "grammar, with held-out masked accuracy, confidence-remasking sampler exact "
-            "match, activation trajectory checks, and shuffled-label control. It also "
-            "checks pinned DiffusionGemma config/processor/model-class support, exact "
-            "BF16/NVFP4 revisions, shard readiness, and a real isolated vLLM NVFP4 "
-            "generation proof without accepting config-only evidence as generation."
-        ),
+        "verification_status": "OWN_ANSWER_TEXT_STUDY_AND_FRESH_CUDA_REGENERATION",
+        "baseline_status": "MATCHED_CACHED_AR_SHUFFLED_UNTRAINED_AND_CHECKPOINT_CONTROLS",
+        "notes": "Section 5.5 retains the exact copy warm-up and adds a 90-cell, 23-exercise text progression: finite absorbing loss, reverse kernel, uniform/confidence sampling, temperature and blocks, a shared bidirectional/causal Transformer, twelve matched fits on three seeds, and 126 frozen final conditions. Twelve actual figures show words, trajectories, control failures and cached-AR cost. All 43 own-answer code cells pass; fresh CUDA refits four models and exactly regenerates 21,504 examples. TinyStories continuations remain weak; reference edit distance is not story correctness. DiffusionGemma local inference is tracked separately.",
     },
     {
         "method_name": "DiffusionGemma local inference",
@@ -1810,34 +1804,36 @@ METHOD_ROWS: list[dict[str, str]] = [
         "baseline_status": "HAS_RANDOM_CONTROLS",
         "notes": "Section 8.1; reusable clean/corrupt patching metrics.",
     },
-    {
-        "method_name": "Attribution patching, EAP, and integrated effects",
-        "paper": "EAP / EAP-IG",
-        "year": "2024",
-        "category": "circuit_methods",
-        "model_family": "transformer",
-        "has_code": "true",
-        "has_weights": "not_applicable",
-        "local_24gb_status": "LOCAL_GREEN",
-        "implementation_status": "REQUIRED_IMPLEMENT",
-        "verification_status": "IMPLEMENTED_CONTRACT",
-        "baseline_status": "HAS_EXACT_PATCHING_BASELINE",
-        "notes": "Section 8.2; exact-vs-approx attribution controls.",
-    },
-    {
-        "method_name": "ACDC and circuit metrics",
-        "paper": "ACDC",
-        "year": "2023",
-        "category": "circuit_methods",
-        "model_family": "transformer",
-        "has_code": "true",
-        "has_weights": "not_applicable",
-        "local_24gb_status": "LOCAL_GREEN_TOY",
-        "implementation_status": "TOY_REPRO_ONLY",
-        "verification_status": "IMPLEMENTED_CONTRACT",
-        "baseline_status": "HAS_RANDOM_CIRCUIT_BASELINE",
-        "notes": "Section 8.3; faithfulness, minimality, and completeness metrics.",
-    },
+    {'method_name': 'Attribution patching, EAP, and integrated effects',
+     'paper': 'EAP / EAP-IG',
+     'year': '2024',
+     'category': 'circuit_methods',
+     'model_family': 'transformer',
+     'has_code': 'true',
+     'has_weights': 'not_applicable',
+     'local_24gb_status': 'LOCAL_GREEN',
+     'implementation_status': 'REQUIRED_IMPLEMENT',
+     'verification_status': 'IMPLEMENTED_CONTRACT',
+     'baseline_status': 'HAS_EXACT_PATCHING_BASELINE',
+     'notes': 'Sections 8.2 and 8.3; exact nonlinear controls plus full GPT-2 additive-edge EAP, '
+              'task/KL EAP-IG and pinned author-code/selector parity. Frozen greater-than transfer, '
+              'all IOI failures and same-size nulls remain visible; complete own-answer learner and '
+              'fresh CUDA checks pass.'},
+    {'method_name': 'ACDC and circuit metrics',
+     'paper': 'ACDC',
+     'year': '2023',
+     'category': 'circuit_methods',
+     'model_family': 'transformer',
+     'has_code': 'true',
+     'has_weights': 'not_applicable',
+     'local_24gb_status': 'LOCAL_GREEN',
+     'implementation_status': 'REQUIRED_IMPLEMENT',
+     'verification_status': 'IMPLEMENTED_CONTRACT',
+     'baseline_status': 'HAS_RANDOM_CIRCUIT_BASELINE',
+     'notes': 'Section 8.3; full 32,491-edge GPT-2 ACDC, greater-than frozen transfer, failed IOI '
+              'development selection, retained-edge deletion and sampled completeness with 320 nulls. '
+              'All 44 own-answer code cells and 56 tests pass; fresh five-circuit CUDA behavior '
+              'matches exactly. Owned interruption/continuation is explicit.'},
     {
         "method_name": "Sparse Feature Circuits",
         "paper": "Sparse Feature Circuits",
@@ -1858,29 +1854,27 @@ METHOD_ROWS: list[dict[str, str]] = [
             "examples, plus safe generated-data SHIFT-style sparse-feature editing."
         ),
     },
-    {
-        "method_name": "Refusal directions",
-        "paper": "Refusal is Mediated by a Single Direction",
-        "year": "2024",
-        "category": "alignment_interpretability",
-        "model_family": "chat_transformer",
-        "has_code": "true",
-        "has_weights": "not_applicable",
-        "local_24gb_status": "LOCAL_GREEN",
-        "implementation_status": "REQUIRED_IMPLEMENT",
-        "verification_status": "IMPLEMENTED_GT2_PUBLIC_REFUSAL_DIRECTION_REPLICATION",
-        "baseline_status": "HAS_PUBLIC_DATASET_LAYER_POSITION_PCA_RANDOM_AND_LABEL_CONTROLS",
-        "notes": (
-            "Section 9.1 now includes safe toy controls, a pinned Pythia-70M-deduped "
-            "hidden-state category preflight across three sanitized prompt-template "
-            "families, pinned Qwen2.5-0.5B-Instruct no-generation addition/projection-out "
-            "logit interventions, and a scoped GT-2 public josephmayo/refusal-compliance-pairs "
-            "aggregate replication path with held-out direction separation, layer and "
-            "position sweeps, PCA/SVD structure, random-direction and label-shuffle "
-            "negative controls, aggregate-only behavioral completion metrics, and no "
-            "raw prompt/completion text saved."
-        ),
-    },
+    {'method_name': 'Refusal directions',
+     'paper': 'Refusal is Mediated by a Single Direction',
+     'year': '2024',
+     'category': 'alignment_interpretability',
+     'model_family': 'chat_transformer',
+     'has_code': 'true',
+     'has_weights': 'not_applicable',
+     'local_24gb_status': 'LOCAL_GREEN',
+     'implementation_status': 'REQUIRED_IMPLEMENT',
+     'verification_status': 'IMPLEMENTED_GT2_PUBLIC_REFUSAL_DIRECTION_REPLICATION',
+     'baseline_status': 'HAS_PUBLIC_DATASET_LAYER_POSITION_PCA_RANDOM_AND_LABEL_CONTROLS',
+     'notes': 'Section 9.1 now teaches the actual pinned Qwen2.5-0.5B-Instruct method through twelve '
+              'own-answer exercises: training-only mean direction/threshold, 24-layer/four-position '
+              'sweeps, centered PCA, 32 genuine training permutations and 32 matched random '
+              'directions, persistent addition and every-residual-write ablation during generation. '
+              'All fifteen development candidates precede frozen final selection. All 85 final '
+              'conditions and 32 new exact benign tasks are retained, with six figures and three real '
+              'plays. Full learner and 20 tests pass; fresh CUDA reproduces 3640 example outcomes and '
+              'all 65 score directions exactly. Sensitive rows store hashes/flags; benign words and '
+              'tokens are inspectable. Marker mistakes, strong permutation directions and '
+              'addition-induced capability damage limit the claim.'},
     {
         "method_name": "Chain-of-thought faithfulness probes",
         "paper": "CoT faithfulness",
@@ -1949,21 +1943,101 @@ METHOD_ROWS: list[dict[str, str]] = [
     },
     {
         "method_name": "Representation geometry controls",
-        "paper": "Language Models Represent Space and Time",
-        "year": "2023",
+        "paper": "Not All Language Model Features Are One-Dimensionally Linear",
+        "year": "2025",
         "category": "representation_geometry",
-        "model_family": "transformer_and_vlm",
+        "model_family": "transformer",
         "has_code": "true",
-        "has_weights": "not_applicable",
+        "has_weights": "true",
         "local_24gb_status": "LOCAL_GREEN",
         "implementation_status": "REQUIRED_IMPLEMENT",
-        "verification_status": "IMPLEMENTED_CALENDAR_GEOMETRY_PREFLIGHT",
-        "baseline_status": "HAS_RANDOM_LABEL_CONTROLS_AND_REAL_LM_PREFLIGHT",
+        "verification_status": "IMPLEMENTED_OWN_ANSWER_AND_FRESH_MISTRAL_CALENDAR_STUDY",
+        "baseline_status": "HAS_EXACT_ORACLES_NATIVE_DONORS_32_DRAW_NULLS_AND_NONLINEAR_STABILITY",
+        "notes": "Section 11.1 teaches eleven visible exercise groups, sixteen immediate tests, thirteen figures and four plays. The full pinned Mistral-7B learner retains 579 new prompts, 5634 donor pairs, 32 draws of three nulls and 120 UMAP/t-SNE fits; fresh CUDA reproduces 6656 outcomes exactly. Pure edits, mean ablation, full donors and failed answers remain distinct. The earlier numerical repeatability failure is archived. This covers controlled calendar geometry; years, cities and broader space/time tasks remain unfinished."
+    },
+    {
+        "method_name": "CCA, SVCCA, and Procrustes alignment",
+        "paper": "SVCCA; Similarity of Neural Network Representations Revisited",
+        "year": "2017",
+        "category": "representation_geometry",
+        "model_family": "transformer",
+        "has_code": "true",
+        "has_weights": "true",
+        "local_24gb_status": "LOCAL_GREEN",
+        "implementation_status": "REQUIRED_IMPLEMENT",
+        "verification_status": "IMPLEMENTED_OWN_ANSWER_AND_FRESH_CPU_MODEL",
+        "baseline_status": "HAS_EXACT_ORACLES_RANDOM_VIEWS_SHUFFLED_MAPS_NATIVE_DONORS_AND_RANDOM_EDITS",
+        "notes": "Section 11.2; eight learner-implemented methods, nine figures and three play cells. Native GPT-2 IOI donor transport on 96 new prompts retains all 17 candidates and 16 random draws per layer pair. Fresh CPU model and refitted maps reproduce 5184 checked outcomes exactly. Partial transfer, native-donor failures and cross-layer-only scope remain explicit."
+    },
+    {
+        "method_name": "Distributed Alignment Search",
+        "paper": "Finding Alignments Between Interpretable Causal Variables and Distributed Neural Representations",
+        "year": "2024",
+        "category": "representation_geometry",
+        "model_family": "transformer",
+        "has_code": "true",
+        "has_weights": "true",
+        "local_24gb_status": "LOCAL_GREEN",
+        "implementation_status": "REQUIRED_IMPLEMENT",
+        "verification_status": "IMPLEMENTED_OWN_ANSWER_AND_FRESH_CPU_MODEL",
+        "baseline_status": "HAS_EXACT_ORACLES_NATIVE_DONORS_PROBES_SHUFFLED_TARGETS_AND_32_RANDOM_SUBSPACES",
+        "notes": "Section 11.3; nine visible implementation groups, thirteen immediate tests, twelve figures and three plays. Students fit orthogonal subspace interchanges on a known organism and frozen GPT-2. Development selects the site and rank before 96 new final prompts. Three fits change the correct role on 71/96, 73/96 and 72/96 cross-name interventions; the whole-position donor gets 72/96. All 32 random and three shuffled controls are retained. Fresh CPU execution reproduces all 16512 final outputs exactly. No advantage over whole donors, unique abstraction or model-weight intervention training is claimed."
+    },
+    {
+        "method_name": "Causal abstraction and interchange interventions",
+        "paper": "Causal Abstraction: A Theoretical Foundation for Mechanistic Interpretability",
+        "year": "2025",
+        "category": "representation_geometry",
+        "model_family": "transformer",
+        "has_code": "true",
+        "has_weights": "true",
+        "local_24gb_status": "LOCAL_GREEN",
+        "implementation_status": "REQUIRED_IMPLEMENT",
+        "verification_status": "IMPLEMENTED_OWN_ANSWER_AND_FRESH_CPU_MODEL",
+        "baseline_status": "HAS_STRUCTURAL_ORACLES_UNUSED_PREDICTIVE_COPY_SIDE_VARIABLE_AND_NATIVE_COUNTERFACTUALS",
+        "notes": "Section 11.3 explicitly compares high-level and low-level interchanges on a rotated causal organism, including an unused predictive copy and an independent side variable. The native GPT-2 role-transfer study separates observational probes, requested counterfactual answers, actual full-vocabulary winners and donor identity leakage. Conditional and unconditional denominators, failed examples and all controls remain visible. Exact organism agreement and approximate native output agreement do not establish a unique or minimal causal model."
+    },
+    {
+        "method_name": "Contrast-Consistent Search",
+        "paper": "Discovering Latent Knowledge in Language Models Without Supervision",
+        "year": "2023",
+        "category": "representation_geometry",
+        "model_family": "transformer",
+        "has_code": "true",
+        "has_weights": "true",
+        "local_24gb_status": "LOCAL_GREEN",
+        "implementation_status": "REQUIRED_IMPLEMENT",
+        "verification_status": "IMPLEMENTED_OWN_ANSWER_AND_FRESH_CPU_MODEL",
+        "baseline_status": "HAS_EXACT_COMPETING_FEATURES_AUTHOR_PARITY_ALL_RESTARTS_PCA_SUPERVISED_RANDOM_AND_NATIVE_OUTPUT_CONTROLS",
         "notes": (
-            "Section 11.1 now includes PCA/SVD metrics, white-noise controls, "
-            "template-centering controls, and a pinned Pythia-70M-deduped weekday/month "
-            "calendar hidden-state geometry preflight with raw-template failure, "
-            "permuted-label controls, and white-noise controls."
+            'Section 11.5; nine implementation groups, twelve immediate checks, fifteen figures and two plays'
+            ' derive the original asymmetric CCS loss and test frozen GPT-2. All three sites, two wrappers '
+            'and three text variants retain 1152 reporters and 98304 final reporter scores. Fresh CPU '
+            'extraction and refitting reproduce all tensors and 3586 full-vocabulary prefix outputs exactly. '
+            'Calibration labels set orientation separately; plain-review successes and competing-opinion '
+            'failures remain visible. Controlled reviews do not establish truth, beliefs, causal necessity or'
+            ' whole-paper replication.'
+        )
+    },
+    {
+        "method_name": "Concept erasure (LEACE)",
+        "paper": "LEACE: Perfect linear concept erasure in closed form",
+        "year": "2023",
+        "category": "representation_geometry",
+        "model_family": "transformer",
+        "has_code": "true",
+        "has_weights": "true",
+        "local_24gb_status": "LOCAL_GREEN",
+        "implementation_status": "REQUIRED_IMPLEMENT",
+        "verification_status": "IMPLEMENTED_OWN_ANSWER_AND_FRESH_CPU_MODEL",
+        "baseline_status": "HAS_EXACT_KKT_AUTHOR_PARITY_REFITTED_PROBES_RANDOM_RANK_AND_MAGNITUDE_CONTROLS",
+        "notes": (
+            'Section 11.4; eight implementation groups, eleven immediate checks, twelve figures and two '
+            'plays derive affine erasure and test frozen GPT-2. Separate eraser and probe fitting '
+            'precede 106 final conditions on 288 role and 384 object prompts. All 71232 full-vocabulary '
+            'outcomes reproduce exactly with freshly fitted maps and probes. Training guardedness, '
+            'new-sentence recovery and collateral damage remain distinct; complete information removal '
+            'and all-layer scrubbing are not claimed.'
         ),
     },
     {
@@ -2007,6 +2081,46 @@ METHOD_ROWS: list[dict[str, str]] = [
             "SD1.5 safe-shape path with DAAM-style color/shape token localization, "
             "target-token ablation over random-token controls, CLIP alignment, "
             "image-quality preservation, and white-noise rejection."
+        ),
+    },
+    {
+        "method_name": "Denoising-time activation and latent patching",
+        "paper": "Course denoising-time causal intervention protocol",
+        "year": "2026",
+        "category": "image_generation_interpretability",
+        "model_family": "diffusion",
+        "has_code": "true",
+        "has_weights": "true",
+        "local_24gb_status": "LOCAL_YELLOW",
+        "implementation_status": "REQUIRED_IMPLEMENT",
+        "verification_status": "IMPLEMENTED_TOY_ACTIVATION_AND_SD15_LATENT_PREFLIGHT",
+        "baseline_status": "HAS_MATCHED_TIME_REGION_AND_RANDOM_LATENT_CONTROLS",
+        "notes": (
+            "Section 13.2 implements exact denoiser activation patching and a pinned "
+            "SD1.5 scheduler-latent intervention over 19 times and two same-seed color "
+            "counterfactuals. Real internal UNet activation patching and multi-seed "
+            "robustness remain unfinished; this is not a full UNet circuit result."
+        ),
+    },
+    {
+        "method_name": "I-JEPA from scratch",
+        "paper": "Self-Supervised Learning from Images with a Joint-Embedding Predictive Architecture",
+        "year": "2023",
+        "category": "world_models",
+        "model_family": "image_jepa",
+        "has_code": "true",
+        "has_weights": "true",
+        "local_24gb_status": "LOCAL_GREEN",
+        "implementation_status": "REQUIRED_IMPLEMENT",
+        "verification_status": "IMPLEMENTED_TOY_PREDICTIVE_KEY_WORLD",
+        "baseline_status": "HAS_KEY_SWAP_ERASURE_RANDOM_AND_COMPOUND_TARGET_CONTROLS",
+        "notes": (
+            "Section 14.2 implements the full tiny encoder-predictor-EMA training loop "
+            "with twelve learner exercises, exact oracles, and three-seed CUDA causal "
+            "key interventions. Evaluation pixels differ but all twelve semantic "
+            "templates are shared. Random features solve the easy probe. CIFAR/STL "
+            "learning, improvement over random features, and released-checkpoint "
+            "comparison remain unfinished; the section is TOY_ONLY."
         ),
     },
     {
@@ -6054,6 +6168,8 @@ def write_method_registry() -> None:
 
 
 def hard_exercise_ladder_rows(records: list[dict[str, Any]]) -> list[dict[str, str]]:
+    from scripts.audit_report_evidence_contracts import has_native_cpu_model_evidence
+
     rows: list[dict[str, str]] = []
     for record in records:
         exercise_dir = record["exercise_dir"]
@@ -6065,10 +6181,22 @@ def hard_exercise_ladder_rows(records: list[dict[str, Any]]) -> list[dict[str, s
 
         fixture_path = exercise_dir / "expected_outputs" / "README.md"
         tests_path = exercise_dir / "tests.py"
+        # Small compatibility modules may only re-export the visible checks.
+        # Point readers and the structural audit to the substantive test file.
+        if tests_path.exists():
+            def test_count(path: Path) -> int:
+                return sum(isinstance(node, ast.FunctionDef) and node.name.startswith("test_")
+                           for node in ast.walk(ast.parse(path.read_text())))
+
+            if test_count(tests_path) == 0:
+                candidates = [tests_path, *sorted(exercise_dir.glob("*methods_tests.py"))]
+                tests_path = max(candidates, key=test_count)
         report_path = exercise_dir / "verification_report.json"
 
         if metadata["REQUIRES_GPU"]:
             gpu_requirement = "cuda_section_metric required before chapter release"
+        elif lock.get("execution_device") == "cpu":
+            gpu_requirement = "explicit CPU model execution; fresh native logits required"
         else:
             gpu_requirement = "required only if section makes a GPU-backed claim"
 
@@ -6083,6 +6211,10 @@ def hard_exercise_ladder_rows(records: list[dict[str, Any]]) -> list[dict[str, s
             )
             if report.get("accepted") is True and gpu_category == "cuda_section_metric":
                 release_status = "released_with_cuda_section_metric"
+                remaining_release_evidence = ""
+            elif (report.get("accepted") is True and report.get("tests_passed") is True
+                  and has_native_cpu_model_evidence(lock, report)):
+                release_status = "released_with_cpu_model_metric"
                 remaining_release_evidence = ""
             elif report.get("accepted") is True:
                 release_status = f"accepted_with_{gpu_category}"

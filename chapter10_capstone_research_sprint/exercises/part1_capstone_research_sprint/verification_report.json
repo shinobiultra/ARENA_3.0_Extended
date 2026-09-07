@@ -71,9 +71,9 @@
       ]
     }
   ],
-  "date_run": "2026-09-04T08:48:50+00:00",
+  "date_run": "2026-09-04T23:53:27+00:00",
   "evidence_level": "exact_ground_truth_parity_direction_with_heldout_causal_controls",
-  "git_commit": "6502bcac",
+  "git_commit": "8eab192b",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-4",
   "known_failures": [],
@@ -168,7 +168,7 @@
       "paired_accuracy_delta": 0.5,
       "paired_accuracy_delta_ci_high": 0.6875,
       "paired_accuracy_delta_ci_low": 0.3125,
-      "peak_vram_gb": 0.032520294189453125,
+      "peak_vram_gb": 0.06377029418945312,
       "preflight_passed": true,
       "preregistered_criteria": {
         "direction_cosine_at_least_0_98": true,
@@ -265,11 +265,16 @@
   "ood_tests": {
     "declared": "required_where_applicable"
   },
-  "peak_vram_gb": 0.032520294189453125,
+  "peak_vram_gb": 0.06377029418945312,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "3dcbf81bccf37282dd55b351bc5ff484ae05b7b9a2fcea11f987e4dbd02188b8",
+    "combined_sha256": "eff2b7abf9a38c021f1d5d304fd9ce51091d90639994fa524c23c16d09bb5c96",
     "files": [
+      {
+        "path": "arena_ext/notebook_checks.py",
+        "sha256": "0033fd8978a45bf0cf5dd7ce790bb234add9d63c564c76479c0d8eb86973bacc",
+        "size_bytes": 1627
+      },
       {
         "path": "arena_ext/verification.py",
         "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
@@ -292,13 +297,13 @@
       },
       {
         "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/artifacts.lock.yml",
-        "sha256": "8e09b92c7c95b90b8a2a362f18f088d684d17862e9aa9e0ae5bf20907702c6a3",
-        "size_bytes": 3114
+        "sha256": "996bb20173ba2979366f343b3547c4001ab6ba52cf2fc4b45d2c2217be24e185",
+        "size_bytes": 3147
       },
       {
         "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/expected_outputs/README.md",
-        "sha256": "30e5f596751093fcea8df6e61fb57827156fb928a4e61c0768173266e55a63b6",
-        "size_bytes": 853
+        "sha256": "c899038a320e22f9a9bdb2d5543f770e725be196a177e0d1f2e625a68a6ec3d3",
+        "size_bytes": 2308
       },
       {
         "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/expected_outputs/reference_metrics.json",
@@ -337,8 +342,8 @@
       },
       {
         "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/tests.py",
-        "sha256": "205c34757cfcda9d65fdf867507163998c5c11623cad3789e93b7c81bec0af00",
-        "size_bytes": 14480
+        "sha256": "1593c064084c4d91ee8c26a73971994a4a533e665e657a94d854748c1133611c",
+        "size_bytes": 14529
       },
       {
         "path": "chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/utils.py",
@@ -368,5 +373,5 @@
     "The exact model organism is generated deterministically and the claim is explicitly scoped to method validation."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 1.164284
+  "wall_clock_seconds": 0.458641
 }

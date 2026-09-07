@@ -1,0 +1,594 @@
+{
+  "accepted": true,
+  "baselines": {
+    "declared_controls": [
+      "all_256_coalitions_for_three_primary_models_and_both_games",
+      "full_local_vector_and_base_prediction_exhaustive_parity",
+      "unmodified_shap_0_49_1_raw_threshold_failure_retained",
+      "separately_threshold_corrected_compiled_reference",
+      "all_18_clean_and_shuffled_fits_across_three_seeds",
+      "decision_tree_random_forest_and_gradient_boosting_families",
+      "training_target_mean_performance_baseline",
+      "saabas_efficiency_without_shapley_parity_claim",
+      "100_random_deletion_orders",
+      "primary_64_and_nested_16_128_backgrounds",
+      "two_independent_64_row_backgrounds",
+      "correlated_binary_conditional_interventional_and_cover_games",
+      "equivalent_additive_trees_with_opposite_root_order",
+      "repeated_feature_constant_tree_and_dummy_features",
+      "exact_enumeration_versus_dynamic_programming_timing",
+      "fresh_native_refit_and_full_array_comparison",
+      "editable_tiny_tree_and_real_recipe_plays"
+    ],
+    "expected_metrics": {
+      "accepted": true,
+      "actual_learner_passed": true,
+      "all_model_fits_retained": true,
+      "all_training_seeds_retained": true,
+      "alternate_backgrounds_compared": true,
+      "background_rows_compared": 272,
+      "background_variants": 4,
+      "base_value_parity_max_error_max": 2e-05,
+      "clean_fits": 9,
+      "component_trees": 486,
+      "corrected_interventional_reference_max_error_max": 2e-05,
+      "corrected_interventional_reference_model_rows": 4896,
+      "corrected_interventional_reference_passed": true,
+      "corrected_source_route_disagreements": 0,
+      "corrected_thresholds": 941,
+      "cross_split_recipe_overlap": 0,
+      "deletion_audit_rows": 119,
+      "deletion_models": 3,
+      "deletion_uses_exact_interventional_game": true,
+      "dummy_feature_max_abs_max": 1e-10,
+      "embedded_figures": 17,
+      "exact_coalitions": 256,
+      "exact_game_model_rows": 1632,
+      "exact_games": 2,
+      "exact_model_rows": 816,
+      "exact_models": 3,
+      "exhaustive_interventional_max_error_max": 1e-08,
+      "exhaustive_path_max_error_max": 1e-08,
+      "explanation_group_count": 64,
+      "explanation_row_count": 153,
+      "final_used_for_selection": false,
+      "fresh_compared_arrays": 3961,
+      "fresh_compared_arrays_min": 1,
+      "fresh_compared_elements": 1055546,
+      "fresh_compared_elements_min": 1,
+      "fresh_max_error": 0.0,
+      "fresh_model_fits": 18,
+      "fresh_reproduction_passed": true,
+      "heldout_group_count": 65,
+      "heldout_row_count": 119,
+      "heldout_unit": "recipe_group",
+      "model_fits": 18,
+      "model_row_explanations": 4896,
+      "native_evidence_reused": false,
+      "native_model_retrained": true,
+      "native_model_retrained_in_this_report": true,
+      "own_answer_code_cells": 38,
+      "path_reference_max_error_max": 1e-08,
+      "path_reference_model_rows": 4896,
+      "path_reference_passed": true,
+      "prediction_parity_max_error_max": 1e-08,
+      "random_order_controls": 100,
+      "raw_interventional_reference_affected_rows": 469,
+      "raw_interventional_reference_affected_rows_min": 2,
+      "raw_interventional_reference_disclosed": true,
+      "raw_interventional_reference_max_error_max": 10.0,
+      "raw_interventional_reference_max_error_min": 0.001,
+      "raw_interventional_reference_model_rows": 4896,
+      "raw_interventional_reference_passed": false,
+      "raw_source_route_disagreements": 217,
+      "rows_explained_per_model": 272,
+      "saabas_additivity_max_error_max": 1e-08,
+      "saabas_attribution_gap_max_min": 1e-08,
+      "saabas_deletion_models": 3,
+      "saabas_differs_from_shap": true,
+      "saabas_model_rows": 4896,
+      "saabas_models": 18,
+      "shap_parity_model_rows": 4896,
+      "shap_parity_rows": 4896,
+      "shap_parity_rows_per_model": 272,
+      "shuffled_fits": 9,
+      "shuffled_models_evaluated": 9,
+      "shuffled_training_targets": true,
+      "test_count": 9,
+      "tests_passed": true,
+      "train_group_count": 298,
+      "train_row_count": 758,
+      "training_mean_baseline": true,
+      "whole_paper_replication": false
+    }
+  },
+  "claim_scope": "Student-implemented path-dependent and finite-background interventional TreeSHAP match exhaustive 8-feature games across three clean tree families, while all 18 fresh fits, 486 component trees, 272 held-out rows per model, Saabas, deletion orders, shuffled targets, background variants and mechanism controls are retained. Unmodified SHAP 0.49.1 interventional routing fails on disclosed float32-threshold cases; a separately threshold-corrected compiled reference passes the original tolerance. The public concrete study is predictive attribution, not a causal material recipe or whole-paper benchmark replication.",
+  "datasets": [
+    {
+      "audit": 119,
+      "explanation": 153,
+      "id": "uci_concrete_compressive_strength",
+      "license": "CC BY 4.0",
+      "manifest": "data_manifest.json",
+      "revision": "8d4b15b6fc68cd932d745cbd663d5ceae66dd54422e99c1e4865f2936ab7e2af",
+      "source": "uci",
+      "train": 758
+    }
+  ],
+  "date_run": "2026-09-06T13:15:06+00:00",
+  "evidence_level": "exhaustive_tree_games_and_raw_plus_threshold_corrected_compiled_reference",
+  "git_commit": "8eab192b",
+  "gpu_name": "unavailable",
+  "gt_tier": "GT-0",
+  "known_failures": [],
+  "metrics": {
+    "gpu_evidence": {
+      "category": "cpu_or_budget_metric",
+      "placeholder_only": false,
+      "section_specific_metric_keys": [
+        "actual_learner_passed",
+        "all_model_fits_retained",
+        "all_training_seeds_retained",
+        "alternate_backgrounds_compared",
+        "background_rows_compared",
+        "background_variants",
+        "base_value_parity_max_error",
+        "clean_fits",
+        "component_trees",
+        "corrected_interventional_reference_max_error",
+        "corrected_interventional_reference_model_rows",
+        "corrected_interventional_reference_passed",
+        "corrected_source_route_disagreements",
+        "corrected_thresholds",
+        "cross_split_recipe_overlap",
+        "deletion_audit_rows",
+        "deletion_models",
+        "deletion_uses_exact_interventional_game",
+        "dummy_feature_max_abs",
+        "embedded_figures",
+        "exact_coalitions",
+        "exact_game_model_rows",
+        "exact_games",
+        "exact_model_rows",
+        "exact_models",
+        "exhaustive_interventional_max_error",
+        "exhaustive_path_max_error",
+        "explanation_group_count",
+        "explanation_row_count",
+        "final_used_for_selection",
+        "fresh_compared_arrays",
+        "fresh_compared_elements",
+        "fresh_elapsed_seconds",
+        "fresh_evidence_sha256",
+        "fresh_max_error",
+        "fresh_model_fits",
+        "fresh_output_directory",
+        "fresh_reproduction_passed",
+        "heldout_group_count",
+        "heldout_row_count",
+        "heldout_unit",
+        "learner_evidence_sha256",
+        "model_families",
+        "model_fits",
+        "model_row_explanations",
+        "native_evidence_reused",
+        "native_model_retrained",
+        "native_model_retrained_in_this_report",
+        "own_answer_code_cells",
+        "path_reference_max_error",
+        "path_reference_model_rows",
+        "path_reference_passed",
+        "prediction_parity_max_error",
+        "random_order_controls",
+        "raw_interventional_reference_affected_rows",
+        "raw_interventional_reference_disclosed",
+        "raw_interventional_reference_max_error",
+        "raw_interventional_reference_model_rows",
+        "raw_interventional_reference_passed",
+        "raw_source_route_disagreements",
+        "rows_explained_per_model",
+        "saabas_additivity_max_error",
+        "saabas_attribution_gap_max",
+        "saabas_deletion_models",
+        "saabas_differs_from_shap",
+        "saabas_model_rows",
+        "saabas_models",
+        "shap_parity_model_rows",
+        "shap_parity_rows",
+        "shap_parity_rows_per_model",
+        "shuffled_fits",
+        "shuffled_models_evaluated",
+        "shuffled_training_targets",
+        "train_group_count",
+        "train_row_count",
+        "training_mean_baseline",
+        "training_seeds",
+        "whole_paper_replication"
+      ],
+      "uses_cuda": false
+    },
+    "gpu_test": {
+      "actual_learner_passed": true,
+      "all_model_fits_retained": true,
+      "all_training_seeds_retained": true,
+      "alternate_backgrounds_compared": true,
+      "background_rows_compared": 272,
+      "background_variants": 4,
+      "base_value_parity_max_error": 2.1316282072803006e-14,
+      "clean_fits": 9,
+      "component_trees": 486,
+      "corrected_interventional_reference_max_error": 3.1421996737890368e-06,
+      "corrected_interventional_reference_model_rows": 4896,
+      "corrected_interventional_reference_passed": true,
+      "corrected_source_route_disagreements": 0,
+      "corrected_thresholds": 941,
+      "cross_split_recipe_overlap": 0,
+      "cuda_available": false,
+      "cuda_version": "13.2",
+      "deletion_audit_rows": 119,
+      "deletion_models": 3,
+      "deletion_uses_exact_interventional_game": true,
+      "device": "cpu",
+      "dummy_feature_max_abs": 1.6053824936079764e-13,
+      "embedded_figures": 17,
+      "exact_coalitions": 256,
+      "exact_game_model_rows": 1632,
+      "exact_games": 2,
+      "exact_model_rows": 816,
+      "exact_models": 3,
+      "exhaustive_interventional_max_error": 3.197442310920451e-14,
+      "exhaustive_path_max_error": 2.4868995751603507e-14,
+      "explanation_group_count": 64,
+      "explanation_row_count": 153,
+      "final_used_for_selection": false,
+      "fresh_compared_arrays": 3961,
+      "fresh_compared_elements": 1055546,
+      "fresh_elapsed_seconds": 18.38065698399805,
+      "fresh_evidence_sha256": "7fa8b210445a705bb2685068583407173bbcaf9ac09df86d0f1c4e77685e57bd",
+      "fresh_max_error": 0.0,
+      "fresh_model_fits": 18,
+      "fresh_output_directory": "/home/bitwise/.cache/arena_extended/treeshap/report_reproductions/report-pgbj06uh/fresh_cpu",
+      "fresh_reproduction_passed": true,
+      "gpu_total_memory_gb": null,
+      "heldout_group_count": 65,
+      "heldout_row_count": 119,
+      "heldout_unit": "recipe_group",
+      "learner_evidence_sha256": "e06cdeb355a53c27a7d1c5f0cb663bf1a910edc69a0c7bb88024f1038beb41e6",
+      "model_families": [
+        "tree",
+        "forest",
+        "boost"
+      ],
+      "model_fits": 18,
+      "model_row_explanations": 4896,
+      "native_evidence_reused": false,
+      "native_model_retrained": true,
+      "native_model_retrained_in_this_report": true,
+      "own_answer_code_cells": 38,
+      "path_reference_max_error": 3.552713678800501e-14,
+      "path_reference_model_rows": 4896,
+      "path_reference_passed": true,
+      "peak_vram_gb": 0.0,
+      "prediction_parity_max_error": 3.552713678800501e-14,
+      "random_order_controls": 100,
+      "raw_interventional_reference_affected_rows": 469,
+      "raw_interventional_reference_disclosed": true,
+      "raw_interventional_reference_max_error": 0.6168255402761815,
+      "raw_interventional_reference_model_rows": 4896,
+      "raw_interventional_reference_passed": false,
+      "raw_source_route_disagreements": 217,
+      "rows_explained_per_model": 272,
+      "saabas_additivity_max_error": 2.842170943040401e-14,
+      "saabas_attribution_gap_max": 11.109879919792164,
+      "saabas_deletion_models": 3,
+      "saabas_differs_from_shap": true,
+      "saabas_model_rows": 4896,
+      "saabas_models": 18,
+      "shap_parity_model_rows": 4896,
+      "shap_parity_rows": 4896,
+      "shap_parity_rows_per_model": 272,
+      "shuffled_fits": 9,
+      "shuffled_models_evaluated": 9,
+      "shuffled_training_targets": true,
+      "torch_version": "2.12.1+cu132",
+      "train_group_count": 298,
+      "train_row_count": 758,
+      "training_mean_baseline": true,
+      "training_seeds": [
+        161310,
+        161311,
+        161312
+      ],
+      "whole_paper_replication": false,
+      "within_vram_budget": true
+    },
+    "notebook_contract": {
+      "accepted": true,
+      "claim_scope": "Exact coalition, path-extension, repeated-feature, cover-weighted, interventional, Saabas, and ensemble linearity checks for the declared tree games.",
+      "test_count": 9,
+      "tests_passed": true
+    }
+  },
+  "models": [
+    {
+      "gated": false,
+      "id": "sklearn_decision_tree_random_forest_gradient_boosting",
+      "precision": "float64_values_float32_routing",
+      "revision": "frozen_treeshap_protocol_v1",
+      "source": "generated_training_run"
+    }
+  ],
+  "negative_controls": {
+    "declared_controls": [
+      "decision_tree_random_forest_and_gradient_boosting_families",
+      "100_random_deletion_orders"
+    ]
+  },
+  "notebook_id": "16_13_treeshap_from_first_principles",
+  "ood_tests": {
+    "declared": "required_where_applicable"
+  },
+  "peak_vram_gb": 0.0,
+  "report_inputs": {
+    "algorithm": "sha256",
+    "combined_sha256": "af531de08a1c3b0026c76b17085bda181cd643c1cfbe888f75e0d110b6b9c0a4",
+    "files": [
+      {
+        "path": "arena_ext/verification.py",
+        "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
+        "size_bytes": 9276
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part13_treeshap/16.13_TreeSHAP_from_First_Principles_exercises.ipynb",
+        "sha256": "81ea7d8f8ccdd6b4ae8c7ae76d7466032155dce70f12143e797e285015e253f0",
+        "size_bytes": 1456803
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part13_treeshap/16.13_TreeSHAP_from_First_Principles_solutions.ipynb",
+        "sha256": "2ff5519653008ab6e36298066372255d01998a1179baf6e9c5670f2a60e42ebc",
+        "size_bytes": 1465623
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part13_treeshap/README.md",
+        "sha256": "ef9d3e39cfa6ae19a10009050899fa31fb3b806e063c416e6d6400ddcd6f715b",
+        "size_bytes": 6781
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part13_treeshap/artifacts.lock.yml",
+        "sha256": "696c397b7923a92b2b229c3febbc50c86834657cda3d942b009dee064f5cf6fe",
+        "size_bytes": 9389
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part13_treeshap/author_reference.json",
+        "sha256": "c02421610e81d11b4f38baa88d86d463d147ed9a195eeba8fa230ffb35efd5f3",
+        "size_bytes": 651
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part13_treeshap/build_notebooks.py",
+        "sha256": "8f4e5b271c7995a004ac0182509023eaea783f665fa84b4a5878683b22e19814",
+        "size_bytes": 10810
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part13_treeshap/data_manifest.json",
+        "sha256": "0e829e5632b8b3fec9cdd54393e361fe58f7ea3e40d4e753399c4372509eeb38",
+        "size_bytes": 12657
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part13_treeshap/execute_learner.py",
+        "sha256": "ebe9d16f3f2f15dc24e401388497e3f6567e10bba1af129cb08df89b962bf3d2",
+        "size_bytes": 7910
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part13_treeshap/expected_outputs/README.md",
+        "sha256": "6210695e1598bd83bc9f982e46043035f2f374d38c0f05a40c3d332a737c960d",
+        "size_bytes": 6558
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part13_treeshap/expected_outputs/fresh_reproduction.json",
+        "sha256": "7fa8b210445a705bb2685068583407173bbcaf9ac09df86d0f1c4e77685e57bd",
+        "size_bytes": 60089
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part13_treeshap/expected_outputs/learner_execution.json",
+        "sha256": "e06cdeb355a53c27a7d1c5f0cb663bf1a910edc69a0c7bb88024f1038beb41e6",
+        "size_bytes": 65193
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part13_treeshap/expected_outputs/native_summary.json",
+        "sha256": "3d000a98bdb340cd0ce5d9614e3faf0a74667dba05f2a5f2d6315835f20d866b",
+        "size_bytes": 50664
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part13_treeshap/lesson.md",
+        "sha256": "a879f927b851dfa8e1b5b83f96999269923be486828fcf98454b4d1feaf338d0",
+        "size_bytes": 65533
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part13_treeshap/protocol.md",
+        "sha256": "a62ed351750e5e1c4e77f8d651ecef040267b4df795940052ec73b73017159c7",
+        "size_bytes": 5981
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part13_treeshap/protocol_freeze.json",
+        "sha256": "eb895e76b1ca62e8e654bb1334524be14a8e9b55a14045d427bf001f7558ba00",
+        "size_bytes": 477
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part13_treeshap/publish_study.py",
+        "sha256": "40451219c501267a09a31deff1704a09bbb1e4979866673a9f0e2ae007afd7a1",
+        "size_bytes": 13324
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part13_treeshap/reference_boundary_addendum.md",
+        "sha256": "2e639c56060d45131a093caeb838a8896399a2d6e89cba9fe477bcd9b816023e",
+        "size_bytes": 4098
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part13_treeshap/reproduce_native.py",
+        "sha256": "b3c11a58e251c2b5c4d319d34bb10ca1a83486d35ad777a7ea13853ab600e44c",
+        "size_bytes": 10421
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part13_treeshap/run_native.py",
+        "sha256": "739b40fcf51fb0704f0356236aea3ccff8e055b903bcef1c2800c00962f06a03",
+        "size_bytes": 13059
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part13_treeshap/solutions.py",
+        "sha256": "d8d61cf692d75b974aacb16d21fd54586c14552820fb5c77f302e7ebfcfaeb03",
+        "size_bytes": 11493
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part13_treeshap/tests.py",
+        "sha256": "19a986b3faaa4819f12f14948fa5e44e3728cfb7d8a1f91618555da1355fa132",
+        "size_bytes": 149
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_contract_tests.py",
+        "sha256": "acd5be5893d03bf9d9931bbc5fb536365126c5b0de32b4b4d15c4ac6b1207dc5",
+        "size_bytes": 7874
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_data.py",
+        "sha256": "329b983afd4b12be1786507a4b585d057e722cfa888adaa99457f2222b82ffe3",
+        "size_bytes": 1784
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_diagnostics.py",
+        "sha256": "18ffa61053a6335fc4d31ac81858105e3c771613df032eb2cd3ec854b613fd29",
+        "size_bytes": 15490
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_methods.py",
+        "sha256": "49b0c781c3eaae5e813d246abafb4dacca7daefbc003b83d1a8be876ba58fb09",
+        "size_bytes": 9719
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_methods_tests.py",
+        "sha256": "d758e99a280c0927d15ce9ad0be5bd5817e883cdc39cad652112ed1514fdad08",
+        "size_bytes": 10513
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_plots.py",
+        "sha256": "b815a464a0c822c792b363ec1bb37f73dab5fb08d2026e5080865c39e62b691d",
+        "size_bytes": 42784
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_reference.py",
+        "sha256": "ac2be0a07cf31449c7974cc26118dc967f1728128fd555539f7e5d6fd56a1303",
+        "size_bytes": 35769
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_study.py",
+        "sha256": "d7c902e82347fad37307cf7f088f1f2292af04e56a116e9bc39cffb575cd9bfc",
+        "size_bytes": 9152
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part13_treeshap/verification_report.schema.json",
+        "sha256": "c6db9438f0a04447f9fc8575dc8fc514a25dc505823257b201bfc1771b547c4c",
+        "size_bytes": 4159
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/treeshap_01_missing_feature_games.png",
+        "sha256": "fd31e73a4fac4e1448319163bea1e6ca01292a55c6dd635bfcc50c02c4c53d83",
+        "size_bytes": 117880
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/treeshap_02_tiny_tree.png",
+        "sha256": "00197263cdddaa045429c7cd635d96b660bcde204723d51574496036008702b4",
+        "size_bytes": 90624
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/treeshap_03_cardinality_weights.png",
+        "sha256": "4229f2ca5c1561187c2d8b96178cfae21570f5b223dc527c58282fe0d4135cf9",
+        "size_bytes": 76646
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/treeshap_04_correlated_games.png",
+        "sha256": "ea2b3295d4b0de0733c46092304feb96263a001992d70d2d53350204d4dd12f8",
+        "size_bytes": 120184
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/treeshap_05_repeated_feature.png",
+        "sha256": "1215c44899ccc530d3e920ccce9c41ea0ae1e68f570450a9053f2b906d9516d9",
+        "size_bytes": 124629
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/treeshap_06_saabas_control.png",
+        "sha256": "6fadacd560d4008425f526cd5760cafdccd6537aaaedd062732dfcb767a56aef",
+        "size_bytes": 52590
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/treeshap_07_audit_performance.png",
+        "sha256": "9598264b02952a5383529039002def3d2672c73bc0a2a106dc9f4b797d6f5137",
+        "size_bytes": 75825
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/treeshap_08_prediction_waterfall.png",
+        "sha256": "294eda95409364396eb12a09c19f74399af133cf4776cc2a2e75673cfc5aa61e",
+        "size_bytes": 84378
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/treeshap_09_attribution_heatmaps.png",
+        "sha256": "93923e6958e37c5f75eb4eb62183dabeb88ca0e8af6aeea1ba3ccb0a6ec36d0b",
+        "size_bytes": 146922
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/treeshap_10_model_seed_variation.png",
+        "sha256": "d48c6bc571796e131fb33f36129e04f832200cfb2ce7ef836ba538ed81b43414",
+        "size_bytes": 129405
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/treeshap_11_background_sensitivity.png",
+        "sha256": "c226847a750743817791d5a03916499a5c6bbb8fb4676cf34221838ad624b2a0",
+        "size_bytes": 147948
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/treeshap_12_deletion_curves.png",
+        "sha256": "89d98c34744db64510c89e0e614c22e84bfb2986f78eb4e40bd5df2ab77e0f85",
+        "size_bytes": 217869
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/treeshap_13_runtime_dummy_features.png",
+        "sha256": "5e9f83cc2ede6ff924e72aee03b13446cdcbe0a27f44b5ceb57b5a5de9d513a7",
+        "size_bytes": 80841
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/treeshap_14_runtime_depth.png",
+        "sha256": "80e5e654cd3fc0eb52c0f485ae28948828723fe0710a8fdaf7fd030e86905664",
+        "size_bytes": 86914
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/treeshap_15_tiny_tree_play.png",
+        "sha256": "69cfb54ee18bba50b5e5df8ae734e76565043fed66da559bca2596de1226f79b",
+        "size_bytes": 72365
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/treeshap_16_real_recipe_play.png",
+        "sha256": "d9a6ae6022cd932bab7256266d3f15c9e330f93e40a9ddf63f94d88caee8d07b",
+        "size_bytes": 105400
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/treeshap_17_reference_parity.png",
+        "sha256": "5d4ac3907e717f7e3ee010eca60f6732a5ed99e54994bce0d7df0fe34d4f568d",
+        "size_bytes": 275421
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/pages/13_[16.13]_TreeSHAP_from_First_Principles.md",
+        "sha256": "46d9b2fc3d4c1082505b174668f4b29a42d1a42541ff344bbb638bb5e21231ce",
+        "size_bytes": 87215
+      },
+      {
+        "path": "scripts/run_extension_verification_reports.py",
+        "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
+        "size_bytes": 16272
+      }
+    ],
+    "schema_version": 1
+  },
+  "safety_notes": [
+    "Public material measurements; predictive feature attribution is not a material-design recommendation."
+  ],
+  "tests_passed": true,
+  "wall_clock_seconds": 19.556822
+}

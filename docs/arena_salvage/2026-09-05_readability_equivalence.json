@@ -1,0 +1,668 @@
+{
+  "date": "2026-09-05",
+  "scope": "Formatting only; no new experiment, threshold, claim, or release acceptance.",
+  "before_snapshot": "/tmp/arena-readability-before",
+  "normalization": "CommonMark rendering with whitespace normalized outside fenced code; Python fenced blocks by AST; notebook metadata and outputs unchanged; test source by AST. Builder outputs compared before and after with the same dependencies.",
+  "source_files": [
+    {
+      "path": "chapter12_vlm_interpretability/exercises/part2_object_hallucination_arbitration/build_notebooks.py",
+      "old_sha256": "9dc5c2133179fb56c259cc9a1e62fafe20ea1e557f389d0037057e5a075e72ac",
+      "new_sha256": "1fd3ffdf73be41f11414c9dd35c538217ce47c7a1db907b91bdedc56e9d6d17c",
+      "equivalence": "builder_checked_by_captured_generated_artifacts"
+    },
+    {
+      "path": "chapter12_vlm_interpretability/instructions/pages/01_[12.1]_CLIP_SigLIP_and_VLM_Controls.md",
+      "old_sha256": "b5460cd0a6f42ed168d5dffce44090c6957fd916c3abcb97629542b8666ba0bb",
+      "new_sha256": "878feddf367322f23d5983ca7b38f5e67809e52b1a07463d1051febbcc0fa003",
+      "equivalence": "same_commonmark_render_and_fenced_code_ast",
+      "old_semantic_sha256": "f4f237459bd22e9336361a77863a150d76b9a3393aab54a6ba17879a308144e4",
+      "new_semantic_sha256": "f4f237459bd22e9336361a77863a150d76b9a3393aab54a6ba17879a308144e4"
+    },
+    {
+      "path": "chapter12_vlm_interpretability/instructions/pages/05_[12.5]_Object_Hallucination_and_Modality_Arbitration.md",
+      "old_sha256": "8f127951ee5ecbd1f38de9443fe82341dd5210f8a5db0173969fdd3eb6f097e3",
+      "new_sha256": "f8e7425efa3c39b06bb5a276e8b2ea665adf86b71b8f65d8560b67f0f9db2300",
+      "equivalence": "same_commonmark_render_and_fenced_code_ast",
+      "old_semantic_sha256": "7a1b61d5fa5d3662c229f54c2e4473919a830ed2e595b43f0d0fbc17d70de3cb",
+      "new_semantic_sha256": "7a1b61d5fa5d3662c229f54c2e4473919a830ed2e595b43f0d0fbc17d70de3cb"
+    },
+    {
+      "path": "chapter14_jepa_world_models/exercises/part2_ijepa_from_scratch/14.2_I-JEPA_from_Scratch_exercises.ipynb",
+      "old_sha256": "e85fe9ae4b9c22b760a4419a56978a089c85e08c9d45818b0e1190106e20b4ea",
+      "new_sha256": "ead2e1c0cd7e21ffcd6e56af11f98c3321879f84d60f349bd16029fd8eff6cbb",
+      "equivalence": "same_notebook_cell_code_markdown_metadata_and_outputs",
+      "old_semantic_sha256": "71b50e638bc85223fab0fe67d4f9595006fb3ea92493033eab1451d4d642c5f5",
+      "new_semantic_sha256": "71b50e638bc85223fab0fe67d4f9595006fb3ea92493033eab1451d4d642c5f5"
+    },
+    {
+      "path": "chapter14_jepa_world_models/exercises/part2_ijepa_from_scratch/build_notebooks.py",
+      "old_sha256": "c3679bd10abfbf6632aa49da09a0e6b0abe0980ad3b944484617d9b41cd7a986",
+      "new_sha256": "bb8a00a1425e45ddf682a20317637a633150ab8938bc1e884f8d78a583af9b42",
+      "equivalence": "builder_checked_by_captured_generated_artifacts"
+    },
+    {
+      "path": "chapter14_jepa_world_models/instructions/pages/01_[14.1]_JEPA_and_World_Model_Controls.md",
+      "old_sha256": "aa6273388ab424fdbf425e4393b609fe440645685c3808a827f5fc9c8b4e3d9d",
+      "new_sha256": "e3532a5d91f7771a3116b1f8bb8e4c49a3d35bde2ccb0ac80b79cebc6b93c93c",
+      "equivalence": "same_commonmark_render_and_fenced_code_ast",
+      "old_semantic_sha256": "1fbdcd72da2b42e348eece0701559235550c9e0b02a8d90a97bea02b30d6fe4a",
+      "new_semantic_sha256": "1fbdcd72da2b42e348eece0701559235550c9e0b02a8d90a97bea02b30d6fe4a"
+    },
+    {
+      "path": "chapter14_jepa_world_models/instructions/pages/02_[14.2]_I-JEPA_from_Scratch.md",
+      "old_sha256": "1c9766968906a831d747964f77571ebeb94da37e440001e7b0132a37c2d2a023",
+      "new_sha256": "d1033b51fdc6f8f680d201ad8147fa97e42436d1042454978861ad9446964d9d",
+      "equivalence": "same_commonmark_render_and_fenced_code_ast",
+      "old_semantic_sha256": "ab469787c7030ee57c0bcdb09753fc631c3b7084791c6654b84da0659b1837cf",
+      "new_semantic_sha256": "ab469787c7030ee57c0bcdb09753fc631c3b7084791c6654b84da0659b1837cf"
+    },
+    {
+      "path": "chapter14_jepa_world_models/instructions/pages/03_[14.3]_V_JEPA_from_Scratch.md",
+      "old_sha256": "3566aa4135636d790adc2d725d8a2bb5dd527587a51c8c605c27bf080c84d8d5",
+      "new_sha256": "87a9109ff843c54995d9956db20c79e8bca254961bd789d1accf60c526167f19",
+      "equivalence": "same_commonmark_render_and_fenced_code_ast",
+      "old_semantic_sha256": "e67c4f91058d93b74188b00865a98acc829418924414207441956d87ebba015e",
+      "new_semantic_sha256": "e67c4f91058d93b74188b00865a98acc829418924414207441956d87ebba015e"
+    },
+    {
+      "path": "chapter16_shapley_attribution_baselines/instructions/pages/01_[16.1]_Exact_Shapley_on_Ground_Truth_Games.md",
+      "old_sha256": "f5f8305ebaf7584b50de0079407dbb25e5153163882e56be304f6ef805a51083",
+      "new_sha256": "417ca72cce393de7148c5eb2211f87ae4d58273633fdb5725fb3fee95258dcc0",
+      "equivalence": "same_commonmark_render_and_fenced_code_ast",
+      "old_semantic_sha256": "8cdea311b0aee0c88e4c4ea1ffe4c2dadc4cc542fbff45755ae5440756a0740e",
+      "new_semantic_sha256": "8cdea311b0aee0c88e4c4ea1ffe4c2dadc4cc542fbff45755ae5440756a0740e"
+    },
+    {
+      "path": "chapter16_shapley_attribution_baselines/instructions/pages/02_[16.2]_KernelSHAP_and_PartitionSHAP_Controls.md",
+      "old_sha256": "d7f0d59b1791898a272f863c1acf32d954785f65b1bd18a5f034a9b3f633356e",
+      "new_sha256": "16bba689b7640e7d5bfb2b4c22da13532520ecfb6f6bd2e6217417722eb6d877",
+      "equivalence": "same_commonmark_render_and_fenced_code_ast",
+      "old_semantic_sha256": "bc28f926d2eaafa568e2e81fc739e5604dd5958c944473ed2c70418f50f7da57",
+      "new_semantic_sha256": "bc28f926d2eaafa568e2e81fc739e5604dd5958c944473ed2c70418f50f7da57"
+    },
+    {
+      "path": "chapter16_shapley_attribution_baselines/instructions/pages/03_[16.3]_Shapley_Interactions_with_shapiq.md",
+      "old_sha256": "1b280a09cef23a0f693833dfe16d9b2ad4f3704960cebbc43040cc0b872643a6",
+      "new_sha256": "2c1e5be78194c27701ca56f059697ae189877cc1cf1798760bfa1151b1f0c3d1",
+      "equivalence": "same_commonmark_render_and_fenced_code_ast",
+      "old_semantic_sha256": "33dd75d7cc062ad1f57f0e78fec4bf91f4c463a7184364e5eee68b326bfb1846",
+      "new_semantic_sha256": "33dd75d7cc062ad1f57f0e78fec4bf91f4c463a7184364e5eee68b326bfb1846"
+    },
+    {
+      "path": "chapter16_shapley_attribution_baselines/instructions/pages/05_[16.5]_VLM_Modality_and_Region_SHAP.md",
+      "old_sha256": "566d482cdc2cb44c3c4dac448c97df7a83a207fad82b861fdf5c10e97195bc3c",
+      "new_sha256": "4c8b388a7e26dcbda1a3a980a87ac8abf1792060f8b9a7ab5302ce6f9ad93d76",
+      "equivalence": "same_commonmark_render_and_fenced_code_ast",
+      "old_semantic_sha256": "895516fa1e1ac61a1f342fa24935e9369de375d627e02bf7b58994702e93a59c",
+      "new_semantic_sha256": "895516fa1e1ac61a1f342fa24935e9369de375d627e02bf7b58994702e93a59c"
+    },
+    {
+      "path": "chapter16_shapley_attribution_baselines/instructions/pages/06_[16.6]_SHAP_vs_Activation_Patching.md",
+      "old_sha256": "db499eabf57b200adbe4ec1c90d4ebec8e25eff335c9f2be3a600cc1f3acc946",
+      "new_sha256": "5b8d80e438874293dda68ae6f5d889ba2f551634fbd79f714a1116b00da166a3",
+      "equivalence": "same_commonmark_render_and_fenced_code_ast",
+      "old_semantic_sha256": "b6c061279ed319005477b4399b273783390ef6c3aee06ddac16912eed3a22588",
+      "new_semantic_sha256": "b6c061279ed319005477b4399b273783390ef6c3aee06ddac16912eed3a22588"
+    },
+    {
+      "path": "chapter16_shapley_attribution_baselines/instructions/pages/08_[16.8]_Do_SHAPley_and_Mechanistic_Interpretability_Agree.md",
+      "old_sha256": "65b9957610e570ae0129b8ed57084deb25ae7cad3417c831630d0881d6a49322",
+      "new_sha256": "e7556111b690f93040e7e987c87eb1f057f61d21732e7c68717e867759d748d2",
+      "equivalence": "same_commonmark_render_and_fenced_code_ast",
+      "old_semantic_sha256": "8c4576ebb850adddfe874a369e3fb84aa5dc2e8b49d0b07c87ad67e120d250c0",
+      "new_semantic_sha256": "8c4576ebb850adddfe874a369e3fb84aa5dc2e8b49d0b07c87ad67e120d250c0"
+    },
+    {
+      "path": "chapter5_modern_architectures/exercises/part7_mamba2_ssd/lesson.md",
+      "old_sha256": "8dbff15b24e1efd1096773083ea790c2a1488174656e1822585dffa753a731b3",
+      "new_sha256": "736e911d26e4d7d334f74db2f7883ddcdb40da972fc48d5dfa505411afa5d8d1",
+      "equivalence": "same_commonmark_render_and_fenced_code_ast",
+      "old_semantic_sha256": "8f0d6ac59bdba9423820d570c0b71e11f39ba6e5a0bac1a2136737bf5d1dcc16",
+      "new_semantic_sha256": "8f0d6ac59bdba9423820d570c0b71e11f39ba6e5a0bac1a2136737bf5d1dcc16"
+    },
+    {
+      "path": "chapter5_modern_architectures/exercises/part8_mixture_of_experts/build_notebooks.py",
+      "old_sha256": "da8ddc8338139a0fd1b30ec4185ef1dcdbaf752bff65230056c339216f383c49",
+      "new_sha256": "5f1c5dfcac70e0d4e508ce62945907a151304d8f2ab5e28fc640b7d3d8871ad6",
+      "equivalence": "builder_checked_by_captured_generated_artifacts"
+    },
+    {
+      "path": "chapter5_modern_architectures/instructions/pages/02_[5.2]_Gemma_Scope_and_Feature_Steering.md",
+      "old_sha256": "237210da9007b95df3d390153266843872b13847ba8ea1dc9e9a2d78760c159f",
+      "new_sha256": "86704c647489c49da876e609616a163ff7ccf5a867420aac1a6e54c4000d18c6",
+      "equivalence": "same_commonmark_render_and_fenced_code_ast",
+      "old_semantic_sha256": "3f2e2ad9dbad7675ed4b92af627f68253eb1a6c121d472085130efc33ad73770",
+      "new_semantic_sha256": "3f2e2ad9dbad7675ed4b92af627f68253eb1a6c121d472085130efc33ad73770"
+    },
+    {
+      "path": "chapter5_modern_architectures/instructions/pages/03_[5.3]_Mamba_from_Scratch.md",
+      "old_sha256": "c4c81b37b9b5224c2257368d3ec27d58add07a7288a4072a36fb424d3e5d0708",
+      "new_sha256": "2a67b6f5f6b01006f759cf5d9ffdc182e0077c4ee45fcf1c98c218c9f2013430",
+      "equivalence": "same_commonmark_render_and_fenced_code_ast",
+      "old_semantic_sha256": "df92313594325a6c7302ab092d346a945b637a57bb42aab5eac0c3152f43632c",
+      "new_semantic_sha256": "df92313594325a6c7302ab092d346a945b637a57bb42aab5eac0c3152f43632c"
+    },
+    {
+      "path": "chapter5_modern_architectures/instructions/pages/07_[5.7]_Mamba-2_and_Structured_State-Space_Duality.md",
+      "old_sha256": "351464f46df40506c159a434d50dae4deaf8058e7b47548cb76579d85a42c089",
+      "new_sha256": "07ace33f1f7df9cef445e395c222b74fc997fb1fd3c381a4cbe234f0ff28c635",
+      "equivalence": "same_commonmark_render_and_fenced_code_ast",
+      "old_semantic_sha256": "32c7453dcff54ee1bda887adacc71e3b08e9a5a29610765955b2ab020796f125",
+      "new_semantic_sha256": "32c7453dcff54ee1bda887adacc71e3b08e9a5a29610765955b2ab020796f125"
+    },
+    {
+      "path": "chapter5_modern_architectures/instructions/pages/08_[5.8]_Mixture_of_Experts_from_Scratch.md",
+      "old_sha256": "9be508b42e69fc428f9bdad4ef59465d4b20f3548b4392cc54f2fddffb668b73",
+      "new_sha256": "da11ec451086137fe9cb9fd3ae0791d9182443cefb44979cd4cb836ea32bcbfb",
+      "equivalence": "same_commonmark_render_and_fenced_code_ast",
+      "old_semantic_sha256": "95f8176ee756b4e8c9b032ca2c03669788fbfd4c70c3013f346ede9a0b8858ca",
+      "new_semantic_sha256": "95f8176ee756b4e8c9b032ca2c03669788fbfd4c70c3013f346ede9a0b8858ca"
+    },
+    {
+      "path": "chapter6_sparse_feature_methods/instructions/pages/01_[6.1]_SAE_Variants.md",
+      "old_sha256": "20867f1d8a87724e87316a41ad4234b838d35d818ff36dd4fd940063067918d1",
+      "new_sha256": "1adc259041aacf83904c060e735e8c27deea445c9cfc615378d97ebe76e80092",
+      "equivalence": "same_commonmark_render_and_fenced_code_ast",
+      "old_semantic_sha256": "472aca4c49adefdd8d283b466ee43e115bbcf26f074e578cc26c7dbf05b1f48f",
+      "new_semantic_sha256": "472aca4c49adefdd8d283b466ee43e115bbcf26f074e578cc26c7dbf05b1f48f"
+    },
+    {
+      "path": "chapter6_sparse_feature_methods/instructions/pages/02_[6.2]_Gemma_Scope_Deep_Dive.md",
+      "old_sha256": "0d48dc201b876e2b46fb2132027493b73bc1f85fd3d5a7ec3ed8b2f5127e8f0c",
+      "new_sha256": "747f47ef019908512c7164b87bc4291a31eed1f13d356b82bc08260bc8b3f9a8",
+      "equivalence": "same_commonmark_render_and_fenced_code_ast",
+      "old_semantic_sha256": "fecdccbd864d8e79c8ac8b55673ba0defb4a6aaac3deae5ab952d359186a11e4",
+      "new_semantic_sha256": "fecdccbd864d8e79c8ac8b55673ba0defb4a6aaac3deae5ab952d359186a11e4"
+    },
+    {
+      "path": "chapter6_sparse_feature_methods/instructions/pages/03_[6.3]_Transcoders_and_Attribution_Graphs.md",
+      "old_sha256": "4741330f1c5702656551dd1a39305ca3f346a654f0401bb7d6c0a398facc2e12",
+      "new_sha256": "0b4d97800ba794950d269debfe69d3be0218d273398b831b33d30237a6801732",
+      "equivalence": "same_commonmark_render_and_fenced_code_ast",
+      "old_semantic_sha256": "0e52358e6e8f6d1ea87fe797289764e6668e6134fc1b202321cba1b93a72aac8",
+      "new_semantic_sha256": "0e52358e6e8f6d1ea87fe797289764e6668e6134fc1b202321cba1b93a72aac8"
+    },
+    {
+      "path": "chapter7_activation_to_language/exercises/part1_lenses_patchscopes/expected_outputs/README.md",
+      "old_sha256": "1b41aa4f5da5d1ec6742d9fcf7323c057b85aeb2a359bc5ec6a19b245d90e3f7",
+      "new_sha256": "16494aa4822e9060833f311dd05f1d3385c85d9d9ec327eefad3da9372179187",
+      "equivalence": "same_commonmark_render_and_fenced_code_ast",
+      "old_semantic_sha256": "ec3a1f123d535ba70da1d6b013c134c1689ebe291e2705c2ca493518fa4115f4",
+      "new_semantic_sha256": "ec3a1f123d535ba70da1d6b013c134c1689ebe291e2705c2ca493518fa4115f4"
+    },
+    {
+      "path": "chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/build_notebooks.py",
+      "old_sha256": "0476eb24fc587f1f6a0dc1a362db7ad34519612c4274f1cdb6f80736dd6c5b6b",
+      "new_sha256": "b1b97de41708fc6cfaf276b9ce7d28139792011fa247c2da46dc2008dff3ac85",
+      "equivalence": "builder_checked_by_captured_generated_artifacts"
+    },
+    {
+      "path": "chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/tests.py",
+      "old_sha256": "5b7c40df37c407d2ae1adb991afc456da6730d2923fbd400b64f7a4d4ae73ce0",
+      "new_sha256": "a588626e0a42729ef63d55357510794fad8366fde74aaed104eb70c84a91a052",
+      "equivalence": "same_python_ast",
+      "old_semantic_sha256": "0710b1269033283ef88b84043d7860089978fa6c593199369436c80731003991",
+      "new_semantic_sha256": "0710b1269033283ef88b84043d7860089978fa6c593199369436c80731003991"
+    },
+    {
+      "path": "chapter7_activation_to_language/instructions/pages/01_[7.1]_Logit_Lens_Tuned_Lens_and_Patchscopes.md",
+      "old_sha256": "a070a4249197a3744a6ca0f922c173ab854c2120f262b822b294a36898e2546b",
+      "new_sha256": "bee431fee38bc57e110d0185b7ee73123a9a4f1560e6f9b95381cb0cd960451a",
+      "equivalence": "same_commonmark_render_and_fenced_code_ast",
+      "old_semantic_sha256": "310c31f59a13dfce585a135b4bf3a3fea3f48e229306746c73bf3731cfb082e8",
+      "new_semantic_sha256": "310c31f59a13dfce585a135b4bf3a3fea3f48e229306746c73bf3731cfb082e8"
+    },
+    {
+      "path": "chapter7_activation_to_language/instructions/pages/04_[7.4]_Mini_Natural_Language_Autoencoders.md",
+      "old_sha256": "1da283d3cec723465982c0aacc9956201dac63a6fca44a7af0ecad297c458b95",
+      "new_sha256": "4212950207a04ff6ba59a2d5af8d8cdc6b40ae356d620f9b18c1b9af90a53e5a",
+      "equivalence": "same_commonmark_render_and_fenced_code_ast",
+      "old_semantic_sha256": "6e12f64b59c56a6b65c0a6801e989b0c25e37f180e51a55f356e7c0110604a16",
+      "new_semantic_sha256": "6e12f64b59c56a6b65c0a6801e989b0c25e37f180e51a55f356e7c0110604a16"
+    },
+    {
+      "path": "chapter7_activation_to_language/instructions/pages/05_[7.5]_Predictive_Concept_Decoders.md",
+      "old_sha256": "bb0a956b60a9fa19263505ee12d7067054642f8a93cddce187248bf0e380e173",
+      "new_sha256": "e393c9e550a8dd56ad56d62209cd4353ba275c2f20471b21edc422ed594903da",
+      "equivalence": "same_commonmark_render_and_fenced_code_ast",
+      "old_semantic_sha256": "7139f6e2d61912d57e1773d4746ae5f98ddd03f2c60e120ae8c94b09028ccb88",
+      "new_semantic_sha256": "7139f6e2d61912d57e1773d4746ae5f98ddd03f2c60e120ae8c94b09028ccb88"
+    },
+    {
+      "path": "chapter8_automated_circuits/exercises/part6_atp_star/lesson.md",
+      "old_sha256": "857697cd791da3579882ea115744c143a65600ed64e4ee6924a2dae1497cd49d",
+      "new_sha256": "f1a54ca0a7f91af80ef3ffe6f8ab391da1e93e99107e45d5da8db78ac30e61b3",
+      "equivalence": "same_commonmark_render_and_fenced_code_ast",
+      "old_semantic_sha256": "a7ae5cd43e9b30bdb182fab84fe4137d9dd0fc7e966f69679baee38364610e2f",
+      "new_semantic_sha256": "a7ae5cd43e9b30bdb182fab84fe4137d9dd0fc7e966f69679baee38364610e2f"
+    },
+    {
+      "path": "chapter8_automated_circuits/instructions/pages/01_[8.1]_Activation_Patching_Refresher.md",
+      "old_sha256": "9bd3ed38e02245718e0b5e151806552847304a9d451f0b8fc76704b59a770ef9",
+      "new_sha256": "082a378bbce1678556cbcbf70e8fe7d38b291be1b9236d1488974d45e33e9c80",
+      "equivalence": "same_commonmark_render_and_fenced_code_ast",
+      "old_semantic_sha256": "ff9bbef454412af3d75a548b921b6dbf6825e1814e49a5d89d7cb62772b3cbbf",
+      "new_semantic_sha256": "ff9bbef454412af3d75a548b921b6dbf6825e1814e49a5d89d7cb62772b3cbbf"
+    },
+    {
+      "path": "chapter8_automated_circuits/instructions/pages/02_[8.2]_Attribution_Patching_and_EAP.md",
+      "old_sha256": "9d070c52f6a3c86c1da9704d3cfa2db91fa809da608b5349d8fa99724eddfac8",
+      "new_sha256": "9b5243bce86e32ceb5c15eea39f4b53ea4fb4ddae59ca9cd59167d1fad7690be",
+      "equivalence": "same_commonmark_render_and_fenced_code_ast",
+      "old_semantic_sha256": "a0c92444bd32c052dd765c8d5f30e0757afb4428a7a542ef678a2a2315526995",
+      "new_semantic_sha256": "a0c92444bd32c052dd765c8d5f30e0757afb4428a7a542ef678a2a2315526995"
+    },
+    {
+      "path": "chapter8_automated_circuits/instructions/pages/03_[8.3]_ACDC_and_Circuit_Metrics.md",
+      "old_sha256": "bdc57d08f7f78d58d167eff59ffe633cad5c7f9a52b2c96d74f39c29ddb56bf7",
+      "new_sha256": "2336957f09103511b0b2e8ead82454a13279a8d540a379a2eabdf782413beb50",
+      "equivalence": "same_commonmark_render_and_fenced_code_ast",
+      "old_semantic_sha256": "b11a33ccd5a24ea4be660db50609b6f8c0d63af15e6549222d34ee3b2956a574",
+      "new_semantic_sha256": "b11a33ccd5a24ea4be660db50609b6f8c0d63af15e6549222d34ee3b2956a574"
+    },
+    {
+      "path": "chapter8_automated_circuits/instructions/pages/04_[8.4]_Circuit_Tracing_with_Attribution_Graphs.md",
+      "old_sha256": "befd9a95b3ff318fff48f973c5a532c50d2dbcbdc00c53efca228856ca582419",
+      "new_sha256": "13aa56f43f2fde37567acf564fd5368e1e41a8f9793f4d0d0f3b9f0b6c4f4ca8",
+      "equivalence": "same_commonmark_render_and_fenced_code_ast",
+      "old_semantic_sha256": "6119e11ff39c130482999701357b7359bc573b1b005e4cff7a07e6077c5a4403",
+      "new_semantic_sha256": "6119e11ff39c130482999701357b7359bc573b1b005e4cff7a07e6077c5a4403"
+    },
+    {
+      "path": "chapter8_automated_circuits/instructions/pages/05_[8.5]_Sparse_Feature_Circuits.md",
+      "old_sha256": "7e42e7213427186f303c77f158c8933c4b50140d08c1fb63683ea029234e4857",
+      "new_sha256": "7cec15522d2ce79670d8b3e1eabaf1a56c3aba083008dc70658f364f7adf1b1b",
+      "equivalence": "same_commonmark_render_and_fenced_code_ast",
+      "old_semantic_sha256": "b7fcf7dd4421272c519db497eb19d4c05c9683899d289314792f1c74afbe6b09",
+      "new_semantic_sha256": "b7fcf7dd4421272c519db497eb19d4c05c9683899d289314792f1c74afbe6b09"
+    },
+    {
+      "path": "chapter8_automated_circuits/instructions/pages/06_[8.6]_AtP-Star_from_Scratch.md",
+      "old_sha256": "ad6134fb8fe97bbde213e70e3098c3d4b12c1381b3a30ddf06926c49874ccfe0",
+      "new_sha256": "2077ee6e54235671ae133b0fbf3c06405763908bec6f4c61580eb3f850400979",
+      "equivalence": "same_commonmark_render_and_fenced_code_ast",
+      "old_semantic_sha256": "e0b1655332bb2a4ebc35282f4e3a95e9f811dd8e858f7aef0378a70b09527fec",
+      "new_semantic_sha256": "e0b1655332bb2a4ebc35282f4e3a95e9f811dd8e858f7aef0378a70b09527fec"
+    },
+    {
+      "path": "chapter9_alignment_interpretability/instructions/pages/02_[9.2]_Chain_of_Thought_Faithfulness.md",
+      "old_sha256": "fa80c1fb06e6670f083a98a4a9cd865b4589b30b002451ffb68a32cdb087a1d8",
+      "new_sha256": "0d827c39d0438638890d3857d620b7defba49cc420d21afb0e2987facb7ac8cd",
+      "equivalence": "same_commonmark_render_and_fenced_code_ast",
+      "old_semantic_sha256": "c2610829684ad7d2e62bf27414ad7cd153d9274fed62e67bbc907cca35f1a07b",
+      "new_semantic_sha256": "c2610829684ad7d2e62bf27414ad7cd153d9274fed62e67bbc907cca35f1a07b"
+    },
+    {
+      "path": "chapter9_alignment_interpretability/instructions/pages/03_[9.3]_Emergent_Misalignment_Detection.md",
+      "old_sha256": "1736a714725dd0d03177c7819cf5221fd9d07a2576592f5afca3d50a884497c7",
+      "new_sha256": "beddbd463ab46fce29c395342eee55ea0112a53b462deff2f66eb3cd0464b603",
+      "equivalence": "same_commonmark_render_and_fenced_code_ast",
+      "old_semantic_sha256": "03e764d7b8933fdf7c43f87d6dc6f1fbc4992c72e81e64a614b4399a1db8bc92",
+      "new_semantic_sha256": "03e764d7b8933fdf7c43f87d6dc6f1fbc4992c72e81e64a614b4399a1db8bc92"
+    },
+    {
+      "path": "chapter9_alignment_interpretability/instructions/pages/04_[9.4]_White_box_Evals_and_Monitors.md",
+      "old_sha256": "966787e5356a2a4767ccaaa49a8a25e45f64bbb892b9d1064fc11962334d8f3c",
+      "new_sha256": "61ddfe7de94d6c9c546da48ca0a3439ff241ac61ce85926b827c215fdd66d30b",
+      "equivalence": "same_commonmark_render_and_fenced_code_ast",
+      "old_semantic_sha256": "d075279fa328cf0501d8cb5d16329428270a8ca6417e6764d1e5a1a2117b4511",
+      "new_semantic_sha256": "d075279fa328cf0501d8cb5d16329428270a8ca6417e6764d1e5a1a2117b4511"
+    },
+    {
+      "path": "chapter14_jepa_world_models/exercises/part3_vjepa_from_scratch/rebuild_notebooks.py",
+      "old_sha256": "32698eb5741bfe742573f5f0e3ba7afc319ee2c9ffd949a1ad56c724c54c25ea",
+      "new_sha256": "4e5e3d724a47b8914ee00447364348fd21b4dc3b17daf9acb067190597dd45a8",
+      "equivalence": "builder_checked_by_captured_generated_artifacts"
+    }
+  ],
+  "captured_builder_outputs": [
+    {
+      "builder": "part3_vjepa_from_scratch",
+      "artifacts": [
+        {
+          "path": "chapter14_jepa_world_models/exercises/part3_vjepa_from_scratch/14.3_V_JEPA_from_Scratch_exercises.ipynb",
+          "before_semantic_sha256": "5f5d59bba7c9d3cfc90ca9126cdef1dbb3a24d66ac19c056aa5c5297b8b6aa31",
+          "after_semantic_sha256": "5f5d59bba7c9d3cfc90ca9126cdef1dbb3a24d66ac19c056aa5c5297b8b6aa31"
+        },
+        {
+          "path": "chapter14_jepa_world_models/exercises/part3_vjepa_from_scratch/14.3_V_JEPA_from_Scratch_solutions.ipynb",
+          "before_semantic_sha256": "408b18f180ce2f01ef5d1797090bcbf3dca7a4642785195c5d90fee64ddb73f4",
+          "after_semantic_sha256": "408b18f180ce2f01ef5d1797090bcbf3dca7a4642785195c5d90fee64ddb73f4"
+        },
+        {
+          "path": "chapter14_jepa_world_models/instructions/pages/03_[14.3]_V_JEPA_from_Scratch.md",
+          "before_semantic_sha256": "e67c4f91058d93b74188b00865a98acc829418924414207441956d87ebba015e",
+          "after_semantic_sha256": "e67c4f91058d93b74188b00865a98acc829418924414207441956d87ebba015e"
+        }
+      ]
+    },
+    {
+      "builder": "part8_mixture_of_experts",
+      "artifacts": [
+        {
+          "path": "chapter5_modern_architectures/exercises/part8_mixture_of_experts/5.8_Mixture_of_Experts_from_Scratch_exercises.ipynb",
+          "before_semantic_sha256": "648c997098165b7e39ec89276f0e9b308eabf4b59c84337f616884efe60a87c3",
+          "after_semantic_sha256": "648c997098165b7e39ec89276f0e9b308eabf4b59c84337f616884efe60a87c3"
+        },
+        {
+          "path": "chapter5_modern_architectures/exercises/part8_mixture_of_experts/5.8_Mixture_of_Experts_from_Scratch_solutions.ipynb",
+          "before_semantic_sha256": "4ea54b787e263cadbb485f4c5de663c48497a2bc92147624557b94f0f952b986",
+          "after_semantic_sha256": "4ea54b787e263cadbb485f4c5de663c48497a2bc92147624557b94f0f952b986"
+        },
+        {
+          "path": "chapter5_modern_architectures/instructions/pages/08_[5.8]_Mixture_of_Experts_from_Scratch.md",
+          "before_semantic_sha256": "95f8176ee756b4e8c9b032ca2c03669788fbfd4c70c3013f346ede9a0b8858ca",
+          "after_semantic_sha256": "95f8176ee756b4e8c9b032ca2c03669788fbfd4c70c3013f346ede9a0b8858ca"
+        }
+      ]
+    },
+    {
+      "builder": "part4_mini_natural_language_autoencoders",
+      "artifacts": [
+        {
+          "path": "chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/7.4_Mini_Natural_Language_Autoencoders_exercises.ipynb",
+          "before_semantic_sha256": "cedc638313c5e5e03b035dbf3d07b05f9234e2b25f17c5be44c5d0fb178a2bf4",
+          "after_semantic_sha256": "cedc638313c5e5e03b035dbf3d07b05f9234e2b25f17c5be44c5d0fb178a2bf4"
+        },
+        {
+          "path": "chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/7.4_Mini_Natural_Language_Autoencoders_solutions.ipynb",
+          "before_semantic_sha256": "b5b8760d9467e1cbd01c0403d12632b122ecf1457be473d571f2a7661d169f5d",
+          "after_semantic_sha256": "b5b8760d9467e1cbd01c0403d12632b122ecf1457be473d571f2a7661d169f5d"
+        },
+        {
+          "path": "chapter7_activation_to_language/instructions/pages/04_[7.4]_Mini_Natural_Language_Autoencoders.md",
+          "before_semantic_sha256": "6e12f64b59c56a6b65c0a6801e989b0c25e37f180e51a55f356e7c0110604a16",
+          "after_semantic_sha256": "6e12f64b59c56a6b65c0a6801e989b0c25e37f180e51a55f356e7c0110604a16"
+        }
+      ]
+    },
+    {
+      "builder": "part2_object_hallucination_arbitration",
+      "artifacts": [
+        {
+          "path": "chapter12_vlm_interpretability/exercises/part2_object_hallucination_arbitration/12.5_Object_Hallucination_and_Modality_Arbitration_exercises.ipynb",
+          "before_semantic_sha256": "8b909bcacd0a196d826b39323be05fa171c552a874fab3d8b6989835d8acb17e",
+          "after_semantic_sha256": "8b909bcacd0a196d826b39323be05fa171c552a874fab3d8b6989835d8acb17e"
+        },
+        {
+          "path": "chapter12_vlm_interpretability/exercises/part2_object_hallucination_arbitration/12.5_Object_Hallucination_and_Modality_Arbitration_solutions.ipynb",
+          "before_semantic_sha256": "38f05aad010cbe2f547b46c69490aec30a4472b1d641e03565e51a5a08d71e69",
+          "after_semantic_sha256": "38f05aad010cbe2f547b46c69490aec30a4472b1d641e03565e51a5a08d71e69"
+        },
+        {
+          "path": "chapter12_vlm_interpretability/instructions/pages/05_[12.5]_Object_Hallucination_and_Modality_Arbitration.md",
+          "before_semantic_sha256": "7a1b61d5fa5d3662c229f54c2e4473919a830ed2e595b43f0d0fbc17d70de3cb",
+          "after_semantic_sha256": "7a1b61d5fa5d3662c229f54c2e4473919a830ed2e595b43f0d0fbc17d70de3cb"
+        },
+        {
+          "path": "chapter12_vlm_interpretability/exercises/part2_object_hallucination_arbitration/expected_outputs/smoke_test.json",
+          "before_semantic_sha256": "353c744229d2672cde807d4f4278a4eebbae46dfc056a33ef4558d05b7024a2d",
+          "after_semantic_sha256": "353c744229d2672cde807d4f4278a4eebbae46dfc056a33ef4558d05b7024a2d"
+        },
+        {
+          "path": "chapter12_vlm_interpretability/exercises/part2_object_hallucination_arbitration/expected_outputs/reference_metrics.json",
+          "before_semantic_sha256": "a80820fbf508f184fc63d1eefe396b39295f0f84f67da5c41f89cdd942d6baca",
+          "after_semantic_sha256": "a80820fbf508f184fc63d1eefe396b39295f0f84f67da5c41f89cdd942d6baca"
+        }
+      ]
+    },
+    {
+      "builder": "part2_ijepa_from_scratch",
+      "artifacts": [
+        {
+          "path": "chapter14_jepa_world_models/exercises/part2_ijepa_from_scratch/14.2_I-JEPA_from_Scratch_exercises.ipynb",
+          "before_semantic_sha256": "71b50e638bc85223fab0fe67d4f9595006fb3ea92493033eab1451d4d642c5f5",
+          "after_semantic_sha256": "71b50e638bc85223fab0fe67d4f9595006fb3ea92493033eab1451d4d642c5f5"
+        },
+        {
+          "path": "chapter14_jepa_world_models/exercises/part2_ijepa_from_scratch/14.2_I-JEPA_from_Scratch_solutions.ipynb",
+          "before_semantic_sha256": "78ce9eb883503c754cc9ad8313cac9d82efd833e1b1b95756c4984e54cbfd6c0",
+          "after_semantic_sha256": "78ce9eb883503c754cc9ad8313cac9d82efd833e1b1b95756c4984e54cbfd6c0"
+        },
+        {
+          "path": "chapter14_jepa_world_models/instructions/pages/02_[14.2]_I-JEPA_from_Scratch.md",
+          "before_semantic_sha256": "ab469787c7030ee57c0bcdb09753fc631c3b7084791c6654b84da0659b1837cf",
+          "after_semantic_sha256": "ab469787c7030ee57c0bcdb09753fc631c3b7084791c6654b84da0659b1837cf"
+        }
+      ]
+    }
+  ],
+  "report_manifest_updates": [
+    {
+      "path": "chapter5_modern_architectures/exercises/part7_mamba2_ssd/verification_report.json",
+      "old_manifest_sha256": "46a7f61ab097326b2cea18a0f4add745c95f7d2f2189723adb7eb184f607bcff",
+      "new_manifest_sha256": "b0a32b03d41d3214d5ab86646d0d6af9ecbbbe006577dfedddeb3832ae8cd1ee",
+      "measurement_date_unchanged": "2026-09-04T23:57:48+00:00",
+      "acceptance_unchanged": true,
+      "only_report_inputs_changed": true
+    },
+    {
+      "path": "chapter5_modern_architectures/exercises/part3_mamba_from_scratch/verification_report.json",
+      "old_manifest_sha256": "c217b7f55adebf7ca72381c68e24fe21ff40462e9730e131659d0c2ccb1dfcc3",
+      "new_manifest_sha256": "b50b8b47b4c91226b3d7d8317dd788c8a137c862c3c477d0a1b3eec57cf800bf",
+      "measurement_date_unchanged": "2026-09-04T13:34:39+00:00",
+      "acceptance_unchanged": true,
+      "only_report_inputs_changed": true
+    },
+    {
+      "path": "chapter5_modern_architectures/exercises/part2_gemma_scope_feature_steering/verification_report.json",
+      "old_manifest_sha256": "ddb2bbb9ad4a75caf5d36eee36280207439bea056750d6506b2c61c56ab643d4",
+      "new_manifest_sha256": "776b7b47c61c2ed8df24ef9214ddf08bbb2455f795e42c75dc30593a3c051b75",
+      "measurement_date_unchanged": "2026-09-04T08:41:10+00:00",
+      "acceptance_unchanged": true,
+      "only_report_inputs_changed": true
+    },
+    {
+      "path": "chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls/verification_report.json",
+      "old_manifest_sha256": "7baedecdd480306d1016b3c78c8e14c20808cb7b7e178d752d9ba754e4120d6a",
+      "new_manifest_sha256": "832753a25c9a4ce94597794701e238034bb3bb9bf08ce610e588e63809f7927a",
+      "measurement_date_unchanged": "2026-09-04T23:53:38+00:00",
+      "acceptance_unchanged": true,
+      "only_report_inputs_changed": true
+    },
+    {
+      "path": "chapter12_vlm_interpretability/exercises/part2_object_hallucination_arbitration/verification_report.json",
+      "old_manifest_sha256": "9ea79a7c5ab5a31daf6d4b71ff65191a46af9194b592068d1201dccb90c84f4f",
+      "new_manifest_sha256": "88a80173ee90db53a9af12c95faa3ebd8a5a1cb71bbc36b9ea2c7b632973d43a",
+      "measurement_date_unchanged": "2026-09-05T00:13:37.888148+00:00",
+      "acceptance_unchanged": false,
+      "only_report_inputs_changed": true
+    },
+    {
+      "path": "chapter14_jepa_world_models/exercises/part2_ijepa_from_scratch/verification_report.json",
+      "old_manifest_sha256": "a6b17b79155de95f6a461359f781ac4ec09919d87d7dc09e2c108a50327baa4e",
+      "new_manifest_sha256": "94c5a92349123c6f276dcdb728b9b16bdcb22d9a4edc612eb60642a248ac1234",
+      "measurement_date_unchanged": "2026-09-04T23:56:48+00:00",
+      "acceptance_unchanged": true,
+      "only_report_inputs_changed": true
+    },
+    {
+      "path": "chapter14_jepa_world_models/exercises/part1_jepa_world_model_controls/verification_report.json",
+      "old_manifest_sha256": "31df5f2707fc8b13595c8babce0d3d30babba102e226284ab902a0a8763a6ccb",
+      "new_manifest_sha256": "713e5a5ae25682b03edb3b074bf1f35ce43c941ee6c550d68e2d11a1ce479506",
+      "measurement_date_unchanged": "2026-09-04T13:07:00+00:00",
+      "acceptance_unchanged": true,
+      "only_report_inputs_changed": true
+    },
+    {
+      "path": "chapter6_sparse_feature_methods/exercises/part1_sae_variants/verification_report.json",
+      "old_manifest_sha256": "2d6605296484205560a6e59dd62ce5a35d24ab1fc95a31940b3b49f8339f0d02",
+      "new_manifest_sha256": "316ae4e8b711ea2e41461a0ba258f41917012d067bbc08a68b57238834e6dddb",
+      "measurement_date_unchanged": "2026-09-04T08:19:06+00:00",
+      "acceptance_unchanged": true,
+      "only_report_inputs_changed": true
+    },
+    {
+      "path": "chapter6_sparse_feature_methods/exercises/part3_transcoders_attribution_graphs/verification_report.json",
+      "old_manifest_sha256": "093d0e640253ccfdb55b483e0f1ca6fcea0f554513afe68371cfb03d301ac0f2",
+      "new_manifest_sha256": "af40d4598165d3394eb82f95ad16067aa75c02cba8388579adcc2e4182d1e2e0",
+      "measurement_date_unchanged": "2026-09-04T23:53:08+00:00",
+      "acceptance_unchanged": true,
+      "only_report_inputs_changed": true
+    },
+    {
+      "path": "chapter6_sparse_feature_methods/exercises/part2_gemma_scope_deep_dive/verification_report.json",
+      "old_manifest_sha256": "8bfffb7c285f019e0127b92317490f22a7f2302cb50e56c0858137adead4cf05",
+      "new_manifest_sha256": "0f746bf91fffc55984b7ae1328f218fc41bd5f1580b3de9ff1a369f3ef4a0944",
+      "measurement_date_unchanged": "2026-09-04T08:26:31+00:00",
+      "acceptance_unchanged": true,
+      "only_report_inputs_changed": true
+    },
+    {
+      "path": "chapter7_activation_to_language/exercises/part1_lenses_patchscopes/verification_report.json",
+      "old_manifest_sha256": "27a819d977c0ed8ade70694c8f6c9c6aa1a673866bb430177fbb354028e8d441",
+      "new_manifest_sha256": "e72c6a5112ef5d2a11d504288f5a489f2910f475bdd66c1ed3a9c904fedeb6a5",
+      "measurement_date_unchanged": "2026-09-04T13:59:22+00:00",
+      "acceptance_unchanged": true,
+      "only_report_inputs_changed": true
+    },
+    {
+      "path": "chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/verification_report.json",
+      "old_manifest_sha256": "f152e9378335a4821614d45181a048423edde95d287598cfa167de01af351636",
+      "new_manifest_sha256": "d1b7b1c4f1cd2468ca4dc17752c65c7b18f0ea512ac7079d6390063f43046ef7",
+      "measurement_date_unchanged": "2026-09-04T23:42:45+00:00",
+      "acceptance_unchanged": true,
+      "only_report_inputs_changed": true
+    },
+    {
+      "path": "chapter7_activation_to_language/exercises/part5_predictive_concept_decoders/verification_report.json",
+      "old_manifest_sha256": "39d2d31fa8162209beb8b2b4a73387e0405404df4aff0048d3c322f5c1806a96",
+      "new_manifest_sha256": "1119beda7191b411b3dfbbe1d556b75d2d1ad0d8ef437520f7a5e9de41947097",
+      "measurement_date_unchanged": "2026-09-04T23:53:17+00:00",
+      "acceptance_unchanged": true,
+      "only_report_inputs_changed": true
+    },
+    {
+      "path": "chapter9_alignment_interpretability/exercises/part3_emergent_misalignment_detection/verification_report.json",
+      "old_manifest_sha256": "1f21653826015cbdc2844686f7388a28c8e8349bf563d3aea9b8555680a650bc",
+      "new_manifest_sha256": "807a7d5fef43943db05c5a13dbf70a894463e8a038bb20becdae1d4fd3866571",
+      "measurement_date_unchanged": "2026-09-04T23:53:27+00:00",
+      "acceptance_unchanged": true,
+      "only_report_inputs_changed": true
+    },
+    {
+      "path": "chapter9_alignment_interpretability/exercises/part2_cot_faithfulness/verification_report.json",
+      "old_manifest_sha256": "4fdd3062534a4feb6d60db58204e2ba65c70e6652272e6187725cd7471428666",
+      "new_manifest_sha256": "fbd8051753be047c302c687a52479a7e1ce0213d177e951b45299b37708b9053",
+      "measurement_date_unchanged": "2026-09-04T08:49:36+00:00",
+      "acceptance_unchanged": true,
+      "only_report_inputs_changed": true
+    },
+    {
+      "path": "chapter9_alignment_interpretability/exercises/part4_white_box_evals_monitors/verification_report.json",
+      "old_manifest_sha256": "6ea454d6400e6c110eb4bd21878ca32ae0c1719d62da0b9ddbc7921b9310b60d",
+      "new_manifest_sha256": "8c4316eabc655dd713b885896b47f5a171ca16ec05cbab9ef15b3c7fd8fe2b8f",
+      "measurement_date_unchanged": "2026-09-04T08:40:31+00:00",
+      "acceptance_unchanged": true,
+      "only_report_inputs_changed": true
+    },
+    {
+      "path": "chapter16_shapley_attribution_baselines/exercises/part1_exact_shapley_ground_truth_games/verification_report.json",
+      "old_manifest_sha256": "3fbdeb7297a83399c178bf8bf0849acba8286214b95fb182d05794fea8088408",
+      "new_manifest_sha256": "31778ad424e3f3475a3ba1586d4a7b989ebff5c9d6b12309338616b86b7d54a2",
+      "measurement_date_unchanged": "2026-09-04T08:36:02+00:00",
+      "acceptance_unchanged": true,
+      "only_report_inputs_changed": true
+    },
+    {
+      "path": "chapter16_shapley_attribution_baselines/exercises/part3_shapley_interactions_shapiq/verification_report.json",
+      "old_manifest_sha256": "fcd40ca3d29838800b7740dc15b49fc44770efe0b86e947c2d84cc2946c7bb16",
+      "new_manifest_sha256": "3682df199c3322d495ff8de624e14ec5d63cdb723c0e46435e79cf6a3076774b",
+      "measurement_date_unchanged": "2026-09-04T08:15:00+00:00",
+      "acceptance_unchanged": true,
+      "only_report_inputs_changed": true
+    },
+    {
+      "path": "chapter16_shapley_attribution_baselines/exercises/part2_kernelshap_partition_shap_controls/verification_report.json",
+      "old_manifest_sha256": "a5a4fb0dff9afcff981049a2f05d7f801e2b6582da2f3cf1c5d089cfa6d7e574",
+      "new_manifest_sha256": "885a47e0cf09038c33f3d1df8ac05fbe964c69fb28796759b9808486efc12093",
+      "measurement_date_unchanged": "2026-09-04T08:49:41+00:00",
+      "acceptance_unchanged": true,
+      "only_report_inputs_changed": true
+    },
+    {
+      "path": "chapter16_shapley_attribution_baselines/exercises/part8_shapley_mechinterp_agreement/verification_report.json",
+      "old_manifest_sha256": "cb575170dfc32df68f5f628191a699c358b6b6ba07be47ee33ef3e08d07177ca",
+      "new_manifest_sha256": "e9910f2609dabf945acaac0677c2cb2ac3fb2bf627937ce8bb086240f7bcc8c2",
+      "measurement_date_unchanged": "2026-09-04T23:53:45+00:00",
+      "acceptance_unchanged": true,
+      "only_report_inputs_changed": true
+    },
+    {
+      "path": "chapter16_shapley_attribution_baselines/exercises/part6_shap_vs_activation_patching/verification_report.json",
+      "old_manifest_sha256": "971d713d0ba63a58e91612127558be3b155b8217c95783f438e54bd35432826f",
+      "new_manifest_sha256": "b73314ebee5ff446ef8aaa4d5f4f20bcb4d0f268dbe871c597bff8d2a846c55f",
+      "measurement_date_unchanged": "2026-09-04T08:38:57+00:00",
+      "acceptance_unchanged": true,
+      "only_report_inputs_changed": true
+    },
+    {
+      "path": "chapter16_shapley_attribution_baselines/exercises/part5_vlm_modality_region_shap/verification_report.json",
+      "old_manifest_sha256": "cecc567bdc2f6f83809906d6b5c4227579a9a15eb201ead1619e957250039cbe",
+      "new_manifest_sha256": "8aec13a0c80f886bbef1860af8166933e6320dcd9859fd68644edcd7704256bf",
+      "measurement_date_unchanged": "2026-09-04T08:50:16+00:00",
+      "acceptance_unchanged": true,
+      "only_report_inputs_changed": true
+    },
+    {
+      "path": "chapter8_automated_circuits/exercises/part4_circuit_tracing_attribution_graphs/verification_report.json",
+      "old_manifest_sha256": "648098d92e20b73657b7d317ff4ff83830ea253fc45ed4b43f52026a7a157bb2",
+      "new_manifest_sha256": "36135adc90c4593beb6498bc01752061df3f46a0b78a7f8d4eb951fa985ea284",
+      "measurement_date_unchanged": "2026-09-04T08:44:30+00:00",
+      "acceptance_unchanged": true,
+      "only_report_inputs_changed": true
+    },
+    {
+      "path": "chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/verification_report.json",
+      "old_manifest_sha256": "a29c2f309776a3b19111024042ffe9dfb27bc6d0f07ef7ec252eed179d094919",
+      "new_manifest_sha256": "4f782ed6df95ef92a0e651f2461dc2705d7d0d2cd68066fdb7e2612d91366718",
+      "measurement_date_unchanged": "2026-09-04T23:53:25+00:00",
+      "acceptance_unchanged": true,
+      "only_report_inputs_changed": true
+    },
+    {
+      "path": "chapter8_automated_circuits/exercises/part6_atp_star/verification_report.json",
+      "old_manifest_sha256": "7598d79c7619035454f6f6a4427079fd9831372e44502973a822b9ed9b5c44b9",
+      "new_manifest_sha256": "f4f2c8f8149286f3980a31cdc49a607a8f3057a9f2eb0c13d1d4402407618203",
+      "measurement_date_unchanged": "2026-09-05T00:22:33.584025+00:00",
+      "acceptance_unchanged": false,
+      "only_report_inputs_changed": true
+    },
+    {
+      "path": "chapter8_automated_circuits/exercises/part1_activation_patching_refresher/verification_report.json",
+      "old_manifest_sha256": "de93402abba7a4ce8cae92201a858de33f635170c797492c11e74fa1309152a3",
+      "new_manifest_sha256": "3df17197587e0c47255252ebd139365c1ec1cb669cf8d66964fabb8a99cf7963",
+      "measurement_date_unchanged": "2026-09-04T08:44:07+00:00",
+      "acceptance_unchanged": true,
+      "only_report_inputs_changed": true
+    },
+    {
+      "path": "chapter8_automated_circuits/exercises/part5_sparse_feature_circuits/verification_report.json",
+      "old_manifest_sha256": "568081bf8145dc7b325b994c75dbc40b663d8bc1d1512fd41fc4bf97fe316712",
+      "new_manifest_sha256": "c4362f8185624c56d3654f5859cf8ee35d4afeb17dab784cc35ed75261599754",
+      "measurement_date_unchanged": "2026-09-04T08:44:44+00:00",
+      "acceptance_unchanged": true,
+      "only_report_inputs_changed": true
+    },
+    {
+      "path": "chapter8_automated_circuits/exercises/part2_attribution_patching_eap/verification_report.json",
+      "old_manifest_sha256": "7e96d7cc64324feaeb3c87550411a517bf5f4303671180df71cfaba6d238d711",
+      "new_manifest_sha256": "457d6a8fef2d013bb783f23f00a81f1593430d52a1770dbd68a13e66a62d9143",
+      "measurement_date_unchanged": "2026-09-04T23:53:22+00:00",
+      "acceptance_unchanged": true,
+      "only_report_inputs_changed": true
+    }
+  ],
+  "gpu_experiments_rerun": false,
+  "all_numerical_results_and_measurement_dates_unchanged": true,
+  "validation": {
+    "affected_section_tests": "147 passed in 19.84 seconds",
+    "source_readability": "0 blockers",
+    "original_arena_preservation": "PASS",
+    "registered_report_evidence": "48 reports, 0 blockers",
+    "course_surface": "13 extension chapters, 0 blockers",
+    "arena_style_depth": "46 pages, 0 blockers",
+    "hard_exercise_ladders": "45 sections, 0 blockers",
+    "full_repository_tests": "415 passed, 1 artifact-hygiene failure in 19.65 seconds"
+  }
+}

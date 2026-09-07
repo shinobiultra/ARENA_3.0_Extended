@@ -1,0 +1,180 @@
+{
+  "original_directory": "/tmp/geometry-full-own-answer-release-v1",
+  "members": {
+    "completed_learner.ipynb": {
+      "sha256": "f320a5d45f8f478c5f162546cdfadeb4990ba04ad105f6e584aa3f127d816df7",
+      "archived": true,
+      "bytes": 2233037
+    },
+    "execution.json": {
+      "sha256": "b8854b8667c586a56331e2bd929c5f3781be82993cf0a69d6aa77e5be8cb90dc",
+      "archived": true,
+      "bytes": 1635
+    },
+    "experiments/actual_activations_and_probes.pt": {
+      "sha256": "7bc2ee192c69634873d6a03899a5b72409349e0d6732dd3160a9f32e84df3097",
+      "archived": false,
+      "bytes": 419130017
+    },
+    "experiments/angle_play.json.gz": {
+      "sha256": "54e78035f517e18c95f46881cac9af6c65b15dbbf0a9b29bd1a79e6befee0fd1",
+      "archived": true,
+      "bytes": 30956
+    },
+    "experiments/measured_study.json.gz": {
+      "sha256": "7a1e52fd4c42aee162f673ecb5c4193481eb3351a225134e1af94ecb24c1f534",
+      "archived": true,
+      "bytes": 4235840
+    },
+    "experiments/projection_study.json.gz": {
+      "sha256": "284d83b46aa223678917fffdb80485cdaff89a4d82558451262b1f88540fef79",
+      "archived": true,
+      "bytes": 742734
+    },
+    "experiments/protocol.json": {
+      "sha256": "d9e21dbb2203f581892863255bce312b77dc2a9b55c6db42119eaba3e0e28c96",
+      "archived": true,
+      "bytes": 4280
+    },
+    "experiments/runtime.json": {
+      "sha256": "cbd02b709c66b7e0f297590e1c23bd4d45d3270df7ce89292f36381446ac5645",
+      "archived": true,
+      "bytes": 299
+    },
+    "experiments/single_play.json": {
+      "sha256": "4ebd2a22ceba719f08251cfd02296215ec4a7c0bb537ca16b4bd9000d019566a",
+      "archived": true,
+      "bytes": 1388
+    },
+    "figures/geometry_angle_play.png": {
+      "sha256": "9c87695dc89f2e22d02aeaacb9dbad41f713f10866f6d8efd84d3a7890cf7c0e",
+      "archived": true,
+      "bytes": 37283
+    },
+    "figures/geometry_calendar_order_null.png": {
+      "sha256": "a285c314e16ecedca7e0d2c8a7387442ff33e312d9afa92fc9743b29d5e0fff4",
+      "archived": true,
+      "bytes": 69322
+    },
+    "figures/geometry_mistral_actual_answers.png": {
+      "sha256": "3b26fe3247a34e5a728bce3d8ea4f4f9f7ef9551a5e41cc492e25e004640156e",
+      "archived": true,
+      "bytes": 279014
+    },
+    "figures/geometry_mistral_all_donors.png": {
+      "sha256": "77f2a17e918f60cea993d4b83b3982ac42df56da7d6cf4ad1737bdefdc180b33",
+      "archived": true,
+      "bytes": 200850
+    },
+    "figures/geometry_mistral_angle_radius.png": {
+      "sha256": "98c46b73bd63f826cc252d6ffd00eb1ad2205ee85ee381537c253c51583256b3",
+      "archived": true,
+      "bytes": 233392
+    },
+    "figures/geometry_mistral_final_controls.png": {
+      "sha256": "878f8bce347bfa91faf437f52d0016c42978beba1b08d699a7de0e1b0d86e1d9",
+      "archived": true,
+      "bytes": 235888
+    },
+    "figures/geometry_mistral_layer_sweep.png": {
+      "sha256": "dfa36093b5b6aa8e885edead66b478bef71a626ac3e31a0a7ca2a172efc46c75",
+      "archived": true,
+      "bytes": 352263
+    },
+    "figures/geometry_mistral_projections.png": {
+      "sha256": "22b5c037c78cae1b6d9cec948171aef03f939878573bc00aa88f96491599de61",
+      "archived": true,
+      "bytes": 355696
+    },
+    "figures/geometry_mistral_single_play.png": {
+      "sha256": "3898c13580440a4073c5d2e7e8993ac71a441b852649f9d40834f30d53e71683",
+      "archived": true,
+      "bytes": 61898
+    },
+    "figures/geometry_plane_intervention.png": {
+      "sha256": "1569f17955f51800904190e28755caba259adae02568823b67f2e755edd6ee0c",
+      "archived": true,
+      "bytes": 77814
+    },
+    "figures/geometry_projection_gallery.png": {
+      "sha256": "8603b5cbdabfafd75f880b85b7492b166354d33ece6d1556a424fcc12c68b547",
+      "archived": true,
+      "bytes": 548976
+    },
+    "figures/geometry_projection_stability.png": {
+      "sha256": "4e69f8c59ab4142d79d30c6e8a89e32b626c7c0c3c73091a5714724712096e56",
+      "archived": true,
+      "bytes": 315182
+    },
+    "figures/geometry_template_offsets.png": {
+      "sha256": "5c1fdc2d2fa51f9e0314dc4e7fbea2940f13d38b5558d6cad5fef97a99f3edaf",
+      "archived": true,
+      "bytes": 86406
+    },
+    "layout_update/geometry_mistral_angle_radius.png": {
+      "sha256": "956664bcbfdd3d777bd886f28b006640416d00dc6d6e217d66197b4afd1af39a",
+      "archived": true,
+      "bytes": 206255
+    },
+    "layout_update/render.ipynb": {
+      "sha256": "941ef2d42e864e7d184240672f2c78c619b7154065007ab11262030a3c37af3e",
+      "archived": true,
+      "bytes": 180876
+    },
+    "layout_update/render_update.json": {
+      "sha256": "648abd520148f313dd969065daf5e1e8956a2ce7f8df1d5b63ef338cfc9d4680",
+      "archived": true,
+      "bytes": 401
+    },
+    "measurement_audit.json": {
+      "sha256": "03839c0012a7d949815fd9f5755b063620c4a1babe868a813c13e91952071dc5",
+      "archived": true,
+      "bytes": 6410
+    },
+    "source_snapshot/build_notebooks.py": {
+      "sha256": "0f34dae75c4c2b7604faeec248b182bd923e5ae6ad86d085a451b74ef25585f0",
+      "archived": true,
+      "bytes": 4316
+    },
+    "source_snapshot/execute_learner.py": {
+      "sha256": "dccfdc78b78fb625d059ac0558e8e78f74b2ed0ae647178b5c061c68aec884f6",
+      "archived": true,
+      "bytes": 3263
+    },
+    "source_snapshot/geometry_data.py": {
+      "sha256": "cc8045803c8437d859e44d60fe45414c9e2e95b5246fdb62ae0f8d7b8192037b",
+      "archived": true,
+      "bytes": 2676
+    },
+    "source_snapshot/geometry_methods.py": {
+      "sha256": "13a67de4475c3e6ba746489e2aaa06ef1a1ed26347438b90aee236305dfdf409",
+      "archived": true,
+      "bytes": 14404
+    },
+    "source_snapshot/geometry_methods_tests.py": {
+      "sha256": "29422632828b9f6b52a2f1caf67e450dd98e02eb97031b68851634d640074e25",
+      "archived": true,
+      "bytes": 12696
+    },
+    "source_snapshot/geometry_plotting.py": {
+      "sha256": "8d4fc74331b8ac3ad032bd4d59176024a23e22fa67f768d992913a20d03f8545",
+      "archived": true,
+      "bytes": 14487
+    },
+    "source_snapshot/geometry_protocol.json": {
+      "sha256": "d9e21dbb2203f581892863255bce312b77dc2a9b55c6db42119eaba3e0e28c96",
+      "archived": true,
+      "bytes": 4280
+    },
+    "source_snapshot/geometry_study.py": {
+      "sha256": "c3cdf723ec7e7e557d3e960f29eeb45e73148059cce12d706ed2b3e785a772c6",
+      "archived": true,
+      "bytes": 25440
+    },
+    "source_snapshot/lesson.md": {
+      "sha256": "ade669e63674f77baecf988c5bd5e69ce362133585a240caf7fe9de5ca2a3cd0",
+      "archived": true,
+      "bytes": 97505
+    }
+  }
+}

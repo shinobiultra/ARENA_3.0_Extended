@@ -1,0 +1,21 @@
+{
+  "notebook_id": "11_2_cca_svcca_and_representation_alignment",
+  "evidence_role": "Expected full learner and fresh native contract; these values do not certify execution.",
+  "expected_metrics": {
+    "tests_passed": true,
+    "accepted": true,
+    "native_model_reloaded": true,
+    "actual_learner_passed": true,
+    "fresh_reproduction_passed": true,
+    "own_answer_code_cells": 20,
+    "embedded_figures": 9,
+    "retained_outcomes": 12816,
+    "main_forward_rows": 12888,
+    "fresh_compared_examples": 5184,
+    "fresh_condition_batches": 108,
+    "fresh_max_logit_error_max": 1e-05,
+    "fresh_top_token_mismatches": 0,
+    "final_used_for_selection": false,
+    "whole_paper_replication": false
+  }
+}

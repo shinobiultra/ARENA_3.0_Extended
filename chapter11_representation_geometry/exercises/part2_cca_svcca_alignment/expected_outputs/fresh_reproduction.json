@@ -1,0 +1,913 @@
+{
+  "status": "PASS",
+  "source_inputs": {
+    "alignment_reproduce.py": "0c458a76c584d4462a59e32e259a51adbe2165753a736f7b0f7fd7b16d0931c0",
+    "alignment_evidence.py": "ca36e8e7eb4160d8358477d15f2a830216f226a704cb4232c656d77238ca7e9f",
+    "alignment_methods.py": "9745adae5294110c32394d0668b336fbe2934e1edcf9b7591090f13fb764930f",
+    "alignment_model.py": "92b8bb8302e74a66ca2dcf262a6219aecffa5453fe8bca345ee84904b12b95b4",
+    "alignment_ioi_data.py": "24dcca4b91674bda2411c19ddd283f7e1f7df3a91a9ef9565fd2a37ab8f9185f",
+    "alignment_data.py": "e03c33969ba6629652ae3db88df0a9f5a01801859d9eb40ff50b9fc70be3286e",
+    "run_alignment_development.py": "0a0d0f7aac9975d02f196ac13843e1d26f1f6040bfccecd473dc0448a7ae9463",
+    "alignment_protocol.json": "d334f056f827eb5d26e5e08fa7e83bd6b0030c56cfca5d00651fc8816d8d1b65"
+  },
+  "learner_directory": "/home/bitwise/.cache/arena_extended/alignment/full-own-answer-v3",
+  "device": "cpu",
+  "conditions": [
+    {
+      "pair": "2_to_6",
+      "condition": "baseline",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "2_to_6",
+      "condition": "no_op",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "2_to_6",
+      "condition": "native_donor",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "2_to_6",
+      "condition": "cca_rank2",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "2_to_6",
+      "condition": "svcca_rank2",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "2_to_6",
+      "condition": "shuffled_cca_rank2",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "2_to_6",
+      "condition": "procrustes_rank2",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "2_to_6",
+      "condition": "cca_rank4",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "2_to_6",
+      "condition": "svcca_rank4",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "2_to_6",
+      "condition": "shuffled_cca_rank4",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "2_to_6",
+      "condition": "procrustes_rank4",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "2_to_6",
+      "condition": "cca_rank8",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "2_to_6",
+      "condition": "svcca_rank8",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "2_to_6",
+      "condition": "shuffled_cca_rank8",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "2_to_6",
+      "condition": "procrustes_rank8",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "2_to_6",
+      "condition": "cca_rank16",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "2_to_6",
+      "condition": "svcca_rank16",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "2_to_6",
+      "condition": "shuffled_cca_rank16",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "2_to_6",
+      "condition": "procrustes_rank16",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "2_to_6",
+      "condition": "ridge_0.1",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "2_to_6",
+      "condition": "random_0",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "2_to_6",
+      "condition": "random_1",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "2_to_6",
+      "condition": "random_2",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "2_to_6",
+      "condition": "random_3",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "2_to_6",
+      "condition": "random_4",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "2_to_6",
+      "condition": "random_5",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "2_to_6",
+      "condition": "random_6",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "2_to_6",
+      "condition": "random_7",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "2_to_6",
+      "condition": "random_8",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "2_to_6",
+      "condition": "random_9",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "2_to_6",
+      "condition": "random_10",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "2_to_6",
+      "condition": "random_11",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "2_to_6",
+      "condition": "random_12",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "2_to_6",
+      "condition": "random_13",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "2_to_6",
+      "condition": "random_14",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "2_to_6",
+      "condition": "random_15",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "4_to_8",
+      "condition": "baseline",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "4_to_8",
+      "condition": "no_op",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "4_to_8",
+      "condition": "native_donor",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "4_to_8",
+      "condition": "cca_rank2",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "4_to_8",
+      "condition": "svcca_rank2",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "4_to_8",
+      "condition": "shuffled_cca_rank2",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "4_to_8",
+      "condition": "procrustes_rank2",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "4_to_8",
+      "condition": "cca_rank4",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "4_to_8",
+      "condition": "svcca_rank4",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "4_to_8",
+      "condition": "shuffled_cca_rank4",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "4_to_8",
+      "condition": "procrustes_rank4",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "4_to_8",
+      "condition": "cca_rank8",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "4_to_8",
+      "condition": "svcca_rank8",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "4_to_8",
+      "condition": "shuffled_cca_rank8",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "4_to_8",
+      "condition": "procrustes_rank8",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "4_to_8",
+      "condition": "cca_rank16",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "4_to_8",
+      "condition": "svcca_rank16",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "4_to_8",
+      "condition": "shuffled_cca_rank16",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "4_to_8",
+      "condition": "procrustes_rank16",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "4_to_8",
+      "condition": "ridge_0.1",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "4_to_8",
+      "condition": "random_0",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "4_to_8",
+      "condition": "random_1",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "4_to_8",
+      "condition": "random_2",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "4_to_8",
+      "condition": "random_3",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "4_to_8",
+      "condition": "random_4",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "4_to_8",
+      "condition": "random_5",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "4_to_8",
+      "condition": "random_6",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "4_to_8",
+      "condition": "random_7",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "4_to_8",
+      "condition": "random_8",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "4_to_8",
+      "condition": "random_9",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "4_to_8",
+      "condition": "random_10",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "4_to_8",
+      "condition": "random_11",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "4_to_8",
+      "condition": "random_12",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "4_to_8",
+      "condition": "random_13",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "4_to_8",
+      "condition": "random_14",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "4_to_8",
+      "condition": "random_15",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "6_to_10",
+      "condition": "baseline",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "6_to_10",
+      "condition": "no_op",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "6_to_10",
+      "condition": "native_donor",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "6_to_10",
+      "condition": "cca_rank2",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "6_to_10",
+      "condition": "svcca_rank2",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "6_to_10",
+      "condition": "shuffled_cca_rank2",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "6_to_10",
+      "condition": "procrustes_rank2",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "6_to_10",
+      "condition": "cca_rank4",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "6_to_10",
+      "condition": "svcca_rank4",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "6_to_10",
+      "condition": "shuffled_cca_rank4",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "6_to_10",
+      "condition": "procrustes_rank4",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "6_to_10",
+      "condition": "cca_rank8",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "6_to_10",
+      "condition": "svcca_rank8",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "6_to_10",
+      "condition": "shuffled_cca_rank8",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "6_to_10",
+      "condition": "procrustes_rank8",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "6_to_10",
+      "condition": "cca_rank16",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "6_to_10",
+      "condition": "svcca_rank16",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "6_to_10",
+      "condition": "shuffled_cca_rank16",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "6_to_10",
+      "condition": "procrustes_rank16",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "6_to_10",
+      "condition": "ridge_0.1",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "6_to_10",
+      "condition": "random_0",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "6_to_10",
+      "condition": "random_1",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "6_to_10",
+      "condition": "random_2",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "6_to_10",
+      "condition": "random_3",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "6_to_10",
+      "condition": "random_4",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "6_to_10",
+      "condition": "random_5",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "6_to_10",
+      "condition": "random_6",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "6_to_10",
+      "condition": "random_7",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "6_to_10",
+      "condition": "random_8",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "6_to_10",
+      "condition": "random_9",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "6_to_10",
+      "condition": "random_10",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "6_to_10",
+      "condition": "random_11",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "6_to_10",
+      "condition": "random_12",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "6_to_10",
+      "condition": "random_13",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "6_to_10",
+      "condition": "random_14",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "pair": "6_to_10",
+      "condition": "random_15",
+      "rows": 48,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    }
+  ],
+  "learner_audit": {
+    "status": "PASS",
+    "own_answer_code_cells": 20,
+    "figures": [
+      "alignment_known_correlations.png",
+      "alignment_noise_overfit.png",
+      "alignment_variance_causal_failure.png",
+      "alignment_real_correlations.png",
+      "alignment_real_transport_curves.png",
+      "alignment_real_name_changes.png",
+      "alignment_real_token_gallery.png",
+      "alignment_real_name_generalization.png",
+      "alignment_real_play.png"
+    ],
+    "outcomes": 12816,
+    "main_forward_rows": 12888,
+    "play_forward_rows": 5,
+    "maximum_kl_record_error": 0.0,
+    "winning_tokens_checked": 12816,
+    "development_selected_before_final": true,
+    "actual_tensors_sha256": "d5105bb038479c08aa33a279a09d6976e81ed521bb8183a3b1eaeb6297242c37",
+    "actual_play_sha256": "06718ab1e81782b348f5c2c9f805c43793301d27d0f8517c31c813de6c128d11"
+  },
+  "compared_rows": 5184,
+  "forward_rows": 5208,
+  "compared_conditions": 108,
+  "selected_final_indices": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    72,
+    73,
+    74,
+    75,
+    76,
+    77,
+    78,
+    79,
+    80,
+    81,
+    82,
+    83,
+    84,
+    85,
+    86,
+    87,
+    88,
+    89,
+    90,
+    91,
+    92,
+    93,
+    94,
+    95
+  ],
+  "fit_errors": {
+    "2_to_6": {
+      "cca_rank2": 0.0,
+      "svcca_rank2": 0.0,
+      "shuffled_cca_rank2": 0.0,
+      "procrustes_rank2": 0.0,
+      "cca_rank4": 0.0,
+      "svcca_rank4": 0.0,
+      "shuffled_cca_rank4": 0.0,
+      "procrustes_rank4": 0.0,
+      "cca_rank8": 0.0,
+      "svcca_rank8": 0.0,
+      "shuffled_cca_rank8": 0.0,
+      "procrustes_rank8": 0.0,
+      "cca_rank16": 0.0,
+      "svcca_rank16": 0.0,
+      "shuffled_cca_rank16": 0.0,
+      "procrustes_rank16": 0.0,
+      "ridge_0.1": 0.0
+    },
+    "4_to_8": {
+      "cca_rank2": 0.0,
+      "svcca_rank2": 0.0,
+      "shuffled_cca_rank2": 0.0,
+      "procrustes_rank2": 0.0,
+      "cca_rank4": 0.0,
+      "svcca_rank4": 0.0,
+      "shuffled_cca_rank4": 0.0,
+      "procrustes_rank4": 0.0,
+      "cca_rank8": 0.0,
+      "svcca_rank8": 0.0,
+      "shuffled_cca_rank8": 0.0,
+      "procrustes_rank8": 0.0,
+      "cca_rank16": 0.0,
+      "svcca_rank16": 0.0,
+      "shuffled_cca_rank16": 0.0,
+      "procrustes_rank16": 0.0,
+      "ridge_0.1": 0.0
+    },
+    "6_to_10": {
+      "cca_rank2": 0.0,
+      "svcca_rank2": 0.0,
+      "shuffled_cca_rank2": 0.0,
+      "procrustes_rank2": 0.0,
+      "cca_rank4": 0.0,
+      "svcca_rank4": 0.0,
+      "shuffled_cca_rank4": 0.0,
+      "procrustes_rank4": 0.0,
+      "cca_rank8": 0.0,
+      "svcca_rank8": 0.0,
+      "shuffled_cca_rank8": 0.0,
+      "procrustes_rank8": 0.0,
+      "cca_rank16": 0.0,
+      "svcca_rank16": 0.0,
+      "shuffled_cca_rank16": 0.0,
+      "procrustes_rank16": 0.0,
+      "ridge_0.1": 0.0
+    }
+  },
+  "maximum_logit_error": 0.0,
+  "top_token_mismatches": 0,
+  "actual_fresh_tensors_sha256": "614cb0212292753a4b03a54c86d307b652e4ee292627591c5ae453d9e7152aa4",
+  "elapsed_seconds": 66.19131851196289,
+  "changed_sources": []
+}

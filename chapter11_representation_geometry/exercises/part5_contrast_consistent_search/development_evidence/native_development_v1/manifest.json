@@ -1,0 +1,181 @@
+{
+  "source_directory": "/home/bitwise/.cache/arena_extended/ccs/native-development-v1",
+  "archive_sha256": "7688a30863a4e8e54f765876e00d340e043d4f8d963b08d991979cc780d8e3da",
+  "members": {
+    "development.json": {
+      "sha256": "48b60fb464cf120e86db910046e05243e10429e35152611b5fe6dcb1f6b917e6",
+      "size_bytes": 1111245
+    },
+    "source_snapshot/chapter11_representation_geometry/exercises/part4_concept_erasure/erasure_methods.py": {
+      "sha256": "594d3c56ec40bd32c4418d8645ec26e70280df9c842b9dbb3c2fd87f42711e5e",
+      "size_bytes": 9958
+    },
+    "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/ccs_data.py": {
+      "sha256": "7dd941005818dd5c3563a1939a169e3367e01ce5e91bed0ed3e084d095fa9816",
+      "size_bytes": 6083
+    },
+    "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/ccs_methods.py": {
+      "sha256": "efc2e1d6e7f73d4774538711f7b8b1d93801f2d0c3d8d259ddd12866583e4dc6",
+      "size_bytes": 9543
+    },
+    "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/ccs_native.py": {
+      "sha256": "07dd672d1e30933f95e50398352762989f317898f45f868bbbfad3291b6f0438",
+      "size_bytes": 5086
+    },
+    "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/native_protocol.md": {
+      "sha256": "3a3289a6841444f7c9bab71cc58da715c1161f13cc8d61f220ff13c8923af413",
+      "size_bytes": 4576
+    },
+    "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/run_development.py": {
+      "sha256": "3b262b4988de93ad0e7e922b30ba1d0030bf9b41ee2cf51260318904abad769a",
+      "size_bytes": 9733
+    }
+  },
+  "large_tensors_retained_externally": {
+    "capture-distracting_reader-customer-calibration.pt": {
+      "sha256": "5d6a33fc955df66fd6ad69904f03bf092ea8f859f6d00e92b8018145aca86559",
+      "size_bytes": 29404357
+    },
+    "capture-distracting_reader-customer-development.pt": {
+      "sha256": "6ffac34726567953440221d26beff38894911e8c599e06d17e4f930b4a7b176d",
+      "size_bytes": 29413253
+    },
+    "capture-distracting_reader-customer-train.pt": {
+      "sha256": "d200429b88096728b8e0c916e0f888b82c76bd8bee9bc2575ea45385cb08ad60",
+      "size_bytes": 117612005
+    },
+    "capture-distracting_reader-quoted_review-calibration.pt": {
+      "sha256": "b02c64a57790b2418fa53e92b0b20ff75a581153d1802efe1bddf007681ff643",
+      "size_bytes": 29422741
+    },
+    "capture-distracting_reader-quoted_review-development.pt": {
+      "sha256": "5cac13d436b828e09ee3a1df3a9d95678123a312118be4c6e100f6d19d988afe",
+      "size_bytes": 29431637
+    },
+    "capture-distracting_reader-quoted_review-train.pt": {
+      "sha256": "5ceefc898699b3fe3093d350d1d22157af86467f9cc188ab9dfe5b76013fd221",
+      "size_bytes": 117685301
+    },
+    "capture-neutral_reader-customer-calibration.pt": {
+      "sha256": "9f519fb7e77a8906d9d6d9b56543305bdf81e870a318ceda992aa52b1a6e86b6",
+      "size_bytes": 14710533
+    },
+    "capture-neutral_reader-customer-development.pt": {
+      "sha256": "83ef64d88e876d128929f150a01605d59131517a065be9fd2fc509d2da581f6a",
+      "size_bytes": 14715397
+    },
+    "capture-neutral_reader-customer-train.pt": {
+      "sha256": "8b76f56d320a5bb62fb2e665fea1c33d236e3e711f8d47c971bbd896485fd45d",
+      "size_bytes": 58833445
+    },
+    "capture-neutral_reader-quoted_review-calibration.pt": {
+      "sha256": "eea7d003dc6bf3a50ac8e5d65977fd4e612d56e8e61e8f4b2c67d9a0135594a8",
+      "size_bytes": 14719829
+    },
+    "capture-neutral_reader-quoted_review-development.pt": {
+      "sha256": "3a5afdbc896e75cbb3ac8ab299548093647cb488a61a6ca7619d4105cd5a7abd",
+      "size_bytes": 14724629
+    },
+    "capture-neutral_reader-quoted_review-train.pt": {
+      "sha256": "edf848cad14487f4ad6034792013a634b0db3895991f96d510e698fd90ab7995",
+      "size_bytes": 58870133
+    },
+    "capture-plain-customer-calibration.pt": {
+      "sha256": "e538aa8d0840460dbcd1d5875b8a6bd2a72c9a545dedc01538bd0d2d6dd90fe8",
+      "size_bytes": 14686773
+    },
+    "capture-plain-customer-development.pt": {
+      "sha256": "6e54f32bc89ee6ad42a37a6a470c81eafca4a84e68a219c7d43306439d442d15",
+      "size_bytes": 14691637
+    },
+    "capture-plain-customer-train.pt": {
+      "sha256": "99a156ee074a472a79a1b410c91f8dbd0e87d15b06e6601031879b86515f103e",
+      "size_bytes": 58738837
+    },
+    "capture-plain-quoted_review-calibration.pt": {
+      "sha256": "e0fc1c4f78e73d9acc94d8fca9b814d49d67198fa14d9f27cb296154cdb6d9e4",
+      "size_bytes": 14696005
+    },
+    "capture-plain-quoted_review-development.pt": {
+      "sha256": "a61bd5d6f4a7ff7f1f9a71fd5d16a1b4162caea2ab4e4b42cb2c53ab3a62e4dd",
+      "size_bytes": 14700869
+    },
+    "capture-plain-quoted_review-train.pt": {
+      "sha256": "c697936794a570d63841e48afaf6807c1917ad83e47c6820d804a3565f43527b",
+      "size_bytes": 58775525
+    },
+    "fits-distracting_reader-customer-layer12.pt": {
+      "sha256": "4ac2c889b6bcdff5e38c6ad77aa563f6def5a1e52e4dd3eec65a9eea142988ae",
+      "size_bytes": 1598801
+    },
+    "fits-distracting_reader-customer-layer4.pt": {
+      "sha256": "75292404c392bfd33ab4a3c808d8243f78727b8f545d7ff8b6af52f8a9cee010",
+      "size_bytes": 1598687
+    },
+    "fits-distracting_reader-customer-layer8.pt": {
+      "sha256": "05bae8b8447e5cc9e0b42eb3bb6db344affa1c4b6e961638b0b02e702eb20d44",
+      "size_bytes": 1598751
+    },
+    "fits-distracting_reader-quoted_review-layer12.pt": {
+      "sha256": "ee04f8c4d0e1f3c21660495ea6496ab960a539d47930eb014692d889849dea6d",
+      "size_bytes": 1599051
+    },
+    "fits-distracting_reader-quoted_review-layer4.pt": {
+      "sha256": "d37fe7b311c5ed2207ebaca8c7e1dd9912f9d5c532b144a79b11eb292efd1a6a",
+      "size_bytes": 1599001
+    },
+    "fits-distracting_reader-quoted_review-layer8.pt": {
+      "sha256": "375b0c047ed153f6177dd54359b8196e92294c0d9e854c22f2b8e100abc72a1f",
+      "size_bytes": 1598937
+    },
+    "fits-neutral_reader-customer-layer12.pt": {
+      "sha256": "fa798b7572f92e8b60726749db9ca112ef9b9f98262e2a7ebd2248f2299dc9e7",
+      "size_bytes": 1397833
+    },
+    "fits-neutral_reader-customer-layer4.pt": {
+      "sha256": "7dfe6289ccfa544072293ac1ba98c3a02e0385761559fe34e230cf1be96cecd0",
+      "size_bytes": 1397719
+    },
+    "fits-neutral_reader-customer-layer8.pt": {
+      "sha256": "5e43e635dad0ac699aab88e87949391aef692489b899602edc628209bcbad372",
+      "size_bytes": 1397847
+    },
+    "fits-neutral_reader-quoted_review-layer12.pt": {
+      "sha256": "727a66b2e6163839e7f38a8856f06f1f69ccb3fb02630cf95cc12ed60fccbc55",
+      "size_bytes": 1398083
+    },
+    "fits-neutral_reader-quoted_review-layer4.pt": {
+      "sha256": "74478ee17627ae630b17357765782d849de5c3e86fbf83154cf5cafae6c078c6",
+      "size_bytes": 1397969
+    },
+    "fits-neutral_reader-quoted_review-layer8.pt": {
+      "sha256": "41f61fb8677216fb82ac274cfd5f74a63fbfa590aa8d5334c111d972eeff3b2e",
+      "size_bytes": 1398033
+    },
+    "fits-plain-customer-layer12.pt": {
+      "sha256": "d6182d329ba9fb58d1f02dcb659386aa554bdf6b1f025190c63bf604487e1dd8",
+      "size_bytes": 1397383
+    },
+    "fits-plain-customer-layer4.pt": {
+      "sha256": "f71dbb7a882c75f77a18be0d2111044f0f8b8e7410c01d2eb9d77ea5265c4898",
+      "size_bytes": 1397269
+    },
+    "fits-plain-customer-layer8.pt": {
+      "sha256": "75fa42e97d003066dfa6aeaa6e0bf5967bb147d1487594f1626c2a75a24d5bb5",
+      "size_bytes": 1397333
+    },
+    "fits-plain-quoted_review-layer12.pt": {
+      "sha256": "2f36c529a3116eed11ea17a1751825fdbbb4edfcc8851575fb1bea27f8448fc8",
+      "size_bytes": 1397633
+    },
+    "fits-plain-quoted_review-layer4.pt": {
+      "sha256": "2efbcf4fd129645b7029f8c03108b740ff5266f5bc35134f17e30ff42bedbdf4",
+      "size_bytes": 1397519
+    },
+    "fits-plain-quoted_review-layer8.pt": {
+      "sha256": "4a6faf600c80ccd55221316d38cc27d58c6f83687af68daf426ca97c7aafc785",
+      "size_bytes": 1397519
+    }
+  },
+  "readback_verified": true
+}

@@ -97,3 +97,29 @@ def test_ladder_blockers_flag_non_cuda_report_and_thin_tests(tmp_path, monkeypat
 
 def test_current_hard_exercise_ladder_audit_passes():
     assert ladder_blockers() == []
+
+
+def test_feedback_accepts_concrete_messages_after_checks(tmp_path):
+    path = tmp_path / 'tests.py'
+    path.write_text('def test_projection(fn):\n    assert fn() == 0\n    print("Projection and gradients agree!")\n')
+    assert visible_test_summary(path).success_print_count == 1
+
+
+def test_feedback_rejects_print_only_and_premature_success(tmp_path):
+    path = tmp_path / 'tests.py'
+    path.write_text('def test_empty():\n    print("All tests in `empty` passed!")\n\ndef test_premature(fn):\n    print("All tests in `premature` passed!")\n    assert fn()\n')
+    assert visible_test_summary(path).success_print_count == 0
+
+
+def test_ladder_counts_real_numpy_and_torch_assertions(tmp_path):
+    path = tmp_path / 'tests.py'
+    path.write_text('''def test_numbers(fn):
+    t.testing.assert_close(fn(), expected)
+    np.testing.assert_allclose(fn(), expected)
+    np.testing.assert_array_equal(ids, expected_ids)
+    logger.assert_close("this is not a numerical test")
+    print("Numerical references agree.")
+''')
+    result = visible_test_summary(path)
+    assert result.assert_count == 3
+    assert result.success_print_count == 1

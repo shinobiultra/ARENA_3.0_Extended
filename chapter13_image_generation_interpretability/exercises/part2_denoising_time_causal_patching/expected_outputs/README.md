@@ -46,3 +46,39 @@ peak VRAM: 3.235 GiB
 The real result must still be treated as a two-case, selected-prompt latent
 intervention. It does not establish an internal U-Net activation circuit,
 multi-seed robustness, or broad image-generation quality.
+
+## How this fixture was produced
+
+The toy signature runs `run_toy_experiment(training_steps=350, seed=0)` and
+recomputes the full layer/time intervention grid from live denoiser activations.
+The independent CUDA path executes the pinned SD1.5 DDIM trajectory and all
+nineteen non-initial intervention times for both declared color pairs.
+
+## Trusted implementation
+
+The noising equation, zero-time endpoint, analytically rendered shape masks,
+and direct-pixel recovery anchors are exact sub-function oracles. Real SD1.5
+scheduler steps and actual VAE decoding supply the released-model computation;
+CLIP measures the declared regional color transfer. The selected best time and
+two fixed examples do not establish broad or internal-activation causality.
+
+## Random seed
+
+Toy training uses seed 0. Deterministic trajectory unit tests use model seed 7
+and noise seed 11; the same-size random-latent oracle uses seed 19. Real donor
+and recipient trajectories use the same per-case noise specified in the
+implementation. Keep their pairing when introducing additional seeds.
+
+## Allowed tolerances
+
+Exact masks, zero-time identities, and untouched coordinates use `rtol=0,
+atol=0` semantics. Float32 `torch.testing.assert_close` uses `rtol=1.3e-6,
+atol=1e-5` unless a test overrides it; the closed-form noising comparison has
+`atol=1e-7`. Scientific recovery margins are separately declared in the lock.
+
+## When to regenerate
+
+Regenerate after changes to the noising schedule, denoiser, mask, hook location,
+training, timestep selection, prompt, checkpoint, or metric. Execute the
+learner images, heatmap, and controls before refreshing report hashes. Retain
+wrong-time, wrong-region, and random-latent failures visibly.

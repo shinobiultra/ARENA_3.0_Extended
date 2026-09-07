@@ -1,0 +1,240 @@
+{
+  "old_lesson_sha256": "50ddc5498463ad6d94212aed2c456f609bcf60c47b2a85c4a93bb0ac998b584c",
+  "new_lesson_sha256": "294cfaa206dafe8748deac12356df5743a335ce945ccf02abc03d6c0bbc0985a",
+  "formatter": "ruff 0.12.11, line length 100",
+  "strict_ast_comparison": true,
+  "changed_blocks": 36,
+  "blocks": [
+    {
+      "block": 0,
+      "ast_equal": true,
+      "changed": true
+    },
+    {
+      "block": 1,
+      "ast_equal": true,
+      "changed": true
+    },
+    {
+      "block": 2,
+      "ast_equal": true,
+      "changed": true
+    },
+    {
+      "block": 3,
+      "ast_equal": false,
+      "changed": false
+    },
+    {
+      "block": 4,
+      "ast_equal": false,
+      "changed": false
+    },
+    {
+      "block": 5,
+      "ast_equal": true,
+      "changed": true
+    },
+    {
+      "block": 6,
+      "ast_equal": true,
+      "changed": true
+    },
+    {
+      "block": 7,
+      "ast_equal": true,
+      "changed": true
+    },
+    {
+      "block": 8,
+      "ast_equal": false,
+      "changed": false
+    },
+    {
+      "block": 9,
+      "ast_equal": false,
+      "changed": false
+    },
+    {
+      "block": 10,
+      "ast_equal": true,
+      "changed": true
+    },
+    {
+      "block": 11,
+      "ast_equal": true,
+      "changed": true
+    },
+    {
+      "block": 12,
+      "ast_equal": true,
+      "changed": true
+    },
+    {
+      "block": 13,
+      "ast_equal": true,
+      "changed": true
+    },
+    {
+      "block": 14,
+      "ast_equal": true,
+      "changed": true
+    },
+    {
+      "block": 15,
+      "ast_equal": false,
+      "changed": false
+    },
+    {
+      "block": 16,
+      "ast_equal": false,
+      "changed": false
+    },
+    {
+      "block": 17,
+      "ast_equal": true,
+      "changed": true
+    },
+    {
+      "block": 18,
+      "ast_equal": true,
+      "changed": true
+    },
+    {
+      "block": 19,
+      "ast_equal": false,
+      "changed": false
+    },
+    {
+      "block": 20,
+      "ast_equal": false,
+      "changed": false
+    },
+    {
+      "block": 21,
+      "ast_equal": false,
+      "changed": false
+    },
+    {
+      "block": 22,
+      "ast_equal": false,
+      "changed": false
+    },
+    {
+      "block": 23,
+      "ast_equal": true,
+      "changed": true
+    },
+    {
+      "block": 24,
+      "ast_equal": true,
+      "changed": true
+    },
+    {
+      "block": 25,
+      "ast_equal": true,
+      "changed": true
+    },
+    {
+      "block": 26,
+      "ast_equal": true,
+      "changed": true
+    },
+    {
+      "block": 27,
+      "ast_equal": true,
+      "changed": true
+    },
+    {
+      "block": 28,
+      "ast_equal": true,
+      "changed": true
+    },
+    {
+      "block": 29,
+      "ast_equal": true,
+      "changed": true
+    },
+    {
+      "block": 30,
+      "ast_equal": true,
+      "changed": true
+    },
+    {
+      "block": 31,
+      "ast_equal": true,
+      "changed": true
+    },
+    {
+      "block": 32,
+      "ast_equal": true,
+      "changed": true
+    },
+    {
+      "block": 33,
+      "ast_equal": true,
+      "changed": true
+    },
+    {
+      "block": 34,
+      "ast_equal": true,
+      "changed": true
+    },
+    {
+      "block": 35,
+      "ast_equal": true,
+      "changed": true
+    },
+    {
+      "block": 36,
+      "ast_equal": true,
+      "changed": true
+    },
+    {
+      "block": 37,
+      "ast_equal": true,
+      "changed": true
+    },
+    {
+      "block": 38,
+      "ast_equal": true,
+      "changed": true
+    },
+    {
+      "block": 39,
+      "ast_equal": true,
+      "changed": true
+    },
+    {
+      "block": 40,
+      "ast_equal": true,
+      "changed": true
+    },
+    {
+      "block": 41,
+      "ast_equal": true,
+      "changed": true
+    },
+    {
+      "block": 42,
+      "ast_equal": true,
+      "changed": true
+    },
+    {
+      "block": 43,
+      "ast_equal": true,
+      "changed": true
+    },
+    {
+      "block": 44,
+      "ast_equal": true,
+      "changed": true
+    },
+    {
+      "block": 45,
+      "ast_equal": true,
+      "changed": true
+    }
+  ],
+  "non_equivalent_format_suggestions_skipped": 10
+}

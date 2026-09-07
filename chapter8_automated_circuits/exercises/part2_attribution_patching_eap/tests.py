@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from arena_ext.notebook_checks import unfinished_definitions
+
 import ast
 from collections.abc import Callable
 from pathlib import Path
@@ -56,6 +58,7 @@ def test_make_planted_graph_has_exact_ground_truth(
         "The clean planted graph should reproduce the declared exact metric."
     )
     print("Planted graph ground truth passed: clean-corrupt metric = 4.399326.")
+    print("All tests in `test_make_planted_graph_has_exact_ground_truth` passed!")
 
 
 def test_exact_node_patching_recovers_known_effects(
@@ -72,6 +75,7 @@ def test_exact_node_patching_recovers_known_effects(
     assert actual[1] > 1.0, "The gated relation route must be causally important."
     assert actual[3] == 0.0, "The decoy must be an exact zero-effect control."
     print("Exact node patching passed: the gated route is important and the decoy is null.")
+    print("All tests in `test_exact_node_patching_recovers_known_effects` passed!")
 
 
 def test_first_order_attribution_exposes_nonlinear_false_negative(
@@ -89,6 +93,7 @@ def test_first_order_attribution_exposes_nonlinear_false_negative(
         "The missed threshold-gated sender must still have a large exact causal effect."
     )
     print("First-order attribution passed: it visibly misses the threshold-gated route.")
+    print("All tests in `test_first_order_attribution_exposes_nonlinear_false_negative` passed!")
 
 
 def test_integrated_gradients_recovers_ranking_and_completeness(
@@ -119,6 +124,7 @@ def test_integrated_gradients_recovers_ranking_and_completeness(
         "Integrated gradients should recover the exact ranking and clearly outperform endpoint attribution."
     )
     print("Integrated gradients passed: top-2 ranking recovered and completeness error < 5e-4.")
+    print("All tests in `test_integrated_gradients_recovers_ranking_and_completeness` passed!")
 
 
 def test_exact_edge_patching_matches_planted_matrix(
@@ -147,6 +153,7 @@ def test_exact_edge_patching_matches_planted_matrix(
         "The relation-gate to threshold-gate edge should have the largest exact effect."
     )
     print("Exact edge patching passed: relation gate -> threshold gate is the top edge.")
+    print("All tests in `test_exact_edge_patching_matches_planted_matrix` passed!")
 
 
 def test_eap_and_eap_ig_separate_speed_from_faithfulness(
@@ -180,6 +187,7 @@ def test_eap_and_eap_ig_separate_speed_from_faithfulness(
         "Path integration should improve edge-score correlation beyond endpoint EAP."
     )
     print("EAP comparison passed: IG raises top-3 overlap from 2/3 to 1.0.")
+    print("All tests in `test_eap_and_eap_ig_separate_speed_from_faithfulness` passed!")
 
 
 def test_agreement_metrics_rejects_pretty_but_wrong_rankings(
@@ -207,6 +215,7 @@ def test_agreement_metrics_rejects_pretty_but_wrong_rankings(
     else:
         raise AssertionError("Mismatched score tensors must fail.")
     print("Agreement diagnostics passed: wrong top-k rankings cannot hide behind a plot.")
+    print("All tests in `test_agreement_metrics_rejects_pretty_but_wrong_rankings` passed!")
 
 
 def test_signature_result_metrics_and_controls() -> None:
@@ -254,6 +263,7 @@ def test_signature_result_metrics_and_controls() -> None:
         "The shuffled-delta control should recover none of the exact top-3 edges."
     )
     print("Signature result passed: nonlinear recovery, linear control, and shuffled control all separate.")
+    print("All tests in `test_signature_result_metrics_and_controls` passed!")
 
 
 def test_solution_smoke_contract_contains_signature_metrics() -> None:
@@ -270,6 +280,7 @@ def test_solution_smoke_contract_contains_signature_metrics() -> None:
     assert signature["shuffled_edge_top3_overlap"] == 0.0, (
         "The smoke contract should retain the failing shuffled-delta control."
     )
+    print("All tests in `test_solution_smoke_contract_contains_signature_metrics` passed!")
 
 
 def _notebook_sources(path: Path) -> tuple[str, str]:
@@ -283,6 +294,7 @@ def test_notebook_code_cells_parse() -> None:
     for path in (EXERCISE_NOTEBOOK, SOLUTION_NOTEBOOK):
         _, code = _notebook_sources(path)
         ast.parse(code)
+    print("All tests in `test_notebook_code_cells_parse` passed!")
 
 
 def test_solution_notebook_exposes_taught_implementations() -> None:
@@ -303,10 +315,11 @@ def test_solution_notebook_exposes_taught_implementations() -> None:
     )
     for name in taught:
         assert f"def {name}(" in code, f"Solved notebook must define {name} inline."
-    assert "NotImplementedError" not in code, (
+    assert not unfinished_definitions(code), (
         "The solution notebook should contain complete implementations for every exercise."
     )
     assert "solutions." not in code, "The solved learner path must not call hidden taught methods."
+    print("All tests in `test_solution_notebook_exposes_taught_implementations` passed!")
 
 
 def test_learner_surface_contains_full_arena_progression() -> None:
@@ -334,9 +347,10 @@ def test_learner_surface_contains_full_arena_progression() -> None:
     assert "verification_report.json" not in exercise_code, (
         "The exercise implementation should compute its evidence instead of loading a report."
     )
-    assert "raise NotImplementedError" in exercise_code, (
+    assert unfinished_definitions(exercise_code), (
         "The exercise notebook should retain visible student implementation stubs."
     )
+    print("All tests in `test_learner_surface_contains_full_arena_progression` passed!")
 
 
 def test_instruction_page_teaches_the_same_claim() -> None:
@@ -355,6 +369,7 @@ def test_instruction_page_teaches_the_same_claim() -> None:
         assert marker in page, (
             f"The instruction page should teach the same scoped claim via {marker!r}."
         )
+    print("All tests in `test_instruction_page_teaches_the_same_claim` passed!")
 
 
 def test_original_arena_preservation_boundary() -> None:
@@ -366,3 +381,4 @@ def test_original_arena_preservation_boundary() -> None:
     assert all(not path.startswith("chapter1_transformer_interp/") for path in relative_paths), (
         "Section-local changes must not cross the original ARENA preservation boundary."
     )
+    print("All tests in `test_original_arena_preservation_boundary` passed!")

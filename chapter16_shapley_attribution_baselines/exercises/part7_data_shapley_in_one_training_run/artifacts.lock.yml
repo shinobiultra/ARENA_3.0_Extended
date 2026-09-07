@@ -104,3 +104,6 @@ safety_notes:
 - The real training path uses only a generated four-example regression problem with
   one flipped label. It does not use unsafe prompts, user data, external APIs, adapters,
   gated weights, or large persistent artifacts.
+
+freshness_inputs:
+  - arena_ext/notebook_checks.py

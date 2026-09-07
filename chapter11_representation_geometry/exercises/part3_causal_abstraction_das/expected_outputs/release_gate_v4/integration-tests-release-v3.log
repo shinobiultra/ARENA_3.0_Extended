@@ -1,0 +1,15 @@
+..............................F..................                        [100%]
+=================================== FAILURES ===================================
+_________________ test_current_report_evidence_contracts_pass __________________
+
+    def test_current_report_evidence_contracts_pass():
+>       assert report_evidence_blockers() == []
+E       AssertionError: assert ['11_3_causal...ADME.md', ...] == []
+E         
+E         Left contains 22 more items, first extra item: '11_3_causal_abstraction_and_distributed_alignment_search: safety_notes are empty'
+E         Use -v to get more diff
+
+tests/test_report_evidence_contract_audit.py:121: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_report_evidence_contract_audit.py::test_current_report_evidence_contracts_pass
+1 failed, 48 passed in 8.02s

@@ -1,0 +1,10 @@
+{
+  "gpu": "NVIDIA GeForce RTX 5090 Laptop GPU",
+  "peak_cuda_allocated_gib": 13.6112380027771,
+  "elapsed_real_seconds": 371.44865813700017,
+  "model_forward_rows": 105484,
+  "retained_outcomes": 120649,
+  "projection_fits": 120,
+  "angle_play_forward_rows": 3196,
+  "single_play_forward_rows": 4
+}

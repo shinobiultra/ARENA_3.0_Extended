@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from arena_ext.notebook_checks import unfinished_definitions
+
 import ast
 from collections.abc import Callable
 import json
@@ -447,38 +449,26 @@ def test_exercise_notebook_exposes_arena_learner_surface():
     notebook = json.loads(notebook_path.read_text())
     source = "\n".join("".join(cell.get("source", [])) for cell in notebook["cells"])
     required = [
-        "By the end of this notebook",
-        "## Core Question",
-        "## Cold Open",
-        "### Exercise 1 - Build the frozen patch encoder",
-        "### Exercise 3 - Learn the visual connector",
-        "### Exercise 4 - Insert image tokens before the question token",
-        "### Exercise 6 - Implement one causal decoder block",
-        "### Exercise 7 - Assemble the MiniVLM",
-        "### Exercise 8 - Implement answer metrics and the training loss",
-        "### Exercise 10 - Establish exact patching ground truth",
-        "### Exercise 11 - Train and falsify the MiniVLM",
-        "## Signature Result",
-        "## Try It Yourself",
-        "## Bonus: Hunt an Anomaly",
-        "mini_vlm_signature_result.png",
-        "mini_vlm_layer_position_patching_heatmap.png",
+        "By the end of this notebook", "## Core Question", "## Cold Open",
+        "Learn an RGB patch embedding", "Use bidirectional or causal attention",
+        "Build the vision transformer", "Assemble image markers, visual rows and word tokens",
+        "Connect vision to a causal word decoder", "Shift the teacher-forced answer loss",
+        "Generate until each example reaches EOS", "Evaluate from answer-free word prompts",
+        "Train both towers and select only on development", "Patch during autoregressive generation",
+        "## Signature Result", "## Try It Yourself", "conditional", "unrestricted",
+        "word_transfer.png", "word_stage_region_patching.png",
     ]
     for needle in required:
         assert needle in source, f"Notebook is missing learner-surface marker: {needle}"
-    assert source.count("### Exercise ") == 12, "12.3 should have exactly 12 graded exercises."
-    assert source.count("<summary>Expected output</summary>") >= 12, (
-        "Each graded exercise should include a visible expected-output dropdown."
-    )
-    assert source.count("<summary>Help -") >= 12, (
-        "Each graded exercise should include a reasoning-oriented help dropdown."
-    )
-    assert source.count("<summary>Interpretation</summary>") >= 12, (
-        "Each graded exercise should explain how to interpret its result."
-    )
-    assert source.count("<summary>Solution</summary>") >= 12, (
-        "Each graded exercise should include a full solution dropdown."
-    )
+    assert source.count("### Exercise ") == 19, "The complete word path needs all 19 exercise groups."
+    assert source.count("<summary>Expected output</summary>") >= 19, "Give every exercise its expected output."
+    assert source.count("<summary>Help - approach</summary>") >= 19, "Give every exercise an actionable help dropdown."
+    assert source.count("<summary>Solution</summary>") >= 19, "Give every exercise a complete working answer."
+    # The old notebook had indentation-broken answers: parse every own-answer completion.
+    from chapter12_vlm_interpretability.exercises.part3_mini_vlm_from_scratch.build_notebooks import complete_learner
+    completed = complete_learner(notebook)
+    completed_code = "\n".join("".join(cell["source"]) for cell in completed["cells"] if cell["cell_type"] == "code")
+    assert not unfinished_definitions(completed_code), "Every stub must complete from its own visible solution."
     print("All tests in `test_exercise_notebook_exposes_arena_learner_surface` passed!")
 
 
@@ -492,23 +482,13 @@ def test_solution_notebook_exposes_taught_implementations():
     )
     tree = ast.parse(code)
     taught = {
-        "FrozenPatchEncoder",
-        "VisualConnector",
-        "CausalDecoderBlock",
-        "MiniVLM",
-        "encode_visual_token_cache",
-        "build_multimodal_sequence",
-        "vqa_accuracy",
-        "answer_margin",
-        "mini_vlm_loss",
-        "patch_indices_from_bbox",
-        "patch_visual_tokens",
-        "toy_ground_truth_patch_report",
-        "train_mini_vlm",
-        "modality_baseline_report",
-        "forward_with_visual_patch",
-        "trained_patch_report",
-        "patching_effect_heatmap",
+        "FrozenPatchEncoder", "encode_visual_token_cache", "patch_visual_tokens",
+        "patch_indices_from_bbox", "toy_ground_truth_patch_report",
+        "LearnedPatchEmbedding", "WordVisionBlock", "replace_activation_rows",
+        "PatchVisionEncoder", "build_multimodal_word_sequence", "WordMiniVLM",
+        "teacher_forced_answer_loss", "greedy_word_generation", "generated_word_exact_match",
+        "evaluate_word_model", "train_word_model", "visual_rows_from_pixel_mask",
+        "sample_visual_row_controls", "generate_with_visual_patch", "conditional_targeted_flips",
     }
     definitions = {
         node.name: node
@@ -518,21 +498,15 @@ def test_solution_notebook_exposes_taught_implementations():
     assert taught <= definitions.keys(), f"Missing inline solution bodies: {taught - definitions.keys()}"
     for name in taught:
         node = definitions[name]
-        assert not any(
-            isinstance(child, ast.Raise)
-            and isinstance(child.exc, ast.Call)
-            and isinstance(child.exc.func, ast.Name)
-            and child.exc.func.id == "NotImplementedError"
-            for child in ast.walk(node)
-        ), f"{name} is still a placeholder in the solved notebook."
+        assert not unfinished_definitions(node), f"{name} is still a placeholder in the solved notebook."
         assert not any(
             isinstance(child, ast.Attribute)
             and isinstance(child.value, ast.Name)
-            and child.value.id == "reference"
+            and child.value.id in {"reference", "warmup_reference"}
             and child.attr == name
             for child in ast.walk(node)
         ), f"{name} delegates the taught method to hidden reference code."
-    assert "NotImplementedError" not in code, (
+    assert not unfinished_definitions(code), (
         "The solved notebook should not contain any remaining implementation placeholders."
     )
     print("All tests in `test_solution_notebook_exposes_taught_implementations` passed!")

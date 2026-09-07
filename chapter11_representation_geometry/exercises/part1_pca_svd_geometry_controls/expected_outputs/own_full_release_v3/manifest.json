@@ -1,0 +1,43 @@
+{
+  "source_directory": "/home/bitwise/.cache/arena_extended/geometry/full-own-answer-v3",
+  "archive_sha256": "14f1e75816491f15301e41a965cae9bda3e63088da70ed5265be0afe44f1c9d4",
+  "members_sha256": {
+    "completed_learner.ipynb": "b1a1689e2d7ab525b2169f7366db9395d91ff4400f7daf5b735ac4e960c2bf16",
+    "execution.json": "a055cd05d4ab4e7c2dac38dc806b1d9ab6a24b89490e5d1113cb014dbfc23857",
+    "experiments/angle_play.json.gz": "9136d7e2151abf408f50fd12759a62f9f3ee387fd0fd0d713b3ada4830ebedc0",
+    "experiments/measured_study.json.gz": "2f031ef87a377dc5cc971cd46e9da5e4ef76d6fc383e6af612377c2cab49f6f3",
+    "experiments/projection_study.json.gz": "284d83b46aa223678917fffdb80485cdaff89a4d82558451262b1f88540fef79",
+    "experiments/protocol.json": "4a4816aaeaa734d5ba3a3ba8860b70e1338fdc4d5388255a6414944f43408f78",
+    "experiments/runtime.json": "fba5e6205ab5eab786e93fc9a310e9436fce1b7cfd5307e2847da73eca184889",
+    "experiments/single_play.json": "4ebd2a22ceba719f08251cfd02296215ec4a7c0bb537ca16b4bd9000d019566a",
+    "figures/geometry_angle_play.png": "9c87695dc89f2e22d02aeaacb9dbad41f713f10866f6d8efd84d3a7890cf7c0e",
+    "figures/geometry_calendar_order_null.png": "a285c314e16ecedca7e0d2c8a7387442ff33e312d9afa92fc9743b29d5e0fff4",
+    "figures/geometry_mistral_actual_answers.png": "3b26fe3247a34e5a728bce3d8ea4f4f9f7ef9551a5e41cc492e25e004640156e",
+    "figures/geometry_mistral_all_donors.png": "e0caaec08bce529b0d0380ad2ff23608c7bdf47de35b7f1e38c5aef4b219d5c5",
+    "figures/geometry_mistral_angle_radius.png": "afd1236b3a85900d4fc6fd41f640017ca27883d4869b8466aeb386a0b7dc9967",
+    "figures/geometry_mistral_final_controls.png": "bd98b59558cda7799e07c19884e149768e73224ccd210f3ecdd99d7fa78dded7",
+    "figures/geometry_mistral_layer_sweep.png": "cb391b129cf556ce32a80f61f75f55369fe1c02b06f243642060efff19fca24e",
+    "figures/geometry_mistral_projections.png": "675d41867862b0feefa8e71e1e27c02efa1238590813e36dd7896f43b2d362a6",
+    "figures/geometry_mistral_single_play.png": "3898c13580440a4073c5d2e7e8993ac71a441b852649f9d40834f30d53e71683",
+    "figures/geometry_plane_intervention.png": "1569f17955f51800904190e28755caba259adae02568823b67f2e755edd6ee0c",
+    "figures/geometry_projection_gallery.png": "8603b5cbdabfafd75f880b85b7492b166354d33ece6d1556a424fcc12c68b547",
+    "figures/geometry_projection_stability.png": "4e69f8c59ab4142d79d30c6e8a89e32b626c7c0c3c73091a5714724712096e56",
+    "figures/geometry_template_offsets.png": "5c1fdc2d2fa51f9e0314dc4e7fbea2940f13d38b5558d6cad5fef97a99f3edaf",
+    "source_snapshot/build_notebooks.py": "0f34dae75c4c2b7604faeec248b182bd923e5ae6ad86d085a451b74ef25585f0",
+    "source_snapshot/execute_learner.py": "dccfdc78b78fb625d059ac0558e8e78f74b2ed0ae647178b5c061c68aec884f6",
+    "source_snapshot/geometry_data.py": "cc8045803c8437d859e44d60fe45414c9e2e95b5246fdb62ae0f8d7b8192037b",
+    "source_snapshot/geometry_methods.py": "a821887870ebc8e8b38bc5e94aadab6a93a431758b1f22248bf8b8967ff47aed",
+    "source_snapshot/geometry_methods_tests.py": "abd6502a4858330686a492e9038d9bec727787a5ed109ade557caed4ce6a3533",
+    "source_snapshot/geometry_plotting.py": "d185bc99e49504e6e32d39a39a2782bfd2a20814ac706aaa15eac39f3fadc1fe",
+    "source_snapshot/geometry_protocol.json": "4a4816aaeaa734d5ba3a3ba8860b70e1338fdc4d5388255a6414944f43408f78",
+    "source_snapshot/geometry_study.py": "c3cdf723ec7e7e557d3e960f29eeb45e73148059cce12d706ed2b3e785a772c6",
+    "source_snapshot/lesson.md": "50ddc5498463ad6d94212aed2c456f609bcf60c47b2a85c4a93bb0ac998b584c"
+  },
+  "large_tensors_retained_in_source_directory": {
+    "experiments/actual_activations_and_probes.pt": {
+      "sha256": "e9d838b7d6f279b7ec104aee720b4ff9a8d0bc865367bc80f28344cd6c9d7c48",
+      "size_bytes": 419130017
+    }
+  },
+  "all_archive_members_read_back_and_verified": true
+}

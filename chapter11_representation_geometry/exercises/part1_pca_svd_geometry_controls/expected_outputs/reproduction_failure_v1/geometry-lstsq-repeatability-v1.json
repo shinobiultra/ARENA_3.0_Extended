@@ -1,0 +1,22 @@
+{
+  "weekday": {
+    "gelsy": {
+      "max_repeat_weight_difference": 2.384185791015625e-07,
+      "unique_weights": 8
+    },
+    "gelsd": {
+      "max_repeat_weight_difference": 0.0,
+      "unique_weights": 1
+    }
+  },
+  "month": {
+    "gelsy": {
+      "max_repeat_weight_difference": 5.960464477539062e-07,
+      "unique_weights": 13
+    },
+    "gelsd": {
+      "max_repeat_weight_difference": 0.0,
+      "unique_weights": 1
+    }
+  }
+}

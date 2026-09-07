@@ -19,6 +19,7 @@ lesson content.
 | `.python-version` | uv-managed Python version pin for the CUDA 13 environment. |
 | `AGENTS.md` | Repo-local agent instructions for ARENA-style salvage without changing original lessons. |
 | `Extension-Roadmap.md` | User-authored extension specification. |
+| `HANDOFF.md` | Extension salvage execution handoff; contains no original lesson content. |
 | `guidance_2-0.md` | Reviewer guidance for the ARENA-style rewrite. |
 | `install.sh` | Original installer redirected to the pinned original requirements split. |
 | `README.md` | Entrypoint documentation for the extended course. |

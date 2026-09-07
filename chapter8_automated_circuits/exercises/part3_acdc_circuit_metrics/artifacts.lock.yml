@@ -3,24 +3,21 @@ section: '8.3'
 title: ACDC and Circuit Metrics
 exercise_metadata:
   EXERCISE_ID: 8_3_acdc_and_circuit_metrics
-  GT_TIER: GT-0
+  GT_TIER: GT-1
   DIFFICULTY: 4
   IMPORTANCE: 5
-  EXPECTED_RUNTIME: 90 minutes for exercises; about 30 seconds for the cached CPU solution run
-  REQUIRES_GPU: false
-gt_tier: GT-0
-evidence_level: exact_nonlinear_ground_truth_acdc_plus_pinned_transformerlens_component_result
-claim_scope: >-
-  The learner-facing signature result is an exact named-node and named-edge
-  nonlinear graph with a declared eight-edge ground-truth circuit. Corrupt-matched
-  edge intervention, iterative greedy deletion with metric recomputation, a full
-  threshold sweep, faithfulness, edgewise minimality, pairwise completeness,
-  exhaustive same-size controls, and three held-out toy regimes are all evaluated
-  exactly. A separate pinned gelu-1l path applies the same greedy algorithm to eight
-  named attention-head result components while the real MLP recomputes, then checks
-  every same-size three-head set and three held-out prompt pairs. This is honest
-  component-level evidence, not a full edge-level IOI or greater-than ACDC replication.
-required_gpu_gb: 0
+  EXPECTED_RUNTIME: two to three study days; about three hours for all fresh GPU searches and diagnostics
+  REQUIRES_GPU: true
+gt_tier: GT-1
+evidence_level: exact_nonlinear_warmup_plus_full_gpt2_additive_edge_search_and_author_eap_ig_parity
+claim_scope: Students implement the full 32,491-edge GPT-2 additive residual graph, current-hybrid
+  corrupt-reference interventions, sequential ACDC, EAP and input-interpolated EAP-IG, metrics, and
+  controls. Four independent IOI threshold searches fail the fixed development criteria; their diagnostic
+  candidate is evaluated on development only and the IOI holdout stays unopened. Greater-than ACDC,
+  EAP, task-loss EAP-IG and KL-loss EAP-IG masks are frozen on development and evaluated on changed
+  wording. The bounded studies teach the methods and retain negative results; they do not reproduce
+  the papers' complete benchmarks. Original exact and GELU-1L component warm-ups remain.
+required_gpu_gb: 12
 max_allowed_gpu_gb: 24
 models:
 - id: exact_nonlinear_named_edge_graph_v1
@@ -38,6 +35,17 @@ models:
   transformerlens_model_name: gelu-1l
   tokenizer_id: NeelNanda/gpt-neox-tokenizer-digits
   tokenizer_revision: 0f6671571a20be9756b9991d978047c03b75e749
+- id: openai-community/gpt2
+  source: huggingface_via_transformerlens
+  revision: 607a30d783dfa663caf39e06633721c8d4cfcd7e
+  precision: float32
+  gated: false
+  transformerlens_model_name: gpt2-small
+  claim_scope: all_32491_legal_additive_residual_edges
+  fold_ln: true
+  center_unembed: true
+  center_writing_weights: true
+  refactor_factored_attn_matrices: true
 datasets:
 - id: exact_nonlinear_named_edge_inputs_v1
   source: generated_analytic_task
@@ -57,6 +65,43 @@ datasets:
   - child_vs_plane
   - cup_vs_plane
   tokenizer: NeelNanda/gpt-neox-tokenizer-digits
+- id: original_arena_ioi_prefixes_with_fixed_clean_labels
+  source: original_ioi_generator_unchanged_plus_extension_prefix_adapter
+  discovery_count: 32
+  development_count: 32
+  discovery_seed: 1
+  development_seed: 2
+  corruption: all names replaced; second-subject-only attribution control separate
+  thresholds:
+  - 0.05
+  - 0.004
+  - 0.001
+  - 0.0005
+  selection_criteria:
+    minimum_recovery: 0.85
+    maximum_accuracy_drop: 0.1
+    maximum_kl: 0.5
+  reference_selection: none qualifies; maximum-development-recovery candidate inspected on development
+    only
+  heldout_opened: false
+  heldout_planned_count: 64
+  heldout_planned_seed: 3
+- id: controlled_greater_than_year_suffixes
+  source: fixed_single_token_numeric_suffixes_and_disjoint_year_event_partitions
+  discovery_count: 32
+  development_count: 32
+  heldout_count: 64
+  discovery_seed: 11
+  development_seed: 12
+  heldout_seed: 13
+  corruption: replace start-year suffix with 01
+  metric: full-vocabulary probability mass later minus earlier-or-equal suffixes
+  shift: heldout template omits the year
+  frozen_edge_counts:
+    acdc: 78
+    eap: 300
+    eap-ig-inputs: 100
+    eap-ig-kl: 300
 expected_metrics:
   tests_passed: true
   accepted: true
@@ -86,13 +131,19 @@ expected_metrics:
   - L0H0
   - L0H4
   - L0H6
-  real_primary_recovery_min: 0.90
+  real_primary_recovery_min: 0.9
   real_same_size_set_count: 56
   real_same_size_rank: 1
   real_same_size_exact_pvalue_max: 0.0179
   real_same_size_best_other_recovery_max: 0.89
   real_worst_heldout_recovery_min: 0.75
   real_mlp_bottleneck_recovery_min: 0.95
+  full_edge_graph_verified: true
+  full_edge_legal_edges: 32491
+  full_edge_random_controls_rechecked: 320
+  full_edge_learner_executed: true
+  full_edge_max_endpoint_error_max: 0.0001
+  full_edge_max_behavior_recheck_error_max: 0.0001
 controls:
 - exact clean and corrupt metric endpoints
 - corrupt-matched edge replacement rather than zero ablation
@@ -107,9 +158,61 @@ controls:
 - exhaustive real-model same-size random-circuit null over all 56 three-head sets
 - three held-out real prompt pairs
 - downstream MLP clean-output bottleneck control
+- GPT-2 full/empty graph endpoint parity on every evaluated split
+- every full additive Q/K/V, MLP-input and final-output edge is eligible
+- four fresh IOI searches retain every failed development candidate
+- IOI diagnostic is not relabelled as qualified or held-out evidence
+- four greater-than masks frozen before changed-wording holdout
+- all 32 uniform and 32 receiver-indegree-matched null circuits per inspected circuit
+- all retained-edge deletions and 72 full-versus-circuit subset probes
+- EAP, task EAP-IG and KL EAP-IG with author-code numerical parity
+- all-name versus repeated-subject IOI corruption, fixed clean labels
+- fresh learner execution from its own solution dropdowns and separate live CUDA recheck
 safety_notes:
-- No unsafe prompts, adapters, gated weights, or large data artifacts are used.
-- The exact model organism is deterministic and contains no learned empirical claim.
-- The real path reads next-token logits for safe generic prompts and runs on CPU.
-- The real result is limited to named head-result components in one layer; it does not claim a full causal edge circuit.
-- Verification reports support the lesson but are not the learner-facing signature result.
+- The full learner release records an owned interrupted continuation with exact checkpoint and source provenance.
+- The exact toy supplies known mechanisms; GPT-2 behavior is a controlled empirical study.
+- IOI development selection fails; its holdout remains unopened.
+- Greater-than ACDC recovery drops below the development floor on changed wording; preserve the result.
+- Sampled completeness probes are not a global completeness proof.
+- Verification reports support generated graphs, curves and prompt experiments.
+freshness_inputs:
+- chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/build_notebooks.py
+- chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/edge_attribution.py
+- chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/edge_attribution_tests.py
+- chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/edge_evidence.py
+- chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/edge_evidence_tests.py
+- chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/edge_experiment_tests.py
+- chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/edge_experiments.py
+- chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/edge_metric_tests.py
+- chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/edge_metrics.py
+- chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/edge_tests.py
+- chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/execute_learner.py
+- chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/greater_than.py
+- chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/greater_than_tests.py
+- chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/ioi_controls.py
+- chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/real_edges.py
+- chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/run_attribution_comparison.py
+- chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/run_edge_discovery.py
+- chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/run_edge_evaluation.py
+- chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/run_greater_than_discovery.py
+- chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/solutions.py
+- chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/tests.py
+- chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/utils.py
+- chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/validate_upstream_eapig.py
+- chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/lesson.md
+- chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/expected_outputs/learner_execution.json
+- chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/expected_outputs/completed_edge_study.json.gz
+- chapter8_automated_circuits/instructions/assets/acdc_full_edge_thresholds.png
+- chapter8_automated_circuits/instructions/assets/acdc_greater_than_100_edge_graph.png
+- chapter8_automated_circuits/instructions/assets/acdc_greater_than_acdc_graph.png
+- chapter8_automated_circuits/instructions/assets/acdc_greater_than_edge_diagnostics.png
+- chapter8_automated_circuits/instructions/assets/acdc_greater_than_frozen_transfer.png
+- chapter8_automated_circuits/instructions/assets/acdc_greater_than_method_curves.png
+- chapter8_automated_circuits/instructions/assets/acdc_ioi_all-names_greedy_attribution.png
+- chapter8_automated_circuits/instructions/assets/acdc_ioi_all-names_topk_attribution.png
+- chapter8_automated_circuits/instructions/assets/acdc_ioi_candidate_controls.png
+- chapter8_automated_circuits/instructions/assets/acdc_ioi_edge_diagnostics.png
+- chapter8_automated_circuits/instructions/assets/acdc_ioi_edge_matrix.png
+- chapter8_automated_circuits/instructions/assets/acdc_ioi_second-subject_greedy_attribution.png
+- chapter8_automated_circuits/instructions/assets/acdc_toy_ground_truth_signature.png
+- chapter8_automated_circuits/instructions/assets/acdc_transformerlens_component_signature.png

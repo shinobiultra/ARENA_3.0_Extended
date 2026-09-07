@@ -1,0 +1,18 @@
+{
+  "source_directory": "/home/bitwise/.cache/arena_extended/das/native-screen-v1",
+  "archive_sha256": "6c2e2720d6bbec5c69f0a528f33ca032b1de71274fd0a12a0ad0ea2ae6860608",
+  "members_sha256": {
+    "development.json": "e922f0a47c97d28810770aaf5ab41622c4225e8b84747a73c28ee02a9d05bb84",
+    "source_snapshot/das_ioi_data.py": "33c3dc44791146d0212b49eeea4cf4185db04bf0046c20113512f13d4aac6dd3",
+    "source_snapshot/das_methods.py": "606c7446aee48d96367a258875040f03ad75adc2aead99d1cff46eae5ec9db0f",
+    "source_snapshot/das_native.py": "3a496211314ead995faa02eeab9bc1a00928bc081125e08309873e48044c1478",
+    "source_snapshot/das_training_methods.py": "f3177576f641211c356071c3b23de53708c05805a99ad06c295833702dadae79",
+    "source_snapshot/run_das_screen.py": "1b8df3af791321918ac31527a7a05d84c709602a47b8be90526392ce132555dc",
+    "source_snapshot/run_native_development.py": "106359a4e42b2a14cdfea264d47dd06ba080de9a68a9441261044a98a7cc81f2"
+  },
+  "large_tensors_retained_in_source_directory": {
+    "actual_bases.pt": "ffce42acb414c3d919a75f2de919a39374e011f51747934f2777e8028da87a86",
+    "actual_logits_and_activations.pt": "9e9b80fe4256023a88cdeb8010acee3b40d5b605aa5e565225d4d20821d21278"
+  },
+  "all_archive_members_read_back_and_verified": true
+}

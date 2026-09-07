@@ -1,0 +1,108 @@
+{
+  "source_directory": "/home/bitwise/.cache/arena_extended/deepshap/learner-v1",
+  "archive_sha256": "1dc8bc3fc13ce5b102f42c8b23228ed7962f75f71ca126a7764c83d7194f3c57",
+  "members": {
+    "completed_learner.ipynb": {
+      "sha256": "2a5e008ef0463b5561cd710b5d2724fe5cad191cc77d8ac6cd09f2d3a316a655",
+      "size_bytes": 407166
+    },
+    "execution.json": {
+      "sha256": "7ffeba07acf5ce508c817a1a18d31561cd2994f9b1ca849e8269f5d1bce3038f",
+      "size_bytes": 5919
+    },
+    "figures/01_rescale_limits.png": {
+      "sha256": "382b0039914c3e367f54eca0dad9ac700b4d5b0f4eb76c05de0f951a045dc67e",
+      "size_bytes": 108756
+    },
+    "figures/02_near_zero_epsilon.png": {
+      "sha256": "7a2b961da97658f0481b7c520bd6b88a9afff29da003ec7fc0ae474f92e87200",
+      "size_bytes": 79496
+    },
+    "figures/03_affine_controls.png": {
+      "sha256": "6ed5a22fed43420a326b3af80b932699f95feab1372d8ca670721c11990f0c3c",
+      "size_bytes": 77489
+    },
+    "figures/04_background_average.png": {
+      "sha256": "029abaa223aec4257a64c6bedc2113f7e357d5c928cac0c3367ee0ee1d5e6b95",
+      "size_bytes": 91890
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/author_reference.json": {
+      "sha256": "581b970592c09f0c9fe991d3ac99d2dfbd48244e67ae5a69069b8d576fa0c9c7",
+      "size_bytes": 4321
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/build_notebooks.py": {
+      "sha256": "60ab1ef90afeadeba85703db3204411ca1a421b9417e803557cafe807f350857",
+      "size_bytes": 12277
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/data_manifest.json": {
+      "sha256": "c1c072ef4a540f1d7d878b828ce09b27085ffe085e328587fcc6fd83de6dbc58",
+      "size_bytes": 12835
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_contract_tests.py": {
+      "sha256": "1f8f1af137dd58d028ef30ad28f65c5b19c05546b72429785999c3a9ce0a37a3",
+      "size_bytes": 16844
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_data.py": {
+      "sha256": "ec2a7f4337c4c7dfa7649d5cf2794be041a16e258f50d0844c2e2b4bed882918",
+      "size_bytes": 1784
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_diagnostics.py": {
+      "sha256": "d46fc51716c11429bdf2465c656d81b31e3f07caf8bb1bb5b3814242a32a3608",
+      "size_bytes": 21125
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_methods.py": {
+      "sha256": "8d5e9d04624e3941768a710ba9c72dfd281c25c39b495845beda296a1628c4c6",
+      "size_bytes": 14566
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_methods_tests.py": {
+      "sha256": "ced3c0db050f473423f0e7baffc1e38c83bea4fd69d014ead62f40c860ddd7d5",
+      "size_bytes": 19673
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_plots.py": {
+      "sha256": "9c100838dcd57fa4d1068accbaa0c84d5eed47a71fca8def16e1dfc36f13a3a1",
+      "size_bytes": 40188
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_reference.py": {
+      "sha256": "834b41927d1ff01a8bc38a103b59ea50e70bfa53c2c26facee7b5e1bf75afcbe",
+      "size_bytes": 49968
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_reference_tests.py": {
+      "sha256": "270c145a6fd5e99302850f7b30a8e1324e6647677b16631fa853eb520cd771cf",
+      "size_bytes": 11045
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_study.py": {
+      "sha256": "df5d7f892a6846309d27441a10258595988015c59be1db49d49d314764f3120d",
+      "size_bytes": 36930
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_study_tests.py": {
+      "sha256": "93dec8b4844ecee8b7fef748a59de4f611348d79a9b02a31e245e80258f52329",
+      "size_bytes": 17827
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/execute_learner.py": {
+      "sha256": "47b30cc96a77b5720be18fac15a3cd17966358f2da15aa79c673ad25e7b2a5df",
+      "size_bytes": 9035
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/lesson.md": {
+      "sha256": "1fd0f452c773062a53218b4420862756b57b43e91570a68ede9d9a9dd997081b",
+      "size_bytes": 57645
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/protocol.md": {
+      "sha256": "ceca1c3d0fa9bd5635915b4f7c8ec9d2353c3e55b6816788ce69b58d8e67869e",
+      "size_bytes": 12469
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/protocol_freeze.json": {
+      "sha256": "8b3da8fdac611b7d95ecf8d1e35d565c6ef6b0952b213162527afb140da852fd",
+      "size_bytes": 769
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/reproduce_native.py": {
+      "sha256": "a710dc99f4d0108aaab10f590635f7ac1819d66a368b046d16261571042aeccb",
+      "size_bytes": 10426
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/run_native.py": {
+      "sha256": "dd7e3fed1be5388ce705605488f212d8679131baa81f9ed32a71aefbe9b9b8fc",
+      "size_bytes": 14331
+    }
+  },
+  "large_tensors_retained_externally": {},
+  "readback_verified": true
+}

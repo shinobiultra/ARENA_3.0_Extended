@@ -1,0 +1,153 @@
+{
+  "source_directory": "/home/bitwise/.cache/arena_extended/datamodels/fresh-native-v2",
+  "archive_sha256": "e780d322b196c744711e866aebd1ce1b0d5b405ff7804feab36ee0c99d051220",
+  "members": {
+    "fresh_run/execution.json": {
+      "sha256": "0cc9410669563bb9171cd752f975fd75ea9c4cd062d77aa6be72db2ddefa32ab",
+      "size_bytes": 382
+    },
+    "fresh_run/reference_checks.json": {
+      "sha256": "bc6bf2729e21b4369384d421ae41a76843aba37ded982985611364964166538e",
+      "size_bytes": 4736
+    },
+    "fresh_run/selection_boundary.json": {
+      "sha256": "e57a24a0ddd878a18f6479882e638d7473e983885c965409974e1216cb3d89aa",
+      "size_bytes": 274
+    },
+    "fresh_run/source_inputs.json": {
+      "sha256": "116f0493adf7a51353a44f93251cd88ec09a0757fd205c8d527de0dc967cc46a",
+      "size_bytes": 1800
+    },
+    "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part10_datamodels/data_manifest.json": {
+      "sha256": "153c7cd06df8988ff10032de373f8ccda1b42ba43bfe1da427357b3a5fb0f0e3",
+      "size_bytes": 6911
+    },
+    "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part10_datamodels/datamodel_data.py": {
+      "sha256": "b4592f2233b1b29cd1dd640ae8085a523c766a523c395acce5420272ea645384",
+      "size_bytes": 2478
+    },
+    "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part10_datamodels/datamodel_methods.py": {
+      "sha256": "889eb435db076656b2e98fbbdf23d8974ed1858fadab409eb7750e5138f4d5d1",
+      "size_bytes": 9767
+    },
+    "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part10_datamodels/datamodel_methods_tests.py": {
+      "sha256": "ecb25ef417066ecca25e5a26c5d2e27ab0c21e12764a2121c042e1667d0368e4",
+      "size_bytes": 9827
+    },
+    "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part10_datamodels/datamodel_study.py": {
+      "sha256": "eab8c349cfdd78cf533be33492d51ff6031eb940ad2adc1bb2e05f3389a4a735",
+      "size_bytes": 11315
+    },
+    "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part10_datamodels/protocol.md": {
+      "sha256": "01061ec436553e02d6496e8e2f5faa65d06cdff3345bca4d19f6ef490a8a06af",
+      "size_bytes": 7097
+    },
+    "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part10_datamodels/protocol_freeze.json": {
+      "sha256": "dcc5b5de9e5897a5f8e03737afd6c0b195742b46be5052969c3f93b33831ca9b",
+      "size_bytes": 523
+    },
+    "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part10_datamodels/run_native.py": {
+      "sha256": "7f591260f8cef12595b75158847c7c937985bb2349e653c0c1dd2878e07961e6",
+      "size_bytes": 9854
+    },
+    "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/attribution_data.py": {
+      "sha256": "eaa4954f3255d3f82082dc30baef1051f03c0cad4afab806e9cb16d810101ab3",
+      "size_bytes": 5582
+    },
+    "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/attribution_methods.py": {
+      "sha256": "f6f0712d185182b7e43a6bc8bb8b6e401e019e33326f0e59d2d75dda522df046",
+      "size_bytes": 16788
+    },
+    "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/attribution_reference.py": {
+      "sha256": "bd342601bc81ba5e5b3f3bc193900643f089b9d8e8f6cdd22022cc0688ed8303",
+      "size_bytes": 1119
+    },
+    "reproduction.json": {
+      "sha256": "92ed066f86b70f01ad07f7fec27c52ce3e424e1776270bf66c84f35d3403c05b",
+      "size_bytes": 4178
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part10_datamodels/build_notebooks.py": {
+      "sha256": "e11d5d9692e92acc3d9e6895c67fe3965abd211cc13a6e6b0d202009aa6271a7",
+      "size_bytes": 4648
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part10_datamodels/data_manifest.json": {
+      "sha256": "153c7cd06df8988ff10032de373f8ccda1b42ba43bfe1da427357b3a5fb0f0e3",
+      "size_bytes": 6911
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part10_datamodels/datamodel_contract_tests.py": {
+      "sha256": "a2e12eb3d2a76201f131c6e72fbb4c479c3b602b7e38985db524a5ff06f59dd3",
+      "size_bytes": 6382
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part10_datamodels/datamodel_data.py": {
+      "sha256": "b4592f2233b1b29cd1dd640ae8085a523c766a523c395acce5420272ea645384",
+      "size_bytes": 2478
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part10_datamodels/datamodel_methods.py": {
+      "sha256": "889eb435db076656b2e98fbbdf23d8974ed1858fadab409eb7750e5138f4d5d1",
+      "size_bytes": 9767
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part10_datamodels/datamodel_methods_tests.py": {
+      "sha256": "ecb25ef417066ecca25e5a26c5d2e27ab0c21e12764a2121c042e1667d0368e4",
+      "size_bytes": 9827
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part10_datamodels/datamodel_study.py": {
+      "sha256": "eab8c349cfdd78cf533be33492d51ff6031eb940ad2adc1bb2e05f3389a4a735",
+      "size_bytes": 11315
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part10_datamodels/execute_learner.py": {
+      "sha256": "fd181c053d386c61d8fadd01ae31cf51424575045bb0f4574717d0eecac676d0",
+      "size_bytes": 5903
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part10_datamodels/lesson.md": {
+      "sha256": "e6a47ff79969f6c38e151b40b19cc060056b28cdeb56cfff8e2cf84d6bab54ec",
+      "size_bytes": 77429
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part10_datamodels/protocol.md": {
+      "sha256": "01061ec436553e02d6496e8e2f5faa65d06cdff3345bca4d19f6ef490a8a06af",
+      "size_bytes": 7097
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part10_datamodels/protocol_freeze.json": {
+      "sha256": "dcc5b5de9e5897a5f8e03737afd6c0b195742b46be5052969c3f93b33831ca9b",
+      "size_bytes": 523
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part10_datamodels/reproduce_native.py": {
+      "sha256": "df15b22764cc62b4cd04fee3d2d16ee653420229ee66a4abfdb719f8e23301af",
+      "size_bytes": 4861
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part10_datamodels/run_native.py": {
+      "sha256": "7f591260f8cef12595b75158847c7c937985bb2349e653c0c1dd2878e07961e6",
+      "size_bytes": 9854
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/attribution_data.py": {
+      "sha256": "eaa4954f3255d3f82082dc30baef1051f03c0cad4afab806e9cb16d810101ab3",
+      "size_bytes": 5582
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/attribution_methods.py": {
+      "sha256": "f6f0712d185182b7e43a6bc8bb8b6e401e019e33326f0e59d2d75dda522df046",
+      "size_bytes": 16788
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/attribution_reference.py": {
+      "sha256": "bd342601bc81ba5e5b3f3bc193900643f089b9d8e8f6cdd22022cc0688ed8303",
+      "size_bytes": 1119
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/reproduce_native.py": {
+      "sha256": "db9ceda4b56d549fb448f8bcd003d034db7502b0e5696c49af030065c5a862d0",
+      "size_bytes": 8482
+    }
+  },
+  "large_tensors_retained_externally": {
+    "fresh_run/native/evaluated.pt": {
+      "sha256": "4bacdc5a4d0436e09951029baf95c6e2de74539c7d01d12efb48385a57082ff2",
+      "size_bytes": 11861619
+    },
+    "fresh_run/native/play.pt": {
+      "sha256": "d665653a0268e57a31610b7f470281f264518f9fdbabb6c4aaaa3c69766a46df",
+      "size_bytes": 25699
+    },
+    "fresh_run/native/prepared.pt": {
+      "sha256": "2faaf5705cb4d904f97469e80c4ea0cdfe7f054ed676dda276f0e5c0944f9423",
+      "size_bytes": 23646338
+    }
+  },
+  "readback_verified": true
+}

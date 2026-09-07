@@ -1,0 +1,195 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ARENA 8.6 AtP* verification report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "notebook_id",
+    "section",
+    "title",
+    "date_run",
+    "git_commit",
+    "gt_tier",
+    "evidence_level",
+    "claim_scope",
+    "models",
+    "datasets",
+    "tests_passed",
+    "metrics",
+    "baselines",
+    "negative_controls",
+    "ood_tests",
+    "known_failures",
+    "safety_notes",
+    "cpu_evidence",
+    "gpu_evidence",
+    "accepted",
+    "report_inputs"
+  ],
+  "properties": {
+    "notebook_id": {
+      "const": "8_6_atp_star_from_scratch"
+    },
+    "section": {
+      "const": "8.6"
+    },
+    "title": {
+      "const": "AtP* from Scratch"
+    },
+    "date_run": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "git_commit": {
+      "type": "string",
+      "minLength": 7
+    },
+    "gt_tier": {
+      "const": "GT-0"
+    },
+    "evidence_level": {
+      "type": "string"
+    },
+    "claim_scope": {
+      "type": "string",
+      "minLength": 80
+    },
+    "models": {
+      "type": "array",
+      "minItems": 2
+    },
+    "datasets": {
+      "type": "array",
+      "minItems": 2
+    },
+    "tests_passed": {
+      "const": true
+    },
+    "metrics": {
+      "type": "object",
+      "required": [
+        "toy",
+        "real_cpu"
+      ]
+    },
+    "baselines": {
+      "type": "object"
+    },
+    "negative_controls": {
+      "type": "object"
+    },
+    "ood_tests": {
+      "type": "object"
+    },
+    "known_failures": {
+      "type": "array"
+    },
+    "safety_notes": {
+      "type": "array"
+    },
+    "cpu_evidence": {
+      "type": "object",
+      "required": [
+        "status",
+        "solution_notebook_executed",
+        "code_cells",
+        "error_outputs"
+      ],
+      "properties": {
+        "status": {
+          "const": "passed"
+        },
+        "solution_notebook_executed": {
+          "const": true
+        },
+        "code_cells": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "error_outputs": {
+          "const": 0
+        }
+      }
+    },
+    "gpu_evidence": {
+      "type": "object",
+      "required": [
+        "status",
+        "uses_cuda",
+        "cpu_fallback",
+        "max_vram_gb",
+        "entry_points"
+      ],
+      "properties": {
+        "status": {
+          "const": "not_run_pending_independent_review"
+        },
+        "uses_cuda": {
+          "const": false
+        },
+        "cpu_fallback": {
+          "const": false
+        },
+        "max_vram_gb": {
+          "const": 24.0
+        },
+        "entry_points": {
+          "type": "array",
+          "minItems": 2
+        }
+      }
+    },
+    "accepted": {
+      "const": false
+    },
+    "report_inputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": 1
+        },
+        "algorithm": {
+          "const": "sha256"
+        },
+        "combined_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "files": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "path": {
+                "type": "string",
+                "minLength": 1
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              },
+              "size_bytes": {
+                "type": "integer",
+                "minimum": 1
+              }
+            },
+            "required": [
+              "path",
+              "sha256",
+              "size_bytes"
+            ]
+          }
+        }
+      },
+      "required": [
+        "schema_version",
+        "algorithm",
+        "combined_sha256",
+        "files"
+      ]
+    }
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "source_directory": "/home/bitwise/.cache/arena_extended/deepshap/pinned_source_bundle",
+  "archive_sha256": "8ce6e26f6d5424a98ec6907a85a329a3a5033fccfa06da10cd75cc32d7745393",
+  "members": {
+    "deeplift-0201a21/LICENSE": {
+      "sha256": "44d99845e6c8d0423dc49856a74e74a244de8064156ad4ebd922b6ee9668ea42",
+      "size_bytes": 1068
+    },
+    "deeplift-0201a21/README.md": {
+      "sha256": "c2fd6d489a1aefd6996849bbca38ef31939e7d33f7a04bc60ac5f7dd729ff9d3",
+      "size_bytes": 31643
+    },
+    "deeplift-0201a21/activations.py": {
+      "sha256": "2d2538a763833a19250792f4bd55d14ee8f62ea64722a3dc8e5f89b82c528e26",
+      "size_bytes": 11709
+    },
+    "shap-v0.49.1/LICENSE": {
+      "sha256": "cf5c26305c632e5451b6eed7e0964a36c4cec1102f0c6467db063b3483a19127",
+      "size_bytes": 1081
+    },
+    "shap-v0.49.1/shap/explainers/_deep/__init__.py": {
+      "sha256": "31f6496511a73ae245863ac284927466508fa6c2b64a9aab69f57b5649c0afc0",
+      "size_bytes": 8066
+    },
+    "shap-v0.49.1/shap/explainers/_deep/deep_pytorch.py": {
+      "sha256": "a40f475a071807071dce2fab323366a4d7f5814306df6503d668cbd8bf482322",
+      "size_bytes": 15961
+    },
+    "shap-v0.49.1/shap/explainers/_deep/deep_utils.py": {
+      "sha256": "acd352a68ee4937f86c7a7e38e2a99a1aa46dae86b5d3ebdb19b55d98308f185",
+      "size_bytes": 1367
+    }
+  },
+  "large_tensors_retained_externally": {},
+  "readback_verified": true
+}

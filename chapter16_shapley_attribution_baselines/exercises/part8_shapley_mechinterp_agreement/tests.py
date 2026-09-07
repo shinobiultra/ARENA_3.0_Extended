@@ -1,3 +1,5 @@
+
+from arena_ext.notebook_checks import unfinished_definitions
 import ast
 import csv
 import json
@@ -400,7 +402,7 @@ def test_solution_notebook_exposes_taught_implementations():
         source = cell.get("source", "")
         if isinstance(source, list):
             source = "".join(source)
-        assert "NotImplementedError" not in source, (
+        assert not unfinished_definitions(source), (
             "The solution notebook must not retain learner stubs."
         )
         tree = ast.parse(source)
@@ -425,6 +427,7 @@ def test_solution_notebook_exposes_taught_implementations():
         "The solved notebook must expose every taught method inline; "
         f"missing {missing}."
     )
+    print("All tests in `test_solution_notebook_exposes_taught_implementations` passed!")
 
 
 def test_committed_gpu_report_records_agreement_and_controls():

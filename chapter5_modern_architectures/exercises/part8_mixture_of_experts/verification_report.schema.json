@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "[5.8] strict CUDA release report",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "notebook_id": {"const": "5_8_mixture_of_experts_from_scratch"},
+    "cuda_available": {"const": true},
+    "device": {"type": "string", "minLength": 1},
+    "steps": {"const": 180},
+    "seeds": {
+      "type": "array",
+      "prefixItems": [{"const": 7}, {"const": 19}, {"const": 31}],
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "peak_vram_gb": {"type": "number", "minimum": 0},
+    "max_vram_gb": {"type": "number", "exclusiveMinimum": 0},
+    "wall_clock_seconds": {"type": "number", "minimum": 0},
+    "metrics": {
+      "type": "object",
+      "properties": {
+        "context_only_router_probe_accuracy": {"type": "number", "minimum": 0, "maximum": 1},
+        "factorial_aux_main_effect_hard_load_entropy": {"type": "number"},
+        "factorial_aux_main_effect_dropped_fraction": {"type": "number"},
+        "factorial_z_main_effect_router_log_partition_rms": {"type": "number"},
+        "router_evaluated_positions": {"const": 3060.0},
+        "sparse_router_matmul_flops": {"const": 440640.0}
+      },
+      "required": [
+        "context_only_router_probe_accuracy",
+        "factorial_aux_main_effect_hard_load_entropy",
+        "factorial_aux_main_effect_dropped_fraction",
+        "factorial_z_main_effect_router_log_partition_rms",
+        "router_evaluated_positions",
+        "sparse_router_matmul_flops"
+      ]
+    },
+    "seed_metrics": {"type": "object"},
+    "dev_routing_by_regime": {"type": "array"},
+    "routing_by_regime": {"type": "array"},
+    "preferred_experts": {"type": "array"},
+    "requested_counts": {"type": "array"},
+    "kept_counts": {"type": "array"},
+    "intervention": {
+      "type": "object",
+      "properties": {
+        "intact_accuracy": {"type": "array"},
+        "ablated_accuracy": {"type": "array"},
+        "forced_accuracy": {"type": "array"}
+      },
+      "required": ["intact_accuracy", "ablated_accuracy", "forced_accuracy"],
+      "additionalProperties": false
+    },
+    "traces": {"type": "object"},
+    "accepted": {"type": "boolean"}
+  },
+  "required": [
+    "notebook_id",
+    "cuda_available",
+    "device",
+    "steps",
+    "seeds",
+    "peak_vram_gb",
+    "max_vram_gb",
+    "wall_clock_seconds",
+    "metrics",
+    "seed_metrics",
+    "dev_routing_by_regime",
+    "routing_by_regime",
+    "preferred_experts",
+    "requested_counts",
+    "kept_counts",
+    "intervention",
+    "traces",
+    "accepted"
+  ]
+}

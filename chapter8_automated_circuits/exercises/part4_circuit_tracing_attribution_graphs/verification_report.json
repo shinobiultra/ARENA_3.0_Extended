@@ -399,7 +399,7 @@
   "peak_vram_gb": 0.46683549880981445,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "648098d92e20b73657b7d317ff4ff83830ea253fc45ed4b43f52026a7a157bb2",
+    "combined_sha256": "36135adc90c4593beb6498bc01752061df3f46a0b78a7f8d4eb951fa985ea284",
     "files": [
       {
         "path": "arena_ext/__init__.py",
@@ -473,7 +473,7 @@
       },
       {
         "path": "chapter8_automated_circuits/instructions/pages/04_[8.4]_Circuit_Tracing_with_Attribution_Graphs.md",
-        "sha256": "befd9a95b3ff318fff48f973c5a532c50d2dbcbdc00c53efca228856ca582419",
+        "sha256": "13aa56f43f2fde37567acf564fd5368e1e41a8f9793f4d0d0f3b9f0b6c4f4ca8",
         "size_bytes": 50447
       },
       {

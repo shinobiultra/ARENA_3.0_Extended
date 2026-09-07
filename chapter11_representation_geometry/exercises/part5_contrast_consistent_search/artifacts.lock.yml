@@ -1,0 +1,124 @@
+notebook_id: 11_5_contrast_consistent_search
+section: '11.5'
+title: Contrast-Consistent Search
+execution_device: cpu
+exercise_metadata:
+  EXERCISE_ID: 11_5_contrast_consistent_search
+  GT_TIER: GT-0
+  DIFFICULTY: 4
+  IMPORTANCE: 5
+  EXPECTED_RUNTIME: About four hours study; several minutes for the complete reference
+    CPU notebook
+  REQUIRES_GPU: false
+gt_tier: GT-0
+evidence_level: exact_consistency_counterexample_and_native_gpt2_competing_opinions
+claim_scope: Learner-implemented original CCS loss, independent restarts, training-only
+  centering, calibration orientation and paired opinion-change metrics. Exact competing-feature
+  oracles and pinned author primitives connect to frozen GPT-2 at three sites, two
+  wrappers and three text variants. All 1152 reporters and 98304 final reporter scores
+  are retained; 3586 actual prefix vocabulary outputs reproduce after a fresh reload.
+  Controlled review classification does not establish truth discovery, beliefs, causal
+  necessity or whole-paper replication.
+required_gpu_gb: 0
+max_allowed_gpu_gb: 0
+safety_notes:
+- Controlled generated reviews use explicit binary adjectives; all pretrained weights
+  remain frozen.
+models:
+- id: gpt2
+  source: huggingface
+  revision: 607a30d783dfa663caf39e06633721c8d4cfcd7e
+  precision: float32
+  gated: false
+datasets:
+- id: frozen_ccs_controlled_reviews_v2
+  source: generated
+  protocol: ccs_data.py
+  train_base_reviews: 256
+  calibration_base_reviews: 64
+  development_base_reviews: 64
+  final_base_reviews: 64
+  final_contrast_pairs: 512
+expected_metrics:
+  tests_passed: true
+  accepted: true
+  test_count: 14
+  native_model_reloaded: true
+  actual_learner_passed: true
+  fresh_reproduction_passed: true
+  own_answer_code_cells: 32
+  embedded_figures: 15
+  final_prompt_count: 512
+  distinct_final_base_reviews: 64
+  retained_final_outcomes: 98304
+  fresh_compared_examples: 3586
+  fresh_condition_batches: 18
+  refitted_reporters: 1152
+  fresh_max_logit_error_max: 1.0e-05
+  fresh_top_token_mismatches: 0
+  primary_metric_matches_actual_tokens: true
+  all_reporters_refitted: true
+  weights_unchanged: true
+  model_gradients_absent: true
+  final_used_for_selection: false
+  whole_paper_replication: false
+controls:
+- exact_competing_feature_counterexample
+- pinned_author_loss_centering_parity
+- asymmetric_loss_complement_check
+- single_vs_batched_restart_parity
+- train_only_branch_centering
+- fixed_calibration_orientation
+- ten_all_restarts_per_mode
+- raw_no_centering_control
+- shuffled_pair_control
+- paired_difference_pca
+- supervised_labelled_probe
+- 32_matched_random_directions
+- neutral_reader_context_control
+- independent_opinion_crossed_with_target
+- all_three_sites_and_two_wrappers
+- all_native_errors_retained
+- restricted_vs_full_vocabulary_outputs
+- native_padding_and_full_model_parity
+- fixed_reporter_native_play
+- fresh_cpu_all_captures_and_refits
+freshness_inputs:
+- chapter11_representation_geometry/exercises/part5_contrast_consistent_search/build_notebooks.py
+- chapter11_representation_geometry/exercises/part5_contrast_consistent_search/ccs_data.py
+- chapter11_representation_geometry/exercises/part5_contrast_consistent_search/ccs_methods.py
+- chapter11_representation_geometry/exercises/part5_contrast_consistent_search/ccs_methods_tests.py
+- chapter11_representation_geometry/exercises/part5_contrast_consistent_search/ccs_native.py
+- chapter11_representation_geometry/exercises/part5_contrast_consistent_search/ccs_native_methods.py
+- chapter11_representation_geometry/exercises/part5_contrast_consistent_search/ccs_native_methods_tests.py
+- chapter11_representation_geometry/exercises/part5_contrast_consistent_search/ccs_reproduction.py
+- chapter11_representation_geometry/exercises/part5_contrast_consistent_search/ccs_reproduction_tests.py
+- chapter11_representation_geometry/exercises/part5_contrast_consistent_search/ccs_study.py
+- chapter11_representation_geometry/exercises/part5_contrast_consistent_search/execute_learner.py
+- chapter11_representation_geometry/exercises/part5_contrast_consistent_search/publish_study.py
+- chapter11_representation_geometry/exercises/part5_contrast_consistent_search/reference_parity.py
+- chapter11_representation_geometry/exercises/part5_contrast_consistent_search/solutions.py
+- chapter11_representation_geometry/exercises/part5_contrast_consistent_search/tests.py
+- chapter11_representation_geometry/exercises/part5_contrast_consistent_search/lesson.md
+- chapter11_representation_geometry/exercises/part5_contrast_consistent_search/native_protocol.md
+- chapter11_representation_geometry/exercises/part5_contrast_consistent_search/README.md
+- chapter11_representation_geometry/exercises/part5_contrast_consistent_search/expected_outputs/learner_execution.json
+- chapter11_representation_geometry/exercises/part5_contrast_consistent_search/expected_outputs/native_summary.json
+- chapter11_representation_geometry/exercises/part5_contrast_consistent_search/expected_outputs/fresh_reproduction.json
+- chapter11_representation_geometry/exercises/part5_contrast_consistent_search/expected_outputs/README.md
+- chapter11_representation_geometry/instructions/assets/ccs_contrast_geometry.png
+- chapter11_representation_geometry/instructions/assets/ccs_loss_landscape.png
+- chapter11_representation_geometry/instructions/assets/ccs_exact_counterexample.png
+- chapter11_representation_geometry/instructions/assets/ccs_restart_outcomes.png
+- chapter11_representation_geometry/instructions/assets/ccs_orientation_control.png
+- chapter11_representation_geometry/instructions/assets/ccs_direction_baselines.png
+- chapter11_representation_geometry/instructions/assets/ccs_distractor_strength_play.png
+- chapter11_representation_geometry/instructions/assets/ccs_native_development.png
+- chapter11_representation_geometry/instructions/assets/ccs_final_method_comparison.png
+- chapter11_representation_geometry/instructions/assets/ccs_final_all_restarts.png
+- chapter11_representation_geometry/instructions/assets/ccs_final_opinion_change.png
+- chapter11_representation_geometry/instructions/assets/ccs_final_random_controls.png
+- chapter11_representation_geometry/instructions/assets/ccs_native_output_baselines.png
+- chapter11_representation_geometry/instructions/assets/ccs_actual_review_gallery.png
+- chapter11_representation_geometry/instructions/assets/ccs_native_review_play.png
+- chapter11_representation_geometry/exercises/part4_concept_erasure/erasure_methods.py

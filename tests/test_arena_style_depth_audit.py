@@ -1,6 +1,32 @@
 import scripts.audit_arena_style_depth as audit
 
 
+def test_rendered_markdown_plot_does_not_require_signature_keyword(tmp_path):
+    page = tmp_path / "page.md"
+    page.write_text('''# What changed after retraining?
+<details><summary>Expected output</summary>Compare the curves.</details>
+<details><summary>Solution</summary>Shown in the notebook.</details>
+<details><summary>Help</summary>Use the matched control.</details>
+```python
+ax.plot(retained, measured_accuracy)
+```
+![Actual retraining curves](../assets/retraining.png)
+## Limitations
+Only these data and training seeds were tested.
+''')
+    assert audit._page_course_ready_blockers("16.11", page) == []
+
+
+def test_signature_alternative_requires_plotting_and_visible_output():
+    source = "ax.scatter(variability, confidence)"
+    image = "![Actual map](../assets/map.png)"
+    assert not audit._has_signature_result(source)
+    assert not audit._has_signature_result(image)
+    assert not audit._has_signature_result('print(verification_report)', has_embedded_figure=True)
+    assert audit._has_signature_result(source + image)
+    assert audit._has_signature_result(source, has_embedded_figure=True)
+
+
 def test_course_ready_page_rejects_keyword_stuffing(tmp_path):
     page = tmp_path / "page.md"
     page.write_text(
@@ -163,3 +189,12 @@ def test_notebook_setup_contract_accepts_defined_section_dir(tmp_path, monkeypat
     monkeypatch.setattr(audit, "ROOT", tmp_path)
 
     assert audit.notebook_setup_contract_blockers() == []
+
+
+def test_plain_help_dropdown_and_consequence_based_bug_guidance():
+    for title in ['Help', 'Help - a hint', 'Help: diagnose the shape']:
+        assert audit.HELP_DROPDOWN.search('<details>\n<summary>' + title + '</summary>\nUse the last real token.\n</details>')
+    assert not audit.HELP_DROPDOWN.search('This paragraph merely says help - with no dropdown.')
+    assert not audit.HELP_DROPDOWN.search('<details><summary>Helpful links</summary></details>')
+    assert audit.BUG_GUIDANCE.search('Confusing those positions would let the baseline read the inserted answer.')
+    assert not audit.BUG_GUIDANCE.search('The positions are confusing.')

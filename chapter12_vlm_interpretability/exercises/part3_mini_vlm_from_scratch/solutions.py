@@ -1,8 +1,8 @@
 """Reference solutions for [12.3] Mini VLM from Scratch.
 
-The section intentionally stays small enough to run on CPU. It trains a real
-PyTorch VQA model on rendered colored-shape scenes, then evaluates causal
-visual-token patching with object/background/random controls.
+The main word-level learner uses the visible language_* reference bodies.
+This module retains the engineered-token and categorical-decoder warm-up for
+compatibility, and exposes the full learner/CUDA verification entry points.
 """
 
 from __future__ import annotations
@@ -1239,7 +1239,7 @@ def save_signature_assets(result: dict[str, object], assets_dir: Path) -> tuple[
     return signature_path, heatmap_path
 
 
-def run_smoke_test(cpu: bool = True) -> dict[str, object]:
+def run_warmup_smoke_test(cpu: bool = True) -> dict[str, object]:
     """Compact contract used by tests and the notebook verification appendix."""
 
     device = "cpu" if cpu else "cuda"
@@ -1254,7 +1254,7 @@ def run_smoke_test(cpu: bool = True) -> dict[str, object]:
     }
 
 
-def run_gpu_test(max_vram_gb: float = 24.0) -> dict[str, object]:
+def run_warmup_gpu_test(max_vram_gb: float = 24.0) -> dict[str, object]:
     """Train and causally validate the MiniVLM on the release CUDA device."""
 
     if not t.cuda.is_available():
@@ -1299,9 +1299,43 @@ def run_gpu_test(max_vram_gb: float = 24.0) -> dict[str, object]:
     }
 
 
-def run_full_experiment(max_vram_gb: float = 24.0) -> dict[str, object]:
-    """Run the complete release experiment rather than a reduced smoke path."""
+def run_smoke_test(cpu: bool = True) -> dict[str, object]:
+    """Check the word path's gradients without claiming a trained-model result."""
+    from chapter12_vlm_interpretability.exercises.part3_mini_vlm_from_scratch import (
+        language_data as data, language_training as training, language_vlm as vlm,
+    )
+    device = "cpu" if cpu else "cuda"
+    t.manual_seed(0)
+    model = vlm.WordMiniVLM().to(device)
+    batch = training.make_word_task_batch(data.make_language_dataset("train", examples_per_combination=1))
+    logits = model(batch["images"][:3].to(device), batch["token_ids"][:3].to(device), batch["valid_mask"][:3].to(device))
+    loss = vlm.teacher_forced_answer_loss(logits, batch["token_ids"][:3].to(device), batch["target_mask"][:3].to(device))
+    loss.backward()
+    reached = {name: any(parameter.grad is not None and float(parameter.grad.abs().sum()) > 0
+                         for key, parameter in model.named_parameters() if key.startswith(name))
+               for name in ("vision.", "connector.", "word_embedding.", "decoder.", "unembed.")}
+    return {"accepted": bool(t.isfinite(loss)) and all(reached.values()),
+            "scope": "untrained_word_path_gradient_smoke_only", "loss": float(loss.detach()),
+            "word_logits_shape": list(logits.shape), "learned_groups_reached": reached}
 
+
+def run_gpu_test(max_vram_gb: float = 24.0) -> dict[str, object]:
+    """Require the complete word learner, then train and evaluate fresh CUDA controls."""
+    from chapter12_vlm_interpretability.exercises.part3_mini_vlm_from_scratch.word_cuda import run_fresh_word_cuda_check
+    return run_fresh_word_cuda_check(max_vram_gb=max_vram_gb)
+
+
+def run_full_experiment(max_vram_gb: float = 24.0) -> dict[str, object]:
+    """Execute all own answers and twelve fresh fits, publish, then recheck on CUDA."""
+    import subprocess
+    import tempfile
+    import sys
+    here = Path(__file__).resolve().parent
+    root_dir = here.parents[2]
+    output = Path(tempfile.mkdtemp(prefix="arena-word-full-")) / "execution"
+    subprocess.run([sys.executable, str(here / "build_notebooks.py")], cwd=root_dir, check=True)
+    subprocess.run([sys.executable, "-u", str(here / "execute_learner.py"), "--scope", "full",
+                    "--output-directory", str(output), "--publish"], cwd=root_dir, check=True)
     return run_gpu_test(max_vram_gb=max_vram_gb)
 
 

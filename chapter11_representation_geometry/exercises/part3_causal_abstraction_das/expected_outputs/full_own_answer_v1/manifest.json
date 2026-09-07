@@ -1,0 +1,39 @@
+{
+  "source_directory": "/home/bitwise/.cache/arena_extended/das/full-own-answer-v1",
+  "archive_sha256": "2c8c2b96f97653319c7d2d66ad62b336ec4fa3f6a90891eb092fa6de42244b93",
+  "members_sha256": {
+    "completed_learner.ipynb": "c8c62e4f660fdb2d7c828cf58a3173730b8dc66c8fb33e93dae937dde51a7720",
+    "execution.json": "12eac9acb1a620af4477eb71a8ceffc8336d1142438673c9bbba1b9e4c7eb5fe",
+    "figures/das_angle_play.png": "d0de23e4bb095a152f1fd2dc77fa625e7b6bbc1de0c2c30c279b606c0a1ae121",
+    "figures/das_coordinate_and_specificity.png": "d887161fe3b108e543666513622cfee277bcbbc8c2e8a20c503768da6f9773ff",
+    "figures/das_exact_interchanges.png": "11b9a69d0b76bf816c28fb3f1661a18b3372cfc8722a02d50d5b6d9b2ed3b032",
+    "figures/das_learning_and_controls.png": "d1a04e7b77668b682fca366c03c69e482defe5603f73dc86149e06c304133b23",
+    "figures/das_native_final_controls.png": "559651eba1b28e50f2d5ac20df1e4cb647630ee186938e6b86306c29bc7a2ac9",
+    "figures/das_native_pair_play.png": "6173e6b8169a02e1988d25a60d567ce80a6cdcdf31a8691dc7e6b2fa4a4a2126",
+    "figures/das_native_rank_selection.png": "2c49e4d17c53c9fece67a7e56ef54ba8a511f3cfe098dc34dbd86bf42c94a2c8",
+    "figures/das_native_site_comparison.png": "94bfc01982e7cb165e0ced8e5519581f16fe763ba03d96e62189c9a5387f4176",
+    "figures/das_native_site_play.png": "39deac55e1e36c263869b1aa9da8cc17e4cc0a5277c79d739c203928971258a2",
+    "figures/das_native_specificity.png": "0252e6ba5e8b20296083fc44bccb4d7c34e06dfba809e1282207566caae9e245",
+    "figures/das_native_token_examples.png": "5f16fbf6dda4a33159d53cc0812e7d29fd2a7724940a890e7f73a15856012148",
+    "figures/native_summary.json": "2431602e29fb25e331d49689355ebd4dc56d32cbe4ffef5b3a5b00ae13f57fa9",
+    "source_snapshot/build_notebooks.py": "fcb06b82351610f5773e15176119c2239e909ad3272a146ec566185528fdf3a5",
+    "source_snapshot/das_ioi_data.py": "c8cdaf671dce1282065966f0981b446de98511b353d6b1fac12c292f437ead19",
+    "source_snapshot/das_methods.py": "606c7446aee48d96367a258875040f03ad75adc2aead99d1cff46eae5ec9db0f",
+    "source_snapshot/das_methods_tests.py": "c02a53380103ac9a12cb8c6dfc8f948cdae9f35812d821f780fe600c2179230d",
+    "source_snapshot/das_native.py": "c25c36e165528797eb9377e72dd09fa6e1fdf80c21712986b0e16136f769c0de",
+    "source_snapshot/das_native_tests.py": "0b9d4214d9c8b6b8125b90d4401b338bde062aa06fd0ce189935a4e5844917ca",
+    "source_snapshot/das_organism.py": "97302ad3c0ee5397704a6a04e2fe5164ac81bd15ebd03c5d15a01185fed356a6",
+    "source_snapshot/das_protocol.py": "2be338d2be230544231b50cbaaac76ac2c88e28872bd4364713e686fd76563a3",
+    "source_snapshot/das_training_methods.py": "dc2f1645a2b0c651c358b9e973e5876fb654a535758752a4ccc1081b86982453",
+    "source_snapshot/das_training_tests.py": "ababa8da82e0e78a3342471e4035ffa016af1abf1dc046336be3ed1771e3f514",
+    "source_snapshot/execute_learner.py": "b21dff1bc97ad88ff349cb203dadd688bc774b87b29273f962d05551cc9b1797",
+    "source_snapshot/lesson.md": "9269647e0c69c0ae3852099dfca3c4c4f8b97adc3eee562a3d5205536ff3ad79",
+    "source_snapshot/native_protocol.md": "26f7002fdabdec9f72d6de1db2dc67678b6f856d9c403ea0e26d4cf9fc9661fd",
+    "source_snapshot/run_das_screen.py": "0c2b82e083249b339bb28643371e49a298ccd2cb0fa526bdbe049219b8b0ced2",
+    "source_snapshot/run_native_development.py": "3a0b72d3b79c7683548db702fede8f424ff7f29cdd1b1494381e46d8bc16f8f4"
+  },
+  "large_tensors_retained_in_source_directory": {
+    "figures/actual_native_tensors.pt": "5f95d395fdd0ec066d43c4696c369f9907622a4742163c9ecc868e8466409d67"
+  },
+  "all_archive_members_read_back_and_verified": true
+}

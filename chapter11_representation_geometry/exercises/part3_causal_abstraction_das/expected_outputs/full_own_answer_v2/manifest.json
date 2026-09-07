@@ -1,0 +1,42 @@
+{
+  "source_directory": "/home/bitwise/.cache/arena_extended/das/full-own-answer-v2",
+  "archive_sha256": "da5032cbd0e37bef4d54dedacb4dbad24c52e4e09b742decb9d05a2848ef9b82",
+  "members_sha256": {
+    "completed_learner.ipynb": "c3c7031d5d3255308460336f2ea9d926984d9e2ce102dcb8c16b48b19830593a",
+    "execution.json": "85ad9d11cfff8ffd619f8f6be342d13c7ef7bebbff27d25a3f9f109014bdabf0",
+    "figures/das_angle_play.png": "d0de23e4bb095a152f1fd2dc77fa625e7b6bbc1de0c2c30c279b606c0a1ae121",
+    "figures/das_coordinate_and_specificity.png": "d887161fe3b108e543666513622cfee277bcbbc8c2e8a20c503768da6f9773ff",
+    "figures/das_exact_interchanges.png": "11b9a69d0b76bf816c28fb3f1661a18b3372cfc8722a02d50d5b6d9b2ed3b032",
+    "figures/das_learning_and_controls.png": "d1a04e7b77668b682fca366c03c69e482defe5603f73dc86149e06c304133b23",
+    "figures/das_native_final_controls.png": "559651eba1b28e50f2d5ac20df1e4cb647630ee186938e6b86306c29bc7a2ac9",
+    "figures/das_native_generalization.png": "348f94ae87490d725101457c33d660ebdc4c65908659fe3a32034697d722b122",
+    "figures/das_native_pair_play.png": "6173e6b8169a02e1988d25a60d567ce80a6cdcdf31a8691dc7e6b2fa4a4a2126",
+    "figures/das_native_rank_selection.png": "2c49e4d17c53c9fece67a7e56ef54ba8a511f3cfe098dc34dbd86bf42c94a2c8",
+    "figures/das_native_site_comparison.png": "86fa92bd21ea9bae2f3e9274e3276814d50e5a92efc4934ed9bde1d7504f3319",
+    "figures/das_native_site_play.png": "39deac55e1e36c263869b1aa9da8cc17e4cc0a5277c79d739c203928971258a2",
+    "figures/das_native_specificity.png": "0252e6ba5e8b20296083fc44bccb4d7c34e06dfba809e1282207566caae9e245",
+    "figures/das_native_token_examples.png": "ee7b6bf9583cb0060c9068245a44e4b3600c5b22dc6da1c635f53196427eb74a",
+    "figures/native_summary.json": "2431602e29fb25e331d49689355ebd4dc56d32cbe4ffef5b3a5b00ae13f57fa9",
+    "published_prose_equivalence.json": "fdd71335b241bbad584e314a2c99cbf823ad7747c2e4c3f6c7200a0350043dd9",
+    "source_snapshot/build_notebooks.py": "fcb06b82351610f5773e15176119c2239e909ad3272a146ec566185528fdf3a5",
+    "source_snapshot/das_ioi_data.py": "c8cdaf671dce1282065966f0981b446de98511b353d6b1fac12c292f437ead19",
+    "source_snapshot/das_methods.py": "606c7446aee48d96367a258875040f03ad75adc2aead99d1cff46eae5ec9db0f",
+    "source_snapshot/das_methods_tests.py": "c02a53380103ac9a12cb8c6dfc8f948cdae9f35812d821f780fe600c2179230d",
+    "source_snapshot/das_native.py": "c25c36e165528797eb9377e72dd09fa6e1fdf80c21712986b0e16136f769c0de",
+    "source_snapshot/das_native_tests.py": "0b9d4214d9c8b6b8125b90d4401b338bde062aa06fd0ce189935a4e5844917ca",
+    "source_snapshot/das_organism.py": "97302ad3c0ee5397704a6a04e2fe5164ac81bd15ebd03c5d15a01185fed356a6",
+    "source_snapshot/das_protocol.py": "2be338d2be230544231b50cbaaac76ac2c88e28872bd4364713e686fd76563a3",
+    "source_snapshot/das_training_methods.py": "dc2f1645a2b0c651c358b9e973e5876fb654a535758752a4ccc1081b86982453",
+    "source_snapshot/das_training_tests.py": "ababa8da82e0e78a3342471e4035ffa016af1abf1dc046336be3ed1771e3f514",
+    "source_snapshot/execute_learner.py": "ac729943d3388661576b67761112c8e82ad35df8fa92ee7d073f1dc748cb2f09",
+    "source_snapshot/lesson.md": "33ec64e56bd3cf1767a9d950d089e25ea65056a18c399ad29d9c2954d908790e",
+    "source_snapshot/native_protocol.md": "12f052d2259789c546c6b147c5c3313b74e42269e18ddde4e6c296261441aa78",
+    "source_snapshot/run_das_screen.py": "0c2b82e083249b339bb28643371e49a298ccd2cb0fa526bdbe049219b8b0ced2",
+    "source_snapshot/run_native_development.py": "3a0b72d3b79c7683548db702fede8f424ff7f29cdd1b1494381e46d8bc16f8f4",
+    "visual_review.json": "dfc36c797473c0ac04a429ad2ea18a2f42c251f979e9019195e08d781c3315db"
+  },
+  "large_tensors_retained_in_source_directory": {
+    "figures/actual_native_tensors.pt": "5f95d395fdd0ec066d43c4696c369f9907622a4742163c9ecc868e8466409d67"
+  },
+  "all_archive_members_read_back_and_verified": true
+}

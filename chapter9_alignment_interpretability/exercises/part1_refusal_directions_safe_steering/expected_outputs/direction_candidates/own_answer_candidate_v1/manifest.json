@@ -1,0 +1,18 @@
+{
+  "execution.json.gz": {
+    "original_sha256": "48495f28a86d54b1108ac39d4ed71a23829945e07f5db1ad4e062b85944543c3",
+    "saved_sha256": "0b5244edf25db378ee3df24927ad5bfb9cdd7d032efc1f3a7939d52f250a7ec6"
+  },
+  "completed_learner.ipynb.gz": {
+    "original_sha256": "a1ba88930f5eff6928b240029b9b33d074d3dae2e7acdc81cc72958e323c5985",
+    "saved_sha256": "a26b29737f13a869769c6c80843e7f3e62f6baf979f28f8f7d02507b8089c48e"
+  },
+  "lesson_snapshot.md.gz": {
+    "original_sha256": "22f3e5796ce3164d3bb51fa5a1ef989b84368479c5a4f6427670b5d4eeceed2c",
+    "saved_sha256": "7fecc65240446ab11084d1fb6a296f0a6531e9d51969cfe8cdf1fb4b9f39dd3e"
+  },
+  "completed_refusal_study.json.gz": {
+    "original_sha256": "a29107e4f956d8878e36efb6a5eac308a173fe7af5b7a21a1c4c990b4997df99",
+    "saved_sha256": "a29107e4f956d8878e36efb6a5eac308a173fe7af5b7a21a1c4c990b4997df99"
+  }
+}

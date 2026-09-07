@@ -64,9 +64,9 @@
       "source": "generated_finite_table"
     }
   ],
-  "date_run": "2026-09-04T08:46:19+00:00",
+  "date_run": "2026-09-04T23:53:46+00:00",
   "evidence_level": "exact_fourier_oracle_plus_real_checkpoint_train_save_reload",
-  "git_commit": "b726d692",
+  "git_commit": "8eab192b",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-0",
   "known_failures": [],
@@ -405,7 +405,7 @@
         "generalization_scope": "Complete finite mod-13 addition table (169/169 input pairs); no held-out OOD extrapolation is claimed.",
         "intervention_rows": [
           {
-            "addition_fourier_score": 0.0001544082333566621,
+            "addition_fourier_score": 0.00015440826246049255,
             "legal_ablated_accuracy": 0.08284023404121399,
             "legal_ablation_drop": 0.0,
             "legal_only_accuracy": 0.0,
@@ -413,7 +413,7 @@
             "phase": "early",
             "random_ablated_accuracy": 0.08284023404121399,
             "random_ablation_drop": 0.0,
-            "random_fourier_score": 0.00030711721046827734,
+            "random_fourier_score": 0.0003071172395721078,
             "random_only_accuracy": 0.09467455744743347,
             "step": 0
           },
@@ -426,7 +426,7 @@
             "phase": "mid",
             "random_ablated_accuracy": 0.6568047404289246,
             "random_ablation_drop": 0.0059171319007873535,
-            "random_fourier_score": 0.0008140764548443258,
+            "random_fourier_score": 0.0008140768040902913,
             "random_only_accuracy": 0.06508875638246536,
             "step": 12
           },
@@ -439,7 +439,7 @@
             "phase": "late",
             "random_ablated_accuracy": 1.0,
             "random_ablation_drop": 0.0,
-            "random_fourier_score": 0.0004919822094962001,
+            "random_fourier_score": 0.0004919818602502346,
             "random_only_accuracy": 0.08284023404121399,
             "step": 180
           }
@@ -481,20 +481,20 @@
             "control_or_threshold": "<= 0.05",
             "passed": true,
             "quantity": "random-label peak Fourier score",
-            "value": 0.0037886658683419228
+            "value": 0.003788667032495141
           },
           {
             "control_or_threshold": "<= 0.05",
             "passed": true,
             "quantity": "same-size random Fourier peak",
-            "value": 0.0008140764548443258
+            "value": 0.0008140768040902913
           }
         ],
         "model_family": "tiny_modular_addition_mlp",
         "modulus": 13,
         "ood_generalization_claimed": false,
         "phase_transition_detected": true,
-        "phase_transition_jump": 0.14498722553253174,
+        "phase_transition_jump": 0.1449872851371765,
         "phase_transition_step": 24,
         "preflight_passed": true,
         "random_label_accuracy_control_passed": true,
@@ -515,26 +515,26 @@
           0.07692307978868484
         ],
         "random_label_addition_fourier_score_trajectory": [
-          0.0001544082333566621,
-          0.00015609883121214807,
-          0.00018444856686983258,
-          0.00026739711756817997,
-          0.00044581625843420625,
-          0.0006733362097293139,
-          0.0010077961487695575,
-          0.0019426709040999413,
-          0.002699614502489567,
+          0.00015440826246049255,
+          0.00015609878755640239,
+          0.00018444865418132395,
+          0.00026739685563370585,
+          0.0004458161711227149,
+          0.0006733365007676184,
+          0.0010077955666929483,
+          0.0019426716025918722,
+          0.002699614968150854,
           0.003346560290083289,
-          0.0035480326041579247,
-          0.0036492503713816404,
-          0.003711480414494872,
-          0.0037886658683419228
+          0.0035480328369885683,
+          0.003649249905720353,
+          0.00371147901751101,
+          0.003788667032495141
         ],
         "random_label_mechanism_control_passed": true,
         "random_label_peak_accuracy": 0.10650887340307236,
-        "random_label_peak_fourier_score": 0.0037886658683419228,
+        "random_label_peak_fourier_score": 0.003788667032495141,
         "random_mechanism_control_passed": true,
-        "random_mechanism_peak_score": 0.0008140764548443258,
+        "random_mechanism_peak_score": 0.0008140768040902913,
         "real_checkpoints_reloaded": true,
         "table_example_count": 169,
         "target_accuracy_trajectory": [
@@ -554,15 +554,15 @@
           1.0
         ],
         "target_addition_fourier_score_trajectory": [
-          0.0001544082333566621,
+          0.00015440826246049255,
           0.003906705416738987,
           0.020137330517172813,
-          0.08282065391540527,
+          0.08282063901424408,
           0.19623544812202454,
           0.3043513894081116,
           0.4014342427253723,
-          0.546421468257904,
-          0.645743727684021,
+          0.5464215278625488,
+          0.6457437872886658,
           0.720340371131897,
           0.7363097071647644,
           0.7438230514526367,
@@ -575,31 +575,31 @@
           2.511641025543213,
           2.4431369304656982,
           2.267300844192505,
-          2.0059003829956055,
+          2.0059001445770264,
           1.656125783920288,
           0.8274151682853699,
-          0.22761718928813934,
-          0.01530242245644331,
-          0.004683685023337603,
-          0.002356946002691984,
-          0.0017126244492828846,
-          0.0011288110399618745
+          0.22761720418930054,
+          0.015302427113056183,
+          0.0046836864203214645,
+          0.002356947399675846,
+          0.0017126251477748156,
+          0.0011288124369457364
         ],
         "target_random_fourier_score_trajectory": [
-          0.00030711721046827734,
-          0.00046738743549212813,
-          0.0006032685632817447,
-          0.000635959324426949,
-          0.0006772865308448672,
-          0.0008140764548443258,
-          0.0007344745681621134,
-          0.0005718094180338085,
-          0.0005439394153654575,
-          0.0005984348244965076,
-          0.0005884700804017484,
-          0.0005445146816782653,
-          0.000516692060045898,
-          0.0004919822094962001
+          0.0003071172395721078,
+          0.0004673874645959586,
+          0.0006032692035660148,
+          0.000635958684142679,
+          0.0006772859487682581,
+          0.0008140768040902913,
+          0.0007344746845774353,
+          0.0005718096508644521,
+          0.0005439391825348139,
+          0.0005984350573271513,
+          0.0005884699057787657,
+          0.0005445147398859262,
+          0.0005166923510842025,
+          0.0004919818602502346
         ]
       },
       "phase_transition": {
@@ -650,8 +650,13 @@
   "peak_vram_gb": 0.06286430358886719,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "93f71fd1896ab08a88fa3f6ea52c6744c7bc30893b95ad9fc422e08cec4cdef0",
+    "combined_sha256": "4a5e162c2bb8380832ce087477c38e8843055b01f4354c5ffa2d8559debf7985",
     "files": [
+      {
+        "path": "arena_ext/notebook_checks.py",
+        "sha256": "0033fd8978a45bf0cf5dd7ce790bb234add9d63c564c76479c0d8eb86973bacc",
+        "size_bytes": 1627
+      },
       {
         "path": "arena_ext/training_dynamics.py",
         "sha256": "068146be6cb1782ce38d86b1e9db23781c7e84ac98a7b432d40e2ea28b943c59",
@@ -679,8 +684,8 @@
       },
       {
         "path": "chapter17_training_dynamics/exercises/part1_checkpoint_archaeology/artifacts.lock.yml",
-        "sha256": "6ce2e8d85a8393b08a146fab6e8e9e132f63995dae66d605ac5f88757ec6a4d4",
-        "size_bytes": 3397
+        "sha256": "1d11787e8990e87e8ed838140d9b0e0dd1df205b885d83c7932a16ef2ec48afd",
+        "size_bytes": 3449
       },
       {
         "path": "chapter17_training_dynamics/exercises/part1_checkpoint_archaeology/expected_outputs/README.md",
@@ -704,8 +709,8 @@
       },
       {
         "path": "chapter17_training_dynamics/exercises/part1_checkpoint_archaeology/tests.py",
-        "sha256": "78d2c6098e263b1874519eb8a0e2de86eadd602789691f2a327eb8f87fc20158",
-        "size_bytes": 13948
+        "sha256": "0a3138363b7e6bd6999da904e3edcd69d5811c051dffe5e083f4eae084f54dd5",
+        "size_bytes": 13996
       },
       {
         "path": "chapter17_training_dynamics/exercises/part1_checkpoint_archaeology/utils.py",
@@ -735,5 +740,5 @@
     "The training path uses only a generated finite modular-addition table and a random-label negative control. It does not use user data, gated weights, or persistent large artifacts."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 7.249725
+  "wall_clock_seconds": 0.838353
 }

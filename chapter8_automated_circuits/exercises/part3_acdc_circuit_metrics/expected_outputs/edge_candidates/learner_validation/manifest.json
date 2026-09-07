@@ -1,0 +1,68 @@
+{
+  "scope": "partial_completed_learner_validation_not_full_release",
+  "files": [
+    {
+      "file": "greater_than_completed_learner.ipynb.gz",
+      "source_path": "/tmp/acdc-greater-than-completed-learner-v1/completed_learner.ipynb",
+      "uncompressed_sha256": "0f3080adad9a820bdac4298f9c18d5ebf9cdef838d9b25d9a8462cc18612b0be",
+      "compressed_sha256": "c98d8e293ba62b992d6696269809209d1bfc804a7e6c44fd4ddb430bffc51faf",
+      "compressed_bytes": 1311210
+    },
+    {
+      "file": "greater_than_lesson_snapshot.md.gz",
+      "source_path": "/tmp/acdc-greater-than-completed-learner-v1/lesson_snapshot.md",
+      "uncompressed_sha256": "d242596fcb21efc38ff55fb70eb1432193ed8a98029dc3e621c76651bd1b9ec2",
+      "compressed_sha256": "6dc0aa60305baa79c429cf3763cc7ad4e5844b5d17937051933e71d20174810d",
+      "compressed_bytes": 37772
+    },
+    {
+      "file": "greater_than_execution.json.gz",
+      "source_path": "/tmp/acdc-greater-than-completed-learner-v1/execution.json",
+      "uncompressed_sha256": "730d05b7b7bda3417cec04413d4f2146727f348341bb47098139fc1089ced592",
+      "compressed_sha256": "da1e1fd2b87edee38578645fd1d0ba4eb4719297df5cd1ec3622adf071f3b97c",
+      "compressed_bytes": 1753
+    },
+    {
+      "file": "ioi_attribution_completed_learner.ipynb.gz",
+      "source_path": "/tmp/acdc-ioi-attribution-completed-learner-v1/completed_learner.ipynb",
+      "uncompressed_sha256": "45eab48bd90c950aa76640c297e0637218fc6e38418dc6d74591f61a1fd9675d",
+      "compressed_sha256": "1bdf8ea32c6a785f5aca9c0abacd527dc378f59417c68f8d27278d0ca115bc29",
+      "compressed_bytes": 1117743
+    },
+    {
+      "file": "ioi_attribution_lesson_snapshot.md.gz",
+      "source_path": "/tmp/acdc-ioi-attribution-completed-learner-v1/lesson_snapshot.md",
+      "uncompressed_sha256": "fdb23d83890628864479796fa75d8e5107b91bf2194e586407c6e589c490032a",
+      "compressed_sha256": "421d5e296dd2c132851687093dc41af1e5b89e35eefca6c410b08da80bafc0bb",
+      "compressed_bytes": 43298
+    },
+    {
+      "file": "ioi_attribution_execution.json.gz",
+      "source_path": "/tmp/acdc-ioi-attribution-completed-learner-v1/execution.json",
+      "uncompressed_sha256": "7c226f18542970ad29e6e7b767cc762a521aeb3791c4845200c5ed9a41a57157",
+      "compressed_sha256": "c2858c9a2b4da46c6100cbd1f8549b027ae01361244ec306b7b080c1945de6cf",
+      "compressed_bytes": 273
+    },
+    {
+      "file": "numerical_completed_learner.ipynb.gz",
+      "source_path": "/tmp/acdc-full-draft-numerical-v2/completed_learner.ipynb",
+      "uncompressed_sha256": "6370206180af893f7bfb670f89eea6eb5ed5f670aa903c553c08e414bbdd4f4d",
+      "compressed_sha256": "89e487f83c1ef317bb8a500927aa952528a7725403f77ebb250e3ab53cae50f1",
+      "compressed_bytes": 213565
+    },
+    {
+      "file": "numerical_lesson_snapshot.md.gz",
+      "source_path": "/tmp/acdc-full-draft-numerical-v2/lesson_snapshot.md",
+      "uncompressed_sha256": "40f0e4f5be5284fdc74dc87f111c4e62327cd4f792756e8a1658730419613ab9",
+      "compressed_sha256": "07631f9fcb4d50cb436d84af24639a6e4827ad82bc29282f2a99f49077b6a17d",
+      "compressed_bytes": 43136
+    },
+    {
+      "file": "numerical_execution.json.gz",
+      "source_path": "/tmp/acdc-full-draft-numerical-v2/execution.json",
+      "uncompressed_sha256": "1a6bc86e73228374fc0c5c36134b096168433953f8e9d54ea77f86a8bcae3d9b",
+      "compressed_sha256": "0f1778c2ed3e4180880fdfe62010e5ffac1e9f131f2095da52e2f27724780e61",
+      "compressed_bytes": 1572
+    }
+  ]
+}

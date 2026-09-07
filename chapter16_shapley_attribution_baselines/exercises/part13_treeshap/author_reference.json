@@ -1,0 +1,11 @@
+{
+  "paper": "https://arxiv.org/abs/1802.03888",
+  "paper_pdf_sha256": "4bb594a16893a7534b8d3357c607e6ab356858a26d03b7d037d55f2ad2f7eef7",
+  "reference": "SHAP 0.49.1 installed wheel; compare compiled TreeExplainer, read Python and C++ path algorithms",
+  "documentation": "https://shap.readthedocs.io/en/latest/generated/shap.TreeExplainer.html",
+  "sources": {
+    "explainers/pytree.py": "6268bb35cdc149256de1d379e1b8eda2ac431142f822abc313e917f222c56563",
+    "explainers/_tree.py": "45c32dfd23e16610c90a437346b9267b6d3689da7b9b08a14a9583d364eb76a8",
+    "cext/tree_shap.h": "5453cb9ee20376a842cd3f5099c22118732f537ae8593062c7df13ea3661f73a"
+  }
+}

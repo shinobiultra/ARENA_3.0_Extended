@@ -932,10 +932,12 @@ def run_diffusiongemma_readiness_preflight(*, allow_network: bool = True) -> dic
 
 
 def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
+    from chapter5_modern_architectures.exercises.part5_diffusion_language_models.study_release import run_text_gpu_check
     tiny_report = run_trained_tiny_diffusion_lm_preflight(max_vram_gb=max_vram_gb)
     return {
         **tiny_report,
         **run_diffusiongemma_readiness_preflight(allow_network=True),
+        **run_text_gpu_check(max_vram_gb=max_vram_gb),
     }
 
 

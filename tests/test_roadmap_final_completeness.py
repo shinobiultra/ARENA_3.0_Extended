@@ -33,7 +33,7 @@ def test_current_roadmap_requirement_registry_is_structurally_valid():
     assert roadmap_requirement_registry_blockers() == []
 
 
-def test_current_registry_is_exhaustive_over_known_unsupported_families():
+def test_current_registry_is_exhaustive_over_selected_families():
     registry = load_roadmap_requirement_registry()
     by_id = {row["id"]: row for row in registry["requirements"]}
     required_missing = {
@@ -45,6 +45,7 @@ def test_current_registry_is_exhaustive_over_known_unsupported_families():
         "data_attribution.influence_functions",
         "data_attribution.tracin",
         "data_attribution.datamodels",
+        "data_attribution.dataset_cartography",
         "alignment.rome_model_editing",
         "alignment.memit_model_editing",
         "alignment.unlearning",
@@ -72,7 +73,35 @@ def test_current_registry_is_exhaustive_over_known_unsupported_families():
     }
 
     assert required_missing <= set(by_id)
-    assert all(by_id[requirement_id]["status"] == "UNIMPLEMENTED" for requirement_id in required_missing)
+    partial_implementations = {
+        "image.denoising_time_causal_patching": "PREFLIGHT_ONLY",
+        "jepa.ijepa_from_scratch": "TOY_ONLY",
+        "data_attribution.influence_functions": "TAUGHT",
+        "data_attribution.tracin": "TAUGHT",
+        "data_attribution.datamodels": "TAUGHT",
+        "data_attribution.dataset_cartography": "TAUGHT",
+        "shapley.sage": "TAUGHT",
+        "shapley.treeshap": "TAUGHT",
+        "shapley.deepshap": "TAUGHT",
+    }
+    for requirement_id in required_missing:
+        row = by_id[requirement_id]
+        assert row["status"] == partial_implementations.get(requirement_id, "UNIMPLEMENTED")
+        if row["status"] == "TAUGHT":
+            assert not row["blocker"]
+            expected_section = {
+                "data_attribution.datamodels": "16.10",
+                "data_attribution.dataset_cartography": "16.11",
+                "shapley.sage": "16.12",
+                "shapley.treeshap": "16.13",
+                "shapley.deepshap": "16.14",
+            }.get(requirement_id, "16.9")
+            assert row["section"] == expected_section
+            assert len(row["evidence"]) >= 5
+        else:
+            assert row["blocker"], "Partial or missing implementations must retain an explicit blocker."
+        if requirement_id in partial_implementations:
+            assert row["evidence"], "A partial implementation needs traceable existing evidence."
 
 
 def test_unimplemented_requirements_block_course_completion():
@@ -163,3 +192,35 @@ def test_final_completeness_gate_includes_registry_status_blockers(monkeypatch):
     assert audit.roadmap_final_completeness_blockers() == [
         "roadmap status: missing.topic: UNIMPLEMENTED - no learner surface"
     ]
+
+
+def test_refusal_requirement_rejects_missing_regeneration_and_full_replication_claim(monkeypatch):
+    import json
+    requirement = next(row for row in audit.REPORT_REQUIREMENTS if row.requirement_id == 'gt2_refusal_direction')
+    real_report = json.loads((audit.ROOT / requirement.report_path).read_text())
+    assert audit.report_requirement_blockers(requirement) == []
+    altered = deepcopy(real_report)
+    altered['metrics']['gpu_test']['fresh_generation_examples'] = 104
+    altered['metrics']['gpu_test']['paper_equivalent_full_replication'] = True
+    monkeypatch.setattr(audit, '_load_json', lambda path: altered)
+    blockers = audit.report_requirement_blockers(requirement)
+    assert any('fresh_generation_examples' in item for item in blockers)
+    assert any('paper_equivalent_full_replication' in item for item in blockers)
+
+
+def test_ccs_requirement_keeps_vocabulary_counts_refits_and_selection_separate(monkeypatch):
+    import json
+    requirement = next(row for row in audit.REPORT_REQUIREMENTS if row.requirement_id == 'gt0_contrast_consistent_search')
+    real = json.loads((audit.ROOT / requirement.report_path).read_text())
+    assert audit.report_requirement_blockers(requirement) == []
+    altered = deepcopy(real)
+    measured = altered['metrics']['gpu_test']
+    # Reporter scores must not be passed off as separate vocabulary forwards.
+    measured['fresh_compared_examples'] = measured['retained_final_outcomes']
+    measured['all_reporters_refitted'] = False
+    measured['final_used_for_selection'] = True
+    measured['whole_paper_replication'] = True
+    monkeypatch.setattr(audit, '_load_json', lambda path: altered)
+    blockers = audit.report_requirement_blockers(requirement)
+    for key in ['fresh_compared_examples', 'all_reporters_refitted', 'final_used_for_selection', 'whole_paper_replication']:
+        assert any(key in item for item in blockers), key

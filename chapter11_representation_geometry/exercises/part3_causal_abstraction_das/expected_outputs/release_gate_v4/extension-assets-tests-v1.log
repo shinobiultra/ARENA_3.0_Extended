@@ -1,0 +1,121 @@
+...F.FF.......                                                           [100%]
+=================================== FAILURES ===================================
+____________ test_every_extension_notebook_has_verification_assets _____________
+
+    def test_every_extension_notebook_has_verification_assets():
+        missing = []
+        for exercise_dir in extension_exercise_dirs():
+            expected_paths = [
+                exercise_dir / "README.md",
+                exercise_dir / "artifacts.lock.yml",
+                exercise_dir / "verification_report.json",
+                exercise_dir / "verification_report.schema.json",
+                exercise_dir / "expected_outputs/README.md",
+                exercise_dir / "expected_outputs/smoke_test.json",
+                exercise_dir / "expected_outputs/reference_metrics.json",
+            ]
+            missing.extend(path for path in expected_paths if not path.exists())
+    
+>       assert missing == []
+E       AssertionError: assert [PosixPath('/...etrics.json')] == []
+E         
+E         Left contains 3 more items, first extra item: PosixPath('/home/bitwise/Documents/ARENA_3.0_Extended/chapter11_representation_geometry/exercises/part2_cca_svcca_alignment/verification_report.schema.json')
+E         Use -v to get more diff
+
+tests/test_extension_verification_assets.py:195: AssertionError
+_________ test_artifact_locks_and_report_schemas_have_required_fields __________
+
+    def test_artifact_locks_and_report_schemas_have_required_fields():
+        for exercise_dir in extension_exercise_dirs():
+            lock = yaml.safe_load((exercise_dir / "artifacts.lock.yml").read_text())
+            report = json.loads((exercise_dir / "verification_report.json").read_text())
+            schema = json.loads((exercise_dir / "verification_report.schema.json").read_text())
+            smoke = json.loads((exercise_dir / "expected_outputs/smoke_test.json").read_text())
+    
+            assert REQUIRED_LOCK_FIELDS.issubset(lock)
+            assert lock["gt_tier"] in {"GT-0", "GT-1", "GT-2", "GT-3", "GT-4"}
+            assert EXERCISE_METADATA_FIELDS.issubset(lock["exercise_metadata"])
+            assert lock["exercise_metadata"]["EXERCISE_ID"] == lock["notebook_id"]
+            assert lock["exercise_metadata"]["GT_TIER"] == lock["gt_tier"]
+            assert 1 <= lock["exercise_metadata"]["DIFFICULTY"] <= 5
+            assert 1 <= lock["exercise_metadata"]["IMPORTANCE"] <= 5
+            assert isinstance(lock["exercise_metadata"]["EXPECTED_RUNTIME"], str)
+            assert lock["exercise_metadata"]["EXPECTED_RUNTIME"]
+            assert isinstance(lock["exercise_metadata"]["REQUIRES_GPU"], bool)
+            assert lock["max_allowed_gpu_gb"] <= 24
+            assert set(schema["required"]) == REQUIRED_REPORT_FIELDS
+            assert REQUIRED_REPORT_FIELDS.issubset(report)
+            assert report["report_inputs"]["algorithm"] == "sha256"
+            assert report["report_inputs"]["combined_sha256"]
+            input_paths = {item["path"] for item in report["report_inputs"]["files"]}
+            assert input_paths
+            assert (exercise_dir / "solutions.py").relative_to(ROOT).as_posix() in input_paths
+            assert (exercise_dir / "artifacts.lock.yml").relative_to(ROOT).as_posix() in input_paths
+            exercise_prefix = exercise_dir.relative_to(ROOT).as_posix()
+            assert any(
+                path.startswith(f"{exercise_prefix}/") and path.endswith("_exercises.ipynb")
+                for path in input_paths
+            )
+            assert any(
+                path.startswith(f"{exercise_prefix}/") and path.endswith("_solutions.ipynb")
+                for path in input_paths
+            )
+            chapter_dir = exercise_dir.parents[1].relative_to(ROOT).as_posix()
+            assert any(
+                path.startswith(f"{chapter_dir}/instructions/pages/") and path.endswith(".md")
+                for path in input_paths
+            )
+            assert report["notebook_id"] == lock["notebook_id"]
+            assert report["gt_tier"] == lock["gt_tier"]
+            assert report["evidence_level"] == lock["evidence_level"]
+            assert report["claim_scope"] == lock["claim_scope"]
+            assert "gpu_evidence" in report["metrics"]
+            assert report["metrics"]["gpu_evidence"]["category"] in {
+                "cuda_section_metric",
+                "cuda_environment_or_budget",
+                "cpu_or_budget_metric",
+                "placeholder_only",
+                "missing",
+            }
+            section_specific_expected_metrics = set(lock["expected_metrics"]) - {
+                "tests_passed",
+                "accepted",
+                "max_allowed_gpu_gb",
+            }
+            assert section_specific_expected_metrics
+            assert report["tests_passed"] is True
+            assert report["accepted"] is True
+            assert report["peak_vram_gb"] <= lock["max_allowed_gpu_gb"]
+>           assert smoke["notebook_id"] == lock["notebook_id"]
+                   ^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'notebook_id'
+
+tests/test_extension_verification_assets.py:302: KeyError
+____ test_expected_output_fixture_readmes_record_provenance_and_tolerances _____
+
+    def test_expected_output_fixture_readmes_record_provenance_and_tolerances():
+        required_phrases = [
+            "How this fixture was produced",
+            "Trusted implementation",
+            "Random seed",
+            "Allowed tolerances",
+            "When to regenerate",
+            "rtol=",
+            "atol=",
+        ]
+        for exercise_dir in extension_exercise_dirs():
+            readme = (exercise_dir / "expected_outputs/README.md").read_text()
+            missing_phrases = [phrase for phrase in required_phrases if phrase not in readme]
+>           assert missing_phrases == [], f"{exercise_dir}: missing provenance {missing_phrases}"
+E           AssertionError: /home/bitwise/Documents/ARENA_3.0_Extended/chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering: missing provenance ['How this fixture was produced', 'Trusted implementation', 'Random seed', 'Allowed tolerances', 'When to regenerate', 'rtol=', 'atol=']
+E           assert ['How this fi... 'rtol=', ...] == []
+E             
+E             Left contains 7 more items, first extra item: 'How this fixture was produced'
+E             Use -v to get more diff
+
+tests/test_extension_verification_assets.py:322: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_extension_verification_assets.py::test_every_extension_notebook_has_verification_assets
+FAILED tests/test_extension_verification_assets.py::test_artifact_locks_and_report_schemas_have_required_fields
+FAILED tests/test_extension_verification_assets.py::test_expected_output_fixture_readmes_record_provenance_and_tolerances
+3 failed, 11 passed in 0.67s

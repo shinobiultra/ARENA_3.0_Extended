@@ -863,7 +863,7 @@
   "peak_vram_gb": 0.5876307487487793,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "568081bf8145dc7b325b994c75dbc40b663d8bc1d1512fd41fc4bf97fe316712",
+    "combined_sha256": "c4362f8185624c56d3654f5859cf8ee35d4afeb17dab784cc35ed75261599754",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -927,7 +927,7 @@
       },
       {
         "path": "chapter8_automated_circuits/instructions/pages/05_[8.5]_Sparse_Feature_Circuits.md",
-        "sha256": "7e42e7213427186f303c77f158c8933c4b50140d08c1fb63683ea029234e4857",
+        "sha256": "7cec15522d2ce79670d8b3e1eabaf1a56c3aba083008dc70658f364f7adf1b1b",
         "size_bytes": 73635
       },
       {

@@ -1,119 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ARENA extension verification report",
+  "type": "object",
   "additionalProperties": true,
-  "properties": {
-    "accepted": {
-      "type": "boolean"
-    },
-    "baselines": {
-      "type": "object"
-    },
-    "claim_scope": {
-      "type": "string"
-    },
-    "datasets": {
-      "type": "array"
-    },
-    "date_run": {
-      "type": "string"
-    },
-    "evidence_level": {
-      "type": "string"
-    },
-    "git_commit": {
-      "type": "string"
-    },
-    "gpu_name": {
-      "type": "string"
-    },
-    "gt_tier": {
-      "enum": [
-        "GT-0",
-        "GT-1",
-        "GT-2",
-        "GT-3",
-        "GT-4"
-      ],
-      "type": "string"
-    },
-    "known_failures": {
-      "type": "array"
-    },
-    "metrics": {
-      "type": "object"
-    },
-    "models": {
-      "type": "array"
-    },
-    "negative_controls": {
-      "type": "object"
-    },
-    "notebook_id": {
-      "type": "string"
-    },
-    "ood_tests": {
-      "type": "object"
-    },
-    "peak_vram_gb": {
-      "minimum": 0,
-      "type": "number"
-    },
-    "report_inputs": {
-      "properties": {
-        "algorithm": {
-          "const": "sha256",
-          "type": "string"
-        },
-        "combined_sha256": {
-          "type": "string"
-        },
-        "files": {
-          "items": {
-            "properties": {
-              "path": {
-                "type": "string"
-              },
-              "sha256": {
-                "type": "string"
-              },
-              "size_bytes": {
-                "minimum": 0,
-                "type": "integer"
-              }
-            },
-            "required": [
-              "path",
-              "sha256",
-              "size_bytes"
-            ],
-            "type": "object"
-          },
-          "type": "array"
-        },
-        "schema_version": {
-          "const": 1,
-          "type": "integer"
-        }
-      },
-      "required": [
-        "schema_version",
-        "algorithm",
-        "combined_sha256",
-        "files"
-      ],
-      "type": "object"
-    },
-    "safety_notes": {
-      "type": "array"
-    },
-    "tests_passed": {
-      "type": "boolean"
-    },
-    "wall_clock_seconds": {
-      "minimum": 0,
-      "type": "number"
-    }
-  },
   "required": [
     "notebook_id",
     "date_run",
@@ -136,6 +25,35 @@
     "safety_notes",
     "accepted"
   ],
-  "title": "ARENA extension verification report",
-  "type": "object"
+  "properties": {
+    "notebook_id": {"const": "7_4_mini_natural_language_autoencoders"},
+    "date_run": {"type": "string"},
+    "git_commit": {"type": "string"},
+    "report_inputs": {
+      "type": "object",
+      "required": ["schema_version", "algorithm", "combined_sha256", "files"],
+      "properties": {
+        "schema_version": {"const": 1, "type": "integer"},
+        "algorithm": {"const": "sha256", "type": "string"},
+        "combined_sha256": {"type": "string"},
+        "files": {"type": "array", "minItems": 1, "items": {"type": "object"}}
+      }
+    },
+    "gt_tier": {"const": "GT-3"},
+    "evidence_level": {"type": "string"},
+    "claim_scope": {"type": "string"},
+    "gpu_name": {"type": "string"},
+    "peak_vram_gb": {"type": "number", "minimum": 0, "maximum": 24},
+    "wall_clock_seconds": {"type": "number", "minimum": 0},
+    "models": {"type": "array"},
+    "datasets": {"type": "array"},
+    "tests_passed": {"type": "boolean"},
+    "metrics": {"type": "object"},
+    "baselines": {"type": "object"},
+    "negative_controls": {"type": "object"},
+    "ood_tests": {"type": "object"},
+    "known_failures": {"type": "array"},
+    "safety_notes": {"type": "array"},
+    "accepted": {"type": "boolean"}
+  }
 }

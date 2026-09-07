@@ -1,0 +1,409 @@
+{
+  "accepted": true,
+  "baselines": {
+    "declared_controls": [
+      "exact_small_subset_enumeration",
+      "independent_scalar_proximal_oracle",
+      "orthogonal_KKT_ground_truth",
+      "sklearn_coordinate_descent_parity",
+      "rank_deficient_coefficient_offset_fixture",
+      "separate_and_batched_classifier_refits",
+      "independent_scipy_optima",
+      "intercept_only_and_minimum_norm_least_squares",
+      "permuted_subset_response_control",
+      "all_three_subsampling_fractions",
+      "all_regularization_paths_and_training_prefixes",
+      "test_subset_responses_excluded_from_selection",
+      "signed_pixel_neighbor_deletions",
+      "16_class_matched_random_deletions_per_policy",
+      "all_queries_and_failures_retained",
+      "coordinate_shuffled_similarity",
+      "fresh_complete_native_retraining",
+      "editable_interaction_and_real_query_plays"
+    ],
+    "expected_metrics": {
+      "accepted": true,
+      "actual_learner_passed": true,
+      "embedded_figures": 15,
+      "exploratory_refits": 18,
+      "fresh_compared_elements": 5546159,
+      "fresh_compared_tensors": 263,
+      "fresh_max_error_max": 1e-10,
+      "fresh_reproduction_passed": true,
+      "heldout_model_count": 768,
+      "heldout_unit": "training_subset_model",
+      "independent_lasso_checks": 12,
+      "independent_scipy_checks": 10,
+      "native_evidence_reused": false,
+      "native_model_retrained": true,
+      "native_model_retrained_in_this_report": true,
+      "own_answer_code_cells": 31,
+      "query_image_count": 64,
+      "query_images_excluded_from_classifier_training": true,
+      "query_images_used_as_regression_targets": true,
+      "reference_refits": 10753,
+      "test_count": 12,
+      "test_responses_used_for_selection": false,
+      "tests_passed": true,
+      "whole_paper_replication": false
+    }
+  },
+  "claim_scope": "Visible fixed-cardinality subset sampling, correct-class margins, checked Lasso, validation-only path selection and counterfactual deletion. A 65-parameter digit classifier supplies 10753 independently converged model fits. Held-out training subsets test query-specific datamodel predictions; query images are excluded from classifier training but intentionally supply datamodel targets. Same-size accuracy, mostly dense coefficients and deletion calibration errors are retained. This is not a stochastic ResNet or whole-paper replication.",
+  "datasets": [
+    {
+      "id": "uci_optdigits",
+      "license": "CC BY 4.0",
+      "manifest": "data_manifest.json",
+      "query": 64,
+      "revision": "0d7b054fea010270e9b3f06411c654c5e59547732ad626381980baffe0a23fb0",
+      "source": "uci",
+      "train": 128
+    }
+  ],
+  "date_run": "2026-09-06T10:44:47+00:00",
+  "evidence_level": "independent_lasso_oracles_and_real_subset_retraining",
+  "git_commit": "8eab192b",
+  "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+  "gt_tier": "GT-0",
+  "known_failures": [],
+  "metrics": {
+    "gpu_evidence": {
+      "category": "cpu_or_budget_metric",
+      "placeholder_only": false,
+      "section_specific_metric_keys": [
+        "actual_learner_passed",
+        "embedded_figures",
+        "exploratory_refits",
+        "fresh_compared_elements",
+        "fresh_compared_tensors",
+        "fresh_elapsed_seconds",
+        "fresh_evidence_sha256",
+        "fresh_max_error",
+        "fresh_output_directory",
+        "fresh_reproduction_passed",
+        "heldout_model_count",
+        "heldout_unit",
+        "independent_lasso_checks",
+        "independent_scipy_checks",
+        "learner_evidence_sha256",
+        "native_evidence_reused",
+        "native_model_retrained",
+        "native_model_retrained_in_this_report",
+        "own_answer_code_cells",
+        "query_image_count",
+        "query_images_excluded_from_classifier_training",
+        "query_images_used_as_regression_targets",
+        "reference_refits",
+        "test_responses_used_for_selection",
+        "whole_paper_replication"
+      ],
+      "uses_cuda": false
+    },
+    "gpu_test": {
+      "actual_learner_passed": true,
+      "cuda_available": false,
+      "cuda_version": "13.2",
+      "device": "cpu",
+      "embedded_figures": 15,
+      "exploratory_refits": 18,
+      "fresh_compared_elements": 5546159,
+      "fresh_compared_tensors": 263,
+      "fresh_elapsed_seconds": 7.429960163997748,
+      "fresh_evidence_sha256": "b9eff0e2d0e72a201c3be0d32cd1c81b61b89f8d32410d25db31ce80de9f6dfb",
+      "fresh_max_error": 0.0,
+      "fresh_output_directory": "/home/bitwise/.cache/arena_extended/datamodels/report_reproductions/report-xuz1z3e7/fresh_cpu",
+      "fresh_reproduction_passed": true,
+      "gpu_total_memory_gb": 23.45965576171875,
+      "heldout_model_count": 768,
+      "heldout_unit": "training_subset_model",
+      "independent_lasso_checks": 12,
+      "independent_scipy_checks": 10,
+      "learner_evidence_sha256": "c0a4c7fa18c66f98c7d2bd6b54cf3e661425200843eb628d464a7e1e444d1180",
+      "native_evidence_reused": false,
+      "native_model_retrained": true,
+      "native_model_retrained_in_this_report": true,
+      "own_answer_code_cells": 31,
+      "peak_vram_gb": 0.0,
+      "query_image_count": 64,
+      "query_images_excluded_from_classifier_training": true,
+      "query_images_used_as_regression_targets": true,
+      "reference_refits": 10753,
+      "test_responses_used_for_selection": false,
+      "torch_version": "2.12.1+cu132",
+      "whole_paper_replication": false,
+      "within_vram_budget": true
+    },
+    "notebook_contract": {
+      "accepted": true,
+      "claim_scope": "Independent subset, margin, proximal, KKT, Lasso and intervention checks.",
+      "test_count": 12,
+      "tests_passed": true
+    }
+  },
+  "models": [
+    {
+      "gated": false,
+      "id": "course_digit3_8_logistic65",
+      "precision": "float64",
+      "revision": "frozen_datamodels_protocol_v1",
+      "source": "generated_training_run"
+    }
+  ],
+  "negative_controls": {
+    "declared_controls": [
+      "16_class_matched_random_deletions_per_policy"
+    ]
+  },
+  "notebook_id": "16_10_datamodels",
+  "ood_tests": {
+    "declared": "required_where_applicable"
+  },
+  "peak_vram_gb": 0.0,
+  "report_inputs": {
+    "algorithm": "sha256",
+    "combined_sha256": "2b74807422083d057c09e7ed4c658f66fc3cf41c47cc969d5f037fc8ea100d94",
+    "files": [
+      {
+        "path": "arena_ext/verification.py",
+        "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
+        "size_bytes": 9276
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part10_datamodels/16.10_Datamodels_exercises.ipynb",
+        "sha256": "6295199bc70618083394543e2e29bddb199753b6a2e527719d88963cfa472995",
+        "size_bytes": 1425170
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part10_datamodels/16.10_Datamodels_solutions.ipynb",
+        "sha256": "d0ad9d62d6d4d42a0be806f7d6b9b1878763a6d7999c060bab408a9df480fe8d",
+        "size_bytes": 1435270
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part10_datamodels/README.md",
+        "sha256": "457adb74910cbe3a745129313626f8a6c410afc0fcffe9d1ca2ee0c95797a2e0",
+        "size_bytes": 2555
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part10_datamodels/artifacts.lock.yml",
+        "sha256": "422bd9a35312b326c2faa8fb8032ac08d20b1150d7854b9e878e2b60557ad6e3",
+        "size_bytes": 6520
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part10_datamodels/build_notebooks.py",
+        "sha256": "e11d5d9692e92acc3d9e6895c67fe3965abd211cc13a6e6b0d202009aa6271a7",
+        "size_bytes": 4648
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part10_datamodels/data_manifest.json",
+        "sha256": "153c7cd06df8988ff10032de373f8ccda1b42ba43bfe1da427357b3a5fb0f0e3",
+        "size_bytes": 6911
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part10_datamodels/datamodel_contract_tests.py",
+        "sha256": "a2e12eb3d2a76201f131c6e72fbb4c479c3b602b7e38985db524a5ff06f59dd3",
+        "size_bytes": 6382
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part10_datamodels/datamodel_data.py",
+        "sha256": "b4592f2233b1b29cd1dd640ae8085a523c766a523c395acce5420272ea645384",
+        "size_bytes": 2478
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part10_datamodels/datamodel_methods.py",
+        "sha256": "889eb435db076656b2e98fbbdf23d8974ed1858fadab409eb7750e5138f4d5d1",
+        "size_bytes": 9767
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part10_datamodels/datamodel_methods_tests.py",
+        "sha256": "aea894497e616402244d5a1d18e628aa216b7be1a5e2efa3261c37226252df37",
+        "size_bytes": 11354
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part10_datamodels/datamodel_study.py",
+        "sha256": "eab8c349cfdd78cf533be33492d51ff6031eb940ad2adc1bb2e05f3389a4a735",
+        "size_bytes": 11315
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part10_datamodels/execute_learner.py",
+        "sha256": "fd181c053d386c61d8fadd01ae31cf51424575045bb0f4574717d0eecac676d0",
+        "size_bytes": 5903
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part10_datamodels/expected_outputs/README.md",
+        "sha256": "ca3b2ae84f151da9cc658cf8feb81f41ea5905f0531f7c4b7f90581eb0564da9",
+        "size_bytes": 2914
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part10_datamodels/expected_outputs/fresh_reproduction.json",
+        "sha256": "b9eff0e2d0e72a201c3be0d32cd1c81b61b89f8d32410d25db31ce80de9f6dfb",
+        "size_bytes": 4178
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part10_datamodels/expected_outputs/learner_execution.json",
+        "sha256": "c0a4c7fa18c66f98c7d2bd6b54cf3e661425200843eb628d464a7e1e444d1180",
+        "size_bytes": 11309
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part10_datamodels/expected_outputs/native_summary.json",
+        "sha256": "77336a4ac2c0d2c3f4c548fdb239ae4b2e82eea712969e5cf9d80672cae78b2a",
+        "size_bytes": 464
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part10_datamodels/lesson.md",
+        "sha256": "83138abc0bda16d67d01da6fd7ee900b9f2ffe2d2cef39c62a2bf93c32e87bac",
+        "size_bytes": 77663
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part10_datamodels/protocol.md",
+        "sha256": "01061ec436553e02d6496e8e2f5faa65d06cdff3345bca4d19f6ef490a8a06af",
+        "size_bytes": 7097
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part10_datamodels/protocol_freeze.json",
+        "sha256": "dcc5b5de9e5897a5f8e03737afd6c0b195742b46be5052969c3f93b33831ca9b",
+        "size_bytes": 523
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part10_datamodels/publish_study.py",
+        "sha256": "e9be1d237064a1b33a8310e779ed867d355c98713b360f300be910613f1f0e5b",
+        "size_bytes": 8260
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part10_datamodels/reproduce_native.py",
+        "sha256": "df15b22764cc62b4cd04fee3d2d16ee653420229ee66a4abfdb719f8e23301af",
+        "size_bytes": 4861
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part10_datamodels/run_native.py",
+        "sha256": "7f591260f8cef12595b75158847c7c937985bb2349e653c0c1dd2878e07961e6",
+        "size_bytes": 9854
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part10_datamodels/solutions.py",
+        "sha256": "17e9294e4c14aca647226b3249e32e29d453c60b085352bbf0d23bc3c56d3ab3",
+        "size_bytes": 3977
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part10_datamodels/tests.py",
+        "sha256": "91fdbd7c9dddf49daf8d75f4f990441eb283fa062e06f83e15a8c7f5370e133e",
+        "size_bytes": 147
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part10_datamodels/verification_report.schema.json",
+        "sha256": "6866d119eaa1d2da0386c6b0423026e03b08b215e7077d7af52221cb51b5afea",
+        "size_bytes": 2669
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/attribution_data.py",
+        "sha256": "eaa4954f3255d3f82082dc30baef1051f03c0cad4afab806e9cb16d810101ab3",
+        "size_bytes": 5582
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/attribution_methods.py",
+        "sha256": "f6f0712d185182b7e43a6bc8bb8b6e401e019e33326f0e59d2d75dda522df046",
+        "size_bytes": 16788
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/attribution_reference.py",
+        "sha256": "bd342601bc81ba5e5b3f3bc193900643f089b9d8e8f6cdd22022cc0688ed8303",
+        "size_bytes": 1119
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/reproduce_native.py",
+        "sha256": "db9ceda4b56d549fb448f8bcd003d034db7502b0e5696c49af030065c5a862d0",
+        "size_bytes": 8482
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/datamodel_coefficient_gallery.png",
+        "sha256": "c2fdd881b41287e261bf896a89010fd776ae2e987adfa0e238c83010b6854c39",
+        "size_bytes": 142024
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/datamodel_cross_fraction.png",
+        "sha256": "6fb1bcce812b17824fec464eab2f99b2215e07cb47dc36a6d74a1094aebed77b",
+        "size_bytes": 50611
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/datamodel_deletion_curves.png",
+        "sha256": "25529549b94f4b6df4670a9e11a2950ce2f21c97828b158748d39abfad3e74ee",
+        "size_bytes": 175604
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/datamodel_fixture_play.png",
+        "sha256": "54bd3dfb6364d0e4d43e5c0028e073f7b9f4efcc516a3d360da6ba47d9434d44",
+        "size_bytes": 80985
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/datamodel_gauge.png",
+        "sha256": "25310255b7c2e05350f9a26067d0ec50046ca9f0e76da1d3e3d196cc6bce9411",
+        "size_bytes": 85117
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/datamodel_heldout_predictions.png",
+        "sha256": "6f2ae9a271683890fb1a5f6ebc817f96e80d0f7f012106448af492e1211b2914",
+        "size_bytes": 174758
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/datamodel_images.png",
+        "sha256": "f042428abf8f3893ae9fbbd9df98c2ae0d953c1a703c1e8045ffea7f62dda1d9",
+        "size_bytes": 39237
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/datamodel_individual_flips.png",
+        "sha256": "fe251d46a16fc8b4e63bd27270cbf95a05f7e6ffd6d032c29788e6f2b70b046a",
+        "size_bytes": 179445
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/datamodel_membership.png",
+        "sha256": "5dce0ea5245d97312b26c528e8513bcf5496104ad6b4021dde442cfb7c52776b",
+        "size_bytes": 53470
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/datamodel_query_r2.png",
+        "sha256": "78f1819aa53bd64ecef7a13436dbda1fae923a1bda9b845180c0abdca38779cd",
+        "size_bytes": 141858
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/datamodel_real_play.png",
+        "sha256": "10f6e876e3fb4273a55db124b64718f4130d2ede9551310be862959c32ce0931",
+        "size_bytes": 54766
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/datamodel_sample_complexity.png",
+        "sha256": "98f5d65b4b2b3bcbc0315e020f427cc13060f8e0d85737f94d453ec615259e17",
+        "size_bytes": 135291
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/datamodel_similarity.png",
+        "sha256": "17ca313bc1d19e3b0efab9bd63373acd40b0a03f91e15391a9aa3370ffe29529",
+        "size_bytes": 114110
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/datamodel_soft_threshold.png",
+        "sha256": "f1b8fc3538dca197184c1de83d922d40b9516b2ac5d409b73b3a8e833a04848e",
+        "size_bytes": 56951
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/datamodel_validation_path.png",
+        "sha256": "51babf208ed2dd40070087489feb136f6185afee5a1260a4dbe0cb351ce3481c",
+        "size_bytes": 160331
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/pages/10_[16.10]_Datamodels.md",
+        "sha256": "a45261c7cfed27d76ab051cb774116261a460b02b3f5a860c41ca5a1edca9a7f",
+        "size_bytes": 77092
+      },
+      {
+        "path": "scripts/run_extension_verification_reports.py",
+        "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
+        "size_bytes": 16272
+      }
+    ],
+    "schema_version": 1
+  },
+  "safety_notes": [
+    "Public UCI digit images with original labels and source row provenance."
+  ],
+  "tests_passed": true,
+  "wall_clock_seconds": 9.626284
+}

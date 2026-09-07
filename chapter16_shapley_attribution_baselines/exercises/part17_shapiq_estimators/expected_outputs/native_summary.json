@@ -1,0 +1,54 @@
+{
+  "status": "PASS",
+  "scope": "complete fixed logical-query study on reproduced model games",
+  "models": 7,
+  "rows": 272,
+  "games": 1904,
+  "pairs": 28,
+  "replicates_per_proposal": 32,
+  "proposals": [
+    "kernel",
+    "uniform"
+  ],
+  "draw_budgets": [
+    16,
+    32,
+    64,
+    128,
+    256,
+    512,
+    1024
+  ],
+  "known_model_state_checks": 21,
+  "reference_donor_predictions": 31195136,
+  "sampling_plans_data_independent": true,
+  "estimator_inputs_only_queried_values": true,
+  "reference_precomputed_cost_disclosed": true,
+  "elapsed_seconds": 18.64940252499946,
+  "artifacts": {
+    "fitted.pt": {
+      "sha256": "7db05dd09da70f0b404b47b8bbc33d7a72b085660046829def42125de91072de",
+      "bytes": 467968
+    },
+    "games.pt": {
+      "sha256": "09b82ccee02d0a5d83df0329dcb0883dcb7f745995a73902416cf48b16526073",
+      "bytes": 253507819
+    },
+    "plans.pt": {
+      "sha256": "5ad4d632964814a19ca9d40767c5495b9e17a48b435535ad0b0b1d81eedf4ece",
+      "bytes": 1051581
+    },
+    "estimates.pt": {
+      "sha256": "c41ce8b4b11d5c835b8fcf5eafa5f5af93d48d7be896929fcbd71c5f454f29cd",
+      "bytes": 689878283
+    },
+    "exact.pt": {
+      "sha256": "3d543502c3749489b03f61e70c46e96c258d0650358bc71f08df3214b29978e4",
+      "bytes": 1411953
+    },
+    "package.pt": {
+      "sha256": "80257d40214e7db28c1293239d89dc04eb5ca6e2050dfcf53c8fdf0aca617800",
+      "bytes": 61272
+    }
+  }
+}

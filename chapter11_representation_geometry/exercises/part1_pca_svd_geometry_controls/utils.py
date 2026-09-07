@@ -1,12 +1,2 @@
-"""Helpers for [11.1] PCA, SVD, and Geometry Controls."""
-
-from __future__ import annotations
-
-from collections.abc import Mapping
-
-
-def print_report(title: str, report: Mapping[str, object]) -> None:
-    print(title)
-    width = max((len(str(key)) for key in report), default=0)
-    for key, value in report.items():
-        print(f"  {key:<{width}} : {value}")
+"""Plumbing for 11.1; taught methods live in the learner and geometry_methods.py."""
+from chapter11_representation_geometry.exercises.part1_pca_svd_geometry_controls.geometry_data import NAMES,calendar_rows,paired_donor_indices,load_protocol

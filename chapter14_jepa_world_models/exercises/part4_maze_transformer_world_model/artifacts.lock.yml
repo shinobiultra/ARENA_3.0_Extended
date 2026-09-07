@@ -1,0 +1,82 @@
+notebook_id: 14_4_maze_transformers_and_latent_planning
+section: '14.4'
+title: 'Maze Transformers: Policies, Probes, and State Patching'
+exercise_metadata:
+  EXERCISE_ID: 14_4_maze_transformers_and_latent_planning
+  GT_TIER: GT-3
+  DIFFICULTY: 5
+  IMPORTANCE: 5
+  EXPECTED_RUNTIME: 2-3 hours; under five minutes for full CUDA verification
+  REQUIRES_GPU: true
+gt_tier: GT-3
+evidence_level: exact_bfs_ground_truth_plus_trained_transformer_and_causal_route_state_patching
+claim_scope: >-
+  A small decoder-only transformer trained from scratch on exact BFS policy labels
+  learns a usable next-action policy on disjoint generated 5x5 wall layouts. Its
+  query-position residual stream supports held-out distance/legal-degree/action probes,
+  and a counterfactual same-maze route-state patch changes next-action logits more
+  than wrong-position and matched-norm random patches. Legal-action-constrained
+  rollouts are reported separately from raw decoding. This does not establish
+  natural-language planning, large-maze search, or a complete planning circuit.
+  Manhattan distance bins beat the learned distance probe, and same-action donors
+  from other mazes match or exceed targeted donors in the checked CPU experiment.
+  Internal search and route-specific representations are not established.
+required_gpu_gb: 1
+max_allowed_gpu_gb: 24
+reproducibility:
+  cublas_workspace_config: ':4096:8'
+  deterministic_cuda_algorithms: true
+  float32_matmul_precision: highest
+models:
+  - id: course_tiny_maze_decoder_transformer_v1
+    source: trained_from_scratch
+    revision: architecture_in_solutions_py
+    precision: float32
+    gated: false
+datasets:
+  - id: course_generated_bfs_maze_policy_v1
+    source: deterministic_tensor_generator
+    seed: 0
+    train_maze_size: 5
+    heldout_wall_layouts_disjoint: true
+    labels: exact_bfs_distance_local_legal_degree_and_next_action
+    ood_conditions:
+      - obstacle_density_0.28
+      - maze_size_6
+expected_metrics:
+  tests_passed: true
+  accepted: false
+  heldout_action_accuracy_min: 0.72
+  detour_shuffled_maze_margin_min: 0.04
+  legal_path_rate_min: 0.99
+  goal_reach_rate_min: 0.58
+  optimal_path_rate_min: 0.48
+  goal_reach_margin_over_template_min: 0.08
+  best_distance_probe_accuracy_min: 0.62
+  distance_probe_random_label_margin_min: 0.25
+  targeted_patch_effect_min: 0.15
+  targeted_patch_positive_fraction_min: 0.85
+  targeted_patch_wrong_position_margin_min: 0.10
+  targeted_patch_matched_random_margin_min: 0.10
+  train_heldout_template_overlap_max: 0
+  max_allowed_gpu_gb: 24
+controls:
+  - hand_computed_bfs_path_and_distance_map
+  - exact_legal_move_and_route_cell_labels
+  - disjoint_train_heldout_wall_layout_hashes
+  - wall_blind_axis_first_template_policy
+  - unconstrained_raw_decoder_illegal_move_rate
+  - legal_action_constrained_decoder
+  - shuffled_maze_wall_layout_action_control
+  - randomized_distance_probe_labels
+  - wrong_sequence_position_residual_patch
+  - matched_norm_random_direction_patch
+  - same_size_unrelated_route_state_patch
+  - same_action_other_maze_donor_on_matched_eligible_pairs
+  - explicit_manhattan_distance_bin_baseline
+  - independently_replayed_rollout_actions_and_optimality
+  - higher_obstacle_density_ood
+  - unseen_maze_size_ood
+safety_notes:
+  - No network access, gated models, unsafe prompts, or external datasets are required.
+  - Generated mazes have exact ground truth; empirical claims remain bounded to this controlled world.

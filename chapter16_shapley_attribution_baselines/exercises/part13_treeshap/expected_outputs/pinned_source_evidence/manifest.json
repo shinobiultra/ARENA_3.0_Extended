@@ -1,0 +1,36 @@
+{
+  "source_directory": "/home/bitwise/.cache/arena_extended/treeshap/pinned_source_evidence",
+  "archive_sha256": "76def62648d41740fad8b1a4293b95c56c22e67ce37d0b4658cc94f28e0417fc",
+  "members": {
+    "README.md": {
+      "sha256": "fc4f837bb9740df67bde0a4d56e7d9e55733da53733053305618cdb95671b630",
+      "size_bytes": 717
+    },
+    "SHAP_LICENSE": {
+      "sha256": "cf5c26305c632e5451b6eed7e0964a36c4cec1102f0c6467db063b3483a19127",
+      "size_bytes": 1081
+    },
+    "author_reference.json": {
+      "sha256": "c02421610e81d11b4f38baa88d86d463d147ed9a195eeba8fa230ffb35efd5f3",
+      "size_bytes": 651
+    },
+    "cext/tree_shap.h": {
+      "sha256": "5453cb9ee20376a842cd3f5099c22118732f537ae8593062c7df13ea3661f73a",
+      "size_bytes": 59066
+    },
+    "concrete.csv": {
+      "sha256": "8d4b15b6fc68cd932d745cbd663d5ceae66dd54422e99c1e4865f2936ab7e2af",
+      "size_bytes": 41472
+    },
+    "explainers/_tree.py": {
+      "sha256": "45c32dfd23e16610c90a437346b9267b6d3689da7b9b08a14a9583d364eb76a8",
+      "size_bytes": 112590
+    },
+    "explainers/pytree.py": {
+      "sha256": "6268bb35cdc149256de1d379e1b8eda2ac431142f822abc313e917f222c56563",
+      "size_bytes": 21054
+    }
+  },
+  "large_tensors_retained_externally": {},
+  "readback_verified": true
+}

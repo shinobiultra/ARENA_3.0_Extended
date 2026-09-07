@@ -1,0 +1,7 @@
+extension_pages_checked=48
+style_depth_blockers=4
+ARENA_STYLE_DEPTH=FAIL
+- 11.3: course-ready page lacks signature result
+- 11.3: chapter11_representation_geometry/exercises/part3_causal_abstraction_das/11.3_Causal_Abstraction_and_Distributed_Alignment_Search_exercises.ipynb lacks ['signature result']
+- 11.3: chapter11_representation_geometry/exercises/part3_causal_abstraction_das/11.3_Causal_Abstraction_and_Distributed_Alignment_Search_solutions.ipynb lacks ['signature result']
+- chapter11_representation_geometry/exercises/part3_causal_abstraction_das/das_methods_tests.py: bare assertions without educational failure messages at lines 161, 192

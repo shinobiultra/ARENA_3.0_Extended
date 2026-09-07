@@ -164,3 +164,6 @@ safety_notes:
 - The real-model path uses safe generic prompts and cached activations/logits from
   a small public TransformerLens checkpoint. It does not use unsafe prompts, gated
   weights, generated completions, adapter training, or external API calls.
+
+freshness_inputs:
+  - arena_ext/notebook_checks.py

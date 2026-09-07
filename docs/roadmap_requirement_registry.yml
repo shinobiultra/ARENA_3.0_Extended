@@ -21,7 +21,7 @@ requirements:
     status: TAUGHT
     roadmap_refs: [Extension-Roadmap.md:2848-2851, Extension-Roadmap.md:5214-5234]
     evidence: [docs/original_preservation_contract.md, scripts/audit_original_arena_preservation.py]
-    reason: The canonical ARENA chapters remain present and are guarded by a preservation audit.
+    reason: The canonical ARENA chapters remain present and the append-only preservation audit passes against the pinned original tree, including the exact extension HANDOFF.md allowance.
     blocker: null
 
   - id: foundations.original_mechinterp_spine
@@ -137,12 +137,13 @@ requirements:
   - id: modern.mamba2_ssd
     topic: Mamba-2 structured state-space duality and implementation
     chapter: 2 Modern architectures
-    section: unassigned
-    status: UNIMPLEMENTED
+    section: "5.7"
+    status: PREFLIGHT_ONLY
     roadmap_refs: [Extension-Roadmap.md:335-371, Extension-Roadmap.md:1153-1176]
-    evidence: []
-    reason: Mamba-2 is separately required in the architecture progression and comparison matrix.
-    blocker: No Mamba-2 SSD implementation, checkpoint parity, or comparison notebook exists.
+    course_sections: ["5.7"]
+    evidence: [chapter5_modern_architectures/exercises/part7_mamba2_ssd, docs/arena_salvage/2026-09-05_mamba2_repair_plan.md]
+    reason: Eleven visible exercises implement SSD schedules, gradients, blocks, caches, recall controls, and strict 219-tensor released-model mapping. A completed learner notebook executes all 21 code cells and the generic CUDA report is accepted under IEEE precision without tolerance inflation.
+    blocker: Independent editorial review and the roadmap's trained cross-architecture generation/throughput comparison remain; parameter counts and educational CPU timings do not establish those comparisons.
 
   - id: modern.mamba3_state_tracking
     topic: Mamba-3-style state tracking and causal hidden-state intervention
@@ -160,13 +161,13 @@ requirements:
     topic: Discrete diffusion language model noising, denoising, remasking, and sampling
     chapter: 2 Modern architectures
     section: "5.5"
-    status: TOY_ONLY
+    status: TAUGHT
     roadmap_refs: [Extension-Roadmap.md:405-468]
     course_sections: ["5.5"]
     method_registry_names: [Discrete diffusion language modeling]
     evidence: [chapter5_modern_architectures/exercises/part5_diffusion_language_models]
-    reason: The course trains and tests a tiny discrete diffusion language model with exact controls.
-    blocker: The full TinyStories/templated-QA progression and AR-versus-diffusion benchmark are absent.
+    reason: The completed 90-cell learner teaches finite absorbing diffusion, three samplers, temperature and block generation, and matched cached-AR comparison on parentheses, arithmetic, templated QA and pinned TinyStories. Twelve fits across three seeds produce 126 frozen final conditions, 64,512 examples, twelve figures and all plays. Independent CUDA refits four models and reproduces 21,504 examples and every checkpoint/trace exactly. Weak natural-text quality and development-selected versus endpoint sensitivity remain visible.
+    blocker: null
 
   - id: modern.diffusiongemma_inference
     topic: DiffusionGemma local quantized inference
@@ -218,9 +219,9 @@ requirements:
     section: unassigned
     status: UNIMPLEMENTED
     roadmap_refs: [Extension-Roadmap.md:2773-2794, Extension-Roadmap.md:5426-5431]
-    evidence: []
-    reason: MoE is a named model family in the final architecture matrix.
-    blocker: No tiny MoE routing or expert interpretability notebook exists.
+    evidence: [chapter5_modern_architectures/exercises/part8_mixture_of_experts]
+    reason: An unreleased candidate now teaches correct Switch gating, causal capacity, and three-seed routing controls with an explicit negative expert-ablation result.
+    blocker: The original positive-specialization contract is rejected and the candidate is outside the course release; real-model expert-feature inspection and independent review remain missing.
 
   - id: modern.rwkv
     topic: RWKV mechanistic interpretability
@@ -460,8 +461,8 @@ requirements:
     course_sections: ["7.2"]
     method_registry_names: [Feature verbalizers]
     evidence: [chapter7_activation_to_language/exercises/part2_feature_verbalizers]
-    reason: Exact ground truth is followed by a pinned local Qwen candidate-selection loop, blind held-out scoring, three-counterexample revision, and a real residual-direction intervention test.
-    blocker: The local language model scores precommitted hypotheses rather than generating and operationalizing a free-form explanation.
+    reason: Students fit and verbalize a pinned Pythia-70m residual direction, report regular/irregular/nonce behavior, enumerate the exact matched-pair null, and perform bidirectional component replacement against separate matched orthogonal controls.
+    blocker: The candidate set is human-authored rather than generated and operationalized from free-form explanations; the held-out decoder is non-significant under the exact pair-preserving null, and the causal result covers one prompt family, model, and layer.
 
   - id: activation.mini_activation_oracle
     topic: Mini Activation Oracle with question-conditioned activation answers
@@ -491,13 +492,13 @@ requirements:
     topic: Mini Natural Language Autoencoder with a learned text bottleneck
     chapter: 5 Activation-to-language
     section: "7.4"
-    status: TAUGHT
+    status: PREFLIGHT_ONLY
     roadmap_refs: [Extension-Roadmap.md:753-784]
     course_sections: ["7.4"]
     method_registry_names: [Mini Natural Language Autoencoders]
     evidence: [chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders]
-    reason: Students train a miniature activation-to-text-to-activation bottleneck first on exact semantic ground truth and then on pinned Pythia residuals with actual phrase-token embeddings, behavior metrics, counterfactuals, and no-text, wrong-phrase, and shuffled-label controls.
-    blocker: null
+    reason: Students train a 24-token activation verbalizer and a paper-normalized Pythia activation reconstructor, then compare it with an order-blind bag-of-tokens ridge bypass under exactly matched token multisets, factor/prototype controls, shuffled targets, and a row-local causal text edit.
+    blocker: Independent re-review remains pending; the implementation is a supervised templated warm-start rather than unsupervised or free-form NLA training.
 
   - id: activation.full_scale_natural_language_autoencoders
     topic: Full-scale Natural Language Autoencoder training
@@ -546,23 +547,35 @@ requirements:
     topic: PCA and SVD representation geometry with quantitative controls
     chapter: 6 Concept and representation methods
     section: "11.1"
-    status: PREFLIGHT_ONLY
+    status: TAUGHT
     roadmap_refs: [Extension-Roadmap.md:4573-4731, Extension-Roadmap.md:5433-5439]
     course_sections: ["11.1"]
     method_registry_names: [Representation geometry controls]
     evidence: [chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls]
-    reason: Controlled weekday/month geometry, PCA/SVD, random labels, and stability checks exist.
-    blocker: The full days/months/years/space/time progression and causal coordinate interventions are incomplete.
+    reason: >-
+      Students implement PCA/SVD, circular regression, chronological nulls,
+      neighbor and stability metrics, coordinate replacement and native hooks.
+      Exact algebra and the full Mistral learner pass; new-template effects,
+      strong nulls, failed answers and mean-ablation contributions are visible.
+      Fresh CUDA reproduces all 6656 checked outcomes exactly.
+    blocker: ""
 
   - id: representation.umap_tsne_validation
     topic: UMAP and t-SNE with seed, hyperparameter, trustworthiness, and random-label controls
     chapter: 6 Concept and representation methods
     section: "11.1"
-    status: PREFLIGHT_ONLY
+    status: TAUGHT
     roadmap_refs: [Extension-Roadmap.md:4583-4731]
+    course_sections: ["11.1"]
     evidence: [chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls]
-    reason: The current geometry section treats nonlinear projections as controlled exploratory tools.
-    blocker: The full multi-dataset UMAP/t-SNE robustness suite is narrower than the roadmap.
+    reason: >-
+      The executed learner fits 120 nonlinear views across weekday/month and
+      independent-noise activations, five seeds and three settings per reducer.
+      It compares training-only label prediction, shuffled labels, trustworthiness,
+      continuity, aligned seed error and class-disjoint circular probes.
+      UMAP transforms new points; t-SNE explicitly fits them jointly. All views
+      and failures are retained alongside PCA and actual model interventions.
+    blocker: ""
 
   - id: representation.days_months_space_time
     topic: Days, months, years, cities, space, and time representation geometry
@@ -571,7 +584,7 @@ requirements:
     status: PREFLIGHT_ONLY
     roadmap_refs: [Extension-Roadmap.md:4627-4679, Extension-Roadmap.md:5214-5253]
     evidence: [chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls]
-    reason: Weekday and month experiments exist on a small real language model.
+    reason: Full pinned Mistral-7B weekday and month geometry and causal interventions are now taught in 11.1; the broader entity families remain unimplemented.
     blocker: Years, cities, geographic coordinates, historical time, and corresponding causal tests are absent.
 
   - id: representation.feature_manifolds
@@ -587,12 +600,20 @@ requirements:
   - id: representation.cca_svcca_procrustes
     topic: CCA, SVCCA, and Procrustes representation alignment
     chapter: 6 Concept and representation methods
-    section: unassigned
-    status: UNIMPLEMENTED
+    section: "11.2"
+    status: TAUGHT
+    course_sections: ["11.2"]
+    method_registry_names: ["CCA, SVCCA, and Procrustes alignment"]
     roadmap_refs: [Extension-Roadmap.md:4583-4625]
-    evidence: []
-    reason: CCA/SVCCA and cross-model/layer Procrustes alignment are explicit geometry methods.
-    blocker: No representation-alignment implementation, seed test, or causal interpretation exists.
+    evidence: [chapter11_representation_geometry/exercises/part2_cca_svcca_alignment]
+    reason: >-
+      Own-answer whitening, CCA/SVCCA, held-out signed correlations, Procrustes,
+      canonical regression and ridge are taught with exact oracles and five-seed
+      noise controls. The complete CPU GPT-2 learner tests real donor transport
+      on 96 new prompts with all ranks, random controls and failed examples.
+      Fresh native model/fit reproduction matches all 5184 checked outcomes.
+      Claims are bounded to cross-layer alignment, not cross-model equivalence.
+    blocker: ""
 
   - id: representation.linear_and_nonlinear_probes
     topic: Linear probes, nonlinear probes, and held-out probe validation
@@ -607,32 +628,66 @@ requirements:
   - id: representation.causal_probes_das
     topic: Causal probes and Distributed Alignment Search
     chapter: 6 Concept and representation methods
-    section: unassigned
-    status: UNIMPLEMENTED
-    roadmap_refs: [Extension-Roadmap.md:2482-2497, Extension-Roadmap.md:4523-4545]
-    evidence: []
-    reason: DAS and learned causal subspaces are named skeptical extensions to mean-difference directions.
-    blocker: No trainable intervention or DAS exercise exists.
+    section: '11.3'
+    status: TAUGHT
+    roadmap_refs:
+    - Extension-Roadmap.md:2482-2497
+    - Extension-Roadmap.md:4523-4545
+    evidence:
+    - chapter11_representation_geometry/exercises/part3_causal_abstraction_das
+    reason: Nine visible implementation groups connect exact subspace interchanges to frozen GPT-2 DAS. The own-answer learner
+      executes 32 code cells and twelve controlled figures; a fresh CPU model reproduces all 16512 final outputs across 43 conditions
+      exactly. Three seeds, shuffled targets, observational probes, whole donors and 32 random subspaces are retained; no whole-donor
+      advantage or model-weight training is claimed.
+    blocker: null
+    course_sections:
+    - '11.3'
+    method_registry_names:
+    - Distributed Alignment Search
 
   - id: representation.ccs
     topic: Contrast-Consistent Search
     chapter: 6 Concept and representation methods
-    section: unassigned
-    status: UNIMPLEMENTED
-    roadmap_refs: [Extension-Roadmap.md:2840-2874]
-    evidence: []
-    reason: CCS is explicitly included in the final concept-method syllabus.
-    blocker: No CCS implementation or unsupervised concept-direction comparison exists.
+    section: '11.5'
+    status: TAUGHT
+    roadmap_refs:
+    - Extension-Roadmap.md:2840-2874
+    evidence:
+    - chapter11_representation_geometry/exercises/part5_contrast_consistent_search
+    reason: 65 cells and 32 executed own-answer code cells; nine exercise groups, twelve immediate checks, fifteen
+      inspected figures and two plays. The original asymmetric objective and exact competing-feature oracle connect
+      to all eighteen frozen GPT-2 site/wrapper/text conditions. Fresh capture and 1152 refits reproduce all 98304
+      final reporter scores, 3586 actual full-vocabulary prefix outputs and 5408 tensors exactly. Plain-review success
+      coexists with 50% target accuracy and 100% paired opinion flips in every selected competing-opinion CCS case.
+      Supervised, PCA, raw, shuffled and all 32 random controls remain visible. The polished learner passes in 224.500
+      s. This controlled review study does not establish truth, beliefs, causal necessity or whole-paper replication.
+    blocker: null
+    course_sections:
+    - '11.5'
+    method_registry_names:
+    - Contrast-Consistent Search
 
   - id: representation.concept_erasure
     topic: Concept erasure
     chapter: 6 Concept and representation methods
-    section: unassigned
-    status: UNIMPLEMENTED
-    roadmap_refs: [Extension-Roadmap.md:2631-2641, Extension-Roadmap.md:2840-2874]
-    evidence: []
-    reason: Concept erasure is a required bridge between representation geometry and editing.
-    blocker: No concept-erasure implementation or side-effect evaluation exists.
+    section: '11.4'
+    status: TAUGHT
+    roadmap_refs:
+    - Extension-Roadmap.md:2631-2641
+    - Extension-Roadmap.md:2840-2874
+    evidence:
+    - chapter11_representation_geometry/exercises/part4_concept_erasure
+    reason: Eight visible implementation groups derive affine LEACE from paired moments and singular whitening, with
+      an independent constrained oracle and pinned author parity. The 24-code-cell own-answer learner produces twelve
+      controlled figures and two plays. Two prescribed GPT-2 sites and all 106 conditions retain 71232 final role/object
+      outcomes; fresh model reloads refit every eraser and probe and reproduce every full-vocabulary output exactly.
+      Empirical guardedness, new-data recovery and collateral damage remain separate; all-layer scrubbing and unrestricted
+      information removal are not claimed.
+    blocker: null
+    course_sections:
+    - '11.4'
+    method_registry_names:
+    - Concept erasure (LEACE)
 
   - id: representation.representation_engineering
     topic: Representation engineering and steering vectors
@@ -647,12 +702,22 @@ requirements:
   - id: representation.causal_abstraction
     topic: Causal abstraction and interchange interventions
     chapter: 6 Concept and representation methods
-    section: unassigned
-    status: UNIMPLEMENTED
-    roadmap_refs: [Extension-Roadmap.md:2482-2497, Extension-Roadmap.md:2840-2874]
-    evidence: []
-    reason: Causal abstraction is explicitly named in the representation-method chapter.
-    blocker: No abstraction map or interchange-intervention verification lab exists.
+    section: '11.3'
+    status: TAUGHT
+    roadmap_refs:
+    - Extension-Roadmap.md:2482-2497
+    - Extension-Roadmap.md:2840-2874
+    evidence:
+    - chapter11_representation_geometry/exercises/part3_causal_abstraction_das
+    reason: Explicit structural equations, an unused predictive copy and an independent side variable establish exact high-level
+      versus low-level intervention oracles. The published native role-transfer study evaluates new templates and name pairings,
+      shows actual token outcomes and separates requested counterfactuals, native errors, conditional denominators and donor-identity
+      leakage. Exact output agreement does not establish a unique or minimal abstraction.
+    blocker: null
+    course_sections:
+    - '11.3'
+    method_registry_names:
+    - Causal abstraction and interchange interventions
 
   - id: representation.subspace_patching_illusions
     topic: Subspace-patching illusions and falsification
@@ -699,24 +764,24 @@ requirements:
   - id: circuits.attribution_patching_eap_integrated_effects
     topic: Attribution patching, EAP, integrated gradients, and integrated effects
     chapter: 4 Circuit methods
-    section: "8.2"
-    status: TOY_ONLY
+    section: "8.3"
+    status: TAUGHT
     roadmap_refs: [Extension-Roadmap.md:825-849, Extension-Roadmap.md:3117-3169]
-    course_sections: ["8.2"]
+    course_sections: ["8.2", "8.3"]
     method_registry_names: ["Attribution patching, EAP, and integrated effects"]
-    evidence: [chapter8_automated_circuits/exercises/part2_attribution_patching_eap]
-    reason: Exact linear/nonlinear organisms compare first-order and integrated approximations.
-    blocker: No real-model edge-attribution replication or scalable EAP graph is learner-run.
+    evidence: [chapter8_automated_circuits/exercises/part2_attribution_patching_eap, chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics]
+    reason: Section 8.2 supplies exact nonlinear controls; the completed 8.3 learner implements all 32,491 GPT-2 additive edges, gradient contractions, EAP and task/KL integrated scores with fixed corrupt-reference interpolation. Author-code and selector parity, five edge budgets, both IOI corruptions and greater-than frozen transfer retain negative and positive results.
+    blocker: null
 
   - id: circuits.eap_ig
     topic: EAP-IG
     chapter: 4 Circuit methods
-    section: "8.2"
-    status: TOY_ONLY
+    section: "8.3"
+    status: TAUGHT
     roadmap_refs: [Extension-Roadmap.md:3139-3169, Extension-Roadmap.md:6210-6242]
-    evidence: [chapter8_automated_circuits/exercises/part2_attribution_patching_eap]
-    reason: Integrated edge effects are compared against exact patching on a nonlinear toy case.
-    blocker: No published EAP-IG implementation parity or real circuit extraction exists.
+    evidence: [chapter8_automated_circuits/exercises/part2_attribution_patching_eap, chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics]
+    reason: The full own-answer 8.3 learner implements input-interpolated EAP-IG with an eight-point left grid, task and clean-KL losses, and both top-score and author-style greedy circuit selection. All 32,491 real GPT-2 scores and five selector budgets match the pinned author implementation within numerical tolerance. Greater-than task/KL circuits transfer with recovery 0.8586/0.9090; weak IOI results remain visible. This is a scoped method study, not the paper's complete benchmark suite.
+    blocker: null
 
   - id: circuits.atp_star
     topic: AtP star
@@ -724,21 +789,21 @@ requirements:
     section: unassigned
     status: UNIMPLEMENTED
     roadmap_refs: [Extension-Roadmap.md:825-849, Extension-Roadmap.md:5269-5288]
-    evidence: []
-    reason: AtP* is explicitly listed in the required circuit-attribution comparison.
-    blocker: No AtP* implementation, benchmark, or comparison exists.
+    evidence: [chapter8_automated_circuits/exercises/part6_atp_star]
+    reason: An unreleased candidate now exposes corrected real node gradients, Q/K correction, GradDrop, and exact controlled Pythia comparisons in an executed learner notebook.
+    blocker: Independent review, strict CUDA evidence, release registration, and the paper's subset-sampling false-negative diagnostic remain missing.
 
   - id: circuits.acdc
     topic: ACDC iterative circuit discovery
     chapter: 4 Circuit methods
     section: "8.3"
-    status: PREFLIGHT_ONLY
+    status: TAUGHT
     roadmap_refs: [Extension-Roadmap.md:851-872, Extension-Roadmap.md:3258-3310]
     course_sections: ["8.3"]
     method_registry_names: [ACDC and circuit metrics]
     evidence: [chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics]
-    reason: Section 8.3 teaches iterative deletion with metric recomputation on an exact nonlinear graph, then applies the same search to named attention-head result components in pinned gelu-1l with exhaustive same-size controls and held-out prompts.
-    blocker: The roadmap's full edge-level IOI or greater-than ACDC replication is not yet implemented.
+    reason: Twenty-one exercise groups progress from exact ground truth to sequential ACDC on all 32,491 additive GPT-2 edges with current-hybrid corrupt-reference interventions. The complete 44-code-cell learner, five owned search traces and fourteen figures pass; all 56 tests and separate CUDA remeasurement of five circuits and 320 nulls pass. Greater-than ACDC retains 78 edges and transfers with recovery 0.8318. All four IOI thresholds fail fixed development selection and its holdout remains unopened. Interrupted own-search continuation is recorded explicitly.
+    blocker: null
 
   - id: circuits.causal_scrubbing
     topic: Causal scrubbing
@@ -754,11 +819,11 @@ requirements:
     topic: Faithfulness, completeness, minimality, sparsity, and OOD circuit metrics
     chapter: 4 Circuit methods
     section: "8.3"
-    status: PREFLIGHT_ONLY
+    status: TAUGHT
     roadmap_refs: [Extension-Roadmap.md:851-872, Extension-Roadmap.md:3258-3310]
     evidence: [chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics]
-    reason: Exact faithfulness, edgewise minimality, pairwise completeness, exhaustive same-size controls, and OOD transfer are taught on known ground truth; the real component study adds same-size ranking, held-out transfer, and an MLP bottleneck control.
-    blocker: A discovered real-model edge circuit has not yet been evaluated through the complete faithfulness, minimality, completeness, sparsity, and OOD suite.
+    reason: The full own-answer 8.3 learner measures raw task effects, normalized recovery, clean-to-circuit KL, sparsity and changed-wording transfer for four frozen greater-than circuits plus a development-only IOI diagnostic. Every retained ACDC edge is deleted and 72 full-versus-circuit subset removals per circuit probe bounded completeness. Each circuit keeps 32 uniform and 32 receiver-matched nulls; independent CUDA remeasurement matches all five circuits and 320 controls exactly. Sampled completeness is not a global proof and OOD means the declared wording shift.
+    blocker: null
 
   - id: circuits.attribution_graphs
     topic: Attribution graphs and circuit tracing
@@ -827,23 +892,23 @@ requirements:
     topic: CLIP contrastive image-text model from scratch
     chapter: 6 Vision-language interpretability
     section: "12.1"
-    status: TOY_ONLY
+    status: TAUGHT
     roadmap_refs: [Extension-Roadmap.md:3566-3630, Extension-Roadmap.md:5312-5330]
     course_sections: ["12.1"]
     method_registry_names: ["CLIP, SigLIP, and VLM controls"]
     evidence: [chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls]
-    reason: Section 12.1 makes students implement normalized all-pairs logits, bidirectional retrieval metrics, and separate trainable image/text projections through exact controlled-scene retrieval convergence.
-    blocker: The toy path starts from engineered image and caption features rather than training complete pixel and token encoders from scratch.
+    reason: Section 12.1 now teaches a complete RGB CNN, causal caption block, EOS pooling, normalized projections, both alignment losses, semantic retrieval and optimizer loop. Both encoders train on 576 actual image instances and are evaluated on 288 independent instances across three matched seeds with frozen-tower, shuffled-pair and pixel/word controls.
+    blocker: null
 
   - id: vlm.siglip_loss_from_scratch
     topic: SigLIP sigmoid contrastive loss from scratch
     chapter: 6 Vision-language interpretability
     section: "12.1"
-    status: TOY_ONLY
+    status: TAUGHT
     roadmap_refs: [Extension-Roadmap.md:3566-3630, Extension-Roadmap.md:6334-6362]
     evidence: [chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls]
-    reason: Sigmoid pairwise loss mechanics and controlled retrieval are present.
-    blocker: A full SigLIP encoder training and official-output parity exercise is absent.
+    reason: The learner derives SigLIP pair gradients and the paper sum-over-pairs divided-by-batch convention, trains complete pixel/text encoders under both objectives, evaluates held-out semantic retrieval across matched seeds and reconstructs official pinned SigLIP logits from extracted embeddings. The tiny architecture is explicitly a teaching model, not a full-scale checkpoint reproduction.
+    blocker: null
 
   - id: vlm.real_clip_siglip_retrieval
     topic: Real CLIP and SigLIP feature extraction, retrieval, and controls
@@ -878,12 +943,12 @@ requirements:
   - id: vlm.typographic_attack_mechanisms
     topic: Typographic attack diagnosis and sparse-feature mitigation
     chapter: 6 Vision-language interpretability
-    section: unassigned
-    status: UNIMPLEMENTED
+    section: "12.1"
+    status: PREFLIGHT_ONLY
     roadmap_refs: [Extension-Roadmap.md:3566-3690, Extension-Roadmap.md:4278-4297]
-    evidence: []
-    reason: The VLM flagship requires a controlled typographic attack and mitigation project.
-    blocker: No typographic dataset, feature localization, or mitigation experiment exists.
+    evidence: [chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls]
+    reason: The 12.1 learner implements targeted-flip and matched-margin metrics and executes pretrained CLIP zero-shot classification on 48 scenes with clean, blank-card, correct, conflicting, irrelevant and scrambled text across background and object placements. Background words do not occlude the object; object overlays use matched blank-card controls.
+    blocker: The controlled typographic dataset and behavioral attack are implemented; sparse-feature localization, causal mechanism diagnosis and mitigation remain absent.
 
   - id: vlm.mini_vlm_from_scratch
     topic: Mini VLM patch encoder, connector, image tokens, causal decoder, and losses from scratch
@@ -893,7 +958,7 @@ requirements:
     roadmap_refs: [Extension-Roadmap.md:3692-3758, Extension-Roadmap.md:6277-6332]
     course_sections: ["12.3"]
     evidence: [chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch]
-    reason: Section 12.3 now makes students progressively build the frozen patch encoder, visual connector, multimodal sequence, causal decoder, complete MiniVLM, loss, training loop, controls, and activation-patching analysis.
+    reason: The complete 19-exercise learner builds learned RGB patches, a ViT, a connector, explicit word sequences, causal decoding, shifted answer/caption loss, greedy generation and stage/region patching. All 34 own-answer code cells retrain twelve models across three seeds and four controls; familiar generation improves while excluded-combination caption failure remains visible. Seven figures, 43 tests and a separate fresh CUDA training/generation/patching check support this controlled model study.
     blocker: null
 
   - id: vlm.paligemma_adapter
@@ -972,9 +1037,9 @@ requirements:
     section: unassigned
     status: UNIMPLEMENTED
     roadmap_refs: [Extension-Roadmap.md:3841-3912, Extension-Roadmap.md:4235-4276]
-    evidence: []
-    reason: The roadmap requires a real-model causal hallucination study beyond the controlled toy proxy.
-    blocker: No real generative VLM benchmark, internal probe ladder, or answer-flipping intervention exists.
+    evidence: [chapter12_vlm_interpretability/exercises/part2_object_hallucination_arbitration]
+    reason: An unreleased 12.5 candidate provides an executed analytic learner lab and an unrun real visual-counterfactual preflight.
+    blocker: The real preflight intervenes only on neutral-prior image pairs; actual hallucination repair, stage-specific probe and patch controls, and independent review remain missing.
 
   - id: vlm.multimodal_saes
     topic: Multimodal SAEs on projector, visual-token, text-token, and answer-token streams
@@ -1155,12 +1220,14 @@ requirements:
   - id: jepa.ijepa_from_scratch
     topic: I-JEPA from scratch with masking, EMA target encoder, predictor, and collapse diagnostics
     chapter: 8 JEPAs and world models
-    section: unassigned
-    status: UNIMPLEMENTED
+    section: "14.2"
+    status: TOY_ONLY
     roadmap_refs: [Extension-Roadmap.md:1483-1522, Extension-Roadmap.md:6462-6490]
-    evidence: []
-    reason: I-JEPA is the required first architecture notebook in the JEPA progression.
-    blocker: No image JEPA training, masking, EMA update, or collapse-diagnostic learner exercise exists.
+    course_sections: ["14.2"]
+    method_registry_names: [I-JEPA from scratch]
+    evidence: [chapter14_jepa_world_models/exercises/part2_ijepa_from_scratch]
+    reason: Section 14.2 teaches the complete mechanism on an exact predictive-key image world and verifies causal held-out latent prediction against matched context, zero-context, no-EMA, untrained, shuffled-label, constant-feature, and random-encoder controls.
+    blocker: The roadmap's required CIFAR-10 or STL-10 subset experiment, learned-feature improvement over a random ViT, and released I-JEPA checkpoint comparison remain unimplemented; the exact-world notebook deliberately exposes that random features already solve its easy linear probes.
 
   - id: jepa.vjepa_from_scratch
     topic: V-JEPA video tubelets, temporal masking, latent prediction, and retrieval
@@ -1168,9 +1235,9 @@ requirements:
     section: unassigned
     status: UNIMPLEMENTED
     roadmap_refs: [Extension-Roadmap.md:1524-1565]
-    evidence: []
-    reason: V-JEPA is separately specified before V-JEPA 2.
-    blocker: No video JEPA architecture or training notebook exists.
+    evidence: [chapter14_jepa_world_models/exercises/part3_vjepa_from_scratch]
+    reason: An unreleased learner-executed video JEPA candidate implements tubelets, spatial tube masking, visible-context encoding, L1, EMA, probes and retrieval on exact moving-square worlds. Its three-seed future-mask result is negative against persistence and blank-future context-carryover controls.
+    blocker: The requested temporal-shuffle and context/target/object-crop intervention studies and broader state probes remain incomplete; no matched-context future-specific prediction result or independent course acceptance is established.
 
   - id: jepa.vjepa2_feature_extraction
     topic: V-JEPA 2 feature extraction and controlled world-state probes
@@ -1354,9 +1421,9 @@ requirements:
     section: unassigned
     status: UNIMPLEMENTED
     roadmap_refs: [Extension-Roadmap.md:1837-1858, Extension-Roadmap.md:2876-2885]
-    evidence: []
-    reason: Maze world models are a required standalone lab.
-    blocker: No maze generator, trained transformer, probes, or causal route intervention exists.
+    evidence: [chapter14_jepa_world_models/exercises/part4_maze_transformer_world_model]
+    reason: Maze world models are a required standalone lab. The current 14.4 candidate teaches a supervised maze policy with exact replayed path metrics, legal-degree and distance probes, and controlled state patches; the larger CUDA run fails the original patch thresholds.
+    blocker: An unreleased learner-executed 14.4 candidate now trains an exact-BFS next-action policy and tests probes and residual patches. Manhattan and same-action donor controls do not support the stronger internal-search or route-specific-state claims; full maze-topology reconstruction, adjacency-head analysis, and independent course acceptance remain incomplete.
 
   - id: world.sudoku_transformers
     topic: Sudoku constraint world models and naked-single circuits
@@ -1560,9 +1627,9 @@ requirements:
     section: unassigned
     status: UNIMPLEMENTED
     roadmap_refs: [Extension-Roadmap.md:4992-5047, Extension-Roadmap.md:5362-5380]
-    evidence: []
-    reason: QLoRA is explicitly listed as an optional PEFT method and local quantization comparison.
-    blocker: No quantized base-model adapter training or dequantization-control notebook exists.
+    evidence: [chapter15_peft_misalignment/exercises/part3_qlora_from_scratch]
+    reason: The optional QLoRA candidate now has an executed completed learner, exact forward and optimizer oracles, three-seed nested-NF4 TinyStories training, paired controls, memory and spectrum panels, and a precision diagnostic.
+    blocker: The unchanged BF16 dequantized-matmul parity gate fails at 0.03125 versus 0.01; the candidate remains unreleased. It does not replace the core LoRA/DoRA/subspace roadmap study.
 
   - id: peft.safe_lora_misalignment_proxy
     topic: Safe LoRA-induced broad behavior drift and causal activation direction
@@ -1594,7 +1661,7 @@ requirements:
     course_sections: ["9.1"]
     method_registry_names: [Refusal directions]
     evidence: [chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering]
-    reason: Section 9.1 includes a sanitized GT-2 public-data replication with aggregate causal effects and negative controls.
+    reason: Twelve own-answer exercises execute the real pinned Qwen method with training-only thresholds, persistent generation interventions, all 15 development candidates and all 85 frozen final conditions. The 26-cell full run and 20 semantic tests pass; fresh CUDA regenerates 3640 examples and all 65 classification directions exactly. Six inspected figures retain strong permutation controls and capability damage.
     blocker: null
 
   - id: alignment.multi_refusal_geometry
@@ -1669,9 +1736,9 @@ requirements:
     section: unassigned
     status: UNIMPLEMENTED
     roadmap_refs: [Extension-Roadmap.md:2631-2641, Extension-Roadmap.md:5499-5505]
-    evidence: []
-    reason: ROME is explicitly named as a pedagogical model-editing example.
-    blocker: No causal tracing, rank-one edit, locality, or downstream side-effect notebook exists.
+    evidence: [chapter9_alignment_interpretability/exercises/part5_rome_model_editing]
+    reason: An unreleased course ROME-like candidate executes a complete learner path with rank-one algebra, real Pythia edits, qualified locality, matched controls, and negative localization evidence.
+    blocker: Independent review and release registration remain missing; official ROME covariance, random-prefix, and value-objective parity are not established.
 
   - id: alignment.memit_model_editing
     topic: MEMIT mass model editing and failure modes
@@ -1861,42 +1928,82 @@ requirements:
   - id: shapley.treeshap
     topic: TreeSHAP
     chapter: 11 Shapley and attribution baselines
-    section: unassigned
-    status: UNIMPLEMENTED
+    section: '16.13'
+    course_sections: ['16.13']
+    status: TAUGHT
     roadmap_refs: [Extension-Roadmap.md:2011-2048, Extension-Roadmap.md:5382-5402]
-    evidence: []
-    reason: TreeSHAP is explicitly required in the final attribution inventory.
-    blocker: No tree path algorithm, exact parity, or tree-model attribution lab exists.
+    method_registry_names: [TreeSHAP]
+    evidence:
+      - chapter16_shapley_attribution_baselines/instructions/pages/13_[16.13]_TreeSHAP_from_First_Principles.md
+      - chapter16_shapley_attribution_baselines/exercises/part13_treeshap/16.13_TreeSHAP_from_First_Principles_exercises.ipynb
+      - chapter16_shapley_attribution_baselines/exercises/part13_treeshap/expected_outputs/learner_execution.json
+      - chapter16_shapley_attribution_baselines/exercises/part13_treeshap/expected_outputs/fresh_reproduction.json
+      - chapter16_shapley_attribution_baselines/exercises/part13_treeshap/verification_report.json
+    reason: Student-implemented TreeSHAP is exercised on fresh fitted tree ensembles with exhaustive
+      path and interventional games, complete local-vector parity, recipe-disjoint audit controls,
+      and independent fresh reproduction. The unmodified SHAP 0.49.1 threshold-routing failure is
+      retained; a separately threshold-corrected compiled reference passes the frozen tolerance.
+    blocker: ''
 
   - id: shapley.deepshap
     topic: DeepSHAP
     chapter: 11 Shapley and attribution baselines
-    section: unassigned
-    status: UNIMPLEMENTED
+    section: '16.14'
+    course_sections: ['16.14']
+    status: TAUGHT
     roadmap_refs: [Extension-Roadmap.md:2011-2048, Extension-Roadmap.md:5382-5402]
-    evidence: []
-    reason: DeepSHAP is explicitly required as a neural attribution baseline.
-    blocker: No DeepSHAP implementation or ground-truth causal comparison exists.
+    method_registry_names: [DeepSHAP]
+    evidence:
+      - chapter16_shapley_attribution_baselines/instructions/pages/14_[16.14]_DeepSHAP_When_Does_Fast_Attribution_Match_Exact_SHAP.md
+      - chapter16_shapley_attribution_baselines/exercises/part14_deepshap/16.14_DeepSHAP_When_Does_Fast_Attribution_Match_Exact_SHAP_exercises.ipynb
+      - chapter16_shapley_attribution_baselines/exercises/part14_deepshap/expected_outputs/learner_execution.json
+      - chapter16_shapley_attribution_baselines/exercises/part14_deepshap/expected_outputs/fresh_reproduction.json
+      - chapter16_shapley_attribution_baselines/exercises/part14_deepshap/verification_report.json
+    reason: Student-implemented Rescale propagation is exercised on six fresh float64 neural
+      regressors and a ridge control. Exact 256-coalition games, every intact background donor,
+      complete author-reference vectors, recipe-disjoint audit curves and independent fresh
+      reproduction retain both approximation gaps and the finite-epsilon failure.
+    blocker: ''
 
   - id: shapley.gradientshap
     topic: GradientSHAP
     chapter: 11 Shapley and attribution baselines
-    section: unassigned
-    status: UNIMPLEMENTED
-    roadmap_refs: [Extension-Roadmap.md:2011-2048, Extension-Roadmap.md:5382-5402]
-    evidence: []
-    reason: GradientSHAP is explicitly required as an attribution baseline.
-    blocker: No GradientSHAP implementation, baseline-distribution study, or causal comparison exists.
+    section: '16.15'
+    status: TAUGHT
+    roadmap_refs:
+    - Extension-Roadmap.md:2011-2048
+    - Extension-Roadmap.md:5382-5402
+    evidence:
+    - chapter16_shapley_attribution_baselines/instructions/pages/15_[16.15]_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate.md
+    - chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/16.15_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate_exercises.ipynb
+    - chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/expected_outputs/learner_execution.json
+    - chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/expected_outputs/fresh_reproduction.json
+    - chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/verification_report.json
+    reason: Nine student methods connect exact analytic paths to complete Expected Gradients samples on
+      seven reproduced predictors. Approximate quadrature, exact games, package replay, backgrounds, noise
+      and held-out replacement controls remain visible and every deterministic result is independently reproduced.
+    blocker: ''
+    course_sections:
+    - '16.15'
+    method_registry_names:
+    - GradientSHAP
 
   - id: shapley.sage
     topic: SAGE global Shapley feature importance
     chapter: 11 Shapley and attribution baselines
-    section: unassigned
-    status: UNIMPLEMENTED
+    section: '16.12'
+    course_sections: ['16.12']
+    status: TAUGHT
     roadmap_refs: [Extension-Roadmap.md:2011-2048, Extension-Roadmap.md:2620-2629]
-    evidence: []
-    reason: SAGE is explicitly required both as global feature importance and training-data-adjacent attribution.
-    blocker: No SAGE implementation or global-versus-local comparison exists.
+    method_registry_names: [SAGE]
+    evidence:
+      - chapter16_shapley_attribution_baselines/instructions/pages/12_[16.12]_SAGE_Global_Importance.md
+      - chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/16.12_SAGE_Global_Importance_exercises.ipynb
+      - chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/expected_outputs/learner_execution.json
+      - chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/expected_outputs/fresh_reproduction.json
+      - chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/verification_report.json
+    reason: Conditional Gaussian and native empirical marginal SAGE are implemented visibly, with local-loss versus prediction comparisons, exact and sampled estimators, and recipe-disjoint audit rankings. Seven fresh regressors and all controls are retained, with full independent numerical reproduction.
+    blocker: ''
 
   - id: shapley.token_shapley
     topic: TokenSHAP and TokenShapley
@@ -1929,18 +2036,29 @@ requirements:
     status: UNIMPLEMENTED
     roadmap_refs: [Extension-Roadmap.md:2031-2048, Extension-Roadmap.md:2665-2675]
     evidence: []
-    reason: These interaction formalisms are separately named in the final method inventory.
-    blocker: No Shapley-Taylor or Faith-Shap implementation and parity comparison exists.
+    reason: An unpublished 16.16 development candidate implements both indices with complete native execution, exact fresh reproduction and author visual review; publication review is pending.
+    blocker: Independent final review, canonical publication, registered verification and integration are incomplete.
 
   - id: shapley.shap_iq
     topic: SHAP-IQ and KernelSHAP-IQ
     chapter: 11 Shapley and attribution baselines
-    section: "16.3"
-    status: PREFLIGHT_ONLY
+    section: '16.17'
+    status: TAUGHT
     roadmap_refs: [Extension-Roadmap.md:2031-2048, Extension-Roadmap.md:2665-2675]
-    evidence: [chapter16_shapley_attribution_baselines/exercises/part3_shapley_interactions_shapiq]
-    reason: shapiq provides a validated interaction reference, but the SHAP-IQ estimator itself is not built.
-    blocker: No SHAP-IQ/KernelSHAP-IQ learner implementation or estimator comparison exists.
+    course_sections: ['16.17']
+    method_registry_names: [SHAP-IQ and KernelSHAP-IQ]
+    evidence:
+    - chapter16_shapley_attribution_baselines/instructions/pages/17_[16.17]_One_Query_Many_Interactions.md
+    - chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/16.17_One_Query_Many_Interactions_exercises.ipynb
+    - chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/expected_outputs/learner_execution.json
+    - chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/expected_outputs/fresh_reproduction.json
+    - chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/verification_report.json
+    reason: Eight exercises implement nine core functions for shared-query SHAP-IQ and sequential pairwise
+      KernelSHAP-IQ. All 1904 known model games retain both proposals, 32 sampling streams and seven budgets.
+      Exact SII, sampling variance, model controls, query costs and rank diagnostics are visible in ten figures.
+      Own-answer execution and fresh refits reproduce every stored value. Review is by the author; logical
+      precomputed-oracle budgets do not establish inference speedups or causal ingredient interactions.
+    blocker: ''
 
   - id: shapley.spex_proxyspex
     topic: SPEX and ProxySPEX scalable interaction discovery
@@ -2001,42 +2119,69 @@ requirements:
   - id: data_attribution.influence_functions
     topic: Influence functions
     chapter: 11 Training-data attribution
-    section: unassigned
-    status: UNIMPLEMENTED
+    section: "16.9"
+    status: TAUGHT
     roadmap_refs: [Extension-Roadmap.md:2620-2629, Extension-Roadmap.md:7135-7180]
-    evidence: []
-    reason: Influence functions are explicitly required in both the method inventory and agreement protocol.
-    blocker: No inverse-Hessian influence implementation or retraining validation exists.
+    course_sections: ["16.9"]
+    method_registry_names: [Influence functions]
+    evidence:
+      - chapter16_shapley_attribution_baselines/instructions/pages/09_[16.9]_Influence_Functions_and_TracIn.md
+      - chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/16.9_Influence_Functions_and_TracIn_exercises.ipynb
+      - chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/verification_report.json
+      - chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/expected_outputs/learner_execution.json
+      - chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/expected_outputs/fresh_reproduction.json
+    reason: Student-derived inverse-Hessian influence and checked HVP/CG connect to every independently refitted real-digit leave-one-out model, finite perturbations, convergence and damping controls, and held-out deletion outcomes.
+    blocker: ""
 
   - id: data_attribution.tracin
     topic: TracIn-style training-data attribution
     chapter: 11 Training-data attribution
-    section: unassigned
-    status: UNIMPLEMENTED
+    section: "16.9"
+    status: TAUGHT
     roadmap_refs: [Extension-Roadmap.md:2620-2629, Extension-Roadmap.md:7135-7180]
-    evidence: []
-    reason: TracIn is explicitly required as a checkpoint-gradient attribution baseline.
-    blocker: No TracIn implementation, checkpoint scoring, or deletion/retraining validation exists.
+    method_registry_names: [TracIn]
+    evidence:
+      - chapter16_shapley_attribution_baselines/instructions/pages/09_[16.9]_Influence_Functions_and_TracIn.md
+      - chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/16.9_Influence_Functions_and_TracIn_exercises.ipynb
+      - chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/verification_report.json
+      - chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/expected_outputs/learner_execution.json
+      - chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/expected_outputs/fresh_reproduction.json
+    reason: Exact recorded single-example SGD, its Taylor approximation and all-checkpoint TracIn are implemented visibly and compared with all checkpoint choices, three orders, actual retraining, random deletions and image-level disagreements.
+    blocker: ""
 
   - id: data_attribution.datamodels
     topic: Datamodels
     chapter: 11 Training-data attribution
-    section: unassigned
-    status: UNIMPLEMENTED
+    section: '16.10'
+    course_sections: ['16.10']
+    status: TAUGHT
     roadmap_refs: [Extension-Roadmap.md:2620-2629]
-    evidence: []
-    reason: Datamodels are explicitly included in the training-data attribution family.
-    blocker: No subset-training response model or influence approximation notebook exists.
+    method_registry_names: [Datamodels]
+    evidence:
+      - chapter16_shapley_attribution_baselines/instructions/pages/10_[16.10]_Datamodels.md
+      - chapter16_shapley_attribution_baselines/exercises/part10_datamodels/16.10_Datamodels_exercises.ipynb
+      - chapter16_shapley_attribution_baselines/exercises/part10_datamodels/verification_report.json
+      - chapter16_shapley_attribution_baselines/exercises/part10_datamodels/expected_outputs/learner_execution.json
+      - chapter16_shapley_attribution_baselines/exercises/part10_datamodels/expected_outputs/fresh_reproduction.json
+    reason: Student-implemented fixed-size subset sampling and checked Lasso predict actual classifier retraining margins, with validation-only selection, held-out subset tests, all fraction and sample-size choices, coefficient galleries and matched random deletion refits. Same-size success and counterfactual calibration failures are both retained.
+    blocker: ""
 
   - id: data_attribution.dataset_cartography
     topic: Dataset cartography
     chapter: 11 Training-data attribution
-    section: unassigned
-    status: UNIMPLEMENTED
+    section: '16.11'
+    course_sections: ['16.11']
+    status: TAUGHT
     roadmap_refs: [Extension-Roadmap.md:2620-2629]
-    evidence: []
-    reason: Dataset cartography is explicitly listed as a data-attribution method.
-    blocker: No confidence/variability training-dynamics map or data pruning exercise exists.
+    method_registry_names: [Dataset Cartography]
+    evidence:
+      - chapter16_shapley_attribution_baselines/instructions/pages/11_[16.11]_Dataset_Cartography.md
+      - chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/16.11_Dataset_Cartography_exercises.ipynb
+      - chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/verification_report.json
+      - chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/expected_outputs/learner_execution.json
+      - chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/expected_outputs/fresh_reproduction.json
+    reason: Student-implemented training dynamics and stable logging generate real neural-network data maps, image histories, noise detection and actual region-selection retraining. Five seeds, class-matched random subsets, both logging conventions and equal-update controls retain all held-out outcomes and failed selection claims.
+    blocker: ""
 
   - id: data_attribution.training_run_simulations
     topic: Training-run simulations and contribution accounting
@@ -2051,12 +2196,18 @@ requirements:
   - id: data_attribution.ghostsuite
     topic: Ghost dot-product and GhostSuite per-example gradients
     chapter: 11 Training-data attribution
-    section: "16.7"
-    status: UNIMPLEMENTED
+    section: "16.9"
+    status: TAUGHT
     roadmap_refs: [Extension-Roadmap.md:7069-7118, Extension-Roadmap.md:7408-7440]
-    evidence: []
-    reason: The in-run notebook explicitly specifies ghost dot-product implementation and optional GhostSuite integration.
-    blocker: No per-example ghost-gradient implementation or reference comparison exists.
+    method_registry_names: [Affine ghost gradient products]
+    evidence:
+      - chapter16_shapley_attribution_baselines/instructions/pages/09_[16.9]_Influence_Functions_and_TracIn.md
+      - chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/16.9_Influence_Functions_and_TracIn_exercises.ipynb
+      - chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/verification_report.json
+      - chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/expected_outputs/learner_execution.json
+      - chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/expected_outputs/fresh_reproduction.json
+    reason: The required affine ghost dot product is student-implemented, checked against independent autograd and every native checkpoint gradient product, with a rolled-residual control. Optional GhostSuite package integration and tied-token formulas are not claimed.
+    blocker: ""
 
   - id: data_attribution.adam_aware_in_run_shapley
     topic: Adam-aware In-Run Data Shapley

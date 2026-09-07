@@ -86,9 +86,9 @@
       ]
     }
   ],
-  "date_run": "2026-09-04T12:55:25+00:00",
+  "date_run": "2026-09-04T23:53:42+00:00",
   "evidence_level": "data_shapley_contract_plus_cuda_one_step_training_preflight",
-  "git_commit": "387be0eb",
+  "git_commit": "8eab192b",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-0",
   "known_failures": [],
@@ -226,13 +226,13 @@
       "random_data_in_run_signal_correlation": 0.21317629654669076,
       "random_data_max_abs_signal_correlation": 0.21317629654669076,
       "random_data_signal_correlation": 0.01479098203169305,
-      "runtime_exact_enumeration_seconds": 0.0014552915624994611,
-      "runtime_exact_vs_full_update_overhead_ratio": 2.503708405976264,
-      "runtime_full_update_seconds": 0.0005812544140626486,
+      "runtime_exact_enumeration_seconds": 0.0015148040781234329,
+      "runtime_exact_vs_full_update_overhead_ratio": 2.9458453452858966,
+      "runtime_full_update_seconds": 0.0005142171093766024,
       "runtime_in_run_faster_than_exact": true,
-      "runtime_in_run_scores_seconds": 0.0007003345312508458,
-      "runtime_in_run_vs_exact_ratio": 0.48123314207087287,
-      "runtime_in_run_vs_full_update_overhead_ratio": 1.2048674630372143,
+      "runtime_in_run_scores_seconds": 0.0008936027421846404,
+      "runtime_in_run_vs_exact_ratio": 0.5899130818895417,
+      "runtime_in_run_vs_full_update_overhead_ratio": 1.7377927064075644,
       "runtime_measurement_repeats": 128,
       "runtime_overhead_reported": true,
       "sampled_approximates_exact": true,
@@ -509,8 +509,13 @@
   "peak_vram_gb": 0.06251144409179688,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "29c9580e3ace9c14c9ad3d974c235f83819bd570db7b4fee9451b2cae40b7072",
+    "combined_sha256": "8199b75108afa4c287138bf642c57336ee851be41f758ebf685039808e4ce5f8",
     "files": [
+      {
+        "path": "arena_ext/notebook_checks.py",
+        "sha256": "0033fd8978a45bf0cf5dd7ce790bb234add9d63c564c76479c0d8eb86973bacc",
+        "size_bytes": 1627
+      },
       {
         "path": "arena_ext/verification.py",
         "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
@@ -533,13 +538,13 @@
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part7_data_shapley_in_one_training_run/artifacts.lock.yml",
-        "sha256": "bfc5a428433dcdb34e846f2573c36258a6a0d54a4ae63658bc7351d40e05812a",
-        "size_bytes": 3702
+        "sha256": "c90cb8525c6953aa0462d0ec526525705b29e531d63fc08f8bc99031c37786fa",
+        "size_bytes": 3754
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part7_data_shapley_in_one_training_run/expected_outputs/README.md",
-        "sha256": "d6837f12538076599572170cb8dfb0cb253e62ca9bb28681bcfde1317d5cb1b0",
-        "size_bytes": 1121
+        "sha256": "2b96f6b85c52d95571b96719da028bd93d4088e0bf18045c1f17a113953e4dfe",
+        "size_bytes": 2773
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part7_data_shapley_in_one_training_run/expected_outputs/reference_metrics.json",
@@ -558,8 +563,8 @@
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part7_data_shapley_in_one_training_run/tests.py",
-        "sha256": "0c7d33ab4827a63f29155a444c59b013e8be439f4fa18a37b671209e0bab9852",
-        "size_bytes": 23753
+        "sha256": "0878e57c4ffe48b19ddcb9ec8ce283b9a0ae9935f43ff1afe3cfb71884ab4d46",
+        "size_bytes": 24172
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part7_data_shapley_in_one_training_run/utils.py",
@@ -589,5 +594,5 @@
     "The real training path uses only a generated four-example regression problem with one flipped label. It does not use unsafe prompts, user data, external APIs, adapters, gated weights, or large persistent artifacts."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 4.565739
+  "wall_clock_seconds": 1.138547
 }

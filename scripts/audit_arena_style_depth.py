@@ -34,12 +34,15 @@ REQUIRED_PAGE_TERMS = {
     "difficulty": "exercise difficulty metadata",
     "importance": "exercise importance metadata",
 }
-REQUIRED_METADATA_TERMS = {
-    "gt_tier": "GT_TIER learner-facing metadata",
-    "exercise_id": "EXERCISE_ID learner-facing metadata",
-    "expected_runtime": "EXPECTED_RUNTIME learner-facing metadata",
-    "requires_gpu": "REQUIRES_GPU learner-facing metadata",
-}
+BUG_GUIDANCE = re.compile(
+    r"\b(?:common bugs?|common mistakes?|pitfalls?)\b|\bconfusing\b[^.?!]{1,240}\bwould\b|\bmistake\b[^.?!]{1,160}\bfor\b",
+    re.IGNORECASE,
+)
+HELP_DROPDOWN = re.compile(r"<details>\s*<summary>\s*help(?:\s|<|[-–—:])", re.IGNORECASE)
+# Release identifiers belong in artifact manifests. Original ARENA teaches with
+# ordinary prose, difficulty/importance estimates, exercises and results; it
+# does not require students to read pipeline constants. If legacy pages still
+# expose those constants, page_metadata_consistency_blockers checks their truth.
 UNRESOLVED_LADDER_EVIDENCE = {
     "ongoing_visible_notebook_cell_spot_audit",
     "debug_cache_for_complex_functions_where_needed",
@@ -47,6 +50,8 @@ UNRESOLVED_LADDER_EVIDENCE = {
 }
 STYLE_STATUS_PATH = ROOT / "docs/arena_style_rewrite_status.yml"
 COURSE_READY_STATUSES = {"course_ready"}
+VISIBLE_IMAGE = re.compile(r"<img\b|!\[[^\]]*\]\([^)]+\)", re.IGNORECASE)
+PLOT_CALL = re.compile(r"\.(?:plot(?:_[a-z0-9_]+)?|scatter|imshow|matshow|bar|barh|heatmap)\s*\(")
 REQUIRED_COURSE_READY_PAGE_PATTERNS = {
     "expected output dropdown": re.compile(
         r"<details>\s*<summary>\s*expected output",
@@ -61,7 +66,7 @@ REQUIRED_COURSE_READY_PAGE_PATTERNS = {
         re.IGNORECASE,
     ),
     "signature result": re.compile(r"signature result", re.IGNORECASE),
-    "limitations": re.compile(r"limitations", re.IGNORECASE),
+    "limitations": re.compile(r"\b(?:limitations|limits)\b", re.IGNORECASE),
 }
 PAGE_METADATA_PATTERNS = {
     "GT_TIER": re.compile(r"GT_TIER\s*=\s*[\"']([^\"']+)[\"']"),
@@ -91,8 +96,8 @@ def page_style_depth_blockers(config: dict[str, Any] | None = None) -> list[str]
         text = page_path.read_text().lower()
         missing = [
             label
-            for term, label in {**REQUIRED_PAGE_TERMS, **REQUIRED_METADATA_TERMS}.items()
-            if term not in text
+            for term, label in REQUIRED_PAGE_TERMS.items()
+            if (not BUG_GUIDANCE.search(text) if term == "common bug" else term not in text)
         ]
         if missing:
             blockers.append(
@@ -127,13 +132,27 @@ def style_status_blockers(config: dict[str, Any] | None = None) -> list[str]:
     return blockers
 
 
+def _has_signature_result(text: str, has_embedded_figure: bool = False) -> bool:
+    """Recognize a rendered plot without requiring pipeline terminology in prose.
+
+    Source-only plotting calls or an image without a visible plotting operation
+    do not satisfy this alternative. Execution, controls and ownership still have
+    their own gates and visual review; this check only recognizes the surface.
+    """
+    return bool(
+        re.search(r"signature result", text, re.IGNORECASE)
+        or (PLOT_CALL.search(text) and (VISIBLE_IMAGE.search(text) or has_embedded_figure))
+    )
+
+
 def _page_course_ready_blockers(number: str, page_path: Path) -> list[str]:
     text = page_path.read_text()
     blockers: list[str] = []
     for label, pattern in REQUIRED_COURSE_READY_PAGE_PATTERNS.items():
-        if pattern.search(text) is None:
+        present = _has_signature_result(text) if label == "signature result" else pattern.search(text)
+        if not present:
             blockers.append(f"{number}: course-ready page lacks {label}")
-    if "<img" not in text and "|" not in text:
+    if not VISIBLE_IMAGE.search(text) and "|" not in text:
         blockers.append(f"{number}: course-ready page lacks visible figure or table")
     return blockers
 
@@ -188,15 +207,27 @@ def _notebook_course_ready_blockers(number: str, page_path: Path) -> list[str]:
         return blockers
     for notebook_dir in matching_dirs[:1]:
         for notebook_path in sorted(notebook_dir.glob("*.ipynb")):
-            text = _notebook_text(notebook_path).lower()
+            text = _notebook_text(notebook_path).lower().replace("—", "-").replace("–", "-")
             required = {
                 "expected output": "expected-output content",
                 "<details>": "dropdown content",
-                "help -": "help dropdown",
                 "signature result": "signature result",
                 "limitations": "limitations",
             }
-            missing = [label for term, label in required.items() if term not in text]
+            notebook = json.loads(notebook_path.read_text())
+            has_embedded_figure = any(
+                "image/png" in output.get("data", {}) or "image/svg+xml" in output.get("data", {})
+                for cell in notebook.get("cells", []) for output in cell.get("outputs", [])
+            )
+            missing = [
+                label for term, label in required.items()
+                if (not _has_signature_result(text, has_embedded_figure)
+                    if term == "signature result"
+                    else not REQUIRED_COURSE_READY_PAGE_PATTERNS["limitations"].search(text)
+                    if term == "limitations" else term not in text)
+            ]
+            if not HELP_DROPDOWN.search(text):
+                missing.append("help dropdown")
             if missing:
                 blockers.append(
                     f"{number}: {notebook_path.relative_to(ROOT)} lacks {missing}"

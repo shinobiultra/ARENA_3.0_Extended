@@ -141,9 +141,9 @@
       "train_example_count": 8
     }
   ],
-  "date_run": "2026-09-04T08:42:45+00:00",
+  "date_run": "2026-09-04T23:53:12+00:00",
   "evidence_level": "exact_factor_world_plus_pinned_transformerlens_question_conditioned_oracle_preflight",
-  "git_commit": "66aad913",
+  "git_commit": "8eab192b",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-1",
   "known_failures": [],
@@ -419,8 +419,13 @@
   "peak_vram_gb": 0.26896047592163086,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "116b63714c7c2771877e5a52889ae88e81d0e16e386db9f27e7d5f6a3fe9d8d0",
+    "combined_sha256": "18075496ac8c46ceb070b1e9b6b4f538aa7439905fe2285d50358f9e8b0e53e0",
     "files": [
+      {
+        "path": "arena_ext/notebook_checks.py",
+        "sha256": "0033fd8978a45bf0cf5dd7ce790bb234add9d63c564c76479c0d8eb86973bacc",
+        "size_bytes": 1627
+      },
       {
         "path": "arena_ext/verification.py",
         "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
@@ -443,8 +448,8 @@
       },
       {
         "path": "chapter7_activation_to_language/exercises/part3_mini_activation_oracles/artifacts.lock.yml",
-        "sha256": "ee26c68859b7f2b1ba27f65a8729d710c40958617097e3a301d10fa7b8773ba7",
-        "size_bytes": 5696
+        "sha256": "36fe463829d1d893ae76a5a65ed19df59c1a7ec6df315f4e7e8fb91f0adb6fef",
+        "size_bytes": 5748
       },
       {
         "path": "chapter7_activation_to_language/exercises/part3_mini_activation_oracles/expected_outputs/README.md",
@@ -468,8 +473,8 @@
       },
       {
         "path": "chapter7_activation_to_language/exercises/part3_mini_activation_oracles/tests.py",
-        "sha256": "e3598cad3d95aa9f6407794f00dab41ee5cbb7fc24bfb146827db4fdd8c9d0c6",
-        "size_bytes": 32616
+        "sha256": "28e05e1238b765561b6284a17d3521dac899e149989c8ae4a289622d8f0fdd3b",
+        "size_bytes": 32671
       },
       {
         "path": "chapter7_activation_to_language/exercises/part3_mini_activation_oracles/utils.py",
@@ -499,5 +504,5 @@
     "The real-model path uses safe generic prompts and cached activations/logits from a small public TransformerLens checkpoint. It does not use unsafe prompts, gated weights, generated completions, adapter training, or external API calls."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 6.815925
+  "wall_clock_seconds": 3.346674
 }

@@ -1,0 +1,192 @@
+notebook_id: 16_14_deepshap_when_does_fast_attribution_match_exact_shap
+section: '16.14'
+title: 'DeepSHAP: When Does Fast Attribution Match Exact SHAP?'
+execution_device: cpu
+exercise_metadata:
+  EXERCISE_ID: 16_14_deepshap_when_does_fast_attribution_match_exact_shap
+  GT_TIER: GT-0
+  DIFFICULTY: 5
+  IMPORTANCE: 5
+  EXPECTED_RUNTIME: Four to six hours self-study; canonical full CPU runtime recorded after execution
+  REQUIRES_GPU: false
+gt_tier: GT-0
+evidence_level: all_coalition_neural_game_plus_author_deepexplainer_reference
+claim_scope: >-
+  Student-implemented Rescale-style DeepSHAP for supported scalar affine/ReLU Sequential models is
+  checked against hand-derived circuits, an independent SHAP 0.49.1 DeepExplainer adapter, and the
+  exact 256-coalition intact-donor game on all 1,904 held-out model-row combinations. DeepSHAP is a
+  compositional approximation and is not required or claimed to equal exact feature Shapley. The
+  Concrete study attributes a predictive model in MPa and is not a causal material recipe.
+required_gpu_gb: 0
+max_allowed_gpu_gb: 0
+models:
+- id: six_float64_8x32x32x1_relu_regressors
+  source: generated_training_run
+  revision: frozen_deepshap_protocol_v1
+  precision: float64
+  gated: false
+- id: affine_ridge_control
+  source: generated_training_run
+  revision: frozen_deepshap_protocol_v1
+  precision: float64
+  gated: false
+datasets:
+- id: uci_concrete_compressive_strength
+  source: uci
+  revision: 8d4b15b6fc68cd932d745cbd663d5ceae66dd54422e99c1e4865f2936ab7e2af
+  license: CC BY 4.0
+  train: 758
+  explanation: 153
+  audit: 119
+  manifest: data_manifest.json
+expected_metrics:
+  tests_passed: true
+  accepted: true
+  test_count: 11
+  student_method_exercises: 9
+  actual_learner_passed: true
+  embedded_figures: 17
+  native_model_retrained: true
+  native_model_retrained_in_this_report: true
+  native_evidence_reused: false
+  fresh_reproduction_passed: true
+  fresh_compared_arrays_min: 842
+  fresh_compared_elements_min: 5887125
+  fresh_max_error: 0.0
+  model_fits: 7
+  fresh_model_fits: 7
+  all_model_fits_retained: true
+  mlp_fits: 6
+  neural_training_runs: 6
+  ridge_fits: 1
+  clean_fits: 3
+  shuffled_fits: 3
+  shuffled_models_evaluated: 3
+  optimizer_updates: 4800
+  model_keys:
+  - clean_0
+  - clean_1
+  - clean_2
+  - shuffled_0
+  - shuffled_1
+  - shuffled_2
+  - ridge
+  training_seeds: [161410, 161411, 161412]
+  all_training_seeds_retained: true
+  shuffled_training_targets: true
+  train_row_count: 758
+  train_group_count: 298
+  explanation_group_count: 64
+  heldout_unit: recipe_group
+  heldout_group_count: 65
+  heldout_row_count: 119
+  explanation_row_count: 153
+  rows_explained_per_model: 272
+  model_row_explanations: 1904
+  final_used_for_selection: false
+  cross_split_recipe_overlap: 0
+  exact_models: 7
+  exact_coalitions: 256
+  exact_model_rows: 1904
+  model_coalition_values: 487424
+  pair_model_rows: 121856
+  pair_local_values: 974848
+  background_rows: 64
+  folding_max_error_max: 1.0e-10
+  author_reference_model_rows: 1904
+  author_reference_local_values: 15232
+  author_pair_rows_checked: 896
+  author_pair_local_values_checked: 7168
+  author_reference_passed: true
+  author_reference_atol: 1.0e-7
+  author_reference_rtol: 1.0e-8
+  real_local_accuracy_passed: true
+  real_local_accuracy_atol: 1.0e-7
+  real_local_accuracy_rtol: 1.0e-8
+  exact_efficiency_max_error_max: 1.0e-10
+  deepshap_is_exact_shap: false
+  deepshap_approximation_disclosed: true
+  ridge_exact_max_error_max: 1.0e-10
+  threshold_exact_max_error_max: 1.0e-10
+  min_exact_max_error_max: 1.0e-10
+  nearzero_primary_local_accuracy_passed: false
+  nearzero_primary_residual: 4.0e-7
+  nearzero_primary_failure_disclosed: true
+  nearzero_epsilon_zero_max_error_max: 1.0e-10
+  background_variants: 5
+  background_rows_compared: 272
+  alternate_backgrounds_compared: true
+  replacement_models: 7
+  replacement_audit_rows: 119
+  random_order_controls: 100
+  gradient_baseline_model_rows: 1904
+  training_mean_baseline: true
+  dummy_feature_max_abs_max: 1.0e-10
+  unsupported_operator_rejected: true
+  whole_paper_replication: false
+controls:
+- exact_256_coalition_intact_donor_game_for_all_seven_models_and_272_rows
+- full_64_reference_pair_contributions_retained_and_freshly_reproduced
+- independent_shap_0_49_1_deepexplainer_reference_on_supported_sequential_models
+- affine_and_ridge_exactness_controls
+- threshold_gate_exact_half_half_versus_rescale_two_thirds_one_third
+- min_circuit_and_mirrored_architecture_approximation_failures
+- bounded_revealcancel_group_diagnostic
+- finite_epsilon_nearzero_failure_and_epsilon_zero_control
+- gradient_times_input_delta_baseline_not_gradientshap
+- 100_random_replacement_orders
+- primary_nested_and_independent_backgrounds_with_new_exact_games
+- shuffled_target_networks_and_training_mean_prediction_baseline
+- constant_dummy_and_unsupported_operator_controls
+- fresh_native_refit_and_full_payload_comparison
+- editable_tiny_gate_and_real_recipe_plays
+safety_notes:
+- Public material measurements; predictive attribution is not a material-design recommendation.
+- Intact-donor marginal hybrids may still be off manifold and do not establish physical causality.
+freshness_inputs:
+- chapter16_shapley_attribution_baselines/exercises/part14_deepshap/build_notebooks.py
+- chapter16_shapley_attribution_baselines/exercises/part14_deepshap/execute_learner.py
+- chapter16_shapley_attribution_baselines/exercises/part14_deepshap/publish_study.py
+- chapter16_shapley_attribution_baselines/exercises/part14_deepshap/reproduce_native.py
+- chapter16_shapley_attribution_baselines/exercises/part14_deepshap/run_native.py
+- chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_contract_tests.py
+- chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_data.py
+- chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_diagnostics.py
+- chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_methods.py
+- chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_methods_tests.py
+- chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_plots.py
+- chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_reference.py
+- chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_reference_tests.py
+- chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_study.py
+- chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_study_tests.py
+- chapter16_shapley_attribution_baselines/exercises/part14_deepshap/solutions.py
+- chapter16_shapley_attribution_baselines/exercises/part14_deepshap/tests.py
+- chapter16_shapley_attribution_baselines/exercises/part14_deepshap/README.md
+- chapter16_shapley_attribution_baselines/exercises/part14_deepshap/lesson.md
+- chapter16_shapley_attribution_baselines/exercises/part14_deepshap/protocol.md
+- chapter16_shapley_attribution_baselines/exercises/part14_deepshap/protocol_freeze.json
+- chapter16_shapley_attribution_baselines/exercises/part14_deepshap/data_manifest.json
+- chapter16_shapley_attribution_baselines/exercises/part14_deepshap/author_reference.json
+- chapter16_shapley_attribution_baselines/exercises/part14_deepshap/verification_report.schema.json
+- chapter16_shapley_attribution_baselines/exercises/part14_deepshap/expected_outputs/README.md
+- chapter16_shapley_attribution_baselines/exercises/part14_deepshap/expected_outputs/learner_execution.json
+- chapter16_shapley_attribution_baselines/exercises/part14_deepshap/expected_outputs/native_summary.json
+- chapter16_shapley_attribution_baselines/exercises/part14_deepshap/expected_outputs/fresh_reproduction.json
+- chapter16_shapley_attribution_baselines/instructions/pages/14_[16.14]_DeepSHAP_When_Does_Fast_Attribution_Match_Exact_SHAP.md
+- chapter16_shapley_attribution_baselines/instructions/assets/deepshap_01_rescale_limits.png
+- chapter16_shapley_attribution_baselines/instructions/assets/deepshap_02_near_zero_epsilon.png
+- chapter16_shapley_attribution_baselines/instructions/assets/deepshap_03_affine_controls.png
+- chapter16_shapley_attribution_baselines/instructions/assets/deepshap_04_background_average.png
+- chapter16_shapley_attribution_baselines/instructions/assets/deepshap_05_threshold_complete_not_exact.png
+- chapter16_shapley_attribution_baselines/instructions/assets/deepshap_06_cancellation_implementation_dependence.png
+- chapter16_shapley_attribution_baselines/instructions/assets/deepshap_07_replacement_fixture.png
+- chapter16_shapley_attribution_baselines/instructions/assets/deepshap_08_performance_controls.png
+- chapter16_shapley_attribution_baselines/instructions/assets/deepshap_09_signed_parity_all_rows.png
+- chapter16_shapley_attribution_baselines/instructions/assets/deepshap_10_error_heatmaps_all_rows.png
+- chapter16_shapley_attribution_baselines/instructions/assets/deepshap_11_fixed_waterfall.png
+- chapter16_shapley_attribution_baselines/instructions/assets/deepshap_12_fixed_attribution_comparison.png
+- chapter16_shapley_attribution_baselines/instructions/assets/deepshap_13_completeness_vs_exact.png
+- chapter16_shapley_attribution_baselines/instructions/assets/deepshap_14_background_sensitivity.png
+- chapter16_shapley_attribution_baselines/instructions/assets/deepshap_15_replacement_curves.png
+- chapter16_shapley_attribution_baselines/instructions/assets/deepshap_16_threshold_play.png
+- chapter16_shapley_attribution_baselines/instructions/assets/deepshap_17_real_recipe_play.png

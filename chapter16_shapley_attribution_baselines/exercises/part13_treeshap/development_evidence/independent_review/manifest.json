@@ -1,0 +1,28 @@
+{
+  "source_directory": "/home/bitwise/.cache/arena_extended/treeshap/reviews",
+  "archive_sha256": "2374c104ebaa86cc613dbf191e7413cb3750f57d98a1b36f9ee6465ba4b15442",
+  "members": {
+    "evidence/all_threshold_floor_check.py": {
+      "sha256": "03fc3a9473459405fff6ff1b7487f8cfba21ff34ba11d2052e344fc54b60f8ff",
+      "size_bytes": 5717
+    },
+    "evidence/all_threshold_floor_check.result.json": {
+      "sha256": "782500846520fed6b5a002a06d87891ca6e102a60ea79d297168d558c8f42a7e",
+      "size_bytes": 3910
+    },
+    "evidence/randomized200_tree_oracle_check.py": {
+      "sha256": "08a70deadbed08c684f46b634fd411d4bb79ef00a8fcf8d0f69b617b23f72826",
+      "size_bytes": 5295
+    },
+    "evidence/randomized200_tree_oracle_check.result.json": {
+      "sha256": "7829951958b02e0d93d4dd3231f9b393c2b47ae01972807e54ba5d28c5b3b96e",
+      "size_bytes": 1351
+    },
+    "independent_methods_science_review_2026-09-06.md": {
+      "sha256": "591d8bbef93141fd79f5a2ef5f6019331c76bf632670c98c465efecd66fd23bf",
+      "size_bytes": 6308
+    }
+  },
+  "large_tensors_retained_externally": {},
+  "readback_verified": true
+}

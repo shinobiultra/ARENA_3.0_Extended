@@ -1,0 +1,25 @@
+{
+  "scope": "full_candidate_learner_with_sources_changed_during_execution_not_release",
+  "files": [
+    {
+      "file": "lesson_snapshot.md.gz",
+      "sha256": "ba2b832b0691dc02199e3b00f122641e74302bf717da2aeae4216ee27a2698f0",
+      "bytes": 26724
+    },
+    {
+      "file": "completed_learner.ipynb.gz",
+      "sha256": "54b0c848698f9215e6f931b4cf8cb4c87d16d000dd0d42f027871c1c2bb5328d",
+      "bytes": 696100
+    },
+    {
+      "file": "execution.json.gz",
+      "sha256": "9f4f29ba28145648ae301a9182e4c36ce9a97ed14f3a487f68a38e9eb40e47c9",
+      "bytes": 1379
+    },
+    {
+      "file": "completed_word_study.json.gz",
+      "sha256": "34f8361d78207fd6fd108a8ae723ad64ffa0c9ed8f53ebe0288551e14a888c6c",
+      "bytes": 847744
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "original_directory": "/tmp/geometry-mistral-layer-sweep-v1",
+  "members": {
+    "results.json": {
+      "sha256": "a2e3bef0ce7bfc20fc60e8b7fd3ae0ae0d0f30ba767c2df427b362c82b7b9d1b",
+      "archived": true,
+      "bytes": 6218130
+    },
+    "status.json": {
+      "sha256": "c0846233762ac34b5ec3c7ce5d1a223b4a3f94aec21ba173a0c8fe1d75dfc575",
+      "archived": true,
+      "bytes": 261
+    }
+  }
+}

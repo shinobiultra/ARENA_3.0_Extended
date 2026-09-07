@@ -1,10 +1,8 @@
 {
   "accepted": true,
-  "claim_scope": "Contract check; not a full real-model validation.",
-  "evidence_level": "notebook_contract",
-  "gt_tier": "GT-2",
-  "notebook_id": "9_1_refusal_directions_and_safe_steering",
-  "section": "9.1",
-  "tests_passed": true,
-  "title": "Refusal Directions and Safe Steering"
+  "scope": "analytic_train_only_threshold_and_projection_smoke",
+  "shifted_accuracy": 0.5,
+  "shifted_auroc": 1.0,
+  "projection_error": 0.0,
+  "real_model_experiment": false
 }

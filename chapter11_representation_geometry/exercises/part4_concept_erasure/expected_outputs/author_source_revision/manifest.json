@@ -1,0 +1,28 @@
+{
+  "source_directory": "/home/bitwise/.cache/arena_extended/erasure/author_source",
+  "archive_sha256": "6355edc54cd017a8fa00b4dfa9f735b9ede8d64394de37950715f18221be1003",
+  "members": {
+    "LICENSE": {
+      "sha256": "956bd01010229da10d4a0e8c9ab848bdf55050789174dba82b2c1250559180a0",
+      "size_bytes": 1067
+    },
+    "concept_erasure/caching.py": {
+      "sha256": "4bdf3865c0aebd70cf241642e4f4f068625687f82e81c7f2f1906bfc76a9992a",
+      "size_bytes": 1326
+    },
+    "concept_erasure/leace.py": {
+      "sha256": "e4145ae6a1ae6671b3eb68fe1df7dbbbe3ea06eb077dfac8bf169ed4c908b463",
+      "size_bytes": 10314
+    },
+    "concept_erasure/shrinkage.py": {
+      "sha256": "05f3269524e4f612691605325407e72a56a1305678d1b9cee56b1177d3335988",
+      "size_bytes": 2397
+    },
+    "pyproject.toml": {
+      "sha256": "0c9736161198b279e7f9ded5bf2dd4e9600cd7514ef9227855e2bc801f7682c1",
+      "size_bytes": 1414
+    }
+  },
+  "large_tensors_retained_externally": {},
+  "readback_verified": true
+}

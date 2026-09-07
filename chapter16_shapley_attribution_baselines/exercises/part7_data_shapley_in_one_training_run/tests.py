@@ -1,3 +1,5 @@
+
+from arena_ext.notebook_checks import unfinished_definitions
 import json
 from collections.abc import Callable
 from pathlib import Path
@@ -440,12 +442,17 @@ def test_shuffled_label_control_relocates_harm(
 
 
 def test_notebook_contract():
+    from IPython.core.inputtransformer2 import TransformerManager
+
     exercise_path = SECTION_DIR / "16.7_Data_Shapley_in_One_Training_Run_exercises.ipynb"
     solution_path = SECTION_DIR / "16.7_Data_Shapley_in_One_Training_Run_solutions.ipynb"
     exercise = json.loads(exercise_path.read_text())
     solution = json.loads(solution_path.read_text())
     exercise_text = "\n".join("".join(cell["source"]) for cell in exercise["cells"])
     solution_text = "\n".join("".join(cell["source"]) for cell in solution["cells"])
+
+    exercise_code = "\n".join("".join(cell["source"]) for cell in exercise["cells"] if cell["cell_type"] == "code")
+    solution_code = "\n".join("".join(cell["source"]) for cell in solution["cells"] if cell["cell_type"] == "code")
 
     required_phrases = (
         "one precise claim",
@@ -463,10 +470,11 @@ def test_notebook_contract():
     )
     for phrase in required_phrases:
         assert phrase in exercise_text, f"Exercise notebook is missing `{phrase}`."
-    assert exercise_text.count("raise NotImplementedError()") >= 10, (
+    transform = TransformerManager().transform_cell
+    assert len(unfinished_definitions(transform(exercise_code))) >= 10, (
         "The learner notebook must expose the core training and attribution methods."
     )
-    assert "raise NotImplementedError()" not in solution_text, (
+    assert not unfinished_definitions(transform(solution_code)), (
         "The solution notebook must contain executable implementations."
     )
     assert "verification_report.json" in exercise_text + solution_text, (

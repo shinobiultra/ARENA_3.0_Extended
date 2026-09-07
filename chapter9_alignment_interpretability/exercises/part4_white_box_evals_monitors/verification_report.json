@@ -375,7 +375,7 @@
   "peak_vram_gb": 0.30931854248046875,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "6ea454d6400e6c110eb4bd21878ca32ae0c1719d62da0b9ddbc7921b9310b60d",
+    "combined_sha256": "8c4316eabc655dd713b885896b47f5a171ca16ec05cbab9ef15b3c7fd8fe2b8f",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -444,7 +444,7 @@
       },
       {
         "path": "chapter9_alignment_interpretability/instructions/pages/04_[9.4]_White_box_Evals_and_Monitors.md",
-        "sha256": "966787e5356a2a4767ccaaa49a8a25e45f64bbb892b9d1064fc11962334d8f3c",
+        "sha256": "61ddfe7de94d6c9c546da48ca0a3439ff241ac61ce85926b827c215fdd66d30b",
         "size_bytes": 40087
       },
       {

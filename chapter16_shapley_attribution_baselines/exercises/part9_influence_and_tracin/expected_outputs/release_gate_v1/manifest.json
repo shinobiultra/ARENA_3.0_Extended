@@ -1,0 +1,144 @@
+{
+  "source_directory": "/home/bitwise/.cache/arena_extended/data_attribution/release-gate-v1",
+  "archive_sha256": "0345f9d063bf5e62dadf16c95a61a1d842bd2adb2df8b3d9c3e8147eec14e689",
+  "members": {
+    "browser-full-v2.log": {
+      "sha256": "16302afba32308b54ba4223aa4b9af001808e62a71e39e1daad7938ef798e469",
+      "size_bytes": 53
+    },
+    "browser-full-v3.log": {
+      "sha256": "16302afba32308b54ba4223aa4b9af001808e62a71e39e1daad7938ef798e469",
+      "size_bytes": 53
+    },
+    "checkpoint.json": {
+      "sha256": "db8c77c982c63523ae472e8f5a802259d0f886e99dc7965f6cf551b0816dc4fa",
+      "size_bytes": 1985
+    },
+    "course-surface-v2.log": {
+      "sha256": "a2e00c3825989a7411fcd96c79f159ef679acf0f5afc8514ff159bdc7ddf7fed",
+      "size_bytes": 76
+    },
+    "full-tests-v1.log": {
+      "sha256": "0c46e4c44d44bf789204bb8d2da3a3bd630f83e5845b897f9f2e8ed892781990",
+      "size_bytes": 99
+    },
+    "hard-ladders-v3.log": {
+      "sha256": "007390b8c4070f6fbb865741024744c2e34f8b9273d1f91624e7d7312942c3ea",
+      "size_bytes": 71
+    },
+    "integration-tests-v1.log": {
+      "sha256": "ddf33ae80543662ee5b6a17a9be8ec0a824e7328620bb9469f22fe967d6bb3dd",
+      "size_bytes": 2551
+    },
+    "normal-report-v1.log": {
+      "sha256": "50131000073d1aa50c4dafaf5a4484b0641855dfa3d56da00439046f1960fece",
+      "size_bytes": 229
+    },
+    "normal-report-v2.log": {
+      "sha256": "fcba1c132b7bb6756e6b0d423d6756740eb5adc37ffacafbb6706dc678ec583e",
+      "size_bytes": 2174
+    },
+    "normal-report-v3.log": {
+      "sha256": "8d2e2ece7e036c87674b680719d6334eb7d2637b4ece771095137c0f22408be3",
+      "size_bytes": 2174
+    },
+    "original-preservation-final-v1.log": {
+      "sha256": "7b86583b6c4f25a7cc2e29ca42eafe6809bf8edac15acd96e8e4a14fdf482bd2",
+      "size_bytes": 123
+    },
+    "readability-release-v2.log": {
+      "sha256": "0e1f09f006190cddc7b69740e057760c4e1abe048cad6571e047c0808551f2dd",
+      "size_bytes": 9952
+    },
+    "release-tests-v1.log": {
+      "sha256": "bdbe3fc707428b2c4cbbc79d64e98765d012902cc853c88b631f621eb12f1166",
+      "size_bytes": 179
+    },
+    "report-contracts-v2.log": {
+      "sha256": "37f0794955977cabd500e2d073ec7c796812dec77b9f0e00dda34275e51b2145",
+      "size_bytes": 77
+    },
+    "roadmap-completeness-v3.log": {
+      "sha256": "41a896fe5bb3ea8c3d6702c2b4f2b65b9c5fdc8b6fba6a82ecafb919cc6ec738",
+      "size_bytes": 13419
+    },
+    "roadmap-tests-v2.log": {
+      "sha256": "b648617a90db214237d5b5b0cf467e4dbc7497b8cd857b483dc2d8fc97e55dfd",
+      "size_bytes": 2736
+    },
+    "roadmap-tests-v3.log": {
+      "sha256": "b9d8d7f7c1f9e6715a34eea9063113fd94af1edbd74e57afe55b21600f0fd3cc",
+      "size_bytes": 99
+    },
+    "source_snapshot/HANDOFF.md": {
+      "sha256": "433d61fa8cc30b68aac3bf748282574a68300c96593f4e8237b21f6c0e5f632a",
+      "size_bytes": 187603
+    },
+    "source_snapshot/docs/arena_salvage/2026-09-06_data_attribution_next_plan.md": {
+      "sha256": "171d706d448e47b57deefafcdcad1f1b33950a53a41cbd1c51b6802674fd40e3",
+      "size_bytes": 24303
+    },
+    "source_snapshot/docs/arena_style_rewrite_status.yml": {
+      "sha256": "386c5ac6cc68b6d4ee926b8f977b64d3703d7914bc869a7fd44cb08f0d857d1f",
+      "size_bytes": 50833
+    },
+    "source_snapshot/docs/hard_exercise_ladder_registry.csv": {
+      "sha256": "7b7ef2e7afe74e3a2479b4ad6afa0d802176a574c9a6efc8f5549188365f86ae",
+      "size_bytes": 36855
+    },
+    "source_snapshot/docs/hard_exercise_ladder_registry.lock.yml": {
+      "sha256": "603991ded6a75faaec181b76bef71690f2f2a3351ff6ee1acb1137eefb9dd227",
+      "size_bytes": 55744
+    },
+    "source_snapshot/docs/hard_exercise_ladder_registry.md": {
+      "sha256": "ce6273074fbf4c18fa0fd2e11a4a181eb9ceaede995e4d406606558f3d913509",
+      "size_bytes": 38180
+    },
+    "source_snapshot/docs/method_registry.csv": {
+      "sha256": "fd06cea3d5b75d5fda7f7f794ea92524aa7809ccbe83afe7857271f54c9aad9e",
+      "size_bytes": 29510
+    },
+    "source_snapshot/docs/roadmap_requirement_registry.yml": {
+      "sha256": "1d4e4d7f29ee2a67449c51af2ed959765a89bfc8c37196d04f33e0b10b7edca2",
+      "size_bytes": 121614
+    },
+    "source_snapshot/infrastructure/core/config.yaml": {
+      "sha256": "ebbcdfd6fc2d743c78fbe5cd7201c98fe67694c4e0beea8808acd71d708133e4",
+      "size_bytes": 86371
+    },
+    "source_snapshot/infrastructure/core/config_extension.yaml": {
+      "sha256": "7cb81580f30b8adb70092ff72f7ee7f985fe7dbab0dfb1fb6424398a05a48a8a",
+      "size_bytes": 53190
+    },
+    "source_snapshot/scripts/audit_course_surface.py": {
+      "sha256": "e305e7fa4c90731be0370f3da60478175ae947b26a079d88d6c44847fbe6b9e2",
+      "size_bytes": 23127
+    },
+    "source_snapshot/scripts/audit_report_evidence_contracts.py": {
+      "sha256": "a3ee7df4615763752e31ff953872c660295bb327a2eb978df09926334f600581",
+      "size_bytes": 9711
+    },
+    "source_snapshot/tests/test_course_surface_audit.py": {
+      "sha256": "91b1ca27a4abc9c1b41236f7d617a41c249ded5dff7b6b82f98227d2156eb188",
+      "size_bytes": 15346
+    },
+    "source_snapshot/tests/test_report_evidence_contract_audit.py": {
+      "sha256": "0d17dbac9b6ac8b58dcb64b2a2ca06932481b9f4bd11bbad62bd3dab9634172f",
+      "size_bytes": 8380
+    },
+    "source_snapshot/tests/test_roadmap_final_completeness.py": {
+      "sha256": "def8eaa10dbf95a524c64374cdb37785d44612df8999b0b3f7fbc3469a3dacf1",
+      "size_bytes": 9018
+    },
+    "style-depth-v1.log": {
+      "sha256": "11c21bf3940c1e2130b19a0a7db50d683e3e47aee7ca0a5a4ab4dce12e3dfd6f",
+      "size_bytes": 73
+    },
+    "surface-tests-v1.log": {
+      "sha256": "9c770838207e4aa2198fa2c77083140c44c81f6985533a50b03592091c79d980",
+      "size_bytes": 99
+    }
+  },
+  "large_tensors_retained_externally": {},
+  "readback_verified": true
+}

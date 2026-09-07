@@ -1,13 +1,16 @@
 {
-  "notebook_id": "12_3_mini_vlm_from_scratch",
-  "accepted": true,
-  "expected": {
-    "heldout_accuracy_min": 0.95,
-    "text_only_accuracy_max": 0.45,
-    "image_only_accuracy_max": 0.6,
-    "random_visual_accuracy_max": 0.5,
-    "object_patch_flips": true,
-    "background_patch_preserves": true,
-    "random_region_preserves": true
-  }
+  "scope": "untrained_word_model_gradient_contract_only",
+  "expected_word_logits_shape": [
+    3,
+    11,
+    24
+  ],
+  "gradient_groups": [
+    "vision.",
+    "connector.",
+    "word_embedding.",
+    "decoder.",
+    "unembed."
+  ],
+  "trained_model_evidence_required_separately": true
 }

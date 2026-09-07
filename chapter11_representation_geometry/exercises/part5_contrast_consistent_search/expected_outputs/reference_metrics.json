@@ -1,0 +1,28 @@
+{
+  "notebook_id": "11_5_contrast_consistent_search",
+  "evidence_role": "Expected full learner and fresh native contract; these counts do not certify execution.",
+  "expected_metrics": {
+    "tests_passed": true,
+    "accepted": true,
+    "test_count": 14,
+    "native_model_reloaded": true,
+    "actual_learner_passed": true,
+    "fresh_reproduction_passed": true,
+    "own_answer_code_cells": 32,
+    "embedded_figures": 15,
+    "final_prompt_count": 512,
+    "distinct_final_base_reviews": 64,
+    "retained_final_outcomes": 98304,
+    "fresh_compared_examples": 3586,
+    "fresh_condition_batches": 18,
+    "refitted_reporters": 1152,
+    "fresh_max_logit_error_max": 1e-05,
+    "fresh_top_token_mismatches": 0,
+    "primary_metric_matches_actual_tokens": true,
+    "all_reporters_refitted": true,
+    "weights_unchanged": true,
+    "model_gradients_absent": true,
+    "final_used_for_selection": false,
+    "whole_paper_replication": false
+  }
+}

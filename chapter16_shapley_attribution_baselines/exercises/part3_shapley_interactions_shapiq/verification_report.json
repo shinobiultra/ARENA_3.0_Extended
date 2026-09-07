@@ -284,7 +284,7 @@
   "peak_vram_gb": 0.06262922286987305,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "fcd40ca3d29838800b7740dc15b49fc44770efe0b86e947c2d84cc2946c7bb16",
+    "combined_sha256": "3682df199c3322d495ff8de624e14ec5d63cdb723c0e46435e79cf6a3076774b",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -348,7 +348,7 @@
       },
       {
         "path": "chapter16_shapley_attribution_baselines/instructions/pages/03_[16.3]_Shapley_Interactions_with_shapiq.md",
-        "sha256": "1b280a09cef23a0f693833dfe16d9b2ad4f3704960cebbc43040cc0b872643a6",
+        "sha256": "2c1e5be78194c27701ca56f059697ae189877cc1cf1798760bfa1151b1f0c3d1",
         "size_bytes": 39913
       },
       {

@@ -1,3 +1,5 @@
+
+from arena_ext.notebook_checks import unfinished_definitions
 import ast
 from collections.abc import Callable, Mapping
 import json
@@ -644,23 +646,29 @@ def test_exercise_notebook_declares_full_verification_contract():
         "def causal_patch_metrics",
         "def generate_qwen_answers",
         "run_real_contrastive_study",
-        "Set RUN_REAL_MODELS=True to regenerate",
+        "class PixelImageEncoder",
+        "class PixelTextEncoder",
+        "class PixelDualEncoder",
+        "def train_pixel_dual_encoder",
+        "def semantic_retrieval_metrics",
+        "def typographic_attack_metrics",
+        "Real checkpoints skipped",
     ]
     for needle in required:
         assert needle in source, f"The learner notebook is missing the visible method surface: {needle}"
-    assert source.count("### Exercise ") == 10, (
-        "12.1 should present ten graded exercises from toy ground truth through real-model generation."
+    assert source.count("### Exercise ") == 20, (
+        "12.1 should present twenty exercises including full encoders and typographic controls."
     )
-    assert source.count("<summary>Expected output</summary>") >= 10, (
+    assert source.count("<summary>Expected output</summary>") >= 20, (
         "Every graded exercise should state its expected output."
     )
-    assert source.count("<summary>Help -") >= 10, (
+    assert source.count("<summary>Help") >= 20, (
         "Every graded exercise should include reasoning-oriented help."
     )
-    assert source.count("<summary>Solution</summary>") >= 10, (
+    assert source.count("<summary>Solution</summary>") >= 20, (
         "Every graded exercise should include a visible solution dropdown."
     )
-    assert source.count("<summary>Interpretation</summary>") >= 10, (
+    assert source.count("<summary>Interpretation</summary>") >= 20, (
         "Every graded exercise should explain how to interpret the result."
     )
     print("All tests in `test_exercise_notebook_declares_full_verification_contract` passed!")
@@ -690,6 +698,12 @@ def test_solution_notebook_keeps_real_vlm_methods_visible():
         "causal_patch_metrics",
         "trim_generated_tokens",
         "generate_qwen_answers",
+        "tokenize_pixel_captions",
+        "pixel_alignment_loss",
+        "semantic_retrieval_metrics",
+        "train_pixel_dual_encoder",
+        "evaluate_pixel_model",
+        "typographic_attack_metrics",
     }
     definitions = {
         node.name: node
@@ -700,13 +714,7 @@ def test_solution_notebook_keeps_real_vlm_methods_visible():
         f"Solved notebook is missing visible implementations: {taught - definitions.keys()}"
     )
     for name in taught:
-        assert not any(
-            isinstance(child, ast.Raise)
-            and isinstance(child.exc, ast.Call)
-            and isinstance(child.exc.func, ast.Name)
-            and child.exc.func.id == "NotImplementedError"
-            for child in ast.walk(definitions[name])
-        ), f"{name} remains a placeholder in the solved notebook."
+        assert not unfinished_definitions(definitions[name]), f"{name} remains a placeholder in the solved notebook."
     assert "reference_solutions" not in code_source and "reference." not in code_source, (
         "The solved notebook must run taught VLM methods directly, not delegate to solutions.py."
     )

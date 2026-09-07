@@ -491,7 +491,7 @@
   "peak_vram_gb": 0.3199195861816406,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "4fdd3062534a4feb6d60db58204e2ba65c70e6652272e6187725cd7471428666",
+    "combined_sha256": "fbd8051753be047c302c687a52479a7e1ce0213d177e951b45299b37708b9053",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -555,7 +555,7 @@
       },
       {
         "path": "chapter9_alignment_interpretability/instructions/pages/02_[9.2]_Chain_of_Thought_Faithfulness.md",
-        "sha256": "fa80c1fb06e6670f083a98a4a9cd865b4589b30b002451ffb68a32cdb087a1d8",
+        "sha256": "0d827c39d0438638890d3857d620b7defba49cc420d21afb0e2987facb7ac8cd",
         "size_bytes": 51999
       },
       {

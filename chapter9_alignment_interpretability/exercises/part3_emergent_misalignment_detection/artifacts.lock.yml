@@ -148,3 +148,6 @@ safety_notes:
   hidden states, and next-token logits only. It performs no generated completions,
   trains no adapters, includes no harmful procedural content, and does not claim to
   reproduce emergent misalignment.
+
+freshness_inputs:
+  - arena_ext/notebook_checks.py

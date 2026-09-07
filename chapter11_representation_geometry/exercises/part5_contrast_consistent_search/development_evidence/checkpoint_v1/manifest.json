@@ -1,0 +1,75 @@
+{
+  "readback_verified": true,
+  "members": {
+    "preservation-checkpoint-v1.log": {
+      "source": "/home/bitwise/.cache/arena_extended/ccs/preservation-checkpoint-v1.log",
+      "sha256": "d5d0b3c3edd9872636d0d09b2da21f44a7d97189abbd50379cf3eef8e08876b5",
+      "size_bytes": 123
+    },
+    "course-surface-checkpoint-v1.log": {
+      "source": "/home/bitwise/.cache/arena_extended/ccs/course-surface-checkpoint-v1.log",
+      "sha256": "a2e00c3825989a7411fcd96c79f159ef679acf0f5afc8514ff159bdc7ddf7fed",
+      "size_bytes": 76
+    },
+    "style-checkpoint-v1.log": {
+      "source": "/home/bitwise/.cache/arena_extended/ccs/style-checkpoint-v1.log",
+      "sha256": "10f08cdb746ec0d424b0b5768adfd608704515aafed64947e5971cd48be7f6be",
+      "size_bytes": 73
+    },
+    "evidence-checkpoint-v1.log": {
+      "source": "/home/bitwise/.cache/arena_extended/ccs/evidence-checkpoint-v1.log",
+      "sha256": "4af7394dd7de6e70bf84f25ad2019d9d09e9af4ec8dce0dae5cf069afc7d0b16",
+      "size_bytes": 77
+    },
+    "roadmap-checkpoint-v1.log": {
+      "source": "/home/bitwise/.cache/arena_extended/ccs/roadmap-checkpoint-v1.log",
+      "sha256": "5008e8fb0ace3d9a7d46eaf2201e8c2536556961afb6ae9ae59fdffd9a1345b6",
+      "size_bytes": 13984
+    },
+    "method-pytest-v2.log": {
+      "source": "/home/bitwise/.cache/arena_extended/ccs/method-pytest-v2.log",
+      "sha256": "f61ba8de186692cdcd4d94681ef42a1c1cf8228af6db60783726a59f0e3116b7",
+      "size_bytes": 99
+    },
+    "method-checks-v1.log": {
+      "source": "/home/bitwise/.cache/arena_extended/ccs/method-checks-v1.log",
+      "sha256": "1f21a6912791b38940352194742b4e0212f594177e7b373bd9c62c62cf7215b6",
+      "size_bytes": 340
+    },
+    "author-parity-v1.json": {
+      "source": "/home/bitwise/.cache/arena_extended/ccs/author-parity-v1.json",
+      "sha256": "c94dd3270b8412dcebf917287cf42d9a6c9a65229ae5271b7a89db0d8b4601e2",
+      "size_bytes": 909
+    },
+    "data-manifest-v1.json": {
+      "source": "/home/bitwise/.cache/arena_extended/ccs/data-manifest-v1.json",
+      "sha256": "6ee4273d7b750b1f2abd3c83bf2e19b63dc01e2784896444a0a5f0273bfe5875",
+      "size_bytes": 617
+    },
+    "data-manifest-v2.json": {
+      "source": "/home/bitwise/.cache/arena_extended/ccs/data-manifest-v2.json",
+      "sha256": "d3b6f5194ea7a74c4fb4cea228f32d8ae3255caf8e6969fa5d43f4daeb169699",
+      "size_bytes": 617
+    },
+    "browser-review-v2.log": {
+      "source": "/home/bitwise/.cache/arena_extended/ccs/browser-review-v2.log",
+      "sha256": "c7c6760f099e14c0d5c9d30433ffb0b15cabc8745ffcafafd6234eb37e1f364c",
+      "size_bytes": 53
+    },
+    "own-foundation-v1.log": {
+      "source": "/home/bitwise/.cache/arena_extended/ccs/own-foundation-v1.log",
+      "sha256": "733418068443113de99bb8978b6bf117e6d0957fa0c2dce670afa3eb46c7e1c9",
+      "size_bytes": 532
+    },
+    "own-foundation-v2.log": {
+      "source": "/home/bitwise/.cache/arena_extended/ccs/own-foundation-v2.log",
+      "sha256": "1bf7c43a52f804f7ba99d47724604c1878f44629e7c71e0e40953c1f07f20f50",
+      "size_bytes": 532
+    },
+    "native-development-v1.log": {
+      "source": "/home/bitwise/.cache/arena_extended/ccs/native-development-v1.log",
+      "sha256": "ae5d2a0129fedccdd2151a0024bd234787bba63235f6c7fe2eb94183959cfa61",
+      "size_bytes": 2103
+    }
+  }
+}

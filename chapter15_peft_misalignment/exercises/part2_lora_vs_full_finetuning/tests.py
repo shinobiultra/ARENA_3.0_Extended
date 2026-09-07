@@ -100,6 +100,7 @@ def test_toy_lora_delta_uses_scaled_b_times_a(fn: Callable = solutions.toy_lora_
     expected = t.tensor([[6.0, 12.0], [8.0, 16.0]])
     assert t.equal(actual, expected), "LoRA must compute alpha/rank * B @ A, not A @ B or an unscaled product."
     assert t.linalg.matrix_rank(actual).item() == 1, "The exact rank-one oracle must remain rank one."
+    print("All tests in `test_toy_lora_delta_uses_scaled_b_times_a` passed!")
 
 
 def test_lora_linear_starts_as_exact_base_and_trains_only_factors(cls=solutions.LoRALinear) -> None:
@@ -111,6 +112,7 @@ def test_lora_linear_starts_as_exact_base_and_trains_only_factors(cls=solutions.
     assert layer.lora_a.dtype == base.weight.dtype and layer.lora_b.dtype == base.weight.dtype, "LoRA factors must inherit the wrapped projection's dtype."
     assert not base.weight.requires_grad, "The wrapped transformer weight must be frozen."
     assert layer.lora_a.requires_grad and layer.lora_b.requires_grad, "Both low-rank factors must remain trainable."
+    print("All tests in `test_lora_linear_starts_as_exact_base_and_trains_only_factors` passed!")
 
 
 def test_merge_unmerge_preserves_logits_and_base_weight(
@@ -124,6 +126,7 @@ def test_merge_unmerge_preserves_logits_and_base_weight(
     parity, restoration = fn(layer, t.randn(7, 4))
     assert parity < 1e-5, "Merged and unmerged LoRA logits should agree to floating-point precision."
     assert restoration < 1e-6, "Unmerging must restore the pretrained weight exactly."
+    print("All tests in `test_merge_unmerge_preserves_logits_and_base_weight` passed!")
 
 
 def test_inject_lora_replaces_real_named_linear_modules(
@@ -146,6 +149,7 @@ def test_inject_lora_replaces_real_named_linear_modules(
     assert isinstance(model.attn.q_proj, cls), "The named attention projection must be replaced in the model tree."
     assert isinstance(model.other, nn.Linear), "Untargeted transformer modules must remain untouched."
     assert list(inserted) == ["attn.q_proj"], "Injection should report the exact modified module path."
+    print("All tests in `test_inject_lora_replaces_real_named_linear_modules` passed!")
 
 
 def test_freeze_except_lora_exposes_exact_parameter_budget(
@@ -159,6 +163,7 @@ def test_freeze_except_lora_exposes_exact_parameter_budget(
         parameter.requires_grad == ("lora_" in name)
         for name, parameter in model.named_parameters()
     ), "No pretrained or bias parameter may leak into LoRA optimization."
+    print("All tests in `test_freeze_except_lora_exposes_exact_parameter_budget` passed!")
 
 
 def test_codebook_split_has_disjoint_templates_and_twenty_heldout_examples(
@@ -169,6 +174,7 @@ def test_codebook_split_has_disjoint_templates_and_twenty_heldout_examples(
     assert not ({x.template_id for x in train} & {x.template_id for x in heldout}), "Held-out templates must be disjoint from training templates."
     assert {x.label for x in train} == {0, 1}, "Both codebook labels must appear in training."
     assert {x.subject for x in train} == {x.subject for x in heldout}, "This experiment isolates prompt-template generalization, not unseen-name generalization."
+    print("All tests in `test_codebook_split_has_disjoint_templates_and_twenty_heldout_examples` passed!")
 
 
 def test_random_label_control_preserves_prompts_and_balance(
@@ -180,6 +186,7 @@ def test_random_label_control_preserves_prompts_and_balance(
     assert [x.prompt for x in shuffled] == [x.prompt for x in train], "Random-label control must use identical model inputs."
     assert sum(x.label for x in shuffled) == sum(x.label for x in train), "The negative control must preserve class balance."
     assert any(a.label != b.label for a, b in zip(train, shuffled, strict=True)), "The control must actually break label alignment."
+    print("All tests in `test_random_label_control_preserves_prompts_and_balance` passed!")
 
 
 def test_matched_training_loop_learns_exact_next_token_organism(
@@ -205,6 +212,7 @@ def test_matched_training_loop_learns_exact_next_token_organism(
     assert len(trace.losses) == 30 and trace.examples_seen == 120, "The matched loop must honor its declared step and example budget."
     assert trace.losses[-1] < trace.losses[0] * 0.2, "The exact organism's combined task/replay loss should fall sharply."
     assert metrics.accuracy == 1.0, "The training loop should solve the exact two-token organism."
+    print("All tests in `test_matched_training_loop_learns_exact_next_token_organism` passed!")
 
 
 def test_spectrum_distinguishes_rank_one_from_full_rank(fn: Callable = solutions.summarize_spectrum) -> None:
@@ -215,6 +223,7 @@ def test_spectrum_distinguishes_rank_one_from_full_rank(fn: Callable = solutions
     assert low.effective_rank < 1.01, "The exact rank-one oracle should have effective rank one."
     assert full.effective_rank > 1.99, "An isotropic two-dimensional update should have effective rank two."
     assert low.singular_values[1] < 1e-5, "The second singular value must vanish in the rank-one oracle."
+    print("All tests in `test_spectrum_distinguishes_rank_one_from_full_rank` passed!")
 
 
 def test_dominant_activation_drift_recovers_planted_direction(
@@ -229,6 +238,7 @@ def test_dominant_activation_drift_recovers_planted_direction(
     cosine = t.cosine_similarity(report.direction, planted, dim=0).abs().item()
     assert cosine > 0.999, "SVD should recover the planted adapter-induced activation direction."
     assert report.top_variance_fraction > 0.999, "A one-direction drift should explain nearly all uncentered drift energy."
+    print("All tests in `test_dominant_activation_drift_recovers_planted_direction` passed!")
 
 
 def test_direction_ablation_removes_exact_adaptation_component(
@@ -247,6 +257,7 @@ def test_direction_ablation_removes_exact_adaptation_component(
     assert before.accuracy == 1.0, "The exact organism must solve both labels before intervention."
     assert after.target_probability < before.target_probability - 0.25, "Removing the exact drift direction must cause a large target-probability drop."
     assert after.target_probability == 0.5, "Projecting back to the base state should return exact chance probability."
+    print("All tests in `test_direction_ablation_removes_exact_adaptation_component` passed!")
 
 
 def test_same_norm_random_lora_matches_learned_norm(
@@ -273,6 +284,7 @@ def test_same_norm_random_lora_matches_learned_norm(
     )
     delta = random_model.attn.q_proj.delta_weight()
     assert abs(delta.norm().item() - 3.5) < 1e-5, "Random low-rank control must match the learned Frobenius norm."
+    print("All tests in `test_same_norm_random_lora_matches_learned_norm` passed!")
 
 
 def test_gpu_hooks_are_strict_and_have_exact_budget_signature() -> None:
@@ -281,6 +293,7 @@ def test_gpu_hooks_are_strict_and_have_exact_budget_signature() -> None:
     source = inspect.getsource(solutions._cuda_metadata)
     assert "CUDA is required" in source, "CUDA verification must fail closed with an actionable error."
     assert 't.device("cpu")' not in source and "device='cpu'" not in source, "The strict GPU hook must not contain a CPU execution branch."
+    print("All tests in `test_gpu_hooks_are_strict_and_have_exact_budget_signature` passed!")
 
 
 def test_notebook_contract_exposes_method_and_controls() -> None:
@@ -305,6 +318,7 @@ def test_notebook_contract_exposes_method_and_controls() -> None:
         "run_full_experiment",
     ):
         assert required.lower() in combined.lower(), f"Learner surface is missing required concept or function: {required}."
+    print("All tests in `test_notebook_contract_exposes_method_and_controls` passed!")
 
 
 def test_run_smoke_test_packages_exact_oracles() -> None:
@@ -315,3 +329,4 @@ def test_run_smoke_test_packages_exact_oracles() -> None:
     assert smoke["unmerge_restoration_max_abs_diff"] < 1e-6, "Smoke evidence must include unmerge restoration."
     assert smoke["heldout_examples"] >= 20 and smoke["disjoint_templates"], "Smoke evidence must expose the held-out design."
     assert smoke["model_revision"] == solutions.MODEL_REVISION, "The pretrained transformer revision must remain immutable."
+    print("All tests in `test_run_smoke_test_packages_exact_oracles` passed!")

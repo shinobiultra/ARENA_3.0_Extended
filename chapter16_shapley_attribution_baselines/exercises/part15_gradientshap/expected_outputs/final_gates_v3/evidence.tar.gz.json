@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "status": "PASS",
+  "label": "final_registered_global_gates_v3",
+  "archive": "/home/bitwise/Documents/ARENA_3.0_Extended/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/expected_outputs/final_gates_v3/evidence.tar.gz",
+  "sha256": "fa472400ceb9e5fd6b22d5afeb9b887c6278d48451f3a72c126e3170abc81ceb",
+  "size_bytes": 308265,
+  "verified_included_files": 40,
+  "verified_external_files": 0,
+  "historical_status": {
+    "release_gate_status": "PASS",
+    "release_gates": [
+      "build_merged_config",
+      "audit_course_surface",
+      "audit_report_evidence_contracts",
+      "audit_arena_style_depth",
+      "audit_hard_exercise_ladders",
+      "audit_original_arena_preservation"
+    ],
+    "merged_config": "PASS",
+    "course_surface": {
+      "status": "PASS",
+      "chapters": 13
+    },
+    "report_evidence": {
+      "status": "PASS",
+      "reports": 59
+    },
+    "arena_style": {
+      "status": "PASS",
+      "pages": 57
+    },
+    "hard_exercise_ladders": {
+      "status": "PASS",
+      "rows": 56
+    },
+    "original_arena_preservation": {
+      "status": "PASS",
+      "blockers": 0
+    },
+    "full_course": {
+      "status": "FAIL",
+      "requirements": 205,
+      "taught": 52,
+      "unimplemented": 84,
+      "deferred": 13,
+      "preflight_only": 36,
+      "toy_only": 20
+    },
+    "focused_global_pytest": {
+      "status": "PASS",
+      "passed": 74,
+      "elapsed_seconds": 18.35,
+      "test_files": 7
+    },
+    "interpretation": "16.15 release gates pass; full-course completion remains FAIL with 84 unimplemented requirements.",
+    "integration_apply_log_sha256": "d9bad7e4db294d7b5f4358864b19cb2b7b41ad140ab3593a58326faeb2019ef5",
+    "hand_off_included": false
+  },
+  "external_files": {}
+}

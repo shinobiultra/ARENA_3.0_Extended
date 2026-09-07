@@ -1,0 +1,32 @@
+{
+  "passed": true,
+  "revision": "be10d7b912b17e8eacb45de794e9dca044e4ed37",
+  "source_sha256": "5a65f7d130aa5531ca37979d487e63057ef2d9aa4d925176f892a6ebc7955c13",
+  "license_sha256": "99a7c1ab3190e7da4978946ca7152d1f939ae335cc1d1917ee5a70ec5989c274",
+  "primitives": [
+    "mean-only training centering",
+    "original asymmetric loss",
+    "loss gradients"
+  ],
+  "whole_author_class_executed": false,
+  "cases": [
+    {
+      "case": "full_rank",
+      "centering_error": 4.440892098500626e-16,
+      "loss_error": 0.0,
+      "gradient_error": 2.7755575615628914e-17
+    },
+    {
+      "case": "rank_deficient",
+      "centering_error": 4.440892098500626e-16,
+      "loss_error": 0.0,
+      "gradient_error": 2.7755575615628914e-17
+    },
+    {
+      "case": "translated",
+      "centering_error": 5.329070518200751e-15,
+      "loss_error": 0.0,
+      "gradient_error": 1.3877787807814457e-17
+    }
+  ]
+}

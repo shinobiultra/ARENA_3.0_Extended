@@ -1,0 +1,26 @@
+{
+  "notebook_id": "11_4_concept_erasure",
+  "evidence_role": "Expected full learner and fresh native contract; these counts do not certify execution.",
+  "expected_metrics": {
+    "tests_passed": true,
+    "accepted": true,
+    "test_count": 11,
+    "native_model_reloaded": true,
+    "actual_learner_passed": true,
+    "fresh_reproduction_passed": true,
+    "own_answer_code_cells": 24,
+    "embedded_figures": 12,
+    "final_prompt_count": 672,
+    "retained_final_outcomes": 71232,
+    "fresh_compared_examples": 71232,
+    "fresh_condition_batches": 106,
+    "fresh_max_logit_error_max": 1e-05,
+    "fresh_top_token_mismatches": 0,
+    "primary_metric_matches_actual_tokens": true,
+    "weights_unchanged": true,
+    "model_gradients_absent": true,
+    "all_erasers_and_probes_refitted": true,
+    "final_used_for_selection": false,
+    "whole_paper_replication": false
+  }
+}

@@ -1,1829 +1,1372 @@
-# %%
-"""Reference solutions for [7.4] Mini Natural Language Autoencoders."""
+"""Reference implementation for [7.4] Mini Natural Language Autoencoders.
 
-import logging
-import os
-import re
+This lesson is a deliberately small supervised warm-start, not a reproduction
+of paper-scale NLA reinforcement learning. Its activation verbalizer predicts
+GPT-NeoX token sequences. Its activation reconstructor sends those tokens
+through a frozen language model before applying the affine output head used by
+the NLA paper. No phrase ID, factor parser, or activation prototype appears in
+the learned round trip.
+"""
+
+from __future__ import annotations
+
 import sys
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any, Sequence
 
 import torch as t
 import torch.nn.functional as F
+
 
 chapter = "chapter7_activation_to_language"
 root_dir = next(p for p in [Path.cwd(), *Path.cwd().parents] if (p / chapter).exists())
 if str(root_dir) not in sys.path:
     sys.path.append(str(root_dir))
 
-MAIN = __name__ == "__main__"
 
-TL_GELU1L_MODEL_NAME = "gelu-1l"
-TL_GELU1L_HF_ID = "NeelNanda/GELU_1L512W_C4_Code"
-TL_GELU1L_REVISION = "bddc0e332f0ae84279e6a6a45d91b314899e1603"
-TL_GELU1L_TOKENIZER_ID = "NeelNanda/gpt-neox-tokenizer-digits"
-TL_GELU1L_TOKENIZER_REVISION = "0f6671571a20be9756b9991d978047c03b75e749"
-TL_BNB_CUDA_OVERRIDE = "130"
-TL_RESID_POST_HOOK = "blocks.0.hook_resid_post"
-TL_POSITIVE_ANCHOR = "The cat sat on the"
-TL_NEGATIVE_ANCHOR = "The bird flew over the"
-TL_BASIS_COMPONENTS = 4
-TL_TRAIN_EXAMPLES = [
-    ("The cat sat on the", "surface"),
-    ("The dog slept on the", "surface"),
-    ("The child sat on the", "surface"),
-    ("The book rested on the", "surface"),
-    ("The blanket lay on the", "surface"),
-    ("The lamp sat on the", "surface"),
-    ("The bird flew over the", "motion"),
-    ("The plane flew over the", "motion"),
-    ("The kite floated above the", "motion"),
-    ("The cloud drifted above the", "motion"),
-    ("The feather floated above the", "motion"),
-    ("The train rushed through the", "motion"),
-]
-TL_EVAL_EXAMPLES = [
-    ("Yesterday at home, the blanket lay on the", "surface"),
-    ("In the quiet room, the lamp sat on the", "surface"),
-    ("After dinner, the pillow rested on the", "surface"),
-    ("Near the window, the chair sat on the", "surface"),
-    ("At noon outside, the rocket launched into the", "motion"),
-    ("During the game, the ball flew over the", "motion"),
-    ("On the hill, the kite floated above the", "motion"),
-    ("In the hallway, the train rushed through the", "motion"),
-]
-TL_SURFACE_TERMS = ("sat", "slept", "rested", "stood", "lay")
-TL_MOTION_TERMS = ("flew", "floated", "launched", "rushed", "ran", "jumped")
-TL_TRAIN_PHRASES = (
-    "cat resting on support",
-    "dog sleeping on support",
-    "child sitting on support",
-    "book resting on support",
-    "blanket lying on support",
-    "lamp sitting on support",
-    "bird moving above path",
-    "plane moving above path",
-    "kite floating above scene",
-    "cloud drifting above scene",
-    "feather floating above scene",
-    "train rushing along path",
+PYTHIA_MODEL_ID = "EleutherAI/pythia-70m-deduped"
+PYTHIA_REVISION = "e93a9faa9c77e5d09219f6c868bfc7a1bd65593c"
+PYTHIA_HIDDEN_STATE_INDEX = 4
+PYTHIA_PATCH_BLOCK_INDEX = 3
+AGREEMENT_CANDIDATES = (" is", " are", " was", " were")
+FACTOR_STATES = ((1.0, 1.0), (-1.0, 1.0), (1.0, -1.0), (-1.0, -1.0))
+AR_PROMPT = "Summary of the following text: <text>{}</text> <summary>"
+
+NOUN_PAIRS = (
+    ("key", "keys"),
+    ("book", "books"),
+    ("car", "cars"),
+    ("tree", "trees"),
+    ("house", "houses"),
+    ("chair", "chairs"),
+    ("table", "tables"),
+    ("door", "doors"),
+    ("apple", "apples"),
+    ("river", "rivers"),
+    ("city", "cities"),
+    ("student", "students"),
+    ("teacher", "teachers"),
+    ("doctor", "doctors"),
+    ("artist", "artists"),
+    ("pilot", "pilots"),
 )
 
-
-# %%
-@dataclass(frozen=True)
-class NLATrainingBatch:
-    activations: t.Tensor
-    original_text_spans: tuple[str, ...]
-    synthetic_latent_labels: tuple[str, ...]
-    generated_explanations: tuple[str, ...]
-
-
-@dataclass(frozen=True)
-class NLAReconstructionReport:
-    activation_mse: float
-    text_only_mse: float
-    mean_cosine_similarity: float
-    beats_text_only: bool
-
-
-@dataclass(frozen=True)
-class LogitDiffPreservationReport:
-    original_logit_diff: float
-    reconstructed_logit_diff: float
-    mean_abs_error: float
-    preserves_target_logit_diff: bool
-
-
-@dataclass(frozen=True)
-class LatentPreservationReport:
-    original_probe_accuracy: float
-    reconstructed_probe_accuracy: float
-    prediction_agreement: float
-    preserves_latents: bool
-
-
-@dataclass(frozen=True)
-class GeneratedTextBrevityReport:
-    generated_word_count: int
-    original_word_count: int
-    compression_ratio: float
-    shorter_than_original: bool
-
-
-@dataclass(frozen=True)
-class CounterfactualExplanationReport:
-    original_explanation: str
-    counterfactual_explanation: str
-    activation_delta: float
-    explanation_changed: bool
-
-
-@dataclass(frozen=True)
-class TrainableNLABottleneckReport:
-    encoder_final_loss: float
-    decoder_final_mse: float
-    encoder_train_accuracy: float
-    eval_phrase_accuracy: float
-    reconstruction_mse: float
-    blank_text_mse: float
-    beats_blank_text: bool
-    generated_explanations: tuple[str, ...]
-    phrase_count: int
-    training_steps: int
-    seed: int
-
-
-def _prediction_accuracy(logits: t.Tensor, labels: t.Tensor) -> float:
-    """Return exact top-1 accuracy for probe or answer logits."""
-
-    if logits.ndim < 2:
-        raise ValueError("logits must have shape (..., classes).")
-    if logits.shape[:-1] != labels.shape:
-        raise ValueError("logits prefix shape must match labels.")
-    return logits.argmax(dim=-1).eq(labels).float().mean().item()
-
-
-def build_nla_training_batch(
-    activations: t.Tensor,
-    original_text_spans: list[str],
-    synthetic_latent_labels: list[str],
-    generated_explanations: list[str],
-) -> NLATrainingBatch:
-    """Bundle activations with source text, latent labels, and explanations."""
-
-    if activations.ndim < 2:
-        raise ValueError("activations must have at least shape (examples, d_model).")
-    if activations.shape[0] == 0:
-        raise ValueError("activations must contain at least one example.")
-    expected_examples = activations.shape[0]
-    lengths = {
-        len(original_text_spans),
-        len(synthetic_latent_labels),
-        len(generated_explanations),
-    }
-    if lengths != {expected_examples}:
-        raise ValueError("all text fields must have one entry per activation.")
-    return NLATrainingBatch(
-        activations=activations,
-        original_text_spans=tuple(original_text_spans),
-        synthetic_latent_labels=tuple(synthetic_latent_labels),
-        generated_explanations=tuple(generated_explanations),
-    )
-
-
-def activation_reconstruction_report(
-    original_activations: t.Tensor,
-    reconstructed_activations: t.Tensor,
-    text_only_reconstructions: t.Tensor,
-) -> NLAReconstructionReport:
-    """Compare activation-to-text-to-activation reconstruction to a baseline."""
-
-    if original_activations.ndim < 2:
-        raise ValueError("activations must have at least shape (examples, d_model).")
-    if original_activations.shape[0] == 0:
-        raise ValueError("activations must contain at least one example.")
-    matching_shapes = (
-        original_activations.shape
-        == reconstructed_activations.shape
-        == text_only_reconstructions.shape
-    )
-    if not matching_shapes:
-        raise ValueError("all activation tensors must have matching shape.")
-    activation_mse = F.mse_loss(
-        reconstructed_activations.float(),
-        original_activations.float(),
-    ).item()
-    text_only_mse = F.mse_loss(
-        text_only_reconstructions.float(),
-        original_activations.float(),
-    ).item()
-    original_flat = original_activations.float().reshape(original_activations.shape[0], -1)
-    reconstructed_flat = reconstructed_activations.float().reshape(
-        reconstructed_activations.shape[0],
-        -1,
-    )
-    mean_cosine = F.cosine_similarity(original_flat, reconstructed_flat, dim=-1)
-    return NLAReconstructionReport(
-        activation_mse=activation_mse,
-        text_only_mse=text_only_mse,
-        mean_cosine_similarity=mean_cosine.mean().item(),
-        beats_text_only=activation_mse < text_only_mse,
-    )
-
-
-def batch_target_logit_diff(
-    logits: t.Tensor,
-    *,
-    positive_token_id: int,
-    negative_token_id: int,
-) -> t.Tensor:
-    """Return positive-minus-negative logit differences over a batch."""
-
-    vocab_size = logits.shape[-1]
-    if not 0 <= positive_token_id < vocab_size:
-        raise ValueError("positive_token_id is out of range.")
-    if not 0 <= negative_token_id < vocab_size:
-        raise ValueError("negative_token_id is out of range.")
-    return logits[..., positive_token_id] - logits[..., negative_token_id]
-
-
-def logit_diff_preservation_report(
-    original_logits: t.Tensor,
-    reconstructed_logits: t.Tensor,
-    *,
-    positive_token_id: int,
-    negative_token_id: int,
-    max_mean_abs_error: float = 0.25,
-) -> LogitDiffPreservationReport:
-    """Check whether reconstructed activations preserve a target logit diff."""
-
-    if original_logits.ndim < 2:
-        raise ValueError("logits must have shape (examples, vocab).")
-    if original_logits.shape != reconstructed_logits.shape:
-        raise ValueError("original_logits and reconstructed_logits must match.")
-    if max_mean_abs_error < 0:
-        raise ValueError("max_mean_abs_error must be non-negative.")
-    original_diff = batch_target_logit_diff(
-        original_logits.float(),
-        positive_token_id=positive_token_id,
-        negative_token_id=negative_token_id,
-    )
-    reconstructed_diff = batch_target_logit_diff(
-        reconstructed_logits.float(),
-        positive_token_id=positive_token_id,
-        negative_token_id=negative_token_id,
-    )
-    mean_abs_error = (original_diff - reconstructed_diff).abs().mean().item()
-    return LogitDiffPreservationReport(
-        original_logit_diff=original_diff.mean().item(),
-        reconstructed_logit_diff=reconstructed_diff.mean().item(),
-        mean_abs_error=mean_abs_error,
-        preserves_target_logit_diff=mean_abs_error <= max_mean_abs_error,
-    )
-
-
-def latent_preservation_report(
-    original_probe_logits: t.Tensor,
-    reconstructed_probe_logits: t.Tensor,
-    latent_ids: t.Tensor,
-    *,
-    min_accuracy: float = 0.75,
-    min_agreement: float = 0.75,
-) -> LatentPreservationReport:
-    """Check whether reconstructed activations preserve probe-decoded latents."""
-
-    if not 0.0 <= min_accuracy <= 1.0:
-        raise ValueError("min_accuracy must be between 0 and 1.")
-    if not 0.0 <= min_agreement <= 1.0:
-        raise ValueError("min_agreement must be between 0 and 1.")
-    if original_probe_logits.shape != reconstructed_probe_logits.shape:
-        raise ValueError("probe logits must have matching shape.")
-    original_accuracy = _prediction_accuracy(original_probe_logits, latent_ids)
-    reconstructed_accuracy = _prediction_accuracy(reconstructed_probe_logits, latent_ids)
-    original_predictions = original_probe_logits.argmax(dim=-1)
-    reconstructed_predictions = reconstructed_probe_logits.argmax(dim=-1)
-    prediction_agreement = original_predictions.eq(reconstructed_predictions)
-    prediction_agreement = prediction_agreement.float().mean().item()
-    return LatentPreservationReport(
-        original_probe_accuracy=original_accuracy,
-        reconstructed_probe_accuracy=reconstructed_accuracy,
-        prediction_agreement=prediction_agreement,
-        preserves_latents=(
-            reconstructed_accuracy >= min_accuracy and prediction_agreement >= min_agreement
-        ),
-    )
-
-
-def generated_text_brevity_report(
-    generated_explanations: list[str],
-    original_prompts: list[str],
-) -> GeneratedTextBrevityReport:
-    """Check that generated explanations compress the original prompt text."""
-
-    if len(generated_explanations) != len(original_prompts):
-        raise ValueError("generated_explanations and original_prompts must align.")
-    if not generated_explanations:
-        raise ValueError("generated_explanations must be nonempty.")
-    if any(not text.strip() for text in generated_explanations):
-        raise ValueError("generated explanations must contain text.")
-    generated_word_count = sum(len(text.split()) for text in generated_explanations)
-    original_word_count = sum(len(text.split()) for text in original_prompts)
-    if original_word_count == 0:
-        raise ValueError("original_prompts must contain at least one word.")
-    compression_ratio = generated_word_count / original_word_count
-    return GeneratedTextBrevityReport(
-        generated_word_count=generated_word_count,
-        original_word_count=original_word_count,
-        compression_ratio=compression_ratio,
-        shorter_than_original=generated_word_count < original_word_count,
-    )
-
-
-def counterfactual_explanation_report(
-    original_activation: t.Tensor,
-    counterfactual_activation: t.Tensor,
-    original_explanation: str,
-    counterfactual_explanation: str,
-    *,
-    min_activation_delta: float = 0.0,
-) -> CounterfactualExplanationReport:
-    """Check whether a counterfactual activation changes generated text."""
-
-    if min_activation_delta < 0:
-        raise ValueError("min_activation_delta must be non-negative.")
-    if original_activation.shape != counterfactual_activation.shape:
-        raise ValueError("activation tensors must have matching shape.")
-    activation_delta = (
-        counterfactual_activation.float() - original_activation.float()
-    ).norm().item()
-    explanation_changed = (
-        original_explanation.strip().lower()
-        != counterfactual_explanation.strip().lower()
-    )
-    return CounterfactualExplanationReport(
-        original_explanation=original_explanation,
-        counterfactual_explanation=counterfactual_explanation,
-        activation_delta=activation_delta,
-        explanation_changed=explanation_changed and activation_delta > min_activation_delta,
-    )
-
-
-def train_discrete_nla_bottleneck(
-    train_activations: t.Tensor,
-    train_phrase_ids: t.Tensor,
-    eval_activations: t.Tensor,
-    eval_phrase_ids: t.Tensor,
-    phrase_texts: tuple[str, ...],
-    *,
-    steps: int = 300,
-    lr: float = 0.05,
-    seed: int = 0,
-) -> tuple[t.Tensor, t.Tensor, t.Tensor, t.Tensor, t.Tensor, TrainableNLABottleneckReport]:
-    """Train a small activation -> phrase id -> activation NLA bottleneck."""
-
-    if train_activations.ndim != 2 or eval_activations.ndim != 2:
-        raise ValueError("activations must have shape (examples, d_model).")
-    if train_activations.shape[0] == 0 or eval_activations.shape[0] == 0:
-        raise ValueError("train and eval activations must be nonempty.")
-    if train_activations.shape[1] != eval_activations.shape[1]:
-        raise ValueError("train and eval activations must share d_model.")
-    if train_phrase_ids.shape != (train_activations.shape[0],):
-        raise ValueError("train_phrase_ids must have shape (train_examples,).")
-    if eval_phrase_ids.shape != (eval_activations.shape[0],):
-        raise ValueError("eval_phrase_ids must have shape (eval_examples,).")
-    if not phrase_texts:
-        raise ValueError("phrase_texts must be nonempty.")
-    if steps <= 0:
-        raise ValueError("steps must be positive.")
-    if lr <= 0:
-        raise ValueError("lr must be positive.")
-
-    n_phrases = len(phrase_texts)
-    train_phrase_ids = train_phrase_ids.long()
-    eval_phrase_ids = eval_phrase_ids.long()
-    all_ids = t.cat([train_phrase_ids, eval_phrase_ids])
-    if int(all_ids.min().item()) < 0 or int(all_ids.max().item()) >= n_phrases:
-        raise ValueError("phrase ids must be in [0, len(phrase_texts)).")
-
-    t.manual_seed(seed)
-    if train_activations.device.type == "cuda":
-        t.cuda.manual_seed_all(seed)
-
-    train_x = train_activations.float()
-    eval_x = eval_activations.float()
-    mean = train_x.mean(dim=0, keepdim=True)
-    train_features = F.normalize(train_x - mean, dim=-1)
-    eval_features = F.normalize(eval_x - mean, dim=-1)
-
-    d_model = train_x.shape[1]
-    encoder_weight = (0.01 * t.randn(d_model, n_phrases, device=train_x.device)).requires_grad_()
-    encoder_bias = t.zeros(n_phrases, device=train_x.device, requires_grad=True)
-    global_mean = train_x.mean(dim=0)
-    decoder_init = []
-    for phrase_id in range(n_phrases):
-        mask = train_phrase_ids == phrase_id
-        decoder_init.append(train_x[mask].mean(dim=0) if bool(mask.any()) else global_mean)
-    decoder_table = t.stack(decoder_init).detach().clone().requires_grad_()
-
-    optimizer = t.optim.Adam([encoder_weight, encoder_bias, decoder_table], lr=lr)
-    encoder_final_loss = float("nan")
-    decoder_final_mse = float("nan")
-    for _step in range(steps):
-        optimizer.zero_grad(set_to_none=True)
-        logits = train_features @ encoder_weight + encoder_bias
-        encoder_loss = F.cross_entropy(logits, train_phrase_ids)
-        decoder_reconstruction = decoder_table[train_phrase_ids]
-        decoder_loss = F.mse_loss(decoder_reconstruction, train_x)
-        loss = encoder_loss + decoder_loss
-        loss.backward()
-        optimizer.step()
-        encoder_final_loss = float(encoder_loss.detach().item())
-        decoder_final_mse = float(decoder_loss.detach().item())
-
-    with t.no_grad():
-        train_logits = train_features @ encoder_weight + encoder_bias
-        eval_logits = eval_features @ encoder_weight + encoder_bias
-        train_accuracy = _prediction_accuracy(train_logits, train_phrase_ids)
-        eval_predictions = eval_logits.argmax(dim=-1)
-        eval_accuracy = eval_predictions.eq(eval_phrase_ids).float().mean().item()
-        reconstructed_eval = decoder_table[eval_predictions].detach()
-        blank_text = train_x.mean(dim=0, keepdim=True).expand_as(eval_x)
-        reconstruction_mse = F.mse_loss(reconstructed_eval, eval_x).item()
-        blank_text_mse = F.mse_loss(blank_text, eval_x).item()
-        generated = tuple(phrase_texts[int(index)] for index in eval_predictions.tolist())
-
-    report = TrainableNLABottleneckReport(
-        encoder_final_loss=encoder_final_loss,
-        decoder_final_mse=decoder_final_mse,
-        encoder_train_accuracy=train_accuracy,
-        eval_phrase_accuracy=eval_accuracy,
-        reconstruction_mse=reconstruction_mse,
-        blank_text_mse=blank_text_mse,
-        beats_blank_text=reconstruction_mse < blank_text_mse,
-        generated_explanations=generated,
-        phrase_count=n_phrases,
-        training_steps=steps,
-        seed=seed,
-    )
-    return (
-        encoder_weight.detach(),
-        encoder_bias.detach(),
-        decoder_table.detach(),
-        eval_predictions.detach(),
-        reconstructed_eval.detach(),
-        report,
-    )
-
-
-def batch_smoke_test() -> dict:
-    activations = t.eye(3)
-    batch = build_nla_training_batch(
-        activations,
-        ["Alice gave Bob the book.", "def add(x, y):", "The answer is Paris."],
-        ["ioi", "code", "fact"],
-        ["indirect object is Bob", "python function", "stored capital fact"],
-    )
-    return {
-        "activation_shape": list(batch.activations.shape),
-        "latent_labels": list(batch.synthetic_latent_labels),
-        "generated_explanations": list(batch.generated_explanations),
-    }
-
-
-def reconstruction_smoke_test() -> dict:
-    original = t.tensor([[1.0, 0.0], [0.0, 1.0]])
-    reconstructed = t.tensor([[0.9, 0.1], [0.1, 0.9]])
-    text_only = t.zeros_like(original)
-    return activation_reconstruction_report(original, reconstructed, text_only).__dict__
-
-
-def logit_diff_smoke_test() -> dict:
-    original_logits = t.tensor([[3.0, 1.0, 0.0], [2.0, 0.0, 1.0]])
-    reconstructed_logits = t.tensor([[2.9, 1.1, 0.0], [2.1, 0.0, 1.1]])
-    return logit_diff_preservation_report(
-        original_logits,
-        reconstructed_logits,
-        positive_token_id=0,
-        negative_token_id=1,
-        max_mean_abs_error=0.25,
-    ).__dict__
-
-
-def latent_preservation_smoke_test() -> dict:
-    latent_ids = t.tensor([0, 1, 2])
-    original_logits = t.tensor([[4.0, 0.0, 0.0], [0.0, 4.0, 0.0], [0.0, 0.0, 4.0]])
-    reconstructed_logits = t.tensor(
-        [[3.0, 0.0, 0.0], [0.0, 3.0, 0.0], [0.0, 0.5, 2.0]]
-    )
-    return latent_preservation_report(
-        original_logits,
-        reconstructed_logits,
-        latent_ids,
-        min_accuracy=0.75,
-        min_agreement=0.75,
-    ).__dict__
-
-
-def brevity_smoke_test() -> dict:
-    generated = ["ioi target Bob", "python function"]
-    prompts = [
-        "Alice walked to the hall and gave Bob the book",
-        "Please write a python function that adds two numbers",
-    ]
-    return generated_text_brevity_report(generated, prompts).__dict__
-
-
-def counterfactual_smoke_test() -> dict:
-    return counterfactual_explanation_report(
-        t.tensor([1.0, 0.0]),
-        t.tensor([0.0, 1.0]),
-        "indirect object is Bob",
-        "indirect object is Alice",
-        min_activation_delta=0.5,
-    ).__dict__
-
-
-def trainable_bottleneck_smoke_test() -> dict:
-    train_activations = t.tensor(
-        [
-            [2.0, 0.0],
-            [1.8, 0.1],
-            [-2.0, 0.0],
-            [-1.8, -0.1],
-        ]
-    )
-    eval_activations = t.tensor([[1.9, 0.0], [-1.9, 0.0]])
-    train_phrase_ids = t.tensor([0, 0, 1, 1])
-    eval_phrase_ids = t.tensor([0, 1])
-    *_, report = train_discrete_nla_bottleneck(
-        train_activations,
-        train_phrase_ids,
-        eval_activations,
-        eval_phrase_ids,
-        ("positive direction", "negative direction"),
-        steps=120,
-        lr=0.08,
-        seed=0,
-    )
-    return report.__dict__
-
-
-def _legacy_smoke_test(cpu: bool = True) -> dict:
-    _ = cpu
-    return {
-        "batch": batch_smoke_test(),
-        "reconstruction": reconstruction_smoke_test(),
-        "logit_diff": logit_diff_smoke_test(),
-        "latent_preservation": latent_preservation_smoke_test(),
-        "brevity": brevity_smoke_test(),
-        "counterfactual": counterfactual_smoke_test(),
-        "trainable_bottleneck": trainable_bottleneck_smoke_test(),
-    }
-
-
-def _load_gelu1l_model_on_cuda():
-    os.environ.setdefault("BNB_CUDA_VERSION", TL_BNB_CUDA_OVERRIDE)
-    logging.getLogger("bitsandbytes.cextension").setLevel(logging.ERROR)
-    from transformer_lens import HookedTransformer
-
-    return HookedTransformer.from_pretrained(
-        TL_GELU1L_MODEL_NAME,
-        device="cuda",
-        dtype="float32",
-        revision=TL_GELU1L_REVISION,
-    )
-
-
-def _final_residual_and_logits(model, prompt: str) -> tuple[t.Tensor, t.Tensor]:
-    with t.inference_mode():
-        logits, cache = model.run_with_cache(
-            model.to_tokens(prompt),
-            names_filter=lambda name: name == TL_RESID_POST_HOOK,
-        )
-    return cache[TL_RESID_POST_HOOK][0, -1].detach().float(), logits[0, -1].detach()
-
-
-def _residual_direction(model) -> tuple[t.Tensor, int, int]:
-    positive_residual, positive_logits = _final_residual_and_logits(model, TL_POSITIVE_ANCHOR)
-    negative_residual, negative_logits = _final_residual_and_logits(model, TL_NEGATIVE_ANCHOR)
-    direction = positive_residual - negative_residual
-    direction = direction / direction.norm()
-    return direction, int(positive_logits.argmax().item()), int(negative_logits.argmax().item())
-
-
-def _collect_residuals(model, examples: list[tuple[str, str]]) -> tuple[list[str], list[str], t.Tensor]:
-    texts = [text for text, _ in examples]
-    labels = [label for _, label in examples]
-    residuals = [_final_residual_and_logits(model, text)[0] for text in texts]
-    return texts, labels, t.stack(residuals)
-
-
-def _build_basis(train_residuals: t.Tensor, direction: t.Tensor) -> tuple[t.Tensor, t.Tensor]:
-    mean_residual = train_residuals.mean(dim=0)
-    _, _, vh = t.linalg.svd(train_residuals - mean_residual, full_matrices=False)
-    components = [direction]
-    for vector in vh:
-        orthogonal = vector.clone()
-        for component in components:
-            orthogonal = orthogonal - (orthogonal @ component) * component
-        norm = orthogonal.norm()
-        if norm > 1e-5:
-            components.append(orthogonal / norm)
-        if len(components) >= TL_BASIS_COMPONENTS:
-            break
-    if len(components) != TL_BASIS_COMPONENTS:
-        raise RuntimeError("could not build the requested residual basis.")
-    return mean_residual, t.stack(components)
-
-
-def _numeric_literal_count(texts: list[str]) -> int:
-    return sum(len(re.findall(r"[+-]?\d+(?:\.\d+)?", text)) for text in texts)
-
-
-def _phrase_feature_vocabulary(phrases: list[str]) -> tuple[str, ...]:
-    return tuple(phrases)
-
-
-def _phrase_features(phrase: str, vocabulary: tuple[str, ...], device: t.device) -> t.Tensor:
-    return t.tensor([1.0 if phrase == token else 0.0 for token in vocabulary], device=device)
-
-
-def _fit_phrase_decoder(
-    phrases: list[str],
-    train_residuals: t.Tensor,
-    *,
-    ridge: float = 1e-3,
-) -> tuple[tuple[str, ...], t.Tensor, t.Tensor]:
-    vocabulary = _phrase_feature_vocabulary(phrases)
-    features = t.stack(
-        [_phrase_features(phrase, vocabulary, train_residuals.device) for phrase in phrases]
-    )
-    regularizer = ridge * t.eye(features.shape[1], device=train_residuals.device)
-    decoder_weight = t.linalg.solve(
-        features.T @ features + regularizer,
-        features.T @ train_residuals.float(),
-    )
-    return vocabulary, features, decoder_weight
-
-
-def _decode_phrase(
-    explanation: str,
-    vocabulary: tuple[str, ...],
-    decoder_weight: t.Tensor,
-) -> t.Tensor:
-    features = _phrase_features(explanation, vocabulary, decoder_weight.device)
-    return features @ decoder_weight
-
-
-def _encode_explanation(
-    residual: t.Tensor,
-    train_residuals: t.Tensor,
-    train_labels: list[str],
-    train_phrases: list[str],
-    direction: t.Tensor,
-) -> str:
-    predicted_label = "surface" if (residual @ direction).item() >= 0 else "motion"
-    candidate_ids = [
-        index for index, label in enumerate(train_labels)
-        if label == predicted_label
-    ]
-    if not candidate_ids:
-        candidate_ids = list(range(len(train_phrases)))
-    candidates = train_residuals[candidate_ids]
-    distances = (candidates.float() - residual.float()).pow(2).mean(dim=-1)
-    nearest_id = candidate_ids[int(distances.argmin().item())]
-    return train_phrases[nearest_id]
-
-
-def _direction_probe_logits(residuals: t.Tensor, direction: t.Tensor) -> t.Tensor:
-    scores = residuals.float() @ direction
-    return t.stack([-scores, scores], dim=-1)
-
-
-def _label_ids(labels: list[str], device: t.device) -> t.Tensor:
-    return t.tensor([1 if label == "surface" else 0 for label in labels], device=device)
-
-
-def _text_only_label(text: str) -> str:
-    text_lower = text.lower()
-    if any(term in text_lower for term in TL_SURFACE_TERMS):
-        return "surface"
-    if any(term in text_lower for term in TL_MOTION_TERMS):
-        return "motion"
-    return "motion"
-
-
-def run_transformerlens_nla_preflight(max_vram_gb: float = 24.0) -> dict:
-    """Run a real residual-to-text-to-residual mini NLA preflight on gelu-1l."""
-
-    if not t.cuda.is_available():
-        return {
-            "cuda_available": False,
-            "preflight_passed": False,
-            "full_path": "Pinned TransformerLens gelu-1l residual text-bottleneck NLA preflight.",
-        }
-
-    t.cuda.reset_peak_memory_stats()
-    model = _load_gelu1l_model_on_cuda()
-    model.eval()
-    direction, positive_token_id, negative_token_id = _residual_direction(model)
-
-    train_texts, train_labels, train_residuals = _collect_residuals(model, TL_TRAIN_EXAMPLES)
-    eval_texts, eval_labels, eval_residuals = _collect_residuals(model, TL_EVAL_EXAMPLES)
-    mean_residual = train_residuals.mean(dim=0)
-    train_phrases = list(TL_TRAIN_PHRASES)
-    if len(train_phrases) != len(train_texts):
-        raise RuntimeError("train phrase bank must align with train examples.")
-    phrase_vocabulary = tuple(train_phrases)
-    nearest_explanations = [
-        _encode_explanation(
-            residual,
-            train_residuals,
-            train_labels,
-            train_phrases,
-            direction,
-        )
-        for residual in eval_residuals
-    ]
-    train_phrase_ids = t.arange(len(train_phrases), device=train_residuals.device)
-    eval_phrase_ids = t.tensor(
-        [phrase_vocabulary.index(explanation) for explanation in nearest_explanations],
-        device=train_residuals.device,
-    )
-    (
-        _encoder_weight,
-        _encoder_bias,
-        decoder_table,
-        eval_phrase_predictions,
-        reconstructed_residuals,
-        trainable_bottleneck,
-    ) = train_discrete_nla_bottleneck(
-        train_residuals,
-        train_phrase_ids,
-        eval_residuals,
-        eval_phrase_ids,
-        phrase_vocabulary,
-        steps=300,
-        lr=0.05,
-        seed=0,
-    )
-    generated_explanations = list(trainable_bottleneck.generated_explanations)
-    blank_text_residuals = mean_residual.expand_as(eval_residuals)
-    trainable_encoder_parameter_count = (
-        train_residuals.shape[1] * len(phrase_vocabulary) + len(phrase_vocabulary)
-    )
-    trainable_decoder_parameter_count = len(phrase_vocabulary) * train_residuals.shape[1]
-    text_only_mean = mean_residual.expand_as(eval_residuals)
-
-    label_prototypes = {}
-    for label in {"surface", "motion"}:
-        mask = t.tensor(
-            [train_label == label for train_label in train_labels],
-            device=train_residuals.device,
-            dtype=t.bool,
-        )
-        label_prototypes[label] = train_residuals[mask].mean(dim=0)
-    prompt_label_residuals = t.stack(
-        [label_prototypes[_text_only_label(text)] for text in eval_texts]
-    )
-
-    nla_batch = build_nla_training_batch(
-        eval_residuals,
-        eval_texts,
-        eval_labels,
-        generated_explanations,
-    )
-    reconstruction = activation_reconstruction_report(
-        eval_residuals,
-        reconstructed_residuals,
-        text_only_mean,
-    )
-    prompt_label_mse = t.nn.functional.mse_loss(
-        prompt_label_residuals.float(),
-        eval_residuals.float(),
-    ).item()
-
-    label_ids = _label_ids(eval_labels, eval_residuals.device)
-    original_probe_logits = _direction_probe_logits(eval_residuals, direction)
-    reconstructed_probe_logits = _direction_probe_logits(reconstructed_residuals, direction)
-    text_only_probe_logits = _direction_probe_logits(text_only_mean, direction)
-    logit_diff = logit_diff_preservation_report(
-        original_probe_logits,
-        reconstructed_probe_logits,
-        positive_token_id=1,
-        negative_token_id=0,
-        max_mean_abs_error=2.0,
-    )
-    latent = latent_preservation_report(
-        original_probe_logits,
-        reconstructed_probe_logits,
-        label_ids,
-        min_accuracy=1.0,
-        min_agreement=1.0,
-    )
-    text_only_latent = latent_preservation_report(
-        original_probe_logits,
-        text_only_probe_logits,
-        label_ids,
-        min_accuracy=1.0,
-        min_agreement=1.0,
-    )
-    brevity = generated_text_brevity_report(generated_explanations, eval_texts)
-    counterfactual = counterfactual_explanation_report(
-        train_residuals[0],
-        train_residuals[-1],
-        _encode_explanation(
-            train_residuals[0],
-            train_residuals,
-            train_labels,
-            train_phrases,
-            direction,
-        ),
-        _encode_explanation(
-            train_residuals[-1],
-            train_residuals,
-            train_labels,
-            train_phrases,
-            direction,
-        ),
-        min_activation_delta=1.0,
-    )
-
-    shuffled_explanations = generated_explanations[1:] + generated_explanations[:1]
-    shuffled_ids = t.tensor(
-        [phrase_vocabulary.index(explanation) for explanation in shuffled_explanations],
-        device=eval_residuals.device,
-    )
-    shuffled_reconstruction = decoder_table[shuffled_ids]
-    shuffled_mse = t.nn.functional.mse_loss(
-        shuffled_reconstruction.float(),
-        eval_residuals.float(),
-    ).item()
-    blank_text_mse = t.nn.functional.mse_loss(
-        blank_text_residuals.float(),
-        eval_residuals.float(),
-    ).item()
-    numeric_literal_count = _numeric_literal_count(generated_explanations)
-    prediction_accuracy = (
-        reconstructed_probe_logits.argmax(dim=-1).eq(label_ids).float().mean().item()
-    )
-    text_only_prediction_accuracy = (
-        text_only_probe_logits.argmax(dim=-1).eq(label_ids).float().mean().item()
-    )
-
-    t.cuda.synchronize()
-    peak_vram_gb = t.cuda.max_memory_allocated() / 1024**3
-    within_vram_budget = peak_vram_gb <= max_vram_gb
-    preflight_passed = (
-        trainable_bottleneck.encoder_train_accuracy == 1.0
-        and trainable_bottleneck.eval_phrase_accuracy >= 0.75
-        and trainable_bottleneck.encoder_final_loss < 0.01
-        and trainable_bottleneck.beats_blank_text
-        and reconstruction.beats_text_only
-        and reconstruction.activation_mse < prompt_label_mse
-        and reconstruction.mean_cosine_similarity >= 0.85
-        and logit_diff.preserves_target_logit_diff
-        and latent.preserves_latents
-        and not text_only_latent.preserves_latents
-        and prediction_accuracy == 1.0
-        and text_only_prediction_accuracy == 0.5
-        and brevity.shorter_than_original
-        and numeric_literal_count == 0
-        and counterfactual.explanation_changed
-        and shuffled_mse > reconstruction.activation_mse
-        and blank_text_mse > reconstruction.activation_mse
-        and within_vram_budget
-    )
-
-    return {
-        "cuda_available": True,
-        "device": t.cuda.get_device_name(0),
-        "preflight_passed": preflight_passed,
-        "model_name": TL_GELU1L_MODEL_NAME,
-        "hf_model_id": TL_GELU1L_HF_ID,
-        "hf_revision": TL_GELU1L_REVISION,
-        "tokenizer_id": TL_GELU1L_TOKENIZER_ID,
-        "tokenizer_revision": TL_GELU1L_TOKENIZER_REVISION,
-        "bnb_cuda_override": TL_BNB_CUDA_OVERRIDE,
-        "hook_name": TL_RESID_POST_HOOK,
-        "positive_anchor_prompt": TL_POSITIVE_ANCHOR,
-        "negative_anchor_prompt": TL_NEGATIVE_ANCHOR,
-        "positive_token": model.to_string(positive_token_id),
-        "negative_token": model.to_string(negative_token_id),
-        "phrase_count": len(train_phrases),
-        "phrase_vocabulary_size": len(phrase_vocabulary),
-        "text_bottleneck": "discrete_natural_language_phrase_bottleneck",
-        "live_trainable_nla": True,
-        "report_replay": False,
-        "trainable_encoder_type": "linear_residual_to_phrase_id",
-        "trainable_decoder_type": "phrase_id_embedding_table_to_residual",
-        "trainable_encoder_parameter_count": trainable_encoder_parameter_count,
-        "trainable_decoder_parameter_count": trainable_decoder_parameter_count,
-        "trainable_encoder_final_loss": trainable_bottleneck.encoder_final_loss,
-        "trainable_decoder_final_mse": trainable_bottleneck.decoder_final_mse,
-        "trainable_encoder_train_accuracy": trainable_bottleneck.encoder_train_accuracy,
-        "trainable_eval_phrase_accuracy": trainable_bottleneck.eval_phrase_accuracy,
-        "trainable_reconstruction_mse": trainable_bottleneck.reconstruction_mse,
-        "trainable_blank_text_mse": trainable_bottleneck.blank_text_mse,
-        "trainable_beats_blank_text": trainable_bottleneck.beats_blank_text,
-        "trainable_phrase_count": trainable_bottleneck.phrase_count,
-        "trainable_training_steps": trainable_bottleneck.training_steps,
-        "trainable_seed": trainable_bottleneck.seed,
-        "trainable_generated_explanation": generated_explanations[0],
-        "train_example_count": len(train_texts),
-        "eval_example_count": len(eval_texts),
-        "activation_shape": list(nla_batch.activations.shape),
-        "explanation_count": len(generated_explanations),
-        "example_generated_explanation": generated_explanations[0],
-        "numeric_literal_count": numeric_literal_count,
-        "activation_mse": reconstruction.activation_mse,
-        "text_only_mse": reconstruction.text_only_mse,
-        "prompt_label_baseline_mse": prompt_label_mse,
-        "mean_cosine_similarity": reconstruction.mean_cosine_similarity,
-        "beats_text_only": reconstruction.beats_text_only,
-        "beats_prompt_label_baseline": reconstruction.activation_mse < prompt_label_mse,
-        "probe_logit_mean_abs_error": logit_diff.mean_abs_error,
-        "preserves_target_logit_diff": logit_diff.preserves_target_logit_diff,
-        "original_probe_accuracy": latent.original_probe_accuracy,
-        "reconstructed_probe_accuracy": latent.reconstructed_probe_accuracy,
-        "prediction_agreement": latent.prediction_agreement,
-        "preserves_latents": latent.preserves_latents,
-        "text_only_prediction_accuracy": text_only_prediction_accuracy,
-        "nla_prediction_accuracy": prediction_accuracy,
-        "passes_ood": prediction_accuracy == 1.0,
-        "generated_word_count": brevity.generated_word_count,
-        "original_word_count": brevity.original_word_count,
-        "compression_ratio": brevity.compression_ratio,
-        "shorter_than_original": brevity.shorter_than_original,
-        "counterfactual_activation_delta": counterfactual.activation_delta,
-        "counterfactual_explanation_changed": counterfactual.explanation_changed,
-        "shuffled_reconstruction_mse": shuffled_mse,
-        "shuffled_control_worse": shuffled_mse > reconstruction.activation_mse,
-        "blank_text_mse": blank_text_mse,
-        "blank_text_control_worse": blank_text_mse > reconstruction.activation_mse,
-        "peak_vram_gb": peak_vram_gb,
-        "within_vram_budget": within_vram_budget,
-        "full_path": "Pinned TransformerLens gelu-1l residual text-bottleneck NLA preflight.",
-    }
-
-
-# %%
-# Exact model-organism lesson used by the learner and solved notebooks.
-SEMANTIC_VOCABULARY = ("north", "south", "fragile", "standard")
-ANTIPODAL_PHRASE = {
-    "route north; cargo fragile": "route south; cargo standard",
-    "route north; cargo standard": "route south; cargo fragile",
-    "route south; cargo fragile": "route north; cargo standard",
-    "route south; cargo standard": "route north; cargo fragile",
-}
-
-PYTHIA_NLA_MODEL_ID = "EleutherAI/pythia-70m-deduped"
-PYTHIA_NLA_REVISION = "e93a9faa9c77e5d09219f6c868bfc7a1bd65593c"
-PYTHIA_NLA_PHRASES = (
-    "indefinite article a comes next",
-    "definite article the comes next",
-    "comma punctuation comes next",
-    "hyphen punctuation comes next",
-    "period punctuation comes next",
-    "line break comes next",
-)
-PYTHIA_NLA_EXPECTED_TOKENS = (" a", " the", ",", "-", ".", "\n")
-PYTHIA_NLA_PROMPT_GROUPS = (
-    (
-        (
-            "The chemical symbol for water is",
-            "The square root of nine is",
-            "One hundred divided by ten is",
-            "Spring comes after",
-            "The last letter of the alphabet is",
-            "The first letter of the alphabet is",
-        ),
-        (
-            "The planet closest to the Sun is",
-            "The author of Hamlet was",
-            "The language spoken in Spain is",
-        ),
-    ),
-    (
-        (
-            "The day after Monday is",
-            "The day before Friday is",
-            "Plants need sunlight and",
-            "The opposite of left is",
-            "The opposite of up is",
-            "The opposite of true is",
-        ),
-        (
-            "The opposite of yes is",
-            "The number after nine is",
-            "The capital of Japan is",
-        ),
-    ),
-    (
-        (
-            "Water freezes at zero degrees",
-            "A Python function begins with the keyword",
-            "The fraction one half equals zero point",
-            "The freezing point of water is zero degrees",
-            "The acronym GPU stands for graphics processing",
-            "The acronym CSS stands for cascading style",
-        ),
-        (
-            "One kilometer contains one thousand",
-            "One kilogram contains one thousand",
-            "Ice melts at zero degrees",
-        ),
-    ),
-    (
-        (
-            "One minute contains sixty",
-            "One hour contains sixty",
-            "The Git command that shows changes is git",
-            "The Git command that creates a commit is git",
-            "The Git command that lists branches is git",
-            "The Git command that switches branches is git",
-        ),
-        (
-            "The Git command that fetches changes is git",
-            "The Git command that pushes changes is git",
-            "One meter contains one hundred",
-        ),
-    ),
-    (
-        (
-            "A dozen means twelve",
-            "The boiling point of water is one hundred degrees",
-            "The acronym HTML stands for hypertext markup",
-            "The acronym JSON stands for JavaScript object notation",
-            "The acronym URL stands for uniform resource locator",
-            "The acronym SQL stands for structured query language",
-        ),
-        (
-            "The acronym PDF stands for portable document format",
-            "The acronym HTTP stands for hypertext transfer protocol",
-            "The acronym USB stands for universal serial bus",
-        ),
-    ),
-    (
-        (
-            "The file extension for Python is",
-            "The file extension for Markdown is",
-            "The file extension for JSON is",
-            "The file extension for TOML is",
-            "The file extension for CSV is",
-            "The file extension for C is",
-        ),
-        (
-            "The file extension for C++ is",
-            "The file extension for Go is",
-            "The file extension for XML is",
-        ),
-    ),
+TEMPLATE_PAIRS = (
+    ("Today, the {}", "Yesterday, the {}", "plain"),
+    ("Currently, the {}", "Earlier, the {}", "formal"),
 )
 
 
 @dataclass(frozen=True)
-class PlantedNLADataset:
-    activations: t.Tensor
-    latent_bits: t.Tensor
-    prompts: tuple[str, ...]
-    phrases: tuple[str, ...]
-    split_ids: t.Tensor
-    semantic_directions: t.Tensor
-    nuisance_directions: t.Tensor
-    behavior_direction: t.Tensor
+class AgreementExample:
+    prompt: str
+    explanation: str
+    factors: tuple[float, float]
+    context_id: int
+    noun_lemma: str
+    style: str
+    held_out_state: tuple[float, float]
+    split: str
 
 
 @dataclass(frozen=True)
-class ReconstructionComparison:
-    nla_mse: float
-    prompt_only_mse: float
-    shuffled_phrase_mse: float
+class PythiaNLADataset:
+    train_activations: t.Tensor
+    eval_activations: t.Tensor
+    train_factors: t.Tensor
+    eval_factors: t.Tensor
+    train_examples: tuple[AgreementExample, ...]
+    eval_examples: tuple[AgreementExample, ...]
+    eval_input_ids: t.Tensor
+    eval_attention_mask: t.Tensor
+    eval_positions: t.Tensor
+    candidate_token_ids: t.Tensor
+    original_candidate_logits: t.Tensor
+
+
+@dataclass(frozen=True)
+class ExplanationTokens:
+    token_ids: t.Tensor
+    local_token_ids: t.Tensor
+    attention_mask: t.Tensor
+    vocabulary_token_ids: t.Tensor
+    eos_token_id: int
+
+
+@dataclass(frozen=True)
+class TokenVerbalizer:
+    weight: t.Tensor
+    vocabulary_token_ids: t.Tensor
+    eos_token_id: int
+    sequence_length: int
+
+
+@dataclass(frozen=True)
+class GeneratedExplanations:
+    texts: tuple[str, ...]
+    token_ids: t.Tensor
+    local_token_ids: t.Tensor
+    logits: t.Tensor
+
+
+@dataclass(frozen=True)
+class TokenReconstructor:
+    feature_mean: t.Tensor
+    target_mean: t.Tensor
+    weight: t.Tensor
+    output_norm: float
+
+
+@dataclass(frozen=True)
+class ReconstructionMetrics:
+    fve: float
+    within_factor_fve: float
+    normalized_mse: float
     mean_cosine: float
-    nla_beats_prompt_only: bool
-    shuffled_control_fails: bool
+    distinct_rows: int
 
 
 @dataclass(frozen=True)
-class BehaviorPreservation:
-    nla_mae: float
-    prompt_only_mae: float
-    shuffled_phrase_mae: float
-    route_accuracy: float
-    cargo_accuracy: float
-    behavior_sign_accuracy: float
-    nla_beats_controls: bool
+class InterventionResult:
+    base_text: str
+    edited_text: str
+    activation_delta_norm: float
+    selected_logit_change: float
+    other_rows_max_logit_change: float
+    original_winner: str
+    intervened_winner: str
+    candidate_logits: t.Tensor
 
 
 @dataclass(frozen=True)
-class PythiaTextBottleneckDataset:
-    train_residuals: t.Tensor
-    eval_residuals: t.Tensor
-    train_phrase_ids: t.Tensor
-    eval_phrase_ids: t.Tensor
-    train_prompts: tuple[str, ...]
-    eval_prompts: tuple[str, ...]
-    phrase_texts: tuple[str, ...]
-    target_token_ids: t.Tensor
+class MiniNLAReport:
+    train_count: int
+    eval_count: int
+    token_accuracy: float
+    exact_text_accuracy: float
+    reconstruction: ReconstructionMetrics
+    bag_of_tokens: ReconstructionMetrics
+    prompt_only_factor: ReconstructionMetrics
+    direct_factor: ReconstructionMetrics
+    class_mean: ReconstructionMetrics
+    mean_conditioned: ReconstructionMetrics
+    lexical_relabel: ReconstructionMetrics
+    original_task_accuracy: float
+    reconstructed_task_accuracy: float
+    behavior_parity_accuracy: float
+    bag_of_tokens_behavior_parity: float
+    oracle_text_behavior_parity: float
+    omitted_composition_end_to_end_parity: float
+    prompt_only_factor_behavior_parity: float
+    direct_factor_behavior_parity: float
+    class_mean_behavior_parity: float
+    lexical_relabel_behavior_parity: float
+    same_context_token_multiset_fraction: float
+    shuffled_fve_by_seed: tuple[tuple[int, float], ...]
+    shuffled_behavior_parity_by_seed: tuple[tuple[int, float], ...]
+    identity_max_logit_error: float
+    intervention: InterventionResult
+    generated_explanations: tuple[str, ...]
+    rows: tuple[dict[str, Any], ...]
 
 
 @dataclass(frozen=True)
-class PythiaTextBottleneckReport:
-    phrase_accuracy: float
-    shuffled_label_accuracy: float
-    reconstruction_mse: float
-    oracle_phrase_mse: float
-    no_text_mse: float
-    shuffled_phrase_mse: float
-    reconstructed_target_accuracy: float
-    oracle_phrase_target_accuracy: float
-    no_text_target_accuracy: float
-    shuffled_phrase_target_accuracy: float
-    rows: tuple[dict[str, object], ...]
+class MiniNLAExperiment:
+    report: MiniNLAReport
+    verbalizer: TokenVerbalizer
+    reconstructor: TokenReconstructor
+    reconstructed_activations: t.Tensor
 
 
-def latent_phrase(latent_bits: t.Tensor) -> str:
-    """Turn the two planted semantic bits into a short compositional phrase."""
+def natural_language_explanation(
+    noun_lemma: str,
+    style: str,
+    factors: tuple[float, float],
+) -> str:
+    """Write a readable explanation whose factor values are encoded by word order.
 
-    if latent_bits.shape != (2,):
-        raise ValueError("latent_bits must have shape (2,).")
-    route = "north" if float(latent_bits[0]) > 0 else "south"
-    cargo = "fragile" if float(latent_bits[1]) > 0 else "standard"
-    return f"route {route}; cargo {cargo}"
+    Within one noun/style context, all four factor states have exactly the same
+    token multiset. This makes a bag-of-tokens reconstructor a genuine order-free
+    control for the contextual Pythia reconstructor.
+    """
 
-
-def make_planted_nla_dataset(
-    *,
-    seed: int = 0,
-    d_model: int = 8,
-    train_prompt_count: int = 6,
-    eval_prompt_count: int = 4,
-    nuisance_scale: float = 0.35,
-) -> PlantedNLADataset:
-    """Build paired prompts whose hidden activation contains two known semantic bits."""
-
-    if d_model < 4:
-        raise ValueError("d_model must be at least 4.")
-    if train_prompt_count < 2 or eval_prompt_count < 2:
-        raise ValueError("each split needs at least two prompt groups.")
-    if nuisance_scale < 0:
-        raise ValueError("nuisance_scale must be non-negative.")
-
-    generator = t.Generator().manual_seed(seed)
-    basis, _ = t.linalg.qr(t.randn(d_model, d_model, generator=generator))
-    semantic_directions = basis[:, :2].T.contiguous()
-    nuisance_directions = basis[:, 2:4].T.contiguous()
-    behavior_direction = 1.4 * semantic_directions[0] + 0.8 * semantic_directions[1]
-
-    activations: list[t.Tensor] = []
-    latent_rows: list[tuple[float, float]] = []
-    prompts: list[str] = []
-    phrases: list[str] = []
-    split_ids: list[int] = []
-    latent_states = ((1.0, 1.0), (1.0, -1.0), (-1.0, 1.0), (-1.0, -1.0))
-
-    for split_id, prompt_count, offset in (
-        (0, train_prompt_count, 0),
-        (1, eval_prompt_count, train_prompt_count),
-    ):
-        for prompt_index in range(prompt_count):
-            angle = 2 * t.pi * prompt_index / prompt_count
-            nuisance = nuisance_scale * (
-                t.cos(t.tensor(angle)) * nuisance_directions[0]
-                + t.sin(t.tensor(angle)) * nuisance_directions[1]
-            )
-            prompt = (
-                f"The courier reads sealed card {offset + prompt_index:02d} "
-                "before choosing the next move."
-            )
-            for route_bit, cargo_bit in latent_states:
-                bits = t.tensor([route_bit, cargo_bit])
-                activation = (
-                    2.5 * route_bit * semantic_directions[0]
-                    + 2.0 * cargo_bit * semantic_directions[1]
-                    + nuisance
-                )
-                activations.append(activation)
-                latent_rows.append((route_bit, cargo_bit))
-                prompts.append(prompt)
-                phrases.append(latent_phrase(bits))
-                split_ids.append(split_id)
-
-    return PlantedNLADataset(
-        activations=t.stack(activations),
-        latent_bits=t.tensor(latent_rows),
-        prompts=tuple(prompts),
-        phrases=tuple(phrases),
-        split_ids=t.tensor(split_ids, dtype=t.long),
-        semantic_directions=semantic_directions,
-        nuisance_directions=nuisance_directions,
-        behavior_direction=behavior_direction,
+    if not noun_lemma.isalpha() or not style.isalpha():
+        raise ValueError("noun_lemma and style must be alphabetic words.")
+    if factors not in FACTOR_STATES:
+        raise ValueError("factors must be one of the four precommitted states.")
+    quantity = "one not many" if factors[0] > 0 else "many not one"
+    time = "current not earlier" if factors[1] > 0 else "earlier not current"
+    return (
+        f"The topic is {noun_lemma}. The wording is {style}. "
+        f"Quantity is {quantity}. Time is {time}."
     )
 
 
-def phrase_feature_matrix(
-    phrases: list[str] | tuple[str, ...],
-    vocabulary: tuple[str, ...] = SEMANTIC_VOCABULARY,
-) -> t.Tensor:
-    """Represent phrases by semantic word presence, never by phrase identity."""
+def build_agreement_examples() -> tuple[tuple[AgreementExample, ...], tuple[AgreementExample, ...]]:
+    """Build 32 lexical contexts with one composition withheld in each."""
 
-    if not phrases:
-        raise ValueError("phrases must be nonempty.")
-    if len(set(vocabulary)) != len(vocabulary) or not vocabulary:
-        raise ValueError("vocabulary must contain unique tokens.")
-    rows = []
-    for phrase in phrases:
-        words = set(re.findall(r"[a-z]+", phrase.lower()))
-        row = [float(token in words) for token in vocabulary]
-        if sum(row) != 2:
-            raise ValueError("each phrase must contain one route word and one cargo word.")
-        rows.append(row)
-    return t.tensor(rows, dtype=t.float32)
-
-
-def fit_activation_encoder(
-    train_activations: t.Tensor,
-    train_latent_bits: t.Tensor,
-    *,
-    ridge: float = 1e-5,
-) -> tuple[t.Tensor, t.Tensor]:
-    """Fit a linear activation-to-two-bit encoder by ridge regression."""
-
-    if train_activations.ndim != 2 or train_latent_bits.shape != (len(train_activations), 2):
-        raise ValueError("expected activations [batch, d_model] and latent bits [batch, 2].")
-    if ridge <= 0:
-        raise ValueError("ridge must be positive.")
-    mean = train_activations.mean(dim=0)
-    centered = train_activations - mean
-    eye = t.eye(centered.shape[1], device=centered.device, dtype=centered.dtype)
-    weight = t.linalg.solve(centered.T @ centered + ridge * eye, centered.T @ train_latent_bits)
-    bias = -mean @ weight
-    return weight, bias
+    train: list[AgreementExample] = []
+    evaluation: list[AgreementExample] = []
+    for noun_index, (singular, plural) in enumerate(NOUN_PAIRS):
+        for template_index, (current_template, earlier_template, style) in enumerate(TEMPLATE_PAIRS):
+            context_id = 2 * noun_index + template_index
+            held_out_state = FACTOR_STATES[context_id % len(FACTOR_STATES)]
+            for number_factor, noun in ((1.0, singular), (-1.0, plural)):
+                for time_factor, template in ((1.0, current_template), (-1.0, earlier_template)):
+                    factors = (number_factor, time_factor)
+                    split = "eval" if factors == held_out_state else "train"
+                    example = AgreementExample(
+                        prompt=template.format(noun),
+                        explanation=natural_language_explanation(singular, style, factors),
+                        factors=factors,
+                        context_id=context_id,
+                        noun_lemma=singular,
+                        style=style,
+                        held_out_state=held_out_state,
+                        split=split,
+                    )
+                    (evaluation if split == "eval" else train).append(example)
+    return tuple(train), tuple(evaluation)
 
 
-def encode_activations_to_phrases(
-    activations: t.Tensor,
-    encoder_weight: t.Tensor,
-    encoder_bias: t.Tensor,
-) -> tuple[tuple[str, ...], t.Tensor]:
-    """Encode residuals into two semantic bits and render them as phrases."""
-
-    if activations.ndim != 2:
-        raise ValueError("activations must have shape [batch, d_model].")
-    scores = activations @ encoder_weight + encoder_bias
-    if scores.shape != (len(activations), 2):
-        raise ValueError("encoder must produce exactly two semantic scores.")
-    predicted_bits = t.where(scores >= 0, t.ones_like(scores), -t.ones_like(scores))
-    phrases = tuple(latent_phrase(bits) for bits in predicted_bits)
-    return phrases, predicted_bits
-
-
-def fit_phrase_decoder(
-    train_phrases: list[str] | tuple[str, ...],
-    train_activations: t.Tensor,
-    *,
-    ridge: float = 1e-5,
-) -> tuple[t.Tensor, t.Tensor]:
-    """Fit a compositional semantic-word-to-activation ridge decoder."""
-
-    features = phrase_feature_matrix(train_phrases).to(train_activations)
-    if train_activations.ndim != 2 or len(features) != len(train_activations):
-        raise ValueError("phrases and activations must align by row.")
-    if ridge <= 0:
-        raise ValueError("ridge must be positive.")
-    design = t.cat([features, t.ones(len(features), 1, device=features.device)], dim=1)
-    regularizer = ridge * t.eye(design.shape[1], device=design.device)
-    regularizer[-1, -1] = 0.0
-    parameters = t.linalg.solve(
-        design.T @ design + regularizer,
-        design.T @ train_activations,
-    )
-    return parameters[:-1], parameters[-1]
-
-
-def decode_phrases(
-    phrases: list[str] | tuple[str, ...],
-    decoder_weight: t.Tensor,
-    decoder_bias: t.Tensor,
-) -> t.Tensor:
-    """Decode compositional phrase features back into activation space."""
-
-    features = phrase_feature_matrix(phrases).to(decoder_weight)
-    if decoder_weight.shape[0] != features.shape[1]:
-        raise ValueError("decoder weight must have one row per vocabulary token.")
-    return features @ decoder_weight + decoder_bias
-
-
-def prompt_only_reconstruction(
-    eval_activations: t.Tensor,
-    eval_prompts: list[str] | tuple[str, ...],
-) -> t.Tensor:
-    """Return the oracle conditional mean available from each visible prompt."""
-
-    if eval_activations.ndim != 2 or len(eval_activations) == 0:
-        raise ValueError("eval_activations must be nonempty and rank two.")
-    if len(eval_activations) != len(eval_prompts):
-        raise ValueError("eval_activations and eval_prompts must align.")
-    reconstruction = t.empty_like(eval_activations)
-    for prompt in sorted(set(eval_prompts)):
-        mask = t.tensor(
-            [value == prompt for value in eval_prompts],
-            device=eval_activations.device,
-        )
-        reconstruction[mask] = eval_activations[mask].mean(dim=0)
-    return reconstruction
-
-
-def antipodal_phrase_control(phrases: list[str] | tuple[str, ...]) -> tuple[str, ...]:
-    """Replace every explanation with the opposite two-bit explanation."""
-
-    try:
-        return tuple(ANTIPODAL_PHRASE[phrase] for phrase in phrases)
-    except KeyError as exc:
-        raise ValueError(f"unknown NLA phrase: {exc.args[0]}") from exc
-
-
-def reconstruction_comparison(
-    original: t.Tensor,
-    nla_reconstruction: t.Tensor,
-    prompt_only: t.Tensor,
-    shuffled_phrase: t.Tensor,
-) -> ReconstructionComparison:
-    """Compare the NLA reconstruction with matched shortcut controls."""
-
-    if not (original.shape == nla_reconstruction.shape == prompt_only.shape == shuffled_phrase.shape):
-        raise ValueError("all reconstruction tensors must have the same shape.")
-    nla_mse = F.mse_loss(nla_reconstruction, original).item()
-    prompt_mse = F.mse_loss(prompt_only, original).item()
-    shuffled_mse = F.mse_loss(shuffled_phrase, original).item()
-    mean_cosine = F.cosine_similarity(nla_reconstruction, original, dim=-1).mean().item()
-    return ReconstructionComparison(
-        nla_mse=nla_mse,
-        prompt_only_mse=prompt_mse,
-        shuffled_phrase_mse=shuffled_mse,
-        mean_cosine=mean_cosine,
-        nla_beats_prompt_only=nla_mse < prompt_mse,
-        shuffled_control_fails=shuffled_mse > prompt_mse,
-    )
-
-
-def behavior_preservation(
-    original: t.Tensor,
-    nla_reconstruction: t.Tensor,
-    prompt_only: t.Tensor,
-    shuffled_phrase: t.Tensor,
-    latent_bits: t.Tensor,
-    semantic_directions: t.Tensor,
-    behavior_direction: t.Tensor,
-) -> BehaviorPreservation:
-    """Score whether reconstructed residuals preserve planted latents and behavior."""
-
-    if original.shape != nla_reconstruction.shape:
-        raise ValueError("original and NLA reconstruction must align.")
-    original_behavior = original @ behavior_direction
-
-    def mae(candidate: t.Tensor) -> float:
-        return ((candidate @ behavior_direction) - original_behavior).abs().mean().item()
-
-    predicted_latents = t.where(
-        nla_reconstruction @ semantic_directions.T >= 0,
-        t.ones_like(latent_bits),
-        -t.ones_like(latent_bits),
-    )
-    nla_behavior = nla_reconstruction @ behavior_direction
-    nla_mae = mae(nla_reconstruction)
-    prompt_mae = mae(prompt_only)
-    shuffled_mae = mae(shuffled_phrase)
-    return BehaviorPreservation(
-        nla_mae=nla_mae,
-        prompt_only_mae=prompt_mae,
-        shuffled_phrase_mae=shuffled_mae,
-        route_accuracy=predicted_latents[:, 0].eq(latent_bits[:, 0]).float().mean().item(),
-        cargo_accuracy=predicted_latents[:, 1].eq(latent_bits[:, 1]).float().mean().item(),
-        behavior_sign_accuracy=nla_behavior.sign().eq(original_behavior.sign()).float().mean().item(),
-        nla_beats_controls=nla_mae < prompt_mae and nla_mae < shuffled_mae,
-    )
-
-
-def word_compression_ratio(
-    explanations: list[str] | tuple[str, ...],
-    prompts: list[str] | tuple[str, ...],
-) -> float:
-    """Return explanation words divided by source-prompt words."""
-
-    if len(explanations) != len(prompts) or not explanations:
-        raise ValueError("explanations and prompts must be nonempty and aligned.")
-    explanation_words = sum(len(re.findall(r"[a-z]+", text.lower())) for text in explanations)
-    prompt_words = sum(len(re.findall(r"[a-z]+", text.lower())) for text in prompts)
-    if prompt_words == 0:
-        raise ValueError("prompts must contain words.")
-    return explanation_words / prompt_words
-
-
-def counterfactual_route_flip(activation: t.Tensor, route_direction: t.Tensor) -> t.Tensor:
-    """Reflect an activation across the route-orthogonal hyperplane."""
-
-    if activation.shape[-1] != route_direction.numel():
-        raise ValueError("activation and route_direction dimensions must match.")
-    unit_route = route_direction / route_direction.norm()
-    route_coordinate = activation @ unit_route
-    return activation - 2 * route_coordinate.unsqueeze(-1) * unit_route
-
-
-def build_signature_payload(*, nuisance_scale: float = 0.35) -> dict:
-    """Run the complete exact model-organism experiment used by the visible figure."""
-
-    dataset = make_planted_nla_dataset(nuisance_scale=nuisance_scale)
-    train_mask = dataset.split_ids == 0
-    eval_mask = dataset.split_ids == 1
-    encoder_weight, encoder_bias = fit_activation_encoder(
-        dataset.activations[train_mask],
-        dataset.latent_bits[train_mask],
-    )
-    eval_phrases, predicted_bits = encode_activations_to_phrases(
-        dataset.activations[eval_mask],
-        encoder_weight,
-        encoder_bias,
-    )
-    decoder_weight, decoder_bias = fit_phrase_decoder(
-        tuple(phrase for phrase, keep in zip(dataset.phrases, train_mask.tolist()) if keep),
-        dataset.activations[train_mask],
-    )
-    nla_reconstruction = decode_phrases(eval_phrases, decoder_weight, decoder_bias)
-    eval_prompts = tuple(prompt for prompt, keep in zip(dataset.prompts, eval_mask.tolist()) if keep)
-    prompt_only = prompt_only_reconstruction(dataset.activations[eval_mask], eval_prompts)
-    opposite_phrases = antipodal_phrase_control(eval_phrases)
-    shuffled_reconstruction = decode_phrases(opposite_phrases, decoder_weight, decoder_bias)
-    reconstruction = reconstruction_comparison(
-        dataset.activations[eval_mask],
-        nla_reconstruction,
-        prompt_only,
-        shuffled_reconstruction,
-    )
-    behavior = behavior_preservation(
-        dataset.activations[eval_mask],
-        nla_reconstruction,
-        prompt_only,
-        shuffled_reconstruction,
-        dataset.latent_bits[eval_mask],
-        dataset.semantic_directions,
-        dataset.behavior_direction,
-    )
-    phrase_accuracy = predicted_bits.eq(dataset.latent_bits[eval_mask]).all(dim=1).float().mean().item()
-    return {
-        "dataset": dataset,
-        "train_mask": train_mask,
-        "eval_mask": eval_mask,
-        "eval_prompts": eval_prompts,
-        "eval_phrases": eval_phrases,
-        "predicted_bits": predicted_bits,
-        "nla_reconstruction": nla_reconstruction,
-        "prompt_only_reconstruction": prompt_only,
-        "shuffled_reconstruction": shuffled_reconstruction,
-        "opposite_phrases": opposite_phrases,
-        "reconstruction": reconstruction,
-        "behavior": behavior,
-        "phrase_accuracy": phrase_accuracy,
-        "compression_ratio": word_compression_ratio(eval_phrases, eval_prompts),
-    }
-
-
-def load_pythia_text_bottleneck_model():
-    """Load the pinned six-layer model used by the real CPU lesson."""
+def load_pythia(device: str | t.device = "cpu"):
+    """Load the pinned checkpoint from the local cache on an explicit device."""
 
     from transformers import AutoModelForCausalLM, AutoTokenizer
 
     tokenizer = AutoTokenizer.from_pretrained(
-        PYTHIA_NLA_MODEL_ID,
-        revision=PYTHIA_NLA_REVISION,
+        PYTHIA_MODEL_ID,
+        revision=PYTHIA_REVISION,
         local_files_only=True,
     )
     tokenizer.pad_token = tokenizer.eos_token
-    tokenizer.padding_side = "left"
+    tokenizer.padding_side = "right"
     model = AutoModelForCausalLM.from_pretrained(
-        PYTHIA_NLA_MODEL_ID,
-        revision=PYTHIA_NLA_REVISION,
+        PYTHIA_MODEL_ID,
+        revision=PYTHIA_REVISION,
         local_files_only=True,
-        dtype=t.float16,
-    ).cpu().eval()
+        dtype=t.float32,
+    ).to(device)
+    model.eval()
     return tokenizer, model
 
 
-def cache_pythia_text_bottleneck_dataset(
+def load_pythia_cpu():
+    """Compatibility wrapper used by the fast CPU exercise tests."""
+
+    return load_pythia("cpu")
+
+
+def _require_informative_matrix(values: t.Tensor, name: str) -> t.Tensor:
+    if values.ndim != 2 or len(values) < 2:
+        raise ValueError(f"{name} must be a matrix with at least two rows.")
+    values = values.detach().float()
+    if not bool(t.isfinite(values).all()):
+        raise ValueError(f"{name} must contain only finite values.")
+    if float(values.norm(dim=-1).mean()) <= 1e-8:
+        raise ValueError(f"{name} cannot be zero-filled.")
+    if float((values - values.mean(dim=0)).square().sum()) <= 1e-8:
+        raise ValueError(f"{name} must contain row-level variation.")
+    return values
+
+
+def _batched_final_hidden(
     tokenizer,
     model,
-) -> PythiaTextBottleneckDataset:
-    """Cache real final residuals for six held-out next-token concepts."""
-
-    train_prompts: list[str] = []
-    eval_prompts: list[str] = []
-    train_ids: list[int] = []
-    eval_ids: list[int] = []
-    for phrase_id, (train_group, eval_group) in enumerate(PYTHIA_NLA_PROMPT_GROUPS):
-        train_prompts.extend(train_group)
-        eval_prompts.extend(eval_group)
-        train_ids.extend([phrase_id] * len(train_group))
-        eval_ids.extend([phrase_id] * len(eval_group))
-
-    def cache(prompts: list[str]) -> tuple[t.Tensor, t.Tensor]:
-        tokens = tokenizer(prompts, return_tensors="pt", padding=True)
-        with t.inference_mode():
-            outputs = model(**tokens, output_hidden_states=True)
-        residuals = outputs.hidden_states[-1][:, -1].detach().float()
-        predictions = outputs.logits[:, -1].argmax(dim=-1).detach()
-        return residuals, predictions
-
-    train_residuals, train_predictions = cache(train_prompts)
-    eval_residuals, eval_predictions = cache(eval_prompts)
-    train_expected = t.tensor(
-        [tokenizer.encode(PYTHIA_NLA_EXPECTED_TOKENS[index], add_special_tokens=False)[0] for index in train_ids]
-    )
-    eval_expected = t.tensor(
-        [tokenizer.encode(PYTHIA_NLA_EXPECTED_TOKENS[index], add_special_tokens=False)[0] for index in eval_ids]
-    )
-    if not t.equal(train_predictions.cpu(), train_expected):
-        raise RuntimeError("Pinned Pythia no longer produces the curated training targets.")
-    if not t.equal(eval_predictions.cpu(), eval_expected):
-        raise RuntimeError("Pinned Pythia no longer produces the curated held-out targets.")
-    return PythiaTextBottleneckDataset(
-        train_residuals=train_residuals,
-        eval_residuals=eval_residuals,
-        train_phrase_ids=t.tensor(train_ids),
-        eval_phrase_ids=t.tensor(eval_ids),
-        train_prompts=tuple(train_prompts),
-        eval_prompts=tuple(eval_prompts),
-        phrase_texts=PYTHIA_NLA_PHRASES,
-        target_token_ids=eval_expected,
-    )
-
-
-def fit_real_residual_phrase_encoder(
-    train_residuals: t.Tensor,
-    train_phrase_ids: t.Tensor,
+    texts: Sequence[str],
     *,
-    phrase_count: int,
-    ridge: float = 1.0,
-) -> tuple[t.Tensor, t.Tensor, t.Tensor]:
-    """Learn a ridge residual -> natural-language phrase classifier."""
-
-    if train_residuals.ndim != 2 or train_phrase_ids.shape != (len(train_residuals),):
-        raise ValueError("training residuals and phrase ids must align.")
-    if phrase_count < 2 or ridge <= 0:
-        raise ValueError("phrase_count and ridge must be positive.")
-    mean = train_residuals.float().mean(dim=0)
-    features = F.normalize(train_residuals.float() - mean, dim=-1)
-    labels = F.one_hot(train_phrase_ids.long(), num_classes=phrase_count).float()
-    dual = features @ features.T + ridge * t.eye(len(features))
-    weight = features.T @ t.linalg.solve(dual, labels)
-    bias = labels.mean(dim=0) - features.mean(dim=0) @ weight
-    return weight, bias, mean
-
-
-def predict_residual_phrases(
-    residuals: t.Tensor,
-    weight: t.Tensor,
-    bias: t.Tensor,
-    mean: t.Tensor,
-) -> tuple[t.Tensor, t.Tensor]:
-    """Return phrase logits and phrase ids for cached residuals."""
-
-    if residuals.ndim != 2 or residuals.shape[1] != weight.shape[0]:
-        raise ValueError("residuals and encoder weight must share d_model.")
-    features = F.normalize(residuals.float() - mean, dim=-1)
-    logits = features @ weight + bias
-    return logits, logits.argmax(dim=-1)
+    hidden_state_index: int,
+    batch_size: int = 64,
+) -> t.Tensor:
+    if not texts:
+        raise ValueError("texts must be nonempty.")
+    if batch_size <= 0:
+        raise ValueError("batch_size must be positive.")
+    device = next(model.parameters()).device
+    chunks: list[t.Tensor] = []
+    for start in range(0, len(texts), batch_size):
+        encoded = tokenizer(
+            list(texts[start : start + batch_size]),
+            return_tensors="pt",
+            padding=True,
+            add_special_tokens=False,
+        ).to(device)
+        positions = encoded.attention_mask.sum(dim=1) - 1
+        rows = t.arange(len(positions), device=device)
+        with t.inference_mode():
+            output = model(**encoded, output_hidden_states=True, use_cache=False)
+        chunks.append(
+            output.hidden_states[hidden_state_index][rows, positions].detach().cpu().float()
+        )
+    return t.cat(chunks)
 
 
-def pythia_phrase_text_features(
+def _candidate_indices(factors: t.Tensor) -> t.Tensor:
+    if factors.ndim != 2 or factors.shape[1] != 2:
+        raise ValueError("factors must have shape [batch, 2].")
+    plural_offset = factors[:, 0].lt(0).long()
+    earlier_offset = 2 * factors[:, 1].lt(0).long()
+    return plural_offset + earlier_offset
+
+
+def cache_pythia_nla_dataset(tokenizer, model) -> PythiaNLADataset:
+    """Cache real layer-4 states for the compositional agreement split."""
+
+    train_examples, eval_examples = build_agreement_examples()
+    candidate_ids: list[int] = []
+    for candidate in AGREEMENT_CANDIDATES:
+        encoded = tokenizer.encode(candidate, add_special_tokens=False)
+        if len(encoded) != 1:
+            raise RuntimeError(f"agreement candidate {candidate!r} is not one token.")
+        candidate_ids.append(encoded[0])
+    candidate_token_ids = t.tensor(candidate_ids, dtype=t.long)
+
+    def cache(examples: Sequence[AgreementExample]):
+        texts = [example.prompt for example in examples]
+        device = next(model.parameters()).device
+        encoded = tokenizer(
+            texts, return_tensors="pt", padding=True, add_special_tokens=False
+        ).to(device)
+        positions = encoded.attention_mask.sum(dim=1) - 1
+        rows = t.arange(len(examples), device=device)
+        with t.inference_mode():
+            output = model(**encoded, output_hidden_states=True, use_cache=False)
+        activations = (
+            output.hidden_states[PYTHIA_HIDDEN_STATE_INDEX][rows, positions]
+            .detach()
+            .cpu()
+            .float()
+        )
+        logits = (
+            output.logits[rows, positions][:, candidate_token_ids.to(device)]
+            .detach()
+            .cpu()
+            .float()
+        )
+        return activations, logits, encoded.to("cpu"), positions.to("cpu")
+
+    train_activations, _, _, _ = cache(train_examples)
+    eval_activations, original_logits, eval_encoded, eval_positions = cache(eval_examples)
+    _require_informative_matrix(train_activations, "train_activations")
+    _require_informative_matrix(eval_activations, "eval_activations")
+    return PythiaNLADataset(
+        train_activations=train_activations,
+        eval_activations=eval_activations,
+        train_factors=t.tensor([example.factors for example in train_examples]),
+        eval_factors=t.tensor([example.factors for example in eval_examples]),
+        train_examples=train_examples,
+        eval_examples=eval_examples,
+        eval_input_ids=eval_encoded.input_ids,
+        eval_attention_mask=eval_encoded.attention_mask,
+        eval_positions=eval_positions,
+        candidate_token_ids=candidate_token_ids,
+        original_candidate_logits=original_logits,
+    )
+
+
+def tokenize_explanations(
+    tokenizer,
+    explanations: Sequence[str],
+    *,
+    vocabulary_token_ids: t.Tensor | None = None,
+) -> ExplanationTokens:
+    """Tokenize complete explanations into a small GPT-NeoX token vocabulary."""
+
+    if not explanations or any(not text.strip() for text in explanations):
+        raise ValueError("explanations must be nonempty strings.")
+    eos_token_id = int(tokenizer.eos_token_id)
+    sequences = [tokenizer.encode(text, add_special_tokens=False) + [eos_token_id] for text in explanations]
+    if vocabulary_token_ids is None:
+        vocabulary_token_ids = t.tensor(sorted({token for row in sequences for token in row}), dtype=t.long)
+    else:
+        vocabulary_token_ids = vocabulary_token_ids.detach().long().cpu()
+    if vocabulary_token_ids.ndim != 1 or len(vocabulary_token_ids) < 2:
+        raise ValueError("vocabulary_token_ids must contain at least two token IDs.")
+    if len(t.unique(vocabulary_token_ids)) != len(vocabulary_token_ids):
+        raise ValueError("vocabulary_token_ids cannot contain duplicates.")
+
+    sequence_length = max(len(row) for row in sequences)
+    token_ids = t.full((len(sequences), sequence_length), eos_token_id, dtype=t.long)
+    attention_mask = t.zeros_like(token_ids, dtype=t.bool)
+    for row_index, row in enumerate(sequences):
+        token_ids[row_index, : len(row)] = t.tensor(row)
+        attention_mask[row_index, : len(row)] = True
+    matches = token_ids[..., None].eq(vocabulary_token_ids[None, None, :])
+    if not bool(matches.any(dim=-1).all()):
+        missing = t.unique(token_ids[~matches.any(dim=-1)]).tolist()
+        raise ValueError(f"explanation contains token IDs outside the training vocabulary: {missing}")
+    local_token_ids = matches.float().argmax(dim=-1)
+    return ExplanationTokens(
+        token_ids=token_ids,
+        local_token_ids=local_token_ids,
+        attention_mask=attention_mask,
+        vocabulary_token_ids=vocabulary_token_ids,
+        eos_token_id=eos_token_id,
+    )
+
+
+def permute_explanation_tokens(tokens: ExplanationTokens, permutation: t.Tensor) -> ExplanationTokens:
+    """Permute text targets while retaining the same token vocabulary."""
+
+    if permutation.shape != (len(tokens.token_ids),) or not t.equal(
+        t.sort(permutation).values, t.arange(len(permutation))
+    ):
+        raise ValueError("permutation must contain every row index exactly once.")
+    return ExplanationTokens(
+        token_ids=tokens.token_ids[permutation],
+        local_token_ids=tokens.local_token_ids[permutation],
+        attention_mask=tokens.attention_mask[permutation],
+        vocabulary_token_ids=tokens.vocabulary_token_ids,
+        eos_token_id=tokens.eos_token_id,
+    )
+
+
+def fit_token_verbalizer(
+    train_activations: t.Tensor,
+    train_tokens: ExplanationTokens,
+    *,
+    ridge: float = 0.1,
+) -> TokenVerbalizer:
+    """Fit activation-to-token logits at every sequence position."""
+
+    activations = _require_informative_matrix(train_activations, "train_activations")
+    if len(activations) != len(train_tokens.token_ids):
+        raise ValueError("activation and token rows must align.")
+    if ridge <= 0:
+        raise ValueError("ridge must be positive.")
+    vocabulary_size = len(train_tokens.vocabulary_token_ids)
+    targets = F.one_hot(train_tokens.local_token_ids, vocabulary_size).float()
+    features = F.normalize(activations, dim=-1)
+    design = t.cat([t.ones(len(features), 1), features], dim=1)
+    dual = design @ design.T + ridge * t.eye(len(design))
+    weight = design.T @ t.linalg.solve(dual, targets.reshape(len(targets), -1))
+    return TokenVerbalizer(
+        weight=weight,
+        vocabulary_token_ids=train_tokens.vocabulary_token_ids,
+        eos_token_id=train_tokens.eos_token_id,
+        sequence_length=train_tokens.token_ids.shape[1],
+    )
+
+
+def generate_token_explanations(
+    tokenizer,
+    activations: t.Tensor,
+    verbalizer: TokenVerbalizer,
+) -> GeneratedExplanations:
+    """Generate natural-language token sequences without phrase lookup."""
+
+    if activations.ndim != 2 or activations.shape[1] + 1 != verbalizer.weight.shape[0]:
+        raise ValueError("activations and verbalizer must share d_model.")
+    design = t.cat([t.ones(len(activations), 1), F.normalize(activations.float(), dim=-1)], dim=1)
+    vocabulary_size = len(verbalizer.vocabulary_token_ids)
+    logits = (design @ verbalizer.weight).reshape(
+        len(activations), verbalizer.sequence_length, vocabulary_size
+    )
+    local_token_ids = logits.argmax(dim=-1)
+    token_ids = verbalizer.vocabulary_token_ids[local_token_ids]
+    texts: list[str] = []
+    for row in token_ids.tolist():
+        end = row.index(verbalizer.eos_token_id) if verbalizer.eos_token_id in row else len(row)
+        texts.append(tokenizer.decode(row[:end], clean_up_tokenization_spaces=False))
+    return GeneratedExplanations(
+        texts=tuple(texts),
+        token_ids=token_ids,
+        local_token_ids=local_token_ids,
+        logits=logits,
+    )
+
+
+def token_generation_accuracy(
+    generated: GeneratedExplanations,
+    targets: ExplanationTokens,
+) -> tuple[float, float]:
+    """Return masked token accuracy and whole-sequence exact match."""
+
+    if generated.token_ids.shape != targets.token_ids.shape:
+        raise ValueError("generated and target token tensors must have the same shape.")
+    correct = generated.token_ids.eq(targets.token_ids)
+    token_accuracy = correct[targets.attention_mask].float().mean().item()
+    exact_match = (correct | ~targets.attention_mask).all(dim=1).float().mean().item()
+    return token_accuracy, exact_match
+
+
+def encode_reconstructor_text(
     tokenizer,
     model,
-    phrases: list[str] | tuple[str, ...],
+    explanations: Sequence[str],
+    *,
+    batch_size: int = 64,
 ) -> t.Tensor:
-    """Represent each explanation by the mean of its actual token embeddings."""
+    """Run explanation tokens through the LM and read its layer-4 final token."""
 
-    if not phrases or any(not phrase.strip() for phrase in phrases):
-        raise ValueError("phrases must contain nonempty natural-language text.")
-    embedding = model.get_input_embeddings()
-    rows = []
-    with t.inference_mode():
-        for phrase in phrases:
-            token_ids = tokenizer.encode(phrase, add_special_tokens=False, return_tensors="pt")
-            rows.append(embedding(token_ids).mean(dim=1).squeeze(0).float())
+    wrapped = [AR_PROMPT.format(text) for text in explanations]
+    return _batched_final_hidden(
+        tokenizer,
+        model,
+        wrapped,
+        hidden_state_index=PYTHIA_HIDDEN_STATE_INDEX,
+        batch_size=batch_size,
+    )
+
+
+def bag_of_tokens_features(
+    tokenizer,
+    explanations: Sequence[str],
+    *,
+    vocabulary_token_ids: t.Tensor | None = None,
+) -> tuple[t.Tensor, t.Tensor]:
+    """Count explanation tokens while deliberately discarding their order."""
+
+    if not explanations or any(not text.strip() for text in explanations):
+        raise ValueError("explanations must be nonempty strings.")
+    sequences = [tokenizer.encode(text, add_special_tokens=False) for text in explanations]
+    if vocabulary_token_ids is None:
+        vocabulary_token_ids = t.tensor(
+            sorted({token_id for sequence in sequences for token_id in sequence}),
+            dtype=t.long,
+        )
+    else:
+        vocabulary_token_ids = vocabulary_token_ids.detach().cpu().long()
+    if vocabulary_token_ids.ndim != 1 or len(vocabulary_token_ids) < 2:
+        raise ValueError("vocabulary_token_ids must be a one-dimensional vocabulary.")
+    if len(t.unique(vocabulary_token_ids)) != len(vocabulary_token_ids):
+        raise ValueError("vocabulary_token_ids cannot contain duplicates.")
+
+    token_to_column = {
+        int(token_id): column for column, token_id in enumerate(vocabulary_token_ids)
+    }
+    counts = t.zeros(len(sequences), len(vocabulary_token_ids))
+    for row, sequence in enumerate(sequences):
+        for token_id in sequence:
+            column = token_to_column.get(int(token_id))
+            if column is not None:
+                counts[row, column] += 1
+    return counts, vocabulary_token_ids
+
+
+def fit_token_reconstructor(
+    train_text_features: t.Tensor,
+    train_activations: t.Tensor,
+    *,
+    ridge: float = 1e-3,
+) -> TokenReconstructor:
+    """Fit the affine AR head after contextual token processing."""
+
+    text_features = _require_informative_matrix(train_text_features, "train_text_features")
+    activations = _require_informative_matrix(train_activations, "train_activations")
+    if len(text_features) != len(activations):
+        raise ValueError("text features and activations must have the same batch size.")
+    if ridge <= 0:
+        raise ValueError("ridge must be positive.")
+    features = F.normalize(text_features, dim=-1)
+    targets = F.normalize(activations, dim=-1)
+    feature_mean = features.mean(dim=0)
+    target_mean = targets.mean(dim=0)
+    centered_features = features - feature_mean
+    centered_targets = targets - target_mean
+    dual = centered_features @ centered_features.T + ridge * t.eye(
+        len(features), device=features.device, dtype=features.dtype
+    )
+    weight = centered_features.T @ t.linalg.solve(dual, centered_targets)
+    return TokenReconstructor(
+        feature_mean=feature_mean,
+        target_mean=target_mean,
+        weight=weight,
+        output_norm=float(activations.norm(dim=-1).mean()),
+    )
+
+
+def decode_text_features(text_features: t.Tensor, reconstructor: TokenReconstructor) -> t.Tensor:
+    """Apply the AR head and restore the training-set mean activation norm."""
+
+    if text_features.ndim != 2 or text_features.shape[1] != reconstructor.weight.shape[0]:
+        raise ValueError("text features and reconstructor must share d_model.")
+    features = F.normalize(text_features.float(), dim=-1)
+    reconstructed = (features - reconstructor.feature_mean) @ reconstructor.weight
+    reconstructed = reconstructed + reconstructor.target_mean
+    return F.normalize(reconstructed, dim=-1) * reconstructor.output_norm
+
+
+def reconstruct_from_explanations(
+    tokenizer,
+    model,
+    explanations: Sequence[str],
+    reconstructor: TokenReconstructor,
+) -> t.Tensor:
+    """Run the complete natural-language-token-to-activation path."""
+
+    features = encode_reconstructor_text(tokenizer, model, explanations)
+    return decode_text_features(features, reconstructor)
+
+
+def fraction_variance_explained(original: t.Tensor, reconstructed: t.Tensor) -> float:
+    """Compute the NLA paper's row-normalized held-out FVE."""
+
+    if original.shape != reconstructed.shape or original.ndim != 2:
+        raise ValueError("original and reconstructed must be aligned matrices.")
+    original = F.normalize(original.float(), dim=-1)
+    reconstructed = F.normalize(reconstructed.float(), dim=-1)
+    denominator = (original - original.mean(dim=0)).square().sum()
+    if float(denominator) <= 1e-8:
+        raise ValueError("original activations need nonzero held-out variance.")
+    return float(1 - (reconstructed - original).square().sum() / denominator)
+
+
+def within_factor_fve(original: t.Tensor, reconstructed: t.Tensor, factors: t.Tensor) -> float:
+    """Measure reconstruction after removing each factor combination's mean."""
+
+    if original.shape != reconstructed.shape or factors.shape != (len(original), 2):
+        raise ValueError("original, reconstructed, and factor rows must align.")
+    original = F.normalize(original.float(), dim=-1)
+    reconstructed = F.normalize(reconstructed.float(), dim=-1)
+    factors = factors.to(original.device)
+    original_residuals: list[t.Tensor] = []
+    reconstructed_residuals: list[t.Tensor] = []
+    for state in FACTOR_STATES:
+        mask = factors.eq(
+            t.tensor(state, device=factors.device, dtype=factors.dtype)
+        ).all(dim=1)
+        if int(mask.sum()) < 2:
+            raise ValueError("each factor state needs at least two rows.")
+        original_group = original[mask]
+        reconstructed_group = reconstructed[mask]
+        original_residuals.append(original_group - original_group.mean(dim=0))
+        reconstructed_residuals.append(reconstructed_group - reconstructed_group.mean(dim=0))
+    original_residual = t.cat(original_residuals)
+    reconstructed_residual = t.cat(reconstructed_residuals)
+    denominator = original_residual.square().sum()
+    if float(denominator) <= 1e-8:
+        raise ValueError("within-factor activations need nonzero variance.")
+    return float(1 - (reconstructed_residual - original_residual).square().sum() / denominator)
+
+
+def count_distinct_rows(values: t.Tensor, *, atol: float = 1e-2) -> int:
+    """Count rows up to an explicit Euclidean tolerance."""
+
+    if values.ndim != 2 or atol <= 0:
+        raise ValueError("values must be a matrix and atol must be positive.")
+    representatives: list[t.Tensor] = []
+    for row in values:
+        if not any(float((row - representative).norm()) <= atol for representative in representatives):
+            representatives.append(row)
+    return len(representatives)
+
+
+def reconstruction_metrics(
+    original: t.Tensor,
+    reconstructed: t.Tensor,
+    factors: t.Tensor,
+) -> ReconstructionMetrics:
+    """Score full-vector and within-factor reconstruction on aligned rows."""
+
+    normalized_error = (
+        F.normalize(original, dim=-1) - F.normalize(reconstructed, dim=-1)
+    ).square().sum(dim=-1).mean()
+    return ReconstructionMetrics(
+        fve=fraction_variance_explained(original, reconstructed),
+        within_factor_fve=within_factor_fve(original, reconstructed, factors),
+        normalized_mse=float(normalized_error),
+        mean_cosine=float(F.cosine_similarity(original, reconstructed, dim=-1).mean()),
+        distinct_rows=count_distinct_rows(reconstructed),
+    )
+
+
+def assert_nonprototype_reconstruction(
+    original: t.Tensor,
+    reconstructed: t.Tensor,
+    factors: t.Tensor,
+    *,
+    minimum_within_factor_fve: float = 0.2,
+) -> None:
+    """Reject four-vector prototypes even if they preserve agreement labels."""
+
+    factor_state_count = len(t.unique(factors, dim=0))
+    distinct_rows = count_distinct_rows(reconstructed)
+    if distinct_rows <= factor_state_count:
+        raise AssertionError(
+            f"prototype collapse: found {distinct_rows} rows for {factor_state_count} factor states."
+        )
+    score = within_factor_fve(original, reconstructed, factors)
+    if score <= minimum_within_factor_fve:
+        raise AssertionError(
+            f"within-factor activation variation was not reconstructed: FVE={score:.3f}."
+        )
+
+
+def prompt_only_factor_explanations(examples: Sequence[AgreementExample]) -> tuple[str, ...]:
+    """Hold context fixed while preserving the exact explanation template."""
+
+    return tuple(
+        natural_language_explanation("key", "plain", example.factors)
+        for example in examples
+    )
+
+
+def lexically_relabel_explanations(examples: Sequence[AgreementExample]) -> tuple[str, ...]:
+    """Cycle noun meanings while preserving factor words and sentence shape."""
+
+    if len(examples) < 4:
+        raise ValueError("lexical relabeling needs at least four examples.")
+    offset = 4
+    relabeled = tuple(
+        natural_language_explanation(
+            examples[(index + offset) % len(examples)].noun_lemma,
+            example.style,
+            example.factors,
+        )
+        for index, example in enumerate(examples)
+    )
+    if any(text == example.explanation for text, example in zip(relabeled, examples)):
+        raise AssertionError("lexical relabeling must change every explanation.")
+    return relabeled
+
+
+def factor_prototype_reconstruction(
+    train_activations: t.Tensor,
+    train_factors: t.Tensor,
+    eval_factors: t.Tensor,
+) -> t.Tensor:
+    """Explicit class-mean baseline used only to expose prototype shortcuts."""
+
+    if train_factors.shape != (len(train_activations), 2) or eval_factors.ndim != 2:
+        raise ValueError("activation and factor rows must align.")
+    train_factors = train_factors.to(train_activations.device)
+    eval_factors = eval_factors.to(train_activations.device)
+    rows: list[t.Tensor] = []
+    for factors in eval_factors:
+        mask = train_factors.eq(factors).all(dim=1)
+        if not bool(mask.any()):
+            raise ValueError("every evaluation state needs training rows for the prototype baseline.")
+        rows.append(train_activations[mask].mean(dim=0))
     return t.stack(rows)
 
 
-def fit_phrase_text_decoder(
-    phrase_features: t.Tensor,
-    train_phrase_ids: t.Tensor,
-    train_residuals: t.Tensor,
+def replace_with_factor_prototypes(activations: t.Tensor, factors: t.Tensor) -> t.Tensor:
+    """Replace every row by its factor mean for an adversarial training control."""
+
+    return factor_prototype_reconstruction(activations, factors, factors)
+
+
+def fit_direct_factor_decoder(
+    train_factors: t.Tensor,
+    train_activations: t.Tensor,
     *,
-    ridge: float = 0.0,
-) -> tuple[t.Tensor, t.Tensor]:
-    """Fit natural-language embedding -> class-mean residual by least squares."""
-
-    if phrase_features.ndim != 2 or train_residuals.ndim != 2:
-        raise ValueError("phrase features and residuals must be matrices.")
-    if train_phrase_ids.shape != (len(train_residuals),):
-        raise ValueError("train_phrase_ids must align with train_residuals.")
-    if ridge < 0:
-        raise ValueError("ridge must be non-negative.")
-    class_means = []
-    for phrase_id in range(len(phrase_features)):
-        mask = train_phrase_ids == phrase_id
-        if not bool(mask.any()):
-            raise ValueError("every phrase needs at least one training residual.")
-        class_means.append(train_residuals[mask].float().mean(dim=0))
-    targets = t.stack(class_means)
-    design = t.cat([phrase_features.float(), t.ones(len(phrase_features), 1)], dim=1)
-    if ridge == 0:
-        parameters = t.linalg.lstsq(design, targets, driver="gelsd").solution
-    else:
-        eye = t.eye(design.shape[1], device=design.device)
-        eye[-1, -1] = 0.0
-        parameters = t.linalg.solve(design.T @ design + ridge * eye, design.T @ targets)
-    return parameters[:-1], parameters[-1]
-
-
-def decode_phrase_text_features(
-    phrase_features: t.Tensor,
-    phrase_ids: t.Tensor,
-    decoder_weight: t.Tensor,
-    decoder_bias: t.Tensor,
+    ridge: float = 1e-3,
 ) -> t.Tensor:
-    """Decode selected natural-language embeddings back to residual space."""
+    """Fit the forbidden two-scalar shortcut as an explicit negative baseline."""
 
-    if phrase_ids.ndim != 1:
-        raise ValueError("phrase_ids must be a vector.")
-    return phrase_features[phrase_ids.long()] @ decoder_weight + decoder_bias
+    activations = _require_informative_matrix(train_activations, "train_activations")
+    if train_factors.shape != (len(activations), 2):
+        raise ValueError("train_factors must align with activations.")
+    train_factors = train_factors.to(activations.device)
+    design = t.cat(
+        [
+            t.ones(
+                len(train_factors),
+                1,
+                device=activations.device,
+                dtype=activations.dtype,
+            ),
+            train_factors.to(dtype=activations.dtype),
+        ],
+        dim=1,
+    )
+    regularizer = ridge * t.eye(
+        design.shape[1], device=design.device, dtype=design.dtype
+    )
+    regularizer[0, 0] = 0
+    return t.linalg.solve(design.T @ design + regularizer, design.T @ activations)
 
 
-def _pythia_logits_from_residuals(model, residuals: t.Tensor) -> t.Tensor:
-    """Unembed reconstructed final-normalized Pythia hidden states."""
+def decode_direct_factors(factors: t.Tensor, parameters: t.Tensor) -> t.Tensor:
+    """Apply the two-scalar baseline; never use this in the NLA path."""
 
-    dtype = model.get_output_embeddings().weight.dtype
-    with t.inference_mode():
-        return model.embed_out(residuals.to(dtype)).float()
+    if factors.ndim != 2 or factors.shape[1] != 2 or parameters.shape[0] != 3:
+        raise ValueError("expected factors [batch, 2] and parameters [3, d_model].")
+    factors = factors.to(device=parameters.device, dtype=parameters.dtype)
+    return t.cat(
+        [
+            t.ones(
+                len(factors),
+                1,
+                device=parameters.device,
+                dtype=parameters.dtype,
+            ),
+            factors,
+        ],
+        dim=1,
+    ) @ parameters
 
 
-def evaluate_pythia_text_bottleneck(
+def patch_pythia_candidate_logits(
+    model,
+    dataset: PythiaNLADataset,
+    replacements: t.Tensor,
+    *,
+    row_indices: Sequence[int] | None = None,
+) -> t.Tensor:
+    """Patch all rows or a declared subset and return every row's candidate logits."""
+
+    device = next(model.parameters()).device
+    if row_indices is None:
+        row_indices = tuple(range(len(dataset.eval_activations)))
+    rows = t.tensor(tuple(row_indices), dtype=t.long)
+    if len(rows) == 0 or len(t.unique(rows)) != len(rows):
+        raise ValueError("row_indices must be nonempty and unique.")
+    if int(rows.min()) < 0 or int(rows.max()) >= len(dataset.eval_activations):
+        raise ValueError("row_indices are outside the evaluation batch.")
+    if replacements.shape != (len(rows), dataset.eval_activations.shape[1]):
+        raise ValueError("replacements must have shape [selected_rows, d_model].")
+    if not bool(t.isfinite(replacements).all()):
+        raise ValueError("replacements must be finite.")
+
+    def replace_selected_rows(_module, _inputs, output):
+        hidden = output[0] if isinstance(output, tuple) else output
+        hidden = hidden.clone()
+        device_rows = rows.to(hidden.device)
+        positions = dataset.eval_positions[rows].to(hidden.device)
+        hidden[device_rows, positions] = replacements.to(hidden)
+        return (hidden, *output[1:]) if isinstance(output, tuple) else hidden
+
+    handle = model.gpt_neox.layers[PYTHIA_PATCH_BLOCK_INDEX].register_forward_hook(
+        replace_selected_rows
+    )
+    all_rows = t.arange(len(dataset.eval_activations), device=device)
+    try:
+        with t.inference_mode():
+            output = model(
+                input_ids=dataset.eval_input_ids.to(device),
+                attention_mask=dataset.eval_attention_mask.to(device),
+                use_cache=False,
+            )
+        logits = output.logits[all_rows, dataset.eval_positions.to(device)]
+        return logits[:, dataset.candidate_token_ids.to(device)].detach().cpu().float()
+    finally:
+        handle.remove()
+
+
+def candidate_accuracy(candidate_logits: t.Tensor, factors: t.Tensor) -> float:
+    """Score the four-way grammatical target without a label lookup table."""
+
+    targets = _candidate_indices(factors).to(candidate_logits.device)
+    return float(candidate_logits.argmax(dim=1).eq(targets).float().mean())
+
+
+def behavior_parity(candidate_logits: t.Tensor, original_candidate_logits: t.Tensor) -> float:
+    """Measure whether a patch preserves the target model's own choices."""
+
+    if candidate_logits.shape != original_candidate_logits.shape:
+        raise ValueError("candidate logit tensors must align.")
+    return float(
+        candidate_logits.argmax(dim=1).eq(original_candidate_logits.argmax(dim=1)).float().mean()
+    )
+
+
+def run_text_edit_intervention(
     tokenizer,
     model,
-    dataset: PythiaTextBottleneckDataset,
+    dataset: PythiaNLADataset,
+    reconstructor: TokenReconstructor,
     *,
-    seed: int = 0,
-) -> PythiaTextBottleneckReport:
-    """Evaluate the real learned text bottleneck and three matched controls."""
+    row_index: int,
+    base_text: str,
+    edited_text: str,
+    strength: float = 1.0,
+) -> InterventionResult:
+    """Apply an AR(edit)-AR(base) steering vector to exactly one real row."""
 
-    phrase_count = len(dataset.phrase_texts)
-    encoder_weight, encoder_bias, encoder_mean = fit_real_residual_phrase_encoder(
-        dataset.train_residuals,
-        dataset.train_phrase_ids,
-        phrase_count=phrase_count,
+    if not 0 <= row_index < len(dataset.eval_activations):
+        raise ValueError("row_index is outside the evaluation batch.")
+    if not t.isfinite(t.tensor(strength)) or strength == 0:
+        raise ValueError("strength must be finite and nonzero.")
+    reconstructions = reconstruct_from_explanations(
+        tokenizer, model, (base_text, edited_text), reconstructor
     )
-    _, predicted_ids = predict_residual_phrases(
-        dataset.eval_residuals,
-        encoder_weight,
-        encoder_bias,
-        encoder_mean,
+    delta = strength * (reconstructions[1] - reconstructions[0])
+    replacement = dataset.eval_activations[row_index] + delta
+    patched_logits = patch_pythia_candidate_logits(
+        model,
+        dataset,
+        replacement[None, :],
+        row_indices=(row_index,),
     )
-
-    generator = t.Generator().manual_seed(seed + 1)
-    shuffled_train_ids = dataset.train_phrase_ids[t.randperm(len(dataset.train_phrase_ids), generator=generator)]
-    shuffled_weight, shuffled_bias, shuffled_mean = fit_real_residual_phrase_encoder(
-        dataset.train_residuals,
-        shuffled_train_ids,
-        phrase_count=phrase_count,
-    )
-    _, shuffled_label_predictions = predict_residual_phrases(
-        dataset.eval_residuals,
-        shuffled_weight,
-        shuffled_bias,
-        shuffled_mean,
-    )
-
-    phrase_features = pythia_phrase_text_features(tokenizer, model, dataset.phrase_texts)
-    decoder_weight, decoder_bias = fit_phrase_text_decoder(
-        phrase_features,
-        dataset.train_phrase_ids,
-        dataset.train_residuals,
-    )
-    reconstruction = decode_phrase_text_features(
-        phrase_features, predicted_ids, decoder_weight, decoder_bias
-    )
-    oracle_reconstruction = decode_phrase_text_features(
-        phrase_features, dataset.eval_phrase_ids, decoder_weight, decoder_bias
-    )
-    no_text = dataset.train_residuals.mean(dim=0, keepdim=True).expand_as(dataset.eval_residuals)
-    wrong_ids = (dataset.eval_phrase_ids + 1) % phrase_count
-    shuffled_phrase = decode_phrase_text_features(
-        phrase_features, wrong_ids, decoder_weight, decoder_bias
+    logit_change = (patched_logits - dataset.original_candidate_logits).abs()
+    other_rows = t.arange(len(patched_logits)) != row_index
+    original_winner = AGREEMENT_CANDIDATES[
+        int(dataset.original_candidate_logits[row_index].argmax())
+    ].strip()
+    intervened_winner = AGREEMENT_CANDIDATES[int(patched_logits[row_index].argmax())].strip()
+    return InterventionResult(
+        base_text=base_text,
+        edited_text=edited_text,
+        activation_delta_norm=float(delta.norm()),
+        selected_logit_change=float(logit_change[row_index].max()),
+        other_rows_max_logit_change=float(logit_change[other_rows].max()),
+        original_winner=original_winner,
+        intervened_winner=intervened_winner,
+        candidate_logits=patched_logits[row_index],
     )
 
-    def target_accuracy(residuals: t.Tensor) -> tuple[float, t.Tensor]:
-        predictions = _pythia_logits_from_residuals(model, residuals).argmax(dim=-1)
-        accuracy = predictions.eq(dataset.target_token_ids).float().mean().item()
-        return accuracy, predictions
 
-    reconstructed_accuracy, reconstructed_tokens = target_accuracy(reconstruction)
-    oracle_accuracy, _ = target_accuracy(oracle_reconstruction)
-    no_text_accuracy, _ = target_accuracy(no_text)
-    shuffled_accuracy, _ = target_accuracy(shuffled_phrase)
+def _counterfactual_explanation(example: AgreementExample) -> str:
+    flipped = (-example.factors[0], example.factors[1])
+    return natural_language_explanation(example.noun_lemma, example.style, flipped)
+
+
+def _metrics_for(
+    original: t.Tensor,
+    candidates: dict[str, t.Tensor],
+    factors: t.Tensor,
+) -> dict[str, ReconstructionMetrics]:
+    return {
+        name: reconstruction_metrics(original, reconstructed, factors)
+        for name, reconstructed in candidates.items()
+    }
+
+
+def evaluate_mini_nla(
+    tokenizer,
+    model,
+    dataset: PythiaNLADataset,
+    *,
+    shuffle_seeds: Sequence[int] = tuple(range(8)),
+) -> MiniNLAExperiment:
+    """Run the held-out token NLA and all adversarial controls."""
+
+    train_texts = tuple(example.explanation for example in dataset.train_examples)
+    eval_texts = tuple(example.explanation for example in dataset.eval_examples)
+    train_tokens = tokenize_explanations(tokenizer, train_texts)
+    eval_tokens = tokenize_explanations(
+        tokenizer,
+        eval_texts,
+        vocabulary_token_ids=train_tokens.vocabulary_token_ids,
+    )
+    verbalizer = fit_token_verbalizer(dataset.train_activations, train_tokens)
+    generated = generate_token_explanations(tokenizer, dataset.eval_activations, verbalizer)
+    token_accuracy, exact_text_accuracy = token_generation_accuracy(generated, eval_tokens)
+
+    train_text_features = encode_reconstructor_text(tokenizer, model, train_texts)
+    reconstructor = fit_token_reconstructor(train_text_features, dataset.train_activations)
+    generated_features = encode_reconstructor_text(tokenizer, model, generated.texts)
+    learned = decode_text_features(generated_features, reconstructor)
+    oracle = reconstruct_from_explanations(tokenizer, model, eval_texts, reconstructor)
+
+    train_bag_features, bag_vocabulary = bag_of_tokens_features(tokenizer, train_texts)
+    eval_bag_features, _ = bag_of_tokens_features(
+        tokenizer,
+        eval_texts,
+        vocabulary_token_ids=bag_vocabulary,
+    )
+    train_bag_features = train_bag_features.to(dataset.train_activations.device)
+    eval_bag_features = eval_bag_features.to(dataset.eval_activations.device)
+    bag_reconstructor = fit_token_reconstructor(
+        train_bag_features,
+        dataset.train_activations,
+    )
+    bag_reconstruction = decode_text_features(eval_bag_features, bag_reconstructor)
+
+    factor_texts = prompt_only_factor_explanations(dataset.eval_examples)
+    factor_text_reconstruction = reconstruct_from_explanations(
+        tokenizer, model, factor_texts, reconstructor
+    )
+    lexical_texts = lexically_relabel_explanations(dataset.eval_examples)
+    lexical_reconstruction = reconstruct_from_explanations(
+        tokenizer, model, lexical_texts, reconstructor
+    )
+    class_mean_reconstruction = factor_prototype_reconstruction(
+        dataset.train_activations, dataset.train_factors, dataset.eval_factors
+    )
+    direct_parameters = fit_direct_factor_decoder(
+        dataset.train_factors, dataset.train_activations
+    )
+    direct_reconstruction = decode_direct_factors(dataset.eval_factors, direct_parameters)
+    mean_conditioned_targets = replace_with_factor_prototypes(
+        dataset.train_activations, dataset.train_factors
+    )
+    mean_conditioned_head = fit_token_reconstructor(
+        train_text_features, mean_conditioned_targets
+    )
+    mean_conditioned_reconstruction = decode_text_features(
+        encode_reconstructor_text(tokenizer, model, eval_texts), mean_conditioned_head
+    )
+
+    candidates = {
+        "reconstruction": learned,
+        "bag_of_tokens": bag_reconstruction,
+        "prompt_only_factor": factor_text_reconstruction,
+        "direct_factor": direct_reconstruction,
+        "class_mean": class_mean_reconstruction,
+        "mean_conditioned": mean_conditioned_reconstruction,
+        "lexical_relabel": lexical_reconstruction,
+    }
+    metrics = _metrics_for(dataset.eval_activations, candidates, dataset.eval_factors)
+    assert_nonprototype_reconstruction(
+        dataset.eval_activations, learned, dataset.eval_factors
+    )
+
+    identity_logits = patch_pythia_candidate_logits(
+        model, dataset, dataset.eval_activations
+    )
+    learned_logits = patch_pythia_candidate_logits(model, dataset, learned)
+    bag_logits = patch_pythia_candidate_logits(model, dataset, bag_reconstruction)
+    oracle_logits = patch_pythia_candidate_logits(model, dataset, oracle)
+    factor_logits = patch_pythia_candidate_logits(model, dataset, factor_text_reconstruction)
+    direct_logits = patch_pythia_candidate_logits(model, dataset, direct_reconstruction)
+    class_mean_logits = patch_pythia_candidate_logits(model, dataset, class_mean_reconstruction)
+    lexical_logits = patch_pythia_candidate_logits(model, dataset, lexical_reconstruction)
+
+    shuffled_fve: list[tuple[int, float]] = []
+    shuffled_parity: list[tuple[int, float]] = []
+    for seed in shuffle_seeds:
+        generator = t.Generator().manual_seed(int(seed))
+        permutation = t.randperm(len(train_tokens.token_ids), generator=generator)
+        shuffled_tokens = permute_explanation_tokens(train_tokens, permutation)
+        shuffled_verbalizer = fit_token_verbalizer(
+            dataset.train_activations, shuffled_tokens
+        )
+        shuffled_text = generate_token_explanations(
+            tokenizer, dataset.eval_activations, shuffled_verbalizer
+        )
+        shuffled_reconstruction = reconstruct_from_explanations(
+            tokenizer, model, shuffled_text.texts, reconstructor
+        )
+        shuffled_logits = patch_pythia_candidate_logits(
+            model, dataset, shuffled_reconstruction
+        )
+        shuffled_fve.append(
+            (int(seed), fraction_variance_explained(dataset.eval_activations, shuffled_reconstruction))
+        )
+        shuffled_parity.append(
+            (int(seed), behavior_parity(shuffled_logits, dataset.original_candidate_logits))
+        )
+
+    first_example = dataset.eval_examples[0]
+    intervention = run_text_edit_intervention(
+        tokenizer,
+        model,
+        dataset,
+        reconstructor,
+        row_index=0,
+        base_text=generated.texts[0],
+        edited_text=_counterfactual_explanation(first_example),
+    )
+    if intervention.activation_delta_norm <= 1e-3 or intervention.selected_logit_change <= 1e-3:
+        raise AssertionError("the text edit must have a nonzero activation and causal logit effect.")
+
+    targets = _candidate_indices(dataset.eval_factors)
+    original_winners = dataset.original_candidate_logits.argmax(dim=1)
+    reconstructed_winners = learned_logits.argmax(dim=1)
+    all_examples = (*dataset.train_examples, *dataset.eval_examples)
+    all_bag_features, _ = bag_of_tokens_features(
+        tokenizer,
+        tuple(example.explanation for example in all_examples),
+    )
+    multiset_matches = []
+    for context_id in sorted({example.context_id for example in all_examples}):
+        rows_for_context = [
+            index
+            for index, example in enumerate(all_examples)
+            if example.context_id == context_id
+        ]
+        reference = all_bag_features[rows_for_context[0]]
+        multiset_matches.append(
+            all(t.equal(reference, all_bag_features[index]) for index in rows_for_context[1:])
+        )
     rows = tuple(
         {
-            "prompt": prompt,
-            "true_phrase": dataset.phrase_texts[int(true_id)],
-            "predicted_phrase": dataset.phrase_texts[int(predicted_id)],
-            "target_token": tokenizer.decode([int(target_id)]),
-            "reconstructed_token": tokenizer.decode([int(reconstructed_id)]),
-            "correct": bool(true_id == predicted_id),
+            "prompt": example.prompt,
+            "generated explanation": explanation,
+            "target": AGREEMENT_CANDIDATES[int(target)].strip(),
+            "original": AGREEMENT_CANDIDATES[int(original)].strip(),
+            "reconstructed": AGREEMENT_CANDIDATES[int(reconstructed)].strip(),
+            "behavior preserved": bool(original == reconstructed),
+            "row cosine": float(
+                F.cosine_similarity(
+                    dataset.eval_activations[index : index + 1],
+                    learned[index : index + 1],
+                )
+            ),
         }
-        for prompt, true_id, predicted_id, target_id, reconstructed_id in zip(
-            dataset.eval_prompts,
-            dataset.eval_phrase_ids.tolist(),
-            predicted_ids.tolist(),
-            dataset.target_token_ids.tolist(),
-            reconstructed_tokens.tolist(),
+        for index, (example, explanation, target, original, reconstructed) in enumerate(
+            zip(
+                dataset.eval_examples,
+                generated.texts,
+                targets.tolist(),
+                original_winners.tolist(),
+                reconstructed_winners.tolist(),
+            )
         )
     )
-    return PythiaTextBottleneckReport(
-        phrase_accuracy=predicted_ids.eq(dataset.eval_phrase_ids).float().mean().item(),
-        shuffled_label_accuracy=shuffled_label_predictions.eq(dataset.eval_phrase_ids).float().mean().item(),
-        reconstruction_mse=F.mse_loss(reconstruction, dataset.eval_residuals).item(),
-        oracle_phrase_mse=F.mse_loss(oracle_reconstruction, dataset.eval_residuals).item(),
-        no_text_mse=F.mse_loss(no_text, dataset.eval_residuals).item(),
-        shuffled_phrase_mse=F.mse_loss(shuffled_phrase, dataset.eval_residuals).item(),
-        reconstructed_target_accuracy=reconstructed_accuracy,
-        oracle_phrase_target_accuracy=oracle_accuracy,
-        no_text_target_accuracy=no_text_accuracy,
-        shuffled_phrase_target_accuracy=shuffled_accuracy,
+
+    report = MiniNLAReport(
+        train_count=len(dataset.train_examples),
+        eval_count=len(dataset.eval_examples),
+        token_accuracy=token_accuracy,
+        exact_text_accuracy=exact_text_accuracy,
+        reconstruction=metrics["reconstruction"],
+        bag_of_tokens=metrics["bag_of_tokens"],
+        prompt_only_factor=metrics["prompt_only_factor"],
+        direct_factor=metrics["direct_factor"],
+        class_mean=metrics["class_mean"],
+        mean_conditioned=metrics["mean_conditioned"],
+        lexical_relabel=metrics["lexical_relabel"],
+        original_task_accuracy=candidate_accuracy(
+            dataset.original_candidate_logits, dataset.eval_factors
+        ),
+        reconstructed_task_accuracy=candidate_accuracy(learned_logits, dataset.eval_factors),
+        behavior_parity_accuracy=behavior_parity(
+            learned_logits, dataset.original_candidate_logits
+        ),
+        bag_of_tokens_behavior_parity=behavior_parity(
+            bag_logits, dataset.original_candidate_logits
+        ),
+        oracle_text_behavior_parity=behavior_parity(
+            oracle_logits, dataset.original_candidate_logits
+        ),
+        omitted_composition_end_to_end_parity=behavior_parity(
+            learned_logits, dataset.original_candidate_logits
+        ),
+        prompt_only_factor_behavior_parity=behavior_parity(
+            factor_logits, dataset.original_candidate_logits
+        ),
+        direct_factor_behavior_parity=behavior_parity(
+            direct_logits, dataset.original_candidate_logits
+        ),
+        class_mean_behavior_parity=behavior_parity(
+            class_mean_logits, dataset.original_candidate_logits
+        ),
+        lexical_relabel_behavior_parity=behavior_parity(
+            lexical_logits, dataset.original_candidate_logits
+        ),
+        same_context_token_multiset_fraction=sum(multiset_matches) / len(multiset_matches),
+        shuffled_fve_by_seed=tuple(shuffled_fve),
+        shuffled_behavior_parity_by_seed=tuple(shuffled_parity),
+        identity_max_logit_error=float(
+            (identity_logits - dataset.original_candidate_logits).abs().max()
+        ),
+        intervention=intervention,
+        generated_explanations=generated.texts,
         rows=rows,
     )
-
-
-def run_pythia_text_bottleneck_lab() -> dict:
-    """Run the learner-visible real residual -> text -> residual experiment."""
-
-    tokenizer, model = load_pythia_text_bottleneck_model()
-    dataset = cache_pythia_text_bottleneck_dataset(tokenizer, model)
-    report = evaluate_pythia_text_bottleneck(tokenizer, model, dataset)
-    return {"tokenizer": tokenizer, "model": model, "dataset": dataset, "report": report}
-
-
-def summarize_pythia_text_bottleneck_lab(
-    result: dict[str, object],
-) -> dict[str, float | int]:
-    """Flatten the learner-visible Pythia experiment into release metrics."""
-
-    dataset = result["dataset"]
-    report = result["report"]
-    return {
-        "learner_cpu_train_count": len(dataset.train_residuals),
-        "learner_cpu_eval_count": len(dataset.eval_residuals),
-        "learner_cpu_phrase_accuracy": float(report.phrase_accuracy),
-        "learner_cpu_shuffled_label_accuracy": float(report.shuffled_label_accuracy),
-        "learner_cpu_reconstructed_target_accuracy": float(
-            report.reconstructed_target_accuracy
-        ),
-        "learner_cpu_oracle_phrase_target_accuracy": float(
-            report.oracle_phrase_target_accuracy
-        ),
-        "learner_cpu_no_text_target_accuracy": float(report.no_text_target_accuracy),
-        "learner_cpu_wrong_phrase_target_accuracy": float(
-            report.shuffled_phrase_target_accuracy
-        ),
-        "learner_cpu_reconstruction_mse": float(report.reconstruction_mse),
-        "learner_cpu_no_text_mse": float(report.no_text_mse),
-        "learner_cpu_wrong_phrase_mse": float(report.shuffled_phrase_mse),
-    }
-
-
-def run_smoke_test(cpu: bool = True) -> dict:
-    """Return the compact exact-ground-truth contract used by report generation."""
-
-    _ = cpu
-    signature = build_signature_payload()
-    reconstruction = signature["reconstruction"]
-    behavior = signature["behavior"]
-    accepted = (
-        signature["phrase_accuracy"] == 1.0
-        and reconstruction.nla_beats_prompt_only
-        and reconstruction.shuffled_control_fails
-        and behavior.nla_beats_controls
-        and behavior.route_accuracy == 1.0
-        and behavior.cargo_accuracy == 1.0
-        and signature["compression_ratio"] < 0.5
+    return MiniNLAExperiment(
+        report=report,
+        verbalizer=verbalizer,
+        reconstructor=reconstructor,
+        reconstructed_activations=learned,
     )
+
+
+def save_signature_figure(report: MiniNLAReport, path: str | Path) -> Path:
+    """Create the learner-facing result from live report values."""
+
+    import matplotlib.pyplot as plt
+
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    figure, axes = plt.subplots(1, 3, figsize=(15, 4.7))
+    labels = ["token NLA", "bag of tokens", "factor text", "direct factors", "class mean", "relabel"]
+    fves = [
+        report.reconstruction.fve,
+        report.bag_of_tokens.fve,
+        report.prompt_only_factor.fve,
+        report.direct_factor.fve,
+        report.class_mean.fve,
+        report.lexical_relabel.fve,
+    ]
+    colors = ["#16837a", "#8172b3", "#6f6f6f", "#b07c26", "#c44e52", "#4c72b0"]
+    axes[0].bar(labels, fves, color=colors)
+    axes[0].axhline(0, color="black", linewidth=0.8)
+    axes[0].set(title="Held-out full-vector FVE", ylabel="fraction variance explained")
+    axes[0].tick_params(axis="x", rotation=32)
+
+    within = [
+        report.reconstruction.within_factor_fve,
+        report.bag_of_tokens.within_factor_fve,
+        report.prompt_only_factor.within_factor_fve,
+        report.direct_factor.within_factor_fve,
+        report.class_mean.within_factor_fve,
+        report.lexical_relabel.within_factor_fve,
+    ]
+    axes[1].bar(labels, within, color=colors)
+    axes[1].axhline(0, color="black", linewidth=0.8)
+    axes[1].set(title="Variation within the same factors", ylabel="within-factor FVE")
+    axes[1].tick_params(axis="x", rotation=32)
+
+    behavior_labels = [
+        "token NLA",
+        "bag of tokens",
+        "factor text",
+        "direct factors",
+        "class mean",
+        "relabel",
+        "shuffled AV",
+    ]
+    shuffle_values = [value for _, value in report.shuffled_behavior_parity_by_seed]
+    behavior = [
+        report.behavior_parity_accuracy,
+        report.bag_of_tokens_behavior_parity,
+        report.prompt_only_factor_behavior_parity,
+        report.direct_factor_behavior_parity,
+        report.class_mean_behavior_parity,
+        report.lexical_relabel_behavior_parity,
+        sum(shuffle_values) / len(shuffle_values),
+    ]
+    axes[2].bar(behavior_labels, behavior, color=[*colors, "#9b9b9b"])
+    axes[2].scatter(
+        [5.82 + 0.05 * index for index in range(len(shuffle_values))],
+        shuffle_values,
+        color="black",
+        s=18,
+        label="shuffled AV seeds",
+        zorder=3,
+    )
+    axes[2].set(
+        ylim=(0, 1.08),
+        title="Causal behavior parity",
+        ylabel="fraction matching original model",
+    )
+    axes[2].tick_params(axis="x", rotation=32)
+    axes[2].legend(frameon=False, fontsize=8)
+    figure.suptitle(
+        "Same words, different order: "
+        f"Pythia AR parity {report.behavior_parity_accuracy:.2f} vs "
+        f"bag-of-tokens {report.bag_of_tokens_behavior_parity:.2f}"
+    )
+    figure.tight_layout()
+    figure.savefig(path, dpi=180, bbox_inches="tight")
+    plt.close(figure)
+    return path
+
+
+def run_smoke_test(cpu: bool = True) -> dict[str, Any]:
+    """Return structural facts only; scientific acceptance is never report-driven."""
+
+    del cpu
+    train, evaluation = build_agreement_examples()
     return {
-        "accepted": accepted,
-        "tests_passed": accepted,
-        "contract_passed": accepted,
-        "toy_phrase_accuracy": signature["phrase_accuracy"],
-        "toy_nla_mse": reconstruction.nla_mse,
-        "toy_prompt_only_mse": reconstruction.prompt_only_mse,
-        "toy_shuffled_phrase_mse": reconstruction.shuffled_phrase_mse,
-        "toy_behavior_mae": behavior.nla_mae,
-        "toy_prompt_only_behavior_mae": behavior.prompt_only_mae,
-        "toy_shuffled_behavior_mae": behavior.shuffled_phrase_mae,
-        "toy_route_accuracy": behavior.route_accuracy,
-        "toy_cargo_accuracy": behavior.cargo_accuracy,
-        "toy_compression_ratio": signature["compression_ratio"],
+        "notebook_id": "7_4_mini_natural_language_autoencoders",
+        "train_count": len(train),
+        "eval_count": len(evaluation),
+        "contexts": len({example.context_id for example in (*train, *evaluation)}),
+        "eval_factor_counts": {
+            str(state): sum(example.factors == state for example in evaluation)
+            for state in FACTOR_STATES
+        },
     }
 
 
-def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
-    gpu_result = run_transformerlens_nla_preflight(max_vram_gb=max_vram_gb)
-    if not gpu_result.get("cuda_available", False):
-        return gpu_result
-    learner_result = run_pythia_text_bottleneck_lab()
-    return gpu_result | summarize_pythia_text_bottleneck_lab(learner_result)
+def run_cpu_test() -> dict[str, Any]:
+    """Run the complete pinned experiment on CPU and return measured evidence."""
+
+    tokenizer, model = load_pythia_cpu()
+    dataset = cache_pythia_nla_dataset(tokenizer, model)
+    report = evaluate_mini_nla(tokenizer, model, dataset).report
+    return {
+        "model_id": PYTHIA_MODEL_ID,
+        "revision": PYTHIA_REVISION,
+        "device": "cpu",
+        "train_count": report.train_count,
+        "eval_count": report.eval_count,
+        "token_accuracy": report.token_accuracy,
+        "exact_text_accuracy": report.exact_text_accuracy,
+        "fve": report.reconstruction.fve,
+        "bag_of_tokens_fve": report.bag_of_tokens.fve,
+        "within_factor_fve": report.reconstruction.within_factor_fve,
+        "bag_of_tokens_within_factor_fve": report.bag_of_tokens.within_factor_fve,
+        "distinct_rows": report.reconstruction.distinct_rows,
+        "normalized_mse": report.reconstruction.normalized_mse,
+        "mean_cosine": report.reconstruction.mean_cosine,
+        "original_task_accuracy": report.original_task_accuracy,
+        "reconstructed_task_accuracy": report.reconstructed_task_accuracy,
+        "behavior_parity_accuracy": report.behavior_parity_accuracy,
+        "bag_of_tokens_behavior_parity": report.bag_of_tokens_behavior_parity,
+        "same_context_token_multiset_fraction": report.same_context_token_multiset_fraction,
+        "omitted_composition_end_to_end_parity": report.omitted_composition_end_to_end_parity,
+        "prompt_only_factor_fve": report.prompt_only_factor.fve,
+        "direct_factor_fve": report.direct_factor.fve,
+        "class_mean_fve": report.class_mean.fve,
+        "mean_conditioned_fve": report.mean_conditioned.fve,
+        "lexical_relabel_fve": report.lexical_relabel.fve,
+        "lexical_relabel_within_factor_fve": report.lexical_relabel.within_factor_fve,
+        "prompt_only_factor_behavior_parity": report.prompt_only_factor_behavior_parity,
+        "direct_factor_behavior_parity": report.direct_factor_behavior_parity,
+        "class_mean_behavior_parity": report.class_mean_behavior_parity,
+        "lexical_relabel_behavior_parity": report.lexical_relabel_behavior_parity,
+        "identity_max_logit_error": report.identity_max_logit_error,
+        "single_row_other_max_logit_change": report.intervention.other_rows_max_logit_change,
+        "intervention_selected_logit_change": report.intervention.selected_logit_change,
+        "shuffled_fve_by_seed": report.shuffled_fve_by_seed,
+        "shuffled_behavior_parity_by_seed": report.shuffled_behavior_parity_by_seed,
+    }
 
 
-def run_full_experiment(max_vram_gb: float = 24.0) -> dict:
-    """Run the validated experiment path used by the verification report."""
+def run_gpu_test(max_vram_gb: float = 24.0) -> dict[str, Any]:
+    """Run the full text bottleneck on CUDA with no fallback."""
+
+    if max_vram_gb <= 0:
+        raise ValueError("max_vram_gb must be positive.")
+    if not t.cuda.is_available():
+        raise RuntimeError("CUDA is required for 7.4 GPU verification.")
+    t.cuda.reset_peak_memory_stats()
+    tokenizer, model = load_pythia("cuda")
+    dataset = cache_pythia_nla_dataset(tokenizer, model)
+    report = evaluate_mini_nla(tokenizer, model, dataset).report
+    peak_vram_gb = t.cuda.max_memory_allocated() / 2**30
+    if peak_vram_gb > max_vram_gb:
+        raise AssertionError(
+            f"peak VRAM {peak_vram_gb:.3f} GB exceeds {max_vram_gb:.1f} GB"
+        )
+    checks = {
+        "exact_text": report.exact_text_accuracy == 1.0,
+        "normalized_fve": report.reconstruction.fve >= 0.75,
+        "beats_bag_of_tokens_fve": (
+            report.reconstruction.fve > report.bag_of_tokens.fve + 0.1
+        ),
+        "behavior_parity": report.behavior_parity_accuracy == 1.0,
+        "beats_bag_of_tokens_behavior": (
+            report.behavior_parity_accuracy
+            > report.bag_of_tokens_behavior_parity + 0.5
+        ),
+        "same_token_multiset": report.same_context_token_multiset_fraction == 1.0,
+        "identity_patch": report.identity_max_logit_error == 0.0,
+        "single_row_locality": report.intervention.other_rows_max_logit_change == 0.0,
+        "causal_text_edit": report.intervention.selected_logit_change > 1.0,
+    }
+    if not all(checks.values()):
+        failed = [name for name, passed in checks.items() if not passed]
+        raise AssertionError(f"7.4 scientific contract failed: {failed}")
+    return {
+        "accepted": True,
+        "cuda_available": True,
+        "device": "cuda",
+        "gpu_name": t.cuda.get_device_name(),
+        "torch_version": t.__version__,
+        "cuda_version": t.version.cuda,
+        "peak_vram_gb": peak_vram_gb,
+        "within_vram_budget": True,
+        "model_id": PYTHIA_MODEL_ID,
+        "revision": PYTHIA_REVISION,
+        "train_count": report.train_count,
+        "eval_count": report.eval_count,
+        "token_accuracy": report.token_accuracy,
+        "exact_text_accuracy": report.exact_text_accuracy,
+        "held_out_fve": report.reconstruction.fve,
+        "within_factor_fve": report.reconstruction.within_factor_fve,
+        "bag_of_tokens_fve": report.bag_of_tokens.fve,
+        "bag_of_tokens_within_factor_fve": report.bag_of_tokens.within_factor_fve,
+        "behavior_parity": report.behavior_parity_accuracy,
+        "bag_of_tokens_behavior_parity": report.bag_of_tokens_behavior_parity,
+        "same_context_token_multiset_fraction": report.same_context_token_multiset_fraction,
+        "distinct_reconstruction_rows": report.reconstruction.distinct_rows,
+        "identity_max_logit_error": report.identity_max_logit_error,
+        "intervention_selected_logit_change": report.intervention.selected_logit_change,
+        "single_row_other_max_logit_change": report.intervention.other_rows_max_logit_change,
+        "checks": checks,
+    }
+
+
+def run_full_experiment(max_vram_gb: float = 24.0):
+    """Run the complete pinned CUDA experiment."""
 
     return run_gpu_test(max_vram_gb=max_vram_gb)
-
-
-if MAIN:
-    print(run_smoke_test())

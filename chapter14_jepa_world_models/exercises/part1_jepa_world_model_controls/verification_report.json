@@ -472,7 +472,7 @@
   "peak_vram_gb": 0.7092466354370117,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "31df5f2707fc8b13595c8babce0d3d30babba102e226284ab902a0a8763a6ccb",
+    "combined_sha256": "713e5a5ae25682b03edb3b074bf1f35ce43c941ee6c550d68e2d11a1ce479506",
     "files": [
       {
         "path": "arena_ext/jepa_world_models.py",
@@ -541,7 +541,7 @@
       },
       {
         "path": "chapter14_jepa_world_models/instructions/pages/01_[14.1]_JEPA_and_World_Model_Controls.md",
-        "sha256": "aa6273388ab424fdbf425e4393b609fe440645685c3808a827f5fc9c8b4e3d9d",
+        "sha256": "e3532a5d91f7771a3116b1f8bb8e4c49a3d35bde2ccb0ac80b79cebc6b93c93c",
         "size_bytes": 39086
       },
       {

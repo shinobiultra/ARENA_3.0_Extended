@@ -1,0 +1,92 @@
+{
+  "source_directory": "/home/bitwise/.cache/arena_extended/erasure/own-foundation-v1",
+  "archive_sha256": "17a128f422d3c71da58aebc86c097673b536edc6ed21e6722389b6846af8eb66",
+  "members": {
+    "completed_learner.ipynb": {
+      "sha256": "b29741a56d5120915617db1b2ec49d8d7d57f6dd6debb25ca72d8da3f7f17096",
+      "size_bytes": 348277
+    },
+    "execution.json": {
+      "sha256": "16ba932b6952bed559f8a900bbefff01a5fce61d363ab94a327507ae957eded6",
+      "size_bytes": 2923
+    },
+    "figures/author_parity.json": {
+      "sha256": "f7cdf7ad9da3eb0f0e596170535729c3cd93502f1fbf57122acc474db3c1c97e",
+      "size_bytes": 1193
+    },
+    "figures/erasure_constraint_and_distortion.png": {
+      "sha256": "dac90ce3583f705516505ce440832f0d3d0978b461df0740a073ac29b5b1d74f",
+      "size_bytes": 58313
+    },
+    "figures/erasure_covariance_play.png": {
+      "sha256": "0737b3707a4b46d54760c345f885dab9101031bada39306fa0f97f7b167981f0",
+      "size_bytes": 87161
+    },
+    "figures/erasure_four_point_geometry.png": {
+      "sha256": "cfaea30855f06fbdd55053a2c73bea0a16ba81a73e5ebb4b6ec9fa8465abdeea",
+      "size_bytes": 114695
+    },
+    "figures/erasure_nonlinear_counterexample.png": {
+      "sha256": "2cb06c5c49315d50f85c2d80822e9e89e2d817fac67689d65a0d4d7986480708",
+      "size_bytes": 85718
+    },
+    "figures/erasure_probe_refitting.png": {
+      "sha256": "ce103a8a0615d8869a5a622ecac67670e07f0c23af96ad7e3b3dfd29936fc03f",
+      "size_bytes": 47464
+    },
+    "source_snapshot/chapter11_representation_geometry/exercises/part3_causal_abstraction_das/das_native.py": {
+      "sha256": "c25c36e165528797eb9377e72dd09fa6e1fdf80c21712986b0e16136f769c0de",
+      "size_bytes": 6897
+    },
+    "source_snapshot/chapter11_representation_geometry/exercises/part3_causal_abstraction_das/run_native_development.py": {
+      "sha256": "3a0b72d3b79c7683548db702fede8f424ff7f29cdd1b1494381e46d8bc16f8f4",
+      "size_bytes": 9774
+    },
+    "source_snapshot/chapter11_representation_geometry/exercises/part4_concept_erasure/build_notebooks.py": {
+      "sha256": "a7e4b4137a3d5a434d4b31dcacb46139567abb4cea6010622eb5a13f11e12032",
+      "size_bytes": 4524
+    },
+    "source_snapshot/chapter11_representation_geometry/exercises/part4_concept_erasure/erasure_data.py": {
+      "sha256": "f362733d9c1cab259bad33d300a932b041e6b05f23dc033c698de17a141ecb0f",
+      "size_bytes": 4202
+    },
+    "source_snapshot/chapter11_representation_geometry/exercises/part4_concept_erasure/erasure_methods.py": {
+      "sha256": "594d3c56ec40bd32c4418d8645ec26e70280df9c842b9dbb3c2fd87f42711e5e",
+      "size_bytes": 9958
+    },
+    "source_snapshot/chapter11_representation_geometry/exercises/part4_concept_erasure/erasure_methods_tests.py": {
+      "sha256": "89ffc6a48a5fab63d5ae2df5936c48502fbe116c3b566f8848dd9138f76cd1c7",
+      "size_bytes": 11907
+    },
+    "source_snapshot/chapter11_representation_geometry/exercises/part4_concept_erasure/erasure_native.py": {
+      "sha256": "1a49a5d7c147192a77cee8f1271160ed0c1ff9190ba12dc525e105db89512729",
+      "size_bytes": 1995
+    },
+    "source_snapshot/chapter11_representation_geometry/exercises/part4_concept_erasure/erasure_protocol.py": {
+      "sha256": "99d037a141755a27325d5f23fcf725916c40eea2c0b25655ac87cfb95b72eaf1",
+      "size_bytes": 827
+    },
+    "source_snapshot/chapter11_representation_geometry/exercises/part4_concept_erasure/execute_learner.py": {
+      "sha256": "1f173c1faac050971cae70d48b88b6c4672c35bdd15ed0d1e5eb9b3b54efb129",
+      "size_bytes": 3820
+    },
+    "source_snapshot/chapter11_representation_geometry/exercises/part4_concept_erasure/lesson.md": {
+      "sha256": "c9553b2b5d6e0706c5ff8596bdac485b022c08ebab1c2cb0af1e6343dfc15ad0",
+      "size_bytes": 32905
+    },
+    "source_snapshot/chapter11_representation_geometry/exercises/part4_concept_erasure/native_protocol.md": {
+      "sha256": "b3e389537b27898303db1bb3e7e2a2a49ae95ee2a3fe045fe711308df44474ec",
+      "size_bytes": 3696
+    },
+    "source_snapshot/chapter11_representation_geometry/exercises/part4_concept_erasure/reference_parity.py": {
+      "sha256": "ac923a053b61bbc80da6bad234b899b85e0f1c82db7a3ca98e6248b844e076fb",
+      "size_bytes": 3291
+    },
+    "source_snapshot/chapter11_representation_geometry/exercises/part4_concept_erasure/run_development.py": {
+      "sha256": "1ecf163e1d78c72da57cad2c6b62fe899749bc00c6e1b7a684cb2d5ed05d6b41",
+      "size_bytes": 7899
+    }
+  },
+  "large_tensors_retained_externally": {},
+  "readback_verified": true
+}

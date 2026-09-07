@@ -1,0 +1,14 @@
+{
+  "frozen_at_utc": "2026-09-06T12:13:28.852719+00:00",
+  "native_fits_before_freeze": 0,
+  "sha256": {
+    "protocol.md": "a62ed351750e5e1c4e77f8d651ecef040267b4df795940052ec73b73017159c7",
+    "data_manifest.json": "0e829e5632b8b3fec9cdd54393e361fe58f7ea3e40d4e753399c4372509eeb38",
+    "treeshap_data.py": "329b983afd4b12be1786507a4b585d057e722cfa888adaa99457f2222b82ffe3"
+  },
+  "versions": {
+    "numpy": "1.26.4",
+    "scikit-learn": "1.9.0",
+    "shap": "0.49.1"
+  }
+}

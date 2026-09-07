@@ -29,6 +29,7 @@ COMPATIBILITY_PATCH_RATIONALES = {
     ".python-version": "uv-managed Python version pin for the CUDA 13 environment",
     "AGENTS.md": "repo-local agent instructions for ARENA-style salvage without changing original lessons",
     "Extension-Roadmap.md": "user-authored extension specification",
+    "HANDOFF.md": "extension salvage execution handoff; no original lesson content",
     "guidance_2-0.md": "review guidance for the ARENA-style rewrite",
     "README.md": "entrypoint documentation for the extended course",
     "install.sh": "original installer redirected to the pinned original requirements split",

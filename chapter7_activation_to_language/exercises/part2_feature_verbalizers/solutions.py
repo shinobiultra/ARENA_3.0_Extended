@@ -1,1507 +1,1276 @@
 # %%
-"""Reference solutions for [7.2] Feature Verbalizers."""
+"""Reference solutions for [7.2] Feature Verbalizers.
+
+The learner-facing notebooks implement the same core functions inline. This module
+exists so the focused tests and release checks have an importable reference.
+"""
 
 from __future__ import annotations
 
-import logging
-import os
-import re
-import sys
-from dataclasses import dataclass
-from pathlib import Path
-from typing import Literal
+import random
+from dataclasses import asdict, dataclass
+from typing import Literal, Sequence
 
 import torch as t
 
-chapter = "chapter7_activation_to_language"
-root_dir = next(p for p in [Path.cwd(), *Path.cwd().parents] if (p / chapter).exists())
-if str(root_dir) not in sys.path:
-    sys.path.append(str(root_dir))
-
-MAIN = __name__ == "__main__"
-ExampleKind = Literal["top", "bottom", "random", "contrastive"]
-SplitKind = Literal["train", "revision", "heldout"]
-TOKEN_RE = re.compile(r"[a-zA-Z]+")
-
-DEFAULT_STOPWORDS = {
-    "a",
-    "an",
-    "and",
-    "at",
-    "beside",
-    "by",
-    "during",
-    "in",
-    "near",
-    "of",
-    "on",
-    "over",
-    "the",
-    "to",
-}
-
-ANIMAL_TERMS = frozenset(
-    {
-        "alpaca",
-        "badger",
-        "bear",
-        "cat",
-        "dog",
-        "fox",
-        "goat",
-        "horse",
-        "kitten",
-        "lizard",
-        "mouse",
-        "otter",
-        "owl",
-        "puppy",
-        "rabbit",
-        "seal",
-        "sheep",
-    }
-)
-RESTING_TERMS = frozenset(
-    {"curled", "dozed", "lounged", "napped", "perched", "rested", "roosted", "sat", "slept"}
-)
-SURFACE_TERMS = frozenset(
-    {
-        "basket",
-        "bench",
-        "blanket",
-        "branch",
-        "couch",
-        "dock",
-        "fence",
-        "floor",
-        "hay",
-        "ledge",
-        "log",
-        "mat",
-        "mound",
-        "pillow",
-        "rock",
-        "rug",
-        "shelf",
-        "sofa",
-        "table",
-    }
-)
-DECOY_TERMS = frozenset({"cardboard", "ceramic", "painted", "plastic", "plush", "statue", "toy", "wooden"})
-DEFAULT_SEMANTIC_LEXICON = {
-    "animal": ANIMAL_TERMS,
-    "resting": RESTING_TERMS,
-    "surface": SURFACE_TERMS,
-    "decoy": DECOY_TERMS,
-}
-
-TL_GELU1L_MODEL_NAME = "gelu-1l"
-TL_GELU1L_HF_ID = "NeelNanda/GELU_1L512W_C4_Code"
-TL_GELU1L_REVISION = "bddc0e332f0ae84279e6a6a45d91b314899e1603"
-TL_GELU1L_TOKENIZER_ID = "NeelNanda/gpt-neox-tokenizer-digits"
-TL_GELU1L_TOKENIZER_REVISION = "0f6671571a20be9756b9991d978047c03b75e749"
-TL_BNB_CUDA_OVERRIDE = "130"
-TL_RESID_POST_HOOK = "blocks.0.hook_resid_post"
-TL_DIRECTION_POSITIVE_PROMPT = "The cat sat on the"
-TL_DIRECTION_NEGATIVE_PROMPT = "The bird flew over the"
-TL_VERBALIZER_TRAIN_EXAMPLES = [
-    ("The cat sat on the", True),
-    ("The dog slept near the", True),
-    ("The child sat beside the", True),
-    ("The book rested near the", True),
-    ("The bird flew over the", False),
-    ("The plane flew over the", False),
-    ("The kite floated above the", False),
-    ("The cloud drifted above the", False),
-]
-TL_VERBALIZER_HELDOUT_EXAMPLES = [
-    ("The cup sat on the", True),
-    ("The blanket slept near the", True),
-    ("The lamp rested beside the", True),
-    ("The pillow sat near the", True),
-    ("The dog ran through the", False),
-    ("The balloon rose above the", False),
-    ("The cat jumped over the", False),
-    ("The rocket launched into the", False),
-]
-TL_DIRECTION_SCALE = 2.0
-LOCAL_VERBALIZER_MODEL_ID = "Qwen/Qwen2.5-0.5B-Instruct"
-LOCAL_VERBALIZER_REVISION = "7ae557604adf67be50417f59c2c2f167def9a775"
+MODEL_ID = "EleutherAI/pythia-70m"
+MODEL_REVISION = "a39f36b100fe8a5377810d56c3f4789b9c53ac42"
+LAYER = 3
+IS_TOKEN = " is"
+ARE_TOKEN = " are"
+PAIR_CAUSAL_NULL_SEED = 1729
+PAIR_CAUSAL_NULL_COUNT = 256
+Number = Literal["singular", "plural"]
+Split = Literal["train", "validation", "heldout"]
+Morphology = Literal["regular", "irregular", "nonce"]
 
 
 @dataclass(frozen=True)
-class VerbalizerExample:
-    text: str
-    score: float
-    label: bool
-    kind: ExampleKind
+class DirectionDecoder:
+    direction: t.Tensor
+    threshold: float
+    negative_mean: float
+    positive_mean: float
 
 
 @dataclass(frozen=True)
-class VerbalizerExampleSet:
-    top: tuple[VerbalizerExample, ...]
-    bottom: tuple[VerbalizerExample, ...]
-    random: tuple[VerbalizerExample, ...]
-    contrastive: tuple[VerbalizerExample, ...]
+class ActivationCache:
+    prompts: tuple[str, ...]
+    activations: t.Tensor
+    next_token_margins: t.Tensor
 
 
 @dataclass(frozen=True)
-class ExplanationPredictionReport:
+class NumberExample:
+    prompt: str
+    noun: str
+    number: Number
+    split: Split
+    morphology: Morphology
+    semantic_class: str
+
+
+@dataclass(frozen=True)
+class Hypothesis:
+    hypothesis_id: str
+    description: str
+
+
+@dataclass(frozen=True)
+class BinaryEvaluation:
     accuracy: float
     baseline_accuracy: float
-    contrastive_accuracy: float
-    passes_baseline: bool
-    survives_contrastive: bool
+    subset_accuracy: float
+    subset_baseline_accuracy: float
+    beats_baseline: bool
+    survives_subset: bool
 
 
 @dataclass(frozen=True)
-class InterventionPredictionReport:
-    predicted_direction: Literal["increase", "decrease"]
-    observed_delta: float
-    matches_prediction: bool
+class HookIntervention:
+    next_token_margins: t.Tensor
+    hook_calls: int
 
 
 @dataclass(frozen=True)
-class ExplanationBrevityReport:
-    explanation_word_count: int
-    examples_word_count: int
-    shorter_than_examples: bool
+class LayerSweepCache:
+    layer_names: tuple[str, ...]
+    activations: tuple[t.Tensor, ...]
 
 
-@dataclass(frozen=True)
-class CounterexampleReport:
-    num_counterexamples: int
-    counterexamples: tuple[str, ...]
-
-
-@dataclass(frozen=True)
-class PlantedFeatureExample:
-    text: str
-    split: SplitKind
-    label: bool
-    score: float
-    tags: tuple[str, ...]
-    counterfactual_type: str
-
-
-@dataclass(frozen=True)
-class PlantedFeatureSplit:
-    train: tuple[PlantedFeatureExample, ...]
-    revision: tuple[PlantedFeatureExample, ...]
-    heldout: tuple[PlantedFeatureExample, ...]
-
-
-@dataclass(frozen=True)
-class ExplanationRule:
-    description: str
-    required_groups: tuple[str, ...]
-    excluded_terms: tuple[str, ...] = ()
-
-
-@dataclass(frozen=True)
-class PlantedInterventionReport:
-    predicted_direction: Literal["increase", "decrease"]
-    observed_delta: float
-    random_direction_delta: float
-    matches_prediction: bool
-    beats_random_direction: bool
-    evaluated_examples: int
-
-
-@dataclass(frozen=True)
-class LocalHypothesisCandidate:
-    key: str
-    description: str
-    rule: ExplanationRule
-
-
-INITIAL_LOCAL_HYPOTHESES = (
-    LocalHypothesisCandidate(
-        "A",
-        "fires on resting words",
-        ExplanationRule("resting words", ("resting",)),
+HYPOTHESES = (
+    Hypothesis(
+        "subject_number_plural",
+        "The final subject noun is grammatically plural.",
     ),
-    LocalHypothesisCandidate(
-        "B",
-        "fires on living animals that are resting",
-        ExplanationRule("living animal resting", ("animal", "resting")),
+    Hypothesis(
+        "surface_suffix_s",
+        "The final subject token ends with the letter s.",
     ),
-    LocalHypothesisCandidate(
-        "C",
-        "fires on living animals resting on physical surfaces",
-        ExplanationRule(
-            "living animal resting on a physical surface",
-            ("animal", "resting", "surface"),
-        ),
+    Hypothesis(
+        "subject_is_person",
+        "The subject denotes a person, regardless of number.",
     ),
-)
-REVISED_LOCAL_HYPOTHESES = (
-    LocalHypothesisCandidate(
-        "C",
-        "living animals resting on physical surfaces",
-        INITIAL_LOCAL_HYPOTHESES[-1].rule,
-    ),
-    LocalHypothesisCandidate(
-        "D",
-        "living animals resting on physical surfaces, excluding non-living replicas such as toys, plush objects, statues, and wooden objects",
-        ExplanationRule(
-            "living animal resting on a physical surface; exclude non-living replicas",
-            ("animal", "resting", "surface"),
-            tuple(sorted(DECOY_TERMS)),
-        ),
+    Hypothesis(
+        "noun_has_six_letters",
+        "The displayed noun token has at least six letters.",
     ),
 )
 
+TRAIN_PAIRS = (
+    ("pilot", "pilots", "person"),
+    ("doctor", "doctors", "person"),
+    ("artist", "artists", "person"),
+    ("farmer", "farmers", "person"),
+    ("chef", "chefs", "person"),
+    ("lawyer", "lawyers", "person"),
+    ("student", "students", "person"),
+    ("teacher", "teachers", "person"),
+    ("driver", "drivers", "person"),
+    ("writer", "writers", "person"),
+    ("singer", "singers", "person"),
+    ("guard", "guards", "person"),
+)
 
-_PLANTED_EXAMPLE_SPECS: tuple[tuple[str, SplitKind, str], ...] = (
-    ("The cat sat on the mat.", "train", "positive"),
-    ("A dog slept on the rug.", "train", "positive"),
-    ("The rabbit rested near the sofa.", "train", "positive"),
-    ("An otter napped on the dock.", "train", "positive"),
-    ("The goat lounged beside the bench.", "train", "positive"),
-    ("A fox perched on the ledge.", "train", "positive"),
-    ("The robot rested on the sofa.", "train", "object_resting"),
-    ("The book rested on the shelf.", "train", "object_resting"),
-    ("The cat sprinted across the mat.", "train", "animal_motion"),
-    ("The dog slept during the storm.", "train", "no_surface"),
-    ("The kite floated above the field.", "train", "irrelevant"),
-    ("The lamp sat on the floor.", "train", "object_resting"),
-    ("The toy cat sat on the mat.", "revision", "decoy_animal"),
-    ("The plush dog slept on the rug.", "revision", "decoy_animal"),
-    ("The wooden fox perched on the ledge.", "revision", "decoy_animal"),
-    ("The mouse rested under the table.", "revision", "positive"),
-    ("The seal napped on the rock.", "revision", "positive"),
-    ("The badger ran across the mound.", "revision", "animal_motion"),
-    ("The horse rested on the blanket.", "heldout", "positive"),
-    ("A lizard dozed on the warm rock.", "heldout", "positive"),
-    ("The owl perched on the branch.", "heldout", "positive"),
-    ("The kitten slept beside the basket.", "heldout", "positive"),
-    ("The puppy lounged on the couch.", "heldout", "positive"),
-    ("An alpaca sat near the fence.", "heldout", "positive"),
-    ("The bear rested by the log.", "heldout", "positive"),
-    ("The sheep slept on the hay.", "heldout", "positive"),
-    ("The toy horse rested on the blanket.", "heldout", "decoy_animal"),
-    ("A ceramic lizard dozed on the rock.", "heldout", "decoy_animal"),
-    ("The statue owl perched on the branch.", "heldout", "decoy_animal"),
-    ("The plush puppy slept on the couch.", "heldout", "decoy_animal"),
-    ("The horse galloped across the blanket.", "heldout", "animal_motion"),
-    ("The seal swam near the rock.", "heldout", "animal_motion"),
-    ("The lamp rested on the blanket.", "heldout", "object_resting"),
-    ("The book sat on the shelf.", "heldout", "object_resting"),
-    ("The kitten slept during the storm.", "heldout", "no_surface"),
-    ("The robot napped on the couch.", "heldout", "object_resting"),
-    ("The painted bear rested by the log.", "heldout", "decoy_animal"),
-    ("A cardboard sheep slept on the hay.", "heldout", "decoy_animal"),
-    ("The owl flew above the branch.", "heldout", "animal_motion"),
-    ("The fox chased the mouse.", "heldout", "no_rest"),
-    ("The catalog sat on the shelf.", "heldout", "substring_trap"),
-    ("The rocket launched above the clouds.", "heldout", "irrelevant"),
+VALIDATION_PAIRS = (
+    ("baker", "bakers", "regular", "person"),
+    ("dancer", "dancers", "regular", "person"),
+    ("mouse", "mice", "irregular", "animal"),
+    ("goose", "geese", "irregular", "animal"),
+    ("wug", "wugs", "nonce", "nonce"),
+    ("dax", "daxes", "nonce", "nonce"),
+)
+
+HELDOUT_PAIRS = (
+    ("engineer", "engineers", "regular", "person"),
+    ("musician", "musicians", "regular", "person"),
+    ("scientist", "scientists", "regular", "person"),
+    ("gardener", "gardeners", "regular", "person"),
+    ("man", "men", "irregular", "person"),
+    ("woman", "women", "irregular", "person"),
+    ("child", "children", "irregular", "person"),
+    ("person", "people", "irregular", "person"),
+    ("blicket", "blickets", "nonce", "nonce"),
+    ("zorp", "zorps", "nonce", "nonce"),
+    ("plin", "plins", "nonce", "nonce"),
+    ("nup", "nups", "nonce", "nonce"),
 )
 
 
-def _tokens(text: str) -> set[str]:
-    return set(TOKEN_RE.findall(text.lower()))
-
-
-def _has_group(tokens: set[str], group: str, lexicon: dict[str, frozenset[str]] | None = None) -> bool:
-    lexicon = DEFAULT_SEMANTIC_LEXICON if lexicon is None else lexicon
-    if group not in lexicon:
-        raise KeyError(f"Unknown semantic group: {group!r}.")
-    return bool(tokens.intersection(lexicon[group]))
-
-
-def planted_feature_label(text: str) -> bool:
-    """Exact toy-oracle rule: a living animal is resting on a physical surface."""
-
-    tokens = _tokens(text)
-    return (
-        _has_group(tokens, "animal")
-        and _has_group(tokens, "resting")
-        and _has_group(tokens, "surface")
-        and not _has_group(tokens, "decoy")
-    )
-
-
-def _planted_feature_score(text: str) -> float:
-    tokens = _tokens(text)
-    has_animal = float(_has_group(tokens, "animal"))
-    has_resting = float(_has_group(tokens, "resting"))
-    has_surface = float(_has_group(tokens, "surface"))
-    has_decoy = float(_has_group(tokens, "decoy"))
-    label = float(planted_feature_label(text))
-    jitter = ((sum(ord(char) for char in text) % 17) - 8) / 100.0
-    return (
-        -2.0
-        + 1.3 * has_animal
-        + 1.15 * has_resting
-        + 0.95 * has_surface
-        - 1.4 * has_decoy
-        + 3.2 * label
-        + jitter
-    )
-
-
-def _planted_tags(text: str) -> tuple[str, ...]:
-    tokens = _tokens(text)
-    tags = [group for group in ("animal", "resting", "surface", "decoy") if _has_group(tokens, group)]
-    return tuple(tags)
-
-
-def make_planted_feature_dataset() -> tuple[PlantedFeatureExample, ...]:
-    """Return the finite planted feature dataset with exact labels and scores."""
-
-    return tuple(
-        PlantedFeatureExample(
-            text=text,
-            split=split,
-            label=planted_feature_label(text),
-            score=_planted_feature_score(text),
-            tags=_planted_tags(text),
-            counterfactual_type=counterfactual_type,
+def _pair_examples(
+    pairs: Sequence[tuple[str, str, str]],
+    *,
+    split: Split,
+    morphology: Morphology,
+) -> list[NumberExample]:
+    examples: list[NumberExample] = []
+    for singular, plural, semantic_class in pairs:
+        examples.extend(
+            [
+                NumberExample(
+                    f"The {singular}", singular, "singular", split, morphology, semantic_class
+                ),
+                NumberExample(
+                    f"The {plural}", plural, "plural", split, morphology, semantic_class
+                ),
+            ]
         )
-        for text, split, counterfactual_type in _PLANTED_EXAMPLE_SPECS
+    return examples
+
+
+def make_number_dataset() -> tuple[NumberExample, ...]:
+    """Build paired train, validation, and held-out prompt families."""
+
+    train = _pair_examples(TRAIN_PAIRS, split="train", morphology="regular")
+    validation: list[NumberExample] = []
+    for singular, plural, morphology, semantic_class in VALIDATION_PAIRS:
+        validation.extend(
+            _pair_examples(
+                [(singular, plural, semantic_class)],
+                split="validation",
+                morphology=morphology,
+            )
+        )
+    heldout: list[NumberExample] = []
+    for singular, plural, morphology, semantic_class in HELDOUT_PAIRS:
+        heldout.extend(
+            _pair_examples(
+                [(singular, plural, semantic_class)],
+                split="heldout",
+                morphology=morphology,
+            )
+        )
+    examples = tuple(train + validation + heldout)
+    validate_number_dataset(examples)
+    return examples
+
+
+def split_number_dataset(
+    examples: Sequence[NumberExample],
+) -> tuple[tuple[NumberExample, ...], tuple[NumberExample, ...], tuple[NumberExample, ...]]:
+    return tuple(
+        tuple(example for example in examples if example.split == split)
+        for split in ("train", "validation", "heldout")
     )
 
 
-def split_planted_feature_dataset(
-    examples: tuple[PlantedFeatureExample, ...] | list[PlantedFeatureExample],
-) -> PlantedFeatureSplit:
-    """Validate and split planted examples into train, revision, and final held-out sets."""
+def validate_number_dataset(examples: Sequence[NumberExample]) -> None:
+    """Reject overlap and malformed number pairs before any activation fitting."""
 
     if not examples:
         raise ValueError("examples must be nonempty.")
-    texts = [example.text for example in examples]
-    if len(set(texts)) != len(texts):
-        raise ValueError("example texts must be unique across splits.")
-    train = tuple(example for example in examples if example.split == "train")
-    revision = tuple(example for example in examples if example.split == "revision")
-    heldout = tuple(example for example in examples if example.split == "heldout")
-    if not train or not revision or not heldout:
-        raise ValueError("train, revision, and heldout splits must all be present.")
-    if set(example.text for example in train).intersection(example.text for example in heldout):
-        raise ValueError("train and heldout examples must be disjoint.")
-    for name, split in {"train": train, "revision": revision, "heldout": heldout}.items():
-        labels = {example.label for example in split}
-        if labels != {False, True}:
-            raise ValueError(f"{name} split must contain both positive and negative labels.")
-    return PlantedFeatureSplit(train=train, revision=revision, heldout=heldout)
-
-
-def _make_examples(
-    texts: list[str],
-    scores: t.Tensor,
-    labels: t.Tensor,
-    indices: t.Tensor,
-    kind: ExampleKind,
-) -> tuple[VerbalizerExample, ...]:
-    return tuple(
-        VerbalizerExample(
-            text=texts[int(index.item())],
-            score=float(scores[int(index.item())].item()),
-            label=bool(labels[int(index.item())].item()),
-            kind=kind,
-        )
-        for index in indices
-    )
-
-
-def gather_verbalizer_examples(
-    texts: list[str],
-    scores: t.Tensor,
-    labels: t.Tensor,
-    *,
-    k: int = 3,
-    threshold: float | None = None,
-    seed: int = 0,
-) -> VerbalizerExampleSet:
-    """Collect top, bottom, random, and contrastive near-miss examples."""
-
-    scores = scores.flatten().float()
-    labels = labels.flatten().bool()
-    if len(texts) != scores.numel() or labels.shape != scores.shape:
-        raise ValueError("texts, scores, and labels must describe the same examples.")
-    if k <= 0:
-        raise ValueError("k must be positive.")
-
-    k = min(k, scores.numel())
-    top_indices = scores.topk(k=k).indices
-    bottom_indices = (-scores).topk(k=k).indices
-
-    generator = t.Generator().manual_seed(seed)
-    random_indices = t.randperm(scores.numel(), generator=generator)[:k]
-
-    if threshold is None:
-        threshold = scores.mean().item()
-    contrastive_indices = (scores - threshold).abs().argsort()[:k]
-
-    return VerbalizerExampleSet(
-        top=_make_examples(texts, scores, labels, top_indices, "top"),
-        bottom=_make_examples(texts, scores, labels, bottom_indices, "bottom"),
-        random=_make_examples(texts, scores, labels, random_indices, "random"),
-        contrastive=_make_examples(texts, scores, labels, contrastive_indices, "contrastive"),
-    )
-
-
-def keyword_explanation_predictions(
-    texts: list[str],
-    explanation_terms: list[str],
-) -> t.Tensor:
-    """Turn a keyword-style explanation into activation predictions."""
-
-    normalized_terms = [term.strip().lower() for term in explanation_terms if term.strip()]
-    if not normalized_terms:
-        raise ValueError("explanation_terms must include at least one nonempty term.")
-    return t.tensor(
-        [any(term in _tokens(text) for term in normalized_terms) for text in texts],
-        dtype=t.bool,
-    )
-
-
-def semantic_rule_predictions(
-    texts: list[str],
-    rule: ExplanationRule,
-    *,
-    lexicon: dict[str, frozenset[str]] | None = None,
-) -> t.Tensor:
-    """Turn a semantic verbalizer rule into whole-token predictions."""
-
-    lexicon = DEFAULT_SEMANTIC_LEXICON if lexicon is None else lexicon
-    if not rule.required_groups:
-        raise ValueError("rule.required_groups must be nonempty.")
-    for group in rule.required_groups:
-        if group not in lexicon:
-            raise KeyError(f"Unknown semantic group: {group!r}.")
-    excluded_terms = {term.strip().lower() for term in rule.excluded_terms if term.strip()}
-    predictions = []
-    for text in texts:
-        tokens = _tokens(text)
-        has_required_groups = all(tokens.intersection(lexicon[group]) for group in rule.required_groups)
-        has_excluded_term = bool(tokens.intersection(excluded_terms))
-        predictions.append(bool(has_required_groups and not has_excluded_term))
-    return t.tensor(predictions, dtype=t.bool)
-
-
-def learn_verbalizer_terms(
-    texts: list[str],
-    labels: t.Tensor,
-    *,
-    top_k: int = 5,
-    stopwords: set[str] | None = None,
-) -> list[str]:
-    """Learn concise keyword explanation terms from labeled training examples only."""
-
-    labels = labels.flatten().bool()
-    if len(texts) != labels.numel():
-        raise ValueError("texts and labels must describe the same examples.")
-    if top_k <= 0:
-        raise ValueError("top_k must be positive.")
-    stopwords = DEFAULT_STOPWORDS if stopwords is None else stopwords
-    counts: dict[str, list[int]] = {}
-    for text, label in zip(texts, labels.tolist(), strict=True):
-        for token in _tokens(text):
-            if token in stopwords:
-                continue
-            counts.setdefault(token, [0, 0])[int(bool(label))] += 1
-    scored_terms = [
-        (pos - neg, pos, -neg, token)
-        for token, (neg, pos) in counts.items()
-        if pos > 0 and pos > neg
-    ]
-    scored_terms.sort(reverse=True)
-    return [token for _, _, _, token in scored_terms[:top_k]]
-
-
-def explanation_prediction_report(
-    predictions: t.Tensor,
-    labels: t.Tensor,
-    baseline_predictions: t.Tensor,
-    contrastive_mask: t.Tensor,
-) -> ExplanationPredictionReport:
-    """Score explanation-derived predictions against baseline and contrastives."""
-
-    predictions = predictions.flatten().bool()
-    labels = labels.flatten().bool()
-    baseline_predictions = baseline_predictions.flatten().bool()
-    contrastive_mask = contrastive_mask.flatten().bool()
-    matching_shapes = (
-        predictions.shape == labels.shape == baseline_predictions.shape == contrastive_mask.shape
-    )
-    if not matching_shapes:
-        raise ValueError("all prediction, label, and mask tensors must have matching shape.")
-
-    accuracy = predictions.eq(labels).float().mean().item()
-    baseline_accuracy = baseline_predictions.eq(labels).float().mean().item()
-    if contrastive_mask.any():
-        contrastive_accuracy = predictions[contrastive_mask].eq(labels[contrastive_mask])
-        contrastive_accuracy = contrastive_accuracy.float().mean().item()
-    else:
-        contrastive_accuracy = float("nan")
-
-    return ExplanationPredictionReport(
-        accuracy=accuracy,
-        baseline_accuracy=baseline_accuracy,
-        contrastive_accuracy=contrastive_accuracy,
-        passes_baseline=accuracy > baseline_accuracy,
-        survives_contrastive=bool(
-            contrastive_mask.any() and contrastive_accuracy > baseline_accuracy
-        ),
-    )
-
-
-def find_counterexamples(
-    texts: list[str],
-    predictions: t.Tensor,
-    labels: t.Tensor,
-    *,
-    max_examples: int = 3,
-) -> CounterexampleReport:
-    """Return examples where the explanation prediction is wrong."""
-
-    predictions = predictions.flatten().bool()
-    labels = labels.flatten().bool()
-    if len(texts) != predictions.numel() or labels.shape != predictions.shape:
-        raise ValueError("texts, predictions, and labels must describe the same examples.")
-    if max_examples <= 0:
-        raise ValueError("max_examples must be positive.")
-
-    wrong_indices = predictions.ne(labels).nonzero(as_tuple=False).flatten()
-    examples = tuple(texts[int(index.item())] for index in wrong_indices[:max_examples])
-    return CounterexampleReport(
-        num_counterexamples=int(wrong_indices.numel()),
-        counterexamples=examples,
-    )
-
-
-def mine_counterexamples(
-    examples: tuple[PlantedFeatureExample, ...] | list[PlantedFeatureExample],
-    predictions: t.Tensor,
-    *,
-    max_examples: int = 8,
-) -> tuple[dict[str, object], ...]:
-    """Return structured false positives and false negatives for revision."""
-
-    predictions = predictions.flatten().bool()
-    if len(examples) != predictions.numel():
-        raise ValueError("examples and predictions must have matching length.")
-    if max_examples <= 0:
-        raise ValueError("max_examples must be positive.")
-    rows = []
-    for example, prediction in zip(examples, predictions.tolist(), strict=True):
-        if bool(prediction) != example.label:
-            rows.append(
-                {
-                    "text": example.text,
-                    "label": example.label,
-                    "predicted": bool(prediction),
-                    "score": example.score,
-                    "counterfactual_type": example.counterfactual_type,
-                    "tags": example.tags,
-                }
-            )
-    return tuple(rows[:max_examples])
-
-
-def revise_explanation(
-    explanation: str,
-    counterexamples: tuple[str, ...],
-    *,
-    revision_note: str,
-) -> str:
-    """Append a short revision note grounded in counterexamples."""
-
-    if not counterexamples:
-        return explanation
-    return f"{explanation} Revision: {revision_note}"
-
-
-def revise_rule_from_counterexamples(
-    rule: ExplanationRule,
-    counterexamples: tuple[dict[str, object], ...],
-) -> ExplanationRule:
-    """Revise the planted verbalizer by adding missing semantic constraints."""
-
-    if not counterexamples:
-        return rule
-    required_groups = set(rule.required_groups)
-    excluded_terms = set(rule.excluded_terms)
-    for row in counterexamples:
-        text = str(row["text"])
-        tokens = _tokens(text)
-        if row["predicted"] and not row["label"]:
-            required_groups.update({"animal", "resting", "surface"})
-            if tokens.intersection(DECOY_TERMS):
-                excluded_terms.update(DECOY_TERMS)
-        elif row["label"] and not row["predicted"]:
-            required_groups.update({"animal", "resting", "surface"})
-    ordered_groups = tuple(group for group in ("animal", "resting", "surface") if group in required_groups)
-    ordered_exclusions = tuple(sorted(excluded_terms))
-    if ordered_exclusions:
-        description = (
-            "living animal resting on a physical surface; exclude "
-            + ", ".join(ordered_exclusions)
-            + " examples"
-        )
-    else:
-        description = "living animal resting on a physical surface"
-    return ExplanationRule(
-        description=description,
-        required_groups=ordered_groups,
-        excluded_terms=ordered_exclusions,
-    )
-
-
-def intervention_prediction_report(
-    baseline_scores: t.Tensor,
-    intervened_scores: t.Tensor,
-    *,
-    predicted_direction: Literal["increase", "decrease"],
-) -> InterventionPredictionReport:
-    """Check whether an explanation predicts intervention direction."""
-
-    baseline_mean = baseline_scores.float().mean().item()
-    intervened_mean = intervened_scores.float().mean().item()
-    observed_delta = intervened_mean - baseline_mean
-    if predicted_direction == "increase":
-        matches_prediction = observed_delta > 0
-    elif predicted_direction == "decrease":
-        matches_prediction = observed_delta < 0
-    else:
-        raise ValueError("predicted_direction must be 'increase' or 'decrease'.")
-    return InterventionPredictionReport(
-        predicted_direction=predicted_direction,
-        observed_delta=observed_delta,
-        matches_prediction=matches_prediction,
-    )
-
-
-def planted_intervention_direction_test(
-    examples: tuple[PlantedFeatureExample, ...] | list[PlantedFeatureExample],
-    predictions: t.Tensor,
-    *,
-    alpha: float = 1.25,
-) -> PlantedInterventionReport:
-    """Exact toy intervention: adding the planted feature direction raises the readout score."""
-
-    predictions = predictions.flatten().bool()
-    if len(examples) != predictions.numel():
-        raise ValueError("examples and predictions must have matching length.")
-    if not predictions.any():
-        raise ValueError("at least one example must be predicted positive for intervention scoring.")
-    if alpha <= 0:
-        raise ValueError("alpha must be positive.")
-    scores = t.tensor([example.score for example in examples], dtype=t.float32)
-    mask = predictions
-    baseline_scores = scores[mask]
-    intervened_scores = baseline_scores + alpha
-    random_direction_scores = baseline_scores
-    observed_delta = (intervened_scores.mean() - baseline_scores.mean()).item()
-    random_delta = (random_direction_scores.mean() - baseline_scores.mean()).item()
-    return PlantedInterventionReport(
-        predicted_direction="increase",
-        observed_delta=observed_delta,
-        random_direction_delta=random_delta,
-        matches_prediction=observed_delta > 0,
-        beats_random_direction=observed_delta > abs(random_delta) + 0.5,
-        evaluated_examples=int(mask.sum().item()),
-    )
-
-
-def explanation_brevity_report(
-    explanation: str,
-    examples: list[str] | tuple[str, ...],
-) -> ExplanationBrevityReport:
-    """Check whether an explanation is shorter than an examples-only baseline."""
-
-    explanation_word_count = len(explanation.split())
-    examples_word_count = sum(len(example.split()) for example in examples)
-    return ExplanationBrevityReport(
-        explanation_word_count=explanation_word_count,
-        examples_word_count=examples_word_count,
-        shorter_than_examples=explanation_word_count < examples_word_count,
-    )
-
-
-def _accuracy(predictions: t.Tensor, labels: t.Tensor) -> float:
-    return float(predictions.flatten().bool().eq(labels.flatten().bool()).float().mean().item())
-
-
-def examples_only_lookup_predictions(
-    train_examples: tuple[PlantedFeatureExample, ...] | list[PlantedFeatureExample],
-    test_examples: tuple[PlantedFeatureExample, ...] | list[PlantedFeatureExample],
-) -> t.Tensor:
-    """Predict positive only for exact held-out strings seen as positive in train."""
-
-    positive_train_texts = {example.text for example in train_examples if example.label}
-    return t.tensor([example.text in positive_train_texts for example in test_examples], dtype=t.bool)
-
-
-def random_keyword_predictions(
-    texts: list[str],
-    *,
-    seed: int = 0,
-    k: int = 3,
-) -> t.Tensor:
-    """A deterministic random-keyword control over the observed text vocabulary."""
-
-    if k <= 0:
-        raise ValueError("k must be positive.")
-    vocabulary = sorted({token for text in texts for token in _tokens(text)})
-    if not vocabulary:
-        raise ValueError("texts must contain at least one alphabetic token.")
-    generator = t.Generator().manual_seed(seed)
-    indices = t.randperm(len(vocabulary), generator=generator)[: min(k, len(vocabulary))]
-    terms = [vocabulary[int(index.item())] for index in indices]
-    return keyword_explanation_predictions(texts, terms)
-
-
-def control_prediction_table(
-    train_examples: tuple[PlantedFeatureExample, ...] | list[PlantedFeatureExample],
-    heldout_examples: tuple[PlantedFeatureExample, ...] | list[PlantedFeatureExample],
-    initial_rule: ExplanationRule,
-    revised_rule: ExplanationRule,
-    *,
-    seed: int = 0,
-) -> tuple[dict[str, object], ...]:
-    """Compare revised verbalizer predictions against non-explanatory controls."""
-
-    heldout_texts = [example.text for example in heldout_examples]
-    labels = t.tensor([example.label for example in heldout_examples], dtype=t.bool)
-    initial_predictions = semantic_rule_predictions(heldout_texts, initial_rule)
-    revised_predictions = semantic_rule_predictions(heldout_texts, revised_rule)
-    always_negative = t.zeros_like(labels)
-    random_predictions = random_keyword_predictions(heldout_texts, seed=seed, k=3)
-    lookup_predictions = examples_only_lookup_predictions(train_examples, heldout_examples)
-    train_scores = t.tensor([example.score for example in train_examples])
-    train_labels = t.tensor([example.label for example in train_examples], dtype=t.bool)
-    score_threshold = float((train_scores[train_labels].min() + train_scores[~train_labels].max()) / 2)
-    score_predictions = t.tensor(
-        [example.score >= score_threshold for example in heldout_examples],
-        dtype=t.bool,
-    )
-    rows = [
-        ("initial text-only rule", initial_predictions, "resting-word story from top examples"),
-        ("always-negative base rate", always_negative, "majority-class baseline"),
-        ("random keyword rule", random_predictions, "random words from held-out vocabulary"),
-        ("train-example lookup", lookup_predictions, "exact memorization control"),
-        ("activation-score threshold", score_predictions, "oracle-style feature-score upper bound"),
-        ("revised verbalizer", revised_predictions, "semantic rule after counterexample revision"),
-    ]
-    revised_accuracy = _accuracy(revised_predictions, labels)
-    return tuple(
-        {
-            "control": name,
-            "accuracy": _accuracy(predictions, labels),
-            "beats_revised": _accuracy(predictions, labels) > revised_accuracy,
-            "notes": notes,
+    prompts = [example.prompt for example in examples]
+    if len(set(prompts)) != len(prompts):
+        raise ValueError("prompts must be unique.")
+    train, validation, heldout = split_number_dataset(examples)
+    if not train or not validation or not heldout:
+        raise ValueError("train, validation, and heldout splits must all be nonempty.")
+    split_nouns = [{example.noun for example in split} for split in (train, validation, heldout)]
+    if (
+        split_nouns[0] & split_nouns[1]
+        or split_nouns[0] & split_nouns[2]
+        or split_nouns[1] & split_nouns[2]
+    ):
+        raise ValueError("noun vocabulary must be disjoint across splits.")
+    for name, split in zip(
+        ("train", "validation", "heldout"),
+        (train, validation, heldout),
+        strict=True,
+    ):
+        counts = {
+            number: sum(example.number == number for example in split)
+            for number in ("singular", "plural")
         }
-        for name, predictions, notes in rows
+        if counts["singular"] != counts["plural"]:
+            raise ValueError(f"{name} must contain balanced singular/plural pairs.")
+
+
+def number_labels(examples: Sequence[NumberExample]) -> t.Tensor:
+    return t.tensor([example.number == "plural" for example in examples], dtype=t.bool)
+
+
+def fit_mean_difference_decoder(activations: t.Tensor, labels: t.Tensor) -> DirectionDecoder:
+    """Fit a unit mean-difference direction using labeled training activations only."""
+
+    if activations.ndim != 2:
+        raise ValueError("activations must have shape [examples, d_model].")
+    labels = labels.flatten().bool()
+    if activations.shape[0] != labels.numel():
+        raise ValueError("activations and labels must contain the same number of examples.")
+    if not labels.any() or labels.all():
+        raise ValueError("labels must contain both classes.")
+    activations = activations.float()
+    negative_mean_vector = activations[~labels].mean(dim=0)
+    positive_mean_vector = activations[labels].mean(dim=0)
+    difference = positive_mean_vector - negative_mean_vector
+    norm = difference.norm()
+    if not t.isfinite(norm) or norm <= 1e-8:
+        raise ValueError("class means do not define a finite nonzero direction.")
+    direction = difference / norm
+    negative_mean = float(negative_mean_vector @ direction)
+    positive_mean = float(positive_mean_vector @ direction)
+    return DirectionDecoder(
+        direction=direction,
+        threshold=(negative_mean + positive_mean) / 2,
+        negative_mean=negative_mean,
+        positive_mean=positive_mean,
     )
 
 
-def run_planted_feature_verbalizer_signature_result(seed: int = 0) -> dict:
-    """Run the full CPU signature result on the exact planted verbalizer organism."""
-
-    dataset = make_planted_feature_dataset()
-    split = split_planted_feature_dataset(dataset)
-    train_texts = [example.text for example in split.train]
-    train_scores = t.tensor([example.score for example in split.train], dtype=t.float32)
-    train_labels = t.tensor([example.label for example in split.train], dtype=t.bool)
-    train_threshold = float((train_scores[train_labels].min() + train_scores[~train_labels].max()) / 2)
-    example_set = gather_verbalizer_examples(
-        train_texts,
-        train_scores,
-        train_labels,
-        k=4,
-        threshold=train_threshold,
-        seed=seed,
-    )
-
-    initial_rule = ExplanationRule(
-        description="feature fires on resting words",
-        required_groups=("resting",),
-    )
-    revision_texts = [example.text for example in split.revision]
-    revision_labels = t.tensor([example.label for example in split.revision], dtype=t.bool)
-    revision_predictions = semantic_rule_predictions(revision_texts, initial_rule)
-    counterexamples = mine_counterexamples(split.revision, revision_predictions, max_examples=8)
-    revised_rule = revise_rule_from_counterexamples(initial_rule, counterexamples)
-
-    heldout_texts = [example.text for example in split.heldout]
-    heldout_labels = t.tensor([example.label for example in split.heldout], dtype=t.bool)
-    initial_predictions = semantic_rule_predictions(heldout_texts, initial_rule)
-    revised_predictions = semantic_rule_predictions(heldout_texts, revised_rule)
-    contrastive_mask = t.tensor(
-        [example.counterfactual_type not in {"positive", "irrelevant"} for example in split.heldout],
-        dtype=t.bool,
-    )
-    prediction_report = explanation_prediction_report(
-        revised_predictions,
-        heldout_labels,
-        initial_predictions,
-        contrastive_mask,
-    )
-    controls = control_prediction_table(
-        split.train,
-        split.heldout,
-        initial_rule,
-        revised_rule,
-        seed=seed,
-    )
-    intervention = planted_intervention_direction_test(split.heldout, revised_predictions)
-    brevity = explanation_brevity_report(
-        revised_rule.description,
-        [example.text for example in example_set.top],
-    )
-    revised_accuracy = prediction_report.accuracy
-    control_accuracies = {
-        str(row["control"]): float(row["accuracy"])
-        for row in controls
-        if row["control"] != "activation-score threshold"
-    }
-    signature_passed = (
-        revised_accuracy >= 0.95
-        and all(revised_accuracy > value for value in control_accuracies.values() if value < 0.999)
-        and prediction_report.survives_contrastive
-        and len(counterexamples) >= 3
-        and intervention.matches_prediction
-        and intervention.beats_random_direction
-        and brevity.shorter_than_examples
-    )
-    return {
-        "claim": (
-            "On an exact planted feature, a revised semantic verbalizer predicts held-out "
-            "counterfactual activations and the sign of a feature-direction intervention."
-        ),
-        "planted_rule": "living animal + resting verb + physical surface - decoy object terms",
-        "train_count": len(split.train),
-        "revision_count": len(split.revision),
-        "heldout_count": len(split.heldout),
-        "initial_rule": initial_rule.__dict__,
-        "revised_rule": revised_rule.__dict__,
-        "example_groups": {
-            "top": [example.__dict__ for example in example_set.top],
-            "bottom": [example.__dict__ for example in example_set.bottom],
-            "random": [example.__dict__ for example in example_set.random],
-            "contrastive": [example.__dict__ for example in example_set.contrastive],
-        },
-        "validation_counterexamples": list(counterexamples),
-        "heldout_rows": [
-            {
-                "text": example.text,
-                "score": example.score,
-                "label": example.label,
-                "initial_prediction": bool(initial),
-                "revised_prediction": bool(revised),
-                "counterfactual_type": example.counterfactual_type,
-            }
-            for example, initial, revised in zip(
-                split.heldout,
-                initial_predictions.tolist(),
-                revised_predictions.tolist(),
-                strict=True,
-            )
-        ],
-        "control_table": list(controls),
-        "metrics": {
-            "initial_accuracy": _accuracy(initial_predictions, heldout_labels),
-            "revised_accuracy": prediction_report.accuracy,
-            "baseline_accuracy": prediction_report.baseline_accuracy,
-            "contrastive_accuracy": prediction_report.contrastive_accuracy,
-            "passes_baseline": prediction_report.passes_baseline,
-            "survives_contrastive": prediction_report.survives_contrastive,
-            "counterexamples_mined": len(counterexamples),
-            "intervention_delta": intervention.observed_delta,
-            "random_direction_delta": intervention.random_direction_delta,
-            "intervention_matches_prediction": intervention.matches_prediction,
-            "target_beats_random_direction": intervention.beats_random_direction,
-            "brevity_shorter_than_examples": brevity.shorter_than_examples,
-        },
-        "intervention": intervention.__dict__,
-        "brevity": brevity.__dict__,
-        "signature_passed": signature_passed,
-    }
+def direction_scores(activations: t.Tensor, decoder: DirectionDecoder) -> t.Tensor:
+    if activations.ndim != 2 or activations.shape[1] != decoder.direction.numel():
+        raise ValueError("activations must be [examples, d_model] and match the decoder.")
+    return activations.float() @ decoder.direction.float()
 
 
-def example_selection_smoke_test() -> dict:
-    texts = ["alpha code", "beta def", "plain story", "quiet notes"]
-    scores = t.tensor([0.9, 0.8, 0.2, 0.1])
-    labels = t.tensor([1, 1, 0, 0], dtype=t.bool)
-    examples = gather_verbalizer_examples(texts, scores, labels, k=2, threshold=0.5, seed=0)
-    return {
-        "top": [example.text for example in examples.top],
-        "bottom": [example.text for example in examples.bottom],
-        "random": [example.text for example in examples.random],
-        "contrastive": [example.text for example in examples.contrastive],
-    }
+def direction_predictions(activations: t.Tensor, decoder: DirectionDecoder) -> t.Tensor:
+    return direction_scores(activations, decoder) >= decoder.threshold
 
 
-def prediction_report_smoke_test() -> dict:
-    texts = ["write code", "plain story", "def fn", "quiet notes"]
-    labels = t.tensor([1, 0, 1, 0], dtype=t.bool)
-    predictions = keyword_explanation_predictions(texts, ["code", "def"])
-    baseline = t.zeros(4, dtype=t.bool)
-    contrastive_mask = t.tensor([False, False, True, True])
-    report = explanation_prediction_report(predictions, labels, baseline, contrastive_mask)
-    return {"predictions": predictions.tolist(), **report.__dict__}
+def replace_direction_component(
+    activations: t.Tensor,
+    direction: t.Tensor,
+    target_scores: t.Tensor | float,
+) -> t.Tensor:
+    """Replace only the component parallel to a unit direction."""
+
+    if (
+        activations.ndim != 2
+        or direction.ndim != 1
+        or activations.shape[1] != direction.numel()
+    ):
+        raise ValueError("expected activations [batch, d_model] and matching direction [d_model].")
+    direction = direction.to(device=activations.device, dtype=activations.dtype)
+    expected_norm = t.tensor(1.0, device=direction.device, dtype=direction.dtype)
+    if not t.allclose(direction.norm(), expected_norm, atol=1e-5):
+        raise ValueError("direction must have unit norm.")
+    targets = t.as_tensor(target_scores, device=activations.device, dtype=activations.dtype)
+    targets = targets.expand(activations.shape[0])
+    current_scores = activations @ direction
+    return activations + (targets - current_scores).unsqueeze(-1) * direction
 
 
-def counterexample_revision_smoke_test() -> dict:
-    texts = ["write code", "plain story", "def fn", "quiet notes"]
-    predictions = t.tensor([1, 1, 1, 0], dtype=t.bool)
-    labels = t.tensor([1, 0, 1, 0], dtype=t.bool)
-    report = find_counterexamples(texts, predictions, labels)
-    revised = revise_explanation(
-        "Feature activates on code.",
-        report.counterexamples,
-        revision_note="Exclude ordinary stories.",
-    )
-    return {
-        "num_counterexamples": report.num_counterexamples,
-        "counterexamples": list(report.counterexamples),
-        "revised": revised,
-    }
+def _single_token_id(tokenizer, text: str) -> int:
+    token_ids = tokenizer.encode(text, add_special_tokens=False)
+    if len(token_ids) != 1:
+        raise ValueError(f"{text!r} must tokenize to exactly one token, got {token_ids}.")
+    return int(token_ids[0])
 
 
-def intervention_prediction_smoke_test() -> dict:
-    baseline = t.tensor([0.1, 0.2])
-    intervened = t.tensor([0.5, 0.6])
-    return intervention_prediction_report(
-        baseline,
-        intervened,
-        predicted_direction="increase",
-    ).__dict__
-
-
-def brevity_smoke_test() -> dict:
-    explanation = "Activates on code snippets."
-    examples = ["write python code", "define a function with def"]
-    return explanation_brevity_report(explanation, examples).__dict__
-
-
-def run_smoke_test(cpu: bool = True) -> dict:
-    _ = cpu
-    return {
-        "examples": example_selection_smoke_test(),
-        "prediction": prediction_report_smoke_test(),
-        "counterexamples": counterexample_revision_smoke_test(),
-        "intervention": intervention_prediction_smoke_test(),
-        "brevity": brevity_smoke_test(),
-        "planted_signature": run_planted_feature_verbalizer_signature_result(seed=0),
-    }
-
-
-def load_local_verbalizer_model():
-    """Load the pinned local instruction model used to choose hypotheses."""
+def load_pinned_model(device: str | t.device = "cpu"):
+    """Load the pinned checkpoint from the local HF cache onto one explicit device."""
 
     from transformers import AutoModelForCausalLM, AutoTokenizer
 
     tokenizer = AutoTokenizer.from_pretrained(
-        LOCAL_VERBALIZER_MODEL_ID,
-        revision=LOCAL_VERBALIZER_REVISION,
+        MODEL_ID,
+        revision=MODEL_REVISION,
         local_files_only=True,
     )
+    tokenizer.pad_token = tokenizer.eos_token
+    tokenizer.padding_side = "left"
     model = AutoModelForCausalLM.from_pretrained(
-        LOCAL_VERBALIZER_MODEL_ID,
-        revision=LOCAL_VERBALIZER_REVISION,
+        MODEL_ID,
+        revision=MODEL_REVISION,
         local_files_only=True,
-        dtype=t.bfloat16,
-    ).to("cpu")
+        dtype=t.float32,
+    ).to(device)
     model.eval()
     return model, tokenizer
 
 
-def build_local_hypothesis_prompt(
-    examples: tuple[PlantedFeatureExample, ...] | list[PlantedFeatureExample],
-    candidates: tuple[LocalHypothesisCandidate, ...],
-    *,
-    previous_hypothesis: str | None = None,
-    counterexamples: tuple[dict[str, object], ...] = (),
-) -> str:
-    """Create an auditable prompt for initial selection or counterexample revision."""
-
-    if not examples:
-        raise ValueError("examples must be nonempty.")
-    if not candidates or len({candidate.key for candidate in candidates}) != len(candidates):
-        raise ValueError("candidates must have unique keys.")
-    options = "\n".join(
-        f"{candidate.key}. {candidate.description}" for candidate in candidates
-    )
-    if previous_hypothesis is None:
-        rows = "\n".join(
-            f"- {example.text} => {'ACTIVE' if example.label else 'INACTIVE'}"
-            for example in examples
-        )
-        return (
-            "Infer the latent feature from evidence. Choose the shortest option consistent "
-            "with every row.\n"
-            f"{rows}\n\n{options}\n\nAnswer with one letter only:"
-        )
-    if not counterexamples:
-        raise ValueError("revision prompts require at least one counterexample.")
-    error_rows = "\n".join(
-        f"- {row['text']} => {'ACTIVE' if row['label'] else 'INACTIVE'}"
-        for row in counterexamples
-    )
-    count_text = "three" if len(counterexamples) == 3 else str(len(counterexamples))
-    return (
-        f"An earlier feature hypothesis was: \"{previous_hypothesis.removeprefix('fires on ')}\". "
-        f"It wrongly predicts ACTIVE for all {count_text} blind counterexamples:\n"
-        f"{error_rows}\n"
-        "Choose the revision that fixes this shared failure without dropping the "
-        "original conjunction.\n"
-        f"{options}\nAnswer with one letter only:"
-    )
-
-
-def score_local_hypothesis_candidates(
+def cache_final_token_activations(
     model,
     tokenizer,
-    prompt: str,
-    candidates: tuple[LocalHypothesisCandidate, ...],
-) -> tuple[dict[str, object], ...]:
-    """Score candidate keys at the local model's next-token distribution."""
+    prompts: Sequence[str],
+    *,
+    layer: int = LAYER,
+) -> ActivationCache:
+    """Cache real final-token residual activations and the downstream are-is margin."""
 
-    rendered = tokenizer.apply_chat_template(
-        [{"role": "user", "content": prompt}],
-        tokenize=False,
-        add_generation_prompt=True,
-    )
-    encoded = tokenizer(rendered, return_tensors="pt")
+    if not prompts:
+        raise ValueError("prompts must be nonempty.")
+    if layer < 0 or layer >= len(model.gpt_neox.layers):
+        raise ValueError("layer is outside the model's transformer blocks.")
+    device = next(model.parameters()).device
+    encoded = tokenizer(list(prompts), padding=True, return_tensors="pt").to(device)
     with t.inference_mode():
-        logits = model(**encoded).logits[0, -1].detach().float()
-    candidate_token_ids = []
-    for candidate in candidates:
-        token_ids = tokenizer.encode(candidate.key, add_special_tokens=False)
-        if len(token_ids) != 1:
-            raise ValueError(f"candidate key {candidate.key!r} must tokenize to one token.")
-        candidate_token_ids.append(token_ids[0])
-    candidate_logits = logits[t.tensor(candidate_token_ids)]
-    probabilities = candidate_logits.softmax(dim=0)
+        output = model(**encoded, output_hidden_states=True)
+    activations = output.hidden_states[layer + 1][:, -1, :].detach().cpu().float()
+    logits = output.logits[:, -1, :].detach().cpu().float()
+    is_id = _single_token_id(tokenizer, IS_TOKEN)
+    are_id = _single_token_id(tokenizer, ARE_TOKEN)
+    margins = logits[:, are_id] - logits[:, is_id]
+    return ActivationCache(tuple(prompts), activations, margins)
+
+
+def cache_layer_sweep(
+    model,
+    tokenizer,
+    prompts: Sequence[str],
+) -> LayerSweepCache:
+    """Cache the embedding residual and every post-block final-token residual."""
+
+    if not prompts:
+        raise ValueError("prompts must be nonempty.")
+    device = next(model.parameters()).device
+    encoded = tokenizer(list(prompts), padding=True, return_tensors="pt").to(device)
+    with t.inference_mode():
+        output = model(**encoded, output_hidden_states=True)
+    activations = tuple(
+        hidden[:, -1, :].detach().cpu().float() for hidden in output.hidden_states
+    )
+    expected_count = len(model.gpt_neox.layers) + 1
+    if len(activations) != expected_count:
+        raise AssertionError("hidden-state count must equal embedding plus transformer blocks")
+    names = ("embedding",) + tuple(f"block {index}" for index in range(len(activations) - 1))
+    return LayerSweepCache(names, activations)
+
+
+def layer_sweep_accuracies(
+    train_cache: LayerSweepCache,
+    train_labels: t.Tensor,
+    test_cache: LayerSweepCache,
+    test_labels: t.Tensor,
+) -> tuple[float, ...]:
+    """Fit on training activations independently at every depth and test held out."""
+
+    if train_cache.layer_names != test_cache.layer_names:
+        raise ValueError("train and test sweeps must contain the same layers")
     return tuple(
-        {
-            "key": candidate.key,
-            "hypothesis": candidate.description,
-            "logit": float(logit),
-            "probability_among_candidates": float(probability),
-        }
-        for candidate, logit, probability in zip(
-            candidates,
-            candidate_logits.tolist(),
-            probabilities.tolist(),
-            strict=True,
+        float(direction_predictions(
+            test_activations, fit_mean_difference_decoder(train_activations, train_labels)
+        ).eq(test_labels.bool()).float().mean())
+        for train_activations, test_activations in zip(
+            train_cache.activations, test_cache.activations, strict=True
         )
     )
 
 
-def select_local_hypothesis(
-    candidates: tuple[LocalHypothesisCandidate, ...],
-    scores: tuple[dict[str, object], ...],
-) -> LocalHypothesisCandidate:
-    """Return the candidate with the largest local-model score."""
+def hypothesis_predictions(
+    examples: Sequence[NumberExample],
+    hypothesis: Hypothesis,
+) -> t.Tensor:
+    """Execute a verbalizer as a semantic predicate, never as an answer token."""
 
-    if len(candidates) != len(scores):
-        raise ValueError("candidates and scores must align.")
-    score_by_key = {str(row["key"]): float(row["logit"]) for row in scores}
-    if set(score_by_key) != {candidate.key for candidate in candidates}:
-        raise ValueError("score keys must match candidate keys exactly.")
-    return max(candidates, key=lambda candidate: score_by_key[candidate.key])
+    if hypothesis.hypothesis_id == "subject_number_plural":
+        values = [example.number == "plural" for example in examples]
+    elif hypothesis.hypothesis_id == "surface_suffix_s":
+        values = [example.noun.lower().endswith("s") for example in examples]
+    elif hypothesis.hypothesis_id == "subject_is_person":
+        values = [example.semantic_class == "person" for example in examples]
+    elif hypothesis.hypothesis_id == "noun_has_six_letters":
+        values = [len(example.noun) >= 6 for example in examples]
+    else:
+        raise KeyError(f"Unknown hypothesis id: {hypothesis.hypothesis_id!r}.")
+    return t.tensor(values, dtype=t.bool)
 
 
-def run_local_feature_hypothesis_lab(model, tokenizer) -> dict[str, object]:
-    """Run a local-model hypothesis, blind revision, and held-out scoring loop."""
+def score_hypotheses(
+    examples: Sequence[NumberExample],
+    activation_predictions: t.Tensor,
+    candidates: Sequence[Hypothesis] = HYPOTHESES,
+    *,
+    seed: int = 0,
+) -> tuple[dict[str, object], ...]:
+    """Score candidate meaning against activations after randomizing display order."""
 
-    split = split_planted_feature_dataset(make_planted_feature_dataset())
-    initial_prompt = build_local_hypothesis_prompt(
-        split.train,
-        INITIAL_LOCAL_HYPOTHESES,
+    activation_predictions = activation_predictions.flatten().bool()
+    if len(examples) != activation_predictions.numel():
+        raise ValueError("examples and activation_predictions must align.")
+    if not candidates or len({candidate.hypothesis_id for candidate in candidates}) != len(candidates):
+        raise ValueError("candidate ids must be nonempty and unique.")
+    randomized = list(candidates)
+    random.Random(seed).shuffle(randomized)
+    rows = []
+    for display_index, candidate in enumerate(randomized, start=1):
+        predictions = hypothesis_predictions(examples, candidate)
+        rows.append(
+            {
+                "display_index": display_index,
+                "hypothesis_id": candidate.hypothesis_id,
+                "description": candidate.description,
+                "agreement": float(predictions.eq(activation_predictions).float().mean()),
+                "word_count": len(candidate.description.rstrip(".").split()),
+                "counterexample_count": int(predictions.ne(activation_predictions).sum()),
+            }
+        )
+    return tuple(rows)
+
+
+def select_hypothesis(rows: Sequence[dict[str, object]]) -> str:
+    if not rows:
+        raise ValueError("rows must be nonempty.")
+    selected = max(
+        rows,
+        key=lambda row: (
+            float(row["agreement"]),
+            -int(row["word_count"]),
+            str(row["hypothesis_id"]),
+        ),
     )
-    initial_scores = score_local_hypothesis_candidates(
+    return str(selected["hypothesis_id"])
+
+
+def rank_feature_examples(
+    examples: Sequence[NumberExample],
+    scores: t.Tensor,
+    threshold: float,
+    *,
+    n: int = 2,
+    seed: int = 0,
+) -> tuple[dict[str, object], ...]:
+    """Return top, bottom, random, and near-threshold evidence rows."""
+
+    scores = scores.flatten().float()
+    if len(examples) != scores.numel() or not 0 < n <= len(examples):
+        raise ValueError("scores must align with examples and n must select available rows")
+    order = t.argsort(scores)
+    groups = {
+        "bottom": order[:n].tolist(),
+        "top": order[-n:].flip(0).tolist(),
+        "near miss": t.argsort((scores - threshold).abs())[:n].tolist(),
+        "random": random.Random(seed).sample(range(len(examples)), n),
+    }
+    rows = []
+    for group, indices in groups.items():
+        for index in indices:
+            example = examples[index]
+            rows.append(
+                {
+                    "group": group,
+                    "prompt": example.prompt,
+                    "score": float(scores[index]),
+                    "predicted_side": "positive" if scores[index] >= threshold else "negative",
+                    "morphology": example.morphology,
+                }
+            )
+    return tuple(rows)
+
+
+def mine_counterexamples(
+    examples: Sequence[NumberExample],
+    activation_predictions: t.Tensor,
+    hypothesis: Hypothesis,
+) -> tuple[dict[str, object], ...]:
+    """Find rows where an executable explanation disagrees with the feature side."""
+
+    activation_predictions = activation_predictions.flatten().bool()
+    if len(examples) != activation_predictions.numel():
+        raise ValueError("examples and activation_predictions must align")
+    explanation_predictions = hypothesis_predictions(examples, hypothesis)
+    return tuple(
+        {
+            "prompt": example.prompt,
+            "feature_side": "positive" if feature_value else "negative",
+            "explanation_prediction": "positive" if explanation_value else "negative",
+            "morphology": example.morphology,
+        }
+        for example, feature_value, explanation_value in zip(
+            examples,
+            activation_predictions,
+            explanation_predictions,
+            strict=True,
+        )
+        if bool(feature_value) != bool(explanation_value)
+    )
+
+
+def brevity_frontier(rows: Sequence[dict[str, object]]) -> tuple[str, ...]:
+    """Return explanations not dominated in both agreement and word count."""
+
+    frontier = []
+    for row in rows:
+        dominated = any(
+            float(other["agreement"]) >= float(row["agreement"])
+            and int(other["word_count"]) <= int(row["word_count"])
+            and (
+                float(other["agreement"]) > float(row["agreement"])
+                or int(other["word_count"]) < int(row["word_count"])
+            )
+            for other in rows
+        )
+        if not dominated:
+            frontier.append(str(row["hypothesis_id"]))
+    return tuple(sorted(frontier))
+
+
+def evaluate_binary_predictions(
+    predictions: t.Tensor,
+    labels: t.Tensor,
+    baseline_predictions: t.Tensor,
+    subset_mask: t.Tensor,
+) -> BinaryEvaluation:
+    """Compare method and baseline on both the full set and the exact same subset."""
+
+    predictions = predictions.flatten().bool()
+    labels = labels.flatten().bool()
+    baseline_predictions = baseline_predictions.flatten().bool()
+    subset_mask = subset_mask.flatten().bool()
+    if not (predictions.shape == labels.shape == baseline_predictions.shape == subset_mask.shape):
+        raise ValueError("predictions, labels, baseline, and subset mask must have matching shape.")
+    if not subset_mask.any():
+        raise ValueError("subset_mask must select at least one example.")
+    accuracy = float(predictions.eq(labels).float().mean())
+    baseline_accuracy = float(baseline_predictions.eq(labels).float().mean())
+    subset_accuracy = float(predictions[subset_mask].eq(labels[subset_mask]).float().mean())
+    subset_baseline_accuracy = float(
+        baseline_predictions[subset_mask].eq(labels[subset_mask]).float().mean()
+    )
+    return BinaryEvaluation(
+        accuracy=accuracy,
+        baseline_accuracy=baseline_accuracy,
+        subset_accuracy=subset_accuracy,
+        subset_baseline_accuracy=subset_baseline_accuracy,
+        beats_baseline=accuracy > baseline_accuracy,
+        survives_subset=subset_accuracy > subset_baseline_accuracy,
+    )
+
+
+def final_noun_token_ids(tokenizer, examples: Sequence[NumberExample]) -> tuple[int, ...]:
+    """Return each noun's final tokenizer id without pretending all nouns are one token."""
+
+    token_ids: list[int] = []
+    for example in examples:
+        encoded = tokenizer.encode(" " + example.noun, add_special_tokens=False)
+        if not encoded:
+            raise ValueError(f"noun {example.noun!r} produced no tokens")
+        token_ids.append(int(encoded[-1]))
+    return tuple(token_ids)
+
+
+def seen_plural_lookup_predictions(
+    tokenizer,
+    train_examples: Sequence[NumberExample],
+    test_examples: Sequence[NumberExample],
+) -> t.Tensor:
+    """Text-only control that memorizes final plural tokenizer ids from training."""
+
+    train_ids = final_noun_token_ids(tokenizer, train_examples)
+    seen_plural_ids = {
+        token_id
+        for token_id, example in zip(train_ids, train_examples, strict=True)
+        if example.number == "plural"
+    }
+    return t.tensor(
+        [token_id in seen_plural_ids for token_id in final_noun_token_ids(tokenizer, test_examples)],
+        dtype=t.bool,
+    )
+
+
+def orthographic_feature_matrix(examples: Sequence[NumberExample]) -> t.Tensor:
+    """Encode a deliberately simple text-only spelling baseline."""
+
+    alphabet = "abcdefghijklmnopqrstuvwxyz"
+    rows = []
+    for example in examples:
+        noun = example.noun.lower()
+        rows.append(
+            [
+                1.0,
+                len(noun) / 10.0,
+                float(noun.endswith("s")),
+                float(noun.endswith("en")),
+                float(noun.endswith("ice")),
+                float(noun.endswith("ese")),
+                *[noun.count(letter) / max(len(noun), 1) for letter in alphabet],
+            ]
+        )
+    return t.tensor(rows, dtype=t.float32)
+
+
+def orthographic_ridge_predictions(
+    train_examples: Sequence[NumberExample],
+    train_labels: t.Tensor,
+    test_examples: Sequence[NumberExample],
+    *,
+    ridge: float = 1e-2,
+) -> t.Tensor:
+    """Fit a train-only ridge classifier on spelling features, then threshold at 0.5."""
+
+    train_features = orthographic_feature_matrix(train_examples)
+    test_features = orthographic_feature_matrix(test_examples)
+    labels = train_labels.flatten().float()
+    if train_features.shape[0] != labels.numel() or ridge <= 0:
+        raise ValueError("training labels must align and ridge must be positive")
+    identity = t.eye(train_features.shape[1], dtype=train_features.dtype)
+    weights = t.linalg.solve(
+        train_features.T @ train_features + ridge * identity,
+        train_features.T @ labels,
+    )
+    return test_features @ weights >= 0.5
+
+
+def paired_swap_decoder_accuracies(
+    train_activations: t.Tensor,
+    train_labels: t.Tensor,
+    test_activations: t.Tensor,
+    test_labels: t.Tensor,
+) -> tuple[float, ...]:
+    """Enumerate the exact null that swaps labels only within matched noun pairs."""
+
+    if train_activations.shape[0] != train_labels.numel() or train_labels.numel() % 2:
+        raise ValueError("training rows must form consecutive singular/plural pairs")
+    paired_labels = train_labels.bool().view(-1, 2)
+    if not t.all(paired_labels.sum(dim=1) == 1):
+        raise ValueError("each training pair must contain one singular and one plural label")
+    pair_count = paired_labels.shape[0]
+    if pair_count > 20:
+        raise ValueError("exact enumeration is limited to at most 20 pairs")
+
+    accuracies = []
+    for pattern in range(2**pair_count):
+        swapped = paired_labels.clone()
+        swap_mask = t.tensor(
+            [(pattern >> pair_index) & 1 for pair_index in range(pair_count)],
+            dtype=t.bool,
+            device=train_labels.device,
+        )
+        swapped[swap_mask] = swapped[swap_mask].flip(dims=(1,))
+        try:
+            decoder = fit_mean_difference_decoder(train_activations, swapped.flatten())
+            predictions = direction_predictions(test_activations, decoder)
+        except ValueError as error:
+            if "nonzero direction" not in str(error):
+                raise
+            predictions = t.zeros_like(test_labels, dtype=t.bool)
+        accuracies.append(float(predictions.eq(test_labels.bool()).float().mean()))
+    return tuple(accuracies)
+
+
+def paired_swap_decoder_directions(
+    train_activations: t.Tensor,
+    train_labels: t.Tensor,
+    *,
+    count: int = PAIR_CAUSAL_NULL_COUNT,
+    seed: int = PAIR_CAUSAL_NULL_SEED,
+) -> tuple[tuple[int, ...], t.Tensor]:
+    """Precommit decoder directions induced by within-pair label swaps."""
+
+    if train_activations.shape[0] != train_labels.numel() or train_labels.numel() % 2:
+        raise ValueError("training rows must form consecutive singular/plural pairs")
+    paired_labels = train_labels.bool().view(-1, 2)
+    if not t.all(paired_labels.sum(dim=1) == 1):
+        raise ValueError("each training pair must contain one singular and one plural label")
+    pair_count = paired_labels.shape[0]
+    available_patterns = 2**pair_count - 2
+    if not 0 < count <= available_patterns:
+        raise ValueError("count must fit the non-target, non-inverted swap patterns")
+    patterns = tuple(random.Random(seed).sample(range(1, 2**pair_count - 1), count))
+    directions = []
+    for pattern in patterns:
+        swapped = paired_labels.clone()
+        swap_mask = t.tensor(
+            [(pattern >> pair_index) & 1 for pair_index in range(pair_count)],
+            dtype=t.bool,
+            device=train_labels.device,
+        )
+        swapped[swap_mask] = swapped[swap_mask].flip(dims=(1,))
+        directions.append(
+            fit_mean_difference_decoder(train_activations, swapped.flatten()).direction
+        )
+    bank = t.stack(directions)
+    if not t.allclose(bank.norm(dim=-1), bank.new_ones(count), rtol=1e-5, atol=1e-5):
+        raise AssertionError("every paired-null decoder direction must have unit norm")
+    return patterns, bank
+
+
+def orthogonal_random_direction(direction: t.Tensor, *, seed: int = 0) -> t.Tensor:
+    generator = t.Generator(device=direction.device).manual_seed(seed)
+    control = t.randn(direction.shape, generator=generator, device=direction.device)
+    control = control - (control @ direction) * direction
+    return control / control.norm()
+
+
+def orthogonal_random_directions(
+    direction: t.Tensor, *, seeds: Sequence[int] = tuple(range(64))
+) -> t.Tensor:
+    """Construct a distribution of unit directions orthogonal to the target."""
+
+    if not seeds:
+        raise ValueError("seeds must be nonempty")
+    controls = t.stack(
+        [orthogonal_random_direction(direction, seed=int(seed)) for seed in seeds]
+    )
+    if (controls @ direction).abs().max() > 1e-5:
+        raise AssertionError("orthogonal controls are not numerically orthogonal")
+    if (controls.norm(dim=-1) - 1).abs().max() > 1e-5:
+        raise AssertionError("orthogonal controls must have unit norm")
+    return controls
+
+
+def run_residual_edit(
+    model,
+    tokenizer,
+    prompts: Sequence[str],
+    edit_vectors: t.Tensor,
+    *,
+    layer: int = LAYER,
+) -> HookIntervention:
+    """Add per-example edits inside a real transformer block forward hook."""
+
+    if edit_vectors.ndim != 2 or edit_vectors.shape[0] != len(prompts):
+        raise ValueError("edit_vectors must have shape [len(prompts), d_model].")
+    device = next(model.parameters()).device
+    encoded = tokenizer(list(prompts), padding=True, return_tensors="pt").to(device)
+    edits = edit_vectors.to(device=device, dtype=next(model.parameters()).dtype)
+    hook_calls = 0
+
+    def edit_hook(_module, _inputs, output):
+        nonlocal hook_calls
+        hook_calls += 1
+        hidden = output[0] if isinstance(output, tuple) else output
+        if hidden.shape[0] != edits.shape[0] or hidden.shape[-1] != edits.shape[-1]:
+            raise ValueError("hook output and edit vectors do not align.")
+        edited = hidden.clone()
+        edited[:, -1, :] = edited[:, -1, :] + edits
+        if isinstance(output, tuple):
+            return (edited, *output[1:])
+        return edited
+
+    handle = model.gpt_neox.layers[layer].register_forward_hook(edit_hook)
+    try:
+        with t.inference_mode():
+            logits = model(**encoded).logits[:, -1, :].detach().cpu().float()
+    finally:
+        handle.remove()
+    is_id = _single_token_id(tokenizer, IS_TOKEN)
+    are_id = _single_token_id(tokenizer, ARE_TOKEN)
+    return HookIntervention(logits[:, are_id] - logits[:, is_id], hook_calls)
+
+
+def run_orthogonal_control_distribution(
+    model,
+    tokenizer,
+    prompts: Sequence[str],
+    replacement_coefficients: t.Tensor,
+    target_direction: t.Tensor,
+    baseline_margin: float,
+    *,
+    seeds: Sequence[int] = tuple(range(64)),
+) -> dict[str, object]:
+    """Apply many matched-coefficient orthogonal edits in one real model forward."""
+
+    if replacement_coefficients.shape != (len(prompts),):
+        raise ValueError("replacement_coefficients must have one value per prompt")
+    controls = orthogonal_random_directions(target_direction, seeds=seeds)
+    edits = controls[:, None, :] * replacement_coefficients[None, :, None]
+    expanded_prompts = tuple(prompt for _ in seeds for prompt in prompts)
+    intervention = run_residual_edit(
         model,
         tokenizer,
-        initial_prompt,
-        INITIAL_LOCAL_HYPOTHESES,
+        expanded_prompts,
+        edits.reshape(-1, edits.shape[-1]),
     )
-    initial = select_local_hypothesis(INITIAL_LOCAL_HYPOTHESES, initial_scores)
-    revision_predictions = semantic_rule_predictions(
-        [example.text for example in split.revision],
-        initial.rule,
+    mean_margins = intervention.next_token_margins.view(len(seeds), len(prompts)).mean(dim=1)
+    deltas = mean_margins - baseline_margin
+    return {
+        "deltas": tuple(float(value) for value in deltas),
+        "absolute_p95": float(t.quantile(deltas.abs(), 0.95)),
+        "absolute_max": float(deltas.abs().max()),
+        "orthogonality_max_abs_dot": float((controls @ target_direction).abs().max()),
+        "norm_error_max": float((controls.norm(dim=-1) - 1).abs().max()),
+        "hook_calls": intervention.hook_calls,
+    }
+
+
+def run_direction_control_distribution(
+    model,
+    tokenizer,
+    prompts: Sequence[str],
+    replacement_coefficients: t.Tensor,
+    control_directions: t.Tensor,
+    baseline_margin: float,
+    *,
+    effect_sign: float,
+    chunk_size: int = 32,
+    layer: int = LAYER,
+) -> dict[str, object]:
+    """Run a bank of same-coefficient directions through the real block hook."""
+
+    coefficients = replacement_coefficients.flatten().float()
+    if coefficients.shape != (len(prompts),):
+        raise ValueError("replacement_coefficients must have one value per prompt")
+    expected_dim = int(model.config.hidden_size)
+    if control_directions.ndim != 2 or control_directions.shape[1] != expected_dim:
+        raise ValueError("control_directions must have shape [controls, d_model]")
+    if not len(control_directions) or chunk_size <= 0 or effect_sign not in (-1.0, 1.0):
+        raise ValueError("controls, positive chunk_size, and effect_sign +/-1 are required")
+    if not t.allclose(
+        control_directions.float().norm(dim=-1),
+        control_directions.new_ones(len(control_directions)),
+        rtol=1e-5,
+        atol=1e-5,
+    ):
+        raise ValueError("control directions must be unit norm")
+
+    effects: list[float] = []
+    hook_calls: list[int] = []
+    for start in range(0, len(control_directions), chunk_size):
+        directions = control_directions[start : start + chunk_size]
+        edits = directions[:, None, :] * coefficients[None, :, None]
+        expanded_prompts = tuple(prompt for _ in range(len(directions)) for prompt in prompts)
+        intervention = run_residual_edit(
+            model,
+            tokenizer,
+            expanded_prompts,
+            edits.reshape(-1, edits.shape[-1]),
+            layer=layer,
+        )
+        margins = intervention.next_token_margins.view(len(directions), len(prompts)).mean(dim=1)
+        effects.extend(float(value) for value in effect_sign * (margins - baseline_margin))
+        hook_calls.append(intervention.hook_calls)
+    effect_tensor = t.tensor(effects)
+    return {
+        "effects": tuple(effects),
+        "mean": float(effect_tensor.mean()),
+        "p95": float(t.quantile(effect_tensor, 0.95)),
+        "max": float(effect_tensor.max()),
+        "hook_calls": tuple(hook_calls),
+        "coefficient_checksum": float(coefficients.sum()),
+    }
+
+
+def _accuracy(predictions: t.Tensor, labels: t.Tensor) -> float:
+    return float(predictions.bool().eq(labels.bool()).float().mean())
+
+
+def run_real_model_signature(model=None, tokenizer=None, *, seed: int = 0) -> dict[str, object]:
+    """Run the complete offline signature experiment on real model activations."""
+
+    if model is None or tokenizer is None:
+        model, tokenizer = load_pinned_model()
+    dataset = make_number_dataset()
+    train, validation, heldout = split_number_dataset(dataset)
+    train_labels = number_labels(train)
+    validation_labels = number_labels(validation)
+    heldout_labels = number_labels(heldout)
+
+    train_cache = cache_final_token_activations(model, tokenizer, [x.prompt for x in train])
+    validation_cache = cache_final_token_activations(model, tokenizer, [x.prompt for x in validation])
+    heldout_cache = cache_final_token_activations(model, tokenizer, [x.prompt for x in heldout])
+    train_sweep = cache_layer_sweep(model, tokenizer, [x.prompt for x in train])
+    heldout_sweep = cache_layer_sweep(model, tokenizer, [x.prompt for x in heldout])
+    sweep_accuracies = layer_sweep_accuracies(
+        train_sweep,
+        train_labels,
+        heldout_sweep,
+        heldout_labels,
     )
-    counterexamples = mine_counterexamples(
-        split.revision,
-        revision_predictions,
-        max_examples=len(split.revision),
+    decoder = fit_mean_difference_decoder(train_cache.activations, train_labels)
+    validation_predictions = direction_predictions(validation_cache.activations, decoder)
+    heldout_predictions = direction_predictions(heldout_cache.activations, decoder)
+
+    hypothesis_rows = score_hypotheses(
+        validation,
+        validation_predictions,
+        HYPOTHESES,
+        seed=seed,
     )
-    revision_prompt = build_local_hypothesis_prompt(
-        split.revision,
-        REVISED_LOCAL_HYPOTHESES,
-        previous_hypothesis=initial.description,
-        counterexamples=counterexamples,
+    selected_hypothesis = select_hypothesis(hypothesis_rows)
+    feature_examples = rank_feature_examples(
+        validation,
+        direction_scores(validation_cache.activations, decoder),
+        decoder.threshold,
+        n=2,
+        seed=seed,
     )
-    revision_scores = score_local_hypothesis_candidates(
+    suffix_hypothesis = next(
+        hypothesis for hypothesis in HYPOTHESES if hypothesis.hypothesis_id == "surface_suffix_s"
+    )
+    suffix_counterexamples = mine_counterexamples(
+        validation,
+        validation_predictions,
+        suffix_hypothesis,
+    )
+    explanation_frontier = brevity_frontier(hypothesis_rows)
+    suffix_predictions = hypothesis_predictions(
+        heldout,
+        suffix_hypothesis,
+    )
+    lookup_predictions = seen_plural_lookup_predictions(tokenizer, train, heldout)
+    orthographic_predictions = orthographic_ridge_predictions(train, train_labels, heldout)
+    contrastive_mask = t.tensor(
+        [example.morphology != "regular" for example in heldout],
+        dtype=t.bool,
+    )
+    decoder_evaluation = evaluate_binary_predictions(
+        heldout_predictions,
+        heldout_labels,
+        suffix_predictions,
+        contrastive_mask,
+    )
+    paired_null_accuracies = paired_swap_decoder_accuracies(
+        train_cache.activations,
+        train_labels,
+        heldout_cache.activations,
+        heldout_labels,
+    )
+    causal_null_patterns, causal_null_directions = paired_swap_decoder_directions(
+        train_cache.activations,
+        train_labels,
+    )
+    singular_indices = t.tensor(
+        [index for index, example in enumerate(heldout) if example.number == "singular"],
+        dtype=t.long,
+    )
+    singular_examples = tuple(heldout[int(index)] for index in singular_indices)
+    singular_activations = heldout_cache.activations[singular_indices]
+    full_replacements = (
+        replace_direction_component(
+            singular_activations,
+            decoder.direction,
+            decoder.positive_mean,
+        )
+        - singular_activations
+    )
+    strengths = (0.0, 0.25, 0.5, 0.75, 1.0)
+    dose_margins = []
+    hook_calls = []
+    for strength in strengths:
+        intervention = run_residual_edit(
+            model,
+            tokenizer,
+            [example.prompt for example in singular_examples],
+            strength * full_replacements,
+        )
+        dose_margins.append(float(intervention.next_token_margins.mean()))
+        hook_calls.append(intervention.hook_calls)
+
+    replacement_coefficients = full_replacements @ decoder.direction
+    baseline_margin = dose_margins[0]
+    target_delta = dose_margins[-1] - baseline_margin
+    target_result = run_residual_edit(
         model,
         tokenizer,
-        revision_prompt,
-        REVISED_LOCAL_HYPOTHESES,
+        [example.prompt for example in singular_examples],
+        full_replacements,
     )
-    revised = select_local_hypothesis(REVISED_LOCAL_HYPOTHESES, revision_scores)
 
-    heldout_texts = [example.text for example in split.heldout]
-    heldout_labels = t.tensor([example.label for example in split.heldout], dtype=t.bool)
-    initial_predictions = semantic_rule_predictions(heldout_texts, initial.rule)
-    revised_predictions = semantic_rule_predictions(heldout_texts, revised.rule)
-    lookup_predictions = examples_only_lookup_predictions(split.train, split.heldout)
-    random_predictions = random_keyword_predictions(heldout_texts, seed=11, k=3)
-    controls = (
-        {"method": "always inactive", "accuracy": _accuracy(t.zeros_like(heldout_labels), heldout_labels)},
-        {"method": "train-example lookup", "accuracy": _accuracy(lookup_predictions, heldout_labels)},
-        {"method": "random keyword rule", "accuracy": _accuracy(random_predictions, heldout_labels)},
-        {"method": "initial local hypothesis", "accuracy": _accuracy(initial_predictions, heldout_labels)},
-        {"method": "revised local hypothesis", "accuracy": _accuracy(revised_predictions, heldout_labels)},
+    plural_indices = t.tensor(
+        [index for index, example in enumerate(heldout) if example.number == "plural"],
+        dtype=t.long,
+    )
+    plural_examples = tuple(heldout[int(index)] for index in plural_indices)
+    plural_activations = heldout_cache.activations[plural_indices]
+    reverse_replacements = (
+        replace_direction_component(
+            plural_activations,
+            decoder.direction,
+            decoder.negative_mean,
+        )
+        - plural_activations
+    )
+    reverse_baseline = float(heldout_cache.next_token_margins[plural_indices].mean())
+    reverse_result = run_residual_edit(
+        model,
+        tokenizer,
+        [example.prompt for example in plural_examples],
+        reverse_replacements,
+    )
+    reverse_final_margin = float(reverse_result.next_token_margins.mean())
+
+    orthogonal_distribution = run_orthogonal_control_distribution(
+        model,
+        tokenizer,
+        [example.prompt for example in singular_examples],
+        replacement_coefficients,
+        decoder.direction,
+        baseline_margin,
+        seeds=tuple(range(seed + 101, seed + 165)),
+    )
+    reverse_coefficients = reverse_replacements @ decoder.direction
+    reverse_orthogonal_distribution = run_orthogonal_control_distribution(
+        model,
+        tokenizer,
+        [example.prompt for example in plural_examples],
+        reverse_coefficients,
+        decoder.direction,
+        reverse_baseline,
+        seeds=tuple(range(seed + 201, seed + 265)),
+    )
+    paired_causal_distribution = run_direction_control_distribution(
+        model,
+        tokenizer,
+        [example.prompt for example in singular_examples],
+        replacement_coefficients,
+        causal_null_directions,
+        baseline_margin,
+        effect_sign=1.0,
+    )
+    reverse_paired_causal_distribution = run_direction_control_distribution(
+        model,
+        tokenizer,
+        [example.prompt for example in plural_examples],
+        reverse_coefficients,
+        causal_null_directions,
+        reverse_baseline,
+        effect_sign=-1.0,
+    )
+
+    activation_accuracy = _accuracy(heldout_predictions, heldout_labels)
+    suffix_accuracy = _accuracy(suffix_predictions, heldout_labels)
+    lookup_accuracy = _accuracy(lookup_predictions, heldout_labels)
+    orthographic_accuracy = _accuracy(orthographic_predictions, heldout_labels)
+    behavior_accuracy = _accuracy(heldout_cache.next_token_margins >= 0, heldout_labels)
+    paired_null_tensor = t.tensor(paired_null_accuracies)
+    paired_null_mean = sum(paired_null_accuracies) / len(paired_null_accuracies)
+    paired_null_p95 = float(t.quantile(paired_null_tensor, 0.95))
+    paired_null_exact_p = float((paired_null_tensor >= activation_accuracy).float().mean())
+    forward_causal_p = (
+        1
+        + sum(
+            effect >= target_delta
+            for effect in paired_causal_distribution["effects"]
+        )
+    ) / (len(causal_null_patterns) + 1)
+    reverse_target_delta = reverse_baseline - reverse_final_margin
+    reverse_causal_p = (
+        1
+        + sum(
+            effect >= reverse_target_delta
+            for effect in reverse_paired_causal_distribution["effects"]
+        )
+    ) / (len(causal_null_patterns) + 1)
+    morphology_breakdown = {
+        morphology: {
+            "count": int(sum(example.morphology == morphology for example in heldout)),
+            "activation_accuracy": _accuracy(
+                heldout_predictions[t.tensor([x.morphology == morphology for x in heldout])],
+                heldout_labels[t.tensor([x.morphology == morphology for x in heldout])],
+            ),
+            "suffix_accuracy": _accuracy(
+                suffix_predictions[t.tensor([x.morphology == morphology for x in heldout])],
+                heldout_labels[t.tensor([x.morphology == morphology for x in heldout])],
+            ),
+            "token_lookup_accuracy": _accuracy(
+                lookup_predictions[t.tensor([x.morphology == morphology for x in heldout])],
+                heldout_labels[t.tensor([x.morphology == morphology for x in heldout])],
+            ),
+        }
+        for morphology in ("regular", "irregular", "nonce")
+    }
+    train_final_ids = set(final_noun_token_ids(tokenizer, train))
+    heldout_final_ids = set(final_noun_token_ids(tokenizer, heldout))
+    multi_token_noun_count = sum(
+        len(tokenizer.encode(" " + example.noun, add_special_tokens=False)) > 1
+        for example in heldout
     )
     heldout_rows = tuple(
         {
-            "text": example.text,
-            "kind": example.counterfactual_type,
-            "label": example.label,
-            "initial": bool(initial_prediction),
-            "revised": bool(revised_prediction),
+            "prompt": example.prompt,
+            "morphology": example.morphology,
+            "number": example.number,
+            "activation_score": float(score),
+            "activation_prediction": "plural" if prediction else "singular",
+            "are_minus_is": float(margin),
         }
-        for example, initial_prediction, revised_prediction in zip(
-            split.heldout,
-            initial_predictions.tolist(),
-            revised_predictions.tolist(),
+        for example, score, prediction, margin in zip(
+            heldout,
+            direction_scores(heldout_cache.activations, decoder),
+            heldout_predictions,
+            heldout_cache.next_token_margins,
             strict=True,
         )
     )
     return {
-        "model_id": LOCAL_VERBALIZER_MODEL_ID,
-        "revision": LOCAL_VERBALIZER_REVISION,
-        "initial_prompt": initial_prompt,
-        "initial_scores": initial_scores,
-        "initial_hypothesis": initial,
-        "revision_prompt": revision_prompt,
-        "revision_scores": revision_scores,
-        "revised_hypothesis": revised,
-        "counterexamples": counterexamples,
-        "heldout_count": len(split.heldout),
-        "initial_accuracy": _accuracy(initial_predictions, heldout_labels),
-        "revised_accuracy": _accuracy(revised_predictions, heldout_labels),
-        "controls": controls,
+        "claim": (
+            "Pythia-70m's embedding already linearly separates this prompt family, so "
+            "held-out decoding is a lexical negative result. A train-only direction still "
+            "has bidirectional causal effects that exceed precommitted within-pair decoder "
+            "nulls, while an operationalized explanation loop revises an s-suffix story "
+            "using validation counterexamples."
+        ),
+        "model_id": MODEL_ID,
+        "model_revision": MODEL_REVISION,
+        "layer": LAYER,
+        "train_count": len(train),
+        "validation_count": len(validation),
+        "heldout_count": len(heldout),
+        "decoder": {
+            "threshold": decoder.threshold,
+            "negative_mean": decoder.negative_mean,
+            "positive_mean": decoder.positive_mean,
+        },
+        "hypothesis_rows": hypothesis_rows,
+        "selected_hypothesis": selected_hypothesis,
+        "feature_examples": feature_examples,
+        "suffix_counterexamples": suffix_counterexamples,
+        "explanation_frontier": explanation_frontier,
+        "layer_sweep": {
+            "layer_names": train_sweep.layer_names,
+            "heldout_accuracies": sweep_accuracies,
+        },
         "heldout_rows": heldout_rows,
+        "controls": (
+            {"method": "activation direction", "accuracy": activation_accuracy},
+            {"method": "surface suffix s", "accuracy": suffix_accuracy},
+            {"method": "train final-token-id lookup", "accuracy": lookup_accuracy},
+            {"method": "orthographic ridge", "accuracy": orthographic_accuracy},
+            {"method": "embedding residual direction", "accuracy": sweep_accuracies[0]},
+            {"method": "exact within-pair label-swap null (mean)", "accuracy": paired_null_mean},
+        ),
+        "metrics": {
+            "validation_activation_accuracy": _accuracy(validation_predictions, validation_labels),
+            "heldout_activation_accuracy": activation_accuracy,
+            "heldout_behavior_accuracy": behavior_accuracy,
+            "suffix_accuracy": suffix_accuracy,
+            "lookup_accuracy": lookup_accuracy,
+            "orthographic_accuracy": orthographic_accuracy,
+            "embedding_accuracy": sweep_accuracies[0],
+            "paired_null_accuracy_mean": paired_null_mean,
+            "paired_null_accuracy_max": max(paired_null_accuracies),
+            "paired_null_accuracy_p95": paired_null_p95,
+            "paired_null_exact_p": paired_null_exact_p,
+            "paired_null_count": len(paired_null_accuracies),
+            "paired_null_perfect_count": sum(
+                accuracy >= activation_accuracy for accuracy in paired_null_accuracies
+            ),
+            "forward_orthogonal_absolute_p95": orthogonal_distribution["absolute_p95"],
+            "reverse_orthogonal_absolute_p95": reverse_orthogonal_distribution["absolute_p95"],
+            "paired_causal_count": len(causal_null_patterns),
+            "forward_paired_causal_p95": paired_causal_distribution["p95"],
+            "reverse_paired_causal_p95": reverse_paired_causal_distribution["p95"],
+            "forward_paired_causal_p": forward_causal_p,
+            "reverse_paired_causal_p": reverse_causal_p,
+            "train_heldout_final_token_overlap": len(train_final_ids & heldout_final_ids),
+            "heldout_multi_token_noun_count": multi_token_noun_count,
+            **asdict(decoder_evaluation),
+        },
+        "morphology_breakdown": morphology_breakdown,
+        "paired_null_accuracies": paired_null_accuracies,
+        "intervention": {
+            "strengths": strengths,
+            "target_mean_margins": tuple(dose_margins),
+            "baseline_margin": baseline_margin,
+            "target_delta": target_delta,
+            "orthogonal_distribution": orthogonal_distribution,
+            "reverse_orthogonal_distribution": reverse_orthogonal_distribution,
+            "paired_causal_patterns": causal_null_patterns,
+            "paired_causal_distribution": paired_causal_distribution,
+            "reverse_paired_causal_distribution": reverse_paired_causal_distribution,
+            "target_plural_preference_rate": float(
+                target_result.next_token_margins.gt(0).float().mean()
+            ),
+            "reverse_baseline_margin": reverse_baseline,
+            "reverse_final_margin": reverse_final_margin,
+            "reverse_target_delta": reverse_target_delta,
+            "reverse_singular_preference_rate": float(
+                reverse_result.next_token_margins.lt(0).float().mean()
+            ),
+            "hook_calls": tuple(hook_calls),
+            "mean_edit_norm": float(full_replacements.norm(dim=1).mean()),
+        },
+        "signature_passed": bool(
+            selected_hypothesis == "subject_number_plural"
+            and activation_accuracy >= 0.95
+            and decoder_evaluation.survives_subset
+            and activation_accuracy > suffix_accuracy
+            and len(paired_null_accuracies) == 4096
+            and paired_null_p95 >= activation_accuracy
+            and paired_null_exact_p >= 0.05
+            and target_delta > 2.0
+            and sweep_accuracies[0] >= activation_accuracy
+            and len(causal_null_patterns) == PAIR_CAUSAL_NULL_COUNT
+            and target_delta > float(paired_causal_distribution["p95"])
+            and reverse_target_delta > float(reverse_paired_causal_distribution["p95"])
+            and forward_causal_p < 0.05
+            and reverse_causal_p < 0.05
+            and len(train_final_ids & heldout_final_ids) == 0
+            and all(call_count == 1 for call_count in hook_calls)
+            and int(orthogonal_distribution["hook_calls"]) == 1
+            and int(reverse_orthogonal_distribution["hook_calls"]) == 1
+            and all(call_count == 1 for call_count in paired_causal_distribution["hook_calls"])
+            and all(
+                call_count == 1
+                for call_count in reverse_paired_causal_distribution["hook_calls"]
+            )
+        ),
     }
 
 
-def summarize_local_feature_hypothesis_lab(
-    result: dict[str, object],
-) -> dict[str, str | float | int]:
-    """Flatten the learner-visible local-model loop into release metrics."""
+def run_smoke_test(cpu: bool = True) -> dict[str, object]:
+    """Run the pinned-model contract on the explicitly requested device."""
 
-    return {
-        "local_model_initial_hypothesis": result["initial_hypothesis"].key,
-        "local_model_revised_hypothesis": result["revised_hypothesis"].key,
-        "local_model_revision_counterexample_count": len(result["counterexamples"]),
-        "local_model_initial_heldout_accuracy": float(result["initial_accuracy"]),
-        "local_model_revised_heldout_accuracy": float(result["revised_accuracy"]),
-    }
+    if not cpu and not t.cuda.is_available():
+        raise RuntimeError("CUDA is required when cpu=False")
+    model, tokenizer = load_pinned_model("cpu" if cpu else "cuda")
+    return run_real_model_signature(model, tokenizer)
 
 
-def _load_gelu1l_model_on_cuda():
-    os.environ.setdefault("BNB_CUDA_VERSION", TL_BNB_CUDA_OVERRIDE)
-    logging.getLogger("bitsandbytes.cextension").setLevel(logging.ERROR)
-    from transformer_lens import HookedTransformer
-
-    return HookedTransformer.from_pretrained(
-        TL_GELU1L_MODEL_NAME,
-        device="cuda",
-        dtype="float32",
-        revision=TL_GELU1L_REVISION,
-    )
-
-
-def _final_residual_and_logits(model, prompt: str) -> tuple[t.Tensor, t.Tensor]:
-    with t.inference_mode():
-        logits, cache = model.run_with_cache(
-            model.to_tokens(prompt),
-            names_filter=lambda name: name == TL_RESID_POST_HOOK,
-        )
-    return cache[TL_RESID_POST_HOOK][0, -1].detach(), logits[0, -1].detach()
-
-
-def _score_examples(
-    model,
-    examples: list[tuple[str, bool]],
-    direction: t.Tensor,
-) -> tuple[list[str], t.Tensor, t.Tensor]:
-    texts = [text for text, _ in examples]
-    labels = t.tensor([label for _, label in examples], dtype=t.bool, device=direction.device)
-    scores = []
-    for text in texts:
-        residual, _ = _final_residual_and_logits(model, text)
-        scores.append((residual.float() @ direction).item())
-    return texts, t.tensor(scores, device=direction.device), labels
-
-
-def run_transformerlens_feature_verbalizer_preflight(max_vram_gb: float = 24.0) -> dict:
-    """Validate a concise verbalizer on a real residual direction from gelu-1l."""
+def run_gpu_test(max_vram_gb: float = 24.0) -> dict[str, object]:
+    """Run the complete real-model signature on CUDA with no CPU fallback."""
 
     if not t.cuda.is_available():
-        return {
-            "cuda_available": False,
-            "preflight_passed": False,
-            "full_path": "Pinned TransformerLens gelu-1l residual-direction verbalizer preflight.",
-        }
-
+        raise RuntimeError("CUDA is required for 7.2 GPU verification")
     t.cuda.reset_peak_memory_stats()
-    model = _load_gelu1l_model_on_cuda()
-    model.eval()
-
-    positive_residual, positive_logits = _final_residual_and_logits(
-        model,
-        TL_DIRECTION_POSITIVE_PROMPT,
+    model, tokenizer = load_pinned_model("cuda")
+    result = run_real_model_signature(model, tokenizer)
+    peak_vram_gb = t.cuda.max_memory_allocated() / 2**30
+    if peak_vram_gb > max_vram_gb:
+        raise AssertionError(f"peak VRAM {peak_vram_gb:.3f} GB exceeds {max_vram_gb:.1f} GB")
+    if not result["signature_passed"]:
+        raise AssertionError("7.2 CUDA signature did not satisfy its scientific contract")
+    result.update(
+        {
+            "cuda_available": True,
+            "gpu_name": t.cuda.get_device_name(),
+            "torch_version": t.__version__,
+            "cuda_version": t.version.cuda,
+            "peak_vram_gb": peak_vram_gb,
+            "within_vram_budget": True,
+            "accepted": True,
+        }
     )
-    negative_residual, negative_logits = _final_residual_and_logits(
-        model,
-        TL_DIRECTION_NEGATIVE_PROMPT,
-    )
-    direction = positive_residual.float() - negative_residual.float()
-    direction = direction / direction.norm()
-    positive_token_id = int(positive_logits.argmax().item())
-    negative_token_id = int(negative_logits.argmax().item())
-
-    train_texts, train_scores, train_labels = _score_examples(
-        model,
-        TL_VERBALIZER_TRAIN_EXAMPLES,
-        direction,
-    )
-    heldout_texts, heldout_scores, heldout_labels = _score_examples(
-        model,
-        TL_VERBALIZER_HELDOUT_EXAMPLES,
-        direction,
-    )
-    examples = gather_verbalizer_examples(
-        train_texts,
-        train_scores,
-        train_labels,
-        k=2,
-        threshold=1.0,
-        seed=0,
-    )
-    learned_terms = learn_verbalizer_terms(train_texts, train_labels.cpu(), top_k=3)
-    train_positive_tokens = {
-        token
-        for text, label in TL_VERBALIZER_TRAIN_EXAMPLES
-        if label
-        for token in TOKEN_RE.findall(text.lower())
-    }
-    train_heldout_overlap = set(train_texts).intersection(heldout_texts)
-    heldout_only_learned_terms = [
-        term for term in learned_terms if term not in train_positive_tokens
-    ]
-    learned_terms_from_train = len(heldout_only_learned_terms) == 0
-    explanation = "Surface verbs: " + ", ".join(learned_terms) + "."
-
-    predictions = keyword_explanation_predictions(heldout_texts, learned_terms).to(
-        heldout_labels.device
-    )
-    baseline = t.zeros_like(heldout_labels)
-    contrastive_mask = (heldout_scores - 1.0).abs() <= 2.5
-    prediction_report = explanation_prediction_report(
-        predictions,
-        heldout_labels,
-        baseline,
-        contrastive_mask,
-    )
-    heldout_contrastive_indices = contrastive_mask.nonzero(as_tuple=False).flatten().tolist()
-    heldout_contrastive_examples = [
-        heldout_texts[int(index)] for index in heldout_contrastive_indices
-    ]
-    heldout_contrastive_labels = [
-        bool(heldout_labels[int(index)].item()) for index in heldout_contrastive_indices
-    ]
-    heldout_contrastive_scores = [
-        float(heldout_scores[int(index)].item()) for index in heldout_contrastive_indices
-    ]
-    heldout_contrastive_has_both_labels = (
-        bool(any(heldout_contrastive_labels)) and not all(heldout_contrastive_labels)
-    )
-    counterexamples = find_counterexamples(heldout_texts, predictions, heldout_labels)
-    revised_explanation = revise_explanation(
-        explanation,
-        counterexamples.counterexamples,
-        revision_note="Exclude motion or airborne examples.",
-    )
-    brevity = explanation_brevity_report(
-        revised_explanation,
-        [example.text for example in examples.top],
-    )
-
-    baseline_scores = []
-    intervened_scores = []
-    random_intervened_scores = []
-    generator = t.Generator(device=direction.device).manual_seed(72)
-    random_direction = t.randn(direction.shape, device=direction.device, generator=generator)
-    random_direction = random_direction - (random_direction @ direction) * direction
-    random_direction = random_direction / random_direction.norm()
-    for text in heldout_texts:
-        residual, _ = _final_residual_and_logits(model, text)
-        baseline_logits = model.unembed(model.ln_final(residual))
-        intervened_logits = model.unembed(
-            model.ln_final(residual + TL_DIRECTION_SCALE * direction)
-        )
-        random_intervened_logits = model.unembed(
-            model.ln_final(residual + TL_DIRECTION_SCALE * random_direction)
-        )
-        baseline_scores.append(
-            baseline_logits[positive_token_id] - baseline_logits[negative_token_id]
-        )
-        intervened_scores.append(
-            intervened_logits[positive_token_id] - intervened_logits[negative_token_id]
-        )
-        random_intervened_scores.append(
-            random_intervened_logits[positive_token_id]
-            - random_intervened_logits[negative_token_id]
-        )
-    intervention = intervention_prediction_report(
-        t.stack(baseline_scores),
-        t.stack(intervened_scores),
-        predicted_direction="increase",
-    )
-    random_intervention = intervention_prediction_report(
-        t.stack(baseline_scores),
-        t.stack(random_intervened_scores),
-        predicted_direction="increase",
-    )
-    target_beats_random_intervention = (
-        intervention.observed_delta > abs(random_intervention.observed_delta) + 0.25
-    )
-
-    positive_mean_score = float(train_scores[train_labels].mean().item())
-    negative_mean_score = float(train_scores[~train_labels].mean().item())
-    score_separation = positive_mean_score - negative_mean_score
-    t.cuda.synchronize()
-    peak_vram_gb = t.cuda.max_memory_allocated() / 1024**3
-    within_vram_budget = peak_vram_gb <= max_vram_gb
-    preflight_passed = (
-        prediction_report.accuracy == 1.0
-        and prediction_report.passes_baseline
-        and prediction_report.survives_contrastive
-        and counterexamples.num_counterexamples == 0
-        and intervention.matches_prediction
-        and intervention.observed_delta >= 0.5
-        and target_beats_random_intervention
-        and score_separation >= 5.0
-        and brevity.shorter_than_examples
-        and len(train_heldout_overlap) == 0
-        and learned_terms_from_train
-        and within_vram_budget
-    )
-
-    return {
-        "cuda_available": True,
-        "device": t.cuda.get_device_name(0),
-        "preflight_passed": preflight_passed,
-        "model_name": TL_GELU1L_MODEL_NAME,
-        "hf_model_id": TL_GELU1L_HF_ID,
-        "hf_revision": TL_GELU1L_REVISION,
-        "tokenizer_id": TL_GELU1L_TOKENIZER_ID,
-        "tokenizer_revision": TL_GELU1L_TOKENIZER_REVISION,
-        "bnb_cuda_override": TL_BNB_CUDA_OVERRIDE,
-        "positive_prompt": TL_DIRECTION_POSITIVE_PROMPT,
-        "negative_prompt": TL_DIRECTION_NEGATIVE_PROMPT,
-        "positive_token": model.to_string(positive_token_id),
-        "negative_token": model.to_string(negative_token_id),
-        "train_example_count": len(train_texts),
-        "heldout_example_count": len(heldout_texts),
-        "explanation": explanation,
-        "explanation_terms": learned_terms,
-        "train_heldout_overlap_count": len(train_heldout_overlap),
-        "heldout_only_learned_terms": heldout_only_learned_terms,
-        "learned_terms_from_train": learned_terms_from_train,
-        "top_examples": [example.text for example in examples.top],
-        "bottom_examples": [example.text for example in examples.bottom],
-        "contrastive_examples": [example.text for example in examples.contrastive],
-        "positive_mean_score": positive_mean_score,
-        "negative_mean_score": negative_mean_score,
-        "score_separation": score_separation,
-        "prediction_accuracy": prediction_report.accuracy,
-        "baseline_accuracy": prediction_report.baseline_accuracy,
-        "contrastive_accuracy": prediction_report.contrastive_accuracy,
-        "heldout_contrastive_count": len(heldout_contrastive_examples),
-        "heldout_contrastive_examples": heldout_contrastive_examples,
-        "heldout_contrastive_labels": heldout_contrastive_labels,
-        "heldout_contrastive_scores": heldout_contrastive_scores,
-        "heldout_contrastive_has_both_labels": heldout_contrastive_has_both_labels,
-        "passes_baseline": prediction_report.passes_baseline,
-        "survives_contrastive": prediction_report.survives_contrastive,
-        "num_counterexamples": counterexamples.num_counterexamples,
-        "revised_explanation": revised_explanation,
-        "brevity_shorter_than_examples": brevity.shorter_than_examples,
-        "intervention_delta": intervention.observed_delta,
-        "matches_intervention_prediction": intervention.matches_prediction,
-        "random_direction_intervention_delta": random_intervention.observed_delta,
-        "target_beats_random_intervention": target_beats_random_intervention,
-        "peak_vram_gb": peak_vram_gb,
-        "within_vram_budget": within_vram_budget,
-        "full_path": "Pinned TransformerLens gelu-1l residual-direction verbalizer preflight.",
-    }
+    return result
 
 
-def run_transformerlens_feature_verbalizer_signature_result(
-    max_vram_gb: float = 24.0,
-) -> dict:
-    """CUDA-only real-transformer escalation used by the parent verification pass."""
-
-    return run_transformerlens_feature_verbalizer_preflight(max_vram_gb=max_vram_gb)
-
-
-def _attach_planted_signature_metrics(gpu_result: dict, planted_result: dict) -> dict:
-    """Keep exact toy-oracle evidence distinct from same-named CUDA metrics."""
-
-    metrics = planted_result["metrics"]
-    control_accuracy = {
-        str(row["control"]): float(row["accuracy"])
-        for row in planted_result["control_table"]
-    }
-    return {
-        **gpu_result,
-        "toy_planted_signature_passed": planted_result["signature_passed"],
-        "toy_train_count": planted_result["train_count"],
-        "toy_revision_count": planted_result["revision_count"],
-        "toy_heldout_count": planted_result["heldout_count"],
-        "toy_initial_accuracy": metrics["initial_accuracy"],
-        "toy_revised_accuracy": metrics["revised_accuracy"],
-        "toy_baseline_accuracy": metrics["baseline_accuracy"],
-        "toy_contrastive_accuracy": metrics["contrastive_accuracy"],
-        "toy_passes_baseline": metrics["passes_baseline"],
-        "toy_survives_contrastive": metrics["survives_contrastive"],
-        "toy_counterexamples_mined": metrics["counterexamples_mined"],
-        "toy_intervention_delta": metrics["intervention_delta"],
-        "toy_random_direction_delta": metrics["random_direction_delta"],
-        "toy_intervention_matches_prediction": metrics["intervention_matches_prediction"],
-        "toy_target_beats_random_direction": metrics["target_beats_random_direction"],
-        "toy_brevity_shorter_than_examples": metrics["brevity_shorter_than_examples"],
-        "toy_activation_score_threshold_upper_bound_accuracy": control_accuracy[
-            "activation-score threshold"
-        ],
-    }
-
-
-def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
-    gpu_result = run_transformerlens_feature_verbalizer_preflight(max_vram_gb=max_vram_gb)
-    planted_result = run_planted_feature_verbalizer_signature_result(seed=0)
-    result = _attach_planted_signature_metrics(gpu_result, planted_result)
-    if not gpu_result.get("cuda_available", False):
-        return result
-    local_model, local_tokenizer = load_local_verbalizer_model()
-    local_result = run_local_feature_hypothesis_lab(local_model, local_tokenizer)
-    return result | summarize_local_feature_hypothesis_lab(local_result)
-
-
-def run_full_experiment(max_vram_gb: float = 24.0) -> dict:
-    """Run the validated experiment path used by the verification report."""
-
+def run_full_experiment(max_vram_gb: float = 24.0) -> dict[str, object]:
     return run_gpu_test(max_vram_gb=max_vram_gb)
 
 
-if MAIN:
-    print(run_smoke_test())
+if __name__ == "__main__":
+    result = run_real_model_signature()
+    print(result["claim"])
+    print(result["metrics"])
+    print(result["intervention"])

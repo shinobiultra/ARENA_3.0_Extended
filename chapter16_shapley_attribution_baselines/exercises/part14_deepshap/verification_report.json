@@ -1,0 +1,629 @@
+{
+  "accepted": true,
+  "baselines": {
+    "declared_controls": [
+      "exact_256_coalition_intact_donor_game_for_all_seven_models_and_272_rows",
+      "full_64_reference_pair_contributions_retained_and_freshly_reproduced",
+      "independent_shap_0_49_1_deepexplainer_reference_on_supported_sequential_models",
+      "affine_and_ridge_exactness_controls",
+      "threshold_gate_exact_half_half_versus_rescale_two_thirds_one_third",
+      "min_circuit_and_mirrored_architecture_approximation_failures",
+      "bounded_revealcancel_group_diagnostic",
+      "finite_epsilon_nearzero_failure_and_epsilon_zero_control",
+      "gradient_times_input_delta_baseline_not_gradientshap",
+      "100_random_replacement_orders",
+      "primary_nested_and_independent_backgrounds_with_new_exact_games",
+      "shuffled_target_networks_and_training_mean_prediction_baseline",
+      "constant_dummy_and_unsupported_operator_controls",
+      "fresh_native_refit_and_full_payload_comparison",
+      "editable_tiny_gate_and_real_recipe_plays"
+    ],
+    "expected_metrics": {
+      "accepted": true,
+      "actual_learner_passed": true,
+      "all_model_fits_retained": true,
+      "all_training_seeds_retained": true,
+      "alternate_backgrounds_compared": true,
+      "author_pair_local_values_checked": 7168,
+      "author_pair_rows_checked": 896,
+      "author_reference_atol": 1e-07,
+      "author_reference_local_values": 15232,
+      "author_reference_model_rows": 1904,
+      "author_reference_passed": true,
+      "author_reference_rtol": 1e-08,
+      "background_rows": 64,
+      "background_rows_compared": 272,
+      "background_variants": 5,
+      "clean_fits": 3,
+      "cross_split_recipe_overlap": 0,
+      "deepshap_approximation_disclosed": true,
+      "deepshap_is_exact_shap": false,
+      "dummy_feature_max_abs_max": 1e-10,
+      "embedded_figures": 17,
+      "exact_coalitions": 256,
+      "exact_efficiency_max_error_max": 1e-10,
+      "exact_model_rows": 1904,
+      "exact_models": 7,
+      "explanation_group_count": 64,
+      "explanation_row_count": 153,
+      "final_used_for_selection": false,
+      "folding_max_error_max": 1e-10,
+      "fresh_compared_arrays_min": 842,
+      "fresh_compared_elements_min": 5887125,
+      "fresh_max_error": 0.0,
+      "fresh_model_fits": 7,
+      "fresh_reproduction_passed": true,
+      "gradient_baseline_model_rows": 1904,
+      "heldout_group_count": 65,
+      "heldout_row_count": 119,
+      "heldout_unit": "recipe_group",
+      "min_exact_max_error_max": 1e-10,
+      "mlp_fits": 6,
+      "model_coalition_values": 487424,
+      "model_fits": 7,
+      "model_keys": [
+        "clean_0",
+        "clean_1",
+        "clean_2",
+        "shuffled_0",
+        "shuffled_1",
+        "shuffled_2",
+        "ridge"
+      ],
+      "model_row_explanations": 1904,
+      "native_evidence_reused": false,
+      "native_model_retrained": true,
+      "native_model_retrained_in_this_report": true,
+      "nearzero_epsilon_zero_max_error_max": 1e-10,
+      "nearzero_primary_failure_disclosed": true,
+      "nearzero_primary_local_accuracy_passed": false,
+      "nearzero_primary_residual": 4e-07,
+      "neural_training_runs": 6,
+      "optimizer_updates": 4800,
+      "pair_local_values": 974848,
+      "pair_model_rows": 121856,
+      "random_order_controls": 100,
+      "real_local_accuracy_atol": 1e-07,
+      "real_local_accuracy_passed": true,
+      "real_local_accuracy_rtol": 1e-08,
+      "replacement_audit_rows": 119,
+      "replacement_models": 7,
+      "ridge_exact_max_error_max": 1e-10,
+      "ridge_fits": 1,
+      "rows_explained_per_model": 272,
+      "shuffled_fits": 3,
+      "shuffled_models_evaluated": 3,
+      "shuffled_training_targets": true,
+      "student_method_exercises": 9,
+      "test_count": 11,
+      "tests_passed": true,
+      "threshold_exact_max_error_max": 1e-10,
+      "train_group_count": 298,
+      "train_row_count": 758,
+      "training_mean_baseline": true,
+      "training_seeds": [
+        161410,
+        161411,
+        161412
+      ],
+      "unsupported_operator_rejected": true,
+      "whole_paper_replication": false
+    }
+  },
+  "claim_scope": "Student-implemented Rescale-style DeepSHAP for supported scalar affine/ReLU Sequential models is checked against hand-derived circuits, an independent SHAP 0.49.1 DeepExplainer adapter, and the exact 256-coalition intact-donor game on all 1,904 held-out model-row combinations. DeepSHAP is a compositional approximation and is not required or claimed to equal exact feature Shapley. The Concrete study attributes a predictive model in MPa and is not a causal material recipe.",
+  "datasets": [
+    {
+      "audit": 119,
+      "explanation": 153,
+      "id": "uci_concrete_compressive_strength",
+      "license": "CC BY 4.0",
+      "manifest": "data_manifest.json",
+      "revision": "8d4b15b6fc68cd932d745cbd663d5ceae66dd54422e99c1e4865f2936ab7e2af",
+      "source": "uci",
+      "train": 758
+    }
+  ],
+  "date_run": "2026-09-06T14:20:18+00:00",
+  "evidence_level": "all_coalition_neural_game_plus_author_deepexplainer_reference",
+  "git_commit": "8eab192b",
+  "gpu_name": "unavailable",
+  "gt_tier": "GT-0",
+  "known_failures": [],
+  "metrics": {
+    "gpu_evidence": {
+      "category": "cpu_or_budget_metric",
+      "placeholder_only": false,
+      "section_specific_metric_keys": [
+        "actual_learner_passed",
+        "all_model_fits_retained",
+        "all_training_seeds_retained",
+        "alternate_backgrounds_compared",
+        "attribution_coordinates_per_method",
+        "author_pair_local_values_checked",
+        "author_pair_rows_checked",
+        "author_reference_atol",
+        "author_reference_local_values",
+        "author_reference_max_error",
+        "author_reference_model_rows",
+        "author_reference_passed",
+        "author_reference_rtol",
+        "background_rows",
+        "background_rows_compared",
+        "background_variants",
+        "clean_fits",
+        "cross_split_recipe_overlap",
+        "deepshap_approximation_disclosed",
+        "deepshap_exact_gap_max",
+        "deepshap_is_exact_shap",
+        "dummy_feature_max_abs",
+        "embedded_figures",
+        "exact_coalitions",
+        "exact_efficiency_max_error",
+        "exact_model_rows",
+        "exact_models",
+        "explanation_group_count",
+        "explanation_row_count",
+        "final_used_for_selection",
+        "folding_max_error",
+        "fresh_compared_arrays",
+        "fresh_compared_elements",
+        "fresh_elapsed_seconds",
+        "fresh_evidence_sha256",
+        "fresh_max_error",
+        "fresh_model_fits",
+        "fresh_output_directory",
+        "fresh_reproduction_passed",
+        "gradient_baseline_model_rows",
+        "heldout_group_count",
+        "heldout_row_count",
+        "heldout_unit",
+        "learner_evidence_sha256",
+        "min_exact_max_error",
+        "mlp_fits",
+        "model_coalition_values",
+        "model_fits",
+        "model_keys",
+        "model_row_explanations",
+        "native_evidence_reused",
+        "native_model_retrained",
+        "native_model_retrained_in_this_report",
+        "nearzero_epsilon_zero_max_error",
+        "nearzero_primary_failure_disclosed",
+        "nearzero_primary_local_accuracy_passed",
+        "nearzero_primary_residual",
+        "neural_training_runs",
+        "optimizer_updates",
+        "own_answer_code_cells",
+        "pair_local_values",
+        "pair_model_rows",
+        "primary_hybrid_predictions",
+        "random_order_controls",
+        "real_local_accuracy_atol",
+        "real_local_accuracy_max_error",
+        "real_local_accuracy_passed",
+        "real_local_accuracy_rtol",
+        "replacement_audit_rows",
+        "replacement_models",
+        "ridge_exact_max_error",
+        "ridge_fits",
+        "rows_explained_per_model",
+        "shuffled_fits",
+        "shuffled_models_evaluated",
+        "shuffled_training_targets",
+        "threshold_exact_max_error",
+        "train_group_count",
+        "train_row_count",
+        "training_mean_baseline",
+        "training_seeds",
+        "unsupported_operator_rejected",
+        "whole_paper_replication"
+      ],
+      "uses_cuda": false
+    },
+    "gpu_test": {
+      "actual_learner_passed": true,
+      "all_model_fits_retained": true,
+      "all_training_seeds_retained": true,
+      "alternate_backgrounds_compared": true,
+      "attribution_coordinates_per_method": 15232,
+      "author_pair_local_values_checked": 7168,
+      "author_pair_rows_checked": 896,
+      "author_reference_atol": 1e-07,
+      "author_reference_local_values": 15232,
+      "author_reference_max_error": 6.306066779870889e-13,
+      "author_reference_model_rows": 1904,
+      "author_reference_passed": true,
+      "author_reference_rtol": 1e-08,
+      "background_rows": 64,
+      "background_rows_compared": 272,
+      "background_variants": 5,
+      "clean_fits": 3,
+      "cross_split_recipe_overlap": 0,
+      "cuda_available": false,
+      "cuda_version": "13.2",
+      "deepshap_approximation_disclosed": true,
+      "deepshap_exact_gap_max": 55.41840472584833,
+      "deepshap_is_exact_shap": false,
+      "device": "cpu",
+      "dummy_feature_max_abs": 0.0,
+      "embedded_figures": 17,
+      "exact_coalitions": 256,
+      "exact_efficiency_max_error": 1.4210854715202004e-14,
+      "exact_model_rows": 1904,
+      "exact_models": 7,
+      "explanation_group_count": 64,
+      "explanation_row_count": 153,
+      "final_used_for_selection": false,
+      "folding_max_error": 5.719869022868806e-13,
+      "fresh_compared_arrays": 842,
+      "fresh_compared_elements": 5887125,
+      "fresh_elapsed_seconds": 8.041748276998987,
+      "fresh_evidence_sha256": "319b46a2964e253b97300b8d6b90fb16a89e381fb0561b48d3a679daa6c8a525",
+      "fresh_max_error": 0.0,
+      "fresh_model_fits": 7,
+      "fresh_output_directory": "/home/bitwise/.cache/arena_extended/deepshap/report_reproductions/report-bct3qckx/fresh_cpu",
+      "fresh_reproduction_passed": true,
+      "gpu_total_memory_gb": null,
+      "gradient_baseline_model_rows": 1904,
+      "heldout_group_count": 65,
+      "heldout_row_count": 119,
+      "heldout_unit": "recipe_group",
+      "learner_evidence_sha256": "09b4d6212b09d48b4ad97b4b82e68c27fe711b5f3c2a9710df44a71a3a583dbb",
+      "min_exact_max_error": 0.0,
+      "mlp_fits": 6,
+      "model_coalition_values": 487424,
+      "model_fits": 7,
+      "model_keys": [
+        "clean_0",
+        "clean_1",
+        "clean_2",
+        "shuffled_0",
+        "shuffled_1",
+        "shuffled_2",
+        "ridge"
+      ],
+      "model_row_explanations": 1904,
+      "native_evidence_reused": false,
+      "native_model_retrained": true,
+      "native_model_retrained_in_this_report": true,
+      "nearzero_epsilon_zero_max_error": 0.0,
+      "nearzero_primary_failure_disclosed": true,
+      "nearzero_primary_local_accuracy_passed": false,
+      "nearzero_primary_residual": 4e-07,
+      "neural_training_runs": 6,
+      "optimizer_updates": 4800,
+      "own_answer_code_cells": 70,
+      "pair_local_values": 974848,
+      "pair_model_rows": 121856,
+      "peak_vram_gb": 0.0,
+      "primary_hybrid_predictions": 31195136,
+      "random_order_controls": 100,
+      "real_local_accuracy_atol": 1e-07,
+      "real_local_accuracy_max_error": 1.7053025658242404e-13,
+      "real_local_accuracy_passed": true,
+      "real_local_accuracy_rtol": 1e-08,
+      "replacement_audit_rows": 119,
+      "replacement_models": 7,
+      "ridge_exact_max_error": 7.105427357601002e-15,
+      "ridge_fits": 1,
+      "rows_explained_per_model": 272,
+      "shuffled_fits": 3,
+      "shuffled_models_evaluated": 3,
+      "shuffled_training_targets": true,
+      "threshold_exact_max_error": 0.0,
+      "torch_version": "2.12.1+cu132",
+      "train_group_count": 298,
+      "train_row_count": 758,
+      "training_mean_baseline": true,
+      "training_seeds": [
+        161410,
+        161411,
+        161412
+      ],
+      "unsupported_operator_rejected": true,
+      "whole_paper_replication": false,
+      "within_vram_budget": true
+    },
+    "notebook_contract": {
+      "accepted": true,
+      "claim_scope": "Rescale propagation, intact-donor games, exact contraction, RevealCancel groups, replacement curves, and the two provided helper contracts on declared CPU float64 Sequential models.",
+      "student_method_exercises": 9,
+      "test_count": 11,
+      "tests_passed": true
+    }
+  },
+  "models": [
+    {
+      "gated": false,
+      "id": "six_float64_8x32x32x1_relu_regressors",
+      "precision": "float64",
+      "revision": "frozen_deepshap_protocol_v1",
+      "source": "generated_training_run"
+    },
+    {
+      "gated": false,
+      "id": "affine_ridge_control",
+      "precision": "float64",
+      "revision": "frozen_deepshap_protocol_v1",
+      "source": "generated_training_run"
+    }
+  ],
+  "negative_controls": {
+    "declared_controls": [
+      "100_random_replacement_orders"
+    ]
+  },
+  "notebook_id": "16_14_deepshap_when_does_fast_attribution_match_exact_shap",
+  "ood_tests": {
+    "declared": "required_where_applicable"
+  },
+  "peak_vram_gb": 0.0,
+  "report_inputs": {
+    "algorithm": "sha256",
+    "combined_sha256": "5703b1645fdd7af47eb39a19c4ca34ba8d7ed213ca99a486922a302ba640364d",
+    "files": [
+      {
+        "path": "arena_ext/verification.py",
+        "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
+        "size_bytes": 9276
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part14_deepshap/16.14_DeepSHAP_When_Does_Fast_Attribution_Match_Exact_SHAP_exercises.ipynb",
+        "sha256": "7718d5024c6174ca3a188ecbb7d88e5453681fcdf17cd281108f96ac32edf551",
+        "size_bytes": 1781415
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part14_deepshap/16.14_DeepSHAP_When_Does_Fast_Attribution_Match_Exact_SHAP_solutions.ipynb",
+        "sha256": "26a928e810b8f82902671e54604c5857e6e230262d70855e57d0776877ca4507",
+        "size_bytes": 1793120
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part14_deepshap/README.md",
+        "sha256": "57041a9707f3b26c0899617492f5f290e8549a43588056664cf1ac2d690c43b0",
+        "size_bytes": 5485
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part14_deepshap/artifacts.lock.yml",
+        "sha256": "2339ad2b8c2edccfcafbd09f17b33f8928e959c7dfe00881af731cc2f3a3b975",
+        "size_bytes": 9493
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part14_deepshap/author_reference.json",
+        "sha256": "581b970592c09f0c9fe991d3ac99d2dfbd48244e67ae5a69069b8d576fa0c9c7",
+        "size_bytes": 4321
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part14_deepshap/build_notebooks.py",
+        "sha256": "60ab1ef90afeadeba85703db3204411ca1a421b9417e803557cafe807f350857",
+        "size_bytes": 12277
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part14_deepshap/data_manifest.json",
+        "sha256": "c1c072ef4a540f1d7d878b828ce09b27085ffe085e328587fcc6fd83de6dbc58",
+        "size_bytes": 12835
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_contract_tests.py",
+        "sha256": "1f8f1af137dd58d028ef30ad28f65c5b19c05546b72429785999c3a9ce0a37a3",
+        "size_bytes": 16844
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_data.py",
+        "sha256": "ec2a7f4337c4c7dfa7649d5cf2794be041a16e258f50d0844c2e2b4bed882918",
+        "size_bytes": 1784
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_diagnostics.py",
+        "sha256": "d46fc51716c11429bdf2465c656d81b31e3f07caf8bb1bb5b3814242a32a3608",
+        "size_bytes": 21125
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_methods.py",
+        "sha256": "8d5e9d04624e3941768a710ba9c72dfd281c25c39b495845beda296a1628c4c6",
+        "size_bytes": 14566
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_methods_tests.py",
+        "sha256": "7df1f66d3598491f25d947a718f0c05d3249ffdb1bd6779574d5a17a8009b524",
+        "size_bytes": 20390
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_plots.py",
+        "sha256": "9c100838dcd57fa4d1068accbaa0c84d5eed47a71fca8def16e1dfc36f13a3a1",
+        "size_bytes": 40188
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_reference.py",
+        "sha256": "834b41927d1ff01a8bc38a103b59ea50e70bfa53c2c26facee7b5e1bf75afcbe",
+        "size_bytes": 49968
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_reference_tests.py",
+        "sha256": "270c145a6fd5e99302850f7b30a8e1324e6647677b16631fa853eb520cd771cf",
+        "size_bytes": 11045
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_study.py",
+        "sha256": "df5d7f892a6846309d27441a10258595988015c59be1db49d49d314764f3120d",
+        "size_bytes": 36930
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_study_tests.py",
+        "sha256": "93dec8b4844ecee8b7fef748a59de4f611348d79a9b02a31e245e80258f52329",
+        "size_bytes": 17827
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part14_deepshap/execute_learner.py",
+        "sha256": "47b30cc96a77b5720be18fac15a3cd17966358f2da15aa79c673ad25e7b2a5df",
+        "size_bytes": 9035
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part14_deepshap/expected_outputs/README.md",
+        "sha256": "3ca51269eb35cb1c1b87a52eadafe6d5b6523c28aba9ca3f4e0192054412c1c8",
+        "size_bytes": 6103
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part14_deepshap/expected_outputs/fresh_reproduction.json",
+        "sha256": "319b46a2964e253b97300b8d6b90fb16a89e381fb0561b48d3a679daa6c8a525",
+        "size_bytes": 33961
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part14_deepshap/expected_outputs/learner_execution.json",
+        "sha256": "09b4d6212b09d48b4ad97b4b82e68c27fe711b5f3c2a9710df44a71a3a583dbb",
+        "size_bytes": 41381
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part14_deepshap/expected_outputs/native_summary.json",
+        "sha256": "2753802e185d88455f6efe4335df655fc6bcdd664b3caac3b505cd3ed414375b",
+        "size_bytes": 25095
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part14_deepshap/lesson.md",
+        "sha256": "584266a0f4ef6d31f03b5cdf6f81f543271af9d258ee6446a7bda5e702b3c7d1",
+        "size_bytes": 58027
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part14_deepshap/protocol.md",
+        "sha256": "ceca1c3d0fa9bd5635915b4f7c8ec9d2353c3e55b6816788ce69b58d8e67869e",
+        "size_bytes": 12469
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part14_deepshap/protocol_freeze.json",
+        "sha256": "8b3da8fdac611b7d95ecf8d1e35d565c6ef6b0952b213162527afb140da852fd",
+        "size_bytes": 769
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part14_deepshap/publish_study.py",
+        "sha256": "be812a0026b83f1facced87511bb048e1391a7cca6bba0243a4012937d926a25",
+        "size_bytes": 13502
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part14_deepshap/reproduce_native.py",
+        "sha256": "a710dc99f4d0108aaab10f590635f7ac1819d66a368b046d16261571042aeccb",
+        "size_bytes": 10426
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part14_deepshap/run_native.py",
+        "sha256": "dd7e3fed1be5388ce705605488f212d8679131baa81f9ed32a71aefbe9b9b8fc",
+        "size_bytes": 14331
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part14_deepshap/solutions.py",
+        "sha256": "52a82bebab6d5d0224d8d209916feabb7c3fcc2b3d60aeb94e3558795632da64",
+        "size_bytes": 12409
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part14_deepshap/tests.py",
+        "sha256": "e9750501e3fff1069c46da3aa38e8c460f2ffcf718d10db9ba321dcf8c67479d",
+        "size_bytes": 149
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part14_deepshap/verification_report.schema.json",
+        "sha256": "cc8f76a3d3a17bcf1c1f8322f1ff1a07fef755f658713e885178121502f6ef0b",
+        "size_bytes": 15726
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/deepshap_01_rescale_limits.png",
+        "sha256": "382b0039914c3e367f54eca0dad9ac700b4d5b0f4eb76c05de0f951a045dc67e",
+        "size_bytes": 108756
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/deepshap_02_near_zero_epsilon.png",
+        "sha256": "7a2b961da97658f0481b7c520bd6b88a9afff29da003ec7fc0ae474f92e87200",
+        "size_bytes": 79496
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/deepshap_03_affine_controls.png",
+        "sha256": "6ed5a22fed43420a326b3af80b932699f95feab1372d8ca670721c11990f0c3c",
+        "size_bytes": 77489
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/deepshap_04_background_average.png",
+        "sha256": "029abaa223aec4257a64c6bedc2113f7e357d5c928cac0c3367ee0ee1d5e6b95",
+        "size_bytes": 91890
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/deepshap_05_threshold_complete_not_exact.png",
+        "sha256": "7c1bf8431176ea6f1589c52657f6e176f3c3d09f2f959b3bf9b024a4ca60ccdb",
+        "size_bytes": 80969
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/deepshap_06_cancellation_implementation_dependence.png",
+        "sha256": "ea0050c326d0219029542a5ae7b73696c8f8644ff00b6bd074d121a6e713422b",
+        "size_bytes": 91803
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/deepshap_07_replacement_fixture.png",
+        "sha256": "8f2832380781934d70e149f9cb31c96dfe00f01236c836c2dfd20715812eae1d",
+        "size_bytes": 135241
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/deepshap_08_performance_controls.png",
+        "sha256": "b2999e7fb686c61d01dbbc4b43d544a00d2bef84f839afced96296735c465004",
+        "size_bytes": 100224
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/deepshap_09_signed_parity_all_rows.png",
+        "sha256": "3937ed89ed00c98ddcf8b36af6a52bc2ce110e605a4504450dae5c56ce093f20",
+        "size_bytes": 376141
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/deepshap_10_error_heatmaps_all_rows.png",
+        "sha256": "7716de1f85ece1d622adac1fe985f0b7c18bee1dd953445fbb73ebb377b9ed03",
+        "size_bytes": 211784
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/deepshap_11_fixed_waterfall.png",
+        "sha256": "a8be0c6a978736b7fb7db73ad529d95e1c96d23ab11e15509ad66f966b5c0eaa",
+        "size_bytes": 117303
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/deepshap_12_fixed_attribution_comparison.png",
+        "sha256": "c7d3b334806e436421bc6ebda09780274ea497e52946f245125f9e126225d28b",
+        "size_bytes": 122418
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/deepshap_13_completeness_vs_exact.png",
+        "sha256": "6b82d5f9cb4155fb6e17fb6c31bb8a978757bfd1c4b772d843c8fb69c91e0b0c",
+        "size_bytes": 162884
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/deepshap_14_background_sensitivity.png",
+        "sha256": "7ef9d79d8742f50ec534d3538665c5f1e4651b2c3458a3683800b3e0dbf98acc",
+        "size_bytes": 286578
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/deepshap_15_replacement_curves.png",
+        "sha256": "fd1a3d201bcd803feffd519b7d92b1dde01f5aa213185298d9a5e97a7a953e37",
+        "size_bytes": 189622
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/deepshap_16_threshold_play.png",
+        "sha256": "4deedd10fd4bc5d4cbc19a94153946d22f00de307780b3d34e8c391456d90766",
+        "size_bytes": 82247
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/deepshap_17_real_recipe_play.png",
+        "sha256": "b33ef5d9e2b52fd99637c741d696a6d3c2a45486669c839ff87beae3423a6c31",
+        "size_bytes": 150568
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/pages/14_[16.14]_DeepSHAP_When_Does_Fast_Attribution_Match_Exact_SHAP.md",
+        "sha256": "08eeedb39aa0291a1d21c405504a6a7d5769ebabdc424bccc853fa03e6a7c12b",
+        "size_bytes": 101492
+      },
+      {
+        "path": "scripts/run_extension_verification_reports.py",
+        "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
+        "size_bytes": 16272
+      }
+    ],
+    "schema_version": 1
+  },
+  "safety_notes": [
+    "Public material measurements; predictive attribution is not a material-design recommendation.",
+    "Intact-donor marginal hybrids may still be off manifold and do not establish physical causality."
+  ],
+  "tests_passed": true,
+  "wall_clock_seconds": 9.344094
+}

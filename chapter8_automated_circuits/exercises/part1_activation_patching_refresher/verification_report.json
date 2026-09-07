@@ -440,7 +440,7 @@
   "peak_vram_gb": 0.2357783317565918,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "de93402abba7a4ce8cae92201a858de33f635170c797492c11e74fa1309152a3",
+    "combined_sha256": "3df17197587e0c47255252ebd139365c1ec1cb669cf8d66964fabb8a99cf7963",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -504,7 +504,7 @@
       },
       {
         "path": "chapter8_automated_circuits/instructions/pages/01_[8.1]_Activation_Patching_Refresher.md",
-        "sha256": "9bd3ed38e02245718e0b5e151806552847304a9d451f0b8fc76704b59a770ef9",
+        "sha256": "082a378bbce1678556cbcbf70e8fe7d38b291be1b9236d1488974d45e33e9c80",
         "size_bytes": 30727
       },
       {

@@ -319,6 +319,7 @@ def test_real_sd15_case_contract_is_pinned_and_counterfactual():
         assert isinstance(case["seed"], int), (
             "Every real-model case needs an explicit matched latent-noise seed."
         )
+    print("All tests in `test_real_sd15_case_contract_is_pinned_and_counterfactual` passed!")
 
 
 def test_sd15_trajectory_rejects_invalid_step_count(
@@ -407,6 +408,7 @@ def test_trained_toy_causal_sweep_beats_preregistered_controls():
     assert controls["untrained_model"]["selectivity"] < 0.0, (
         "The architecture alone should not create the learned causal effect."
     )
+    print("All tests in `test_trained_toy_causal_sweep_beats_preregistered_controls` passed!")
 
 
 def test_notebook_contract(run_smoke_test: Callable | None = None):
@@ -443,6 +445,7 @@ def test_section_file_contract():
     }
     missing = sorted(path for path in required if not (section / path).exists())
     assert not missing, f"13.2 is missing required learner files: {missing}"
+    print("All tests in `test_section_file_contract` passed!")
 
 
 # These named entrypoints are called immediately after the corresponding learner
@@ -452,6 +455,7 @@ def test_render_object_world_has_exact_state_semantics(
     render_object_world: Callable | None = None,
 ):
     test_rendered_world_has_exact_labels_and_masks(render_object_world)
+    print("All tests in `test_render_object_world_has_exact_state_semantics` passed!")
 
 
 def test_q_sample_matches_closed_form_endpoints(q_sample: Callable | None = None):
@@ -467,6 +471,7 @@ def test_q_sample_matches_closed_form_endpoints(q_sample: Callable | None = None
     assert t.allclose(q_sample(clean, timesteps, noise, schedule), expected, atol=1e-7), (
         "Forward noising must match the analytic marginal at arbitrary timesteps."
     )
+    print("All tests in `test_q_sample_matches_closed_form_endpoints` passed!")
 
 
 def test_sinusoidal_timestep_embedding_has_paired_coordinates(
@@ -478,6 +483,7 @@ def test_sinusoidal_timestep_embedding_has_paired_coordinates(
     assert not t.allclose(embedding[1], embedding[2]), (
         "Different denoising times must receive distinguishable conditioning vectors."
     )
+    print("All tests in `test_sinusoidal_timestep_embedding_has_paired_coordinates` passed!")
 
 
 def test_hookable_denoiser_exposes_the_planted_concept_location(
@@ -530,12 +536,14 @@ def test_activation_replacement_changes_only_requested_entries(
     test_activation_replacement_changes_only_selected_coordinates(
         make_activation_replacement_hook
     )
+    print("All tests in `test_activation_replacement_changes_only_requested_entries` passed!")
 
 
 def test_denoise_trajectory_is_matched_seed_and_cache_complete(
     denoise_trajectory: Callable | None = None,
 ):
     test_denoise_trajectory_is_deterministic_and_caches_steps(denoise_trajectory)
+    print("All tests in `test_denoise_trajectory_is_matched_seed_and_cache_complete` passed!")
 
 
 def test_regional_causal_metric_has_exact_anchors(
@@ -706,27 +714,28 @@ def test_gpu_result_packages_real_numeric_acceptance_metrics():
         ],
     }
     packaged = solutions._package_gpu_result(toy, real)
-    assert packaged["cuda_available"] is True
-    assert packaged["peak_vram_gb"] == pytest.approx(3.2)
-    assert packaged["dataset_size"] == 24
-    assert packaged["layer_count"] == 4
-    assert packaged["diffusion_steps"] == 8
-    assert packaged["heatmap_cell_count"] == 32
-    assert packaged["random_channel_selectivity"] == pytest.approx(0.01)
-    assert packaged["wrong_timestep_selectivity"] == pytest.approx(0.0)
-    assert packaged["shuffled_label_selectivity"] == pytest.approx(0.0)
-    assert packaged["untrained_model_selectivity"] == pytest.approx(-0.1)
-    assert packaged["pixel_patch_recovery"] == pytest.approx(1.0)
-    assert packaged["sd15_case_count"] == 2
-    assert packaged["sd15_num_inference_steps"] == 20
-    assert packaged["sd15_min_best_clip_recovery"] == pytest.approx(0.50)
-    assert packaged["sd15_min_best_regional_selectivity"] == pytest.approx(0.22)
-    assert packaged["sd15_min_target_control_margin"] == pytest.approx(0.19)
-    assert packaged["sd15_accepted"] is True and packaged["accepted"] is True
+    assert packaged["cuda_available"] is True, 'Preserve the measured cuda_available in the release payload; packaging must not alter evidence.'
+    assert packaged["peak_vram_gb"] == pytest.approx(3.2), 'Preserve the measured peak_vram_gb in the release payload; packaging must not alter evidence.'
+    assert packaged["dataset_size"] == 24, 'Preserve the measured dataset_size in the release payload; packaging must not alter evidence.'
+    assert packaged["layer_count"] == 4, 'Preserve the measured layer_count in the release payload; packaging must not alter evidence.'
+    assert packaged["diffusion_steps"] == 8, 'Preserve the measured diffusion_steps in the release payload; packaging must not alter evidence.'
+    assert packaged["heatmap_cell_count"] == 32, 'Preserve the measured heatmap_cell_count in the release payload; packaging must not alter evidence.'
+    assert packaged["random_channel_selectivity"] == pytest.approx(0.01), 'Preserve the measured random_channel_selectivity in the release payload; packaging must not alter evidence.'
+    assert packaged["wrong_timestep_selectivity"] == pytest.approx(0.0), 'Preserve the measured wrong_timestep_selectivity in the release payload; packaging must not alter evidence.'
+    assert packaged["shuffled_label_selectivity"] == pytest.approx(0.0), 'Preserve the measured shuffled_label_selectivity in the release payload; packaging must not alter evidence.'
+    assert packaged["untrained_model_selectivity"] == pytest.approx(-0.1), 'Preserve the measured untrained_model_selectivity in the release payload; packaging must not alter evidence.'
+    assert packaged["pixel_patch_recovery"] == pytest.approx(1.0), 'Preserve the measured pixel_patch_recovery in the release payload; packaging must not alter evidence.'
+    assert packaged["sd15_case_count"] == 2, 'Preserve the measured sd15_case_count in the release payload; packaging must not alter evidence.'
+    assert packaged["sd15_num_inference_steps"] == 20, 'Preserve the measured sd15_num_inference_steps in the release payload; packaging must not alter evidence.'
+    assert packaged["sd15_min_best_clip_recovery"] == pytest.approx(0.50), 'Preserve the measured sd15_min_best_clip_recovery in the release payload; packaging must not alter evidence.'
+    assert packaged["sd15_min_best_regional_selectivity"] == pytest.approx(0.22), 'Preserve the measured sd15_min_best_regional_selectivity in the release payload; packaging must not alter evidence.'
+    assert packaged["sd15_min_target_control_margin"] == pytest.approx(0.19), 'Preserve the measured sd15_min_target_control_margin in the release payload; packaging must not alter evidence.'
+    assert packaged["sd15_accepted"] is True and packaged["accepted"] is True, 'Preserve the measured sd15_accepted, accepted in the release payload; packaging must not alter evidence.'
     assert "visual_payload" not in packaged, (
         "Verification reports must keep image and latent payloads in the figure artifact, "
         "not serialize them into the numeric evidence report."
     )
+    print("All tests in `test_gpu_result_packages_real_numeric_acceptance_metrics` passed!")
 
 
 def test_notebook_contract_is_learner_visible():

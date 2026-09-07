@@ -1,0 +1,237 @@
+{
+  "status": "PASS",
+  "scope": "full",
+  "full_release_validation": true,
+  "source_inputs": {
+    "lesson.md": "50ddc5498463ad6d94212aed2c456f609bcf60c47b2a85c4a93bb0ac998b584c",
+    "build_notebooks.py": "0f34dae75c4c2b7604faeec248b182bd923e5ae6ad86d085a451b74ef25585f0",
+    "geometry_methods.py": "a821887870ebc8e8b38bc5e94aadab6a93a431758b1f22248bf8b8967ff47aed",
+    "geometry_methods_tests.py": "abd6502a4858330686a492e9038d9bec727787a5ed109ade557caed4ce6a3533",
+    "execute_learner.py": "dccfdc78b78fb625d059ac0558e8e78f74b2ed0ae647178b5c061c68aec884f6",
+    "geometry_protocol.json": "4a4816aaeaa734d5ba3a3ba8860b70e1338fdc4d5388255a6414944f43408f78",
+    "geometry_data.py": "cc8045803c8437d859e44d60fe45414c9e2e95b5246fdb62ae0f8d7b8192037b",
+    "geometry_study.py": "c3cdf723ec7e7e557d3e960f29eeb45e73148059cce12d706ed2b3e785a772c6",
+    "geometry_plotting.py": "d185bc99e49504e6e32d39a39a2782bfd2a20814ac706aaa15eac39f3fadc1fe"
+  },
+  "completed_from_own_answers": true,
+  "last_completed_cell": 70,
+  "elapsed_seconds": 384.4145550727844,
+  "code_cells": 35,
+  "figures": [
+    "geometry_angle_play.png",
+    "geometry_calendar_order_null.png",
+    "geometry_mistral_actual_answers.png",
+    "geometry_mistral_all_donors.png",
+    "geometry_mistral_angle_radius.png",
+    "geometry_mistral_final_controls.png",
+    "geometry_mistral_layer_sweep.png",
+    "geometry_mistral_projections.png",
+    "geometry_mistral_single_play.png",
+    "geometry_plane_intervention.png",
+    "geometry_projection_gallery.png",
+    "geometry_projection_stability.png",
+    "geometry_template_offsets.png"
+  ],
+  "changed_sources": [],
+  "learner_directory": "/home/bitwise/.cache/arena_extended/geometry/full-own-answer-v3",
+  "measurement_audit": {
+    "accepted": true,
+    "own_answer_code_cells": 35,
+    "embedded_figures": 13,
+    "final_prompts": 579,
+    "all_donor_pairs": 5634,
+    "retained_outcomes": 120649,
+    "model_forward_rows": 105484,
+    "null_draws_per_kind": 32,
+    "projection_fits": 120,
+    "angle_play_rows": 3196,
+    "single_play_rows": 4,
+    "max_stored_margin_error": 0.0,
+    "runtime": {
+      "gpu": "NVIDIA GeForce RTX 5090 Laptop GPU",
+      "peak_cuda_allocated_gib": 13.6112380027771,
+      "elapsed_real_seconds": 371.44865813700017,
+      "model_forward_rows": 105484,
+      "retained_outcomes": 120649,
+      "projection_fits": 120,
+      "angle_play_forward_rows": 3196,
+      "single_play_forward_rows": 4
+    },
+    "tasks": {
+      "weekday": {
+        "new_prompts": 147,
+        "baseline_calendar_accuracy": 0.6462585034013606,
+        "baseline_full_accuracy": 0.6394557823129252,
+        "coordinate_r2": 0.8355668783187866,
+        "angular_accuracy": 0.8367347121238708,
+        "unseen_class_angular_accuracy": 0.47619047619047616,
+        "primary_shift_conditions": {
+          "pure_coordinate": {
+            "rows": 147,
+            "desired_calendar_accuracy": 0.22448979591836735,
+            "desired_full_accuracy": 0.23129251700680273,
+            "mean_margin": 0.304421768707483
+          },
+          "centered_mean_ablated": {
+            "rows": 147,
+            "desired_calendar_accuracy": 0.4421768707482993,
+            "desired_full_accuracy": 0.4421768707482993,
+            "mean_margin": 1.8994472789115646
+          },
+          "author_raw_mean_ablated": {
+            "rows": 147,
+            "desired_calendar_accuracy": 0.4557823129251701,
+            "desired_full_accuracy": 0.46938775510204084,
+            "mean_margin": 1.750637755102041
+          },
+          "full_donor": {
+            "rows": 147,
+            "desired_calendar_accuracy": 0.6258503401360545,
+            "desired_full_accuracy": 0.6530612244897959,
+            "mean_margin": 2.415391156462585
+          },
+          "pca5_donor": {
+            "rows": 147,
+            "desired_calendar_accuracy": 0.41496598639455784,
+            "desired_full_accuracy": 0.41496598639455784,
+            "mean_margin": 1.2969812925170068
+          },
+          "baseline": {
+            "rows": 147,
+            "desired_calendar_accuracy": 0.013605442176870748,
+            "desired_full_accuracy": 0.006802721088435374,
+            "mean_margin": -2.4158163265306123
+          },
+          "no_op": {
+            "rows": 147,
+            "desired_calendar_accuracy": 0.013605442176870748,
+            "desired_full_accuracy": 0.006802721088435374,
+            "mean_margin": -2.4158163265306123
+          },
+          "mean_only": {
+            "rows": 147,
+            "desired_calendar_accuracy": 0.1292517006802721,
+            "desired_full_accuracy": 0.10884353741496598,
+            "mean_margin": -0.11522108843537415
+          },
+          "same_rank_random_donor_plane": {
+            "rows": 4704,
+            "desired_calendar_accuracy": 0.015093537414965986,
+            "desired_full_accuracy": 0.006802721088435374,
+            "mean_margin": -2.4126873405612246
+          },
+          "equal_norm_random_edit": {
+            "rows": 4704,
+            "desired_calendar_accuracy": 0.02189625850340136,
+            "desired_full_accuracy": 0.009991496598639456,
+            "mean_margin": -2.135097789115646
+          },
+          "class_order_permuted_circular_probe": {
+            "rows": 4704,
+            "desired_calendar_accuracy": 0.2986819727891156,
+            "desired_full_accuracy": 0.29230442176870747,
+            "mean_margin": 0.7267285820578231
+          }
+        }
+      },
+      "month": {
+        "new_prompts": 432,
+        "baseline_calendar_accuracy": 0.7916666666666666,
+        "baseline_full_accuracy": 0.7939814814814815,
+        "coordinate_r2": 0.971741795539856,
+        "angular_accuracy": 0.9722222089767456,
+        "unseen_class_angular_accuracy": 0.8217592592592593,
+        "primary_shift_conditions": {
+          "pure_coordinate": {
+            "rows": 432,
+            "desired_calendar_accuracy": 0.07175925925925926,
+            "desired_full_accuracy": 0.07407407407407407,
+            "mean_margin": -2.3786168981481484
+          },
+          "centered_mean_ablated": {
+            "rows": 432,
+            "desired_calendar_accuracy": 0.5115740740740741,
+            "desired_full_accuracy": 0.5046296296296297,
+            "mean_margin": 2.5614149305555554
+          },
+          "author_raw_mean_ablated": {
+            "rows": 432,
+            "desired_calendar_accuracy": 0.5162037037037037,
+            "desired_full_accuracy": 0.5231481481481481,
+            "mean_margin": 2.6694878472222223
+          },
+          "full_donor": {
+            "rows": 432,
+            "desired_calendar_accuracy": 0.7916666666666666,
+            "desired_full_accuracy": 0.7939814814814815,
+            "mean_margin": 3.894458912037037
+          },
+          "pca5_donor": {
+            "rows": 432,
+            "desired_calendar_accuracy": 0.4166666666666667,
+            "desired_full_accuracy": 0.4074074074074074,
+            "mean_margin": 0.8279803240740741
+          },
+          "baseline": {
+            "rows": 432,
+            "desired_calendar_accuracy": 0.018518518518518517,
+            "desired_full_accuracy": 0.018518518518518517,
+            "mean_margin": -3.429615162037037
+          },
+          "no_op": {
+            "rows": 432,
+            "desired_calendar_accuracy": 0.018518518518518517,
+            "desired_full_accuracy": 0.018518518518518517,
+            "mean_margin": -3.429615162037037
+          },
+          "mean_only": {
+            "rows": 432,
+            "desired_calendar_accuracy": 0.08796296296296297,
+            "desired_full_accuracy": 0.08796296296296297,
+            "mean_margin": 0.0013744212962962963
+          },
+          "same_rank_random_donor_plane": {
+            "rows": 13824,
+            "desired_calendar_accuracy": 0.018518518518518517,
+            "desired_full_accuracy": 0.018590856481481483,
+            "mean_margin": -3.4300898799189814
+          },
+          "equal_norm_random_edit": {
+            "rows": 13824,
+            "desired_calendar_accuracy": 0.01902488425925926,
+            "desired_full_accuracy": 0.01902488425925926,
+            "mean_margin": -3.3326009114583335
+          },
+          "class_order_permuted_circular_probe": {
+            "rows": 13824,
+            "desired_calendar_accuracy": 0.19075520833333334,
+            "desired_full_accuracy": 0.19068287037037038,
+            "mean_margin": 0.8929217303240741
+          }
+        }
+      }
+    },
+    "final_used_for_selection": false,
+    "tsne_is_transductive": true
+  },
+  "heading_only_render_update": null,
+  "published_code_matches_executed_own_answers": true,
+  "published_exercises_sha256": "940bac8f23ff890274531796e1f794b58b65ad25d375134e02c1f3fc988cf947",
+  "published_solutions_sha256": "71c9a8e61b00b1cde6320cb1fa702d83e165b4b0f0e7f5fbc7b8e08b7c78edc5",
+  "published_page_sha256": "9a226426509adcfc562cd6f2b8fdb06419a2c09458744a96c732cc38e436645d",
+  "published_figures": {
+    "geometry_template_offsets.png": "5c1fdc2d2fa51f9e0314dc4e7fbea2940f13d38b5558d6cad5fef97a99f3edaf",
+    "geometry_calendar_order_null.png": "a285c314e16ecedca7e0d2c8a7387442ff33e312d9afa92fc9743b29d5e0fff4",
+    "geometry_plane_intervention.png": "1569f17955f51800904190e28755caba259adae02568823b67f2e755edd6ee0c",
+    "geometry_angle_play.png": "9c87695dc89f2e22d02aeaacb9dbad41f713f10866f6d8efd84d3a7890cf7c0e",
+    "geometry_mistral_projections.png": "675d41867862b0feefa8e71e1e27c02efa1238590813e36dd7896f43b2d362a6",
+    "geometry_mistral_layer_sweep.png": "cb391b129cf556ce32a80f61f75f55369fe1c02b06f243642060efff19fca24e",
+    "geometry_mistral_final_controls.png": "bd98b59558cda7799e07c19884e149768e73224ccd210f3ecdd99d7fa78dded7",
+    "geometry_mistral_all_donors.png": "e0caaec08bce529b0d0380ad2ff23608c7bdf47de35b7f1e38c5aef4b219d5c5",
+    "geometry_mistral_actual_answers.png": "3b26fe3247a34e5a728bce3d8ea4f4f9f7ef9551a5e41cc492e25e004640156e",
+    "geometry_projection_stability.png": "4e69f8c59ab4142d79d30c6e8a89e32b626c7c0c3c73091a5714724712096e56",
+    "geometry_projection_gallery.png": "8603b5cbdabfafd75f880b85b7492b166354d33ece6d1556a424fcc12c68b547",
+    "geometry_mistral_angle_radius.png": "afd1236b3a85900d4fc6fd41f640017ca27883d4869b8466aeb386a0b7dc9967",
+    "geometry_mistral_single_play.png": "3898c13580440a4073c5d2e7e8993ac71a441b852649f9d40834f30d53e71683"
+  }
+}

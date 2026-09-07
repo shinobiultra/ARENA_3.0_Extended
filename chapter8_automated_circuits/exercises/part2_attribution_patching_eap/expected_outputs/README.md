@@ -29,3 +29,13 @@ path integration. Real-model tolerances remain explicit in `artifacts.lock.yml`.
 ## When to regenerate
 
 Regenerate these fixtures when the section title, GT tier, artifact lock schema, verification report schema, expected baseline/control slots, or trusted toy implementation changes. Do not regenerate merely to hide a failing check; update the implementation or the declared claim scope first.
+
+## Trusted implementation
+
+Exact finite node/edge interventions in the explicit planted graph are the
+reference for AP/EAP. The tests hand-check its endpoint difference
+`4.399326441019204` and the threshold route before evaluating any gradient
+approximation. Path integration is checked against those interventions and an
+exact linear control, not against another copy of the integration algorithm.
+The helper's `torch.allclose` uses `rtol=1e-5` with explicit `atol=1e-4`;
+tighter endpoint and integration checks retain their per-test tolerances.

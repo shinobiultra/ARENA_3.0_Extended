@@ -1,0 +1,174 @@
+notebook_id: 15_3_qlora_from_scratch
+section: '15.3'
+title: QLoRA from Scratch
+release_status: measured_cuda_candidate_original_bf16_parity_gate_failed
+exercise_metadata:
+  EXERCISE_ID: 15_3_qlora_from_scratch
+  GT_TIER: GT-1
+  DIFFICULTY: 4
+  IMPORTANCE: 4
+  EXPECTED_RUNTIME: under 30 seconds for CPU checks; minutes for serialized CUDA training
+  REQUIRES_GPU: true
+gt_tier: GT-1
+evidence_level: executed_completed_learner_exact_cpu_oracles_three_seed_cuda_comparison
+claim_scope: Student-built nested-NF4 QLoRA and BF16 LoRA both learn a counterbalanced marker rule
+  in three measured seeds on TinyStories-1M. QLoRA saves about 1.3 percent of resident state relative
+  to BF16 LoRA in this small model. The unchanged 0.01 BF16 dequantized-matmul parity gate fails;
+  the optional candidate remains unreleased. This does not replace the core LoRA/DoRA/subspace roadmap
+  study.
+required_gpu_gb: 2
+max_allowed_gpu_gb: 24
+models:
+- id: roneneldan/TinyStories-1M
+  source: huggingface
+  revision: 77f1b168e219585646439073245fe87e56b3023e
+  architecture: GPTNeoForCausalLM
+  parameters: 3745984
+  dense_precision: bfloat16
+  qlora_storage: bitsandbytes_nf4_uint8_packing
+  qlora_compute: bfloat16
+  qlora_double_quant: true
+  gated: false
+  claim_scope: small_pretrained_decoder_for_transparent_local_qlora
+software:
+- package: torch
+  tested_version: 2.12.1+cu132
+- package: transformers
+  tested_version: 5.12.1
+- package: bitsandbytes
+  tested_version: 0.50.2
+- package: accelerate
+  tested_version: 1.14.0
+datasets:
+- id: course_generated_marker_codebook_v2_counterbalanced
+  source: generated_benign_prompts
+  training_examples: 60
+  template_transfer_examples: 40
+  marker_swap_examples: 40
+  marker_removed_examples: 40
+  training_templates: 3
+  template_transfer_templates: 2
+  design: complete_subject_x_template_x_label_cross
+  heldout_scope: same_subjects_disjoint_prompt_templates
+- id: course_generated_marker_codebook_unseen_subjects_v2_counterbalanced
+  source: generated_benign_prompts
+  examples: 40
+  templates: 2
+  design: complete_subject_x_template_x_label_cross
+  heldout_scope: unseen_subjects_and_templates_same_explicit_marker_rule
+- id: course_generated_tinystories_replay_v1
+  source: generated_benign_next_token_pairs
+  examples: 4
+  purpose: unrelated_capability_guardrail
+expected_metrics:
+  max_allowed_gpu_gb: 24
+  heldout_examples_min: 40
+  ood_examples_min: 40
+  marker_swap_examples_min: 40
+  marker_removed_examples_min: 40
+  experiment_seed_count: 3
+  qlora_r2_heldout_accuracy_min: 0.7
+  qlora_r8_heldout_accuracy_min: 0.85
+  bf16_lora_r8_heldout_accuracy_min: 0.85
+  full_bf16_heldout_accuracy_min: 0.85
+  qlora_vs_bf16_lora_accuracy_gap_max: 0.15
+  worst_seed_qlora_vs_bf16_lora_accuracy_gap_max: 0.25
+  qlora_r8_two_label_conditional_nll_max: 0.6
+  qlora_vs_bf16_lora_two_label_conditional_nll_gap_max: 0.35
+  qlora_r8_ood_accuracy_min: 0.75
+  qlora_vs_bf16_lora_ood_accuracy_gap_max: 0.2
+  qlora_r8_marker_swap_accuracy_min: 0.85
+  qlora_r8_marker_swap_flip_rate_min: 0.85
+  qlora_r8_marker_swap_pair_accuracy_min: 0.85
+  qlora_r8_marker_removed_accuracy_max: 0.6
+  name_only_template_transfer_accuracy: 0.5
+  name_only_ood_accuracy: 0.5
+  random_label_control_accuracy_max: 0.7
+  same_norm_random_control_accuracy_max: 0.7
+  dequantized_base_max_diff_max: 0.01
+  same_norm_relative_error_max: 1.0e-06
+  full_update_energy_beyond_rank8_min: 1.0e-06
+  qlora_r8_protected_nll_change_max: 1.5
+target_modules:
+- transformer.h.6.attn.attention.q_proj
+- transformer.h.6.attn.attention.v_proj
+method_matrix:
+- base_bf16
+- base_nf4_frozen
+- qlora_rank_2
+- qlora_rank_8
+- bf16_lora_rank_8
+- full_bf16_finetuning
+- qlora_rank_8_random_labels
+- qlora_rank_8_same_norm_random_adapter
+controls:
+- complete_subject_template_label_counterbalance
+- marker_swap_counterfactual
+- marker_removal_control
+- empirical_name_only_baseline
+- canonical_nf4_codebook_values_checked_against_bitsandbytes
+- nested_dynamic_codebook_values_checked_against_bitsandbytes
+- every_nested_quant_state_tensor_finite
+- corrupt_codebook_offset_and_absmax_rejection
+- exact_manual_vs_bitsandbytes_nf4_dequantization
+- blockwise_absmax_and_zero_block_oracles
+- paper_amortized_vs_tail_aware_vs_actual_tensor_storage
+- actual_linear4bit_zero_adapter_parity
+- actual_linear4bit_dequantized_dense_parity
+- all_intended_linear4bit_modules_materialized_and_nested
+- frozen_nf4_base_behavior_before_adapter_training
+- two_qlora_ranks
+- bf16_lora_same_rank
+- matched_step_full_bf16_finetuning
+- fixed_seed_random_labels
+- same_norm_random_adapter
+- exact_same_norm_equality
+- three_measured_unique_seeds_with_student_t_uncertainty
+- unseen_subject_and_template_ood_diagnostic
+- exact_trainable_counts_learning_rates_and_optimizer_dtypes
+- total_resident_state_model_plus_gradients_plus_optimizer
+- explicit_qlora_vs_bf16_lora_and_full_bf16_state_comparators
+- separate_q_proj_and_v_proj_spectra
+- full_update_energy_beyond_rank_8
+- clean_vs_outlier_block_size_stress
+- protected_full_vocabulary_next_token_nll
+- analytic_nonzero_adapter_forward_and_A_B_input_gradients
+- two_closed_form_adam_steps_including_protected_replay
+- zero_update_rank_zero
+- notebook_defined_adapter_protocol
+- fp32_dequantized_matmul_precision_control
+- parameter_vs_attention_mask_buffer_storage
+acceptance:
+  measured_seed_count: 3
+  learner_provenance_required_in_notebook_release: true
+  qlora_rank_2_accuracy_min: 0.7
+  qlora_rank_8_accuracy_min: 0.85
+  bf16_lora_rank_8_accuracy_min: 0.85
+  full_bf16_accuracy_min: 0.85
+  qlora_vs_bf16_lora_accuracy_gap_max: 0.15
+  worst_seed_qlora_vs_bf16_lora_accuracy_gap_max: 0.25
+  qlora_rank_8_two_label_conditional_nll_max: 0.6
+  qlora_vs_bf16_lora_two_label_conditional_nll_gap_max: 0.35
+  qlora_rank_8_ood_accuracy_min: 0.75
+  qlora_vs_bf16_lora_ood_accuracy_gap_max: 0.2
+  qlora_rank_8_marker_swap_accuracy_min: 0.85
+  qlora_rank_8_marker_swap_flip_rate_min: 0.85
+  qlora_rank_8_marker_swap_pair_accuracy_min: 0.85
+  qlora_rank_8_marker_removed_accuracy_max: 0.6
+  name_only_accuracy: 0.5
+  random_label_accuracy_max: 0.7
+  same_norm_random_accuracy_max: 0.7
+  dequantized_base_max_diff_max: 0.01
+  same_norm_relative_error_max: 1.0e-06
+  full_update_energy_beyond_rank8_min: 1.0e-06
+  qlora_rank_8_protected_nll_change_max: 1.5
+  qlora_total_resident_state_lt_bf16_lora: true
+  qlora_total_resident_state_lt_full_bf16: true
+  peak_vram_gb_max: 24
+  course_release_accepted: false
+safety_notes:
+- All adaptation prompts are generated benign codebook examples.
+- No harmful prompts, refusal suppression, user data, or generated corpus are stored.
+- The strict pretrained path has no CPU, dense, or non-bitsandbytes substitute.
+- 'No accepted verification report is registered: the actual three-seed CUDA comparison fails the
+  original BF16 parity gate.'

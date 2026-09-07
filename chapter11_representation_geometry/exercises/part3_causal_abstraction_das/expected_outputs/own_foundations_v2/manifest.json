@@ -1,0 +1,20 @@
+{
+  "source_directory": "/home/bitwise/.cache/arena_extended/das/own-foundations-v2",
+  "archive_sha256": "b87ecc555df66cc07bad4b88a318610daaf291e82cac9c56cba243d1aa86ea3b",
+  "members_sha256": {
+    "completed_learner.ipynb": "3c0312766fd241a0e5a140c830c325c3e5861f70d2dc14ab7393073ee95752f0",
+    "execution.json": "94cf534dda460e6051c7b4f7c4c0801ff916b5031dd6c69a68bb79650d692427",
+    "figures/das_angle_play.png": "d0de23e4bb095a152f1fd2dc77fa625e7b6bbc1de0c2c30c279b606c0a1ae121",
+    "figures/das_coordinate_and_specificity.png": "d887161fe3b108e543666513622cfee277bcbbc8c2e8a20c503768da6f9773ff",
+    "figures/das_exact_interchanges.png": "9695a49c72e866634a881d5e0ddc90e11cd02ac740e0d1bd2fc19c5e87031855",
+    "figures/das_learning_and_controls.png": "d1a04e7b77668b682fca366c03c69e482defe5603f73dc86149e06c304133b23",
+    "source_snapshot/build_notebooks.py": "fcb06b82351610f5773e15176119c2239e909ad3272a146ec566185528fdf3a5",
+    "source_snapshot/das_methods.py": "606c7446aee48d96367a258875040f03ad75adc2aead99d1cff46eae5ec9db0f",
+    "source_snapshot/das_methods_tests.py": "8724f6e86049537ade77e8b8cbfc4e963e3dd134cc4ea499d15b19c46c75c8ff",
+    "source_snapshot/das_organism.py": "97302ad3c0ee5397704a6a04e2fe5164ac81bd15ebd03c5d15a01185fed356a6",
+    "source_snapshot/execute_learner.py": "5d2f256fab6311b41c7af88dadc03059312ad83f8e2509841420ef8a1b3d3629",
+    "source_snapshot/lesson.md": "31e85343fce4814dd1aa94cf5d9aa6ce8bcf0d82270d6fe88ad34ad45e359eec"
+  },
+  "large_tensors_retained_in_source_directory": {},
+  "all_archive_members_read_back_and_verified": true
+}

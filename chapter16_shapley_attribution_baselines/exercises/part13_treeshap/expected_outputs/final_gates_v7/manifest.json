@@ -1,0 +1,48 @@
+{
+  "source_directory": "/home/bitwise/.cache/arena_extended/treeshap/final-gates-v7",
+  "archive_sha256": "8c452bd0212d486556b3ae89b805e29bb266e38bc3c764b843d0282f1e6dfb68",
+  "members": {
+    "audit_arena_style_depth.log": {
+      "sha256": "559bdd700d5e1971ad91325bb185204b69d1763b52d07c4753d7d2a1f6a8410b",
+      "size_bytes": 73
+    },
+    "audit_course_surface.log": {
+      "sha256": "a2e00c3825989a7411fcd96c79f159ef679acf0f5afc8514ff159bdc7ddf7fed",
+      "size_bytes": 76
+    },
+    "audit_hard_exercise_ladders.log": {
+      "sha256": "81b97c008857aedde8e665c801a5389dcc8563fc108f20792fd254295e2d429c",
+      "size_bytes": 71
+    },
+    "audit_no_minified_files.log": {
+      "sha256": "0e1f09f006190cddc7b69740e057760c4e1abe048cad6571e047c0808551f2dd",
+      "size_bytes": 9952
+    },
+    "audit_original_arena_preservation.log": {
+      "sha256": "74059e8ec1a7ffd5e394efd94f86afb01769ac8f059edf8ff1bee281174f27d6",
+      "size_bytes": 123
+    },
+    "audit_report_evidence_contracts.log": {
+      "sha256": "663dbb06659abade7dc3354e0698948ed70ee6e886d5adf16dd3c44f3169931c",
+      "size_bytes": 77
+    },
+    "audit_roadmap_final_completeness.log": {
+      "sha256": "fd920f9aa80d4cf183a4fcbf04e5c84b654f3d8e647682b801d360b2ac82adfb",
+      "size_bytes": 12884
+    },
+    "build_merged_config.log": {
+      "sha256": "db4ec1dd12435063d118f96cc00f57dfa71fb0a3efb596f58a17b7aa5bca1d97",
+      "size_bytes": 19
+    },
+    "global_tests.log": {
+      "sha256": "5b03e4f171d1bee1979df3b59078e41d3e98cb9cf2ac6f049b5e350fb59a04f6",
+      "size_bytes": 999
+    },
+    "outcomes.json": {
+      "sha256": "00432425c7404e24d00d266cbaf973fecdbc0402af55f317280c71f5652723ac",
+      "size_bytes": 3012
+    }
+  },
+  "large_tensors_retained_externally": {},
+  "readback_verified": true
+}

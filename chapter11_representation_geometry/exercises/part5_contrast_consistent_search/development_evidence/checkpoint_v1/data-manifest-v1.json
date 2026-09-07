@@ -1,0 +1,22 @@
+{
+  "train": {
+    "base_reviews": 256,
+    "contrast_pairs": 2048,
+    "sha256": "0c37ee43ecfdf3fbe16ee5fac73909d054e76d5d1ad86482c7c579126aef154d"
+  },
+  "calibration": {
+    "base_reviews": 64,
+    "contrast_pairs": 512,
+    "sha256": "67788452958b2a18a4168ba918dc8f0be89fd884f7016dc872726ddc83220c03"
+  },
+  "development": {
+    "base_reviews": 64,
+    "contrast_pairs": 512,
+    "sha256": "c1b0c17506ab720478c27a553c137e7162e93e35081c35bdfa3d30a46bf18b09"
+  },
+  "final": {
+    "base_reviews": 64,
+    "contrast_pairs": 512,
+    "sha256": "9ce39660a9f44e1f2790a06d20632c344fc229c28a87ab4f79ce93f7b3a164ea"
+  }
+}

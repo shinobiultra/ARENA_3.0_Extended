@@ -1,0 +1,121 @@
+notebook_id: 16_10_datamodels
+section: '16.10'
+title: Datamodels
+execution_device: cpu
+exercise_metadata:
+  EXERCISE_ID: 16_10_datamodels
+  GT_TIER: GT-0
+  DIFFICULTY: 4
+  IMPORTANCE: 5
+  EXPECTED_RUNTIME: Several hours study; about sixteen seconds for the complete reference CPU notebook on the development
+    machine
+  REQUIRES_GPU: false
+gt_tier: GT-0
+evidence_level: independent_lasso_oracles_and_real_subset_retraining
+claim_scope: Visible fixed-cardinality subset sampling, correct-class margins, checked Lasso, validation-only path
+  selection and counterfactual deletion. A 65-parameter digit classifier supplies 10753 independently converged
+  model fits. Held-out training subsets test query-specific datamodel predictions; query images are excluded from
+  classifier training but intentionally supply datamodel targets. Same-size accuracy, mostly dense coefficients
+  and deletion calibration errors are retained. This is not a stochastic ResNet or whole-paper replication.
+required_gpu_gb: 0
+max_allowed_gpu_gb: 0
+models:
+- id: course_digit3_8_logistic65
+  source: generated_training_run
+  revision: frozen_datamodels_protocol_v1
+  precision: float64
+  gated: false
+datasets:
+- id: uci_optdigits
+  source: uci
+  revision: 0d7b054fea010270e9b3f06411c654c5e59547732ad626381980baffe0a23fb0
+  license: CC BY 4.0
+  train: 128
+  query: 64
+  manifest: data_manifest.json
+expected_metrics:
+  tests_passed: true
+  accepted: true
+  test_count: 12
+  actual_learner_passed: true
+  own_answer_code_cells: 31
+  embedded_figures: 15
+  native_model_retrained: true
+  native_model_retrained_in_this_report: true
+  native_evidence_reused: false
+  fresh_reproduction_passed: true
+  reference_refits: 10753
+  independent_scipy_checks: 10
+  independent_lasso_checks: 12
+  fresh_compared_tensors: 263
+  fresh_compared_elements: 5546159
+  fresh_max_error_max: 1.0e-10
+  heldout_unit: training_subset_model
+  heldout_model_count: 768
+  test_responses_used_for_selection: false
+  query_image_count: 64
+  query_images_used_as_regression_targets: true
+  query_images_excluded_from_classifier_training: true
+  exploratory_refits: 18
+  whole_paper_replication: false
+controls:
+- exact_small_subset_enumeration
+- independent_scalar_proximal_oracle
+- orthogonal_KKT_ground_truth
+- sklearn_coordinate_descent_parity
+- rank_deficient_coefficient_offset_fixture
+- separate_and_batched_classifier_refits
+- independent_scipy_optima
+- intercept_only_and_minimum_norm_least_squares
+- permuted_subset_response_control
+- all_three_subsampling_fractions
+- all_regularization_paths_and_training_prefixes
+- test_subset_responses_excluded_from_selection
+- signed_pixel_neighbor_deletions
+- 16_class_matched_random_deletions_per_policy
+- all_queries_and_failures_retained
+- coordinate_shuffled_similarity
+- fresh_complete_native_retraining
+- editable_interaction_and_real_query_plays
+safety_notes:
+- Public UCI digit images with original labels and source row provenance.
+freshness_inputs:
+- chapter16_shapley_attribution_baselines/exercises/part10_datamodels/README.md
+- chapter16_shapley_attribution_baselines/exercises/part10_datamodels/build_notebooks.py
+- chapter16_shapley_attribution_baselines/exercises/part10_datamodels/data_manifest.json
+- chapter16_shapley_attribution_baselines/exercises/part10_datamodels/datamodel_contract_tests.py
+- chapter16_shapley_attribution_baselines/exercises/part10_datamodels/datamodel_data.py
+- chapter16_shapley_attribution_baselines/exercises/part10_datamodels/datamodel_methods.py
+- chapter16_shapley_attribution_baselines/exercises/part10_datamodels/datamodel_methods_tests.py
+- chapter16_shapley_attribution_baselines/exercises/part10_datamodels/datamodel_study.py
+- chapter16_shapley_attribution_baselines/exercises/part10_datamodels/execute_learner.py
+- chapter16_shapley_attribution_baselines/exercises/part10_datamodels/expected_outputs/fresh_reproduction.json
+- chapter16_shapley_attribution_baselines/exercises/part10_datamodels/expected_outputs/learner_execution.json
+- chapter16_shapley_attribution_baselines/exercises/part10_datamodels/expected_outputs/native_summary.json
+- chapter16_shapley_attribution_baselines/exercises/part10_datamodels/lesson.md
+- chapter16_shapley_attribution_baselines/exercises/part10_datamodels/protocol.md
+- chapter16_shapley_attribution_baselines/exercises/part10_datamodels/protocol_freeze.json
+- chapter16_shapley_attribution_baselines/exercises/part10_datamodels/publish_study.py
+- chapter16_shapley_attribution_baselines/exercises/part10_datamodels/reproduce_native.py
+- chapter16_shapley_attribution_baselines/exercises/part10_datamodels/run_native.py
+- chapter16_shapley_attribution_baselines/exercises/part10_datamodels/solutions.py
+- chapter16_shapley_attribution_baselines/exercises/part10_datamodels/tests.py
+- chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/attribution_data.py
+- chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/attribution_methods.py
+- chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/attribution_reference.py
+- chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/reproduce_native.py
+- chapter16_shapley_attribution_baselines/instructions/assets/datamodel_coefficient_gallery.png
+- chapter16_shapley_attribution_baselines/instructions/assets/datamodel_cross_fraction.png
+- chapter16_shapley_attribution_baselines/instructions/assets/datamodel_deletion_curves.png
+- chapter16_shapley_attribution_baselines/instructions/assets/datamodel_fixture_play.png
+- chapter16_shapley_attribution_baselines/instructions/assets/datamodel_gauge.png
+- chapter16_shapley_attribution_baselines/instructions/assets/datamodel_heldout_predictions.png
+- chapter16_shapley_attribution_baselines/instructions/assets/datamodel_images.png
+- chapter16_shapley_attribution_baselines/instructions/assets/datamodel_individual_flips.png
+- chapter16_shapley_attribution_baselines/instructions/assets/datamodel_membership.png
+- chapter16_shapley_attribution_baselines/instructions/assets/datamodel_query_r2.png
+- chapter16_shapley_attribution_baselines/instructions/assets/datamodel_real_play.png
+- chapter16_shapley_attribution_baselines/instructions/assets/datamodel_sample_complexity.png
+- chapter16_shapley_attribution_baselines/instructions/assets/datamodel_similarity.png
+- chapter16_shapley_attribution_baselines/instructions/assets/datamodel_soft_threshold.png
+- chapter16_shapley_attribution_baselines/instructions/assets/datamodel_validation_path.png

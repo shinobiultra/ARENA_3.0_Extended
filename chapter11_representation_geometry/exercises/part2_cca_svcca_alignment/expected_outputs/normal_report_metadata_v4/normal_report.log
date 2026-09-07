@@ -1,0 +1,17 @@
+W0906 16:00:29.841000 1975006 .venv/lib/python3.14/site-packages/torch/utils/_pytree.py:630] <enum 'KernelPreference'> is an Enum subclass and is now natively supported by torch.compile as an opaque value type. Calling register_constant() on Enum subclasses is deprecated and will be an error in a future release.
+W0906 16:00:29.854000 1975006 .venv/lib/python3.14/site-packages/torch/utils/_pytree.py:630] <enum 'ScaleCalculationMode'> is an Enum subclass and is now natively supported by torch.compile as an opaque value type. Calling register_constant() on Enum subclasses is deprecated and will be an error in a future release.
+Whitening checks passed: identity covariance, numerical rank and training-only centering agree.
+CCA checks passed: known correlations survive invertible affine coordinate changes.
+Held-out checks passed: fitted directions stay fixed and negative or undefined correlations remain visible.
+Overfitting control passed: independent views look perfect on training rows and fail on new rows.
+SVCCA cutoff checks passed: a low-variance feature can be discarded even if it matters to a task.
+Procrustes checks passed: rigid alignment works, anisotropic scaling remains a visible mismatch.
+Transport checks passed: exact differences transfer and an unrelated constant coordinate is preserved.
+Ridge baseline checks passed: dual and primal predictions agree and the intercept remains unpenalized.
+Distribution checks passed: KL uses all tokens and the intended target-to-actual direction.
+Loading weights:   0%|          | 0/148 [00:00<?, ?it/s]Loading weights: 100%|██████████| 148/148 [00:00<00:00, 13196.93it/s]
+2_to_6 fresh model, fits, native donor and all random controls compared
+4_to_8 fresh model, fits, native donor and all random controls compared
+6_to_10 fresh model, fits, native donor and all random controls compared
+PASS 11.2 CCA, SVCCA, and Representation Alignment
+Wrote 1 verification reports; 1 accepted.

@@ -1,0 +1,184 @@
+notebook_id: 16_13_treeshap_from_first_principles
+section: '16.13'
+title: TreeSHAP from First Principles
+execution_device: cpu
+exercise_metadata:
+  EXERCISE_ID: 16_13_treeshap_from_first_principles
+  GT_TIER: GT-0
+  DIFFICULTY: 5
+  IMPORTANCE: 5
+  EXPECTED_RUNTIME: Four to six hours self-study; the complete native CPU runtime is recorded by the canonical learner execution
+  REQUIRES_GPU: false
+gt_tier: GT-0
+evidence_level: exhaustive_tree_games_and_raw_plus_threshold_corrected_compiled_reference
+claim_scope: >-
+  Student-implemented path-dependent and finite-background interventional TreeSHAP match exhaustive
+  8-feature games across three clean tree families, while all 18 fresh fits, 486 component trees,
+  272 held-out rows per model, Saabas, deletion orders, shuffled targets, background variants and
+  mechanism controls are retained. Unmodified SHAP 0.49.1 interventional routing fails on disclosed
+  float32-threshold cases; a separately threshold-corrected compiled reference passes the original
+  tolerance. The public concrete study is predictive attribution, not a causal material recipe or
+  whole-paper benchmark replication.
+required_gpu_gb: 0
+max_allowed_gpu_gb: 0
+models:
+- id: sklearn_decision_tree_random_forest_gradient_boosting
+  source: generated_training_run
+  revision: frozen_treeshap_protocol_v1
+  precision: float64_values_float32_routing
+  gated: false
+datasets:
+- id: uci_concrete_compressive_strength
+  source: uci
+  revision: 8d4b15b6fc68cd932d745cbd663d5ceae66dd54422e99c1e4865f2936ab7e2af
+  license: CC BY 4.0
+  train: 758
+  explanation: 153
+  audit: 119
+  manifest: data_manifest.json
+expected_metrics:
+  tests_passed: true
+  accepted: true
+  test_count: 9
+  actual_learner_passed: true
+  own_answer_code_cells: 38
+  embedded_figures: 17
+  native_model_retrained: true
+  native_model_retrained_in_this_report: true
+  native_evidence_reused: false
+  fresh_reproduction_passed: true
+  fresh_compared_arrays: 3961
+  fresh_compared_elements: 1055546
+  fresh_compared_arrays_min: 1
+  fresh_compared_elements_min: 1
+  fresh_max_error: 0.0
+  model_fits: 18
+  fresh_model_fits: 18
+  all_model_fits_retained: true
+  component_trees: 486
+  clean_fits: 9
+  shuffled_fits: 9
+  shuffled_models_evaluated: 9
+  train_row_count: 758
+  train_group_count: 298
+  explanation_group_count: 64
+  heldout_unit: recipe_group
+  heldout_group_count: 65
+  heldout_row_count: 119
+  explanation_row_count: 153
+  rows_explained_per_model: 272
+  model_row_explanations: 4896
+  final_used_for_selection: false
+  cross_split_recipe_overlap: 0
+  exact_models: 3
+  exact_games: 2
+  exact_coalitions: 256
+  exact_model_rows: 816
+  exact_game_model_rows: 1632
+  shap_parity_rows: 4896
+  shap_parity_rows_per_model: 272
+  shap_parity_model_rows: 4896
+  prediction_parity_max_error_max: 1.0e-8
+  base_value_parity_max_error_max: 2.0e-5
+  path_reference_passed: true
+  path_reference_model_rows: 4896
+  path_reference_max_error_max: 1.0e-8
+  raw_interventional_reference_passed: false
+  raw_interventional_reference_disclosed: true
+  raw_interventional_reference_model_rows: 4896
+  raw_interventional_reference_affected_rows: 469
+  raw_interventional_reference_affected_rows_min: 2
+  raw_interventional_reference_max_error_min: 0.001
+  raw_interventional_reference_max_error_max: 10.0
+  corrected_interventional_reference_passed: true
+  corrected_interventional_reference_model_rows: 4896
+  corrected_interventional_reference_max_error_max: 2.0e-5
+  exhaustive_path_max_error_max: 1.0e-8
+  exhaustive_interventional_max_error_max: 1.0e-8
+  random_order_controls: 100
+  deletion_models: 3
+  deletion_audit_rows: 119
+  deletion_uses_exact_interventional_game: true
+  background_variants: 4
+  background_rows_compared: 272
+  alternate_backgrounds_compared: true
+  saabas_models: 18
+  saabas_model_rows: 4896
+  saabas_deletion_models: 3
+  saabas_differs_from_shap: true
+  saabas_additivity_max_error_max: 1.0e-8
+  saabas_attribution_gap_max_min: 1.0e-8
+  training_mean_baseline: true
+  corrected_thresholds: 941
+  raw_source_route_disagreements: 217
+  corrected_source_route_disagreements: 0
+  dummy_feature_max_abs_max: 1.0e-10
+  all_training_seeds_retained: true
+  shuffled_training_targets: true
+  whole_paper_replication: false
+controls:
+- all_256_coalitions_for_three_primary_models_and_both_games
+- full_local_vector_and_base_prediction_exhaustive_parity
+- unmodified_shap_0_49_1_raw_threshold_failure_retained
+- separately_threshold_corrected_compiled_reference
+- all_18_clean_and_shuffled_fits_across_three_seeds
+- decision_tree_random_forest_and_gradient_boosting_families
+- training_target_mean_performance_baseline
+- saabas_efficiency_without_shapley_parity_claim
+- 100_random_deletion_orders
+- primary_64_and_nested_16_128_backgrounds
+- two_independent_64_row_backgrounds
+- correlated_binary_conditional_interventional_and_cover_games
+- equivalent_additive_trees_with_opposite_root_order
+- repeated_feature_constant_tree_and_dummy_features
+- exact_enumeration_versus_dynamic_programming_timing
+- fresh_native_refit_and_full_array_comparison
+- editable_tiny_tree_and_real_recipe_plays
+safety_notes:
+- Public material measurements; predictive feature attribution is not a material-design recommendation.
+freshness_inputs:
+- chapter16_shapley_attribution_baselines/exercises/part13_treeshap/build_notebooks.py
+- chapter16_shapley_attribution_baselines/exercises/part13_treeshap/execute_learner.py
+- chapter16_shapley_attribution_baselines/exercises/part13_treeshap/publish_study.py
+- chapter16_shapley_attribution_baselines/exercises/part13_treeshap/reproduce_native.py
+- chapter16_shapley_attribution_baselines/exercises/part13_treeshap/run_native.py
+- chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_contract_tests.py
+- chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_data.py
+- chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_diagnostics.py
+- chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_methods.py
+- chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_methods_tests.py
+- chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_plots.py
+- chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_reference.py
+- chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_study.py
+- chapter16_shapley_attribution_baselines/exercises/part13_treeshap/solutions.py
+- chapter16_shapley_attribution_baselines/exercises/part13_treeshap/tests.py
+- chapter16_shapley_attribution_baselines/exercises/part13_treeshap/README.md
+- chapter16_shapley_attribution_baselines/exercises/part13_treeshap/lesson.md
+- chapter16_shapley_attribution_baselines/exercises/part13_treeshap/protocol.md
+- chapter16_shapley_attribution_baselines/exercises/part13_treeshap/protocol_freeze.json
+- chapter16_shapley_attribution_baselines/exercises/part13_treeshap/reference_boundary_addendum.md
+- chapter16_shapley_attribution_baselines/exercises/part13_treeshap/data_manifest.json
+- chapter16_shapley_attribution_baselines/exercises/part13_treeshap/author_reference.json
+- chapter16_shapley_attribution_baselines/exercises/part13_treeshap/verification_report.schema.json
+- chapter16_shapley_attribution_baselines/exercises/part13_treeshap/expected_outputs/README.md
+- chapter16_shapley_attribution_baselines/exercises/part13_treeshap/expected_outputs/learner_execution.json
+- chapter16_shapley_attribution_baselines/exercises/part13_treeshap/expected_outputs/native_summary.json
+- chapter16_shapley_attribution_baselines/exercises/part13_treeshap/expected_outputs/fresh_reproduction.json
+- chapter16_shapley_attribution_baselines/instructions/pages/13_[16.13]_TreeSHAP_from_First_Principles.md
+- chapter16_shapley_attribution_baselines/instructions/assets/treeshap_01_missing_feature_games.png
+- chapter16_shapley_attribution_baselines/instructions/assets/treeshap_02_tiny_tree.png
+- chapter16_shapley_attribution_baselines/instructions/assets/treeshap_03_cardinality_weights.png
+- chapter16_shapley_attribution_baselines/instructions/assets/treeshap_04_correlated_games.png
+- chapter16_shapley_attribution_baselines/instructions/assets/treeshap_05_repeated_feature.png
+- chapter16_shapley_attribution_baselines/instructions/assets/treeshap_06_saabas_control.png
+- chapter16_shapley_attribution_baselines/instructions/assets/treeshap_07_audit_performance.png
+- chapter16_shapley_attribution_baselines/instructions/assets/treeshap_08_prediction_waterfall.png
+- chapter16_shapley_attribution_baselines/instructions/assets/treeshap_09_attribution_heatmaps.png
+- chapter16_shapley_attribution_baselines/instructions/assets/treeshap_10_model_seed_variation.png
+- chapter16_shapley_attribution_baselines/instructions/assets/treeshap_11_background_sensitivity.png
+- chapter16_shapley_attribution_baselines/instructions/assets/treeshap_12_deletion_curves.png
+- chapter16_shapley_attribution_baselines/instructions/assets/treeshap_13_runtime_dummy_features.png
+- chapter16_shapley_attribution_baselines/instructions/assets/treeshap_14_runtime_depth.png
+- chapter16_shapley_attribution_baselines/instructions/assets/treeshap_15_tiny_tree_play.png
+- chapter16_shapley_attribution_baselines/instructions/assets/treeshap_16_real_recipe_play.png
+- chapter16_shapley_attribution_baselines/instructions/assets/treeshap_17_reference_parity.png

@@ -1097,3 +1097,4 @@ def test_solution_notebook_exposes_taught_implementations():
     assert "<summary>Interpretation</summary>" in markdown, (
         'The solution notebook must keep taught implementations, learner aids, and the visible signature result inline.'
     )
+    print("All tests in `test_solution_notebook_exposes_taught_implementations` passed!")

@@ -110,9 +110,9 @@
       "validation_label": 1.0
     }
   ],
-  "date_run": "2026-09-04T12:55:33+00:00",
+  "date_run": "2026-09-04T23:53:45+00:00",
   "evidence_level": "shap_mech_agreement_contract_plus_cuda_neural_game_preflight",
-  "git_commit": "387be0eb",
+  "git_commit": "8eab192b",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-0",
   "known_failures": [],
@@ -332,8 +332,13 @@
   "peak_vram_gb": 0.06262922286987305,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "aaccb90f14ea0672dcdb2caeec78f03cfd55959e9466ffbe7436c9c89efebcd1",
+    "combined_sha256": "e9910f2609dabf945acaac0677c2cb2ac3fb2bf627937ce8bb086240f7bcc8c2",
     "files": [
+      {
+        "path": "arena_ext/notebook_checks.py",
+        "sha256": "0033fd8978a45bf0cf5dd7ce790bb234add9d63c564c76479c0d8eb86973bacc",
+        "size_bytes": 1627
+      },
       {
         "path": "arena_ext/shapley_attribution.py",
         "sha256": "41933e8728654b42e33929346d136327b37d86e28bb884a45dd878dba096c418",
@@ -366,8 +371,8 @@
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part8_shapley_mechinterp_agreement/artifacts.lock.yml",
-        "sha256": "47d91cb26568bed421d2da3d6d451635437370adb941cedfc2daa6cb0712e45d",
-        "size_bytes": 4435
+        "sha256": "e7319729af1c3f2970c85cd3436acc07abf2b549206b071214cc4f4ce28b7eae",
+        "size_bytes": 4487
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part8_shapley_mechinterp_agreement/expected_outputs/README.md",
@@ -391,8 +396,8 @@
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part8_shapley_mechinterp_agreement/tests.py",
-        "sha256": "7ae202e12f153f8e9a1ba4f3ef42387805764bf182bc4fbfc2d4cf9e5de7a3fa",
-        "size_bytes": 21296
+        "sha256": "ae201d5ff4dbd8e52edd62340d04bec9d6c684abdc12a67c38b4df60184fb0a7",
+        "size_bytes": 21447
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part8_shapley_mechinterp_agreement/utils.py",
@@ -406,7 +411,7 @@
       },
       {
         "path": "chapter16_shapley_attribution_baselines/instructions/pages/08_[16.8]_Do_SHAPley_and_Mechanistic_Interpretability_Agree.md",
-        "sha256": "65b9957610e570ae0129b8ed57084deb25ae7cad3417c831630d0881d6a49322",
+        "sha256": "e7556111b690f93040e7e987c87eb1f057f61d21732e7c68717e867759d748d2",
         "size_bytes": 59821
       },
       {
@@ -422,5 +427,5 @@
     "The real training path uses only a generated finite binary feature table and a shuffled-label negative control. It does not use unsafe prompts, user data, external APIs, adapters, gated weights, or large persistent artifacts."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 3.081264
+  "wall_clock_seconds": 2.259005
 }

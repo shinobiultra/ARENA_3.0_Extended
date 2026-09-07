@@ -1,0 +1,293 @@
+{
+  "archive": "execution_review.tar.gz",
+  "sha256": "995c79d4b560b60cbf86c99948f61f4df8200847ff0973e570f2e4dd92bd757b",
+  "bytes": 11990655,
+  "scope": "Own-answer notebook, source snapshots, actual figures, author browser review and complete check receipts. Large numerical arrays remain external and are physically hashed in native_summary.json.",
+  "files": {
+    "learner/execution.json": {
+      "sha256": "1e8364fefbf88c3f25af9db6af1233d703251ff8c618b90c8dfea75d5e74c688",
+      "bytes": 7243
+    },
+    "learner/completed_learner.ipynb": {
+      "sha256": "b28f70ffc5cd27792e72e99d54a6214f2f44c4d4709c4a8adbdb4fdf617179b5",
+      "bytes": 2267954
+    },
+    "learner/figures/05_model_controls.png": {
+      "sha256": "ff5ae60098fa6a4cc3b4b6303f38684196a5ae170719caa61158c4b60c6a21f2",
+      "bytes": 72814
+    },
+    "learner/figures/02_query_play.png": {
+      "sha256": "1d835f1d43d808118557de8a2b896e685966f1681c6b736ca9a7efb855b03916",
+      "bytes": 83178
+    },
+    "learner/figures/07_signed_pair_comparison.png": {
+      "sha256": "50923082be444a9e4c438f9c430ad22c1218c8a9627bb9a29aa11ffd3c21fde1",
+      "bytes": 155370
+    },
+    "learner/figures/09_unique_queries_and_rank.png": {
+      "sha256": "117d7a59067217f3f1597beac34866c5b2bbdd029007417872901a23d003cce5",
+      "bytes": 160316
+    },
+    "learner/figures/03_sampling_and_cost.png": {
+      "sha256": "7ffa341bfd434c7f6aab30cdcc2b6b530809e4055c59d08b92ec0ae81cfa6beb",
+      "bytes": 110954
+    },
+    "learner/figures/01_shared_query.png": {
+      "sha256": "1d835f1d43d808118557de8a2b896e685966f1681c6b736ca9a7efb855b03916",
+      "bytes": 83178
+    },
+    "learner/figures/06_query_budget_errors.png": {
+      "sha256": "20e5cc64dce6a854969c89597a3aff944ce19f2b9be7defe2daba1f04eea386c",
+      "bytes": 856705
+    },
+    "learner/figures/04_boundary_limit.png": {
+      "sha256": "47f75f714895a1a0fd1330e3d7018038a6eb7153580fcae8f55c70e07b7d64eb",
+      "bytes": 102960
+    },
+    "learner/figures/08_sampling_variance.png": {
+      "sha256": "13e92a731dd08994b5ee437b8129aa66c84389592ecd54a1a1651759a9408a8c",
+      "bytes": 621897
+    },
+    "learner/figures/10_native_query_play.png": {
+      "sha256": "53c5822820024a3602880da2c8a5485a0388b2e046ca45a85d3aed708f6dad78",
+      "bytes": 160311
+    },
+    "learner/source_snapshot/uv.lock": {
+      "sha256": "03f77ffac99858cd34a653cd703728b9a868c87686a86cef78523a7afa9a6494",
+      "bytes": 588124
+    },
+    "learner/html_review/browser_pair_boundary_limit.png": {
+      "sha256": "a0340e9a5f09b56e61760102d44f848ce276e1d34a3312a6854fbc140a57c5cd",
+      "bytes": 111890
+    },
+    "learner/html_review/browser_figure_01.png": {
+      "sha256": "272f69e9a2ea84c46b738d7e1adde2af96873692f9af6a91dea1b9928e27d885",
+      "bytes": 107109
+    },
+    "learner/html_review/browser_nullspace_solve.png": {
+      "sha256": "5f23f5d6ecb426cfeb2943b1b6b21bfa938a9ea12bd05927946c17e17fa9b7d5",
+      "bytes": 101612
+    },
+    "learner/html_review/browser_sampling_mean_se.png": {
+      "sha256": "4b3b2d798dec82584235fc2226bbaea3fa632515077ca32e44091050075626cc",
+      "bytes": 83177
+    },
+    "learner/html_review/exercises.html": {
+      "sha256": "6bd7496ca12d9668c9c0095935da201f9ec83f1e698c8419029138ec45a215d9",
+      "bytes": 2632090
+    },
+    "learner/html_review/browser_dom_review.json": {
+      "sha256": "b3d7445611e0a9f908efaf9a55b93de79af1638b8b8a4f968b2c67176f432705",
+      "bytes": 214
+    },
+    "learner/html_review/solutions.html": {
+      "sha256": "10f786c9e1f91dc8b6f8a9f870cd0b217bfa90e619a1925920159c03fdfbcd3f",
+      "bytes": 2620637
+    },
+    "learner/html_review/browser_figure_07.png": {
+      "sha256": "6c67470f3fe4cd3df3ab306c2ad7a518eb1793038fc3cf10a77515bb2d9732bd",
+      "bytes": 97945
+    },
+    "learner/html_review/DRAFT_16.17_One_Query_Many_Interactions_exercises.ipynb": {
+      "sha256": "b780e7af433f42962616bab5a481a56418387e69eac209b55897e4fd21f341f3",
+      "bytes": 2267093
+    },
+    "learner/html_review/browser_figure_10.png": {
+      "sha256": "2465c01c9378fdc524f6dd8cb564a8efa0d7472f72021baa6a849b00230a774e",
+      "bytes": 110330
+    },
+    "learner/html_review/browser_shared_derivation.png": {
+      "sha256": "7df645595f615860d4c9ec965b23239fac0fb75b148e9551882b7d783c62dcd0",
+      "bytes": 67160
+    },
+    "learner/html_review/play_variations.json": {
+      "sha256": "0569f2d2a0a2198b5872e0ae0358d7442323321d179af26f2467e9b8f21cad5c",
+      "bytes": 3442
+    },
+    "learner/html_review/browser_figure_09.png": {
+      "sha256": "82b6d3ffeb61c65d885fbf83c8a94d8f9ccea64f97b63f049d2e19ff92eb1e5d",
+      "bytes": 114037
+    },
+    "learner/html_review/render.json": {
+      "sha256": "585d645ab5c6ad93ed031cfcedfb9f4614aad50c586d994e2b6b796a07d02591",
+      "bytes": 558
+    },
+    "learner/html_review/browser_figure_04.png": {
+      "sha256": "6552abf9369074abf37bbc50a73f25fdcd08e00db8924c70a2cc9a9356267aee",
+      "bytes": 123648
+    },
+    "learner/html_review/browser_figure_05.png": {
+      "sha256": "bccf0bf20dcf883155225d0dc6d3fecea4568a0e8d86d62391c07d3fee706482",
+      "bytes": 91624
+    },
+    "learner/html_review/DRAFT_16.17_One_Query_Many_Interactions_solutions.ipynb": {
+      "sha256": "b28f70ffc5cd27792e72e99d54a6214f2f44c4d4709c4a8adbdb4fdf617179b5",
+      "bytes": 2267954
+    },
+    "learner/html_review/author_visual_review.json": {
+      "sha256": "b53af15ce0fa1ce71719cc62f2339e36d6f1779e2e227faa83786f491a2aee4a",
+      "bytes": 4681
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/estimator_methods_tests.py": {
+      "sha256": "9315702657a2a81795e273e0a9c4f457100cee98092a0f933e02e010b6dd5a99",
+      "bytes": 11116
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/execute_learner.py": {
+      "sha256": "11695b4c9a40a9ff06147d6ba252eaf542f41305e42b40713bdbce9a7cad6f3b",
+      "bytes": 5118
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/lesson.md": {
+      "sha256": "31174dc3d6f95a3dc3d380647ebd69bbd49f9aaa7b5443c35cc78e194ebecf3b",
+      "bytes": 28126
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/lesson_cells.py": {
+      "sha256": "d6c844ab2a307ea8db0b4dcb2a134de56a1d9eb44d954cd4ea05a1b84512b6b2",
+      "bytes": 4985
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/estimator_methods.py": {
+      "sha256": "f173ff6d56b4bdd08fb044ddfb9d18c3cdc7e79cff94b940eb66f51b73fb208c",
+      "bytes": 14759
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/data_manifest.json": {
+      "sha256": "9f2b4351ac056d109d63ee99c108df5249c3185c84a68d61bb9384d99940f3c8",
+      "bytes": 17745
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/build_notebooks.py": {
+      "sha256": "9d2ccd0d791b479d0978b5a4b670e750e9b1374c27815da4547332c34cec5b7f",
+      "bytes": 4996
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/protocol_freeze.json": {
+      "sha256": "8d66f3eb399688712acd557a4b91b2e39612440a1444b6aa31afdba04d479656",
+      "bytes": 1322
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/estimator_plots.py": {
+      "sha256": "835d66ec52d0d7040df7b6ea2ddccf6bb12e0008bc496f6e3f1d0cabd09b0735",
+      "bytes": 16405
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/estimator_study.py": {
+      "sha256": "846faa75ed7ccc6b4c59bbb2df6501c7b69500cf27c24b495288a573cdbb3c55",
+      "bytes": 14864
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/protocol.md": {
+      "sha256": "5ca23cc6f18ce83c82cac60ad495d2deeabba2c0d9da01c4f61b32e9bb68433a",
+      "bytes": 7363
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_plots_tests.py": {
+      "sha256": "b5acaabd5d2062a31c8b36c132cd48c5b9e33fc8f8f6e7f04158248a8f31f93a",
+      "bytes": 13395
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/reproduce_native.py": {
+      "sha256": "382d67ea67ecd6c02d0c1148dbb812c567e6635f706c351f02f85f9cb7d367db",
+      "bytes": 13098
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/run_native.py": {
+      "sha256": "f4c359e12c25d77b14100da9e66145480fe0dfa591f9387cf1fe1d8c938f205c",
+      "bytes": 31408
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/execute_learner.py": {
+      "sha256": "0dfd6ee46e87b0091466c47d6a61e6b451ccdf34758e6a68399ac9f7b42cbc38",
+      "bytes": 10796
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_contracts.py": {
+      "sha256": "3b52d90376e81b75e90ee4f9adfffa35073982708372143542e0a0349b1b319a",
+      "bytes": 24587
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/solutions.py": {
+      "sha256": "29471f5b57fa41cff1e4db5fe08b5c5f0f22ae20cf71f06a0e2c2323e4a2edc1",
+      "bytes": 15822
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_methods.py": {
+      "sha256": "2c56ae4e108d13b8e2994f12944af49af3915fcf95d684da96ddec7ed46c5be5",
+      "bytes": 16834
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference_tests.py": {
+      "sha256": "95bfe943a98b7353e29328992ee4cbf0a0558cdf3c8d64a692129e47bf1dbc4e",
+      "bytes": 18899
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py": {
+      "sha256": "c063d120d7449a9b20b4ac370247b2b5971e809575d44ab9d7c8719cc551292f",
+      "bytes": 43620
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/data_manifest.json": {
+      "sha256": "bcf41f96c9f6839ee4cbf24df82ca8467b35a6ed9090a9c4c56fce0b1a23120c",
+      "bytes": 38183
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_plots.py": {
+      "sha256": "f7369b14f53d0ac3cac2c54efa12ed2b9b799bb2e94336cb0b030b5d585380d0",
+      "bytes": 54585
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/build_notebooks.py": {
+      "sha256": "0b1b09ca7c3ecb58dde9f89ac993600f86837603e0d167dd8c0b0520d7085395",
+      "bytes": 16690
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_study.py": {
+      "sha256": "f49e4f5872beca780c95a3689b919690e5be8c344df3f0625178476ff163ad02",
+      "bytes": 67704
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_diagnostics_tests.py": {
+      "sha256": "420c535748a2dedb4a1e6a3d3e4c99e4cb0ace78d51af01e1141d136b153b029",
+      "bytes": 6350
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/publish_study.py": {
+      "sha256": "9be2df77f3074d1b741108eb77e47c94132cee7f5ed1e8dd8ea5726e78be8003",
+      "bytes": 17833
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_methods_tests.py": {
+      "sha256": "fafa0eaa80591793198f23e884c21b3f457eaf240841ae10c9cfd58e721eae12",
+      "bytes": 26153
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_diagnostics.py": {
+      "sha256": "d3b60c3d5e9565a3c693fa4d8146a8115eae1ac1708986692197dadfdbee5e7f",
+      "bytes": 25759
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_study_tests.py": {
+      "sha256": "ef938b660a7b6388023654bd977cfd94e999540ee6d827ead6f5382f757eb3a5",
+      "bytes": 16879
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/tests.py": {
+      "sha256": "a6525e5184bfb8a9cb6117b8d447c1feaab2343af9a73c00f41052dd19e4fe84",
+      "bytes": 167
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_data.py": {
+      "sha256": "9c9c1016ffd6fe839a004c06e801cdcd24d4d71a85ccd3f0707168dec390c7ce",
+      "bytes": 3795
+    },
+    "learner/figures/native/summary.json": {
+      "sha256": "e2b94b25bb7008a2ac2a9ea0e0d5e8202e237d72790c6f564487900337b5b972",
+      "bytes": 1405
+    },
+    "checks/pre-native-tests-v1.log": {
+      "sha256": "5b881b4537ccc6f9a2ef9a8ca6146ea05212d4441a82a3e1e0ea31119376795e",
+      "bytes": 99
+    },
+    "checks/native-learner-v2-budget.json": {
+      "sha256": "42880572d89105b8834f29311f81152597f24e570959efcdcd6d8dc82cded9cf",
+      "bytes": 283
+    },
+    "checks/normal_report_v3.log": {
+      "sha256": "4f8154d298be6df7393881606772ed467f195efb07ebab9bd1cf1777e41ee967",
+      "bytes": 1548
+    },
+    "checks/integration_tests_v3.log": {
+      "sha256": "eb920a7912fc374e7c750a09799322f2cccbef87325b279b1339bd41c668ec5a",
+      "bytes": 100
+    },
+    "checks/style_wording_tests_v4.log": {
+      "sha256": "ad42a2ab3afa6fc6ecbb7c0942cf2d35150abbe8069bddd5d9cf3e35e8f08d9f",
+      "bytes": 98
+    },
+    "checks/section_gates_v4.json": {
+      "sha256": "a1abb0dd29624fbeaa57e461e1130d8711abe76dc1e2b6ab7c422c69ab3fbb78",
+      "bytes": 171
+    },
+    "checks/original_preservation_v2.log": {
+      "sha256": "20e96bc6af6fdf636d0c24bf46918b8f51f7a5f9a0b56aa04eada22c20d4c848",
+      "bytes": 123
+    },
+    "checks/course_roadmap_audit_v4.log": {
+      "sha256": "02236060fa29291dec0bd2cf4f6627866cd5558fdd8a932af7f66d4a788c5f7f",
+      "bytes": 12645
+    }
+  },
+  "external_native_directory": "/home/bitwise/.cache/arena_extended/shapiq_estimators/native-learner-v2/figures/native"
+}

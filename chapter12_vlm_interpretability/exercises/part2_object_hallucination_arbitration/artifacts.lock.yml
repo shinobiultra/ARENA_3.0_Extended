@@ -1,0 +1,80 @@
+notebook_id: 12_5_object_hallucination_arbitration
+section: '12.5'
+title: Object Hallucination and Modality Arbitration
+exercise_metadata:
+  EXERCISE_ID: 12_5_object_hallucination_arbitration
+  GT_TIER: GT-0
+  DIFFICULTY: 4
+  IMPORTANCE: 5
+  EXPECTED_RUNTIME: 4-6 hours learner; 12-25 minutes CUDA verification
+  REQUIRES_GPU: true
+gt_tier: GT-0
+evidence_level: executed_pixel_prompt_ground_truth_plus_unexecuted_pinned_real_vlm
+claim_scope: >-
+  On a controlled full-factorial rendered benchmark, an explicit analytic organism
+  derives object evidence from pixels and the query from prompt tokens without
+  receiving answer labels, and prompt-identical activation replacement isolates
+  target-region causal effects against two disjoint geometry-matched controls. No
+  real-Qwen mechanism claim is accepted. The optional neutral-prior visual
+  counterfactual preflight cannot establish hallucination repair or four-stage
+  diagnosis even if its own consistency, behavior, and intervention gates pass.
+required_gpu_gb: 12
+max_allowed_gpu_gb: 24
+models:
+  - id: arena_pixel_prompt_ground_truth_vlm_v2
+    revision: section_source_sha256
+    status: executed_cpu
+  - id: Qwen/Qwen2.5-VL-3B-Instruct
+    revision: 66285546d2b821cf421d4f5eb2576359d3770cd3
+    status: not_run
+datasets:
+  - id: arena_factorial_shape_arbitration_v2
+    status: generated_and_executed_cpu
+    example_count: 192
+    development_examples: 64
+    validation_examples: 64
+    test_examples: 64
+    validation_pairs: 8
+    test_pairs: 8
+expected_metrics:
+  cpu_joint_accuracy: 0.75
+  cpu_conflict_accuracy: 0.0
+  cpu_hallucination_rate: 0.25
+  cpu_image_question_accuracy: 1.0
+  cpu_text_only_accuracy: 0.5
+  cpu_shuffled_images_accuracy_max: 0.5
+  cpu_selected_layer: 0
+  cpu_object_patch_directional_effect: 8.0
+  cpu_object_patch_flip_fraction: 1.0
+  cpu_background_patch_absolute_effect: 0.0
+  cpu_random_patch_absolute_effect: 0.0
+  real_test_example_count_min: 32
+  real_validation_pair_count_min: 8
+  real_test_pair_count_min: 8
+  real_joint_accuracy_min: 0.55
+  real_conflict_accuracy_min: 0.25
+  real_hallucination_rate_max: 0.6
+  real_image_question_accuracy_min: 0.6
+  real_text_only_accuracy_max: 0.75
+  real_object_directional_effect_min: 0.1
+  real_object_flip_fraction_min: 0.25
+  real_wall_clock_seconds_max: 2400
+  real_peak_vram_gb_max: 24
+controls:
+  - full_color_shape_factorial
+  - label_balanced_stated_priors
+  - prompt_identical_pixel_counterfactuals
+  - validation_only_layer_selection
+  - untouched_test_reporting
+  - image_question_only_baseline
+  - text_only_baseline
+  - shuffled_image_negative_control
+  - object_region_patch
+  - geometry_excluded_background_patch
+  - distinct_nonoverlapping_same_size_random_patch
+  - full_visual_positive_control
+safety_notes:
+  - Images are deterministic course-generated colored shapes.
+  - No private data, gated model, unsafe prompt, mock model, or fallback path is used.
+  - The real-model path is pinned and raises when CUDA is unavailable.
+  - The checked-in report is deliberately unaccepted for Qwen until the parent CUDA run.

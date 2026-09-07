@@ -1,0 +1,412 @@
+{
+  "accepted": true,
+  "baselines": {
+    "declared_controls": [
+      "exact_competing_feature_counterexample",
+      "pinned_author_loss_centering_parity",
+      "asymmetric_loss_complement_check",
+      "single_vs_batched_restart_parity",
+      "train_only_branch_centering",
+      "fixed_calibration_orientation",
+      "ten_all_restarts_per_mode",
+      "raw_no_centering_control",
+      "shuffled_pair_control",
+      "paired_difference_pca",
+      "supervised_labelled_probe",
+      "32_matched_random_directions",
+      "neutral_reader_context_control",
+      "independent_opinion_crossed_with_target",
+      "all_three_sites_and_two_wrappers",
+      "all_native_errors_retained",
+      "restricted_vs_full_vocabulary_outputs",
+      "native_padding_and_full_model_parity",
+      "fixed_reporter_native_play",
+      "fresh_cpu_all_captures_and_refits"
+    ],
+    "expected_metrics": {
+      "accepted": true,
+      "actual_learner_passed": true,
+      "all_reporters_refitted": true,
+      "distinct_final_base_reviews": 64,
+      "embedded_figures": 15,
+      "final_prompt_count": 512,
+      "final_used_for_selection": false,
+      "fresh_compared_examples": 3586,
+      "fresh_condition_batches": 18,
+      "fresh_max_logit_error_max": 1e-05,
+      "fresh_reproduction_passed": true,
+      "fresh_top_token_mismatches": 0,
+      "model_gradients_absent": true,
+      "native_model_reloaded": true,
+      "own_answer_code_cells": 32,
+      "primary_metric_matches_actual_tokens": true,
+      "refitted_reporters": 1152,
+      "retained_final_outcomes": 98304,
+      "test_count": 14,
+      "tests_passed": true,
+      "weights_unchanged": true,
+      "whole_paper_replication": false
+    }
+  },
+  "claim_scope": "Learner-implemented original CCS loss, independent restarts, training-only centering, calibration orientation and paired opinion-change metrics. Exact competing-feature oracles and pinned author primitives connect to frozen GPT-2 at three sites, two wrappers and three text variants. All 1152 reporters and 98304 final reporter scores are retained; 3586 actual prefix vocabulary outputs reproduce after a fresh reload. Controlled review classification does not establish truth discovery, beliefs, causal necessity or whole-paper replication.",
+  "datasets": [
+    {
+      "calibration_base_reviews": 64,
+      "development_base_reviews": 64,
+      "final_base_reviews": 64,
+      "final_contrast_pairs": 512,
+      "id": "frozen_ccs_controlled_reviews_v2",
+      "protocol": "ccs_data.py",
+      "source": "generated",
+      "train_base_reviews": 256
+    }
+  ],
+  "date_run": "2026-09-06T09:05:42+00:00",
+  "evidence_level": "exact_consistency_counterexample_and_native_gpt2_competing_opinions",
+  "git_commit": "8eab192b",
+  "gpu_name": "unavailable",
+  "gt_tier": "GT-0",
+  "known_failures": [],
+  "metrics": {
+    "gpu_evidence": {
+      "category": "cpu_or_budget_metric",
+      "placeholder_only": false,
+      "section_specific_metric_keys": [
+        "actual_learner_passed",
+        "all_reporters_refitted",
+        "distinct_final_base_reviews",
+        "embedded_figures",
+        "final_prompt_count",
+        "final_used_for_selection",
+        "fresh_compared_examples",
+        "fresh_compared_tensors",
+        "fresh_condition_batches",
+        "fresh_elapsed_seconds",
+        "fresh_evidence_sha256",
+        "fresh_max_logit_error",
+        "fresh_output_directory",
+        "fresh_reproduction_passed",
+        "fresh_top_token_mismatches",
+        "learner_evidence_sha256",
+        "model_gradients_absent",
+        "native_evidence_reused",
+        "native_model_reloaded",
+        "native_model_reloaded_in_this_report",
+        "own_answer_code_cells",
+        "primary_metric_matches_actual_tokens",
+        "refitted_reporters",
+        "retained_final_outcomes",
+        "weights_unchanged",
+        "whole_paper_replication"
+      ],
+      "uses_cuda": false
+    },
+    "gpu_test": {
+      "actual_learner_passed": true,
+      "all_reporters_refitted": true,
+      "cuda_available": false,
+      "cuda_version": "13.2",
+      "device": "cpu",
+      "distinct_final_base_reviews": 64,
+      "embedded_figures": 15,
+      "final_prompt_count": 512,
+      "final_used_for_selection": false,
+      "fresh_compared_examples": 3586,
+      "fresh_compared_tensors": 5408,
+      "fresh_condition_batches": 18,
+      "fresh_elapsed_seconds": 228.79153766499985,
+      "fresh_evidence_sha256": "34d376e70a5868ce3204eb73534eb6b702708a8b33cd536ef28f371aba916df3",
+      "fresh_max_logit_error": 0.0,
+      "fresh_output_directory": "/home/bitwise/.cache/arena_extended/ccs/fresh-native-v4",
+      "fresh_reproduction_passed": true,
+      "fresh_top_token_mismatches": 0,
+      "gpu_total_memory_gb": null,
+      "learner_evidence_sha256": "1f1407df131b90e097b5aad5b51f64c26f48b3e6a85a03561cbef30030d32cb3",
+      "model_gradients_absent": true,
+      "native_evidence_reused": true,
+      "native_model_reloaded": true,
+      "native_model_reloaded_in_this_report": false,
+      "own_answer_code_cells": 32,
+      "peak_vram_gb": 0.0,
+      "primary_metric_matches_actual_tokens": true,
+      "refitted_reporters": 1152,
+      "retained_final_outcomes": 98304,
+      "torch_version": "2.12.1+cu132",
+      "weights_unchanged": true,
+      "whole_paper_replication": false,
+      "within_vram_budget": true
+    },
+    "notebook_contract": {
+      "accepted": true,
+      "claim_scope": "Original asymmetric loss, label-free fitting, exact competing-feature counterexample, orientation, padding and actual vocabulary metrics.",
+      "test_count": 14,
+      "tests_passed": true
+    }
+  },
+  "models": [
+    {
+      "gated": false,
+      "id": "gpt2",
+      "precision": "float32",
+      "revision": "607a30d783dfa663caf39e06633721c8d4cfcd7e",
+      "source": "huggingface"
+    }
+  ],
+  "negative_controls": {
+    "declared_controls": [
+      "32_matched_random_directions"
+    ]
+  },
+  "notebook_id": "11_5_contrast_consistent_search",
+  "ood_tests": {
+    "declared": "required_where_applicable"
+  },
+  "peak_vram_gb": 0.0,
+  "report_inputs": {
+    "algorithm": "sha256",
+    "combined_sha256": "e7594d8f16eeb8fdc8ea4d433506351bae473513c5475e2331860f6ef2acf6a6",
+    "files": [
+      {
+        "path": "arena_ext/verification.py",
+        "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
+        "size_bytes": 9276
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part4_concept_erasure/erasure_methods.py",
+        "sha256": "594d3c56ec40bd32c4418d8645ec26e70280df9c842b9dbb3c2fd87f42711e5e",
+        "size_bytes": 9958
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part5_contrast_consistent_search/11.5_Contrast_Consistent_Search_exercises.ipynb",
+        "sha256": "b0e3edc146ac228a903f16e32b8a235ff6de7ecaaf06049d3d2d3100a95fc642",
+        "size_bytes": 1449727
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part5_contrast_consistent_search/11.5_Contrast_Consistent_Search_solutions.ipynb",
+        "sha256": "eb913c6ddc24621f78d0e6d199f7abb91317eb1d6dc6e6bd078bcc642e11904b",
+        "size_bytes": 1462614
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part5_contrast_consistent_search/README.md",
+        "sha256": "fd3f7338665f106897841ed510fa3020e2d8b76d6dd056262938dab89d36e7f5",
+        "size_bytes": 3593
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part5_contrast_consistent_search/artifacts.lock.yml",
+        "sha256": "ea1183c6eaf301ad917db7a7d40668f28b6638f2d4cd6fe5fd194fb343965041",
+        "size_bytes": 6440
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part5_contrast_consistent_search/build_notebooks.py",
+        "sha256": "7ca1441941f39778849d21c4214f95170c91972f815565fbeabf1044af005303",
+        "size_bytes": 4535
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part5_contrast_consistent_search/ccs_data.py",
+        "sha256": "485c1fc7e10fb0cb75d2f1ac3e7dd0e631aa0dccbd9ba6590c8717bfad19657d",
+        "size_bytes": 6076
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part5_contrast_consistent_search/ccs_methods.py",
+        "sha256": "efc2e1d6e7f73d4774538711f7b8b1d93801f2d0c3d8d259ddd12866583e4dc6",
+        "size_bytes": 9543
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part5_contrast_consistent_search/ccs_methods_tests.py",
+        "sha256": "037edb6f723a22f17b4b9aab72ac635005b34a0287a256595a2858ee9822b674",
+        "size_bytes": 11776
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part5_contrast_consistent_search/ccs_native.py",
+        "sha256": "67674868f56bf6a7d8ca529bdb8436aff5384fb81bc8a5a38afa0bfe4eba32c7",
+        "size_bytes": 5342
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part5_contrast_consistent_search/ccs_native_methods.py",
+        "sha256": "e89b8f7e924832d769148613f40e7e5917131d0678cb659aef892ec789a4b899",
+        "size_bytes": 4445
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part5_contrast_consistent_search/ccs_native_methods_tests.py",
+        "sha256": "570411e44742ef805ec52ebeee15695f8781753ba6ae0368fa75511935421098",
+        "size_bytes": 4151
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part5_contrast_consistent_search/ccs_reproduction.py",
+        "sha256": "11a87feb193308f4e71b0a566d8c8c048c6e22ea179786a4e490be5244005934",
+        "size_bytes": 18519
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part5_contrast_consistent_search/ccs_reproduction_tests.py",
+        "sha256": "d83b7727a972c08387e27dd7540aeadbc16bdc7f68c1479cc424d631c8899c35",
+        "size_bytes": 3899
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part5_contrast_consistent_search/ccs_study.py",
+        "sha256": "53237e0e941409a5eb09b62eb29822715aed2dfbf6bef6dc16bc0f13956b57ef",
+        "size_bytes": 5767
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part5_contrast_consistent_search/execute_learner.py",
+        "sha256": "02be87430b1d568e699650de8b599d333309c456f9564576ca762d5f25d82c22",
+        "size_bytes": 5021
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part5_contrast_consistent_search/expected_outputs/README.md",
+        "sha256": "d586e94c610b7676fb1909ff40de8c8ead54e46dd0cdbf42206e6b0ae30beac9",
+        "size_bytes": 3620
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part5_contrast_consistent_search/expected_outputs/fresh_reproduction.json",
+        "sha256": "34d376e70a5868ce3204eb73534eb6b702708a8b33cd536ef28f371aba916df3",
+        "size_bytes": 18879
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part5_contrast_consistent_search/expected_outputs/learner_execution.json",
+        "sha256": "1f1407df131b90e097b5aad5b51f64c26f48b3e6a85a03561cbef30030d32cb3",
+        "size_bytes": 17315
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part5_contrast_consistent_search/expected_outputs/native_summary.json",
+        "sha256": "8581413e65eb5b09893d691c3e3370828aa43b42043a4e8fe87d0f3749177a5f",
+        "size_bytes": 2665269
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part5_contrast_consistent_search/expected_outputs/reference_metrics.json",
+        "sha256": "0ecbc7ec6893857552a4d671aaa20c2f79fa7d1c09454a8f30583708cdbf7de1",
+        "size_bytes": 952
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part5_contrast_consistent_search/expected_outputs/smoke_test.json",
+        "sha256": "000a90b8769c58dc898f8b98800076a583293c3786b723a3c6918db95e4a22f8",
+        "size_bytes": 632
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part5_contrast_consistent_search/lesson.md",
+        "sha256": "2bbec4416f52c176a578a9cd8a9559f25b62ec01c8cba5bff22e1e5b8c4cbd25",
+        "size_bytes": 94233
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part5_contrast_consistent_search/native_protocol.md",
+        "sha256": "5b30edef98dedda7961c393431be33277e2023cfa07c34818edd60bb621376df",
+        "size_bytes": 5908
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part5_contrast_consistent_search/publish_study.py",
+        "sha256": "e2fa6b08b67b7e56b1a9c4f1e0453814f5791eea241ea07e24a9c8269aca486f",
+        "size_bytes": 7652
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part5_contrast_consistent_search/reference_parity.py",
+        "sha256": "8e60473485fcf00e452d8d4d73247777f750f11ca1998afd62b11861c073d1e3",
+        "size_bytes": 4817
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part5_contrast_consistent_search/solutions.py",
+        "sha256": "ad18c834b46eee141fc7280c44de8c9c395c6ea11a0d6128e5c2bcf6f1c27db1",
+        "size_bytes": 4772
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part5_contrast_consistent_search/tests.py",
+        "sha256": "7ac2fbc703456e57accb1b7be866cd50934847d935886e926003aa036a3f1bae",
+        "size_bytes": 295
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part5_contrast_consistent_search/verification_report.schema.json",
+        "sha256": "6866d119eaa1d2da0386c6b0423026e03b08b215e7077d7af52221cb51b5afea",
+        "size_bytes": 2669
+      },
+      {
+        "path": "chapter11_representation_geometry/instructions/assets/ccs_actual_review_gallery.png",
+        "sha256": "a4dc49b0a34edd7ed2bef10c4c482e3f7e4f9f8c1b445571f2812b7a2d86e052",
+        "size_bytes": 163852
+      },
+      {
+        "path": "chapter11_representation_geometry/instructions/assets/ccs_contrast_geometry.png",
+        "sha256": "9f3cb35b6c340b70e7723c12fd9c8dda5c6ce892de91ec4ed9b5f68d0f6fd977",
+        "size_bytes": 67603
+      },
+      {
+        "path": "chapter11_representation_geometry/instructions/assets/ccs_direction_baselines.png",
+        "sha256": "e915cfe8b6ebc9ae792dabb9f934bcb709f1d1952503b67eb29eaf1c4f0814ea",
+        "size_bytes": 68130
+      },
+      {
+        "path": "chapter11_representation_geometry/instructions/assets/ccs_distractor_strength_play.png",
+        "sha256": "2d41685daf7fa4e917d62e4b09a694b66d82f3c44393359045dc1a5446efb871",
+        "size_bytes": 93719
+      },
+      {
+        "path": "chapter11_representation_geometry/instructions/assets/ccs_exact_counterexample.png",
+        "sha256": "3ee4de3d21c38924def4991d0677663f750060affc8f8b1fc175caeb4102032d",
+        "size_bytes": 76483
+      },
+      {
+        "path": "chapter11_representation_geometry/instructions/assets/ccs_final_all_restarts.png",
+        "sha256": "cd91b66a5697b01c1832b9fd62e5ca9387c1dd579b49e63b28ce94f7cc9f4fe8",
+        "size_bytes": 84384
+      },
+      {
+        "path": "chapter11_representation_geometry/instructions/assets/ccs_final_method_comparison.png",
+        "sha256": "ae485f5bcb8172b4fd13b032f42cb1010d96d23fb4c74e0ebae4eb012aeee800",
+        "size_bytes": 177609
+      },
+      {
+        "path": "chapter11_representation_geometry/instructions/assets/ccs_final_opinion_change.png",
+        "sha256": "e5a39b4f5dab72cfcbe078a2b0c2e8cf80a71317fd041ebe70dd4014f5cd4dc2",
+        "size_bytes": 77727
+      },
+      {
+        "path": "chapter11_representation_geometry/instructions/assets/ccs_final_random_controls.png",
+        "sha256": "643f3aaa6fd847bc4a9e21f1dbc46a54b71746c3fd82c320bd12fea825a121dc",
+        "size_bytes": 145931
+      },
+      {
+        "path": "chapter11_representation_geometry/instructions/assets/ccs_loss_landscape.png",
+        "sha256": "621ab601761a8737f875f97f6fa9806235f0f1fdfd7abbc73bc476072b8b1244",
+        "size_bytes": 316424
+      },
+      {
+        "path": "chapter11_representation_geometry/instructions/assets/ccs_native_development.png",
+        "sha256": "e6a384404b7a57e5c830345955eb85ab436cb6368aacb302b6261f0e70858dc0",
+        "size_bytes": 89924
+      },
+      {
+        "path": "chapter11_representation_geometry/instructions/assets/ccs_native_output_baselines.png",
+        "sha256": "8460f77125adc5376c7a646fb1b40065270a06ba494e54c2ccc8691606c42ff8",
+        "size_bytes": 99506
+      },
+      {
+        "path": "chapter11_representation_geometry/instructions/assets/ccs_native_review_play.png",
+        "sha256": "189f8524d745ec15a2330cc710757515d8397451407661d5c891d4579e628ef5",
+        "size_bytes": 67112
+      },
+      {
+        "path": "chapter11_representation_geometry/instructions/assets/ccs_orientation_control.png",
+        "sha256": "e110decd0f52ffed9645780b19d1abff24ea10a438e85bf8dfa34d0177be8b8e",
+        "size_bytes": 93288
+      },
+      {
+        "path": "chapter11_representation_geometry/instructions/assets/ccs_restart_outcomes.png",
+        "sha256": "ad24f9393288c3106477e1d2df5b0e3e81a1819d379de0cec26ab64d3e0bf880",
+        "size_bytes": 156404
+      },
+      {
+        "path": "chapter11_representation_geometry/instructions/pages/05_[11.5]_Contrast_Consistent_Search.md",
+        "sha256": "8ad5d7f7f938160457f1f6ae52207320c67066663cc25d82894cc6af3997baf5",
+        "size_bytes": 93838
+      },
+      {
+        "path": "scripts/run_extension_verification_reports.py",
+        "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
+        "size_bytes": 16272
+      }
+    ],
+    "schema_version": 1
+  },
+  "safety_notes": [
+    "Controlled generated reviews use explicit binary adjectives; all pretrained weights remain frozen."
+  ],
+  "tests_passed": true,
+  "wall_clock_seconds": 2.955361
+}

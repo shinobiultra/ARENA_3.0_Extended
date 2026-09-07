@@ -8,6 +8,7 @@ ARENA files can keep their historical formatting.
 from __future__ import annotations
 
 import sys
+import hashlib
 import json
 from pathlib import Path
 
@@ -42,6 +43,22 @@ def _is_allowed_markdown_long_line(line: str) -> bool:
     )
 
 
+def _frozen_protocol_has_readable_mirror(path: Path) -> bool:
+    """Preserve experiment freeze bytes only when a text-identical readable copy exists."""
+    if path.name != "protocol.md":
+        return False
+    freeze = path.with_name("protocol_freeze.json")
+    mirror = path.with_name("protocol_readable.md")
+    try:
+        checksum = json.loads(freeze.read_text())["sha256"]["protocol.md"]
+        return (hashlib.sha256(path.read_bytes()).hexdigest() == checksum
+                and path.read_text().split() == mirror.read_text().split()
+                and all(len(line) <= MD_MAX_LINE_LENGTH or _is_allowed_markdown_long_line(line)
+                        for line in mirror.read_text().splitlines()))
+    except (OSError, ValueError, KeyError, TypeError):
+        return False
+
+
 def minified_file_blockers(files: list[Path] | None = None) -> list[str]:
     """Return blockers for extension-owned source files with unreadable lines."""
 
@@ -52,6 +69,8 @@ def minified_file_blockers(files: list[Path] | None = None) -> list[str]:
             continue
         if path.suffix == ".ipynb":
             blockers.extend(_notebook_blockers(path))
+            continue
+        if _frozen_protocol_has_readable_mirror(path):
             continue
         limit = PY_MAX_LINE_LENGTH if path.suffix == ".py" else MD_MAX_LINE_LENGTH
         for line_number, line in enumerate(path.read_text(errors="ignore").splitlines(), 1):
@@ -74,13 +93,6 @@ def _notebook_blockers(path: Path) -> list[str]:
         blockers.append(f"{_display_path(path)}: notebook JSON is collapsed into too few lines")
         return blockers
 
-    for line_number, line in enumerate(lines, 1):
-        if len(line) > IPYNB_MAX_LINE_LENGTH:
-            blockers.append(
-                f"{_display_path(path)}:{line_number}: notebook line length {len(line)} "
-                f"exceeds {IPYNB_MAX_LINE_LENGTH}"
-            )
-
     try:
         notebook = json.loads(text)
     except json.JSONDecodeError as exc:
@@ -90,6 +102,38 @@ def _notebook_blockers(path: Path) -> list[str]:
     cells = notebook.get("cells")
     if not isinstance(cells, list) or not cells:
         blockers.append(f"{_display_path(path)}: notebook has no readable cells")
+        return blockers
+
+    # Notebook images are encoded on one line by nbformat. They are results the
+    # learner needs to see, not minified source. Limit the exemption to binary
+    # MIME values actually present in an output or attachment; source and HTML
+    # still receive the ordinary serialized-line check.
+    binary_mimes = {"image/png", "image/jpeg", "image/gif", "image/webp", "application/pdf"}
+    rendered_values: dict[str, set[str]] = {}
+    for cell in cells:
+        bundles = [output.get("data", {}) for output in cell.get("outputs", [])]
+        bundles.extend(cell.get("attachments", {}).values())
+        for bundle in bundles:
+            for mime in binary_mimes:
+                value = bundle.get(mime)
+                if isinstance(value, str):
+                    rendered_values.setdefault(mime, set()).add(value)
+
+    for line_number, line in enumerate(lines, 1):
+        if len(line) <= IPYNB_MAX_LINE_LENGTH:
+            continue
+        try:
+            entry = json.loads("{" + line.strip().rstrip(",") + "}")
+        except json.JSONDecodeError:
+            entry = {}
+        if len(entry) == 1:
+            mime, value = next(iter(entry.items()))
+            if isinstance(value, str) and value in rendered_values.get(mime, set()):
+                continue
+        blockers.append(
+            f"{_display_path(path)}:{line_number}: notebook line length {len(line)} "
+            f"exceeds {IPYNB_MAX_LINE_LENGTH}"
+        )
     return blockers
 
 

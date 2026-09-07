@@ -1,0 +1,28 @@
+{
+  "source_directory": "/home/bitwise/.cache/arena_extended/ccs/author-source-v1",
+  "archive_sha256": "336a299725b6aa4bdc4e7c8ee9f728ac12503aa66b9ab22275ddaee613429585",
+  "members": {
+    "CCS.ipynb": {
+      "sha256": "f4d0c750c416c4eb0c2baa8a4ef4de79474b1b966e2966bfa0f31c35bb7577f5",
+      "size_bytes": 20584
+    },
+    "LICENSE.md": {
+      "sha256": "99a7c1ab3190e7da4978946ca7152d1f939ae335cc1d1917ee5a70ec5989c274",
+      "size_bytes": 1069
+    },
+    "README.md": {
+      "sha256": "d283061334be24eac49b748f90414b8713c639d00a501ed1f3d78d14485e4f33",
+      "size_bytes": 4931
+    },
+    "source_manifest.json": {
+      "sha256": "63baea2789b10c00537141a55becc2dd0ccf385831a2287c822f280e0585a9e6",
+      "size_bytes": 1086
+    },
+    "utils.py": {
+      "sha256": "5a65f7d130aa5531ca37979d487e63057ef2d9aa4d925176f892a6ebc7955c13",
+      "size_bytes": 23830
+    }
+  },
+  "large_tensors_retained_externally": {},
+  "readback_verified": true
+}

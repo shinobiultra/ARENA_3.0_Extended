@@ -292,7 +292,7 @@
   "peak_vram_gb": 0.39137840270996094,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "2d6605296484205560a6e59dd62ce5a35d24ab1fc95a31940b3b49f8339f0d02",
+    "combined_sha256": "316ae4e8b711ea2e41461a0ba258f41917012d067bbc08a68b57238834e6dddb",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -356,7 +356,7 @@
       },
       {
         "path": "chapter6_sparse_feature_methods/instructions/pages/01_[6.1]_SAE_Variants.md",
-        "sha256": "20867f1d8a87724e87316a41ad4234b838d35d818ff36dd4fd940063067918d1",
+        "sha256": "1adc259041aacf83904c060e735e8c27deea445c9cfc615378d97ebe76e80092",
         "size_bytes": 36567
       },
       {

@@ -1,0 +1,20 @@
+{
+  "original_directory": "/tmp/geometry-mistral-development-v1",
+  "members": {
+    "development_activations_and_logits.pt": {
+      "sha256": "dd68e92732ba8df3f287a4e95d1e754a1a6858e725819f12537ce102b03fcd71",
+      "archived": false,
+      "bytes": 204746741
+    },
+    "results.json": {
+      "sha256": "f62d1438fce1f8bc405879de25a2628b1ce94a070ba6a89167413ffd9f22ed1b",
+      "archived": true,
+      "bytes": 319119
+    },
+    "status.json": {
+      "sha256": "2cda37818bdbf71d26fd0897ae9e9759cb2be240c7162a50e3af4f8a1958fc10",
+      "archived": true,
+      "bytes": 414
+    }
+  }
+}

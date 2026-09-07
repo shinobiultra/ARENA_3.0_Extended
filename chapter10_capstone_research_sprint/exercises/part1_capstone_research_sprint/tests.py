@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from arena_ext.notebook_checks import unfinished_definitions
+
 import ast
 import importlib.util
 import json
@@ -273,10 +275,10 @@ def test_notebooks_have_a_complete_live_research_arc() -> None:
         for cell in nbformat.read(solution_path, as_version=4).cells
         if cell.cell_type == "code"
     )
-    assert exercise_code.count("raise NotImplementedError") >= 5, (
+    assert len(unfinished_definitions(exercise_code)) >= 5, (
         "The learner notebook must retain at least five substantive implementation stubs."
     )
-    assert "raise NotImplementedError" not in solution_code, (
+    assert not unfinished_definitions(solution_code), (
         "The solution notebook must provide every learner implementation."
     )
     assert "fit_ridge_direction" in exercise_code, "Learners must implement mechanism recovery."

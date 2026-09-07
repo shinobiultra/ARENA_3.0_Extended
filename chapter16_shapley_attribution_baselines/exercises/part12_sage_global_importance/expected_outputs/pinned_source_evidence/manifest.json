@@ -1,0 +1,36 @@
+{
+  "source_directory": "/home/bitwise/.cache/arena_extended/sage/source-evidence",
+  "archive_sha256": "bc07d529b19e3a6e8340de04b411424403755d378d2ea0db968aec5b29cbec97",
+  "members": {
+    "author_LICENSE": {
+      "sha256": "572252e99d3028be745e418cde53d2e6f0f6b032f6a6fe8d71f63123a66398b4",
+      "size_bytes": 1067
+    },
+    "author_imputers.py": {
+      "sha256": "3aa7ae2727dfcc881d48c6dc3c9c93f7ea4471bf8073b544ebbcf6e24a5445bd",
+      "size_bytes": 2096
+    },
+    "author_reference.json": {
+      "sha256": "3ec06e257a59da00a9ceeca46b7116617e377d9aabc80e754987ba3a30e4a997",
+      "size_bytes": 794
+    },
+    "author_utils.py": {
+      "sha256": "efe267d7f149085eef4060205b035e7569baa46c01a22b2f06dc2a60bb54b499",
+      "size_bytes": 10822
+    },
+    "concrete.csv": {
+      "sha256": "8d4b15b6fc68cd932d745cbd663d5ceae66dd54422e99c1e4865f2936ab7e2af",
+      "size_bytes": 41472
+    },
+    "data_manifest.json": {
+      "sha256": "4262d471486ed5b26cbcaa804950e878b1ef00318b4141eaa52b554eb26de47a",
+      "size_bytes": 12493
+    },
+    "protocol_freeze.json": {
+      "sha256": "11b553de2cd72af1f242fac53b1583d738f09dc018e0a15a4a8b9183387f8f65",
+      "size_bytes": 365
+    }
+  },
+  "large_tensors_retained_externally": {},
+  "readback_verified": true
+}

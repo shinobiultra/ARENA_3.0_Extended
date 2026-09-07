@@ -1,0 +1,398 @@
+{
+  "notebook_id": "15_3_qlora_from_scratch",
+  "cpu": true,
+  "nf4_codebook_matches_bitsandbytes": true,
+  "nested_nf4_codebook_values_exact": true,
+  "nested_dynamic_codebook_values_exact": true,
+  "nested_quant_state_all_finite": true,
+  "toy_nf4_mse": 0.0013509549899026752,
+  "nested_scale_max_abs_error": 0.0019684284925460815,
+  "double_bits_per_parameter": 4.127025240825918,
+  "paper_amortized_double_bits_per_parameter": 4.126953125,
+  "actual_linear4bit_bits_per_parameter": 16.041666666666668,
+  "actual_linear4bit_includes_codebooks": true,
+  "ste_gradient": [
+    [
+      1.0,
+      1.0
+    ],
+    [
+      1.0,
+      1.0
+    ]
+  ],
+  "dequantized_base_max_diff": 0.0,
+  "base_weight_has_no_gradient": true,
+  "lora_a_gradient_norm": 0.019527526572346687,
+  "lora_b_gradient_norm": 0.10588527470827103,
+  "outlier_block_size_damage_ratio": 12.711551277116113,
+  "train_examples": 60,
+  "heldout_examples": 40,
+  "ood_examples": 40,
+  "marker_swap_examples": 40,
+  "marker_removed_examples": 40,
+  "name_only_template_transfer_accuracy": 0.5,
+  "name_only_ood_accuracy": 0.5,
+  "model_id": "roneneldan/TinyStories-1M",
+  "model_revision": "77f1b168e219585646439073245fe87e56b3023e",
+  "checks": {
+    "provenance_policy_satisfied": true,
+    "canonical_nf4_codebook_exact": true,
+    "nested_quant_state_values_exact": true,
+    "nested_quant_state_all_finite": true,
+    "dequantized_base_exact": true,
+    "adapter_gradients_nonzero": true,
+    "counterbalanced_train": true,
+    "counterbalanced_template_transfer": true,
+    "counterbalanced_ood": true,
+    "name_only_template_transfer_is_chance": true,
+    "name_only_ood_is_chance": true
+  },
+  "implementation_provenance": {
+    "required_policy": "visible_reference_release",
+    "all_callable": true,
+    "all_code_fingerprints_present": true,
+    "all_distinct_from_reference": false,
+    "all_reference_objects": true,
+    "no_direct_reference_delegation": false,
+    "scope": "Identity and direct dependencies only; not proof of implementation correctness.",
+    "policy_satisfied": true,
+    "functions": {
+      "nf4_codebook": {
+        "qualified_name": "chapter15_peft_misalignment.exercises.part3_qlora_from_scratch.solutions.nf4_codebook",
+        "code_sha256": "ab60d5a0cab45f7c155d498f340c87419fb015f93a7c1584b484b5cbacd5f84b",
+        "callable": true,
+        "fingerprinted_methods": [
+          "__call__"
+        ],
+        "is_reference_object": true,
+        "direct_reference_dependencies": []
+      },
+      "expected_dynamic_codebook": {
+        "qualified_name": "chapter15_peft_misalignment.exercises.part3_qlora_from_scratch.solutions.expected_dynamic_codebook",
+        "code_sha256": "a43785bb527af6c617fcb6966695d8ca464de1fe2d40825d095e09a1b7650862",
+        "callable": true,
+        "fingerprinted_methods": [
+          "__call__"
+        ],
+        "is_reference_object": true,
+        "direct_reference_dependencies": []
+      },
+      "blockwise_absmax": {
+        "qualified_name": "chapter15_peft_misalignment.exercises.part3_qlora_from_scratch.solutions.blockwise_absmax",
+        "code_sha256": "a84f8fd4e715c568a15c9f70a8548611cdd474723621aa630469a746297e59c4",
+        "callable": true,
+        "fingerprinted_methods": [
+          "__call__"
+        ],
+        "is_reference_object": true,
+        "direct_reference_dependencies": []
+      },
+      "quantize_nf4": {
+        "qualified_name": "chapter15_peft_misalignment.exercises.part3_qlora_from_scratch.solutions.quantize_nf4",
+        "code_sha256": "e68b21c3a5ad25bcf9e4589a26bf27a66f3c13528fdf923c09b5c1ed2d15dacd",
+        "callable": true,
+        "fingerprinted_methods": [
+          "__call__"
+        ],
+        "is_reference_object": true,
+        "direct_reference_dependencies": [
+          "blockwise_absmax",
+          "nf4_codebook"
+        ]
+      },
+      "dequantize_nf4": {
+        "qualified_name": "chapter15_peft_misalignment.exercises.part3_qlora_from_scratch.solutions.dequantize_nf4",
+        "code_sha256": "4675a33942bdc3113b118d5256871fb8b6a657b5f9052573f40262e95bb14700",
+        "callable": true,
+        "fingerprinted_methods": [
+          "__call__"
+        ],
+        "is_reference_object": true,
+        "direct_reference_dependencies": [
+          "nf4_codebook"
+        ]
+      },
+      "quantization_error": {
+        "qualified_name": "chapter15_peft_misalignment.exercises.part3_qlora_from_scratch.solutions.quantization_error",
+        "code_sha256": "62dcc296ffaebe536b536d011a615c5b2bbe15bd8fa8e85d4f23a4867d0f5db5",
+        "callable": true,
+        "fingerprinted_methods": [
+          "__call__"
+        ],
+        "is_reference_object": true,
+        "direct_reference_dependencies": []
+      },
+      "double_quantize_scales": {
+        "qualified_name": "chapter15_peft_misalignment.exercises.part3_qlora_from_scratch.solutions.double_quantize_scales",
+        "code_sha256": "1a8d875b46a4268c9dc07c4c8c074c00909d90d35c8268a2fecd2cb2b3dd873d",
+        "callable": true,
+        "fingerprinted_methods": [
+          "__call__"
+        ],
+        "is_reference_object": true,
+        "direct_reference_dependencies": []
+      },
+      "dequantize_scales": {
+        "qualified_name": "chapter15_peft_misalignment.exercises.part3_qlora_from_scratch.solutions.dequantize_scales",
+        "code_sha256": "4371be3cfb09c118e4f967ef8674f4c4706afe8cbe93ffc157ec3ccfd3088660",
+        "callable": true,
+        "fingerprinted_methods": [
+          "__call__"
+        ],
+        "is_reference_object": true,
+        "direct_reference_dependencies": []
+      },
+      "ste_nf4": {
+        "qualified_name": "chapter15_peft_misalignment.exercises.part3_qlora_from_scratch.solutions.ste_nf4",
+        "code_sha256": "be5eca88898ce91a7ed31bbf5901dacc5bef4e1e0ebbc0a6afd8c96d7de2850c",
+        "callable": true,
+        "fingerprinted_methods": [
+          "__call__"
+        ],
+        "is_reference_object": true,
+        "direct_reference_dependencies": [
+          "dequantize_nf4",
+          "quantize_nf4"
+        ]
+      },
+      "nf4_storage_accounting": {
+        "qualified_name": "chapter15_peft_misalignment.exercises.part3_qlora_from_scratch.solutions.nf4_storage_accounting",
+        "code_sha256": "31e35f12b2825c837bfa8d17c8a17071087e722893d4ac3419e7f166b5e443fe",
+        "callable": true,
+        "fingerprinted_methods": [
+          "__call__"
+        ],
+        "is_reference_object": true,
+        "direct_reference_dependencies": []
+      },
+      "linear4bit_storage_accounting": {
+        "qualified_name": "chapter15_peft_misalignment.exercises.part3_qlora_from_scratch.solutions.linear4bit_storage_accounting",
+        "code_sha256": "36c7827fdde36cd14ab7e99bb45d93ac618a2a451fdf32675cda170977144014",
+        "callable": true,
+        "fingerprinted_methods": [
+          "__call__"
+        ],
+        "is_reference_object": true,
+        "direct_reference_dependencies": [
+          "nf4_storage_accounting"
+        ]
+      },
+      "audit_linear4bit": {
+        "qualified_name": "chapter15_peft_misalignment.exercises.part3_qlora_from_scratch.solutions.audit_linear4bit",
+        "code_sha256": "8a73ea579d38c75299c9d784ce43666fcb7065d0477f7c1bc28ae92f4aababf2",
+        "callable": true,
+        "fingerprinted_methods": [
+          "__call__"
+        ],
+        "is_reference_object": true,
+        "direct_reference_dependencies": [
+          "expected_dynamic_codebook",
+          "linear4bit_storage_accounting",
+          "nf4_codebook"
+        ]
+      },
+      "qlora_linear": {
+        "qualified_name": "chapter15_peft_misalignment.exercises.part3_qlora_from_scratch.solutions.QLoRALinear",
+        "code_sha256": "163555aeba62d1fb9dfdf6732676639eddbdb5bb67d73ca184c2519b2c9b9186",
+        "callable": true,
+        "fingerprinted_methods": [
+          "__init__",
+          "delta_weight",
+          "forward"
+        ],
+        "is_reference_object": true,
+        "direct_reference_dependencies": [
+          "audit_linear4bit",
+          "qlora_linear"
+        ]
+      },
+      "dequantize_bnb_weight": {
+        "qualified_name": "chapter15_peft_misalignment.exercises.part3_qlora_from_scratch.solutions.dequantize_bnb_weight",
+        "code_sha256": "464bc890d9542f91e0935b01c4834bb6c4acdeb058dc816780e62262448cea52",
+        "callable": true,
+        "fingerprinted_methods": [
+          "__call__"
+        ],
+        "is_reference_object": true,
+        "direct_reference_dependencies": []
+      },
+      "dequantized_base_max_diff": {
+        "qualified_name": "chapter15_peft_misalignment.exercises.part3_qlora_from_scratch.solutions.dequantized_base_max_diff",
+        "code_sha256": "c598b8a7a0d5a01d35ffd6b229c64038c2911edc1a21dade47db2d0590ba58df",
+        "callable": true,
+        "fingerprinted_methods": [
+          "__call__"
+        ],
+        "is_reference_object": true,
+        "direct_reference_dependencies": [
+          "dequantize_bnb_weight"
+        ]
+      },
+      "audit_nf4_model": {
+        "qualified_name": "chapter15_peft_misalignment.exercises.part3_qlora_from_scratch.solutions.audit_nf4_model",
+        "code_sha256": "085ab88a07e52af6d0c131c609c11bc51617b1fa6ad23e1315998e24e626e8ea",
+        "callable": true,
+        "fingerprinted_methods": [
+          "__call__"
+        ],
+        "is_reference_object": true,
+        "direct_reference_dependencies": [
+          "audit_linear4bit"
+        ]
+      },
+      "inject_qlora": {
+        "qualified_name": "chapter15_peft_misalignment.exercises.part3_qlora_from_scratch.solutions.inject_qlora",
+        "code_sha256": "dbc47dd547d1f883ce80641d52e402b9de5df4b902fcf62c49af88686adcda5a",
+        "callable": true,
+        "fingerprinted_methods": [
+          "__call__"
+        ],
+        "is_reference_object": true,
+        "direct_reference_dependencies": [
+          "qlora_linear"
+        ]
+      },
+      "make_codebook_examples": {
+        "qualified_name": "chapter15_peft_misalignment.exercises.part3_qlora_from_scratch.solutions.make_codebook_examples",
+        "code_sha256": "491d6524cb43407cb36d249eb7d0e47683ae42f501ee74dd2502e83aad3ee5ac",
+        "callable": true,
+        "fingerprinted_methods": [
+          "__call__"
+        ],
+        "is_reference_object": true,
+        "direct_reference_dependencies": []
+      },
+      "make_unseen_subject_examples": {
+        "qualified_name": "chapter15_peft_misalignment.exercises.part3_qlora_from_scratch.solutions.make_unseen_subject_examples",
+        "code_sha256": "9f9e163932a2cebed1a9169ad2fc59317aa5f334521c829ba34c19bda1cf608a",
+        "callable": true,
+        "fingerprinted_methods": [
+          "__call__"
+        ],
+        "is_reference_object": true,
+        "direct_reference_dependencies": []
+      },
+      "make_marker_control_examples": {
+        "qualified_name": "chapter15_peft_misalignment.exercises.part3_qlora_from_scratch.solutions.make_marker_control_examples",
+        "code_sha256": "100a41ba40979869842d92e30294c952e1d7c2dea7d25c147df619c422f3b1bb",
+        "callable": true,
+        "fingerprinted_methods": [
+          "__call__"
+        ],
+        "is_reference_object": true,
+        "direct_reference_dependencies": []
+      },
+      "counterbalance_audit": {
+        "qualified_name": "chapter15_peft_misalignment.exercises.part3_qlora_from_scratch.solutions.counterbalance_audit",
+        "code_sha256": "e4ec7482950a50859dc0fc9c980cc9f748887889a4aae8cef06fa341db19e0a8",
+        "callable": true,
+        "fingerprinted_methods": [
+          "__call__"
+        ],
+        "is_reference_object": true,
+        "direct_reference_dependencies": []
+      },
+      "name_only_baseline": {
+        "qualified_name": "chapter15_peft_misalignment.exercises.part3_qlora_from_scratch.solutions.name_only_baseline",
+        "code_sha256": "932b044a31d81e8e0f611bea95564d3b280b1318e525b877403163f98387fdf4",
+        "callable": true,
+        "fingerprinted_methods": [
+          "__call__"
+        ],
+        "is_reference_object": true,
+        "direct_reference_dependencies": []
+      },
+      "randomize_training_labels": {
+        "qualified_name": "chapter15_peft_misalignment.exercises.part3_qlora_from_scratch.solutions.randomize_training_labels",
+        "code_sha256": "13f77eda37d9ddc00d4917e0202f8797f1ba93ce7664c02e363616e50d3570ee",
+        "callable": true,
+        "fingerprinted_methods": [
+          "__call__"
+        ],
+        "is_reference_object": true,
+        "direct_reference_dependencies": []
+      },
+      "train_on_codebook": {
+        "qualified_name": "chapter15_peft_misalignment.exercises.part3_qlora_from_scratch.solutions.train_on_codebook",
+        "code_sha256": "64292833f5577e1d070c6fa671a4394abfcba7be5a4b95f68d485a0627eab279",
+        "callable": true,
+        "fingerprinted_methods": [
+          "__call__"
+        ],
+        "is_reference_object": true,
+        "direct_reference_dependencies": []
+      },
+      "summarize_spectrum": {
+        "qualified_name": "chapter15_peft_misalignment.exercises.part3_qlora_from_scratch.solutions.summarize_spectrum",
+        "code_sha256": "166685ea1e4310af8ebfd17e940423d2dd595db0b2b70066dae904387645bb75",
+        "callable": true,
+        "fingerprinted_methods": [
+          "__call__"
+        ],
+        "is_reference_object": true,
+        "direct_reference_dependencies": []
+      },
+      "quantization_stress_test": {
+        "qualified_name": "chapter15_peft_misalignment.exercises.part3_qlora_from_scratch.solutions.quantization_stress_test",
+        "code_sha256": "25db0fa0652a47d9c472daf08c73e4b6e1b79da2d84dc997889b30560f83bfad",
+        "callable": true,
+        "fingerprinted_methods": [
+          "__call__"
+        ],
+        "is_reference_object": true,
+        "direct_reference_dependencies": [
+          "dequantize_nf4",
+          "quantization_error",
+          "quantize_nf4"
+        ]
+      },
+      "load_nf4_model": {
+        "qualified_name": "chapter15_peft_misalignment.exercises.part3_qlora_from_scratch.solutions.load_nf4_model",
+        "code_sha256": "1a3fe9502d87b7bbe60e01a630583a70748e118a9bb74da7748eb00bea76ea95",
+        "callable": true,
+        "fingerprinted_methods": [
+          "__call__"
+        ],
+        "is_reference_object": true,
+        "direct_reference_dependencies": [
+          "audit_nf4_model"
+        ]
+      }
+    }
+  },
+  "nf4_codebook": [
+    -1.0,
+    -0.6961928009986877,
+    -0.5250730514526367,
+    -0.39491748809814453,
+    -0.28444138169288635,
+    -0.18477343022823334,
+    -0.09105003625154495,
+    0.0,
+    0.07958029955625534,
+    0.16093020141124725,
+    0.24611230194568634,
+    0.33791524171829224,
+    0.44070982933044434,
+    0.5626170039176941,
+    0.7229568362236023,
+    1.0
+  ],
+  "toy_indices": [
+    0,
+    2,
+    5,
+    7,
+    8,
+    9,
+    13,
+    15
+  ],
+  "toy_absmax": [
+    1.2000000476837158,
+    1.2000000476837158
+  ],
+  "tests_passed": true,
+  "accepted": true
+}

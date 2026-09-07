@@ -118,9 +118,9 @@
       "train_prompt_count": 36
     }
   ],
-  "date_run": "2026-09-04T08:40:21+00:00",
+  "date_run": "2026-09-04T23:53:27+00:00",
   "evidence_level": "known_onset_toy_proxy_drift_organism_plus_pinned_pythia_hidden_state_preflight",
-  "git_commit": "b115d47a",
+  "git_commit": "8eab192b",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-3",
   "known_failures": [],
@@ -232,7 +232,7 @@
       "mitigation_neutral_delta_shift": 0.0,
       "mitigation_passes": true,
       "model_name": "EleutherAI/pythia-70m-deduped",
-      "peak_vram_gb": 0.3098287582397461,
+      "peak_vram_gb": 0.3410787582397461,
       "predicts_heldout_drift": true,
       "preflight_passed": true,
       "random_direction_accuracy": 0.375,
@@ -838,11 +838,16 @@
   "ood_tests": {
     "declared": "required_where_applicable"
   },
-  "peak_vram_gb": 0.3098287582397461,
+  "peak_vram_gb": 0.3410787582397461,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "886a5108a4699e4d9c0410081d1efa8f732f8d51b211e8859325f637e75802a3",
+    "combined_sha256": "807a7d5fef43943db05c5a13dbf70a894463e8a038bb20becdae1d4fd3866571",
     "files": [
+      {
+        "path": "arena_ext/notebook_checks.py",
+        "sha256": "0033fd8978a45bf0cf5dd7ce790bb234add9d63c564c76479c0d8eb86973bacc",
+        "size_bytes": 1627
+      },
       {
         "path": "arena_ext/verification.py",
         "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
@@ -865,8 +870,8 @@
       },
       {
         "path": "chapter9_alignment_interpretability/exercises/part3_emergent_misalignment_detection/artifacts.lock.yml",
-        "sha256": "9b3226a67828faee1ff389429fe498411f312605236ec600e3d4e932d6e8990a",
-        "size_bytes": 5241
+        "sha256": "b46f2114041dd04e538289749d973058ebaa85fb6b60d2987d71219ea2be17d8",
+        "size_bytes": 5293
       },
       {
         "path": "chapter9_alignment_interpretability/exercises/part3_emergent_misalignment_detection/expected_outputs/README.md",
@@ -890,8 +895,8 @@
       },
       {
         "path": "chapter9_alignment_interpretability/exercises/part3_emergent_misalignment_detection/tests.py",
-        "sha256": "19258988ae4cbea3d519b6dbae1156506eace27d072af1293bdb8f779d2b6269",
-        "size_bytes": 32920
+        "sha256": "84d3135d8c5e8e11496461c02a1fa65cfa0784340c3babfca39901dbea981198",
+        "size_bytes": 33126
       },
       {
         "path": "chapter9_alignment_interpretability/exercises/part3_emergent_misalignment_detection/utils.py",
@@ -905,7 +910,7 @@
       },
       {
         "path": "chapter9_alignment_interpretability/instructions/pages/03_[9.3]_Emergent_Misalignment_Detection.md",
-        "sha256": "1736a714725dd0d03177c7819cf5221fd9d07a2576592f5afca3d50a884497c7",
+        "sha256": "beddbd463ab46fce29c395342eee55ea0112a53b462deff2f66eb3cd0464b603",
         "size_bytes": 65212
       },
       {
@@ -921,5 +926,5 @@
     "The real-model proxy-drift path uses safe generated behavior-policy descriptions, hidden states, and next-token logits only. It performs no generated completions, trains no adapters, includes no harmful procedural content, and does not claim to reproduce emergent misalignment."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 5.814461
+  "wall_clock_seconds": 1.236784
 }

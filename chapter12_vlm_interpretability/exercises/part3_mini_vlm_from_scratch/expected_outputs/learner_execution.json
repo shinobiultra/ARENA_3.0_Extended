@@ -1,0 +1,43 @@
+{
+  "status": "PASS",
+  "scope": "full",
+  "completed_from_own_answers": true,
+  "fresh_training_required": true,
+  "input_files": {
+    "lesson.md": "b856af83f0aa0f9da039c2185d0ae6ee7cbee73c835df3e75393ef815cb1208b",
+    "build_notebooks.py": "8c974efadafe4c01061ea409d76546e996fd18fb120f2b7165b7fe4ab9d0b3f0",
+    "execute_learner.py": "541bdd81e1a8163d9520607ae3a630083a858221dd4102ee40bfdf8ef3b677d0",
+    "language_data.py": "a0584e9e34ada5cbfe45f47d76426300e36b6485af42adb99dbcb636a9a02c53",
+    "language_data_tests.py": "0e8f2357e85008a08511df99b13bff7e647e25567907606f1c483134e8b3e36f",
+    "language_figures.py": "a88856c302494d74403237656ed78d44f236ae85c1271317e961603675f675b1",
+    "language_patching.py": "03572dcd96d03c6f16a2b11baa14f46cc0b1f0e22c86f3a0390aa609b5fd9629",
+    "language_patching_tests.py": "1a64b1f9f4d3397a996f545139d422260fe4ef2c4f37b85aa0c309c88fecce55",
+    "language_training.py": "9bab6f1a7af2a08889946b7e1b348d42fb8cf59c9958807c0975bd023df9e680",
+    "language_training_tests.py": "20f601ae5b28865d7731bc01a25fd4681d6de7a0f769b239f089c3fd59f4ce23",
+    "language_vlm.py": "3c4deda9198a7c0e960f032c7ee9337ebf08fd8d3de64234a7fa0c890169508c",
+    "language_vlm_tests.py": "9bc8e7030bd2b143d5d9cc2504162a976b9c853ae8497b1b82cc50e911b34905",
+    "run_word_patching.py": "506604735239e725486cd51b5991d62541ab1f8847448ddcc9a19a772a7bf6db",
+    "solutions.py": "2b2a294cb6637d05b67e832e249a7ce72d995b57aff775e9d77ce0c649f7900f",
+    "tests.py": "e8fff0cb3e9e38e6c252cf2b7b1b7eab2a2bdab8b6fb3227713d875dcedefb0d",
+    "word_cuda.py": "0698ab90368b4617f7bce171abd5c7942ab8bdbeb306fbd60ee776861db021de",
+    "word_evidence.py": "0bc4df726268b4eb61bc8bb9d7721210f3f4b8790a274c5d48861e11432d34d7",
+    "word_evidence_tests.py": "ab5a0515ee1c24c7e297e4aeff5a452c3c673c40ab3149ad31b6824a03591b19"
+  },
+  "output_directory_override": "/tmp/mini-vlm-full-word-learner-release-v4",
+  "full_release_validation": true,
+  "elapsed_seconds": 362.8601715620025,
+  "code_cells_executed": 34,
+  "figures": {
+    "mini_vlm_exact_patch_warmup.png": "a0a0e8ad37a24788f2ec850a3bffa6cb0810b7b9933251abed1f96521a553c51",
+    "word_compositional_gallery.png": "d89e3ece7985667193e52c70e7f780266bd9766ecb72a04362f31ebe94c0fff5",
+    "word_familiar_gallery.png": "69d35bac8aff11ce04a1e5eda5d29bd0738fc31c0d4ae8cf9b2ee5ac25ff62e2",
+    "word_learning.png": "2d6436e6cb545668f639c8363fb096e6ac3684a3380f7dba9f24b472b57a035e",
+    "word_random_patch_spread.png": "abeb0d10b610da676ffe3a15a1b6b932c3e1b327b8b8f07289226b33c44e5489",
+    "word_stage_region_patching.png": "164d509b87866a324daa4c71fbf713919970233fefffc0c381daf0ce751f8c3f",
+    "word_transfer.png": "8fbeeac0057c40a97ad5bcf85771eda56395228165652fb0e53c801114a07afa"
+  },
+  "sources_changed_during_run": [],
+  "published_evidence_sha256": "9c59eeca93626b583eca90e79f8e98624ab8cb1504ac4f76f71386182c4daedf",
+  "published_notebook_sha256": "4d2f3db859fe656d959779b7214b2ab31f4211915683bb05c07f422b6286b2d3",
+  "published_exercises_sha256": "a1ed05f183e4b5896e0a9864f899c33f783b8f8b8142418949a0eea8cdb0acfa"
+}

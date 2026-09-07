@@ -229,7 +229,7 @@
   "peak_vram_gb": 0.06262922286987305,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "3fbdeb7297a83399c178bf8bf0849acba8286214b95fb182d05794fea8088408",
+    "combined_sha256": "31778ad424e3f3475a3ba1586d4a7b989ebff5c9d6b12309338616b86b7d54a2",
     "files": [
       {
         "path": "arena_ext/shapley_neural_game.py",
@@ -298,7 +298,7 @@
       },
       {
         "path": "chapter16_shapley_attribution_baselines/instructions/pages/01_[16.1]_Exact_Shapley_on_Ground_Truth_Games.md",
-        "sha256": "f5f8305ebaf7584b50de0079407dbb25e5153163882e56be304f6ef805a51083",
+        "sha256": "417ca72cce393de7148c5eb2211f87ae4d58273633fdb5725fb3fee95258dcc0",
         "size_bytes": 31499
       },
       {

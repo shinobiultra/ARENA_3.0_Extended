@@ -476,7 +476,7 @@
   "peak_vram_gb": 2.2367515563964844,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "8bfffb7c285f019e0127b92317490f22a7f2302cb50e56c0858137adead4cf05",
+    "combined_sha256": "0f746bf91fffc55984b7ae1328f218fc41bd5f1580b3de9ff1a369f3ef4a0944",
     "files": [
       {
         "path": "arena_ext/features.py",
@@ -550,7 +550,7 @@
       },
       {
         "path": "chapter6_sparse_feature_methods/instructions/pages/02_[6.2]_Gemma_Scope_Deep_Dive.md",
-        "sha256": "0d48dc201b876e2b46fb2132027493b73bc1f85fd3d5a7ec3ed8b2f5127e8f0c",
+        "sha256": "747f47ef019908512c7164b87bc4291a31eed1f13d356b82bc08260bc8b3f9a8",
         "size_bytes": 39222
       },
       {

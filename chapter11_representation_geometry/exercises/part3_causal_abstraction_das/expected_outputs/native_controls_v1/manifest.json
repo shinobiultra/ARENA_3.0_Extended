@@ -1,0 +1,18 @@
+{
+  "source_directory": "/home/bitwise/.cache/arena_extended/das/native-controls-v1",
+  "archive_sha256": "f5c3a050feff6c4568b4aa2cafeed19b673587e2f69cf24d3f1464293a824596",
+  "members_sha256": {
+    "development.json": "0d064a26e825220180efa6f5677aa66efb4764d4cfd3afde4fa96e66ade4ba2f",
+    "source_snapshot/das_ioi_data.py": "33c3dc44791146d0212b49eeea4cf4185db04bf0046c20113512f13d4aac6dd3",
+    "source_snapshot/das_methods.py": "606c7446aee48d96367a258875040f03ad75adc2aead99d1cff46eae5ec9db0f",
+    "source_snapshot/das_native.py": "3a496211314ead995faa02eeab9bc1a00928bc081125e08309873e48044c1478",
+    "source_snapshot/das_training_methods.py": "f3177576f641211c356071c3b23de53708c05805a99ad06c295833702dadae79",
+    "source_snapshot/run_das_screen.py": "7b0b883ef8e58d47114ced1e5abe95a9da1e89e9832b522f4c65a80ced8067ff",
+    "source_snapshot/run_native_development.py": "106359a4e42b2a14cdfea264d47dd06ba080de9a68a9441261044a98a7cc81f2"
+  },
+  "large_tensors_retained_in_source_directory": {
+    "actual_bases.pt": "e10d7b0dabbea3bc0500abc85af6b006369b7fe6baab3e81c38d8e9c7d802414",
+    "actual_logits_and_activations.pt": "09d409d0f93437b2d3893bc3423eca79599c9fd118f94fc74bd7f83add2ab424"
+  },
+  "all_archive_members_read_back_and_verified": true
+}

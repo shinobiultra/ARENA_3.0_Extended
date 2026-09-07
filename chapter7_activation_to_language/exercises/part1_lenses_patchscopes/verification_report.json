@@ -407,7 +407,7 @@
   "peak_vram_gb": 0.2957010269165039,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "27a819d977c0ed8ade70694c8f6c9c6aa1a673866bb430177fbb354028e8d441",
+    "combined_sha256": "e72c6a5112ef5d2a11d504288f5a489f2910f475bdd66c1ed3a9c904fedeb6a5",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -436,7 +436,7 @@
       },
       {
         "path": "chapter7_activation_to_language/exercises/part1_lenses_patchscopes/expected_outputs/README.md",
-        "sha256": "1b41aa4f5da5d1ec6742d9fcf7323c057b85aeb2a359bc5ec6a19b245d90e3f7",
+        "sha256": "16494aa4822e9060833f311dd05f1d3385c85d9d9ec327eefad3da9372179187",
         "size_bytes": 2357
       },
       {
@@ -471,7 +471,7 @@
       },
       {
         "path": "chapter7_activation_to_language/instructions/pages/01_[7.1]_Logit_Lens_Tuned_Lens_and_Patchscopes.md",
-        "sha256": "a070a4249197a3744a6ca0f922c173ab854c2120f262b822b294a36898e2546b",
+        "sha256": "bee431fee38bc57e110d0185b7ee73123a9a4f1560e6f9b95381cb0cd960451a",
         "size_bytes": 41919
       },
       {

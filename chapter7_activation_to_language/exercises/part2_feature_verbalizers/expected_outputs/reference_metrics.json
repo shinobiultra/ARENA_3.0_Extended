@@ -1,41 +1,67 @@
 {
   "notebook_id": "7_2_feature_verbalizers",
+  "model_id": "EleutherAI/pythia-70m",
+  "model_revision": "a39f36b100fe8a5377810d56c3f4789b9c53ac42",
+  "layer": 3,
+  "selected_hypothesis": "subject_number_plural",
   "metrics": {
-    "accepted": true,
-    "gt_tier": "GT-1 exact planted verbalizer plus pinned gelu-1l CUDA escalation",
-    "toy_planted_signature_passed": true,
-    "toy_train_count": 12,
-    "toy_revision_count": 6,
-    "toy_heldout_count": 24,
-    "toy_initial_accuracy": 0.5416666865348816,
-    "toy_revised_accuracy": 1.0,
-    "toy_baseline_accuracy": 0.5416666865348816,
-    "toy_contrastive_accuracy": 1.0,
-    "toy_passes_baseline": true,
-    "toy_survives_contrastive": true,
-    "toy_counterexamples_mined": 3,
-    "toy_intervention_delta": 1.25,
-    "toy_random_direction_delta": 0.0,
-    "toy_intervention_matches_prediction": true,
-    "toy_target_beats_random_direction": true,
-    "toy_brevity_shorter_than_examples": true,
-    "toy_activation_score_threshold_upper_bound_accuracy": 1.0,
-    "model_name": "gelu-1l",
-    "hf_revision": "bddc0e332f0ae84279e6a6a45d91b314899e1603",
-    "tokenizer_revision": "0f6671571a20be9756b9991d978047c03b75e749",
-    "max_allowed_gpu_gb": 24
+    "accuracy": 1.0,
+    "baseline_accuracy": 0.8333333134651184,
+    "beats_baseline": true,
+    "embedding_accuracy": 1.0,
+    "forward_orthogonal_absolute_p95": 1.0893045663833618,
+    "forward_paired_causal_p": 0.01556420233463035,
+    "forward_paired_causal_p95": 8.103589057922363,
+    "heldout_activation_accuracy": 1.0,
+    "heldout_behavior_accuracy": 1.0,
+    "heldout_multi_token_noun_count": 10,
+    "lookup_accuracy": 0.5,
+    "orthographic_accuracy": 0.8333333134651184,
+    "paired_causal_count": 256,
+    "paired_null_accuracy_max": 1.0,
+    "paired_null_accuracy_mean": 0.4999999999126885,
+    "paired_null_accuracy_p95": 1.0,
+    "paired_null_count": 4096,
+    "paired_null_exact_p": 0.1337890625,
+    "paired_null_perfect_count": 548,
+    "reverse_orthogonal_absolute_p95": 1.8483564853668213,
+    "reverse_paired_causal_p": 0.007782101167315175,
+    "reverse_paired_causal_p95": 9.018758773803711,
+    "subset_accuracy": 1.0,
+    "subset_baseline_accuracy": 0.75,
+    "suffix_accuracy": 0.8333333134651184,
+    "survives_subset": true,
+    "train_heldout_final_token_overlap": 0,
+    "validation_activation_accuracy": 1.0
   },
-  "baselines": {
-    "initial_text_only_rule": 0.5416666865348816,
-    "always_negative_base_rate": 0.6666666865348816,
-    "random_keyword_rule": 0.6666666865348816,
-    "train_example_lookup": 0.6666666865348816,
-    "activation_score_threshold_upper_bound": 1.0
+  "morphology": {
+    "regular": {
+      "activation": 1.0,
+      "suffix": 1.0,
+      "token_lookup": 0.5
+    },
+    "irregular": {
+      "activation": 1.0,
+      "suffix": 0.5,
+      "token_lookup": 0.5
+    },
+    "nonce": {
+      "activation": 1.0,
+      "suffix": 1.0,
+      "token_lookup": 0.5
+    }
   },
-  "negative_controls": {
-    "required_where_applicable": true
+  "intervention": {
+    "singular_to_plural_delta": 8.4778,
+    "plural_to_singular_delta": 9.6178,
+    "forward_orthogonal_absolute_p95": 1.0893,
+    "forward_orthogonal_absolute_max": 1.4316,
+    "reverse_orthogonal_absolute_p95": 1.8484,
+    "reverse_orthogonal_absolute_max": 2.4096,
+    "target_plural_preference_rate": 1.0,
+    "reverse_singular_preference_rate": 1.0,
+    "forward_paired_causal_p95": 8.103589057922363,
+    "reverse_paired_causal_p95": 9.018758773803711
   },
-  "ood_tests": {
-    "required_where_applicable": true
-  }
+  "signature_passed": true
 }

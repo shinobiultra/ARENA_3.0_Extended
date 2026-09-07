@@ -1,0 +1,18 @@
+{
+  "source_directory": "/home/bitwise/.cache/arena_extended/das/native-ranks-v1",
+  "archive_sha256": "5d7af8e3ff8fefa5e410390ee48b22410c85425eff10c7f1cf17c4770405a438",
+  "members_sha256": {
+    "development.json": "157944277c41925dab4fc72922866e2e890e43f2704fb09cc36c1e1c9b88ec2d",
+    "source_snapshot/das_ioi_data.py": "33c3dc44791146d0212b49eeea4cf4185db04bf0046c20113512f13d4aac6dd3",
+    "source_snapshot/das_methods.py": "606c7446aee48d96367a258875040f03ad75adc2aead99d1cff46eae5ec9db0f",
+    "source_snapshot/das_native.py": "3a496211314ead995faa02eeab9bc1a00928bc081125e08309873e48044c1478",
+    "source_snapshot/das_training_methods.py": "f3177576f641211c356071c3b23de53708c05805a99ad06c295833702dadae79",
+    "source_snapshot/run_das_screen.py": "1b8df3af791321918ac31527a7a05d84c709602a47b8be90526392ce132555dc",
+    "source_snapshot/run_native_development.py": "106359a4e42b2a14cdfea264d47dd06ba080de9a68a9441261044a98a7cc81f2"
+  },
+  "large_tensors_retained_in_source_directory": {
+    "actual_bases.pt": "dc3c53c52dd52bed5ba086957eebad71b431bcea444ca14625ca98e552ec4155",
+    "actual_logits_and_activations.pt": "4b234d91d97bc4049955d615619e1e20da298675c47a0a258b6ade8f4bf36bc8"
+  },
+  "all_archive_members_read_back_and_verified": true
+}

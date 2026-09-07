@@ -1,0 +1,83 @@
+{
+  "status": "PASS_AUTHOR_REVIEW",
+  "reviewer": "root implementation author",
+  "independent_review": false,
+  "learner_execution_sha256": "1e8364fefbf88c3f25af9db6af1233d703251ff8c618b90c8dfea75d5e74c688",
+  "renderer_sha256": "b96b705becc97e22d5d9635259c5adf689793f0c076ce003b5fd83e1ac896c52",
+  "figures": {
+    "01_shared_query.png": {
+      "sha256": "1d835f1d43d808118557de8a2b896e685966f1681c6b736ca9a7efb855b03916",
+      "bytes": 83178
+    },
+    "02_query_play.png": {
+      "sha256": "1d835f1d43d808118557de8a2b896e685966f1681c6b736ca9a7efb855b03916",
+      "bytes": 83178
+    },
+    "03_sampling_and_cost.png": {
+      "sha256": "7ffa341bfd434c7f6aab30cdcc2b6b530809e4055c59d08b92ec0ae81cfa6beb",
+      "bytes": 110954
+    },
+    "04_boundary_limit.png": {
+      "sha256": "47f75f714895a1a0fd1330e3d7018038a6eb7153580fcae8f55c70e07b7d64eb",
+      "bytes": 102960
+    },
+    "05_model_controls.png": {
+      "sha256": "ff5ae60098fa6a4cc3b4b6303f38684196a5ae170719caa61158c4b60c6a21f2",
+      "bytes": 72814
+    },
+    "06_query_budget_errors.png": {
+      "sha256": "20e5cc64dce6a854969c89597a3aff944ce19f2b9be7defe2daba1f04eea386c",
+      "bytes": 856705
+    },
+    "07_signed_pair_comparison.png": {
+      "sha256": "50923082be444a9e4c438f9c430ad22c1218c8a9627bb9a29aa11ffd3c21fde1",
+      "bytes": 155370
+    },
+    "08_sampling_variance.png": {
+      "sha256": "13e92a731dd08994b5ee437b8129aa66c84389592ecd54a1a1651759a9408a8c",
+      "bytes": 621897
+    },
+    "09_unique_queries_and_rank.png": {
+      "sha256": "117d7a59067217f3f1597beac34866c5b2bbdd029007417872901a23d003cce5",
+      "bytes": 160316
+    },
+    "10_native_query_play.png": {
+      "sha256": "53c5822820024a3602880da2c8a5485a0388b2e046ca45a85d3aed708f6dad78",
+      "bytes": 160311
+    }
+  },
+  "reviewed_files": {
+    "html_review/exercises.html": "6bd7496ca12d9668c9c0095935da201f9ec83f1e698c8419029138ec45a215d9",
+    "html_review/solutions.html": "10f786c9e1f91dc8b6f8a9f870cd0b217bfa90e619a1925920159c03fdfbcd3f",
+    "html_review/render.json": "585d645ab5c6ad93ed031cfcedfb9f4614aad50c586d994e2b6b796a07d02591",
+    "html_review/browser_dom_review.json": "b3d7445611e0a9f908efaf9a55b93de79af1638b8b8a4f968b2c67176f432705",
+    "html_review/play_variations.json": "0569f2d2a0a2198b5872e0ae0358d7442323321d179af26f2467e9b8f21cad5c",
+    "html_review/browser_figure_01.png": "272f69e9a2ea84c46b738d7e1adde2af96873692f9af6a91dea1b9928e27d885",
+    "html_review/browser_figure_04.png": "6552abf9369074abf37bbc50a73f25fdcd08e00db8924c70a2cc9a9356267aee",
+    "html_review/browser_figure_05.png": "bccf0bf20dcf883155225d0dc6d3fecea4568a0e8d86d62391c07d3fee706482",
+    "html_review/browser_figure_07.png": "6c67470f3fe4cd3df3ab306c2ad7a518eb1793038fc3cf10a77515bb2d9732bd",
+    "html_review/browser_figure_09.png": "82b6d3ffeb61c65d885fbf83c8a94d8f9ccea64f97b63f049d2e19ff92eb1e5d",
+    "html_review/browser_figure_10.png": "2465c01c9378fdc524f6dd8cb564a8efa0d7472f72021baa6a849b00230a774e",
+    "html_review/browser_nullspace_solve.png": "5f23f5d6ecb426cfeb2943b1b6b21bfa938a9ea12bd05927946c17e17fa9b7d5",
+    "html_review/browser_pair_boundary_limit.png": "a0340e9a5f09b56e61760102d44f848ce276e1d34a3312a6854fbc140a57c5cd",
+    "html_review/browser_sampling_mean_se.png": "4b3b2d798dec82584235fc2226bbaea3fa632515077ca32e44091050075626cc",
+    "html_review/browser_shared_derivation.png": "7df645595f615860d4c9ec965b23239fac0fb75b148e9551882b7d783c62dcd0"
+  },
+  "checks": {
+    "all_ten_figures_visually_inspected": true,
+    "actual_exercise_stubs_and_solutions_reviewed": true,
+    "all_thirty_dropdowns_opened": true,
+    "math_rendered_without_errors": true,
+    "no_page_horizontal_overflow": true,
+    "native_and_analytic_plays_pass": true,
+    "unfavorable_controls_and_all_models_retained": true,
+    "logical_query_scope_disclosed": true
+  },
+  "notes": [
+    "The author inspected all v1 PNGs; v2 retains identical hashes for nine figures. Revised figure 06 was inspected directly at full resolution.",
+    "Six actual notebook figure viewports and four key derivation viewports were inspected and saved. All ten notebook images loaded. Tall convergence and variance figures were inspected as complete PNGs.",
+    "Clean/shuffled convergence axes now use logarithmic automatic limits; the additive ridge panel retains zero and an explicit rounding-scale note. No scientific values or sampling choices changed.",
+    "The native play drew 2 through 4096 samples across clean, shuffled and ridge models, both proposals, different seeds, and explanation/audit rows.",
+    "This author review does not provide independent approval for 16.16 or establish whole-course completion."
+  ]
+}

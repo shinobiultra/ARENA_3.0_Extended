@@ -1396,7 +1396,7 @@ def run_smoke_test(cpu: bool = True) -> dict:
     }
 
 
-def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
+def _run_legacy_gpu_test(max_vram_gb: float = 24.0) -> dict:
     if not t.cuda.is_available():
         raise RuntimeError("12.1 GPU verification requires CUDA.")
 
@@ -1684,6 +1684,91 @@ def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
             "plus controlled clothing factor geometry."
         ),
     }
+
+
+def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
+    """Recompute the preserved controls plus full encoders and word overlays."""
+    from chapter12_vlm_interpretability.exercises.part1_clip_siglip_vlm_controls import (
+        pixel_clip, pixel_tests, typography,
+    )
+    from huggingface_hub import snapshot_download
+    from transformers import CLIPModel, CLIPProcessor
+
+    result = _run_legacy_gpu_test(max_vram_gb=max_vram_gb)
+    legacy_peak = result["peak_vram_gb"]
+    t.cuda.reset_peak_memory_stats()
+    for test in (
+        pixel_tests.test_tokenizer, pixel_tests.test_pixel_cnn,
+        pixel_tests.test_causal_text_block, pixel_tests.test_eos_encoder,
+        pixel_tests.test_dual_encoder, pixel_tests.test_alignment_losses,
+        pixel_tests.test_semantic_retrieval, pixel_tests.test_training_loop,
+        pixel_tests.test_evaluation, pixel_tests.test_broken_implementations_are_rejected,
+        pixel_tests.test_typographic_metrics, pixel_tests.test_typographic_controls,
+        pixel_tests.test_learner_answers_complete_and_match,
+    ):
+        test()
+    pixel_tests.test_activation_patch(run_with_activation_patch)
+    train = pixel_clip.make_pixel_dataset(examples_per_class=48, seed=100)
+    evaluation = pixel_clip.make_pixel_dataset(examples_per_class=24, seed=300)
+    comparison = pixel_clip.run_pixel_comparison(train, evaluation, device="cuda")
+    rows = comparison["rows"]
+    indexed = {(row["objective"], row["seed"], row["condition"]): row for row in rows}
+    paired = [row for row in rows if row["condition"] == "paired"]
+    pairing_gaps, frozen_gaps = [], []
+    for row in paired:
+        key = (row["objective"], row["seed"])
+        pairing_gaps.append(row["image_to_text"] - indexed[(*key, "shuffled_train")]["image_to_text"])
+        frozen_gaps.append(row["image_to_text"] - indexed[(*key, "frozen_towers")]["image_to_text"])
+    training_checks = []
+    for key, history in comparison["histories"].items():
+        changes = history["parameter_change_norms"]
+        if key.endswith("/paired"):
+            training_checks.append(all(value > 0 for value in changes.values()))
+        elif key.endswith("/frozen_towers"):
+            training_checks.append(changes["image_encoder"] == changes["text_encoder"] == 0)
+    snapshot = snapshot_download(
+        REAL_CLIP_MODEL_ID, revision=REAL_CLIP_REVISION,
+        allow_patterns=["config.json", "preprocessor_config.json", "tokenizer.json",
+                        "tokenizer_config.json", "special_tokens_map.json", "vocab.json",
+                        "merges.txt", "pytorch_model.bin"],
+    )
+    model = CLIPModel.from_pretrained(snapshot, use_safetensors=False).cuda().eval()
+    processor = CLIPProcessor.from_pretrained(snapshot, use_fast=False)
+    dataset = typography.make_typographic_dataset()
+    typo = typography.run_typographic_study(
+        model, processor, dataset, extract_fn=extract_contrastive_embeddings,
+        metric_fn=typography.typographic_attack_metrics,
+    )
+    result.update({
+        "pixel_encoder_numerical_checks_passed": True,
+        "pixel_encoder_parameter_controls_passed": all(training_checks),
+        "pixel_encoder_eval_count": len(evaluation.images),
+        "pixel_encoder_exact_train_eval_overlap": comparison["exact_pixel_overlap"],
+        "pixel_encoder_worst_seed_accuracy": min(row["image_to_text"] for row in paired),
+        "pixel_encoder_min_pairing_gap": min(pairing_gaps),
+        "pixel_encoder_min_frozen_tower_gap": min(frozen_gaps),
+        "pixel_encoder_comparison": {
+            key: value for key, value in comparison.items()
+            if key not in ("models", "matrices", "histories")
+        },
+        "pixel_encoder_training": {
+            key: {"first_loss": value["losses"][0], "last_loss": value["losses"][-1],
+                  "parameter_change_norms": value["parameter_change_norms"]}
+            for key, value in comparison["histories"].items()
+        },
+        "typography_dataset_count": typo["image_count"],
+        "typography_controls_complete": len(typo["rows"]) == 11,
+        "typography_comparison": {key: value for key, value in typo.items() if key != "matrices"},
+    })
+    result["peak_vram_gb"] = max(legacy_peak, t.cuda.max_memory_allocated() / 1024**3)
+    result["within_vram_budget"] = result["within_vram_budget"] and result["peak_vram_gb"] <= max_vram_gb
+    result["full_path"] = (
+        "Full RGB and caption encoders train under both objectives, with independent rendered "
+        "instances, three matched seeds, frozen towers and broken-pairing/pixel/word controls. "
+        "Pinned CLIP also undergoes zero-shot classification and ten matched word overlays on "
+        "48 scenes. The original two-scene CLIP/SigLIP patch and Qwen generation preflights remain."
+    )
+    return result
 
 
 def run_full_experiment(max_vram_gb: float = 24.0) -> dict:

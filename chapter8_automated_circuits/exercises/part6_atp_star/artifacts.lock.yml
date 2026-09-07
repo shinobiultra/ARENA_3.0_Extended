@@ -1,0 +1,95 @@
+notebook_id: 8_6_atp_star_from_scratch
+section: '8.6'
+title: AtP* from Scratch
+exercise_metadata:
+  EXERCISE_ID: 8_6_atp_star_from_scratch
+  GT_TIER: GT-0
+  DIFFICULTY: 5
+  IMPORTANCE: 5
+  EXPECTED_RUNTIME: 120-180 minutes; about 5 minutes for the complete CPU solution notebook
+  REQUIRES_GPU: true
+gt_tier: GT-0
+evidence_level: exact_nonlinear_ground_truth_plus_pinned_transformerlens_qk_component_study
+claim_scope: >-
+  An exact eight-site nonlinear model organism proves that clean-point first-order
+  attribution can miss saturated Q/K sites and an exactly cancelling source. The
+  AtP* Q/K softmax correction and GradDrop recover the exact toy ranking. A pinned
+  Pythia-70M study over 24 grammar pairs compares exact patching, vanilla AtP, AtP*,
+  same-size random circuits, clean-pair shuffling, and label shuffling across 96
+  named final-position Q/K sites. The distinct EAP-style baseline is toy-only. This is
+  component-level ranking evidence, not a complete circuit interpretation.
+required_gpu_gb: 0
+max_allowed_gpu_gb: 24
+models:
+  - id: exact_nonlinear_atp_star_toy_v1
+    source: generated_analytic_model
+    revision: saturated_attention_plus_exact_cancellation_v1
+    precision: float64
+    gated: false
+  - id: EleutherAI/pythia-70m-deduped
+    source: huggingface_via_transformerlens
+    revision: e93a9faa9c77e5d09219f6c868bfc7a1bd65593c
+    precision: float32
+    gated: false
+    transformerlens_model_name: pythia-70m-deduped
+    claim_scope: final_position_rotary_qk_component_ranking
+datasets:
+  - id: exact_nonlinear_atp_star_toy_inputs_v1
+    source: generated_analytic_task
+    seed: deterministic
+    candidate_components: 8
+  - id: fixed_grammar_agreement_pairs_v1
+    source: generated_counterfactual_pairs
+    seed: deterministic
+    examples: 24
+    task_families: [copula, possession, agreement]
+expected_metrics:
+  tests_passed: true
+  accepted: true
+  toy_clean_metric: 2.8999999543100614
+  toy_corrupt_metric: 0.0
+  toy_exact_q_effect_abs_min: 2.9999998
+  toy_vanilla_q_effect_abs_max: 0.000002
+  toy_exact_cancellation_effect_abs_min: 0.4999999
+  toy_vanilla_cancellation_effect_abs_max: 0.0000001
+  toy_atp_star_spearman_min: 0.999999
+  toy_vanilla_spearman_max: 0.63
+  toy_atp_star_recovery_at_4_min: 0.898
+  toy_random_recovery_at_4_max: 0.102
+  real_examples: 24
+  real_components: 96
+  real_clean_corrupt_gap_min: 8.0
+  real_vanilla_spearman_min: 0.93
+  real_atp_star_spearman_min: 0.99
+  real_top_component: L5H5.K@end
+  real_top8_effect_min: 0.48
+  real_same_size_random_mean_max: 0.20
+  real_same_size_random_best_max: 0.42
+  real_same_size_rank: 1
+  real_pair_shuffled_top8_effect_max: 0.27
+  real_label_shuffled_top8_effect_max: 0.40
+  max_allowed_gpu_gb: 24
+controls:
+  - exhaustive_exact_intervention_ground_truth
+  - saturated_qk_false_negative
+  - exact_cancellation_false_negative
+  - linear_positive_control
+  - zero_effect_value_and_null_controls
+  - technically_distinct_eap_style_edge_baseline
+  - deterministic_random_ranking_control
+  - batched_exact_patching_parity
+  - joint_top_k_faithfulness_not_additive_scores
+  - twenty_four_same_size_random_real_circuits
+  - clean_to_clean_pair_shuffled_ranking
+  - independently_label_shuffled_ranking
+  - causal_evaluation_of_every_control_ranking
+safety_notes:
+  - No unsafe prompts, gated weights, adapters, or generated completions are used.
+  - The pinned model is public and the fixed prompts test grammatical agreement.
+  - BNB_CUDA_VERSION=130 is an import-only TransformerLens compatibility setting; bitsandbytes kernels are not used.
+  - The strict CUDA entry point has no CPU fallback and was not run for this CPU-only task.
+
+candidate_status: corrected_cpu_learner_pending_review_and_cuda
+freshness_inputs:
+  - chapter8_automated_circuits/exercises/part6_atp_star/build_notebooks.py
+  - chapter8_automated_circuits/exercises/part6_atp_star/lesson.md

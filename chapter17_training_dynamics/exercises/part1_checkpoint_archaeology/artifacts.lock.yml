@@ -96,3 +96,6 @@ safety_notes:
 - No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.
 - The training path uses only a generated finite modular-addition table and a random-label
   negative control. It does not use user data, gated weights, or persistent large artifacts.
+
+freshness_inputs:
+  - arena_ext/notebook_checks.py

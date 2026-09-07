@@ -1,0 +1,17 @@
+{
+  "notebook_id": "11_5_contrast_consistent_search",
+  "evidence_role": "Expected numerical checks; actual execution is recorded separately.",
+  "test_count": 14,
+  "checks": [
+    "train-only paired centering",
+    "original asymmetric CCS loss and gradients",
+    "exact independent competing feature",
+    "single versus batched optimization",
+    "label-free loss selection",
+    "calibration orientation and binary metrics",
+    "paired-difference PCA",
+    "last valid token with left and right padding",
+    "paired opinion changes and missing/duplicate rows",
+    "full-vocabulary versus restricted candidate scores"
+  ]
+}

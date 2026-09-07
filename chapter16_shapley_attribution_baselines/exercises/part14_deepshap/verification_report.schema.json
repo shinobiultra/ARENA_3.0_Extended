@@ -1,0 +1,591 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ARENA 16.14 DeepSHAP verification report",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "notebook_id",
+    "date_run",
+    "git_commit",
+    "report_inputs",
+    "gt_tier",
+    "evidence_level",
+    "claim_scope",
+    "gpu_name",
+    "peak_vram_gb",
+    "wall_clock_seconds",
+    "models",
+    "datasets",
+    "tests_passed",
+    "metrics",
+    "baselines",
+    "negative_controls",
+    "ood_tests",
+    "known_failures",
+    "safety_notes",
+    "accepted"
+  ],
+  "properties": {
+    "notebook_id": {
+      "const": "16_14_deepshap_when_does_fast_attribution_match_exact_shap"
+    },
+    "date_run": {
+      "type": "string",
+      "minLength": 1
+    },
+    "git_commit": {
+      "type": "string",
+      "minLength": 1
+    },
+    "report_inputs": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "schema_version",
+        "algorithm",
+        "combined_sha256",
+        "files"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": 1
+        },
+        "algorithm": {
+          "const": "sha256"
+        },
+        "combined_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "files": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "path",
+              "sha256",
+              "size_bytes"
+            ],
+            "properties": {
+              "path": {
+                "type": "string",
+                "minLength": 1
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              },
+              "size_bytes": {
+                "type": "integer",
+                "minimum": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    "gt_tier": {
+      "enum": [
+        "GT-0",
+        "GT-1",
+        "GT-2",
+        "GT-3",
+        "GT-4"
+      ]
+    },
+    "evidence_level": {
+      "type": "string",
+      "minLength": 1
+    },
+    "claim_scope": {
+      "type": "string",
+      "minLength": 1
+    },
+    "gpu_name": {
+      "type": "string"
+    },
+    "peak_vram_gb": {
+      "const": 0.0
+    },
+    "wall_clock_seconds": {
+      "type": "number",
+      "minimum": 0
+    },
+    "models": {
+      "type": "array",
+      "minItems": 2
+    },
+    "datasets": {
+      "type": "array",
+      "minItems": 1
+    },
+    "tests_passed": {
+      "const": true
+    },
+    "metrics": {
+      "type": "object",
+      "required": [
+        "notebook_contract",
+        "gpu_test",
+        "gpu_evidence"
+      ],
+      "properties": {
+        "notebook_contract": {
+          "type": "object",
+          "required": [
+            "tests_passed",
+            "accepted",
+            "test_count",
+            "claim_scope",
+            "student_method_exercises"
+          ],
+          "properties": {
+            "tests_passed": {
+              "const": true
+            },
+            "accepted": {
+              "const": true
+            },
+            "test_count": {
+              "const": 11
+            },
+            "claim_scope": {
+              "type": "string",
+              "minLength": 1
+            },
+            "student_method_exercises": {
+              "const": 9
+            }
+          }
+        },
+        "gpu_test": {
+          "type": "object",
+          "required": [
+            "cuda_available",
+            "device",
+            "peak_vram_gb",
+            "within_vram_budget",
+            "actual_learner_passed",
+            "own_answer_code_cells",
+            "embedded_figures",
+            "native_model_retrained",
+            "native_model_retrained_in_this_report",
+            "native_evidence_reused",
+            "fresh_reproduction_passed",
+            "fresh_compared_arrays",
+            "fresh_compared_elements",
+            "fresh_max_error",
+            "fresh_output_directory",
+            "learner_evidence_sha256",
+            "fresh_evidence_sha256",
+            "model_fits",
+            "fresh_model_fits",
+            "all_model_fits_retained",
+            "mlp_fits",
+            "neural_training_runs",
+            "ridge_fits",
+            "clean_fits",
+            "shuffled_fits",
+            "shuffled_models_evaluated",
+            "optimizer_updates",
+            "model_keys",
+            "training_seeds",
+            "all_training_seeds_retained",
+            "shuffled_training_targets",
+            "train_row_count",
+            "train_group_count",
+            "explanation_group_count",
+            "heldout_unit",
+            "heldout_group_count",
+            "heldout_row_count",
+            "explanation_row_count",
+            "rows_explained_per_model",
+            "model_row_explanations",
+            "final_used_for_selection",
+            "cross_split_recipe_overlap",
+            "exact_models",
+            "exact_coalitions",
+            "exact_model_rows",
+            "model_coalition_values",
+            "primary_hybrid_predictions",
+            "attribution_coordinates_per_method",
+            "pair_model_rows",
+            "pair_local_values",
+            "background_rows",
+            "folding_max_error",
+            "author_reference_passed",
+            "author_reference_model_rows",
+            "author_reference_local_values",
+            "author_pair_rows_checked",
+            "author_pair_local_values_checked",
+            "author_reference_atol",
+            "author_reference_rtol",
+            "author_reference_max_error",
+            "real_local_accuracy_passed",
+            "real_local_accuracy_atol",
+            "real_local_accuracy_rtol",
+            "real_local_accuracy_max_error",
+            "exact_efficiency_max_error",
+            "deepshap_is_exact_shap",
+            "deepshap_approximation_disclosed",
+            "deepshap_exact_gap_max",
+            "ridge_exact_max_error",
+            "nearzero_primary_local_accuracy_passed",
+            "nearzero_primary_failure_disclosed",
+            "nearzero_primary_residual",
+            "nearzero_epsilon_zero_max_error",
+            "threshold_exact_max_error",
+            "min_exact_max_error",
+            "dummy_feature_max_abs",
+            "unsupported_operator_rejected",
+            "background_variants",
+            "background_rows_compared",
+            "alternate_backgrounds_compared",
+            "replacement_models",
+            "replacement_audit_rows",
+            "random_order_controls",
+            "gradient_baseline_model_rows",
+            "training_mean_baseline",
+            "whole_paper_replication"
+          ],
+          "properties": {
+            "cuda_available": {
+              "const": false
+            },
+            "device": {
+              "const": "cpu"
+            },
+            "peak_vram_gb": {
+              "const": 0.0
+            },
+            "within_vram_budget": {
+              "const": true
+            },
+            "actual_learner_passed": {
+              "const": true
+            },
+            "own_answer_code_cells": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "embedded_figures": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "native_model_retrained": {
+              "const": true
+            },
+            "native_model_retrained_in_this_report": {
+              "const": true
+            },
+            "native_evidence_reused": {
+              "const": false
+            },
+            "fresh_reproduction_passed": {
+              "const": true
+            },
+            "fresh_compared_arrays": {
+              "type": "integer",
+              "minimum": 842
+            },
+            "fresh_compared_elements": {
+              "type": "integer",
+              "minimum": 5887125
+            },
+            "fresh_max_error": {
+              "const": 0.0
+            },
+            "fresh_output_directory": {
+              "type": "string",
+              "minLength": 1
+            },
+            "learner_evidence_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "fresh_evidence_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "model_fits": {
+              "const": 7
+            },
+            "fresh_model_fits": {
+              "const": 7
+            },
+            "all_model_fits_retained": {
+              "const": true
+            },
+            "mlp_fits": {
+              "const": 6
+            },
+            "neural_training_runs": {
+              "const": 6
+            },
+            "ridge_fits": {
+              "const": 1
+            },
+            "clean_fits": {
+              "const": 3
+            },
+            "shuffled_fits": {
+              "const": 3
+            },
+            "shuffled_models_evaluated": {
+              "const": 3
+            },
+            "optimizer_updates": {
+              "const": 4800
+            },
+            "model_keys": {
+              "const": [
+                "clean_0",
+                "clean_1",
+                "clean_2",
+                "shuffled_0",
+                "shuffled_1",
+                "shuffled_2",
+                "ridge"
+              ]
+            },
+            "training_seeds": {
+              "const": [
+                161410,
+                161411,
+                161412
+              ]
+            },
+            "all_training_seeds_retained": {
+              "const": true
+            },
+            "shuffled_training_targets": {
+              "const": true
+            },
+            "train_row_count": {
+              "const": 758
+            },
+            "train_group_count": {
+              "const": 298
+            },
+            "explanation_group_count": {
+              "const": 64
+            },
+            "heldout_unit": {
+              "const": "recipe_group"
+            },
+            "heldout_group_count": {
+              "const": 65
+            },
+            "heldout_row_count": {
+              "const": 119
+            },
+            "explanation_row_count": {
+              "const": 153
+            },
+            "rows_explained_per_model": {
+              "const": 272
+            },
+            "model_row_explanations": {
+              "const": 1904
+            },
+            "final_used_for_selection": {
+              "const": false
+            },
+            "cross_split_recipe_overlap": {
+              "const": 0
+            },
+            "exact_models": {
+              "const": 7
+            },
+            "exact_coalitions": {
+              "const": 256
+            },
+            "exact_model_rows": {
+              "const": 1904
+            },
+            "model_coalition_values": {
+              "const": 487424
+            },
+            "primary_hybrid_predictions": {
+              "const": 31195136
+            },
+            "attribution_coordinates_per_method": {
+              "const": 15232
+            },
+            "pair_model_rows": {
+              "const": 121856
+            },
+            "pair_local_values": {
+              "const": 974848
+            },
+            "background_rows": {
+              "const": 64
+            },
+            "folding_max_error": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1e-10
+            },
+            "author_reference_passed": {
+              "const": true
+            },
+            "author_reference_model_rows": {
+              "const": 1904
+            },
+            "author_reference_local_values": {
+              "const": 15232
+            },
+            "author_pair_rows_checked": {
+              "const": 896
+            },
+            "author_pair_local_values_checked": {
+              "const": 7168
+            },
+            "author_reference_atol": {
+              "const": 1e-07
+            },
+            "author_reference_rtol": {
+              "const": 1e-08
+            },
+            "author_reference_max_error": {
+              "type": "number",
+              "minimum": 0
+            },
+            "real_local_accuracy_passed": {
+              "const": true
+            },
+            "real_local_accuracy_atol": {
+              "const": 1e-07
+            },
+            "real_local_accuracy_rtol": {
+              "const": 1e-08
+            },
+            "real_local_accuracy_max_error": {
+              "type": "number",
+              "minimum": 0
+            },
+            "exact_efficiency_max_error": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1e-10
+            },
+            "deepshap_is_exact_shap": {
+              "const": false
+            },
+            "deepshap_approximation_disclosed": {
+              "const": true
+            },
+            "deepshap_exact_gap_max": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "ridge_exact_max_error": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1e-10
+            },
+            "nearzero_primary_local_accuracy_passed": {
+              "const": false
+            },
+            "nearzero_primary_failure_disclosed": {
+              "const": true
+            },
+            "nearzero_primary_residual": {
+              "type": "number",
+              "minimum": 3.999e-07,
+              "maximum": 4.001e-07
+            },
+            "nearzero_epsilon_zero_max_error": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1e-10
+            },
+            "threshold_exact_max_error": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1e-10
+            },
+            "min_exact_max_error": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1e-10
+            },
+            "dummy_feature_max_abs": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1e-10
+            },
+            "unsupported_operator_rejected": {
+              "const": true
+            },
+            "background_variants": {
+              "const": 5
+            },
+            "background_rows_compared": {
+              "const": 272
+            },
+            "alternate_backgrounds_compared": {
+              "const": true
+            },
+            "replacement_models": {
+              "const": 7
+            },
+            "replacement_audit_rows": {
+              "const": 119
+            },
+            "random_order_controls": {
+              "const": 100
+            },
+            "gradient_baseline_model_rows": {
+              "const": 1904
+            },
+            "training_mean_baseline": {
+              "const": true
+            },
+            "whole_paper_replication": {
+              "const": false
+            }
+          }
+        },
+        "gpu_evidence": {
+          "type": "object"
+        }
+      }
+    },
+    "baselines": {
+      "type": "object",
+      "required": [
+        "declared_controls",
+        "expected_metrics"
+      ],
+      "properties": {
+        "declared_controls": {
+          "type": "array",
+          "minItems": 1
+        },
+        "expected_metrics": {
+          "type": "object",
+          "minProperties": 1
+        }
+      }
+    },
+    "negative_controls": {
+      "type": "object"
+    },
+    "ood_tests": {
+      "type": "object"
+    },
+    "known_failures": {
+      "type": "array",
+      "maxItems": 0
+    },
+    "safety_notes": {
+      "type": "array",
+      "minItems": 1
+    },
+    "accepted": {
+      "const": true
+    }
+  }
+}

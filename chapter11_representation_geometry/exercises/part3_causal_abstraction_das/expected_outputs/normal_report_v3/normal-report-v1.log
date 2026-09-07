@@ -1,0 +1,25 @@
+Traceback (most recent call last):
+  File "/home/bitwise/Documents/ARENA_3.0_Extended/scripts/run_extension_verification_reports.py", line 452, in <module>
+    main()
+    ~~~~^^
+  File "/home/bitwise/Documents/ARENA_3.0_Extended/scripts/run_extension_verification_reports.py", line 444, in main
+    if run_record(record, index, args.max_vram_gb):
+       ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bitwise/Documents/ARENA_3.0_Extended/scripts/run_extension_verification_reports.py", line 377, in run_record
+    reset_cuda_peak()
+    ~~~~~~~~~~~~~~~^^
+  File "/home/bitwise/Documents/ARENA_3.0_Extended/scripts/run_extension_verification_reports.py", line 170, in reset_cuda_peak
+    cleanup_cuda_allocations()
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/bitwise/Documents/ARENA_3.0_Extended/scripts/run_extension_verification_reports.py", line 165, in cleanup_cuda_allocations
+    torch.cuda.synchronize()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/bitwise/Documents/ARENA_3.0_Extended/.venv/lib/python3.14/site-packages/torch/cuda/__init__.py", line 1181, in synchronize
+    return torch._C._cuda_synchronize()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+torch.AcceleratorError: CUDA error: out of memory
+Search for `cudaErrorMemoryAllocation' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+

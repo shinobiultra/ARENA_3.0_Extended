@@ -1,0 +1,4 @@
+extension_chapters_checked=13
+course_surface_blockers=1
+COURSE_SURFACE=FAIL
+- 11.3: exercise notebook lacks a complete learner execution or GPU/full verification surface

@@ -6,98 +6,92 @@ exercise_metadata:
   GT_TIER: GT-0
   DIFFICULTY: 3
   IMPORTANCE: 4
-  EXPECTED_RUNTIME: 70-100 minutes; about 15 seconds for the live CUDA result
+  EXPECTED_RUNTIME: 3-5 hours study; about seven minutes for the complete recorded
+    CUDA notebook
   REQUIRES_GPU: true
 gt_tier: GT-0
-evidence_level: gt0_toy_geometry_plus_real_lm_calendar_template_centering_preflight
-claim_scope: A known cyclic toy task validates train-only PCA, template centering,
-  kNN, and ridge coordinate probing before a pinned Pythia-70M-deduped experiment.
-  The live real-model path shows raw template-dominated transfer failures and
-  template-centered weekday/month identity transfer with learner-generated PCA,
-  cross-template cosine retrieval, five-seed by three-setting UMAP sweeps, held-out
-  kNN, trustworthiness, neighborhood preservation, permuted labels, white noise,
-  and matched random-token controls. It does not claim a literal circular Pythia
-  manifold or a causal intervention.
-required_gpu_gb: 1
+evidence_level: exact_numerical_oracles_and_real_mistral_calendar_interventions
+claim_scope: 'Learner-implemented geometry and native interventions on pinned Mistral-7B:
+  579 new prompts, all 5634 donor pairs, 32 draws of each null, 120 nonlinear fits.
+  Partial causal effects and all failures retained. t-SNE is transductive; broader
+  space/time tasks are not reproduced.'
+required_gpu_gb: 14
 max_allowed_gpu_gb: 24
 models:
-- id: toy_or_generated_inputs
-  source: generated
-  revision: seed_0
-  precision: float32
-  gated: false
-- id: EleutherAI/pythia-70m-deduped
+- id: mistralai/Mistral-7B-v0.1
   source: huggingface
-  revision: e93a9faa9c77e5d09219f6c868bfc7a1bd65593c
-  precision: float32
+  revision: 27d67f1b5f57dc0953326b2601d68371d40ea8da
+  precision: bfloat16
   gated: false
-  claim_scope: weekday_month_template_centered_hidden_state_geometry_preflight
 datasets:
-- id: 11_1_pca_svd_and_geometry_controls_toy_inputs
+- id: frozen_calendar_prompts_v2
   source: generated
-  seed: 0
-- id: course_generated_weekday_prompt_templates_v1
-  source: generated
-  seed: 0
-  label_count: 7
-  train_template: Today is {}
-  heldout_template: The calendar says {}
-- id: course_generated_month_prompt_templates_v1
-  source: generated
-  seed: 1
-  label_count: 12
-  train_template: The report was written in {}
-  heldout_template: The event happened during {}
+  protocol: geometry_protocol.json
+  train_rows: 93
+  development_rows: 100
+  final_rows: 579
 expected_metrics:
   tests_passed: true
   accepted: true
-  max_allowed_gpu_gb: 24
-  template_centering_max_mean_abs: 0.0
-  pythia_weekday_preflight_passed: true
-  pythia_calendar_preflight_passed: true
-  pythia_calendar_task_count: 2
-  pythia_weekday_raw_heldout_accuracy_max: 0.2
-  pythia_weekday_centered_heldout_accuracy: 1.0
-  pythia_weekday_permuted_label_accuracy: 0.0
-  pythia_weekday_noise_accuracy_max: 0.2
-  pythia_month_raw_heldout_accuracy_max: 0.75
-  pythia_month_centered_heldout_accuracy: 1.0
-  pythia_month_permuted_label_accuracy: 0.0
-  pythia_month_noise_accuracy_max: 0.1
-  pythia_month_matched_pair_accuracy: 1.0
-  pythia_weekday_generation_used: false
-  pythia_weekday_umap_min_heldout_knn_accuracy_min: 0.8
-  pythia_month_umap_min_heldout_knn_accuracy_min: 0.8
-  pythia_weekday_umap_min_trustworthiness_min: 0.9
-  pythia_month_umap_min_trustworthiness_min: 0.9
-  pythia_weekday_umap_min_neighborhood_preservation_min: 0.55
-  pythia_month_umap_min_neighborhood_preservation_min: 0.55
-  pythia_weekday_umap_random_label_accuracy_max_max: 0.35
-  pythia_month_umap_random_label_accuracy_max_max: 0.35
-  pythia_weekday_umap_random_token_accuracy_max_max: 0.35
-  pythia_month_umap_random_token_accuracy_max_max: 0.35
+  actual_learner_passed: true
+  own_answer_code_cells: 35
+  embedded_figures: 13
+  final_prompts: 579
+  all_donor_pairs: 5634
+  retained_outcomes: 120649
+  null_draws_per_kind: 32
+  projection_fits: 120
+  angle_play_rows: 3196
+  fresh_compared_examples: 6656
+  fresh_condition_batches: 208
+  fresh_max_logit_error_max: 1.0e-06
+  fresh_top_token_mismatches: 0
+  final_used_for_selection: false
+  tsne_is_transductive: true
+  paper_equivalent_full_replication: false
 controls:
-- baseline_or_reference_check
-- negative_control_where_applicable
-- shape_dtype_or_exact_value_check
-- template_centering_control
-- raw_template_dominated_failure_check
-- weekday_train_heldout_prompt_template_split
-- month_train_heldout_prompt_template_split
-- permuted_label_control
-- white_noise_geometry_control
-- matched_pair_similarity_check
-- five_seed_umap_visualization_sweep
-- three_reducer_hyperparameter_settings
-- heldout_knn_visualization_metric
-- trustworthiness_metric
-- neighborhood_preservation_metric
-- visualization_random_label_negative_control
-- visualization_random_token_negative_control
-- no_generation_hidden_state_only
-- pythia_70m_deduped_revision_pinned
+- exact_calendar_and_independent_nuisance_oracle
+- training_only_pca_and_coordinate_probes
+- chronological_class_permutation_512_draws
+- all_33_development_boundaries
+- frozen_selected_layers_before_final
+- all_new_template_donors
+- no_op
+- mean_only
+- full_donor
+- same_rank_random_donor_plane_32_draws
+- equal_norm_random_edit_32_draws
+- class_order_permuted_circular_probe_32_draws
+- independent_noise_reducer_control
+- permuted_training_labels
+- five_seeds_three_settings_per_reducer
+- leave_one_calendar_class_out
+- actual_full_vocabulary_answers
+- fresh_cuda_all_nulls_first_batch
 safety_notes:
-- No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.
-- The real-LM geometry path uses generated weekday/month labels and hidden states
-  only. It performs no generated completions and does not claim causal space/time
-  intervention behavior.
+- Only generated calendar prompts are used. Native hooks are removed after each forward
+  pass. Weights are never changed.
+freshness_inputs:
+- chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/build_notebooks.py
+- chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/execute_learner.py
+- chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/expected_outputs/learner_execution.json
+- chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/expected_outputs/measured_geometry/angle_play.json.gz
+- chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/expected_outputs/measured_geometry/measured_study.json.gz
+- chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/expected_outputs/measured_geometry/projection_study.json.gz
+- chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/expected_outputs/measured_geometry/protocol.json
+- chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/expected_outputs/measured_geometry/runtime.json
+- chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/expected_outputs/measured_geometry/single_play.json
+- chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/geometry_cuda.py
+- chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/geometry_data.py
+- chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/geometry_evidence.py
+- chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/geometry_methods.py
+- chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/geometry_methods_tests.py
+- chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/geometry_plotting.py
+- chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/geometry_protocol.json
+- chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/geometry_study.py
+- chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/lesson.md
+- chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/publish_study.py
+- chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/geometry_reproduction_cache.py
+- chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/expected_outputs/fresh_cuda_release_v3/manifest.json
+- chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/expected_outputs/fresh_cuda_release_v3/execution.tar.gz
+- tests/test_geometry_reproduction_cache.py

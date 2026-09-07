@@ -1,0 +1,134 @@
+notebook_id: 16_11_dataset_cartography
+section: '16.11'
+title: Dataset Cartography
+execution_device: cpu
+exercise_metadata:
+  EXERCISE_ID: 16_11_dataset_cartography
+  GT_TIER: GT-0
+  DIFFICULTY: 4
+  IMPORTANCE: 5
+  EXPECTED_RUNTIME: Four to six hours self-study; about thirteen seconds for the complete reference CPU notebook
+    on the development machine
+  REQUIRES_GPU: false
+gt_tier: GT-0
+evidence_level: independent_sgd_oracles_and_real_data_selection_retraining
+claim_scope: Student-implemented confidence, population variability and correctness map actual MLP learning
+  histories. Stable IDs, both logging conventions, five seeds, linear and random-label controls, known injected
+  errors, class-matched selections and equal-update comparisons test what the maps mean. All 140 primary training
+  runs and 2620 held-out images are retained. Low confidence retrieves many injected errors, while one-third
+  high-variability selection underperforms its matched control. This is a small-network digit experiment, not
+  a RoBERTa NLP, natural OOD or whole-paper reproduction.
+required_gpu_gb: 0
+max_allowed_gpu_gb: 0
+models:
+- id: course_digit10_mlp64_and_linear
+  source: generated_training_run
+  revision: frozen_cartography_protocol_v1
+  precision: float32
+  gated: false
+datasets:
+- id: uci_optdigits
+  source: uci
+  revision: 0d7b054fea010270e9b3f06411c654c5e59547732ad626381980baffe0a23fb0
+  license: CC BY 4.0
+  train: 3000
+  same_source_holdout: 823
+  separate_writer_holdout: 1797
+  manifest: data_manifest.json
+expected_metrics:
+  tests_passed: true
+  accepted: true
+  test_count: 10
+  actual_learner_passed: true
+  own_answer_code_cells: 30
+  embedded_figures: 20
+  native_model_retrained: true
+  native_model_retrained_in_this_report: true
+  native_evidence_reused: false
+  fresh_reproduction_passed: true
+  reference_refits: 140
+  mapping_runs: 20
+  selection_refits: 120
+  independent_optimizer_checks: 4
+  separate_training_checks: 2
+  independent_numpy_checks: 24
+  optimizer_updates: 53550
+  fresh_compared_tensors: 675
+  fresh_compared_elements: 41903198
+  fresh_max_error_max: 1.0e-10
+  heldout_unit: evaluation_image
+  heldout_image_count: 2620
+  heldout_split_count: 2
+  final_used_for_selection: false
+  heldout_images_excluded_from_training: true
+  both_logging_conventions_recorded: true
+  all_retraining_seeds_retained: true
+  class_matched_controls: true
+  equal_update_control: true
+  exploratory_refits: 2
+  whole_paper_replication: false
+controls:
+- independent_numpy_softmax_and_population_statistics
+- ordinary_torch_nn_and_sgd_training_oracle
+- separate_versus_scheduled_full_training
+- stable_example_ids_under_shuffled_minibatches
+- constant_probability_and_repeated_final_checkpoint
+- paired_clean_and_injected_label_errors
+- permuted_training_labels_and_original_holdout_labels
+- all_five_mapping_and_retraining_seeds
+- online_versus_epoch_end_logging
+- early_full_and_late_training_windows
+- linear_versus_nonlinear_models
+- uniform_random_subsets
+- exact_class_count_matched_random_subsets
+- full_training_pool
+- equal_optimizer_updates_for_one_third_ambiguous_and_random
+- all_holdout_examples_and_failed_selections_retained
+- fresh_full_native_retraining
+- editable_probability_and_actual_retraining_plays
+safety_notes:
+- Public UCI digit images with source-row provenance; introduced label changes remain distinct from original
+  labels.
+freshness_inputs:
+- chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/build_notebooks.py
+- chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/cartography_contract_tests.py
+- chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/cartography_data.py
+- chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/cartography_methods.py
+- chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/cartography_methods_tests.py
+- chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/cartography_reference.py
+- chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/cartography_study.py
+- chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/execute_learner.py
+- chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/publish_study.py
+- chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/reproduce_native.py
+- chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/run_native.py
+- chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/solutions.py
+- chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/tests.py
+- chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/README.md
+- chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/lesson.md
+- chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/protocol.md
+- chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/protocol_freeze.json
+- chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/data_manifest.json
+- chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/expected_outputs/learner_execution.json
+- chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/expected_outputs/fresh_reproduction.json
+- chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/expected_outputs/native_summary.json
+- chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/attribution_data.py
+- chapter16_shapley_attribution_baselines/instructions/assets/cartography_class_accuracy.png
+- chapter16_shapley_attribution_baselines/instructions/assets/cartography_class_counts.png
+- chapter16_shapley_attribution_baselines/instructions/assets/cartography_equal_updates.png
+- chapter16_shapley_attribution_baselines/instructions/assets/cartography_error_retrieval.png
+- chapter16_shapley_attribution_baselines/instructions/assets/cartography_images.png
+- chapter16_shapley_attribution_baselines/instructions/assets/cartography_logging.png
+- chapter16_shapley_attribution_baselines/instructions/assets/cartography_mapping_generalization.png
+- chapter16_shapley_attribution_baselines/instructions/assets/cartography_maps.png
+- chapter16_shapley_attribution_baselines/instructions/assets/cartography_measurement_stability.png
+- chapter16_shapley_attribution_baselines/instructions/assets/cartography_noise_gallery.png
+- chapter16_shapley_attribution_baselines/instructions/assets/cartography_paired_changes.png
+- chapter16_shapley_attribution_baselines/instructions/assets/cartography_real_play.png
+- chapter16_shapley_attribution_baselines/instructions/assets/cartography_region_gallery.png
+- chapter16_shapley_attribution_baselines/instructions/assets/cartography_region_trajectories.png
+- chapter16_shapley_attribution_baselines/instructions/assets/cartography_seed_stability.png
+- chapter16_shapley_attribution_baselines/instructions/assets/cartography_selection_accuracy.png
+- chapter16_shapley_attribution_baselines/instructions/assets/cartography_selection_loss.png
+- chapter16_shapley_attribution_baselines/instructions/assets/cartography_training.png
+- chapter16_shapley_attribution_baselines/instructions/assets/cartography_trajectory_play.png
+- chapter16_shapley_attribution_baselines/instructions/assets/cartography_windows.png

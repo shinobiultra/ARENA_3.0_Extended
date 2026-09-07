@@ -65,9 +65,9 @@
       "source": "exact_course_generator"
     }
   ],
-  "date_run": "2026-09-04T14:34:31+00:00",
+  "date_run": "2026-09-04T23:56:37+00:00",
   "evidence_level": "cuda_verified_toy_ground_truth_and_pinned_sd15_latent_patching",
-  "git_commit": "49ca1c18",
+  "git_commit": "8eab192b",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-0",
   "known_failures": [],
@@ -165,7 +165,7 @@
             "regional_selectivities": [
               0.021231179476458695,
               0.2220655260594271,
-              0.4179024081249554,
+              0.4179023932237942,
               0.5266906972107595,
               0.5893067756642687,
               0.5915839609421507,
@@ -173,12 +173,12 @@
               0.7115527938255312,
               0.7339431971082607,
               0.756165199128628,
-              0.765668477395357,
-              0.7741573523895516,
+              0.7656684848459376,
+              0.7741573672907128,
               0.7829903301186035,
               0.7933557090433385,
               0.797867309500066,
-              0.800114803089366,
+              0.8001147956387854,
               0.8013655079110434,
               0.8023176750386649,
               0.7996839232250531
@@ -246,17 +246,17 @@
               0.22201977337668655,
               0.36227553440903626,
               0.43022326425880986,
-              0.5006988434225093,
+              0.5006988285213481,
               0.5511379110689407,
-              0.5784410577052361,
+              0.5784410651558167,
               0.6104828940611725,
               0.633994917437865,
-              0.6579161058077003,
+              0.6579160983571197,
               0.6804126574206246,
               0.7018503145211596,
               0.7214886234500055,
               0.7409564868086059,
-              0.7560618067284449,
+              0.7560618030031546,
               0.763153270389171,
               0.7669711342784703
             ],
@@ -276,7 +276,7 @@
         "num_inference_steps": 20,
         "peak_vram_gb": 3.2346906661987305,
         "revision": "451f4fe16113bff5a5d2269ed5ad43b0592e9a14",
-        "runtime_seconds": 54.11245172800045,
+        "runtime_seconds": 40.38644652799985,
         "torch_version": "2.12.1+cu132",
         "within_vram_budget": true
       },
@@ -337,7 +337,7 @@
         "heatmap_min": -0.029543252661824226,
         "max_vram_gb": 24.0,
         "peak_vram_gb": 0.06702995300292969,
-        "runtime_seconds": 2.974002966999251,
+        "runtime_seconds": 3.446331420000206,
         "training_final_loss": 0.002254420053213835,
         "training_first_loss": 0.59244375705719,
         "training_loss_ratio": 0.0038052895761988936
@@ -402,7 +402,7 @@
   "peak_vram_gb": 3.2346906661987305,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "20764a0082bb700feb8b3b587da5f16f68cf2148ac3016890a49e048beb587f3",
+    "combined_sha256": "640dda570d5b877d20265b12592ffad60349a9f04f82c62bd5a448ddfc652d4d",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -431,8 +431,8 @@
       },
       {
         "path": "chapter13_image_generation_interpretability/exercises/part2_denoising_time_causal_patching/expected_outputs/README.md",
-        "sha256": "c1b529fd4cf3f7eb173fb0e3dfd06c8a0f2421a314b4c7364a024a38146ebef4",
-        "size_bytes": 1794
+        "sha256": "1d4e2d59055a6cf8e6cf872b31b6922fe4f56654d51567cc038d939a61e13895",
+        "size_bytes": 3513
       },
       {
         "path": "chapter13_image_generation_interpretability/exercises/part2_denoising_time_causal_patching/expected_outputs/reference_metrics.json",
@@ -441,8 +441,8 @@
       },
       {
         "path": "chapter13_image_generation_interpretability/exercises/part2_denoising_time_causal_patching/expected_outputs/smoke_test.json",
-        "sha256": "2f63f51f024478d50c1243572f0cab209e6a1fff0b3fa69193aca5b897c278a1",
-        "size_bytes": 298
+        "sha256": "8b87224cd0aa2f412328fe4b4ed121ff4cba6461f8b80a23b6d47db484cbbb61",
+        "size_bytes": 354
       },
       {
         "path": "chapter13_image_generation_interpretability/exercises/part2_denoising_time_causal_patching/solutions.py",
@@ -451,8 +451,8 @@
       },
       {
         "path": "chapter13_image_generation_interpretability/exercises/part2_denoising_time_causal_patching/tests.py",
-        "sha256": "5434406d69fac0f470fa1526631ec55381d8d793e9f379f144abc09171379b32",
-        "size_bytes": 33253
+        "sha256": "8f04a010a479cc23acfda1452f6acb5ad8bc2a7c360d9b5a90892c9b8210dd88",
+        "size_bytes": 35854
       },
       {
         "path": "chapter13_image_generation_interpretability/exercises/part2_denoising_time_causal_patching/verification_report.schema.json",
@@ -478,5 +478,5 @@
     "No gated data, unsafe prompts, or downloaded training corpus is used."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 59.53215
+  "wall_clock_seconds": 44.862625
 }

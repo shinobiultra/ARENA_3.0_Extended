@@ -225,7 +225,7 @@
   "peak_vram_gb": 0.27759599685668945,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "c217b7f55adebf7ca72381c68e24fe21ff40462e9730e131659d0c2ccb1dfcc3",
+    "combined_sha256": "b50b8b47b4c91226b3d7d8317dd788c8a137c862c3c477d0a1b3eec57cf800bf",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -289,7 +289,7 @@
       },
       {
         "path": "chapter5_modern_architectures/instructions/pages/03_[5.3]_Mamba_from_Scratch.md",
-        "sha256": "c4c81b37b9b5224c2257368d3ec27d58add07a7288a4072a36fb424d3e5d0708",
+        "sha256": "2a67b6f5f6b01006f759cf5d9ffdc182e0077c4ee45fcf1c98c218c9f2013430",
         "size_bytes": 60151
       },
       {

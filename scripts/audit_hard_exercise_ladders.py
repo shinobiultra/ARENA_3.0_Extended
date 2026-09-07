@@ -11,11 +11,16 @@ from __future__ import annotations
 import ast
 import csv
 import json
+import sys
+import yaml
 from dataclasses import dataclass
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:sys.path.insert(0,str(ROOT))
+from scripts.audit_report_evidence_contracts import has_native_cpu_model_evidence
+
 REGISTRY_PATH = ROOT / "docs/hard_exercise_ladder_registry.csv"
 
 REQUIRED_FIXTURE_TERMS = (
@@ -55,7 +60,14 @@ def visible_test_summary(path: Path) -> VisibleTestSummary:
     test_functions = [
         node for node in ast.walk(tree) if isinstance(node, ast.FunctionDef) and node.name.startswith("test_")
     ]
-    assert_count = sum(isinstance(node, ast.Assert) for node in ast.walk(tree))
+    assert_count = sum(
+        isinstance(node, ast.Assert) or (
+            isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute)
+            and node.func.attr in {"assert_close", "assert_allclose", "assert_array_equal"}
+            and isinstance(node.func.value, ast.Attribute)
+            and node.func.value.attr == "testing"
+        ) for node in ast.walk(tree)
+    )
     success_print_count = 0
     placeholder_tests: list[str] = []
 
@@ -69,15 +81,31 @@ def visible_test_summary(path: Path) -> VisibleTestSummary:
         if len(meaningful_body) == 0 or all(isinstance(node, ast.Pass) for node in function.body):
             placeholder_tests.append(function.name)
 
-        for node in ast.walk(function):
-            if not isinstance(node, ast.Call):
-                continue
-            if not isinstance(node.func, ast.Name) or node.func.id != "print":
-                continue
-            if not node.args or not isinstance(node.args[0], ast.Constant):
-                continue
-            if "All tests in `" in str(node.args[0].value):
-                success_print_count += 1
+        # Feedback need not repeat one exact sentence. Require a nonempty
+        # final print after an actual assertion / numerical oracle, so a
+        # progress print or a print-only fake test cannot satisfy this check.
+        checks = any(isinstance(node, (ast.Assert, ast.Raise)) or (
+            isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute)
+            and node.func.attr in {"assert_close", "assert_allclose", "raises", "parse"}
+        ) or (
+            isinstance(node, ast.Call) and isinstance(node.func, ast.Name)
+            and node.func.id.startswith(("test_", "check_", "assert_", "_assert_"))
+        ) for node in ast.walk(function))
+        feedback = [function.body[-1]] if function.body else []
+        if len(function.body) > 1 and isinstance(function.body[-1], ast.Return):
+            feedback.append(function.body[-2])
+        # Expected-exception tests may print and return inside the handler,
+        # followed by a failing assertion if the expected error did not occur.
+        feedback.extend(statement for node in ast.walk(function)
+                        if isinstance(node, ast.ExceptHandler)
+                        for statement in node.body)
+        calls = [node.value for node in feedback if isinstance(node, ast.Expr)]
+        if checks and any(isinstance(call, ast.Call) and isinstance(call.func, ast.Name)
+                and call.func.id == "print" and call.args
+                and isinstance(call.args[0], ast.Constant)
+                and isinstance(call.args[0].value, str) and call.args[0].value.strip()
+                for call in calls):
+            success_print_count += 1
 
     return VisibleTestSummary(
         test_function_count=len(test_functions),
@@ -108,7 +136,8 @@ def row_blockers(row: dict[str, str]) -> list[str]:
     difficulty = int(row["difficulty"])
     blockers: list[str] = []
 
-    if row["release_status"] != "released_with_cuda_section_metric":
+    cpu_release = row.get("requires_gpu", "").lower() == "false" and row["release_status"] == "released_with_cpu_model_metric"
+    if row["release_status"] != "released_with_cuda_section_metric" and not cpu_release:
         blockers.append(f"{notebook_id}: release_status={row['release_status']}")
 
     fixture_path = _path_from_source(row["fixture_provenance_source"])
@@ -150,7 +179,13 @@ def row_blockers(row: dict[str, str]) -> list[str]:
     if summary.placeholder_tests:
         blockers.append(f"{notebook_id}: placeholder tests {list(summary.placeholder_tests)}")
 
-    if not report_has_cuda_section_metric(report_path):
+    cpu_accepted = False
+    if cpu_release:
+        lock_path = _path_from_source(row["metadata_source"])
+        report = json.loads(report_path.read_text())
+        cpu_accepted = (lock_path.is_file() and report.get("accepted") is True and report.get("tests_passed") is True
+                        and has_native_cpu_model_evidence(yaml.safe_load(lock_path.read_text()), report))
+    if not report_has_cuda_section_metric(report_path) and not cpu_accepted:
         blockers.append(f"{notebook_id}: report lacks accepted CUDA section metric")
 
     return blockers

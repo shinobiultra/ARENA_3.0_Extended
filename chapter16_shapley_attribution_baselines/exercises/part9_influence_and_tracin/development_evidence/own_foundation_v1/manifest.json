@@ -1,0 +1,76 @@
+{
+  "source_directory": "/home/bitwise/.cache/arena_extended/data_attribution/own-foundation-v1",
+  "archive_sha256": "d8919fa85360eebf64e1f37c631fab10fd9c1695f5a6dd269339da80a01ffb41",
+  "members": {
+    "completed_learner.ipynb": {
+      "sha256": "2ef0f81ad351c5c3f9a7636da62d7665fcc565a5a9a85d0d68a7de9e4b3e09a6",
+      "size_bytes": 584261
+    },
+    "execution.json": {
+      "sha256": "b639a83d25079a24a42363f4751ab11e39de29f38ef37d57acdd568667b6b47d",
+      "size_bytes": 2349
+    },
+    "figures/attribution_checkpoint_choices.png": {
+      "sha256": "e69c9b88affd07e450dc0098a1d90a104759b2614f9ca0393ce93ca0aae174d0",
+      "size_bytes": 94664
+    },
+    "figures/attribution_curvature_solve.png": {
+      "sha256": "253ca8fb5b2ba9421a801db1f21e58b23917451f78520bb2b78160bfb0fb781a",
+      "size_bytes": 110750
+    },
+    "figures/attribution_exact_training_path.png": {
+      "sha256": "eeea98c521fc119b647c2e46d9cb6c01ebf0de8129b8d52c5e76218e008ec49d",
+      "size_bytes": 116435
+    },
+    "figures/attribution_step_size_play.png": {
+      "sha256": "0b58f6433f1b67fabe783cf614d9547020874a8b3df8d78def0d9d6cc93b004c",
+      "size_bytes": 158660
+    },
+    "figures/attribution_training_images.png": {
+      "sha256": "40d983ce6c861384a8d61510d49428f18a477560718355fcb5f2e89f0dd542f8",
+      "size_bytes": 29610
+    },
+    "figures/attribution_weight_perturbation.png": {
+      "sha256": "991ac9a9da20497d7f088d086553958f235aeda511bddbe4cd9168de75bdb195",
+      "size_bytes": 114975
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/attribution_data.py": {
+      "sha256": "eaa4954f3255d3f82082dc30baef1051f03c0cad4afab806e9cb16d810101ab3",
+      "size_bytes": 5582
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/attribution_methods.py": {
+      "sha256": "f6f0712d185182b7e43a6bc8bb8b6e401e019e33326f0e59d2d75dda522df046",
+      "size_bytes": 16788
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/attribution_methods_tests.py": {
+      "sha256": "ab63b3b07e7c4561395a0c24e28b64417028aabbe6a9816ec0ff60e3ed3d278d",
+      "size_bytes": 16853
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/build_notebooks.py": {
+      "sha256": "7f7cadc73dbb319b85b9c76b3caf10727c3c8f2eea587d0974bea4c50bca6850",
+      "size_bytes": 4539
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/data_manifest.json": {
+      "sha256": "a009ed80855932e774a427cc0b727cb30cfdfa7c228b1d5d7b7dee8f569b0a7c",
+      "size_bytes": 9312
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/execute_learner.py": {
+      "sha256": "6698eb0bc760cfc0fbb58db4e628a0c7f0c027b3cef0b2e7c40308d5ffb73f22",
+      "size_bytes": 3561
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/lesson.md": {
+      "sha256": "a46f70b414dad828609796d0095ea74645e617f388e8197b609b415b4883128f",
+      "size_bytes": 49755
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/native_protocol.md": {
+      "sha256": "c62a145d0d29cf6572a8a0e48b7f1e64dc98e91c35e6810b82a471dce34c3e1e",
+      "size_bytes": 10114
+    },
+    "visual_review.json": {
+      "sha256": "0b8ad7c7abc9b73519e5ad609fea9d3dcb329df6d9b0279b960fd4854395da39",
+      "size_bytes": 367
+    }
+  },
+  "large_tensors_retained_externally": {},
+  "readback_verified": true
+}

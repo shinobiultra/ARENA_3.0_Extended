@@ -2,6 +2,18 @@
   "accepted": true,
   "baselines": {
     "declared_controls": [
+      "pixel_encoder_three_matched_initializations",
+      "full_rgb_and_causal_caption_tower_gradients",
+      "independent_training_and_evaluation_instances_shared_classes",
+      "frozen_random_encoder_trained_projection_baseline",
+      "reshuffled_caption_pairs_every_optimizer_step",
+      "blank_and_independent_noise_pixels",
+      "wrong_color_caption_control",
+      "semantic_duplicate_positive_and_tie_aware_retrieval",
+      "pretrained_clip_zero_shot_twelve_class_gallery",
+      "typographic_background_without_object_overlap",
+      "typographic_object_card_matched_occlusion",
+      "correct_conflicting_irrelevant_and_scrambled_words",
       "baseline_or_reference_check",
       "negative_control_where_applicable",
       "shape_dtype_or_exact_value_check",
@@ -38,6 +50,13 @@
       "object_beats_background": true,
       "object_beats_random": true,
       "object_patch_flips_answer": true,
+      "pixel_encoder_eval_count": 288,
+      "pixel_encoder_exact_train_eval_overlap": 0,
+      "pixel_encoder_min_frozen_tower_gap_min": 0.2,
+      "pixel_encoder_min_pairing_gap_min": 0.6,
+      "pixel_encoder_numerical_checks_passed": true,
+      "pixel_encoder_parameter_controls_passed": true,
+      "pixel_encoder_worst_seed_accuracy_min": 0.8,
       "real_clip_activation_patch_background_preserves_answer": true,
       "real_clip_activation_patch_full_sequence_flips_answer": true,
       "real_clip_activation_patch_full_sequence_matches_corrupt": true,
@@ -98,12 +117,14 @@
       "synthetic_scene_count": 4,
       "tests_passed": true,
       "text_only_fails_image_questions": true,
+      "typography_controls_complete": true,
+      "typography_dataset_count": 48,
       "visual_sequence_patch_full_sequence_matches_corrupt": true,
       "visual_sequence_patch_object_flips_answer": true,
       "visual_sequence_patch_passed": true
     }
   },
-  "claim_scope": "GT-1 pinned CLIP and SigLIP rendered-shape retrieval plus real object-region counterfactual patching, real hidden visual-token activation patching at the vision patch-embedding output with object/background/same-size random-token/full-sequence controls, a pinned Qwen2.5-VL 3B rendered-shape generation check, and a controlled synthetic VLM object/color/clothing-style ladder with counterfactual labels, joint/image-only baselines over text-only priors, and object-region patching against background and same-size random controls.",
+  "claim_scope": "Full pixel and caption encoders trained with CLIP and SigLIP on 576 images, evaluated on 288 independent instances of twelve shared classes across three seeds, with frozen-tower, shuffled-pair, blank, noise and wrong-word controls. Pretrained CLIP zero-shot classification and matched typographic overlays on 48 rendered scenes. GT-1 pinned CLIP and SigLIP rendered-shape retrieval plus real object-region counterfactual patching, real hidden visual-token activation patching at the vision patch-embedding output with object/background/same-size random-token/full-sequence controls, a pinned Qwen2.5-VL 3B rendered-shape generation check, and a controlled synthetic VLM object/color/clothing-style ladder with counterfactual labels, joint/image-only baselines over text-only priors, and object-region patching against background and same-size random controls.",
   "datasets": [
     {
       "id": "12_1_clip_siglip_and_vlm_controls_toy_inputs",
@@ -122,11 +143,37 @@
       "seed": 0,
       "source": "generated_pil_shapes",
       "text_count": 2
+    },
+    {
+      "development_seed": 200,
+      "evaluation_images": 288,
+      "evaluation_seed": 300,
+      "id": "rgb_caption_encoders_v1",
+      "model_seeds": [
+        0,
+        1,
+        2
+      ],
+      "optimizer_steps_per_run": 1200,
+      "shared_semantic_classes": 12,
+      "source": "generated_rgb_pixels_and_caption_tokens",
+      "train_seed": 100,
+      "training_images": 576
+    },
+    {
+      "conditions": "clean_plus_ten_matched_word_and_placement_controls",
+      "font": "DejaVuSans.ttf",
+      "font_size": 20,
+      "id": "clip_typographic_shapes_v1",
+      "images": 48,
+      "seed": 400,
+      "semantic_classes": 12,
+      "source": "generated_pil_shapes_and_word_overlays"
     }
   ],
-  "date_run": "2026-09-04T13:46:26+00:00",
-  "evidence_level": "synthetic_vlm_ladder_plus_real_clip_siglip_hidden_token_patching_and_qwen25_vl_generation",
-  "git_commit": "92e510aa",
+  "date_run": "2026-09-05T02:43:22+00:00",
+  "evidence_level": "full_pixel_token_encoder_learning_plus_pretrained_typographic_controls_and_pinned_vlm_preflights",
+  "git_commit": "8eab192b",
   "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
   "gt_tier": "GT-1",
   "known_failures": [],
@@ -158,6 +205,15 @@
         "object_beats_random",
         "object_patch_effect",
         "object_patch_flips_answer",
+        "pixel_encoder_comparison",
+        "pixel_encoder_eval_count",
+        "pixel_encoder_exact_train_eval_overlap",
+        "pixel_encoder_min_frozen_tower_gap",
+        "pixel_encoder_min_pairing_gap",
+        "pixel_encoder_numerical_checks_passed",
+        "pixel_encoder_parameter_controls_passed",
+        "pixel_encoder_training",
+        "pixel_encoder_worst_seed_accuracy",
         "random_patch_effect",
         "random_patch_same_size",
         "real_clip_activation_patch_background_preserves_answer",
@@ -245,6 +301,9 @@
         "toy_clip_scene_count",
         "toy_clip_signature",
         "toy_clip_text_to_image_accuracy",
+        "typography_comparison",
+        "typography_controls_complete",
+        "typography_dataset_count",
         "visual_sequence_patch_full_sequence_matches_corrupt",
         "visual_sequence_patch_object_flips_answer",
         "visual_sequence_patch_passed"
@@ -268,7 +327,7 @@
       "cuda_available": true,
       "cuda_version": "13.2",
       "device": "NVIDIA GeForce RTX 5090 Laptop GPU",
-      "full_path": "A tiny trained CLIP retrieves rendered colored-shape captions while random-caption and conflict controls fail; pinned CLIP, SigLIP, and Qwen2.5-VL controls also pass on rendered shape retrieval, object-region patching, hidden visual-token and full visual-sequence activation patching against background and same-size random-token controls, grounding, and generation evidence, plus controlled clothing factor geometry.",
+      "full_path": "Full RGB and caption encoders train under both objectives, with independent rendered instances, three matched seeds, frozen towers and broken-pairing/pixel/word controls. Pinned CLIP also undergoes zero-shot classification and ten matched word overlays on 48 scenes. The original two-scene CLIP/SigLIP patch and Qwen generation preflights remain.",
       "gpu_total_memory_gb": 23.45965576171875,
       "image_only_accuracy": 1.0,
       "image_to_text_accuracy": 1.0,
@@ -281,6 +340,576 @@
       "object_patch_effect": 9.0,
       "object_patch_flips_answer": true,
       "peak_vram_gb": 7.081986904144287,
+      "pixel_encoder_comparison": {
+        "evaluation_images": 288,
+        "evaluation_seed": 300,
+        "exact_pixel_overlap": 0,
+        "rows": [
+          {
+            "condition": "untrained",
+            "image_norm_max_error": 1.1920928955078125e-07,
+            "image_to_text": 0.0833333358168602,
+            "objective": "clip",
+            "seed": 0,
+            "text_norm_max_error": 1.1920928955078125e-07,
+            "text_to_image": 0.1666666716337204
+          },
+          {
+            "condition": "paired",
+            "image_norm_max_error": 1.1920928955078125e-07,
+            "image_to_text": 0.9270833134651184,
+            "objective": "clip",
+            "seed": 0,
+            "text_norm_max_error": 5.960464477539063e-08,
+            "text_to_image": 1.0
+          },
+          {
+            "condition": "blank_pixels",
+            "image_norm_max_error": 5.960464477539063e-08,
+            "image_to_text": 0.0833333358168602,
+            "objective": "clip",
+            "seed": 0,
+            "text_norm_max_error": 5.960464477539063e-08,
+            "text_to_image": 0.083333320915699
+          },
+          {
+            "condition": "noise_pixels",
+            "image_norm_max_error": 1.1920928955078125e-07,
+            "image_to_text": 0.0729166641831398,
+            "objective": "clip",
+            "seed": 0,
+            "text_norm_max_error": 5.960464477539063e-08,
+            "text_to_image": 0.0833333358168602
+          },
+          {
+            "condition": "wrong_color_words",
+            "image_to_text": 0.0,
+            "objective": "clip",
+            "seed": 0,
+            "text_to_image": 0.0
+          },
+          {
+            "condition": "shuffled_train",
+            "image_norm_max_error": 1.1920928955078125e-07,
+            "image_to_text": 0.0486111119389534,
+            "objective": "clip",
+            "seed": 0,
+            "text_norm_max_error": 5.960464477539063e-08,
+            "text_to_image": 0.0833333358168602
+          },
+          {
+            "condition": "frozen_towers",
+            "image_norm_max_error": 1.1920928955078125e-07,
+            "image_to_text": 0.4201388955116272,
+            "objective": "clip",
+            "seed": 0,
+            "text_norm_max_error": 1.1920928955078125e-07,
+            "text_to_image": 0.5
+          },
+          {
+            "condition": "untrained",
+            "image_norm_max_error": 1.1920928955078125e-07,
+            "image_to_text": 0.0833333358168602,
+            "objective": "clip",
+            "seed": 1,
+            "text_norm_max_error": 1.1920928955078125e-07,
+            "text_to_image": 0.0833333358168602
+          },
+          {
+            "condition": "paired",
+            "image_norm_max_error": 1.1920928955078125e-07,
+            "image_to_text": 0.9826388955116272,
+            "objective": "clip",
+            "seed": 1,
+            "text_norm_max_error": 5.960464477539063e-08,
+            "text_to_image": 1.0
+          },
+          {
+            "condition": "blank_pixels",
+            "image_norm_max_error": 0.0,
+            "image_to_text": 0.0833333358168602,
+            "objective": "clip",
+            "seed": 1,
+            "text_norm_max_error": 5.960464477539063e-08,
+            "text_to_image": 0.083333320915699
+          },
+          {
+            "condition": "noise_pixels",
+            "image_norm_max_error": 1.7881393432617188e-07,
+            "image_to_text": 0.0833333358168602,
+            "objective": "clip",
+            "seed": 1,
+            "text_norm_max_error": 5.960464477539063e-08,
+            "text_to_image": 0.0
+          },
+          {
+            "condition": "wrong_color_words",
+            "image_to_text": 0.0,
+            "objective": "clip",
+            "seed": 1,
+            "text_to_image": 0.0
+          },
+          {
+            "condition": "shuffled_train",
+            "image_norm_max_error": 1.1920928955078125e-07,
+            "image_to_text": 0.0798611119389534,
+            "objective": "clip",
+            "seed": 1,
+            "text_norm_max_error": 1.1920928955078125e-07,
+            "text_to_image": 0.0
+          },
+          {
+            "condition": "frozen_towers",
+            "image_norm_max_error": 1.1920928955078125e-07,
+            "image_to_text": 0.4861111044883728,
+            "objective": "clip",
+            "seed": 1,
+            "text_norm_max_error": 5.960464477539063e-08,
+            "text_to_image": 0.6666666865348816
+          },
+          {
+            "condition": "untrained",
+            "image_norm_max_error": 1.1920928955078125e-07,
+            "image_to_text": 0.0833333358168602,
+            "objective": "clip",
+            "seed": 2,
+            "text_norm_max_error": 5.960464477539063e-08,
+            "text_to_image": 0.0833333358168602
+          },
+          {
+            "condition": "paired",
+            "image_norm_max_error": 1.1920928955078125e-07,
+            "image_to_text": 0.9756944179534912,
+            "objective": "clip",
+            "seed": 2,
+            "text_norm_max_error": 5.960464477539063e-08,
+            "text_to_image": 1.0
+          },
+          {
+            "condition": "blank_pixels",
+            "image_norm_max_error": 0.0,
+            "image_to_text": 0.0833333358168602,
+            "objective": "clip",
+            "seed": 2,
+            "text_norm_max_error": 5.960464477539063e-08,
+            "text_to_image": 0.083333320915699
+          },
+          {
+            "condition": "noise_pixels",
+            "image_norm_max_error": 1.1920928955078125e-07,
+            "image_to_text": 0.0694444477558136,
+            "objective": "clip",
+            "seed": 2,
+            "text_norm_max_error": 5.960464477539063e-08,
+            "text_to_image": 0.0
+          },
+          {
+            "condition": "wrong_color_words",
+            "image_to_text": 0.0,
+            "objective": "clip",
+            "seed": 2,
+            "text_to_image": 0.0
+          },
+          {
+            "condition": "shuffled_train",
+            "image_norm_max_error": 1.1920928955078125e-07,
+            "image_to_text": 0.1145833358168602,
+            "objective": "clip",
+            "seed": 2,
+            "text_norm_max_error": 5.960464477539063e-08,
+            "text_to_image": 0.0833333358168602
+          },
+          {
+            "condition": "frozen_towers",
+            "image_norm_max_error": 1.1920928955078125e-07,
+            "image_to_text": 0.4548611044883728,
+            "objective": "clip",
+            "seed": 2,
+            "text_norm_max_error": 5.960464477539063e-08,
+            "text_to_image": 0.5
+          },
+          {
+            "condition": "untrained",
+            "image_norm_max_error": 1.1920928955078125e-07,
+            "image_to_text": 0.0833333358168602,
+            "objective": "siglip",
+            "seed": 0,
+            "text_norm_max_error": 1.1920928955078125e-07,
+            "text_to_image": 0.1666666716337204
+          },
+          {
+            "condition": "paired",
+            "image_norm_max_error": 1.1920928955078125e-07,
+            "image_to_text": 0.9861111044883728,
+            "objective": "siglip",
+            "seed": 0,
+            "text_norm_max_error": 1.1920928955078125e-07,
+            "text_to_image": 1.0
+          },
+          {
+            "condition": "blank_pixels",
+            "image_norm_max_error": 0.0,
+            "image_to_text": 0.0833333358168602,
+            "objective": "siglip",
+            "seed": 0,
+            "text_norm_max_error": 1.1920928955078125e-07,
+            "text_to_image": 0.083333320915699
+          },
+          {
+            "condition": "noise_pixels",
+            "image_norm_max_error": 1.1920928955078125e-07,
+            "image_to_text": 0.0694444477558136,
+            "objective": "siglip",
+            "seed": 0,
+            "text_norm_max_error": 1.1920928955078125e-07,
+            "text_to_image": 0.0
+          },
+          {
+            "condition": "wrong_color_words",
+            "image_to_text": 0.0,
+            "objective": "siglip",
+            "seed": 0,
+            "text_to_image": 0.0
+          },
+          {
+            "condition": "shuffled_train",
+            "image_norm_max_error": 1.1920928955078125e-07,
+            "image_to_text": 0.0798611119389534,
+            "objective": "siglip",
+            "seed": 0,
+            "text_norm_max_error": 5.960464477539063e-08,
+            "text_to_image": 0.0833333358168602
+          },
+          {
+            "condition": "frozen_towers",
+            "image_norm_max_error": 1.1920928955078125e-07,
+            "image_to_text": 0.4131944477558136,
+            "objective": "siglip",
+            "seed": 0,
+            "text_norm_max_error": 5.960464477539063e-08,
+            "text_to_image": 0.3333333432674408
+          },
+          {
+            "condition": "untrained",
+            "image_norm_max_error": 1.1920928955078125e-07,
+            "image_to_text": 0.0833333358168602,
+            "objective": "siglip",
+            "seed": 1,
+            "text_norm_max_error": 1.1920928955078125e-07,
+            "text_to_image": 0.0833333358168602
+          },
+          {
+            "condition": "paired",
+            "image_norm_max_error": 1.1920928955078125e-07,
+            "image_to_text": 0.9895833134651184,
+            "objective": "siglip",
+            "seed": 1,
+            "text_norm_max_error": 1.1920928955078125e-07,
+            "text_to_image": 1.0
+          },
+          {
+            "condition": "blank_pixels",
+            "image_norm_max_error": 5.960464477539063e-08,
+            "image_to_text": 0.0833333358168602,
+            "objective": "siglip",
+            "seed": 1,
+            "text_norm_max_error": 1.1920928955078125e-07,
+            "text_to_image": 0.083333320915699
+          },
+          {
+            "condition": "noise_pixels",
+            "image_norm_max_error": 1.1920928955078125e-07,
+            "image_to_text": 0.0798611119389534,
+            "objective": "siglip",
+            "seed": 1,
+            "text_norm_max_error": 1.1920928955078125e-07,
+            "text_to_image": 0.0
+          },
+          {
+            "condition": "wrong_color_words",
+            "image_to_text": 0.0,
+            "objective": "siglip",
+            "seed": 1,
+            "text_to_image": 0.0
+          },
+          {
+            "condition": "shuffled_train",
+            "image_norm_max_error": 1.1920928955078125e-07,
+            "image_to_text": 0.1111111119389534,
+            "objective": "siglip",
+            "seed": 1,
+            "text_norm_max_error": 5.960464477539063e-08,
+            "text_to_image": 0.0833333358168602
+          },
+          {
+            "condition": "frozen_towers",
+            "image_norm_max_error": 1.1920928955078125e-07,
+            "image_to_text": 0.3854166567325592,
+            "objective": "siglip",
+            "seed": 1,
+            "text_norm_max_error": 5.960464477539063e-08,
+            "text_to_image": 0.4166666567325592
+          },
+          {
+            "condition": "untrained",
+            "image_norm_max_error": 1.1920928955078125e-07,
+            "image_to_text": 0.0833333358168602,
+            "objective": "siglip",
+            "seed": 2,
+            "text_norm_max_error": 5.960464477539063e-08,
+            "text_to_image": 0.0833333358168602
+          },
+          {
+            "condition": "paired",
+            "image_norm_max_error": 1.1920928955078125e-07,
+            "image_to_text": 0.9965277910232544,
+            "objective": "siglip",
+            "seed": 2,
+            "text_norm_max_error": 1.1920928955078125e-07,
+            "text_to_image": 1.0
+          },
+          {
+            "condition": "blank_pixels",
+            "image_norm_max_error": 0.0,
+            "image_to_text": 0.0833333358168602,
+            "objective": "siglip",
+            "seed": 2,
+            "text_norm_max_error": 1.1920928955078125e-07,
+            "text_to_image": 0.083333320915699
+          },
+          {
+            "condition": "noise_pixels",
+            "image_norm_max_error": 1.1920928955078125e-07,
+            "image_to_text": 0.0659722238779068,
+            "objective": "siglip",
+            "seed": 2,
+            "text_norm_max_error": 1.1920928955078125e-07,
+            "text_to_image": 0.1666666716337204
+          },
+          {
+            "condition": "wrong_color_words",
+            "image_to_text": 0.0,
+            "objective": "siglip",
+            "seed": 2,
+            "text_to_image": 0.0
+          },
+          {
+            "condition": "shuffled_train",
+            "image_norm_max_error": 1.1920928955078125e-07,
+            "image_to_text": 0.1319444477558136,
+            "objective": "siglip",
+            "seed": 2,
+            "text_norm_max_error": 5.960464477539063e-08,
+            "text_to_image": 0.0833333358168602
+          },
+          {
+            "condition": "frozen_towers",
+            "image_norm_max_error": 1.1920928955078125e-07,
+            "image_to_text": 0.4583333432674408,
+            "objective": "siglip",
+            "seed": 2,
+            "text_norm_max_error": 5.960464477539063e-08,
+            "text_to_image": 0.4166666567325592
+          }
+        ],
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "steps": 1200,
+        "train_images": 576,
+        "train_seed": 100
+      },
+      "pixel_encoder_eval_count": 288,
+      "pixel_encoder_exact_train_eval_overlap": 0,
+      "pixel_encoder_min_frozen_tower_gap": 0.4965277910232544,
+      "pixel_encoder_min_pairing_gap": 0.861111082136631,
+      "pixel_encoder_numerical_checks_passed": true,
+      "pixel_encoder_parameter_controls_passed": true,
+      "pixel_encoder_training": {
+        "clip/0/frozen_towers": {
+          "first_loss": 2.5652177333831787,
+          "last_loss": 1.2337348461151123,
+          "parameter_change_norms": {
+            "image_encoder": 0.0,
+            "image_projection": 2.3335003338951066,
+            "text_encoder": 0.0,
+            "text_projection": 2.058445036581723
+          }
+        },
+        "clip/0/paired": {
+          "first_loss": 2.5652177333831787,
+          "last_loss": 0.0006562070921063423,
+          "parameter_change_norms": {
+            "image_encoder": 11.227129966341451,
+            "image_projection": 0.8694868105545549,
+            "text_encoder": 4.146358432375457,
+            "text_projection": 0.9055501274292044
+          }
+        },
+        "clip/0/shuffled_train": {
+          "first_loss": 2.5749130249023438,
+          "last_loss": 2.4851486682891846,
+          "parameter_change_norms": {
+            "image_encoder": 2.659732048869275,
+            "image_projection": 0.5221024754154111,
+            "text_encoder": 2.3525419856742538,
+            "text_projection": 0.5016181510877895
+          }
+        },
+        "clip/1/frozen_towers": {
+          "first_loss": 2.5789942741394043,
+          "last_loss": 1.0590280294418335,
+          "parameter_change_norms": {
+            "image_encoder": 0.0,
+            "image_projection": 2.269686301313922,
+            "text_encoder": 0.0,
+            "text_projection": 1.8380876652396645
+          }
+        },
+        "clip/1/paired": {
+          "first_loss": 2.5789942741394043,
+          "last_loss": 0.0004455973976291716,
+          "parameter_change_norms": {
+            "image_encoder": 8.916738868326172,
+            "image_projection": 0.78472474800161,
+            "text_encoder": 3.6053472598675826,
+            "text_projection": 0.7307086897301355
+          }
+        },
+        "clip/1/shuffled_train": {
+          "first_loss": 2.548597812652588,
+          "last_loss": 2.4849185943603516,
+          "parameter_change_norms": {
+            "image_encoder": 3.6012511638552915,
+            "image_projection": 0.6737425376606224,
+            "text_encoder": 2.762398123642684,
+            "text_projection": 0.6287513210366176
+          }
+        },
+        "clip/2/frozen_towers": {
+          "first_loss": 2.499403715133667,
+          "last_loss": 1.172393560409546,
+          "parameter_change_norms": {
+            "image_encoder": 0.0,
+            "image_projection": 2.070823865391702,
+            "text_encoder": 0.0,
+            "text_projection": 1.9798260911995915
+          }
+        },
+        "clip/2/paired": {
+          "first_loss": 2.499403715133667,
+          "last_loss": 0.000222181057324633,
+          "parameter_change_norms": {
+            "image_encoder": 9.643531748008003,
+            "image_projection": 0.9186831677061728,
+            "text_encoder": 4.110304626682653,
+            "text_projection": 0.7954130038028372
+          }
+        },
+        "clip/2/shuffled_train": {
+          "first_loss": 2.502427339553833,
+          "last_loss": 2.4842700958251953,
+          "parameter_change_norms": {
+            "image_encoder": 4.115452626881184,
+            "image_projection": 0.6848805550344575,
+            "text_encoder": 2.4765452841632674,
+            "text_projection": 0.6661430975226762
+          }
+        },
+        "siglip/0/frozen_towers": {
+          "first_loss": 3.7935595512390137,
+          "last_loss": 2.4455199241638184,
+          "parameter_change_norms": {
+            "image_encoder": 0.0,
+            "image_projection": 2.310512823013553,
+            "text_encoder": 0.0,
+            "text_projection": 2.057379637821152
+          }
+        },
+        "siglip/0/paired": {
+          "first_loss": 3.7935595512390137,
+          "last_loss": 0.008590538054704666,
+          "parameter_change_norms": {
+            "image_encoder": 12.739589420153655,
+            "image_projection": 0.9069169977139544,
+            "text_encoder": 4.292723726373267,
+            "text_projection": 0.8772701038895462
+          }
+        },
+        "siglip/0/shuffled_train": {
+          "first_loss": 3.8032546043395996,
+          "last_loss": 3.4416556358337402,
+          "parameter_change_norms": {
+            "image_encoder": 4.857856037686964,
+            "image_projection": 0.6621735128209943,
+            "text_encoder": 2.7164066550029884,
+            "text_projection": 0.5052225235456967
+          }
+        },
+        "siglip/1/frozen_towers": {
+          "first_loss": 7.180103302001953,
+          "last_loss": 2.1995818614959717,
+          "parameter_change_norms": {
+            "image_encoder": 0.0,
+            "image_projection": 2.230490769579904,
+            "text_encoder": 0.0,
+            "text_projection": 2.0002664150179057
+          }
+        },
+        "siglip/1/paired": {
+          "first_loss": 7.180103302001953,
+          "last_loss": 0.004359440412372351,
+          "parameter_change_norms": {
+            "image_encoder": 11.552023462686307,
+            "image_projection": 0.768294836998289,
+            "text_encoder": 4.010517066789245,
+            "text_projection": 0.7418357818829933
+          }
+        },
+        "siglip/1/shuffled_train": {
+          "first_loss": 7.149705410003662,
+          "last_loss": 3.4421634674072266,
+          "parameter_change_norms": {
+            "image_encoder": 3.5632156789869187,
+            "image_projection": 0.5876720947466442,
+            "text_encoder": 2.403084567837328,
+            "text_projection": 0.43936386897393054
+          }
+        },
+        "siglip/2/frozen_towers": {
+          "first_loss": 6.679084777832031,
+          "last_loss": 2.1747331619262695,
+          "parameter_change_norms": {
+            "image_encoder": 0.0,
+            "image_projection": 2.463718550436344,
+            "text_encoder": 0.0,
+            "text_projection": 2.6031784216996416
+          }
+        },
+        "siglip/2/paired": {
+          "first_loss": 6.679084777832031,
+          "last_loss": 0.0025589046999812126,
+          "parameter_change_norms": {
+            "image_encoder": 11.153586730901383,
+            "image_projection": 0.907009924244447,
+            "text_encoder": 4.0965433440179595,
+            "text_projection": 0.7316330387437049
+          }
+        },
+        "siglip/2/shuffled_train": {
+          "first_loss": 6.6821088790893555,
+          "last_loss": 3.4421205520629883,
+          "parameter_change_norms": {
+            "image_encoder": 3.0328904547737605,
+            "image_projection": 0.5603790297745198,
+            "text_encoder": 2.053163542673313,
+            "text_projection": 0.5880011774589791
+          }
+        }
+      },
+      "pixel_encoder_worst_seed_accuracy": 0.9270833134651184,
       "random_patch_effect": 0.0,
       "random_patch_same_size": true,
       "real_clip_activation_patch_background_preserves_answer": true,
@@ -2099,6 +2728,184 @@
         "text_to_image_accuracy": 1.0
       },
       "toy_clip_text_to_image_accuracy": 1.0,
+      "typography_comparison": {
+        "captions": [
+          "a simple red square on a white background",
+          "a simple red circle on a white background",
+          "a simple red triangle on a white background",
+          "a simple blue square on a white background",
+          "a simple blue circle on a white background",
+          "a simple blue triangle on a white background",
+          "a simple green square on a white background",
+          "a simple green circle on a white background",
+          "a simple green triangle on a white background",
+          "a simple yellow square on a white background",
+          "a simple yellow circle on a white background",
+          "a simple yellow triangle on a white background"
+        ],
+        "font_sha256": "6038a160b491e121c1f12c7bccb4a9c8730296e3adc1086a059404ed84b7451c",
+        "font_size": 20,
+        "image_count": 48,
+        "rows": [
+          {
+            "accuracy": 0.9791666865348816,
+            "attack_choice_rate": 0.0,
+            "baseline_accuracy": 0.9791666865348816,
+            "baseline_correct_count": 47,
+            "condition": "clean",
+            "image_count": 48,
+            "matched_baseline": "clean",
+            "matched_card_correct_count": 47,
+            "matched_card_margin_change": 0.0,
+            "matched_card_targeted_flip_rate": 0.0,
+            "mean_margin_change": 0.0,
+            "targeted_flip_rate": 0.0
+          },
+          {
+            "accuracy": 0.9791666865348816,
+            "attack_choice_rate": 0.0,
+            "baseline_accuracy": 0.9791666865348816,
+            "baseline_correct_count": 47,
+            "condition": "background/blank_card",
+            "image_count": 48,
+            "matched_baseline": "background/blank_card",
+            "matched_card_correct_count": 47,
+            "matched_card_margin_change": 0.0,
+            "matched_card_targeted_flip_rate": 0.0,
+            "mean_margin_change": 0.0,
+            "targeted_flip_rate": 0.0
+          },
+          {
+            "accuracy": 1.0,
+            "attack_choice_rate": 0.0,
+            "baseline_accuracy": 0.9791666865348816,
+            "baseline_correct_count": 47,
+            "condition": "background/correct_word",
+            "image_count": 48,
+            "matched_baseline": "background/blank_card",
+            "matched_card_correct_count": 47,
+            "matched_card_margin_change": 2.836500406265259,
+            "matched_card_targeted_flip_rate": 0.0,
+            "mean_margin_change": 2.836500406265259,
+            "targeted_flip_rate": 0.0
+          },
+          {
+            "accuracy": 0.2291666716337204,
+            "attack_choice_rate": 0.7708333134651184,
+            "baseline_accuracy": 0.9791666865348816,
+            "baseline_correct_count": 47,
+            "condition": "background/conflicting_word",
+            "image_count": 48,
+            "matched_baseline": "background/blank_card",
+            "matched_card_correct_count": 47,
+            "matched_card_margin_change": -4.90074348449707,
+            "matched_card_targeted_flip_rate": 0.7659574747085571,
+            "mean_margin_change": -4.90074348449707,
+            "targeted_flip_rate": 0.7659574747085571
+          },
+          {
+            "accuracy": 1.0,
+            "attack_choice_rate": 0.0,
+            "baseline_accuracy": 0.9791666865348816,
+            "baseline_correct_count": 47,
+            "condition": "background/irrelevant_word",
+            "image_count": 48,
+            "matched_baseline": "background/blank_card",
+            "matched_card_correct_count": 47,
+            "matched_card_margin_change": -0.5751810669898987,
+            "matched_card_targeted_flip_rate": 0.0,
+            "mean_margin_change": -0.5751810669898987,
+            "targeted_flip_rate": 0.0
+          },
+          {
+            "accuracy": 0.9791666865348816,
+            "attack_choice_rate": 0.02083333395421505,
+            "baseline_accuracy": 0.9791666865348816,
+            "baseline_correct_count": 47,
+            "condition": "background/scrambled_word",
+            "image_count": 48,
+            "matched_baseline": "background/blank_card",
+            "matched_card_correct_count": 47,
+            "matched_card_margin_change": -0.748267412185669,
+            "matched_card_targeted_flip_rate": 0.021276595070958138,
+            "mean_margin_change": -0.748267412185669,
+            "targeted_flip_rate": 0.021276595070958138
+          },
+          {
+            "accuracy": 0.9166666865348816,
+            "attack_choice_rate": 0.0,
+            "baseline_accuracy": 0.9791666865348816,
+            "baseline_correct_count": 47,
+            "condition": "object/blank_card",
+            "image_count": 48,
+            "matched_baseline": "object/blank_card",
+            "matched_card_correct_count": 44,
+            "matched_card_margin_change": 0.0,
+            "matched_card_targeted_flip_rate": 0.0,
+            "mean_margin_change": -0.7073470950126648,
+            "targeted_flip_rate": 0.0
+          },
+          {
+            "accuracy": 1.0,
+            "attack_choice_rate": 0.0,
+            "baseline_accuracy": 0.9791666865348816,
+            "baseline_correct_count": 47,
+            "condition": "object/correct_word",
+            "image_count": 48,
+            "matched_baseline": "object/blank_card",
+            "matched_card_correct_count": 44,
+            "matched_card_margin_change": 2.8112804889678955,
+            "matched_card_targeted_flip_rate": 0.0,
+            "mean_margin_change": 2.103933334350586,
+            "targeted_flip_rate": 0.0
+          },
+          {
+            "accuracy": 0.2083333283662796,
+            "attack_choice_rate": 0.7916666865348816,
+            "baseline_accuracy": 0.9791666865348816,
+            "baseline_correct_count": 47,
+            "condition": "object/conflicting_word",
+            "image_count": 48,
+            "matched_baseline": "object/blank_card",
+            "matched_card_correct_count": 44,
+            "matched_card_margin_change": -5.985774993896484,
+            "matched_card_targeted_flip_rate": 0.7727272510528564,
+            "mean_margin_change": -6.693122386932373,
+            "targeted_flip_rate": 0.7872340679168701
+          },
+          {
+            "accuracy": 1.0,
+            "attack_choice_rate": 0.0,
+            "baseline_accuracy": 0.9791666865348816,
+            "baseline_correct_count": 47,
+            "condition": "object/irrelevant_word",
+            "image_count": 48,
+            "matched_baseline": "object/blank_card",
+            "matched_card_correct_count": 44,
+            "matched_card_margin_change": -1.7576981782913208,
+            "matched_card_targeted_flip_rate": 0.0,
+            "mean_margin_change": -2.465045213699341,
+            "targeted_flip_rate": 0.0
+          },
+          {
+            "accuracy": 0.7083333134651184,
+            "attack_choice_rate": 0.1458333283662796,
+            "baseline_accuracy": 0.9791666865348816,
+            "baseline_correct_count": 47,
+            "condition": "object/scrambled_word",
+            "image_count": 48,
+            "matched_baseline": "object/blank_card",
+            "matched_card_correct_count": 44,
+            "matched_card_margin_change": -1.922869086265564,
+            "matched_card_targeted_flip_rate": 0.13636364042758942,
+            "mean_margin_change": -2.630216360092163,
+            "targeted_flip_rate": 0.1489361673593521
+          }
+        ],
+        "seed": 400
+      },
+      "typography_controls_complete": true,
+      "typography_dataset_count": 48,
       "visual_sequence_patch_full_sequence_matches_corrupt": true,
       "visual_sequence_patch_object_flips_answer": true,
       "visual_sequence_patch_passed": true,
@@ -3466,6 +4273,7 @@
   ],
   "negative_controls": {
     "declared_controls": [
+      "frozen_random_encoder_trained_projection_baseline",
       "negative_control_where_applicable",
       "clothing_random_label_control",
       "same_size_random_region_patch_control",
@@ -3481,8 +4289,13 @@
   "peak_vram_gb": 7.081986904144287,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "6193b5021b1a9749b1b2b31342c5d98acd6d1d576577cd0fe5a5fa93c355bf0f",
+    "combined_sha256": "8ea58c6321c1feb31b77cbb7054810b27581f18e87638541523f7bf95751d22b",
     "files": [
+      {
+        "path": "arena_ext/notebook_checks.py",
+        "sha256": "0033fd8978a45bf0cf5dd7ce790bb234add9d63c564c76479c0d8eb86973bacc",
+        "size_bytes": 1627
+      },
       {
         "path": "arena_ext/verification.py",
         "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
@@ -3495,28 +4308,53 @@
       },
       {
         "path": "chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls/12.1_CLIP_SigLIP_and_VLM_Controls_exercises.ipynb",
-        "sha256": "9a383631a3650f534dcc1d817549cb574284e1d19b275bbeb80d51f5dcdf6d6b",
-        "size_bytes": 51520
+        "sha256": "576db43ae2b003bcbac7ae00e03913fb202f15936d2033f9fa0a0333561fdee4",
+        "size_bytes": 124857
       },
       {
         "path": "chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls/12.1_CLIP_SigLIP_and_VLM_Controls_solutions.ipynb",
-        "sha256": "3c16261e48fb445570f8ec4784262c7d119b0036ff69d95ca4682d235219c619",
-        "size_bytes": 144340
+        "sha256": "c7e520c97f45bef69736d59c17b226d6c8f4b6ee669ed4e1974657650fa8d83b",
+        "size_bytes": 944580
       },
       {
         "path": "chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls/README.md",
-        "sha256": "21a8273be9929bd7fc640aee6c644188224c96fcbe45be81e044568ec72b535f",
-        "size_bytes": 2362
+        "sha256": "be411f1179512f9ed0c00ba3fc75632f69ae8e3b1d8601c9a6c0d45c45b0aefb",
+        "size_bytes": 3774
       },
       {
         "path": "chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls/artifacts.lock.yml",
-        "sha256": "9cbb05a7cf96ba979bf3f1897939793a7aeaad165e9c34a961e9ec8cf89137f6",
-        "size_bytes": 7621
+        "sha256": "a7b8021d100fb51637360cc8067a24fb0d0bfe0613b1b2440e0ec1a4eb5f9a6f",
+        "size_bytes": 10845
+      },
+      {
+        "path": "chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls/build_notebooks.py",
+        "sha256": "d0f9e77dbc291929adfe3cd7b6bb2ae0bd45c3c203cc13eed25a800e9f34ae37",
+        "size_bytes": 5302
+      },
+      {
+        "path": "chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls/execute_learner.py",
+        "sha256": "27558ed8c72fd921497ebe2d74e620574606e483ec14e1de95152a0ba4eaad58",
+        "size_bytes": 2537
       },
       {
         "path": "chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls/expected_outputs/README.md",
-        "sha256": "a665ca44d1fb7e3c8858b052239d5e4aef857c262dc87af7df4dd8d4bc7deca3",
-        "size_bytes": 1932
+        "sha256": "08d5d9a85c8abb75efd82a5c2aee2f68106ea82b17b394258f4fb68238f13889",
+        "size_bytes": 4064
+      },
+      {
+        "path": "chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls/expected_outputs/learner_execution.json",
+        "sha256": "7b4a91e3ab84605ca233bb8d6f540bb9c1fcc8fbf8a0a4fac5bdd0dfba2e3515",
+        "size_bytes": 690
+      },
+      {
+        "path": "chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls/expected_outputs/pixel_encoder_metrics.json",
+        "sha256": "024832781fcdcd09bb22086a16b38b7a1b59c371ff77932b698338922a284f59",
+        "size_bytes": 622896
+      },
+      {
+        "path": "chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls/expected_outputs/real_checkpoint_metrics.json",
+        "sha256": "fddb3298b8de0287bf1782c5d31ba7e5f38253ddb81fe35313e7016cc2dc9e42",
+        "size_bytes": 3231
       },
       {
         "path": "chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls/expected_outputs/reference_metrics.json",
@@ -3529,14 +4367,39 @@
         "size_bytes": 299
       },
       {
+        "path": "chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls/expected_outputs/typographic_metrics.json",
+        "sha256": "707fd599dcfee023be0dc80cc85ceaee480e59039d53b1d53a59f912b2a8cc53",
+        "size_bytes": 6507
+      },
+      {
+        "path": "chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls/lesson.md",
+        "sha256": "cc60afcc03aabd474274a3fa011da49b81023f14f5a9c4d11d069bb0d327734d",
+        "size_bytes": 96728
+      },
+      {
+        "path": "chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls/pixel_clip.py",
+        "sha256": "40c11cd44eda66a11c42d6fed5c5ce50f7694f864209516add11f953a0f8a70c",
+        "size_bytes": 22244
+      },
+      {
+        "path": "chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls/pixel_tests.py",
+        "sha256": "f60f7c747cb270db853449cb9de33834e526aed4cb89535216fa051c9a0e197b",
+        "size_bytes": 17219
+      },
+      {
         "path": "chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls/solutions.py",
-        "sha256": "a1f5d9584f458b661168fd2ba4d39acd834a62aa4810d3774a692e14921c14ca",
-        "size_bytes": 63532
+        "sha256": "e3c02e74deaf4cad706b7a24d2e6a86bb26c7ff43d71a206e3a3bea273e35279",
+        "size_bytes": 68353
       },
       {
         "path": "chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls/tests.py",
-        "sha256": "3cf5b2fb4691be43f44a15930459326fc0c5740ed73923ff109607a51f90ea5e",
-        "size_bytes": 34319
+        "sha256": "5f97947907a60e72e9c1637b089106cc81278b05882fb80f63c233944bb2211f",
+        "size_bytes": 34569
+      },
+      {
+        "path": "chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls/typography.py",
+        "sha256": "136ee7cef7a80adc55e01ce5a905b29f0b23ab42109df32b6ba3ed781b452e61",
+        "size_bytes": 8917
       },
       {
         "path": "chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls/utils.py",
@@ -3549,9 +4412,29 @@
         "size_bytes": 2669
       },
       {
+        "path": "chapter12_vlm_interpretability/instructions/assets/clip_pixel_encoder_comparison.png",
+        "sha256": "53f71cccdde5805357eae435a4661cb861071c4c6163f34b249d48bfa15bfb97",
+        "size_bytes": 346940
+      },
+      {
+        "path": "chapter12_vlm_interpretability/instructions/assets/clip_pixel_encoder_examples.png",
+        "sha256": "c82269bb78a48097d5ad9e8d7a59dd417cadcfa46d380583fbf18e9a3eda8b50",
+        "size_bytes": 75718
+      },
+      {
+        "path": "chapter12_vlm_interpretability/instructions/assets/clip_siglip_live_patch_results.png",
+        "sha256": "3ddee59f06c09509368dfb680b87a9590aa9902fd438fd2ac12ffebd24e45881",
+        "size_bytes": 59975
+      },
+      {
+        "path": "chapter12_vlm_interpretability/instructions/assets/clip_typographic_controls.png",
+        "sha256": "1ebf23c97ebda16668bbbf12161a8555255f6cb3eb2185c89c27f88f81816168",
+        "size_bytes": 161797
+      },
+      {
         "path": "chapter12_vlm_interpretability/instructions/pages/01_[12.1]_CLIP_SigLIP_and_VLM_Controls.md",
-        "sha256": "b5460cd0a6f42ed168d5dffce44090c6957fd916c3abcb97629542b8666ba0bb",
-        "size_bytes": 38085
+        "sha256": "ef427d0fc0667140b8db7b1c23e444c2b36edaeccbcaed9f0b4e49f4285da76c",
+        "size_bytes": 94253
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
@@ -3566,5 +4449,5 @@
     "The real generative VLM path uses safe generated shape images only. The CLIP and SigLIP region-patching path uses deterministic rendered shape images with object, background, and same-size non-overlapping random-region patch controls. The hidden-token path patches real CLIP/SigLIP visual-token activations at `vision_model.embeddings` and requires object tokens to flip the contrastive answer while background, same-size random-token, and full visual-sequence controls behave as expected. The Qwen2.5-VL path verifies grounded generation on the same safe rendered objects."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 48.512041
+  "wall_clock_seconds": 65.461835
 }

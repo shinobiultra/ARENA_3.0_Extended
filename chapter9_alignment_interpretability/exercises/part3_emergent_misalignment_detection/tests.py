@@ -1,3 +1,5 @@
+
+from arena_ext.notebook_checks import unfinished_definitions
 import ast
 from collections.abc import Callable
 import json
@@ -668,7 +670,10 @@ def test_solution_notebook_mirrors_progression_and_inlines_taught_methods():
         "The solved notebook must define every taught method inline; missing "
         f"{sorted(required_definitions - defined)}."
     )
-    assert "NotImplementedError" not in source, (
+    executable_source = "\n".join(
+        "".join(cell.get("source", [])) for cell in cells if cell.get("cell_type") == "code"
+    )
+    assert not unfinished_definitions(executable_source), (
         "The solved notebook must not retain learner stubs."
     )
     assert hidden_solution_imports <= {"run_pythia_proxy_drift_preflight"}, (

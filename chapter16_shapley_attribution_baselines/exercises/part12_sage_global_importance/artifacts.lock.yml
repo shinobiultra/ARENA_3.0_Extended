@@ -1,0 +1,136 @@
+notebook_id: 16_12_sage_global_importance
+section: '16.12'
+title: SAGE Global Importance
+execution_device: cpu
+exercise_metadata:
+  EXERCISE_ID: 16_12_sage_global_importance
+  GT_TIER: GT-0
+  DIFFICULTY: 4
+  IMPORTANCE: 5
+  EXPECTED_RUNTIME: Four to six hours self-study; about twelve seconds for the complete CPU notebook on
+    the development machine
+  REQUIRES_GPU: false
+gt_tier: GT-0
+evidence_level: analytic_conditional_oracles_and_native_marginal_performance_games
+claim_scope: Visible conditional Gaussian and exact/sampled marginal SAGE distinguish predictive usefulness
+  from output sensitivity. Seven fresh regressors, all 256 coalitions, recipe-disjoint ranking/audit evaluation,
+  independent game and model oracles, three network seeds and background/target/random-order controls
+  retain negative and unstable attributions. The real study uses a finite empirical marginal background;
+  it is not a causal effect, universal optimal-model importance, or whole-paper replication.
+required_gpu_gb: 0
+max_allowed_gpu_gb: 0
+models:
+- id: course_concrete_mlp32x2_and_ridge
+  source: generated_training_run
+  revision: frozen_sage_protocol_v1
+  precision: float64
+  gated: false
+datasets:
+- id: uci_concrete_compressive_strength
+  source: uci
+  revision: 8d4b15b6fc68cd932d745cbd663d5ceae66dd54422e99c1e4865f2936ab7e2af
+  license: CC BY 4.0
+  train: 758
+  explanation: 153
+  audit: 119
+  manifest: data_manifest.json
+expected_metrics:
+  tests_passed: true
+  accepted: true
+  test_count: 9
+  actual_learner_passed: true
+  own_answer_code_cells: 33
+  embedded_figures: 18
+  native_model_retrained: true
+  native_model_retrained_in_this_report: true
+  native_evidence_reused: false
+  fresh_reproduction_passed: true
+  reference_refits: 7
+  neural_training_runs: 6
+  optimizer_updates: 4800
+  fresh_compared_tensors: 464
+  fresh_compared_elements: 3786320
+  fresh_max_error_max: 1.0e-10
+  heldout_unit: recipe_group
+  heldout_group_count: 65
+  heldout_row_count: 119
+  explanation_row_count: 153
+  final_used_for_selection: false
+  cross_split_recipe_overlap: 0
+  all_training_seeds_retained: true
+  shuffled_training_targets: true
+  random_order_controls: 100
+  exact_coalitions: 256
+  direct_sampled_paths: 4096
+  independent_permutations: 40320
+  independent_weighted_regression_coalitions: 254
+  independent_numpy_predictions: 64
+  author_imputation_comparisons: 64
+  local_global_max_error_max: 1.0e-08
+  direct_path_max_error_max: 1.0e-08
+  ignored_feature_importance: 0.0
+  whole_paper_replication: false
+controls:
+- analytic_conditional_versus_marginal_gaussian
+- XOR_singleton_and_leave_one_out
+- averaging_before_loss_and_nonlinear_mean_imputation
+- shuffled_training_and_evaluation_targets
+- constant_target_and_ridge_baselines
+- all_three_clean_and_shuffled_network_seeds
+- three_independent_background_orders_and_nested_sizes
+- exact_global_versus_mean_local_loss_identity
+- prediction_and_mean_absolute_prediction_shapley
+- all_coalitions_versus_direct_sampled_paths
+- 32_independent_outer_sampling_schedules
+- inner_sampling_bias_oracle
+- recipe_equal_weighting_and_disjoint_audit
+- 100_random_feature_orders
+- ignored_ninth_feature
+- independent_permutation_weighted_regression_numpy_author_checks
+- fresh_native_retraining_and_full_tensor_comparison
+- two_editable_plays
+safety_notes:
+- Public material measurements; predictive attribution is not a material-design recommendation.
+freshness_inputs:
+- chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/build_notebooks.py
+- chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/execute_learner.py
+- chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/publish_study.py
+- chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/reproduce_native.py
+- chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/run_native.py
+- chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/sage_contract_tests.py
+- chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/sage_data.py
+- chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/sage_methods.py
+- chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/sage_methods_tests.py
+- chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/sage_reference.py
+- chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/sage_study.py
+- chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/solutions.py
+- chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/tests.py
+- chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/README.md
+- chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/lesson.md
+- chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/protocol.md
+- chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/protocol_freeze.json
+- chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/data_manifest.json
+- chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/author_reference.json
+- chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/expected_outputs/README.md
+- chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/expected_outputs/learner_execution.json
+- chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/expected_outputs/native_summary.json
+- chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/expected_outputs/fresh_reproduction.json
+- chapter16_shapley_attribution_baselines/instructions/assets/sage_additive_approximation.png
+- chapter16_shapley_attribution_baselines/instructions/assets/sage_audit_prefixes.png
+- chapter16_shapley_attribution_baselines/instructions/assets/sage_averaging.png
+- chapter16_shapley_attribution_baselines/instructions/assets/sage_background_and_targets.png
+- chapter16_shapley_attribution_baselines/instructions/assets/sage_correlation.png
+- chapter16_shapley_attribution_baselines/instructions/assets/sage_gaussian_play.png
+- chapter16_shapley_attribution_baselines/instructions/assets/sage_global_importance.png
+- chapter16_shapley_attribution_baselines/instructions/assets/sage_inner_bias.png
+- chapter16_shapley_attribution_baselines/instructions/assets/sage_local_explanations.png
+- chapter16_shapley_attribution_baselines/instructions/assets/sage_local_global.png
+- chapter16_shapley_attribution_baselines/instructions/assets/sage_mean_imputation.png
+- chapter16_shapley_attribution_baselines/instructions/assets/sage_missingness.png
+- chapter16_shapley_attribution_baselines/instructions/assets/sage_model_performance.png
+- chapter16_shapley_attribution_baselines/instructions/assets/sage_native_play.png
+- chapter16_shapley_attribution_baselines/instructions/assets/sage_sampling.png
+- chapter16_shapley_attribution_baselines/instructions/assets/sage_training.png
+- chapter16_shapley_attribution_baselines/instructions/assets/sage_weighting_and_split.png
+- chapter16_shapley_attribution_baselines/instructions/assets/sage_xor.png
+- chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/protocol_readable.md

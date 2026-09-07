@@ -9,8 +9,12 @@ exercise_metadata:
   EXPECTED_RUNTIME: seconds on toy contract; minutes on local real-model path
   REQUIRES_GPU: true
 gt_tier: GT-1
-evidence_level: synthetic_vlm_ladder_plus_real_clip_siglip_hidden_token_patching_and_qwen25_vl_generation
-claim_scope: GT-1 pinned CLIP and SigLIP rendered-shape retrieval plus real object-region
+evidence_level: full_pixel_token_encoder_learning_plus_pretrained_typographic_controls_and_pinned_vlm_preflights
+claim_scope: Full pixel and caption encoders trained with CLIP and SigLIP on 576 images,
+  evaluated on 288 independent instances of twelve shared classes across three seeds,
+  with frozen-tower, shuffled-pair, blank, noise and wrong-word controls. Pretrained
+  CLIP zero-shot classification and matched typographic overlays on 48 rendered scenes.
+  GT-1 pinned CLIP and SigLIP rendered-shape retrieval plus real object-region
   counterfactual patching, real hidden visual-token activation patching at the vision
   patch-embedding output with object/background/same-size random-token/full-sequence
   controls, a pinned Qwen2.5-VL 3B rendered-shape generation check, and a controlled
@@ -56,7 +60,34 @@ datasets:
   seed: 0
   image_count: 2
   text_count: 2
+- id: rgb_caption_encoders_v1
+  source: generated_rgb_pixels_and_caption_tokens
+  train_seed: 100
+  development_seed: 200
+  evaluation_seed: 300
+  training_images: 576
+  evaluation_images: 288
+  shared_semantic_classes: 12
+  model_seeds: [0, 1, 2]
+  optimizer_steps_per_run: 1200
+- id: clip_typographic_shapes_v1
+  source: generated_pil_shapes_and_word_overlays
+  seed: 400
+  images: 48
+  semantic_classes: 12
+  font: DejaVuSans.ttf
+  font_size: 20
+  conditions: clean_plus_ten_matched_word_and_placement_controls
 expected_metrics:
+  pixel_encoder_numerical_checks_passed: true
+  pixel_encoder_parameter_controls_passed: true
+  pixel_encoder_eval_count: 288
+  pixel_encoder_exact_train_eval_overlap: 0
+  pixel_encoder_worst_seed_accuracy_min: 0.8
+  pixel_encoder_min_pairing_gap_min: 0.6
+  pixel_encoder_min_frozen_tower_gap_min: 0.2
+  typography_dataset_count: 48
+  typography_controls_complete: true
   tests_passed: true
   accepted: true
   max_allowed_gpu_gb: 24
@@ -126,6 +157,18 @@ expected_metrics:
   - blue circle
   real_qwen25_vl_peak_vram_gb_max: 12.0
 controls:
+- pixel_encoder_three_matched_initializations
+- full_rgb_and_causal_caption_tower_gradients
+- independent_training_and_evaluation_instances_shared_classes
+- frozen_random_encoder_trained_projection_baseline
+- reshuffled_caption_pairs_every_optimizer_step
+- blank_and_independent_noise_pixels
+- wrong_color_caption_control
+- semantic_duplicate_positive_and_tie_aware_retrieval
+- pretrained_clip_zero_shot_twelve_class_gallery
+- typographic_background_without_object_overlap
+- typographic_object_card_matched_occlusion
+- correct_conflicting_irrelevant_and_scrambled_words
 - baseline_or_reference_check
 - negative_control_where_applicable
 - shape_dtype_or_exact_value_check
@@ -163,3 +206,20 @@ safety_notes:
   and requires object tokens to flip the contrastive answer while background, same-size
   random-token, and full visual-sequence controls behave as expected. The Qwen2.5-VL
   path verifies grounded generation on the same safe rendered objects.
+
+freshness_inputs:
+  - arena_ext/notebook_checks.py
+  - chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls/pixel_clip.py
+  - chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls/pixel_tests.py
+  - chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls/typography.py
+  - chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls/lesson.md
+  - chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls/build_notebooks.py
+  - chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls/execute_learner.py
+  - chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls/expected_outputs/pixel_encoder_metrics.json
+  - chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls/expected_outputs/typographic_metrics.json
+  - chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls/expected_outputs/learner_execution.json
+  - chapter12_vlm_interpretability/instructions/assets/clip_pixel_encoder_comparison.png
+  - chapter12_vlm_interpretability/instructions/assets/clip_pixel_encoder_examples.png
+  - chapter12_vlm_interpretability/instructions/assets/clip_siglip_live_patch_results.png
+  - chapter12_vlm_interpretability/instructions/assets/clip_typographic_controls.png
+  - chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls/expected_outputs/real_checkpoint_metrics.json
