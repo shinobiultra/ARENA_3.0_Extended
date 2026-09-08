@@ -1,0 +1,53 @@
+{
+  "notebook_id": "8_3_acdc_and_circuit_metrics",
+  "gt_tier": "GT-0",
+  "toy": {
+    "accepted": true,
+    "candidate_edges": 10,
+    "ground_truth_edges": 8,
+    "kept_edges": 8,
+    "clean_metric": 2.5,
+    "corrupt_metric": 0.1,
+    "one_shot_max_abs": 0.0,
+    "recovery": 1.0,
+    "min_edge_damage": 0.16666666666666663,
+    "max_omitted_subset_gain": 0.0,
+    "same_size_circuits": 45,
+    "same_size_rank": 1,
+    "same_size_exact_pvalue": 0.022222222222222223,
+    "same_size_wrong_mean": 0.196969696969697,
+    "same_size_wrong_best": 0.8333333333333334,
+    "worst_heldout_recovery": 1.0
+  },
+  "real_cpu": {
+    "accepted": true,
+    "model_name": "gelu-1l",
+    "hf_revision": "bddc0e332f0ae84279e6a6a45d91b314899e1603",
+    "tokenizer_revision": "0f6671571a20be9756b9991d978047c03b75e749",
+    "head_hook": "blocks.0.attn.hook_result",
+    "mlp_hook": "blocks.0.hook_mlp_out",
+    "target_token": " floor",
+    "distractor_token": " top",
+    "clean_corrupt_gap": 6.2770843505859375,
+    "kept_heads": ["L0H0", "L0H4", "L0H6"],
+    "primary_recovery": 0.9455145852324521,
+    "same_size_sets": 56,
+    "same_size_rank": 1,
+    "same_size_exact_pvalue": 0.017857142857142856,
+    "same_size_other_mean": 0.4094854948758322,
+    "same_size_other_best": 0.8854851109085384,
+    "heldout_recoveries": {
+      "dog_vs_plane": 0.8375973111269811,
+      "child_vs_plane": 0.9448677076362934,
+      "cup_vs_plane": 0.7854963112588677
+    },
+    "mlp_bottleneck_recovery": 0.9912110300820419
+  },
+  "controls": {
+    "one_shot_failure_required": true,
+    "same_size_null_required": true,
+    "pairwise_completeness_required": true,
+    "heldout_transfer_required": true,
+    "mlp_bottleneck_control_required": true
+  }
+}

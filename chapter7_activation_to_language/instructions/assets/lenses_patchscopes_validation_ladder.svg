@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="320" viewBox="0 0 960 320" role="img" aria-labelledby="title desc">
+  <title id="title">Validation ladder for [7.1] Logit Lens, Tuned Lens, and Patchscopes</title>
+  <desc id="desc">A five-step activation-to-language validation ladder: decode, calibrate, read, insert, control.</desc>
+  <rect width="960" height="320" fill="#f8fafc"/>
+  <style>
+    .box { fill: #ffffff; stroke: #334155; stroke-width: 2; rx: 10; }
+    .title { font: 700 18px sans-serif; fill: #0f172a; }
+    .body { font: 14px sans-serif; fill: #334155; }
+    .small { font: 12px sans-serif; fill: #475569; }
+    .arrow { stroke: #475569; stroke-width: 2.5; fill: none; marker-end: url(#arrow); }
+    .blue { fill: #dbeafe; stroke: #2563eb; }
+    .green { fill: #dcfce7; stroke: #16a34a; }
+    .orange { fill: #ffedd5; stroke: #f97316; }
+    .violet { fill: #ede9fe; stroke: #7c3aed; }
+    .rose { fill: #ffe4e6; stroke: #e11d48; }
+  </style>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#475569"/>
+    </marker>
+  </defs>
+
+  <text x="36" y="40" class="title">Activation-to-language validation ladder</text>
+  <text x="36" y="64" class="body">Decoded text or tokens are hypotheses. They earn trust only after calibration and controls.</text>
+
+  <rect x="36" y="104" width="160" height="118" class="box blue"/>
+  <text x="56" y="132" class="title">1. Decode</text>
+  <text x="56" y="158" class="body">Logit lens:</text>
+  <text x="56" y="180" class="body">what is linearly</text>
+  <text x="56" y="202" class="body">available now?</text>
+
+  <rect x="226" y="104" width="160" height="118" class="box green"/>
+  <text x="246" y="132" class="title">2. Calibrate</text>
+  <text x="246" y="158" class="body">Tuned lens:</text>
+  <text x="246" y="180" class="body">does held-out</text>
+  <text x="246" y="202" class="body">accuracy improve?</text>
+
+  <rect x="416" y="104" width="160" height="118" class="box orange"/>
+  <text x="436" y="132" class="title">3. Read</text>
+  <text x="436" y="158" class="body">Attention lens:</text>
+  <text x="436" y="180" class="body">what value stream</text>
+  <text x="436" y="202" class="body">did this query use?</text>
+
+  <rect x="606" y="104" width="160" height="118" class="box violet"/>
+  <text x="626" y="132" class="title">4. Insert</text>
+  <text x="626" y="158" class="body">Patchscope:</text>
+  <text x="626" y="180" class="body">does activation</text>
+  <text x="626" y="202" class="body">change answers?</text>
+
+  <rect x="796" y="104" width="128" height="118" class="box rose"/>
+  <text x="816" y="132" class="title">5. Control</text>
+  <text x="816" y="158" class="body">Held-out,</text>
+  <text x="816" y="180" class="body">text-only,</text>
+  <text x="816" y="202" class="body">random.</text>
+
+  <path d="M196 163 C210 163 212 163 226 163" class="arrow"/>
+  <path d="M386 163 C400 163 402 163 416 163" class="arrow"/>
+  <path d="M576 163 C590 163 592 163 606 163" class="arrow"/>
+  <path d="M766 163 C780 163 782 163 796 163" class="arrow"/>
+
+  <text x="36" y="276" class="small">Allowed claim: a scoped GELU-1L mechanics preflight for activation-conditioned decoding, not a general semantic truth oracle or released tuned-lens benchmark.</text>
+</svg>

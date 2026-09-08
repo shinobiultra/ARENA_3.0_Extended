@@ -1,0 +1,145 @@
+{
+  "source_directory": "/home/bitwise/.cache/arena_extended/sage/report_reproductions/report-8s8c9vjy/fresh_cpu",
+  "archive_sha256": "9e527b4581176b519dc953c34204c07a35c259fbc66d14b595162fbeb7878462",
+  "members": {
+    "fresh_run/before_audit.json": {
+      "sha256": "e1cae14769f0b75c801d5286ae5144064f45cf1af73a401377a1814636057afd",
+      "size_bytes": 160
+    },
+    "fresh_run/run.json": {
+      "sha256": "24ad9c308a0dea9122b66456999cf3ac661463abdd5044d456e4fd97656035b9",
+      "size_bytes": 3610
+    },
+    "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/author_reference.json": {
+      "sha256": "3ec06e257a59da00a9ceeca46b7116617e377d9aabc80e754987ba3a30e4a997",
+      "size_bytes": 794
+    },
+    "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/data_manifest.json": {
+      "sha256": "4262d471486ed5b26cbcaa804950e878b1ef00318b4141eaa52b554eb26de47a",
+      "size_bytes": 12493
+    },
+    "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/protocol.md": {
+      "sha256": "d19cbb3593dc512b1e211badf7092d77ba3ee9418445406d5ee8c90679c39c39",
+      "size_bytes": 7413
+    },
+    "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/protocol_freeze.json": {
+      "sha256": "11b553de2cd72af1f242fac53b1583d738f09dc018e0a15a4a8b9183387f8f65",
+      "size_bytes": 365
+    },
+    "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/run_native.py": {
+      "sha256": "5047196618df791bb35103487b0a81dec54bf3d533bf1598fb55dd9f8079450e",
+      "size_bytes": 5424
+    },
+    "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/sage_data.py": {
+      "sha256": "5d9d12b16444f29ac4cf51b6f5e0995a105665c4c86d955d3f3990fd77c5350c",
+      "size_bytes": 1780
+    },
+    "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/sage_methods.py": {
+      "sha256": "c19bedefe97edd8f076129db4b09f5f443e6564a40a8abdcc1006e4524878a32",
+      "size_bytes": 7094
+    },
+    "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/sage_methods_tests.py": {
+      "sha256": "f3f34ca9b0ad8ed0419473371b596ddb1d3d0d8a62175d3b69febbe29ece02e8",
+      "size_bytes": 6411
+    },
+    "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/sage_reference.py": {
+      "sha256": "4bdddef0954596b4a009eadf3af0a46e1cab7cba6266f0a3ae2fbe1eef0dda35",
+      "size_bytes": 5625
+    },
+    "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/sage_study.py": {
+      "sha256": "5df36a109b0a549b3491c31809a510e3a76d401886bd2c64e4114a6a6b03714e",
+      "size_bytes": 12528
+    },
+    "fresh_run/summary.json": {
+      "sha256": "0abf83cb0fcab8e2566a543e7f6dfa523ac8f359303cffac1e0825d3e2b6d533",
+      "size_bytes": 1592
+    },
+    "reproduction.json": {
+      "sha256": "1649a452b39fc2223ed933f96b794ff238d68fd8d3140067c95de659e305956a",
+      "size_bytes": 7619
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/author_reference.json": {
+      "sha256": "3ec06e257a59da00a9ceeca46b7116617e377d9aabc80e754987ba3a30e4a997",
+      "size_bytes": 794
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/build_notebooks.py": {
+      "sha256": "57b765b521646498f497948bbdbf08b9c642c8dea62f253451188d1a8bc3cdf6",
+      "size_bytes": 4660
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/data_manifest.json": {
+      "sha256": "4262d471486ed5b26cbcaa804950e878b1ef00318b4141eaa52b554eb26de47a",
+      "size_bytes": 12493
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/execute_learner.py": {
+      "sha256": "3a2adcdcac882050c7f2d430c06a5bf9b34c1dd2aae300bbcd7d6a73995976ee",
+      "size_bytes": 5849
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/lesson.md": {
+      "sha256": "611b2b13f9a7b5738c057646619f7373eb1942ce87d7d20ad70b898089a3686b",
+      "size_bytes": 86197
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/protocol.md": {
+      "sha256": "d19cbb3593dc512b1e211badf7092d77ba3ee9418445406d5ee8c90679c39c39",
+      "size_bytes": 7413
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/protocol_freeze.json": {
+      "sha256": "11b553de2cd72af1f242fac53b1583d738f09dc018e0a15a4a8b9183387f8f65",
+      "size_bytes": 365
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/reproduce_native.py": {
+      "sha256": "2a3374ed78563a6e8eb8415f271e83ee1e92a2c7a45bfeae2f8ebfad325e53e0",
+      "size_bytes": 6246
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/run_native.py": {
+      "sha256": "5047196618df791bb35103487b0a81dec54bf3d533bf1598fb55dd9f8079450e",
+      "size_bytes": 5424
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/sage_contract_tests.py": {
+      "sha256": "ab7a6b9ffb8f34980afda3c6a1a4786e32f49caefb599a4012ba5b19861206f7",
+      "size_bytes": 5276
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/sage_data.py": {
+      "sha256": "5d9d12b16444f29ac4cf51b6f5e0995a105665c4c86d955d3f3990fd77c5350c",
+      "size_bytes": 1780
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/sage_methods.py": {
+      "sha256": "c19bedefe97edd8f076129db4b09f5f443e6564a40a8abdcc1006e4524878a32",
+      "size_bytes": 7094
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/sage_methods_tests.py": {
+      "sha256": "f3f34ca9b0ad8ed0419473371b596ddb1d3d0d8a62175d3b69febbe29ece02e8",
+      "size_bytes": 6411
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/sage_reference.py": {
+      "sha256": "4bdddef0954596b4a009eadf3af0a46e1cab7cba6266f0a3ae2fbe1eef0dda35",
+      "size_bytes": 5625
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/sage_study.py": {
+      "sha256": "5df36a109b0a549b3491c31809a510e3a76d401886bd2c64e4114a6a6b03714e",
+      "size_bytes": 12528
+    }
+  },
+  "large_tensors_retained_externally": {
+    "fresh_run/study/diagnostics.pt": {
+      "sha256": "41af359979c887bcf76b022ec45b183b46728cd39230476c69d72b9ad616a3cc",
+      "size_bytes": 21537991
+    },
+    "fresh_run/study/evaluated.pt": {
+      "sha256": "93b838b0dcdcb49b6d6a9f145f12c13153d1ce9f7c3ba74e7728781d67112604",
+      "size_bytes": 3672087
+    },
+    "fresh_run/study/fitted.pt": {
+      "sha256": "0a3caae22f5ca538f5fd8093a911af238192adb20dd3c272082b08ad56a7fa54",
+      "size_bytes": 289389
+    },
+    "fresh_run/study/play.pt": {
+      "sha256": "37d3e51fef699b19f32273b385acafa7126a9326515b0f165bd0bead96f0e93b",
+      "size_bytes": 19587
+    },
+    "fresh_run/study/prepared.pt": {
+      "sha256": "0fa13f08a77877733c3adca5b645c00458569ec7981c8c7d0370333f6b013efd",
+      "size_bytes": 4898394
+    }
+  },
+  "readback_verified": true
+}

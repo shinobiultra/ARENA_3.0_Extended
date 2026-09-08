@@ -1,0 +1,193 @@
+{
+  "CLIP": {
+    "kind": "CLIP",
+    "causal": {
+      "clean_margins": [
+        7.050161361694336,
+        7.880229949951172
+      ],
+      "corrupt_margins": [
+        -7.880229949951172,
+        -7.050161361694336
+      ],
+      "rows": [
+        {
+          "condition": "object",
+          "mean_margin": -7.465195655822754,
+          "mean_effect": 14.930391311645508,
+          "all_flip": true
+        },
+        {
+          "condition": "background",
+          "mean_margin": 7.465195655822754,
+          "mean_effect": 0.0,
+          "all_flip": false
+        },
+        {
+          "condition": "same_size_random",
+          "mean_margin": 7.465195655822754,
+          "mean_effect": 0.0,
+          "all_flip": false
+        },
+        {
+          "condition": "full_sequence",
+          "mean_margin": -7.465195655822754,
+          "mean_effect": 14.930391311645508,
+          "all_flip": true
+        }
+      ]
+    },
+    "object_indices": [
+      17,
+      18,
+      19,
+      24,
+      25,
+      26,
+      31,
+      32,
+      33
+    ],
+    "random_indices": [
+      13,
+      39,
+      45,
+      11,
+      12,
+      42,
+      21,
+      29,
+      47
+    ],
+    "official_logit_max_abs_error": 5.7220458984375e-06,
+    "official_logit_parity_tolerance": 0.0001
+  },
+  "SigLIP": {
+    "kind": "SigLIP",
+    "causal": {
+      "clean_margins": [
+        20.7890625,
+        10.65625
+      ],
+      "corrupt_margins": [
+        -10.65625,
+        -20.7890625
+      ],
+      "rows": [
+        {
+          "condition": "object",
+          "mean_margin": -15.72265625,
+          "mean_effect": 31.4453125,
+          "all_flip": true
+        },
+        {
+          "condition": "background",
+          "mean_margin": 15.72265625,
+          "mean_effect": 0.0,
+          "all_flip": false
+        },
+        {
+          "condition": "same_size_random",
+          "mean_margin": 15.72265625,
+          "mean_effect": 0.0,
+          "all_flip": false
+        },
+        {
+          "condition": "full_sequence",
+          "mean_margin": -15.72265625,
+          "mean_effect": 31.4453125,
+          "all_flip": true
+        }
+      ]
+    },
+    "object_indices": [
+      60,
+      61,
+      62,
+      63,
+      64,
+      65,
+      74,
+      75,
+      76,
+      77,
+      78,
+      79,
+      88,
+      89,
+      90,
+      91,
+      92,
+      93,
+      102,
+      103,
+      104,
+      105,
+      106,
+      107,
+      116,
+      117,
+      118,
+      119,
+      120,
+      121,
+      130,
+      131,
+      132,
+      133,
+      134,
+      135
+    ],
+    "random_indices": [
+      99,
+      49,
+      98,
+      112,
+      95,
+      115,
+      138,
+      83,
+      34,
+      127,
+      54,
+      182,
+      21,
+      31,
+      4,
+      48,
+      187,
+      42,
+      45,
+      20,
+      167,
+      185,
+      174,
+      96,
+      155,
+      165,
+      13,
+      161,
+      181,
+      168,
+      124,
+      52,
+      11,
+      38,
+      143,
+      37
+    ],
+    "official_logit_max_abs_error": 0.0072460174560546875,
+    "official_logit_parity_tolerance": 0.05
+  },
+  "qwen": {
+    "answers": [
+      "red square",
+      "blue circle"
+    ],
+    "expected": [
+      "red square",
+      "blue circle"
+    ],
+    "accuracy": 1.0
+  }
+}

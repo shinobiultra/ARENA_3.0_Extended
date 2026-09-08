@@ -1,0 +1,329 @@
+{
+  "accepted": true,
+  "baselines": {
+    "declared_controls": [
+      "literal_recurrent_ground_truth",
+      "independently_implemented_quadratic_dual",
+      "independently_implemented_chunked_factorization",
+      "official_ssd_listing_one_reference",
+      "future_token_causality_perturbation",
+      "nondivisible_chunk_padding_and_final_state",
+      "negative_recurrent_carry_ablation",
+      "finite_local_convolution",
+      "negative_independently_shuffled_training_labels",
+      "doubled_sequence_length_ood",
+      "full_context_vs_one_token_cache",
+      "recurrent_quadratic_chunked_gradient_equivalence",
+      "tiny_stacked_lm_full_context_vs_cache",
+      "parameter_matched_causal_attention_block",
+      "parameter_matched_mamba1_block",
+      "strict_219_tensor_released_checkpoint_mapping",
+      "independent_transformers_25_hidden_state_logits_and_token_parity",
+      "educational_cpu_timing_disclaimed_from_fused_kernel_speed"
+    ],
+    "expected_metrics": {
+      "accepted": true,
+      "cache_max_abs_diff_max": 2e-06,
+      "delayed_recall_accuracy_min": 0.95,
+      "doubled_length_accuracy_min": 0.65,
+      "final_state_max_abs_diff_max": 1e-11,
+      "local_conv_accuracy_max": 0.65,
+      "max_allowed_gpu_gb": 24,
+      "official_checkpoint_deterministic_max_abs_diff_max": 0.0,
+      "official_checkpoint_finite": true,
+      "official_checkpoint_logits_shape": [
+        1,
+        8,
+        50288
+      ],
+      "official_checkpoint_logits_std_min": 0.1,
+      "official_checkpoint_peak_vram_gb_max": 4.0,
+      "official_fused_operator_max_abs_diff_max": 0.0002,
+      "official_listing_one_output_max_abs_diff_max": 1e-11,
+      "official_listing_one_state_max_abs_diff_max": 1e-11,
+      "parameter_matched_control_relative_error_max": 0.1,
+      "pinned_hidden_max_abs_diff_max": 0.002,
+      "pinned_hidden_mean_abs_diff_max": 5e-05,
+      "pinned_hidden_state_count": 25,
+      "pinned_logits_max_abs_diff_max": 0.0005,
+      "pinned_logits_mean_abs_diff_max": 5e-05,
+      "pinned_mapped_tensor_count": 219,
+      "pinned_top1_agreement": 1.0,
+      "recurrent_chunked_gradient_max_abs_diff_max": 1e-11,
+      "recurrent_chunked_max_abs_diff_max": 1e-11,
+      "recurrent_quadratic_gradient_max_abs_diff_max": 1e-11,
+      "recurrent_quadratic_max_abs_diff_max": 1e-11,
+      "shuffled_label_accuracy_max": 0.65,
+      "stacked_lm_cache_max_abs_diff_max": 2e-06,
+      "state_ablated_accuracy_max": 0.65,
+      "tests_passed": true
+    }
+  },
+  "claim_scope": "GT-1 Mamba-2/SSD implementation contract: the learner implements stable segment sums, a semiseparable matrix, independent recurrent and quadratic SSD forms, chunked SSD, grouped multi-head parameters, a gated residual block, and exact convolution/SSM cache decoding, a stacked LM, and runnable parameter-matched attention and Mamba-1 controls. Float64 outputs, final states, and gradients agree with the literal recurrence and the official repository's SSD Listing 1. A trained tiny Mamba-2 mixer solves generated delayed recall while recurrent-state ablation, a finite local convolution, and shuffled-label training remain near chance. All 219 tensors from pinned Mamba-2 130M map strictly into a faithful from-scratch 24-layer LM; 25 hidden states, logits, and top tokens match Transformers on two prompts. The strict CUDA release hook additionally compares against the official fused SSD kernel. The paper's optimized training-speed claim is not reproduced.",
+  "datasets": [
+    {
+      "id": "5_7_delayed_recall_v1",
+      "ood_sequence_length": 64,
+      "seed": 0,
+      "source": "generated",
+      "task": "binary WRITE at position zero and READ at final position",
+      "train_sequence_length": 32
+    }
+  ],
+  "date_run": "2026-09-04T23:57:48+00:00",
+  "evidence_level": "exact_ssd_duality_trained_causal_memory_and_full_pinned_130m_output_parity",
+  "git_commit": "8eab192b",
+  "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+  "gt_tier": "GT-1",
+  "known_failures": [],
+  "metrics": {
+    "gpu_evidence": {
+      "category": "cuda_section_metric",
+      "placeholder_only": false,
+      "section_specific_metric_keys": [
+        "accepted",
+        "delayed_recall_accuracy",
+        "doubled_length_accuracy",
+        "from_scratch_checkpoint_parity",
+        "held_out_examples",
+        "max_vram_gb",
+        "model_id",
+        "model_revision",
+        "official_checkpoint",
+        "official_checkpoint_deterministic_max_abs_diff",
+        "official_checkpoint_finite",
+        "official_checkpoint_logits_shape",
+        "official_checkpoint_logits_std",
+        "official_checkpoint_peak_vram_gb",
+        "official_fused_operator_max_abs_diff",
+        "operator_parity",
+        "pinned_hidden_max_abs_diff",
+        "pinned_hidden_mean_abs_diff",
+        "pinned_hidden_state_count",
+        "pinned_logits_max_abs_diff",
+        "pinned_logits_mean_abs_diff",
+        "pinned_mapped_tensor_count",
+        "pinned_top1_agreement",
+        "recall",
+        "torch_float32_matmul_precision",
+        "training_steps_per_model",
+        "triton_f32_default",
+        "wall_clock_seconds"
+      ],
+      "uses_cuda": true
+    },
+    "gpu_test": {
+      "accepted": true,
+      "cuda_available": true,
+      "cuda_version": "13.2",
+      "delayed_recall_accuracy": 1.0,
+      "device": "NVIDIA GeForce RTX 5090 Laptop GPU",
+      "doubled_length_accuracy": 0.7529296875,
+      "from_scratch_checkpoint_parity": {
+        "hidden_max_abs_diff": 0.000946044921875,
+        "hidden_mean_abs_diff": 1.659214285609778e-05,
+        "hidden_state_count": 25,
+        "learner_top_tokens": [
+          320,
+          253
+        ],
+        "logits_max_abs_diff": 0.000125885009765625,
+        "logits_mean_abs_diff": 3.113803541054949e-05,
+        "mapped_tensor_count": 219,
+        "reference_top_tokens": [
+          320,
+          253
+        ],
+        "top1_agreement": 1.0
+      },
+      "gpu_total_memory_gb": 23.45965576171875,
+      "held_out_examples": 1024,
+      "max_vram_gb": 24.0,
+      "model_id": "state-spaces/mamba2-130m",
+      "model_revision": "3a5aea0c25d0fb43cc360e2c2aac82c26e3eed49",
+      "official_checkpoint": {
+        "deterministic_max_abs_diff": 0.0,
+        "finite": true,
+        "logits_shape": [
+          1,
+          8,
+          50288
+        ],
+        "logits_std": 39.32780456542969
+      },
+      "official_checkpoint_deterministic_max_abs_diff": 0.0,
+      "official_checkpoint_finite": true,
+      "official_checkpoint_logits_shape": [
+        1,
+        8,
+        50288
+      ],
+      "official_checkpoint_logits_std": 39.32780456542969,
+      "official_checkpoint_peak_vram_gb": 1.819005012512207,
+      "official_fused_operator_max_abs_diff": 6.556510925292969e-07,
+      "operator_parity": {
+        "max_abs_diff": 6.556510925292969e-07,
+        "mean_abs_diff": 3.98045898464261e-08
+      },
+      "peak_vram_gb": 1.819005012512207,
+      "pinned_hidden_max_abs_diff": 0.000946044921875,
+      "pinned_hidden_mean_abs_diff": 1.659214285609778e-05,
+      "pinned_hidden_state_count": 25,
+      "pinned_logits_max_abs_diff": 0.000125885009765625,
+      "pinned_logits_mean_abs_diff": 3.113803541054949e-05,
+      "pinned_mapped_tensor_count": 219,
+      "pinned_top1_agreement": 1.0,
+      "recall": {
+        "local_conv_accuracy": 0.5078125,
+        "mamba_accuracy": 1.0,
+        "ood_length_accuracy": 0.7529296875,
+        "shuffled_label_accuracy": 0.5234375,
+        "state_ablated_accuracy": 0.5078125
+      },
+      "torch_float32_matmul_precision": "highest",
+      "torch_version": "2.12.1+cu132",
+      "training_steps_per_model": 100,
+      "triton_f32_default": "ieee",
+      "wall_clock_seconds": 15.648898267999812
+    },
+    "notebook_contract": {
+      "cache_max_abs_diff": 2.384185791015625e-07,
+      "device": "cuda",
+      "gradients": {
+        "recurrent_chunked_gradient_max_abs_diff": 2.6645352591003757e-15,
+        "recurrent_quadratic_gradient_max_abs_diff": 1.3322676295501878e-15
+      },
+      "official_listing_one_output_max_abs_diff": 3.552713678800501e-15,
+      "official_listing_one_state_max_abs_diff": 4.440892098500626e-16,
+      "official_reference": {
+        "final_state_max_abs_diff": 4.440892098500626e-16,
+        "output_max_abs_diff": 3.552713678800501e-15
+      },
+      "parameter_matched_control_relative_error": 0.08235294117647063,
+      "parity": {
+        "final_state_max_abs_diff": 1.7763568394002505e-15,
+        "recurrent_chunked_max_abs_diff": 7.105427357601002e-15,
+        "recurrent_quadratic_max_abs_diff": 3.552713678800501e-15
+      },
+      "stacked_lm_cache_max_abs_diff": 2.980232238769531e-07,
+      "tests_passed": true
+    }
+  },
+  "models": [
+    {
+      "gated": false,
+      "id": "toy_or_generated_inputs",
+      "precision": "float64 exact operators; float32 trained organism",
+      "revision": "seed_0",
+      "source": "generated"
+    },
+    {
+      "claim_scope": "strict_219_tensor_mapping_25_hidden_logits_and_top_token_parity",
+      "gated": false,
+      "id": "state-spaces/mamba2-130m",
+      "precision": "released fp16 promoted to float32 for CPU parity; IEEE float32 CUDA parity (TRITON_F32_DEFAULT=ieee)",
+      "revision": "3a5aea0c25d0fb43cc360e2c2aac82c26e3eed49",
+      "source": "huggingface"
+    }
+  ],
+  "negative_controls": {
+    "declared_controls": [
+      "negative_recurrent_carry_ablation",
+      "negative_independently_shuffled_training_labels"
+    ]
+  },
+  "notebook_id": "5_7_mamba2_ssd",
+  "ood_tests": {
+    "declared": "required_where_applicable"
+  },
+  "peak_vram_gb": 1.819005012512207,
+  "report_inputs": {
+    "algorithm": "sha256",
+    "combined_sha256": "b0a32b03d41d3214d5ab86646d0d6af9ecbbbe006577dfedddeb3832ae8cd1ee",
+    "files": [
+      {
+        "path": "arena_ext/verification.py",
+        "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
+        "size_bytes": 9276
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part7_mamba2_ssd/5.7_Mamba-2_and_SSD_exercises.ipynb",
+        "sha256": "eb75100898dbdc042f539d17326e66c5842731dc742277583d20d16e2f5bf4ca",
+        "size_bytes": 140909
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part7_mamba2_ssd/5.7_Mamba-2_and_SSD_solutions.ipynb",
+        "sha256": "c3af3eb7f641511a1c4242fa448ce18b222d54cd44610a595f87c130242f6b3b",
+        "size_bytes": 511884
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part7_mamba2_ssd/README.md",
+        "sha256": "c5c45c9c8e7f1db847ef6a45f3af043ae678276fd9b6fb992691c5e12b50f615",
+        "size_bytes": 3184
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part7_mamba2_ssd/artifacts.lock.yml",
+        "sha256": "33beb7f31ea6092c0a889143e308c36d29be97707653962fd77bb7e4f6001d44",
+        "size_bytes": 4688
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part7_mamba2_ssd/build_notebooks.py",
+        "sha256": "98a1ab3afb362169686a825ed104077a314d140528fc2ce9ceb76b014bc8d679",
+        "size_bytes": 5048
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part7_mamba2_ssd/expected_outputs/README.md",
+        "sha256": "37ce4e2034a3ba61cb8417cfa93880a8d4539cf35583c75f808e6f48344479f4",
+        "size_bytes": 3059
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part7_mamba2_ssd/expected_outputs/reference_metrics.json",
+        "sha256": "015a9a83e175966c1964cdeffa03220036a0a07571569c178adf600c66ad4755",
+        "size_bytes": 1499
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part7_mamba2_ssd/expected_outputs/smoke_test.json",
+        "sha256": "9f42b1132ee5b8371cbd274b1373318137e36ad2a3adb694e6659d827f8f15e1",
+        "size_bytes": 568
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part7_mamba2_ssd/lesson.md",
+        "sha256": "736e911d26e4d7d334f74db2f7883ddcdb40da972fc48d5dfa505411afa5d8d1",
+        "size_bytes": 30533
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part7_mamba2_ssd/solutions.py",
+        "sha256": "3aee1ccbe92f9d2db17618d68c5dcb951e360b854a1ac5c1a6569d8a1cd14fc4",
+        "size_bytes": 58683
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part7_mamba2_ssd/tests.py",
+        "sha256": "42098a0867c3f6fecaa82a8e0ab8e517fa4d835ae94f58a61e610197cc0049dc",
+        "size_bytes": 21460
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part7_mamba2_ssd/verification_report.schema.json",
+        "sha256": "afc66a1ea847e5914729d6ca82885a30152a5d3f0a840759680ea091a2fbe2c4",
+        "size_bytes": 2027
+      },
+      {
+        "path": "chapter5_modern_architectures/instructions/pages/07_[5.7]_Mamba-2_and_Structured_State-Space_Duality.md",
+        "sha256": "07ace33f1f7df9cef445e395c222b74fc997fb1fd3c381a4cbe234f0ff28c635",
+        "size_bytes": 107263
+      },
+      {
+        "path": "scripts/run_extension_verification_reports.py",
+        "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
+        "size_bytes": 16272
+      }
+    ],
+    "schema_version": 1
+  },
+  "safety_notes": [
+    "The generated task contains no user data, unsafe prompts, or external dataset.",
+    "The checkpoint path uses deterministic integer token IDs and no generated text.",
+    "CUDA hooks fail closed if CUDA, fused kernels, checkpoint access, or the VRAM budget is unavailable."
+  ],
+  "tests_passed": true,
+  "wall_clock_seconds": 19.09136
+}

@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="330" viewBox="0 0 920 330" role="img" aria-labelledby="title desc">
+  <title id="title">CLIP and SigLIP control validation loop</title>
+  <desc id="desc">A validation loop from controlled image text pairs to contrastive logits, SigLIP loss, retrieval margins, counterfactual controls, and a scoped real-model report.</desc>
+  <rect width="920" height="330" fill="#f8fafc"/>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#243447"/>
+    </marker>
+    <style>
+      .box { fill: #ffffff; stroke: #243447; stroke-width: 2; rx: 7; }
+      .blue { fill: #e7f0ff; stroke: #225da8; stroke-width: 2; rx: 7; }
+      .green { fill: #e7f6ed; stroke: #247245; stroke-width: 2; rx: 7; }
+      .amber { fill: #fff4dc; stroke: #98610b; stroke-width: 2; rx: 7; }
+      .text { font: 16px sans-serif; fill: #111827; }
+      .small { font: 13px sans-serif; fill: #4b5563; }
+      .arrow { stroke: #243447; stroke-width: 2.4; fill: none; marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <text x="42" y="42" class="text" style="font-weight:700;font-size:24px">CLIP/SigLIP controls: build the score before trusting the story</text>
+  <rect x="42" y="78" width="145" height="92" class="box"/>
+  <text x="114" y="108" text-anchor="middle" class="text">Image-text pairs</text>
+  <text x="114" y="136" text-anchor="middle" class="small">known label</text>
+  <text x="114" y="154" text-anchor="middle" class="small">counterfactual text</text>
+  <path d="M187 124 H246" class="arrow"/>
+  <rect x="246" y="78" width="145" height="92" class="blue"/>
+  <text x="318" y="108" text-anchor="middle" class="text">Normalize</text>
+  <text x="318" y="136" text-anchor="middle" class="small">cosine logits</text>
+  <text x="318" y="154" text-anchor="middle" class="small">shared embedding space</text>
+  <path d="M391 124 H452" class="arrow"/>
+  <rect x="452" y="78" width="150" height="92" class="blue"/>
+  <text x="527" y="108" text-anchor="middle" class="text">Losses</text>
+  <text x="527" y="136" text-anchor="middle" class="small">CLIP retrieval</text>
+  <text x="527" y="154" text-anchor="middle" class="small">SigLIP pairwise</text>
+  <path d="M602 124 H666" class="arrow"/>
+  <rect x="666" y="78" width="170" height="92" class="green"/>
+  <text x="751" y="108" text-anchor="middle" class="text">Margins</text>
+  <text x="751" y="136" text-anchor="middle" class="small">both directions</text>
+  <text x="751" y="154" text-anchor="middle" class="small">strongest distractor</text>
+  <path d="M751 170 V218 H566" class="arrow"/>
+  <rect x="366" y="218" width="200" height="74" class="amber"/>
+  <text x="466" y="248" text-anchor="middle" class="text">Controls</text>
+  <text x="466" y="274" text-anchor="middle" class="small">spurious text, random labels, locality</text>
+  <path d="M366 255 H292" class="arrow"/>
+  <rect x="84" y="218" width="208" height="74" class="green"/>
+  <text x="188" y="248" text-anchor="middle" class="text">Scoped claim</text>
+  <text x="188" y="274" text-anchor="middle" class="small">then read pinned CUDA evidence</text>
+</svg>

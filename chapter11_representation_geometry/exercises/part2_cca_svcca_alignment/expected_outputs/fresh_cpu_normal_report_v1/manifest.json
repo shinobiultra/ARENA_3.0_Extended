@@ -1,0 +1,23 @@
+{
+  "source_directory": "/home/bitwise/.cache/arena_extended/alignment/fresh_reproductions/run-wsb11doq/fresh_cpu",
+  "archive_sha256": "23374321a641a7fa503c5a4d3919c8caa9e97a97d8f50e6cd635fbd7551b115a",
+  "members_sha256": {
+    "fresh_reproduction.json": "468b1766ffca52d3f45c9c36f11ce146c191a44e1445afcb164286ba7c952946",
+    "section_verification_report.json": "26bbf80178ceaadadfa3382fea96101ba6428e9c9f3941494282ad708abd3a38",
+    "source_snapshot/alignment_data.py": "a9733c58b03cc0bd52fc9ff94d5839ae06a1356b61a1a1b44dd2f786adcb16ee",
+    "source_snapshot/alignment_evidence.py": "ca36e8e7eb4160d8358477d15f2a830216f226a704cb4232c656d77238ca7e9f",
+    "source_snapshot/alignment_ioi_data.py": "6a1b0347e670cf33dc97e823551e8c6b943651cc4743dd66f4ee307ce66caff3",
+    "source_snapshot/alignment_methods.py": "1cdfc250494f7bed105c6449e4bf547bdc60c313805f3111c81fb0fbe0147f27",
+    "source_snapshot/alignment_model.py": "d9877ceccd920868fadbcd2f38cbdb57a97fdc89d4a27802aacb4304ce056c58",
+    "source_snapshot/alignment_protocol.json": "d334f056f827eb5d26e5e08fa7e83bd6b0030c56cfca5d00651fc8816d8d1b65",
+    "source_snapshot/alignment_reproduce.py": "0c458a76c584d4462a59e32e259a51adbe2165753a736f7b0f7fd7b16d0931c0",
+    "source_snapshot/run_alignment_development.py": "6587f457d2e8cbfa71e0f3186224cedb130331440945da44ab81161d81ca7167"
+  },
+  "large_tensors_retained_in_source_directory": {
+    "actual_fresh_tensors.pt": {
+      "sha256": "614cb0212292753a4b03a54c86d307b652e4ee292627591c5ae453d9e7152aa4",
+      "size_bytes": 1082646312
+    }
+  },
+  "all_archive_members_read_back_and_verified": true
+}

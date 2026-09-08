@@ -1,0 +1,156 @@
+{
+  "source_directory": "/home/bitwise/.cache/arena_extended/cartography/release-gate-v1",
+  "archive_sha256": "8b90c295dd9f2dd1444b89fef5bce4deadd414fc4d608e097ac55df1b6e55a29",
+  "members": {
+    "checkpoint.json": {
+      "sha256": "a7046d73bccab7e57526839c5c58076a06615c407ff0959bf946aa136afc7c2e",
+      "size_bytes": 230
+    },
+    "checkpoint.md": {
+      "sha256": "10f9460847ba9b6c96d62d37dd452d786e980e2286d42520b443123e08481d6f",
+      "size_bytes": 16490
+    },
+    "final-completeness.log": {
+      "sha256": "2fc8da2c13f0fe3c18a343d190011f0d5ac8cf0b054162445a362b1e18b0c7bb",
+      "size_bytes": 13125
+    },
+    "final-ladder.log": {
+      "sha256": "ac070d1e5c8a9f47d4fee44bf36455fa9e6daac91893642acc686f6004df43a8",
+      "size_bytes": 71
+    },
+    "final-preservation.log": {
+      "sha256": "9744aecb79a7fc64fa0886a0a7bd23d3a94360947d80331c0b9516d48f2f772e",
+      "size_bytes": 123
+    },
+    "final-readability.log": {
+      "sha256": "0e1f09f006190cddc7b69740e057760c4e1abe048cad6571e047c0808551f2dd",
+      "size_bytes": 9952
+    },
+    "final-report-input-check.json": {
+      "sha256": "912fc208eb1fa0acab735b778abfa81bb06247bbd38c571d4b83967fdc8f320f",
+      "size_bytes": 83
+    },
+    "final-reports.log": {
+      "sha256": "e3338656f47f222b9739ca9081aef3bb6b682dfd65fafe72ee4ebae5b4c363d6",
+      "size_bytes": 77
+    },
+    "final-style.log": {
+      "sha256": "b04274a80558a9548e5077f3808f8fa766c6621f4f37620705a14205df1154e6",
+      "size_bytes": 73
+    },
+    "final-surface.log": {
+      "sha256": "a2e00c3825989a7411fcd96c79f159ef679acf0f5afc8514ff159bdc7ddf7fed",
+      "size_bytes": 76
+    },
+    "final-tests.log": {
+      "sha256": "8678371c08417e5b33ca7d9d29fd8a1714531161e39f0266fa697820a272b6c6",
+      "size_bytes": 180
+    },
+    "initial-completeness.log": {
+      "sha256": "82c1541339d16b3e8aee969c8644fccd484fbcd85c10427847d1d36f6bc1e4f2",
+      "size_bytes": 13642
+    },
+    "initial-ladder.log": {
+      "sha256": "b20a59f4a8f03fe2aa590dd57e394ceac12a8d3ef2c946c50d9eb2554f421c2c",
+      "size_bytes": 166
+    },
+    "initial-preservation.log": {
+      "sha256": "6fbb161db77a4a184b9920502227c55ed7a49a8e5b8544e2778eb5051d752c69",
+      "size_bytes": 147
+    },
+    "initial-readability.log": {
+      "sha256": "878a1c5b4df758e043ab384d3460558ae692ecea44fb803cebc9868b124454f3",
+      "size_bytes": 9976
+    },
+    "initial-reports.log": {
+      "sha256": "9cac7eb7bf11310d1a2bdde18b57960d53189742b522587efd107aeaf30fbaa7",
+      "size_bytes": 101
+    },
+    "initial-style.log": {
+      "sha256": "e83e7b78f591cf8220c0cabb6592cf763c284807697549e6b58d6f85e59d3473",
+      "size_bytes": 514
+    },
+    "initial-surface.log": {
+      "sha256": "ef5179fe9222a26ff937a05fbae301338823bd2c3c9660187f4f1c3c58c19f1e",
+      "size_bytes": 100
+    },
+    "post-archive-preservation.log": {
+      "sha256": "23f2a36b3171389661177d3e45bd644870e1e0b2e96670d0f202d2b98dc9a823",
+      "size_bytes": 123
+    },
+    "source_snapshot/HANDOFF.md": {
+      "sha256": "164111e1afd35d0e572c1636171c7fbd129fd4fb7e5c7f1dc67086fddcd4e364",
+      "size_bytes": 213575
+    },
+    "source_snapshot/README.md": {
+      "sha256": "510f2dcdea0f26605626e52c3f348a334d8926596b04ad9cc85f37f2d97bec7b",
+      "size_bytes": 44545
+    },
+    "source_snapshot/docs/arena_salvage/2026-09-06_cartography_next_plan.md": {
+      "sha256": "8d5f3bae97fe5669af7125c3e6bb71b037b2fc29f0b5af33932007f08f5470d7",
+      "size_bytes": 19824
+    },
+    "source_snapshot/docs/arena_style_rewrite_status.yml": {
+      "sha256": "0145c91683fba5e40c6706134fd35ce181f25e0e6fe0dc6f2b9c902348838a2e",
+      "size_bytes": 52760
+    },
+    "source_snapshot/docs/hard_exercise_ladder_registry.csv": {
+      "sha256": "60f882fde185f62b596040853b360e0fb811d4d0c98fa7b062bfcf12d95c6587",
+      "size_bytes": 38625
+    },
+    "source_snapshot/docs/hard_exercise_ladder_registry.lock.yml": {
+      "sha256": "48ce9e5bd496ff4c97e3b948da20a034b86a0f5eaa4999bf1463816e9c4ab6c3",
+      "size_bytes": 58312
+    },
+    "source_snapshot/docs/hard_exercise_ladder_registry.md": {
+      "sha256": "b9b7c1a4ecd0a9e972c196ac9828dd6d109adba9fd4dfa0bf14a8038c707243c",
+      "size_bytes": 40020
+    },
+    "source_snapshot/docs/method_registry.csv": {
+      "sha256": "82bde2048982d347f8300c7ca43dd7734446127108ea72a5830cf24f4457bf43",
+      "size_bytes": 30719
+    },
+    "source_snapshot/docs/roadmap_requirement_registry.yml": {
+      "sha256": "bb5a6103e4b3518eb215befdd567e7a9cd5aba9452785f28b372abeb8161d208",
+      "size_bytes": 123223
+    },
+    "source_snapshot/infrastructure/core/config.yaml": {
+      "sha256": "63dbea1e1314958bf66ebafb95fb8ddcf024386a966175332367aee79a92ad90",
+      "size_bytes": 87889
+    },
+    "source_snapshot/infrastructure/core/config_extension.yaml": {
+      "sha256": "98fe535a9721b064a89e0d554ae585b6484c6434ebef9e9ecf5db4427b6a1e13",
+      "size_bytes": 54708
+    },
+    "source_snapshot/scripts/audit_arena_style_depth.py": {
+      "sha256": "500b549b7db3c2fd207c7cac723945853bf9328c2a90eff0b7c57cda0c90b3e8",
+      "size_bytes": 14429
+    },
+    "source_snapshot/scripts/audit_course_surface.py": {
+      "sha256": "af300d2463ea26b6a592a73a862f8bd08f3bc53b2a744f8dbac7db50220b3dd2",
+      "size_bytes": 28666
+    },
+    "source_snapshot/scripts/audit_report_evidence_contracts.py": {
+      "sha256": "bfc6392fe5a3117532523b9306b025b5b0599c754b7ce66e7f4c4f3df25edb13",
+      "size_bytes": 12188
+    },
+    "source_snapshot/tests/test_arena_style_depth_audit.py": {
+      "sha256": "28feb594d83f959df3f1c09029e38cc77aa1ab22d9bb9404b104e97f38a16f0d",
+      "size_bytes": 6222
+    },
+    "source_snapshot/tests/test_course_surface_audit.py": {
+      "sha256": "4189a58a09440622574ba17575ad733274c8adc144ff502a5c9d1d5d1906d8e5",
+      "size_bytes": 19453
+    },
+    "source_snapshot/tests/test_report_evidence_contract_audit.py": {
+      "sha256": "07a3589aba20ea9f1734fedc6712592e77b6b9e692e32e73e9b95248349f62e3",
+      "size_bytes": 12894
+    },
+    "source_snapshot/tests/test_roadmap_final_completeness.py": {
+      "sha256": "c342b0d220c4bb13dbf235f0b5a1bf5e42c3bce0bc9cfd37734ffb738b3eb2ce",
+      "size_bytes": 9379
+    }
+  },
+  "large_tensors_retained_externally": {},
+  "readback_verified": true
+}

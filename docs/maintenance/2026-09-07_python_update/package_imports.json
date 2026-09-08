@@ -1,0 +1,170 @@
+[
+  {
+    "module": "numpy",
+    "status": "PASS",
+    "version": "1.26.4",
+    "seconds": 0.033580108000023756
+  },
+  {
+    "module": "scipy",
+    "status": "PASS",
+    "version": "1.17.1",
+    "seconds": 0.004737754999950994
+  },
+  {
+    "module": "pandas",
+    "status": "PASS",
+    "version": "2.3.3",
+    "seconds": 0.09714186500059441
+  },
+  {
+    "module": "sklearn",
+    "status": "PASS",
+    "version": "1.9.0",
+    "seconds": 0.2695493070059456
+  },
+  {
+    "module": "torch",
+    "status": "PASS",
+    "version": "2.12.1+cu132",
+    "seconds": 0.5334200650031562
+  },
+  {
+    "module": "torchvision",
+    "status": "PASS",
+    "version": "0.27.1+cu132",
+    "seconds": 0.41830505799589446
+  },
+  {
+    "module": "numba",
+    "status": "PASS",
+    "version": "0.67.0",
+    "seconds": 0.28653760200541
+  },
+  {
+    "module": "shap",
+    "status": "PASS",
+    "version": "0.49.1",
+    "seconds": 0.43572102500183973
+  },
+  {
+    "module": "shapiq",
+    "status": "PASS",
+    "version": "1.5.2",
+    "seconds": 0.07640973600064171
+  },
+  {
+    "module": "captum",
+    "status": "PASS",
+    "version": "0.9.0",
+    "seconds": 0.04070458299975144
+  },
+  {
+    "module": "transformers",
+    "status": "PASS",
+    "version": "5.16.1",
+    "seconds": 0.4317752709976048
+  },
+  {
+    "module": "transformer_lens",
+    "status": "PASS",
+    "version": "unavailable",
+    "seconds": 1.849499909003498
+  },
+  {
+    "module": "diffusers",
+    "status": "PASS",
+    "version": "0.40.0",
+    "seconds": 0.22649844399711583
+  },
+  {
+    "module": "peft",
+    "status": "PASS",
+    "version": "0.20.0",
+    "seconds": 0.19680416399933165
+  },
+  {
+    "module": "sentence_transformers",
+    "status": "PASS",
+    "version": "6.0.1",
+    "seconds": 0.28316129599988926
+  },
+  {
+    "module": "sae_lens",
+    "status": "PASS",
+    "version": "6.50.0",
+    "seconds": 0.10318437599926256
+  },
+  {
+    "module": "sae_vis",
+    "status": "PASS",
+    "version": "0.2.19",
+    "seconds": 0.07010318199900212
+  },
+  {
+    "module": "circuitsvis",
+    "status": "PASS",
+    "version": "1.41.0",
+    "seconds": 0.021987405998515896
+  },
+  {
+    "module": "nnsight",
+    "status": "PASS",
+    "version": "0.7.0",
+    "seconds": 0.6560969159982051
+  },
+  {
+    "module": "streamlit",
+    "status": "PASS",
+    "version": "1.63.0",
+    "seconds": 0.34252850899792975
+  },
+  {
+    "module": "plotly",
+    "status": "PASS",
+    "version": "7.0.0",
+    "seconds": 3.2050011213868856e-06
+  },
+  {
+    "module": "matplotlib",
+    "status": "PASS",
+    "version": "3.11.1",
+    "seconds": 3.806999302469194e-06
+  },
+  {
+    "module": "nbformat",
+    "status": "PASS",
+    "version": "5.11.1",
+    "seconds": 0.45653116200264776
+  },
+  {
+    "module": "IPython",
+    "status": "PASS",
+    "version": "9.17.1",
+    "seconds": 4.285000613890588e-06
+  },
+  {
+    "module": "anthropic",
+    "status": "PASS",
+    "version": "1.4.0",
+    "seconds": 0.5113627300015651
+  },
+  {
+    "module": "openai",
+    "status": "PASS",
+    "version": "2.54.0",
+    "seconds": 0.4984321180018014
+  },
+  {
+    "module": "inspect_ai",
+    "status": "PASS",
+    "version": "0.3.263",
+    "seconds": 1.1072796570006176
+  },
+  {
+    "module": "instructor",
+    "status": "PASS",
+    "version": "1.16.0",
+    "seconds": 0.0008354839956155047
+  }
+]

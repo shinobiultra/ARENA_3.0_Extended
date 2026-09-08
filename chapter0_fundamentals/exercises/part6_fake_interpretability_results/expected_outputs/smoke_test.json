@@ -1,0 +1,10 @@
+{
+  "accepted": true,
+  "claim_scope": "Contract check; not a full real-model validation.",
+  "evidence_level": "notebook_contract",
+  "gt_tier": "GT-0",
+  "notebook_id": "0_6_how_to_know_when_an_interpretability_result_is_fake",
+  "section": "0.6",
+  "tests_passed": true,
+  "title": "How to Know When an Interpretability Result Is Fake"
+}

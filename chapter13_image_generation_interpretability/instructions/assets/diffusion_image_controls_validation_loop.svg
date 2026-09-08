@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="350" viewBox="0 0 920 350" role="img" aria-labelledby="title desc">
+  <title id="title">Diffusion image-generation controls validation loop</title>
+  <desc id="desc">A six-step validation loop for image-generation interpretability controls.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#253143"/>
+    </marker>
+    <style>
+      .bg { fill: #f7f8fb; }
+      .panel { fill: #ffffff; stroke: #c9d1df; stroke-width: 1.5; rx: 8; }
+      .panelStrong { fill: #eef6ff; stroke: #6b9bd2; stroke-width: 1.5; rx: 8; }
+      .text { font: 15px Inter, Arial, sans-serif; fill: #1f2937; }
+      .small { font: 12px Inter, Arial, sans-serif; fill: #4b5563; }
+      .label { font: 700 14px Inter, Arial, sans-serif; fill: #111827; }
+      .arrow { stroke: #253143; stroke-width: 1.8; fill: none; marker-end: url(#arrow); }
+      .fail { stroke: #b45309; stroke-width: 1.5; fill: none; marker-end: url(#arrow); stroke-dasharray: 5 5; }
+      .metric { fill: #e9f8ef; stroke: #57a773; stroke-width: 1.2; rx: 6; }
+    </style>
+  </defs>
+  <rect class="bg" width="920" height="350"/>
+  <text x="36" y="38" class="label">Validation loop: make the heatmap hard to fake</text>
+
+  <rect class="panelStrong" x="36" y="70" width="132" height="82"/>
+  <text x="52" y="100" class="label">1. Region</text>
+  <text x="52" y="122" class="small">Named mask and</text>
+  <text x="52" y="140" class="small">attention mass</text>
+
+  <rect class="panel" x="210" y="70" width="132" height="82"/>
+  <text x="226" y="100" class="label">2. Circuit</text>
+  <text x="226" y="122" class="small">Ablation beats</text>
+  <text x="226" y="140" class="small">random control</text>
+
+  <rect class="panel" x="384" y="70" width="132" height="82"/>
+  <text x="400" y="100" class="label">3. Latent</text>
+  <text x="400" y="122" class="small">Direction beats</text>
+  <text x="400" y="140" class="small">random direction</text>
+
+  <rect class="panel" x="558" y="70" width="132" height="82"/>
+  <text x="574" y="100" class="label">4. Prompt</text>
+  <text x="574" y="122" class="small">Target token drop</text>
+  <text x="574" y="140" class="small">beats control drop</text>
+
+  <rect class="panel" x="732" y="70" width="132" height="82"/>
+  <text x="748" y="100" class="label">5. Quality</text>
+  <text x="748" y="122" class="small">Generated image</text>
+  <text x="748" y="140" class="small">beats noise control</text>
+
+  <path class="arrow" d="M168 111 H200"/>
+  <path class="arrow" d="M342 111 H374"/>
+  <path class="arrow" d="M516 111 H548"/>
+  <path class="arrow" d="M690 111 H722"/>
+
+  <rect class="metric" x="150" y="210" width="620" height="74"/>
+  <text x="170" y="238" class="label">6. CUDA report</text>
+  <text x="170" y="260" class="small">Pinned SD1.5 safe-shape prompts, CLIP retrieval, DAAM-style maps, token ablation, quality, white-noise rejection, and VRAM budget.</text>
+
+  <path class="arrow" d="M798 152 C798 200 760 221 770 247"/>
+  <path class="arrow" d="M150 247 C96 247 94 172 102 153"/>
+  <path class="fail" d="M460 210 C460 184 276 183 276 154"/>
+  <text x="370" y="192" class="small">failed control returns to the local exercise</text>
+
+  <rect x="46" y="302" width="828" height="1.5" fill="#c9d1df"/>
+  <text x="46" y="326" class="small">Passing means a bounded claim: this token, this region, this model revision, this prompt family, this GPU report.</text>
+</svg>

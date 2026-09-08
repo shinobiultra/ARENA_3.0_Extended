@@ -1,0 +1,73 @@
+{
+  "observed_at_utc": "2026-09-06T13:34:00.304847+00:00",
+  "reference": "Installed SHAP 0.49.1 DeepExplainer; Python source verified byte-identical to the official v0.49.1 tag.",
+  "version": "0.49.1",
+  "sources": {
+    "shap/explainers/_deep/__init__.py": {
+      "url": "https://raw.githubusercontent.com/shap/shap/v0.49.1/shap/explainers/_deep/__init__.py",
+      "sha256": "31f6496511a73ae245863ac284927466508fa6c2b64a9aab69f57b5649c0afc0",
+      "cache_path": "/home/bitwise/.cache/arena_extended/deepshap/sources/shap-v0.49.1/shap/explainers/_deep/__init__.py",
+      "installed_relative_path": "explainers/_deep/__init__.py",
+      "installed_sha256": "31f6496511a73ae245863ac284927466508fa6c2b64a9aab69f57b5649c0afc0"
+    },
+    "shap/explainers/_deep/deep_pytorch.py": {
+      "url": "https://raw.githubusercontent.com/shap/shap/v0.49.1/shap/explainers/_deep/deep_pytorch.py",
+      "sha256": "a40f475a071807071dce2fab323366a4d7f5814306df6503d668cbd8bf482322",
+      "cache_path": "/home/bitwise/.cache/arena_extended/deepshap/sources/shap-v0.49.1/shap/explainers/_deep/deep_pytorch.py",
+      "installed_relative_path": "explainers/_deep/deep_pytorch.py",
+      "installed_sha256": "a40f475a071807071dce2fab323366a4d7f5814306df6503d668cbd8bf482322"
+    },
+    "shap/explainers/_deep/deep_utils.py": {
+      "url": "https://raw.githubusercontent.com/shap/shap/v0.49.1/shap/explainers/_deep/deep_utils.py",
+      "sha256": "acd352a68ee4937f86c7a7e38e2a99a1aa46dae86b5d3ebdb19b55d98308f185",
+      "cache_path": "/home/bitwise/.cache/arena_extended/deepshap/sources/shap-v0.49.1/shap/explainers/_deep/deep_utils.py",
+      "installed_relative_path": "explainers/_deep/deep_utils.py",
+      "installed_sha256": "acd352a68ee4937f86c7a7e38e2a99a1aa46dae86b5d3ebdb19b55d98308f185"
+    },
+    "LICENSE": {
+      "url": "https://raw.githubusercontent.com/shap/shap/v0.49.1/LICENSE",
+      "sha256": "cf5c26305c632e5451b6eed7e0964a36c4cec1102f0c6467db063b3483a19127",
+      "cache_path": "/home/bitwise/.cache/arena_extended/deepshap/sources/shap-v0.49.1/LICENSE"
+    }
+  },
+  "papers": [
+    {
+      "title": "A Unified Approach to Interpreting Model Predictions",
+      "url": "https://papers.nips.cc/paper/2017/hash/8a20a8621978632d76c43dfd28b67767-Abstract.html",
+      "pdf_cache_path": "/home/bitwise/.cache/arena_extended/deepshap/sources/lundberg_lee_2017_shap.pdf",
+      "pdf_sha256": "32518459c313a57876ec1646f3266d54569d3b9a70152dd4f28e742eef05a5f3"
+    },
+    {
+      "title": "Learning Important Features Through Propagating Activation Differences",
+      "url": "https://proceedings.mlr.press/v70/shrikumar17a.html",
+      "pdf_cache_path": "/home/bitwise/.cache/arena_extended/deepshap/sources/shrikumar_et_al_2017_deeplift.pdf",
+      "pdf_sha256": "bfdc8344354218d9f516e4dd15004ed522b6ef895cd59f3de9c7ee6867ddbbe6"
+    },
+    {
+      "title": "DeepLIFT supplementary material",
+      "url": "https://proceedings.mlr.press/v70/shrikumar17a/shrikumar17a-supp.pdf",
+      "pdf_cache_path": "/home/bitwise/.cache/arena_extended/deepshap/sources/shrikumar_et_al_2017_deeplift_supplement.pdf",
+      "pdf_sha256": "8ad30696aa01e2bdf6a77a5a63711b067ed21ad893e7ef5f90c4ba40f35337d6"
+    }
+  ],
+  "historical_deeplift": {
+    "commit": "0201a218965a263b9dd353099feacbb6f6db0051",
+    "repository": "https://github.com/kundajelab/deeplift",
+    "sources": {
+      "LICENSE": {
+        "sha256": "44d99845e6c8d0423dc49856a74e74a244de8064156ad4ebd922b6ee9668ea42",
+        "cache_path": "/home/bitwise/.cache/arena_extended/deepshap/sources/deeplift-0201a21/LICENSE"
+      },
+      "README.md": {
+        "sha256": "c2fd6d489a1aefd6996849bbca38ef31939e7d33f7a04bc60ac5f7dd729ff9d3",
+        "cache_path": "/home/bitwise/.cache/arena_extended/deepshap/sources/deeplift-0201a21/README.md"
+      },
+      "activations.py": {
+        "sha256": "2d2538a763833a19250792f4bd55d14ee8f62ea64722a3dc8e5f89b82c528e26",
+        "cache_path": "/home/bitwise/.cache/arena_extended/deepshap/sources/deeplift-0201a21/activations.py"
+      }
+    }
+  },
+  "documentation": "https://shap.readthedocs.io/en/stable/generated/shap.DeepExplainer.html",
+  "license_note": "SHAP and DeepLIFT source excerpts are MIT licensed; retain the copied licenses. Paper PDFs stay in the research cache and are not republished as course assets."
+}

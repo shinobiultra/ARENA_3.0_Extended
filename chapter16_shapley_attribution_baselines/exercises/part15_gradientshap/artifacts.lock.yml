@@ -1,0 +1,184 @@
+notebook_id: 16_15_expected_gradients_which_expectation_does_gradientshap_estimate
+section: '16.15'
+title: 'Expected Gradients: Which Expectation Does GradientSHAP Estimate?'
+execution_device: cpu
+exercise_metadata:
+  EXERCISE_ID: 16_15_expected_gradients_which_expectation_does_gradientshap_estimate
+  GT_TIER: GT-0
+  DIFFICULTY: 5
+  IMPORTANCE: 5
+  EXPECTED_RUNTIME: Four to six hours self-study; complete CPU run timed during validation
+  REQUIRES_GPU: false
+gt_tier: GT-0
+evidence_level: complete_expected_gradients_paths_plus_same_draw_author_references
+claim_scope: Student-implemented Expected Gradients retains explicit donor/path samples, ordinary Monte
+  Carlo standard errors and approximate all-background quadrature on all seven known Concrete predictors
+  and all 272 held-out rows. Exact finite feature games, DeepSHAP, gradient-delta, five backgrounds, Gaussian
+  query noise, 64 sampling replicates, complete same-draw SHAP/Captum references and held-out replacement
+  controls distinguish estimator error from changing the explanation target. This reproduces known seeded
+  predictors; it is not independent model replication or physical causality.
+required_gpu_gb: 0
+max_allowed_gpu_gb: 0
+models:
+- id: six_float64_8x32x32x1_relu_regressors
+  source: generated_training_run
+  revision: known16_14_models_reproduced_under_frozen16_15_protocol
+  precision: float64
+  gated: false
+- id: affine_ridge_control
+  source: generated_training_run
+  revision: frozen_gradientshap_protocol_v1
+  precision: float64
+  gated: false
+datasets:
+- id: uci_concrete_compressive_strength
+  source: uci
+  revision: 8d4b15b6fc68cd932d745cbd663d5ceae66dd54422e99c1e4865f2936ab7e2af
+  license: CC BY 4.0
+  train: 758
+  explanation: 153
+  audit: 119
+  manifest: data_manifest.json
+expected_metrics:
+  tests_passed: true
+  accepted: true
+  test_count: 9
+  student_method_exercises: 9
+  actual_learner_passed: true
+  embedded_figures: 20
+  native_model_retrained: true
+  native_model_retrained_in_this_report: true
+  native_evidence_reused: false
+  fresh_reproduction_passed: true
+  fresh_compared_arrays_min: 1
+  fresh_compared_elements_min: 263716864
+  fresh_max_error: 0.0
+  fresh_comparison: exact_recursive_value_sha256
+  study: 16.15_gradientshap_expected_gradients
+  model_fits: 7
+  fresh_model_fits: 7
+  mlp_fits: 6
+  shuffled_fits: 3
+  optimizer_updates: 4800
+  known_model_state_hashes_matched: 21
+  train_row_count: 758
+  explanation_row_count: 153
+  heldout_row_count: 119
+  cross_split_recipe_overlap: 0
+  final_used_for_selection: false
+  model_row_explanations: 1904
+  primary_sample_coordinates: 31195136
+  model_coalition_values: 487424
+  primary_hybrid_predictions: 31195136
+  quadrature_pair_coordinates:
+    '256': 974848
+    '512': 974848
+  nested_budgets:
+  - 8
+  - 32
+  - 128
+  - 512
+  - 2048
+  replicate_sample_coordinates: 201326592
+  replicate_sample_shape:
+  - 64
+  - 3
+  - 64
+  - 2048
+  - 8
+  replicate_seeds_retained: 64
+  replicate_file_size_bytes_min: 1610612736
+  background_variants: 5
+  noise_variants: 3
+  random_order_controls: 100
+  replacement_models: 7
+  path_distance_points: 34816
+  coalition_distance_points: 557056
+  quadrature_is_approximate: true
+  finite_mc_completeness_is_acceptance_gate: false
+  eg_is_exact_feature_shapley: false
+  positive_noise_changes_target: true
+  whole_paper_replication: false
+  author_reference_passed: true
+  author_reference_versions:
+    shap: 0.49.1
+    captum: 0.9.0
+  author_samples_per_package: 128
+  author_model_rows_per_package: 1904
+  author_total_vectors: 3808
+  author_total_coordinates: 30464
+  author_reference_atol: 1.0e-10
+  author_reference_rtol: 1.0e-10
+  package_draw_tables_distinct: true
+  positive_noise_reference_passed: true
+  author_shap_scaled_error_max: 1.0
+  author_captum_scaled_error_max: 1.0
+controls:
+- analytic_affine_quadratic_relu_constant_dummy_and_threshold_paths
+- ordinary_MC_SE_with_fixed_nested_budgets_and64_independent_schedule_replicates
+- complete256_and512_node_pair_quadrature_is_approximate_on_ReLU_jumps
+- exact256_coalition_intact_donor_game_and_all_hybrid_predictions
+- DeepSHAP_and_endpoint_gradient_delta_controls_on_identical_functions
+- same_draw_SHAP0_49_1_and_Captum0_9_0_all7_models_all 272_rows
+- Gaussian_query_noise_changes_the_prediction_target
+- primary_nested_and_independent_empirical_backgrounds
+- three_shuffled_target_models_ridge_and_training_mean_baselines
+- all100_random_orders_beside_frozen_explanation_rank_audit_curves
+- nearest_training_row_distances_for_paths_and_coalition_hybrids_not_density
+- two_editable_threshold_and_real_recipe_recomputations
+- independent_fresh_process_refit_and_every_deterministic_payload_identity
+safety_notes:
+- Predictive attributions on observational measurements do not establish physical ingredient effects.
+- Computational paths, noise and donor hybrids can be unlike observed recipes; distance is not density.
+freshness_inputs:
+- chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/build_notebooks.py
+- chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/execute_learner.py
+- chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/publish_study.py
+- chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/reproduce_native.py
+- chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/run_native.py
+- chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_contracts.py
+- chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_data.py
+- chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_diagnostics.py
+- chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_diagnostics_tests.py
+- chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_methods.py
+- chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_methods_tests.py
+- chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_plots.py
+- chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_plots_tests.py
+- chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py
+- chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference_tests.py
+- chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_study.py
+- chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_study_tests.py
+- chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/solutions.py
+- chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/tests.py
+- chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/README.md
+- chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/lesson.md
+- chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/protocol.md
+- chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/protocol_freeze.json
+- chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/data_manifest.json
+- chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/author_reference.json
+- chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/verification_report.schema.json
+- chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/expected_outputs/README.md
+- chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/expected_outputs/learner_execution.json
+- chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/expected_outputs/native_summary.json
+- chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/expected_outputs/fresh_reproduction.json
+- chapter16_shapley_attribution_baselines/instructions/pages/15_[16.15]_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate.md
+- chapter16_shapley_attribution_baselines/instructions/assets/gradientshap_01_schedule_prefix.png
+- chapter16_shapley_attribution_baselines/instructions/assets/gradientshap_02_path_interpolation.png
+- chapter16_shapley_attribution_baselines/instructions/assets/gradientshap_03_gradient_controls.png
+- chapter16_shapley_attribution_baselines/instructions/assets/gradientshap_04_relu_samples.png
+- chapter16_shapley_attribution_baselines/instructions/assets/gradientshap_05_mc_convergence.png
+- chapter16_shapley_attribution_baselines/instructions/assets/gradientshap_06_estimator_controls.png
+- chapter16_shapley_attribution_baselines/instructions/assets/gradientshap_07_quadrature_doubling.png
+- chapter16_shapley_attribution_baselines/instructions/assets/gradientshap_08_background_average.png
+- chapter16_shapley_attribution_baselines/instructions/assets/gradientshap_09_gaussian_target_shift.png
+- chapter16_shapley_attribution_baselines/instructions/assets/gradientshap_10_path_vs_coalition.png
+- chapter16_shapley_attribution_baselines/instructions/assets/gradientshap_11_kink_representation.png
+- chapter16_shapley_attribution_baselines/instructions/assets/gradientshap_12_replacement_fixture.png
+- chapter16_shapley_attribution_baselines/instructions/assets/gradientshap_13_threshold_play.png
+- chapter16_shapley_attribution_baselines/instructions/assets/gradientshap_14_native_overview.png
+- chapter16_shapley_attribution_baselines/instructions/assets/gradientshap_15_allrow_method_map.png
+- chapter16_shapley_attribution_baselines/instructions/assets/gradientshap_16_fixed_waterfall.png
+- chapter16_shapley_attribution_baselines/instructions/assets/gradientshap_17_background_and_noise.png
+- chapter16_shapley_attribution_baselines/instructions/assets/gradientshap_18_replicates_and_distance.png
+- chapter16_shapley_attribution_baselines/instructions/assets/gradientshap_19_replacement_curves.png
+- chapter16_shapley_attribution_baselines/instructions/assets/gradientshap_20_real_recipe_play.png

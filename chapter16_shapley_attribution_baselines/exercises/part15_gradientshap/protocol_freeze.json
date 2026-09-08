@@ -1,0 +1,25 @@
+{
+  "frozen_at_utc": "2026-09-07T02:01:38.970418+00:00",
+  "native_fits_before_freeze": 0,
+  "native_attribution_runs_before_freeze": 0,
+  "sha256": {
+    "protocol.md": "4ed1d1d45a0b5db304cb45e7c5abe1c85c97434e53b4c9c156ce05b2b489a83b",
+    "data_manifest.json": "bcf41f96c9f6839ee4cbf24df82ca8467b35a6ed9090a9c4c56fce0b1a23120c",
+    "gradientshap_data.py": "9c9c1016ffd6fe839a004c06e801cdcd24d4d71a85ccd3f0707168dec390c7ce"
+  },
+  "versions": {
+    "numpy": "1.26.4",
+    "torch": "2.12.1+cu132",
+    "scikit-learn": "1.9.0",
+    "shap": "0.49.1",
+    "captum": "0.9.0"
+  },
+  "python": "3.14.2",
+  "pre_fit_review_sha256": "8ff9ae80ae42665a4f33fe70df1d0f581a814986d9d7dddbfc4071899f31c38c",
+  "review": {
+    "path": "/home/bitwise/.cache/arena_extended/gradientshap/review-resume-v1/independent_protocol_review.md",
+    "decision": "APPROVED",
+    "sha256": "8ff9ae80ae42665a4f33fe70df1d0f581a814986d9d7dddbfc4071899f31c38c"
+  },
+  "pre_fit_scope": "Analytic and never-trained-network checks only for16.15. All known16.14 source identities matched; no16.15 native fit or attribution artifact existed. Native attribution requires exact21state hashes after self-contained refitting."
+}

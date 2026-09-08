@@ -1,0 +1,9 @@
+{
+  "frozen_at_utc": "2026-09-06T11:27:00.245079+00:00",
+  "native_fits": 0,
+  "sha256": {
+    "protocol.md": "d19cbb3593dc512b1e211badf7092d77ba3ee9418445406d5ee8c90679c39c39",
+    "data_manifest.json": "4262d471486ed5b26cbcaa804950e878b1ef00318b4141eaa52b554eb26de47a",
+    "sage_data.py": "5d9d12b16444f29ac4cf51b6f5e0995a105665c4c86d955d3f3990fd77c5350c"
+  }
+}

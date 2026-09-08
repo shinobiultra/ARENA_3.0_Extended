@@ -1,0 +1,77 @@
+notebook_id: 1_4_1_gt2_ioi_path_patching
+section: '1.4.1'
+title: Indirect Object Identification GT-2 Path-Patching Evidence
+exercise_metadata:
+  EXERCISE_ID: 1_4_1_gt2_ioi_path_patching
+  GT_TIER: GT-2
+  DIFFICULTY: 5
+  IMPORTANCE: 5
+  EXPECTED_RUNTIME: seconds to minutes on CUDA after GPT-2 small is cached
+  REQUIRES_GPU: true
+gt_tier: GT-2
+evidence_level: lightweight_published_replication_style_ioi_path_patching
+claim_scope: 'GT-2 IOI/path-patching evidence: the original ARENA IOI material is
+  preserved, and this report loads a pinned GPT-2 small checkpoint on CUDA, builds
+  generated IOI and ABC counterfactual prompt pairs with the original IOIDataset,
+  freezes all attention-head z outputs to clean-cache values, patches one selected
+  sender head from the ABC cache, and verifies that published name-mover heads have
+  a much larger absolute path-patching effect on the final IOI logit-diff metric
+  than same-size random head controls. This is a lightweight selected-head
+  replication-style check, not a full all-head IOI heatmap or complete paper
+  reproduction.'
+required_gpu_gb: 2
+max_allowed_gpu_gb: 24
+models:
+- id: gpt2
+  source: huggingface_via_transformerlens
+  revision: 607a30d783dfa663caf39e06633721c8d4cfcd7e
+  precision: float32
+  gated: false
+  claim_scope: gpt2-small_ioi_path_patching_selected_heads
+  transformerlens_model_name: gpt2-small
+datasets:
+- id: original_arena_ioi_dataset_generated_mixed_seed1_n12
+  source: generated_by_original_arena_ioi_dataset
+  seed: 1
+  prompt_type: mixed
+  size: 12
+- id: original_arena_abc_counterfactual_dataset_seed1_n12
+  source: IOIDataset.gen_flipped_prompts
+  seed: 1
+  flip: ABB->XYZ, BAB->XYZ
+  size: 12
+expected_metrics:
+  tests_passed: true
+  accepted: true
+  max_allowed_gpu_gb: 24
+  preflight_passed: true
+  model_name: gpt2-small
+  hf_revision: 607a30d783dfa663caf39e06633721c8d4cfcd7e
+  bnb_cuda_override: '130'
+  dataset_size: 12
+  selected_head_count: 13
+  clean_corrupt_gap_min: 1.0
+  name_mover_mean_damage_min: 0.15
+  name_mover_9_9_damage_min: 0.1
+  name_mover_9_6_damage_min: 0.2
+  random_control_abs_mean_damage_max: 0.02
+  known_to_random_control_ratio_min: 10.0
+  published_heads_beat_random_controls: true
+  random_controls_passed: true
+  negative_name_mover_sign_control_passed: true
+  peak_vram_gb_max: 2.0
+controls:
+- original_arena_ioi_material_present
+- original_arena_ioi_dataset_generation
+- abc_counterfactual_corrupt_dataset_generation
+- appendix_b_freeze_all_heads_patch_one_sender_path_to_final_resid
+- published_name_mover_heads_selected
+- published_negative_name_mover_heads_sign_control
+- published_s2_inhibition_heads_included_for_context
+- same_size_random_head_negative_control
+- clean_vs_corrupt_logit_diff_gap_check
+- no_full_heatmap_claim
+safety_notes:
+- No unsafe prompts, generated completions, gated weights, or large data artifacts.
+- The evidence path uses synthetic IOI names/objects/places from the original ARENA
+  exercise and reads only logit-difference metrics from GPT-2 small.

@@ -1,0 +1,157 @@
+{
+  "schema": "arena.review-bundle.v1",
+  "archive": {
+    "name": "execution.tar.gz",
+    "sha256": "b87ecc555df66cc07bad4b88a318610daaf291e82cac9c56cba243d1aa86ea3b",
+    "size_bytes": 494953
+  },
+  "limits": {
+    "archive_bytes": 67108864,
+    "member_bytes": 16777216,
+    "total_member_bytes": 134217728,
+    "tar_container_bytes": 167772160,
+    "decoded_json_bytes": 67108864,
+    "total_decoded_bytes": 536870912,
+    "members": 4096
+  },
+  "provenance": {
+    "kind": "historical_archive_packaging",
+    "packaged_at_utc": "2026-09-08T03:26:53.539551+00:00",
+    "measurement_claim": "Packaging only. This is not a native rerun, scientific revalidation or new review. Retained receipts, failure labels, values, scientific hashes and measurement dates are byte-identical to the original. Historical embedded archive inventories describe that original; this adjacent contract describes the derived review bundle.",
+    "source_archive": {
+      "repository_path": "chapter11_representation_geometry/exercises/part3_causal_abstraction_das/expected_outputs/own_foundations_v2/execution.tar.gz",
+      "absolute_path": "/home/bitwise/.cache/arena_extended/evidence_packaging/original_archives/b87ecc555df66cc07bad4b88a318610daaf291e82cac9c56cba243d1aa86ea3b.tar.gz",
+      "sha256": "b87ecc555df66cc07bad4b88a318610daaf291e82cac9c56cba243d1aa86ea3b",
+      "size_bytes": 494953,
+      "git_commit": "ce96ceaae2f91bf0dcd7648052325e07a87b0b5b",
+      "git_blob": "5134e0c9832bfcbddf2c60641cf434cdb2195ede"
+    },
+    "source_archive_members": {
+      "completed_learner.ipynb": {
+        "sha256": "3c0312766fd241a0e5a140c830c325c3e5861f70d2dc14ab7393073ee95752f0",
+        "size_bytes": 285523
+      },
+      "execution.json": {
+        "sha256": "94cf534dda460e6051c7b4f7c4c0801ff916b5031dd6c69a68bb79650d692427",
+        "size_bytes": 1044
+      },
+      "figures/das_angle_play.png": {
+        "sha256": "d0de23e4bb095a152f1fd2dc77fa625e7b6bbc1de0c2c30c279b606c0a1ae121",
+        "size_bytes": 38572
+      },
+      "figures/das_coordinate_and_specificity.png": {
+        "sha256": "d887161fe3b108e543666513622cfee277bcbbc8c2e8a20c503768da6f9773ff",
+        "size_bytes": 82161
+      },
+      "figures/das_exact_interchanges.png": {
+        "sha256": "9695a49c72e866634a881d5e0ddc90e11cd02ac740e0d1bd2fc19c5e87031855",
+        "size_bytes": 64218
+      },
+      "figures/das_learning_and_controls.png": {
+        "sha256": "d1a04e7b77668b682fca366c03c69e482defe5603f73dc86149e06c304133b23",
+        "size_bytes": 131718
+      },
+      "source_snapshot/build_notebooks.py": {
+        "sha256": "fcb06b82351610f5773e15176119c2239e909ad3272a146ec566185528fdf3a5",
+        "size_bytes": 4560
+      },
+      "source_snapshot/das_methods.py": {
+        "sha256": "606c7446aee48d96367a258875040f03ad75adc2aead99d1cff46eae5ec9db0f",
+        "size_bytes": 6994
+      },
+      "source_snapshot/das_methods_tests.py": {
+        "sha256": "8724f6e86049537ade77e8b8cbfc4e963e3dd134cc4ea499d15b19c46c75c8ff",
+        "size_bytes": 8947
+      },
+      "source_snapshot/das_organism.py": {
+        "sha256": "97302ad3c0ee5397704a6a04e2fe5164ac81bd15ebd03c5d15a01185fed356a6",
+        "size_bytes": 3116
+      },
+      "source_snapshot/execute_learner.py": {
+        "sha256": "5d2f256fab6311b41c7af88dadc03059312ad83f8e2509841420ef8a1b3d3629",
+        "size_bytes": 3714
+      },
+      "source_snapshot/lesson.md": {
+        "sha256": "31e85343fce4814dd1aa94cf5d9aa6ce8bcf0d82270d6fe88ad34ad45e359eec",
+        "size_bytes": 34818
+      }
+    }
+  },
+  "members": {
+    "completed_learner.ipynb": {
+      "type": "regular",
+      "size_bytes": 285523,
+      "sha256": "3c0312766fd241a0e5a140c830c325c3e5861f70d2dc14ab7393073ee95752f0",
+      "format": "notebook-json"
+    },
+    "execution.json": {
+      "type": "regular",
+      "size_bytes": 1044,
+      "sha256": "94cf534dda460e6051c7b4f7c4c0801ff916b5031dd6c69a68bb79650d692427",
+      "format": "json"
+    },
+    "figures/das_angle_play.png": {
+      "type": "regular",
+      "size_bytes": 38572,
+      "sha256": "d0de23e4bb095a152f1fd2dc77fa625e7b6bbc1de0c2c30c279b606c0a1ae121",
+      "format": "png"
+    },
+    "figures/das_coordinate_and_specificity.png": {
+      "type": "regular",
+      "size_bytes": 82161,
+      "sha256": "d887161fe3b108e543666513622cfee277bcbbc8c2e8a20c503768da6f9773ff",
+      "format": "png"
+    },
+    "figures/das_exact_interchanges.png": {
+      "type": "regular",
+      "size_bytes": 64218,
+      "sha256": "9695a49c72e866634a881d5e0ddc90e11cd02ac740e0d1bd2fc19c5e87031855",
+      "format": "png"
+    },
+    "figures/das_learning_and_controls.png": {
+      "type": "regular",
+      "size_bytes": 131718,
+      "sha256": "d1a04e7b77668b682fca366c03c69e482defe5603f73dc86149e06c304133b23",
+      "format": "png"
+    },
+    "source_snapshot/build_notebooks.py": {
+      "type": "regular",
+      "size_bytes": 4560,
+      "sha256": "fcb06b82351610f5773e15176119c2239e909ad3272a146ec566185528fdf3a5",
+      "format": "utf8-text"
+    },
+    "source_snapshot/das_methods.py": {
+      "type": "regular",
+      "size_bytes": 6994,
+      "sha256": "606c7446aee48d96367a258875040f03ad75adc2aead99d1cff46eae5ec9db0f",
+      "format": "utf8-text"
+    },
+    "source_snapshot/das_methods_tests.py": {
+      "type": "regular",
+      "size_bytes": 8947,
+      "sha256": "8724f6e86049537ade77e8b8cbfc4e963e3dd134cc4ea499d15b19c46c75c8ff",
+      "format": "utf8-text"
+    },
+    "source_snapshot/das_organism.py": {
+      "type": "regular",
+      "size_bytes": 3116,
+      "sha256": "97302ad3c0ee5397704a6a04e2fe5164ac81bd15ebd03c5d15a01185fed356a6",
+      "format": "utf8-text"
+    },
+    "source_snapshot/execute_learner.py": {
+      "type": "regular",
+      "size_bytes": 3714,
+      "sha256": "5d2f256fab6311b41c7af88dadc03059312ad83f8e2509841420ef8a1b3d3629",
+      "format": "utf8-text"
+    },
+    "source_snapshot/lesson.md": {
+      "type": "regular",
+      "size_bytes": 34818,
+      "sha256": "31e85343fce4814dd1aa94cf5d9aa6ce8bcf0d82270d6fe88ad34ad45e359eec",
+      "format": "utf8-text"
+    }
+  },
+  "external_payloads": {},
+  "member_count": 12,
+  "total_member_bytes": 665385
+}

@@ -1,0 +1,10 @@
+{
+  "notebook_id": "7_4_mini_natural_language_autoencoders",
+  "section": "7.4",
+  "title": "Mini Natural Language Autoencoders",
+  "evidence_role": "structural_fixture_only",
+  "train_count": 96,
+  "eval_count": 32,
+  "contexts": 32,
+  "held_out_factor_counts": [8, 8, 8, 8]
+}

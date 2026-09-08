@@ -1,0 +1,189 @@
+{
+  "schema_version": 1,
+  "status": "PASS",
+  "created_at_utc": "2026-09-07T03:10:37.243682+00:00",
+  "archive_count": 3,
+  "policy": {
+    "inline_limit_bytes": 134217728,
+    "original_sources_archived_directly": true,
+    "archive_members_reread_and_rehashed": true,
+    "external_files_rehashed_after_archive": true,
+    "hand_off_excluded_while_mutable": true,
+    "no_overwrites": true,
+    "no_native_run": true
+  },
+  "archives": [
+    {
+      "label": "registered_normal_report_v3",
+      "archive": "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/expected_outputs/normal_report_v3/evidence.tar.gz",
+      "archive_sha256": "2504bc5e2be60c7d84913b14ec6caee0bb4902042a3f7a4a34a3a94c339df52f",
+      "archive_size_bytes": 7633490,
+      "receipt": "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/expected_outputs/normal_report_v3/evidence.tar.gz.json",
+      "receipt_sha256": "5e7cad2e7e1f032e9b72cd6c0c441b77af4c58d5f34e5b3080756b45857d7ac5",
+      "embedded_manifest_sha256": "2e207e249f6c53ae80eecedfffdd4f2a92fc38ef6263c25e02a3f5ed6043b1e7",
+      "historical_status": {
+        "report_status": "PASS",
+        "accepted": true,
+        "tests_passed": true,
+        "report_sha256": "5df9b60c5345a0e984ed8e66f5756dd33d660cce13db2975407c88eea2762f0c",
+        "report_input_count": 56,
+        "report_inputs_combined_sha256": "a07827c73c63b3482995fefc0cc39a298d286a1217c519767384218d4c4ddb12",
+        "fresh_reproduction_sha256": "8bd3583ea231a5908063093d8a37e60cd4c17c1b0cbfd651c48fad62c3aba518",
+        "registered_report_log_sha256": "25cf4f04ed46dc48fe780a28270afacff6c41d59b272dff3f0cf0d342a7b4724"
+      },
+      "included_file_count": 58,
+      "external_file_count": 0,
+      "source_file_count": 58,
+      "source_bytes": 10033007,
+      "external_files": {}
+    },
+    {
+      "label": "registered_normal_report_fresh_cpu_v3",
+      "archive": "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/expected_outputs/normal_fresh_v3/evidence.tar.gz",
+      "archive_sha256": "8469e78147490f842e26d77cdda61570bc03982eaae035b0bfef02f538f80983",
+      "archive_size_bytes": 31924673,
+      "receipt": "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/expected_outputs/normal_fresh_v3/evidence.tar.gz.json",
+      "receipt_sha256": "8c3f9a79dbfc17428ce006feffed0260c9bd0237bb6dc1c727de86c4457a7db9",
+      "embedded_manifest_sha256": "2693776f0c4012ea0ad8efd6d285436cd263da4c046bded847845aac91f1c79d",
+      "historical_status": {
+        "reproduction_status": "PASS",
+        "native_model_retrained": true,
+        "cached_model_inputs_used": false,
+        "changed_sources": [],
+        "comparisons": {
+          "arrays": 1442,
+          "array_elements": 464237288,
+          "records": 2730,
+          "scalars": 872,
+          "max_absolute_error": 0.0,
+          "comparison": "exact_recursive_value_sha256"
+        },
+        "source_directory": "/home/bitwise/.cache/arena_extended/gradientshap/report_reproductions/report-58u1ul79/fresh_cpu"
+      },
+      "included_file_count": 53,
+      "external_file_count": 3,
+      "source_file_count": 56,
+      "source_bytes": 3550016835,
+      "external_files": {
+        "fresh_cpu/fresh_run/evaluated.pt": {
+          "source_absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/report_reproductions/report-58u1ul79/fresh_cpu/fresh_run/evaluated.pt",
+          "sha256": "462e32a9a0b52617af8ea9fe6c75ea10b2614bac2ae7b09a28bdcab9a450f49d",
+          "size_bytes": 1577241419,
+          "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/report_reproductions/report-58u1ul79/fresh_cpu/fresh_run/evaluated.pt",
+          "recursive_manifest": {
+            "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/report_reproductions/report-58u1ul79/fresh_cpu/fresh_run/evaluated.manifest.json",
+            "sha256": "ad2e546b0ebc9c21bef1d67ddbc066081021d3c6f329fe424ed5587b664cb15f",
+            "artifact_sha256": "462e32a9a0b52617af8ea9fe6c75ea10b2614bac2ae7b09a28bdcab9a450f49d",
+            "artifact_size_bytes": 1577241419,
+            "record_count": 1019,
+            "counts": {
+              "arrays": 720,
+              "array_elements": 216054404,
+              "records": 1019
+            }
+          }
+        },
+        "fresh_cpu/fresh_run/prepared.pt": {
+          "source_absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/report_reproductions/report-58u1ul79/fresh_cpu/fresh_run/prepared.pt",
+          "sha256": "af7079beb52083d3c1955aabe20f13d3a8a71f40404e5f10dc4f8ac6822e7853",
+          "size_bytes": 302399289,
+          "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/report_reproductions/report-58u1ul79/fresh_cpu/fresh_run/prepared.pt",
+          "recursive_manifest": {
+            "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/report_reproductions/report-58u1ul79/fresh_cpu/fresh_run/prepared.manifest.json",
+            "sha256": "756c577d673fec5e816b88f82883b02dad040a84028dff11240f1b8d4b3b83fb",
+            "artifact_sha256": "af7079beb52083d3c1955aabe20f13d3a8a71f40404e5f10dc4f8ac6822e7853",
+            "artifact_size_bytes": 302399289,
+            "record_count": 371,
+            "counts": {
+              "arrays": 217,
+              "array_elements": 41552409,
+              "records": 371
+            }
+          }
+        },
+        "fresh_cpu/fresh_run/replicate_samples.pt": {
+          "source_absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/report_reproductions/report-58u1ul79/fresh_cpu/fresh_run/replicate_samples.pt",
+          "sha256": "46238cad0348f56be4807507256233884af3588037a434197f0cbe0f0aa1a0fa",
+          "size_bytes": 1610614447,
+          "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/report_reproductions/report-58u1ul79/fresh_cpu/fresh_run/replicate_samples.pt",
+          "recursive_manifest": {
+            "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/report_reproductions/report-58u1ul79/fresh_cpu/fresh_run/replicate_samples.manifest.json",
+            "sha256": "b4715a058eb3acb905a573d162a6fa5e79a5b90929af269d4085022e072dee4c",
+            "artifact_sha256": "46238cad0348f56be4807507256233884af3588037a434197f0cbe0f0aa1a0fa",
+            "artifact_size_bytes": 1610614447,
+            "record_count": 1,
+            "counts": {
+              "arrays": 1,
+              "array_elements": 201326592,
+              "records": 1
+            }
+          }
+        }
+      }
+    },
+    {
+      "label": "final_registered_global_gates_v3",
+      "archive": "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/expected_outputs/final_gates_v3/evidence.tar.gz",
+      "archive_sha256": "fa472400ceb9e5fd6b22d5afeb9b887c6278d48451f3a72c126e3170abc81ceb",
+      "archive_size_bytes": 308265,
+      "receipt": "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/expected_outputs/final_gates_v3/evidence.tar.gz.json",
+      "receipt_sha256": "87dffe8ab675a692ea23a53dd18118018d9925ed3869c99feff542f428ef6939",
+      "embedded_manifest_sha256": "6e2f4d7acfdce682d5ef99836209a5157dfce316299478cea0041cc452f06d3e",
+      "historical_status": {
+        "release_gate_status": "PASS",
+        "release_gates": [
+          "build_merged_config",
+          "audit_course_surface",
+          "audit_report_evidence_contracts",
+          "audit_arena_style_depth",
+          "audit_hard_exercise_ladders",
+          "audit_original_arena_preservation"
+        ],
+        "merged_config": "PASS",
+        "course_surface": {
+          "status": "PASS",
+          "chapters": 13
+        },
+        "report_evidence": {
+          "status": "PASS",
+          "reports": 59
+        },
+        "arena_style": {
+          "status": "PASS",
+          "pages": 57
+        },
+        "hard_exercise_ladders": {
+          "status": "PASS",
+          "rows": 56
+        },
+        "original_arena_preservation": {
+          "status": "PASS",
+          "blockers": 0
+        },
+        "full_course": {
+          "status": "FAIL",
+          "requirements": 205,
+          "taught": 52,
+          "unimplemented": 84,
+          "deferred": 13,
+          "preflight_only": 36,
+          "toy_only": 20
+        },
+        "focused_global_pytest": {
+          "status": "PASS",
+          "passed": 74,
+          "elapsed_seconds": 18.35,
+          "test_files": 7
+        },
+        "interpretation": "16.15 release gates pass; full-course completion remains FAIL with 84 unimplemented requirements.",
+        "integration_apply_log_sha256": "d9bad7e4db294d7b5f4358864b19cb2b7b41ad140ab3593a58326faeb2019ef5",
+        "hand_off_included": false
+      },
+      "included_file_count": 40,
+      "external_file_count": 0,
+      "source_file_count": 40,
+      "source_bytes": 1281454,
+      "external_files": {}
+    }
+  ]
+}

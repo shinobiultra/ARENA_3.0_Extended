@@ -1,0 +1,407 @@
+{
+  "schema": "arena.review-bundle.v1",
+  "archive": {
+    "name": "execution.tar.gz",
+    "sha256": "033ccca2be54e9b872a37d5139da6b6da49d6b11740d0ef286d11af85f4f040e",
+    "size_bytes": 173322
+  },
+  "limits": {
+    "archive_bytes": 67108864,
+    "member_bytes": 16777216,
+    "total_member_bytes": 134217728,
+    "tar_container_bytes": 167772160,
+    "decoded_json_bytes": 67108864,
+    "total_decoded_bytes": 536870912,
+    "members": 4096
+  },
+  "provenance": {
+    "kind": "historical_archive_packaging",
+    "packaged_at_utc": "2026-09-08T03:27:03.868157+00:00",
+    "measurement_claim": "Packaging only. This is not a native rerun, scientific revalidation or new review. Retained receipts, failure labels, values, scientific hashes and measurement dates are byte-identical to the original. Historical embedded archive inventories describe that original; this adjacent contract describes the derived review bundle.",
+    "source_archive": {
+      "repository_path": "chapter16_shapley_attribution_baselines/exercises/part14_deepshap/expected_outputs/fresh_native_v3/execution.tar.gz",
+      "absolute_path": "/home/bitwise/.cache/arena_extended/evidence_packaging/original_archives/033ccca2be54e9b872a37d5139da6b6da49d6b11740d0ef286d11af85f4f040e.tar.gz",
+      "sha256": "033ccca2be54e9b872a37d5139da6b6da49d6b11740d0ef286d11af85f4f040e",
+      "size_bytes": 173322,
+      "git_commit": "ce96ceaae2f91bf0dcd7648052325e07a87b0b5b",
+      "git_blob": "9c1bc17a4937326a36e33fc41f30395838c704dd"
+    },
+    "source_archive_members": {
+      "fresh_run/before_audit.json": {
+        "sha256": "d0e6828d9ef9af874e2aab37304d709840993691acedb48ed81480d85eb48fcb",
+        "size_bytes": 427
+      },
+      "fresh_run/run.json": {
+        "sha256": "0ab8ee9c62cd77dcddbdbea5498cac48c4c2dea14d0e4566b5e2a14e39a53ea0",
+        "size_bytes": 28270
+      },
+      "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/author_reference.json": {
+        "sha256": "581b970592c09f0c9fe991d3ac99d2dfbd48244e67ae5a69069b8d576fa0c9c7",
+        "size_bytes": 4321
+      },
+      "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/data_manifest.json": {
+        "sha256": "c1c072ef4a540f1d7d878b828ce09b27085ffe085e328587fcc6fd83de6dbc58",
+        "size_bytes": 12835
+      },
+      "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_data.py": {
+        "sha256": "ec2a7f4337c4c7dfa7649d5cf2794be041a16e258f50d0844c2e2b4bed882918",
+        "size_bytes": 1784
+      },
+      "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_diagnostics.py": {
+        "sha256": "d46fc51716c11429bdf2465c656d81b31e3f07caf8bb1bb5b3814242a32a3608",
+        "size_bytes": 21125
+      },
+      "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_methods.py": {
+        "sha256": "8d5e9d04624e3941768a710ba9c72dfd281c25c39b495845beda296a1628c4c6",
+        "size_bytes": 14566
+      },
+      "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_methods_tests.py": {
+        "sha256": "7df1f66d3598491f25d947a718f0c05d3249ffdb1bd6779574d5a17a8009b524",
+        "size_bytes": 20390
+      },
+      "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_plots.py": {
+        "sha256": "9c100838dcd57fa4d1068accbaa0c84d5eed47a71fca8def16e1dfc36f13a3a1",
+        "size_bytes": 40188
+      },
+      "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_reference.py": {
+        "sha256": "834b41927d1ff01a8bc38a103b59ea50e70bfa53c2c26facee7b5e1bf75afcbe",
+        "size_bytes": 49968
+      },
+      "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_reference_tests.py": {
+        "sha256": "270c145a6fd5e99302850f7b30a8e1324e6647677b16631fa853eb520cd771cf",
+        "size_bytes": 11045
+      },
+      "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_study.py": {
+        "sha256": "df5d7f892a6846309d27441a10258595988015c59be1db49d49d314764f3120d",
+        "size_bytes": 36930
+      },
+      "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_study_tests.py": {
+        "sha256": "93dec8b4844ecee8b7fef748a59de4f611348d79a9b02a31e245e80258f52329",
+        "size_bytes": 17827
+      },
+      "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/protocol.md": {
+        "sha256": "ceca1c3d0fa9bd5635915b4f7c8ec9d2353c3e55b6816788ce69b58d8e67869e",
+        "size_bytes": 12469
+      },
+      "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/protocol_freeze.json": {
+        "sha256": "8b3da8fdac611b7d95ecf8d1e35d565c6ef6b0952b213162527afb140da852fd",
+        "size_bytes": 769
+      },
+      "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/run_native.py": {
+        "sha256": "dd7e3fed1be5388ce705605488f212d8679131baa81f9ed32a71aefbe9b9b8fc",
+        "size_bytes": 14331
+      },
+      "fresh_run/summary.json": {
+        "sha256": "c9ba443cb88d692eec938813a8ec1b4af08a2d954f837cad69f73cf97b63c390",
+        "size_bytes": 24999
+      },
+      "reproduction.json": {
+        "sha256": "ac782668ba545e21bbcdf02f5cbaae2af3ceafce2b62312871984d7ad5ea2d83",
+        "size_bytes": 33961
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/author_reference.json": {
+        "sha256": "581b970592c09f0c9fe991d3ac99d2dfbd48244e67ae5a69069b8d576fa0c9c7",
+        "size_bytes": 4321
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/build_notebooks.py": {
+        "sha256": "60ab1ef90afeadeba85703db3204411ca1a421b9417e803557cafe807f350857",
+        "size_bytes": 12277
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/data_manifest.json": {
+        "sha256": "c1c072ef4a540f1d7d878b828ce09b27085ffe085e328587fcc6fd83de6dbc58",
+        "size_bytes": 12835
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_contract_tests.py": {
+        "sha256": "1f8f1af137dd58d028ef30ad28f65c5b19c05546b72429785999c3a9ce0a37a3",
+        "size_bytes": 16844
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_data.py": {
+        "sha256": "ec2a7f4337c4c7dfa7649d5cf2794be041a16e258f50d0844c2e2b4bed882918",
+        "size_bytes": 1784
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_diagnostics.py": {
+        "sha256": "d46fc51716c11429bdf2465c656d81b31e3f07caf8bb1bb5b3814242a32a3608",
+        "size_bytes": 21125
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_methods.py": {
+        "sha256": "8d5e9d04624e3941768a710ba9c72dfd281c25c39b495845beda296a1628c4c6",
+        "size_bytes": 14566
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_methods_tests.py": {
+        "sha256": "7df1f66d3598491f25d947a718f0c05d3249ffdb1bd6779574d5a17a8009b524",
+        "size_bytes": 20390
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_plots.py": {
+        "sha256": "9c100838dcd57fa4d1068accbaa0c84d5eed47a71fca8def16e1dfc36f13a3a1",
+        "size_bytes": 40188
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_reference.py": {
+        "sha256": "834b41927d1ff01a8bc38a103b59ea50e70bfa53c2c26facee7b5e1bf75afcbe",
+        "size_bytes": 49968
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_reference_tests.py": {
+        "sha256": "270c145a6fd5e99302850f7b30a8e1324e6647677b16631fa853eb520cd771cf",
+        "size_bytes": 11045
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_study.py": {
+        "sha256": "df5d7f892a6846309d27441a10258595988015c59be1db49d49d314764f3120d",
+        "size_bytes": 36930
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_study_tests.py": {
+        "sha256": "93dec8b4844ecee8b7fef748a59de4f611348d79a9b02a31e245e80258f52329",
+        "size_bytes": 17827
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/execute_learner.py": {
+        "sha256": "47b30cc96a77b5720be18fac15a3cd17966358f2da15aa79c673ad25e7b2a5df",
+        "size_bytes": 9035
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/lesson.md": {
+        "sha256": "584266a0f4ef6d31f03b5cdf6f81f543271af9d258ee6446a7bda5e702b3c7d1",
+        "size_bytes": 58027
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/protocol.md": {
+        "sha256": "ceca1c3d0fa9bd5635915b4f7c8ec9d2353c3e55b6816788ce69b58d8e67869e",
+        "size_bytes": 12469
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/protocol_freeze.json": {
+        "sha256": "8b3da8fdac611b7d95ecf8d1e35d565c6ef6b0952b213162527afb140da852fd",
+        "size_bytes": 769
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/reproduce_native.py": {
+        "sha256": "a710dc99f4d0108aaab10f590635f7ac1819d66a368b046d16261571042aeccb",
+        "size_bytes": 10426
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/run_native.py": {
+        "sha256": "dd7e3fed1be5388ce705605488f212d8679131baa81f9ed32a71aefbe9b9b8fc",
+        "size_bytes": 14331
+      }
+    }
+  },
+  "members": {
+    "fresh_run/before_audit.json": {
+      "type": "regular",
+      "size_bytes": 427,
+      "sha256": "d0e6828d9ef9af874e2aab37304d709840993691acedb48ed81480d85eb48fcb",
+      "format": "json"
+    },
+    "fresh_run/run.json": {
+      "type": "regular",
+      "size_bytes": 28270,
+      "sha256": "0ab8ee9c62cd77dcddbdbea5498cac48c4c2dea14d0e4566b5e2a14e39a53ea0",
+      "format": "json"
+    },
+    "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/author_reference.json": {
+      "type": "regular",
+      "size_bytes": 4321,
+      "sha256": "581b970592c09f0c9fe991d3ac99d2dfbd48244e67ae5a69069b8d576fa0c9c7",
+      "format": "json"
+    },
+    "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/data_manifest.json": {
+      "type": "regular",
+      "size_bytes": 12835,
+      "sha256": "c1c072ef4a540f1d7d878b828ce09b27085ffe085e328587fcc6fd83de6dbc58",
+      "format": "json"
+    },
+    "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_data.py": {
+      "type": "regular",
+      "size_bytes": 1784,
+      "sha256": "ec2a7f4337c4c7dfa7649d5cf2794be041a16e258f50d0844c2e2b4bed882918",
+      "format": "utf8-text"
+    },
+    "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_diagnostics.py": {
+      "type": "regular",
+      "size_bytes": 21125,
+      "sha256": "d46fc51716c11429bdf2465c656d81b31e3f07caf8bb1bb5b3814242a32a3608",
+      "format": "utf8-text"
+    },
+    "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_methods.py": {
+      "type": "regular",
+      "size_bytes": 14566,
+      "sha256": "8d5e9d04624e3941768a710ba9c72dfd281c25c39b495845beda296a1628c4c6",
+      "format": "utf8-text"
+    },
+    "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_methods_tests.py": {
+      "type": "regular",
+      "size_bytes": 20390,
+      "sha256": "7df1f66d3598491f25d947a718f0c05d3249ffdb1bd6779574d5a17a8009b524",
+      "format": "utf8-text"
+    },
+    "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_plots.py": {
+      "type": "regular",
+      "size_bytes": 40188,
+      "sha256": "9c100838dcd57fa4d1068accbaa0c84d5eed47a71fca8def16e1dfc36f13a3a1",
+      "format": "utf8-text"
+    },
+    "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_reference.py": {
+      "type": "regular",
+      "size_bytes": 49968,
+      "sha256": "834b41927d1ff01a8bc38a103b59ea50e70bfa53c2c26facee7b5e1bf75afcbe",
+      "format": "utf8-text"
+    },
+    "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_reference_tests.py": {
+      "type": "regular",
+      "size_bytes": 11045,
+      "sha256": "270c145a6fd5e99302850f7b30a8e1324e6647677b16631fa853eb520cd771cf",
+      "format": "utf8-text"
+    },
+    "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_study.py": {
+      "type": "regular",
+      "size_bytes": 36930,
+      "sha256": "df5d7f892a6846309d27441a10258595988015c59be1db49d49d314764f3120d",
+      "format": "utf8-text"
+    },
+    "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_study_tests.py": {
+      "type": "regular",
+      "size_bytes": 17827,
+      "sha256": "93dec8b4844ecee8b7fef748a59de4f611348d79a9b02a31e245e80258f52329",
+      "format": "utf8-text"
+    },
+    "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/protocol.md": {
+      "type": "regular",
+      "size_bytes": 12469,
+      "sha256": "ceca1c3d0fa9bd5635915b4f7c8ec9d2353c3e55b6816788ce69b58d8e67869e",
+      "format": "utf8-text"
+    },
+    "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/protocol_freeze.json": {
+      "type": "regular",
+      "size_bytes": 769,
+      "sha256": "8b3da8fdac611b7d95ecf8d1e35d565c6ef6b0952b213162527afb140da852fd",
+      "format": "json"
+    },
+    "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/run_native.py": {
+      "type": "regular",
+      "size_bytes": 14331,
+      "sha256": "dd7e3fed1be5388ce705605488f212d8679131baa81f9ed32a71aefbe9b9b8fc",
+      "format": "utf8-text"
+    },
+    "fresh_run/summary.json": {
+      "type": "regular",
+      "size_bytes": 24999,
+      "sha256": "c9ba443cb88d692eec938813a8ec1b4af08a2d954f837cad69f73cf97b63c390",
+      "format": "json"
+    },
+    "reproduction.json": {
+      "type": "regular",
+      "size_bytes": 33961,
+      "sha256": "ac782668ba545e21bbcdf02f5cbaae2af3ceafce2b62312871984d7ad5ea2d83",
+      "format": "json"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/author_reference.json": {
+      "type": "regular",
+      "size_bytes": 4321,
+      "sha256": "581b970592c09f0c9fe991d3ac99d2dfbd48244e67ae5a69069b8d576fa0c9c7",
+      "format": "json"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/build_notebooks.py": {
+      "type": "regular",
+      "size_bytes": 12277,
+      "sha256": "60ab1ef90afeadeba85703db3204411ca1a421b9417e803557cafe807f350857",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/data_manifest.json": {
+      "type": "regular",
+      "size_bytes": 12835,
+      "sha256": "c1c072ef4a540f1d7d878b828ce09b27085ffe085e328587fcc6fd83de6dbc58",
+      "format": "json"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_contract_tests.py": {
+      "type": "regular",
+      "size_bytes": 16844,
+      "sha256": "1f8f1af137dd58d028ef30ad28f65c5b19c05546b72429785999c3a9ce0a37a3",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_data.py": {
+      "type": "regular",
+      "size_bytes": 1784,
+      "sha256": "ec2a7f4337c4c7dfa7649d5cf2794be041a16e258f50d0844c2e2b4bed882918",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_diagnostics.py": {
+      "type": "regular",
+      "size_bytes": 21125,
+      "sha256": "d46fc51716c11429bdf2465c656d81b31e3f07caf8bb1bb5b3814242a32a3608",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_methods.py": {
+      "type": "regular",
+      "size_bytes": 14566,
+      "sha256": "8d5e9d04624e3941768a710ba9c72dfd281c25c39b495845beda296a1628c4c6",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_methods_tests.py": {
+      "type": "regular",
+      "size_bytes": 20390,
+      "sha256": "7df1f66d3598491f25d947a718f0c05d3249ffdb1bd6779574d5a17a8009b524",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_plots.py": {
+      "type": "regular",
+      "size_bytes": 40188,
+      "sha256": "9c100838dcd57fa4d1068accbaa0c84d5eed47a71fca8def16e1dfc36f13a3a1",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_reference.py": {
+      "type": "regular",
+      "size_bytes": 49968,
+      "sha256": "834b41927d1ff01a8bc38a103b59ea50e70bfa53c2c26facee7b5e1bf75afcbe",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_reference_tests.py": {
+      "type": "regular",
+      "size_bytes": 11045,
+      "sha256": "270c145a6fd5e99302850f7b30a8e1324e6647677b16631fa853eb520cd771cf",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_study.py": {
+      "type": "regular",
+      "size_bytes": 36930,
+      "sha256": "df5d7f892a6846309d27441a10258595988015c59be1db49d49d314764f3120d",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_study_tests.py": {
+      "type": "regular",
+      "size_bytes": 17827,
+      "sha256": "93dec8b4844ecee8b7fef748a59de4f611348d79a9b02a31e245e80258f52329",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/execute_learner.py": {
+      "type": "regular",
+      "size_bytes": 9035,
+      "sha256": "47b30cc96a77b5720be18fac15a3cd17966358f2da15aa79c673ad25e7b2a5df",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/lesson.md": {
+      "type": "regular",
+      "size_bytes": 58027,
+      "sha256": "584266a0f4ef6d31f03b5cdf6f81f543271af9d258ee6446a7bda5e702b3c7d1",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/protocol.md": {
+      "type": "regular",
+      "size_bytes": 12469,
+      "sha256": "ceca1c3d0fa9bd5635915b4f7c8ec9d2353c3e55b6816788ce69b58d8e67869e",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/protocol_freeze.json": {
+      "type": "regular",
+      "size_bytes": 769,
+      "sha256": "8b3da8fdac611b7d95ecf8d1e35d565c6ef6b0952b213162527afb140da852fd",
+      "format": "json"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/reproduce_native.py": {
+      "type": "regular",
+      "size_bytes": 10426,
+      "sha256": "a710dc99f4d0108aaab10f590635f7ac1819d66a368b046d16261571042aeccb",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/run_native.py": {
+      "type": "regular",
+      "size_bytes": 14331,
+      "sha256": "dd7e3fed1be5388ce705605488f212d8679131baa81f9ed32a71aefbe9b9b8fc",
+      "format": "utf8-text"
+    }
+  },
+  "external_payloads": {},
+  "member_count": 37,
+  "total_member_bytes": 711362
+}

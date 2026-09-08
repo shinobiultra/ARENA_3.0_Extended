@@ -1,0 +1,404 @@
+{
+  "status": "PASS",
+  "scope": "complete_gradientshap_own_answer_learner",
+  "source_inputs": {
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_data.py": "9c9c1016ffd6fe839a004c06e801cdcd24d4d71a85ccd3f0707168dec390c7ce",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_methods.py": "2c56ae4e108d13b8e2994f12944af49af3915fcf95d684da96ddec7ed46c5be5",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_methods_tests.py": "fafa0eaa80591793198f23e884c21b3f457eaf240841ae10c9cfd58e721eae12",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_study.py": "f49e4f5872beca780c95a3689b919690e5be8c344df3f0625178476ff163ad02",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_study_tests.py": "ef938b660a7b6388023654bd977cfd94e999540ee6d827ead6f5382f757eb3a5",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py": "c063d120d7449a9b20b4ac370247b2b5971e809575d44ab9d7c8719cc551292f",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference_tests.py": "95bfe943a98b7353e29328992ee4cbf0a0558cdf3c8d64a692129e47bf1dbc4e",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_diagnostics.py": "d3b60c3d5e9565a3c693fa4d8146a8115eae1ac1708986692197dadfdbee5e7f",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_plots.py": "f7369b14f53d0ac3cac2c54efa12ed2b9b799bb2e94336cb0b030b5d585380d0",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/protocol.md": "4ed1d1d45a0b5db304cb45e7c5abe1c85c97434e53b4c9c156ce05b2b489a83b",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/protocol_freeze.json": "79fc20a6b600cc17b9e942927d44ac135e192538e124fcf7b7889407940afcf5",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/data_manifest.json": "bcf41f96c9f6839ee4cbf24df82ca8467b35a6ed9090a9c4c56fce0b1a23120c",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/run_native.py": "f4c359e12c25d77b14100da9e66145480fe0dfa591f9387cf1fe1d8c938f205c",
+    "chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_methods.py": "8d5e9d04624e3941768a710ba9c72dfd281c25c39b495845beda296a1628c4c6",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/lesson.md": "ec76a8b487de0d623b28c38ab6e2dded30e09dbde51d7d167fd15bcd3c34f2c5",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/build_notebooks.py": "0b1b09ca7c3ecb58dde9f89ac993600f86837603e0d167dd8c0b0520d7085395",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/execute_learner.py": "0dfd6ee46e87b0091466c47d6a61e6b451ccdf34758e6a68399ac9f7b42cbc38",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_contracts.py": "3b52d90376e81b75e90ee4f9adfffa35073982708372143542e0a0349b1b319a",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/reproduce_native.py": "382d67ea67ecd6c02d0c1148dbb812c567e6635f706c351f02f85f9cb7d367db",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/publish_study.py": "ea001e7f27cadc4b37a9d63f3766cc67e7450c4ce053a5c2a4f0466beb5034a0"
+  },
+  "completed_from_own_answers": true,
+  "native_model_executed": true,
+  "execution_device": "cpu",
+  "elapsed_seconds": 63.25113045699982,
+  "last_completed_cell": 123,
+  "native_summary": {
+    "study": "16.15_gradientshap_expected_gradients",
+    "phase": "evaluated_after_audit",
+    "model_keys": [
+      "clean_0",
+      "clean_1",
+      "clean_2",
+      "shuffled_0",
+      "shuffled_1",
+      "shuffled_2",
+      "ridge"
+    ],
+    "model_fits": 7,
+    "optimizer_updates": 4800,
+    "train_rows": 758,
+    "explanation_rows": 153,
+    "audit_rows": 119,
+    "all_model_rows": 1904,
+    "nested_budgets": [
+      8,
+      32,
+      128,
+      512,
+      2048
+    ],
+    "quadrature_nodes": [
+      256,
+      512
+    ],
+    "background_variants": 5,
+    "noise_variants": 3,
+    "sampling_replicates": 64,
+    "replicate_sample_shape": [
+      64,
+      3,
+      64,
+      2048,
+      8
+    ],
+    "replicate_sample_dtype": "float64",
+    "replicate_sample_coordinates": 201326592,
+    "replicate_sample_sha256": "521ce9f2e1f23c239e6863166333fb0a3f5f52dbec980a4a527118cee7391c6f",
+    "primary_sample_coordinates": 31195136,
+    "audit_used_for_selection": false,
+    "reference_status": "PASS",
+    "deterministic_artifacts": [
+      "fitted.pt",
+      "prepared.pt",
+      "evaluated.pt",
+      "reference.pt",
+      "diagnostics.pt",
+      "play.pt",
+      "replicate_samples.pt"
+    ],
+    "manifest_array_count": 1442,
+    "manifest_array_elements": 464237288,
+    "native_directory": "/home/bitwise/.cache/arena_extended/gradientshap/new-environment-learner-v1/figures/native"
+  },
+  "native_summary_sha256": "dbd4b01baf1ca7993959b2a160b61df69810c23468a576352cfc917b31b13115",
+  "native_directory": "/home/bitwise/.cache/arena_extended/gradientshap/new-environment-learner-v1/figures/native",
+  "native_artifacts": {
+    "artifact_manifest.json": {
+      "sha256": "f5f8d91f8e0c0f00ec994f14a652390a840d080c9bca1a2c8a99bd2da1889023",
+      "size_bytes": 2617
+    },
+    "before_audit.json": {
+      "sha256": "e03e31391558028cf1ec36acb694a2ae5413aa3bdc91db43f10b565345ce6a2a",
+      "size_bytes": 914
+    },
+    "diagnostics.manifest.json": {
+      "sha256": "870ea57f0ae06805c0e99a05761b4ff61714746ba55b877bc06f366806d5fc2b",
+      "size_bytes": 68014
+    },
+    "diagnostics.pt": {
+      "sha256": "1b2b7f318eaa7b293c3c7fda4bdb88725f652492b42036dbe0f9d33a08cfc050",
+      "size_bytes": 67813
+    },
+    "evaluated.manifest.json": {
+      "sha256": "ad2e546b0ebc9c21bef1d67ddbc066081021d3c6f329fe424ed5587b664cb15f",
+      "size_bytes": 322694
+    },
+    "evaluated.pt": {
+      "sha256": "462e32a9a0b52617af8ea9fe6c75ea10b2614bac2ae7b09a28bdcab9a450f49d",
+      "size_bytes": 1577241419
+    },
+    "fitted.manifest.json": {
+      "sha256": "df829a28703c3fee40f1aac08f4ee6d178d28ceebc0ddddf4463cba98f0abf54",
+      "size_bytes": 106561
+    },
+    "fitted.pt": {
+      "sha256": "c8e5bce695edc3e76e02284968ce6c5e6760060a2373a82f659e75700962e4c3",
+      "size_bytes": 467968
+    },
+    "play.manifest.json": {
+      "sha256": "4837d21511e2d249fb6a445a3b22f670827b60a6b2c06fc34fa82b8104125a9f",
+      "size_bytes": 19042
+    },
+    "play.pt": {
+      "sha256": "98f107c9935881417758f606124bda1871b89b756b1c7b5db5bde15258861e3f",
+      "size_bytes": 159143
+    },
+    "prepared.manifest.json": {
+      "sha256": "756c577d673fec5e816b88f82883b02dad040a84028dff11240f1b8d4b3b83fb",
+      "size_bytes": 109257
+    },
+    "prepared.pt": {
+      "sha256": "af7079beb52083d3c1955aabe20f13d3a8a71f40404e5f10dc4f8ac6822e7853",
+      "size_bytes": 302399289
+    },
+    "reference.manifest.json": {
+      "sha256": "940a4e71fbd70777e4e8994a88347fcbea14a234962837ca26d001df02f4111e",
+      "size_bytes": 171510
+    },
+    "reference.pt": {
+      "sha256": "3acbf133884f07b3dcb80bf6853e4ad88fee83b6a13ec1556f03d5e16ae29502",
+      "size_bytes": 57328569
+    },
+    "replicate_samples.manifest.json": {
+      "sha256": "b4715a058eb3acb905a573d162a6fa5e79a5b90929af269d4085022e072dee4c",
+      "size_bytes": 577
+    },
+    "replicate_samples.pt": {
+      "sha256": "46238cad0348f56be4807507256233884af3588037a434197f0cbe0f0aa1a0fa",
+      "size_bytes": 1610614447
+    },
+    "summary.json": {
+      "sha256": "edfc70b8a22cf7cc459cd1fb72ecb3081047a148f54ea32087f098f87f68f0d4",
+      "size_bytes": 1175
+    },
+    "timings.manifest.json": {
+      "sha256": "aab5cef6fce8331fb79f18ae8da8902db83e6845022cbcdef8293be08a3780f6",
+      "size_bytes": 333
+    },
+    "timings.pt": {
+      "sha256": "67f9ffa21f366d5a3b31a6def1ccb17d1f91c37b4b0d9c1532215ae4c52642e0",
+      "size_bytes": 1261
+    }
+  },
+  "external_replicate_artifact": {
+    "relative_path": "figures/native/replicate_samples.pt",
+    "sha256": "46238cad0348f56be4807507256233884af3588037a434197f0cbe0f0aa1a0fa",
+    "size_bytes": 1610614447,
+    "manifest": "replicate_samples.manifest.json"
+  },
+  "cells": 126,
+  "code_cells": 79,
+  "embedded_figures": 20,
+  "figures": {
+    "01_schedule_prefix.png": "3e08b8b53b6df990ebc965c61ba8c3de44327c7401134fdfa440a8bbdec6a360",
+    "02_path_interpolation.png": "57c4279dfc2960715a8912d77a72fbe34f66cc1d6831ca9f3b9ec2130499bf35",
+    "03_gradient_controls.png": "4be0a9b1a4c6c4be396f6556b3cddbc6fc6078989d75a7a46c6a64f277d9ae99",
+    "04_relu_samples.png": "106602992c9816758a4fd6641c5eff76ff4e23188d177ca8f90393ab3f64a88b",
+    "05_mc_convergence.png": "b438ef93bbcd22d4af7e658fa8a0bf2e9a82c34c627537b465c061a2cf40248b",
+    "06_estimator_controls.png": "2dacf2b751f0d2e6643cb042919d8b189e5415cfa5c61949ebcdf8c93c5bc303",
+    "07_quadrature_doubling.png": "123204b6eb994d0279d63d5140bc5ea3db6699b5102454cc9cc3c406a03f4fcd",
+    "08_background_average.png": "8502f6d9aea4382b2ef47e113b25b9876c7c38a09fa2a0e1cc4b46951d5c7cbf",
+    "09_gaussian_target_shift.png": "31b7af4220dbfc098f1e44595a3e3093fe3fb9d57f494a12a4f0e4c7a4280a97",
+    "10_path_vs_coalition.png": "6145c18772fe59d6f40f116d5c65f5831fd11ddd3eb1cb984c91c7fe8acc48aa",
+    "11_kink_representation.png": "4cdfdbec90b5a037ba9ca059961e3e63df4925e07853827e3ccd2f73514094af",
+    "12_replacement_fixture.png": "d7c8e6c0320705f8f4138f25a32bf1651b9597b09908120b35b464c15527d4b1",
+    "13_threshold_play.png": "c93da55000cc7980a5175c03a7a8cac477caf0ec68883fb80eec23200b604131",
+    "14_native_overview.png": "9e86da52f2fa4846150ae57924f010924ec515be52cb0f09685d35adc50f0ba3",
+    "15_allrow_method_map.png": "d4b3627f0439957ab142304b2589626b5db4d91266e81c9e2198a9bfd99b4fcb",
+    "16_fixed_waterfall.png": "7a1781021036e9b5fb838c7763f9e4088c20d46b8016a0c85772f0a6152da648",
+    "17_background_and_noise.png": "69e72af160d0a1cba08db2c1bff57e2a28d7dc9bfd5c13f23c35d35c8f283491",
+    "18_replicates_and_distance.png": "2bba011c2a602c269aa43d398aed060e00ebe78f4d0764fc5a10e055af602156",
+    "19_replacement_curves.png": "521b41627298c82f157b307f781d2bc987e32afeb01e863da761cbdfbcc00e1a",
+    "20_real_recipe_play.png": "c1464a29c83f15f35fde631b8939da646182b68c8a58fed9ca48e294e7a4903d"
+  },
+  "changed_sources": [],
+  "completed_learner_sha256": "4432975f60bacd0f677f72a76a98946d749f63c9eac5d8b8a75610e5f2a0653f",
+  "learner_directory": "/home/bitwise/.cache/arena_extended/gradientshap/new-environment-learner-v1",
+  "fresh_directory": "/home/bitwise/.cache/arena_extended/gradientshap/new-environment-reproduction-v1",
+  "published_exercises_sha256": "da4952b9d804229387204823c0794298bb798fc28198e07a5350cd4f2d17806a",
+  "published_solutions_sha256": "0e944fb9831ef9e27d59cd7b9e1cc2ade468c8ad266a91cb34d26619a704e814",
+  "published_page_sha256": "993218bc30024f28d542f1463217614cbf29ea1dc3ac1a246d77020f75706df7",
+  "published_figures": {
+    "gradientshap_01_schedule_prefix.png": "3e08b8b53b6df990ebc965c61ba8c3de44327c7401134fdfa440a8bbdec6a360",
+    "gradientshap_02_path_interpolation.png": "57c4279dfc2960715a8912d77a72fbe34f66cc1d6831ca9f3b9ec2130499bf35",
+    "gradientshap_03_gradient_controls.png": "4be0a9b1a4c6c4be396f6556b3cddbc6fc6078989d75a7a46c6a64f277d9ae99",
+    "gradientshap_04_relu_samples.png": "106602992c9816758a4fd6641c5eff76ff4e23188d177ca8f90393ab3f64a88b",
+    "gradientshap_05_mc_convergence.png": "b438ef93bbcd22d4af7e658fa8a0bf2e9a82c34c627537b465c061a2cf40248b",
+    "gradientshap_06_estimator_controls.png": "2dacf2b751f0d2e6643cb042919d8b189e5415cfa5c61949ebcdf8c93c5bc303",
+    "gradientshap_07_quadrature_doubling.png": "123204b6eb994d0279d63d5140bc5ea3db6699b5102454cc9cc3c406a03f4fcd",
+    "gradientshap_08_background_average.png": "8502f6d9aea4382b2ef47e113b25b9876c7c38a09fa2a0e1cc4b46951d5c7cbf",
+    "gradientshap_09_gaussian_target_shift.png": "31b7af4220dbfc098f1e44595a3e3093fe3fb9d57f494a12a4f0e4c7a4280a97",
+    "gradientshap_10_path_vs_coalition.png": "6145c18772fe59d6f40f116d5c65f5831fd11ddd3eb1cb984c91c7fe8acc48aa",
+    "gradientshap_11_kink_representation.png": "4cdfdbec90b5a037ba9ca059961e3e63df4925e07853827e3ccd2f73514094af",
+    "gradientshap_12_replacement_fixture.png": "d7c8e6c0320705f8f4138f25a32bf1651b9597b09908120b35b464c15527d4b1",
+    "gradientshap_13_threshold_play.png": "c93da55000cc7980a5175c03a7a8cac477caf0ec68883fb80eec23200b604131",
+    "gradientshap_14_native_overview.png": "9e86da52f2fa4846150ae57924f010924ec515be52cb0f09685d35adc50f0ba3",
+    "gradientshap_15_allrow_method_map.png": "d4b3627f0439957ab142304b2589626b5db4d91266e81c9e2198a9bfd99b4fcb",
+    "gradientshap_16_fixed_waterfall.png": "7a1781021036e9b5fb838c7763f9e4088c20d46b8016a0c85772f0a6152da648",
+    "gradientshap_17_background_and_noise.png": "69e72af160d0a1cba08db2c1bff57e2a28d7dc9bfd5c13f23c35d35c8f283491",
+    "gradientshap_18_replicates_and_distance.png": "2bba011c2a602c269aa43d398aed060e00ebe78f4d0764fc5a10e055af602156",
+    "gradientshap_19_replacement_curves.png": "521b41627298c82f157b307f781d2bc987e32afeb01e863da761cbdfbcc00e1a",
+    "gradientshap_20_real_recipe_play.png": "c1464a29c83f15f35fde631b8939da646182b68c8a58fed9ca48e294e7a4903d"
+  },
+  "visual_review": {
+    "status": "PASS",
+    "reviewer": "Astra section author with root author browser inspection",
+    "independent_review": false,
+    "browser_math_and_dropdowns_checked": true,
+    "lesson_sha256": "ec76a8b487de0d623b28c38ab6e2dded30e09dbde51d7d167fd15bcd3c34f2c5",
+    "completed_learner_sha256": "4432975f60bacd0f677f72a76a98946d749f63c9eac5d8b8a75610e5f2a0653f",
+    "learner_execution_sha256": "7946d1e801856e968d6ec6e78ca613e24d84681d1d13d81e13748d8e5fa44b1b",
+    "figures": {
+      "01_schedule_prefix.png": "3e08b8b53b6df990ebc965c61ba8c3de44327c7401134fdfa440a8bbdec6a360",
+      "02_path_interpolation.png": "57c4279dfc2960715a8912d77a72fbe34f66cc1d6831ca9f3b9ec2130499bf35",
+      "03_gradient_controls.png": "4be0a9b1a4c6c4be396f6556b3cddbc6fc6078989d75a7a46c6a64f277d9ae99",
+      "04_relu_samples.png": "106602992c9816758a4fd6641c5eff76ff4e23188d177ca8f90393ab3f64a88b",
+      "05_mc_convergence.png": "b438ef93bbcd22d4af7e658fa8a0bf2e9a82c34c627537b465c061a2cf40248b",
+      "06_estimator_controls.png": "2dacf2b751f0d2e6643cb042919d8b189e5415cfa5c61949ebcdf8c93c5bc303",
+      "07_quadrature_doubling.png": "123204b6eb994d0279d63d5140bc5ea3db6699b5102454cc9cc3c406a03f4fcd",
+      "08_background_average.png": "8502f6d9aea4382b2ef47e113b25b9876c7c38a09fa2a0e1cc4b46951d5c7cbf",
+      "09_gaussian_target_shift.png": "31b7af4220dbfc098f1e44595a3e3093fe3fb9d57f494a12a4f0e4c7a4280a97",
+      "10_path_vs_coalition.png": "6145c18772fe59d6f40f116d5c65f5831fd11ddd3eb1cb984c91c7fe8acc48aa",
+      "11_kink_representation.png": "4cdfdbec90b5a037ba9ca059961e3e63df4925e07853827e3ccd2f73514094af",
+      "12_replacement_fixture.png": "d7c8e6c0320705f8f4138f25a32bf1651b9597b09908120b35b464c15527d4b1",
+      "13_threshold_play.png": "c93da55000cc7980a5175c03a7a8cac477caf0ec68883fb80eec23200b604131",
+      "14_native_overview.png": "9e86da52f2fa4846150ae57924f010924ec515be52cb0f09685d35adc50f0ba3",
+      "15_allrow_method_map.png": "d4b3627f0439957ab142304b2589626b5db4d91266e81c9e2198a9bfd99b4fcb",
+      "16_fixed_waterfall.png": "7a1781021036e9b5fb838c7763f9e4088c20d46b8016a0c85772f0a6152da648",
+      "17_background_and_noise.png": "69e72af160d0a1cba08db2c1bff57e2a28d7dc9bfd5c13f23c35d35c8f283491",
+      "18_replicates_and_distance.png": "2bba011c2a602c269aa43d398aed060e00ebe78f4d0764fc5a10e055af602156",
+      "19_replacement_curves.png": "521b41627298c82f157b307f781d2bc987e32afeb01e863da761cbdfbcc00e1a",
+      "20_real_recipe_play.png": "c1464a29c83f15f35fde631b8939da646182b68c8a58fed9ca48e294e7a4903d"
+    },
+    "screenshots": [
+      {
+        "path": "/home/bitwise/.cache/arena_extended/gradientshap/new-environment-learner-v1/html_review/root_derivation.jpg",
+        "sha256": "251becd42c471b9f642dde9be6e4887a6f6b58a11af92d30b297e5436b07b3b2",
+        "size_bytes": 70669
+      },
+      {
+        "path": "/home/bitwise/.cache/arena_extended/gradientshap/new-environment-learner-v1/html_review/root_threshold.jpg",
+        "sha256": "76c280923b04f2dde43f86dd0cd14b43f9c04615ce6052cd6d374afefe89f535",
+        "size_bytes": 92448
+      },
+      {
+        "path": "/home/bitwise/.cache/arena_extended/gradientshap/new-environment-learner-v1/html_review/root_native_overview.jpg",
+        "sha256": "2308d1aa570503b0223c718b5454b3bef05bf141815032b0e55cdb346093d19a",
+        "size_bytes": 92101
+      },
+      {
+        "path": "/home/bitwise/.cache/arena_extended/gradientshap/new-environment-learner-v1/html_review/root_native_play.jpg",
+        "sha256": "e6054fcf0d1cc0a96e6b7af4606ce4c79c8a0481243e38c3b5fb93c5bfe3bb46",
+        "size_bytes": 80481
+      },
+      {
+        "path": "/home/bitwise/.cache/arena_extended/gradientshap/new-environment-learner-v1/html_review/root_native_play_result.jpg",
+        "sha256": "f7f72aad4cae5f0ee3864a573959eb178e3959b36a5c77498916d990e0486b00",
+        "size_bytes": 76943
+      }
+    ],
+    "root_browser_review": {
+      "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/new-environment-learner-v1/html_review/root_browser_review.json",
+      "sha256": "90798541ab9f7ef1a0a6d99be661116bbdfad2f7111ae6177b453fd252091a9a",
+      "size_bytes": 3066
+    },
+    "author_source_and_figure_review": {
+      "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/new-environment-learner-v1/source_review.json",
+      "sha256": "ff75da51bd6e795ef4b5b70ac2998b62623a7d312cb47bb70e5655a5b4cfe0a2",
+      "size_bytes": 12143
+    },
+    "browser_observations": {
+      "details": 43,
+      "images": 20,
+      "math": 63,
+      "mathErrors": 0,
+      "openDetails": 43,
+      "solutions": 9,
+      "viewport": 1265,
+      "width": 1265
+    },
+    "learner_environment": {
+      "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/new-environment-learner-v1/environment/execution_environment.json",
+      "sha256": "aea76666a6faeef1f213c9284b3fea90b9d480ba85f2d9e8a8253c729d047ecf",
+      "size_bytes": 1687
+    },
+    "fresh_environment": {
+      "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/new-environment-reproduction-v1/environment/execution_environment.json",
+      "sha256": "04b037ba1d1fbb9cc022f43c7fb80bba1c61c3b7b7fd79cf669a6cafb65fd0b1",
+      "size_bytes": 1808
+    },
+    "play_review": {
+      "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/new-environment-learner-v1/play_review_v2/play_review.json",
+      "sha256": "63781e1b856cb82f18fbfdff3c2f7ddd7742bfb54028367a0d70f0234457ac96",
+      "size_bytes": 48456
+    },
+    "claim_boundary": "Current-environment author revalidation only. Historical independent approvals are not transferred to new execution or image hashes. No full-course completion claim."
+  },
+  "fresh_reproduction_sha256": "a353d8a8effc56949d36918752ced67236ba9755553e29d735fb97be38c9643e",
+  "archive": {
+    "path": "/home/bitwise/Documents/ARENA_3.0_Extended/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/expected_outputs/execution.tar.gz",
+    "sha256": "5d5353090330167bf9aba7148c502b9218b1d60a5eec0f2f7aa97c97fa586cd2",
+    "size_bytes": 5694929,
+    "external_payloads": {
+      "fitted.pt": {
+        "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/new-environment-learner-v1/figures/native/fitted.pt",
+        "artifact_sha256": "c8e5bce695edc3e76e02284968ce6c5e6760060a2373a82f659e75700962e4c3",
+        "size_bytes": 467968,
+        "manifest": "native/fitted.manifest.json",
+        "manifest_sha256": "df829a28703c3fee40f1aac08f4ee6d178d28ceebc0ddddf4463cba98f0abf54",
+        "external_large_payload": false,
+        "archived_bytes": false
+      },
+      "prepared.pt": {
+        "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/new-environment-learner-v1/figures/native/prepared.pt",
+        "artifact_sha256": "af7079beb52083d3c1955aabe20f13d3a8a71f40404e5f10dc4f8ac6822e7853",
+        "size_bytes": 302399289,
+        "manifest": "native/prepared.manifest.json",
+        "manifest_sha256": "756c577d673fec5e816b88f82883b02dad040a84028dff11240f1b8d4b3b83fb",
+        "external_large_payload": false,
+        "archived_bytes": false
+      },
+      "evaluated.pt": {
+        "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/new-environment-learner-v1/figures/native/evaluated.pt",
+        "artifact_sha256": "462e32a9a0b52617af8ea9fe6c75ea10b2614bac2ae7b09a28bdcab9a450f49d",
+        "size_bytes": 1577241419,
+        "manifest": "native/evaluated.manifest.json",
+        "manifest_sha256": "ad2e546b0ebc9c21bef1d67ddbc066081021d3c6f329fe424ed5587b664cb15f",
+        "external_large_payload": false,
+        "archived_bytes": false
+      },
+      "reference.pt": {
+        "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/new-environment-learner-v1/figures/native/reference.pt",
+        "artifact_sha256": "3acbf133884f07b3dcb80bf6853e4ad88fee83b6a13ec1556f03d5e16ae29502",
+        "size_bytes": 57328569,
+        "manifest": "native/reference.manifest.json",
+        "manifest_sha256": "940a4e71fbd70777e4e8994a88347fcbea14a234962837ca26d001df02f4111e",
+        "external_large_payload": false,
+        "archived_bytes": false
+      },
+      "diagnostics.pt": {
+        "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/new-environment-learner-v1/figures/native/diagnostics.pt",
+        "artifact_sha256": "1b2b7f318eaa7b293c3c7fda4bdb88725f652492b42036dbe0f9d33a08cfc050",
+        "size_bytes": 67813,
+        "manifest": "native/diagnostics.manifest.json",
+        "manifest_sha256": "870ea57f0ae06805c0e99a05761b4ff61714746ba55b877bc06f366806d5fc2b",
+        "external_large_payload": false,
+        "archived_bytes": false
+      },
+      "play.pt": {
+        "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/new-environment-learner-v1/figures/native/play.pt",
+        "artifact_sha256": "98f107c9935881417758f606124bda1871b89b756b1c7b5db5bde15258861e3f",
+        "size_bytes": 159143,
+        "manifest": "native/play.manifest.json",
+        "manifest_sha256": "4837d21511e2d249fb6a445a3b22f670827b60a6b2c06fc34fa82b8104125a9f",
+        "external_large_payload": false,
+        "archived_bytes": false
+      },
+      "replicate_samples.pt": {
+        "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/new-environment-learner-v1/figures/native/replicate_samples.pt",
+        "artifact_sha256": "46238cad0348f56be4807507256233884af3588037a434197f0cbe0f0aa1a0fa",
+        "size_bytes": 1610614447,
+        "manifest": "native/replicate_samples.manifest.json",
+        "manifest_sha256": "b4715a058eb3acb905a573d162a6fa5e79a5b90929af269d4085022e072dee4c",
+        "external_large_payload": true,
+        "archived_bytes": false
+      },
+      "timings.pt": {
+        "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/new-environment-learner-v1/figures/native/timings.pt",
+        "artifact_sha256": "67f9ffa21f366d5a3b31a6def1ccb17d1f91c37b4b0d9c1532215ae4c52642e0",
+        "size_bytes": 1261,
+        "manifest": "native/timings.manifest.json",
+        "manifest_sha256": "aab5cef6fce8331fb79f18ae8da8902db83e6845022cbcdef8293be08a3780f6",
+        "external_large_payload": false,
+        "archived_bytes": false
+      }
+    }
+  },
+  "full_release_validation": true
+}

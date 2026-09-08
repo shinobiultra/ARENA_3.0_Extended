@@ -1,0 +1,16 @@
+{
+  "scope": "untrained_word_model_gradient_contract_only",
+  "expected_word_logits_shape": [
+    3,
+    11,
+    24
+  ],
+  "gradient_groups": [
+    "vision.",
+    "connector.",
+    "word_embedding.",
+    "decoder.",
+    "unembed."
+  ],
+  "trained_model_evidence_required_separately": true
+}

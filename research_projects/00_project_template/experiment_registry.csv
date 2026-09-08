@@ -1,0 +1,2 @@
+run_id,date,status,question,benchmark,seed,model,dataset,baselines,negative_controls,ood_split,causal_interventions,metrics_path,artifact_dir,known_failures,next_action
+run_000,YYYY-MM-DD,planned,short question,benchmark name,0,model id,dataset id,"probe;text_only;random_control","label_shuffle;random_activation",heldout_templates,"ablation;patching",results/run_000/metrics.json,results/run_000,none,replace this row before claiming results

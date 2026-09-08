@@ -1,0 +1,44 @@
+{
+  "claim_passed": true,
+  "clean_score": 4.25,
+  "corrupt_score": 0.0,
+  "hidden_max_abs_error_max": 1e-12,
+  "hidden_patching": [
+    1.0,
+    0.6,
+    0.25,
+    0.0,
+    2.4
+  ],
+  "hidden_shapley": [
+    1.0,
+    0.6,
+    0.25,
+    0.0,
+    2.4
+  ],
+  "output_delta": 4.25,
+  "random_control_count": 512,
+  "random_control_seed": 1666,
+  "random_direction_mean_abs_effect": 0.9943479120912706,
+  "random_direction_p95_abs_effect": 2.165827819479382,
+  "shuffled_label_cosine": 0.5147262229810324,
+  "target_gate_effect": 2.4,
+  "target_gate_random_percentile": 0.986328125,
+  "token_credit_overcount": 2.4,
+  "token_max_abs_error": 1.2,
+  "token_patching": [
+    3.4,
+    3.0,
+    0.25,
+    0.0
+  ],
+  "token_shapley": [
+    2.2,
+    1.8,
+    0.25,
+    0.0
+  ],
+  "wrong_location_effect": 0.0,
+  "zero_interaction_token_max_abs_error": 0.0
+}

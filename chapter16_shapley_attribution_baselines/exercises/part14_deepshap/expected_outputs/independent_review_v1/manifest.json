@@ -1,0 +1,44 @@
+{
+  "source_directory": "/home/bitwise/.cache/arena_extended/deepshap/reviews",
+  "archive_sha256": "2245b64a672ed2d9880ff4593fd5921700c086a692a253de84065ed94e8da5d4",
+  "members": {
+    "methods_study_independent_probe.py": {
+      "sha256": "f6c0c32d7f6160d40bb399945a740bf21c2134fdc2baa124a78eeba5903b78cc",
+      "size_bytes": 13872
+    },
+    "methods_study_independent_probe.result.json": {
+      "sha256": "e6a756bae6a264c7d8dd5fbefda60ac97f98a85b114c24541b7df4eb171f0a64",
+      "size_bytes": 2012
+    },
+    "methods_study_independent_probe.stdout.log": {
+      "sha256": "e6a756bae6a264c7d8dd5fbefda60ac97f98a85b114c24541b7df4eb171f0a64",
+      "size_bytes": 2012
+    },
+    "methods_study_review_2026-09-06.md": {
+      "sha256": "87716852e098fc4dfe4578d232b5184bb3d9bb13d470cc340639376011f1e953",
+      "size_bytes": 7614
+    },
+    "native_saved_array_integrity.py": {
+      "sha256": "473da19aa7dbccb75f46a2b97736f8e579f3f8c72a4e47d1cd251fcbb920120b",
+      "size_bytes": 18900
+    },
+    "native_saved_array_integrity.result.json": {
+      "sha256": "2f561d7eedc1748b131a05044d671d86c12f493db26bc09125af801da8f30543",
+      "size_bytes": 6458
+    },
+    "pre_fit_protocol_audit.py": {
+      "sha256": "ecba0bcc15ceab12dfc8d06871cb9a912b4364022b0eee6c75638e3ffacf4622",
+      "size_bytes": 9998
+    },
+    "pre_fit_protocol_audit.result.json": {
+      "sha256": "ab6a5866920a58ff940835f0aa6db0dc29d76e479888659aac460c67e35a2314",
+      "size_bytes": 7440
+    },
+    "pre_fit_protocol_review_2026-09-06.md": {
+      "sha256": "5f497a3a54d7001bbe9850dccd49ce4ec37aa625a72b407e8ab88319188216cc",
+      "size_bytes": 4881
+    }
+  },
+  "large_tensors_retained_externally": {},
+  "readback_verified": true
+}

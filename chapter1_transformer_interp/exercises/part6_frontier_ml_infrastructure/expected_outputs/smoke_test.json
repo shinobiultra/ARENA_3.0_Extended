@@ -1,0 +1,10 @@
+{
+  "accepted": true,
+  "claim_scope": "Contract check; not a full real-model validation.",
+  "evidence_level": "notebook_contract",
+  "gt_tier": "GT-1",
+  "notebook_id": "1_6_local_frontier_ml_infrastructure",
+  "section": "1.6",
+  "tests_passed": true,
+  "title": "Local Frontier ML Infrastructure"
+}

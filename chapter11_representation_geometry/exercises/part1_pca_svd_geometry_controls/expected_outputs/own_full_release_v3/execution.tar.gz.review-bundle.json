@@ -1,0 +1,343 @@
+{
+  "schema": "arena.review-bundle.v1",
+  "archive": {
+    "name": "execution.tar.gz",
+    "sha256": "14f1e75816491f15301e41a965cae9bda3e63088da70ed5265be0afe44f1c9d4",
+    "size_bytes": 9265569
+  },
+  "limits": {
+    "archive_bytes": 67108864,
+    "member_bytes": 16777216,
+    "total_member_bytes": 134217728,
+    "tar_container_bytes": 167772160,
+    "decoded_json_bytes": 67108864,
+    "total_decoded_bytes": 536870912,
+    "members": 4096
+  },
+  "provenance": {
+    "kind": "historical_archive_packaging",
+    "packaged_at_utc": "2026-09-08T03:26:51.600504+00:00",
+    "measurement_claim": "Packaging only. This is not a native rerun, scientific revalidation or new review. Retained receipts, failure labels, values, scientific hashes and measurement dates are byte-identical to the original. Historical embedded archive inventories describe that original; this adjacent contract describes the derived review bundle.",
+    "source_archive": {
+      "repository_path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/expected_outputs/own_full_release_v3/execution.tar.gz",
+      "absolute_path": "/home/bitwise/.cache/arena_extended/evidence_packaging/original_archives/14f1e75816491f15301e41a965cae9bda3e63088da70ed5265be0afe44f1c9d4.tar.gz",
+      "sha256": "14f1e75816491f15301e41a965cae9bda3e63088da70ed5265be0afe44f1c9d4",
+      "size_bytes": 9265569,
+      "git_commit": "ce96ceaae2f91bf0dcd7648052325e07a87b0b5b",
+      "git_blob": "aafdc33c47b39785905e233543bec7693e062c2f"
+    },
+    "source_archive_members": {
+      "completed_learner.ipynb": {
+        "sha256": "b1a1689e2d7ab525b2169f7366db9395d91ff4400f7daf5b735ac4e960c2bf16",
+        "size_bytes": 2238332
+      },
+      "execution.json": {
+        "sha256": "a055cd05d4ab4e7c2dac38dc806b1d9ab6a24b89490e5d1113cb014dbfc23857",
+        "size_bytes": 1635
+      },
+      "experiments/angle_play.json.gz": {
+        "sha256": "9136d7e2151abf408f50fd12759a62f9f3ee387fd0fd0d713b3ada4830ebedc0",
+        "size_bytes": 30897
+      },
+      "experiments/measured_study.json.gz": {
+        "sha256": "2f031ef87a377dc5cc971cd46e9da5e4ef76d6fc383e6af612377c2cab49f6f3",
+        "size_bytes": 4235871
+      },
+      "experiments/projection_study.json.gz": {
+        "sha256": "284d83b46aa223678917fffdb80485cdaff89a4d82558451262b1f88540fef79",
+        "size_bytes": 742734
+      },
+      "experiments/protocol.json": {
+        "sha256": "4a4816aaeaa734d5ba3a3ba8860b70e1338fdc4d5388255a6414944f43408f78",
+        "size_bytes": 4451
+      },
+      "experiments/runtime.json": {
+        "sha256": "fba5e6205ab5eab786e93fc9a310e9436fce1b7cfd5307e2847da73eca184889",
+        "size_bytes": 299
+      },
+      "experiments/single_play.json": {
+        "sha256": "4ebd2a22ceba719f08251cfd02296215ec4a7c0bb537ca16b4bd9000d019566a",
+        "size_bytes": 1388
+      },
+      "figures/geometry_angle_play.png": {
+        "sha256": "9c87695dc89f2e22d02aeaacb9dbad41f713f10866f6d8efd84d3a7890cf7c0e",
+        "size_bytes": 37283
+      },
+      "figures/geometry_calendar_order_null.png": {
+        "sha256": "a285c314e16ecedca7e0d2c8a7387442ff33e312d9afa92fc9743b29d5e0fff4",
+        "size_bytes": 69322
+      },
+      "figures/geometry_mistral_actual_answers.png": {
+        "sha256": "3b26fe3247a34e5a728bce3d8ea4f4f9f7ef9551a5e41cc492e25e004640156e",
+        "size_bytes": 279014
+      },
+      "figures/geometry_mistral_all_donors.png": {
+        "sha256": "e0caaec08bce529b0d0380ad2ff23608c7bdf47de35b7f1e38c5aef4b219d5c5",
+        "size_bytes": 200847
+      },
+      "figures/geometry_mistral_angle_radius.png": {
+        "sha256": "afd1236b3a85900d4fc6fd41f640017ca27883d4869b8466aeb386a0b7dc9967",
+        "size_bytes": 206254
+      },
+      "figures/geometry_mistral_final_controls.png": {
+        "sha256": "bd98b59558cda7799e07c19884e149768e73224ccd210f3ecdd99d7fa78dded7",
+        "size_bytes": 235899
+      },
+      "figures/geometry_mistral_layer_sweep.png": {
+        "sha256": "cb391b129cf556ce32a80f61f75f55369fe1c02b06f243642060efff19fca24e",
+        "size_bytes": 352541
+      },
+      "figures/geometry_mistral_projections.png": {
+        "sha256": "675d41867862b0feefa8e71e1e27c02efa1238590813e36dd7896f43b2d362a6",
+        "size_bytes": 355719
+      },
+      "figures/geometry_mistral_single_play.png": {
+        "sha256": "3898c13580440a4073c5d2e7e8993ac71a441b852649f9d40834f30d53e71683",
+        "size_bytes": 61898
+      },
+      "figures/geometry_plane_intervention.png": {
+        "sha256": "1569f17955f51800904190e28755caba259adae02568823b67f2e755edd6ee0c",
+        "size_bytes": 77814
+      },
+      "figures/geometry_projection_gallery.png": {
+        "sha256": "8603b5cbdabfafd75f880b85b7492b166354d33ece6d1556a424fcc12c68b547",
+        "size_bytes": 548976
+      },
+      "figures/geometry_projection_stability.png": {
+        "sha256": "4e69f8c59ab4142d79d30c6e8a89e32b626c7c0c3c73091a5714724712096e56",
+        "size_bytes": 315182
+      },
+      "figures/geometry_template_offsets.png": {
+        "sha256": "5c1fdc2d2fa51f9e0314dc4e7fbea2940f13d38b5558d6cad5fef97a99f3edaf",
+        "size_bytes": 86406
+      },
+      "source_snapshot/build_notebooks.py": {
+        "sha256": "0f34dae75c4c2b7604faeec248b182bd923e5ae6ad86d085a451b74ef25585f0",
+        "size_bytes": 4316
+      },
+      "source_snapshot/execute_learner.py": {
+        "sha256": "dccfdc78b78fb625d059ac0558e8e78f74b2ed0ae647178b5c061c68aec884f6",
+        "size_bytes": 3263
+      },
+      "source_snapshot/geometry_data.py": {
+        "sha256": "cc8045803c8437d859e44d60fe45414c9e2e95b5246fdb62ae0f8d7b8192037b",
+        "size_bytes": 2676
+      },
+      "source_snapshot/geometry_methods.py": {
+        "sha256": "a821887870ebc8e8b38bc5e94aadab6a93a431758b1f22248bf8b8967ff47aed",
+        "size_bytes": 14458
+      },
+      "source_snapshot/geometry_methods_tests.py": {
+        "sha256": "abd6502a4858330686a492e9038d9bec727787a5ed109ade557caed4ce6a3533",
+        "size_bytes": 15392
+      },
+      "source_snapshot/geometry_plotting.py": {
+        "sha256": "d185bc99e49504e6e32d39a39a2782bfd2a20814ac706aaa15eac39f3fadc1fe",
+        "size_bytes": 14510
+      },
+      "source_snapshot/geometry_protocol.json": {
+        "sha256": "4a4816aaeaa734d5ba3a3ba8860b70e1338fdc4d5388255a6414944f43408f78",
+        "size_bytes": 4451
+      },
+      "source_snapshot/geometry_study.py": {
+        "sha256": "c3cdf723ec7e7e557d3e960f29eeb45e73148059cce12d706ed2b3e785a772c6",
+        "size_bytes": 25440
+      },
+      "source_snapshot/lesson.md": {
+        "sha256": "50ddc5498463ad6d94212aed2c456f609bcf60c47b2a85c4a93bb0ac998b584c",
+        "size_bytes": 101181
+      }
+    }
+  },
+  "members": {
+    "completed_learner.ipynb": {
+      "type": "regular",
+      "size_bytes": 2238332,
+      "sha256": "b1a1689e2d7ab525b2169f7366db9395d91ff4400f7daf5b735ac4e960c2bf16",
+      "format": "notebook-json"
+    },
+    "execution.json": {
+      "type": "regular",
+      "size_bytes": 1635,
+      "sha256": "a055cd05d4ab4e7c2dac38dc806b1d9ab6a24b89490e5d1113cb014dbfc23857",
+      "format": "json"
+    },
+    "experiments/angle_play.json.gz": {
+      "type": "regular",
+      "size_bytes": 30897,
+      "sha256": "9136d7e2151abf408f50fd12759a62f9f3ee387fd0fd0d713b3ada4830ebedc0",
+      "format": "gzip-json",
+      "decoded_size_bytes": 291404,
+      "decoded_sha256": "66d125a243164517ff1295f3d062c187cdd06103bca4f8504688a7c509065893"
+    },
+    "experiments/measured_study.json.gz": {
+      "type": "regular",
+      "size_bytes": 4235871,
+      "sha256": "2f031ef87a377dc5cc971cd46e9da5e4ef76d6fc383e6af612377c2cab49f6f3",
+      "format": "gzip-json",
+      "decoded_size_bytes": 57405833,
+      "decoded_sha256": "5a6426528f47a8335ad7e1ad96621a343b260c89dfd56351891fecfc619ce1e0"
+    },
+    "experiments/projection_study.json.gz": {
+      "type": "regular",
+      "size_bytes": 742734,
+      "sha256": "284d83b46aa223678917fffdb80485cdaff89a4d82558451262b1f88540fef79",
+      "format": "gzip-json",
+      "decoded_size_bytes": 1801036,
+      "decoded_sha256": "35496fdb6934ac9fd1a26f6756957a0cf71836bb753b123d716848f72255242e"
+    },
+    "experiments/protocol.json": {
+      "type": "regular",
+      "size_bytes": 4451,
+      "sha256": "4a4816aaeaa734d5ba3a3ba8860b70e1338fdc4d5388255a6414944f43408f78",
+      "format": "json"
+    },
+    "experiments/runtime.json": {
+      "type": "regular",
+      "size_bytes": 299,
+      "sha256": "fba5e6205ab5eab786e93fc9a310e9436fce1b7cfd5307e2847da73eca184889",
+      "format": "json"
+    },
+    "experiments/single_play.json": {
+      "type": "regular",
+      "size_bytes": 1388,
+      "sha256": "4ebd2a22ceba719f08251cfd02296215ec4a7c0bb537ca16b4bd9000d019566a",
+      "format": "json"
+    },
+    "figures/geometry_angle_play.png": {
+      "type": "regular",
+      "size_bytes": 37283,
+      "sha256": "9c87695dc89f2e22d02aeaacb9dbad41f713f10866f6d8efd84d3a7890cf7c0e",
+      "format": "png"
+    },
+    "figures/geometry_calendar_order_null.png": {
+      "type": "regular",
+      "size_bytes": 69322,
+      "sha256": "a285c314e16ecedca7e0d2c8a7387442ff33e312d9afa92fc9743b29d5e0fff4",
+      "format": "png"
+    },
+    "figures/geometry_mistral_actual_answers.png": {
+      "type": "regular",
+      "size_bytes": 279014,
+      "sha256": "3b26fe3247a34e5a728bce3d8ea4f4f9f7ef9551a5e41cc492e25e004640156e",
+      "format": "png"
+    },
+    "figures/geometry_mistral_all_donors.png": {
+      "type": "regular",
+      "size_bytes": 200847,
+      "sha256": "e0caaec08bce529b0d0380ad2ff23608c7bdf47de35b7f1e38c5aef4b219d5c5",
+      "format": "png"
+    },
+    "figures/geometry_mistral_angle_radius.png": {
+      "type": "regular",
+      "size_bytes": 206254,
+      "sha256": "afd1236b3a85900d4fc6fd41f640017ca27883d4869b8466aeb386a0b7dc9967",
+      "format": "png"
+    },
+    "figures/geometry_mistral_final_controls.png": {
+      "type": "regular",
+      "size_bytes": 235899,
+      "sha256": "bd98b59558cda7799e07c19884e149768e73224ccd210f3ecdd99d7fa78dded7",
+      "format": "png"
+    },
+    "figures/geometry_mistral_layer_sweep.png": {
+      "type": "regular",
+      "size_bytes": 352541,
+      "sha256": "cb391b129cf556ce32a80f61f75f55369fe1c02b06f243642060efff19fca24e",
+      "format": "png"
+    },
+    "figures/geometry_mistral_projections.png": {
+      "type": "regular",
+      "size_bytes": 355719,
+      "sha256": "675d41867862b0feefa8e71e1e27c02efa1238590813e36dd7896f43b2d362a6",
+      "format": "png"
+    },
+    "figures/geometry_mistral_single_play.png": {
+      "type": "regular",
+      "size_bytes": 61898,
+      "sha256": "3898c13580440a4073c5d2e7e8993ac71a441b852649f9d40834f30d53e71683",
+      "format": "png"
+    },
+    "figures/geometry_plane_intervention.png": {
+      "type": "regular",
+      "size_bytes": 77814,
+      "sha256": "1569f17955f51800904190e28755caba259adae02568823b67f2e755edd6ee0c",
+      "format": "png"
+    },
+    "figures/geometry_projection_gallery.png": {
+      "type": "regular",
+      "size_bytes": 548976,
+      "sha256": "8603b5cbdabfafd75f880b85b7492b166354d33ece6d1556a424fcc12c68b547",
+      "format": "png"
+    },
+    "figures/geometry_projection_stability.png": {
+      "type": "regular",
+      "size_bytes": 315182,
+      "sha256": "4e69f8c59ab4142d79d30c6e8a89e32b626c7c0c3c73091a5714724712096e56",
+      "format": "png"
+    },
+    "figures/geometry_template_offsets.png": {
+      "type": "regular",
+      "size_bytes": 86406,
+      "sha256": "5c1fdc2d2fa51f9e0314dc4e7fbea2940f13d38b5558d6cad5fef97a99f3edaf",
+      "format": "png"
+    },
+    "source_snapshot/build_notebooks.py": {
+      "type": "regular",
+      "size_bytes": 4316,
+      "sha256": "0f34dae75c4c2b7604faeec248b182bd923e5ae6ad86d085a451b74ef25585f0",
+      "format": "utf8-text"
+    },
+    "source_snapshot/execute_learner.py": {
+      "type": "regular",
+      "size_bytes": 3263,
+      "sha256": "dccfdc78b78fb625d059ac0558e8e78f74b2ed0ae647178b5c061c68aec884f6",
+      "format": "utf8-text"
+    },
+    "source_snapshot/geometry_data.py": {
+      "type": "regular",
+      "size_bytes": 2676,
+      "sha256": "cc8045803c8437d859e44d60fe45414c9e2e95b5246fdb62ae0f8d7b8192037b",
+      "format": "utf8-text"
+    },
+    "source_snapshot/geometry_methods.py": {
+      "type": "regular",
+      "size_bytes": 14458,
+      "sha256": "a821887870ebc8e8b38bc5e94aadab6a93a431758b1f22248bf8b8967ff47aed",
+      "format": "utf8-text"
+    },
+    "source_snapshot/geometry_methods_tests.py": {
+      "type": "regular",
+      "size_bytes": 15392,
+      "sha256": "abd6502a4858330686a492e9038d9bec727787a5ed109ade557caed4ce6a3533",
+      "format": "utf8-text"
+    },
+    "source_snapshot/geometry_plotting.py": {
+      "type": "regular",
+      "size_bytes": 14510,
+      "sha256": "d185bc99e49504e6e32d39a39a2782bfd2a20814ac706aaa15eac39f3fadc1fe",
+      "format": "utf8-text"
+    },
+    "source_snapshot/geometry_protocol.json": {
+      "type": "regular",
+      "size_bytes": 4451,
+      "sha256": "4a4816aaeaa734d5ba3a3ba8860b70e1338fdc4d5388255a6414944f43408f78",
+      "format": "json"
+    },
+    "source_snapshot/geometry_study.py": {
+      "type": "regular",
+      "size_bytes": 25440,
+      "sha256": "c3cdf723ec7e7e557d3e960f29eeb45e73148059cce12d706ed2b3e785a772c6",
+      "format": "utf8-text"
+    },
+    "source_snapshot/lesson.md": {
+      "type": "regular",
+      "size_bytes": 101181,
+      "sha256": "50ddc5498463ad6d94212aed2c456f609bcf60c47b2a85c4a93bb0ac998b584c",
+      "format": "utf8-text"
+    }
+  },
+  "external_payloads": {},
+  "member_count": 30,
+  "total_member_bytes": 10268449
+}

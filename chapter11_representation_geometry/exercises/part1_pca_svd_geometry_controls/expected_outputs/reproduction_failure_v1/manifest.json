@@ -1,0 +1,12 @@
+{
+  "verification_report.json": "5ab2c698cc8938d1371873d52b5ca5a42620c828e3aa9b522bb87febd87644ec",
+  "geometry-lstsq-repeatability-v1.json": "0c1f55fc4417acdb458843ed96a648ce50a5200415a5f2ec308aca92ddc09608",
+  "fresh_cuda/actual_outcomes.json.gz": "18f43b734ddccf2bf1746273b1a04886f1a3b592aaf1af8b2d7ae8379bfa9b80",
+  "fresh_cuda/reproduction.json": "4df4fa14b4038af467ee424ae8e0e1bbd62d1b0fe5ca1c5a7ae3591fd13d0c0a",
+  "fresh_cuda/source_snapshot/geometry_study.py": "c3cdf723ec7e7e557d3e960f29eeb45e73148059cce12d706ed2b3e785a772c6",
+  "fresh_cuda/source_snapshot/geometry_cuda.py": "2eb46b7f72902ff28dfc537a9d4f4e01cae778099573a7878ff8834d4e286d60",
+  "fresh_cuda/source_snapshot/geometry_protocol.json": "d9e21dbb2203f581892863255bce312b77dc2a9b55c6db42119eaba3e0e28c96",
+  "fresh_cuda/source_snapshot/geometry_methods.py": "13a67de4475c3e6ba746489e2aaa06ef1a1ed26347438b90aee236305dfdf409",
+  "fresh_cuda/source_snapshot/geometry_evidence.py": "7d800a28bafeaae39926b098842f5edcb20d6d8f9a1b40caad3f7271e788c548",
+  "fresh_cuda/source_snapshot/geometry_data.py": "cc8045803c8437d859e44d60fe45414c9e2e95b5246fdb62ae0f8d7b8192037b"
+}

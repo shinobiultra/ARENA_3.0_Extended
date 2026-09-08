@@ -1,0 +1,18 @@
+{
+  "source_directory": "/home/bitwise/.cache/arena_extended/das/organism-development-v1",
+  "archive_sha256": "1e2f1263a23a9f26102416f37defc3fe36719a0c553415aaf9c8ea8ed490a992",
+  "members_sha256": {
+    "development.json": "e45a0521a5279308f5aee836b6d7883f5681e92c54f427a106da9733649848e7",
+    "source_snapshot/das_methods.py": "606c7446aee48d96367a258875040f03ad75adc2aead99d1cff46eae5ec9db0f",
+    "source_snapshot/das_methods_tests.py": "4ee04abb74056dc675d14b529d726edd8e92fcafc53f888479bda7300e6366af",
+    "source_snapshot/das_organism.py": "97302ad3c0ee5397704a6a04e2fe5164ac81bd15ebd03c5d15a01185fed356a6",
+    "source_snapshot/run_organism_development.py": "26f83a7ad315501f09a1a80b7d13362214e1cc4100e156f560b3956c393efa0a"
+  },
+  "large_tensors_retained_in_source_directory": {
+    "actual_tensors.pt": {
+      "sha256": "10fde03fb2e0689eacbe90d47854229d2b43c51fb59db4d6b467f5f7d313731c",
+      "size_bytes": 223633
+    }
+  },
+  "all_archive_members_read_back_and_verified": true
+}

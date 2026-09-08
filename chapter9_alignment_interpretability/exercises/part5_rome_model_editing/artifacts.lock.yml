@@ -1,0 +1,83 @@
+notebook_id: 9_5_rome_model_editing
+section: "9.5"
+title: Course ROME-like Rank-One Model Editing
+exercise_metadata:
+  EXERCISE_ID: 9_5_rome_model_editing
+  GT_TIER: GT-2
+  DIFFICULTY: 4
+  IMPORTANCE: 5
+  EXPECTED_RUNTIME: under 10 minutes on CPU
+  REQUIRES_GPU: false
+gt_tier: GT-2
+evidence_level: independent_constrained_oracle_plus_single_fact_negative_localization_case_study
+claim_scope: >-
+  On the pinned Pythia-70M-deduped checkpoint, one course ROME-like rank-one update
+  can be checked against an independent constrained linear-system oracle, written
+  into the complete biased MLP output, and made to increase the Rome continuation
+  on 20 held-out Louvre paraphrases. Norm-matched success at multiple layers and a
+  wrong position is negative localization evidence. This is not official ROME parity
+  or sufficient evidence of selective knowledge editing.
+required_gpu_gb: 0
+max_allowed_gpu_gb: 24
+models:
+  - id: EleutherAI/pythia-70m-deduped
+    source: huggingface
+    revision: e93a9faa9c77e5d09219f6c868bfc7a1bd65593c
+    precision: float32
+    gated: false
+datasets:
+  - id: course_authored_louvre_counterfactual_v2
+    source: course_authored_templates_with_ids_families_and_split_provenance
+    seed: 0
+    optimization_prompt_count: 8
+    heldout_paraphrase_count: 20
+    covariance_context_count: 24
+    known_fact_candidate_count: 24
+    expected_base_qualified_known_fact_count: 14
+    adversarial_prompt_count: 16
+    adversarial_stratum_count: 4
+    unrelated_prompt_count: 20
+    fluency_text_count: 10
+expected_metrics:
+  independent_constrained_oracle: true
+  exact_toy_write_error_max: 1.0e-10
+  exact_toy_protected_error_max: 1.0e-10
+  rank_one_update_rank: 1
+  real_affine_module_write_error_max: 1.0e-4
+  official_rome_parity_established: false
+  missing_wikipedia_covariance_parity_reported: true
+  missing_random_prefix_parity_reported: true
+  missing_released_value_objective_parity_reported: true
+  independent_activation_patching_condition_count: 9
+  layer_comparisons_norm_matched: true
+  negative_localization_result_reported: true
+  report_pairwise_preference_separately: true
+  report_target_top1_separately: true
+  report_full_target_likelihood: true
+  factual_locality_uses_base_qualified_denominator: true
+  report_adversarial_strata_separately: true
+  legitimate_rome_targets_excluded_from_leakage: true
+  report_value_optimizer_preservation_kl: true
+  report_localized_louvre_repetition_only: true
+  selectivity_claim_accepted: false
+controls:
+  - unedited_base
+  - complete_six_layer_sweep
+  - norm_matched_wrong_position
+  - five_same_norm_random_rank_one_updates
+  - norm_matched_shuffled_city_targets
+  - disjoint_base_qualified_known_fact_candidates
+  - four_stratified_adversarial_prompt_families
+  - unrelated_prompt_side_effects
+  - heldout_text_perplexity
+  - one_localized_louvre_generation_probe
+safety_notes:
+  - The edit is a harmless geographic counterfactual used only for pedagogy.
+  - Legitimate Rome-target prompts are reported separately and never counted as leakage.
+  - The section reports adversarial leakage and one repetitive Louvre generation as negative evidence.
+  - It does not claim durable knowledge change, repeated-edit safety, or deployment readiness.
+
+candidate_status: negative_localization_case_pending_independent_review
+freshness_inputs:
+  - chapter9_alignment_interpretability/exercises/part5_rome_model_editing/build_notebooks.py
+  - arena_ext/notebook_checks.py

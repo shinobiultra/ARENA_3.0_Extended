@@ -1,0 +1,120 @@
+notebook_id: 11_4_concept_erasure
+section: '11.4'
+title: Concept Erasure
+execution_device: cpu
+exercise_metadata:
+  EXERCISE_ID: 11_4_concept_erasure
+  GT_TIER: GT-0
+  DIFFICULTY: 4
+  IMPORTANCE: 5
+  EXPECTED_RUNTIME: About four hours study; several minutes for the complete reference
+    CPU notebook
+  REQUIRES_GPU: false
+gt_tier: GT-0
+evidence_level: exact_constrained_erasure_oracles_and_native_gpt2_concept_interventions
+claim_scope: Learner-implemented centered moments, singular whitening and affine LEACE,
+  exact and independent constrained oracles, refitted probes and a nonlinear counterexample.
+  Frozen GPT-2 compares two sites and 106 retained conditions on 288 role and 384
+  object prompts. Fitting-set guardedness, new-sentence recovery, target damage and
+  collateral damage remain separate; full information removal, unique causal identification
+  and all-layer scrubbing are not claimed.
+required_gpu_gb: 0
+max_allowed_gpu_gb: 0
+safety_notes:
+- Generated name-role and object sentences form a finite task; every pretrained weight
+  stays frozen.
+models:
+- id: gpt2
+  source: huggingface
+  revision: 607a30d783dfa663caf39e06633721c8d4cfcd7e
+  precision: float32
+  gated: false
+datasets:
+- id: frozen_concept_erasure_role_and_object_v1
+  source: generated
+  protocol: erasure_protocol.py
+  train_rows: 512
+  probe_train_rows: 320
+  development_role_rows: 160
+  final_role_rows: 288
+  final_object_rows: 384
+expected_metrics:
+  tests_passed: true
+  accepted: true
+  test_count: 11
+  native_model_reloaded: true
+  actual_learner_passed: true
+  fresh_reproduction_passed: true
+  own_answer_code_cells: 24
+  embedded_figures: 12
+  final_prompt_count: 672
+  retained_final_outcomes: 71232
+  fresh_compared_examples: 71232
+  fresh_condition_batches: 106
+  fresh_max_logit_error_max: 1.0e-05
+  fresh_top_token_mismatches: 0
+  primary_metric_matches_actual_tokens: true
+  weights_unchanged: true
+  model_gradients_absent: true
+  all_erasers_and_probes_refitted: true
+  final_used_for_selection: false
+  whole_paper_replication: false
+controls:
+- four_point_ground_truth
+- independent_numpy_constrained_optimum
+- pinned_author_reference_parity
+- singular_and_translated_covariance
+- useful_side_variable
+- old_vs_refitted_probe
+- nonlinear_equal_mean_counterexample
+- convex_loss_vs_hard_threshold_accuracy
+- no_intervention
+- orthogonal_covariance_removal
+- old_probe_coefficient_removal
+- independent_probe_fitting_split
+- two_prescribed_sites
+- empirical_and_fixed_covariance_mixture
+- 16_random_rank_one_draws_per_site
+- 16_per_example_norm_matched_draws_per_eraser_per_site
+- unrelated_object_task
+- all_native_errors_retained
+- new_template_and_name_pair_final
+- full_vocabulary_metrics
+- native_hook_parity
+- fresh_cpu_all_conditions_and_refits
+freshness_inputs:
+- chapter11_representation_geometry/exercises/part4_concept_erasure/build_notebooks.py
+- chapter11_representation_geometry/exercises/part4_concept_erasure/erasure_data.py
+- chapter11_representation_geometry/exercises/part4_concept_erasure/erasure_methods.py
+- chapter11_representation_geometry/exercises/part4_concept_erasure/erasure_methods_tests.py
+- chapter11_representation_geometry/exercises/part4_concept_erasure/erasure_native.py
+- chapter11_representation_geometry/exercises/part4_concept_erasure/erasure_protocol.py
+- chapter11_representation_geometry/exercises/part4_concept_erasure/erasure_reproduction.py
+- chapter11_representation_geometry/exercises/part4_concept_erasure/erasure_reproduction_tests.py
+- chapter11_representation_geometry/exercises/part4_concept_erasure/execute_learner.py
+- chapter11_representation_geometry/exercises/part4_concept_erasure/publish_study.py
+- chapter11_representation_geometry/exercises/part4_concept_erasure/reference_parity.py
+- chapter11_representation_geometry/exercises/part4_concept_erasure/run_development.py
+- chapter11_representation_geometry/exercises/part4_concept_erasure/solutions.py
+- chapter11_representation_geometry/exercises/part4_concept_erasure/tests.py
+- chapter11_representation_geometry/exercises/part4_concept_erasure/lesson.md
+- chapter11_representation_geometry/exercises/part4_concept_erasure/native_protocol.md
+- chapter11_representation_geometry/exercises/part4_concept_erasure/README.md
+- chapter11_representation_geometry/exercises/part4_concept_erasure/expected_outputs/learner_execution.json
+- chapter11_representation_geometry/exercises/part4_concept_erasure/expected_outputs/native_summary.json
+- chapter11_representation_geometry/exercises/part4_concept_erasure/expected_outputs/fresh_reproduction.json
+- chapter11_representation_geometry/exercises/part4_concept_erasure/expected_outputs/README.md
+- chapter11_representation_geometry/instructions/assets/erasure_four_point_geometry.png
+- chapter11_representation_geometry/instructions/assets/erasure_constraint_and_distortion.png
+- chapter11_representation_geometry/instructions/assets/erasure_probe_refitting.png
+- chapter11_representation_geometry/instructions/assets/erasure_nonlinear_counterexample.png
+- chapter11_representation_geometry/instructions/assets/erasure_covariance_play.png
+- chapter11_representation_geometry/instructions/assets/erasure_native_development.png
+- chapter11_representation_geometry/instructions/assets/erasure_final_probe_recovery.png
+- chapter11_representation_geometry/instructions/assets/erasure_covariance_transfer.png
+- chapter11_representation_geometry/instructions/assets/erasure_final_task_and_collateral.png
+- chapter11_representation_geometry/instructions/assets/erasure_distortion_and_native_kl.png
+- chapter11_representation_geometry/instructions/assets/erasure_actual_token_gallery.png
+- chapter11_representation_geometry/instructions/assets/erasure_native_strength_play.png
+- chapter11_representation_geometry/exercises/part3_causal_abstraction_das/das_native.py
+- chapter11_representation_geometry/exercises/part3_causal_abstraction_das/run_native_development.py

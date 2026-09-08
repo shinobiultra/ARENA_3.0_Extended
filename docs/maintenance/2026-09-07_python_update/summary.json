@@ -1,0 +1,31 @@
+{
+  "course_checkpoint": "ff6d06e323b54c32c6b9df2f9f3bc369ecd48e19",
+  "previous_uv_lock_sha256": "03f77ffac99858cd34a653cd703728b9a868c87686a86cef78523a7afa9a6494",
+  "updated_uv_lock_sha256": "e96e946bb00f50592d32c1b3bf453fca4482a0097731120defbebcd978f019eb",
+  "scope": "project Python packages only, preserve explicit pyproject compatibility pins",
+  "command": "uv lock --upgrade; BNB_CUDA_VERSION=130 uv sync --locked --inexact",
+  "installed_version_changes": 110,
+  "installed_new_packages": 9,
+  "locked_version_changes": 111,
+  "locked_packages_added": 10,
+  "locked_packages_removed": 7,
+  "python": "3.14.2",
+  "uv": "0.12.10",
+  "system_packages_changed": false,
+  "original_preservation": "PASS",
+  "package_dependency_check": "PASS",
+  "root_cpu_tests": {
+    "passed": 460,
+    "failed": 9,
+    "seconds": 25.7
+  },
+  "scientific_tests": {
+    "passed": 31,
+    "failed": 0,
+    "seconds": 1.79
+  },
+  "prior_gate_failures": 6,
+  "new_environment_freshness_gate_failures": 3,
+  "full_notebook_reproduction_on_updated_environment": "NOT_YET_RUN",
+  "fixture_packaging_fix": "Existing six diffusion text_data files were ignored by *data; now explicitly included. Five gzip and decoded hashes verified against original manifest."
+}

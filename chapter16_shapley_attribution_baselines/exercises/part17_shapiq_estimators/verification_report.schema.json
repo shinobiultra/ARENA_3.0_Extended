@@ -1,0 +1,352 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ARENA16.17 SHAP-IQ estimator verification report",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "notebook_id",
+    "date_run",
+    "git_commit",
+    "report_inputs",
+    "gt_tier",
+    "evidence_level",
+    "claim_scope",
+    "gpu_name",
+    "peak_vram_gb",
+    "wall_clock_seconds",
+    "models",
+    "datasets",
+    "tests_passed",
+    "metrics",
+    "baselines",
+    "negative_controls",
+    "ood_tests",
+    "known_failures",
+    "safety_notes",
+    "accepted"
+  ],
+  "properties": {
+    "notebook_id": {
+      "const": "16_17_one_query_many_interactions"
+    },
+    "date_run": {
+      "type": "string",
+      "minLength": 1
+    },
+    "git_commit": {
+      "type": "string",
+      "minLength": 1
+    },
+    "report_inputs": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "schema_version",
+        "algorithm",
+        "combined_sha256",
+        "files"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": 1
+        },
+        "algorithm": {
+          "const": "sha256"
+        },
+        "combined_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "files": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "path",
+              "sha256",
+              "size_bytes"
+            ],
+            "properties": {
+              "path": {
+                "type": "string",
+                "minLength": 1
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              },
+              "size_bytes": {
+                "type": "integer",
+                "minimum": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    "gt_tier": {
+      "enum": [
+        "GT-0",
+        "GT-1",
+        "GT-2",
+        "GT-3",
+        "GT-4"
+      ]
+    },
+    "evidence_level": {
+      "type": "string",
+      "minLength": 1
+    },
+    "claim_scope": {
+      "type": "string",
+      "minLength": 1
+    },
+    "gpu_name": {
+      "type": "string"
+    },
+    "peak_vram_gb": {
+      "const": 0.0
+    },
+    "wall_clock_seconds": {
+      "type": "number",
+      "minimum": 0
+    },
+    "models": {
+      "type": "array",
+      "minItems": 2
+    },
+    "datasets": {
+      "type": "array",
+      "minItems": 1
+    },
+    "tests_passed": {
+      "const": true
+    },
+    "metrics": {
+      "type": "object",
+      "required": [
+        "notebook_contract",
+        "gpu_test"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "notebook_contract": {
+          "type": "object",
+          "additionalProperties": true,
+          "required": [
+            "tests_passed",
+            "accepted",
+            "test_count",
+            "student_method_exercises",
+            "student_core_functions"
+          ],
+          "properties": {
+            "tests_passed": {
+              "const": true
+            },
+            "accepted": {
+              "const": true
+            },
+            "test_count": {
+              "const": 9
+            },
+            "student_method_exercises": {
+              "const": 8
+            },
+            "student_core_functions": {
+              "const": 9
+            }
+          }
+        },
+        "gpu_test": {
+          "type": "object",
+          "additionalProperties": true,
+          "required": [
+            "actual_learner_passed",
+            "own_answer_code_cells",
+            "embedded_figures",
+            "native_model_retrained_in_this_report",
+            "cached_model_inputs_used",
+            "fresh_reproduction_passed",
+            "fresh_compared_arrays",
+            "fresh_compared_elements",
+            "fresh_comparison",
+            "model_fits",
+            "known_model_state_hashes_matched",
+            "train_rows",
+            "explanation_rows",
+            "audit_rows",
+            "model_games",
+            "coalition_values",
+            "donor_predictions",
+            "replicates_per_proposal",
+            "proposals",
+            "nested_draw_budgets",
+            "signed_pair_estimates",
+            "author_reference_version",
+            "author_reference_games",
+            "author_reference_algorithms",
+            "author_reference_passed",
+            "logical_query_benchmark",
+            "precomputed_oracle",
+            "fresh_predictive_discovery",
+            "method_superiority_is_acceptance_gate",
+            "cross_split_recipe_overlap",
+            "review_scope",
+            "learner_evidence_sha256",
+            "fresh_evidence_sha256"
+          ],
+          "properties": {
+            "actual_learner_passed": {
+              "const": true
+            },
+            "own_answer_code_cells": {
+              "const": 22
+            },
+            "embedded_figures": {
+              "const": 10
+            },
+            "native_model_retrained_in_this_report": {
+              "const": true
+            },
+            "cached_model_inputs_used": {
+              "const": false
+            },
+            "fresh_reproduction_passed": {
+              "const": true
+            },
+            "fresh_compared_arrays": {
+              "const": 663
+            },
+            "fresh_compared_elements": {
+              "const": 118275724
+            },
+            "fresh_comparison": {
+              "const": "exact_recursive_dtype_shape_value_sha256_including_container_order"
+            },
+            "model_fits": {
+              "const": 7
+            },
+            "known_model_state_hashes_matched": {
+              "const": 21
+            },
+            "train_rows": {
+              "const": 758
+            },
+            "explanation_rows": {
+              "const": 153
+            },
+            "audit_rows": {
+              "const": 119
+            },
+            "model_games": {
+              "const": 1904
+            },
+            "coalition_values": {
+              "const": 487424
+            },
+            "donor_predictions": {
+              "const": 31195136
+            },
+            "replicates_per_proposal": {
+              "const": 32
+            },
+            "proposals": {
+              "const": [
+                "kernel",
+                "uniform"
+              ]
+            },
+            "nested_draw_budgets": {
+              "const": [
+                16,
+                32,
+                64,
+                128,
+                256,
+                512,
+                1024
+              ]
+            },
+            "signed_pair_estimates": {
+              "const": 47767552
+            },
+            "author_reference_version": {
+              "const": "1.5.2"
+            },
+            "author_reference_games": {
+              "const": 7
+            },
+            "author_reference_algorithms": {
+              "const": 3
+            },
+            "author_reference_passed": {
+              "const": true
+            },
+            "logical_query_benchmark": {
+              "const": true
+            },
+            "precomputed_oracle": {
+              "const": true
+            },
+            "fresh_predictive_discovery": {
+              "const": false
+            },
+            "method_superiority_is_acceptance_gate": {
+              "const": false
+            },
+            "cross_split_recipe_overlap": {
+              "const": 0
+            },
+            "review_scope": {
+              "const": "author_review_not_independent"
+            },
+            "learner_evidence_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "fresh_evidence_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          }
+        }
+      }
+    },
+    "baselines": {
+      "type": "object",
+      "required": [
+        "declared_controls",
+        "expected_metrics"
+      ],
+      "properties": {
+        "declared_controls": {
+          "type": "array",
+          "minItems": 1
+        },
+        "expected_metrics": {
+          "type": "object",
+          "minProperties": 1
+        }
+      }
+    },
+    "negative_controls": {
+      "type": "object"
+    },
+    "ood_tests": {
+      "type": "object"
+    },
+    "known_failures": {
+      "type": "array",
+      "maxItems": 0
+    },
+    "safety_notes": {
+      "type": "array",
+      "minItems": 1
+    },
+    "accepted": {
+      "const": true
+    }
+  }
+}

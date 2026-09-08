@@ -1,0 +1,85 @@
+{
+  "status": "PASS",
+  "scope": "full",
+  "completed_from_own_answers": true,
+  "fresh_experiments_required": true,
+  "input_files": {
+    "lesson.md": "db335b3a3a15dad037dcb0ca4c99aa1537c42855d36964c746a17af4ef4afa53",
+    "build_notebooks.py": "c184d5d09c9092614fa61e98ef050b02ac78f00fc9c38dd523b8c5b14d748884",
+    "direction_cuda.py": "6082021dd955d014e3a920f62904f7de9944206be5760ecad517380bfc916ead",
+    "direction_data.py": "fcd8e13ec297b4b1d4ac030b93aa5ecc9e004c9537febe4d42bb416a33dc6dfe",
+    "direction_evaluation.py": "6de36a214905e664bb9206421389f598729116a9959cd1c5d5adf958bccabdd3",
+    "direction_evaluation_tests.py": "2b4559d924ce2b29685d634de2e0bc5ba77b24914146b7fdffd1bcf9f0362f33",
+    "direction_evidence.py": "60782a271c2787a0b571e7aaf07d3f7370d16875e5acd5393ac0a0f0acbc6883",
+    "direction_evidence_tests.py": "74e498fa69b69c6f76caa2c122f35103cc0dd303c2a0d835aaf6abeae8b5a275",
+    "direction_figures.py": "4be6c42688f4e10bc118061d13d93d101d73762f7cfbd5c0b90da671e72ba031",
+    "direction_final.py": "e8dca58f6e1eb91ea745f3f87139ca6279d1dc7c41edefdbc73cfb0061579225",
+    "direction_method_tests.py": "324406004a8a28349ef2a4051fa0d5a1a6b5d22784d64820bc599a0d93952928",
+    "direction_methods.py": "d558c69c1286f23e6b8a1a4288d9d514e60440c1506b0aff743c97e6dc9eef9a",
+    "execute_learner.py": "73ec89b28def0d3e63514d3f2894939aa848c1b2fc31330117dee0e5cf1d7ea0",
+    "run_direction_study.py": "8ef499c9d7d1905361102ff30518e886fd97a30d17ae4cd6255ea95aaa37f9f3",
+    "solutions.py": "fa395b0af21f372b086ce05f33bb473220a8651e4dff8e7f6783487039600712",
+    "tests.py": "14e59cbc72600e76a7665e96052511810392e31aa2e6ed300a714ffc342ec7b3",
+    "utils.py": "780923f8b6bd41c57f9bfd98caecf6fda3d2642f85fc40f11e7f1c130c0bbf28"
+  },
+  "output_directory_override": "/tmp/refusal-full-own-answer-release-v2",
+  "full_release_validation": true,
+  "elapsed_seconds": 539.0771407920038,
+  "code_cells_executed": 26,
+  "figures": {
+    "refusal_benign_generations.png": "a797c23cdb0ab438762edfca91ff5639ddbbeb98d5776faed12f9c97c8ba880a",
+    "refusal_development_selection.png": "ed413d1271cb2c8b7543e806be90299ae105b9ad1d9300ba28be779c2a00d732",
+    "refusal_development_separation.png": "00cd667d068aed70d4dcaee8d47356e82cd583768c558abe16d7c258c6b69a0d",
+    "refusal_final_curves.png": "40b8f1a48dd4d0505133103982f5463a9b5ed93be87a68cf1813607eecd6539d",
+    "refusal_final_separation.png": "3a3a11ab58c0bd93d508820121776ea4083198148504f1722d68cfa7b79650ed",
+    "refusal_training_geometry.png": "dc9af414445fe9d2bf48464ccb197928d4d3b042ea8eaffcd6a8d527bae2a317"
+  },
+  "sources_changed_during_run": [],
+  "measurement_audit": {
+    "raw_metrics_recomputed": true,
+    "development_candidates": 15,
+    "selection_passed": true,
+    "selected_layer": 16,
+    "selected_offset": -1,
+    "final_conditions": 85,
+    "final_separation": {
+      "auroc": 1.0,
+      "accuracy": 0.9583333333333334,
+      "margin": 5.566188812255859
+    },
+    "final_baseline": {
+      "refusal_category_marker_rate": 0.7222222222222222,
+      "benign_category_marker_rate": 0.027777777777777776
+    },
+    "final_capability_baseline": 0.875,
+    "addition_on_benign": {
+      "n": 36,
+      "baseline_rate": 0.027777777777777776,
+      "intervention_rate": 0.75,
+      "delta": 0.7222222222222222,
+      "new_markers": 27,
+      "removed_markers": 1,
+      "initially_without_marker": 35,
+      "initially_with_marker": 1,
+      "conditional_new_rate": 0.7714285714285715,
+      "conditional_removed_rate": 1.0
+    },
+    "ablation_on_refusal": {
+      "n": 36,
+      "baseline_rate": 0.7222222222222222,
+      "intervention_rate": 0.0,
+      "delta": -0.7222222222222222,
+      "new_markers": 0,
+      "removed_markers": 26,
+      "initially_without_marker": 10,
+      "initially_with_marker": 26,
+      "conditional_new_rate": 0.0,
+      "conditional_removed_rate": 1.0
+    },
+    "sensitive_marker_flags_require_fresh_model_check": true,
+    "marker_absence_is_safety_or_correctness": false
+  },
+  "published_evidence_sha256": "a29107e4f956d8878e36efb6a5eac308a173fe7af5b7a21a1c4c990b4997df99",
+  "published_notebook_sha256": "03f5541cec6a8980d5aefd04886b22758ecfaba31e811ed8bc1157ee44f5ae2e",
+  "published_exercises_sha256": "8934e98feb9237b6f56c142e28cb2fb6d4686f6ca1a95d468715dda8144e82a9"
+}

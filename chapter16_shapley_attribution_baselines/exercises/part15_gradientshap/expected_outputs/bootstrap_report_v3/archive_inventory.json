@@ -1,0 +1,123 @@
+{
+  "schema_version": 1,
+  "status": "PASS",
+  "captured_at_utc": "2026-09-07T03:01:40.215397+00:00",
+  "bootstrap_report_source": {
+    "path": "/home/bitwise/Documents/ARENA_3.0_Extended/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/verification_report.json",
+    "sha256": "cba34a9396f575e5fa2b506df9e50b66b1fc41e5b2ef2fcd6b60111716bafc14",
+    "size_bytes": 26496
+  },
+  "bootstrap_log": {
+    "path": "/home/bitwise/.cache/arena_extended/gradientshap/review-publication-v3/bootstrap_report_v3.log",
+    "sha256": "88065acebb19cdee6c2b64e17895e34102b4db7b18eb1c742ecec9eda27e75e9",
+    "size_bytes": 738
+  },
+  "report_input_count": 56,
+  "report_inputs_combined_sha256": "3071d2493a3689f2252249c7be8e216f488d2fa18fb0b42da4fbe395b3a7bb61",
+  "report_archive": {
+    "schema_version": 1,
+    "status": "PASS",
+    "label": "bootstrap_normal_report_v3",
+    "archive": "/home/bitwise/Documents/ARENA_3.0_Extended/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/expected_outputs/bootstrap_report_v3/evidence.tar.gz",
+    "sha256": "268d4b62034958b156c7b6d9ea67c1ad7fc0401948cbf2402d0ca5a7f611c511",
+    "size_bytes": 7633463,
+    "verified_included_files": 58,
+    "verified_external_files": 0,
+    "historical_status": {
+      "report_sha256": "cba34a9396f575e5fa2b506df9e50b66b1fc41e5b2ef2fcd6b60111716bafc14",
+      "report_accepted": true,
+      "tests_passed": true,
+      "report_input_count": 56,
+      "report_inputs_combined_sha256": "3071d2493a3689f2252249c7be8e216f488d2fa18fb0b42da4fbe395b3a7bb61",
+      "fresh_reproduction_sha256": "27577d7beea59dc1408ed83aa690e7629b74ff5673a18fefc2d71f648d61fb54",
+      "bootstrap_log_sha256": "88065acebb19cdee6c2b64e17895e34102b4db7b18eb1c742ecec9eda27e75e9"
+    },
+    "external_files": {},
+    "receipt": "/home/bitwise/Documents/ARENA_3.0_Extended/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/expected_outputs/bootstrap_report_v3/evidence.tar.gz.json",
+    "receipt_sha256": "9e654ae5b62bfab163998f18c089940dbe023e3167647d3b0f4f6f1c7ff1d3dc"
+  },
+  "fresh_archive": {
+    "schema_version": 1,
+    "status": "PASS",
+    "label": "bootstrap_report_fresh_cpu_v3",
+    "archive": "/home/bitwise/Documents/ARENA_3.0_Extended/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/expected_outputs/bootstrap_fresh_v3/evidence.tar.gz",
+    "sha256": "68a3929b36c6e7bed7527b33ba2b86cf8448c63a3a3551fea9a20e497e4e863d",
+    "size_bytes": 31924734,
+    "verified_included_files": 53,
+    "verified_external_files": 3,
+    "historical_status": {
+      "reproduction_status": "PASS",
+      "native_model_retrained": true,
+      "cached_model_inputs_used": false,
+      "changed_sources": [],
+      "comparisons": {
+        "arrays": 1442,
+        "array_elements": 464237288,
+        "records": 2730,
+        "scalars": 872,
+        "max_absolute_error": 0.0,
+        "comparison": "exact_recursive_value_sha256"
+      },
+      "source_directory": "/home/bitwise/.cache/arena_extended/gradientshap/report_reproductions/report-q9pkfw18/fresh_cpu"
+    },
+    "external_files": {
+      "fresh_cpu/fresh_run/evaluated.pt": {
+        "source_absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/report_reproductions/report-q9pkfw18/fresh_cpu/fresh_run/evaluated.pt",
+        "sha256": "462e32a9a0b52617af8ea9fe6c75ea10b2614bac2ae7b09a28bdcab9a450f49d",
+        "size_bytes": 1577241419,
+        "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/report_reproductions/report-q9pkfw18/fresh_cpu/fresh_run/evaluated.pt",
+        "recursive_manifest": {
+          "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/report_reproductions/report-q9pkfw18/fresh_cpu/fresh_run/evaluated.manifest.json",
+          "sha256": "ad2e546b0ebc9c21bef1d67ddbc066081021d3c6f329fe424ed5587b664cb15f",
+          "artifact_sha256": "462e32a9a0b52617af8ea9fe6c75ea10b2614bac2ae7b09a28bdcab9a450f49d",
+          "artifact_size_bytes": 1577241419,
+          "record_count": 1019,
+          "counts": {
+            "arrays": 720,
+            "array_elements": 216054404,
+            "records": 1019
+          }
+        }
+      },
+      "fresh_cpu/fresh_run/prepared.pt": {
+        "source_absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/report_reproductions/report-q9pkfw18/fresh_cpu/fresh_run/prepared.pt",
+        "sha256": "af7079beb52083d3c1955aabe20f13d3a8a71f40404e5f10dc4f8ac6822e7853",
+        "size_bytes": 302399289,
+        "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/report_reproductions/report-q9pkfw18/fresh_cpu/fresh_run/prepared.pt",
+        "recursive_manifest": {
+          "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/report_reproductions/report-q9pkfw18/fresh_cpu/fresh_run/prepared.manifest.json",
+          "sha256": "756c577d673fec5e816b88f82883b02dad040a84028dff11240f1b8d4b3b83fb",
+          "artifact_sha256": "af7079beb52083d3c1955aabe20f13d3a8a71f40404e5f10dc4f8ac6822e7853",
+          "artifact_size_bytes": 302399289,
+          "record_count": 371,
+          "counts": {
+            "arrays": 217,
+            "array_elements": 41552409,
+            "records": 371
+          }
+        }
+      },
+      "fresh_cpu/fresh_run/replicate_samples.pt": {
+        "source_absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/report_reproductions/report-q9pkfw18/fresh_cpu/fresh_run/replicate_samples.pt",
+        "sha256": "46238cad0348f56be4807507256233884af3588037a434197f0cbe0f0aa1a0fa",
+        "size_bytes": 1610614447,
+        "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/report_reproductions/report-q9pkfw18/fresh_cpu/fresh_run/replicate_samples.pt",
+        "recursive_manifest": {
+          "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/report_reproductions/report-q9pkfw18/fresh_cpu/fresh_run/replicate_samples.manifest.json",
+          "sha256": "b4715a058eb3acb905a573d162a6fa5e79a5b90929af269d4085022e072dee4c",
+          "artifact_sha256": "46238cad0348f56be4807507256233884af3588037a434197f0cbe0f0aa1a0fa",
+          "artifact_size_bytes": 1610614447,
+          "record_count": 1,
+          "counts": {
+            "arrays": 1,
+            "array_elements": 201326592,
+            "records": 1
+          }
+        }
+      }
+    },
+    "receipt": "/home/bitwise/Documents/ARENA_3.0_Extended/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/expected_outputs/bootstrap_fresh_v3/evidence.tar.gz.json",
+    "receipt_sha256": "a57f3d7757c9e4718f57a555089e335ea93c14e6e7b8615295f5a024f449f665"
+  },
+  "no_new_fit_or_reproduction": true
+}

@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="340" viewBox="0 0 920 340" role="img" aria-labelledby="title desc">
+  <title id="title">Exact Shapley validation loop</title>
+  <desc id="desc">A validation loop for exact Shapley on complete finite games.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f8fafc; }
+      .panel { fill: #ffffff; stroke: #334155; stroke-width: 2; rx: 14; }
+      .accent { fill: #0f766e; }
+      .accent2 { fill: #7c2d12; }
+      .text { fill: #0f172a; font-family: Inter, Arial, sans-serif; font-size: 18px; font-weight: 700; }
+      .small { fill: #334155; font-family: Inter, Arial, sans-serif; font-size: 14px; }
+      .arrow { stroke: #475569; stroke-width: 3; fill: none; marker-end: url(#arrowhead); }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#475569"/>
+    </marker>
+  </defs>
+  <rect class="bg" x="0" y="0" width="920" height="340"/>
+  <rect class="panel" x="40" y="70" width="170" height="160"/>
+  <circle class="accent" cx="72" cy="105" r="12"/>
+  <text class="text" x="92" y="112">Finite game</text>
+  <text class="small" x="62" y="145">Enumerate all</text>
+  <text class="small" x="62" y="166">2^n coalitions</text>
+  <text class="small" x="62" y="187">No missing values</text>
+  <path class="arrow" d="M220 150 H300"/>
+  <rect class="panel" x="310" y="70" width="190" height="160"/>
+  <circle class="accent" cx="342" cy="105" r="12"/>
+  <text class="text" x="362" y="112">Exact target</text>
+  <text class="small" x="332" y="145">Weighted marginal</text>
+  <text class="small" x="332" y="166">effects match</text>
+  <text class="small" x="332" y="187">permutation average</text>
+  <path class="arrow" d="M510 150 H590"/>
+  <rect class="panel" x="600" y="70" width="230" height="160"/>
+  <circle class="accent2" cx="632" cy="105" r="12"/>
+  <text class="text" x="652" y="112">Controls</text>
+  <text class="small" x="622" y="145">Efficiency conserves</text>
+  <text class="small" x="622" y="166">credit; shuffled labels</text>
+  <text class="small" x="622" y="187">must fail attribution</text>
+  <path class="arrow" d="M705 240 C620 310 310 310 205 240"/>
+  <text class="small" x="345" y="292">If a check fails, debug the attribution before scaling up.</text>
+</svg>

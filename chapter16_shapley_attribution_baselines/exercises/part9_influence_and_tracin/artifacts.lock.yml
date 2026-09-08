@@ -1,0 +1,121 @@
+notebook_id: 16_9_influence_functions_and_tracin
+section: '16.9'
+title: Influence Functions and TracIn
+execution_device: cpu
+exercise_metadata:
+  EXERCISE_ID: 16_9_influence_functions_and_tracin
+  GT_TIER: GT-0
+  DIFFICULTY: 4
+  IMPORTANCE: 5
+  EXPECTED_RUNTIME: Several hours study; about fourteen seconds for the complete reference CPU notebook
+    on the development machine
+  REQUIRES_GPU: false
+gt_tier: GT-0
+evidence_level: exact_derivative_oracles_and_real_digit_retraining
+claim_scope: Visible inverse-Hessian influence, exact and Taylor single-example SGD accounting, TracInCP
+  and affine ghost products. A regularized 65-parameter digit classifier connects every score to
+  actual writer-separated query predictions, all leave-one-out refits and matched deletion interventions.
+  This does not establish nonconvex-network attribution accuracy, exact Data Shapley, tied-token
+  ghost products or whole-paper replication.
+required_gpu_gb: 0
+max_allowed_gpu_gb: 0
+models:
+- id: course_digit1_7_logistic65
+  source: generated_training_run
+  revision: frozen_native_protocol_v1
+  precision: float64
+  gated: false
+datasets:
+- id: uci_optdigits
+  source: uci
+  revision: 0d7b054fea010270e9b3f06411c654c5e59547732ad626381980baffe0a23fb0
+  license: CC BY 4.0
+  train: 128
+  ranking: 48
+  final: 64
+  manifest: data_manifest.json
+expected_metrics:
+  tests_passed: true
+  accepted: true
+  test_count: 14
+  actual_learner_passed: true
+  own_answer_code_cells: 40
+  embedded_figures: 18
+  native_model_retrained: true
+  native_model_retrained_in_this_report: true
+  native_evidence_reused: false
+  fresh_reproduction_passed: true
+  reference_refits: 930
+  sgd_paths: 6
+  sgd_updates: 30720
+  fresh_compared_tensors: 1048
+  fresh_compared_elements: 16726855
+  fresh_max_error_max: 1.0e-10
+  independent_scipy_checks: 10
+  final_query_count: 64
+  final_used_for_selection: false
+  exploratory_refits: 33
+  whole_paper_replication: false
+controls:
+- exact_quadratic_oracle
+- independent_autograd_derivatives
+- separate_and_batched_newton_refits
+- independent_scipy_optima
+- checked_hvp_cg_residuals
+- wrong_regularization_normalization
+- unfinished_optimization
+- all_damping_values
+- all_weight_perturbations
+- clean_and_corrupted_training_labels
+- exact_recorded_sgd_accounting
+- omitted_regularizer_control
+- all_checkpoint_choices_and_order_seeds
+- gradient_and_signed_pixel_baselines
+- 32_class_matched_random_deletions
+- ranking_only_policy_selection
+- all_final_sign_errors_retained
+- complete_vs_factored_affine_gradients
+- rolled_residual_ghost_control
+- fresh_all_model_refits_and_predictions
+- editable_step_size_and_native_query_plays
+safety_notes:
+- Public digit images; original labels retained alongside the deliberate corruption.
+freshness_inputs:
+- chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/attribution_contract_tests.py
+- chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/attribution_data.py
+- chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/attribution_data_tests.py
+- chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/attribution_methods.py
+- chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/attribution_methods_tests.py
+- chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/attribution_play.py
+- chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/attribution_reference.py
+- chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/attribution_study.py
+- chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/attribution_study_tests.py
+- chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/build_notebooks.py
+- chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/execute_learner.py
+- chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/publish_study.py
+- chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/reproduce_native.py
+- chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/run_development.py
+- chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/lesson.md
+- chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/native_protocol.md
+- chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/data_manifest.json
+- chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/expected_outputs/learner_execution.json
+- chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/expected_outputs/native_summary.json
+- chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/expected_outputs/fresh_reproduction.json
+- chapter16_shapley_attribution_baselines/instructions/assets/attribution_checkpoint_choices.png
+- chapter16_shapley_attribution_baselines/instructions/assets/attribution_curvature_solve.png
+- chapter16_shapley_attribution_baselines/instructions/assets/attribution_exact_training_path.png
+- chapter16_shapley_attribution_baselines/instructions/assets/attribution_final_deletion_curves.png
+- chapter16_shapley_attribution_baselines/instructions/assets/attribution_final_derivative_controls.png
+- chapter16_shapley_attribution_baselines/instructions/assets/attribution_final_gallery_clean.png
+- chapter16_shapley_attribution_baselines/instructions/assets/attribution_final_gallery_corrupted.png
+- chapter16_shapley_attribution_baselines/instructions/assets/attribution_final_loo_comparison.png
+- chapter16_shapley_attribution_baselines/instructions/assets/attribution_final_perturbations_clean.png
+- chapter16_shapley_attribution_baselines/instructions/assets/attribution_final_perturbations_corrupted.png
+- chapter16_shapley_attribution_baselines/instructions/assets/attribution_final_query_agreement.png
+- chapter16_shapley_attribution_baselines/instructions/assets/attribution_native_ghost_products.png
+- chapter16_shapley_attribution_baselines/instructions/assets/attribution_native_path_accounting.png
+- chapter16_shapley_attribution_baselines/instructions/assets/attribution_native_query_play.png
+- chapter16_shapley_attribution_baselines/instructions/assets/attribution_native_training.png
+- chapter16_shapley_attribution_baselines/instructions/assets/attribution_step_size_play.png
+- chapter16_shapley_attribution_baselines/instructions/assets/attribution_training_images.png
+- chapter16_shapley_attribution_baselines/instructions/assets/attribution_weight_perturbation.png

@@ -1,0 +1,26 @@
+{
+  "notebook_id": "11_3_causal_abstraction_and_distributed_alignment_search",
+  "evidence_role": "Expected full learner and fresh native contract; these counts do not certify execution.",
+  "expected_metrics": {
+    "tests_passed": true,
+    "accepted": true,
+    "test_count": 13,
+    "native_model_reloaded": true,
+    "actual_learner_passed": true,
+    "fresh_reproduction_passed": true,
+    "own_answer_code_cells": 32,
+    "embedded_figures": 12,
+    "final_prompt_count": 96,
+    "retained_final_outcomes": 16512,
+    "fresh_compared_examples": 16512,
+    "fresh_condition_batches": 43,
+    "fresh_native_forward_rows": 17232,
+    "fresh_max_logit_error_max": 0.0003,
+    "fresh_top_token_mismatches": 0,
+    "primary_metric_matches_actual_tokens": true,
+    "weights_unchanged": true,
+    "model_gradients_absent": true,
+    "final_used_for_selection": false,
+    "whole_paper_replication": false
+  }
+}

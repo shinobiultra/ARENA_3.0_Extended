@@ -1,0 +1,19 @@
+{
+  "candidate_sha256": "50e61fc25aa5132a7076184bbc42b73cc07edc020dad0461d639a74377c8970b",
+  "development_evidence": [
+    {
+      "path": "/tmp/acdc-greater-than-tau0004-development.json",
+      "sha256": "f826c80a0d7793693aeb7e2d7a856d1a8d510d945a739cfb7f6ad82d42636bde"
+    }
+  ],
+  "reason": "The sole completed planned greater-than ACDC threshold meets the fixed development criteria.",
+  "criteria": {
+    "recovery_minimum": 0.85,
+    "fraction_positive_maximum_drop_from_clean": 0.1,
+    "kl_maximum": 0.5
+  },
+  "method": "acdc",
+  "heldout_seed": 13,
+  "heldout_count": 64,
+  "frozen_before_heldout": true
+}

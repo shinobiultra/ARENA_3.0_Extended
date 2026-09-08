@@ -1,0 +1,10 @@
+{
+  "accepted": true,
+  "claim_scope": "Contract check; not a full real-model validation.",
+  "evidence_level": "notebook_contract",
+  "gt_tier": "GT-0",
+  "notebook_id": "16_5_vlm_modality_and_region_shap",
+  "section": "16.5",
+  "tests_passed": true,
+  "title": "VLM Modality and Region SHAP"
+}

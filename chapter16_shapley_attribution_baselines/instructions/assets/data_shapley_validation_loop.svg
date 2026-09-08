@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="310" viewBox="0 0 960 310" role="img" aria-labelledby="title desc">
+  <title id="title">Data Shapley validation loop</title>
+  <desc id="desc">Validation loop from one-step utility to exact Data Shapley, sampled approximation, in-run scores, controls, and CUDA evidence.</desc>
+  <rect width="960" height="310" fill="#f8faf7"/>
+  <style>
+    .box{fill:#ffffff;stroke:#243b53;stroke-width:2;rx:8}
+    .head{font:700 19px sans-serif;fill:#102a43}
+    .body{font:15px sans-serif;fill:#334e68}
+    .tag{font:700 13px sans-serif;fill:#0b7285}
+    .arrow{stroke:#0b7285;stroke-width:4;fill:none;marker-end:url(#arrow)}
+  </style>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#0b7285"/>
+    </marker>
+  </defs>
+  <text x="40" y="42" class="head">Validation loop: one exact tiny training run before scalable data-attribution claims</text>
+  <rect x="34" y="78" width="155" height="146" class="box"/>
+  <text x="54" y="112" class="head">1. Utility</text>
+  <text x="54" y="146" class="body">One gradient</text>
+  <text x="54" y="170" class="body">step, validation</text>
+  <text x="54" y="194" class="body">loss delta.</text>
+  <path d="M198 151 H238" class="arrow"/>
+  <rect x="246" y="78" width="155" height="146" class="box"/>
+  <text x="266" y="112" class="head">2. Exact</text>
+  <text x="266" y="146" class="body">Enumerate all</text>
+  <text x="266" y="170" class="body">16 coalitions.</text>
+  <text x="266" y="198" class="tag">GT-0 oracle</text>
+  <path d="M410 151 H450" class="arrow"/>
+  <rect x="458" y="78" width="155" height="146" class="box"/>
+  <text x="478" y="112" class="head">3. Proxy</text>
+  <text x="478" y="146" class="body">Monte Carlo</text>
+  <text x="478" y="170" class="body">and gradient</text>
+  <text x="478" y="194" class="body">dot scores.</text>
+  <path d="M622 151 H662" class="arrow"/>
+  <rect x="670" y="78" width="155" height="146" class="box"/>
+  <text x="690" y="112" class="head">4. Controls</text>
+  <text x="690" y="146" class="body">Random data</text>
+  <text x="690" y="170" class="body">and label</text>
+  <text x="690" y="194" class="body">shuffle fail.</text>
+  <path d="M834 151 H874" class="arrow"/>
+  <rect x="882" y="78" width="58" height="146" class="box"/>
+  <text x="896" y="112" class="head">5.</text>
+  <text x="895" y="146" class="body">CUDA</text>
+  <text x="895" y="170" class="body">rerun</text>
+  <text x="40" y="266" class="body">Acceptance requires exact harmful-example identification, proxy agreement, negative-control failure, and runtime evidence.</text>
+</svg>

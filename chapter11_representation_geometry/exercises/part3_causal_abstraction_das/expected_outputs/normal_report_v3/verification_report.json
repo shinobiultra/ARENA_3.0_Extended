@@ -1,0 +1,383 @@
+{
+  "accepted": true,
+  "baselines": {
+    "declared_controls": [
+      "exact_rotated_causal_organism",
+      "perfectly_predictive_unused_copy",
+      "independent_projector_finite_difference",
+      "unchanged_side_variable",
+      "three_alignment_seeds",
+      "three_shuffled_target_fits",
+      "32_equal_rank_random_subspaces",
+      "no_intervention",
+      "same_prompt_identity",
+      "whole_position_donor",
+      "observational_ridge_role_probe",
+      "observational_mean_direction",
+      "training_only_fit",
+      "development_selected_site_and_rank",
+      "new_template_and_name_pair_final",
+      "all_native_errors_retained",
+      "explicit_counterfactual_prompt",
+      "conditional_and_unconditional_denominators",
+      "donor_answer_identity_leakage",
+      "native_hook_and_cached_gradient_parity",
+      "fresh_cpu_all_full_vocabulary_outputs"
+    ],
+    "expected_metrics": {
+      "accepted": true,
+      "actual_learner_passed": true,
+      "embedded_figures": 12,
+      "final_prompt_count": 96,
+      "final_used_for_selection": false,
+      "fresh_compared_examples": 16512,
+      "fresh_condition_batches": 43,
+      "fresh_max_logit_error_max": 0.0003,
+      "fresh_native_forward_rows": 17232,
+      "fresh_reproduction_passed": true,
+      "fresh_top_token_mismatches": 0,
+      "model_gradients_absent": true,
+      "native_model_reloaded": true,
+      "own_answer_code_cells": 32,
+      "primary_metric_matches_actual_tokens": true,
+      "retained_final_outcomes": 16512,
+      "test_count": 13,
+      "tests_passed": true,
+      "weights_unchanged": true,
+      "whole_paper_replication": false
+    }
+  },
+  "claim_scope": "Learner-implemented structural interventions, orthogonal subspace swaps, independent derivatives and frozen-model alignment, followed by 96 new GPT-2 prompts and 384 final interventions per condition. All three fitting seeds, shuffled targets and 32 matched-rank random subspaces remain visible. Output agreement does not establish a unique or minimal causal abstraction, an advantage over whole-position donors, or interchange intervention training of model weights.",
+  "datasets": [
+    {
+      "development_rows": 48,
+      "final_interventions": 384,
+      "final_rows": 96,
+      "id": "frozen_name_role_interchanges_v1",
+      "protocol": "das_protocol.py",
+      "source": "generated",
+      "train_rows": 72
+    }
+  ],
+  "date_run": "2026-09-06T06:53:22+00:00",
+  "evidence_level": "exact_causal_oracles_and_native_gpt2_distributed_interchanges",
+  "git_commit": "8eab192b",
+  "gpu_name": "unavailable",
+  "gt_tier": "GT-0",
+  "known_failures": [],
+  "metrics": {
+    "gpu_evidence": {
+      "category": "cpu_or_budget_metric",
+      "placeholder_only": false,
+      "section_specific_metric_keys": [
+        "actual_learner_passed",
+        "embedded_figures",
+        "final_prompt_count",
+        "final_used_for_selection",
+        "fresh_compared_examples",
+        "fresh_condition_batches",
+        "fresh_elapsed_seconds",
+        "fresh_evidence_sha256",
+        "fresh_max_logit_error",
+        "fresh_native_forward_rows",
+        "fresh_output_directory",
+        "fresh_reproduction_passed",
+        "fresh_top_token_mismatches",
+        "learner_evidence_sha256",
+        "model_gradients_absent",
+        "native_model_reloaded",
+        "own_answer_code_cells",
+        "primary_metric_matches_actual_tokens",
+        "retained_final_outcomes",
+        "weights_unchanged",
+        "whole_paper_replication"
+      ],
+      "uses_cuda": false
+    },
+    "gpu_test": {
+      "actual_learner_passed": true,
+      "cuda_available": false,
+      "cuda_version": "13.2",
+      "device": "cpu",
+      "embedded_figures": 12,
+      "final_prompt_count": 96,
+      "final_used_for_selection": false,
+      "fresh_compared_examples": 16512,
+      "fresh_condition_batches": 43,
+      "fresh_elapsed_seconds": 43.107425623999916,
+      "fresh_evidence_sha256": "dad035d7351178873792aa53365646f272eb51bba09d6456def2594abed9d09a",
+      "fresh_max_logit_error": 0.0,
+      "fresh_native_forward_rows": 17232,
+      "fresh_output_directory": "/home/bitwise/.cache/arena_extended/das/fresh_reproductions/run-0y56qllx/fresh_cpu",
+      "fresh_reproduction_passed": true,
+      "fresh_top_token_mismatches": 0,
+      "gpu_total_memory_gb": null,
+      "learner_evidence_sha256": "9a6dc50bdd28656d63c284b3111479500b221ea13c913862c10806b6afe59b1b",
+      "model_gradients_absent": true,
+      "native_model_reloaded": true,
+      "own_answer_code_cells": 32,
+      "peak_vram_gb": 0.0,
+      "primary_metric_matches_actual_tokens": true,
+      "retained_final_outcomes": 16512,
+      "torch_version": "2.12.1+cu132",
+      "weights_unchanged": true,
+      "whole_paper_replication": false,
+      "within_vram_budget": true
+    },
+    "notebook_contract": {
+      "accepted": true,
+      "claim_scope": "Exact causal/interchange, independent gradient, minibatch, and native-plumbing tests.",
+      "test_count": 13,
+      "tests_passed": true
+    }
+  },
+  "models": [
+    {
+      "gated": false,
+      "id": "gpt2",
+      "precision": "float32",
+      "revision": "607a30d783dfa663caf39e06633721c8d4cfcd7e",
+      "source": "huggingface"
+    }
+  ],
+  "negative_controls": {
+    "declared_controls": [
+      "32_equal_rank_random_subspaces"
+    ]
+  },
+  "notebook_id": "11_3_causal_abstraction_and_distributed_alignment_search",
+  "ood_tests": {
+    "declared": "required_where_applicable"
+  },
+  "peak_vram_gb": 0.0,
+  "report_inputs": {
+    "algorithm": "sha256",
+    "combined_sha256": "4d9c457d6612a94de7731128ccaff9c9e480ca9f4fa467a69898d1f2dd01201a",
+    "files": [
+      {
+        "path": "arena_ext/verification.py",
+        "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
+        "size_bytes": 9276
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part3_causal_abstraction_das/11.3_Causal_Abstraction_and_Distributed_Alignment_Search_exercises.ipynb",
+        "sha256": "d6403e74c164a7de7d104e24dba46e6b1131ec9eeaf54420853cd84e36ff3213",
+        "size_bytes": 864388
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part3_causal_abstraction_das/11.3_Causal_Abstraction_and_Distributed_Alignment_Search_solutions.ipynb",
+        "sha256": "207d579dbaa6782d6405de44b50bd5372d6ca834ed8660664626685377e2b02d",
+        "size_bytes": 878086
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part3_causal_abstraction_das/README.md",
+        "sha256": "8df6f22f2b3fd8ec6cbb013a3f574fdaf027c330750ca8f8e5e5bb45e3f6230b",
+        "size_bytes": 2965
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part3_causal_abstraction_das/artifacts.lock.yml",
+        "sha256": "4587128785af52a90b0b28cd1a4a2f21f79b5d08d573dd302c303e7e5b90cade",
+        "size_bytes": 6152
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part3_causal_abstraction_das/build_notebooks.py",
+        "sha256": "fcb06b82351610f5773e15176119c2239e909ad3272a146ec566185528fdf3a5",
+        "size_bytes": 4560
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part3_causal_abstraction_das/das_ioi_data.py",
+        "sha256": "c8cdaf671dce1282065966f0981b446de98511b353d6b1fac12c292f437ead19",
+        "size_bytes": 4895
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part3_causal_abstraction_das/das_methods.py",
+        "sha256": "606c7446aee48d96367a258875040f03ad75adc2aead99d1cff46eae5ec9db0f",
+        "size_bytes": 6994
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part3_causal_abstraction_das/das_methods_tests.py",
+        "sha256": "c02a53380103ac9a12cb8c6dfc8f948cdae9f35812d821f780fe600c2179230d",
+        "size_bytes": 10023
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part3_causal_abstraction_das/das_native.py",
+        "sha256": "c25c36e165528797eb9377e72dd09fa6e1fdf80c21712986b0e16136f769c0de",
+        "size_bytes": 6897
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part3_causal_abstraction_das/das_native_tests.py",
+        "sha256": "0b9d4214d9c8b6b8125b90d4401b338bde062aa06fd0ce189935a4e5844917ca",
+        "size_bytes": 3518
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part3_causal_abstraction_das/das_organism.py",
+        "sha256": "97302ad3c0ee5397704a6a04e2fe5164ac81bd15ebd03c5d15a01185fed356a6",
+        "size_bytes": 3116
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part3_causal_abstraction_das/das_protocol.py",
+        "sha256": "2be338d2be230544231b50cbaaac76ac2c88e28872bd4364713e686fd76563a3",
+        "size_bytes": 821
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part3_causal_abstraction_das/das_reproduction.py",
+        "sha256": "568f5bea49b4f18b22b558eeecf35d9068b004a04f30b95457328e9092960895",
+        "size_bytes": 14678
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part3_causal_abstraction_das/das_reproduction_tests.py",
+        "sha256": "e4c5dd0c7e4906d4d59609584d3a4354cd1e7b0fb0da917048d50ed89cc25f48",
+        "size_bytes": 1899
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part3_causal_abstraction_das/das_training_methods.py",
+        "sha256": "dc2f1645a2b0c651c358b9e973e5876fb654a535758752a4ccc1081b86982453",
+        "size_bytes": 4198
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part3_causal_abstraction_das/das_training_tests.py",
+        "sha256": "ababa8da82e0e78a3342471e4035ffa016af1abf1dc046336be3ed1771e3f514",
+        "size_bytes": 4271
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part3_causal_abstraction_das/execute_learner.py",
+        "sha256": "ac729943d3388661576b67761112c8e82ad35df8fa92ee7d073f1dc748cb2f09",
+        "size_bytes": 4682
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part3_causal_abstraction_das/expected_outputs/README.md",
+        "sha256": "1761dfd1d354deb729f8bdd3b4f9989d640f844020bf0b6b2e28f3351b53a89b",
+        "size_bytes": 2898
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part3_causal_abstraction_das/expected_outputs/fresh_reproduction.json",
+        "sha256": "dad035d7351178873792aa53365646f272eb51bba09d6456def2594abed9d09a",
+        "size_bytes": 12902
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part3_causal_abstraction_das/expected_outputs/learner_execution.json",
+        "sha256": "9a6dc50bdd28656d63c284b3111479500b221ea13c913862c10806b6afe59b1b",
+        "size_bytes": 415838
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part3_causal_abstraction_das/expected_outputs/native_summary.json",
+        "sha256": "2431602e29fb25e331d49689355ebd4dc56d32cbe4ffef5b3a5b00ae13f57fa9",
+        "size_bytes": 362904
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part3_causal_abstraction_das/lesson.md",
+        "sha256": "1b5cbd0738f0448ad8626875d4fa6e6b688dc13a5a77fac55b7b8f6bfb2c1e38",
+        "size_bytes": 87506
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part3_causal_abstraction_das/native_protocol.md",
+        "sha256": "12f052d2259789c546c6b147c5c3313b74e42269e18ddde4e6c296261441aa78",
+        "size_bytes": 6541
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part3_causal_abstraction_das/publish_study.py",
+        "sha256": "bfa98da6df66c8f1956a9621e9a5751f2234fc8a587665b4abb1663448440b58",
+        "size_bytes": 6832
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part3_causal_abstraction_das/run_das_screen.py",
+        "sha256": "0c2b82e083249b339bb28643371e49a298ccd2cb0fa526bdbe049219b8b0ced2",
+        "size_bytes": 14166
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part3_causal_abstraction_das/run_native_development.py",
+        "sha256": "3a0b72d3b79c7683548db702fede8f424ff7f29cdd1b1494381e46d8bc16f8f4",
+        "size_bytes": 9774
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part3_causal_abstraction_das/run_organism_development.py",
+        "sha256": "26f83a7ad315501f09a1a80b7d13362214e1cc4100e156f560b3956c393efa0a",
+        "size_bytes": 4714
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part3_causal_abstraction_das/solutions.py",
+        "sha256": "c1aff865219b9dd299fd8d70b3085f2b0894c362a2b3d66a0db78346394e533c",
+        "size_bytes": 3515
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part3_causal_abstraction_das/tests.py",
+        "sha256": "844a41b5fb7a4dd761d5601d39bc63e49106fb61772557545d7f860e66026d53",
+        "size_bytes": 396
+      },
+      {
+        "path": "chapter11_representation_geometry/instructions/assets/das_angle_play.png",
+        "sha256": "d0de23e4bb095a152f1fd2dc77fa625e7b6bbc1de0c2c30c279b606c0a1ae121",
+        "size_bytes": 38572
+      },
+      {
+        "path": "chapter11_representation_geometry/instructions/assets/das_coordinate_and_specificity.png",
+        "sha256": "d887161fe3b108e543666513622cfee277bcbbc8c2e8a20c503768da6f9773ff",
+        "size_bytes": 82161
+      },
+      {
+        "path": "chapter11_representation_geometry/instructions/assets/das_exact_interchanges.png",
+        "sha256": "11b9a69d0b76bf816c28fb3f1661a18b3372cfc8722a02d50d5b6d9b2ed3b032",
+        "size_bytes": 62313
+      },
+      {
+        "path": "chapter11_representation_geometry/instructions/assets/das_learning_and_controls.png",
+        "sha256": "d1a04e7b77668b682fca366c03c69e482defe5603f73dc86149e06c304133b23",
+        "size_bytes": 131718
+      },
+      {
+        "path": "chapter11_representation_geometry/instructions/assets/das_native_final_controls.png",
+        "sha256": "559651eba1b28e50f2d5ac20df1e4cb647630ee186938e6b86306c29bc7a2ac9",
+        "size_bytes": 109650
+      },
+      {
+        "path": "chapter11_representation_geometry/instructions/assets/das_native_generalization.png",
+        "sha256": "348f94ae87490d725101457c33d660ebdc4c65908659fe3a32034697d722b122",
+        "size_bytes": 49587
+      },
+      {
+        "path": "chapter11_representation_geometry/instructions/assets/das_native_pair_play.png",
+        "sha256": "6173e6b8169a02e1988d25a60d567ce80a6cdcdf31a8691dc7e6b2fa4a4a2126",
+        "size_bytes": 37088
+      },
+      {
+        "path": "chapter11_representation_geometry/instructions/assets/das_native_rank_selection.png",
+        "sha256": "2c49e4d17c53c9fece67a7e56ef54ba8a511f3cfe098dc34dbd86bf42c94a2c8",
+        "size_bytes": 62820
+      },
+      {
+        "path": "chapter11_representation_geometry/instructions/assets/das_native_site_comparison.png",
+        "sha256": "86fa92bd21ea9bae2f3e9274e3276814d50e5a92efc4934ed9bde1d7504f3319",
+        "size_bytes": 93826
+      },
+      {
+        "path": "chapter11_representation_geometry/instructions/assets/das_native_site_play.png",
+        "sha256": "39deac55e1e36c263869b1aa9da8cc17e4cc0a5277c79d739c203928971258a2",
+        "size_bytes": 30796
+      },
+      {
+        "path": "chapter11_representation_geometry/instructions/assets/das_native_specificity.png",
+        "sha256": "0252e6ba5e8b20296083fc44bccb4d7c34e06dfba809e1282207566caae9e245",
+        "size_bytes": 91431
+      },
+      {
+        "path": "chapter11_representation_geometry/instructions/assets/das_native_token_examples.png",
+        "sha256": "ee7b6bf9583cb0060c9068245a44e4b3600c5b22dc6da1c635f53196427eb74a",
+        "size_bytes": 226890
+      },
+      {
+        "path": "chapter11_representation_geometry/instructions/pages/03_[11.3]_Causal_Abstraction_and_Distributed_Alignment_Search.md",
+        "sha256": "1977dd987ea30065b07d13059f3d9725708da15ea43d9055b6bf898e91eeb7ec",
+        "size_bytes": 86893
+      },
+      {
+        "path": "scripts/run_extension_verification_reports.py",
+        "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
+        "size_bytes": 16272
+      }
+    ],
+    "schema_version": 1
+  },
+  "safety_notes": [],
+  "tests_passed": true,
+  "wall_clock_seconds": 45.539336
+}

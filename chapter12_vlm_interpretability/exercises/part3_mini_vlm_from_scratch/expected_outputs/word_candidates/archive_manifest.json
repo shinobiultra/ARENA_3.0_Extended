@@ -1,0 +1,168 @@
+{
+  "scope": "independent_candidate_experiments_not_completed_learner_or_release",
+  "weights_included": false,
+  "files": [
+    {
+      "file": "configuration.json.gz",
+      "uncompressed_sha256": "82b683c2b58edfc033bec7bc607d48857b2329c2935402d0028289b05d884ddf",
+      "compressed_sha256": "4295bc02cb73e289603890a8dc3d7795ca5d8dab7a300f908053054536c4b2b0",
+      "bytes": 454
+    },
+    {
+      "file": "final_evaluation.json.gz",
+      "uncompressed_sha256": "d4ecaae63fdee98c202d532fe3ba481bc787323d5f2030580dbfcd50f5ee1e03",
+      "compressed_sha256": "eeadc95c658842ace8bdfd5c7c1dc8063f952ade2cb5927dc29887c28f741727",
+      "bytes": 18828
+    },
+    {
+      "file": "frozen_selection.json.gz",
+      "uncompressed_sha256": "fc8ae9cb011cf4da3241c8dc912199a8f45cf179e54351654b068fb9d04c4dac",
+      "compressed_sha256": "e047f4b3822bf7fece8f2627618623f44e812433776883d1d4ca33a748445376",
+      "bytes": 1235
+    },
+    {
+      "file": "image-only-0.json.gz",
+      "uncompressed_sha256": "5382f9e03ac68d2ff9c711026881f41734c734ee173fa805716a6999a59f8b72",
+      "compressed_sha256": "76401bf449315d3b221fd6eb0fdd25c97cf04c75da47270e3ab92c28cfe1ea7f",
+      "bytes": 967
+    },
+    {
+      "file": "image-only-1.json.gz",
+      "uncompressed_sha256": "1bb5da1cb701524289dd6248f3dd01004ea64f725de21d24bf6580fa2d82dbd2",
+      "compressed_sha256": "c690c67041552a71e754f835045782319f2c29c87bff901a9ccfa35857098b71",
+      "bytes": 1050
+    },
+    {
+      "file": "image-only-2.json.gz",
+      "uncompressed_sha256": "830232e71f35d03d8a9df4eff18f4639a6f3600253f0c5d18be3e4b0681b6ebb",
+      "compressed_sha256": "2fbd671fc0222f189297b20a3dba8ef3b0d3682e82c10ab3de13c37c44ae522e",
+      "bytes": 1036
+    },
+    {
+      "file": "joint-0.json.gz",
+      "uncompressed_sha256": "a11c7436e536f5c87800e98c3f8adccee64e7008a9e958669715d65d89fe97dd",
+      "compressed_sha256": "1ae08b9abd056a94f7769a68580db27d4364c64d9c6b9511c92607a9c715ba47",
+      "bytes": 1051
+    },
+    {
+      "file": "joint-1.json.gz",
+      "uncompressed_sha256": "6db640fb9b5d72ecf84443a85229bcf25d9d863518d17a07ff7fdc827a0b9f5b",
+      "compressed_sha256": "7e724bb47aa8242ce183f9352b8c7d037fe7b098e8019599b60c8093253eec25",
+      "bytes": 955
+    },
+    {
+      "file": "joint-2.json.gz",
+      "uncompressed_sha256": "a09b75729c8173a7bde996886591dd4cd21a27835a6ddcbd7867222af5101aba",
+      "compressed_sha256": "73894fd97ca0ad368bb33a7d10e2d1326d0f350426fa4404936238b1cd7d3f98",
+      "bytes": 1020
+    },
+    {
+      "file": "shuffled-pairs-0.json.gz",
+      "uncompressed_sha256": "0a6f08d332a53b1b61591379dcafd17b887211d0d56245199668e92ac42d6850",
+      "compressed_sha256": "567326daddef8a5d7d721cb9792a2f46d22336bc7bd8e088f0955c6a7690f87f",
+      "bytes": 876
+    },
+    {
+      "file": "shuffled-pairs-1.json.gz",
+      "uncompressed_sha256": "28eeffd8d7b129d63fd4bd9ef37073754843d791486263a27ad06a3e908794af",
+      "compressed_sha256": "776bd3995ff6dcc33f47d2195f4ca27b643333c6809e1b30c18ed75692af3107",
+      "bytes": 855
+    },
+    {
+      "file": "shuffled-pairs-2.json.gz",
+      "uncompressed_sha256": "99b9908489e2c3da6e7049cf13be4df09a3a942bb6f68f47f82b2a767be10608",
+      "compressed_sha256": "e01eae966eae46c8b1d55f6a0812f7d0108622c35f20ddd6f8fd555b2625f337",
+      "bytes": 844
+    },
+    {
+      "file": "stage_region_patching.json.gz",
+      "uncompressed_sha256": "81c418c7799d5ab4ee70f58c25042687414712e650e8bdd0ca29ac780e339340",
+      "compressed_sha256": "2388560b8d12dbaf2ad0e0450929a6ece1c58cdef6ac18fba82fa6ec4f819533",
+      "bytes": 1342449
+    },
+    {
+      "file": "text-only-0.json.gz",
+      "uncompressed_sha256": "e5422b8d3015f38bb9648a14cf34769165b784c02d562a7528fbf76cc7c6f92f",
+      "compressed_sha256": "a11ea627e6acc3bebe21b75652f7187c36c8e3d6a25636d8764591d8739a5b2f",
+      "bytes": 731
+    },
+    {
+      "file": "text-only-1.json.gz",
+      "uncompressed_sha256": "b365fd690c1e98b74092ea08dc659618f89e5fb15aca6bb267448b6ea95dbfc2",
+      "compressed_sha256": "02c9a0ee3062bbe353d80a9f03115760b15eb871629e9031edc34e86ff67c92b",
+      "bytes": 738
+    },
+    {
+      "file": "text-only-2.json.gz",
+      "uncompressed_sha256": "67f29091d9814589e620dcdf5f97747c93373724fce4917866cccf4b5bfd9880",
+      "compressed_sha256": "b24120aea9d78fcb717d1ca2c2403381f49b6448e53766269e1937ae8a07ef0f",
+      "bytes": 728
+    },
+    {
+      "file": "language_data.py.gz",
+      "uncompressed_sha256": "a0584e9e34ada5cbfe45f47d76426300e36b6485af42adb99dbcb636a9a02c53",
+      "compressed_sha256": "d09620c368d1e3854fbbc79b9aec481c66ccbbb5b978072db39616385a2237f7",
+      "bytes": 2893
+    },
+    {
+      "file": "language_vlm.py.gz",
+      "uncompressed_sha256": "3c4deda9198a7c0e960f032c7ee9337ebf08fd8d3de64234a7fa0c890169508c",
+      "compressed_sha256": "4e98fec7e7960bc502414d3762a3f1cf7ce6b9a7d1c7a948111591171352f1e5",
+      "bytes": 3597
+    },
+    {
+      "file": "language_training.py.gz",
+      "uncompressed_sha256": "9bab6f1a7af2a08889946b7e1b348d42fb8cf59c9958807c0975bd023df9e680",
+      "compressed_sha256": "88e3e09065b9f76e61c8c39d7439703a13003723286fc935a582e7967566927c",
+      "bytes": 2747
+    },
+    {
+      "file": "language_patching.py.gz",
+      "uncompressed_sha256": "03572dcd96d03c6f16a2b11baa14f46cc0b1f0e22c86f3a0390aa609b5fd9629",
+      "compressed_sha256": "60e2ff67208fe48c5ca225e7678e7a1604657ea545f081f8c8524754732c63ff",
+      "bytes": 1867
+    },
+    {
+      "file": "run_word_patching.py.gz",
+      "uncompressed_sha256": "506604735239e725486cd51b5991d62541ab1f8847448ddcc9a19a772a7bf6db",
+      "compressed_sha256": "d6b43cb1513a040a31ef36f1008150aaa986d9e0b821882bd6141580e7451c77",
+      "bytes": 3298
+    },
+    {
+      "file": "language_figures.py.gz",
+      "uncompressed_sha256": "a88856c302494d74403237656ed78d44f236ae85c1271317e961603675f675b1",
+      "compressed_sha256": "02ea2f5afd790b4e3b31f9dcc7ab51a13dbbdb2a5a5c002e2114a5a0a4197a3d",
+      "bytes": 2796
+    },
+    {
+      "file": "figures/word_compositional_gallery.png",
+      "sha256": "156c3e282a31b2f28814a35d3b5c6772adc082c14a5c9746e7735d5cf268746f",
+      "bytes": 74149
+    },
+    {
+      "file": "figures/word_familiar_gallery.png",
+      "sha256": "69d35bac8aff11ce04a1e5eda5d29bd0738fc31c0d4ae8cf9b2ee5ac25ff62e2",
+      "bytes": 189684
+    },
+    {
+      "file": "figures/word_learning.png",
+      "sha256": "2d6436e6cb545668f639c8363fb096e6ac3684a3380f7dba9f24b472b57a035e",
+      "bytes": 114041
+    },
+    {
+      "file": "figures/word_random_patch_spread.png",
+      "sha256": "abeb0d10b610da676ffe3a15a1b6b932c3e1b327b8b8f07289226b33c44e5489",
+      "bytes": 136582
+    },
+    {
+      "file": "figures/word_stage_region_patching.png",
+      "sha256": "80ba697136a2fa37ac57897338c5bf24068a52ccdd76698ce47a260e00c25fbb",
+      "bytes": 337673
+    },
+    {
+      "file": "figures/word_transfer.png",
+      "sha256": "8fbeeac0057c40a97ad5bcf85771eda56395228165652fb0e53c801114a07afa",
+      "bytes": 103093
+    }
+  ]
+}

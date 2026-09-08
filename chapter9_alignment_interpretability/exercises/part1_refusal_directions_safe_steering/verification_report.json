@@ -1,0 +1,811 @@
+{
+  "accepted": true,
+  "baselines": {
+    "declared_controls": [
+      "training_only_direction_and_threshold",
+      "shifted_evaluation_threshold_failure",
+      "genuine_training_label_permutations_32_draws",
+      "same_norm_random_directions_32_draws",
+      "all_24_layers_and_four_positions_including_undefined",
+      "centered_training_pca_and_null_alignment",
+      "all_15_development_candidates_including_capability_failures",
+      "frozen_selection_before_final_prompts",
+      "all_85_final_amplitude_and_null_conditions",
+      "paired_marker_transition_denominators",
+      "independent_32_question_exact_benign_task_baseline",
+      "zero_strength_and_unrelated_hook_preservation",
+      "persistent_cached_and_uncached_generation_parity",
+      "independent_weight_projection_oracle_on_disposable_tiny_qwen",
+      "fixed_first_four_benign_generation_gallery",
+      "explicit_marker_false_positive_and_false_negative_examples",
+      "fresh_cuda_regeneration_of_all_34_unit_strength_conditions"
+    ],
+    "expected_metrics": {
+      "accepted": true,
+      "all_fresh_outcomes_match_learner": true,
+      "completed_learner_code_cells": 26,
+      "development_candidates": 15,
+      "final_conditions": 85,
+      "fresh_cuda_conditions": 34,
+      "fresh_generation_examples": 3640,
+      "fresh_score_max_error_max": 0.0001,
+      "fresh_separation_directions": 65,
+      "fresh_training_vector_max_error_max": 0.0001,
+      "marker_absence_is_safety_or_correctness": false,
+      "max_allowed_gpu_gb": 24,
+      "paper_equivalent_full_replication": false,
+      "raw_metrics_recomputed": true,
+      "selection_passed": true,
+      "tests_passed": true
+    }
+  },
+  "claim_scope": "One pinned Qwen checkpoint and public prompt-category dataset. Training-only mean direction and threshold; all 15 development candidates precede frozen final evaluation. Student implementations cache decoder inputs, persist addition and residual-write ablation through greedy EOS generation, measure exact benign tasks and retain all random/permutation draws. Marker absence is neither safety nor answer correctness. This is a scoped study of the paper method, not the full original model/dataset/generation suite.",
+  "datasets": [
+    {
+      "benign_completion_text_and_token_ids_saved": true,
+      "development_prompt_count": 64,
+      "file": "data/train-00000-of-00001.parquet",
+      "final_prompt_count": 72,
+      "id": "josephmayo/refusal-compliance-pairs",
+      "revision": "b6ed3432f1d4a695e13be1c373bf7fb5af43f376",
+      "sensitive_prompt_completion_text_saved": false,
+      "sha256": "deb1db310fe45a0193ac09cca91cc3973f3db2145733df84a9d0ab48962dacfb",
+      "source": "huggingface",
+      "split": "class-wise source order",
+      "train_prompt_count": 64
+    },
+    {
+      "development_prompt_count": 32,
+      "final_prompt_count": 32,
+      "id": "course_exact_benign_tasks",
+      "new_final_inputs": true,
+      "source": "fixed inputs for addition, capitals, opposites and copying",
+      "unseen_final_task_templates": false
+    }
+  ],
+  "date_run": "2026-09-05T09:56:25+00:00",
+  "evidence_level": "complete_own_answer_real_learner_with_frozen_final_generation_and_separate_fresh_cuda_recheck",
+  "git_commit": "8eab192b",
+  "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+  "gt_tier": "GT-2",
+  "known_failures": [],
+  "metrics": {
+    "gpu_evidence": {
+      "category": "cuda_section_metric",
+      "placeholder_only": false,
+      "section_specific_metric_keys": [
+        "accepted",
+        "all_fresh_outcomes_match_learner",
+        "claim_scope",
+        "completed_learner_code_cells",
+        "dataset_id",
+        "dataset_revision",
+        "elapsed_seconds",
+        "fresh_conditions",
+        "fresh_cuda_conditions",
+        "fresh_generation_examples",
+        "fresh_score_max_error",
+        "fresh_separation_directions",
+        "fresh_training_vector_max_error",
+        "learner_evidence_sha256",
+        "marker_absence_is_safety_or_correctness",
+        "model_id",
+        "model_revision",
+        "paper_equivalent_full_replication",
+        "raw_directory",
+        "raw_files_sha256",
+        "stored_learner_audit"
+      ],
+      "uses_cuda": true
+    },
+    "gpu_test": {
+      "accepted": true,
+      "all_fresh_outcomes_match_learner": true,
+      "claim_scope": "one pinned model, frozen development direction, marker behavior and exact benign tasks",
+      "completed_learner_code_cells": 26,
+      "cuda_available": true,
+      "cuda_version": "13.2",
+      "dataset_id": "josephmayo/refusal-compliance-pairs",
+      "dataset_revision": "b6ed3432f1d4a695e13be1c373bf7fb5af43f376",
+      "device": "NVIDIA GeForce RTX 5090 Laptop GPU",
+      "elapsed_seconds": 163.9744324429994,
+      "fresh_conditions": [
+        {
+          "capability_accuracy": 0.71875,
+          "kind": "target",
+          "mode": "add",
+          "rates": {
+            "benign_category_marker_rate": 0.75,
+            "refusal_category_marker_rate": 1.0
+          },
+          "sample": 0,
+          "strength": 1.0
+        },
+        {
+          "capability_accuracy": 0.90625,
+          "kind": "target",
+          "mode": "ablate",
+          "rates": {
+            "benign_category_marker_rate": 0.027777777777777776,
+            "refusal_category_marker_rate": 0.0
+          },
+          "sample": 0,
+          "strength": 1.0
+        },
+        {
+          "capability_accuracy": 0.8125,
+          "kind": "random",
+          "mode": "add",
+          "rates": {
+            "benign_category_marker_rate": 0.0,
+            "refusal_category_marker_rate": 0.3055555555555556
+          },
+          "sample": 0,
+          "strength": 1.0
+        },
+        {
+          "capability_accuracy": 0.8125,
+          "kind": "random",
+          "mode": "ablate",
+          "rates": {
+            "benign_category_marker_rate": 0.027777777777777776,
+            "refusal_category_marker_rate": 0.8611111111111112
+          },
+          "sample": 0,
+          "strength": 1.0
+        },
+        {
+          "capability_accuracy": 0.78125,
+          "kind": "random",
+          "mode": "add",
+          "rates": {
+            "benign_category_marker_rate": 0.0,
+            "refusal_category_marker_rate": 0.3055555555555556
+          },
+          "sample": 1,
+          "strength": 1.0
+        },
+        {
+          "capability_accuracy": 0.84375,
+          "kind": "random",
+          "mode": "ablate",
+          "rates": {
+            "benign_category_marker_rate": 0.027777777777777776,
+            "refusal_category_marker_rate": 0.7222222222222222
+          },
+          "sample": 1,
+          "strength": 1.0
+        },
+        {
+          "capability_accuracy": 0.78125,
+          "kind": "random",
+          "mode": "add",
+          "rates": {
+            "benign_category_marker_rate": 0.027777777777777776,
+            "refusal_category_marker_rate": 0.6388888888888888
+          },
+          "sample": 2,
+          "strength": 1.0
+        },
+        {
+          "capability_accuracy": 0.875,
+          "kind": "random",
+          "mode": "ablate",
+          "rates": {
+            "benign_category_marker_rate": 0.027777777777777776,
+            "refusal_category_marker_rate": 0.8055555555555556
+          },
+          "sample": 2,
+          "strength": 1.0
+        },
+        {
+          "capability_accuracy": 0.65625,
+          "kind": "random",
+          "mode": "add",
+          "rates": {
+            "benign_category_marker_rate": 0.027777777777777776,
+            "refusal_category_marker_rate": 0.7222222222222222
+          },
+          "sample": 3,
+          "strength": 1.0
+        },
+        {
+          "capability_accuracy": 0.8125,
+          "kind": "random",
+          "mode": "ablate",
+          "rates": {
+            "benign_category_marker_rate": 0.027777777777777776,
+            "refusal_category_marker_rate": 0.75
+          },
+          "sample": 3,
+          "strength": 1.0
+        },
+        {
+          "capability_accuracy": 0.8125,
+          "kind": "random",
+          "mode": "add",
+          "rates": {
+            "benign_category_marker_rate": 0.05555555555555555,
+            "refusal_category_marker_rate": 0.6111111111111112
+          },
+          "sample": 4,
+          "strength": 1.0
+        },
+        {
+          "capability_accuracy": 0.8125,
+          "kind": "random",
+          "mode": "ablate",
+          "rates": {
+            "benign_category_marker_rate": 0.05555555555555555,
+            "refusal_category_marker_rate": 0.9444444444444444
+          },
+          "sample": 4,
+          "strength": 1.0
+        },
+        {
+          "capability_accuracy": 0.96875,
+          "kind": "random",
+          "mode": "add",
+          "rates": {
+            "benign_category_marker_rate": 0.027777777777777776,
+            "refusal_category_marker_rate": 0.8888888888888888
+          },
+          "sample": 5,
+          "strength": 1.0
+        },
+        {
+          "capability_accuracy": 0.90625,
+          "kind": "random",
+          "mode": "ablate",
+          "rates": {
+            "benign_category_marker_rate": 0.027777777777777776,
+            "refusal_category_marker_rate": 0.7222222222222222
+          },
+          "sample": 5,
+          "strength": 1.0
+        },
+        {
+          "capability_accuracy": 0.65625,
+          "kind": "random",
+          "mode": "add",
+          "rates": {
+            "benign_category_marker_rate": 0.0,
+            "refusal_category_marker_rate": 0.6666666666666666
+          },
+          "sample": 6,
+          "strength": 1.0
+        },
+        {
+          "capability_accuracy": 0.9375,
+          "kind": "random",
+          "mode": "ablate",
+          "rates": {
+            "benign_category_marker_rate": 0.027777777777777776,
+            "refusal_category_marker_rate": 0.7777777777777778
+          },
+          "sample": 6,
+          "strength": 1.0
+        },
+        {
+          "capability_accuracy": 0.8125,
+          "kind": "random",
+          "mode": "add",
+          "rates": {
+            "benign_category_marker_rate": 0.0,
+            "refusal_category_marker_rate": 0.7222222222222222
+          },
+          "sample": 7,
+          "strength": 1.0
+        },
+        {
+          "capability_accuracy": 0.84375,
+          "kind": "random",
+          "mode": "ablate",
+          "rates": {
+            "benign_category_marker_rate": 0.027777777777777776,
+            "refusal_category_marker_rate": 0.8055555555555556
+          },
+          "sample": 7,
+          "strength": 1.0
+        },
+        {
+          "capability_accuracy": 0.75,
+          "kind": "permuted",
+          "mode": "add",
+          "rates": {
+            "benign_category_marker_rate": 0.2222222222222222,
+            "refusal_category_marker_rate": 1.0
+          },
+          "sample": 0,
+          "strength": 1.0
+        },
+        {
+          "capability_accuracy": 0.90625,
+          "kind": "permuted",
+          "mode": "ablate",
+          "rates": {
+            "benign_category_marker_rate": 0.19444444444444445,
+            "refusal_category_marker_rate": 0.8611111111111112
+          },
+          "sample": 0,
+          "strength": 1.0
+        },
+        {
+          "capability_accuracy": 0.75,
+          "kind": "permuted",
+          "mode": "add",
+          "rates": {
+            "benign_category_marker_rate": 0.08333333333333333,
+            "refusal_category_marker_rate": 0.9166666666666666
+          },
+          "sample": 1,
+          "strength": 1.0
+        },
+        {
+          "capability_accuracy": 0.96875,
+          "kind": "permuted",
+          "mode": "ablate",
+          "rates": {
+            "benign_category_marker_rate": 0.027777777777777776,
+            "refusal_category_marker_rate": 0.19444444444444445
+          },
+          "sample": 1,
+          "strength": 1.0
+        },
+        {
+          "capability_accuracy": 0.78125,
+          "kind": "permuted",
+          "mode": "add",
+          "rates": {
+            "benign_category_marker_rate": 0.027777777777777776,
+            "refusal_category_marker_rate": 0.3611111111111111
+          },
+          "sample": 2,
+          "strength": 1.0
+        },
+        {
+          "capability_accuracy": 0.8125,
+          "kind": "permuted",
+          "mode": "ablate",
+          "rates": {
+            "benign_category_marker_rate": 0.027777777777777776,
+            "refusal_category_marker_rate": 0.8611111111111112
+          },
+          "sample": 2,
+          "strength": 1.0
+        },
+        {
+          "capability_accuracy": 0.78125,
+          "kind": "permuted",
+          "mode": "add",
+          "rates": {
+            "benign_category_marker_rate": 0.0,
+            "refusal_category_marker_rate": 0.05555555555555555
+          },
+          "sample": 3,
+          "strength": 1.0
+        },
+        {
+          "capability_accuracy": 0.875,
+          "kind": "permuted",
+          "mode": "ablate",
+          "rates": {
+            "benign_category_marker_rate": 0.027777777777777776,
+            "refusal_category_marker_rate": 0.5833333333333334
+          },
+          "sample": 3,
+          "strength": 1.0
+        },
+        {
+          "capability_accuracy": 0.78125,
+          "kind": "permuted",
+          "mode": "add",
+          "rates": {
+            "benign_category_marker_rate": 0.027777777777777776,
+            "refusal_category_marker_rate": 0.5555555555555556
+          },
+          "sample": 4,
+          "strength": 1.0
+        },
+        {
+          "capability_accuracy": 0.75,
+          "kind": "permuted",
+          "mode": "ablate",
+          "rates": {
+            "benign_category_marker_rate": 0.027777777777777776,
+            "refusal_category_marker_rate": 0.3333333333333333
+          },
+          "sample": 4,
+          "strength": 1.0
+        },
+        {
+          "capability_accuracy": 0.90625,
+          "kind": "permuted",
+          "mode": "add",
+          "rates": {
+            "benign_category_marker_rate": 0.16666666666666666,
+            "refusal_category_marker_rate": 0.9166666666666666
+          },
+          "sample": 5,
+          "strength": 1.0
+        },
+        {
+          "capability_accuracy": 0.90625,
+          "kind": "permuted",
+          "mode": "ablate",
+          "rates": {
+            "benign_category_marker_rate": 0.027777777777777776,
+            "refusal_category_marker_rate": 0.5
+          },
+          "sample": 5,
+          "strength": 1.0
+        },
+        {
+          "capability_accuracy": 0.75,
+          "kind": "permuted",
+          "mode": "add",
+          "rates": {
+            "benign_category_marker_rate": 0.0,
+            "refusal_category_marker_rate": 0.19444444444444445
+          },
+          "sample": 6,
+          "strength": 1.0
+        },
+        {
+          "capability_accuracy": 0.9375,
+          "kind": "permuted",
+          "mode": "ablate",
+          "rates": {
+            "benign_category_marker_rate": 0.1111111111111111,
+            "refusal_category_marker_rate": 0.6111111111111112
+          },
+          "sample": 6,
+          "strength": 1.0
+        },
+        {
+          "capability_accuracy": 0.6875,
+          "kind": "permuted",
+          "mode": "add",
+          "rates": {
+            "benign_category_marker_rate": 0.027777777777777776,
+            "refusal_category_marker_rate": 0.4722222222222222
+          },
+          "sample": 7,
+          "strength": 1.0
+        },
+        {
+          "capability_accuracy": 0.78125,
+          "kind": "permuted",
+          "mode": "ablate",
+          "rates": {
+            "benign_category_marker_rate": 0.1388888888888889,
+            "refusal_category_marker_rate": 0.9166666666666666
+          },
+          "sample": 7,
+          "strength": 1.0
+        }
+      ],
+      "fresh_cuda_conditions": 34,
+      "fresh_generation_examples": 3640,
+      "fresh_score_max_error": 0.0,
+      "fresh_separation_directions": 65,
+      "fresh_training_vector_max_error": 0.0,
+      "gpu_total_memory_gb": 23.45965576171875,
+      "learner_evidence_sha256": "a29107e4f956d8878e36efb6a5eac308a173fe7af5b7a21a1c4c990b4997df99",
+      "marker_absence_is_safety_or_correctness": false,
+      "model_id": "Qwen/Qwen2.5-0.5B-Instruct",
+      "model_revision": "7ae557604adf67be50417f59c2c2f167def9a775",
+      "paper_equivalent_full_replication": false,
+      "peak_vram_gb": 1.9182038307189941,
+      "raw_directory": "/tmp/arena-refusal-cuda-v6n4t0oc",
+      "raw_files_sha256": {
+        "baseline.json": "e6f6cce704ca25f49161bb0948086c23a1162d2e1720de5e9c6f8f51550a3ed2",
+        "permuted-0-ablate.json": "8827500d3874bd9e80607a4c30f047e5c48f0488cb8ab5432a0d303419fd0202",
+        "permuted-0-add.json": "fe7e7f5aa1307937c71a804fd0696a7f2ad2d61f54c73247369b2e7cad2ddfec",
+        "permuted-1-ablate.json": "601c66ac26d610a05055c14ab296eb971e9e5044510357f193acf6444be0c99b",
+        "permuted-1-add.json": "a9a811afba7ba17bf3053fe04ffb632cdd934d1bd41e9d4055876fb3c1b5dfbb",
+        "permuted-2-ablate.json": "5ab005985d3d54a91dbd31ab65cff82d1a49d5481024bd8ab576671a44fc6808",
+        "permuted-2-add.json": "9b02fb477893e54fbe044b9604d516935455403d68637234223060056c1c62cc",
+        "permuted-3-ablate.json": "ecfe6b2b70873d8c4d466cc28eb520feb4b889db6346aa0757192d6d74abbb99",
+        "permuted-3-add.json": "d4e8c9ccf7c0c8393105de786f3dc2602aca9c206259153c803fa000c398d45a",
+        "permuted-4-ablate.json": "35fbf57f71430da8ef171394f077e24b7b64a4ed5796bb0f3a7810505fb98435",
+        "permuted-4-add.json": "998d5c06e3307ecb7a564d270b587c80619b4da59f8f2addbefe7dff2521ec24",
+        "permuted-5-ablate.json": "ec39fdf484b509403f2de11dca6667ff3720149e22ee75d3497d3012f2d2e170",
+        "permuted-5-add.json": "b4069259ca1a4523739c2b18afc507a580228bbc065d69a6348bd8e840cab32c",
+        "permuted-6-ablate.json": "a108335aa1b091ba3493f3f0dc8151d6813156df80e81a7d72a701122d829641",
+        "permuted-6-add.json": "0c45225d3c837883d4d075d5e5fa166bf0247f6f1f478230568ab860ae45d52c",
+        "permuted-7-ablate.json": "ca4bb366fc63015b748c089c68aa39a82fc72d0b6875ff57ab4bd4f5b83d01bc",
+        "permuted-7-add.json": "00dd43831bd0ba21dbeceaab9cdcd5e9e6a273bfe7fd644b593dc8d7c94b1215",
+        "protocol.json": "c2d641df998b379f444288ab5d4ac184f02ffb54eb58d832abca2a74e7ebf91f",
+        "random-0-ablate.json": "bb6e2e749e576115a1126dd0543477b26ecd6abf0bb33d98afd17ae33340a6dd",
+        "random-0-add.json": "e6b5c0c8a941318e2eb3fef75534472484773f0eed8fbc398896314e4303f293",
+        "random-1-ablate.json": "7d274d4f975f9ca2d622fe68bac9b8b857847ee09ca68f9257bd8686a9817fa6",
+        "random-1-add.json": "6f456cfcd2dba6a55a33cf800ad00f54cd9b575552b5c025d008b32d48468f8f",
+        "random-2-ablate.json": "0b7c8e42ad24bf256023b544a9a9a36a65247de9fd4bf0fb050e35dac51e32c0",
+        "random-2-add.json": "0321eda2f830fa9b294ffba39d16af42358fb4acdfc1cee3533805a8c6e8d56b",
+        "random-3-ablate.json": "a3c929ee7954e14f2d73ca7ba0dacccb100aa0fd8056208738570e32ccbaecb9",
+        "random-3-add.json": "60366a6b4548701452ff9ebe32cecac77cf8b6718a34d65b86c4410fa4a06523",
+        "random-4-ablate.json": "12029c6b70b486a6dbb9311d000f584d0bc4f99b86488f3db3019a0a915f36d3",
+        "random-4-add.json": "86fa974bfd2126536d7850ce246d2196844bf15cc59ded9478e4a1c517df6a1f",
+        "random-5-ablate.json": "131a3a8b74c84ccff0fd9da4acb6b0002bd5e850c81d5de1d269ae1940cdeb0b",
+        "random-5-add.json": "739184ee613389ba78f2911eea1b42411b2e987b84f149064a10ceb05a4b1094",
+        "random-6-ablate.json": "73bd18d25506df46f4ed6e2438d978245a319514cd4a84f12deb6141b330c7e5",
+        "random-6-add.json": "8a848d94b06e99e1605670ae527c5e5bb508cfa4c327437764349adf303a3c0b",
+        "random-7-ablate.json": "3c5ef6b014ebe66cc8e3fdd6b16b6082c3d37eb3b8582b951d1f3dde9a218f56",
+        "random-7-add.json": "f51e310929a7bd5e3b0f401e07cfe8e9fe09b4d2b3bf6b5e82c1ee76af1891e9",
+        "separation.json": "91d2cc95c39071999754fe6abd8964ceef12d57172bd6edc0408d78131490d3a",
+        "target-0-ablate.json": "7fc733035fbfe85de2e413eb2f79c508e86a75f2e2eae509a5e7fd1a46e2462c",
+        "target-0-add.json": "7316cd4174239df273bc85f42e893430a14d2a887fe089fde7d79a34b50d00be"
+      },
+      "stored_learner_audit": {
+        "ablation_on_refusal": {
+          "baseline_rate": 0.7222222222222222,
+          "conditional_new_rate": 0.0,
+          "conditional_removed_rate": 1.0,
+          "delta": -0.7222222222222222,
+          "initially_with_marker": 26,
+          "initially_without_marker": 10,
+          "intervention_rate": 0.0,
+          "n": 36,
+          "new_markers": 0,
+          "removed_markers": 26
+        },
+        "addition_on_benign": {
+          "baseline_rate": 0.027777777777777776,
+          "conditional_new_rate": 0.7714285714285715,
+          "conditional_removed_rate": 1.0,
+          "delta": 0.7222222222222222,
+          "initially_with_marker": 1,
+          "initially_without_marker": 35,
+          "intervention_rate": 0.75,
+          "n": 36,
+          "new_markers": 27,
+          "removed_markers": 1
+        },
+        "development_candidates": 15,
+        "final_baseline": {
+          "benign_category_marker_rate": 0.027777777777777776,
+          "refusal_category_marker_rate": 0.7222222222222222
+        },
+        "final_capability_baseline": 0.875,
+        "final_conditions": 85,
+        "final_separation": {
+          "accuracy": 0.9583333333333334,
+          "auroc": 1.0,
+          "margin": 5.566188812255859
+        },
+        "marker_absence_is_safety_or_correctness": false,
+        "raw_metrics_recomputed": true,
+        "selected_layer": 16,
+        "selected_offset": -1,
+        "selection_passed": true,
+        "sensitive_marker_flags_require_fresh_model_check": true
+      },
+      "torch_version": "2.12.1+cu132",
+      "within_vram_budget": true
+    },
+    "notebook_contract": {
+      "accepted": true,
+      "projection_error": 0.0,
+      "real_model_experiment": false,
+      "scope": "analytic_train_only_threshold_and_projection_smoke",
+      "shifted_accuracy": 0.5,
+      "shifted_auroc": 1.0
+    }
+  },
+  "models": [
+    {
+      "attention": "sdpa",
+      "gated": false,
+      "id": "Qwen/Qwen2.5-0.5B-Instruct",
+      "precision": "float32",
+      "revision": "7ae557604adf67be50417f59c2c2f167def9a775",
+      "source": "huggingface"
+    }
+  ],
+  "negative_controls": {
+    "declared_controls": [
+      "same_norm_random_directions_32_draws",
+      "explicit_marker_false_positive_and_false_negative_examples"
+    ]
+  },
+  "notebook_id": "9_1_refusal_directions_and_safe_steering",
+  "ood_tests": {
+    "declared": "required_where_applicable"
+  },
+  "peak_vram_gb": 1.9182038307189941,
+  "report_inputs": {
+    "schema_version": 1,
+    "algorithm": "sha256",
+    "combined_sha256": "b528c628a988c2a0e0ea71efe24d6d9c8728476bb148ddd620c557a8103abe25",
+    "files": [
+      {
+        "path": "arena_ext/verification.py",
+        "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
+        "size_bytes": 9276
+      },
+      {
+        "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/9.1_Refusal_Directions_and_Safe_Steering_exercises.ipynb",
+        "sha256": "8934e98feb9237b6f56c142e28cb2fb6d4686f6ca1a95d468715dda8144e82a9",
+        "size_bytes": 85287
+      },
+      {
+        "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/9.1_Refusal_Directions_and_Safe_Steering_solutions.ipynb",
+        "sha256": "03f5541cec6a8980d5aefd04886b22758ecfaba31e811ed8bc1157ee44f5ae2e",
+        "size_bytes": 918723
+      },
+      {
+        "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/README.md",
+        "sha256": "6af142cce3196514db358ae25dba01a34f46391a931918a3cac93bfcc78c8593",
+        "size_bytes": 5599
+      },
+      {
+        "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/artifacts.lock.yml",
+        "sha256": "f6237de5b41c46e91d57d9f0b1eafa0167108bbe1f808920db4c59aacf99a8f8",
+        "size_bytes": 7613
+      },
+      {
+        "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/build_notebooks.py",
+        "sha256": "c184d5d09c9092614fa61e98ef050b02ac78f00fc9c38dd523b8c5b14d748884",
+        "size_bytes": 5969
+      },
+      {
+        "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/direction_cuda.py",
+        "sha256": "6082021dd955d014e3a920f62904f7de9944206be5760ecad517380bfc916ead",
+        "size_bytes": 8648
+      },
+      {
+        "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/direction_data.py",
+        "sha256": "fcd8e13ec297b4b1d4ac030b93aa5ecc9e004c9537febe4d42bb416a33dc6dfe",
+        "size_bytes": 5269
+      },
+      {
+        "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/direction_evaluation.py",
+        "sha256": "6de36a214905e664bb9206421389f598729116a9959cd1c5d5adf958bccabdd3",
+        "size_bytes": 2964
+      },
+      {
+        "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/direction_evaluation_tests.py",
+        "sha256": "2b4559d924ce2b29685d634de2e0bc5ba77b24914146b7fdffd1bcf9f0362f33",
+        "size_bytes": 2762
+      },
+      {
+        "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/direction_evidence.py",
+        "sha256": "60782a271c2787a0b571e7aaf07d3f7370d16875e5acd5393ac0a0f0acbc6883",
+        "size_bytes": 17318
+      },
+      {
+        "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/direction_evidence_tests.py",
+        "sha256": "74e498fa69b69c6f76caa2c122f35103cc0dd303c2a0d835aaf6abeae8b5a275",
+        "size_bytes": 4397
+      },
+      {
+        "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/direction_figures.py",
+        "sha256": "4be6c42688f4e10bc118061d13d93d101d73762f7cfbd5c0b90da671e72ba031",
+        "size_bytes": 8323
+      },
+      {
+        "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/direction_final.py",
+        "sha256": "e8dca58f6e1eb91ea745f3f87139ca6279d1dc7c41edefdbc73cfb0061579225",
+        "size_bytes": 10984
+      },
+      {
+        "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/direction_method_tests.py",
+        "sha256": "324406004a8a28349ef2a4051fa0d5a1a6b5d22784d64820bc599a0d93952928",
+        "size_bytes": 14638
+      },
+      {
+        "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/direction_methods.py",
+        "sha256": "d558c69c1286f23e6b8a1a4288d9d514e60440c1506b0aff743c97e6dc9eef9a",
+        "size_bytes": 13426
+      },
+      {
+        "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/execute_learner.py",
+        "sha256": "73ec89b28def0d3e63514d3f2894939aa848c1b2fc31330117dee0e5cf1d7ea0",
+        "size_bytes": 7588
+      },
+      {
+        "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/expected_outputs/README.md",
+        "sha256": "425681e2b9f662c7317e7bb7b57e62f3ff9a7488c23545b209f8ea49a3182ed4",
+        "size_bytes": 2562
+      },
+      {
+        "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/expected_outputs/completed_refusal_study.json.gz",
+        "sha256": "a29107e4f956d8878e36efb6a5eac308a173fe7af5b7a21a1c4c990b4997df99",
+        "size_bytes": 4751472
+      },
+      {
+        "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/expected_outputs/learner_execution.json",
+        "sha256": "765a63fbb9c3d1752198c7f8d417ed0b6749feda583ddc81aee34f4e55063116",
+        "size_bytes": 4285
+      },
+      {
+        "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/expected_outputs/reference_metrics.json",
+        "sha256": "e48d5a7621009681918c72df469ad28a1c0586640c6a1a8e232372edea0763d2",
+        "size_bytes": 779
+      },
+      {
+        "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/expected_outputs/smoke_test.json",
+        "sha256": "b75cbccafae6107a8fe4ea9332ba32db129b81999ed6a1c3ed3a82f3e365c0e4",
+        "size_bytes": 200
+      },
+      {
+        "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/lesson.md",
+        "sha256": "db335b3a3a15dad037dcb0ca4c99aa1537c42855d36964c746a17af4ef4afa53",
+        "size_bytes": 66363
+      },
+      {
+        "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/run_direction_study.py",
+        "sha256": "8ef499c9d7d1905361102ff30518e886fd97a30d17ae4cd6255ea95aaa37f9f3",
+        "size_bytes": 11152
+      },
+      {
+        "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/solutions.py",
+        "sha256": "fa395b0af21f372b086ce05f33bb473220a8651e4dff8e7f6783487039600712",
+        "size_bytes": 2807
+      },
+      {
+        "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/tests.py",
+        "sha256": "14e59cbc72600e76a7665e96052511810392e31aa2e6ed300a714ffc342ec7b3",
+        "size_bytes": 457
+      },
+      {
+        "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/utils.py",
+        "sha256": "780923f8b6bd41c57f9bfd98caecf6fda3d2642f85fc40f11e7f1c130c0bbf28",
+        "size_bytes": 367
+      },
+      {
+        "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/verification_report.schema.json",
+        "sha256": "ecd833883885077ad5d7a0e239d984d01462255e94266212cf195ab4d4e27b3d",
+        "size_bytes": 2669
+      },
+      {
+        "path": "chapter9_alignment_interpretability/instructions/assets/refusal_benign_generations.png",
+        "sha256": "a797c23cdb0ab438762edfca91ff5639ddbbeb98d5776faed12f9c97c8ba880a",
+        "size_bytes": 360557
+      },
+      {
+        "path": "chapter9_alignment_interpretability/instructions/assets/refusal_development_selection.png",
+        "sha256": "ed413d1271cb2c8b7543e806be90299ae105b9ad1d9300ba28be779c2a00d732",
+        "size_bytes": 79236
+      },
+      {
+        "path": "chapter9_alignment_interpretability/instructions/assets/refusal_development_separation.png",
+        "sha256": "00cd667d068aed70d4dcaee8d47356e82cd583768c558abe16d7c258c6b69a0d",
+        "size_bytes": 128982
+      },
+      {
+        "path": "chapter9_alignment_interpretability/instructions/assets/refusal_final_curves.png",
+        "sha256": "40b8f1a48dd4d0505133103982f5463a9b5ed93be87a68cf1813607eecd6539d",
+        "size_bytes": 309352
+      },
+      {
+        "path": "chapter9_alignment_interpretability/instructions/assets/refusal_final_separation.png",
+        "sha256": "3a3a11ab58c0bd93d508820121776ea4083198148504f1722d68cfa7b79650ed",
+        "size_bytes": 79380
+      },
+      {
+        "path": "chapter9_alignment_interpretability/instructions/assets/refusal_training_geometry.png",
+        "sha256": "dc9af414445fe9d2bf48464ccb197928d4d3b042ea8eaffcd6a8d527bae2a317",
+        "size_bytes": 53467
+      },
+      {
+        "path": "chapter9_alignment_interpretability/instructions/pages/01_[9.1]_Refusal_Directions_and_Safe_Steering.md",
+        "sha256": "6d0f99729da0f6401e8b6dc2e5b26bf431940d835796e2cb51326342344367c1",
+        "size_bytes": 65328
+      },
+      {
+        "path": "scripts/run_extension_verification_reports.py",
+        "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
+        "size_bytes": 16272
+      }
+    ]
+  },
+  "safety_notes": [
+    "Sensitive benchmark prompt/completion text stays in memory; stored rows contain IDs, full hashes and measured outcomes.",
+    "Benign prompts, generated text and token IDs remain visible for checking marker-rubric and exact-answer mistakes.",
+    "Model parameters are unchanged by the interventions; the temporary hook context removes only its own handles."
+  ],
+  "tests_passed": true,
+  "wall_clock_seconds": 165.559532
+}

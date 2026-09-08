@@ -1,0 +1,11 @@
+{
+  "status": "historical_accepted_report_and_retained_initial_resource_failure",
+  "files_sha256": {
+    "normal-report-v1.log": "f31265ac95435a939d018aeb5d95d04a75f9505bbafabf5877246670be71084e",
+    "rank-selection-v1.json": "fcf0f63910aeeda9b82d98efc9c28433417810d47515a8f06d3dcb13b9229a4a",
+    "normal-report-cpu-v2.log": "9fa12f08888b2e884d3b062e48b8bd2bcc3fa22cb4b5eba814f6fff81515a216",
+    "verification_report.json": "c8d291bfa5f9addd3170185faddb4bc5e4102e4a89d4e7da19aabfeed11fadf6",
+    "layer-selection-v1.json": "a75b1009c4359b571d690fefbf285d6e1e4ab4d2a8bfe4d32b716cd3e08bf444"
+  },
+  "notes": "The first normal attempt failed during global CUDA cleanup before section execution. The accepted CPU report reproduced all final outputs before the later educational-message and integration fixes."
+}

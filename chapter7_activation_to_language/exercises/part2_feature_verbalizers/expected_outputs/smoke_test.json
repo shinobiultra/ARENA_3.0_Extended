@@ -1,0 +1,11 @@
+{
+  "accepted": true,
+  "claim_scope": "Exact toy oracles plus a pinned Pythia-70m direction whose held-out decoding is non-significant under all 4,096 pair-preserving label swaps, followed by bidirectional real residual-stream component replacement against separate 64-direction matched orthogonal controls.",
+  "evidence_level": "exact_toy_oracles_plus_pinned_pythia_cuda_causal_intervention",
+  "gt_tier": "GT-1",
+  "notebook_id": "7_2_feature_verbalizers",
+  "section": "7.2",
+  "signature_passed": true,
+  "tests_passed": true,
+  "title": "Feature Verbalizers"
+}

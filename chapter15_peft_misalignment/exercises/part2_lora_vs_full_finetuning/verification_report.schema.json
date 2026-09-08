@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ARENA extension verification report",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "notebook_id",
+    "date_run",
+    "git_commit",
+    "report_inputs",
+    "gt_tier",
+    "evidence_level",
+    "claim_scope",
+    "gpu_name",
+    "peak_vram_gb",
+    "wall_clock_seconds",
+    "models",
+    "datasets",
+    "tests_passed",
+    "metrics",
+    "baselines",
+    "negative_controls",
+    "ood_tests",
+    "known_failures",
+    "safety_notes",
+    "accepted"
+  ],
+  "properties": {
+    "notebook_id": {"type": "string"},
+    "date_run": {"type": "string"},
+    "git_commit": {"type": "string"},
+    "report_inputs": {
+      "type": "object",
+      "required": ["schema_version", "algorithm", "combined_sha256", "files"],
+      "properties": {
+        "schema_version": {"type": "integer", "const": 1},
+        "algorithm": {"type": "string", "const": "sha256"},
+        "combined_sha256": {"type": "string"},
+        "files": {"type": "array"}
+      }
+    },
+    "gt_tier": {"type": "string", "enum": ["GT-0", "GT-1", "GT-2", "GT-3", "GT-4"]},
+    "evidence_level": {"type": "string"},
+    "claim_scope": {"type": "string"},
+    "gpu_name": {"type": "string"},
+    "peak_vram_gb": {"type": "number", "minimum": 0},
+    "wall_clock_seconds": {"type": "number", "minimum": 0},
+    "models": {"type": "array"},
+    "datasets": {"type": "array"},
+    "tests_passed": {"type": "boolean"},
+    "metrics": {"type": "object"},
+    "baselines": {"type": "object"},
+    "negative_controls": {"type": "object"},
+    "ood_tests": {"type": "object"},
+    "known_failures": {"type": "array"},
+    "safety_notes": {"type": "array"},
+    "accepted": {"type": "boolean"}
+  }
+}

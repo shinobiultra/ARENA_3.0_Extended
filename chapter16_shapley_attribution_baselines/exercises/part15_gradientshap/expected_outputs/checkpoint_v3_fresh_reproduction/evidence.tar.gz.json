@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "status": "PASS",
+  "label": "v3_fresh_reproduction",
+  "archive": "/home/bitwise/Documents/ARENA_3.0_Extended/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/expected_outputs/checkpoint_v3_fresh_reproduction/evidence.tar.gz",
+  "sha256": "52ee16ce70cdb05fbbc6502bda79f354576babb1d4a94a8d42538bcd8d7a6efa",
+  "size_bytes": 31924703,
+  "verified_included_files": 53,
+  "verified_external_files": 3,
+  "historical_status": {
+    "reproduction_status": "PASS",
+    "native_model_retrained": true,
+    "cached_model_inputs_used": false,
+    "changed_sources": [],
+    "comparisons": {
+      "arrays": 1442,
+      "array_elements": 464237288,
+      "records": 2730,
+      "scalars": 872,
+      "max_absolute_error": 0.0,
+      "comparison": "exact_recursive_value_sha256"
+    }
+  },
+  "external_files": {
+    "reproduction-v3/fresh_run/evaluated.pt": {
+      "source_absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/reproduction-v3/fresh_run/evaluated.pt",
+      "sha256": "462e32a9a0b52617af8ea9fe6c75ea10b2614bac2ae7b09a28bdcab9a450f49d",
+      "size_bytes": 1577241419,
+      "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/reproduction-v3/fresh_run/evaluated.pt",
+      "recursive_manifest": {
+        "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/reproduction-v3/fresh_run/evaluated.manifest.json",
+        "sha256": "ad2e546b0ebc9c21bef1d67ddbc066081021d3c6f329fe424ed5587b664cb15f",
+        "artifact_sha256": "462e32a9a0b52617af8ea9fe6c75ea10b2614bac2ae7b09a28bdcab9a450f49d",
+        "artifact_size_bytes": 1577241419,
+        "record_count": 1019,
+        "counts": {
+          "arrays": 720,
+          "array_elements": 216054404,
+          "records": 1019
+        }
+      }
+    },
+    "reproduction-v3/fresh_run/prepared.pt": {
+      "source_absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/reproduction-v3/fresh_run/prepared.pt",
+      "sha256": "af7079beb52083d3c1955aabe20f13d3a8a71f40404e5f10dc4f8ac6822e7853",
+      "size_bytes": 302399289,
+      "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/reproduction-v3/fresh_run/prepared.pt",
+      "recursive_manifest": {
+        "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/reproduction-v3/fresh_run/prepared.manifest.json",
+        "sha256": "756c577d673fec5e816b88f82883b02dad040a84028dff11240f1b8d4b3b83fb",
+        "artifact_sha256": "af7079beb52083d3c1955aabe20f13d3a8a71f40404e5f10dc4f8ac6822e7853",
+        "artifact_size_bytes": 302399289,
+        "record_count": 371,
+        "counts": {
+          "arrays": 217,
+          "array_elements": 41552409,
+          "records": 371
+        }
+      }
+    },
+    "reproduction-v3/fresh_run/replicate_samples.pt": {
+      "source_absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/reproduction-v3/fresh_run/replicate_samples.pt",
+      "sha256": "46238cad0348f56be4807507256233884af3588037a434197f0cbe0f0aa1a0fa",
+      "size_bytes": 1610614447,
+      "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/reproduction-v3/fresh_run/replicate_samples.pt",
+      "recursive_manifest": {
+        "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/reproduction-v3/fresh_run/replicate_samples.manifest.json",
+        "sha256": "b4715a058eb3acb905a573d162a6fa5e79a5b90929af269d4085022e072dee4c",
+        "artifact_sha256": "46238cad0348f56be4807507256233884af3588037a434197f0cbe0f0aa1a0fa",
+        "artifact_size_bytes": 1610614447,
+        "record_count": 1,
+        "counts": {
+          "arrays": 1,
+          "array_elements": 201326592,
+          "records": 1
+        }
+      }
+    }
+  }
+}

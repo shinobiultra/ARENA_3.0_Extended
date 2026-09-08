@@ -1,0 +1,72 @@
+{
+  "source_directory": "/home/bitwise/.cache/arena_extended/cartography/own-full-v1",
+  "archive_sha256": "1f9756ffb66a8ecb3f7e0b4c2f001f8d6625454b7dd42fc433f406f9692e83bc",
+  "members": {
+    "execution.json": {
+      "sha256": "47281b527e1c10ef8cde13245aee55ae28233d2ff30f7791c9a3571e89a39729",
+      "size_bytes": 2882
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/build_notebooks.py": {
+      "sha256": "f3fa008011db92ff40c4fe491a2bdb30c9ca7087439060733b3c999127da1cf1",
+      "size_bytes": 4657
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/cartography_contract_tests.py": {
+      "sha256": "cb38db82ca0fe6ac707a3ffafe31049ca04d296763ab8c2b73cdfb84b2d15411",
+      "size_bytes": 6108
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/cartography_data.py": {
+      "sha256": "e31bebc991561d103c1e50bf3399c21361ac4201adffcce1fdf88007d5d9068e",
+      "size_bytes": 3684
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/cartography_methods.py": {
+      "sha256": "bc5e5f10614cd4a700a0110ebc2dd1d157de29556b8118c8802360a361d387a0",
+      "size_bytes": 9247
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/cartography_methods_tests.py": {
+      "sha256": "be257cfea0b1efb040d87f9bbdf8bd767fd02991e95c2cd5db0d5d5d6036428f",
+      "size_bytes": 8300
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/cartography_reference.py": {
+      "sha256": "6eeeac9106212f4c9d649b7d128649d03b1f37aa4422dd5f2fd0ae4239cda781",
+      "size_bytes": 2279
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/cartography_study.py": {
+      "sha256": "fc9d7c4ee489101891c0c627239c325686a04f9ab4ec74e77628dcec5f3002ee",
+      "size_bytes": 6773
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/data_manifest.json": {
+      "sha256": "4677e7425a872b6cbc1caab44fa99f72480c95aeef6f34c6b13f2b10f4b84be4",
+      "size_bytes": 176326
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/execute_learner.py": {
+      "sha256": "537acf44c1ff58b94efaa98adb2033de49ea94a6db322a084e3878dd45174366",
+      "size_bytes": 5866
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/lesson.md": {
+      "sha256": "075ea7fb753524ba6c25cb4d7fc8641be3e024b088b025ebedb399fb9bd20f28",
+      "size_bytes": 72388
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/protocol.md": {
+      "sha256": "91d9857f36b162730773cce3868b5ffe8145a7ea40f9516b0f58c7849a545637",
+      "size_bytes": 6994
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/protocol_freeze.json": {
+      "sha256": "9cc8fdfcc193d75249985cb0b4b8f5c6cc4e2a5c148f80ad28793bbed235dcc8",
+      "size_bytes": 387
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/reproduce_native.py": {
+      "sha256": "947188b0f726ac153132ccb82917031583111cf9f21d0ff8488e1fb6b5a23024",
+      "size_bytes": 6438
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/run_native.py": {
+      "sha256": "a25db84475dfa80b0a825d99264d8e0b0c50efc949014b6f41a7eed9a648d55d",
+      "size_bytes": 9487
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/attribution_data.py": {
+      "sha256": "eaa4954f3255d3f82082dc30baef1051f03c0cad4afab806e9cb16d810101ab3",
+      "size_bytes": 5582
+    }
+  },
+  "large_tensors_retained_externally": {},
+  "readback_verified": true
+}

@@ -1,0 +1,437 @@
+{
+  "accepted": true,
+  "baselines": {
+    "declared_controls": [
+      "baseline_or_reference_check",
+      "negative_control_where_applicable",
+      "shape_dtype_or_exact_value_check",
+      "parity_cumulative_xor_contract",
+      "bracket_depth_bounded_state_contract",
+      "heldout_position_probe_contract",
+      "probe_direction_intervention_contract",
+      "trained_tiny_mamba_bracket_depth",
+      "heldout_longer_sequence_generalization",
+      "random_label_training_control",
+      "trained_tiny_transformer_bracket_depth_baseline",
+      "mamba_vs_transformer_long_sequence_comparison",
+      "learned_mamba_hidden_state_intervention",
+      "matched_norm_random_hidden_state_intervention_control",
+      "pinned_official_mamba_130m_hf_hidden_state_extraction",
+      "mamba_ssm_and_causal_conv1d_fast_kernels_required"
+    ],
+    "expected_metrics": {
+      "accepted": true,
+      "learned_hidden_probe_test_accuracy_min": 0.8,
+      "learned_state_intervention_passed": true,
+      "learned_state_intervention_random_target_rate_max": 0.5,
+      "learned_state_intervention_success_rate_min": 0.9,
+      "learned_state_intervention_target_logit_delta_min": 1.0,
+      "max_allowed_gpu_gb": 24,
+      "official_mamba_fast_kernel_available": true,
+      "official_mamba_hidden_shape": [
+        4,
+        11,
+        768
+      ],
+      "official_mamba_hidden_std_min": 0.1,
+      "official_mamba_preflight_passed": true,
+      "tests_passed": true,
+      "tiny_mamba_long_accuracy_min": 0.85,
+      "tiny_mamba_long_late_accuracy_min": 0.8,
+      "tiny_mamba_minus_transformer_long_accuracy_min": 0.2,
+      "tiny_mamba_minus_transformer_long_late_accuracy_min": 0.4,
+      "tiny_mamba_preflight_passed": true,
+      "tiny_mamba_random_label_long_accuracy_max": 0.55,
+      "tiny_mamba_short_accuracy_min": 0.9,
+      "tiny_transformer_comparison_passed": true,
+      "tiny_transformer_long_accuracy_max": 0.75,
+      "tiny_transformer_long_late_accuracy_max": 0.4,
+      "tiny_transformer_short_accuracy_min": 0.95
+    }
+  },
+  "claim_scope": "GT-1 synthetic state-tracking controls plus a trained tiny Mamba bracket-depth organism with held-out longer-sequence generalization and random-label control, a trained tiny causal Transformer baseline on the same generated task, learned Mamba hidden-state interventions with matched random-direction controls, and a pinned official Mamba-130M-HF hidden-state extraction preflight.",
+  "datasets": [
+    {
+      "id": "5_4_mamba_state_tracking_toy_inputs",
+      "seed": 0,
+      "source": "generated"
+    },
+    {
+      "heldout_seq_len": 32,
+      "id": "course_generated_bracket_depth_tracking_v1",
+      "max_depth": 3,
+      "random_label_control": true,
+      "seed": 0,
+      "source": "generated",
+      "train_seq_len": 16
+    }
+  ],
+  "date_run": "2026-09-04T08:41:28+00:00",
+  "evidence_level": "toy_state_tracking_plus_trained_mamba_transformer_comparison_learned_intervention_and_official_hidden_state_preflight",
+  "git_commit": "5e16cf8e",
+  "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+  "gt_tier": "GT-1",
+  "known_failures": [],
+  "metrics": {
+    "gpu_evidence": {
+      "category": "cuda_section_metric",
+      "placeholder_only": false,
+      "section_specific_metric_keys": [
+        "learned_hidden_probe_test_accuracy",
+        "learned_state_intervention_passed",
+        "learned_state_intervention_random_target_rate",
+        "learned_state_intervention_success_rate",
+        "learned_state_intervention_target_logit_delta",
+        "official_mamba_fast_kernel_available",
+        "official_mamba_hidden_shape",
+        "official_mamba_hidden_std",
+        "official_mamba_peak_vram_gb",
+        "official_mamba_preflight",
+        "official_mamba_preflight_passed",
+        "predictions_match",
+        "test_accuracy",
+        "tiny_mamba_long_accuracy",
+        "tiny_mamba_long_late_accuracy",
+        "tiny_mamba_minus_transformer_long_accuracy",
+        "tiny_mamba_minus_transformer_long_late_accuracy",
+        "tiny_mamba_peak_vram_gb",
+        "tiny_mamba_preflight",
+        "tiny_mamba_preflight_passed",
+        "tiny_mamba_random_label_control_fails",
+        "tiny_mamba_random_label_long_accuracy",
+        "tiny_mamba_short_accuracy",
+        "tiny_transformer_comparison_passed",
+        "tiny_transformer_long_accuracy",
+        "tiny_transformer_long_late_accuracy",
+        "tiny_transformer_short_accuracy",
+        "train_accuracy"
+      ],
+      "uses_cuda": true
+    },
+    "gpu_test": {
+      "cuda_available": true,
+      "cuda_version": "13.2",
+      "device": "NVIDIA GeForce RTX 5090 Laptop GPU",
+      "full_path": "Validated tiny Mamba state-tracking, random-label controls, a trained tiny Transformer baseline, learned-state interventions, and pinned Mamba-130M-HF hidden-state extraction with fast CUDA kernels.",
+      "gpu_total_memory_gb": 23.45965576171875,
+      "learned_hidden_probe_test_accuracy": 0.849609375,
+      "learned_state_intervention_passed": true,
+      "learned_state_intervention_random_target_rate": 0.06278573721647263,
+      "learned_state_intervention_success_rate": 0.9887229204177856,
+      "learned_state_intervention_target_logit_delta": 5.3760480880737305,
+      "official_mamba_fast_kernel_available": true,
+      "official_mamba_hidden_shape": [
+        4,
+        11,
+        768
+      ],
+      "official_mamba_hidden_std": 2.1835155487060547,
+      "official_mamba_peak_vram_gb": 0.3243837356567383,
+      "official_mamba_preflight": {
+        "backend_note": "Transformers Mamba fast path components are available.",
+        "claim_scope": "official_mamba_130m_hf_hidden_state_extraction_preflight",
+        "cuda_available": true,
+        "fast_kernel_available": true,
+        "fast_path_components": {
+          "causal_conv1d_fn": true,
+          "causal_conv1d_update": true,
+          "mamba_inner_fn": true,
+          "selective_scan_fn": true,
+          "selective_state_update": true,
+          "transformers_mamba_mixer_constructed": true
+        },
+        "finite_hidden_states": true,
+        "hidden_shape": [
+          4,
+          11,
+          768
+        ],
+        "hidden_std": 2.1835155487060547,
+        "logits_shape": [
+          4,
+          11,
+          50280
+        ],
+        "model_id": "state-spaces/mamba-130m-hf",
+        "peak_vram_gb": 0.3243837356567383,
+        "preflight_passed": true,
+        "prompt_count": 4,
+        "revision": "1e76775f628fbf1350fbe4dbb3d971ba64af25a1",
+        "within_vram_budget": true
+      },
+      "official_mamba_preflight_passed": true,
+      "peak_vram_gb": 0.3243837356567383,
+      "predictions_match": true,
+      "test_accuracy": 1.0,
+      "tiny_mamba_long_accuracy": 0.932373046875,
+      "tiny_mamba_long_late_accuracy": 0.8994140625,
+      "tiny_mamba_minus_transformer_long_accuracy": 0.310791015625,
+      "tiny_mamba_minus_transformer_long_late_accuracy": 0.6298828125,
+      "tiny_mamba_peak_vram_gb": 0.10754680633544922,
+      "tiny_mamba_preflight": {
+        "claim_scope": "trained_tiny_mamba_transformer_comparison_and_learned_state_intervention_preflight",
+        "cuda_available": true,
+        "heldout_seq_len": 32,
+        "learned": {
+          "final_loss": 0.09233546257019043,
+          "long_accuracy": 0.932373046875,
+          "long_late_accuracy": 0.8994140625,
+          "short_accuracy": 0.97412109375,
+          "short_late_accuracy": 0.9482421875
+        },
+        "learned_state_intervention": {
+          "candidate_count": 3281,
+          "coefficient": 5.0,
+          "passed": true,
+          "probe_test_accuracy": 0.849609375,
+          "probe_train_accuracy": 0.93310546875,
+          "random_target_logit_delta": 0.006247205659747124,
+          "random_target_rate": 0.06278573721647263,
+          "source_states": [
+            0,
+            1,
+            2
+          ],
+          "success_rate": 0.9887229204177856,
+          "target_logit_delta": 5.3760480880737305,
+          "target_states": [
+            1,
+            2,
+            3
+          ]
+        },
+        "learned_state_intervention_passed": true,
+        "mamba_minus_transformer_long_accuracy": 0.310791015625,
+        "mamba_minus_transformer_long_late_accuracy": 0.6298828125,
+        "max_depth": 3,
+        "peak_vram_gb": 0.10754680633544922,
+        "preflight_passed": true,
+        "random_label_control": {
+          "final_loss": 1.3879339694976807,
+          "long_accuracy": 0.355224609375,
+          "long_late_accuracy": 0.3486328125,
+          "short_accuracy": 0.3701171875,
+          "short_late_accuracy": 0.3046875
+        },
+        "random_label_control_fails": true,
+        "train_batch": 64,
+        "train_seq_len": 16,
+        "train_steps": 160,
+        "transformer_baseline": {
+          "final_loss": 0.0020149890333414078,
+          "long_accuracy": 0.62158203125,
+          "long_late_accuracy": 0.26953125,
+          "short_accuracy": 1.0,
+          "short_late_accuracy": 1.0
+        },
+        "transformer_comparison_passed": true,
+        "within_vram_budget": true
+      },
+      "tiny_mamba_preflight_passed": true,
+      "tiny_mamba_random_label_control_fails": true,
+      "tiny_mamba_random_label_long_accuracy": 0.355224609375,
+      "tiny_mamba_short_accuracy": 0.97412109375,
+      "tiny_transformer_comparison_passed": true,
+      "tiny_transformer_long_accuracy": 0.62158203125,
+      "tiny_transformer_long_late_accuracy": 0.26953125,
+      "tiny_transformer_short_accuracy": 1.0,
+      "torch_version": "2.12.1+cu132",
+      "train_accuracy": 1.0,
+      "within_vram_budget": true
+    },
+    "notebook_contract": {
+      "bracket_depth": {
+        "bounded": true,
+        "consistent": true,
+        "max_depth_observed": 3
+      },
+      "intervention": {
+        "intervened_prediction": 1,
+        "passed": true,
+        "random_prediction": 0,
+        "source_prediction": 0,
+        "target_logit_delta": 3.992011785507202,
+        "target_prediction": 1
+      },
+      "parity_probe": {
+        "accuracy": 1.0,
+        "predictions_match": true
+      },
+      "parity_task": {
+        "matches_cumulative_xor": true,
+        "states": [
+          [
+            0,
+            1,
+            0,
+            0,
+            1
+          ],
+          [
+            1,
+            0,
+            1,
+            0,
+            1
+          ]
+        ],
+        "task": "parity",
+        "tokens": [
+          [
+            0,
+            1,
+            1,
+            0,
+            1
+          ],
+          [
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        ]
+      },
+      "probe_generalization": {
+        "num_test": 96,
+        "num_train": 96,
+        "test_accuracy": 1.0,
+        "train_accuracy": 1.0
+      }
+    }
+  },
+  "models": [
+    {
+      "gated": false,
+      "id": "toy_or_generated_inputs",
+      "precision": "float32",
+      "revision": "seed_0",
+      "source": "generated"
+    },
+    {
+      "claim_scope": "trained_bracket_depth_state_tracking_organism",
+      "gated": false,
+      "id": "course_tiny_mamba_state_classifier_v1",
+      "precision": "float32",
+      "revision": "seed_0_steps_160",
+      "source": "generated_training_run"
+    },
+    {
+      "claim_scope": "trained_transformer_bracket_depth_baseline",
+      "gated": false,
+      "id": "course_tiny_causal_transformer_state_classifier_v1",
+      "precision": "float32",
+      "revision": "seed_2_steps_160",
+      "source": "generated_training_run"
+    },
+    {
+      "claim_scope": "official_hidden_state_extraction_preflight",
+      "gated": false,
+      "id": "state-spaces/mamba-130m-hf",
+      "precision": "float16",
+      "revision": "1e76775f628fbf1350fbe4dbb3d971ba64af25a1",
+      "source": "huggingface"
+    }
+  ],
+  "negative_controls": {
+    "declared_controls": [
+      "negative_control_where_applicable",
+      "random_label_training_control",
+      "matched_norm_random_hidden_state_intervention_control"
+    ]
+  },
+  "notebook_id": "5_4_mamba_state_tracking",
+  "ood_tests": {
+    "declared": "required_where_applicable"
+  },
+  "peak_vram_gb": 0.3243837356567383,
+  "report_inputs": {
+    "algorithm": "sha256",
+    "combined_sha256": "62088c888b35049544440a63bbe32ed91ca662de238d34cd7161e8f9d650a466",
+    "files": [
+      {
+        "path": "arena_ext/mamba.py",
+        "sha256": "765279bd314b97920844b150c36282d948dfefa2535b3282d46de435da122249",
+        "size_bytes": 15615
+      },
+      {
+        "path": "arena_ext/verification.py",
+        "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
+        "size_bytes": 9276
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part4_mamba_state_tracking/5.4_Mamba_State_Tracking_exercises.ipynb",
+        "sha256": "434a28a646ea0c4854f7ee9dfca1efcf2f8041c732548007c8a58617e2ca64d2",
+        "size_bytes": 55463
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part4_mamba_state_tracking/5.4_Mamba_State_Tracking_solutions.ipynb",
+        "sha256": "4f2d00c1d667ff12f96b00b331036079deb05af5e34e721df5590e812db39eea",
+        "size_bytes": 326628
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part4_mamba_state_tracking/README.md",
+        "sha256": "f1a09c625b7a32619acc89463e2125fcef4f2eb6c0c0951f65c2d45a4e84168a",
+        "size_bytes": 1408
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part4_mamba_state_tracking/artifacts.lock.yml",
+        "sha256": "019563889c75625358503e31873d47ddda1a107e1b6897cebb97204e91ba8dd1",
+        "size_bytes": 3889
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part4_mamba_state_tracking/expected_outputs/README.md",
+        "sha256": "d1ff2b6b7f8011086538167a813b4a1c20b719a774c07ea5c43d1bd9a7ace356",
+        "size_bytes": 1772
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part4_mamba_state_tracking/expected_outputs/reference_metrics.json",
+        "sha256": "633b91e3f757693830e9a35a7a97bff3f977b0f20e49e0670d57618099750226",
+        "size_bytes": 1350
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part4_mamba_state_tracking/expected_outputs/smoke_test.json",
+        "sha256": "52341ae6412b6471114cb0af609fdf025272acd483b67d98df66923124ef2884",
+        "size_bytes": 279
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part4_mamba_state_tracking/solutions.py",
+        "sha256": "8c8a6abe12cab4de230a86316982e6c19b4356c941ceea63cbd7e5929ec9fa82",
+        "size_bytes": 42792
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part4_mamba_state_tracking/tests.py",
+        "sha256": "69e819a3affdbbcfc50a8812a6b0f0e11b68b35c2628ccd593e403878dd193d9",
+        "size_bytes": 15820
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part4_mamba_state_tracking/utils.py",
+        "sha256": "ddc79b1527f4e7cb3334ff955db2c5126125b192cad9316ddea43434eab3696d",
+        "size_bytes": 351
+      },
+      {
+        "path": "chapter5_modern_architectures/exercises/part4_mamba_state_tracking/verification_report.schema.json",
+        "sha256": "ecd833883885077ad5d7a0e239d984d01462255e94266212cf195ab4d4e27b3d",
+        "size_bytes": 2669
+      },
+      {
+        "path": "chapter5_modern_architectures/instructions/pages/04_[5.4]_Mamba_State_Tracking.md",
+        "sha256": "8e220ad57c1b8401cfbb2c9e600a738beb58eba1d8cf84c252763d01d86924b3",
+        "size_bytes": 22155
+      },
+      {
+        "path": "scripts/run_extension_verification_reports.py",
+        "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
+        "size_bytes": 16272
+      }
+    ],
+    "schema_version": 1
+  },
+  "safety_notes": [
+    "No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.",
+    "The trained Mamba path uses generated bracket-depth data only. Official Mamba-130M-HF is used for hidden-state extraction, not as a solved state-tracking model. The Transformer comparison and learned-state intervention are local generated-task organism checks."
+  ],
+  "tests_passed": true,
+  "wall_clock_seconds": 10.300704
+}

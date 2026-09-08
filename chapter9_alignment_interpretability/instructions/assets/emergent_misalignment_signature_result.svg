@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="330" viewBox="0 0 960 330" role="img" aria-labelledby="title desc">
+  <title id="title">Benign proxy-drift signature result</title>
+  <desc id="desc">A compact summary of the Pythia-70M benign proxy-drift hidden-state preflight.</desc>
+  <defs>
+    <style>
+      .bg { fill: #fbfaf5; }
+      .card { fill: #ffffff; stroke: #2b3033; stroke-width: 1.3; rx: 8; }
+      .head { fill: #263238; }
+      .headText { font: 700 15px Arial, sans-serif; fill: #ffffff; }
+      .title { font: 700 20px Arial, sans-serif; fill: #1f2427; }
+      .sub { font: 12px Arial, sans-serif; fill: #59636b; }
+      .metric { font: 700 22px Arial, sans-serif; fill: #1f2427; }
+      .label { font: 12px Arial, sans-serif; fill: #4b545c; }
+      .good { fill: #e3f4ec; stroke: #198a5a; }
+      .warn { fill: #fff3dc; stroke: #b97918; }
+      .bad { fill: #fde7e6; stroke: #b3433e; }
+      .small { font: 11px Arial, sans-serif; fill: #4b545c; }
+    </style>
+  </defs>
+  <rect class="bg" x="0" y="0" width="960" height="330"/>
+  <text class="title" x="36" y="42">Signature result: Pythia-70M hidden-state proxy drift preflight</text>
+  <text class="sub" x="36" y="64">Model EleutherAI/pythia-70m-deduped at revision e93a9faa...; hidden states and logits only, no generated completions.</text>
+
+  <rect class="card good" x="36" y="92" width="170" height="82"/>
+  <text class="metric" x="56" y="126">1.000</text>
+  <text class="label" x="56" y="150">held-out detector acc</text>
+
+  <rect class="card good" x="226" y="92" width="170" height="82"/>
+  <text class="metric" x="246" y="126">0.736</text>
+  <text class="label" x="246" y="150">behavior alignment r</text>
+
+  <rect class="card warn" x="416" y="92" width="170" height="82"/>
+  <text class="metric" x="436" y="126">0.667</text>
+  <text class="label" x="436" y="150">label-shuffle acc</text>
+
+  <rect class="card warn" x="606" y="92" width="170" height="82"/>
+  <text class="metric" x="626" y="126">0.375</text>
+  <text class="label" x="626" y="150">random-direction acc</text>
+
+  <rect class="card good" x="796" y="92" width="128" height="82"/>
+  <text class="metric" x="816" y="126">1.094</text>
+  <text class="label" x="816" y="150">drift reduction</text>
+
+  <rect class="card" x="36" y="206" width="888" height="82"/>
+  <rect class="head" x="36" y="206" width="888" height="28" rx="8"/>
+  <text class="headText" x="56" y="225">Scope and controls</text>
+  <text class="small" x="56" y="254">Train / held-out prompts: 36 / 24 across five benign drift kinds; hidden state shape: [24, 512].</text>
+  <text class="small" x="56" y="274">Behavior proxy tokens: " helpful" and " unsafe"; black-box proxy accuracy: 1.000; generation_used: false.</text>
+  <text class="small" x="56" y="294">Peak VRAM: 0.310 GB on RTX 5090 Laptop GPU; claim excludes harmful finetunes and broad emergent-misalignment reproduction.</text>
+</svg>

@@ -1,0 +1,94 @@
+{
+  "approved_envelope_written_at_utc": "2026-09-08T05:19:26.251509+00:00",
+  "candidate_manifest_path": "/home/bitwise/.cache/arena_extended/sparse_interaction_discovery/protocol_candidate_v2/candidate_manifest.json",
+  "candidate_manifest_sha256": "740fa75cee6523e00781a967d09472c99c4d56193918230ef50f5b48129389c7",
+  "created_at_utc": "2026-09-08T05:11:52.566508+00:00",
+  "independent_review_path": "/home/bitwise/.cache/arena_extended/sparse_interaction_discovery/protocol_review_v3/review.json",
+  "independent_review_sha256": "1ce12d33b5ff5538a29d111ea8c7c96a795aa1ddb6d1cb79ab4f60e0861cf01e",
+  "main_environment_path": "/home/bitwise/.cache/arena_extended/sparse_interaction_discovery/protocol_candidate_v1/main_environment.json",
+  "main_environment_sha256": "1ba6e739a97c66ad755a979b928ffe0f61f3d62f46fd4962e4a8f03ba3339986",
+  "model_and_inputs": {
+    "bpe_tokens_per_prompt": 30,
+    "physical_model_file_hashes_in": "oracle identity snapshot",
+    "primary_prompts": 32,
+    "subject_counterfactuals": 32,
+    "word_features": 28
+  },
+  "model_snapshot_path": "/home/bitwise/.cache/huggingface/hub/models--openai-community--gpt2/snapshots/607a30d783dfa663caf39e06633721c8d4cfcd7e",
+  "native_execution_started": false,
+  "native_fits_before_freeze": 0,
+  "native_queries_before_freeze": 0,
+  "oracle_identity_file_sha256": "2829595835113234add5a9956adafc167ff1fa52a9d2e970225493f317d8df7a",
+  "oracle_identity_path": "/home/bitwise/.cache/arena_extended/sparse_interaction_discovery/prospective_identity_v2/oracle_identity.json",
+  "oracle_identity_sha256": "e60b6bc808947f8e41938faa8e632657542ccf526274ba9cfdcf08545cec3d57",
+  "planned_cached_rows": 481984,
+  "planned_physical_rows": 481999,
+  "previous_unapproved_candidate_sha256": "1d2aa531bff874889faea0c3ab4cc941880c351de18b12bdb86ef27acc3a4a7c",
+  "publication_authorized": false,
+  "query_plan_directory": "/home/bitwise/.cache/arena_extended/sparse_interaction_discovery/query_plan_v1",
+  "query_plan_manifest_sha256": "a16443f7ff2f5c490cc9cca8e569e3cc5033a450150ed7922d0da24752f5aef7",
+  "reference_contract_file_sha256": "d4663014a1852e0760197051e14d78368b31d7621feaabb53bf64995ae09b426",
+  "reference_contract_path": "/home/bitwise/.cache/arena_extended/sparse_interaction_discovery/reference_execution_v1/bridge_resource_cap_v2/contract.json",
+  "reference_contract_sha256": "3680dfd90c6b3cf88f6d7f454f978d031a81584e6b9f2ad666ea8e77b0fd949b",
+  "reference_python_path": "/home/bitwise/.cache/arena_extended/sparse_interaction_discovery/reference_execution_v1/bridge_environment/bin/python",
+  "reference_stage_ids": [
+    "author_spex_b3",
+    "author_proxy_b3",
+    "maintained_proxy_b3",
+    "author_spex_b4",
+    "author_proxy_b4",
+    "maintained_proxy_b4",
+    "author_spex_b5",
+    "author_proxy_b5",
+    "maintained_proxy_b5"
+  ],
+  "resources": {
+    "numerical_threads": 4,
+    "output_bytes": 8589934592,
+    "reference_stage_output_bytes": 268435456,
+    "reference_stage_seconds": 300,
+    "rss_bytes": 8589934592,
+    "torch_interop_threads": 4,
+    "torch_threads": 8,
+    "wall_seconds": 5400
+  },
+  "schema_version": 1,
+  "scope": "complete joint fixed-query experiment; no notebook publication approval",
+  "source_inputs": {
+    "chapter16_shapley_attribution_baselines/exercises/part18_spex/native_data.py": "4f819bd4945a818f42c21f8b839a64a9e32886d16448a763d89502a460cb5eef",
+    "chapter16_shapley_attribution_baselines/exercises/part18_spex/native_oracle.py": "c5f4984a7ee1f32bdc5f9124c6e75e61ad4ea95c49525494b31b455624443b1a",
+    "chapter16_shapley_attribution_baselines/exercises/part18_spex/native_protocol.md": "3acbf370ec5c87ee4ff515a4d65765d9cd1dbc77a8a359ed6a38b969c3680ba1",
+    "chapter16_shapley_attribution_baselines/exercises/part18_spex/native_query_plan.py": "15830384bfd6e4423d3d017fb3df3fcc3e5ed40a577b80e3f3ec0ca0c112ac59",
+    "chapter16_shapley_attribution_baselines/exercises/part18_spex/native_study.py": "5ab0af7a5921c575226999ac7edd748b53c386d8eea88c8e7d39b5a011f6a677",
+    "chapter16_shapley_attribution_baselines/exercises/part18_spex/reference_bridge.py": "28ac06250cf11c0c25251d228fe2fde327fdefd6275e595ec288b9db70d27fae",
+    "chapter16_shapley_attribution_baselines/exercises/part18_spex/reference_environment/pyproject.toml": "903d3f5506e270e06bddea8157b4c7e02c749fc165c5c9a775949893fce65359",
+    "chapter16_shapley_attribution_baselines/exercises/part18_spex/reference_environment/uv.lock": "e3b3c2be7fe1666807e7d53633e497b9a86da58bddf6bbcc4f1f367d92deb2d5",
+    "chapter16_shapley_attribution_baselines/exercises/part18_spex/run_native.py": "134fc5bc559591f8f5d9d9c5b09dd99e8a1e6d414d8512d438d8d23156970a2f",
+    "chapter16_shapley_attribution_baselines/exercises/part18_spex/spex_coding.py": "dc2e4b564e03504a02da7a0ed5f1e3570c31f530883aa200cc3d667187d3fdc4",
+    "chapter16_shapley_attribution_baselines/exercises/part18_spex/spex_methods.py": "7545eb3727e1f696d4f3e8642686b4482d790f66b5865a90693084c98b20d56b",
+    "chapter16_shapley_attribution_baselines/exercises/part19_proxyspex/proxy_methods.py": "c1eecc731bde4fefd7c0d30f07ac22196d96fe3560f389b9f8561bb9f5bc5a01",
+    "pyproject.toml": "77a8312a7b1ed75962fa0e2be53ec8a03e5d2c60279f42c5ff9291c6ac8d0aac",
+    "uv.lock": "e96e946bb00f50592d32c1b3bf453fca4482a0097731120defbebcd978f019eb"
+  },
+  "spex_defaults": {
+    "bin_energy_floor": 1e-09,
+    "chase_depth": 6,
+    "chase_variant": "author",
+    "max_iterations": 100,
+    "min_amplitude": 1e-08,
+    "residual_fraction": 0.9,
+    "stagnation_window": 15
+  },
+  "status": "APPROVED",
+  "tolerances": {
+    "estimator_predictions": {
+      "atol": 1e-08,
+      "rtol": 1e-07
+    },
+    "native_logits": {
+      "atol": 1e-05,
+      "rtol": 1e-06
+    },
+    "supports_ids_selected_parameters_and_order": "exact"
+  }
+}

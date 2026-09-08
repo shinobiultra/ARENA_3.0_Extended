@@ -1,0 +1,6 @@
+torch
+diffusers
+transformers>=4.51,<5
+safetensors
+accelerate
+bitsandbytes

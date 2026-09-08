@@ -1,0 +1,263 @@
+{
+  "accepted": true,
+  "baselines": {
+    "declared_controls": [
+      "matched_same_multiset_bag_of_tokens_reconstructor",
+      "prompt_only_factor_text_with_matched_template",
+      "direct_factor_affine_decoder",
+      "class_mean_replacement",
+      "class_mean_conditioned_ar_training",
+      "lexical_noun_relabeling",
+      "independently_shuffled_av_targets_negative_control_for_eight_seeds",
+      "zero_filled_training_rejection",
+      "identity_hook_parity",
+      "cross_example_single_row_hook_locality",
+      "real_text_edit_causal_effect"
+    ],
+    "expected_metrics": {
+      "accepted": true,
+      "bag_of_tokens_behavior_parity_max": 0.25,
+      "bag_of_tokens_fve_max": 0.7,
+      "behavior_parity_min": 0.99,
+      "cuda_available": true,
+      "distinct_reconstruction_rows": 32,
+      "exact_text_accuracy_min": 0.99,
+      "held_out_fve_min": 0.75,
+      "identity_max_logit_error": 0.0,
+      "intervention_selected_logit_change_min": 1.0,
+      "max_allowed_gpu_gb": 24,
+      "same_context_token_multiset_fraction": 1.0,
+      "single_row_other_max_logit_change": 0.0,
+      "tests_passed": true,
+      "token_accuracy_min": 0.99,
+      "within_factor_fve_min": 0.75,
+      "within_vram_budget": true
+    }
+  },
+  "claim_scope": "A supervised activation verbalizer predicts 24-token explanations for 32 held-out Pythia-70m states. Within each lexical context, all four factor states have exactly the same token multiset and differ only in word order. A frozen-Pythia activation reconstructor reaches held-out normalized FVE 0.816 and preserves all 32 original model choices, versus FVE 0.642 and zero behavior parity for a matched bag-of-tokens ridge control. This is a small supervised warm-start showing order-sensitive reconstruction in one prompt family, not unsupervised or paper-scale NLA training.",
+  "datasets": [
+    {
+      "candidate_tokens": [
+        " is",
+        " are",
+        " was",
+        " were"
+      ],
+      "eval_count": 32,
+      "held_out_factor_counts": [
+        8,
+        8,
+        8,
+        8
+      ],
+      "held_out_rows_per_context": 1,
+      "id": "pythia_agreement_order_nla_v4",
+      "lexical_contexts": 32,
+      "local_token_vocabulary": 33,
+      "rows_per_context": 4,
+      "same_context_token_multiset_fraction": 1.0,
+      "source": "course_authored_compositional_prompts",
+      "token_sequence_length": 24,
+      "train_count": 96,
+      "train_rows_per_context": 3
+    }
+  ],
+  "date_run": "2026-09-04T23:42:45+00:00",
+  "evidence_level": "pinned_pythia_cuda_order_sensitive_text_bottleneck",
+  "git_commit": "8eab192b",
+  "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+  "gt_tier": "GT-3",
+  "known_failures": [],
+  "metrics": {
+    "gpu_evidence": {
+      "category": "cuda_section_metric",
+      "placeholder_only": false,
+      "section_specific_metric_keys": [
+        "accepted",
+        "bag_of_tokens_behavior_parity",
+        "bag_of_tokens_fve",
+        "bag_of_tokens_within_factor_fve",
+        "behavior_parity",
+        "checks",
+        "distinct_reconstruction_rows",
+        "eval_count",
+        "exact_text_accuracy",
+        "held_out_fve",
+        "identity_max_logit_error",
+        "intervention_selected_logit_change",
+        "model_id",
+        "revision",
+        "same_context_token_multiset_fraction",
+        "single_row_other_max_logit_change",
+        "token_accuracy",
+        "train_count",
+        "within_factor_fve"
+      ],
+      "uses_cuda": true
+    },
+    "gpu_test": {
+      "accepted": true,
+      "bag_of_tokens_behavior_parity": 0.0,
+      "bag_of_tokens_fve": 0.6417766213417053,
+      "bag_of_tokens_within_factor_fve": 0.8405261039733887,
+      "behavior_parity": 1.0,
+      "checks": {
+        "beats_bag_of_tokens_behavior": true,
+        "beats_bag_of_tokens_fve": true,
+        "behavior_parity": true,
+        "causal_text_edit": true,
+        "exact_text": true,
+        "identity_patch": true,
+        "normalized_fve": true,
+        "same_token_multiset": true,
+        "single_row_locality": true
+      },
+      "cuda_available": true,
+      "cuda_version": "13.2",
+      "device": "cuda",
+      "distinct_reconstruction_rows": 32,
+      "eval_count": 32,
+      "exact_text_accuracy": 1.0,
+      "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+      "gpu_total_memory_gb": 23.45965576171875,
+      "held_out_fve": 0.8164604306221008,
+      "identity_max_logit_error": 0.0,
+      "intervention_selected_logit_change": 5.614990234375,
+      "model_id": "EleutherAI/pythia-70m-deduped",
+      "peak_vram_gb": 1.0084428787231445,
+      "revision": "e93a9faa9c77e5d09219f6c868bfc7a1bd65593c",
+      "same_context_token_multiset_fraction": 1.0,
+      "single_row_other_max_logit_change": 0.0,
+      "token_accuracy": 1.0,
+      "torch_version": "2.12.1+cu132",
+      "train_count": 96,
+      "within_factor_fve": 0.8281691074371338,
+      "within_vram_budget": true
+    },
+    "notebook_contract": {
+      "contexts": 32,
+      "eval_count": 32,
+      "eval_factor_counts": {
+        "(-1.0, -1.0)": 8,
+        "(-1.0, 1.0)": 8,
+        "(1.0, -1.0)": 8,
+        "(1.0, 1.0)": 8
+      },
+      "notebook_id": "7_4_mini_natural_language_autoencoders",
+      "train_count": 96
+    }
+  },
+  "models": [
+    {
+      "device": "cuda",
+      "gated": false,
+      "hidden_state_index": 4,
+      "id": "EleutherAI/pythia-70m-deduped",
+      "local_files_only": true,
+      "patch_block_index": 3,
+      "precision": "float32",
+      "revision": "e93a9faa9c77e5d09219f6c868bfc7a1bd65593c",
+      "source": "huggingface_local_cache"
+    }
+  ],
+  "negative_controls": {
+    "declared_controls": [
+      "independently_shuffled_av_targets_negative_control_for_eight_seeds"
+    ]
+  },
+  "notebook_id": "7_4_mini_natural_language_autoencoders",
+  "ood_tests": {
+    "declared": "required_where_applicable"
+  },
+  "peak_vram_gb": 1.0084428787231445,
+  "report_inputs": {
+    "algorithm": "sha256",
+    "combined_sha256": "d1b7b1c4f1cd2468ca4dc17752c65c7b18f0ea512ac7079d6390063f43046ef7",
+    "files": [
+      {
+        "path": "arena_ext/verification.py",
+        "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
+        "size_bytes": 9276
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/7.4_Mini_Natural_Language_Autoencoders_exercises.ipynb",
+        "sha256": "41d2b58f38146e917b34056ff106ca7c692ff28571df9068cdaff7224683ef68",
+        "size_bytes": 97979
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/7.4_Mini_Natural_Language_Autoencoders_solutions.ipynb",
+        "sha256": "a49a7fad7d2366f5db3720d7c39a630d44e8d78e037033d606df45c8f4effd11",
+        "size_bytes": 337246
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/README.md",
+        "sha256": "c93986b95f8d6dfb5a65c0733ff1c9d9724da9d0d49381d51f77b652fe2be8dc",
+        "size_bytes": 1923
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/artifacts.lock.yml",
+        "sha256": "feebc4972aa802bbc2432b4cd6ef184e10cb0ef8ca31ff946a0b3ef73c15bdbf",
+        "size_bytes": 3845
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/build_notebooks.py",
+        "sha256": "b1b97de41708fc6cfaf276b9ce7d28139792011fa247c2da46dc2008dff3ac85",
+        "size_bytes": 29517
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/expected_outputs/README.md",
+        "sha256": "9c67fdf00fca303998dd3183c22dd08236fbba01a75b1676922b1dc9f5efb02f",
+        "size_bytes": 2916
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/expected_outputs/reference_metrics.json",
+        "sha256": "6cd5d077a7eb9d255fa67f54246ea2278265049d93a26f346f4f8577c2dbf062",
+        "size_bytes": 970
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/expected_outputs/smoke_test.json",
+        "sha256": "c488ec07e2247f26608d4a187c89122d0b935aded33df6fc025f19ba2e354238",
+        "size_bytes": 278
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/solutions.py",
+        "sha256": "67c2c8d4fe102445c5c723704a2d88d5679a2973b9b5665461f6974920346994",
+        "size_bytes": 54961
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/tests.py",
+        "sha256": "a588626e0a42729ef63d55357510794fad8366fde74aaed104eb70c84a91a052",
+        "size_bytes": 37831
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/utils.py",
+        "sha256": "1bc4b0f0bec5b81ec0b8471b0c52eaf7882c01f79b3862183daae56e4e3f296e",
+        "size_bytes": 365
+      },
+      {
+        "path": "chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/verification_report.schema.json",
+        "sha256": "bd104a5476b71858598961c138b08f9182d86db3b981dee15763b9e8e719966b",
+        "size_bytes": 1796
+      },
+      {
+        "path": "chapter7_activation_to_language/instructions/pages/04_[7.4]_Mini_Natural_Language_Autoencoders.md",
+        "sha256": "4212950207a04ff6ba59a2d5af8d8cdc6b40ae356d620f9b18c1b9af90a53e5a",
+        "size_bytes": 77164
+      },
+      {
+        "path": "scripts/run_extension_verification_reports.py",
+        "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
+        "size_bytes": 16272
+      }
+    ],
+    "schema_version": 1
+  },
+  "safety_notes": [
+    "All prompts are short benign grammatical-agreement fragments.",
+    "The checkpoint is pinned and loaded offline from the local cache.",
+    "The CUDA path fails closed when CUDA is unavailable.",
+    "Verification JSON is supporting evidence and is never an acceptance input."
+  ],
+  "tests_passed": true,
+  "wall_clock_seconds": 0.566746
+}

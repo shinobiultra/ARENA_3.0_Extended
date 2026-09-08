@@ -1,0 +1,10 @@
+{
+  "accepted": true,
+  "claim_scope": "Exact CPU toy CoT circuit contract; real-model evidence is produced by run_gpu_test.",
+  "evidence_level": "exact_toy_ground_truth",
+  "gt_tier": "GT-3",
+  "notebook_id": "9_2_chain_of_thought_faithfulness",
+  "section": "9.2",
+  "tests_passed": true,
+  "title": "Chain-of-Thought Faithfulness"
+}

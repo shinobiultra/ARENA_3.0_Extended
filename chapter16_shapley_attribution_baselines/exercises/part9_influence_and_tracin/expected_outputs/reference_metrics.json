@@ -1,0 +1,23 @@
+{
+  "tests_passed": true,
+  "accepted": true,
+  "test_count": 14,
+  "actual_learner_passed": true,
+  "own_answer_code_cells": 40,
+  "embedded_figures": 18,
+  "native_model_retrained": true,
+  "native_model_retrained_in_this_report": true,
+  "native_evidence_reused": false,
+  "fresh_reproduction_passed": true,
+  "reference_refits": 930,
+  "sgd_paths": 6,
+  "sgd_updates": 30720,
+  "fresh_compared_tensors": 1048,
+  "fresh_compared_elements": 16726855,
+  "fresh_max_error_max": 1e-10,
+  "independent_scipy_checks": 10,
+  "final_query_count": 64,
+  "final_used_for_selection": false,
+  "exploratory_refits": 33,
+  "whole_paper_replication": false
+}

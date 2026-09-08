@@ -1,0 +1,22 @@
+{
+  "notebook_id": "9_1_refusal_directions_and_safe_steering",
+  "scope": "declared protocol checks; actual measurements are in completed_refusal_study.json.gz",
+  "metrics": {
+    "tests_passed": true,
+    "accepted": true,
+    "max_allowed_gpu_gb": 24,
+    "completed_learner_code_cells": 26,
+    "raw_metrics_recomputed": true,
+    "development_candidates": 15,
+    "selection_passed": true,
+    "final_conditions": 85,
+    "fresh_cuda_conditions": 34,
+    "fresh_generation_examples": 3640,
+    "fresh_separation_directions": 65,
+    "all_fresh_outcomes_match_learner": true,
+    "fresh_training_vector_max_error_max": 0.0001,
+    "fresh_score_max_error_max": 0.0001,
+    "paper_equivalent_full_replication": false,
+    "marker_absence_is_safety_or_correctness": false
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "baselines": {
+    "raw_bits_accuracy": 0.5,
+    "template_only_accuracy": 0.5,
+    "label_shuffle_accuracy_mean": 0.525390625
+  },
+  "causal": {
+    "ablation_accuracy": 0.5,
+    "learned_patch_target_accuracy": 1.0,
+    "random_patch_target_accuracy_mean": 0.056640625,
+    "random_patch_target_accuracy_p95": 0.5
+  },
+  "dataset": {
+    "d_model": 8,
+    "heldout_example_count": 32,
+    "heldout_template_count": 8,
+    "train_example_count": 48,
+    "train_template_count": 12
+  },
+  "heldout_accuracy": 1.0,
+  "direction_cosine": 1.0,
+  "noise_accuracies": [
+    1.0,
+    1.0,
+    0.978759765625,
+    0.840576171875,
+    0.685791015625,
+    0.622314453125
+  ],
+  "noise_sigmas": [
+    0.0,
+    0.25,
+    0.5,
+    1.0,
+    2.0,
+    3.0
+  ],
+  "notebook_id": "10_1_capstone_research_sprint"
+}

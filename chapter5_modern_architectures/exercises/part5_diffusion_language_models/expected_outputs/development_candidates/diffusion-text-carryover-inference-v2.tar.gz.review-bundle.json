@@ -1,0 +1,217 @@
+{
+  "schema": "arena.review-bundle.v1",
+  "archive": {
+    "name": "diffusion-text-carryover-inference-v2.tar.gz",
+    "sha256": "6df37a1f04181462820dcac31990c312dfd7d835fb9a6841c0d398953715ed53",
+    "size_bytes": 118670
+  },
+  "limits": {
+    "archive_bytes": 67108864,
+    "member_bytes": 16777216,
+    "total_member_bytes": 134217728,
+    "tar_container_bytes": 167772160,
+    "decoded_json_bytes": 67108864,
+    "total_decoded_bytes": 536870912,
+    "members": 4096
+  },
+  "provenance": {
+    "kind": "historical_archive_packaging",
+    "packaged_at_utc": "2026-09-08T03:27:52.680277+00:00",
+    "measurement_claim": "Packaging only. This is not a native rerun, scientific revalidation or new review. Retained receipts, failure labels, values, scientific hashes and measurement dates are byte-identical to the original. Historical embedded archive inventories describe that original; this adjacent contract describes the derived review bundle.",
+    "source_archive": {
+      "repository_path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/expected_outputs/development_candidates/diffusion-text-carryover-inference-v2.tar.gz",
+      "absolute_path": "/home/bitwise/.cache/arena_extended/evidence_packaging/original_archives/6df37a1f04181462820dcac31990c312dfd7d835fb9a6841c0d398953715ed53.tar.gz",
+      "sha256": "6df37a1f04181462820dcac31990c312dfd7d835fb9a6841c0d398953715ed53",
+      "size_bytes": 118670,
+      "git_commit": "ce96ceaae2f91bf0dcd7648052325e07a87b0b5b",
+      "git_blob": "5e9d42506841f9912476f6de220835c6825444c4"
+    },
+    "source_archive_members": {
+      "diffusion-ancestral.json": {
+        "sha256": "8d2299cd89336b80eb34a3cf998c6cc4ffa745a4c3b733d58fccb62b619eaac8",
+        "size_bytes": 679031
+      },
+      "diffusion-confidence.json": {
+        "sha256": "9e0686d046cd406a11f9db58b800331f15e4f2a3ecdcd02b3fc79898cef99c93",
+        "size_bytes": 678819
+      },
+      "diffusion-shuffled-ancestral.json": {
+        "sha256": "5c8cb983f6fd8d9fad1d050fdee2fa3442e3365fc0cd1ec54f6c8b2c01ac9494",
+        "size_bytes": 678778
+      },
+      "diffusion-shuffled-confidence.json": {
+        "sha256": "aabb99f3df05e2f80fbaa32806a14c3530b9c2b47399c9946114fb5bf74b0e95",
+        "size_bytes": 678326
+      },
+      "diffusion-shuffled-uniform.json": {
+        "sha256": "cdfef39818340d10d7b97af040ba860a76b009b31edcdad84ed2bb8ad54e60a9",
+        "size_bytes": 678922
+      },
+      "diffusion-uniform.json": {
+        "sha256": "f93a06d9d2569c08dd1c8292311986ec3bd88f405ba625c50648b7f11600a256",
+        "size_bytes": 679074
+      },
+      "protocol.json": {
+        "sha256": "200652f0ae818c3a3e3ad7841ee1cd5b1bc3a3c424b416f5221fad7f33cd8530",
+        "size_bytes": 1722
+      },
+      "source_snapshot/text_data.py": {
+        "sha256": "fb96f68b8b133b1266f9916cf1f24badd8734a5542076f8c484bc05660040def",
+        "size_bytes": 12194
+      },
+      "source_snapshot/text_data_tests.py": {
+        "sha256": "6ff55c107ffec491e4f4e03091c20caca4ebb4a1115274c23efb189d81b5a443",
+        "size_bytes": 5126
+      },
+      "source_snapshot/text_diffusion_methods.py": {
+        "sha256": "ae56389b965215261cd68e13682949e42de2ab3dad9c3c4be76cc373e7c3a014",
+        "size_bytes": 10472
+      },
+      "source_snapshot/text_diffusion_tests.py": {
+        "sha256": "6534aac590f15010387ac90c9f313d15c92a7f96baccb678371385b432e9f89e",
+        "size_bytes": 14168
+      },
+      "source_snapshot/text_evaluation.py": {
+        "sha256": "ff3770872347dfdfd66026a285f7803d6371c78f10471d647ceb864d52b26e7f",
+        "size_bytes": 8901
+      },
+      "source_snapshot/text_evaluation_tests.py": {
+        "sha256": "74adf8dd8e1df46c42961b6e0f7f5eba5e39a928eaa04e250f28a9ba4ffc6073",
+        "size_bytes": 4395
+      },
+      "source_snapshot/text_model.py": {
+        "sha256": "b836a35351cf97a58313bf2226f06fe6eec304ba92a882bdeb7655a8c97c5914",
+        "size_bytes": 7005
+      },
+      "source_snapshot/text_model_tests.py": {
+        "sha256": "8c5e5dda3b29ff2537936d58f016e1c63157a1c675ff713c30978b750bfe0721",
+        "size_bytes": 9067
+      },
+      "source_snapshot/text_training.py": {
+        "sha256": "6ad5727e71aa130534ecb6f2d040b1ed5db1e2434fdda2dd049f29811904de62",
+        "size_bytes": 9498
+      },
+      "source_snapshot/text_training_tests.py": {
+        "sha256": "22fb4e84b0b8738b69040a5ddddff99a20db1eed4a7fd69c73fd438bfdbdd250",
+        "size_bytes": 6053
+      },
+      "status.json": {
+        "sha256": "13900c1bd8e7a164eddf7e6e8f30b9f3dfd4bb71633e488ffdb088c389df85be",
+        "size_bytes": 5452
+      }
+    }
+  },
+  "members": {
+    "diffusion-ancestral.json": {
+      "type": "regular",
+      "size_bytes": 679031,
+      "sha256": "8d2299cd89336b80eb34a3cf998c6cc4ffa745a4c3b733d58fccb62b619eaac8",
+      "format": "json"
+    },
+    "diffusion-confidence.json": {
+      "type": "regular",
+      "size_bytes": 678819,
+      "sha256": "9e0686d046cd406a11f9db58b800331f15e4f2a3ecdcd02b3fc79898cef99c93",
+      "format": "json"
+    },
+    "diffusion-shuffled-ancestral.json": {
+      "type": "regular",
+      "size_bytes": 678778,
+      "sha256": "5c8cb983f6fd8d9fad1d050fdee2fa3442e3365fc0cd1ec54f6c8b2c01ac9494",
+      "format": "json"
+    },
+    "diffusion-shuffled-confidence.json": {
+      "type": "regular",
+      "size_bytes": 678326,
+      "sha256": "aabb99f3df05e2f80fbaa32806a14c3530b9c2b47399c9946114fb5bf74b0e95",
+      "format": "json"
+    },
+    "diffusion-shuffled-uniform.json": {
+      "type": "regular",
+      "size_bytes": 678922,
+      "sha256": "cdfef39818340d10d7b97af040ba860a76b009b31edcdad84ed2bb8ad54e60a9",
+      "format": "json"
+    },
+    "diffusion-uniform.json": {
+      "type": "regular",
+      "size_bytes": 679074,
+      "sha256": "f93a06d9d2569c08dd1c8292311986ec3bd88f405ba625c50648b7f11600a256",
+      "format": "json"
+    },
+    "protocol.json": {
+      "type": "regular",
+      "size_bytes": 1722,
+      "sha256": "200652f0ae818c3a3e3ad7841ee1cd5b1bc3a3c424b416f5221fad7f33cd8530",
+      "format": "json"
+    },
+    "source_snapshot/text_data.py": {
+      "type": "regular",
+      "size_bytes": 12194,
+      "sha256": "fb96f68b8b133b1266f9916cf1f24badd8734a5542076f8c484bc05660040def",
+      "format": "utf8-text"
+    },
+    "source_snapshot/text_data_tests.py": {
+      "type": "regular",
+      "size_bytes": 5126,
+      "sha256": "6ff55c107ffec491e4f4e03091c20caca4ebb4a1115274c23efb189d81b5a443",
+      "format": "utf8-text"
+    },
+    "source_snapshot/text_diffusion_methods.py": {
+      "type": "regular",
+      "size_bytes": 10472,
+      "sha256": "ae56389b965215261cd68e13682949e42de2ab3dad9c3c4be76cc373e7c3a014",
+      "format": "utf8-text"
+    },
+    "source_snapshot/text_diffusion_tests.py": {
+      "type": "regular",
+      "size_bytes": 14168,
+      "sha256": "6534aac590f15010387ac90c9f313d15c92a7f96baccb678371385b432e9f89e",
+      "format": "utf8-text"
+    },
+    "source_snapshot/text_evaluation.py": {
+      "type": "regular",
+      "size_bytes": 8901,
+      "sha256": "ff3770872347dfdfd66026a285f7803d6371c78f10471d647ceb864d52b26e7f",
+      "format": "utf8-text"
+    },
+    "source_snapshot/text_evaluation_tests.py": {
+      "type": "regular",
+      "size_bytes": 4395,
+      "sha256": "74adf8dd8e1df46c42961b6e0f7f5eba5e39a928eaa04e250f28a9ba4ffc6073",
+      "format": "utf8-text"
+    },
+    "source_snapshot/text_model.py": {
+      "type": "regular",
+      "size_bytes": 7005,
+      "sha256": "b836a35351cf97a58313bf2226f06fe6eec304ba92a882bdeb7655a8c97c5914",
+      "format": "utf8-text"
+    },
+    "source_snapshot/text_model_tests.py": {
+      "type": "regular",
+      "size_bytes": 9067,
+      "sha256": "8c5e5dda3b29ff2537936d58f016e1c63157a1c675ff713c30978b750bfe0721",
+      "format": "utf8-text"
+    },
+    "source_snapshot/text_training.py": {
+      "type": "regular",
+      "size_bytes": 9498,
+      "sha256": "6ad5727e71aa130534ecb6f2d040b1ed5db1e2434fdda2dd049f29811904de62",
+      "format": "utf8-text"
+    },
+    "source_snapshot/text_training_tests.py": {
+      "type": "regular",
+      "size_bytes": 6053,
+      "sha256": "22fb4e84b0b8738b69040a5ddddff99a20db1eed4a7fd69c73fd438bfdbdd250",
+      "format": "utf8-text"
+    },
+    "status.json": {
+      "type": "regular",
+      "size_bytes": 5452,
+      "sha256": "13900c1bd8e7a164eddf7e6e8f30b9f3dfd4bb71633e488ffdb088c389df85be",
+      "format": "json"
+    }
+  },
+  "external_payloads": {},
+  "member_count": 18,
+  "total_member_bytes": 4167003
+}

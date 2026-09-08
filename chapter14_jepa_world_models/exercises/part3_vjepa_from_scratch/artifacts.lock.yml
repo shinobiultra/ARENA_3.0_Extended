@@ -1,0 +1,89 @@
+notebook_id: 14_3_vjepa_from_scratch
+section: '14.3'
+title: 'V-JEPA from Scratch: A Persistence-Shortcut Lab'
+exercise_metadata:
+  EXERCISE_ID: 14_3_vjepa_from_scratch
+  GT_TIER: GT-1
+  DIFFICULTY: 4
+  IMPORTANCE: 5
+  EXPECTED_RUNTIME: three 1,000-step reference seeds; typically under five minutes on CPU
+  REQUIRES_GPU: false
+gt_tier: GT-1
+evidence_level: exact_toy_ground_truth_plus_three_seed_negative_result
+evaluation_protocol: vjepa-14.3-paper-l1-tube-mask-v4
+claim_scope: >-
+  A student-built tubelet V-JEPA optimizes target-normalized, stop-gradient L1
+  prediction under spatial masks repeated through time and an EMA teacher. A
+  separate full-future mask is an out-of-distribution stress test. Across three
+  CPU seeds, copy-last-frame exceeds V-JEPA on observed mean teacher-latent
+  cosine and retrieval, while exact dynamics reaches 1.0. Canonical reversed
+  keys have zero overlap with pretraining, probe-fit, and forward test keys.
+  The result does not establish learned dynamics beyond persistence.
+  Blanking all future pixels also exceeds learned retrieval on the observed
+  mean, exposing context carryover in the teacher's final-slice representations.
+required_gpu_gb: 0
+max_allowed_gpu_gb: 24
+models:
+  - id: course_small_vjepa_v3
+    source: learner_implemented
+    revision: architecture_in_solutions_py
+    precision: float32
+    gated: false
+datasets:
+  - id: exact_toroidal_colored_square_video_world_v3
+    source: generated
+    train_examples_per_seed: 512
+    heldout_gallery_examples_per_seed: 128
+    evaluation_seeds: [0, 1, 2]
+    frames_per_video: 6
+    input_size: 16x16
+    exact_states: 8
+    clip_key: [color, direction, start_x, start_y]
+    unique_within_splits: true
+    train_test_key_overlap: 0
+    reversed_pretraining_key_overlap: 0
+    reversed_probe_fit_key_overlap: 0
+    reversed_test_key_overlap: 0
+expected_metrics:
+  tests_passed: true
+  final_initial_l1_ratio_mean: 0.388
+  future_mask_vjepa_teacher_latent_cosine_mean: 0.889
+  future_mask_vjepa_retrieval_accuracy_mean: 0.531
+  blank_future_teacher_latent_cosine_mean: 0.913
+  blank_future_retrieval_accuracy_mean: 0.721
+  copy_last_frame_teacher_latent_cosine_mean: 0.922
+  copy_last_frame_retrieval_accuracy_mean: 0.703
+  exact_dynamics_teacher_latent_cosine: 1.0
+  exact_dynamics_retrieval_accuracy: 1.0
+  random_predictor_retrieval_accuracy_mean: 0.005
+  color_probe_accuracy_mean: 1.0
+  direction_probe_accuracy_mean: 0.555
+  state_probe_accuracy_mean: 0.549
+  random_encoder_direction_accuracy_mean: 0.458
+  random_encoder_state_accuracy_mean: 0.438
+  reversed_original_state_accuracy_mean: 0.120
+  reversed_physical_state_accuracy_mean: 0.560
+  effective_rank_mean: 9.274
+  effective_rank_attainable_max: 72
+  tied_queries_all_methods: 0
+controls:
+  - exact_toroidal_transition_oracle_in_teacher_latent_space
+  - blank_future_context_carryover_in_teacher_latent_space
+  - copy_last_frame_in_teacher_latent_space
+  - independently_initialized_predictor_on_trained_context
+  - random_label_state_probe
+  - separately_initialized_random_encoder_color_direction_state_probes
+  - reversed_clips_with_original_and_physical_labels
+  - tie_aware_unique_key_retrieval_gallery
+  - canonical_reversal_collision_audit
+  - variance_pairwise_cosine_and_effective_rank_observation_only
+simplifications:
+  - one_spatial_prediction_block_instead_of_release_multiblock_masking
+  - no_auxiliary_variance_or_covariance_penalty
+  - full_future_mask_used_only_as_out_of_distribution_diagnostic
+freshness:
+  metrics_and_asset_hashes: expected_outputs/reference_metrics.json
+  regeneration_script: regenerate_reference.py
+safety_notes:
+  - No gated artifacts, remote code, external datasets, network access, or GPU are required.
+  - Generated colored-square videos do not support natural-video benchmark claims.

@@ -1,0 +1,23 @@
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+W0906 17:07:00.451000 2887014 .venv/lib/python3.14/site-packages/torch/utils/_pytree.py:630] <enum 'KernelPreference'> is an Enum subclass and is now natively supported by torch.compile as an opaque value type. Calling register_constant() on Enum subclasses is deprecated and will be an error in a future release.
+W0906 17:07:00.461000 2887014 .venv/lib/python3.14/site-packages/torch/utils/_pytree.py:630] <enum 'ScaleCalculationMode'> is an Enum subclass and is now natively supported by torch.compile as an opaque value type. Calling register_constant() on Enum subclasses is deprecated and will be an error in a future release.
+Loading weights:   0%|          | 0/148 [00:00<?, ?it/s]Loading weights: 100%|██████████| 148/148 [00:00<00:00, 25739.40it/s]
+Finished plain, customer, layer 4: 64 retained reporters
+Finished plain, customer, layer 8: 64 retained reporters
+Finished plain, customer, layer 12: 64 retained reporters
+Finished plain, quoted_review, layer 4: 64 retained reporters
+Finished plain, quoted_review, layer 8: 64 retained reporters
+Finished plain, quoted_review, layer 12: 64 retained reporters
+Finished neutral_reader, customer, layer 4: 64 retained reporters
+Finished neutral_reader, customer, layer 8: 64 retained reporters
+Finished neutral_reader, customer, layer 12: 64 retained reporters
+Finished neutral_reader, quoted_review, layer 4: 64 retained reporters
+Finished neutral_reader, quoted_review, layer 8: 64 retained reporters
+Finished neutral_reader, quoted_review, layer 12: 64 retained reporters
+Finished distracting_reader, customer, layer 4: 64 retained reporters
+Finished distracting_reader, customer, layer 8: 64 retained reporters
+Finished distracting_reader, customer, layer 12: 64 retained reporters
+Finished distracting_reader, quoted_review, layer 4: 64 retained reporters
+Finished distracting_reader, quoted_review, layer 8: 64 retained reporters
+Finished distracting_reader, quoted_review, layer 12: 64 retained reporters
+PASS: 18 cases in 197.444s; final not evaluated.

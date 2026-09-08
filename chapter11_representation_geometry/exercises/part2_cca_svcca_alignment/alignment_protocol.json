@@ -1,0 +1,68 @@
+{
+  "version": 1,
+  "stage": "frozen_before_final_model_execution",
+  "model_id": "gpt2",
+  "revision": "607a30d783dfa663caf39e06633721c8d4cfcd7e",
+  "device": "cpu",
+  "dtype": "float32",
+  "attention": "eager",
+  "batch_size": 24,
+  "position": "prediction",
+  "layer_pairs": [
+    [
+      2,
+      6
+    ],
+    [
+      4,
+      8
+    ],
+    [
+      6,
+      10
+    ]
+  ],
+  "canonical_ranks": [
+    2,
+    4,
+    8,
+    16
+  ],
+  "cca_input_rank_cap": 32,
+  "svcca_variance_fraction": 0.99,
+  "ridge": 0.1,
+  "null_draws": 16,
+  "null_seed": 941,
+  "null_definition": "independent same-norm edits matched to each selected CCA edit on each row",
+  "selection": "minimum development KL to native target-layer donor, then lexical candidate name; select separately by method",
+  "selected": {
+    "2_to_6": {
+      "cca": "cca_rank16",
+      "svcca": "svcca_rank16",
+      "procrustes": "procrustes_rank16",
+      "ridge": "ridge_0.1"
+    },
+    "4_to_8": {
+      "cca": "cca_rank16",
+      "svcca": "svcca_rank16",
+      "procrustes": "procrustes_rank16",
+      "ridge": "ridge_0.1"
+    },
+    "6_to_10": {
+      "cca": "cca_rank16",
+      "svcca": "svcca_rank16",
+      "procrustes": "procrustes_rank16",
+      "ridge": "ridge_0.1"
+    }
+  },
+  "selection_source": "/home/bitwise/.cache/arena_extended/alignment/development-ioi-v1/development.json",
+  "selection_source_sha256": "a86c631a2615de6dc9fc850120e0da5f2f91e75b39006055fe6834e13df72ec6",
+  "train_rows": 72,
+  "development_rows": 48,
+  "final_rows": 96,
+  "final_donors": "same template and name pair, reversed roles; keep every row",
+  "final_split": "three new templates; 66 rows using training names and 30 rows including unseen names",
+  "final_conditions": "all 17 development candidates, native donor, no-op, baseline, 16 same-norm null draws per layer pair",
+  "control_claim": "full-vocabulary KL measures reproduction of an actual local donor intervention, not unrestricted task accuracy",
+  "final_used_for_selection": false
+}

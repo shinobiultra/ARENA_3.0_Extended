@@ -1,0 +1,36 @@
+{
+  "status": "SECTION_RELEASE_PASS",
+  "whole_course_complete": false,
+  "original_preservation": "PASS",
+  "style_pages": 48,
+  "hard_exercise_sections": 47,
+  "course_chapters": 13,
+  "evidence_reports": 50,
+  "integration_and_reproduction_guard_tests": 56,
+  "immediate_method_tests": 13,
+  "learner_cells": 63,
+  "own_answer_code_cells": 32,
+  "figures": 12,
+  "implementation_groups": 9,
+  "play_cells": 3,
+  "roadmap_requirements": 205,
+  "roadmap_status_counts": {
+    "TAUGHT": 41,
+    "PREFLIGHT_ONLY": 36,
+    "TOY_ONLY": 20,
+    "DEFERRED": 13,
+    "UNIMPLEMENTED": 95
+  },
+  "roadmap_blockers": 95,
+  "normal_report_inputs_sha256": "e3b875be95b10d6809a066b31246cca96e2e3b3ed646f161f6f6d72d762a1891",
+  "normal_report_fresh_directory": "/home/bitwise/.cache/arena_extended/das/fresh_reproductions/run-dy2cd_lc/fresh_cpu",
+  "normal_report_fresh_elapsed_seconds": 46.767161234000014,
+  "normal_report_fresh_compared_examples": 16512,
+  "normal_report_fresh_conditions": 43,
+  "normal_report_fresh_max_logit_error": 0.0,
+  "notes": [
+    "The earlier integration-test attempt ran while the new normal report was still pending and correctly rejected stale old report inputs. The later full 56-test run passes after the accepted report was written.",
+    "The first global audit found structural documentation, educational-message and report-metadata gaps. Those were fixed; the unchanged native protocol was rerun completely and independently reproduced.",
+    "Original ARENA chapters remain unchanged. Concept erasure, CCS, IIT and the other open requirements have not been promoted."
+  ]
+}

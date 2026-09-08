@@ -1,0 +1,10 @@
+{
+  "accepted": true,
+  "claim_scope": "Contract check; not a full real-model validation.",
+  "evidence_level": "notebook_contract",
+  "gt_tier": "GT-3",
+  "notebook_id": "5_2_gemma_scope_and_feature_steering",
+  "section": "5.2",
+  "tests_passed": true,
+  "title": "Gemma Scope and Feature Steering"
+}

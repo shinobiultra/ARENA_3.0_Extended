@@ -1,0 +1,19 @@
+{
+  "source_directory": "/home/bitwise/.cache/arena_extended/geometry/validated-cache-report-v5",
+  "archive_sha256": "bbfc255e4cc6b0d1110d03d53425fe9063d85378cc09b1b6b115b7f8126d78b2",
+  "members_sha256": {
+    "README.md": "27c31eae60d56616ad23882a74db894567d53d2441a0035abcd0c6439674ea73",
+    "artifacts.lock.yml": "1311c9692bd12c820849e1f66c724e49d969e8c7ea8601922c90745d263ef08f",
+    "final-tests-v6.log": "ddd747fbd3cc2e427ba71e90c9d9d6cfdcd9a7ecb1c72aa6517258e493ef28ad",
+    "geometry_reproduction_cache.py": "8f24e1e5cbcc4cae0da25a27ea777c5fe34e5e7611633962743cd593790c053c",
+    "lesson.md": "a3a82fd91093137b807d77e56f92d16ee3307f7440bc0745eb9a23f97abcce17",
+    "native_manifest.json": "218976a8267313dd16feba8fa75eda45e16d30f6ce70d9e5a6248a62c06705f1",
+    "render_validation.json": "65ff50acd6adabe9957a9163883933fc3d610da989f082a72d4db44879ed8ab2",
+    "reproduction-cache-tests-v1.log": "71288863ec9567395a647dd0c8fbf0e2048bee72283202612ad6f90a7a526ef3",
+    "solutions.py": "1333e364538ab4e562f87af4e5ba9badf756b033dddcf70b19a6a3cc0a92505c",
+    "test_geometry_reproduction_cache.py": "e37739de4b18aaf32f729da4c3d02bcca44aca882459bda94b9ca761886f5739",
+    "verification_report.json": "69a81b6890631ae9981b7d90bb6fb1ff2fa4555f2fbf7e167b0a795f94b63b1e"
+  },
+  "large_tensors_retained_in_source_directory": {},
+  "all_archive_members_read_back_and_verified": true
+}

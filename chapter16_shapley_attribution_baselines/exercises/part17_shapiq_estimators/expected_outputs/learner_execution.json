@@ -1,0 +1,111 @@
+{
+  "status": "PASS",
+  "scope": "complete own-answer 16.17 learner",
+  "completed_from_own_answers": true,
+  "source_inputs": {
+    "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/estimator_methods.py": "f173ff6d56b4bdd08fb044ddfb9d18c3cdc7e79cff94b940eb66f51b73fb208c",
+    "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/estimator_methods_tests.py": "760c871a37c4840b66300b4ec7dc84f17feb2c70e0c26c6836c2f6cf8d56489a",
+    "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/estimator_study.py": "846faa75ed7ccc6b4c59bbb2df6501c7b69500cf27c24b495288a573cdbb3c55",
+    "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/estimator_plots.py": "835d66ec52d0d7040df7b6ea2ddccf6bb12e0008bc496f6e3f1d0cabd09b0735",
+    "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/lesson.md": "f242daacaafab111f92ed347417a6ce9e8e99064d142dc375c0624a6a32d41eb",
+    "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/lesson_cells.py": "d6c844ab2a307ea8db0b4dcb2a134de56a1d9eb44d954cd4ea05a1b84512b6b2",
+    "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/build_notebooks.py": "9d2ccd0d791b479d0978b5a4b670e750e9b1374c27815da4547332c34cec5b7f",
+    "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/execute_learner.py": "11695b4c9a40a9ff06147d6ba252eaf542f41305e42b40713bdbce9a7cad6f3b",
+    "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/protocol.md": "5ca23cc6f18ce83c82cac60ad495d2deeabba2c0d9da01c4f61b32e9bb68433a",
+    "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/data_manifest.json": "9f2b4351ac056d109d63ee99c108df5249c3185c84a68d61bb9384d99940f3c8",
+    "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/protocol_freeze.json": "8d66f3eb399688712acd557a4b91b2e39612440a1444b6aa31afdba04d479656",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/build_notebooks.py": "0b1b09ca7c3ecb58dde9f89ac993600f86837603e0d167dd8c0b0520d7085395",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/execute_learner.py": "0dfd6ee46e87b0091466c47d6a61e6b451ccdf34758e6a68399ac9f7b42cbc38",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_contracts.py": "3b52d90376e81b75e90ee4f9adfffa35073982708372143542e0a0349b1b319a",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_data.py": "9c9c1016ffd6fe839a004c06e801cdcd24d4d71a85ccd3f0707168dec390c7ce",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_diagnostics.py": "d3b60c3d5e9565a3c693fa4d8146a8115eae1ac1708986692197dadfdbee5e7f",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_diagnostics_tests.py": "420c535748a2dedb4a1e6a3d3e4c99e4cb0ace78d51af01e1141d136b153b029",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_methods.py": "2c56ae4e108d13b8e2994f12944af49af3915fcf95d684da96ddec7ed46c5be5",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_methods_tests.py": "fafa0eaa80591793198f23e884c21b3f457eaf240841ae10c9cfd58e721eae12",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_plots.py": "f7369b14f53d0ac3cac2c54efa12ed2b9b799bb2e94336cb0b030b5d585380d0",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_plots_tests.py": "b5acaabd5d2062a31c8b36c132cd48c5b9e33fc8f8f6e7f04158248a8f31f93a",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py": "c063d120d7449a9b20b4ac370247b2b5971e809575d44ab9d7c8719cc551292f",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference_tests.py": "95bfe943a98b7353e29328992ee4cbf0a0558cdf3c8d64a692129e47bf1dbc4e",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_study.py": "f49e4f5872beca780c95a3689b919690e5be8c344df3f0625178476ff163ad02",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_study_tests.py": "ef938b660a7b6388023654bd977cfd94e999540ee6d827ead6f5382f757eb3a5",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/publish_study.py": "ea001e7f27cadc4b37a9d63f3766cc67e7450c4ce053a5c2a4f0466beb5034a0",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/reproduce_native.py": "382d67ea67ecd6c02d0c1148dbb812c567e6635f706c351f02f85f9cb7d367db",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/run_native.py": "f4c359e12c25d77b14100da9e66145480fe0dfa591f9387cf1fe1d8c938f205c",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/solutions.py": "29471f5b57fa41cff1e4db5fe08b5c5f0f22ae20cf71f06a0e2c2323e4a2edc1",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/tests.py": "a6525e5184bfb8a9cb6117b8d447c1feaab2343af9a73c00f41052dd19e4fe84",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/data_manifest.json": "bcf41f96c9f6839ee4cbf24df82ca8467b35a6ed9090a9c4c56fce0b1a23120c",
+    "uv.lock": "e96e946bb00f50592d32c1b3bf453fca4482a0097731120defbebcd978f019eb"
+  },
+  "execution_device": "cpu",
+  "analytic_only": false,
+  "changed_sources": [],
+  "elapsed_seconds": 28.913442872000132,
+  "cells": 49,
+  "code_cells": 22,
+  "executed_code_cells": 22,
+  "embedded_figures": 10,
+  "completed_learner_sha256": "f95c84427e55494c4717bd06ab57dc3ad5720aa9e3f725ffdac6093be90f7dd0",
+  "native_summary_exists": true,
+  "figures": {
+    "01_shared_query.png": {
+      "sha256": "8e0e7004a2f72e8aae6b7fb9379d709722b27a41b115fccc87f791b2974f6e9a",
+      "bytes": 83178
+    },
+    "02_query_play.png": {
+      "sha256": "8e0e7004a2f72e8aae6b7fb9379d709722b27a41b115fccc87f791b2974f6e9a",
+      "bytes": 83178
+    },
+    "03_sampling_and_cost.png": {
+      "sha256": "e68a7df66e110e10deca637eac2b4c9ebf0ce210344f6c7053ee6d9e2b20bdf0",
+      "bytes": 110954
+    },
+    "04_boundary_limit.png": {
+      "sha256": "cd99c47e2e1791b9d7c9d4ce8ee09c71289602955137bc6ca23f723a74e50f0a",
+      "bytes": 102960
+    },
+    "05_model_controls.png": {
+      "sha256": "b41a792c5c23ba5234b2d2e41d2dff45f22d3f49e8563c7002290a031733ab19",
+      "bytes": 72814
+    },
+    "06_query_budget_errors.png": {
+      "sha256": "e2abf92c2914cb90ddf109782d5bebb50b936d6825503fe46f28af72949348da",
+      "bytes": 856705
+    },
+    "07_signed_pair_comparison.png": {
+      "sha256": "5f656f9ae215f9215dad217e536c2f9bfdcff59f2bff9b170405a1b0f25268c7",
+      "bytes": 155370
+    },
+    "08_sampling_variance.png": {
+      "sha256": "3a3d1a4cf35cc096f97f071440af45d3182c3a1bcc4a5070e1eddb7b373f11bd",
+      "bytes": 621897
+    },
+    "09_unique_queries_and_rank.png": {
+      "sha256": "32c4aef1562b7c8d9d3efb6f1761a16821013136029c80ace3326e9907c78306",
+      "bytes": 160316
+    },
+    "10_native_query_play.png": {
+      "sha256": "b7df1fb079f047a037cdf06b15b78889d2892327ffe2b355887c084deb8d66ec",
+      "bytes": 160311
+    }
+  },
+  "learner_directory": "/home/bitwise/.cache/arena_extended/shapiq_estimators/new-environment-learner-v4",
+  "publication_fresh_directory": "/home/bitwise/.cache/arena_extended/shapiq_estimators/new-environment-reproduction-v4",
+  "published_exercises_sha256": "5823504f59f9b975c27ee252e1993022355584159ca1ccac31fcc974c3b54525",
+  "published_solutions_sha256": "40d6f0cfa512483ec9a1dbe1d4fd4ea21682433680f3e6db1ad4881476db3df2",
+  "published_page_sha256": "c979fdc985605ede0aeb46625ef75e6f9402cc21683b411944186df3c87055cc",
+  "published_figures": {
+    "shapiq_01_shared_query.png": "8e0e7004a2f72e8aae6b7fb9379d709722b27a41b115fccc87f791b2974f6e9a",
+    "shapiq_02_query_play.png": "8e0e7004a2f72e8aae6b7fb9379d709722b27a41b115fccc87f791b2974f6e9a",
+    "shapiq_03_sampling_and_cost.png": "e68a7df66e110e10deca637eac2b4c9ebf0ce210344f6c7053ee6d9e2b20bdf0",
+    "shapiq_04_boundary_limit.png": "cd99c47e2e1791b9d7c9d4ce8ee09c71289602955137bc6ca23f723a74e50f0a",
+    "shapiq_05_model_controls.png": "b41a792c5c23ba5234b2d2e41d2dff45f22d3f49e8563c7002290a031733ab19",
+    "shapiq_06_query_budget_errors.png": "e2abf92c2914cb90ddf109782d5bebb50b936d6825503fe46f28af72949348da",
+    "shapiq_07_signed_pair_comparison.png": "5f656f9ae215f9215dad217e536c2f9bfdcff59f2bff9b170405a1b0f25268c7",
+    "shapiq_08_sampling_variance.png": "3a3d1a4cf35cc096f97f071440af45d3182c3a1bcc4a5070e1eddb7b373f11bd",
+    "shapiq_09_unique_queries_and_rank.png": "32c4aef1562b7c8d9d3efb6f1761a16821013136029c80ace3326e9907c78306",
+    "shapiq_10_native_query_play.png": "b7df1fb079f047a037cdf06b15b78889d2892327ffe2b355887c084deb8d66ec"
+  },
+  "publication_review_scope": "author_review_not_independent",
+  "publication_review_sha256": "7b092cf0eddbd4420b413228d67cac0301fbc598e33c08ebc91af15baeffcfb8",
+  "publisher_sha256": "edf5a5bfaba8d3d882b5e3b1123aa3b81fbecce4be3d6509f0b18bc9b333eda5"
+}

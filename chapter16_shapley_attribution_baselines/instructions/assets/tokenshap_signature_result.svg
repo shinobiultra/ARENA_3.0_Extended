@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="940" height="320" viewBox="0 0 940 320" role="img" aria-labelledby="title desc">
+  <title id="title">TokenSHAP signature result</title>
+  <desc id="desc">A table showing exact token Shapley values, sampled estimates, and the shuffled-label rejection control.</desc>
+  <defs>
+    <style>
+      .bg { fill: #fbfcff; }
+      .header { fill: #1e344f; }
+      .row1 { fill: #ffffff; }
+      .row2 { fill: #eef5ff; }
+      .ok { fill: #e9f8ef; stroke: #20814d; stroke-width: 2; rx: 6; }
+      .bad { fill: #fff0e8; stroke: #b44b24; stroke-width: 2; rx: 6; }
+      .text { font-family: Inter, Arial, sans-serif; fill: #172033; font-size: 17px; }
+      .head { font-family: Inter, Arial, sans-serif; fill: #ffffff; font-size: 16px; font-weight: 700; }
+      .title { font-family: Inter, Arial, sans-serif; fill: #172033; font-size: 23px; font-weight: 750; }
+      .small { font-family: Inter, Arial, sans-serif; fill: #3a4658; font-size: 14px; }
+      .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; fill: #172033; font-size: 16px; }
+    </style>
+  </defs>
+  <rect class="bg" x="0" y="0" width="940" height="320" rx="12"/>
+  <text class="title" x="32" y="42">Signature result: token credit is exact before it is sampled</text>
+  <text class="small" x="32" y="68">Prompt: "The capital is Paris"; score = Paris target + capital/Paris interaction.</text>
+  <rect class="header" x="32" y="92" width="876" height="42" rx="6"/>
+  <text class="head" x="55" y="119">token</text>
+  <text class="head" x="230" y="119">exact value</text>
+  <text class="head" x="390" y="119">sampled value</text>
+  <text class="head" x="575" y="119">interpretation</text>
+  <rect class="row1" x="32" y="134" width="876" height="42"/>
+  <text class="mono" x="55" y="161">The</text>
+  <text class="mono" x="252" y="161">0.0</text>
+  <text class="mono" x="414" y="161">0.00000002</text>
+  <text class="text" x="575" y="161">filler token control</text>
+  <rect class="row2" x="32" y="176" width="876" height="42"/>
+  <text class="mono" x="55" y="203">capital</text>
+  <text class="mono" x="252" y="203">1.0</text>
+  <text class="mono" x="414" y="203">1.050781</text>
+  <text class="text" x="575" y="203">half of context-target interaction</text>
+  <rect class="row1" x="32" y="218" width="876" height="42"/>
+  <text class="mono" x="55" y="245">is</text>
+  <text class="mono" x="252" y="245">0.0</text>
+  <text class="mono" x="414" y="245">-0.00000001</text>
+  <text class="text" x="575" y="245">filler token control</text>
+  <rect class="row2" x="32" y="260" width="876" height="42"/>
+  <text class="mono" x="55" y="287">Paris</text>
+  <text class="mono" x="252" y="287">2.0</text>
+  <text class="mono" x="414" y="287">1.949219</text>
+  <text class="text" x="575" y="287">target point plus half interaction</text>
+  <rect class="ok" x="32" y="306" width="248" height="1"/>
+  <rect class="ok" x="660" y="20" width="248" height="48"/>
+  <text class="text" x="680" y="51">efficiency error = 0</text>
+  <rect class="bad" x="660" y="72" width="248" height="48"/>
+  <text class="text" x="680" y="103">shuffle error = 1.8333</text>
+</svg>

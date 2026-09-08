@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="320" viewBox="0 0 900 320" role="img" aria-label="Fake interpretability validation loop">
+  <rect width="900" height="320" fill="#f7f8fb"/>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#273043"/>
+    </marker>
+  </defs>
+  <text x="40" y="45" font-family="Arial, sans-serif" font-size="26" font-weight="700" fill="#101828">GT-0 skepticism loop</text>
+  <text x="40" y="74" font-family="Arial, sans-serif" font-size="15" fill="#475467">Every impressive-looking result must beat the control that would make it fake.</text>
+  <g font-family="Arial, sans-serif">
+    <rect x="45" y="120" width="150" height="96" rx="8" fill="#ffffff" stroke="#98a2b3" stroke-width="2"/>
+    <text x="70" y="152" font-size="16" font-weight="700" fill="#101828">Claim</text>
+    <text x="70" y="178" font-size="13" fill="#475467">Probe / feature /</text>
+    <text x="70" y="197" font-size="13" fill="#475467">direction looks good</text>
+
+    <rect x="255" y="120" width="150" height="96" rx="8" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+    <text x="282" y="152" font-size="16" font-weight="700" fill="#9a3412">Toy oracle</text>
+    <text x="282" y="178" font-size="13" fill="#9a3412">Known failure mode</text>
+    <text x="282" y="197" font-size="13" fill="#9a3412">injected deliberately</text>
+
+    <rect x="465" y="120" width="150" height="96" rx="8" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+    <text x="492" y="152" font-size="16" font-weight="700" fill="#1d4ed8">Control</text>
+    <text x="492" y="178" font-size="13" fill="#1d4ed8">Shift / population /</text>
+    <text x="492" y="197" font-size="13" fill="#1d4ed8">held-out / random</text>
+
+    <rect x="675" y="120" width="160" height="96" rx="8" fill="#ecfdf3" stroke="#16a34a" stroke-width="2"/>
+    <text x="703" y="152" font-size="16" font-weight="700" fill="#166534">Decision</text>
+    <text x="703" y="178" font-size="13" fill="#166534">Reject fake result</text>
+    <text x="703" y="197" font-size="13" fill="#166534">or narrow claim</text>
+
+    <line x1="198" y1="168" x2="248" y2="168" stroke="#273043" stroke-width="2.5" marker-end="url(#arrow)"/>
+    <line x1="408" y1="168" x2="458" y2="168" stroke="#273043" stroke-width="2.5" marker-end="url(#arrow)"/>
+    <line x1="618" y1="168" x2="668" y2="168" stroke="#273043" stroke-width="2.5" marker-end="url(#arrow)"/>
+  </g>
+  <g font-family="Arial, sans-serif" font-size="13" fill="#344054">
+    <text x="56" y="262">Leakage: perfect feature must fail shifted control</text>
+    <text x="56" y="286">Cherry-pick: selected examples must match population</text>
+    <text x="478" y="262">Probe: train accuracy must survive held-out templates</text>
+    <text x="478" y="286">Steering: claimed direction must beat random p95</text>
+  </g>
+</svg>

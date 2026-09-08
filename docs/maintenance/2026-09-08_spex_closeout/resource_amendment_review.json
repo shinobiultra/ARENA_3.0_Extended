@@ -1,0 +1,99 @@
+{
+  "approval_scope": "Exact resource-only amendment: increase the complete joint native execution and complete cold reproduction wall cap from 5400 to 10800 seconds. Execution protocol approval only; no outcome, learner artifact or publication approval.",
+  "candidate_manifest_path": "/home/bitwise/.cache/arena_extended/sparse_interaction_discovery/protocol_candidate_v3/candidate_manifest.json",
+  "candidate_manifest_sha256": "b851613780948f81aa3e203a4a29a10515447e46213e03411aea2101734a77ca",
+  "dataflow_boundary": "The validator reads and hashes historical files for provenance, including saved record JSON and array/database bytes. Their contents remain local to validation and never become inputs to new oracle queries or estimator fits. Unchanged run_study requires a new output directory and cold oracle cache. The claim is absence of scientific payload reuse, not absence of historical file access.",
+  "evidence_files": {
+    "/home/bitwise/.cache/arena_extended/sparse_interaction_discovery/protocol_review_v3/runtime_amendment_review_v1/actual_validator_preapproval_check.json": "5035223a2da7d2b51afa2470f4f0812c66ad6e2c619f7144e1a48c2e242a612c",
+    "/home/bitwise/.cache/arena_extended/sparse_interaction_discovery/protocol_review_v3/runtime_amendment_review_v1/interruption_verification.json": "47a86fbf190fb53db3314094db84e7dd42b09be0cf63c2fa614845a980aaaedc",
+    "/home/bitwise/.cache/arena_extended/sparse_interaction_discovery/protocol_review_v3/runtime_amendment_review_v1/pytest_amendment.log": "8e8e16c551f5fe15589f8eaaed83632dea544f1d461cfa946910bbe7dd4166a5",
+    "/home/bitwise/.cache/arena_extended/sparse_interaction_discovery/protocol_review_v3/runtime_amendment_review_v1/source_difference_proof.json": "e980bff0a406122a31912e0a4ecd799635e1de4d938938f5d5153ed79e3ee115",
+    "/home/bitwise/.cache/arena_extended/sparse_interaction_discovery/runtime_amendment_v1/interruption_inventory_v2.json": "11b37b67de28be4695c56b8f0bb1d2d71694830bc36db790cb1223f1116a24a9",
+    "/home/bitwise/.cache/arena_extended/sparse_interaction_discovery/runtime_amendment_v1/targeted_tests_v2.log": "f7463464fb8a98cebaa9e21d4544f85326b874269d16d8ba7ed0227629780908"
+  },
+  "findings": [],
+  "limits": [
+    "Interrupted v1 remains incomplete and retained; no completed scientific outcome or cold reproduction is established.",
+    "The larger cap is prospective and applies to a new cold run, with unchanged query/model/method/seed/grid/tolerance/thread/RSS/output/reference-stage settings.",
+    "No native v2 execution is authorized by this reviewer to occur today; scheduling remains with the root task under the current user deadline.",
+    "The separate outcome auditor is a draft, untested and not run on native outcomes; it is not acceptance evidence.",
+    "Original ARENA files and all repository files were untouched by this reviewer."
+  ],
+  "native_fits_performed_by_reviewer": 0,
+  "native_queries_performed_by_reviewer": 0,
+  "original_scientific_candidate_manifest_sha256": "740fa75cee6523e00781a967d09472c99c4d56193918230ef50f5b48129389c7",
+  "original_scientific_freeze_sha256": "a2a6619beb5d6777742a46bc062685444842d580dcfb324d591a93c9d2fe9179",
+  "prior_interruption": {
+    "audit_records": 0,
+    "cached_rows": 49363,
+    "changed_sources": [],
+    "completed_physical_query_rows": 49378,
+    "completed_saved_method_condition_fits": 124,
+    "execution_returncode": -2,
+    "execution_sha256": "729b03bd6566e7c776bb4a8870823dc2c8ccd03d791d53b2b7d162d896d54a07",
+    "execution_status": "FAIL",
+    "fits_count_units": "completed, saved method-condition fits; lower bound on attempted work, not an exact attempted fit count",
+    "inventory_sha256": "11b37b67de28be4695c56b8f0bb1d2d71694830bc36db790cb1223f1116a24a9",
+    "prior_scientific_payload_reuse_authorized": false,
+    "reference_stages": 0,
+    "resource_violations": [],
+    "saved_fit_accounting": {
+      "baseline_fits": 248,
+      "ensemble_fits": 806,
+      "oracle_calls_by_methods": 0,
+      "residual_tree_fits": 250624,
+      "ridge_candidate_fits": 992,
+      "ridge_matrix_decompositions": 248,
+      "spex_recoveries": 62
+    },
+    "started_batch_attempt_rows": 49634
+  },
+  "publication_authorized": false,
+  "reviewed_at_utc": "2026-09-08T06:03:23.878447+00:00",
+  "reviewer_identity": {
+    "agent": "/root/astra_native_fixture_integration",
+    "model_family": "gpt-6-astra",
+    "role": "independent resource amendment reviewer"
+  },
+  "runtime_basis": "Three completed prompt timings were 209.078, 202.870 and 206.879 seconds. Their steady-rate extrapolation places primary training alone near 6560 seconds, beyond the former 5400-second joint cap. The 10800-second cap also reserves all nine unchanged 300-second reference stage limits; it does not guarantee completion.",
+  "schema": "arena.sparse-interaction.independent-resource-amendment-review.v1",
+  "source_difference_proof": {
+    "all_other_native_inputs": "Eleven files byte-identical",
+    "protocol": "Original bytes preserved exactly as a prefix; append-only resource amendment and provenance-read clarification",
+    "runner": "AST exact after four numeric 5400-to-10800 substitutions",
+    "scientific_fields": "Every original scientific field unchanged; only explicitly enumerated resource/provenance/envelope fields may differ",
+    "study": "AST exact outside the validate_freeze function body; actual new body independently reviewed"
+  },
+  "source_input_count": 14,
+  "source_inputs": {
+    "chapter16_shapley_attribution_baselines/exercises/part18_spex/native_data.py": "4f819bd4945a818f42c21f8b839a64a9e32886d16448a763d89502a460cb5eef",
+    "chapter16_shapley_attribution_baselines/exercises/part18_spex/native_oracle.py": "c5f4984a7ee1f32bdc5f9124c6e75e61ad4ea95c49525494b31b455624443b1a",
+    "chapter16_shapley_attribution_baselines/exercises/part18_spex/native_protocol.md": "4c60e023a131806674222af0f116a8c8b9aa631917135c46d196db14ba7a0f32",
+    "chapter16_shapley_attribution_baselines/exercises/part18_spex/native_query_plan.py": "15830384bfd6e4423d3d017fb3df3fcc3e5ed40a577b80e3f3ec0ca0c112ac59",
+    "chapter16_shapley_attribution_baselines/exercises/part18_spex/native_study.py": "6995a081626ab6796e4554402f4657fea2b5f40ded507830ef020da59e8ba4f6",
+    "chapter16_shapley_attribution_baselines/exercises/part18_spex/reference_bridge.py": "28ac06250cf11c0c25251d228fe2fde327fdefd6275e595ec288b9db70d27fae",
+    "chapter16_shapley_attribution_baselines/exercises/part18_spex/reference_environment/pyproject.toml": "903d3f5506e270e06bddea8157b4c7e02c749fc165c5c9a775949893fce65359",
+    "chapter16_shapley_attribution_baselines/exercises/part18_spex/reference_environment/uv.lock": "e3b3c2be7fe1666807e7d53633e497b9a86da58bddf6bbcc4f1f367d92deb2d5",
+    "chapter16_shapley_attribution_baselines/exercises/part18_spex/run_native.py": "5faaacee83b0113ab0beaaae7f49aa5dbcd4b42fb5e7e6ed5af1cd568a6d1547",
+    "chapter16_shapley_attribution_baselines/exercises/part18_spex/spex_coding.py": "dc2e4b564e03504a02da7a0ed5f1e3570c31f530883aa200cc3d667187d3fdc4",
+    "chapter16_shapley_attribution_baselines/exercises/part18_spex/spex_methods.py": "7545eb3727e1f696d4f3e8642686b4482d790f66b5865a90693084c98b20d56b",
+    "chapter16_shapley_attribution_baselines/exercises/part19_proxyspex/proxy_methods.py": "c1eecc731bde4fefd7c0d30f07ac22196d96fe3560f389b9f8561bb9f5bc5a01",
+    "pyproject.toml": "77a8312a7b1ed75962fa0e2be53ec8a03e5d2c60279f42c5ff9291c6ac8d0aac",
+    "uv.lock": "e96e946bb00f50592d32c1b3bf453fca4482a0097731120defbebcd978f019eb"
+  },
+  "status": "APPROVE_RESOURCE_ONLY_AMENDMENT",
+  "unresolved_blockers": [],
+  "validation": {
+    "actual_candidate_validator_preapproval_check": "PASS: unapproved on-disk review rejected; only its pending decision was substituted in-process for the positive preapproval check; all source, candidate, provenance, count and environment checks used actual bytes",
+    "implementation_combined_suite_log_verified": "106 passed in 15.94s",
+    "independent_amendment_mutation_tests": "38 passed in 7.13s",
+    "mutation_coverage": [
+      "scientific/resource/count/time/schema drift",
+      "rehashed changes outside authorized source regions",
+      "altered historical approval and execution links",
+      "locally rehashed false counts, audit/reference activity or reuse declarations"
+    ],
+    "query_or_fit_execution_by_reviewer": 0
+  },
+  "zero_count_scope": "The two zero native_*_before_freeze fields describe only the immutable original scientific freeze. This amendment explicitly records nonzero historical queries and saved fits; it does not claim that native execution has never begun."
+}

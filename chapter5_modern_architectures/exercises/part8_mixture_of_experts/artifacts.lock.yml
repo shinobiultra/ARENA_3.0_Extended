@@ -1,0 +1,99 @@
+notebook_id: 5_8_mixture_of_experts_from_scratch
+section: '5.8'
+title: Mixture of Experts from Scratch
+exercise_metadata:
+  EXERCISE_ID: 5_8_mixture_of_experts_from_scratch
+  GT_TIER: GT-3
+  SUPPORTING_GT_TIER: GT-0
+  DIFFICULTY: 4
+  IMPORTANCE: 5
+  EXPECTED_RUNTIME: 2-3 hours learner time; three-seed CPU run measured by the notebook
+  REQUIRES_GPU: true
+gt_tier: GT-3
+supporting_gt_tier: GT-0
+evidence_level: exact_router_dispatch_oracles_plus_controlled_trained_sparse_transformer
+claim_scope: >-
+  Negative candidate on generated copy/successor/predecessor instruction streams.
+  Students implement Switch top-1 probability gates, per-sequence left-to-right
+  capacity, sparse dispatch/combine, and paired auxiliary/z-loss comparisons.
+  Across three seeds balancing improves routing and final accuracy is above 0.99,
+  but preferred-expert accuracy ablation has no material effect and per-sequence
+  overflow exceeds the original release bound. The original positive-specialization
+  contract remains rejected. Longer-context accuracy is approximately 0.657.
+  Equal-width dense and sparse FFNs are compared with measured padding overhead;
+  this experiment does not demonstrate a sparse compute saving.
+required_gpu_gb: 1
+max_allowed_gpu_gb: 24
+models:
+  - id: course_trained_tiny_sparse_moe_transformer
+    source: generated_by_course
+    revision: architecture_v3_switch_probability_gates_and_causal_capacity
+    precision: float32_cpu; parent CUDA verification may use float32
+    gated: false
+    seeds: [7, 19, 31]
+datasets:
+  - id: mixed_copy_successor_predecessor_instruction_stream_v1
+    source: generated
+    seed: 7
+    vocabulary: BOS, three operation tokens, five value tokens
+    train_data_tokens: 9
+    ood_data_tokens: 17
+    label_function: exact modulo-5 copy, successor, or predecessor
+training:
+  optimizer: AdamW
+  steps_per_condition: 180
+  batch_size: 63
+  independent_training_repetitions: 3
+  learning_rate: 0.003
+  auxiliary_load_balance_coefficient: 0.2
+  router_z_loss_coefficient: 0.001
+  router_bias_stress_test: expert_0_bias_4.0_for_both_balanced_and_unbalanced_models
+candidate_status: rejected_original_positive_release_claim
+candidate_failure: Preferred-expert accuracy ablation does not beat the nonpreferred control; balanced per-sequence overflow also exceeds the original 0.05 bound.
+# These are the preserved original release expectations, not accepted measurements.
+expected_metrics:
+  balanced_heldout_accuracy_min: 0.99
+  dense_compute_matched_accuracy_min: 0.99
+  balanced_ood_long_accuracy_min: 0.65
+  balanced_load_entropy_min: 0.95
+  no_balance_load_entropy_max: 0.10
+  balanced_dropped_fraction_max: 0.05
+  no_balance_dropped_fraction_min: 0.60
+  task_evaluator_support_size: 15
+  task_uniform_chance_accuracy: 0.06666666666666667
+  router_probe_support_size: 3
+  context_only_router_probe_accuracy_max: 0.4533333333333333
+  context_only_shuffled_label_probe_accuracy_max: 0.4533333333333333
+  paired_aux_hard_load_entropy_effect_min: 0.20
+  paired_aux_dropped_fraction_effect_max: -0.20
+  paired_z_router_log_partition_rms_effect_max: 0.0
+  preferred_expert_ablation_drop_min: 0.02
+  mean_nonpreferred_expert_forcing_drop_min: 0.10
+  coherent_expert_permutation_max_diff_max: 3.0e-6
+  final_active_operation_tokens: 1440
+  final_router_evaluated_positions: 3060
+  final_sparse_router_matmul_flops: 440640
+controls:
+  - exact_hand_computed_topk_router
+  - exact_capacity_overflow_ledger
+  - brute_force_dispatch_and_combine
+  - unbounded_sparse_moe_bruteforce_parity
+  - equal_width_dense_ffn_with_explicit_padding_overhead
+  - identical_biased_router_without_balancing
+  - current_operation_token_delexicalization
+  - disjoint_dev_fit_and_final_probe_evaluation
+  - shuffled_context_probe_labels
+  - paired_aux_z_factorial_effects_within_initialization
+  - dev_selected_preferred_experts
+  - exhaustive_all_expert_ablation_and_forcing
+  - three_independently_trained_seed_repetitions
+  - all_position_router_flop_accounting
+  - coherent_router_and_expert_permutation
+  - longer_sequence_ood_transfer
+safety_notes:
+  - The task is generated arithmetic over five symbols and contains no sensitive data.
+  - No external checkpoint, gated artifact, scientific mock, or fabricated result is used.
+  - The complete learner path is CPU-only; strict release hooks fail closed when CUDA is unavailable.
+
+freshness_inputs:
+  - chapter5_modern_architectures/exercises/part8_mixture_of_experts/build_notebooks.py

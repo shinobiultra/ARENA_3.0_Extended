@@ -1,0 +1,146 @@
+...F.F...F........F.....F.....................                           [100%]
+=================================== FAILURES ===================================
+____________ test_every_extension_notebook_has_verification_assets _____________
+
+    def test_every_extension_notebook_has_verification_assets():
+        missing = []
+        for exercise_dir in extension_exercise_dirs():
+            expected_paths = [
+                exercise_dir / "README.md",
+                exercise_dir / "artifacts.lock.yml",
+                exercise_dir / "verification_report.json",
+                exercise_dir / "verification_report.schema.json",
+                exercise_dir / "expected_outputs/README.md",
+                exercise_dir / "expected_outputs/smoke_test.json",
+                exercise_dir / "expected_outputs/reference_metrics.json",
+            ]
+            missing.extend(path for path in expected_paths if not path.exists())
+    
+>       assert missing == []
+E       AssertionError: assert [PosixPath('/...etrics.json')] == []
+E         
+E         Left contains 3 more items, first extra item: PosixPath('/home/bitwise/Documents/ARENA_3.0_Extended/chapter11_representation_geometry/exercises/part4_concept_erasure/verification_report.json')
+E         Use -v to get more diff
+
+tests/test_extension_verification_assets.py:195: AssertionError
+_________ test_artifact_locks_and_report_schemas_have_required_fields __________
+
+    def test_artifact_locks_and_report_schemas_have_required_fields():
+        for exercise_dir in extension_exercise_dirs():
+            lock = yaml.safe_load((exercise_dir / "artifacts.lock.yml").read_text())
+>           report = json.loads((exercise_dir / "verification_report.json").read_text())
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_extension_verification_assets.py:244: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../.local/share/uv/python/cpython-3.14.2-linux-x86_64-gnu/lib/python3.14/pathlib/__init__.py:787: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/home/bitwise/Documents/ARENA_3.0_Extended/chapter11_representation_geometry/exercises/part4_concept_erasure/verification_report.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/home/bitwise/Documents/ARENA_3.0_Extended/chapter11_representation_geometry/exercises/part4_concept_erasure/verification_report.json'
+
+../../.local/share/uv/python/cpython-3.14.2-linux-x86_64-gnu/lib/python3.14/pathlib/__init__.py:771: FileNotFoundError
+_________ test_hard_exercise_ladder_registry_tracks_all_hard_sections __________
+
+    def test_hard_exercise_ladder_registry_tracks_all_hard_sections():
+        csv_path = ROOT / "docs/hard_exercise_ladder_registry.csv"
+        md_path = ROOT / "docs/hard_exercise_ladder_registry.md"
+        lock_path = ROOT / "docs/hard_exercise_ladder_registry.lock.yml"
+    
+        assert csv_path.exists()
+        assert md_path.exists()
+        assert lock_path.exists()
+    
+        with csv_path.open(newline="") as handle:
+            rows = list(csv.DictReader(handle))
+    
+        assert rows
+        assert set(rows[0]) == LADDER_REGISTRY_COLUMNS
+    
+        hard_notebook_ids = set()
+        for exercise_dir in extension_exercise_dirs():
+            lock = yaml.safe_load((exercise_dir / "artifacts.lock.yml").read_text())
+            if lock["exercise_metadata"]["DIFFICULTY"] >= 3:
+                hard_notebook_ids.add(lock["notebook_id"])
+    
+        assert {row["notebook_id"] for row in rows} == hard_notebook_ids
+        for row in rows:
+            if row["release_status"] == "released_with_cpu_model_metric":
+                from scripts.audit_report_evidence_contracts import has_native_cpu_model_evidence
+                lock = yaml.safe_load((ROOT / row["metadata_source"].split(":", 1)[0]).read_text())
+>               report = json.loads((ROOT / row["report_source"]).read_text())
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_extension_verification_assets.py:415: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../.local/share/uv/python/cpython-3.14.2-linux-x86_64-gnu/lib/python3.14/pathlib/__init__.py:787: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/home/bitwise/Documents/ARENA_3.0_Extended/chapter11_representation_geometry/exercises/part4_concept_erasure/verification_report.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/home/bitwise/Documents/ARENA_3.0_Extended/chapter11_representation_geometry/exercises/part4_concept_erasure/verification_report.json'
+
+../../.local/share/uv/python/cpython-3.14.2-linux-x86_64-gnu/lib/python3.14/pathlib/__init__.py:771: FileNotFoundError
+______________________ test_current_course_surface_passes ______________________
+
+    def test_current_course_surface_passes():
+>       assert course_surface_blockers() == []
+E       AssertionError: assert ['11.4: instr...tion surface'] == []
+E         
+E         Left contains 3 more items, first extra item: '11.4: instruction page lacks ARENA-style learner surface'
+E         Use -v to get more diff
+
+tests/test_course_surface_audit.py:72: AssertionError
+_______ test_current_roadmap_requirement_registry_is_structurally_valid ________
+
+    def test_current_roadmap_requirement_registry_is_structurally_valid():
+>       assert roadmap_requirement_registry_blockers() == []
+E       assert ["roadmap reg...ted ['11.4']"] == []
+E         
+E         Left contains 2 more items, first extra item: "roadmap registry: method_registry.csv rows not represented ['Concept erasure (LEACE)']"
+E         Use -v to get more diff
+
+tests/test_roadmap_final_completeness.py:33: AssertionError
+=============================== warnings summary ===============================
+<frozen importlib._bootstrap>:491
+  <frozen importlib._bootstrap>:491: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:491
+  <frozen importlib._bootstrap>:491: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_extension_verification_assets.py::test_every_extension_notebook_has_verification_assets
+FAILED tests/test_extension_verification_assets.py::test_artifact_locks_and_report_schemas_have_required_fields
+FAILED tests/test_extension_verification_assets.py::test_hard_exercise_ladder_registry_tracks_all_hard_sections
+FAILED tests/test_course_surface_audit.py::test_current_course_surface_passes
+FAILED tests/test_roadmap_final_completeness.py::test_current_roadmap_requirement_registry_is_structurally_valid
+5 failed, 41 passed, 2 warnings in 6.00s
+<sys>:0: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

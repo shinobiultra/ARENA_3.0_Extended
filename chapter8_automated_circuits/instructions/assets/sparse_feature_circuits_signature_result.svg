@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="430" viewBox="0 0 960 430" role="img" aria-labelledby="title desc">
+  <title id="title">8.5 sparse feature circuits signature result</title>
+  <desc id="desc">The accepted local CUDA report shows toy graph recovery, real Pythia residual-feature preflight, official SAE attribution smoke, official 100-example graph artifact, held-out faithfulness, and SHIFT-style editing controls.</desc>
+  <defs>
+    <filter id="shadow" x="-12%" y="-12%" width="124%" height="124%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#0f172a" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+  <rect width="960" height="430" rx="20" fill="#f8fafc"/>
+  <rect x="28" y="28" width="904" height="352" rx="18" fill="#ffffff" filter="url(#shadow)"/>
+  <text x="58" y="68" font-family="Inter, Arial, sans-serif" font-size="25" font-weight="700" fill="#0f172a">Accepted sparse feature circuit report</text>
+  <text x="58" y="96" font-family="Inter, Arial, sans-serif" font-size="14" fill="#475569">RTX 5090 Laptop GPU, torch 2.12.1+cu132, CUDA 13.2, peak report VRAM 0.5876 GB.</text>
+
+  <g font-family="Inter, Arial, sans-serif">
+    <rect x="64" y="128" width="246" height="96" rx="14" fill="#eff6ff" stroke="#bfdbfe"/>
+    <text x="88" y="158" font-size="15" font-weight="700" fill="#1e3a8a">Toy sparse graph</text>
+    <text x="88" y="185" font-size="13" fill="#334155">node recovery: 0.9000</text>
+    <text x="88" y="207" font-size="13" fill="#334155">edge recovery: 0.8000</text>
+
+    <rect x="356" y="128" width="246" height="96" rx="14" fill="#f0fdf4" stroke="#bbf7d0"/>
+    <text x="380" y="158" font-size="15" font-weight="700" fill="#166534">EAP-IG check</text>
+    <text x="380" y="185" font-size="13" fill="#334155">EAP-IG error: 0.0100</text>
+    <text x="380" y="207" font-size="13" fill="#334155">improves over plain EAP: yes</text>
+
+    <rect x="648" y="128" width="246" height="96" rx="14" fill="#fff7ed" stroke="#fed7aa"/>
+    <text x="672" y="158" font-size="15" font-weight="700" fill="#9a3412">Pythia residual preflight</text>
+    <text x="672" y="185" font-size="13" fill="#334155">selected recovery: 0.3759</text>
+    <text x="672" y="207" font-size="13" fill="#334155">random recovery: 0.0301</text>
+
+    <rect x="64" y="252" width="246" height="96" rx="14" fill="#f5f3ff" stroke="#ddd6fe"/>
+    <text x="88" y="282" font-size="15" font-weight="700" fill="#5b21b6">Released SAE attribution</text>
+    <text x="88" y="309" font-size="13" fill="#334155">selected recovery: 0.5829</text>
+    <text x="88" y="331" font-size="13" fill="#334155">random recovery: 0.0000</text>
+
+    <rect x="356" y="252" width="246" height="96" rx="14" fill="#ecfeff" stroke="#a5f3fc"/>
+    <text x="380" y="282" font-size="15" font-weight="700" fill="#155e75">Official graph artifact</text>
+    <text x="380" y="309" font-size="13" fill="#334155">100 examples, 19 submodules</text>
+    <text x="380" y="331" font-size="13" fill="#334155">37 nodes, 59 edges above thresholds</text>
+
+    <rect x="648" y="252" width="246" height="96" rx="14" fill="#fefce8" stroke="#fde68a"/>
+    <text x="672" y="282" font-size="15" font-weight="700" fill="#854d0e">Held-out and edit gates</text>
+    <text x="672" y="309" font-size="13" fill="#334155">faithfulness: 1.0000 on 40 simple_test</text>
+    <text x="672" y="331" font-size="13" fill="#334155">SHIFT OOD: 0.0 to 1.0, train drop 0.0</text>
+  </g>
+
+  <rect x="58" y="392" width="844" height="22" rx="11" fill="#fff7ed"/>
+  <text x="76" y="408" font-family="Inter, Arial, sans-serif" font-size="12.5" fill="#9a3412">Scope: official saved-graph and faithfulness evidence are pinned local checks; one-layer SAE attribution is not a full sparse-feature circuit replication.</text>
+</svg>

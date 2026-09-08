@@ -1,0 +1,107 @@
+{
+  "schema": "arena.review-bundle.v1",
+  "archive": {
+    "name": "execution.tar.gz",
+    "sha256": "8ce6e26f6d5424a98ec6907a85a329a3a5033fccfa06da10cd75cc32d7745393",
+    "size_bytes": 21304
+  },
+  "limits": {
+    "archive_bytes": 67108864,
+    "member_bytes": 16777216,
+    "total_member_bytes": 134217728,
+    "tar_container_bytes": 167772160,
+    "decoded_json_bytes": 67108864,
+    "total_decoded_bytes": 536870912,
+    "members": 4096
+  },
+  "provenance": {
+    "kind": "historical_archive_packaging",
+    "packaged_at_utc": "2026-09-08T03:27:06.919958+00:00",
+    "measurement_claim": "Packaging only. This is not a native rerun, scientific revalidation or new review. Retained receipts, failure labels, values, scientific hashes and measurement dates are byte-identical to the original. Historical embedded archive inventories describe that original; this adjacent contract describes the derived review bundle.",
+    "source_archive": {
+      "repository_path": "chapter16_shapley_attribution_baselines/exercises/part14_deepshap/expected_outputs/pinned_source_evidence/execution.tar.gz",
+      "absolute_path": "/home/bitwise/.cache/arena_extended/evidence_packaging/original_archives/8ce6e26f6d5424a98ec6907a85a329a3a5033fccfa06da10cd75cc32d7745393.tar.gz",
+      "sha256": "8ce6e26f6d5424a98ec6907a85a329a3a5033fccfa06da10cd75cc32d7745393",
+      "size_bytes": 21304,
+      "git_commit": "ce96ceaae2f91bf0dcd7648052325e07a87b0b5b",
+      "git_blob": "8a1c4663f9970a35429369c7bf3c5cd3c02b0755"
+    },
+    "source_archive_members": {
+      "deeplift-0201a21/LICENSE": {
+        "sha256": "44d99845e6c8d0423dc49856a74e74a244de8064156ad4ebd922b6ee9668ea42",
+        "size_bytes": 1068
+      },
+      "deeplift-0201a21/README.md": {
+        "sha256": "c2fd6d489a1aefd6996849bbca38ef31939e7d33f7a04bc60ac5f7dd729ff9d3",
+        "size_bytes": 31643
+      },
+      "deeplift-0201a21/activations.py": {
+        "sha256": "2d2538a763833a19250792f4bd55d14ee8f62ea64722a3dc8e5f89b82c528e26",
+        "size_bytes": 11709
+      },
+      "shap-v0.49.1/LICENSE": {
+        "sha256": "cf5c26305c632e5451b6eed7e0964a36c4cec1102f0c6467db063b3483a19127",
+        "size_bytes": 1081
+      },
+      "shap-v0.49.1/shap/explainers/_deep/__init__.py": {
+        "sha256": "31f6496511a73ae245863ac284927466508fa6c2b64a9aab69f57b5649c0afc0",
+        "size_bytes": 8066
+      },
+      "shap-v0.49.1/shap/explainers/_deep/deep_pytorch.py": {
+        "sha256": "a40f475a071807071dce2fab323366a4d7f5814306df6503d668cbd8bf482322",
+        "size_bytes": 15961
+      },
+      "shap-v0.49.1/shap/explainers/_deep/deep_utils.py": {
+        "sha256": "acd352a68ee4937f86c7a7e38e2a99a1aa46dae86b5d3ebdb19b55d98308f185",
+        "size_bytes": 1367
+      }
+    }
+  },
+  "members": {
+    "deeplift-0201a21/LICENSE": {
+      "type": "regular",
+      "size_bytes": 1068,
+      "sha256": "44d99845e6c8d0423dc49856a74e74a244de8064156ad4ebd922b6ee9668ea42",
+      "format": "utf8-text"
+    },
+    "deeplift-0201a21/README.md": {
+      "type": "regular",
+      "size_bytes": 31643,
+      "sha256": "c2fd6d489a1aefd6996849bbca38ef31939e7d33f7a04bc60ac5f7dd729ff9d3",
+      "format": "utf8-text"
+    },
+    "deeplift-0201a21/activations.py": {
+      "type": "regular",
+      "size_bytes": 11709,
+      "sha256": "2d2538a763833a19250792f4bd55d14ee8f62ea64722a3dc8e5f89b82c528e26",
+      "format": "utf8-text"
+    },
+    "shap-v0.49.1/LICENSE": {
+      "type": "regular",
+      "size_bytes": 1081,
+      "sha256": "cf5c26305c632e5451b6eed7e0964a36c4cec1102f0c6467db063b3483a19127",
+      "format": "utf8-text"
+    },
+    "shap-v0.49.1/shap/explainers/_deep/__init__.py": {
+      "type": "regular",
+      "size_bytes": 8066,
+      "sha256": "31f6496511a73ae245863ac284927466508fa6c2b64a9aab69f57b5649c0afc0",
+      "format": "utf8-text"
+    },
+    "shap-v0.49.1/shap/explainers/_deep/deep_pytorch.py": {
+      "type": "regular",
+      "size_bytes": 15961,
+      "sha256": "a40f475a071807071dce2fab323366a4d7f5814306df6503d668cbd8bf482322",
+      "format": "utf8-text"
+    },
+    "shap-v0.49.1/shap/explainers/_deep/deep_utils.py": {
+      "type": "regular",
+      "size_bytes": 1367,
+      "sha256": "acd352a68ee4937f86c7a7e38e2a99a1aa46dae86b5d3ebdb19b55d98308f185",
+      "format": "utf8-text"
+    }
+  },
+  "external_payloads": {},
+  "member_count": 7,
+  "total_member_bytes": 70895
+}

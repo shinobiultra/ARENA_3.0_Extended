@@ -1,0 +1,1866 @@
+{
+  "status": "FAIL",
+  "source_inputs": {
+    "geometry_cuda.py": "2eb46b7f72902ff28dfc537a9d4f4e01cae778099573a7878ff8834d4e286d60",
+    "geometry_evidence.py": "7d800a28bafeaae39926b098842f5edcb20d6d8f9a1b40caad3f7271e788c548",
+    "geometry_study.py": "c3cdf723ec7e7e557d3e960f29eeb45e73148059cce12d706ed2b3e785a772c6",
+    "geometry_methods.py": "13a67de4475c3e6ba746489e2aaa06ef1a1ed26347438b90aee236305dfdf409",
+    "geometry_data.py": "cc8045803c8437d859e44d60fe45414c9e2e95b5246fdb62ae0f8d7b8192037b",
+    "geometry_protocol.json": "d9e21dbb2203f581892863255bce312b77dc2a9b55c6db42119eaba3e0e28c96"
+  },
+  "learner_audit": {
+    "accepted": true,
+    "own_answer_code_cells": 35,
+    "embedded_figures": 13,
+    "final_prompts": 579,
+    "all_donor_pairs": 5634,
+    "retained_outcomes": 120649,
+    "model_forward_rows": 105484,
+    "null_draws_per_kind": 32,
+    "projection_fits": 120,
+    "angle_play_rows": 3196,
+    "single_play_rows": 4,
+    "max_stored_margin_error": 0.0,
+    "runtime": {
+      "gpu": "NVIDIA GeForce RTX 5090 Laptop GPU",
+      "peak_cuda_allocated_gib": 13.6112380027771,
+      "elapsed_real_seconds": 373.12623037699814,
+      "model_forward_rows": 105484,
+      "retained_outcomes": 120649,
+      "projection_fits": 120,
+      "angle_play_forward_rows": 3196,
+      "single_play_forward_rows": 4
+    },
+    "tasks": {
+      "weekday": {
+        "new_prompts": 147,
+        "baseline_calendar_accuracy": 0.6462585034013606,
+        "baseline_full_accuracy": 0.6394557823129252,
+        "coordinate_r2": 0.8355668783187866,
+        "angular_accuracy": 0.8367347121238708,
+        "unseen_class_angular_accuracy": 0.47619047619047616,
+        "primary_shift_conditions": {
+          "pure_coordinate": {
+            "rows": 147,
+            "desired_calendar_accuracy": 0.22448979591836735,
+            "desired_full_accuracy": 0.23129251700680273,
+            "mean_margin": 0.3031462585034014
+          },
+          "centered_mean_ablated": {
+            "rows": 147,
+            "desired_calendar_accuracy": 0.4421768707482993,
+            "desired_full_accuracy": 0.4421768707482993,
+            "mean_margin": 1.8990221088435375
+          },
+          "author_raw_mean_ablated": {
+            "rows": 147,
+            "desired_calendar_accuracy": 0.4557823129251701,
+            "desired_full_accuracy": 0.46938775510204084,
+            "mean_margin": 1.7502125850340136
+          },
+          "full_donor": {
+            "rows": 147,
+            "desired_calendar_accuracy": 0.6258503401360545,
+            "desired_full_accuracy": 0.6530612244897959,
+            "mean_margin": 2.415391156462585
+          },
+          "pca5_donor": {
+            "rows": 147,
+            "desired_calendar_accuracy": 0.41496598639455784,
+            "desired_full_accuracy": 0.41496598639455784,
+            "mean_margin": 1.2969812925170068
+          },
+          "baseline": {
+            "rows": 147,
+            "desired_calendar_accuracy": 0.013605442176870748,
+            "desired_full_accuracy": 0.006802721088435374,
+            "mean_margin": -2.4158163265306123
+          },
+          "no_op": {
+            "rows": 147,
+            "desired_calendar_accuracy": 0.013605442176870748,
+            "desired_full_accuracy": 0.006802721088435374,
+            "mean_margin": -2.4158163265306123
+          },
+          "mean_only": {
+            "rows": 147,
+            "desired_calendar_accuracy": 0.1292517006802721,
+            "desired_full_accuracy": 0.10884353741496598,
+            "mean_margin": -0.11522108843537415
+          },
+          "same_rank_random_donor_plane": {
+            "rows": 4704,
+            "desired_calendar_accuracy": 0.015093537414965986,
+            "desired_full_accuracy": 0.006802721088435374,
+            "mean_margin": -2.4126873405612246
+          },
+          "equal_norm_random_edit": {
+            "rows": 4704,
+            "desired_calendar_accuracy": 0.02189625850340136,
+            "desired_full_accuracy": 0.009991496598639456,
+            "mean_margin": -2.135210724914966
+          },
+          "class_order_permuted_circular_probe": {
+            "rows": 4704,
+            "desired_calendar_accuracy": 0.297406462585034,
+            "desired_full_accuracy": 0.2925170068027211,
+            "mean_margin": 0.7271603954081632
+          }
+        }
+      },
+      "month": {
+        "new_prompts": 432,
+        "baseline_calendar_accuracy": 0.7916666666666666,
+        "baseline_full_accuracy": 0.7939814814814815,
+        "coordinate_r2": 0.971741795539856,
+        "angular_accuracy": 0.9722222089767456,
+        "unseen_class_angular_accuracy": 0.8217592592592593,
+        "primary_shift_conditions": {
+          "pure_coordinate": {
+            "rows": 432,
+            "desired_calendar_accuracy": 0.07175925925925926,
+            "desired_full_accuracy": 0.07407407407407407,
+            "mean_margin": -2.3784722222222223
+          },
+          "centered_mean_ablated": {
+            "rows": 432,
+            "desired_calendar_accuracy": 0.5115740740740741,
+            "desired_full_accuracy": 0.5046296296296297,
+            "mean_margin": 2.5593894675925926
+          },
+          "author_raw_mean_ablated": {
+            "rows": 432,
+            "desired_calendar_accuracy": 0.5138888888888888,
+            "desired_full_accuracy": 0.5185185185185185,
+            "mean_margin": 2.6703559027777777
+          },
+          "full_donor": {
+            "rows": 432,
+            "desired_calendar_accuracy": 0.7916666666666666,
+            "desired_full_accuracy": 0.7939814814814815,
+            "mean_margin": 3.894458912037037
+          },
+          "pca5_donor": {
+            "rows": 432,
+            "desired_calendar_accuracy": 0.4166666666666667,
+            "desired_full_accuracy": 0.4074074074074074,
+            "mean_margin": 0.8279803240740741
+          },
+          "baseline": {
+            "rows": 432,
+            "desired_calendar_accuracy": 0.018518518518518517,
+            "desired_full_accuracy": 0.018518518518518517,
+            "mean_margin": -3.429615162037037
+          },
+          "no_op": {
+            "rows": 432,
+            "desired_calendar_accuracy": 0.018518518518518517,
+            "desired_full_accuracy": 0.018518518518518517,
+            "mean_margin": -3.429615162037037
+          },
+          "mean_only": {
+            "rows": 432,
+            "desired_calendar_accuracy": 0.08796296296296297,
+            "desired_full_accuracy": 0.08796296296296297,
+            "mean_margin": 0.0013744212962962963
+          },
+          "same_rank_random_donor_plane": {
+            "rows": 13824,
+            "desired_calendar_accuracy": 0.018518518518518517,
+            "desired_full_accuracy": 0.018590856481481483,
+            "mean_margin": -3.4300898799189814
+          },
+          "equal_norm_random_edit": {
+            "rows": 13824,
+            "desired_calendar_accuracy": 0.01902488425925926,
+            "desired_full_accuracy": 0.01902488425925926,
+            "mean_margin": -3.3326325593171298
+          },
+          "class_order_permuted_circular_probe": {
+            "rows": 13824,
+            "desired_calendar_accuracy": 0.1906105324074074,
+            "desired_full_accuracy": 0.19089988425925927,
+            "mean_margin": 0.8926730685763888
+          }
+        }
+      }
+    },
+    "final_used_for_selection": false,
+    "tsne_is_transductive": true
+  },
+  "condition_batches": 208,
+  "compared_examples": 6656,
+  "max_calendar_logit_error": 0.125,
+  "top_token_mismatches": 3,
+  "comparisons": [
+    {
+      "family": "weekday",
+      "condition": "baseline",
+      "draw": null,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "no_op",
+      "draw": null,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "mean_only",
+      "draw": null,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "pure_coordinate",
+      "draw": null,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "centered_mean_ablated",
+      "draw": null,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "author_raw_mean_ablated",
+      "draw": null,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "full_donor",
+      "draw": null,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "pca5_donor",
+      "draw": null,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 0,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "equal_norm_random_edit",
+      "draw": 0,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 0,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 1,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "equal_norm_random_edit",
+      "draw": 1,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 1,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 2,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "equal_norm_random_edit",
+      "draw": 2,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 2,
+      "examples": 32,
+      "max_logit_error": 0.0625,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 3,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "equal_norm_random_edit",
+      "draw": 3,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 3,
+      "examples": 32,
+      "max_logit_error": 0.0625,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 4,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "equal_norm_random_edit",
+      "draw": 4,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 4,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 5,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "equal_norm_random_edit",
+      "draw": 5,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 5,
+      "examples": 32,
+      "max_logit_error": 0.0625,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 6,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "equal_norm_random_edit",
+      "draw": 6,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 6,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 7,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "equal_norm_random_edit",
+      "draw": 7,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 7,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 8,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "equal_norm_random_edit",
+      "draw": 8,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 8,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 9,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "equal_norm_random_edit",
+      "draw": 9,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 9,
+      "examples": 32,
+      "max_logit_error": 0.0625,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 10,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "equal_norm_random_edit",
+      "draw": 10,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 10,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 11,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "equal_norm_random_edit",
+      "draw": 11,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 11,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 12,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "equal_norm_random_edit",
+      "draw": 12,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 12,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 13,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "equal_norm_random_edit",
+      "draw": 13,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 13,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 14,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "equal_norm_random_edit",
+      "draw": 14,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 14,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 15,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "equal_norm_random_edit",
+      "draw": 15,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 15,
+      "examples": 32,
+      "max_logit_error": 0.0625,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 16,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "equal_norm_random_edit",
+      "draw": 16,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 16,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 17,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "equal_norm_random_edit",
+      "draw": 17,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 17,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 18,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "equal_norm_random_edit",
+      "draw": 18,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 18,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 19,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "equal_norm_random_edit",
+      "draw": 19,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 19,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 20,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "equal_norm_random_edit",
+      "draw": 20,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 20,
+      "examples": 32,
+      "max_logit_error": 0.0625,
+      "top_token_mismatches": 1
+    },
+    {
+      "family": "weekday",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 21,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "equal_norm_random_edit",
+      "draw": 21,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 21,
+      "examples": 32,
+      "max_logit_error": 0.0625,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 22,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "equal_norm_random_edit",
+      "draw": 22,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 22,
+      "examples": 32,
+      "max_logit_error": 0.0625,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 23,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "equal_norm_random_edit",
+      "draw": 23,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 23,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 24,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "equal_norm_random_edit",
+      "draw": 24,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 24,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 25,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "equal_norm_random_edit",
+      "draw": 25,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 25,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 26,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "equal_norm_random_edit",
+      "draw": 26,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 26,
+      "examples": 32,
+      "max_logit_error": 0.0625,
+      "top_token_mismatches": 1
+    },
+    {
+      "family": "weekday",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 27,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "equal_norm_random_edit",
+      "draw": 27,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 27,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 28,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "equal_norm_random_edit",
+      "draw": 28,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 28,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 29,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "equal_norm_random_edit",
+      "draw": 29,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 29,
+      "examples": 32,
+      "max_logit_error": 0.0625,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 30,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "equal_norm_random_edit",
+      "draw": 30,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 30,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 31,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "equal_norm_random_edit",
+      "draw": 31,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "weekday",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 31,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "baseline",
+      "draw": null,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "no_op",
+      "draw": null,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "mean_only",
+      "draw": null,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "pure_coordinate",
+      "draw": null,
+      "examples": 32,
+      "max_logit_error": 0.0625,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "centered_mean_ablated",
+      "draw": null,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "author_raw_mean_ablated",
+      "draw": null,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "full_donor",
+      "draw": null,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "pca5_donor",
+      "draw": null,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 0,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "equal_norm_random_edit",
+      "draw": 0,
+      "examples": 32,
+      "max_logit_error": 0.0625,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 0,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 1,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "equal_norm_random_edit",
+      "draw": 1,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 1,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 2,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "equal_norm_random_edit",
+      "draw": 2,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 2,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 3,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "equal_norm_random_edit",
+      "draw": 3,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 3,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 4,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "equal_norm_random_edit",
+      "draw": 4,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 4,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 5,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "equal_norm_random_edit",
+      "draw": 5,
+      "examples": 32,
+      "max_logit_error": 0.09375,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 5,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 6,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "equal_norm_random_edit",
+      "draw": 6,
+      "examples": 32,
+      "max_logit_error": 0.0625,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 6,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 7,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "equal_norm_random_edit",
+      "draw": 7,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 7,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 8,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "equal_norm_random_edit",
+      "draw": 8,
+      "examples": 32,
+      "max_logit_error": 0.0625,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 8,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 9,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "equal_norm_random_edit",
+      "draw": 9,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 9,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 10,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "equal_norm_random_edit",
+      "draw": 10,
+      "examples": 32,
+      "max_logit_error": 0.0625,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 10,
+      "examples": 32,
+      "max_logit_error": 0.0625,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 11,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "equal_norm_random_edit",
+      "draw": 11,
+      "examples": 32,
+      "max_logit_error": 0.0625,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 11,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 12,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "equal_norm_random_edit",
+      "draw": 12,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 12,
+      "examples": 32,
+      "max_logit_error": 0.0625,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 13,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "equal_norm_random_edit",
+      "draw": 13,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 13,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 14,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "equal_norm_random_edit",
+      "draw": 14,
+      "examples": 32,
+      "max_logit_error": 0.03125,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 14,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 15,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "equal_norm_random_edit",
+      "draw": 15,
+      "examples": 32,
+      "max_logit_error": 0.0625,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 15,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 16,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "equal_norm_random_edit",
+      "draw": 16,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 16,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 17,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "equal_norm_random_edit",
+      "draw": 17,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 17,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 18,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "equal_norm_random_edit",
+      "draw": 18,
+      "examples": 32,
+      "max_logit_error": 0.0625,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 18,
+      "examples": 32,
+      "max_logit_error": 0.09375,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 19,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "equal_norm_random_edit",
+      "draw": 19,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 19,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 20,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "equal_norm_random_edit",
+      "draw": 20,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 20,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 21,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "equal_norm_random_edit",
+      "draw": 21,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 21,
+      "examples": 32,
+      "max_logit_error": 0.0625,
+      "top_token_mismatches": 1
+    },
+    {
+      "family": "month",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 22,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "equal_norm_random_edit",
+      "draw": 22,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 22,
+      "examples": 32,
+      "max_logit_error": 0.125,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 23,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "equal_norm_random_edit",
+      "draw": 23,
+      "examples": 32,
+      "max_logit_error": 0.0625,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 23,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 24,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "equal_norm_random_edit",
+      "draw": 24,
+      "examples": 32,
+      "max_logit_error": 0.0625,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 24,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 25,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "equal_norm_random_edit",
+      "draw": 25,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 25,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 26,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "equal_norm_random_edit",
+      "draw": 26,
+      "examples": 32,
+      "max_logit_error": 0.0625,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 26,
+      "examples": 32,
+      "max_logit_error": 0.125,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 27,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "equal_norm_random_edit",
+      "draw": 27,
+      "examples": 32,
+      "max_logit_error": 0.03125,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 27,
+      "examples": 32,
+      "max_logit_error": 0.0625,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 28,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "equal_norm_random_edit",
+      "draw": 28,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 28,
+      "examples": 32,
+      "max_logit_error": 0.125,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 29,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "equal_norm_random_edit",
+      "draw": 29,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 29,
+      "examples": 32,
+      "max_logit_error": 0.125,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 30,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "equal_norm_random_edit",
+      "draw": 30,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 30,
+      "examples": 32,
+      "max_logit_error": 0.0625,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "same_rank_random_donor_plane",
+      "draw": 31,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "equal_norm_random_edit",
+      "draw": 31,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    },
+    {
+      "family": "month",
+      "condition": "class_order_permuted_circular_probe",
+      "draw": 31,
+      "examples": 32,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0
+    }
+  ],
+  "gpu": "NVIDIA GeForce RTX 5090 Laptop GPU",
+  "peak_cuda_allocated_gib": 13.60281229019165,
+  "error": "Fresh first-batch regeneration differs from the actual learner.",
+  "elapsed_seconds": 22.12782163600059,
+  "changed_sources": []
+}

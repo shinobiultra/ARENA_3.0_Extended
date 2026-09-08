@@ -1,0 +1,10 @@
+The accepted normal section report independently refits all four seed-zero models and
+regenerates all 42 configurations (21,504 examples), including untrained controls,
+selected and endpoint checkpoints. All generated outcomes, traces and checkpoint values
+exactly match the own-answer learner. Actual CUDA time is 139.647 seconds; text-model
+peak allocated memory is 0.126704 GiB. The lossless archive retains all measured rows,
+fitting records, status and source snapshots; every raw hash was checked against the
+report and every archive member was read back. Weights remain in the named local
+directory with hashes recorded. The report is included unchanged. The previous report
+aggregation failure is separately retained; it did not indicate a failed CUDA
+experiment.

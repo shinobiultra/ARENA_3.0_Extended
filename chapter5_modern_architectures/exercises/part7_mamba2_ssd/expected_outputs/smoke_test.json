@@ -1,0 +1,10 @@
+{
+  "accepted": true,
+  "claim_scope": "Exact recurrent/quadratic/chunked output, state, and gradient equivalence; official Listing 1 parity; block and stacked-LM cache parity; trained delayed-recall controls; and full 219-tensor pinned-checkpoint hidden/logit/token parity. CUDA fused-operator evidence is separate.",
+  "evidence_level": "exact_ssd_duality_trained_causal_memory_and_full_pinned_130m_parity",
+  "gt_tier": "GT-1",
+  "notebook_id": "5_7_mamba2_ssd",
+  "section": "5.7",
+  "tests_passed": true,
+  "title": "Mamba-2 and Structured State-Space Duality"
+}

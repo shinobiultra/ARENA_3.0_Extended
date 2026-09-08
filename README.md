@@ -93,8 +93,209 @@ Coming soon!
 
 ---
 
+# ARENA Frontier Lab extension
+
+This fork is being rewritten into a local-first frontier-model extension while
+keeping the original ARENA structure intact. The current PR contains a large
+prototype implementation surface plus forty-one polished ARENA-style sections:
+[0.6 How to Know When an Interpretability Result Is Fake](chapter0_fundamentals/instructions/pages/06_%5B0.6%5D_How_to_Know_When_an_Interpretability_Result_Is_Fake.md),
+[1.6 Local Frontier ML Infrastructure](chapter1_transformer_interp/instructions/pages/40_%5B1.6%5D_Local_Frontier_ML_Infrastructure.md),
+[5.1 Gemma from Scratch](chapter5_modern_architectures/instructions/pages/01_%5B5.1%5D_Gemma_from_Scratch.md),
+[5.2 Gemma Scope and Feature Steering](chapter5_modern_architectures/instructions/pages/02_%5B5.2%5D_Gemma_Scope_and_Feature_Steering.md),
+[5.3 Mamba from Scratch](chapter5_modern_architectures/instructions/pages/03_%5B5.3%5D_Mamba_from_Scratch.md),
+[5.4 Mamba State Tracking](chapter5_modern_architectures/instructions/pages/04_%5B5.4%5D_Mamba_State_Tracking.md),
+[5.5 Discrete Diffusion LMs: From Copying Digits to Generating Words](chapter5_modern_architectures/instructions/pages/05_%5B5.5%5D_Diffusion_Language_Models.md),
+[5.6 Embedding Retrieval and Function-Calling Controls](chapter5_modern_architectures/instructions/pages/06_%5B5.6%5D_Multimodal_Embedding_and_Function_Calling_Models.md),
+[6.1 SAE Variants](chapter6_sparse_feature_methods/instructions/pages/01_%5B6.1%5D_SAE_Variants.md),
+[6.2 Gemma Scope Deep Dive](chapter6_sparse_feature_methods/instructions/pages/02_%5B6.2%5D_Gemma_Scope_Deep_Dive.md),
+[6.3 Transcoders and Attribution Graphs](chapter6_sparse_feature_methods/instructions/pages/03_%5B6.3%5D_Transcoders_and_Attribution_Graphs.md),
+[6.4 Crosscoders and Model Diffing](chapter6_sparse_feature_methods/instructions/pages/04_%5B6.4%5D_Crosscoders_and_Model_Diffing.md),
+[7.1 Logit Lens, Tuned Lens, and Patchscopes](chapter7_activation_to_language/instructions/pages/01_%5B7.1%5D_Logit_Lens_Tuned_Lens_and_Patchscopes.md),
+[7.2 Feature Verbalizers](chapter7_activation_to_language/instructions/pages/02_%5B7.2%5D_Feature_Verbalizers.md),
+[7.3 Mini Activation Oracles](chapter7_activation_to_language/instructions/pages/03_%5B7.3%5D_Mini_Activation_Oracles.md),
+[7.4 Mini Natural Language Autoencoders](chapter7_activation_to_language/instructions/pages/04_%5B7.4%5D_Mini_Natural_Language_Autoencoders.md),
+[7.5 Predictive Concept Decoders](chapter7_activation_to_language/instructions/pages/05_%5B7.5%5D_Predictive_Concept_Decoders.md),
+[8.1 Activation Patching Refresher](chapter8_automated_circuits/instructions/pages/01_%5B8.1%5D_Activation_Patching_Refresher.md),
+[8.2 Attribution Patching and EAP](chapter8_automated_circuits/instructions/pages/02_%5B8.2%5D_Attribution_Patching_and_EAP.md),
+[8.3 ACDC and Circuit Metrics](chapter8_automated_circuits/instructions/pages/03_%5B8.3%5D_ACDC_and_Circuit_Metrics.md),
+[8.4 Circuit Tracing with Attribution Graphs](chapter8_automated_circuits/instructions/pages/04_%5B8.4%5D_Circuit_Tracing_with_Attribution_Graphs.md),
+[8.5 Sparse Feature Circuits](chapter8_automated_circuits/instructions/pages/05_%5B8.5%5D_Sparse_Feature_Circuits.md),
+[9.1 Refusal Directions and Safe Steering](chapter9_alignment_interpretability/instructions/pages/01_%5B9.1%5D_Refusal_Directions_and_Safe_Steering.md),
+[9.2 Chain-of-Thought Faithfulness](chapter9_alignment_interpretability/instructions/pages/02_%5B9.2%5D_Chain_of_Thought_Faithfulness.md),
+[9.3 Emergent Misalignment Detection](chapter9_alignment_interpretability/instructions/pages/03_%5B9.3%5D_Emergent_Misalignment_Detection.md),
+[9.4 White-box Evals and Monitors](chapter9_alignment_interpretability/instructions/pages/04_%5B9.4%5D_White_box_Evals_and_Monitors.md),
+[10.1 Capstone Research Sprint](chapter10_capstone_research_sprint/instructions/pages/01_%5B10.1%5D_Capstone_Research_Sprint.md),
+[11.1 PCA, SVD, and Geometry Controls](chapter11_representation_geometry/instructions/pages/01_%5B11.1%5D_PCA_SVD_and_Geometry_Controls.md),
+[12.1 CLIP, SigLIP, and VLM Controls](chapter12_vlm_interpretability/instructions/pages/01_%5B12.1%5D_CLIP_SigLIP_and_VLM_Controls.md),
+[12.3 Mini VLM from Scratch](chapter12_vlm_interpretability/instructions/pages/03_%5B12.3%5D_Mini_VLM_from_Scratch.md),
+[13.1 Diffusion and Image-Generation Controls](chapter13_image_generation_interpretability/instructions/pages/01_%5B13.1%5D_Diffusion_and_Image_Generation_Controls.md),
+[14.1 JEPA and World-Model Controls](chapter14_jepa_world_models/instructions/pages/01_%5B14.1%5D_JEPA_and_World_Model_Controls.md),
+[15.1 LoRA, DoRA, and Adapter Controls](chapter15_peft_misalignment/instructions/pages/01_%5B15.1%5D_LoRA_DoRA_and_Adapter_Controls.md),
+[16.1 Exact Shapley on Ground-Truth Games](chapter16_shapley_attribution_baselines/instructions/pages/01_%5B16.1%5D_Exact_Shapley_on_Ground_Truth_Games.md),
+[16.2 KernelSHAP and PartitionSHAP Controls](chapter16_shapley_attribution_baselines/instructions/pages/02_%5B16.2%5D_KernelSHAP_and_PartitionSHAP_Controls.md),
+[16.3 Shapley Interactions with shapiq](chapter16_shapley_attribution_baselines/instructions/pages/03_%5B16.3%5D_Shapley_Interactions_with_shapiq.md),
+[16.4 TokenSHAP and TokenShapley](chapter16_shapley_attribution_baselines/instructions/pages/04_%5B16.4%5D_TokenSHAP_and_TokenShapley.md),
+[16.5 VLM Modality and Region SHAP](chapter16_shapley_attribution_baselines/instructions/pages/05_%5B16.5%5D_VLM_Modality_and_Region_SHAP.md),
+[16.6 SHAP vs Activation Patching](chapter16_shapley_attribution_baselines/instructions/pages/06_%5B16.6%5D_SHAP_vs_Activation_Patching.md),
+[16.7 Data Shapley in One Training Run](chapter16_shapley_attribution_baselines/instructions/pages/07_%5B16.7%5D_Data_Shapley_in_One_Training_Run.md),
+[16.8 Do SHAPley and Mechanistic Interpretability Agree?](chapter16_shapley_attribution_baselines/instructions/pages/08_%5B16.8%5D_Do_SHAPley_and_Mechanistic_Interpretability_Agree.md),
+and [17.1 Checkpoint Archaeology and Mechanism Emergence](chapter17_training_dynamics/instructions/pages/01_%5B17.1%5D_Checkpoint_Archaeology_and_Mechanism_Emergence.md).
+Current learner readiness and prototype limitations are tracked in
+[ARENA style rewrite status](docs/arena_style_rewrite_status.yml); passing a
+verification report alone does not establish that a section is ready for study.
+
+The rewritten [12.3 Mini VLM](chapter12_vlm_interpretability/instructions/pages/03_%5B12.3%5D_Mini_VLM_from_Scratch.md) has nineteen exercises that build a word-generating model from RGB pixels. Its completed learner trains twelve models, shows actual captions and VQA answers, and tests five activation stages against object, background, random and full-sequence controls. All 34 own-answer code cells and 43 tests pass. The three-seed familiar-task improvement and complete failure on unseen color-shape captions are both visible; the separate CUDA check supports the same limited claim.
+
+Polished [0.6 How to Know When an Interpretability Result Is Fake](chapter0_fundamentals/instructions/pages/06_%5B0.6%5D_How_to_Know_When_an_Interpretability_Result_Is_Fake.md) is a GT-0 skepticism lab for leakage, cherry-picking, probe overfitting, and random-direction controls with a CUDA-backed negative-result signature. Polished [1.6 Local Frontier ML Infrastructure](chapter1_transformer_interp/instructions/pages/40_%5B1.6%5D_Local_Frontier_ML_Infrastructure.md) introduces the reusable verification harness for later Gemma, Mamba, diffusion, SAE/transcoder, JEPA, world-model, attribution, and alignment-interpretability notebooks with environment, memory, parity, activation-store, and CUDA-runtime controls.
+
+Original ARENA is pinned at `f9f034bdb5b8748f44e8b4533b5c5bea68dc8bc0` and checked by [Original ARENA preservation contract](docs/original_preservation_contract.md). The upstream-style dependencies are preserved in `requirements-original.txt`; the extension default is the uv-locked Python 3.14 + PyTorch CUDA 13.2 stack in `pyproject.toml` / `uv.lock`, mirrored by `requirements.txt`; the old Chapter 2 JAX/Brax/EnvPool stack is isolated in `requirements-legacy-rl.txt`.
+
+Current local verification was run in the managed `uv` environment with Python
+3.14.6, PyTorch `2.12.1+cu132`, CUDA 13.2, `torchvision 0.27.1+cu132`,
+`torchao 0.17.0`,
+`transformers 5.12.1`, `bitsandbytes 0.49.2` using its current CUDA 13.0 binary
+override because the wheel does not ship `libbitsandbytes_cuda132.so`,
+`mamba-ssm 2.3.2.post1`, and an RTX 5090 Laptop GPU. The full extension report refresh wrote 41 extension
+verification reports and accepted all 41; the repository contains 43 accepted
+CUDA-backed verification reports including the original-extension evidence
+reports under `docs/evidence/`.
+
+The modern architecture track begins with [5.1 Gemma from Scratch](chapter5_modern_architectures/instructions/pages/01_%5B5.1%5D_Gemma_from_Scratch.md), which implements a tiny Gemma-style decoder and verifies RMSNorm, RoPE, grouped-query attention, sliding-window masking, KV-cache parity, and CUDA logit/cache parity against Hugging Face's `transformers.GemmaForCausalLM` reference architecture with matched deterministic tiny weights. It continues with [5.2 Gemma Scope and Feature Steering](chapter5_modern_architectures/instructions/pages/02_%5B5.2%5D_Gemma_Scope_and_Feature_Steering.md), which adds sparse-feature metrics, held-out validation, steering controls, ablation controls, a pinned Gemma Scope 2 1B-IT residual SAE artifact CUDA preflight, and authenticated Gemma 3 activation feature validation with random-feature and label-shuffle controls. The next section, [5.3 Mamba from Scratch](chapter5_modern_architectures/instructions/pages/03_%5B5.3%5D_Mamba_from_Scratch.md), implements selective scans, causal convolution, tiny Mamba blocks, recurrent-state/cache parity checks, and a pinned Mamba-130M-HF logits/generation CUDA preflight with required fast kernels. [5.4 Mamba State Tracking](chapter5_modern_architectures/instructions/pages/04_%5B5.4%5D_Mamba_State_Tracking.md) adds parity/bracket-depth model organisms, linear probes, held-out position checks, causal state interventions, a trained tiny Mamba bracket-depth GPU preflight with random-label controls, a trained tiny causal Transformer baseline comparison on the same generated task, learned Mamba hidden-state interventions with matched random-direction controls, and pinned Mamba-130M-HF hidden-state extraction. [5.5 Discrete Diffusion LMs: From Copying Digits to Generating Words](chapter5_modern_architectures/instructions/pages/05_%5B5.5%5D_Diffusion_Language_Models.md) now takes students from an exact copy warm-up to parentheses, addition, context-dependent QA and pinned TinyStories. Students implement the finite absorbing loss, reverse kernel, samplers, shared Transformer and matched training themselves. Twelve figures show actual words, entropy, token commitments, temperature/block effects and cached-AR cost across three seeds. All 43 own-answer cells pass; independent CUDA refits four models and exactly reproduces 21,504 generated examples. Shuffled and untrained controls, checkpoint sensitivity and weak story continuations stay visible. Released DiffusionGemma denoising-state interpretability remains unfinished. [5.6 Embedding Retrieval and Function-Calling Controls](chapter5_modern_architectures/instructions/pages/06_%5B5.6%5D_Multimodal_Embedding_and_Function_Calling_Models.md) adds masked mean pooling, paired retrieval, centroid probes, tool masking, function-call parsing, no-call metrics, schema-token attribution controls, a pinned public BGE embedding retrieval comparison, direct authenticated EmbeddingGemma retrieval, a pinned public FunctionGemma Mobile Actions eval on held-out real dataset rows, visible argument-fidelity failures, and direct authenticated base FunctionGemma CUDA loading. It is deliberately scoped to text retrieval and function-calling controls; broad VLM/multimodal interpretability is left to later VLM sections.
+
+The sparse feature methods track begins with [6.1 SAE Variants](chapter6_sparse_feature_methods/instructions/pages/01_%5B6.1%5D_SAE_Variants.md), which compares ReLU/L1, TopK, Gated, and JumpReLU SAE encoders with reconstruction metrics, planted-dictionary recovery checks, feature AUC validation, nondegenerate-density checks, decoder-vector steering controls, and a pinned Pythia-70M hidden-state TopK SAE CUDA preflight with held-out reconstruction, permuted-decoder, density, feature-AUC, and decoder-projection steering controls. [6.2 Gemma Scope Deep Dive](chapter6_sparse_feature_methods/instructions/pages/02_%5B6.2%5D_Gemma_Scope_Deep_Dive.md) adds released-artifact metadata checks, tagged feature selection, held-out AUC baselines, base-vs-instruction feature deltas, ablation controls, steering safety checks, direct logit attribution, a pinned Gemma Scope 2 1B-IT layer-13 JumpReLU SAE CUDA preflight with config, shape, finiteness, and encode/decode checks, and authenticated Gemma 3 layer-13 activation validation on one benign technical-vs-narrative split with random-feature and label-shuffle controls. [6.3 Transcoders and Attribution Graphs](chapter6_sparse_feature_methods/instructions/pages/03_%5B6.3%5D_Transcoders_and_Attribution_Graphs.md) adds toy transcoder replacement checks, feature-level logit contributions, sparse input-feature-logit graphs, graph reproducibility, top-feature versus low-effect graph-damage controls, and a pinned TransformerLens `gelu-1l` CUDA preflight with exact MLP-feature replacement parity and trained tiny ReLU transcoder held-out reconstruction. [6.4 Crosscoders and Model Diffing](chapter6_sparse_feature_methods/instructions/pages/04_%5B6.4%5D_Crosscoders_and_Model_Diffing.md) adds paired-model reconstruction checks, shared/model-specific feature classification, behavior-delta prediction, paired score deltas, top-direction removal controls, and a pinned `gelu-1l` vs `solu-1l` CUDA model-diffing preflight with exact shared-plus-delta reconstruction, SVD delta-direction separation, and orthogonal random-direction controls.
+
+The activation-to-language track begins with [7.1 Logit Lens, Tuned Lens, and Patchscopes](chapter7_activation_to_language/instructions/pages/01_%5B7.1%5D_Logit_Lens_Tuned_Lens_and_Patchscopes.md), which adds logit lens, tuned lens, attention lens, Patchscope templates, held-out decoding accuracy comparisons, counterfactual activation checks, random-activation confidence controls, and a pinned TransformerLens `gelu-1l` CUDA preflight that trains a ridge affine lens on cached activations and compares activation-conditioned clean logits against corrupt text-only baselines. [7.2 Feature Verbalizers](chapter7_activation_to_language/instructions/pages/02_%5B7.2%5D_Feature_Verbalizers.md) adds top/bottom/random/contrastive example gathering, explanation-derived held-out predictions, counterexample discovery, explanation revision, intervention-direction checks, brevity controls, and a pinned `gelu-1l` residual-direction verbalizer preflight with held-out and intervention validation. [7.3 Mini Activation Oracles](chapter7_activation_to_language/instructions/pages/03_%5B7.3%5D_Mini_Activation_Oracles.md) adds activation-question datasets, oracle-vs-baseline comparisons, OOD split reports, random-activation graceful-failure checks, activation-patching answer-change controls, and a pinned `gelu-1l` residual-direction mini-oracle CUDA preflight with text-only/probe baselines, OOD prompts, random abstention, and clean-to-corrupt answer flips. [7.4 Mini Natural Language Autoencoders](chapter7_activation_to_language/instructions/pages/04_%5B7.4%5D_Mini_Natural_Language_Autoencoders.md) adds activation-to-text-to-activation reconstruction checks, text-only baselines, target logit-diff preservation, latent-probe preservation, generated-text brevity, counterfactual explanation-change controls, and a pinned `gelu-1l` residual text-bottleneck mini-NLA CUDA preflight with compact parsed explanations, reconstruction baselines, OOD prompts, shuffled controls, and counterfactual explanation changes. Rewritten [7.5 Predictive Concept Decoders](chapter7_activation_to_language/instructions/pages/05_%5B7.5%5D_Predictive_Concept_Decoders.md) now has students recover exact planted sparse concepts, build explicit concept-question interaction slots, train a decoder, beat six held-out controls, and verify targeted removal against a matched active-concept control. The visible heatmap and control panels are learner-generated; the pinned `gelu-1l` CUDA preflight contributes 32 direct held-out prediction rows, stable concepts, shuffle failure, and scoped removal evidence.
+
+The automated-circuits track begins with polished [8.1 Activation Patching Refresher](chapter8_automated_circuits/instructions/pages/01_%5B8.1%5D_Activation_Patching_Refresher.md), which adds reusable clean/corrupt logit-diff metrics, activation-slice patching, recovered-fraction reports, per-component patching sweeps, target-component localization, wrong-position mean/max controls, paired ARENA-style notebooks, and a pinned TransformerLens `gelu-1l` CUDA residual-stream patching preflight with `[0, 0, 0, 0, 0, 1]` position recovery. Polished [8.2 Attribution Patching and EAP](chapter8_automated_circuits/instructions/pages/02_%5B8.2%5D_Attribution_Patching_and_EAP.md) adds first-order attribution patching, integrated-gradient patch scores, EAP-style edge scores, exact-vs-approx correlation, top-k overlap, runtime speedup reports, documented false-negative cases, paired ARENA-style notebooks, and a pinned TransformerLens `gelu-1l` CUDA exact-vs-attribution preflight where exact patching, attribution patching, IG, and EAP all localize the final residual position. [8.3 ACDC and Circuit Metrics](chapter8_automated_circuits/instructions/pages/03_%5B8.3%5D_ACDC_and_Circuit_Metrics.md) now exposes the full 32,491-edge GPT-2 graph, sequential ACDC, EAP and task/KL EAP-IG through 21 exercise groups. Fourteen learner-generated figures show circuit graphs, threshold failures, frozen greater-than transfer, all retained-edge deletions and sampled completeness. All four IOI thresholds fail development selection, so the holdout stays unopened. All 44 own-answer code cells and 56 tests pass; independent CUDA remeasurement matches five circuits and 320 nulls exactly. The recorded continuation uses only the learner's own interrupted checkpoints. Rewritten [8.4 Circuit Tracing with Attribution Graphs](chapter8_automated_circuits/instructions/pages/04_%5B8.4%5D_Circuit_Tracing_with_Attribution_Graphs.md) now makes students build an exact planted feature/head/MLP/logit DAG, compare edge ablation with integrated gradients, recover the top path, and validate it with path-only/path-removed faithfulness, completeness, minimality, same-size random, and reversed-edge controls. The visible graph, heatmap, and threshold sweep come from inline notebook implementations; the pinned TransformerLens `gelu-1l` CUDA `position_5 -> position_5` result is retained only as a residual-position mechanics preflight. Polished [8.5 Sparse Feature Circuits](chapter8_automated_circuits/instructions/pages/05_%5B8.5%5D_Sparse_Feature_Circuits.md) adds exact sparse-feature node and edge patching, EAP-vs-EAP-IG comparison, thresholded graph and same-size random controls, generated SHIFT-style editing, paired ARENA-style notebooks, and a scoped CUDA evidence bundle with Pythia-70M-deduped residual-feature checks, released SAE state-dict and one-layer attribution controls, a 100-example official-code sparse feature graph, and held-out official faithfulness on 40 `simple_test` examples. Use `scripts/prepare_sparse_feature_circuits_artifacts.py --download --extract` to prepare the released artifacts in the ignored `external/feature-circuits/` cache.
+
+The alignment-interpretability track begins with [9.1 Refusal Directions and Safe Steering](chapter9_alignment_interpretability/instructions/pages/01_%5B9.1%5D_Refusal_Directions_and_Safe_Steering.md): twelve own-answer exercises fit real Qwen activations using training data only, implement persistent generation interventions, select among fifteen development candidates, and generate all 85 frozen final conditions. Six figures show layer/position scores, genuine permutation and matched random controls, actual benign responses and capability costs. All 26 code cells and 20 semantic tests pass; separate CUDA regeneration matches 3,640 individual outcomes and all 65 target/null score directions exactly. The English marker rubric makes visible mistakes, some permutation controls are strong, and aggressive addition damages benign-task accuracy; this scoped method study does not establish broad safety. Polished [9.2 Chain-of-Thought Faithfulness](chapter9_alignment_interpretability/instructions/pages/02_%5B9.2%5D_Chain_of_Thought_Faithfulness.md) adds hidden-answer probes before final tokens, narrow hidden-vector LM-head readout-patch checks, CoT text-only baseline comparisons, feature-level unfaithfulness detectors, no-CoT/faithful/biased/post-hoc condition reports, paired ARENA-style notebooks, and a pinned Pythia-70M-deduped hidden-answer preflight with visible-text, label-shuffle, and hidden-state readout controls. Rewritten [9.3 Emergent Misalignment Detection](chapter9_alignment_interpretability/instructions/pages/03_%5B9.3%5D_Emergent_Misalignment_Detection.md) is explicitly a benign proxy-drift model-organism lab: students recover a known causal direction, fit a held-out detector, locate a known checkpoint onset before a delayed behavior proxy, measure behavior alignment, and test projection mitigation against random-direction and label-shuffled controls. The accepted pinned Pythia-70M CUDA path uses safe prompts and hidden states without generation; it is not a harmful-finetune or dangerous-misalignment claim. Polished [9.4 White-box Evals and Monitors](chapter9_alignment_interpretability/instructions/pages/04_%5B9.4%5D_White_box_Evals_and_Monitors.md) adds monitor dashboard rows, AUROC calibration, white-box catches of black-box missed failures, false-positive documentation, held-out feature-explanation validation, paired ARENA-style notebooks, and a pinned Pythia-70M-deduped white-box monitor preflight with next-token black-box proxy, label-shuffle, random-direction, false-positive documentation, and no-generation controls.
+
+The capstone track contains polished [10.1 Capstone Research Sprint](chapter10_capstone_research_sprint/instructions/pages/01_%5B10.1%5D_Capstone_Research_Sprint.md), which adds a paper-style project readiness contract, paired ARENA-style notebooks, local validation/signature diagrams, and a live CUDA mini activation-oracle sprint: a question-conditioned oracle is trained on generated latent-state activations, compared against text-only and linear-probe baselines, and checked with held-out templates, ablation, counterfactual patching, random-patch, random-activation, and label-shuffle controls.
+
+[11.1 PCA, SVD, and Geometry Controls](chapter11_representation_geometry/instructions/pages/01_%5B11.1%5D_PCA_SVD_and_Geometry_Controls.md)
+contains the new Mistral calendar study, including all donor pairs, random
+controls, nonlinear projection checks and thirteen figures. All 35 own-answer
+code cells pass, and an independently loaded Mistral reproduces 6,656 checked
+outcomes exactly. Four play cells connect fitted coordinates to actual answers.
+The completed alignment lesson below can be studied on CPU.
+
+[11.2 CCA, SVCCA, and Representation Alignment](chapter11_representation_geometry/instructions/pages/02_%5B11.2%5D_CCA_SVCCA_and_Representation_Alignment.md)
+derives common coordinates, exposes noise overfitting and low-variance task loss,
+and tests actual GPT-2 donor transport. Its 43-cell CPU notebook includes nine
+figures, three play cells and all failed examples; a fresh model reproduces
+5,184 checked condition outcomes exactly. Correlation, donor reproduction and
+correct name prediction are interpreted separately.
+
+[11.3 Causal Abstraction and Distributed Alignment Search](chapter11_representation_geometry/instructions/pages/03_%5B11.3%5D_Causal_Abstraction_and_Distributed_Alignment_Search.md)
+turns a predictive probe into a causal question: can a learned subspace transfer
+which person receives an object while preserving the recipient's names? Nine
+implementation groups move from exact structural equations to frozen GPT-2
+alignment, with twelve figures, thirteen immediate tests and three play cells.
+The 63-cell CPU notebook shows actual token changes, random and shuffled controls,
+and failures. A fresh model reproduces all 16,512 final condition outputs exactly.
+The learned subspace matches whole-position donors on average here; the lesson
+does not claim a uniquely identified causal mechanism.
+
+[11.4 Concept Erasure](chapter11_representation_geometry/instructions/pages/04_%5B11.4%5D_Concept_Erasure.md)
+derives a least-distorting affine eraser, then tests what GPT-2 still knows.
+Eight implementation groups, twelve figures and two plays separate a disabled
+probe, exact training guardedness, new-sentence recovery and collateral damage.
+All 71,232 final outputs across 106 conditions reproduce exactly with a fresh
+model and refitted maps and readers. The lesson retains failed predictions and
+random controls, including controls with equally large per-example edits.
+
+[11.5 Contrast-Consistent Search](chapter11_representation_geometry/instructions/pages/05_%5B11.5%5D_Contrast_Consistent_Search.md)
+asks whether a consistent feature is the feature you intended. Nine exercise
+groups, fifteen figures and two plays connect an exact competing-feature
+counterexample to frozen GPT-2. The lesson retains all eighteen site/prompt/text
+conditions, every restart and all random controls. Plain reviews can be read
+perfectly, yet another person's opinion dominates CCS in the competing-opinion
+conditions. Calibration, final accuracy, opinion sensitivity and actual native
+word predictions remain separate; this is not a claim of general truth discovery.
+
+The VLM interpretability track begins with polished [12.1 CLIP, SigLIP, and VLM Controls](chapter12_vlm_interpretability/instructions/pages/01_%5B12.1%5D_CLIP_SigLIP_and_VLM_Controls.md), which narrows the first learner-facing section to normalized CLIP-style contrastive logits, bidirectional retrieval margins, SigLIP-style pairwise loss, controlled colored-shape counterfactual scenes, localized visual-token attribution, paired ARENA-style notebooks, local validation/signature diagrams, and a scoped CUDA report with pinned real CLIP/SigLIP rendered-shape retrieval, hidden visual-token activation-patching controls, and a pinned Qwen2.5-VL 3B rendered-shape generation preflight. Broader VLM feature geometry, mini VLMs, visual-token flow, hallucination/arbitration, multimodal SAEs, and VLM attribution baselines remain later-section work rather than being crammed into this first notebook.
+
+The image-generation interpretability track begins with polished [13.1 Diffusion and Image-Generation Controls](chapter13_image_generation_interpretability/instructions/pages/01_%5B13.1%5D_Diffusion_and_Image_Generation_Controls.md), which now builds from exact toy attention and intervention controls to a live CUDA-generated Stable Diffusion 1.5 evidence panel. Students implement the quantitative region, specificity, direction, ablation, quality, and white-noise gates; then inspect the actual generated images, attention overlays, same-seed target/control prompt edits, CLIP retrieval matrix, and negative-control metrics in the notebook. The claim remains scoped to two pinned benign shape prompts, with SD-Turbo retained only as supplemental evidence and denoising-circuit or latent-steering claims explicitly deferred until directly tested.
+
+The JEPA and world-model track begins with polished [14.1 JEPA and World-Model Controls](chapter14_jepa_world_models/instructions/pages/01_%5B14.1%5D_JEPA_and_World_Model_Controls.md), which now starts from a deterministic video world with exact object, position, action, occlusion, and absence labels. Students implement the video generator, image-to-token mapping, similarity and collapse diagnostics, held-out probe gate, action-conditioned rollout gate, permanence test, and causal patch control. The live CUDA signature then renders the actual 200-state, four-variant video suite alongside V-JEPA 2 ViT-L latent PCA, masked-prediction and rollout losses, shuffled-label decoding, occluded-vs-absent persistence, and per-example object-token versus same-size-random patch effects; the claim remains explicitly limited to frozen latents in this generated world.
+
+The PEFT and misalignment track begins with rewritten [15.1 LoRA, DoRA, and Adapter Controls](chapter15_peft_misalignment/instructions/pages/01_%5B15.1%5D_LoRA_DoRA_and_Adapter_Controls.md). Students implement the low-rank update, rank/SVD checks, merge parity, DoRA recomposition, planted-data generator, training loop, held-out/OOD evaluation, same-norm control, and final acceptance gate. The visible CUDA signature compares real LoRA, DoRA, full-finetune, random-label, and same-norm random updates through learning curves, singular values, example predictions, behavior, and weight/activation direction audits; claims remain limited to the generated safe planted-direction model organism.
+
+The Shapley attribution-baseline track begins with polished [16.1 Exact Shapley on Ground-Truth Games](chapter16_shapley_attribution_baselines/instructions/pages/01_%5B16.1%5D_Exact_Shapley_on_Ground_Truth_Games.md), which adds complete coalition-value tables, exact Shapley values, permutation-parity checks, efficiency checks, interaction-heavy leave-one-out failure cases, local validation/signature diagrams, paired ARENA-style notebooks, and a real CUDA-trained neural coalition-game preflight whose ablation Shapley values are checked against analytic ground truth plus a shuffled-label control under a complete finite-domain claim boundary. Polished [16.2 KernelSHAP and PartitionSHAP Controls](chapter16_shapley_attribution_baselines/instructions/pages/02_%5B16.2%5D_KernelSHAP_and_PartitionSHAP_Controls.md) adds full-table KernelSHAP weighted-regression parity, exact Owen-value PartitionSHAP controls, cross-group shortcut anomaly hunting, local validation/signature diagrams, paired ARENA-style notebooks, and a real CUDA neural-game SHAP-control preflight with singleton, aligned-group, mismatched-group, cross-group, and shuffled-label controls. Polished [16.3 Shapley Interactions with shapiq](chapter16_shapley_attribution_baselines/instructions/pages/03_%5B16.3%5D_Shapley_Interactions_with_shapiq.md) adds exact pairwise interaction indices, additive zero-interaction and off-target controls, complete-table SII parity against `shapiq`, local validation/signature diagrams, paired ARENA-style notebooks, and a real CUDA neural-game interaction preflight that recovers planted positive and negative interactions from model ablations while rejecting a shuffled-label control. Polished [16.4 TokenSHAP and TokenShapley](chapter16_shapley_attribution_baselines/instructions/pages/04_%5B16.4%5D_TokenSHAP_and_TokenShapley.md) adds exact masked-token coalition tables, token-position Shapley efficiency checks, sampled permutation TokenSHAP parity against exact values, local validation/signature diagrams, paired ARENA-style notebooks, and a real CUDA trained-token-scorer preflight with analytic, ranking, efficiency, and shuffled-label controls. Rewritten [16.5 VLM Modality and Region SHAP](chapter16_shapley_attribution_baselines/instructions/pages/05_%5B16.5%5D_VLM_Modality_and_Region_SHAP.md) now gives students seven tested implementation steps from complete finite games through inspectable object/background/OCR interventions. Its live CUDA signature shows all eight rendered coalitions with real pinned-CLIP logits, exact modality and region Shapley bars, positive image-text interaction, a negative background control, object-over-non-object margin, and target-vs-distractor caption control; claims remain limited to this explicit counterfactual replacement game rather than segmentation or internal causal mediation. Polished [16.6 SHAP vs Activation Patching](chapter16_shapley_attribution_baselines/instructions/pages/06_%5B16.6%5D_SHAP_vs_Activation_Patching.md) adds exact coalition enumeration, weighted Shapley implementation, full-minus-ablated patching effects, additive agreement and AND-overcount controls, local validation/signature diagrams, paired ARENA-style notebooks, and a real CUDA additive/interaction model-organism comparison with explicit non-claims about arbitrary transformer patching. Polished [16.7 Data Shapley in One Training Run](chapter16_shapley_attribution_baselines/instructions/pages/07_%5B16.7%5D_Data_Shapley_in_One_Training_Run.md) adds one-step linear utility, exact finite-game Data Shapley, sampled permutation approximation, in-run first-order data scores, random-data and label-shuffle controls, local validation/signature diagrams, paired ARENA-style notebooks, and a real CUDA one-step training preflight with harmful-example deletion and runtime-overhead evidence. Rewritten [16.8 Do SHAPley and Mechanistic Interpretability Agree?](chapter16_shapley_attribution_baselines/instructions/pages/08_%5B16.8%5D_Do_SHAPley_and_Mechanistic_Interpretability_Agree.md) now makes students enumerate complete finite games, implement exact Shapley and causal ablation, compare rankings through consequence curves, diagnose XOR as a wrong-player-set failure, recover the pair interaction, reject shuffled controls, and bridge to one-step Data Shapley. Its visible agreement/disagreement panel is backed by an accepted CUDA-trained neural coalition game with exact finite-domain checks.
+
+The training-dynamics track begins with polished [17.1 Checkpoint Archaeology and Mechanism Emergence](chapter17_training_dynamics/instructions/pages/01_%5B17.1%5D_Checkpoint_Archaeology_and_Mechanism_Emergence.md), which adds stable emergence thresholds, first-crossing vs stable-crossing reports, phase-transition detection, random-control checks, toy AR/JEPA/diffusion/Mamba developmental timing comparisons, local validation/signature diagrams, paired ARENA-style notebooks, and a real CUDA modular-addition checkpoint preflight that saves/reloads checkpoints, detects stable emergence, and rejects a random-label checkpoint control.
+
+Durable setup references:
+
+* [Local GPU setup](docs/local_gpu_setup.md)
+* [CI gates](docs/ci_gates.md)
+* [Original ARENA preservation contract](docs/original_preservation_contract.md)
+* [Reproducibility contract](docs/reproducibility_contract.md)
+* [Verification quality policy](docs/verification_quality_policy.md)
+* [Hard exercise verification ladders](docs/hard_exercise_verification_ladders.md)
+* [Hard exercise ladder registry](docs/hard_exercise_ladder_registry.md)
+* [GPU verification policy](docs/gpu_verification_policy.md)
+* [Method registry](docs/method_registry.md)
+* [Research project template](research_projects/00_project_template/README.md)
+* [Generated data contract](docs/generated_data_contract.md)
+
+---
+
 # Submitting PRs
 
 If you want to submit a PR to the repo (e.g. fixing a bug or typo), this would be much appreciated! The easiest way to do this for us is by editing the **master Python file** (not the notebook) in `infrastructure/master_files`, since these are the files that generate all other pages (both Colabs, Streamlit pages, solutions files). For example, if you want to edit material 2.2 (Q-Learning and DQN), you should edit just `infrastructure/master_files/master_2_2.py`. After PRs are merged, we then run code which updates all the other files based on this one (so you don't have to worry about any of those other files, only the master Python file!).
 
 If you find the PR confusing (because you're not sure exactly what to edit in these master files), then please either send a message in the `#errata` Slack channel, or just make a PR on non-master files (e.g. the `solutions.py` file or the markdown files) and we'll be able to merge it & replicate it on the master files.
+
+The new [16.9 Influence Functions and TracIn](chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/README.md)
+lesson derives data attribution, then tests it against actual digit-model
+retraining with helpful/harmful image galleries, all checkpoint choices and
+matched random deletion controls. Its full reference run is CPU-only.
+
+The new [16.10 Datamodels](chapter16_shapley_attribution_baselines/exercises/part10_datamodels/README.md)
+learns how classifier predictions depend on training-set membership, with
+student-implemented Lasso, fifteen controlled figures and actual counterfactual
+retraining. It explicitly tests where predictions fail across subset sizes.
+
+The new [16.11 Dataset Cartography](chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/README.md) follows actual learning
+histories through image galleries, label-error diagnosis and fresh data-selection
+retraining. Its twenty figures retain the effects of logging time, training
+window, model, seed, class coverage and optimizer budget, including unsuccessful
+high-variability selections.
+
+The new [16.12 SAGE Global Importance](chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/README.md)
+asks which inputs help a model predict accurately. Conditional derivations, a real
+concrete-strength regressor, eighteen controlled figures and two editable plays
+separate performance attribution from output sensitivity and sampling precision
+from missing-feature assumptions.
+
+The new [16.13 TreeSHAP from First Principles](chapter16_shapley_attribution_baselines/exercises/part13_treeshap/README.md) builds the exact
+tree-path recurrence in the notebook, then explains eighteen fresh concrete-strength
+tree models on recipe-disjoint rows. Exhaustive games, Saabas, deletion, background and
+shuffled-target controls sit beside the retained SHAP 0.49.1 threshold-routing failure
+and a separately threshold-corrected compiled reference.
+
+The new [16.14 DeepSHAP: When Does Fast Attribution Match Exact SHAP?](chapter16_shapley_attribution_baselines/exercises/part14_deepshap/README.md)
+builds Rescale-style propagation in the notebook, then compares six fresh neural regressors and a
+ridge control with exact 256-coalition intact-donor games on every held-out recipe. Author-reference
+parity, five backgrounds, shuffled targets, replacement curves and the retained finite-epsilon
+failure show both where the approximation is fast and where it differs from exact feature Shapley.
+
+The new [16.15 Expected Gradients: Which Expectation Does GradientSHAP Estimate?](chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/README.md)
+builds Expected Gradients from donor and path samples. Convergence, approximate quadrature, exact
+feature games, background and noise changes, package replay and replacement controls show which
+expectation each attribution estimates, with two editable plays and complete fresh reproduction.
+
+The new [16.16 Where Does Higher-Order Credit Go?](chapter16_shapley_attribution_baselines/instructions/pages/16_[16.16]_Where_Does_Higher_Order_Credit_Go.md)
+builds Shapley-Taylor and exact constrained Faith-Shap from complete coalition games. Eleven figures
+show where omitted higher-order credit goes, how the reconstructed game changes, and why donor
+backgrounds and contextual derivatives answer different questions. Eight exercises and two editable
+plays retain clean, shuffled and additive controls. The full CPU study and fresh reproduction passed
+an independent publication review; the results concern known fitted models, not physical causality.
+
+The new [16.17 One Query, Many Interactions](chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/README.md)
+builds SHAP-IQ and pairwise KernelSHAP-IQ from shared model queries. Ten figures compare signed
+interactions, query-budget errors, sampling variance, additive and shuffled-model controls, and
+regression rank. Two editable plays expose what changes with the coalition, model, recipe or seed.
+The complete CPU study uses a disclosed precomputed oracle and reproduces every retained value
+in a fresh process; its implementation and visual review are by the author.

@@ -1,0 +1,153 @@
+{
+  "version": 3,
+  "stage": "frozen_scientific_choices_with_numerical_reproduction_repair",
+  "model_id": "mistralai/Mistral-7B-v0.1",
+  "revision": "27d67f1b5f57dc0953326b2601d68371d40ea8da",
+  "dtype": "bfloat16",
+  "attention": "sdpa",
+  "batch_size": 32,
+  "selection_rule": "maximize development shifted-answer accuracy for literal author mean-ablation; tie-break by its mean logit effect minus positive mean-only effect, then earlier layer",
+  "selection_source": "/tmp/geometry-mistral-layer-sweep-v2/results.json",
+  "selection_source_sha256": "9ce63b27a5dfc861068ac0aa25ee025f83e4e5c8ad12f8141f4254d813436da4",
+  "selected": {
+    "weekday": {
+      "layer_input": 16,
+      "pca_components": 5,
+      "selection_accuracy": 0.3928571343421936,
+      "selection_effect": 3.564732074737549,
+      "mean_only_effect": 2.736607074737549
+    },
+    "month": {
+      "layer_input": 10,
+      "pca_components": 5,
+      "selection_accuracy": 0.5138888955116272,
+      "selection_effect": 6.988715171813965,
+      "mean_only_effect": 5.11631965637207
+    }
+  },
+  "train_offsets": {
+    "weekday": [
+      1,
+      2,
+      3
+    ],
+    "month": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ]
+  },
+  "development_offsets": {
+    "weekday": [
+      4,
+      5,
+      6,
+      7
+    ],
+    "month": [
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ]
+  },
+  "training_template": "author task wording, no fixed token-length prefix hack",
+  "final_templates": {
+    "weekday": [
+      "Consider the weekdays. {interval} from {name} is",
+      "Let us work out the day. {interval} after {name} is",
+      "Calendar arithmetic: {interval} from {name} is"
+    ],
+    "month": [
+      "Consider the calendar. {interval} from {name} is",
+      "Let us work out the month. {interval} after {name} is",
+      "Calendar arithmetic: {interval} from {name} is"
+    ]
+  },
+  "final_offsets": "all 1..period; all start classes; all three new templates",
+  "final_base_rows": 579,
+  "all_donor_pairs": 5634,
+  "all_donor_conditions": [
+    "pure_coordinate",
+    "centered_mean_ablated",
+    "author_raw_mean_ablated",
+    "full_donor",
+    "pca5_donor"
+  ],
+  "shared_row_conditions": [
+    "baseline",
+    "no_op",
+    "mean_only"
+  ],
+  "primary_control_donor_shift": 2,
+  "null_draws": 32,
+  "null_seed": 2206,
+  "null_conditions": [
+    "same_rank_random_donor_plane",
+    "equal_norm_random_edit",
+    "class_order_permuted_circular_probe"
+  ],
+  "permutation_semantics": "the class permutation consistently maps both training labels and requested donor coordinates; never an intentionally mismatched evaluation label",
+  "circular_order_null_draws": 512,
+  "circular_order_null_seed": 2207,
+  "geometry_splits": "PCA and coordinate probes fit on training-only activations; final templates do not affect their fit. All classes occur in training; separately report leave-one-class-out decoding. No transductive template centering in the real intervention protocol.",
+  "reducer_seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "umap_settings": [
+    {
+      "n_neighbors": 3,
+      "min_dist": 0.0
+    },
+    {
+      "n_neighbors": 5,
+      "min_dist": 0.1
+    },
+    {
+      "n_neighbors": 10,
+      "min_dist": 0.3
+    }
+  ],
+  "tsne_perplexities": [
+    5,
+    15,
+    30
+  ],
+  "tsne_init": "random",
+  "tsne_iterations": 750,
+  "tsne_scope": "joint unlabeled train/final embedding, explicitly transductive; never described as an out-of-sample transform",
+  "negative_results": "retain all rows including wrong baseline/donor answers; record full-vocabulary and restricted-choice predictions separately",
+  "new_model_tuning_after_final": false,
+  "prior_protocol_sha256": "d9e21dbb2203f581892863255bce312b77dc2a9b55c6db42119eaba3e0e28c96",
+  "amendment": "After final v1 and fresh reproduction mismatch, use deterministic CPU SVD least squares for the same objective. Prompts, layers, scores, controls and seeds unchanged. Retain v1 and rerun complete learner; no outcome-based tuning.",
+  "angle_play": {
+    "source": "first final row per family, chosen by construction order",
+    "steps_per_class": 8,
+    "radii": [
+      0.0,
+      0.25,
+      0.5,
+      0.75,
+      1.0,
+      1.5,
+      2.0
+    ],
+    "conditions": [
+      "pure_coordinate",
+      "author_raw_mean_ablated",
+      "equal_norm_random_edit"
+    ],
+    "null_seed": 5500
+  },
+  "cpu_least_squares_driver": "gelsd",
+  "cuda_least_squares_driver": "gels"
+}

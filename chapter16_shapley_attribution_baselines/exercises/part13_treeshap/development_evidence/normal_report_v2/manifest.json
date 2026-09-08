@@ -1,0 +1,20 @@
+{
+  "source_directory": "/home/bitwise/.cache/arena_extended/treeshap/normal-report-v2-record",
+  "archive_sha256": "36ac544653a9a2e661c67660925b0c596694b330e13f61988b722d987fb47024",
+  "members": {
+    "README.md": {
+      "sha256": "cb693c9d41f1e77c2260555548ae91a36103e8bb3e1201cc7bfda750cbac714d",
+      "size_bytes": 279
+    },
+    "fresh_reproduction.json": {
+      "sha256": "26620ddb73c783c9eb4493beb1bdad11303e98d309f2ce5ffac52202602095e8",
+      "size_bytes": 60090
+    },
+    "verification_report.json": {
+      "sha256": "a565b048ec91943b948601db98e948d4cc4aef768ec7485d0b42007aa9641dcb",
+      "size_bytes": 25329
+    }
+  },
+  "large_tensors_retained_externally": {},
+  "readback_verified": true
+}

@@ -1,0 +1,100 @@
+{
+  "scope": "actual_cpu_candidate_learner_reference_not_cuda_results",
+  "source": "word_candidates/learner_validation/completed_word_study.json.gz",
+  "all_seeds_retained": [
+    0,
+    1,
+    2
+  ],
+  "model_parameters": 127392,
+  "word_vocabulary": 24,
+  "cpu_final_means": {
+    "familiar_solid": {
+      "joint": {
+        "exact_match": 0.8958333333333334,
+        "color_exact_match": 1.0,
+        "shape_exact_match": 0.8518518606821696,
+        "caption_exact_match": 0.8356481591860453
+      },
+      "text-only": {
+        "exact_match": 0.25925925374031067,
+        "color_exact_match": 0.3333333432674408,
+        "shape_exact_match": 0.3333333432674408,
+        "caption_exact_match": 0.1111111119389534
+      },
+      "image-only": {
+        "exact_match": 0.32021604975064594,
+        "color_exact_match": 0.6527777711550394,
+        "shape_exact_match": 0.21759259204069772,
+        "caption_exact_match": 0.09027777860562007
+      },
+      "shuffled-pairs": {
+        "exact_match": 0.2939814825852712,
+        "color_exact_match": 0.35879629850387573,
+        "shape_exact_match": 0.38657407959302265,
+        "caption_exact_match": 0.13657407462596893
+      }
+    },
+    "familiar_muted": {
+      "joint": {
+        "exact_match": 0.8580246766408285,
+        "color_exact_match": 0.9907407561937968,
+        "shape_exact_match": 0.7916666666666666,
+        "caption_exact_match": 0.7916666865348816
+      },
+      "text-only": {
+        "exact_match": 0.25925925374031067,
+        "color_exact_match": 0.3333333432674408,
+        "shape_exact_match": 0.3333333432674408,
+        "caption_exact_match": 0.1111111119389534
+      },
+      "image-only": {
+        "exact_match": 0.31327160199483234,
+        "color_exact_match": 0.622685174147288,
+        "shape_exact_match": 0.25462962687015533,
+        "caption_exact_match": 0.06250000124176343
+      },
+      "shuffled-pairs": {
+        "exact_match": 0.2669753034909566,
+        "color_exact_match": 0.314814825852712,
+        "shape_exact_match": 0.36574074625968933,
+        "caption_exact_match": 0.12037037312984467
+      }
+    },
+    "compositional_muted": {
+      "joint": {
+        "exact_match": 0.32754628856976825,
+        "color_exact_match": 0.9027777711550394,
+        "shape_exact_match": 0.07986110945542653,
+        "caption_exact_match": 0.0
+      },
+      "text-only": {
+        "exact_match": 0.1111111119389534,
+        "color_exact_match": 0.0,
+        "shape_exact_match": 0.3333333432674408,
+        "caption_exact_match": 0.0
+      },
+      "image-only": {
+        "exact_match": 0.16666666666666666,
+        "color_exact_match": 0.4999999900658925,
+        "shape_exact_match": 0.0,
+        "caption_exact_match": 0.0
+      },
+      "shuffled-pairs": {
+        "exact_match": 0.116898146768411,
+        "color_exact_match": 0.11111111442248027,
+        "shape_exact_match": 0.23958333830038706,
+        "caption_exact_match": 0.0
+      }
+    }
+  },
+  "causal_pairs_per_seed": 72,
+  "causal_joint_correct_denominators": [
+    50,
+    51,
+    45
+  ],
+  "stage_region_experiments": 285,
+  "comparison_tolerance_for_identical_cpu_recipe": 1e-06,
+  "hardware_training_variation": "CUDA has its own separately frozen measured results; exact CPU/CUDA training equality is not claimed."
+}

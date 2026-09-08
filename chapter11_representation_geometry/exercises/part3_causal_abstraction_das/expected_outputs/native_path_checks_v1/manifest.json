@@ -1,0 +1,15 @@
+{
+  "source_directory": "/home/bitwise/.cache/arena_extended/das/native-checks-v1",
+  "archive_sha256": "976b2533b5fc363b4ea53deb0d0a010145dc7e839d0c588a21c092172e48d56e",
+  "members_sha256": {
+    "development.json": "42b2876c5b6e68539b81a2bda3888669c67c70f0fd4d762528852b5e4deceaef",
+    "source_snapshot/das_ioi_data.py": "33c3dc44791146d0212b49eeea4cf4185db04bf0046c20113512f13d4aac6dd3",
+    "source_snapshot/das_methods.py": "606c7446aee48d96367a258875040f03ad75adc2aead99d1cff46eae5ec9db0f",
+    "source_snapshot/das_native.py": "3a496211314ead995faa02eeab9bc1a00928bc081125e08309873e48044c1478",
+    "source_snapshot/run_native_development.py": "106359a4e42b2a14cdfea264d47dd06ba080de9a68a9441261044a98a7cc81f2"
+  },
+  "large_tensors_retained_in_source_directory": {
+    "actual_native_checks.pt": "228481627ccefb99ca195984d429c36b24e938ba16a789172ce33d6826f45379"
+  },
+  "all_archive_members_read_back_and_verified": true
+}

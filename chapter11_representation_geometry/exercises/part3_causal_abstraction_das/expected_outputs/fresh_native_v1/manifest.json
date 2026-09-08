@@ -1,0 +1,19 @@
+{
+  "source_directory": "/home/bitwise/.cache/arena_extended/das/fresh-native-v1",
+  "archive_sha256": "2fdc97bb2c5c7ed088c17833a9c9e09b15eda069481862be48e75692caf0f8d2",
+  "members_sha256": {
+    "actual_comparisons.jsonl": "a5b141f3811f6bfa0d2299ecd79d655892016f98c6f9638f5a5275f56240d589",
+    "reproduction.json": "cae309a0b7f0f63bfb88fe09d5e4f227e59918c1b4b2029fda257d0f437bd008",
+    "source_snapshot/build_notebooks.py": "fcb06b82351610f5773e15176119c2239e909ad3272a146ec566185528fdf3a5",
+    "source_snapshot/das_ioi_data.py": "c8cdaf671dce1282065966f0981b446de98511b353d6b1fac12c292f437ead19",
+    "source_snapshot/das_native.py": "c25c36e165528797eb9377e72dd09fa6e1fdf80c21712986b0e16136f769c0de",
+    "source_snapshot/das_protocol.py": "2be338d2be230544231b50cbaaac76ac2c88e28872bd4364713e686fd76563a3",
+    "source_snapshot/das_reproduction.py": "591f9bf6744446657d9ccd66f7692ce501f6fd989dd65eb5773abdc15da3846e",
+    "source_snapshot/lesson.md": "9269647e0c69c0ae3852099dfca3c4c4f8b97adc3eee562a3d5205536ff3ad79",
+    "source_snapshot/run_native_development.py": "3a0b72d3b79c7683548db702fede8f424ff7f29cdd1b1494381e46d8bc16f8f4"
+  },
+  "large_tensors_retained_in_source_directory": {
+    "actual_fresh_native_tensors.pt": "527e10a44287401dfdb2cee869a2a75da825d01c9088d9f7eb714dabd06aa16f"
+  },
+  "all_archive_members_read_back_and_verified": true
+}

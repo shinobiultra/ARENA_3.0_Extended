@@ -1,0 +1,527 @@
+{
+  "schema": "arena.review-bundle.v1",
+  "archive": {
+    "name": "execution.tar.gz",
+    "sha256": "776e19ad20409be62ddf3a6fa39cec443784139109043e58ea021169be713284",
+    "size_bytes": 4011415
+  },
+  "limits": {
+    "archive_bytes": 67108864,
+    "member_bytes": 16777216,
+    "total_member_bytes": 134217728,
+    "tar_container_bytes": 167772160,
+    "decoded_json_bytes": 67108864,
+    "total_decoded_bytes": 536870912,
+    "members": 4096
+  },
+  "provenance": {
+    "kind": "historical_archive_packaging",
+    "packaged_at_utc": "2026-09-08T03:26:55.184883+00:00",
+    "measurement_claim": "Packaging only. This is not a native rerun, scientific revalidation or new review. Retained receipts, failure labels, values, scientific hashes and measurement dates are byte-identical to the original. Historical embedded archive inventories describe that original; this adjacent contract describes the derived review bundle.",
+    "source_archive": {
+      "repository_path": "chapter11_representation_geometry/exercises/part5_contrast_consistent_search/expected_outputs/normal_report_source_v1/execution.tar.gz",
+      "absolute_path": "/home/bitwise/.cache/arena_extended/evidence_packaging/original_archives/776e19ad20409be62ddf3a6fa39cec443784139109043e58ea021169be713284.tar.gz",
+      "sha256": "776e19ad20409be62ddf3a6fa39cec443784139109043e58ea021169be713284",
+      "size_bytes": 4011415,
+      "git_commit": "ce96ceaae2f91bf0dcd7648052325e07a87b0b5b",
+      "git_blob": "428dcd18dd39dd18ffc2e92791591440538939b4"
+    },
+    "source_archive_members": {
+      "source_snapshot/arena_ext/verification.py": {
+        "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
+        "size_bytes": 9276
+      },
+      "source_snapshot/chapter11_representation_geometry/exercises/part4_concept_erasure/erasure_methods.py": {
+        "sha256": "594d3c56ec40bd32c4418d8645ec26e70280df9c842b9dbb3c2fd87f42711e5e",
+        "size_bytes": 9958
+      },
+      "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/11.5_Contrast_Consistent_Search_exercises.ipynb": {
+        "sha256": "96d47b5420358cd41722b03eb46666866757c5eb13fd434540e2a09d5e44c61b",
+        "size_bytes": 1449727
+      },
+      "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/11.5_Contrast_Consistent_Search_solutions.ipynb": {
+        "sha256": "7366809c2f2d658827e651725cd9d6287f996b84c6a7efaddb5c3cf75ce32b1a",
+        "size_bytes": 1461944
+      },
+      "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/README.md": {
+        "sha256": "89c18a903e52ba318c8c68379833e41efba1935a2dd4cfade48720996d8d7434",
+        "size_bytes": 3086
+      },
+      "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/artifacts.lock.yml": {
+        "sha256": "ea1183c6eaf301ad917db7a7d40668f28b6638f2d4cd6fe5fd194fb343965041",
+        "size_bytes": 6440
+      },
+      "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/build_notebooks.py": {
+        "sha256": "7ca1441941f39778849d21c4214f95170c91972f815565fbeabf1044af005303",
+        "size_bytes": 4535
+      },
+      "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/ccs_data.py": {
+        "sha256": "485c1fc7e10fb0cb75d2f1ac3e7dd0e631aa0dccbd9ba6590c8717bfad19657d",
+        "size_bytes": 6076
+      },
+      "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/ccs_methods.py": {
+        "sha256": "efc2e1d6e7f73d4774538711f7b8b1d93801f2d0c3d8d259ddd12866583e4dc6",
+        "size_bytes": 9543
+      },
+      "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/ccs_methods_tests.py": {
+        "sha256": "b9bdd836c24330b032478f5b9d152e2b8b69c51514b07a734fe80610c0e9d83b",
+        "size_bytes": 9088
+      },
+      "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/ccs_native.py": {
+        "sha256": "67674868f56bf6a7d8ca529bdb8436aff5384fb81bc8a5a38afa0bfe4eba32c7",
+        "size_bytes": 5342
+      },
+      "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/ccs_native_methods.py": {
+        "sha256": "e89b8f7e924832d769148613f40e7e5917131d0678cb659aef892ec789a4b899",
+        "size_bytes": 4445
+      },
+      "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/ccs_native_methods_tests.py": {
+        "sha256": "f45c502c6ecdb8ff624e01168f8ed604227b469527d0d5f0758adb6ded99de31",
+        "size_bytes": 3472
+      },
+      "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/ccs_reproduction.py": {
+        "sha256": "11a87feb193308f4e71b0a566d8c8c048c6e22ea179786a4e490be5244005934",
+        "size_bytes": 18519
+      },
+      "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/ccs_reproduction_tests.py": {
+        "sha256": "d83b7727a972c08387e27dd7540aeadbc16bdc7f68c1479cc424d631c8899c35",
+        "size_bytes": 3899
+      },
+      "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/ccs_study.py": {
+        "sha256": "53237e0e941409a5eb09b62eb29822715aed2dfbf6bef6dc16bc0f13956b57ef",
+        "size_bytes": 5767
+      },
+      "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/execute_learner.py": {
+        "sha256": "02be87430b1d568e699650de8b599d333309c456f9564576ca762d5f25d82c22",
+        "size_bytes": 5021
+      },
+      "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/expected_outputs/README.md": {
+        "sha256": "0dbeff53caf34a24d157a2a7edbb9d34f88c05cc97f89d30498c1edffae4173f",
+        "size_bytes": 3160
+      },
+      "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/expected_outputs/fresh_reproduction.json": {
+        "sha256": "fb93cb7f927b3d0097d0647a2e677bb195302523cb9d1c4ca3f714c4b3e22bbc",
+        "size_bytes": 18878
+      },
+      "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/expected_outputs/learner_execution.json": {
+        "sha256": "f371f5715d994662314ef9080be7ef19f6e8709b43834eee79d528204425b34f",
+        "size_bytes": 17317
+      },
+      "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/expected_outputs/native_summary.json": {
+        "sha256": "8581413e65eb5b09893d691c3e3370828aa43b42043a4e8fe87d0f3749177a5f",
+        "size_bytes": 2665269
+      },
+      "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/expected_outputs/reference_metrics.json": {
+        "sha256": "0ecbc7ec6893857552a4d671aaa20c2f79fa7d1c09454a8f30583708cdbf7de1",
+        "size_bytes": 952
+      },
+      "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/expected_outputs/smoke_test.json": {
+        "sha256": "000a90b8769c58dc898f8b98800076a583293c3786b723a3c6918db95e4a22f8",
+        "size_bytes": 632
+      },
+      "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/lesson.md": {
+        "sha256": "2bbec4416f52c176a578a9cd8a9559f25b62ec01c8cba5bff22e1e5b8c4cbd25",
+        "size_bytes": 94233
+      },
+      "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/native_protocol.md": {
+        "sha256": "5b30edef98dedda7961c393431be33277e2023cfa07c34818edd60bb621376df",
+        "size_bytes": 5908
+      },
+      "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/publish_study.py": {
+        "sha256": "a456f4e7ccd5b095a8d2f78eaa264e8d294b1fe60418e93e8c20241326b0054b",
+        "size_bytes": 7402
+      },
+      "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/reference_parity.py": {
+        "sha256": "8e60473485fcf00e452d8d4d73247777f750f11ca1998afd62b11861c073d1e3",
+        "size_bytes": 4817
+      },
+      "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/solutions.py": {
+        "sha256": "df9960e17ffcc80336c4ab5efc49b62492a7ff6dbfec4ee8b6e14696cd2f5cf2",
+        "size_bytes": 3538
+      },
+      "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/tests.py": {
+        "sha256": "7ac2fbc703456e57accb1b7be866cd50934847d935886e926003aa036a3f1bae",
+        "size_bytes": 295
+      },
+      "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/verification_report.schema.json": {
+        "sha256": "6866d119eaa1d2da0386c6b0423026e03b08b215e7077d7af52221cb51b5afea",
+        "size_bytes": 2669
+      },
+      "source_snapshot/chapter11_representation_geometry/instructions/assets/ccs_actual_review_gallery.png": {
+        "sha256": "a4dc49b0a34edd7ed2bef10c4c482e3f7e4f9f8c1b445571f2812b7a2d86e052",
+        "size_bytes": 163852
+      },
+      "source_snapshot/chapter11_representation_geometry/instructions/assets/ccs_contrast_geometry.png": {
+        "sha256": "9f3cb35b6c340b70e7723c12fd9c8dda5c6ce892de91ec4ed9b5f68d0f6fd977",
+        "size_bytes": 67603
+      },
+      "source_snapshot/chapter11_representation_geometry/instructions/assets/ccs_direction_baselines.png": {
+        "sha256": "e915cfe8b6ebc9ae792dabb9f934bcb709f1d1952503b67eb29eaf1c4f0814ea",
+        "size_bytes": 68130
+      },
+      "source_snapshot/chapter11_representation_geometry/instructions/assets/ccs_distractor_strength_play.png": {
+        "sha256": "2d41685daf7fa4e917d62e4b09a694b66d82f3c44393359045dc1a5446efb871",
+        "size_bytes": 93719
+      },
+      "source_snapshot/chapter11_representation_geometry/instructions/assets/ccs_exact_counterexample.png": {
+        "sha256": "3ee4de3d21c38924def4991d0677663f750060affc8f8b1fc175caeb4102032d",
+        "size_bytes": 76483
+      },
+      "source_snapshot/chapter11_representation_geometry/instructions/assets/ccs_final_all_restarts.png": {
+        "sha256": "cd91b66a5697b01c1832b9fd62e5ca9387c1dd579b49e63b28ce94f7cc9f4fe8",
+        "size_bytes": 84384
+      },
+      "source_snapshot/chapter11_representation_geometry/instructions/assets/ccs_final_method_comparison.png": {
+        "sha256": "ae485f5bcb8172b4fd13b032f42cb1010d96d23fb4c74e0ebae4eb012aeee800",
+        "size_bytes": 177609
+      },
+      "source_snapshot/chapter11_representation_geometry/instructions/assets/ccs_final_opinion_change.png": {
+        "sha256": "e5a39b4f5dab72cfcbe078a2b0c2e8cf80a71317fd041ebe70dd4014f5cd4dc2",
+        "size_bytes": 77727
+      },
+      "source_snapshot/chapter11_representation_geometry/instructions/assets/ccs_final_random_controls.png": {
+        "sha256": "643f3aaa6fd847bc4a9e21f1dbc46a54b71746c3fd82c320bd12fea825a121dc",
+        "size_bytes": 145931
+      },
+      "source_snapshot/chapter11_representation_geometry/instructions/assets/ccs_loss_landscape.png": {
+        "sha256": "621ab601761a8737f875f97f6fa9806235f0f1fdfd7abbc73bc476072b8b1244",
+        "size_bytes": 316424
+      },
+      "source_snapshot/chapter11_representation_geometry/instructions/assets/ccs_native_development.png": {
+        "sha256": "e6a384404b7a57e5c830345955eb85ab436cb6368aacb302b6261f0e70858dc0",
+        "size_bytes": 89924
+      },
+      "source_snapshot/chapter11_representation_geometry/instructions/assets/ccs_native_output_baselines.png": {
+        "sha256": "8460f77125adc5376c7a646fb1b40065270a06ba494e54c2ccc8691606c42ff8",
+        "size_bytes": 99506
+      },
+      "source_snapshot/chapter11_representation_geometry/instructions/assets/ccs_native_review_play.png": {
+        "sha256": "189f8524d745ec15a2330cc710757515d8397451407661d5c891d4579e628ef5",
+        "size_bytes": 67112
+      },
+      "source_snapshot/chapter11_representation_geometry/instructions/assets/ccs_orientation_control.png": {
+        "sha256": "e110decd0f52ffed9645780b19d1abff24ea10a438e85bf8dfa34d0177be8b8e",
+        "size_bytes": 93288
+      },
+      "source_snapshot/chapter11_representation_geometry/instructions/assets/ccs_restart_outcomes.png": {
+        "sha256": "ad24f9393288c3106477e1d2df5b0e3e81a1819d379de0cec26ab64d3e0bf880",
+        "size_bytes": 156404
+      },
+      "source_snapshot/chapter11_representation_geometry/instructions/pages/05_[11.5]_Contrast_Consistent_Search.md": {
+        "sha256": "8ad5d7f7f938160457f1f6ae52207320c67066663cc25d82894cc6af3997baf5",
+        "size_bytes": 93838
+      },
+      "source_snapshot/scripts/run_extension_verification_reports.py": {
+        "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
+        "size_bytes": 16272
+      },
+      "source_verification.json": {
+        "sha256": "74b228a31a33b531c95afe68ef94dc1c5134efef56f0f2b2d0358061f2b8a2bd",
+        "size_bytes": 754
+      },
+      "verification_report.json": {
+        "sha256": "0c96d281ad99452915f39444b9cd8c9336bfe13cff1c48ef8ed0d2b4afc7648b",
+        "size_bytes": 17649
+      }
+    }
+  },
+  "members": {
+    "source_snapshot/arena_ext/verification.py": {
+      "type": "regular",
+      "size_bytes": 9276,
+      "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter11_representation_geometry/exercises/part4_concept_erasure/erasure_methods.py": {
+      "type": "regular",
+      "size_bytes": 9958,
+      "sha256": "594d3c56ec40bd32c4418d8645ec26e70280df9c842b9dbb3c2fd87f42711e5e",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/11.5_Contrast_Consistent_Search_exercises.ipynb": {
+      "type": "regular",
+      "size_bytes": 1449727,
+      "sha256": "96d47b5420358cd41722b03eb46666866757c5eb13fd434540e2a09d5e44c61b",
+      "format": "notebook-json"
+    },
+    "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/11.5_Contrast_Consistent_Search_solutions.ipynb": {
+      "type": "regular",
+      "size_bytes": 1461944,
+      "sha256": "7366809c2f2d658827e651725cd9d6287f996b84c6a7efaddb5c3cf75ce32b1a",
+      "format": "notebook-json"
+    },
+    "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/README.md": {
+      "type": "regular",
+      "size_bytes": 3086,
+      "sha256": "89c18a903e52ba318c8c68379833e41efba1935a2dd4cfade48720996d8d7434",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/artifacts.lock.yml": {
+      "type": "regular",
+      "size_bytes": 6440,
+      "sha256": "ea1183c6eaf301ad917db7a7d40668f28b6638f2d4cd6fe5fd194fb343965041",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/build_notebooks.py": {
+      "type": "regular",
+      "size_bytes": 4535,
+      "sha256": "7ca1441941f39778849d21c4214f95170c91972f815565fbeabf1044af005303",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/ccs_data.py": {
+      "type": "regular",
+      "size_bytes": 6076,
+      "sha256": "485c1fc7e10fb0cb75d2f1ac3e7dd0e631aa0dccbd9ba6590c8717bfad19657d",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/ccs_methods.py": {
+      "type": "regular",
+      "size_bytes": 9543,
+      "sha256": "efc2e1d6e7f73d4774538711f7b8b1d93801f2d0c3d8d259ddd12866583e4dc6",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/ccs_methods_tests.py": {
+      "type": "regular",
+      "size_bytes": 9088,
+      "sha256": "b9bdd836c24330b032478f5b9d152e2b8b69c51514b07a734fe80610c0e9d83b",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/ccs_native.py": {
+      "type": "regular",
+      "size_bytes": 5342,
+      "sha256": "67674868f56bf6a7d8ca529bdb8436aff5384fb81bc8a5a38afa0bfe4eba32c7",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/ccs_native_methods.py": {
+      "type": "regular",
+      "size_bytes": 4445,
+      "sha256": "e89b8f7e924832d769148613f40e7e5917131d0678cb659aef892ec789a4b899",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/ccs_native_methods_tests.py": {
+      "type": "regular",
+      "size_bytes": 3472,
+      "sha256": "f45c502c6ecdb8ff624e01168f8ed604227b469527d0d5f0758adb6ded99de31",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/ccs_reproduction.py": {
+      "type": "regular",
+      "size_bytes": 18519,
+      "sha256": "11a87feb193308f4e71b0a566d8c8c048c6e22ea179786a4e490be5244005934",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/ccs_reproduction_tests.py": {
+      "type": "regular",
+      "size_bytes": 3899,
+      "sha256": "d83b7727a972c08387e27dd7540aeadbc16bdc7f68c1479cc424d631c8899c35",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/ccs_study.py": {
+      "type": "regular",
+      "size_bytes": 5767,
+      "sha256": "53237e0e941409a5eb09b62eb29822715aed2dfbf6bef6dc16bc0f13956b57ef",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/execute_learner.py": {
+      "type": "regular",
+      "size_bytes": 5021,
+      "sha256": "02be87430b1d568e699650de8b599d333309c456f9564576ca762d5f25d82c22",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/expected_outputs/README.md": {
+      "type": "regular",
+      "size_bytes": 3160,
+      "sha256": "0dbeff53caf34a24d157a2a7edbb9d34f88c05cc97f89d30498c1edffae4173f",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/expected_outputs/fresh_reproduction.json": {
+      "type": "regular",
+      "size_bytes": 18878,
+      "sha256": "fb93cb7f927b3d0097d0647a2e677bb195302523cb9d1c4ca3f714c4b3e22bbc",
+      "format": "json"
+    },
+    "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/expected_outputs/learner_execution.json": {
+      "type": "regular",
+      "size_bytes": 17317,
+      "sha256": "f371f5715d994662314ef9080be7ef19f6e8709b43834eee79d528204425b34f",
+      "format": "json"
+    },
+    "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/expected_outputs/native_summary.json": {
+      "type": "regular",
+      "size_bytes": 2665269,
+      "sha256": "8581413e65eb5b09893d691c3e3370828aa43b42043a4e8fe87d0f3749177a5f",
+      "format": "json"
+    },
+    "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/expected_outputs/reference_metrics.json": {
+      "type": "regular",
+      "size_bytes": 952,
+      "sha256": "0ecbc7ec6893857552a4d671aaa20c2f79fa7d1c09454a8f30583708cdbf7de1",
+      "format": "json"
+    },
+    "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/expected_outputs/smoke_test.json": {
+      "type": "regular",
+      "size_bytes": 632,
+      "sha256": "000a90b8769c58dc898f8b98800076a583293c3786b723a3c6918db95e4a22f8",
+      "format": "json"
+    },
+    "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/lesson.md": {
+      "type": "regular",
+      "size_bytes": 94233,
+      "sha256": "2bbec4416f52c176a578a9cd8a9559f25b62ec01c8cba5bff22e1e5b8c4cbd25",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/native_protocol.md": {
+      "type": "regular",
+      "size_bytes": 5908,
+      "sha256": "5b30edef98dedda7961c393431be33277e2023cfa07c34818edd60bb621376df",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/publish_study.py": {
+      "type": "regular",
+      "size_bytes": 7402,
+      "sha256": "a456f4e7ccd5b095a8d2f78eaa264e8d294b1fe60418e93e8c20241326b0054b",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/reference_parity.py": {
+      "type": "regular",
+      "size_bytes": 4817,
+      "sha256": "8e60473485fcf00e452d8d4d73247777f750f11ca1998afd62b11861c073d1e3",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/solutions.py": {
+      "type": "regular",
+      "size_bytes": 3538,
+      "sha256": "df9960e17ffcc80336c4ab5efc49b62492a7ff6dbfec4ee8b6e14696cd2f5cf2",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/tests.py": {
+      "type": "regular",
+      "size_bytes": 295,
+      "sha256": "7ac2fbc703456e57accb1b7be866cd50934847d935886e926003aa036a3f1bae",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/verification_report.schema.json": {
+      "type": "regular",
+      "size_bytes": 2669,
+      "sha256": "6866d119eaa1d2da0386c6b0423026e03b08b215e7077d7af52221cb51b5afea",
+      "format": "json"
+    },
+    "source_snapshot/chapter11_representation_geometry/instructions/assets/ccs_actual_review_gallery.png": {
+      "type": "regular",
+      "size_bytes": 163852,
+      "sha256": "a4dc49b0a34edd7ed2bef10c4c482e3f7e4f9f8c1b445571f2812b7a2d86e052",
+      "format": "png"
+    },
+    "source_snapshot/chapter11_representation_geometry/instructions/assets/ccs_contrast_geometry.png": {
+      "type": "regular",
+      "size_bytes": 67603,
+      "sha256": "9f3cb35b6c340b70e7723c12fd9c8dda5c6ce892de91ec4ed9b5f68d0f6fd977",
+      "format": "png"
+    },
+    "source_snapshot/chapter11_representation_geometry/instructions/assets/ccs_direction_baselines.png": {
+      "type": "regular",
+      "size_bytes": 68130,
+      "sha256": "e915cfe8b6ebc9ae792dabb9f934bcb709f1d1952503b67eb29eaf1c4f0814ea",
+      "format": "png"
+    },
+    "source_snapshot/chapter11_representation_geometry/instructions/assets/ccs_distractor_strength_play.png": {
+      "type": "regular",
+      "size_bytes": 93719,
+      "sha256": "2d41685daf7fa4e917d62e4b09a694b66d82f3c44393359045dc1a5446efb871",
+      "format": "png"
+    },
+    "source_snapshot/chapter11_representation_geometry/instructions/assets/ccs_exact_counterexample.png": {
+      "type": "regular",
+      "size_bytes": 76483,
+      "sha256": "3ee4de3d21c38924def4991d0677663f750060affc8f8b1fc175caeb4102032d",
+      "format": "png"
+    },
+    "source_snapshot/chapter11_representation_geometry/instructions/assets/ccs_final_all_restarts.png": {
+      "type": "regular",
+      "size_bytes": 84384,
+      "sha256": "cd91b66a5697b01c1832b9fd62e5ca9387c1dd579b49e63b28ce94f7cc9f4fe8",
+      "format": "png"
+    },
+    "source_snapshot/chapter11_representation_geometry/instructions/assets/ccs_final_method_comparison.png": {
+      "type": "regular",
+      "size_bytes": 177609,
+      "sha256": "ae485f5bcb8172b4fd13b032f42cb1010d96d23fb4c74e0ebae4eb012aeee800",
+      "format": "png"
+    },
+    "source_snapshot/chapter11_representation_geometry/instructions/assets/ccs_final_opinion_change.png": {
+      "type": "regular",
+      "size_bytes": 77727,
+      "sha256": "e5a39b4f5dab72cfcbe078a2b0c2e8cf80a71317fd041ebe70dd4014f5cd4dc2",
+      "format": "png"
+    },
+    "source_snapshot/chapter11_representation_geometry/instructions/assets/ccs_final_random_controls.png": {
+      "type": "regular",
+      "size_bytes": 145931,
+      "sha256": "643f3aaa6fd847bc4a9e21f1dbc46a54b71746c3fd82c320bd12fea825a121dc",
+      "format": "png"
+    },
+    "source_snapshot/chapter11_representation_geometry/instructions/assets/ccs_loss_landscape.png": {
+      "type": "regular",
+      "size_bytes": 316424,
+      "sha256": "621ab601761a8737f875f97f6fa9806235f0f1fdfd7abbc73bc476072b8b1244",
+      "format": "png"
+    },
+    "source_snapshot/chapter11_representation_geometry/instructions/assets/ccs_native_development.png": {
+      "type": "regular",
+      "size_bytes": 89924,
+      "sha256": "e6a384404b7a57e5c830345955eb85ab436cb6368aacb302b6261f0e70858dc0",
+      "format": "png"
+    },
+    "source_snapshot/chapter11_representation_geometry/instructions/assets/ccs_native_output_baselines.png": {
+      "type": "regular",
+      "size_bytes": 99506,
+      "sha256": "8460f77125adc5376c7a646fb1b40065270a06ba494e54c2ccc8691606c42ff8",
+      "format": "png"
+    },
+    "source_snapshot/chapter11_representation_geometry/instructions/assets/ccs_native_review_play.png": {
+      "type": "regular",
+      "size_bytes": 67112,
+      "sha256": "189f8524d745ec15a2330cc710757515d8397451407661d5c891d4579e628ef5",
+      "format": "png"
+    },
+    "source_snapshot/chapter11_representation_geometry/instructions/assets/ccs_orientation_control.png": {
+      "type": "regular",
+      "size_bytes": 93288,
+      "sha256": "e110decd0f52ffed9645780b19d1abff24ea10a438e85bf8dfa34d0177be8b8e",
+      "format": "png"
+    },
+    "source_snapshot/chapter11_representation_geometry/instructions/assets/ccs_restart_outcomes.png": {
+      "type": "regular",
+      "size_bytes": 156404,
+      "sha256": "ad24f9393288c3106477e1d2df5b0e3e81a1819d379de0cec26ab64d3e0bf880",
+      "format": "png"
+    },
+    "source_snapshot/chapter11_representation_geometry/instructions/pages/05_[11.5]_Contrast_Consistent_Search.md": {
+      "type": "regular",
+      "size_bytes": 93838,
+      "sha256": "8ad5d7f7f938160457f1f6ae52207320c67066663cc25d82894cc6af3997baf5",
+      "format": "utf8-text"
+    },
+    "source_snapshot/scripts/run_extension_verification_reports.py": {
+      "type": "regular",
+      "size_bytes": 16272,
+      "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
+      "format": "utf8-text"
+    },
+    "source_verification.json": {
+      "type": "regular",
+      "size_bytes": 754,
+      "sha256": "74b228a31a33b531c95afe68ef94dc1c5134efef56f0f2b2d0358061f2b8a2bd",
+      "format": "json"
+    },
+    "verification_report.json": {
+      "type": "regular",
+      "size_bytes": 17649,
+      "sha256": "0c96d281ad99452915f39444b9cd8c9336bfe13cff1c48ef8ed0d2b4afc7648b",
+      "format": "json"
+    }
+  },
+  "external_payloads": {},
+  "member_count": 49,
+  "total_member_bytes": 7747817
+}

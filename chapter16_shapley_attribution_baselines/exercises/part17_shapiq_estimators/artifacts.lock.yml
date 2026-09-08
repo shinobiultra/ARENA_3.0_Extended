@@ -1,0 +1,155 @@
+notebook_id: 16_17_one_query_many_interactions
+section: '16.17'
+title: One Query, Many Interactions
+execution_device: cpu
+exercise_metadata:
+  EXERCISE_ID: 16_17_one_query_many_interactions
+  GT_TIER: GT-0
+  DIFFICULTY: 4
+  IMPORTANCE: 5
+  EXPECTED_RUNTIME: Two to three hours self-study; full CPU learner about 29 seconds on validated host
+  REQUIRES_GPU: false
+gt_tier: GT-0
+evidence_level: complete_native_pair_interaction_sampling_with_exact_games_and_author_package_checks
+claim_scope: Student-implemented SHAP-IQ and pairwise KernelSHAP-IQ on 1904 known model games, with complete
+  query plans, replicate estimates, exact SII, finite sampling variance and controls. Logical query budgets
+  use a precomputed oracle; no measured inference speedup, new predictive discovery or causal ingredient
+  effects. Author review is not independent.
+required_gpu_gb: 0
+max_allowed_gpu_gb: 0
+models:
+- id: six_float64_8x32x32x1_relu_regressors
+  source: generated_training_run
+  revision: known16_14_states_reproduced_under16_17_fixed_protocol
+  precision: float64
+  gated: false
+- id: affine_ridge_control
+  source: generated_training_run
+  revision: known16_14_state_reproduced
+  precision: float64
+  gated: false
+datasets:
+- id: uci_concrete_compressive_strength
+  source: uci
+  revision: 8d4b15b6fc68cd932d745cbd663d5ceae66dd54422e99c1e4865f2936ab7e2af
+  license: CC BY 4.0
+  train: 758
+  explanation: 153
+  audit: 119
+  manifest: data_manifest.json
+expected_metrics:
+  tests_passed: true
+  accepted: true
+  test_count: 9
+  student_method_exercises: 8
+  student_core_functions: 9
+  actual_learner_passed: true
+  own_answer_code_cells: 22
+  embedded_figures: 10
+  native_model_retrained_in_this_report: true
+  cached_model_inputs_used: false
+  fresh_reproduction_passed: true
+  fresh_compared_arrays: 663
+  fresh_compared_elements: 118275724
+  fresh_comparison: exact_recursive_dtype_shape_value_sha256_including_container_order
+  model_fits: 7
+  known_model_state_hashes_matched: 21
+  train_rows: 758
+  explanation_rows: 153
+  audit_rows: 119
+  model_games: 1904
+  coalition_values: 487424
+  donor_predictions: 31195136
+  replicates_per_proposal: 32
+  proposals:
+  - kernel
+  - uniform
+  nested_draw_budgets:
+  - 16
+  - 32
+  - 64
+  - 128
+  - 256
+  - 512
+  - 1024
+  signed_pair_estimates: 47767552
+  author_reference_version: 1.5.2
+  author_reference_games: 7
+  author_reference_algorithms: 3
+  author_reference_passed: true
+  logical_query_benchmark: true
+  precomputed_oracle: true
+  fresh_predictive_discovery: false
+  method_superiority_is_acceptance_gate: false
+  cross_split_recipe_overlap: 0
+  review_scope: author_review_not_independent
+controls:
+- 'Negative controls: constant, additive and dummy games beside exact SII and complete basis identities
+  for four through eight players'
+- Constant, additive, signed pair, triple, four-way and dummy games
+- Two proposals and 32 fixed iid streams with duplicate draws retained
+- Zero-pair baseline and three shuffled-target predictors plus additive ridge
+- Exact finite sampling variance, estimated SE squared and actual replicate MSE
+- Constrained-rank diagnostics and finite boundary-penalty limit
+- Actual shapiq 1.5.2 ExactComputer, SHAPIQ and KernelSHAPIQ
+- Two editable plays and fresh source-only process refits
+safety_notes:
+- Predictive interactions in observational replacement games do not establish causal ingredient effects.
+freshness_inputs:
+- chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/build_notebooks.py
+- chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/data_manifest.json
+- chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/execute_learner.py
+- chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_contracts.py
+- chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_data.py
+- chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_diagnostics.py
+- chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_diagnostics_tests.py
+- chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_methods.py
+- chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_methods_tests.py
+- chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_plots.py
+- chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_plots_tests.py
+- chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py
+- chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference_tests.py
+- chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_study.py
+- chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_study_tests.py
+- chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/publish_study.py
+- chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/reproduce_native.py
+- chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/run_native.py
+- chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/solutions.py
+- chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/tests.py
+- chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/build_notebooks.py
+- chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/data_manifest.json
+- chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/estimator_methods.py
+- chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/estimator_methods_tests.py
+- chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/estimator_plots.py
+- chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/estimator_reference_tests.py
+- chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/estimator_study.py
+- chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/estimator_study_tests.py
+- chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/execute_learner.py
+- chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/expected_outputs/author_visual_review.json
+- chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/expected_outputs/fresh_reproduction.json
+- chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/expected_outputs/learner_execution.json
+- chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/expected_outputs/native_summary.json
+- chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/expected_outputs/own_answer_execution.json
+- chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/lesson.md
+- chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/lesson_cells.py
+- chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/native_contracts.py
+- chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/protocol.md
+- chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/protocol_freeze.json
+- chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/publish_study.py
+- chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/reproduce_native.py
+- chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/review_learner.py
+- chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/solutions.py
+- chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/tests.py
+- chapter16_shapley_attribution_baselines/instructions/assets/shapiq_01_shared_query.png
+- chapter16_shapley_attribution_baselines/instructions/assets/shapiq_02_query_play.png
+- chapter16_shapley_attribution_baselines/instructions/assets/shapiq_03_sampling_and_cost.png
+- chapter16_shapley_attribution_baselines/instructions/assets/shapiq_04_boundary_limit.png
+- chapter16_shapley_attribution_baselines/instructions/assets/shapiq_05_model_controls.png
+- chapter16_shapley_attribution_baselines/instructions/assets/shapiq_06_query_budget_errors.png
+- chapter16_shapley_attribution_baselines/instructions/assets/shapiq_07_signed_pair_comparison.png
+- chapter16_shapley_attribution_baselines/instructions/assets/shapiq_08_sampling_variance.png
+- chapter16_shapley_attribution_baselines/instructions/assets/shapiq_09_unique_queries_and_rank.png
+- chapter16_shapley_attribution_baselines/instructions/assets/shapiq_10_native_query_play.png
+- uv.lock
+- scripts/shapiq_learner_contract.py
+- tests/test_shapiq_learner_contract.py

@@ -1,0 +1,119 @@
+notebook_id: 16_2_kernelshap_and_partitionshap_controls
+section: '16.2'
+title: KernelSHAP and PartitionSHAP Controls
+exercise_metadata:
+  EXERCISE_ID: 16_2_kernelshap_and_partitionshap_controls
+  GT_TIER: GT-0
+  DIFFICULTY: 4
+  IMPORTANCE: 4
+  EXPECTED_RUNTIME: seconds on toy contract; minutes on local real-model path
+  REQUIRES_GPU: true
+gt_tier: GT-0
+evidence_level: kernelshap_partition_contract_plus_cuda_trained_neural_game_preflight
+claim_scope: 'GT-0 SHAP baseline preflight: deterministic KernelSHAP and PartitionSHAP/Owen-value
+  contracts are kept for learner exercises, then a CUDA MLP is trained on the complete
+  binary feature table for the same nonlinear coalition game used by 16.1. The report
+  computes KernelSHAP from real model ablations, checks parity against exact Shapley
+  and analytic ground truth, verifies singleton and grouped PartitionSHAP parity,
+  checks a cross-group interaction counterexample where the irrelevant grouped player
+  receives zero credit, and rejects a shuffled-label attribution control. This proves
+  the local full-table SHAP controls on a finite trained model organism; it is not
+  a claim about sampled SHAP on large language or vision models.'
+required_gpu_gb: 1
+max_allowed_gpu_gb: 24
+models:
+- id: toy_or_generated_inputs
+  source: generated
+  revision: seed_0
+  precision: float32
+  gated: false
+- id: course_cuda_neural_coalition_game_mlp_v1
+  source: generated_training_run
+  revision: seed_1621_players4_hidden64_steps1200
+  precision: float32
+  gated: false
+  claim_scope: trained_kernelshap_partition_preflight
+  optimizer: AdamW
+  learning_rate: 0.05
+datasets:
+- id: 16_2_kernelshap_and_partitionshap_controls_toy_inputs
+  source: generated
+  seed: 0
+- id: complete_binary_feature_game_table_v1
+  source: generated_finite_table
+  seed: 1621
+  num_players: 4
+  example_count: 16
+  coalition_count: 16
+  target_rule: 0.25 + 1.2*x0 - 0.7*x1 + 1.6*x2 + 0.9*x3 + 2.2*x0*x2 - 1.5*x1*x3
+  target_input:
+  - 1
+  - 1
+  - 1
+  - 1
+  baseline_input:
+  - 0
+  - 0
+  - 0
+  - 0
+  singleton_partition_groups:
+  - - 0
+  - - 1
+  - - 2
+  - - 3
+  aligned_partition_groups:
+  - - 0
+    - 2
+  - - 1
+    - 3
+  mismatched_partition_groups:
+  - - 0
+    - 1
+  - - 2
+    - 3
+  shuffled_label_control: true
+expected_metrics:
+  tests_passed: true
+  accepted: true
+  max_allowed_gpu_gb: 24
+  preflight_passed: true
+  model_family: cuda_trained_neural_coalition_game_mlp
+  num_players: 4
+  coalition_count: 16
+  training_example_count: 16
+  training_steps: 1200
+  fit_mse_max: 1.0e-08
+  fit_max_abs_error_max: 0.0001
+  kernel_approximates_exact: true
+  kernel_max_abs_error_max: 1.0e-08
+  kernel_vs_true_max_abs_error_max: 0.0001
+  partition_max_abs_error_max: 1.0e-08
+  partition_recovers_exact: true
+  aligned_partition_max_abs_error_min: 2.5952855747801706e-07
+  aligned_partition_recovers_exact: true
+  mismatched_partition_max_abs_error_min: 2.3469328880310059e-07
+  mismatched_partition_recovers_exact: true
+  shuffled_control_kernel_vs_true_error_min: 1.0
+  shuffled_control_rejected: true
+  peak_vram_gb_max: 1.0
+controls:
+- baseline_or_reference_check
+- negative_control_where_applicable
+- shape_dtype_or_exact_value_check
+- full_table_kernelshap_contract
+- grouped_partition_shap_contract
+- real_cuda_training_run
+- complete_binary_feature_table_fit
+- real_model_ablation_coalition_table
+- kernelshap_vs_exact_shapley_on_trained_model
+- kernelshap_vs_analytic_ground_truth
+- singleton_partition_exact_parity
+- grouped_partition_exact_owen_value_parity
+- cross_group_interaction_irrelevant_player_control
+- shuffled_label_trained_model_negative_control
+- sampled_shap_token_region_and_large_model_attribution_not_claimed
+safety_notes:
+- No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.
+- The real training path uses only a generated finite binary feature table and a shuffled-label
+  negative control. It does not use unsafe prompts, user data, external APIs, adapters,
+  gated weights, or large persistent artifacts.

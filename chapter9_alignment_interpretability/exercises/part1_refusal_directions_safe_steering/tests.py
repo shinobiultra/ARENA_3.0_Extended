@@ -1,0 +1,4 @@
+"""Semantic tests for the real learner, including its numerical failure controls."""
+from chapter9_alignment_interpretability.exercises.part1_refusal_directions_safe_steering.direction_method_tests import *
+from chapter9_alignment_interpretability.exercises.part1_refusal_directions_safe_steering.direction_evaluation_tests import *
+from chapter9_alignment_interpretability.exercises.part1_refusal_directions_safe_steering.direction_evidence_tests import *

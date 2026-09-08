@@ -1,0 +1,1102 @@
+{
+  "accepted": true,
+  "baselines": {
+    "declared_controls": [
+      "Negative controls: constant, additive and dummy games beside exact SII and complete basis identities for four through eight players",
+      "Constant, additive, signed pair, triple, four-way and dummy games",
+      "Two proposals and 32 fixed iid streams with duplicate draws retained",
+      "Zero-pair baseline and three shuffled-target predictors plus additive ridge",
+      "Exact finite sampling variance, estimated SE squared and actual replicate MSE",
+      "Constrained-rank diagnostics and finite boundary-penalty limit",
+      "Actual shapiq 1.5.2 ExactComputer, SHAPIQ and KernelSHAPIQ",
+      "Two editable plays and fresh source-only process refits"
+    ],
+    "expected_metrics": {
+      "accepted": true,
+      "actual_learner_passed": true,
+      "audit_rows": 119,
+      "author_reference_algorithms": 3,
+      "author_reference_games": 7,
+      "author_reference_passed": true,
+      "author_reference_version": "1.5.2",
+      "cached_model_inputs_used": false,
+      "coalition_values": 487424,
+      "cross_split_recipe_overlap": 0,
+      "donor_predictions": 31195136,
+      "embedded_figures": 10,
+      "explanation_rows": 153,
+      "fresh_compared_arrays": 663,
+      "fresh_compared_elements": 118275724,
+      "fresh_comparison": "exact_recursive_dtype_shape_value_sha256_including_container_order",
+      "fresh_predictive_discovery": false,
+      "fresh_reproduction_passed": true,
+      "known_model_state_hashes_matched": 21,
+      "logical_query_benchmark": true,
+      "method_superiority_is_acceptance_gate": false,
+      "model_fits": 7,
+      "model_games": 1904,
+      "native_model_retrained_in_this_report": true,
+      "nested_draw_budgets": [
+        16,
+        32,
+        64,
+        128,
+        256,
+        512,
+        1024
+      ],
+      "own_answer_code_cells": 22,
+      "precomputed_oracle": true,
+      "proposals": [
+        "kernel",
+        "uniform"
+      ],
+      "replicates_per_proposal": 32,
+      "review_scope": "author_review_not_independent",
+      "signed_pair_estimates": 47767552,
+      "student_core_functions": 9,
+      "student_method_exercises": 8,
+      "test_count": 9,
+      "tests_passed": true,
+      "train_rows": 758
+    }
+  },
+  "claim_scope": "Student-implemented SHAP-IQ and pairwise KernelSHAP-IQ on 1904 known model games, with complete query plans, replicate estimates, exact SII, finite sampling variance and controls. Logical query budgets use a precomputed oracle; no measured inference speedup, new predictive discovery or causal ingredient effects. Author review is not independent.",
+  "datasets": [
+    {
+      "audit": 119,
+      "explanation": 153,
+      "id": "uci_concrete_compressive_strength",
+      "license": "CC BY 4.0",
+      "manifest": "data_manifest.json",
+      "revision": "8d4b15b6fc68cd932d745cbd663d5ceae66dd54422e99c1e4865f2936ab7e2af",
+      "source": "uci",
+      "train": 758
+    }
+  ],
+  "date_run": "2026-09-08T03:29:13+00:00",
+  "evidence_level": "complete_native_pair_interaction_sampling_with_exact_games_and_author_package_checks",
+  "git_commit": "ce96ceaa",
+  "gpu_name": "unavailable",
+  "gt_tier": "GT-0",
+  "known_failures": [],
+  "metrics": {
+    "gpu_evidence": {
+      "category": "cpu_or_budget_metric",
+      "placeholder_only": false,
+      "section_specific_metric_keys": [
+        "actual_learner_passed",
+        "audit_rows",
+        "author_reference_algorithms",
+        "author_reference_games",
+        "author_reference_passed",
+        "author_reference_version",
+        "cached_model_inputs_used",
+        "coalition_values",
+        "cross_split_recipe_overlap",
+        "donor_predictions",
+        "embedded_figures",
+        "explanation_rows",
+        "first_constraint_error",
+        "fresh_compared_arrays",
+        "fresh_compared_elements",
+        "fresh_comparison",
+        "fresh_evidence_sha256",
+        "fresh_output_directory",
+        "fresh_predictive_discovery",
+        "fresh_reproduction_passed",
+        "known_model_state_hashes_matched",
+        "learner_evidence_sha256",
+        "logical_query_benchmark",
+        "method_superiority_is_acceptance_gate",
+        "model_fits",
+        "model_games",
+        "native_model_retrained_in_this_report",
+        "nested_draw_budgets",
+        "own_answer_code_cells",
+        "pair_constraint_error",
+        "precomputed_oracle",
+        "proposals",
+        "recipe_weighted_pair_mae_by_budget_and_model",
+        "replicates_per_proposal",
+        "review_scope",
+        "signed_pair_estimates",
+        "study",
+        "train_rows"
+      ],
+      "uses_cuda": false
+    },
+    "gpu_test": {
+      "actual_learner_passed": true,
+      "audit_rows": 119,
+      "author_reference_algorithms": 3,
+      "author_reference_games": 7,
+      "author_reference_passed": true,
+      "author_reference_version": "1.5.2",
+      "cached_model_inputs_used": false,
+      "coalition_values": 487424,
+      "cross_split_recipe_overlap": 0,
+      "cuda_available": false,
+      "cuda_version": "13.2",
+      "device": "cpu",
+      "donor_predictions": 31195136,
+      "embedded_figures": 10,
+      "explanation_rows": 153,
+      "first_constraint_error": 4.263256414560601e-14,
+      "fresh_compared_arrays": 663,
+      "fresh_compared_elements": 118275724,
+      "fresh_comparison": "exact_recursive_dtype_shape_value_sha256_including_container_order",
+      "fresh_evidence_sha256": "d4d92e5c74c9ee94da3d23bce82af9f314603aa45bd18db5a00fd7ab8bdc2d3d",
+      "fresh_output_directory": "/home/bitwise/.cache/arena_extended/shapiq_estimators/report_reproductions/report-xqkhcg5z/fresh_cpu",
+      "fresh_predictive_discovery": false,
+      "fresh_reproduction_passed": true,
+      "gpu_total_memory_gb": null,
+      "known_model_state_hashes_matched": 21,
+      "learner_evidence_sha256": "f6a8823d6d583415256165f5fb6670150d758b9494a0a6add70702dce752fbb3",
+      "logical_query_benchmark": true,
+      "method_superiority_is_acceptance_gate": false,
+      "model_fits": 7,
+      "model_games": 1904,
+      "native_model_retrained_in_this_report": true,
+      "nested_draw_budgets": [
+        16,
+        32,
+        64,
+        128,
+        256,
+        512,
+        1024
+      ],
+      "own_answer_code_cells": 22,
+      "pair_constraint_error": 1.7053025658242404e-13,
+      "peak_vram_gb": 0.0,
+      "precomputed_oracle": true,
+      "proposals": [
+        "kernel",
+        "uniform"
+      ],
+      "recipe_weighted_pair_mae_by_budget_and_model": {
+        "kernel": {
+          "kernelshap_iq": {
+            "audit": [
+              [
+                2.4356104328411323,
+                1.879008773655736,
+                2.2731835930390387,
+                6.276347420861107,
+                6.886287673815238,
+                7.156284512451373,
+                7.90355215461509e-15
+              ],
+              [
+                1.9282136650789687,
+                1.5374685958760095,
+                1.8352357972595068,
+                5.241191316254891,
+                5.466517872368698,
+                6.049345471958177,
+                8.778122674464735e-15
+              ],
+              [
+                0.8836171547723211,
+                0.696499628182226,
+                0.833307626052092,
+                2.4373642189501616,
+                2.5012792334093352,
+                2.751629308758824,
+                4.410314951829273e-15
+              ],
+              [
+                0.5099006811650552,
+                0.41131563841272295,
+                0.47833059976833014,
+                1.435610044816027,
+                1.4477033349877737,
+                1.652357532732596,
+                2.5963095900739595e-15
+              ],
+              [
+                0.316478436919987,
+                0.25624927892017,
+                0.2982892642536724,
+                0.9120757886246622,
+                0.9147431541301305,
+                1.0438577905303115,
+                1.4743051949917735e-15
+              ],
+              [
+                0.2225352652025187,
+                0.1787183081971342,
+                0.2099000555459832,
+                0.6397427733636756,
+                0.6352049826647675,
+                0.7251127056574962,
+                1.240800845167791e-15
+              ],
+              [
+                0.14999421554468073,
+                0.12064674524919108,
+                0.1394549573903936,
+                0.4276755381150757,
+                0.428651703827378,
+                0.4881160566748184,
+                7.911227567579828e-16
+              ]
+            ],
+            "explain": [
+              [
+                2.273840040840419,
+                1.907584067914313,
+                2.01369237429591,
+                6.279708872765207,
+                7.482540703310801,
+                7.642572278251462,
+                7.874112274992295e-15
+              ],
+              [
+                1.8328083291621016,
+                1.5499752447358421,
+                1.670870713078728,
+                5.162596481710045,
+                5.878381180873617,
+                6.253637461730648,
+                9.136778378936993e-15
+              ],
+              [
+                0.8428200886729258,
+                0.6982303566196322,
+                0.7544478413309883,
+                2.429336243899407,
+                2.683515559872892,
+                2.8103205833792955,
+                4.430577618067044e-15
+              ],
+              [
+                0.494712686518376,
+                0.40981861925742946,
+                0.43854179646943287,
+                1.4427716315671715,
+                1.5441382934264545,
+                1.662869530258541,
+                2.6462840126881565e-15
+              ],
+              [
+                0.3113278771447152,
+                0.257691977038644,
+                0.27679098482424247,
+                0.9153713317705916,
+                0.9713851439036345,
+                1.0453493223947117,
+                1.498027450037488e-15
+              ],
+              [
+                0.21780253801331337,
+                0.18082367207068795,
+                0.193861893022611,
+                0.6413623138811462,
+                0.6752683556486432,
+                0.7239404901820514,
+                1.2535626157116154e-15
+              ],
+              [
+                0.1473785100528457,
+                0.12131779411734378,
+                0.1304632485813463,
+                0.4282422921553706,
+                0.4538220219225413,
+                0.4871658699880044,
+                8.02382537444674e-16
+              ]
+            ]
+          },
+          "shapiq": {
+            "audit": [
+              [
+                8.427521285262142,
+                7.228369510334965,
+                7.4317083826209,
+                9.820460871912537,
+                9.806659481379238,
+                9.405882643487491,
+                6.31288876853953
+              ],
+              [
+                6.120799027567834,
+                5.227017890553022,
+                5.398275494272895,
+                7.211117001804229,
+                7.1225108416156475,
+                6.806387758044606,
+                4.563426578507833
+              ],
+              [
+                4.369514390510748,
+                3.7260273316271606,
+                3.8533118548694034,
+                5.148431480299556,
+                5.126109663385826,
+                4.845904844569276,
+                3.265853083616458
+              ],
+              [
+                3.134925161500729,
+                2.662596476753719,
+                2.75243668577402,
+                3.6874482714534937,
+                3.5955593240101473,
+                3.4463733367144047,
+                2.3459815369334702
+              ],
+              [
+                2.113894411366375,
+                1.7996505403812753,
+                1.8525724043485494,
+                2.5317868766580474,
+                2.4585219144216603,
+                2.3756800277230226,
+                1.5711676734214999
+              ],
+              [
+                1.520197514129558,
+                1.3071534317247422,
+                1.3462737695766003,
+                1.8144927440391956,
+                1.7830388338326801,
+                1.7165526633444694,
+                1.143018427232722
+              ],
+              [
+                1.0530835271237478,
+                0.895288870940036,
+                0.9277586804344355,
+                1.2503585946027471,
+                1.235655804432814,
+                1.1959403703981368,
+                0.7873983657158561
+              ]
+            ],
+            "explain": [
+              [
+                8.829083064127353,
+                7.800796162276717,
+                7.946981717180605,
+                9.796564808983799,
+                9.859855644743575,
+                9.761431552951407,
+                6.560748269396788
+              ],
+              [
+                6.3723710371639335,
+                5.655627719681304,
+                5.79311631112145,
+                7.083674069031273,
+                7.156484879166708,
+                7.056418969061275,
+                4.729605716279117
+              ],
+              [
+                4.538669760154056,
+                4.038013341991569,
+                4.097599040762965,
+                5.065477619440815,
+                5.129455612281151,
+                5.074783596462451,
+                3.378428440986704
+              ],
+              [
+                3.2439287169705873,
+                2.8795029768687455,
+                2.9152138593042576,
+                3.5788613768097295,
+                3.6127352500501257,
+                3.5890231825404815,
+                2.422522945799675
+              ],
+              [
+                2.189443804041857,
+                1.9426080617124422,
+                1.972972692000327,
+                2.44289618235267,
+                2.476304776611059,
+                2.4678982641925704,
+                1.6192552717350457
+              ],
+              [
+                1.5813320401440087,
+                1.410667435286227,
+                1.4348680878296185,
+                1.7662629041376885,
+                1.7909799149288745,
+                1.7929856143728764,
+                1.18200067602929
+              ],
+              [
+                1.0928970005940792,
+                0.9722421757923019,
+                0.9887255462095891,
+                1.217517890027446,
+                1.2408836890058543,
+                1.244229653759205,
+                0.8155737536777264
+              ]
+            ]
+          }
+        },
+        "uniform": {
+          "kernelshap_iq": {
+            "audit": [
+              [
+                2.619393323747034,
+                2.005521307826872,
+                2.451485450773321,
+                6.689149258392806,
+                7.401512225899276,
+                7.660664032931081,
+                7.732342798716937e-15
+              ],
+              [
+                1.9085979997397102,
+                1.495663236524471,
+                1.8139319517710708,
+                5.159437657025491,
+                5.4194290324355325,
+                5.837701273285602,
+                7.22879063936875e-15
+              ],
+              [
+                0.9439163836378286,
+                0.7489366274981142,
+                0.8955243360524465,
+                2.6012228562775968,
+                2.703090775347886,
+                2.9517069529596833,
+                4.119050795732084e-15
+              ],
+              [
+                0.5591577641528074,
+                0.4491580611614854,
+                0.5242621361325734,
+                1.567734667308271,
+                1.5952869570832768,
+                1.797516745317521,
+                2.7843493006263135e-15
+              ],
+              [
+                0.3582064174226406,
+                0.286777894087692,
+                0.3326300236205523,
+                1.0220029607708192,
+                1.0181286869535524,
+                1.1639030086619049,
+                1.9107404959396164e-15
+              ],
+              [
+                0.24689771475638195,
+                0.1960297317518983,
+                0.23082975868034408,
+                0.7018684216140797,
+                0.6961005829535332,
+                0.7975591839122627,
+                1.262716599995688e-15
+              ],
+              [
+                0.17086463159340315,
+                0.1370354768421369,
+                0.1593609906198763,
+                0.48810734056898886,
+                0.4845178880346499,
+                0.5551928999866692,
+                9.999306189779068e-16
+              ]
+            ],
+            "explain": [
+              [
+                2.4596515926968827,
+                2.0408963119163843,
+                2.177921302069597,
+                6.650470308760164,
+                8.040067422619336,
+                8.13352489652742,
+                8.066485987094575e-15
+              ],
+              [
+                1.8315272716146729,
+                1.4952792972213433,
+                1.632602831492392,
+                5.1423775729582815,
+                5.840486830381172,
+                6.009550936106142,
+                7.37419472300052e-15
+              ],
+              [
+                0.9010491574947583,
+                0.7427893639573272,
+                0.8130684961207446,
+                2.5934561358017074,
+                2.9159456213728916,
+                2.9714673035696775,
+                4.253603730908434e-15
+              ],
+              [
+                0.5369883556084808,
+                0.4506436202009839,
+                0.48240623378950864,
+                1.568030022136168,
+                1.7078010268223438,
+                1.7940483368150104,
+                2.837041444115457e-15
+              ],
+              [
+                0.3485251812261305,
+                0.28899225321582844,
+                0.30930044493543374,
+                1.0189846071492483,
+                1.093025774142907,
+                1.158361546999077,
+                1.9779845553829476e-15
+              ],
+              [
+                0.23955081553790314,
+                0.19951524321370523,
+                0.2147830810065017,
+                0.696607683819036,
+                0.748990860948462,
+                0.7892348465188319,
+                1.2783115823257479e-15
+              ],
+              [
+                0.16733259652041726,
+                0.13856187383788882,
+                0.14920668666426454,
+                0.48214910573361547,
+                0.5180394072134294,
+                0.5496891172049345,
+                1.0186838843650109e-15
+              ]
+            ]
+          },
+          "shapiq": {
+            "audit": [
+              [
+                8.864220920113842,
+                7.6512843914040305,
+                7.883177043024528,
+                10.134916565033276,
+                10.256126023285429,
+                9.931392717991084,
+                6.704790407996233
+              ],
+              [
+                6.382094152637061,
+                5.481140814782343,
+                5.663525584386262,
+                7.590227822733014,
+                7.541310771825916,
+                7.173917357425806,
+                4.781555248031331
+              ],
+              [
+                4.7537073846332945,
+                4.100917551880052,
+                4.257241518606881,
+                5.622842906108012,
+                5.682492719456814,
+                5.350708741783098,
+                3.5890548394909296
+              ],
+              [
+                3.516807406732478,
+                3.0218671184286743,
+                3.1259763358361585,
+                4.096020361799397,
+                4.07273607840159,
+                3.923449948003832,
+                2.6633539115961744
+              ],
+              [
+                2.4423891832248055,
+                2.0897562036730983,
+                2.1664414765557547,
+                2.875125662243411,
+                2.8716907426066918,
+                2.7496585685701307,
+                1.8350738328068592
+              ],
+              [
+                1.7178092871374204,
+                1.4838019977391705,
+                1.5357024273315618,
+                2.040729615458493,
+                2.0631091962136257,
+                1.9771271487313455,
+                1.2914860386853961
+              ],
+              [
+                1.2395616211004725,
+                1.0610061064708494,
+                1.1030515257388949,
+                1.4540048793949383,
+                1.4681658183600383,
+                1.4176636735818806,
+                0.930640792617721
+              ]
+            ],
+            "explain": [
+              [
+                9.295135950247063,
+                8.290047493101921,
+                8.443230801018839,
+                10.049778131190724,
+                10.17310678256844,
+                10.310827407972049,
+                6.92533233967692
+              ],
+              [
+                6.6215881605362155,
+                5.9372578747626505,
+                6.059090597599494,
+                7.461647570510811,
+                7.538824759785826,
+                7.429590076761482,
+                4.917230921011918
+              ],
+              [
+                4.919308820765066,
+                4.431157534281633,
+                4.49800293938677,
+                5.56519978783349,
+                5.65012797705133,
+                5.600404105048852,
+                3.683861634885012
+              ],
+              [
+                3.6365251956255564,
+                3.261876406275455,
+                3.3085597466196557,
+                4.019851073522334,
+                4.0813720244669485,
+                4.101101219205278,
+                2.7316392968466214
+              ],
+              [
+                2.527183849257832,
+                2.252475831312238,
+                2.289740139278612,
+                2.8362839939321978,
+                2.906000380050565,
+                2.8620038379634543,
+                1.8895328278707941
+              ],
+              [
+                1.7860931385566894,
+                1.6034661734831959,
+                1.6325281070787296,
+                2.0164515990343626,
+                2.083365169770603,
+                2.0652500272497742,
+                1.331802876433616
+              ],
+              [
+                1.286896490466315,
+                1.150737753220707,
+                1.1700838401558955,
+                1.4349325145026586,
+                1.4851413697786757,
+                1.4825960174544353,
+                0.9593849286318443
+              ]
+            ]
+          }
+        }
+      },
+      "replicates_per_proposal": 32,
+      "review_scope": "author_review_not_independent",
+      "signed_pair_estimates": 47767552,
+      "study": "16.17_shapiq_estimators",
+      "torch_version": "2.12.1+cu132",
+      "train_rows": 758,
+      "within_vram_budget": true
+    },
+    "notebook_contract": {
+      "accepted": true,
+      "claim_scope": "Analytic immediate method checks; the native model study runs separately.",
+      "student_core_functions": 9,
+      "student_method_exercises": 8,
+      "test_count": 9,
+      "tests_passed": true
+    }
+  },
+  "models": [
+    {
+      "gated": false,
+      "id": "six_float64_8x32x32x1_relu_regressors",
+      "precision": "float64",
+      "revision": "known16_14_states_reproduced_under16_17_fixed_protocol",
+      "source": "generated_training_run"
+    },
+    {
+      "gated": false,
+      "id": "affine_ridge_control",
+      "precision": "float64",
+      "revision": "known16_14_state_reproduced",
+      "source": "generated_training_run"
+    }
+  ],
+  "negative_controls": {
+    "declared_controls": [
+      "Negative controls: constant, additive and dummy games beside exact SII and complete basis identities for four through eight players"
+    ]
+  },
+  "notebook_id": "16_17_one_query_many_interactions",
+  "ood_tests": {
+    "declared": "required_where_applicable"
+  },
+  "peak_vram_gb": 0.0,
+  "report_inputs": {
+    "algorithm": "sha256",
+    "combined_sha256": "b837c52db79238683aa3d42543c04061d733f0221d59cef295aac4fd9f56261d",
+    "files": [
+      {
+        "path": "arena_ext/verification.py",
+        "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
+        "size_bytes": 9276
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/build_notebooks.py",
+        "sha256": "0b1b09ca7c3ecb58dde9f89ac993600f86837603e0d167dd8c0b0520d7085395",
+        "size_bytes": 16690
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/data_manifest.json",
+        "sha256": "bcf41f96c9f6839ee4cbf24df82ca8467b35a6ed9090a9c4c56fce0b1a23120c",
+        "size_bytes": 38183
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/execute_learner.py",
+        "sha256": "0dfd6ee46e87b0091466c47d6a61e6b451ccdf34758e6a68399ac9f7b42cbc38",
+        "size_bytes": 10796
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_contracts.py",
+        "sha256": "3b52d90376e81b75e90ee4f9adfffa35073982708372143542e0a0349b1b319a",
+        "size_bytes": 24587
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_data.py",
+        "sha256": "9c9c1016ffd6fe839a004c06e801cdcd24d4d71a85ccd3f0707168dec390c7ce",
+        "size_bytes": 3795
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_diagnostics.py",
+        "sha256": "d3b60c3d5e9565a3c693fa4d8146a8115eae1ac1708986692197dadfdbee5e7f",
+        "size_bytes": 25759
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_diagnostics_tests.py",
+        "sha256": "420c535748a2dedb4a1e6a3d3e4c99e4cb0ace78d51af01e1141d136b153b029",
+        "size_bytes": 6350
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_methods.py",
+        "sha256": "2c56ae4e108d13b8e2994f12944af49af3915fcf95d684da96ddec7ed46c5be5",
+        "size_bytes": 16834
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_methods_tests.py",
+        "sha256": "fafa0eaa80591793198f23e884c21b3f457eaf240841ae10c9cfd58e721eae12",
+        "size_bytes": 26153
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_plots.py",
+        "sha256": "f7369b14f53d0ac3cac2c54efa12ed2b9b799bb2e94336cb0b030b5d585380d0",
+        "size_bytes": 54585
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_plots_tests.py",
+        "sha256": "b5acaabd5d2062a31c8b36c132cd48c5b9e33fc8f8f6e7f04158248a8f31f93a",
+        "size_bytes": 13395
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py",
+        "sha256": "c063d120d7449a9b20b4ac370247b2b5971e809575d44ab9d7c8719cc551292f",
+        "size_bytes": 43620
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference_tests.py",
+        "sha256": "95bfe943a98b7353e29328992ee4cbf0a0558cdf3c8d64a692129e47bf1dbc4e",
+        "size_bytes": 18899
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_study.py",
+        "sha256": "f49e4f5872beca780c95a3689b919690e5be8c344df3f0625178476ff163ad02",
+        "size_bytes": 67704
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_study_tests.py",
+        "sha256": "ef938b660a7b6388023654bd977cfd94e999540ee6d827ead6f5382f757eb3a5",
+        "size_bytes": 16879
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/publish_study.py",
+        "sha256": "ea001e7f27cadc4b37a9d63f3766cc67e7450c4ce053a5c2a4f0466beb5034a0",
+        "size_bytes": 18278
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/reproduce_native.py",
+        "sha256": "382d67ea67ecd6c02d0c1148dbb812c567e6635f706c351f02f85f9cb7d367db",
+        "size_bytes": 13098
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/run_native.py",
+        "sha256": "f4c359e12c25d77b14100da9e66145480fe0dfa591f9387cf1fe1d8c938f205c",
+        "size_bytes": 31408
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/solutions.py",
+        "sha256": "29471f5b57fa41cff1e4db5fe08b5c5f0f22ae20cf71f06a0e2c2323e4a2edc1",
+        "size_bytes": 15822
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/tests.py",
+        "sha256": "a6525e5184bfb8a9cb6117b8d447c1feaab2343af9a73c00f41052dd19e4fe84",
+        "size_bytes": 167
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/16.17_One_Query_Many_Interactions_exercises.ipynb",
+        "sha256": "5823504f59f9b975c27ee252e1993022355584159ca1ccac31fcc974c3b54525",
+        "size_bytes": 2267567
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/16.17_One_Query_Many_Interactions_solutions.ipynb",
+        "sha256": "40d6f0cfa512483ec9a1dbe1d4fd4ea21682433680f3e6db1ad4881476db3df2",
+        "size_bytes": 2268428
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/README.md",
+        "sha256": "383d874cfc6fc301ac89dd9e94966df271ad8c47c6928d24b52a6097bfc08a21",
+        "size_bytes": 4120
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/artifacts.lock.yml",
+        "sha256": "286a4d0eab667e1bc38c98e1a9618ce35089964d8f3eeae5e0888723bddbc73f",
+        "size_bytes": 8726
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/build_notebooks.py",
+        "sha256": "9d2ccd0d791b479d0978b5a4b670e750e9b1374c27815da4547332c34cec5b7f",
+        "size_bytes": 4996
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/data_manifest.json",
+        "sha256": "9f2b4351ac056d109d63ee99c108df5249c3185c84a68d61bb9384d99940f3c8",
+        "size_bytes": 17745
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/estimator_methods.py",
+        "sha256": "f173ff6d56b4bdd08fb044ddfb9d18c3cdc7e79cff94b940eb66f51b73fb208c",
+        "size_bytes": 14759
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/estimator_methods_tests.py",
+        "sha256": "760c871a37c4840b66300b4ec7dc84f17feb2c70e0c26c6836c2f6cf8d56489a",
+        "size_bytes": 11517
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/estimator_plots.py",
+        "sha256": "835d66ec52d0d7040df7b6ea2ddccf6bb12e0008bc496f6e3f1d0cabd09b0735",
+        "size_bytes": 16405
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/estimator_reference_tests.py",
+        "sha256": "b45a5f3bc4bc8be046e8642e10c69be88c794a742b88a45b852d0a99471e5a2f",
+        "size_bytes": 2849
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/estimator_study.py",
+        "sha256": "846faa75ed7ccc6b4c59bbb2df6501c7b69500cf27c24b495288a573cdbb3c55",
+        "size_bytes": 14864
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/estimator_study_tests.py",
+        "sha256": "ed7b99edac4c2a72d19e64ad1ef877a75b66089783907fb96ccb72830aad2c73",
+        "size_bytes": 4207
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/execute_learner.py",
+        "sha256": "11695b4c9a40a9ff06147d6ba252eaf542f41305e42b40713bdbce9a7cad6f3b",
+        "size_bytes": 5118
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/expected_outputs/README.md",
+        "sha256": "5688973fe36ac13c1ddbfeb0df945e437a9bec24047b08865de620c66301d475",
+        "size_bytes": 5312
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/expected_outputs/author_visual_review.json",
+        "sha256": "7b092cf0eddbd4420b413228d67cac0301fbc598e33c08ebc91af15baeffcfb8",
+        "size_bytes": 7230
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/expected_outputs/fresh_reproduction.json",
+        "sha256": "d4d92e5c74c9ee94da3d23bce82af9f314603aa45bd18db5a00fd7ab8bdc2d3d",
+        "size_bytes": 326172
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/expected_outputs/learner_execution.json",
+        "sha256": "f6a8823d6d583415256165f5fb6670150d758b9494a0a6add70702dce752fbb3",
+        "size_bytes": 9113
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/expected_outputs/native_summary.json",
+        "sha256": "4ef0ef51636fe980561a0ac41703d179e3309b4a58008fabf3fad0aac3811cb6",
+        "size_bytes": 1406
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/expected_outputs/own_answer_execution.json",
+        "sha256": "3d93732521e1f2ec1c2590acb6dcdae27ec9580602d7012e683b676c9e0be753",
+        "size_bytes": 7243
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/expected_outputs/reference_metrics.json",
+        "sha256": "2e28cb04fe5e7a67a3c5022e806e59f72a79eae19bf63b7f63cb78bb33d9445f",
+        "size_bytes": 19891
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/lesson.md",
+        "sha256": "f242daacaafab111f92ed347417a6ce9e8e99064d142dc375c0624a6a32d41eb",
+        "size_bytes": 28126
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/lesson_cells.py",
+        "sha256": "d6c844ab2a307ea8db0b4dcb2a134de56a1d9eb44d954cd4ea05a1b84512b6b2",
+        "size_bytes": 4985
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/native_contracts.py",
+        "sha256": "4ef69080c63cab08fa685b03485265400feb0120521e8ba46e8fb6c3265e71c7",
+        "size_bytes": 7391
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/protocol.md",
+        "sha256": "5ca23cc6f18ce83c82cac60ad495d2deeabba2c0d9da01c4f61b32e9bb68433a",
+        "size_bytes": 7363
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/protocol_freeze.json",
+        "sha256": "8d66f3eb399688712acd557a4b91b2e39612440a1444b6aa31afdba04d479656",
+        "size_bytes": 1322
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/publish_study.py",
+        "sha256": "edf5a5bfaba8d3d882b5e3b1123aa3b81fbecce4be3d6509f0b18bc9b333eda5",
+        "size_bytes": 9320
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/reproduce_native.py",
+        "sha256": "683a0aa4b4530ea7e9b44f8dee028d412c14a9ded0df062b7e40c14861282a56",
+        "size_bytes": 6954
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/review_learner.py",
+        "sha256": "b96b705becc97e22d5d9635259c5adf689793f0c076ce003b5fd83e1ac896c52",
+        "size_bytes": 2751
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/solutions.py",
+        "sha256": "3371714bafaedcdabde51df9899944a30b963d1a24d22e69ad25ebba9d6912e0",
+        "size_bytes": 3947
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/tests.py",
+        "sha256": "1a6f83207b55ff2b37d738840b1b4e8531b687293884ac0e5b60079dbc1b52f7",
+        "size_bytes": 204
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/verification_report.schema.json",
+        "sha256": "180e0fd1b6c538927debbaa07f3d58b9decd18c78bf24e33ae9474b213420e5b",
+        "size_bytes": 8583
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/shapiq_01_shared_query.png",
+        "sha256": "8e0e7004a2f72e8aae6b7fb9379d709722b27a41b115fccc87f791b2974f6e9a",
+        "size_bytes": 83178
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/shapiq_02_query_play.png",
+        "sha256": "8e0e7004a2f72e8aae6b7fb9379d709722b27a41b115fccc87f791b2974f6e9a",
+        "size_bytes": 83178
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/shapiq_03_sampling_and_cost.png",
+        "sha256": "e68a7df66e110e10deca637eac2b4c9ebf0ce210344f6c7053ee6d9e2b20bdf0",
+        "size_bytes": 110954
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/shapiq_04_boundary_limit.png",
+        "sha256": "cd99c47e2e1791b9d7c9d4ce8ee09c71289602955137bc6ca23f723a74e50f0a",
+        "size_bytes": 102960
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/shapiq_05_model_controls.png",
+        "sha256": "b41a792c5c23ba5234b2d2e41d2dff45f22d3f49e8563c7002290a031733ab19",
+        "size_bytes": 72814
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/shapiq_06_query_budget_errors.png",
+        "sha256": "e2abf92c2914cb90ddf109782d5bebb50b936d6825503fe46f28af72949348da",
+        "size_bytes": 856705
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/shapiq_07_signed_pair_comparison.png",
+        "sha256": "5f656f9ae215f9215dad217e536c2f9bfdcff59f2bff9b170405a1b0f25268c7",
+        "size_bytes": 155370
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/shapiq_08_sampling_variance.png",
+        "sha256": "3a3d1a4cf35cc096f97f071440af45d3182c3a1bcc4a5070e1eddb7b373f11bd",
+        "size_bytes": 621897
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/shapiq_09_unique_queries_and_rank.png",
+        "sha256": "32c4aef1562b7c8d9d3efb6f1761a16821013136029c80ace3326e9907c78306",
+        "size_bytes": 160316
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/shapiq_10_native_query_play.png",
+        "sha256": "b7df1fb079f047a037cdf06b15b78889d2892327ffe2b355887c084deb8d66ec",
+        "size_bytes": 160311
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/pages/17_[16.17]_One_Query_Many_Interactions.md",
+        "sha256": "c979fdc985605ede0aeb46625ef75e6f9402cc21683b411944186df3c87055cc",
+        "size_bytes": 47608
+      },
+      {
+        "path": "scripts/run_extension_verification_reports.py",
+        "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
+        "size_bytes": 16272
+      },
+      {
+        "path": "scripts/shapiq_learner_contract.py",
+        "sha256": "30e6187849b5b35b02c155233a682ce44d5ecbf350aab3ec9cd7822210fda734",
+        "size_bytes": 6786
+      },
+      {
+        "path": "tests/test_shapiq_learner_contract.py",
+        "sha256": "53418847d54d60dfe765849ae0d56ec398cf0ce8739e30d3050044da6590e9e2",
+        "size_bytes": 3548
+      },
+      {
+        "path": "uv.lock",
+        "sha256": "e96e946bb00f50592d32c1b3bf453fca4482a0097731120defbebcd978f019eb",
+        "size_bytes": 610963
+      }
+    ],
+    "schema_version": 1
+  },
+  "safety_notes": [
+    "Predictive interactions in observational replacement games do not establish causal ingredient effects."
+  ],
+  "tests_passed": true,
+  "wall_clock_seconds": 26.601722
+}

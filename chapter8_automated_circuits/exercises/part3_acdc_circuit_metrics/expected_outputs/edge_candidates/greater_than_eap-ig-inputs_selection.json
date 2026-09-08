@@ -1,0 +1,19 @@
+{
+  "candidate_sha256": "563e3469235b3de660efd85edc6d534ae4c62e2cb29d7c57fea49c4cb6925f16",
+  "development_evidence": [
+    {
+      "path": "/tmp/acdc-greater-than-three-method-development.json",
+      "sha256": "225fb1f0b2b9d2f052c493d6359b70a9863945ed8dd44d03e63c2bf358e75333"
+    }
+  ],
+  "reason": "Choose the smallest tested global-score circuit meeting the fixed development criteria for this method.",
+  "criteria": {
+    "recovery_minimum": 0.85,
+    "fraction_positive_maximum_drop_from_clean": 0.1,
+    "kl_maximum": 0.5
+  },
+  "method": "eap-ig-inputs",
+  "heldout_seed": 13,
+  "heldout_count": 64,
+  "frozen_before_heldout": true
+}

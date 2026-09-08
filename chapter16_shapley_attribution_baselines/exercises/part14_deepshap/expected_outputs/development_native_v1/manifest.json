@@ -1,0 +1,89 @@
+{
+  "source_directory": "/home/bitwise/.cache/arena_extended/deepshap/native-dev-v1",
+  "archive_sha256": "390b54c886b6bb95dd7e40420667ebb32aafd5bb0fdf77e560e3ec7bea404920",
+  "members": {
+    "before_audit.json": {
+      "sha256": "d0e6828d9ef9af874e2aab37304d709840993691acedb48ed81480d85eb48fcb",
+      "size_bytes": 427
+    },
+    "measured_results.json": {
+      "sha256": "e369954d84ca1421ff026020ee7900c21020b2540cbf55de6177da0d39f5b45f",
+      "size_bytes": 3697
+    },
+    "sources/author_reference.json": {
+      "sha256": "581b970592c09f0c9fe991d3ac99d2dfbd48244e67ae5a69069b8d576fa0c9c7",
+      "size_bytes": 4321
+    },
+    "sources/data_manifest.json": {
+      "sha256": "c1c072ef4a540f1d7d878b828ce09b27085ffe085e328587fcc6fd83de6dbc58",
+      "size_bytes": 12835
+    },
+    "sources/deepshap_data.py": {
+      "sha256": "ec2a7f4337c4c7dfa7649d5cf2794be041a16e258f50d0844c2e2b4bed882918",
+      "size_bytes": 1784
+    },
+    "sources/deepshap_methods.py": {
+      "sha256": "36d983ebad52b24d98fb081d4dff24a8eae254ab5be6c21836df002498d05b73",
+      "size_bytes": 14551
+    },
+    "sources/deepshap_methods_tests.py": {
+      "sha256": "ced3c0db050f473423f0e7baffc1e38c83bea4fd69d014ead62f40c860ddd7d5",
+      "size_bytes": 19673
+    },
+    "sources/deepshap_reference.py": {
+      "sha256": "834b41927d1ff01a8bc38a103b59ea50e70bfa53c2c26facee7b5e1bf75afcbe",
+      "size_bytes": 49968
+    },
+    "sources/deepshap_reference_tests.py": {
+      "sha256": "270c145a6fd5e99302850f7b30a8e1324e6647677b16631fa853eb520cd771cf",
+      "size_bytes": 11045
+    },
+    "sources/deepshap_study.py": {
+      "sha256": "df5d7f892a6846309d27441a10258595988015c59be1db49d49d314764f3120d",
+      "size_bytes": 36930
+    },
+    "sources/deepshap_study_tests.py": {
+      "sha256": "93dec8b4844ecee8b7fef748a59de4f611348d79a9b02a31e245e80258f52329",
+      "size_bytes": 17827
+    },
+    "sources/protocol.md": {
+      "sha256": "ceca1c3d0fa9bd5635915b4f7c8ec9d2353c3e55b6816788ce69b58d8e67869e",
+      "size_bytes": 12469
+    },
+    "sources/protocol_freeze.json": {
+      "sha256": "8b3da8fdac611b7d95ecf8d1e35d565c6ef6b0952b213162527afb140da852fd",
+      "size_bytes": 769
+    },
+    "sources/run_native.py": {
+      "sha256": "a7da0b8903318e1fefff2c34b50050ba82b2ae2e7296f802323e2a301aa11e2b",
+      "size_bytes": 14249
+    },
+    "state.json": {
+      "sha256": "2ea1974b54bbcc355c6467edc7ee60cfd8369fca3fb34f4fc92fad7e8670f223",
+      "size_bytes": 2728
+    }
+  },
+  "large_tensors_retained_externally": {
+    "evaluated.pt": {
+      "sha256": "3f136b9074b483ee0058bc9293eac51ba557c085f6e9fcf36f5541f9fe373e18",
+      "size_bytes": 39243851
+    },
+    "fitted.pt": {
+      "sha256": "282fe37b7d332084db282afbd1707a827f06af176d6c814aa65329839ff5bddb",
+      "size_bytes": 462144
+    },
+    "play.pt": {
+      "sha256": "c7edea426322be93cbc06966656e217ad78de19545dd9e032c620d5fbdcc57b7",
+      "size_bytes": 19509
+    },
+    "prepared.pt": {
+      "sha256": "b59ee37f6994e338f14df407c4c6103d290a0e06762b993641bbd554f217d29d",
+      "size_bytes": 6838665
+    },
+    "reference.pt": {
+      "sha256": "64bc1b730b76db1e1c47d4ac2d9912f9d1a9927d8fb2515a5043e3c52c5a1166",
+      "size_bytes": 963769
+    }
+  },
+  "readback_verified": true
+}

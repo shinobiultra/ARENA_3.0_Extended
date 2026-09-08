@@ -1,0 +1,82 @@
+{
+  "study": "16.16_shapley_taylor_faith_shap",
+  "phase": "evaluated_after_audit",
+  "model_keys": [
+    "clean_0",
+    "clean_1",
+    "clean_2",
+    "shuffled_0",
+    "shuffled_1",
+    "shuffled_2",
+    "ridge"
+  ],
+  "model_fits": 7,
+  "known_model_state_hashes": 21,
+  "train_rows": 758,
+  "explanation_rows": 153,
+  "audit_rows": 119,
+  "all_rows": 272,
+  "coalitions": 256,
+  "pairs": 28,
+  "method_keys": [
+    "sii",
+    "stii",
+    "fsii"
+  ],
+  "backgrounds": [
+    "primary64",
+    "nested16",
+    "nested128",
+    "independent64_a",
+    "independent64_b"
+  ],
+  "primary_explain_hybrid": {
+    "kind": "torch.Tensor",
+    "shape": [
+      7,
+      153,
+      256,
+      64
+    ],
+    "dtype": "float64",
+    "elements": 17547264,
+    "value_sha256": "3bbd032ca2905d2203b19cbb03f26f9df8f031eb0ac78982b28eddeb035533b9"
+  },
+  "primary_audit_hybrid": {
+    "kind": "torch.Tensor",
+    "shape": [
+      7,
+      119,
+      256,
+      64
+    ],
+    "dtype": "float64",
+    "elements": 13647872,
+    "value_sha256": "394f351f39543292153200eb2039039921df8a05976bb4c28fdd8e86a1671273"
+  },
+  "full_hybrid_coordinates": 50135040,
+  "audit_used_for_selection": false,
+  "reference_status": "PASS",
+  "deterministic_artifacts": [
+    "fitted.pt",
+    "prepared.pt",
+    "evaluated.pt",
+    "reference.pt",
+    "diagnostics.pt",
+    "play.pt",
+    "primary_explain_hybrid.pt",
+    "nested16_explain_hybrid.pt",
+    "nested128_explain_hybrid.pt",
+    "independent64_a_explain_hybrid.pt",
+    "independent64_b_explain_hybrid.pt",
+    "primary_audit_hybrid.pt",
+    "nested16_audit_hybrid.pt",
+    "nested128_audit_hybrid.pt",
+    "independent64_a_audit_hybrid.pt",
+    "independent64_b_audit_hybrid.pt"
+  ],
+  "manifest_array_count": 1797,
+  "manifest_array_elements": 94604271,
+  "scientific_results_are_descriptive": true,
+  "native_directory": "/home/bitwise/.cache/arena_extended/shapley_interactions/native-development-v8/figures/native"
+}

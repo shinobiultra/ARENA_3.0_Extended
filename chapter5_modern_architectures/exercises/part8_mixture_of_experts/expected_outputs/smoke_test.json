@@ -1,0 +1,17 @@
+{
+  "notebook_id": "5_8_mixture_of_experts_from_scratch",
+  "evidence_role": "short CPU trainability check, not full specialization acceptance",
+  "metrics": {
+    "tests_passed": true,
+    "device": "cpu",
+    "cuda_used": false,
+    "accuracy": 0.8048611283302307,
+    "soft_probability_entropy": 0.9983131289482117,
+    "hard_load_entropy": 0.9985137581825256,
+    "dropped_fraction": 0.19791666666666666,
+    "router_log_partition_rms": 2.41959547996521,
+    "router_evaluated_positions": 3060.0,
+    "sparse_router_matmul_flops": 440640.0,
+    "loss_decreased": true
+  }
+}

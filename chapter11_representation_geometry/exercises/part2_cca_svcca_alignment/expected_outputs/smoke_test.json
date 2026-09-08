@@ -1,0 +1,11 @@
+{
+  "notebook_id": "11_2_cca_svcca_and_representation_alignment",
+  "evidence_role": "Expected numerical contract; actual execution is recorded separately in verification_report.json.",
+  "expected_checks": [
+    "CCA paired correlation oracle",
+    "SVCCA truncation controls",
+    "orthogonal Procrustes recovery",
+    "independent primal and dual ridge parity",
+    "native transport shape and hook checks"
+  ]
+}

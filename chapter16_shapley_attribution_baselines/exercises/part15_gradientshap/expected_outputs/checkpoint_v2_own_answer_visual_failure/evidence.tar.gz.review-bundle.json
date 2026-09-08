@@ -1,0 +1,1583 @@
+{
+  "schema": "arena.review-bundle.v1",
+  "archive": {
+    "name": "evidence.tar.gz",
+    "sha256": "995ff06aaff88e9b37dd17b0f247f4d0ac2d96994d4133d1803c872928dd2d21",
+    "size_bytes": 28177994
+  },
+  "limits": {
+    "archive_bytes": 67108864,
+    "member_bytes": 16777216,
+    "total_member_bytes": 134217728,
+    "tar_container_bytes": 167772160,
+    "decoded_json_bytes": 67108864,
+    "total_decoded_bytes": 536870912,
+    "members": 4096
+  },
+  "provenance": {
+    "kind": "historical_archive_packaging",
+    "packaged_at_utc": "2026-09-08T03:27:28.668083+00:00",
+    "measurement_claim": "Packaging only. This is not a native rerun, scientific revalidation or new review. Retained receipts, failure labels, values, scientific hashes and measurement dates are byte-identical to the original. Historical embedded archive inventories describe that original; this adjacent contract describes the derived review bundle.",
+    "source_archive": {
+      "repository_path": "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/expected_outputs/checkpoint_v2_own_answer_visual_failure/evidence.tar.gz",
+      "absolute_path": "/home/bitwise/.cache/arena_extended/evidence_packaging/original_archives/bfc1ee381bda375b5608926b2d54001bbdc0839de175bd5b2c367e44237ad9c6.tar.gz",
+      "sha256": "bfc1ee381bda375b5608926b2d54001bbdc0839de175bd5b2c367e44237ad9c6",
+      "size_bytes": 59239504,
+      "git_commit": "ce96ceaae2f91bf0dcd7648052325e07a87b0b5b",
+      "git_blob": "f4ee435e2c11a4e21dd8d549c64ab57debc6d28b"
+    },
+    "source_archive_members": {
+      "native-dev-v2.READY.json": {
+        "sha256": "d611f0f149cbeef747e146ec66d68c62e29b3b6fb1156a555d687d783ed2a46f",
+        "size_bytes": 4156
+      },
+      "native-dev-v2.execution_audit.json": {
+        "sha256": "b2b76eb6d2347dc83c834062c5bc6becb494d92930e77c1cee7a82fc20647310",
+        "size_bytes": 13937
+      },
+      "native-dev-v2.process.json": {
+        "sha256": "e992a8e1e5751d33a1abf8880d5ecb97f14b3175f168fffdb8a2344719248065",
+        "size_bytes": 2007
+      },
+      "native-dev-v2.process.log": {
+        "sha256": "3284d899be19daa46becb297b2de507d3a1a2d1e1c0921fcd87012def149d355",
+        "size_bytes": 1176
+      },
+      "native-dev-v2.report_payload_metrics.json": {
+        "sha256": "c2ec91f0fafe71fb8e1122998f3a251e22b0ec65ee6c698ae015ca2a143707b5",
+        "size_bytes": 2412
+      },
+      "native-dev-v2/completed_learner.ipynb": {
+        "sha256": "b378dea8b4a96115f29cc0ee3460f60da7ff45aae6a9d4c82e06a0c7a5a5c27c",
+        "size_bytes": 2765877
+      },
+      "native-dev-v2/execution.json": {
+        "sha256": "c35e5e5251179794f4d4c24aa0aadb65f7248139268fe4adc47d27fabdfbbcba",
+        "size_bytes": 10465
+      },
+      "native-dev-v2/figures/01_schedule_prefix.png": {
+        "sha256": "13d08cad9644b039ce64c5529bffb595249b915621a90e2682b78e1cc9adfd7c",
+        "size_bytes": 232649
+      },
+      "native-dev-v2/figures/02_path_interpolation.png": {
+        "sha256": "8c985c0c67adf9cd657b8cb044a3644327cc1bb0995fba9b2f93bd442ed539a8",
+        "size_bytes": 107519
+      },
+      "native-dev-v2/figures/03_gradient_controls.png": {
+        "sha256": "1623f75668187445e9964ab3b68c23b088acdb9f4d6f9c920b842bddf0eac3c3",
+        "size_bytes": 77372
+      },
+      "native-dev-v2/figures/04_relu_samples.png": {
+        "sha256": "8cba96523adb409b73b389de006948f6cb12751dc8d0d5f26b3a238e6e1b3cd4",
+        "size_bytes": 110777
+      },
+      "native-dev-v2/figures/05_mc_convergence.png": {
+        "sha256": "517cdf5b04a4f13bfe6ca58339a129b1057b77e7f6e0557fc6bdb32b36454afd",
+        "size_bytes": 140633
+      },
+      "native-dev-v2/figures/06_estimator_controls.png": {
+        "sha256": "7e01b288602f7d85aef87ab997439193e3e375c1276cf8269641eec09ddec40a",
+        "size_bytes": 90861
+      },
+      "native-dev-v2/figures/07_quadrature_doubling.png": {
+        "sha256": "396f9d35355f39b0180fffa78e27f818b6ac40646576ac6f473ff8ef2381d247",
+        "size_bytes": 125127
+      },
+      "native-dev-v2/figures/08_background_average.png": {
+        "sha256": "afc5ae3cbf3eeb8bc8d037433f6cc042c9c91207e9fd7df05d141f55902a8c69",
+        "size_bytes": 74422
+      },
+      "native-dev-v2/figures/09_gaussian_target_shift.png": {
+        "sha256": "cb51d5ff11ebb2f75d3baaa5e003d96e86faa2c7d2cef4015240fc7876b74014",
+        "size_bytes": 110137
+      },
+      "native-dev-v2/figures/10_path_vs_coalition.png": {
+        "sha256": "e1a3541f575611c5d6b044308949aefecb910dee219887bd7cd16059d0dc5bd3",
+        "size_bytes": 69987
+      },
+      "native-dev-v2/figures/11_kink_representation.png": {
+        "sha256": "8828bb1c26cc3cef705be9a9acbfd28905594f9aa1c03b2ccb3804a91ddaae26",
+        "size_bytes": 77845
+      },
+      "native-dev-v2/figures/12_replacement_fixture.png": {
+        "sha256": "ac34938cabb50f62565cef6f0deeea84dcf92eebbde9f15413fbed8b06d549ec",
+        "size_bytes": 150247
+      },
+      "native-dev-v2/figures/13_threshold_play.png": {
+        "sha256": "e1054231e09209f1e0c5ad8cf09a18e58438b36e8d9955874f989d388ca35130",
+        "size_bytes": 148255
+      },
+      "native-dev-v2/figures/14_native_overview.png": {
+        "sha256": "440cf2f3a42d84f56094ac431276fe0e2224a1ee8bef5ed1e8378716690431e7",
+        "size_bytes": 273433
+      },
+      "native-dev-v2/figures/15_allrow_method_map.png": {
+        "sha256": "71945a5053a6f66334c6d9ef07e3fc99c744b0bfa3f60fe134fe679fb941ecb4",
+        "size_bytes": 916754
+      },
+      "native-dev-v2/figures/16_fixed_waterfall.png": {
+        "sha256": "72072e6864709128b876739427f055f47df0ee3bb01379f6017a8d9b9a2a8ce6",
+        "size_bytes": 163331
+      },
+      "native-dev-v2/figures/17_background_and_noise.png": {
+        "sha256": "789cd34f5befb9213c11ca5e0c0da294a828aea90043b7e2ace72ded44a30bfe",
+        "size_bytes": 272058
+      },
+      "native-dev-v2/figures/18_replicates_and_distance.png": {
+        "sha256": "9419195318af1a757d4e439c5417967bfbf05ab57374496bcaef89dbe5ac36c4",
+        "size_bytes": 174241
+      },
+      "native-dev-v2/figures/19_replacement_curves.png": {
+        "sha256": "e50acea902c60786ef3a77614aff0fd7535e34cf48cab464dcddfb3b3762742f",
+        "size_bytes": 248706
+      },
+      "native-dev-v2/figures/20_real_recipe_play.png": {
+        "sha256": "14b57325c7f3edb2196a44fc478b95da9797813f46a92a074788494e6f06719a",
+        "size_bytes": 201386
+      },
+      "native-dev-v2/figures/native/artifact_manifest.json": {
+        "sha256": "f5f8d91f8e0c0f00ec994f14a652390a840d080c9bca1a2c8a99bd2da1889023",
+        "size_bytes": 2617
+      },
+      "native-dev-v2/figures/native/before_audit.json": {
+        "sha256": "e03e31391558028cf1ec36acb694a2ae5413aa3bdc91db43f10b565345ce6a2a",
+        "size_bytes": 914
+      },
+      "native-dev-v2/figures/native/diagnostics.manifest.json": {
+        "sha256": "870ea57f0ae06805c0e99a05761b4ff61714746ba55b877bc06f366806d5fc2b",
+        "size_bytes": 68014
+      },
+      "native-dev-v2/figures/native/diagnostics.pt": {
+        "sha256": "1b2b7f318eaa7b293c3c7fda4bdb88725f652492b42036dbe0f9d33a08cfc050",
+        "size_bytes": 67813
+      },
+      "native-dev-v2/figures/native/evaluated.manifest.json": {
+        "sha256": "ad2e546b0ebc9c21bef1d67ddbc066081021d3c6f329fe424ed5587b664cb15f",
+        "size_bytes": 322694
+      },
+      "native-dev-v2/figures/native/fitted.manifest.json": {
+        "sha256": "df829a28703c3fee40f1aac08f4ee6d178d28ceebc0ddddf4463cba98f0abf54",
+        "size_bytes": 106561
+      },
+      "native-dev-v2/figures/native/fitted.pt": {
+        "sha256": "c8e5bce695edc3e76e02284968ce6c5e6760060a2373a82f659e75700962e4c3",
+        "size_bytes": 467968
+      },
+      "native-dev-v2/figures/native/play.manifest.json": {
+        "sha256": "4837d21511e2d249fb6a445a3b22f670827b60a6b2c06fc34fa82b8104125a9f",
+        "size_bytes": 19042
+      },
+      "native-dev-v2/figures/native/play.pt": {
+        "sha256": "98f107c9935881417758f606124bda1871b89b756b1c7b5db5bde15258861e3f",
+        "size_bytes": 159143
+      },
+      "native-dev-v2/figures/native/prepared.manifest.json": {
+        "sha256": "756c577d673fec5e816b88f82883b02dad040a84028dff11240f1b8d4b3b83fb",
+        "size_bytes": 109257
+      },
+      "native-dev-v2/figures/native/reference.manifest.json": {
+        "sha256": "940a4e71fbd70777e4e8994a88347fcbea14a234962837ca26d001df02f4111e",
+        "size_bytes": 171510
+      },
+      "native-dev-v2/figures/native/reference.pt": {
+        "sha256": "3acbf133884f07b3dcb80bf6853e4ad88fee83b6a13ec1556f03d5e16ae29502",
+        "size_bytes": 57328569
+      },
+      "native-dev-v2/figures/native/replicate_samples.manifest.json": {
+        "sha256": "b4715a058eb3acb905a573d162a6fa5e79a5b90929af269d4085022e072dee4c",
+        "size_bytes": 577
+      },
+      "native-dev-v2/figures/native/summary.json": {
+        "sha256": "edfc70b8a22cf7cc459cd1fb72ecb3081047a148f54ea32087f098f87f68f0d4",
+        "size_bytes": 1175
+      },
+      "native-dev-v2/figures/native/timings.manifest.json": {
+        "sha256": "aab5cef6fce8331fb79f18ae8da8902db83e6845022cbcdef8293be08a3780f6",
+        "size_bytes": 333
+      },
+      "native-dev-v2/figures/native/timings.pt": {
+        "sha256": "67f9ffa21f366d5a3b31a6def1ccb17d1f91c37b4b0d9c1532215ae4c52642e0",
+        "size_bytes": 1261
+      },
+      "native-dev-v2/figures/native_summary.json": {
+        "sha256": "145c77de4f63887b774ec83f449c6672c6cfd6f91bdb28d01a1da5738a2b7bfb",
+        "size_bytes": 1278
+      },
+      "native-dev-v2/html_review/browser_figure_01_schedule_prefix.png": {
+        "sha256": "f5e16c1c5ce4425237f16ded970f36d254ee2fb3c0ff109185073048c601f22a",
+        "size_bytes": 113844
+      },
+      "native-dev-v2/html_review/browser_figure_02_path_interpolation.png": {
+        "sha256": "f95ba76db019d08759545de29109217911eb458a9fb1e05377fe9afb138cc689",
+        "size_bytes": 54591
+      },
+      "native-dev-v2/html_review/browser_figure_03_gradient_controls.png": {
+        "sha256": "d034230c4d6719413630095664fb6dfd883b8862850313fd790169a701948d44",
+        "size_bytes": 38546
+      },
+      "native-dev-v2/html_review/browser_figure_04_relu_samples.png": {
+        "sha256": "3653682fc6a7304e19275b0b3c5914675cdcb6e555b942680dd32c4a1574c5c1",
+        "size_bytes": 55446
+      },
+      "native-dev-v2/html_review/browser_figure_05_mc_convergence.png": {
+        "sha256": "8e910646856db8ba072be50c6669f87ef64b9ff81c9198dafde18f36e55ee49a",
+        "size_bytes": 70541
+      },
+      "native-dev-v2/html_review/browser_figure_06_estimator_controls.png": {
+        "sha256": "f130c818d8383c1fa18ae05cc213f370c588fc830163084417c0a3146d148ae4",
+        "size_bytes": 45678
+      },
+      "native-dev-v2/html_review/browser_figure_07_quadrature_doubling.png": {
+        "sha256": "1dcb4a04fec919cf1694334939caeaa7a43ca5721bd630ccbba386bed76ce751",
+        "size_bytes": 61147
+      },
+      "native-dev-v2/html_review/browser_figure_08_background_average.png": {
+        "sha256": "0d35da57c2033f3d8893b8002e134395a71e0a13ce0e5d90e0855d2119832883",
+        "size_bytes": 37333
+      },
+      "native-dev-v2/html_review/browser_figure_09_gaussian_target_shift.png": {
+        "sha256": "ec3bff6e16fecbcf1643c38b52d5aa014357a28dfdecd0a88b3f8de4a9bee9f4",
+        "size_bytes": 54057
+      },
+      "native-dev-v2/html_review/browser_figure_10_path_vs_coalition.png": {
+        "sha256": "ec409c87c14bfa72d9b6fd08d7444f738f449dc4b2162baacb23d8125295b6d1",
+        "size_bytes": 34141
+      },
+      "native-dev-v2/html_review/browser_figure_11_kink_representation.png": {
+        "sha256": "a14f7ce3ab6547dffa71a5aab6dacc7c377238cc2321bad9282706186f16ba87",
+        "size_bytes": 38139
+      },
+      "native-dev-v2/html_review/browser_figure_12_replacement_fixture.png": {
+        "sha256": "3d97feec0fac039f82f7995a771bfd1e88d6d9ae68ad7421bfc7d0f3c1d73dae",
+        "size_bytes": 70446
+      },
+      "native-dev-v2/html_review/browser_figure_13_threshold_play.png": {
+        "sha256": "db9b062971fd9f70925f567979e5abac9ee7f9eff0541de844752a523036f839",
+        "size_bytes": 72480
+      },
+      "native-dev-v2/html_review/browser_figure_14_native_overview.png": {
+        "sha256": "841929400512c69040300beb40e97fbb5ce5db5c10789f8cab66a69fb8712bcc",
+        "size_bytes": 145848
+      },
+      "native-dev-v2/html_review/browser_figure_15_allrow_method_map.png": {
+        "sha256": "42ce3b13ec85879bbf13fe5fe47ec91dfb0bf7d355a66d7ab95c5718f806d6ea",
+        "size_bytes": 452482
+      },
+      "native-dev-v2/html_review/browser_figure_16_fixed_waterfall.png": {
+        "sha256": "a176b625fd0b3825df185bf1a79b31d5bdc9f174a75417d9eecf70db8a9ead78",
+        "size_bytes": 112621
+      },
+      "native-dev-v2/html_review/browser_figure_17_background_and_noise.png": {
+        "sha256": "7fc0516a2857ebc4b8f2c20bcc29aeba2253f1220dd0ed09fa23c164d5820b67",
+        "size_bytes": 175307
+      },
+      "native-dev-v2/html_review/browser_figure_18_replicates_and_distance.png": {
+        "sha256": "4f6a987758a72decde31c1a9a0394a7dbae619879a198d96db212a299a996a68",
+        "size_bytes": 83288
+      },
+      "native-dev-v2/html_review/browser_figure_19_replacement_curves.png": {
+        "sha256": "81098d73f9339a498448c9c7702088d72266fb82a98509dd75ef17786308934a",
+        "size_bytes": 73772
+      },
+      "native-dev-v2/html_review/browser_figure_20_real_recipe_play.png": {
+        "sha256": "91f949954331f994300d410bb76edbed1129d6a6af4269c83686da81edf4eac7",
+        "size_bytes": 133928
+      },
+      "native-dev-v2/html_review/browser_review.json": {
+        "sha256": "62a6539285832243921e550c1f70c9c8e84e55e15ff2adadfb07ed6482e988d6",
+        "size_bytes": 12564
+      },
+      "native-dev-v2/html_review/browser_review.stdout.json": {
+        "sha256": "62a6539285832243921e550c1f70c9c8e84e55e15ff2adadfb07ed6482e988d6",
+        "size_bytes": 12564
+      },
+      "native-dev-v2/html_review/browser_section_01.png": {
+        "sha256": "8acc2f8d61d8c5d5092b1974e4a9b3def3138ac1fd53a3a9f5c488206e516e7a",
+        "size_bytes": 157043
+      },
+      "native-dev-v2/html_review/browser_section_02.png": {
+        "sha256": "8acc2f8d61d8c5d5092b1974e4a9b3def3138ac1fd53a3a9f5c488206e516e7a",
+        "size_bytes": 157043
+      },
+      "native-dev-v2/html_review/browser_section_03.png": {
+        "sha256": "8acc2f8d61d8c5d5092b1974e4a9b3def3138ac1fd53a3a9f5c488206e516e7a",
+        "size_bytes": 157043
+      },
+      "native-dev-v2/html_review/browser_section_04.png": {
+        "sha256": "8acc2f8d61d8c5d5092b1974e4a9b3def3138ac1fd53a3a9f5c488206e516e7a",
+        "size_bytes": 157043
+      },
+      "native-dev-v2/html_review/browser_section_05.png": {
+        "sha256": "209b8e21d801893524441f9b3c30f788528ab1bc1c7e4ef3e452e9ff2fb2a2ad",
+        "size_bytes": 133770
+      },
+      "native-dev-v2/html_review/browser_section_06.png": {
+        "sha256": "209b8e21d801893524441f9b3c30f788528ab1bc1c7e4ef3e452e9ff2fb2a2ad",
+        "size_bytes": 133770
+      },
+      "native-dev-v2/html_review/browser_section_07.png": {
+        "sha256": "41f0ffd020968726cb4619b4fe8494c7ec0f4c81b4486f4a59d5db2274d465c8",
+        "size_bytes": 197080
+      },
+      "native-dev-v2/html_review/browser_section_08.png": {
+        "sha256": "d31fb4f062721cdbb9001d4c12b01a5a4c9610605ebb2f109944e0783b6793a3",
+        "size_bytes": 138505
+      },
+      "native-dev-v2/html_review/browser_section_09.png": {
+        "sha256": "083fd5024c9dca7d5f9937da9a5803621c7d9318d434e56517f238057dc1e8ca",
+        "size_bytes": 125047
+      },
+      "native-dev-v2/html_review/browser_section_10.png": {
+        "sha256": "cdf8f13c413243035923dded0e91004f063363f45610a7f891240dac00bc8955",
+        "size_bytes": 138066
+      },
+      "native-dev-v2/html_review/browser_section_11.png": {
+        "sha256": "231288db249b24c476d46d77faf3159607ac0a452c9850c72dd4e7b343db4259",
+        "size_bytes": 151634
+      },
+      "native-dev-v2/html_review/browser_section_12.png": {
+        "sha256": "8d7e93f598f0eb3a0498d7c12ab486528dbc07b3b0d84dbe3e242e165bf807bd",
+        "size_bytes": 129268
+      },
+      "native-dev-v2/html_review/browser_section_13.png": {
+        "sha256": "2ab16e46c51e6536006ba1bcc6ceef8eea06d1320d09fb7ad2b3c82e81aeda75",
+        "size_bytes": 121174
+      },
+      "native-dev-v2/html_review/browser_section_14.png": {
+        "sha256": "245a571a339d643478c934be6b23e2eb3671643e7742ff7f1c39f0d22cf97c7a",
+        "size_bytes": 138895
+      },
+      "native-dev-v2/html_review/browser_section_15.png": {
+        "sha256": "6daa289380be07f0b8ce31cad3d6c13be45385095308f85eca1cb41f48f1044a",
+        "size_bytes": 177357
+      },
+      "native-dev-v2/html_review/browser_section_16.png": {
+        "sha256": "355afe7aaa2b176f98957e5d225974d59db28617fdf0e4dad0803ff8e52a6567",
+        "size_bytes": 165284
+      },
+      "native-dev-v2/html_review/browser_section_17.png": {
+        "sha256": "2623c6ab3fa4ac275f43e938feab88989b482dc145e9400cd65e78bbc73a3d1b",
+        "size_bytes": 163736
+      },
+      "native-dev-v2/html_review/browser_section_18.png": {
+        "sha256": "07cdbd3cfcf747c7981566a194525e06369e28cb14b62711fc84994abd6f2599",
+        "size_bytes": 216584
+      },
+      "native-dev-v2/html_review/browser_section_19.png": {
+        "sha256": "07cdbd3cfcf747c7981566a194525e06369e28cb14b62711fc84994abd6f2599",
+        "size_bytes": 216584
+      },
+      "native-dev-v2/html_review/browser_section_20.png": {
+        "sha256": "5186094f4f9cc30759333e10d50b754fe2d1c77e275adde99863cec5cac8b93e",
+        "size_bytes": 196017
+      },
+      "native-dev-v2/html_review/browser_section_21.png": {
+        "sha256": "5186094f4f9cc30759333e10d50b754fe2d1c77e275adde99863cec5cac8b93e",
+        "size_bytes": 196017
+      },
+      "native-dev-v2/html_review/browser_top.png": {
+        "sha256": "8acc2f8d61d8c5d5092b1974e4a9b3def3138ac1fd53a3a9f5c488206e516e7a",
+        "size_bytes": 157043
+      },
+      "native-dev-v2/html_review/contact_figures_1.png": {
+        "sha256": "e13ae142c7134359afce3d52f7575b48bd244e476468f270b5bcb5b0d1821731",
+        "size_bytes": 722023
+      },
+      "native-dev-v2/html_review/contact_figures_2.png": {
+        "sha256": "4e9fe11135e53984ac30a6a3a3741e842a05175991c8a86cbc5e115577936f24",
+        "size_bytes": 580254
+      },
+      "native-dev-v2/html_review/contact_figures_3.png": {
+        "sha256": "a73e9fbb3c18c5235063fcdfa1bbfe91bebdf94a869e09c44602423a5ab3459d",
+        "size_bytes": 1121543
+      },
+      "native-dev-v2/html_review/contact_figures_4.png": {
+        "sha256": "86a32a1aaf86d5a0063fc86188312da248922cb568945d99fbb0808bbddfd09e",
+        "size_bytes": 830511
+      },
+      "native-dev-v2/html_review/contact_sections_1.png": {
+        "sha256": "e5ed2d61ac99ee12d7bc4217c5c17099e88b571bcc7ce5ae26e4500203ad06ae",
+        "size_bytes": 912435
+      },
+      "native-dev-v2/html_review/contact_sections_2.png": {
+        "sha256": "e084561507e0177836c1c6ca3a7c8a2c2a77f7d95724f1bbfdf2360e6045efed",
+        "size_bytes": 1511382
+      },
+      "native-dev-v2/html_review/contact_sections_3.png": {
+        "sha256": "c6604c6f10cf3ba1c2247f4517954f2a454d15daf2504769c7ee4cbda41b61bc",
+        "size_bytes": 1827896
+      },
+      "native-dev-v2/html_review/contact_sections_4.png": {
+        "sha256": "0e0d2c45969dc8c22846ad0e634c13ead1abc94bf335b26de3ae844f4f9165c8",
+        "size_bytes": 1236084
+      },
+      "native-dev-v2/html_review/reviewed_completed_learner.html": {
+        "sha256": "dde0e70bb753d7b5ba00ec7a38f255878219652042a6bc841819a5dd14306d89",
+        "size_bytes": 3464032
+      },
+      "native-dev-v2/html_review/reviewed_completed_learner.ipynb": {
+        "sha256": "b378dea8b4a96115f29cc0ee3460f60da7ff45aae6a9d4c82e06a0c7a5a5c27c",
+        "size_bytes": 2765877
+      },
+      "native-dev-v2/layout-fixes-v3/16_fixed_waterfall.png": {
+        "sha256": "be1ccc8518530a9d7e5e6920de62591ba54aec3b2448eb509a3e6a849c38aa04",
+        "size_bytes": 157662
+      },
+      "native-dev-v2/layout-fixes-v3/18_replicates_and_distance.png": {
+        "sha256": "8b30d376203760f12f367cac4818c4bee0db2cf0ca49edea372695e14c00048f",
+        "size_bytes": 173716
+      },
+      "native-dev-v2/layout-fixes-v3/19_replacement_curves.png": {
+        "sha256": "95984d5bcece3ae65587f522ff8c688e8a5a58a5d9c580399ea736ca3abf63b8",
+        "size_bytes": 234055
+      },
+      "native-dev-v2/layout-fixes-v3/notebook-width-1200/16_fixed_waterfall.png": {
+        "sha256": "9ae91b729d5c460b11d924b904deafd3c36e4af3c75583381c336de274becd59",
+        "size_bytes": 129645
+      },
+      "native-dev-v2/layout-fixes-v3/notebook-width-1200/18_replicates_and_distance.png": {
+        "sha256": "3fc7c0c5b290f6f8e6d032c259aca90c2b5b3713b9999432e157e72df9ad6d84",
+        "size_bytes": 133310
+      },
+      "native-dev-v2/layout-fixes-v3/notebook-width-1200/19_replacement_curves.png": {
+        "sha256": "2c1c55bece91dbb6dbf2d410d3a4038fc8dff479ecb9f971cedfc4a241c3460f",
+        "size_bytes": 190680
+      },
+      "native-dev-v2/notebook-width-1200/01_schedule_prefix.png": {
+        "sha256": "3a0ff4a1055c489b349b035904c53fc26c7c9c35f8a4c25888fcb4caecc9c1f1",
+        "size_bytes": 207212
+      },
+      "native-dev-v2/notebook-width-1200/02_path_interpolation.png": {
+        "sha256": "fe51708fb234f78b7a526b614b26158ff8d095eadc0e00f1f8f02fe1f48adc16",
+        "size_bytes": 106609
+      },
+      "native-dev-v2/notebook-width-1200/03_gradient_controls.png": {
+        "sha256": "88ac9c928b84045e6deffb8bfa9602b58b12c5a06925c45699c56aef73e41283",
+        "size_bytes": 79161
+      },
+      "native-dev-v2/notebook-width-1200/04_relu_samples.png": {
+        "sha256": "5281bd0e60e4d751b7e780c5c83a6b6693c514ad26e2eacd728877de3c3c2168",
+        "size_bytes": 104843
+      },
+      "native-dev-v2/notebook-width-1200/05_mc_convergence.png": {
+        "sha256": "dd6af217570f70c344aeac43d778d0c8398573a75b83ef592577a33ab8339dca",
+        "size_bytes": 142272
+      },
+      "native-dev-v2/notebook-width-1200/06_estimator_controls.png": {
+        "sha256": "b8af2d4670cc563cf8ba790591b97a092e9252055411d7828ee9f91aabdaec46",
+        "size_bytes": 89536
+      },
+      "native-dev-v2/notebook-width-1200/07_quadrature_doubling.png": {
+        "sha256": "c205ef0317f0906c2d80acc54698ad6c3dcadd656c0535b648cfd172346d304f",
+        "size_bytes": 124386
+      },
+      "native-dev-v2/notebook-width-1200/08_background_average.png": {
+        "sha256": "4b6728885ee49610d8c022acf6c96d2e269098987a35d2690ee809676f658c56",
+        "size_bytes": 82290
+      },
+      "native-dev-v2/notebook-width-1200/09_gaussian_target_shift.png": {
+        "sha256": "02de2b78fb0608d6e6955a855a2889ee3e3eea14588f7eb4b71a6af78a6b98cf",
+        "size_bytes": 110764
+      },
+      "native-dev-v2/notebook-width-1200/10_path_vs_coalition.png": {
+        "sha256": "12db373330729f4f198683fdc69a674d3c02cd62b02ad9d27c7aafd3b53b27a1",
+        "size_bytes": 71729
+      },
+      "native-dev-v2/notebook-width-1200/11_kink_representation.png": {
+        "sha256": "a6439bf8398a9d71a3dd5e58e5ceb9e988a583c64eaf21065bbe39501f07f750",
+        "size_bytes": 80768
+      },
+      "native-dev-v2/notebook-width-1200/12_replacement_fixture.png": {
+        "sha256": "98a0a8639029f7c4728cec58b84ef81f643bc43d426f3e6173860a46045e3d56",
+        "size_bytes": 142343
+      },
+      "native-dev-v2/notebook-width-1200/13_threshold_play.png": {
+        "sha256": "bba267920b226f335e34ea4d45f3e6eeebe07179315a414b43dc994cfb45e88e",
+        "size_bytes": 112369
+      },
+      "native-dev-v2/notebook-width-1200/14_native_overview.png": {
+        "sha256": "fecb2e767d0d6af0301491dd199d58036a73c0ad5049c29c63e917513a756f54",
+        "size_bytes": 155066
+      },
+      "native-dev-v2/notebook-width-1200/15_allrow_method_map.png": {
+        "sha256": "c73cf39fd1a52d5a73eb1a825101ba447881d169b7a149d1ac232e670566afcf",
+        "size_bytes": 567733
+      },
+      "native-dev-v2/notebook-width-1200/16_fixed_waterfall.png": {
+        "sha256": "eb73514ef670d3e4fd0f200163ea336820749c0d05e2852b12791600de623e7e",
+        "size_bytes": 127397
+      },
+      "native-dev-v2/notebook-width-1200/17_background_and_noise.png": {
+        "sha256": "bfcd79997fdc46acb720f3bbdc7bd9f8caaefe6327f37638b9c52b7791e50bb6",
+        "size_bytes": 220236
+      },
+      "native-dev-v2/notebook-width-1200/18_replicates_and_distance.png": {
+        "sha256": "a2f091cc31fbe6b651838c665fa9b3db97098fd9d8a242fb5a8dc66e94b97a2d",
+        "size_bytes": 139086
+      },
+      "native-dev-v2/notebook-width-1200/19_replacement_curves.png": {
+        "sha256": "6881c50cf238f782d1de769161949408776becc7963826e5f35fb28a8b05fd5e",
+        "size_bytes": 97071
+      },
+      "native-dev-v2/notebook-width-1200/20_real_recipe_play.png": {
+        "sha256": "22fd2a8dba96aded66d9a8bf7284534f173ca785249a70f8dd53be021e6804e6",
+        "size_bytes": 142488
+      },
+      "native-dev-v2/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_methods.py": {
+        "sha256": "8d5e9d04624e3941768a710ba9c72dfd281c25c39b495845beda296a1628c4c6",
+        "size_bytes": 14566
+      },
+      "native-dev-v2/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/build_notebooks.py": {
+        "sha256": "0b1b09ca7c3ecb58dde9f89ac993600f86837603e0d167dd8c0b0520d7085395",
+        "size_bytes": 16690
+      },
+      "native-dev-v2/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/data_manifest.json": {
+        "sha256": "bcf41f96c9f6839ee4cbf24df82ca8467b35a6ed9090a9c4c56fce0b1a23120c",
+        "size_bytes": 38183
+      },
+      "native-dev-v2/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/execute_learner.py": {
+        "sha256": "0dfd6ee46e87b0091466c47d6a61e6b451ccdf34758e6a68399ac9f7b42cbc38",
+        "size_bytes": 10796
+      },
+      "native-dev-v2/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_contracts.py": {
+        "sha256": "a1163e0a0a2b8f2097dca2dc26b9a4c786f9b772ff838052524b2c1a27859cd6",
+        "size_bytes": 23568
+      },
+      "native-dev-v2/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_data.py": {
+        "sha256": "9c9c1016ffd6fe839a004c06e801cdcd24d4d71a85ccd3f0707168dec390c7ce",
+        "size_bytes": 3795
+      },
+      "native-dev-v2/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_diagnostics.py": {
+        "sha256": "d3b60c3d5e9565a3c693fa4d8146a8115eae1ac1708986692197dadfdbee5e7f",
+        "size_bytes": 25759
+      },
+      "native-dev-v2/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_methods.py": {
+        "sha256": "2c56ae4e108d13b8e2994f12944af49af3915fcf95d684da96ddec7ed46c5be5",
+        "size_bytes": 16834
+      },
+      "native-dev-v2/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_methods_tests.py": {
+        "sha256": "fafa0eaa80591793198f23e884c21b3f457eaf240841ae10c9cfd58e721eae12",
+        "size_bytes": 26153
+      },
+      "native-dev-v2/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_plots.py": {
+        "sha256": "f6c85a3a9fc915d85f8658945c29e5afe6f9bf5838b15e57cd6f44ad4fd551df",
+        "size_bytes": 54674
+      },
+      "native-dev-v2/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py": {
+        "sha256": "c063d120d7449a9b20b4ac370247b2b5971e809575d44ab9d7c8719cc551292f",
+        "size_bytes": 43620
+      },
+      "native-dev-v2/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference_tests.py": {
+        "sha256": "95bfe943a98b7353e29328992ee4cbf0a0558cdf3c8d64a692129e47bf1dbc4e",
+        "size_bytes": 18899
+      },
+      "native-dev-v2/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_study.py": {
+        "sha256": "f49e4f5872beca780c95a3689b919690e5be8c344df3f0625178476ff163ad02",
+        "size_bytes": 67704
+      },
+      "native-dev-v2/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_study_tests.py": {
+        "sha256": "ef938b660a7b6388023654bd977cfd94e999540ee6d827ead6f5382f757eb3a5",
+        "size_bytes": 16879
+      },
+      "native-dev-v2/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/lesson.md": {
+        "sha256": "f84c687f2f89366f1743571f54e2ef98443428d292f472cd98950d6232c7a06e",
+        "size_bytes": 70321
+      },
+      "native-dev-v2/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/protocol.md": {
+        "sha256": "4ed1d1d45a0b5db304cb45e7c5abe1c85c97434e53b4c9c156ce05b2b489a83b",
+        "size_bytes": 22825
+      },
+      "native-dev-v2/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/protocol_freeze.json": {
+        "sha256": "79fc20a6b600cc17b9e942927d44ac135e192538e124fcf7b7889407940afcf5",
+        "size_bytes": 1189
+      },
+      "native-dev-v2/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/publish_study.py": {
+        "sha256": "c8039ec512cd5ac77c042c89e11cce39c67ae5223743e04945be7d7be2d5b22a",
+        "size_bytes": 17463
+      },
+      "native-dev-v2/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/reproduce_native.py": {
+        "sha256": "382d67ea67ecd6c02d0c1148dbb812c567e6635f706c351f02f85f9cb7d367db",
+        "size_bytes": 13098
+      },
+      "native-dev-v2/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/run_native.py": {
+        "sha256": "f4c359e12c25d77b14100da9e66145480fe0dfa591f9387cf1fe1d8c938f205c",
+        "size_bytes": 31408
+      },
+      "native-dev-v2/visual-review-crops/15_crop_1.png": {
+        "sha256": "3a198ea4d6c95990e04cf6591b1004603084353bf9192941121c6c3f6914a186",
+        "size_bytes": 314649
+      },
+      "native-dev-v2/visual-review-crops/15_crop_2.png": {
+        "sha256": "6b8ca78fd4fd3d3414071f2b918ec3e480ab15418628804edcb28641311f3b4d",
+        "size_bytes": 363970
+      },
+      "native-dev-v2/visual-review-crops/15_crop_3.png": {
+        "sha256": "1ced4ba8743dcd125791d061821788749d2cb6e87ad83b5782ec1da765a13972",
+        "size_bytes": 288601
+      },
+      "native-dev-v2/visual-review-crops/16_bottom.png": {
+        "sha256": "cf4703351cbdff9ad9d1de8d446375ee682b86c7fda7170d6e6946ff9a272a66",
+        "size_bytes": 61624
+      },
+      "native-dev-v2/visual-review-crops/18_bottom.png": {
+        "sha256": "a41eaef6b3c6e91451e7ac855d9fcb36a00092523674b641def6a7be2f244682",
+        "size_bytes": 59585
+      },
+      "native-dev-v2/visual-review-crops/19_center.png": {
+        "sha256": "79aa3a52597eed85ee70abd5c2e6bcfebd48fc596bf08d654af2c1209f8b35eb",
+        "size_bytes": 206797
+      },
+      "native-dev-v2/visual-review-crops/19_title.png": {
+        "sha256": "01592151c30416124ee8a805d02786492d0cd41af0ea82b45d45c98979f1425a",
+        "size_bytes": 49399
+      },
+      "native-dev-v2/visual_review.json": {
+        "sha256": "186609ffa4294d4c6f754fb5f689222487955085a1409bb70661735c9093b564",
+        "size_bytes": 8904
+      },
+      "native-dev-v2/visual_review_v2.md": {
+        "sha256": "7366214972c5f7f7bed97ab3acdae85011c6cf253f27d56964a0e91b05667adc",
+        "size_bytes": 10276
+      },
+      "archive_checkpoint_manifest.json": {
+        "sha256": "93be6c10438c7b966023ace760789b282da726cae68d4aa21b61cb1e365ffd54",
+        "size_bytes": 55668
+      }
+    }
+  },
+  "members": {
+    "native-dev-v2.READY.json": {
+      "type": "regular",
+      "size_bytes": 4156,
+      "sha256": "d611f0f149cbeef747e146ec66d68c62e29b3b6fb1156a555d687d783ed2a46f",
+      "format": "json"
+    },
+    "native-dev-v2.execution_audit.json": {
+      "type": "regular",
+      "size_bytes": 13937,
+      "sha256": "b2b76eb6d2347dc83c834062c5bc6becb494d92930e77c1cee7a82fc20647310",
+      "format": "json"
+    },
+    "native-dev-v2.process.json": {
+      "type": "regular",
+      "size_bytes": 2007,
+      "sha256": "e992a8e1e5751d33a1abf8880d5ecb97f14b3175f168fffdb8a2344719248065",
+      "format": "json"
+    },
+    "native-dev-v2.process.log": {
+      "type": "regular",
+      "size_bytes": 1176,
+      "sha256": "3284d899be19daa46becb297b2de507d3a1a2d1e1c0921fcd87012def149d355",
+      "format": "utf8-text"
+    },
+    "native-dev-v2.report_payload_metrics.json": {
+      "type": "regular",
+      "size_bytes": 2412,
+      "sha256": "c2ec91f0fafe71fb8e1122998f3a251e22b0ec65ee6c698ae015ca2a143707b5",
+      "format": "json"
+    },
+    "native-dev-v2/completed_learner.ipynb": {
+      "type": "regular",
+      "size_bytes": 2765877,
+      "sha256": "b378dea8b4a96115f29cc0ee3460f60da7ff45aae6a9d4c82e06a0c7a5a5c27c",
+      "format": "notebook-json"
+    },
+    "native-dev-v2/execution.json": {
+      "type": "regular",
+      "size_bytes": 10465,
+      "sha256": "c35e5e5251179794f4d4c24aa0aadb65f7248139268fe4adc47d27fabdfbbcba",
+      "format": "json"
+    },
+    "native-dev-v2/figures/01_schedule_prefix.png": {
+      "type": "regular",
+      "size_bytes": 232649,
+      "sha256": "13d08cad9644b039ce64c5529bffb595249b915621a90e2682b78e1cc9adfd7c",
+      "format": "png"
+    },
+    "native-dev-v2/figures/02_path_interpolation.png": {
+      "type": "regular",
+      "size_bytes": 107519,
+      "sha256": "8c985c0c67adf9cd657b8cb044a3644327cc1bb0995fba9b2f93bd442ed539a8",
+      "format": "png"
+    },
+    "native-dev-v2/figures/03_gradient_controls.png": {
+      "type": "regular",
+      "size_bytes": 77372,
+      "sha256": "1623f75668187445e9964ab3b68c23b088acdb9f4d6f9c920b842bddf0eac3c3",
+      "format": "png"
+    },
+    "native-dev-v2/figures/04_relu_samples.png": {
+      "type": "regular",
+      "size_bytes": 110777,
+      "sha256": "8cba96523adb409b73b389de006948f6cb12751dc8d0d5f26b3a238e6e1b3cd4",
+      "format": "png"
+    },
+    "native-dev-v2/figures/05_mc_convergence.png": {
+      "type": "regular",
+      "size_bytes": 140633,
+      "sha256": "517cdf5b04a4f13bfe6ca58339a129b1057b77e7f6e0557fc6bdb32b36454afd",
+      "format": "png"
+    },
+    "native-dev-v2/figures/06_estimator_controls.png": {
+      "type": "regular",
+      "size_bytes": 90861,
+      "sha256": "7e01b288602f7d85aef87ab997439193e3e375c1276cf8269641eec09ddec40a",
+      "format": "png"
+    },
+    "native-dev-v2/figures/07_quadrature_doubling.png": {
+      "type": "regular",
+      "size_bytes": 125127,
+      "sha256": "396f9d35355f39b0180fffa78e27f818b6ac40646576ac6f473ff8ef2381d247",
+      "format": "png"
+    },
+    "native-dev-v2/figures/08_background_average.png": {
+      "type": "regular",
+      "size_bytes": 74422,
+      "sha256": "afc5ae3cbf3eeb8bc8d037433f6cc042c9c91207e9fd7df05d141f55902a8c69",
+      "format": "png"
+    },
+    "native-dev-v2/figures/09_gaussian_target_shift.png": {
+      "type": "regular",
+      "size_bytes": 110137,
+      "sha256": "cb51d5ff11ebb2f75d3baaa5e003d96e86faa2c7d2cef4015240fc7876b74014",
+      "format": "png"
+    },
+    "native-dev-v2/figures/10_path_vs_coalition.png": {
+      "type": "regular",
+      "size_bytes": 69987,
+      "sha256": "e1a3541f575611c5d6b044308949aefecb910dee219887bd7cd16059d0dc5bd3",
+      "format": "png"
+    },
+    "native-dev-v2/figures/11_kink_representation.png": {
+      "type": "regular",
+      "size_bytes": 77845,
+      "sha256": "8828bb1c26cc3cef705be9a9acbfd28905594f9aa1c03b2ccb3804a91ddaae26",
+      "format": "png"
+    },
+    "native-dev-v2/figures/12_replacement_fixture.png": {
+      "type": "regular",
+      "size_bytes": 150247,
+      "sha256": "ac34938cabb50f62565cef6f0deeea84dcf92eebbde9f15413fbed8b06d549ec",
+      "format": "png"
+    },
+    "native-dev-v2/figures/13_threshold_play.png": {
+      "type": "regular",
+      "size_bytes": 148255,
+      "sha256": "e1054231e09209f1e0c5ad8cf09a18e58438b36e8d9955874f989d388ca35130",
+      "format": "png"
+    },
+    "native-dev-v2/figures/14_native_overview.png": {
+      "type": "regular",
+      "size_bytes": 273433,
+      "sha256": "440cf2f3a42d84f56094ac431276fe0e2224a1ee8bef5ed1e8378716690431e7",
+      "format": "png"
+    },
+    "native-dev-v2/figures/15_allrow_method_map.png": {
+      "type": "regular",
+      "size_bytes": 916754,
+      "sha256": "71945a5053a6f66334c6d9ef07e3fc99c744b0bfa3f60fe134fe679fb941ecb4",
+      "format": "png"
+    },
+    "native-dev-v2/figures/16_fixed_waterfall.png": {
+      "type": "regular",
+      "size_bytes": 163331,
+      "sha256": "72072e6864709128b876739427f055f47df0ee3bb01379f6017a8d9b9a2a8ce6",
+      "format": "png"
+    },
+    "native-dev-v2/figures/17_background_and_noise.png": {
+      "type": "regular",
+      "size_bytes": 272058,
+      "sha256": "789cd34f5befb9213c11ca5e0c0da294a828aea90043b7e2ace72ded44a30bfe",
+      "format": "png"
+    },
+    "native-dev-v2/figures/18_replicates_and_distance.png": {
+      "type": "regular",
+      "size_bytes": 174241,
+      "sha256": "9419195318af1a757d4e439c5417967bfbf05ab57374496bcaef89dbe5ac36c4",
+      "format": "png"
+    },
+    "native-dev-v2/figures/19_replacement_curves.png": {
+      "type": "regular",
+      "size_bytes": 248706,
+      "sha256": "e50acea902c60786ef3a77614aff0fd7535e34cf48cab464dcddfb3b3762742f",
+      "format": "png"
+    },
+    "native-dev-v2/figures/20_real_recipe_play.png": {
+      "type": "regular",
+      "size_bytes": 201386,
+      "sha256": "14b57325c7f3edb2196a44fc478b95da9797813f46a92a074788494e6f06719a",
+      "format": "png"
+    },
+    "native-dev-v2/figures/native/artifact_manifest.json": {
+      "type": "regular",
+      "size_bytes": 2617,
+      "sha256": "f5f8d91f8e0c0f00ec994f14a652390a840d080c9bca1a2c8a99bd2da1889023",
+      "format": "json"
+    },
+    "native-dev-v2/figures/native/before_audit.json": {
+      "type": "regular",
+      "size_bytes": 914,
+      "sha256": "e03e31391558028cf1ec36acb694a2ae5413aa3bdc91db43f10b565345ce6a2a",
+      "format": "json"
+    },
+    "native-dev-v2/figures/native/diagnostics.manifest.json": {
+      "type": "regular",
+      "size_bytes": 68014,
+      "sha256": "870ea57f0ae06805c0e99a05761b4ff61714746ba55b877bc06f366806d5fc2b",
+      "format": "json"
+    },
+    "native-dev-v2/figures/native/evaluated.manifest.json": {
+      "type": "regular",
+      "size_bytes": 322694,
+      "sha256": "ad2e546b0ebc9c21bef1d67ddbc066081021d3c6f329fe424ed5587b664cb15f",
+      "format": "json"
+    },
+    "native-dev-v2/figures/native/fitted.manifest.json": {
+      "type": "regular",
+      "size_bytes": 106561,
+      "sha256": "df829a28703c3fee40f1aac08f4ee6d178d28ceebc0ddddf4463cba98f0abf54",
+      "format": "json"
+    },
+    "native-dev-v2/figures/native/play.manifest.json": {
+      "type": "regular",
+      "size_bytes": 19042,
+      "sha256": "4837d21511e2d249fb6a445a3b22f670827b60a6b2c06fc34fa82b8104125a9f",
+      "format": "json"
+    },
+    "native-dev-v2/figures/native/prepared.manifest.json": {
+      "type": "regular",
+      "size_bytes": 109257,
+      "sha256": "756c577d673fec5e816b88f82883b02dad040a84028dff11240f1b8d4b3b83fb",
+      "format": "json"
+    },
+    "native-dev-v2/figures/native/reference.manifest.json": {
+      "type": "regular",
+      "size_bytes": 171510,
+      "sha256": "940a4e71fbd70777e4e8994a88347fcbea14a234962837ca26d001df02f4111e",
+      "format": "json"
+    },
+    "native-dev-v2/figures/native/replicate_samples.manifest.json": {
+      "type": "regular",
+      "size_bytes": 577,
+      "sha256": "b4715a058eb3acb905a573d162a6fa5e79a5b90929af269d4085022e072dee4c",
+      "format": "json"
+    },
+    "native-dev-v2/figures/native/summary.json": {
+      "type": "regular",
+      "size_bytes": 1175,
+      "sha256": "edfc70b8a22cf7cc459cd1fb72ecb3081047a148f54ea32087f098f87f68f0d4",
+      "format": "json"
+    },
+    "native-dev-v2/figures/native/timings.manifest.json": {
+      "type": "regular",
+      "size_bytes": 333,
+      "sha256": "aab5cef6fce8331fb79f18ae8da8902db83e6845022cbcdef8293be08a3780f6",
+      "format": "json"
+    },
+    "native-dev-v2/figures/native_summary.json": {
+      "type": "regular",
+      "size_bytes": 1278,
+      "sha256": "145c77de4f63887b774ec83f449c6672c6cfd6f91bdb28d01a1da5738a2b7bfb",
+      "format": "json"
+    },
+    "native-dev-v2/html_review/browser_figure_01_schedule_prefix.png": {
+      "type": "regular",
+      "size_bytes": 113844,
+      "sha256": "f5e16c1c5ce4425237f16ded970f36d254ee2fb3c0ff109185073048c601f22a",
+      "format": "png"
+    },
+    "native-dev-v2/html_review/browser_figure_02_path_interpolation.png": {
+      "type": "regular",
+      "size_bytes": 54591,
+      "sha256": "f95ba76db019d08759545de29109217911eb458a9fb1e05377fe9afb138cc689",
+      "format": "png"
+    },
+    "native-dev-v2/html_review/browser_figure_03_gradient_controls.png": {
+      "type": "regular",
+      "size_bytes": 38546,
+      "sha256": "d034230c4d6719413630095664fb6dfd883b8862850313fd790169a701948d44",
+      "format": "png"
+    },
+    "native-dev-v2/html_review/browser_figure_04_relu_samples.png": {
+      "type": "regular",
+      "size_bytes": 55446,
+      "sha256": "3653682fc6a7304e19275b0b3c5914675cdcb6e555b942680dd32c4a1574c5c1",
+      "format": "png"
+    },
+    "native-dev-v2/html_review/browser_figure_05_mc_convergence.png": {
+      "type": "regular",
+      "size_bytes": 70541,
+      "sha256": "8e910646856db8ba072be50c6669f87ef64b9ff81c9198dafde18f36e55ee49a",
+      "format": "png"
+    },
+    "native-dev-v2/html_review/browser_figure_06_estimator_controls.png": {
+      "type": "regular",
+      "size_bytes": 45678,
+      "sha256": "f130c818d8383c1fa18ae05cc213f370c588fc830163084417c0a3146d148ae4",
+      "format": "png"
+    },
+    "native-dev-v2/html_review/browser_figure_07_quadrature_doubling.png": {
+      "type": "regular",
+      "size_bytes": 61147,
+      "sha256": "1dcb4a04fec919cf1694334939caeaa7a43ca5721bd630ccbba386bed76ce751",
+      "format": "png"
+    },
+    "native-dev-v2/html_review/browser_figure_08_background_average.png": {
+      "type": "regular",
+      "size_bytes": 37333,
+      "sha256": "0d35da57c2033f3d8893b8002e134395a71e0a13ce0e5d90e0855d2119832883",
+      "format": "png"
+    },
+    "native-dev-v2/html_review/browser_figure_09_gaussian_target_shift.png": {
+      "type": "regular",
+      "size_bytes": 54057,
+      "sha256": "ec3bff6e16fecbcf1643c38b52d5aa014357a28dfdecd0a88b3f8de4a9bee9f4",
+      "format": "png"
+    },
+    "native-dev-v2/html_review/browser_figure_10_path_vs_coalition.png": {
+      "type": "regular",
+      "size_bytes": 34141,
+      "sha256": "ec409c87c14bfa72d9b6fd08d7444f738f449dc4b2162baacb23d8125295b6d1",
+      "format": "png"
+    },
+    "native-dev-v2/html_review/browser_figure_11_kink_representation.png": {
+      "type": "regular",
+      "size_bytes": 38139,
+      "sha256": "a14f7ce3ab6547dffa71a5aab6dacc7c377238cc2321bad9282706186f16ba87",
+      "format": "png"
+    },
+    "native-dev-v2/html_review/browser_figure_12_replacement_fixture.png": {
+      "type": "regular",
+      "size_bytes": 70446,
+      "sha256": "3d97feec0fac039f82f7995a771bfd1e88d6d9ae68ad7421bfc7d0f3c1d73dae",
+      "format": "png"
+    },
+    "native-dev-v2/html_review/browser_figure_13_threshold_play.png": {
+      "type": "regular",
+      "size_bytes": 72480,
+      "sha256": "db9b062971fd9f70925f567979e5abac9ee7f9eff0541de844752a523036f839",
+      "format": "png"
+    },
+    "native-dev-v2/html_review/browser_figure_14_native_overview.png": {
+      "type": "regular",
+      "size_bytes": 145848,
+      "sha256": "841929400512c69040300beb40e97fbb5ce5db5c10789f8cab66a69fb8712bcc",
+      "format": "png"
+    },
+    "native-dev-v2/html_review/browser_figure_15_allrow_method_map.png": {
+      "type": "regular",
+      "size_bytes": 452482,
+      "sha256": "42ce3b13ec85879bbf13fe5fe47ec91dfb0bf7d355a66d7ab95c5718f806d6ea",
+      "format": "png"
+    },
+    "native-dev-v2/html_review/browser_figure_16_fixed_waterfall.png": {
+      "type": "regular",
+      "size_bytes": 112621,
+      "sha256": "a176b625fd0b3825df185bf1a79b31d5bdc9f174a75417d9eecf70db8a9ead78",
+      "format": "png"
+    },
+    "native-dev-v2/html_review/browser_figure_17_background_and_noise.png": {
+      "type": "regular",
+      "size_bytes": 175307,
+      "sha256": "7fc0516a2857ebc4b8f2c20bcc29aeba2253f1220dd0ed09fa23c164d5820b67",
+      "format": "png"
+    },
+    "native-dev-v2/html_review/browser_figure_18_replicates_and_distance.png": {
+      "type": "regular",
+      "size_bytes": 83288,
+      "sha256": "4f6a987758a72decde31c1a9a0394a7dbae619879a198d96db212a299a996a68",
+      "format": "png"
+    },
+    "native-dev-v2/html_review/browser_figure_19_replacement_curves.png": {
+      "type": "regular",
+      "size_bytes": 73772,
+      "sha256": "81098d73f9339a498448c9c7702088d72266fb82a98509dd75ef17786308934a",
+      "format": "png"
+    },
+    "native-dev-v2/html_review/browser_figure_20_real_recipe_play.png": {
+      "type": "regular",
+      "size_bytes": 133928,
+      "sha256": "91f949954331f994300d410bb76edbed1129d6a6af4269c83686da81edf4eac7",
+      "format": "png"
+    },
+    "native-dev-v2/html_review/browser_review.json": {
+      "type": "regular",
+      "size_bytes": 12564,
+      "sha256": "62a6539285832243921e550c1f70c9c8e84e55e15ff2adadfb07ed6482e988d6",
+      "format": "json"
+    },
+    "native-dev-v2/html_review/browser_review.stdout.json": {
+      "type": "regular",
+      "size_bytes": 12564,
+      "sha256": "62a6539285832243921e550c1f70c9c8e84e55e15ff2adadfb07ed6482e988d6",
+      "format": "json"
+    },
+    "native-dev-v2/html_review/browser_section_01.png": {
+      "type": "regular",
+      "size_bytes": 157043,
+      "sha256": "8acc2f8d61d8c5d5092b1974e4a9b3def3138ac1fd53a3a9f5c488206e516e7a",
+      "format": "png"
+    },
+    "native-dev-v2/html_review/browser_section_02.png": {
+      "type": "regular",
+      "size_bytes": 157043,
+      "sha256": "8acc2f8d61d8c5d5092b1974e4a9b3def3138ac1fd53a3a9f5c488206e516e7a",
+      "format": "png"
+    },
+    "native-dev-v2/html_review/browser_section_03.png": {
+      "type": "regular",
+      "size_bytes": 157043,
+      "sha256": "8acc2f8d61d8c5d5092b1974e4a9b3def3138ac1fd53a3a9f5c488206e516e7a",
+      "format": "png"
+    },
+    "native-dev-v2/html_review/browser_section_04.png": {
+      "type": "regular",
+      "size_bytes": 157043,
+      "sha256": "8acc2f8d61d8c5d5092b1974e4a9b3def3138ac1fd53a3a9f5c488206e516e7a",
+      "format": "png"
+    },
+    "native-dev-v2/html_review/browser_section_05.png": {
+      "type": "regular",
+      "size_bytes": 133770,
+      "sha256": "209b8e21d801893524441f9b3c30f788528ab1bc1c7e4ef3e452e9ff2fb2a2ad",
+      "format": "png"
+    },
+    "native-dev-v2/html_review/browser_section_06.png": {
+      "type": "regular",
+      "size_bytes": 133770,
+      "sha256": "209b8e21d801893524441f9b3c30f788528ab1bc1c7e4ef3e452e9ff2fb2a2ad",
+      "format": "png"
+    },
+    "native-dev-v2/html_review/browser_section_07.png": {
+      "type": "regular",
+      "size_bytes": 197080,
+      "sha256": "41f0ffd020968726cb4619b4fe8494c7ec0f4c81b4486f4a59d5db2274d465c8",
+      "format": "png"
+    },
+    "native-dev-v2/html_review/browser_section_08.png": {
+      "type": "regular",
+      "size_bytes": 138505,
+      "sha256": "d31fb4f062721cdbb9001d4c12b01a5a4c9610605ebb2f109944e0783b6793a3",
+      "format": "png"
+    },
+    "native-dev-v2/html_review/browser_section_09.png": {
+      "type": "regular",
+      "size_bytes": 125047,
+      "sha256": "083fd5024c9dca7d5f9937da9a5803621c7d9318d434e56517f238057dc1e8ca",
+      "format": "png"
+    },
+    "native-dev-v2/html_review/browser_section_10.png": {
+      "type": "regular",
+      "size_bytes": 138066,
+      "sha256": "cdf8f13c413243035923dded0e91004f063363f45610a7f891240dac00bc8955",
+      "format": "png"
+    },
+    "native-dev-v2/html_review/browser_section_11.png": {
+      "type": "regular",
+      "size_bytes": 151634,
+      "sha256": "231288db249b24c476d46d77faf3159607ac0a452c9850c72dd4e7b343db4259",
+      "format": "png"
+    },
+    "native-dev-v2/html_review/browser_section_12.png": {
+      "type": "regular",
+      "size_bytes": 129268,
+      "sha256": "8d7e93f598f0eb3a0498d7c12ab486528dbc07b3b0d84dbe3e242e165bf807bd",
+      "format": "png"
+    },
+    "native-dev-v2/html_review/browser_section_13.png": {
+      "type": "regular",
+      "size_bytes": 121174,
+      "sha256": "2ab16e46c51e6536006ba1bcc6ceef8eea06d1320d09fb7ad2b3c82e81aeda75",
+      "format": "png"
+    },
+    "native-dev-v2/html_review/browser_section_14.png": {
+      "type": "regular",
+      "size_bytes": 138895,
+      "sha256": "245a571a339d643478c934be6b23e2eb3671643e7742ff7f1c39f0d22cf97c7a",
+      "format": "png"
+    },
+    "native-dev-v2/html_review/browser_section_15.png": {
+      "type": "regular",
+      "size_bytes": 177357,
+      "sha256": "6daa289380be07f0b8ce31cad3d6c13be45385095308f85eca1cb41f48f1044a",
+      "format": "png"
+    },
+    "native-dev-v2/html_review/browser_section_16.png": {
+      "type": "regular",
+      "size_bytes": 165284,
+      "sha256": "355afe7aaa2b176f98957e5d225974d59db28617fdf0e4dad0803ff8e52a6567",
+      "format": "png"
+    },
+    "native-dev-v2/html_review/browser_section_17.png": {
+      "type": "regular",
+      "size_bytes": 163736,
+      "sha256": "2623c6ab3fa4ac275f43e938feab88989b482dc145e9400cd65e78bbc73a3d1b",
+      "format": "png"
+    },
+    "native-dev-v2/html_review/browser_section_18.png": {
+      "type": "regular",
+      "size_bytes": 216584,
+      "sha256": "07cdbd3cfcf747c7981566a194525e06369e28cb14b62711fc84994abd6f2599",
+      "format": "png"
+    },
+    "native-dev-v2/html_review/browser_section_19.png": {
+      "type": "regular",
+      "size_bytes": 216584,
+      "sha256": "07cdbd3cfcf747c7981566a194525e06369e28cb14b62711fc84994abd6f2599",
+      "format": "png"
+    },
+    "native-dev-v2/html_review/browser_section_20.png": {
+      "type": "regular",
+      "size_bytes": 196017,
+      "sha256": "5186094f4f9cc30759333e10d50b754fe2d1c77e275adde99863cec5cac8b93e",
+      "format": "png"
+    },
+    "native-dev-v2/html_review/browser_section_21.png": {
+      "type": "regular",
+      "size_bytes": 196017,
+      "sha256": "5186094f4f9cc30759333e10d50b754fe2d1c77e275adde99863cec5cac8b93e",
+      "format": "png"
+    },
+    "native-dev-v2/html_review/browser_top.png": {
+      "type": "regular",
+      "size_bytes": 157043,
+      "sha256": "8acc2f8d61d8c5d5092b1974e4a9b3def3138ac1fd53a3a9f5c488206e516e7a",
+      "format": "png"
+    },
+    "native-dev-v2/html_review/contact_figures_1.png": {
+      "type": "regular",
+      "size_bytes": 722023,
+      "sha256": "e13ae142c7134359afce3d52f7575b48bd244e476468f270b5bcb5b0d1821731",
+      "format": "png"
+    },
+    "native-dev-v2/html_review/contact_figures_2.png": {
+      "type": "regular",
+      "size_bytes": 580254,
+      "sha256": "4e9fe11135e53984ac30a6a3a3741e842a05175991c8a86cbc5e115577936f24",
+      "format": "png"
+    },
+    "native-dev-v2/html_review/contact_figures_3.png": {
+      "type": "regular",
+      "size_bytes": 1121543,
+      "sha256": "a73e9fbb3c18c5235063fcdfa1bbfe91bebdf94a869e09c44602423a5ab3459d",
+      "format": "png"
+    },
+    "native-dev-v2/html_review/contact_figures_4.png": {
+      "type": "regular",
+      "size_bytes": 830511,
+      "sha256": "86a32a1aaf86d5a0063fc86188312da248922cb568945d99fbb0808bbddfd09e",
+      "format": "png"
+    },
+    "native-dev-v2/html_review/contact_sections_1.png": {
+      "type": "regular",
+      "size_bytes": 912435,
+      "sha256": "e5ed2d61ac99ee12d7bc4217c5c17099e88b571bcc7ce5ae26e4500203ad06ae",
+      "format": "png"
+    },
+    "native-dev-v2/html_review/contact_sections_2.png": {
+      "type": "regular",
+      "size_bytes": 1511382,
+      "sha256": "e084561507e0177836c1c6ca3a7c8a2c2a77f7d95724f1bbfdf2360e6045efed",
+      "format": "png"
+    },
+    "native-dev-v2/html_review/contact_sections_3.png": {
+      "type": "regular",
+      "size_bytes": 1827896,
+      "sha256": "c6604c6f10cf3ba1c2247f4517954f2a454d15daf2504769c7ee4cbda41b61bc",
+      "format": "png"
+    },
+    "native-dev-v2/html_review/contact_sections_4.png": {
+      "type": "regular",
+      "size_bytes": 1236084,
+      "sha256": "0e0d2c45969dc8c22846ad0e634c13ead1abc94bf335b26de3ae844f4f9165c8",
+      "format": "png"
+    },
+    "native-dev-v2/html_review/reviewed_completed_learner.html": {
+      "type": "regular",
+      "size_bytes": 3464032,
+      "sha256": "dde0e70bb753d7b5ba00ec7a38f255878219652042a6bc841819a5dd14306d89",
+      "format": "utf8-text"
+    },
+    "native-dev-v2/html_review/reviewed_completed_learner.ipynb": {
+      "type": "regular",
+      "size_bytes": 2765877,
+      "sha256": "b378dea8b4a96115f29cc0ee3460f60da7ff45aae6a9d4c82e06a0c7a5a5c27c",
+      "format": "notebook-json"
+    },
+    "native-dev-v2/layout-fixes-v3/16_fixed_waterfall.png": {
+      "type": "regular",
+      "size_bytes": 157662,
+      "sha256": "be1ccc8518530a9d7e5e6920de62591ba54aec3b2448eb509a3e6a849c38aa04",
+      "format": "png"
+    },
+    "native-dev-v2/layout-fixes-v3/18_replicates_and_distance.png": {
+      "type": "regular",
+      "size_bytes": 173716,
+      "sha256": "8b30d376203760f12f367cac4818c4bee0db2cf0ca49edea372695e14c00048f",
+      "format": "png"
+    },
+    "native-dev-v2/layout-fixes-v3/19_replacement_curves.png": {
+      "type": "regular",
+      "size_bytes": 234055,
+      "sha256": "95984d5bcece3ae65587f522ff8c688e8a5a58a5d9c580399ea736ca3abf63b8",
+      "format": "png"
+    },
+    "native-dev-v2/layout-fixes-v3/notebook-width-1200/16_fixed_waterfall.png": {
+      "type": "regular",
+      "size_bytes": 129645,
+      "sha256": "9ae91b729d5c460b11d924b904deafd3c36e4af3c75583381c336de274becd59",
+      "format": "png"
+    },
+    "native-dev-v2/layout-fixes-v3/notebook-width-1200/18_replicates_and_distance.png": {
+      "type": "regular",
+      "size_bytes": 133310,
+      "sha256": "3fc7c0c5b290f6f8e6d032c259aca90c2b5b3713b9999432e157e72df9ad6d84",
+      "format": "png"
+    },
+    "native-dev-v2/layout-fixes-v3/notebook-width-1200/19_replacement_curves.png": {
+      "type": "regular",
+      "size_bytes": 190680,
+      "sha256": "2c1c55bece91dbb6dbf2d410d3a4038fc8dff479ecb9f971cedfc4a241c3460f",
+      "format": "png"
+    },
+    "native-dev-v2/notebook-width-1200/01_schedule_prefix.png": {
+      "type": "regular",
+      "size_bytes": 207212,
+      "sha256": "3a0ff4a1055c489b349b035904c53fc26c7c9c35f8a4c25888fcb4caecc9c1f1",
+      "format": "png"
+    },
+    "native-dev-v2/notebook-width-1200/02_path_interpolation.png": {
+      "type": "regular",
+      "size_bytes": 106609,
+      "sha256": "fe51708fb234f78b7a526b614b26158ff8d095eadc0e00f1f8f02fe1f48adc16",
+      "format": "png"
+    },
+    "native-dev-v2/notebook-width-1200/03_gradient_controls.png": {
+      "type": "regular",
+      "size_bytes": 79161,
+      "sha256": "88ac9c928b84045e6deffb8bfa9602b58b12c5a06925c45699c56aef73e41283",
+      "format": "png"
+    },
+    "native-dev-v2/notebook-width-1200/04_relu_samples.png": {
+      "type": "regular",
+      "size_bytes": 104843,
+      "sha256": "5281bd0e60e4d751b7e780c5c83a6b6693c514ad26e2eacd728877de3c3c2168",
+      "format": "png"
+    },
+    "native-dev-v2/notebook-width-1200/05_mc_convergence.png": {
+      "type": "regular",
+      "size_bytes": 142272,
+      "sha256": "dd6af217570f70c344aeac43d778d0c8398573a75b83ef592577a33ab8339dca",
+      "format": "png"
+    },
+    "native-dev-v2/notebook-width-1200/06_estimator_controls.png": {
+      "type": "regular",
+      "size_bytes": 89536,
+      "sha256": "b8af2d4670cc563cf8ba790591b97a092e9252055411d7828ee9f91aabdaec46",
+      "format": "png"
+    },
+    "native-dev-v2/notebook-width-1200/07_quadrature_doubling.png": {
+      "type": "regular",
+      "size_bytes": 124386,
+      "sha256": "c205ef0317f0906c2d80acc54698ad6c3dcadd656c0535b648cfd172346d304f",
+      "format": "png"
+    },
+    "native-dev-v2/notebook-width-1200/08_background_average.png": {
+      "type": "regular",
+      "size_bytes": 82290,
+      "sha256": "4b6728885ee49610d8c022acf6c96d2e269098987a35d2690ee809676f658c56",
+      "format": "png"
+    },
+    "native-dev-v2/notebook-width-1200/09_gaussian_target_shift.png": {
+      "type": "regular",
+      "size_bytes": 110764,
+      "sha256": "02de2b78fb0608d6e6955a855a2889ee3e3eea14588f7eb4b71a6af78a6b98cf",
+      "format": "png"
+    },
+    "native-dev-v2/notebook-width-1200/10_path_vs_coalition.png": {
+      "type": "regular",
+      "size_bytes": 71729,
+      "sha256": "12db373330729f4f198683fdc69a674d3c02cd62b02ad9d27c7aafd3b53b27a1",
+      "format": "png"
+    },
+    "native-dev-v2/notebook-width-1200/11_kink_representation.png": {
+      "type": "regular",
+      "size_bytes": 80768,
+      "sha256": "a6439bf8398a9d71a3dd5e58e5ceb9e988a583c64eaf21065bbe39501f07f750",
+      "format": "png"
+    },
+    "native-dev-v2/notebook-width-1200/12_replacement_fixture.png": {
+      "type": "regular",
+      "size_bytes": 142343,
+      "sha256": "98a0a8639029f7c4728cec58b84ef81f643bc43d426f3e6173860a46045e3d56",
+      "format": "png"
+    },
+    "native-dev-v2/notebook-width-1200/13_threshold_play.png": {
+      "type": "regular",
+      "size_bytes": 112369,
+      "sha256": "bba267920b226f335e34ea4d45f3e6eeebe07179315a414b43dc994cfb45e88e",
+      "format": "png"
+    },
+    "native-dev-v2/notebook-width-1200/14_native_overview.png": {
+      "type": "regular",
+      "size_bytes": 155066,
+      "sha256": "fecb2e767d0d6af0301491dd199d58036a73c0ad5049c29c63e917513a756f54",
+      "format": "png"
+    },
+    "native-dev-v2/notebook-width-1200/15_allrow_method_map.png": {
+      "type": "regular",
+      "size_bytes": 567733,
+      "sha256": "c73cf39fd1a52d5a73eb1a825101ba447881d169b7a149d1ac232e670566afcf",
+      "format": "png"
+    },
+    "native-dev-v2/notebook-width-1200/16_fixed_waterfall.png": {
+      "type": "regular",
+      "size_bytes": 127397,
+      "sha256": "eb73514ef670d3e4fd0f200163ea336820749c0d05e2852b12791600de623e7e",
+      "format": "png"
+    },
+    "native-dev-v2/notebook-width-1200/17_background_and_noise.png": {
+      "type": "regular",
+      "size_bytes": 220236,
+      "sha256": "bfcd79997fdc46acb720f3bbdc7bd9f8caaefe6327f37638b9c52b7791e50bb6",
+      "format": "png"
+    },
+    "native-dev-v2/notebook-width-1200/18_replicates_and_distance.png": {
+      "type": "regular",
+      "size_bytes": 139086,
+      "sha256": "a2f091cc31fbe6b651838c665fa9b3db97098fd9d8a242fb5a8dc66e94b97a2d",
+      "format": "png"
+    },
+    "native-dev-v2/notebook-width-1200/19_replacement_curves.png": {
+      "type": "regular",
+      "size_bytes": 97071,
+      "sha256": "6881c50cf238f782d1de769161949408776becc7963826e5f35fb28a8b05fd5e",
+      "format": "png"
+    },
+    "native-dev-v2/notebook-width-1200/20_real_recipe_play.png": {
+      "type": "regular",
+      "size_bytes": 142488,
+      "sha256": "22fd2a8dba96aded66d9a8bf7284534f173ca785249a70f8dd53be021e6804e6",
+      "format": "png"
+    },
+    "native-dev-v2/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_methods.py": {
+      "type": "regular",
+      "size_bytes": 14566,
+      "sha256": "8d5e9d04624e3941768a710ba9c72dfd281c25c39b495845beda296a1628c4c6",
+      "format": "utf8-text"
+    },
+    "native-dev-v2/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/build_notebooks.py": {
+      "type": "regular",
+      "size_bytes": 16690,
+      "sha256": "0b1b09ca7c3ecb58dde9f89ac993600f86837603e0d167dd8c0b0520d7085395",
+      "format": "utf8-text"
+    },
+    "native-dev-v2/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/data_manifest.json": {
+      "type": "regular",
+      "size_bytes": 38183,
+      "sha256": "bcf41f96c9f6839ee4cbf24df82ca8467b35a6ed9090a9c4c56fce0b1a23120c",
+      "format": "json"
+    },
+    "native-dev-v2/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/execute_learner.py": {
+      "type": "regular",
+      "size_bytes": 10796,
+      "sha256": "0dfd6ee46e87b0091466c47d6a61e6b451ccdf34758e6a68399ac9f7b42cbc38",
+      "format": "utf8-text"
+    },
+    "native-dev-v2/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_contracts.py": {
+      "type": "regular",
+      "size_bytes": 23568,
+      "sha256": "a1163e0a0a2b8f2097dca2dc26b9a4c786f9b772ff838052524b2c1a27859cd6",
+      "format": "utf8-text"
+    },
+    "native-dev-v2/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_data.py": {
+      "type": "regular",
+      "size_bytes": 3795,
+      "sha256": "9c9c1016ffd6fe839a004c06e801cdcd24d4d71a85ccd3f0707168dec390c7ce",
+      "format": "utf8-text"
+    },
+    "native-dev-v2/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_diagnostics.py": {
+      "type": "regular",
+      "size_bytes": 25759,
+      "sha256": "d3b60c3d5e9565a3c693fa4d8146a8115eae1ac1708986692197dadfdbee5e7f",
+      "format": "utf8-text"
+    },
+    "native-dev-v2/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_methods.py": {
+      "type": "regular",
+      "size_bytes": 16834,
+      "sha256": "2c56ae4e108d13b8e2994f12944af49af3915fcf95d684da96ddec7ed46c5be5",
+      "format": "utf8-text"
+    },
+    "native-dev-v2/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_methods_tests.py": {
+      "type": "regular",
+      "size_bytes": 26153,
+      "sha256": "fafa0eaa80591793198f23e884c21b3f457eaf240841ae10c9cfd58e721eae12",
+      "format": "utf8-text"
+    },
+    "native-dev-v2/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_plots.py": {
+      "type": "regular",
+      "size_bytes": 54674,
+      "sha256": "f6c85a3a9fc915d85f8658945c29e5afe6f9bf5838b15e57cd6f44ad4fd551df",
+      "format": "utf8-text"
+    },
+    "native-dev-v2/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py": {
+      "type": "regular",
+      "size_bytes": 43620,
+      "sha256": "c063d120d7449a9b20b4ac370247b2b5971e809575d44ab9d7c8719cc551292f",
+      "format": "utf8-text"
+    },
+    "native-dev-v2/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference_tests.py": {
+      "type": "regular",
+      "size_bytes": 18899,
+      "sha256": "95bfe943a98b7353e29328992ee4cbf0a0558cdf3c8d64a692129e47bf1dbc4e",
+      "format": "utf8-text"
+    },
+    "native-dev-v2/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_study.py": {
+      "type": "regular",
+      "size_bytes": 67704,
+      "sha256": "f49e4f5872beca780c95a3689b919690e5be8c344df3f0625178476ff163ad02",
+      "format": "utf8-text"
+    },
+    "native-dev-v2/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_study_tests.py": {
+      "type": "regular",
+      "size_bytes": 16879,
+      "sha256": "ef938b660a7b6388023654bd977cfd94e999540ee6d827ead6f5382f757eb3a5",
+      "format": "utf8-text"
+    },
+    "native-dev-v2/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/lesson.md": {
+      "type": "regular",
+      "size_bytes": 70321,
+      "sha256": "f84c687f2f89366f1743571f54e2ef98443428d292f472cd98950d6232c7a06e",
+      "format": "utf8-text"
+    },
+    "native-dev-v2/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/protocol.md": {
+      "type": "regular",
+      "size_bytes": 22825,
+      "sha256": "4ed1d1d45a0b5db304cb45e7c5abe1c85c97434e53b4c9c156ce05b2b489a83b",
+      "format": "utf8-text"
+    },
+    "native-dev-v2/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/protocol_freeze.json": {
+      "type": "regular",
+      "size_bytes": 1189,
+      "sha256": "79fc20a6b600cc17b9e942927d44ac135e192538e124fcf7b7889407940afcf5",
+      "format": "json"
+    },
+    "native-dev-v2/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/publish_study.py": {
+      "type": "regular",
+      "size_bytes": 17463,
+      "sha256": "c8039ec512cd5ac77c042c89e11cce39c67ae5223743e04945be7d7be2d5b22a",
+      "format": "utf8-text"
+    },
+    "native-dev-v2/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/reproduce_native.py": {
+      "type": "regular",
+      "size_bytes": 13098,
+      "sha256": "382d67ea67ecd6c02d0c1148dbb812c567e6635f706c351f02f85f9cb7d367db",
+      "format": "utf8-text"
+    },
+    "native-dev-v2/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/run_native.py": {
+      "type": "regular",
+      "size_bytes": 31408,
+      "sha256": "f4c359e12c25d77b14100da9e66145480fe0dfa591f9387cf1fe1d8c938f205c",
+      "format": "utf8-text"
+    },
+    "native-dev-v2/visual-review-crops/15_crop_1.png": {
+      "type": "regular",
+      "size_bytes": 314649,
+      "sha256": "3a198ea4d6c95990e04cf6591b1004603084353bf9192941121c6c3f6914a186",
+      "format": "png"
+    },
+    "native-dev-v2/visual-review-crops/15_crop_2.png": {
+      "type": "regular",
+      "size_bytes": 363970,
+      "sha256": "6b8ca78fd4fd3d3414071f2b918ec3e480ab15418628804edcb28641311f3b4d",
+      "format": "png"
+    },
+    "native-dev-v2/visual-review-crops/15_crop_3.png": {
+      "type": "regular",
+      "size_bytes": 288601,
+      "sha256": "1ced4ba8743dcd125791d061821788749d2cb6e87ad83b5782ec1da765a13972",
+      "format": "png"
+    },
+    "native-dev-v2/visual-review-crops/16_bottom.png": {
+      "type": "regular",
+      "size_bytes": 61624,
+      "sha256": "cf4703351cbdff9ad9d1de8d446375ee682b86c7fda7170d6e6946ff9a272a66",
+      "format": "png"
+    },
+    "native-dev-v2/visual-review-crops/18_bottom.png": {
+      "type": "regular",
+      "size_bytes": 59585,
+      "sha256": "a41eaef6b3c6e91451e7ac855d9fcb36a00092523674b641def6a7be2f244682",
+      "format": "png"
+    },
+    "native-dev-v2/visual-review-crops/19_center.png": {
+      "type": "regular",
+      "size_bytes": 206797,
+      "sha256": "79aa3a52597eed85ee70abd5c2e6bcfebd48fc596bf08d654af2c1209f8b35eb",
+      "format": "png"
+    },
+    "native-dev-v2/visual-review-crops/19_title.png": {
+      "type": "regular",
+      "size_bytes": 49399,
+      "sha256": "01592151c30416124ee8a805d02786492d0cd41af0ea82b45d45c98979f1425a",
+      "format": "png"
+    },
+    "native-dev-v2/visual_review.json": {
+      "type": "regular",
+      "size_bytes": 8904,
+      "sha256": "186609ffa4294d4c6f754fb5f689222487955085a1409bb70661735c9093b564",
+      "format": "json"
+    },
+    "native-dev-v2/visual_review_v2.md": {
+      "type": "regular",
+      "size_bytes": 10276,
+      "sha256": "7366214972c5f7f7bed97ab3acdae85011c6cf253f27d56964a0e91b05667adc",
+      "format": "utf8-text"
+    },
+    "archive_checkpoint_manifest.json": {
+      "type": "regular",
+      "size_bytes": 55668,
+      "sha256": "93be6c10438c7b966023ace760789b282da726cae68d4aa21b61cb1e365ffd54",
+      "format": "json"
+    }
+  },
+  "external_payloads": {
+    "native-dev-v2/figures/native/diagnostics.pt": {
+      "sha256": "1b2b7f318eaa7b293c3c7fda4bdb88725f652492b42036dbe0f9d33a08cfc050",
+      "size_bytes": 67813,
+      "source_archive_member": "native-dev-v2/figures/native/diagnostics.pt",
+      "source_archive_sha256": "bfc1ee381bda375b5608926b2d54001bbdc0839de175bd5b2c367e44237ad9c6",
+      "reason": "Raw model/tensor serialization is retained only in the exact original archive."
+    },
+    "native-dev-v2/figures/native/fitted.pt": {
+      "sha256": "c8e5bce695edc3e76e02284968ce6c5e6760060a2373a82f659e75700962e4c3",
+      "size_bytes": 467968,
+      "source_archive_member": "native-dev-v2/figures/native/fitted.pt",
+      "source_archive_sha256": "bfc1ee381bda375b5608926b2d54001bbdc0839de175bd5b2c367e44237ad9c6",
+      "reason": "Raw model/tensor serialization is retained only in the exact original archive."
+    },
+    "native-dev-v2/figures/native/play.pt": {
+      "sha256": "98f107c9935881417758f606124bda1871b89b756b1c7b5db5bde15258861e3f",
+      "size_bytes": 159143,
+      "source_archive_member": "native-dev-v2/figures/native/play.pt",
+      "source_archive_sha256": "bfc1ee381bda375b5608926b2d54001bbdc0839de175bd5b2c367e44237ad9c6",
+      "reason": "Raw model/tensor serialization is retained only in the exact original archive."
+    },
+    "native-dev-v2/figures/native/reference.pt": {
+      "sha256": "3acbf133884f07b3dcb80bf6853e4ad88fee83b6a13ec1556f03d5e16ae29502",
+      "size_bytes": 57328569,
+      "source_archive_member": "native-dev-v2/figures/native/reference.pt",
+      "source_archive_sha256": "bfc1ee381bda375b5608926b2d54001bbdc0839de175bd5b2c367e44237ad9c6",
+      "reason": "Raw model/tensor serialization is retained only in the exact original archive."
+    },
+    "native-dev-v2/figures/native/timings.pt": {
+      "sha256": "67f9ffa21f366d5a3b31a6def1ccb17d1f91c37b4b0d9c1532215ae4c52642e0",
+      "size_bytes": 1261,
+      "source_archive_member": "native-dev-v2/figures/native/timings.pt",
+      "source_archive_sha256": "bfc1ee381bda375b5608926b2d54001bbdc0839de175bd5b2c367e44237ad9c6",
+      "reason": "Raw model/tensor serialization is retained only in the exact original archive."
+    }
+  },
+  "member_count": 149,
+  "total_member_bytes": 33690869
+}

@@ -1,0 +1,400 @@
+version: 1
+policy: Only course_ready sections count as polished ARENA-style course material; prototype sections are retained as implementation evidence and must not be represented as final.
+sections:
+  '0.6':
+    status: course_ready
+    page: chapter0_fundamentals/instructions/pages/06_[0.6]_How_to_Know_When_an_Interpretability_Result_Is_Fake.md
+    notes: ARENA-style GT-0 skepticism lab with validation-loop and signature-result diagrams, input-driven leakage/cherry-pick/probe-overfit/random-direction detectors, alternate-fixture controls, paired notebooks, limitations, anomaly hunting, and scoped CUDA 13.2 fake-result diagnostic evidence.
+  '1.6':
+    status: course_ready
+    page: chapter1_transformer_interp/instructions/pages/40_[1.6]_Local_Frontier_ML_Infrastructure.md
+    notes: ARENA-style local infrastructure lesson with validation-loop and signature-result diagrams, environment metadata, memory estimates, logit/generation parity, activation-store roundtrip evidence, drift and oversized-budget negative controls, paired notebooks, limitations, and scoped CUDA 13.2 BF16 runtime evidence.
+  '5.1':
+    status: course_ready
+    page: chapter5_modern_architectures/instructions/pages/01_[5.1]_Gemma_from_Scratch.md
+    notes: Eight-exercise ARENA build from RMSNorm and RoPE through grouped-query attention, SwiGLU, a complete two-layer causal LM, KV-cache decoding, and activation tracing. The visible signature localizes the first divergence caused by removing embedding scaling or RoPE and by scrambling GQA order, while the exact implementation stays at zero trace error. CUDA verification loads all 21 matched weights into transformers GemmaForCausalLM, reaches 6.88e-05 maximum logit error, full top-5 and greedy-generation agreement, and cache parity within tolerance.
+  '5.2':
+    status: course_ready
+    page: chapter5_modern_architectures/instructions/pages/02_[5.2]_Gemma_Scope_and_Feature_Steering.md
+    notes: "ARENA-style sparse-feature progression with visible JumpReLU, reconstruction, held-out discovery, steering, and progressive-ablation exercises; immediate semantic tests; expected/help/solution/interpretation dropdowns; parameterized play cells; and anomaly hunting. The exact organism gives held-out AUC 1.000 versus 0.500 nuisance features and 0.498 across 200 label shuffles, while selected-feature steering reaches delta 2.000 and full ablation removes the target score. CUDA 13.2 verification uses authenticated google/gemma-3-1b-it plus the pinned Gemma Scope layer-13 width-16k SAE: feature 15586 reaches held-out AUC 1.000 versus random feature 0.500, the label-shuffle control fails, and peak VRAM is 2.236 GB. Seven focused tests and all 13 solution cells pass. The real claim is limited to an eight-plus-eight benign technical-versus-narrative probe and DLA-aligned logit contrast, not monosemanticity, broad feature coverage, safety behavior, or generation quality."
+  '5.3':
+    status: course_ready
+    page: chapter5_modern_architectures/instructions/pages/03_[5.3]_Mamba_from_Scratch.md
+    notes: "ARENA-style eleven-exercise build from exact recurrent and associative selective scans through causal depthwise convolution, input-dependent delta/B/C, gated residual blocks, a stacked language model, recurrent cache, and a full released-weight mapping. Immediate semantic tests, expected/help/solution/interpretation dropdowns, a parameterized play cell, common bugs, and anomaly hunting accompany the visible state-memory signature. The exact organism retains a written value across 32 distractors with zero error, while its real width-8 causal convolution reaches error 1.0 and recurrent-state ablation removes the readout. Seventeen focused tests and all 17 solution cells pass. All 243 tensors from pinned state-spaces/mamba-130m-hf map into the learner model; CPU hidden/logit maximum errors are 9.918e-05/1.221e-04 with exact top-1 and greedy-token agreement. CUDA 13.2 verification confirms fused kernels, 1.000 batched/single top-token agreement, scan/cache errors 4.77e-7/9.54e-7, 15.89 generated tokens/s, and 0.278 GB peak VRAM. The analytic all-context attention curve is a retrieval ceiling, not a trained Transformer comparison."
+  '5.4':
+    status: course_ready
+    page: chapter5_modern_architectures/instructions/pages/04_[5.4]_Mamba_State_Tracking.md
+    notes: Thirteen-cell ARENA progression from exact bracket-depth trajectories through tiny-Mamba training, recurrent-state extraction, controlled probes, matched cache transplants, and OOD anomaly hunting. The visible result shows 0.974 ID and 0.933 length-32 accuracy, probe degradation from 0.936 ID to 0.707 late OOD versus 0.350 shuffled labels, and exact donor-trajectory transfer versus a failed matched-norm random edit. CUDA verification adds a tiny-Transformer comparison, learned state intervention, and pinned Mamba-130M hidden-state extraction through available fast kernels.
+  '5.5':
+    status: course_ready
+    page: chapter5_modern_architectures/instructions/pages/05_[5.5]_Diffusion_Language_Models.md
+    notes: "The 90-cell learner retains the exact copy warm-up and adds thirteen text implementation groups (23 total), immediate semantic checks, twelve inspected figures, clear uncertainty colors and four play cells. All 43 own-answer code cells pass in 432.09 seconds from unchanged sources. Twelve fits, 126 conditions and 64,512 generated examples retain every seed and control. Fresh CUDA refits four models, reproduces all 21,504 seed-zero examples and checkpoint/trace states exactly in 139.65 seconds at 0.127 GiB text-model peak. Arithmetic improves over shuffled supervision; grammar favors AR and QA remains weak. Story continuations are visibly repetitive and reference similarity is not correctness. DiffusionGemma remains a separate inference preflight."
+  '5.6':
+    status: course_ready
+    page: chapter5_modern_architectures/instructions/pages/06_[5.6]_Multimodal_Embedding_and_Function_Calling_Models.md
+    notes: "ARENA-style embedding-router progression from masked pooling and cosine retrieval through confidence/margin abstention, tool availability, and separately scored routing behavior. The visible exact organism reaches 1.0 tool and abstention accuracy with zero hallucinations; a shuffled-schema control has 0.0 tool accuracy, while always-call has 0.0 abstention accuracy and 1.0 hallucination rate. Ten focused tests and all 11 solution cells pass, with expected/help/solution/interpretation dropdowns, parameterized play cells, and anomaly cases. CUDA 13.2 verification gives 4/4 top-1 and MRR 1.0 for both authenticated EmbeddingGemma and pinned BGE while permuted pairs score 0.0; pinned FunctionGemma parses and names all 32 held-out Mobile Actions calls correctly, with 0.875 exact/required argument accuracy and four disclosed failures. Authenticated base FunctionGemma forward also passes; peak VRAM is 1.312 GB. Limits include the hand-declared toy lexicon, uncalibrated abstention thresholds, and no compositional or real-model abstention slice."
+  '5.7':
+    status: prototype
+    page: chapter5_modern_architectures/instructions/pages/07_[5.7]_Mamba-2_and_Structured_State-Space_Duality.md
+    notes: >-
+      Eleven exercises now render from readable canonical sources with complete
+      stubs and parseable solution dropdowns. IEEE float32 resolves the official
+      CUDA operator and full-checkpoint discrepancy within the original bounds.
+      Equal-budget recall controls and requested-length evaluation are repaired.
+      All 21 completed-learner code cells execute, including strict CUDA. The
+      fresh generic report is accepted: 1.000 recall vs 0.508/0.508/0.523 controls,
+      0.753 doubled-length accuracy, 1.26e-4 maximum logit error, 1.819 GiB peak.
+      Independent editorial review remains required before promotion.
+  '6.1':
+    status: course_ready
+    page: chapter6_sparse_feature_methods/instructions/pages/01_[6.1]_SAE_Variants.md
+    notes: "ARENA-style comparison of ReLU-L1, TopK, gated, and JumpReLU SAEs with six control-bearing panels, seven tested learner exercises, inline encoder/objective/metric/intervention implementations, expected/help/solution/interpretation dropdowns, parameter sweeps, and anomaly hunting. On exact planted sparse ground truth, all variants beat the train-mean reconstruction baseline, held-out AUCs are 0.884-0.946 versus shuffled labels near 0.5, causal steering is 0.445-0.731 versus numerical-zero orthogonal controls, and the lowest reconstruction error does not imply the best dictionary recovery. Seven focused tests and all 13 solution cells pass. CUDA 13.2 verification trains a width-256 TopK-16 SAE on pinned Pythia-70M hidden states: held-out MSE 1.134 versus zero 1.375, permuted-decoder MSE ratio 1.436, exact L0 16, safe-logit delta 1.478 versus near-zero orthogonal projection, and 0.391 GB peak VRAM. No individual feature cleanly separates the train or topic-disjoint held-out labels (AUC 0.641/0.438); this is preserved as a negative result, so the real path claims SAE mechanics rather than semantic feature interpretation."
+  '6.2':
+    status: course_ready
+    page: chapter6_sparse_feature_methods/instructions/pages/02_[6.2]_Gemma_Scope_Deep_Dive.md
+    notes: "ARENA-style Gemma Scope lab with eight progressive exercises, visible exact implementations, immediate semantic tests, expected/help/solution/interpretation dropdowns, parameter play, anomaly hunting, and a four-panel validation signature. On the exact six-feature organism, reconstruction MSE is below 1.5e-15, target held-out AUC is 1.0 versus 0.5 for random-feature and shuffled-label controls, the planted train-only confound collapses from AUC 1.0 to 0.5 held out, and target ablation changes the readout by 1.15 versus 0.0 for the matched control. Ten focused tests and all 16 solution cells pass. CUDA 13.2 verification authenticates pinned Gemma 3 1B IT and the layer-13 width-16K Gemma Scope 2 JumpReLU artifact, obtains held-out feature AUC 1.0 versus random-feature AUC 0.5 and label-shuffle AUC 0.0, and peaks at 2.236 GB. The real result uses only 16 benign prompts and has no real-model causal intervention, so its semantic claim remains narrow and correlational."
+  '6.3':
+    status: course_ready
+    page: chapter6_sparse_feature_methods/instructions/pages/03_[6.3]_Transcoders_and_Attribution_Graphs.md
+    notes: "ARENA-style transcoder and attribution-graph lab with six core exercises, immediate semantic tests, visible encoder/decoder/decomposition/edge/graph/intervention implementations, expected/help/solution/interpretation dropdowns, a color-and-shape play cell, anomaly localization, and two signature figures. The exact ReLU organism recovers its known ten-edge graph with zero reconstruction and edge-decomposition error; faithfulness at k=1/2/3 is 0.781/0.906/1.000 versus 0.000/0.000/0.094 for a same-size random graph, full-graph ablation damage is 1.0 versus 0.094, and exact versus shuffled-edge conservation is 1.0 versus 0.0. Eight focused tests and all 13 solution cells pass. CUDA 13.2 verification loads pinned TransformerLens gelu-1l, preserves the oracle MLP output and logits within 5.72e-6 and 1.81e-5, trains a width-512 transcoder with held-out MSE ratio 0.150 and top-1 agreement 0.904, and measures top-feature damage 0.808 versus 0.000646 for low-effect features at 0.369 GB peak VRAM. This is a one-layer real-model preflight, not a published cross-layer-transcoder replication."
+  '6.4':
+    status: course_ready
+    page: chapter6_sparse_feature_methods/instructions/pages/04_[6.4]_Crosscoders_and_Model_Diffing.md
+    notes: "ARENA-style learned-crosscoder lab with exact paired-activation ground truth, seven visible exercises, inline solved implementations, immediate semantic tests, expected/help/solution/interpretation dropdowns, parameterized sparsity play, and anomaly hunting. The 256-example held-out signature reaches reconstruction MSE 0.000183 versus zero baseline 0.1602, ownership accuracy 1.000 with minimum planted-feature correlation 0.9833, behavior AUC 0.9689 versus label-shuffle 0.5436, and targeted-ablation reduction 0.8341 versus same-norm and orthogonal reductions -0.1077 and -0.0965. CUDA 13.2 verification loads pinned TransformerLens GELU-1L and SoLU-1L revisions, obtains real residual-delta AUC 1.000, exact paired reconstruction, and top-direction reduction 16.084 versus random 0.005 at 0.513 GB peak VRAM. Eight focused tests and all 15 solution cells pass. The real-model path is a paired residual/SVD mechanics preflight, not a trained real-model crosscoder replication."
+  '7.1':
+    status: course_ready
+    page: chapter7_activation_to_language/instructions/pages/01_[7.1]_Logit_Lens_Tuned_Lens_and_Patchscopes.md
+    notes: "ARENA-style lens and Patchscope lab with thirteen learner-visible exercises, immediate semantic tests, expected/help/solution/interpretation dropdowns, a layer-selection play cell, anomaly hunting, and a three-panel signature result. On 24 disjoint prompts from pinned Pythia-70M, median target rank improves from 18,163 at the embedding to 1 at the final block; block-5 source insertion recovers 87.5% of source targets versus 0% for text-only, cyclic wrong-source, and matched-scale random controls, with mean target log-probability gain 7.73. CUDA 13.2 verification separately loads pinned TransformerLens gelu-1l: a ridge lens improves held-out next-token accuracy from 0.075 to 0.450, Patchscope accuracy is 1.0 versus 0.0 text-only, and random-activation max confidence is 0.0407 at 0.296 GB peak VRAM. Seventeen focused tests and all 18 solution cells pass. The result establishes decodability and activation transfer, not belief or circuit causality."
+  '7.2':
+    status: prototype
+    page: chapter7_activation_to_language/instructions/pages/02_[7.2]_Feature_Verbalizers.md
+    notes: "Independent re-review pending. The six-exercise feature-verbalizer lab now uses exact decoder/component-replacement oracles, immediate tokenizer-ID and pair-null tests, expected/help/solution/interpretation dropdowns, a real-hook play cell, anomaly hunting, and a visible six-panel signature. The layer-3 direction reaches 1.0 held-out accuracy, but the exhaustive 4,096-case matched-pair null has p95 1.0 and exact p=0.134 with 548 perfect fits, so decoding is explicitly a negative significance result. The suffix rule scores 1.0/0.5/1.0 by morphology and the narrow final-token-ID lookup scores 0.5 with zero ID overlap. Bidirectional residual replacements change are-minus-is by 8.48/9.62, exceeding stronger 256 paired-swap null p95 values 8.10/9.02 with p=0.0156/0.0078. The separate 64-direction orthogonal null remains visible. Sixteen tests and all 14 learner code cells completed from six dropdowns pass on CUDA 13.2 at 1.017 GB peak VRAM. Claims are causal sensitivity in this prompt family, not uniqueness, completeness, or a full agreement circuit."
+  '7.3':
+    status: course_ready
+    page: chapter7_activation_to_language/instructions/pages/03_[7.3]_Mini_Activation_Oracles.md
+    notes: "ARENA-style question-conditioned oracle lab with seven learner exercises, immediate semantic tests, expected/help/solution/interpretation dropdowns, a four-panel signature result, play cell, and anomaly hunt. On exact color/shape/interaction ground truth, the low-rank oracle reaches 1.0 accuracy versus 0.5 text-only and 0.75 activation-only controls, stays at 1.0 on four named OOD splits, abstains on 98.8% of off-manifold activations, and changes exactly the two answers causally downstream of a color-factor patch. Twenty focused tests and all 11 solution cells pass. CUDA 13.2 verification on pinned TransformerLens gelu-1l reaches 1.0 held-out and OOD accuracy, 1.0 random abstention, and the predicted residual-patch answer flip at 0.269 GB peak VRAM. This is exact factor-world evidence plus a real residual-mechanics preflight, not full generative Activation Oracle or AObench parity."
+  '7.4':
+    status: prototype
+    page: chapter7_activation_to_language/instructions/pages/04_[7.4]_Mini_Natural_Language_Autoencoders.md
+    notes: "Independent re-review pending after shortcut repair. The nine-exercise mini-NLA lab now predicts complete 24-token explanations for 32 held-out Pythia states, uses the paper's row-normalized FVE, and makes every number/time state within a lexical context share exactly the same token multiset. The contextual Pythia path reaches normalized FVE 0.816 and behavior parity 1.0 versus 0.642 and 0.0 for a matched bag-of-tokens ridge bypass; the bypass's 0.841 within-factor FVE remains visible to show how lexical context can look strong while losing ordered causal factors. Twenty-three focused tests and all 14 learner code cells completed from nine dropdowns pass, including an embedded live signature figure. CUDA 13.2 execution peaks at 1.009 GB and the real one-row text edit changes a candidate logit by 5.61 with exact locality. This remains a supervised templated warm-start, not unsupervised, free-form, or paper-scale NLA training."
+  '7.5':
+    status: course_ready
+    page: chapter7_activation_to_language/instructions/pages/05_[7.5]_Predictive_Concept_Decoders.md
+    notes: ARENA-style PCD lesson with eight tested exercises, an exact planted sparse-concept world, explicit concept-question interaction slots, a six-control held-out comparison, causal target-vs-active-control removal, learner-generated heatmap and bar panels, complete inline solution implementations, and a pinned gelu-1l CUDA preflight with 32 direct prediction rows.
+  '8.1':
+    status: course_ready
+    page: chapter8_automated_circuits/instructions/pages/01_[8.1]_Activation_Patching_Refresher.md
+    notes: Eight-exercise ARENA lesson on a declared two-hop copy circuit. Students implement the signed metric, normalized recovery, exact patching, denoising and noising sweeps, wrong-position donor controls, and localization metrics; the visible heatmap exactly recovers the three planted route cells with zero off-route response. A separately scoped gelu-1l CUDA preflight verifies real residual-hook mechanics with perfect final-position recovery and zero wrong-position controls.
+  '8.2':
+    status: course_ready
+    page: chapter8_automated_circuits/instructions/pages/02_[8.2]_Attribution_Patching_and_EAP.md
+    notes: Seven-exercise ARENA lesson on an exact nonlinear causal graph. Students implement exact node and edge patching, corrupt-point attribution, path integrated gradients, EAP, and EAP-IG; the visible signature exposes a 1.40 gated-route false negative missed by ordinary AP/EAP and recovered by integration, with exact-zero decoys, a linear positive control, and shuffled-delta failure. A separate gelu-1l CUDA mechanics preflight verifies final-position localization for exact, attribution, IG, and EAP paths.
+  '8.3':
+    status: course_ready
+    page: chapter8_automated_circuits/instructions/pages/03_[8.3]_ACDC_and_Circuit_Metrics.md
+    notes: "Twenty-one exercise groups implement the full GPT-2 additive graph, hybrid edge interventions, sequential ACDC, EAP, task/KL EAP-IG, circuit metrics and controls. The 94-cell own-answer learner passes all 44 code cells with five owned searches, fourteen measured figures and editable budget, removal and prompt plays. Greater-than circuits frozen on development transfer above both 32-draw null ensembles; ACDC recovery falls to 0.8318, while EAP/task-IG/KL-IG reach 0.8952/0.8586/0.9090. All four IOI candidates fail development and its holdout is unopened; edge-deletion and sampled completeness plots retain the diagnostic limitations. All 56 tests and an independent five-circuit/320-null CUDA check pass with exact behavior agreement. The checkpoint continuation and original interruption are preserved. This is bounded real-model method learning, not complete paper-benchmark replication."
+  '8.4':
+    status: course_ready
+    page: chapter8_automated_circuits/instructions/pages/04_[8.4]_Circuit_Tracing_with_Attribution_Graphs.md
+    notes: ARENA-style circuit-tracing lesson with seven tested exercises, an exact planted feature/head/MLP/logit DAG, exact-vs-IG edge heatmaps, top-path extraction, path-only/path-removed faithfulness-completeness-minimality tests, same-size random and reversed-edge controls, editable threshold sweep, inline solution implementations, and an explicitly demoted CUDA residual-position preflight.
+  '8.5':
+    status: course_ready
+    page: chapter8_automated_circuits/instructions/pages/05_[8.5]_Sparse_Feature_Circuits.md
+    notes: "ARENA-style sparse-feature-circuit lab with eight visible implementation exercises, exact node/edge ground truth, immediate semantic tests, expected/help/solution/interpretation dropdowns, two signature figures, threshold play, and anomaly hunting. The planted circuit recovers 0.986 of the effect versus 0.014 for a same-size random graph; its faithfulness/completeness are 0.986, and EAP-IG reduces nonlinear attribution error from 7.81e-3 to 8.57e-8. Twenty-three focused tests and all 17 solution cells pass. CUDA 13.2 verification loads the pinned Pythia-70M model and all 19 official SAE dictionaries, validates a 100-example official graph artifact with 59 edges and 37 nodes, obtains 1.0 faithfulness on 40 held-out examples, and recovers 0.583 of a real SAE-mediated effect versus zero for random features at 0.588 GB peak VRAM. SHIFT-style editing raises generated-data OOD accuracy from 0.0 to 1.0 without train loss; the section does not claim broad task or threshold robustness."
+  '9.1':
+    status: course_ready
+    page: chapter9_alignment_interpretability/instructions/pages/01_[9.1]_Refusal_Directions_and_Safe_Steering.md
+    notes: "Twelve progressive exercises implement training-only mean directions, AUROC, genuine 32-draw permutation/random nulls, PCA, native Qwen input caching, persistent addition/every-write ablation, greedy EOS generation, marker scoring, paired transitions and development selection. All 26 own-answer code cells pass in 555.72 s with unchanged sources and all 85 final conditions retained. Twenty semantic tests pass. Six inspected figures and three real play cells expose concrete generations, frozen final effects and capability cost. A separate 173.61 s CUDA check regenerates 3640 examples across baseline and all 34 unit-strength conditions, and all 65 target/null score directions, with exact agreement at 1.918 GiB. Layer 16/suffix -1 changes benign marker rate from 1/36 to 27/36 under addition and refusal-category markers from 26/36 to zero under full ablation. Strong addition damages exact benign tasks; near-perfect permutation ranking and visible rubric mistakes remain. This is one small model and an English marker study, not broad safety or a complete paper-suite replication."
+  '9.2':
+    status: course_ready
+    page: chapter9_alignment_interpretability/instructions/pages/02_[9.2]_Chain_of_Thought_Faithfulness.md
+    notes: "ARENA-style CoT-faithfulness lab with eight progressive implementation exercises, immediate semantic tests, expected/help/solution/interpretation dropdowns, a 24-example exact toy organism, a visible layer-position probe heatmap, causal residual patching, matched controls, play cells, and anomaly hunting. The exact organism obtains hidden-answer probe accuracy 1.0 versus 0.0 under label shuffling; its targeted causal patch flips 100% of answers and beats the strongest control by a donor-margin gap of 8.0. All 15 solution code cells execute and nine focused CPU tests pass. CUDA 13.2 verification loads pinned EleutherAI/pythia-70m-deduped revision e93a9faa9c77e5d09219f6c868bfc7a1bd65593c and records hidden-answer accuracy 0.775 versus 0.225 under label shuffling at 0.320 GB peak VRAM. That real-model result is deliberately negative: text-only recall is 1.0 and the targeted patch ties the matched random-donor control with a 0.0 gap, so it supports hook execution and falsification rather than a Pythia CoT-faithfulness claim."
+  '9.3':
+    status: course_ready
+    page: chapter9_alignment_interpretability/instructions/pages/03_[9.3]_Emergent_Misalignment_Detection.md
+    notes: ARENA-style eight-exercise benign proxy-drift lab with a known causal direction and checkpoint onset, held-out threshold fitting, white-box-vs-delayed-behavior timing, behavior alignment, projection mitigation with capability cost, random-direction and label-shuffle controls, a live three-panel signature, complete inline solutions, and a no-generation pinned Pythia-70M CUDA preflight.
+  '9.4':
+    status: course_ready
+    page: chapter9_alignment_interpretability/instructions/pages/04_[9.4]_White_box_Evals_and_Monitors.md
+    notes: "ARENA-style white-box-monitor lab with eight visible exercises, immediate semantic tests, expected/help/solution/interpretation dropdowns, threshold play, and anomaly hunting. On the exact six-feature organism, the white-box monitor gets held-out AUROC/accuracy 1.000/1.000 and catches four surface-identical CoT-unfaithful states that the output-only baseline misses; output-only, shuffled-label, and random-direction AUROCs are 0.800, 0.600, and 0.200. CUDA 13.2 verification loads pinned EleutherAI/pythia-70m-deduped revision e93a9faa9c77e5d09219f6c868bfc7a1bd65593c and obtains monitor AUROC 1.000 and accuracy 1.000 versus black-box proxy accuracy 0.875, with three missed failures, zero monitor false positives, label-shuffle AUROC 0.3875, random-direction AUROC 0.0875, and 0.309 GB peak VRAM. Twelve focused tests and all 21 solution cells pass. The real-model path is a safe hidden-state mechanics preflight without generated completions, not a broad safety-monitor or harmful-content benchmark."
+  '10.1':
+    status: course_ready
+    page: chapter10_capstone_research_sprint/instructions/pages/01_[10.1]_Capstone_Research_Sprint.md
+    notes: "ARENA-style exact-model-organism capstone with a preregistered claim, eight learner-implemented and immediately tested subfunctions, expected/help/solution/interpretation dropdowns, 19 of 19 executed solution cells, play and anomaly-hunting cells, and a compact research write-up. The signature result recovers the hidden rotated-XOR direction with cosine 1.000, reaches held-out accuracy 1.000 across eight unseen nuisance templates, transfers donor answers with target accuracy 1.000, and falls to chance after directional ablation. Raw-bit and template-only baselines are 0.500, 128 shuffled-label probes average 0.525, and 256 same-dimensional random patch directions average 0.057; a separate control figure exposes the strongest accidental random alignment instead of hiding it. Eight focused tests pass. CUDA 13.2 verification passes with Torch 2.12.1+cu132 on the RTX 5090 at 0.033 GB peak VRAM. Claims remain limited to exact method validation on this model organism, not a released-model mechanistic discovery."
+  '11.1':
+    status: course_ready
+    page: chapter11_representation_geometry/instructions/pages/01_[11.1]_PCA_SVD_and_Geometry_Controls.md
+    notes: >-
+      71 cells, 35 executed own-answer code cells, eleven exercise groups,
+      sixteen immediate numerical tests, thirteen inspected figures and four
+      play cells. The exact calendar organism leads to actual pinned Mistral-7B
+      geometry, all 33 development boundaries, 579 new-template prompts, all
+      5634 donor pairs, 32 draws of three nulls and 120 nonlinear fits.
+      Full own-answer v3 passes in 384.41 s at 13.612 GiB. Fresh CUDA refits and
+      reproduces all 6656 checked outcomes across 208 condition batches exactly.
+      CPU gelsd fixes a repeatability failure; the earlier failure is archived.
+      Pure-coordinate edits remain weaker than mean-ablated/full-donor edits,
+      some permuted calendar orders work, and unseen-class decoding declines.
+      UMAP uses train-fit transforms; t-SNE is explicitly transductive. This
+      teaches controlled geometry on two families, not the broader space/time
+      paper. Original chapters are unchanged.
+  '11.2':
+    status: course_ready
+    page: chapter11_representation_geometry/instructions/pages/02_[11.2]_CCA_SVCCA_and_Representation_Alignment.md
+    notes: >-
+      43 cells, 20 executed own-answer code cells, eight visible core methods,
+      five implementation groups plus an interpretation exercise, nine inspected
+      figures and three play cells. Exact CCA/SVCCA/Procrustes/ridge oracles,
+      independent-noise and low-variance causal counterexamples lead to actual
+      GPT-2 layer transport on 96 new IOI prompts. All 17 candidates, three layer
+      pairs and 16 same-norm controls remain visible. Full CPU learner v3 passed
+      in 116.37 s; separate fresh CPU model/fit comparison reproduces 5184
+      outcomes and 108 conditions with zero full-logit error and no changed
+      winning tokens. Strong training CCA does not imply complete transfer:
+      rank-16 CCA matches the native donor's winner on 46/96 late-layer prompts;
+      native donors also fail some intended name changes. Cross-model equivalence
+      and a complete IOI circuit reproduction are not claimed.
+  '11.3':
+    status: course_ready
+    page: chapter11_representation_geometry/instructions/pages/03_[11.3]_Causal_Abstraction_and_Distributed_Alignment_Search.md
+    notes: >-
+      63 cells, 32 executed own-answer code cells, nine implementation groups,
+      thirteen immediate tests, twelve inspected figures and three play cells.
+      Explicit structural equations and a perfectly predictive unused copy lead
+      to differentiable frozen GPT-2 interchanges. Students implement the
+      abstraction, orthogonal swap, gradient objective, minibatch optimizer,
+      native continuation and observational probe. Six development sites and four
+      ranks precede 96 new final prompts. All three alignment seeds, three shuffled
+      fits and 32 random subspaces remain visible. Role-change accuracy is
+      71/96, 73/96 and 72/96 versus 72/96 for the whole donor. Full own-answer v3
+      passes in 306.27 s; fresh CPU execution reproduces 16512 outputs across all
+      43 conditions exactly. Counterfactual native errors, a failed play example,
+      template variation and donor-identity leakage are interpreted. Output
+      agreement does not establish a unique abstraction or superiority over whole
+      donors. Final prose and all twelve figures were reviewed; originals are unchanged.
+  '11.4':
+    status: course_ready
+    page: chapter11_representation_geometry/instructions/pages/04_[11.4]_Concept_Erasure.md
+    notes: 52 cells and 24 executed own-answer code cells; eight implementation groups,
+      eleven immediate checks, twelve inspected figures and two play cells. Exact paired-moment,
+      constrained-optimum and singular-covariance oracles connect LEACE to independently
+      refitted probes and frozen GPT-2. Both prescribed sites and all 106 retained conditions
+      reproduce all 71232 final outcomes exactly after a fresh model reload and refit.
+      New-template role recovery, unrelated object damage and failed actual-token examples
+      remain visible. Full learner passes in 324.554 seconds; independent native reproduction
+      in 329.615 seconds. Browser review checks 42 math expressions and 28 dropdowns.
+      No all-layer scrubbing or unrestricted information-removal claim.
+  '11.5':
+    status: course_ready
+    page: chapter11_representation_geometry/instructions/pages/05_[11.5]_Contrast_Consistent_Search.md
+    notes: 65 cells and 32 executed own-answer code cells; nine exercise groups, twelve immediate checks,
+      fifteen inspected figures and two plays. The original asymmetric objective and exact competing-feature
+      oracle connect to all eighteen frozen GPT-2 site/wrapper/text conditions. Fresh capture and 1152
+      refits reproduce all 98304 final reporter scores, 3586 actual full-vocabulary prefix outputs and
+      5408 tensors exactly. Plain-review success coexists with 50% target accuracy and 100% paired opinion
+      flips in every selected competing-opinion CCS case. Supervised, PCA, raw, shuffled and all 32
+      random controls remain visible. The polished learner passes in 224.500 s. This controlled review
+      study does not establish truth, beliefs, causal necessity or whole-paper replication.
+  '12.1':
+    status: course_ready
+    page: chapter12_vlm_interpretability/instructions/pages/01_[12.1]_CLIP_SigLIP_and_VLM_Controls.md
+    notes: >-
+      Twenty exercises now cover a projector warm-up, complete RGB CNN and causal
+      caption encoders, EOS pooling, both losses, semantic retrieval, both-tower
+      training, real embedding extraction, hooks/patches and typography metrics.
+      All 52 completed-learner code cells execute from their own solution dropdowns
+      in a fresh kernel. Three matched seeds use 576 training and 288 independent
+      evaluation images of twelve familiar classes, with frozen-tower, shuffled-pair,
+      untrained, blank, noise and wrong-color controls. Learner mean accuracy is
+      0.9711 for CLIP and 0.9907 for SigLIP; controls and individual errors are visible.
+      A separate pinned CLIP zero-shot experiment uses 48 scenes and ten matched
+      word/card conditions. Conflicting background words reduce accuracy from
+      47/48 to 11/48 without occlusion. The two-scene real patch and Qwen checks
+      remain scoped preflights. Mechanism localization and typography mitigation
+      remain incomplete, as recorded in the roadmap registry.
+  '12.3':
+    status: course_ready
+    page: chapter12_vlm_interpretability/instructions/pages/03_[12.3]_Mini_VLM_from_Scratch.md
+    notes: "Nineteen progressive exercises expose learned RGB patches, bidirectional ViT attention, explicit image and word slots, a causal decoder, shifted teacher-forced loss, greedy EOS generation, training and causal patching. All 34 own-answer cells passed a fresh full execution with twelve fits, 36 final evaluations, 285 stage/region conditions and seven inspected figures. Three CPU seeds average 0.858 exact familiar muted-image generation versus 0.313 for the strongest trained control; excluded-combination caption accuracy is zero for all three seeds. Object, matched background, unrestricted random, all-visual and true full-sequence patches retain every draw and joint-correct denominator. Forty-three tests and a separate fresh four-mode CUDA experiment pass. Three executable play activities cover geometry, question words and patch stages. This is a small controlled word-generating VLM, not a released frontier-model result."
+  '13.1':
+    status: course_ready
+    page: chapter13_image_generation_interpretability/instructions/pages/01_[13.1]_Diffusion_and_Image_Generation_Controls.md
+    notes: "ARENA-style image-generation mechanism lab with learner-visible SD1.5 hook registration, cross-attention capture, token grouping, matched-seed target/control prompt interventions, aggregation, localization and image-quality metrics, immediate semantic tests, expected/help/solution/interpretation dropdowns, play controls, and anomaly hunting. Sixteen focused tests and all 16 solution cells pass. CUDA 13.2 verification runs pinned Stable Diffusion 1.5 on two safe shape prompts, captures at least 336 cross-attention maps, obtains minimum target-region fraction 0.151 and target-ablation drop 0.151 versus maximum random-control drop -0.135, rejects shuffled region labels and white noise, reaches CLIP image-to-text accuracy 1.000, and peaks at 3.095 GB. The result supports these controlled prompts and interventions only; it is not a broad diffusion-circuit or generated-image-quality claim."
+  '13.2':
+    status: course_ready
+    page: chapter13_image_generation_interpretability/instructions/pages/02_[13.2]_Denoising-Time_Causal_Patching.md
+    notes: "ARENA-style ten-exercise progression from exact forward noising through a hookable trained denoiser, layer-by-timestep activation caches, spatial replacement hooks, calibrated recovery, complete causal sweeps, and a pinned SD1.5 latent intervention. Thirty-one focused tests pass; the paired notebooks include immediate tests, expected/help/solution/interpretation dropdowns, a parameterized play cell, anomaly hunting, and visible toy and real-model signatures. CUDA 13.2 gives exact-organism recovery/selectivity 0.994/0.978 versus random-channel 0.071, wrong-time approximately 0, and untrained -0.113 controls. Across two selected 20-step SD1.5 color counterfactuals, minimum best CLIP recovery is 0.505, minimum regional selectivity is 0.222, and minimum margin over the strongest matched control is 0.194 at 3.235 GB peak VRAM. The real claim is two-case latent-state color transfer, not an internal U-Net circuit, multi-seed robustness, or broad image quality."
+  '14.1':
+    status: course_ready
+    page: chapter14_jepa_world_models/instructions/pages/01_[14.1]_JEPA_and_World_Model_Controls.md
+    notes: ARENA-style JEPA/world-model controls lesson with validation-loop and signature-result diagrams, paired cosine target checks, collapse diagnostics, shuffled-label probe controls, copy and shuffled-action rollout controls, absent/different-object permanence controls, paired notebooks, limitations, and scoped pinned V-JEPA 2 generated-video CUDA evidence.
+  '14.2':
+    status: prototype
+    page: chapter14_jepa_world_models/instructions/pages/02_[14.2]_I-JEPA_from_Scratch.md
+    notes: "Independent review remains pending. Twelve exercises expose the full tiny JEPA mechanism, exact patch/scatter/EMA/gradient oracles, image-space key swap and erasure, matched training, controls, and play. All 28 tests and 28 learner code cells completed from the twelve dropdowns pass. Fresh three-seed CUDA evidence gives correct/original-after-swap/alternate/erased accuracies 1.000/0.000/1.000/0.333 for every seed, with exact non-key locality and 0.255 GiB peak VRAM. Evaluation pixels differ but all twelve semantic templates are shared. Seed 1 effective rank is 1.429; rank is disclosed separately from scale and causal recovery. The ablation removes both target stop-gradient and EMA and cannot isolate either effect. Random encoder probes remain a negative result. Real CIFAR/STL learning, improvement over random features, and released-checkpoint comparison remain unfinished."
+  '15.1':
+    status: course_ready
+    page: chapter15_peft_misalignment/instructions/pages/01_[15.1]_LoRA_DoRA_and_Adapter_Controls.md
+    notes: ARENA-style LoRA/DoRA model-organism lesson with nine visible implementation exercises, exact rank/SVD/merge checks, real CUDA LoRA/DoRA/full training, held-out and OOD examples, weight/activation direction audits, random-label and same-norm controls, editable play cell, anomaly hunt, and safe-proxy claim limits.
+  '15.2':
+    status: course_ready
+    page: chapter15_peft_misalignment/instructions/pages/02_[15.2]_LoRA_vs_Full_Finetuning.md
+    notes: "ARENA-style real-transformer comparison with nine progressive exercises covering exact low-rank updates, transparent GPT-Neo Q/V LoRA injection, freezing and merge parity, disjoint-template task construction, matched training, actual weight-update spectra, activation-drift recovery, causal direction ablation, and same-norm random adapters. On 20 held-out prompts from pinned TinyStories-1M, the full 96-step CUDA 13.2 run reaches accuracy 1.00/1.00/1.00 for rank-1 LoRA/rank-4 LoRA/full finetuning versus 0.60 random labels and 0.50 same-norm random adapters. The rank-4 update has effective rank 2.501 versus 9.306 for full finetuning, and ablating its dominant activation-drift direction reduces target probability by 0.333 more than a matched random direction, at 0.537 GB peak VRAM. Fifteen semantic tests and all 31 solution cells pass; expected/help/solution/interpretation dropdowns, a play cell, anomaly hunting, and a four-panel signature result are present. Claims are limited to one small decoder, one Q/V layer, one safe generated task, and disjoint-template rather than broad semantic generalization."
+  '16.1':
+    status: course_ready
+    page: chapter16_shapley_attribution_baselines/instructions/pages/01_[16.1]_Exact_Shapley_on_Ground_Truth_Games.md
+    notes: "ARENA-style exact-Shapley lab with a complete four-player dividend game, student implementations of coalition tables, exact factorial weighting, permutation averaging, efficiency, marginal-context distributions, and leave-one-out controls, plus immediate semantic tests, expected/help/solution/interpretation dropdowns, a play cell, and anomaly hunting. The visible signature result matches exact Shapley to the dividend oracle at [1.90, 0.60, 1.05, 0.55] while leave-one-out overcounts interactions; the interaction sweep and additive control explain the failure mechanistically. Sixteen focused tests pass and all 11 solution code cells execute. CUDA 13.2 verification trains a neural coalition game on all 16 coalitions, recovers exact Shapley within 9.38e-7 with zero efficiency error, rejects a shuffled-label attribution with error 4.63, and peaks at 0.063 GB under Torch 2.12.1+cu132. Claims are limited to complete finite-domain method validation, not approximate SHAP on large models."
+  '16.2':
+    status: course_ready
+    page: chapter16_shapley_attribution_baselines/instructions/pages/02_[16.2]_KernelSHAP_and_PartitionSHAP_Controls.md
+    notes: "ARENA-style seven-exercise KernelSHAP/PartitionSHAP lab with an exact six-player dividend game, learner-implemented constrained regression and Owen values, immediate semantic tests, expected/help/solution/interpretation dropdowns, a three-panel signature result, parameterized budget/seed/partition play, and anomaly hunting. Full-table KernelSHAP matches exact Shapley within 5.55e-16; at budget 24 the paired-kernel sampler has 0.242 mean max error versus 0.477 uniform, while shuffled values give 0.994 error. The aligned partition has zero error, a fixed misaligned partition has 0.300, and 91/100 random balanced partitions differ from exact Shapley. Ten focused tests and all 11 solution cells pass. CUDA 13.2 trains a four-player neural coalition game, recovers exact KernelSHAP/PartitionSHAP within 9.38e-7, rejects shuffled attributions by 4.63, and peaks at 0.063 GB VRAM. Limits include the exact 64-coalition organism, illustrative rather than optimal sampling, and supplied rather than learned partitions."
+  '16.3':
+    status: course_ready
+    page: chapter16_shapley_attribution_baselines/instructions/pages/03_[16.3]_Shapley_Interactions_with_shapiq.md
+    notes: "ARENA-style Shapley-interaction lab with seven learner exercises, complete coalition-table ground truth, local SII and permutation-sampling implementations, immediate semantic tests, expected/help/solution/interpretation dropdowns, a four-panel signature result, parameterized interaction play, and higher-order anomaly hunting. The planted pair has SII 3.0, rises to 4.0 under a known triple term, and all off-target/additive-control interactions are below 1e-9; pinned shapiq parity is within 6.75e-9. Sampling MAE falls from about 0.70 at budget 2 to 0.039 at 256, while within-size value permutation remains wrong by 3.88 and large individual Shapley values identify the wrong pair. Fifteen focused tests and all 13 solution cells pass. CUDA 13.2 trains a neural coalition game, recovers positive and negative interactions within 4.52e-7, matches shapiq within 1.18e-8, rejects shuffled interactions by 4.38, and peaks at 0.063 GB VRAM."
+  '16.4':
+    status: course_ready
+    page: chapter16_shapley_attribution_baselines/instructions/pages/04_[16.4]_TokenSHAP_and_TokenShapley.md
+    notes: "ARENA-style TokenSHAP lab with student implementations of position-preserving masking, complete coalition scoring, exact and sampled Shapley, pairwise redundancy/synergy diagnostics, grouped-player attribution, correlated-support ambiguity, and seed-distribution convergence. Eleven focused tests pass and all 13 solution code cells execute with expected/help/solution/interpretation dropdowns, play cells, and anomaly hunting. The six-panel signature result assigns exact credit [0, 0.3333, 0.3333, 1.5, 6.8333] summing to 9 while leave-one-out sums to 12; at 1024 permutations the 40-seed mean/p90 max errors are 0.0539/0.0904. Random-token and shuffled-value controls fail visibly, word versus subword grouping changes transfer credit from 6.8333 to 7.6667, and two games identical on observed support differ off-manifold and in attribution. CUDA 13.2 verification trains a tiny token scorer on all 16 coalitions, recovers exact values within 1.34e-7, rejects the shuffled control by 1.67, and peaks at 0.063 GB under Torch 2.12.1+cu132. Claims remain finite-game method validation, not faithful attribution for a large language model."
+  '16.5':
+    status: course_ready
+    page: chapter16_shapley_attribution_baselines/instructions/pages/05_[16.5]_VLM_Modality_and_Region_SHAP.md
+    notes: ARENA-style VLM modality/region SHAP lesson with seven tested implementation steps, exact image/text and object/background/OCR games, all eight inspectable rendered coalitions, efficiency and localization controls, live pinned-CLIP score and attribution panels, play/anomaly cells, and explicit finite-counterfactual claim limits.
+  '16.6':
+    status: course_ready
+    page: chapter16_shapley_attribution_baselines/instructions/pages/06_[16.6]_SHAP_vs_Activation_Patching.md
+    notes: "ARENA-style SHAP-versus-patching lab with nine focused tests, all 11 solution code cells executed, learner-implemented coalition enumeration, exact Shapley, patching effects, strict label alignment, matched random directions, and interaction sweeps, plus expected/help/solution/interpretation dropdowns, play, and anomaly hunting. In the exact four-token ReLU organism, token Shapley [2.20, 1.80, 0.25, 0.00] conserves the 4.25 output delta while full-context patching [3.40, 3.00, 0.25, 0.00] overcounts by exactly 2.40; after aligning players to five post-ReLU units, both methods agree to 8.88e-16. A wrong-location patch is exactly zero, shuffled labels reduce cosine to 0.515, and the true 2.40 gate effect beats the visible 512-direction null p95 of 2.166. CUDA 13.2 verification uses a stronger 1,024-direction null with p95 2.187, fits additive and interaction model organisms, confirms additive agreement within 2.73e-8 and interaction disagreement of 1.10, and peaks at 0.063 GB under Torch 2.12.1+cu132. Claims are scoped to exact finite model organisms and player-definition effects, not equivalence on large transformers."
+  '16.7':
+    status: course_ready
+    page: chapter16_shapley_attribution_baselines/instructions/pages/07_[16.7]_Data_Shapley_in_One_Training_Run.md
+    notes: "ARENA-style Data Shapley lab with six student-implemented stages, 17 focused tests, expected/help/solution/interpretation dropdowns, a modifiable play cell, and a visible four-panel signature result. The learner computes exact permutation ground truth first, then performs 256 real subset-training runs for an eight-example logistic-regression game. The one-run checkpoint-gradient estimate correlates r=0.995472 with exact values, preserves duplicate symmetry, and identifies the planted mislabeled row; matched deletion improves utility by 0.132776 while deleting a helpful duplicate reduces it by 0.022480. A 16-seed Monte Carlo band exposes approximation uncertainty, influence disagrees in sign on the rare point, and shuffled labels move negative credit to the relocated corruption. Independent CUDA 13.2 verification enumerates all 16 coalitions of a one-step training organism, obtains exact versus in-run correlation 1.0, rejects random-data and label-shuffled attribution controls, and peaks at 0.063 GB under Torch 2.12.1+cu132. Claims are limited to finite convex organisms, not production-scale data valuation."
+  '16.8':
+    status: course_ready
+    page: chapter16_shapley_attribution_baselines/instructions/pages/08_[16.8]_Do_SHAPley_and_Mechanistic_Interpretability_Agree.md
+    notes: "ARENA-style nine-exercise agreement lab with 19 focused tests, complete finite coalition games, exact Shapley, causal ablation, insertion/deletion curves, additive agreement, XOR player-set failure and pair-interaction repair, shuffled controls, and a one-step Data Shapley bridge. The executed solution exposes every core implementation and includes expected/help/solution/interpretation dropdowns, play, and anomaly hunting. CUDA 13.2 verification reaches Spearman 1.0 and top-k overlap 1.0 on the aligned additive neural game, recovers interaction effects within 4.53e-7, and produces a 3.80 deletion drop versus 0.20 for the matched random baseline. The shuffled control is rejected with Spearman -0.8 and zero top-k overlap; the data-player bridge has Pearson 1.0 and finds the harmful example. Peak VRAM is 0.063 GB under Torch 2.12.1+cu132. Claims are scoped to exact small games and explicit player definitions, not generic equivalence between SHAP and mechanistic attribution."
+  '17.1':
+    status: course_ready
+    page: chapter17_training_dynamics/instructions/pages/01_[17.1]_Checkpoint_Archaeology_and_Mechanism_Emergence.md
+    notes: "ARENA-style checkpoint-archaeology lab with exact Fourier-mode ground truth, real save/reload checkpoints, immediate semantic tests, expected/help/solution/interpretation dropdowns, a three-panel signature figure, checkpoint play, and anomaly hunting. On the complete 169-example mod-13 domain, accuracy reaches 1.0 and legal Fourier power 0.750; both stabilize at step 24. Keeping only legal modes gives 1.0 late accuracy, ablating them drops accuracy by 1.0, while random-label accuracy stays below 0.095 and same-size random Fourier power below 8.15e-4. Eight focused tests and all 14 solution cells pass. CUDA 13.2 trains and reloads all 28 checkpoint files at 0.063 GB peak VRAM. This is exact finite-domain developmental evidence for a tiny MLP, not OOD arithmetic generalization or a large-model checkpoint study."
+  '16.9':
+    status: course_ready
+    page: chapter16_shapley_attribution_baselines/instructions/pages/09_[16.9]_Influence_Functions_and_TracIn.md
+    notes: >-
+      Eighty cells, forty own-answer code cells, eleven exercise groups, thirteen
+      student functions, eighteen inspected figures and two plays. Real UCI digit
+      attribution connects inverse curvature, exact and Taylor SGD accounting and
+      TracInCP to 930 independently converged refits and all six paths. Fresh CPU
+      reproduction matches all 16726855 tensor elements. Every order, checkpoint,
+      damping, finite perturbation and matched random deletion remains, including
+      88 wrong-sign influence pairs and checkpoint/deletion disagreements. Forty-two
+      dropdowns and forty-three math expressions render. No nonconvex-network,
+      exact Data Shapley or GhostSuite package claim.
+  '16.10':
+    status: course_ready
+    page: chapter16_shapley_attribution_baselines/instructions/pages/10_[16.10]_Datamodels.md
+    notes: >-
+      Seventy-one cells, thirty-one own-answer code cells, eight exercise groups,
+      ten student functions, fifteen inspected figures and two editable plays.
+      Datamodels learn real classifier margins from 3456 fit/validation subset
+      models, then test 768 held-out subsets and 6528 frozen counterfactuals.
+      The full CPU learner takes about sixteen seconds; independent reproduction
+      matches all 5546159 tensor elements. All fractions, regularization paths,
+      sample sizes, per-query errors and class-matched random controls remain.
+      Dense coefficients, least-squares instability, fixed-size offset ambiguity
+      and deletion calibration failures are explained. Twenty-four dropdowns and
+      fifty-eight math expressions render. No stochastic ResNet replication or
+      unseen-image generalization by the datamodel is claimed.
+  '16.11':
+    status: course_ready
+    page: chapter16_shapley_attribution_baselines/instructions/pages/11_[16.11]_Dataset_Cartography.md
+    notes: >-
+      Seventy-one cells, thirty own-answer code cells, nine exercise groups, ten
+      student functions, twenty inspected figures and two editable plays. Full
+      confidence/variability/correctness maps retain both logging conventions,
+      five seeds, clean/noisy/shuffled labels and linear/MLP models. All 140 main
+      training runs, class-matched controls and equal-update comparisons are
+      evaluated on 2620 held-out images after selection and training finish.
+      Fresh reproduction exactly matches 41903198 tensor elements. High-variability
+      selection failures, class omissions and injected-error misses remain.
+      Thirty-two dropdowns and sixteen math expressions render. No natural OOD,
+      RoBERTa NLP or universal data-selection claim.
+  '16.12':
+    status: course_ready
+    page: chapter16_shapley_attribution_baselines/instructions/pages/12_[16.12]_SAGE_Global_Importance.md
+    notes: >-
+      Eighty cells, thirty-three own-answer code cells, nine implementation exercises,
+      eighteen inspected figures and two plays. Conditional Gaussian and empirical
+      marginal SAGE, local loss and prediction games, nonlinear averaging, interactions,
+      sampling precision/bias, background/seed/recipe variation and frozen audit rankings.
+      Seven fresh regressors and all 256 coalitions; 40320-ordering, weighted-regression,
+      NumPy and author-imputer references. Fresh reproduction matches all 3786320
+      elements exactly. Thirty-two dropdowns and 81 math expressions render.
+      Negative values and weak/changed rankings remain; no causal or optimal-model claim.
+  '16.13':
+    status: course_ready
+    page: chapter16_shapley_attribution_baselines/instructions/pages/13_[16.13]_TreeSHAP_from_First_Principles.md
+    notes: >-
+      87 cells, 38 own-answer code cells, nine implementation
+      exercises, 17 inspected figures and two editable plays. All 18
+      fresh fitted models and 486 component trees explain 153 ranking and 119 recipe-disjoint audit
+      rows with path and interventional games. Full 256-coalition oracles cover both games for three
+      primary models; deletion, background, shuffled-target, dummy and Saabas controls are retained.
+      The unmodified SHAP 0.49.1 interventional reference fails on
+      469 disclosed model-rows; the separately
+      threshold-corrected compiled route has zero source-route disagreements at the frozen tolerance.
+      Fresh reproduction compares 1055546 array elements exactly.
+      These are predictive attributions, not causal ingredient effects or a whole-paper replication.
+  '16.14':
+    status: course_ready
+    page: chapter16_shapley_attribution_baselines/instructions/pages/14_[16.14]_DeepSHAP_When_Does_Fast_Attribution_Match_Exact_SHAP.md
+    notes: >-
+      114 cells, 70 own-answer code cells, nine implementation
+      exercises, 17 inspected figures and two editable plays. Six fresh
+      float64 8-32-32-1 ReLU networks and one ridge control explain all 153 ranking and 119
+      recipe-disjoint audit rows. Exact 256-coalition intact-donor games cover all seven models and
+      1,904 model-rows; the learner retains 974,848 per-donor attribution coordinates and checks 896
+      bounded model-row pairs against SHAP 0.49.1 DeepExplainer. Five backgrounds, three shuffled
+      targets, a mean baseline, gradient-times-delta, seven-model replacement curves and 100 random
+      orders remain visible. DeepSHAP is explicitly an approximation: the finite-epsilon near-zero
+      fixture keeps its 4.0e-07 residual while epsilon zero passes.
+      Fresh reproduction compares 842 arrays,
+      5887125 elements and 603 scalars exactly.
+      These are predictive attributions, not causal ingredient effects or a whole-paper replication.
+  '16.15':
+    status: course_ready
+    page: chapter16_shapley_attribution_baselines/instructions/pages/15_[16.15]_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate.md
+    notes: 126 cells, 79 own-answer code cells, nine student methods, 20 inspected figures and two editable
+      plays. All seven known predictors are refitted and all 21 state hashes match. Every one of 1,904 held-out
+      model-rows retains K2048 samples, q256/q512 pairs and exact 256-coalition games. Full 64-replicate
+      samples, five backgrounds, three noise scales, SHAP/Captum same-draw references, distance diagnostics
+      and 100 random-order controls are retained. Fresh reproduction compares 1442 arrays and 464237288
+      elements exactly. Ordinary SE and quadrature are qualified; continuous-path attribution differs from
+      discrete feature Shapley and is not physical causality.
+  '16.16':
+    status: course_ready
+    page: chapter16_shapley_attribution_baselines/instructions/pages/16_[16.16]_Where_Does_Higher_Order_Credit_Go.md
+    notes: >-
+      149 exercise cells and 141 completed own-answer cells include 55 executed code cells,
+      eight exercises, ten student functions, eleven inspected figures and two editable plays.
+      All seven known predictors and 272 held-out rows retain complete interaction games,
+      50135040 hybrid predictions, five backgrounds and all pair contexts. Exact dividend,
+      shuffled-target, within-size and random-order controls stay visible. Independent Astra
+      v8 review approved publication after actual browser, mathematics and play inspection.
+      Fresh source-only refits reproduce 1797 arrays and 94604271 elements exactly.
+      Ordered support arithmetic changes 98602 distances and 108 nearest IDs versus v7;
+      the full correction, amendments and historical BLOCK remain inspectable. Observational
+      games and known-model reproduction do not establish physical causality or a whole-paper
+      replication. This section-level status does not establish full course readiness.
+  '16.17':
+    status: course_ready
+    page: chapter16_shapley_attribution_baselines/instructions/pages/17_[16.17]_One_Query_Many_Interactions.md
+    notes: >-
+      49 own-answer cells, 22 executed code cells, eight exercises, nine student functions,
+      ten inspected figures and two editable plays. All seven known predictors, 272 held-out
+      rows, 28 pairs, two proposals, 32 replicates and seven budgets are retained. A source-only
+      process refits the models and exactly reproduces 663 arrays with 118275724 values.
+      Thirty dropdowns and 46 math expressions render. Twelve native and six analytic play
+      variations pass. Finite additive sampling noise, shuffled-model interactions and low-budget
+      rank deficiency remain visible. The precomputed-oracle logical query cost is disclosed.
+      Author implementation and visual review only; no independent review, inference speedup
+      or causal claim. This section-level status does not establish full course readiness.

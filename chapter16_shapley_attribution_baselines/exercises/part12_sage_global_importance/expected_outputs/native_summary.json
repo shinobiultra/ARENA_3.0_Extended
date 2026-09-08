@@ -1,0 +1,59 @@
+{
+  "training_runs": 7,
+  "neural_training_runs": 6,
+  "optimizer_updates": 4800,
+  "train_rows": 758,
+  "explanation_rows": 153,
+  "audit_rows": 119,
+  "coalitions": 256,
+  "background_rows": 64,
+  "direct_sampled_paths": 4096,
+  "repeated_sampling_runs": 32,
+  "audit_used_for_selection": false,
+  "audit_mse": [
+    36.28860074381568,
+    32.1915210979803,
+    37.04540945171606,
+    480.04474298474173,
+    511.11583314055116,
+    557.6219762923796,
+    99.65495616101818
+  ],
+  "training_mean_audit_mse": 244.67938059553117,
+  "explanation_sage": [
+    143.04947111362472,
+    14.655028720809065,
+    -8.201244083699683,
+    16.70322269067869,
+    2.3625118276248123,
+    -11.464934602385776,
+    -9.780643746573249,
+    78.50335644488325
+  ],
+  "audit_sage": [
+    131.48514607260188,
+    11.085329837354026,
+    -2.931254432376253,
+    22.053508445261414,
+    -3.289044731652821,
+    0.61091305537738,
+    -10.491345586430462,
+    63.437710742387665
+  ],
+  "outer_path_table_max_error": 6.821210263296962e-13,
+  "dummy_importance": 0.0,
+  "local_global_max_error": 8.526512829121202e-14,
+  "reference": {
+    "status": "PASS",
+    "author_commit": "0e34e6c7e2a6b1666e39043e83b9929e68ee68f3",
+    "permutations": 40320,
+    "weighted_regression_coalitions": 254,
+    "numpy_native_predictions": 64,
+    "author_native_imputations": 64,
+    "permutation_max_abs_error": 1.8047785488306545e-11,
+    "weighted_regression_max_abs_error": 8.526512829121202e-14,
+    "numpy_prediction_max_abs_error": 1.4210854715202004e-14,
+    "author_imputation_max_abs_error": 7.105427357601002e-15
+  },
+  "native_directory": "/home/bitwise/.cache/arena_extended/sage/own-full-v4/figures/native-83cv2nzi/study"
+}

@@ -1,0 +1,8 @@
+torch
+streamlit==1.45.0
+pyyaml
+diffusers
+transformers>=4.51,<5
+safetensors
+accelerate
+bitsandbytes

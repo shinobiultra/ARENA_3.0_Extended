@@ -1,0 +1,21 @@
+{
+  "schema": "arena.lossless-json-formatting.v1",
+  "provenance": {
+    "kind": "historical_data_packaging",
+    "packaged_at_utc": "2026-09-08T03:30:17.850003+00:00",
+    "measurement_claim": "Packaging only; all recorded outcomes, values and measurement dates are unchanged.",
+    "source_data": {
+      "repository_path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/verification_report.json",
+      "absolute_path": "/home/bitwise/.cache/arena_extended/evidence_packaging/original_json/5ac0d03c0143785ac96e1c325dd0393286a43bca248e2190febef406dad81f4c.json",
+      "sha256": "5ac0d03c0143785ac96e1c325dd0393286a43bca248e2190febef406dad81f4c",
+      "size_bytes": 11492470
+    }
+  },
+  "formatted": {
+    "sha256": "6e746f950236962c01b5c131f4aecd30639763dfaa3247f0839e124757639d07",
+    "size_bytes": 3730522
+  },
+  "value_equivalence": true,
+  "canonical_values_sha256": "5637b63defbe841105c2e554564fcb55625c9dd790bc8ab1e09e7a04d84b303f",
+  "format": "Two-space object indentation; primitive array records stay on one line."
+}

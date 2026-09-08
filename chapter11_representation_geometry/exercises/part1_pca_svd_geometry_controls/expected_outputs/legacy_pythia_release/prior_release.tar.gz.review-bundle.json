@@ -1,0 +1,207 @@
+{
+  "schema": "arena.review-bundle.v1",
+  "archive": {
+    "name": "prior_release.tar.gz",
+    "sha256": "709b9cfd51f1b6a9be66431c1207ab2511848767419bdc12ca30ee05e36073d8",
+    "size_bytes": 917130
+  },
+  "limits": {
+    "archive_bytes": 67108864,
+    "member_bytes": 16777216,
+    "total_member_bytes": 134217728,
+    "tar_container_bytes": 167772160,
+    "decoded_json_bytes": 67108864,
+    "total_decoded_bytes": 536870912,
+    "members": 4096
+  },
+  "provenance": {
+    "kind": "historical_archive_packaging",
+    "packaged_at_utc": "2026-09-08T03:26:49.411656+00:00",
+    "measurement_claim": "Packaging only. This is not a native rerun, scientific revalidation or new review. Retained receipts, failure labels, values, scientific hashes and measurement dates are byte-identical to the original. Historical embedded archive inventories describe that original; this adjacent contract describes the derived review bundle.",
+    "source_archive": {
+      "repository_path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/expected_outputs/legacy_pythia_release/prior_release.tar.gz",
+      "absolute_path": "/home/bitwise/.cache/arena_extended/evidence_packaging/original_archives/709b9cfd51f1b6a9be66431c1207ab2511848767419bdc12ca30ee05e36073d8.tar.gz",
+      "sha256": "709b9cfd51f1b6a9be66431c1207ab2511848767419bdc12ca30ee05e36073d8",
+      "size_bytes": 917130,
+      "git_commit": "ce96ceaae2f91bf0dcd7648052325e07a87b0b5b",
+      "git_blob": "38d8d18b201b78f0a4361b944c23584d776586af"
+    },
+    "source_archive_members": {
+      "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/11.1_PCA_SVD_and_Geometry_Controls_exercises.ipynb": {
+        "sha256": "178fadb313778a7fc1bd27223e24c50abd686cd4b6de04d1639710e7c06617b7",
+        "size_bytes": 73090
+      },
+      "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/11.1_PCA_SVD_and_Geometry_Controls_solutions.ipynb": {
+        "sha256": "a0f75412a0b150eb35738821731347201a6eeea8fcc85e5402e08277c86b1142",
+        "size_bytes": 263213
+      },
+      "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/README.md": {
+        "sha256": "8d54ae05d1a6e641e6c28ce5fa517f6a42f7667c2f4d04e68607dea612422911",
+        "size_bytes": 1295
+      },
+      "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/artifacts.lock.yml": {
+        "sha256": "4931eb3d1940c21ad32b192a8ef4e9aa0b4f7b02d4e003ed624ae6dda25bab00",
+        "size_bytes": 4068
+      },
+      "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/expected_outputs/README.md": {
+        "sha256": "93c87c58f98df6d71c32eb875d19140b2039ae3451d0aba48705065406a98830",
+        "size_bytes": 1784
+      },
+      "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/expected_outputs/reference_metrics.json": {
+        "sha256": "49361e284e706c4493100e37f9541925dfc57a793bbef2998d69c65f68b99770",
+        "size_bytes": 1597
+      },
+      "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/expected_outputs/smoke_test.json": {
+        "sha256": "fb84af0a6e67cbc832d8fdcf754af53d82413f3a811b28f9e1c2d37901ac37f8",
+        "size_bytes": 301
+      },
+      "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/solutions.py": {
+        "sha256": "5fdaa3ca0f7b3df11a99cd65e7425698e2ebb8c1cb26dae38901fd28b558d0f1",
+        "size_bytes": 56878
+      },
+      "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/tests.py": {
+        "sha256": "895cd95ab77cee0eb8be05e8fb9a899d08a964dc3a8e8146d85cbe4d5e0f366e",
+        "size_bytes": 28298
+      },
+      "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/utils.py": {
+        "sha256": "934445bc914649bde77c5c3d9b418a3d5cdeac982e10eecc670967d1de171692",
+        "size_bytes": 363
+      },
+      "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/verification_report.json": {
+        "sha256": "13aa5f045a43f253bfac73ca7cf71c6f2e144e09378397023c104151fe4ec3ed",
+        "size_bytes": 30881
+      },
+      "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/verification_report.schema.json": {
+        "sha256": "ecd833883885077ad5d7a0e239d984d01462255e94266212cf195ab4d4e27b3d",
+        "size_bytes": 2669
+      },
+      "chapter11_representation_geometry/instructions/assets/pca_svd_geometry_pythia_signature.png": {
+        "sha256": "4800bf2b6be76b9215047ecc208f4840e96f4ec8e6b1a3748bda0c6ca850bcf3",
+        "size_bytes": 411410
+      },
+      "chapter11_representation_geometry/instructions/assets/pca_svd_geometry_toy_probe.png": {
+        "sha256": "05aa3bfced526c0861b0317b0d943c484cf0a2639dc833ce8e57e7e13f0717e2",
+        "size_bytes": 103757
+      },
+      "chapter11_representation_geometry/instructions/assets/pca_svd_geometry_toy_ring.png": {
+        "sha256": "33bc3a62cd4923b6cad225c67ebe7e2ffa1f6a0af298b064ad3ed80beed4fddf",
+        "size_bytes": 110267
+      },
+      "chapter11_representation_geometry/instructions/assets/pca_svd_geometry_umap_controls.png": {
+        "sha256": "093e9bc6a23a90fdf16298d23223db0aa6af0334988d58b964060cf7b280be47",
+        "size_bytes": 162519
+      },
+      "chapter11_representation_geometry/instructions/pages/01_[11.1]_PCA_SVD_and_Geometry_Controls.md": {
+        "sha256": "1d5d06f4a24a4e7891a3ffad2479178d7f32a6e7e09fd6a46045ae15dcef4751",
+        "size_bytes": 54332
+      }
+    }
+  },
+  "members": {
+    "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/11.1_PCA_SVD_and_Geometry_Controls_exercises.ipynb": {
+      "type": "regular",
+      "size_bytes": 73090,
+      "sha256": "178fadb313778a7fc1bd27223e24c50abd686cd4b6de04d1639710e7c06617b7",
+      "format": "notebook-json"
+    },
+    "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/11.1_PCA_SVD_and_Geometry_Controls_solutions.ipynb": {
+      "type": "regular",
+      "size_bytes": 263213,
+      "sha256": "a0f75412a0b150eb35738821731347201a6eeea8fcc85e5402e08277c86b1142",
+      "format": "notebook-json"
+    },
+    "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/README.md": {
+      "type": "regular",
+      "size_bytes": 1295,
+      "sha256": "8d54ae05d1a6e641e6c28ce5fa517f6a42f7667c2f4d04e68607dea612422911",
+      "format": "utf8-text"
+    },
+    "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/artifacts.lock.yml": {
+      "type": "regular",
+      "size_bytes": 4068,
+      "sha256": "4931eb3d1940c21ad32b192a8ef4e9aa0b4f7b02d4e003ed624ae6dda25bab00",
+      "format": "utf8-text"
+    },
+    "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/expected_outputs/README.md": {
+      "type": "regular",
+      "size_bytes": 1784,
+      "sha256": "93c87c58f98df6d71c32eb875d19140b2039ae3451d0aba48705065406a98830",
+      "format": "utf8-text"
+    },
+    "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/expected_outputs/reference_metrics.json": {
+      "type": "regular",
+      "size_bytes": 1597,
+      "sha256": "49361e284e706c4493100e37f9541925dfc57a793bbef2998d69c65f68b99770",
+      "format": "json"
+    },
+    "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/expected_outputs/smoke_test.json": {
+      "type": "regular",
+      "size_bytes": 301,
+      "sha256": "fb84af0a6e67cbc832d8fdcf754af53d82413f3a811b28f9e1c2d37901ac37f8",
+      "format": "json"
+    },
+    "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/solutions.py": {
+      "type": "regular",
+      "size_bytes": 56878,
+      "sha256": "5fdaa3ca0f7b3df11a99cd65e7425698e2ebb8c1cb26dae38901fd28b558d0f1",
+      "format": "utf8-text"
+    },
+    "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/tests.py": {
+      "type": "regular",
+      "size_bytes": 28298,
+      "sha256": "895cd95ab77cee0eb8be05e8fb9a899d08a964dc3a8e8146d85cbe4d5e0f366e",
+      "format": "utf8-text"
+    },
+    "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/utils.py": {
+      "type": "regular",
+      "size_bytes": 363,
+      "sha256": "934445bc914649bde77c5c3d9b418a3d5cdeac982e10eecc670967d1de171692",
+      "format": "utf8-text"
+    },
+    "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/verification_report.json": {
+      "type": "regular",
+      "size_bytes": 30881,
+      "sha256": "13aa5f045a43f253bfac73ca7cf71c6f2e144e09378397023c104151fe4ec3ed",
+      "format": "json"
+    },
+    "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/verification_report.schema.json": {
+      "type": "regular",
+      "size_bytes": 2669,
+      "sha256": "ecd833883885077ad5d7a0e239d984d01462255e94266212cf195ab4d4e27b3d",
+      "format": "json"
+    },
+    "chapter11_representation_geometry/instructions/assets/pca_svd_geometry_pythia_signature.png": {
+      "type": "regular",
+      "size_bytes": 411410,
+      "sha256": "4800bf2b6be76b9215047ecc208f4840e96f4ec8e6b1a3748bda0c6ca850bcf3",
+      "format": "png"
+    },
+    "chapter11_representation_geometry/instructions/assets/pca_svd_geometry_toy_probe.png": {
+      "type": "regular",
+      "size_bytes": 103757,
+      "sha256": "05aa3bfced526c0861b0317b0d943c484cf0a2639dc833ce8e57e7e13f0717e2",
+      "format": "png"
+    },
+    "chapter11_representation_geometry/instructions/assets/pca_svd_geometry_toy_ring.png": {
+      "type": "regular",
+      "size_bytes": 110267,
+      "sha256": "33bc3a62cd4923b6cad225c67ebe7e2ffa1f6a0af298b064ad3ed80beed4fddf",
+      "format": "png"
+    },
+    "chapter11_representation_geometry/instructions/assets/pca_svd_geometry_umap_controls.png": {
+      "type": "regular",
+      "size_bytes": 162519,
+      "sha256": "093e9bc6a23a90fdf16298d23223db0aa6af0334988d58b964060cf7b280be47",
+      "format": "png"
+    },
+    "chapter11_representation_geometry/instructions/pages/01_[11.1]_PCA_SVD_and_Geometry_Controls.md": {
+      "type": "regular",
+      "size_bytes": 54332,
+      "sha256": "1d5d06f4a24a4e7891a3ffad2479178d7f32a6e7e09fd6a46045ae15dcef4751",
+      "format": "utf8-text"
+    }
+  },
+  "external_payloads": {},
+  "member_count": 17,
+  "total_member_bytes": 1306722
+}

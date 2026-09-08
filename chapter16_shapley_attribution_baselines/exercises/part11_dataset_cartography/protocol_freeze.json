@@ -1,0 +1,9 @@
+{
+  "frozen_at_utc": "2026-09-06T10:52:59.610544+00:00",
+  "native_digit_fits_at_freeze": 0,
+  "files": {
+    "protocol.md": "91d9857f36b162730773cce3868b5ffe8145a7ea40f9516b0f58c7849a545637",
+    "data_manifest.json": "4677e7425a872b6cbc1caab44fa99f72480c95aeef6f34c6b13f2b10f4b84be4",
+    "cartography_data.py": "e31bebc991561d103c1e50bf3399c21361ac4201adffcce1fdf88007d5d9068e"
+  }
+}

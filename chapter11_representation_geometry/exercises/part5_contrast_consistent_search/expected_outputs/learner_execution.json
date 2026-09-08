@@ -1,0 +1,282 @@
+{
+  "status": "PASS",
+  "source_inputs": {
+    "chapter11_representation_geometry/exercises/part5_contrast_consistent_search/lesson.md": "2bbec4416f52c176a578a9cd8a9559f25b62ec01c8cba5bff22e1e5b8c4cbd25",
+    "chapter11_representation_geometry/exercises/part5_contrast_consistent_search/ccs_methods.py": "efc2e1d6e7f73d4774538711f7b8b1d93801f2d0c3d8d259ddd12866583e4dc6",
+    "chapter11_representation_geometry/exercises/part5_contrast_consistent_search/ccs_methods_tests.py": "037edb6f723a22f17b4b9aab72ac635005b34a0287a256595a2858ee9822b674",
+    "chapter11_representation_geometry/exercises/part5_contrast_consistent_search/reference_parity.py": "8e60473485fcf00e452d8d4d73247777f750f11ca1998afd62b11861c073d1e3",
+    "chapter11_representation_geometry/exercises/part5_contrast_consistent_search/build_notebooks.py": "7ca1441941f39778849d21c4214f95170c91972f815565fbeabf1044af005303",
+    "chapter11_representation_geometry/exercises/part5_contrast_consistent_search/execute_learner.py": "02be87430b1d568e699650de8b599d333309c456f9564576ca762d5f25d82c22",
+    "chapter11_representation_geometry/exercises/part5_contrast_consistent_search/ccs_native_methods.py": "e89b8f7e924832d769148613f40e7e5917131d0678cb659aef892ec789a4b899",
+    "chapter11_representation_geometry/exercises/part5_contrast_consistent_search/ccs_native_methods_tests.py": "570411e44742ef805ec52ebeee15695f8781753ba6ae0368fa75511935421098",
+    "chapter11_representation_geometry/exercises/part5_contrast_consistent_search/ccs_native.py": "67674868f56bf6a7d8ca529bdb8436aff5384fb81bc8a5a38afa0bfe4eba32c7",
+    "chapter11_representation_geometry/exercises/part5_contrast_consistent_search/ccs_data.py": "485c1fc7e10fb0cb75d2f1ac3e7dd0e631aa0dccbd9ba6590c8717bfad19657d",
+    "chapter11_representation_geometry/exercises/part5_contrast_consistent_search/ccs_study.py": "53237e0e941409a5eb09b62eb29822715aed2dfbf6bef6dc16bc0f13956b57ef",
+    "chapter11_representation_geometry/exercises/part5_contrast_consistent_search/native_protocol.md": "5b30edef98dedda7961c393431be33277e2023cfa07c34818edd60bb621376df",
+    "chapter11_representation_geometry/exercises/part4_concept_erasure/erasure_methods.py": "594d3c56ec40bd32c4418d8645ec26e70280df9c842b9dbb3c2fd87f42711e5e"
+  },
+  "completed_from_own_answers": true,
+  "native_model_executed": true,
+  "elapsed_seconds": 224.49960921000093,
+  "last_completed_cell": 63,
+  "cells": 65,
+  "code_cells": 32,
+  "embedded_figures": 15,
+  "figures": {
+    "ccs_actual_review_gallery.png": "a4dc49b0a34edd7ed2bef10c4c482e3f7e4f9f8c1b445571f2812b7a2d86e052",
+    "ccs_contrast_geometry.png": "9f3cb35b6c340b70e7723c12fd9c8dda5c6ce892de91ec4ed9b5f68d0f6fd977",
+    "ccs_direction_baselines.png": "e915cfe8b6ebc9ae792dabb9f934bcb709f1d1952503b67eb29eaf1c4f0814ea",
+    "ccs_distractor_strength_play.png": "2d41685daf7fa4e917d62e4b09a694b66d82f3c44393359045dc1a5446efb871",
+    "ccs_exact_counterexample.png": "3ee4de3d21c38924def4991d0677663f750060affc8f8b1fc175caeb4102032d",
+    "ccs_final_all_restarts.png": "cd91b66a5697b01c1832b9fd62e5ca9387c1dd579b49e63b28ce94f7cc9f4fe8",
+    "ccs_final_method_comparison.png": "ae485f5bcb8172b4fd13b032f42cb1010d96d23fb4c74e0ebae4eb012aeee800",
+    "ccs_final_opinion_change.png": "e5a39b4f5dab72cfcbe078a2b0c2e8cf80a71317fd041ebe70dd4014f5cd4dc2",
+    "ccs_final_random_controls.png": "643f3aaa6fd847bc4a9e21f1dbc46a54b71746c3fd82c320bd12fea825a121dc",
+    "ccs_loss_landscape.png": "621ab601761a8737f875f97f6fa9806235f0f1fdfd7abbc73bc476072b8b1244",
+    "ccs_native_development.png": "e6a384404b7a57e5c830345955eb85ab436cb6368aacb302b6261f0e70858dc0",
+    "ccs_native_output_baselines.png": "8460f77125adc5376c7a646fb1b40065270a06ba494e54c2ccc8691606c42ff8",
+    "ccs_native_review_play.png": "189f8524d745ec15a2330cc710757515d8397451407661d5c891d4579e628ef5",
+    "ccs_orientation_control.png": "e110decd0f52ffed9645780b19d1abff24ea10a438e85bf8dfa34d0177be8b8e",
+    "ccs_restart_outcomes.png": "ad24f9393288c3106477e1d2df5b0e3e81a1819d379de0cec26ab64d3e0bf880"
+  },
+  "native_summary_sha256": "8581413e65eb5b09893d691c3e3370828aa43b42043a4e8fe87d0f3749177a5f",
+  "native_case_count": 18,
+  "final_reporter_scores": 98304,
+  "native_artifacts": {
+    "native/capture-distracting_reader-customer-calibration.pt": {
+      "sha256": "5d6a33fc955df66fd6ad69904f03bf092ea8f859f6d00e92b8018145aca86559",
+      "size_bytes": 29404357
+    },
+    "native/capture-distracting_reader-customer-development.pt": {
+      "sha256": "82606b11a44147bee779e5b76b438109463e521c2abf52fd63736ee8a8191b44",
+      "size_bytes": 29410501
+    },
+    "native/capture-distracting_reader-customer-final.pt": {
+      "sha256": "de4405f1d23c07dfacb9d09d6337f993963edd7a4bea0c730251ec2b64226a1a",
+      "size_bytes": 29418021
+    },
+    "native/capture-distracting_reader-customer-train.pt": {
+      "sha256": "d200429b88096728b8e0c916e0f888b82c76bd8bee9bc2575ea45385cb08ad60",
+      "size_bytes": 117612005
+    },
+    "native/capture-distracting_reader-quoted_review-calibration.pt": {
+      "sha256": "b02c64a57790b2418fa53e92b0b20ff75a581153d1802efe1bddf007681ff643",
+      "size_bytes": 29422741
+    },
+    "native/capture-distracting_reader-quoted_review-development.pt": {
+      "sha256": "47edfea995234a5be104b7672fbc0261041f916f200170ff2dedb9fe09085354",
+      "size_bytes": 29428885
+    },
+    "native/capture-distracting_reader-quoted_review-final.pt": {
+      "sha256": "b4611bd69fee33da41edbd3c0f95a04ba7d15ca64be1b3e789f90af455839d3b",
+      "size_bytes": 29436405
+    },
+    "native/capture-distracting_reader-quoted_review-train.pt": {
+      "sha256": "5ceefc898699b3fe3093d350d1d22157af86467f9cc188ab9dfe5b76013fd221",
+      "size_bytes": 117685301
+    },
+    "native/capture-neutral_reader-customer-calibration.pt": {
+      "sha256": "9f519fb7e77a8906d9d6d9b56543305bdf81e870a318ceda992aa52b1a6e86b6",
+      "size_bytes": 14710533
+    },
+    "native/capture-neutral_reader-customer-development.pt": {
+      "sha256": "e39fef859e3cb55a64ce3be4c8dd89a8134f334ef39bf776d729d3d13b28099a",
+      "size_bytes": 14713925
+    },
+    "native/capture-neutral_reader-customer-final.pt": {
+      "sha256": "d873b91bf9c3ccb956e7080fd92147135d9a5644576f74f859c030103d5437f9",
+      "size_bytes": 14717797
+    },
+    "native/capture-neutral_reader-customer-train.pt": {
+      "sha256": "8b76f56d320a5bb62fb2e665fea1c33d236e3e711f8d47c971bbd896485fd45d",
+      "size_bytes": 58833445
+    },
+    "native/capture-neutral_reader-quoted_review-calibration.pt": {
+      "sha256": "eea7d003dc6bf3a50ac8e5d65977fd4e612d56e8e61e8f4b2c67d9a0135594a8",
+      "size_bytes": 14719829
+    },
+    "native/capture-neutral_reader-quoted_review-development.pt": {
+      "sha256": "dd408a481b9cd4e32522a3fb5c4b79791323c371a86e61b1ab74328f86564c02",
+      "size_bytes": 14723157
+    },
+    "native/capture-neutral_reader-quoted_review-final.pt": {
+      "sha256": "f2b04d8b8b35610fc488f87b6c2e9b7c58bdfb0a1bc73c15aefc6b728d9cbe60",
+      "size_bytes": 14727093
+    },
+    "native/capture-neutral_reader-quoted_review-train.pt": {
+      "sha256": "edf848cad14487f4ad6034792013a634b0db3895991f96d510e698fd90ab7995",
+      "size_bytes": 58870133
+    },
+    "native/capture-plain-customer-calibration.pt": {
+      "sha256": "e538aa8d0840460dbcd1d5875b8a6bd2a72c9a545dedc01538bd0d2d6dd90fe8",
+      "size_bytes": 14686773
+    },
+    "native/capture-plain-customer-development.pt": {
+      "sha256": "f472c5f8ceb09889e5c7f491c953232e364c9dba4a63c281092117e50c44e7b6",
+      "size_bytes": 14690165
+    },
+    "native/capture-plain-customer-final.pt": {
+      "sha256": "2c27a7c0ecfca9afbd4dd0dca561bd25cdf82df364fb14d94fa55901a00142a9",
+      "size_bytes": 14694037
+    },
+    "native/capture-plain-customer-train.pt": {
+      "sha256": "99a156ee074a472a79a1b410c91f8dbd0e87d15b06e6601031879b86515f103e",
+      "size_bytes": 58738837
+    },
+    "native/capture-plain-quoted_review-calibration.pt": {
+      "sha256": "e0fc1c4f78e73d9acc94d8fca9b814d49d67198fa14d9f27cb296154cdb6d9e4",
+      "size_bytes": 14696005
+    },
+    "native/capture-plain-quoted_review-development.pt": {
+      "sha256": "3a192dea144e2afbae41fef0e40b829f45f0d1a7d2b461a2b7a4051faece4e14",
+      "size_bytes": 14699397
+    },
+    "native/capture-plain-quoted_review-final.pt": {
+      "sha256": "49763ca8f91b8f129e351d0f1cff26fad60ffdb6da1850a54e95e94b76ff650c",
+      "size_bytes": 14703269
+    },
+    "native/capture-plain-quoted_review-train.pt": {
+      "sha256": "c697936794a570d63841e48afaf6807c1917ad83e47c6820d804a3565f43527b",
+      "size_bytes": 58775525
+    },
+    "native/fits-distracting_reader-customer-layer12.pt": {
+      "sha256": "2a9936ec3f25f3cc0dcc9e55fc42963ba272332243984e717ad328854790ffb6",
+      "size_bytes": 1690851
+    },
+    "native/fits-distracting_reader-customer-layer4.pt": {
+      "sha256": "75ae0d24f61479a224fbc7e06d97e7f54c516b201621788d929381ff2391c833",
+      "size_bytes": 1690794
+    },
+    "native/fits-distracting_reader-customer-layer8.pt": {
+      "sha256": "9538c42760f1f49cb9c5772a47176b01fdc8e1ca4af2cd225f52a994a0e87709",
+      "size_bytes": 1690858
+    },
+    "native/fits-distracting_reader-quoted_review-layer12.pt": {
+      "sha256": "8af90e601d63ebae83733ca4d4369801b5d59e01206f6eb4a79bbdf2922b3335",
+      "size_bytes": 1691136
+    },
+    "native/fits-distracting_reader-quoted_review-layer4.pt": {
+      "sha256": "89c9bee9735e728ad30499c478c3bf1451d39f5fe9c3472aabcf070a2b984d42",
+      "size_bytes": 1691143
+    },
+    "native/fits-distracting_reader-quoted_review-layer8.pt": {
+      "sha256": "36fce50dfa65fe7fb0d4119bb1bcc9b438ccf30be39370b9a6c6eee61a38a899",
+      "size_bytes": 1691079
+    },
+    "native/fits-neutral_reader-customer-layer12.pt": {
+      "sha256": "4158365aeececaa8db4756843dd17a33e761dc647d962ea246b3a725d1b8ad66",
+      "size_bytes": 1457151
+    },
+    "native/fits-neutral_reader-customer-layer4.pt": {
+      "sha256": "9189fc89a9da9c48732647ed42c57bcbf6db33936d2c39b4cc686c4fdc9c30ce",
+      "size_bytes": 1457030
+    },
+    "native/fits-neutral_reader-customer-layer8.pt": {
+      "sha256": "43a5a1a975d5d1a4721f3758dc0a4081d0e65ed841391331114cb1b41996501a",
+      "size_bytes": 1457158
+    },
+    "native/fits-neutral_reader-quoted_review-layer12.pt": {
+      "sha256": "4850a9153cc774dd2580d7cf0edd8aaef8c2aba035972d23b49ae02542c5099a",
+      "size_bytes": 1457372
+    },
+    "native/fits-neutral_reader-quoted_review-layer4.pt": {
+      "sha256": "32d64993f10c720a1ecc3e6768165b09ed46d5c3ec46755243ec24475f31389e",
+      "size_bytes": 1457315
+    },
+    "native/fits-neutral_reader-quoted_review-layer8.pt": {
+      "sha256": "3267ecde0ff640d70cd1d8b51b0246b68bd7a09216de9c55ebd2b230c05fc197",
+      "size_bytes": 1457315
+    },
+    "native/fits-plain-customer-layer12.pt": {
+      "sha256": "4787b909c5498ab72c75565083283fab2767d0f3c582d0a41afbc5dad9e0a72c",
+      "size_bytes": 1456574
+    },
+    "native/fits-plain-customer-layer4.pt": {
+      "sha256": "f61bb5ec0f8c9ee28cef8070bab0470113bac4da6169b526cd34f6ea1e296f7c",
+      "size_bytes": 1456517
+    },
+    "native/fits-plain-customer-layer8.pt": {
+      "sha256": "d469434a6751d311feadfa9f2f54c9afcd58a581c53652dc4f317da8d5b44d75",
+      "size_bytes": 1456517
+    },
+    "native/fits-plain-quoted_review-layer12.pt": {
+      "sha256": "dfdad818406848df97df728a5c2636249921e0ba7ec3d1020fe766768e100830",
+      "size_bytes": 1456923
+    },
+    "native/fits-plain-quoted_review-layer4.pt": {
+      "sha256": "24830a53ec670c601fc2f340d3876af49fa5587a63ca7646acec7201e508f6e0",
+      "size_bytes": 1456802
+    },
+    "native/fits-plain-quoted_review-layer8.pt": {
+      "sha256": "c2b492b9c951f2f1655ea8cfb9dd29b91d47e92b48518627590ebf7b9ad87c62",
+      "size_bytes": 1456802
+    },
+    "native/native-play.pt": {
+      "sha256": "d63e218d688c1688467e6cccfe83e91e4097b974867e780c0e1548d9520dfada",
+      "size_bytes": 471051
+    }
+  },
+  "changed_sources": [],
+  "learner_directory": "/home/bitwise/.cache/arena_extended/ccs/full-own-answer-v3",
+  "fresh_directory": "/home/bitwise/.cache/arena_extended/ccs/fresh-native-v4",
+  "full_release_validation": true,
+  "prose_only_lesson_changes": false,
+  "published_code_matches_executed_own_answers": true,
+  "published_exercises_sha256": "b0e3edc146ac228a903f16e32b8a235ff6de7ecaaf06049d3d2d3100a95fc642",
+  "published_solutions_sha256": "eb913c6ddc24621f78d0e6d199f7abb91317eb1d6dc6e6bd078bcc642e11904b",
+  "published_page_sha256": "8ad5d7f7f938160457f1f6ae52207320c67066663cc25d82894cc6af3997baf5",
+  "published_figures": {
+    "ccs_contrast_geometry.png": "9f3cb35b6c340b70e7723c12fd9c8dda5c6ce892de91ec4ed9b5f68d0f6fd977",
+    "ccs_loss_landscape.png": "621ab601761a8737f875f97f6fa9806235f0f1fdfd7abbc73bc476072b8b1244",
+    "ccs_exact_counterexample.png": "3ee4de3d21c38924def4991d0677663f750060affc8f8b1fc175caeb4102032d",
+    "ccs_restart_outcomes.png": "ad24f9393288c3106477e1d2df5b0e3e81a1819d379de0cec26ab64d3e0bf880",
+    "ccs_orientation_control.png": "e110decd0f52ffed9645780b19d1abff24ea10a438e85bf8dfa34d0177be8b8e",
+    "ccs_direction_baselines.png": "e915cfe8b6ebc9ae792dabb9f934bcb709f1d1952503b67eb29eaf1c4f0814ea",
+    "ccs_distractor_strength_play.png": "2d41685daf7fa4e917d62e4b09a694b66d82f3c44393359045dc1a5446efb871",
+    "ccs_native_development.png": "e6a384404b7a57e5c830345955eb85ab436cb6368aacb302b6261f0e70858dc0",
+    "ccs_final_method_comparison.png": "ae485f5bcb8172b4fd13b032f42cb1010d96d23fb4c74e0ebae4eb012aeee800",
+    "ccs_final_all_restarts.png": "cd91b66a5697b01c1832b9fd62e5ca9387c1dd579b49e63b28ce94f7cc9f4fe8",
+    "ccs_final_opinion_change.png": "e5a39b4f5dab72cfcbe078a2b0c2e8cf80a71317fd041ebe70dd4014f5cd4dc2",
+    "ccs_final_random_controls.png": "643f3aaa6fd847bc4a9e21f1dbc46a54b71746c3fd82c320bd12fea825a121dc",
+    "ccs_native_output_baselines.png": "8460f77125adc5376c7a646fb1b40065270a06ba494e54c2ccc8691606c42ff8",
+    "ccs_actual_review_gallery.png": "a4dc49b0a34edd7ed2bef10c4c482e3f7e4f9f8c1b445571f2812b7a2d86e052",
+    "ccs_native_review_play.png": "189f8524d745ec15a2330cc710757515d8397451407661d5c891d4579e628ef5"
+  },
+  "visual_review": {
+    "status": "PASS",
+    "browser_math_and_dropdowns_checked": true,
+    "lesson_sha256": "2bbec4416f52c176a578a9cd8a9559f25b62ec01c8cba5bff22e1e5b8c4cbd25",
+    "completed_learner_sha256": "f569d049c4c2dcf2fa4dc6b699ef60de5a6eb9c9144d2de36f0f4fb8f92a94f0",
+    "figures": {
+      "ccs_actual_review_gallery.png": "a4dc49b0a34edd7ed2bef10c4c482e3f7e4f9f8c1b445571f2812b7a2d86e052",
+      "ccs_contrast_geometry.png": "9f3cb35b6c340b70e7723c12fd9c8dda5c6ce892de91ec4ed9b5f68d0f6fd977",
+      "ccs_direction_baselines.png": "e915cfe8b6ebc9ae792dabb9f934bcb709f1d1952503b67eb29eaf1c4f0814ea",
+      "ccs_distractor_strength_play.png": "2d41685daf7fa4e917d62e4b09a694b66d82f3c44393359045dc1a5446efb871",
+      "ccs_exact_counterexample.png": "3ee4de3d21c38924def4991d0677663f750060affc8f8b1fc175caeb4102032d",
+      "ccs_final_all_restarts.png": "cd91b66a5697b01c1832b9fd62e5ca9387c1dd579b49e63b28ce94f7cc9f4fe8",
+      "ccs_final_method_comparison.png": "ae485f5bcb8172b4fd13b032f42cb1010d96d23fb4c74e0ebae4eb012aeee800",
+      "ccs_final_opinion_change.png": "e5a39b4f5dab72cfcbe078a2b0c2e8cf80a71317fd041ebe70dd4014f5cd4dc2",
+      "ccs_final_random_controls.png": "643f3aaa6fd847bc4a9e21f1dbc46a54b71746c3fd82c320bd12fea825a121dc",
+      "ccs_loss_landscape.png": "621ab601761a8737f875f97f6fa9806235f0f1fdfd7abbc73bc476072b8b1244",
+      "ccs_native_development.png": "e6a384404b7a57e5c830345955eb85ab436cb6368aacb302b6261f0e70858dc0",
+      "ccs_native_output_baselines.png": "8460f77125adc5376c7a646fb1b40065270a06ba494e54c2ccc8691606c42ff8",
+      "ccs_native_review_play.png": "189f8524d745ec15a2330cc710757515d8397451407661d5c891d4579e628ef5",
+      "ccs_orientation_control.png": "e110decd0f52ffed9645780b19d1abff24ea10a438e85bf8dfa34d0177be8b8e",
+      "ccs_restart_outcomes.png": "ad24f9393288c3106477e1d2df5b0e3e81a1819d379de0cec26ab64d3e0bf880"
+    },
+    "math_count": 33,
+    "dropdown_count": 34,
+    "screenshots": {
+      "browser_final.png": "0986bf84ca06286e5a2b2aef31b935da152212dde351b9f5a0164ff6479987c6",
+      "browser_fit.png": "cad742808986ea94a6f23fb2cba0edd99534b4d6bc821a046800c7ad4f0dcbb6",
+      "browser_gallery.png": "b1caab70398835a0e4c9fd32500e26c80120da3f8484c5d25706426854c08d1e",
+      "browser_interpretation.png": "db0bf1feaf59e816eef4d762d77b6203148f06b997e495c223b53a0b028d6869",
+      "browser_loss.png": "33ce3c386e1f179c466a4fc78c0bd592671d5d5d7d04c10869502eac8b88ec2b",
+      "browser_native_outputs.png": "07fa05785b8bf9a0867cb86457f7adb5f58356ac1993a3c27772b494a9b4c1b1",
+      "browser_native_play.png": "ecd0ba53372e078e36e42d72c2bcdf18822c243a7771f3cb898c23a46df7733b",
+      "browser_opinion.png": "9415a31de60040721f1bcc2b45a3d6e8713161bc87e4c7c0cb988cd3957882f0"
+    },
+    "browser_review_sha256": "61eff33e92084bf088eb15995a17d57910430d079dfca806998366dc9ae8eb49",
+    "notes": "All fifteen figure files and the complete native summary match the inspected v2 result byte-for-byte. Six browser screenshots are byte-identical; both changed screenshots and three unchanged screenshots were inspected again. All 34 dropdowns open and 33 math expressions render without errors. Test assertions now give explanations and direct success feedback; their mathematical predicates and inputs are unchanged."
+  }
+}

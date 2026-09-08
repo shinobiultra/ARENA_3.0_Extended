@@ -1,0 +1,15 @@
+{
+  "notebook_id": "11_3_causal_abstraction_and_distributed_alignment_search",
+  "evidence_role": "Expected numerical contract; actual execution is recorded in verification_report.json.",
+  "test_count": 13,
+  "checks": [
+    "structural intervention oracle",
+    "QR derivative finite differences",
+    "zero and full rank swaps",
+    "unused predictive copy",
+    "minibatch data coverage",
+    "observational ridge oracle",
+    "native continuation and hook parity",
+    "frozen pretrained weights"
+  ]
+}

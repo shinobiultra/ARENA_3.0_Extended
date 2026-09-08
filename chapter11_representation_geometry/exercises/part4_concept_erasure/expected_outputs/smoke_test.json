@@ -1,0 +1,17 @@
+{
+  "notebook_id": "11_4_concept_erasure",
+  "evidence_role": "Expected numerical contract; actual execution is recorded separately in the verification report.",
+  "test_count": 11,
+  "checks": [
+    "paired population moments",
+    "PSD support and rejection",
+    "four-point affine optimum",
+    "independent NumPy KKT optimum",
+    "singular and translated mean preservation",
+    "old and refitted probes",
+    "nonlinear equal-mean counterexample",
+    "predeclared data rows",
+    "per-example matched random edits",
+    "actual full-vocabulary metrics"
+  ]
+}

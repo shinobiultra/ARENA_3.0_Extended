@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="360" viewBox="0 0 960 360" role="img" aria-labelledby="title desc">
+  <title id="title">Circuit tracing attribution graph validation loop</title>
+  <desc id="desc">Clean and corrupt caches plus corrupt gradients produce an EAP edge matrix, a top-k directed graph, and four validation checks.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#334155"/>
+    </marker>
+    <filter id="shadow" x="-12%" y="-12%" width="124%" height="124%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#0f172a" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+  <rect x="0" y="0" width="960" height="360" rx="20" fill="#f8fafc"/>
+  <rect x="28" y="28" width="904" height="304" rx="18" fill="#ffffff" filter="url(#shadow)"/>
+  <text x="58" y="68" font-family="Inter, Arial, sans-serif" font-size="25" font-weight="700" fill="#0f172a">From attribution scores to a testable graph claim</text>
+  <text x="58" y="96" font-family="Inter, Arial, sans-serif" font-size="14" fill="#475569">The graph only earns trust after metric, perturbation, baseline, and counterfactual checks.</text>
+
+  <rect x="58" y="134" width="170" height="110" rx="12" fill="#eff6ff" stroke="#bfdbfe"/>
+  <text x="78" y="162" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="700" fill="#1e3a8a">1. Cache evidence</text>
+  <text x="78" y="188" font-family="Inter, Arial, sans-serif" font-size="13" fill="#334155">clean residuals</text>
+  <text x="78" y="210" font-family="Inter, Arial, sans-serif" font-size="13" fill="#334155">corrupt residuals</text>
+  <text x="78" y="232" font-family="Inter, Arial, sans-serif" font-size="13" fill="#334155">corrupt gradients</text>
+
+  <line x1="238" y1="189" x2="292" y2="189" stroke="#334155" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <rect x="304" y="134" width="170" height="110" rx="12" fill="#f0fdf4" stroke="#bbf7d0"/>
+  <text x="324" y="162" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="700" fill="#166534">2. Score edges</text>
+  <text x="324" y="188" font-family="Inter, Arial, sans-serif" font-size="13" fill="#334155">delta activations</text>
+  <text x="324" y="210" font-family="Inter, Arial, sans-serif" font-size="13" fill="#334155">dot gradients</text>
+  <text x="324" y="232" font-family="Inter, Arial, sans-serif" font-size="13" fill="#334155">EAP matrix</text>
+
+  <line x1="484" y1="189" x2="538" y2="189" stroke="#334155" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <rect x="550" y="134" width="170" height="110" rx="12" fill="#fff7ed" stroke="#fed7aa"/>
+  <text x="570" y="162" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="700" fill="#9a3412">3. Build graph</text>
+  <circle cx="594" cy="207" r="12" fill="#fb923c"/>
+  <circle cx="674" cy="207" r="12" fill="#fb923c"/>
+  <path d="M608 207 C630 178 650 178 662 207" fill="none" stroke="#9a3412" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <text x="570" y="234" font-family="Inter, Arial, sans-serif" font-size="13" fill="#334155">top-k directed edges</text>
+
+  <line x1="730" y1="189" x2="784" y2="189" stroke="#334155" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <rect x="796" y="116" width="98" height="146" rx="12" fill="#f8fafc" stroke="#cbd5e1"/>
+  <text x="816" y="143" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="700" fill="#0f172a">4. Test</text>
+  <text x="816" y="169" font-family="Inter, Arial, sans-serif" font-size="12.5" fill="#334155">metric</text>
+  <text x="816" y="193" font-family="Inter, Arial, sans-serif" font-size="12.5" fill="#334155">path drop</text>
+  <text x="816" y="217" font-family="Inter, Arial, sans-serif" font-size="12.5" fill="#334155">baseline</text>
+  <text x="816" y="241" font-family="Inter, Arial, sans-serif" font-size="12.5" fill="#334155">counterfact</text>
+
+  <path d="M848 276 C670 328 290 326 145 260" fill="none" stroke="#94a3b8" stroke-width="2" stroke-dasharray="7 7" marker-end="url(#arrow)"/>
+  <text x="367" y="314" font-family="Inter, Arial, sans-serif" font-size="13" fill="#475569">A graph that fails a check goes back to hypothesis selection.</text>
+</svg>

@@ -1,0 +1,28 @@
+{
+  "status": "READONLY_INTERRUPTION_INVENTORY_VERIFIED",
+  "approval": "PENDING_EXACT_AMENDMENT_CANDIDATE",
+  "inventory_sha256": "11b37b67de28be4695c56b8f0bb1d2d71694830bc36db790cb1223f1116a24a9",
+  "execution_sha256": "729b03bd6566e7c776bb4a8870823dc2c8ccd03d791d53b2b7d162d896d54a07",
+  "database_sha256": "091eab85e44ad332dd1355b2191739640338177f22d2f0fb83b97d7df56e00af",
+  "native_queries_performed_by_reviewer": 0,
+  "native_fits_performed_by_reviewer": 0,
+  "verified_completed_physical_rows": 49378,
+  "verified_started_batch_attempt_rows": 49634,
+  "verified_cached_rows": 49363,
+  "verified_completed_method_conditions": 124,
+  "count_units": "completed, saved method-condition fits; lower bound on attempted work, not an exact attempted fit count",
+  "verified_saved_fit_accounting": {
+    "oracle_calls_by_methods": 0,
+    "ensemble_fits": 806,
+    "residual_tree_fits": 250624,
+    "ridge_candidate_fits": 992,
+    "ridge_matrix_decompositions": 248,
+    "baseline_fits": 248,
+    "spex_recoveries": 62
+  },
+  "audits_saved": 0,
+  "reference_stages": 0,
+  "execution_status": "FAIL",
+  "execution_returncode": -2,
+  "source_drift": []
+}

@@ -1,0 +1,95 @@
+{
+  "formatter": "ruff 0.12.11, isolated, line length 100",
+  "python_blocks": 25,
+  "reference_files": [
+    "alignment_methods.py",
+    "alignment_methods_tests.py",
+    "alignment_model.py",
+    "alignment_study.py",
+    "alignment_ioi_data.py",
+    "alignment_data.py",
+    "run_alignment_development.py",
+    "build_notebooks.py",
+    "execute_learner.py"
+  ],
+  "all_parsed_programs_unchanged_except_docstring_indentation": true,
+  "prose_changes": [
+    "Procrustes norm is display math rather than a multiline pipe code span",
+    "Exercise time corrected to 100 minutes",
+    "Common mistake cue made explicit"
+  ],
+  "files": {
+    "alignment_methods.py": {
+      "before_sha256": "1cdfc250494f7bed105c6449e4bf547bdc60c313805f3111c81fb0fbe0147f27",
+      "after_sha256": "9745adae5294110c32394d0668b336fbe2934e1edcf9b7591090f13fb764930f",
+      "normalized_ast_sha256": "ab9b52328aae08dd501885a025d10f250f34ec4295ae329e8e2600db300d3678"
+    },
+    "alignment_methods_tests.py": {
+      "before_sha256": "0978cba94a419ec05ad760623567016a391374fcf20232322bf78586cb40537e",
+      "after_sha256": "16195ddf1b98a1db196fd1a5ed63c150850833e830e4af6a715e16b1989a372b",
+      "normalized_ast_sha256": "c518d55531eba20fc0663e6c07aab24dc40a03fd9321a762ff322925e26d8099"
+    },
+    "alignment_model.py": {
+      "before_sha256": "d9877ceccd920868fadbcd2f38cbdb57a97fdc89d4a27802aacb4304ce056c58",
+      "after_sha256": "92b8bb8302e74a66ca2dcf262a6219aecffa5453fe8bca345ee84904b12b95b4",
+      "normalized_ast_sha256": "49d2dab5fdca2555cba1adaee296d112cd12fa0ef72f9628a7134fb1fd20bd5f"
+    },
+    "alignment_study.py": {
+      "before_sha256": "f11b14154c43b195c7770108a68eb8a3b8d13c90fdde7711c2698b4afcde5956",
+      "after_sha256": "080fd194994b7b5dc719885494b614cea9c31bc985887dbe0baa8335e9e3b862",
+      "normalized_ast_sha256": "7d30325b39440ad04c08114e37f40290759cb638ba61f7f17d751a963e6075ac"
+    },
+    "alignment_ioi_data.py": {
+      "before_sha256": "6a1b0347e670cf33dc97e823551e8c6b943651cc4743dd66f4ee307ce66caff3",
+      "after_sha256": "24dcca4b91674bda2411c19ddd283f7e1f7df3a91a9ef9565fd2a37ab8f9185f",
+      "normalized_ast_sha256": "0640271f3c19edf9dde5649c09a32b4ed2f1c7b0b53b67897b954258d3487ea6"
+    },
+    "alignment_data.py": {
+      "before_sha256": "a9733c58b03cc0bd52fc9ff94d5839ae06a1356b61a1a1b44dd2f786adcb16ee",
+      "after_sha256": "e03c33969ba6629652ae3db88df0a9f5a01801859d9eb40ff50b9fc70be3286e",
+      "normalized_ast_sha256": "894e997def342447bb6973aadf1668938b85433ab7794fbc1eb4ae250702f76a"
+    },
+    "run_alignment_development.py": {
+      "before_sha256": "6587f457d2e8cbfa71e0f3186224cedb130331440945da44ab81161d81ca7167",
+      "after_sha256": "0a0d0f7aac9975d02f196ac13843e1d26f1f6040bfccecd473dc0448a7ae9463",
+      "normalized_ast_sha256": "9ff7f9e473f40ad4bac3b00b191dff3a480df20c05fb57304b7e2dced6e43358"
+    },
+    "build_notebooks.py": {
+      "before_sha256": "10b220a0f8fa523782befd317b486dfed2fcce495487e1cd06b177fad022e6e6",
+      "after_sha256": "e9d9787fc371828b8114c259ecc51482497af23cce7c82ca5b4af5d44fb440ed",
+      "normalized_ast_sha256": "9c08aa987361309723907da865a6868df29dd69ca8b9ca50288b92ea24b72cfa"
+    },
+    "execute_learner.py": {
+      "before_sha256": "9a871b06052079944adc2fe27c4410a3ece825a6d743bc428ff28137da597b2d",
+      "after_sha256": "e0849ac0f174f6108e72fc9e92d1097282675fa125f25e744d3f489fc5479b0a",
+      "normalized_ast_sha256": "93b69e7e99dab602f55495453417b7ad1a4dbcd6e271d26a481a0fd3090c16a5"
+    }
+  },
+  "learner_blocks_normalized_ast_sha256": [
+    "960b317596d2aca46083f490723378d92fb628f691f37c3a9e21dd4cda352e4c",
+    "044e63b26ce48da849d93f22a2a05a7c0e84475383af73656094eb676209ce89",
+    "12c1df453fb7e19ae72be4c5afa7e1e93084e232e589f78f4059e218c19067f7",
+    "f6b265d546bc2649d61f4b50a3dc90100c37d30fdab6fa44bead18a8e13cae15",
+    "38bf1d91ecf440ece8a3aaff114d901ec74d08f5e8739f7aad229af88490bb67",
+    "b53744c40d68cda2fcfb41a3fae9a19ab5ade4d60a4b8739270760f8be43ad32",
+    "7d01c66e88b00256c8e22f7857e7db510f3de9056b66046db3b5d05a6fd38d24",
+    "930fa3426763b31202bad507815e47db54d747abdae19c1a8d6c0d1c6f93daa8",
+    "851c66952bbfc1582946804451bdfe3e08d7a0dbf046aa7e73c581280f617575",
+    "c3ee690c8d1f60ef2f09de45dfdf2dcf13d670bcb6066c1f9dfedb4f06731ab0",
+    "f2d6ce12f11a74f103fcce9b44b2c0a60572082dec791441c3fee2c197a5d44d",
+    "4cff73e2473d1465bdfd2d738aef5cfe4c713036748e78bd1a5c9fb1b7e9bbc3",
+    "25f9c207997c1f198c1f01c34550b323f5843439c30b81c70c4dbb56e3aacec0",
+    "8c2aa5172481c57221d5cc2ef53d3118e645a64a9c1f200a79cb29c90a01654d",
+    "5e775009239bf6644b9b04239aaacda967353a034a5cdc3deb8424d5e88bb8d0",
+    "4a0f08396cc40dd91a71a00f4606cb5fc03a14dc1f6c98c038e2eab609065827",
+    "a1cb68aeaf7f6c6fd1a4c88c50a5d6bbb6944a9f9f7b2eb98fc41b49bff42380",
+    "612b4b38d40451af5e24aca7de26ea18d1bb956f79083f32bef0f0ba47ad607b",
+    "a9f43b77814947ecd0b94ae19b5168a900ec48cbaec70bb7739c4c364eee67a2",
+    "e062bca9ef2ffeb47c1e018f9ac355cb97925625cc59e30af408f5fca013dc3c",
+    "de3df881f337b859bb4a9416c91ac3869ba965fe9e45a5cd7a24d46f5ca62b3a",
+    "9c64fd7abaf27e84617f090d4a3c189c4a2f72bf40295e6754dcd02909f4856c",
+    "d43c90ce2f5b9eb43a7c51a9a790f783f265075043bbe080aab55acafcd8c8a7",
+    "0cb95f1502b989fc8bf1d8f1477910f01dcf471cf00fdeb2cf8d922c2684c4e1",
+    "d698970d1c509865d041f296ac8bec98c83de830ad0bcca87598dbb0cec78e9d"
+  ]
+}

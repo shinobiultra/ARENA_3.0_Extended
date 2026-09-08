@@ -1,0 +1,81 @@
+notebook_id: 15_2_lora_vs_full_finetuning
+section: '15.2'
+title: LoRA vs Full Finetuning on a Real Transformer
+exercise_metadata:
+  EXERCISE_ID: 15_2_lora_vs_full_finetuning
+  GT_TIER: GT-1
+  DIFFICULTY: 4
+  IMPORTANCE: 4
+  EXPECTED_RUNTIME: under two minutes for bounded CPU preflight; minutes for full CUDA comparison
+  REQUIRES_GPU: true
+gt_tier: GT-1
+evidence_level: pinned_pretrained_transformer_matched_peft_and_full_finetuning_comparison
+claim_scope: >-
+  A pinned 3.7M-parameter pretrained TinyStories GPT-Neo model is adapted on a safe
+  generated marker-to-color next-token task with disjoint held-out templates.
+  Rank-1 LoRA, rank-4 LoRA, and full-model finetuning use the same examples, batches,
+  step counts, objective, and protected-task replay, with explicit method-specific
+  learning rates. The learner compares behavior, selected real-transformer update
+  spectra, layer-6 activation drift, and causal removal of the dominant adapter-induced
+  direction against base, random-label, same-norm random low-rank, and random-direction
+  controls. This is template-generalization evidence, not a broad PEFT equivalence claim.
+required_gpu_gb: 2
+max_allowed_gpu_gb: 24
+models:
+- id: roneneldan/TinyStories-1M
+  source: huggingface
+  revision: 77f1b168e219585646439073245fe87e56b3023e
+  architecture: GPTNeoForCausalLM
+  parameters: 3745984
+  precision: float32
+  gated: false
+  license: unspecified_in_model_card
+  claim_scope: small_pretrained_decoder_for_transparent_attention_lora
+datasets:
+- id: course_generated_marker_codebook_v1
+  source: generated_safe_prompts
+  seed: 0
+  training_examples: 30
+  heldout_examples: 20
+  training_templates: 3
+  heldout_templates: 2
+  heldout_scope: same_subjects_disjoint_prompt_templates
+- id: course_generated_tinystories_replay_v1
+  source: generated_safe_next_token_pairs
+  seed: deterministic
+  examples: 4
+  purpose: unrelated_capability_protection_and_measurement
+expected_metrics:
+  tests_passed: true
+  accepted: true
+  max_allowed_gpu_gb: 24
+  heldout_examples_min: 20
+  lora_r1_heldout_accuracy_min: 0.75
+  lora_r4_heldout_accuracy_min: 0.85
+  full_heldout_accuracy_min: 0.85
+  random_label_control_accuracy_max: 0.70
+  same_norm_random_control_accuracy_max: 0.70
+  lora_update_effective_rank_max: 8.1
+  dominant_direction_drop_margin_min: 0.005
+  protected_nll_change_max: 1.5
+  within_vram_budget: true
+controls:
+- exact_toy_b_times_a_rank_oracle
+- pretrained_base_model
+- rank_1_lora
+- rank_4_lora
+- matched_full_model_finetuning
+- fixed_seed_random_label_lora
+- same_norm_random_rank_4_update
+- matched_random_activation_direction
+- disjoint_heldout_prompt_templates
+- unrelated_tinystories_next_token_replay
+- merge_unmerge_logit_parity
+- trainable_parameter_count
+- actual_q_proj_and_v_proj_weight_svd
+- layer_6_activation_drift_svd
+- dominant_drift_projection_ablation
+safety_notes:
+- All adaptation prompts are generated benign codebook examples; no harmful prompts or refusal suppression are used.
+- No user data, gated model, unsafe adapter, or generated completion corpus is stored.
+- Full finetuning is deliberately limited to a 3.7M-parameter public teaching model.

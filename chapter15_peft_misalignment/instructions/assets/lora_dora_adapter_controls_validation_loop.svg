@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="940" height="330" viewBox="0 0 940 330" role="img" aria-labelledby="title desc">
+  <title id="title">LoRA, DoRA, and adapter-control validation loop</title>
+  <desc id="desc">A five-step validation loop from exact LoRA delta checks through DoRA magnitudes, monitored-direction projections, mechanism gates, and safe-proxy CUDA evidence.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f8fafc; }
+      .card { fill: #ffffff; stroke: #334155; stroke-width: 1.5; rx: 8; }
+      .accent1 { fill: #dbeafe; stroke: #2563eb; }
+      .accent2 { fill: #dcfce7; stroke: #16a34a; }
+      .accent3 { fill: #fef3c7; stroke: #d97706; }
+      .accent4 { fill: #fae8ff; stroke: #a21caf; }
+      .accent5 { fill: #fee2e2; stroke: #dc2626; }
+      .title { font: 700 18px Arial, sans-serif; fill: #0f172a; }
+      .step { font: 700 14px Arial, sans-serif; fill: #0f172a; }
+      .body { font: 13px Arial, sans-serif; fill: #334155; }
+      .small { font: 12px Arial, sans-serif; fill: #475569; }
+      .arrow { stroke: #475569; stroke-width: 2; fill: none; marker-end: url(#arrow); }
+      .loop { stroke: #0f766e; stroke-width: 2.5; stroke-dasharray: 7 6; fill: none; marker-end: url(#arrow-green); }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L8,3 z" fill="#475569" />
+    </marker>
+    <marker id="arrow-green" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L8,3 z" fill="#0f766e" />
+    </marker>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="940" height="330" rx="12" />
+  <text class="title" x="36" y="42">Adapter-mechanics evidence loop</text>
+  <text class="body" x="36" y="68">Build exact tensor checks first. Trust the generated CUDA proxy only inside its declared scope.</text>
+
+  <rect class="card accent1" x="36" y="108" width="150" height="108" />
+  <text class="step" x="56" y="135">1. LoRA delta</text>
+  <text class="body" x="56" y="160">Compute</text>
+  <text class="small" x="56" y="180">(alpha / r) * B @ A</text>
+  <text class="small" x="56" y="200">Rank bound via SVD</text>
+
+  <rect class="card accent2" x="218" y="108" width="150" height="108" />
+  <text class="step" x="238" y="135">2. Merge parity</text>
+  <text class="body" x="238" y="160">Compare logits</text>
+  <text class="small" x="238" y="180">unmerged path</text>
+  <text class="small" x="238" y="200">merged weight path</text>
+
+  <rect class="card accent3" x="400" y="108" width="150" height="108" />
+  <text class="step" x="420" y="135">3. DoRA norms</text>
+  <text class="body" x="420" y="160">Normalize direction</text>
+  <text class="small" x="420" y="180">then apply learned</text>
+  <text class="small" x="420" y="200">row magnitudes</text>
+
+  <rect class="card accent4" x="582" y="108" width="150" height="108" />
+  <text class="step" x="602" y="135">4. Direction gate</text>
+  <text class="body" x="602" y="160">Measure projection</text>
+  <text class="small" x="602" y="180">onto monitored</text>
+  <text class="small" x="602" y="200">target/protected axis</text>
+
+  <rect class="card accent5" x="764" y="108" width="140" height="108" />
+  <text class="step" x="784" y="135">5. CUDA report</text>
+  <text class="body" x="784" y="160">Safe proxy train</text>
+  <text class="small" x="784" y="180">random-label and</text>
+  <text class="small" x="784" y="200">random-adapter fail</text>
+
+  <path class="arrow" d="M186 162 H214" />
+  <path class="arrow" d="M368 162 H396" />
+  <path class="arrow" d="M550 162 H578" />
+  <path class="arrow" d="M732 162 H760" />
+  <path class="loop" d="M834 226 C812 294 154 294 112 226" />
+
+  <text class="small" x="336" y="282">If a control fails, go back to the exact tensor contract before making a broader claim.</text>
+</svg>

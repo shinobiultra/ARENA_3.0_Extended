@@ -1,0 +1,301 @@
+{
+  "schema": "arena.review-bundle.v1",
+  "archive": {
+    "name": "current_environment_review.tar.gz",
+    "sha256": "db1cf6978d2fb89db6b7afc6192d54d8299f5251fd7583623ee308ba6f4fe251",
+    "size_bytes": 10489032
+  },
+  "limits": {
+    "archive_bytes": 67108864,
+    "member_bytes": 16777216,
+    "total_member_bytes": 134217728,
+    "tar_container_bytes": 167772160,
+    "decoded_json_bytes": 67108864,
+    "total_decoded_bytes": 536870912,
+    "members": 4096
+  },
+  "provenance": {
+    "kind": "native_execution_packaging",
+    "source_execution": {
+      "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/new-environment-learner-v1/execution.json",
+      "sha256": "7946d1e801856e968d6ec6e78ca613e24d84681d1d13d81e13748d8e5fa44b1b",
+      "size_bytes": 10491
+    },
+    "measurement_claim": "Packaging of new author environment, source, figure, browser and play review. Existing scientific execution and reproduction receipts are preserved unchanged."
+  },
+  "members": {
+    "learner/execution.json": {
+      "type": "regular",
+      "size_bytes": 10491,
+      "sha256": "7946d1e801856e968d6ec6e78ca613e24d84681d1d13d81e13748d8e5fa44b1b",
+      "format": "json"
+    },
+    "learner/source_review.json": {
+      "type": "regular",
+      "size_bytes": 12143,
+      "sha256": "ff75da51bd6e795ef4b5b70ac2998b62623a7d312cb47bb70e5655a5b4cfe0a2",
+      "format": "json"
+    },
+    "learner/visual_review.json": {
+      "type": "regular",
+      "size_bytes": 5496,
+      "sha256": "518b6733a2b52d81569a59e5837def80a719e7385c07bc37107c8aa90fa6042e",
+      "format": "json"
+    },
+    "learner/environment/execution_environment.json": {
+      "type": "regular",
+      "size_bytes": 1687,
+      "sha256": "aea76666a6faeef1f213c9284b3fea90b9d480ba85f2d9e8a8253c729d047ecf",
+      "format": "json"
+    },
+    "learner/environment/uv.lock": {
+      "type": "regular",
+      "size_bytes": 610963,
+      "sha256": "e96e946bb00f50592d32c1b3bf453fca4482a0097731120defbebcd978f019eb",
+      "format": "utf8-text"
+    },
+    "learner/html_review/DRAFT_16.15_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate_exercises.ipynb": {
+      "type": "regular",
+      "size_bytes": 2722012,
+      "sha256": "e6645537a7f8f11a62591540bfc1431f90ea53bdccc199d9c82c9366f65b43cc",
+      "format": "notebook-json"
+    },
+    "learner/html_review/DRAFT_16.15_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate_solutions.ipynb": {
+      "type": "regular",
+      "size_bytes": 2753778,
+      "sha256": "4432975f60bacd0f677f72a76a98946d749f63c9eac5d8b8a75610e5f2a0653f",
+      "format": "notebook-json"
+    },
+    "learner/html_review/exercises.html": {
+      "type": "regular",
+      "size_bytes": 3405181,
+      "sha256": "bdcf53a6460090346ec127c0ccf923211e91aadbd4300ed59f03ae54dc1cb105",
+      "format": "utf8-text"
+    },
+    "learner/html_review/figure_pixel_comparison.json": {
+      "type": "regular",
+      "size_bytes": 10616,
+      "sha256": "5892f5cfa5a8f5ec5214856013ed922da471f55d9149e7fe76ab6dec6b09e424",
+      "format": "json"
+    },
+    "learner/html_review/render.json": {
+      "type": "regular",
+      "size_bytes": 5913,
+      "sha256": "51ddd4043ee1072ec60d785f5fd332667ef6bdb433752c50c20a15ce43f5a615",
+      "format": "json"
+    },
+    "learner/html_review/root_browser_dom.json": {
+      "type": "regular",
+      "size_bytes": 145,
+      "sha256": "c1fd337e643edce836cf8352a12f0ce4e086cba8515700f9da821897d35d6abd",
+      "format": "json"
+    },
+    "learner/html_review/root_browser_review.json": {
+      "type": "regular",
+      "size_bytes": 3066,
+      "sha256": "90798541ab9f7ef1a0a6d99be661116bbdfad2f7111ae6177b453fd252091a9a",
+      "format": "json"
+    },
+    "learner/html_review/root_derivation.jpg": {
+      "type": "regular",
+      "size_bytes": 70669,
+      "sha256": "251becd42c471b9f642dde9be6e4887a6f6b58a11af92d30b297e5436b07b3b2",
+      "format": "jpeg"
+    },
+    "learner/html_review/root_native_overview.jpg": {
+      "type": "regular",
+      "size_bytes": 92101,
+      "sha256": "2308d1aa570503b0223c718b5454b3bef05bf141815032b0e55cdb346093d19a",
+      "format": "jpeg"
+    },
+    "learner/html_review/root_native_play.jpg": {
+      "type": "regular",
+      "size_bytes": 80481,
+      "sha256": "e6054fcf0d1cc0a96e6b7af4606ce4c79c8a0481243e38c3b5fb93c5bfe3bb46",
+      "format": "jpeg"
+    },
+    "learner/html_review/root_native_play_result.jpg": {
+      "type": "regular",
+      "size_bytes": 76943,
+      "sha256": "f7f72aad4cae5f0ee3864a573959eb178e3959b36a5c77498916d990e0486b00",
+      "format": "jpeg"
+    },
+    "learner/html_review/root_threshold.jpg": {
+      "type": "regular",
+      "size_bytes": 92448,
+      "sha256": "76c280923b04f2dde43f86dd0cd14b43f9c04615ce6052cd6d374afefe89f535",
+      "format": "jpeg"
+    },
+    "learner/html_review/solutions.html": {
+      "type": "regular",
+      "size_bytes": 3451922,
+      "sha256": "c89b38b15f724705fbdfa8452432c9cb64255d15bb1decc3710914b39feccecb",
+      "format": "utf8-text"
+    },
+    "learner/play_review/failed_extra_prefix_assertion_runner.py": {
+      "type": "regular",
+      "size_bytes": 5782,
+      "sha256": "cbb77542f8c46d8f200377abf5098e97a8a2491b601fcdf0947268598778bab1",
+      "format": "utf8-text"
+    },
+    "learner/play_review/native_variation_0.png": {
+      "type": "regular",
+      "size_bytes": 201386,
+      "sha256": "c1464a29c83f15f35fde631b8939da646182b68c8a58fed9ca48e294e7a4903d",
+      "format": "png"
+    },
+    "learner/play_review/prefix_recomputation_observation.json": {
+      "type": "regular",
+      "size_bytes": 464,
+      "sha256": "889fc8d19ef7d5db439c8e42725329354d2c26ecf8e7d1e0c5d31a1e64fd3826",
+      "format": "json"
+    },
+    "learner/play_review/threshold_variation_0.png": {
+      "type": "regular",
+      "size_bytes": 148255,
+      "sha256": "c93da55000cc7980a5175c03a7a8cac477caf0ec68883fb80eec23200b604131",
+      "format": "png"
+    },
+    "learner/play_review/threshold_variation_1.png": {
+      "type": "regular",
+      "size_bytes": 154575,
+      "sha256": "8317ea88eafff7ce31588068b756117a31d668727f4e4e521984df1587fd82f2",
+      "format": "png"
+    },
+    "learner/play_review/threshold_variation_2.png": {
+      "type": "regular",
+      "size_bytes": 146270,
+      "sha256": "7d44d4117ae906a40b2e00fb3c0543a0348492f8570f3f1b6ea319e5e64f2c43",
+      "format": "png"
+    },
+    "learner/play_review_v2/invalid_play_checks.json": {
+      "type": "regular",
+      "size_bytes": 589,
+      "sha256": "a129fe8264afb9f87bc6bab75735b48a540f33df214dc71219a9a9db419a5605",
+      "format": "json"
+    },
+    "learner/play_review_v2/native_variation_0.png": {
+      "type": "regular",
+      "size_bytes": 201386,
+      "sha256": "c1464a29c83f15f35fde631b8939da646182b68c8a58fed9ca48e294e7a4903d",
+      "format": "png"
+    },
+    "learner/play_review_v2/native_variation_1.png": {
+      "type": "regular",
+      "size_bytes": 208997,
+      "sha256": "bb8d9fc00b209a13bde9fd6afd852ed697e2235a85ab19109218550ce71ad937",
+      "format": "png"
+    },
+    "learner/play_review_v2/native_variation_2.png": {
+      "type": "regular",
+      "size_bytes": 209687,
+      "sha256": "4b512f78202230cd4220d9de60d3e52adb934b5651972cf1ad95a981f4147d52",
+      "format": "png"
+    },
+    "learner/play_review_v2/native_variation_3.png": {
+      "type": "regular",
+      "size_bytes": 172046,
+      "sha256": "294df8d760a9c3694711e4829433ac3fbd006d2eb89a179e6673ee5af297d1e9",
+      "format": "png"
+    },
+    "learner/play_review_v2/play_review.json": {
+      "type": "regular",
+      "size_bytes": 48456,
+      "sha256": "63781e1b856cb82f18fbfdff3c2f7ddd7742bfb54028367a0d70f0234457ac96",
+      "format": "json"
+    },
+    "learner/play_review_v2/threshold_variation_0.png": {
+      "type": "regular",
+      "size_bytes": 148255,
+      "sha256": "c93da55000cc7980a5175c03a7a8cac477caf0ec68883fb80eec23200b604131",
+      "format": "png"
+    },
+    "learner/play_review_v2/threshold_variation_1.png": {
+      "type": "regular",
+      "size_bytes": 154575,
+      "sha256": "8317ea88eafff7ce31588068b756117a31d668727f4e4e521984df1587fd82f2",
+      "format": "png"
+    },
+    "learner/play_review_v2/threshold_variation_2.png": {
+      "type": "regular",
+      "size_bytes": 146270,
+      "sha256": "7d44d4117ae906a40b2e00fb3c0543a0348492f8570f3f1b6ea319e5e64f2c43",
+      "format": "png"
+    },
+    "fresh/environment/execution_environment.json": {
+      "type": "regular",
+      "size_bytes": 1808,
+      "sha256": "04b037ba1d1fbb9cc022f43c7fb80bba1c61c3b7b7fd79cf669a6cafb65fd0b1",
+      "format": "json"
+    },
+    "fresh/environment/uv.lock": {
+      "type": "regular",
+      "size_bytes": 610963,
+      "sha256": "e96e946bb00f50592d32c1b3bf453fca4482a0097731120defbebcd978f019eb",
+      "format": "utf8-text"
+    },
+    "fresh/reproduction.json": {
+      "type": "regular",
+      "size_bytes": 9452,
+      "sha256": "a353d8a8effc56949d36918752ced67236ba9755553e29d735fb97be38c9643e",
+      "format": "json"
+    },
+    "orchestration/run_new_environment_v1.py": {
+      "type": "regular",
+      "size_bytes": 3476,
+      "sha256": "44ee0e17552ad08f4937ade7ff87dccdd75e2af427e2cb9492a88d63ea8164d5",
+      "format": "utf8-text"
+    },
+    "orchestration/render_new_environment_v1.py": {
+      "type": "regular",
+      "size_bytes": 2796,
+      "sha256": "1662f9d215e31023c460d045fb779089f4c374a4e4503f27af4bbb8ae629a6e0",
+      "format": "utf8-text"
+    },
+    "orchestration/play_new_environment_v1.py": {
+      "type": "regular",
+      "size_bytes": 6614,
+      "sha256": "afe132ffe52374047bb4fb9d276d148898d96c05b60056b32745a584e9621e77",
+      "format": "utf8-text"
+    },
+    "orchestration/assemble_review_new_environment_v1.py": {
+      "type": "regular",
+      "size_bytes": 9771,
+      "sha256": "f5eacc0033c5b4a63358413c15651ee036ec59dd41bcba5c6e190c7e256472e3",
+      "format": "utf8-text"
+    },
+    "orchestration/new-environment-scientific-tests-v1.log": {
+      "type": "regular",
+      "size_bytes": 1748,
+      "sha256": "532b0940cb98baaa1990ae259ce75d828ed49d6bc00db178f108d92a02b8a669",
+      "format": "utf8-text"
+    },
+    "orchestration/new-environment-learner-v1.log": {
+      "type": "regular",
+      "size_bytes": 1189,
+      "sha256": "b2e5b5346b6b41ef58f5523bdf9d379e10a1a57bccfd90d73d7d2b6591066259",
+      "format": "utf8-text"
+    },
+    "orchestration/new-environment-reproduction-v1.log": {
+      "type": "regular",
+      "size_bytes": 221,
+      "sha256": "22c92204fd12091d8c01fecb82136c2dde7cb2724aaa14ebff9fb47b23b2d2f4",
+      "format": "utf8-text"
+    },
+    "orchestration/new-environment-play-v1.log": {
+      "type": "regular",
+      "size_bytes": 297,
+      "sha256": "64dafca7e4d4172d2b0a981641ebbf5826ad6bf6205364aa8a27e670c8105111",
+      "format": "utf8-text"
+    },
+    "orchestration/new-environment-play-v2.log": {
+      "type": "regular",
+      "size_bytes": 190,
+      "sha256": "526617c65fb1de19b0df74d4edffd3df5dac4053841714a880187a3e09ad7904",
+      "format": "utf8-text"
+    }
+  },
+  "external_payloads": {},
+  "member_count": 45,
+  "total_member_bytes": 16001573
+}

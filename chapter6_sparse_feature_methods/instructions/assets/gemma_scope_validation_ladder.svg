@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="940" height="310" viewBox="0 0 940 310" role="img" aria-labelledby="title desc">
+  <title id="title">Evidence ladder for [6.2] Gemma Scope Deep Dive</title>
+  <desc id="desc">A left-to-right ladder from artifact metadata to feature scoring, validation controls, released Gemma Scope SAE loading, and authenticated Gemma 3 activation validation.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#374151"/>
+    </marker>
+    <style>
+      .frame { fill: #ffffff; stroke: #cbd5e1; stroke-width: 1.5; rx: 10; }
+      .box { fill: #f8fafc; stroke: #334155; stroke-width: 2; rx: 8; }
+      .blue { fill: #eef6ff; stroke: #2563eb; stroke-width: 2; rx: 8; }
+      .green { fill: #f0fdf4; stroke: #15803d; stroke-width: 2; rx: 8; }
+      .orange { fill: #fff7ed; stroke: #c2410c; stroke-width: 2; rx: 8; }
+      .title { font: 700 16px sans-serif; fill: #111827; }
+      .label { font: 700 13px sans-serif; fill: #374151; }
+      .text { font: 13px sans-serif; fill: #1f2937; }
+      .small { font: 12px sans-serif; fill: #475569; }
+      .arrow { stroke: #374151; stroke-width: 2; marker-end: url(#arrow); fill: none; }
+    </style>
+  </defs>
+
+  <rect x="20" y="18" width="900" height="274" class="frame"/>
+  <text x="44" y="50" class="title">[6.2] Released SAE artifacts: metadata is not interpretation</text>
+  <text x="44" y="74" class="small">A feature hypothesis earns trust only after held-out scoring, controls, and real activation checks.</text>
+
+  <rect x="44" y="112" width="138" height="96" class="box"/>
+  <text x="62" y="140" class="label">Artifact card</text>
+  <text x="62" y="164" class="text">model, layer, hook</text>
+  <text x="62" y="184" class="text">width, revision</text>
+
+  <path d="M190 160 H232" class="arrow"/>
+
+  <rect x="242" y="112" width="138" height="96" class="blue"/>
+  <text x="260" y="140" class="label">Feature scores</text>
+  <text x="260" y="164" class="text">max / mean / last</text>
+  <text x="260" y="184" class="text">one score per prompt</text>
+
+  <path d="M388 160 H430" class="arrow"/>
+
+  <rect x="440" y="112" width="138" height="96" class="blue"/>
+  <text x="458" y="140" class="label">Validation</text>
+  <text x="458" y="164" class="text">AUC over held-out</text>
+  <text x="458" y="184" class="text">random + shuffle</text>
+
+  <path d="M586 160 H628" class="arrow"/>
+
+  <rect x="638" y="96" width="214" height="128" class="green"/>
+  <text x="660" y="124" class="label">Released Gemma Scope SAE</text>
+  <text x="660" y="148" class="text">JumpReLU layer 13</text>
+  <text x="660" y="168" class="text">16k features, d_model 1152</text>
+  <text x="660" y="188" class="text">Gemma 3 activations</text>
+  <text x="660" y="208" class="text">AUC 1.0 vs controls</text>
+
+  <path d="M112 220 C112 258 744 258 744 234" class="arrow"/>
+  <text x="302" y="252" class="small">The final claim is a benign technical-vs-narrative split, not broad feature semantics.</text>
+
+  <rect x="610" y="38" width="242" height="44" class="orange"/>
+  <text x="628" y="65" class="text">DLA suggests tokens; it does not prove them</text>
+</svg>

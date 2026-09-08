@@ -1,0 +1,14 @@
+{
+  "source": "Own-answer learner outputs and separate fresh CUDA reproduction",
+  "controls": [
+    "no_op",
+    "mean_only",
+    "full_donor",
+    "same_rank_random_donor_plane",
+    "equal_norm_random_edit",
+    "class_order_permuted_circular_probe",
+    "independent_noise",
+    "permuted_training_labels"
+  ],
+  "scientific_outcomes_are_not_acceptance_targets": true
+}

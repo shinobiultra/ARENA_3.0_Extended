@@ -1,0 +1,21 @@
+{
+  "versions": {
+    "numpy": "1.26.4",
+    "torch": "2.12.1+cu132",
+    "shap": "0.49.1",
+    "captum": "0.9.0"
+  },
+  "installed_source_sha256": {
+    "shap/explainers/_gradient.py": "ae1d0fe9405e62c9400c655e6d5af792ccc989a7632fd05171a731776551840a",
+    "captum/attr/_core/gradient_shap.py": "b2333e8819b82eb18693ae5a8a78c7a9ff1e30986179de2ee97b2820dcbff00c",
+    "captum/attr/_core/noise_tunnel.py": "d013c38cdbb4a10d4717a4e38ac063903cacc0b54389a6591a9bcbc4a9fa8606",
+    "captum/_utils/common.py": "a1fc8b6752c48a76ffd3305983fed7972c7013ae6764ddb837c873c8eaa4198e"
+  },
+  "cached_source_sha256": {
+    "shap/explainers/_gradient.py": "ae1d0fe9405e62c9400c655e6d5af792ccc989a7632fd05171a731776551840a",
+    "captum/attr/_core/gradient_shap.py": "b2333e8819b82eb18693ae5a8a78c7a9ff1e30986179de2ee97b2820dcbff00c",
+    "captum/attr/_core/noise_tunnel.py": "d013c38cdbb4a10d4717a4e38ac063903cacc0b54389a6591a9bcbc4a9fa8606",
+    "captum/_utils/common.py": "a1fc8b6752c48a76ffd3305983fed7972c7013ae6764ddb837c873c8eaa4198e"
+  },
+  "source_evidence_sha256": "f378edf0e1f8cce3aa8b4d8369e57e1f2791948746d81fec70c5b0e45ae09008"
+}

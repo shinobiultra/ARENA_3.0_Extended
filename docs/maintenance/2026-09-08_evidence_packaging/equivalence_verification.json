@@ -1,0 +1,29 @@
+{
+  "packaging_only": true,
+  "original_archives_physically_rehashed": 168,
+  "original_git_blobs_verified": 168,
+  "part15_publisher": {
+    "before": {
+      "sha256": "9be2df77f3074d1b741108eb77e47c94132cee7f5ed1e8dd8ea5726e78be8003",
+      "size_bytes": 17833
+    },
+    "after": {
+      "sha256": "ea001e7f27cadc4b37a9d63f3766cc67e7450c4ce053a5c2a4f0466beb5034a0",
+      "size_bytes": 18278
+    },
+    "outside_packaging_ast_unchanged": true
+  },
+  "mini_vlm_report": {
+    "before": {
+      "sha256": "5ac0d03c0143785ac96e1c325dd0393286a43bca248e2190febef406dad81f4c",
+      "size_bytes": 11492470
+    },
+    "after": {
+      "sha256": "6e746f950236962c01b5c131f4aecd30639763dfaa3247f0839e124757639d07",
+      "size_bytes": 3730522
+    },
+    "all_json_values_unchanged": true
+  },
+  "native_runs_performed": 0,
+  "scientific_receipts_rewritten": 0
+}

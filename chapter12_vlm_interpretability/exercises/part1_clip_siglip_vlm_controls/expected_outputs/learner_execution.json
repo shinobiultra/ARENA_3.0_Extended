@@ -1,0 +1,12 @@
+{
+  "completed_from_own_answers": true,
+  "code_cells_executed": 52,
+  "files": {
+    "lesson.md": "cc60afcc03aabd474274a3fa011da49b81023f14f5a9c4d11d069bb0d327734d",
+    "pixel_clip.py": "40c11cd44eda66a11c42d6fed5c5ce50f7694f864209516add11f953a0f8a70c",
+    "pixel_tests.py": "f60f7c747cb270db853449cb9de33834e526aed4cb89535216fa051c9a0e197b",
+    "typography.py": "136ee7cef7a80adc55e01ce5a905b29f0b23ab42109df32b6ba3ed781b452e61",
+    "12.1_CLIP_SigLIP_and_VLM_Controls_exercises.ipynb": "576db43ae2b003bcbac7ae00e03913fb202f15936d2033f9fa0a0333561fdee4",
+    "12.1_CLIP_SigLIP_and_VLM_Controls_solutions.ipynb": "c7e520c97f45bef69736d59c17b226d6c8f4b6ee669ed4e1974657650fa8d83b"
+  }
+}

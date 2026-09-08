@@ -1,0 +1,11 @@
+test_pair_centering: passed
+test_ccs_loss_values: passed
+test_ccs_loss_gradient: passed
+test_paired_inference: passed
+test_two_feature_counterexample: passed
+test_batched_restarts: passed
+test_restart_selection: passed
+test_orientation_and_metrics: passed
+test_pca_distractor: passed
+test_invalid_inputs: passed
+10 CCS method checks passed

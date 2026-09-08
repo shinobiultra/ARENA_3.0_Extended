@@ -1,0 +1,61 @@
+{
+  "status": "PASS",
+  "learner_directory": "/home/bitwise/.cache/arena_extended/datamodels/own-full-v3",
+  "learner_execution_sha256": "a87ee619bfb88c1583bae6fb64f36f6b39eff1938a5fabf487fa074cfc1cc82c",
+  "source_inputs": {
+    "chapter16_shapley_attribution_baselines/exercises/part10_datamodels/protocol.md": "01061ec436553e02d6496e8e2f5faa65d06cdff3345bca4d19f6ef490a8a06af",
+    "chapter16_shapley_attribution_baselines/exercises/part10_datamodels/protocol_freeze.json": "dcc5b5de9e5897a5f8e03737afd6c0b195742b46be5052969c3f93b33831ca9b",
+    "chapter16_shapley_attribution_baselines/exercises/part10_datamodels/data_manifest.json": "153c7cd06df8988ff10032de373f8ccda1b42ba43bfe1da427357b3a5fb0f0e3",
+    "chapter16_shapley_attribution_baselines/exercises/part10_datamodels/datamodel_methods.py": "889eb435db076656b2e98fbbdf23d8974ed1858fadab409eb7750e5138f4d5d1",
+    "chapter16_shapley_attribution_baselines/exercises/part10_datamodels/datamodel_methods_tests.py": "aea894497e616402244d5a1d18e628aa216b7be1a5e2efa3261c37226252df37",
+    "chapter16_shapley_attribution_baselines/exercises/part10_datamodels/datamodel_data.py": "b4592f2233b1b29cd1dd640ae8085a523c766a523c395acce5420272ea645384",
+    "chapter16_shapley_attribution_baselines/exercises/part10_datamodels/datamodel_study.py": "eab8c349cfdd78cf533be33492d51ff6031eb940ad2adc1bb2e05f3389a4a735",
+    "chapter16_shapley_attribution_baselines/exercises/part10_datamodels/run_native.py": "7f591260f8cef12595b75158847c7c937985bb2349e653c0c1dd2878e07961e6",
+    "chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/attribution_data.py": "eaa4954f3255d3f82082dc30baef1051f03c0cad4afab806e9cb16d810101ab3",
+    "chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/attribution_methods.py": "f6f0712d185182b7e43a6bc8bb8b6e401e019e33326f0e59d2d75dda522df046",
+    "chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/attribution_reference.py": "bd342601bc81ba5e5b3f3bc193900643f089b9d8e8f6cdd22022cc0688ed8303",
+    "chapter16_shapley_attribution_baselines/exercises/part10_datamodels/lesson.md": "83138abc0bda16d67d01da6fd7ee900b9f2ffe2d2cef39c62a2bf93c32e87bac",
+    "chapter16_shapley_attribution_baselines/exercises/part10_datamodels/build_notebooks.py": "e11d5d9692e92acc3d9e6895c67fe3965abd211cc13a6e6b0d202009aa6271a7",
+    "chapter16_shapley_attribution_baselines/exercises/part10_datamodels/execute_learner.py": "fd181c053d386c61d8fadd01ae31cf51424575045bb0f4574717d0eecac676d0",
+    "chapter16_shapley_attribution_baselines/exercises/part10_datamodels/datamodel_contract_tests.py": "a2e12eb3d2a76201f131c6e72fbb4c479c3b602b7e38985db524a5ff06f59dd3",
+    "chapter16_shapley_attribution_baselines/exercises/part10_datamodels/reproduce_native.py": "df15b22764cc62b4cd04fee3d2d16ee653420229ee66a4abfdb719f8e23301af",
+    "chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/reproduce_native.py": "db9ceda4b56d549fb448f8bcd003d034db7502b0e5696c49af030065c5a862d0"
+  },
+  "native_model_retrained": true,
+  "comparisons": {
+    "tensors": 263,
+    "tensor_elements": 5546159,
+    "scalars": 327,
+    "max_absolute_error": 0.0
+  },
+  "native_execution": {
+    "status": "PASS",
+    "stage": "COMPLETE_NATIVE",
+    "elapsed_seconds": 7.374254861999361,
+    "source_inputs_unchanged": true,
+    "source_input_count": 11,
+    "classifier_refits": 10753,
+    "separate_refits": 6,
+    "independent_scipy_optima": 10,
+    "independent_lasso_fits": 12,
+    "play_refits": 18,
+    "test_subset_responses_evaluated": true,
+    "selection_used_test_responses": false
+  },
+  "artifacts": {
+    "fresh_run/native/play.pt": {
+      "sha256": "d665653a0268e57a31610b7f470281f264518f9fdbabb6c4aaaa3c69766a46df",
+      "size_bytes": 25699
+    },
+    "fresh_run/native/evaluated.pt": {
+      "sha256": "4bacdc5a4d0436e09951029baf95c6e2de74539c7d01d12efb48385a57082ff2",
+      "size_bytes": 11861619
+    },
+    "fresh_run/native/prepared.pt": {
+      "sha256": "2faaf5705cb4d904f97469e80c4ea0cdfe7f054ed676dda276f0e5c0944f9423",
+      "size_bytes": 23646338
+    }
+  },
+  "changed_sources": [],
+  "elapsed_seconds": 7.429960163997748
+}

@@ -1,0 +1,29 @@
+W0906 16:44:08.822000 2568791 .venv/lib/python3.14/site-packages/torch/utils/_pytree.py:630] <enum 'KernelPreference'> is an Enum subclass and is now natively supported by torch.compile as an opaque value type. Calling register_constant() on Enum subclasses is deprecated and will be an error in a future release.
+W0906 16:44:08.832000 2568791 .venv/lib/python3.14/site-packages/torch/utils/_pytree.py:630] <enum 'ScaleCalculationMode'> is an Enum subclass and is now natively supported by torch.compile as an opaque value type. Calling register_constant() on Enum subclasses is deprecated and will be an error in a future release.
+Centered mean, covariance and cross-covariance checks passed!
+Whitening, numerical support and invalid covariance checks passed!
+Four-point oblique erasure and independent distortion checks passed!
+Affine mean, repeated erasure, unchanged input and zero-rank checks passed!
+Independent KKT constrained-least-squares oracle checks passed!
+Six singular-covariance affine and erasure-invariant cases passed!
+Disabled-old-probe versus independently refitted probe checks passed!
+Nonlinear information and convex-loss-versus-accuracy counterexample passed!
+Disjoint prompts, all declared rows, balanced roles and exact task labels passed!
+Per-example norm, random direction and zero-edit control checks passed!
+Actual target, native-error denominator and full-vocabulary KL checks passed!
+Loading weights:   0%|          | 0/148 [00:00<?, ?it/s]Loading weights: 100%|██████████| 148/148 [00:00<00:00, 16007.97it/s]
+6/subject all 53 freshly fitted conditions agree
+9/end all 53 freshly fitted conditions agree
+Repeated 10 / 106 complete native conditions
+Repeated 20 / 106 complete native conditions
+Repeated 30 / 106 complete native conditions
+Repeated 40 / 106 complete native conditions
+Repeated 50 / 106 complete native conditions
+Repeated 60 / 106 complete native conditions
+Repeated 70 / 106 complete native conditions
+Repeated 80 / 106 complete native conditions
+Repeated 90 / 106 complete native conditions
+Repeated 100 / 106 complete native conditions
+PASS: independently refitted and reproduced all 71,232 final outcomes.
+PASS 11.4 Concept Erasure
+Wrote 1 verification reports; 1 accepted.

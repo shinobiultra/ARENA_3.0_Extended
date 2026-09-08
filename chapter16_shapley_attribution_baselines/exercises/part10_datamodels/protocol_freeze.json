@@ -1,0 +1,11 @@
+{
+  "status": "FROZEN_BEFORE_FIRST_DIGIT_FIT",
+  "recorded_utc": "2026-09-06T10:21:35.431932+00:00",
+  "inputs": {
+    "protocol.md": "01061ec436553e02d6496e8e2f5faa65d06cdff3345bca4d19f6ef490a8a06af",
+    "data_manifest.json": "153c7cd06df8988ff10032de373f8ccda1b42ba43bfe1da427357b3a5fb0f0e3",
+    "datamodel_data.py": "b4592f2233b1b29cd1dd640ae8085a523c766a523c395acce5420272ea645384"
+  },
+  "source_pdf_sha256": "90eab4fd0cdcaec55a1fd08cb135e843e730af5b35fb72015f7d44a0f55f048d",
+  "digit_models_fitted_at_freeze": 0
+}

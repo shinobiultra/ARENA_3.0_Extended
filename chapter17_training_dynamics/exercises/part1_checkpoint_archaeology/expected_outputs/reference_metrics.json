@@ -1,0 +1,36 @@
+{
+  "notebook_id": "17_1_checkpoint_archaeology_and_mechanism_emergence",
+  "metrics": {
+    "tests_passed": true,
+    "accepted": true,
+    "preflight_passed": true,
+    "model_family": "tiny_modular_addition_mlp",
+    "modulus": 13,
+    "table_example_count": 169,
+    "checkpoint_count": 28,
+    "accuracy_stable_from_step": 24,
+    "mechanism_stable_from_step": 24,
+    "final_accuracy": 1.0,
+    "final_addition_fourier_score_min": 0.7,
+    "observed_final_addition_fourier_score": 0.7499501705169678,
+    "late_legal_only_accuracy_min": 0.99,
+    "late_legal_mode_ablation_drop_min": 0.9,
+    "random_label_peak_accuracy_max": 0.2,
+    "observed_random_label_peak_accuracy": 0.10650887340307236,
+    "random_label_peak_fourier_score_max": 0.05,
+    "observed_random_label_peak_fourier_score": 0.0037886658683419228,
+    "random_mechanism_peak_score_max": 0.05,
+    "observed_random_mechanism_peak_score": 0.0008140764548443258,
+    "real_checkpoints_reloaded": true,
+    "max_allowed_gpu_gb": 24
+  },
+  "baselines": {
+    "required": true
+  },
+  "negative_controls": {
+    "required_where_applicable": true
+  },
+  "ood_tests": {
+    "required_where_applicable": true
+  }
+}

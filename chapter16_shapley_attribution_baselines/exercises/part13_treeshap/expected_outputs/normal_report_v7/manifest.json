@@ -1,0 +1,228 @@
+{
+  "source_directory": "/home/bitwise/.cache/arena_extended/treeshap/normal-report-v3-snapshot",
+  "archive_sha256": "22ee81528d8993a324791054567c2d46aafcbcc273e6478e0c27fa0e7e2e4728",
+  "members": {
+    "focused_v7.log": {
+      "sha256": "1221f77cd18351e9a3860026ec14eaf0fbab29cc60236399b5f57a22ea04e843",
+      "size_bytes": 1472
+    },
+    "fresh_directory.txt": {
+      "sha256": "aa38816f1628eb2c7550521863f9e184e65eeaf94a12a4a48b991a57395e8790",
+      "size_bytes": 92
+    },
+    "fresh_reproduction.json": {
+      "sha256": "7fa8b210445a705bb2685068583407173bbcaf9ac09df86d0f1c4e77685e57bd",
+      "size_bytes": 60089
+    },
+    "inputs/arena_ext/verification.py": {
+      "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
+      "size_bytes": 9276
+    },
+    "inputs/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/16.13_TreeSHAP_from_First_Principles_exercises.ipynb": {
+      "sha256": "81ea7d8f8ccdd6b4ae8c7ae76d7466032155dce70f12143e797e285015e253f0",
+      "size_bytes": 1456803
+    },
+    "inputs/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/16.13_TreeSHAP_from_First_Principles_solutions.ipynb": {
+      "sha256": "2ff5519653008ab6e36298066372255d01998a1179baf6e9c5670f2a60e42ebc",
+      "size_bytes": 1465623
+    },
+    "inputs/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/README.md": {
+      "sha256": "ef9d3e39cfa6ae19a10009050899fa31fb3b806e063c416e6d6400ddcd6f715b",
+      "size_bytes": 6781
+    },
+    "inputs/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/artifacts.lock.yml": {
+      "sha256": "696c397b7923a92b2b229c3febbc50c86834657cda3d942b009dee064f5cf6fe",
+      "size_bytes": 9389
+    },
+    "inputs/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/author_reference.json": {
+      "sha256": "c02421610e81d11b4f38baa88d86d463d147ed9a195eeba8fa230ffb35efd5f3",
+      "size_bytes": 651
+    },
+    "inputs/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/build_notebooks.py": {
+      "sha256": "8f4e5b271c7995a004ac0182509023eaea783f665fa84b4a5878683b22e19814",
+      "size_bytes": 10810
+    },
+    "inputs/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/data_manifest.json": {
+      "sha256": "0e829e5632b8b3fec9cdd54393e361fe58f7ea3e40d4e753399c4372509eeb38",
+      "size_bytes": 12657
+    },
+    "inputs/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/execute_learner.py": {
+      "sha256": "ebe9d16f3f2f15dc24e401388497e3f6567e10bba1af129cb08df89b962bf3d2",
+      "size_bytes": 7910
+    },
+    "inputs/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/expected_outputs/README.md": {
+      "sha256": "6210695e1598bd83bc9f982e46043035f2f374d38c0f05a40c3d332a737c960d",
+      "size_bytes": 6558
+    },
+    "inputs/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/expected_outputs/fresh_reproduction.json": {
+      "sha256": "7fa8b210445a705bb2685068583407173bbcaf9ac09df86d0f1c4e77685e57bd",
+      "size_bytes": 60089
+    },
+    "inputs/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/expected_outputs/learner_execution.json": {
+      "sha256": "e06cdeb355a53c27a7d1c5f0cb663bf1a910edc69a0c7bb88024f1038beb41e6",
+      "size_bytes": 65193
+    },
+    "inputs/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/expected_outputs/native_summary.json": {
+      "sha256": "3d000a98bdb340cd0ce5d9614e3faf0a74667dba05f2a5f2d6315835f20d866b",
+      "size_bytes": 50664
+    },
+    "inputs/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/lesson.md": {
+      "sha256": "a879f927b851dfa8e1b5b83f96999269923be486828fcf98454b4d1feaf338d0",
+      "size_bytes": 65533
+    },
+    "inputs/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/protocol.md": {
+      "sha256": "a62ed351750e5e1c4e77f8d651ecef040267b4df795940052ec73b73017159c7",
+      "size_bytes": 5981
+    },
+    "inputs/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/protocol_freeze.json": {
+      "sha256": "eb895e76b1ca62e8e654bb1334524be14a8e9b55a14045d427bf001f7558ba00",
+      "size_bytes": 477
+    },
+    "inputs/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/publish_study.py": {
+      "sha256": "40451219c501267a09a31deff1704a09bbb1e4979866673a9f0e2ae007afd7a1",
+      "size_bytes": 13324
+    },
+    "inputs/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/reference_boundary_addendum.md": {
+      "sha256": "2e639c56060d45131a093caeb838a8896399a2d6e89cba9fe477bcd9b816023e",
+      "size_bytes": 4098
+    },
+    "inputs/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/reproduce_native.py": {
+      "sha256": "b3c11a58e251c2b5c4d319d34bb10ca1a83486d35ad777a7ea13853ab600e44c",
+      "size_bytes": 10421
+    },
+    "inputs/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/run_native.py": {
+      "sha256": "739b40fcf51fb0704f0356236aea3ccff8e055b903bcef1c2800c00962f06a03",
+      "size_bytes": 13059
+    },
+    "inputs/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/solutions.py": {
+      "sha256": "d8d61cf692d75b974aacb16d21fd54586c14552820fb5c77f302e7ebfcfaeb03",
+      "size_bytes": 11493
+    },
+    "inputs/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/tests.py": {
+      "sha256": "19a986b3faaa4819f12f14948fa5e44e3728cfb7d8a1f91618555da1355fa132",
+      "size_bytes": 149
+    },
+    "inputs/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_contract_tests.py": {
+      "sha256": "acd5be5893d03bf9d9931bbc5fb536365126c5b0de32b4b4d15c4ac6b1207dc5",
+      "size_bytes": 7874
+    },
+    "inputs/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_data.py": {
+      "sha256": "329b983afd4b12be1786507a4b585d057e722cfa888adaa99457f2222b82ffe3",
+      "size_bytes": 1784
+    },
+    "inputs/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_diagnostics.py": {
+      "sha256": "18ffa61053a6335fc4d31ac81858105e3c771613df032eb2cd3ec854b613fd29",
+      "size_bytes": 15490
+    },
+    "inputs/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_methods.py": {
+      "sha256": "49b0c781c3eaae5e813d246abafb4dacca7daefbc003b83d1a8be876ba58fb09",
+      "size_bytes": 9719
+    },
+    "inputs/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_methods_tests.py": {
+      "sha256": "d758e99a280c0927d15ce9ad0be5bd5817e883cdc39cad652112ed1514fdad08",
+      "size_bytes": 10513
+    },
+    "inputs/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_plots.py": {
+      "sha256": "b815a464a0c822c792b363ec1bb37f73dab5fb08d2026e5080865c39e62b691d",
+      "size_bytes": 42784
+    },
+    "inputs/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_reference.py": {
+      "sha256": "ac2be0a07cf31449c7974cc26118dc967f1728128fd555539f7e5d6fd56a1303",
+      "size_bytes": 35769
+    },
+    "inputs/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_study.py": {
+      "sha256": "d7c902e82347fad37307cf7f088f1f2292af04e56a116e9bc39cffb575cd9bfc",
+      "size_bytes": 9152
+    },
+    "inputs/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/verification_report.schema.json": {
+      "sha256": "c6db9438f0a04447f9fc8575dc8fc514a25dc505823257b201bfc1771b547c4c",
+      "size_bytes": 4159
+    },
+    "inputs/chapter16_shapley_attribution_baselines/instructions/assets/treeshap_01_missing_feature_games.png": {
+      "sha256": "fd31e73a4fac4e1448319163bea1e6ca01292a55c6dd635bfcc50c02c4c53d83",
+      "size_bytes": 117880
+    },
+    "inputs/chapter16_shapley_attribution_baselines/instructions/assets/treeshap_02_tiny_tree.png": {
+      "sha256": "00197263cdddaa045429c7cd635d96b660bcde204723d51574496036008702b4",
+      "size_bytes": 90624
+    },
+    "inputs/chapter16_shapley_attribution_baselines/instructions/assets/treeshap_03_cardinality_weights.png": {
+      "sha256": "4229f2ca5c1561187c2d8b96178cfae21570f5b223dc527c58282fe0d4135cf9",
+      "size_bytes": 76646
+    },
+    "inputs/chapter16_shapley_attribution_baselines/instructions/assets/treeshap_04_correlated_games.png": {
+      "sha256": "ea2b3295d4b0de0733c46092304feb96263a001992d70d2d53350204d4dd12f8",
+      "size_bytes": 120184
+    },
+    "inputs/chapter16_shapley_attribution_baselines/instructions/assets/treeshap_05_repeated_feature.png": {
+      "sha256": "1215c44899ccc530d3e920ccce9c41ea0ae1e68f570450a9053f2b906d9516d9",
+      "size_bytes": 124629
+    },
+    "inputs/chapter16_shapley_attribution_baselines/instructions/assets/treeshap_06_saabas_control.png": {
+      "sha256": "6fadacd560d4008425f526cd5760cafdccd6537aaaedd062732dfcb767a56aef",
+      "size_bytes": 52590
+    },
+    "inputs/chapter16_shapley_attribution_baselines/instructions/assets/treeshap_07_audit_performance.png": {
+      "sha256": "9598264b02952a5383529039002def3d2672c73bc0a2a106dc9f4b797d6f5137",
+      "size_bytes": 75825
+    },
+    "inputs/chapter16_shapley_attribution_baselines/instructions/assets/treeshap_08_prediction_waterfall.png": {
+      "sha256": "294eda95409364396eb12a09c19f74399af133cf4776cc2a2e75673cfc5aa61e",
+      "size_bytes": 84378
+    },
+    "inputs/chapter16_shapley_attribution_baselines/instructions/assets/treeshap_09_attribution_heatmaps.png": {
+      "sha256": "93923e6958e37c5f75eb4eb62183dabeb88ca0e8af6aeea1ba3ccb0a6ec36d0b",
+      "size_bytes": 146922
+    },
+    "inputs/chapter16_shapley_attribution_baselines/instructions/assets/treeshap_10_model_seed_variation.png": {
+      "sha256": "d48c6bc571796e131fb33f36129e04f832200cfb2ce7ef836ba538ed81b43414",
+      "size_bytes": 129405
+    },
+    "inputs/chapter16_shapley_attribution_baselines/instructions/assets/treeshap_11_background_sensitivity.png": {
+      "sha256": "c226847a750743817791d5a03916499a5c6bbb8fb4676cf34221838ad624b2a0",
+      "size_bytes": 147948
+    },
+    "inputs/chapter16_shapley_attribution_baselines/instructions/assets/treeshap_12_deletion_curves.png": {
+      "sha256": "89d98c34744db64510c89e0e614c22e84bfb2986f78eb4e40bd5df2ab77e0f85",
+      "size_bytes": 217869
+    },
+    "inputs/chapter16_shapley_attribution_baselines/instructions/assets/treeshap_13_runtime_dummy_features.png": {
+      "sha256": "5e9f83cc2ede6ff924e72aee03b13446cdcbe0a27f44b5ceb57b5a5de9d513a7",
+      "size_bytes": 80841
+    },
+    "inputs/chapter16_shapley_attribution_baselines/instructions/assets/treeshap_14_runtime_depth.png": {
+      "sha256": "80e5e654cd3fc0eb52c0f485ae28948828723fe0710a8fdaf7fd030e86905664",
+      "size_bytes": 86914
+    },
+    "inputs/chapter16_shapley_attribution_baselines/instructions/assets/treeshap_15_tiny_tree_play.png": {
+      "sha256": "69cfb54ee18bba50b5e5df8ae734e76565043fed66da559bca2596de1226f79b",
+      "size_bytes": 72365
+    },
+    "inputs/chapter16_shapley_attribution_baselines/instructions/assets/treeshap_16_real_recipe_play.png": {
+      "sha256": "d9a6ae6022cd932bab7256266d3f15c9e330f93e40a9ddf63f94d88caee8d07b",
+      "size_bytes": 105400
+    },
+    "inputs/chapter16_shapley_attribution_baselines/instructions/assets/treeshap_17_reference_parity.png": {
+      "sha256": "5d4ac3907e717f7e3ee010eca60f6732a5ed99e54994bce0d7df0fe34d4f568d",
+      "size_bytes": 275421
+    },
+    "inputs/chapter16_shapley_attribution_baselines/instructions/pages/13_[16.13]_TreeSHAP_from_First_Principles.md": {
+      "sha256": "46d9b2fc3d4c1082505b174668f4b29a42d1a42541ff344bbb638bb5e21231ce",
+      "size_bytes": 87215
+    },
+    "inputs/scripts/run_extension_verification_reports.py": {
+      "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
+      "size_bytes": 16272
+    },
+    "normal_report_v3.log": {
+      "sha256": "a0be1223a9337a89c3fb7e22fd79ab5bed8b70f810199841bdf5d07a10124c5a",
+      "size_bytes": 52661
+    },
+    "verification_report.json": {
+      "sha256": "c8c16a5ac20735113d5f4121c4bb52d66a0c8854a27f608cfab42bec113f8eca",
+      "size_bytes": 25329
+    }
+  },
+  "large_tensors_retained_externally": {},
+  "readback_verified": true
+}

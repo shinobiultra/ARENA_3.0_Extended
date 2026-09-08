@@ -1,0 +1,99 @@
+notebook_id: 7_4_mini_natural_language_autoencoders
+section: '7.4'
+title: Mini Natural Language Autoencoders
+exercise_metadata:
+  EXERCISE_ID: 7_4_mini_natural_language_autoencoders
+  GT_TIER: GT-3
+  DIFFICULTY: 5
+  IMPORTANCE: 5
+  EXPECTED_RUNTIME: 90-120 minutes; under one minute for CUDA verification
+  REQUIRES_GPU: true
+gt_tier: GT-3
+evidence_level: pinned_pythia_cuda_order_sensitive_text_bottleneck
+claim_scope: >-
+  A supervised activation verbalizer predicts 24-token explanations for 32
+  held-out Pythia-70m states. Within each lexical context, all four factor
+  states have exactly the same token multiset and differ only in word order.
+  A frozen-Pythia activation reconstructor reaches held-out normalized FVE
+  0.816 and preserves all 32 original model choices, versus FVE 0.642 and zero
+  behavior parity for a matched bag-of-tokens ridge control. This is a small
+  supervised warm-start showing order-sensitive reconstruction in one prompt
+  family, not unsupervised or paper-scale NLA training.
+required_gpu_gb: 2
+max_allowed_gpu_gb: 24
+models:
+  - id: EleutherAI/pythia-70m-deduped
+    source: huggingface_local_cache
+    revision: e93a9faa9c77e5d09219f6c868bfc7a1bd65593c
+    precision: float32
+    device: cuda
+    gated: false
+    local_files_only: true
+    hidden_state_index: 4
+    patch_block_index: 3
+datasets:
+  - id: pythia_agreement_order_nla_v4
+    source: course_authored_compositional_prompts
+    lexical_contexts: 32
+    train_count: 96
+    eval_count: 32
+    rows_per_context: 4
+    train_rows_per_context: 3
+    held_out_rows_per_context: 1
+    held_out_factor_counts: [8, 8, 8, 8]
+    token_sequence_length: 24
+    local_token_vocabulary: 33
+    same_context_token_multiset_fraction: 1.0
+    candidate_tokens: [' is', ' are', ' was', ' were']
+mechanism:
+  verbalizer: normalized ridge from activation to 24 GPT-NeoX token positions
+  reconstructor_language_path: frozen Pythia explanation-token features at layer 4
+  reconstructor_head: normalized affine ridge head
+  forbidden_in_learned_path:
+    - phrase IDs
+    - parsed factor tensors
+    - class means
+    - activation lookup tables
+expected_metrics:
+  tests_passed: true
+  accepted: true
+  token_accuracy_min: 0.99
+  exact_text_accuracy_min: 0.99
+  held_out_fve_min: 0.75
+  within_factor_fve_min: 0.75
+  bag_of_tokens_fve_max: 0.70
+  bag_of_tokens_behavior_parity_max: 0.25
+  same_context_token_multiset_fraction: 1.0
+  distinct_reconstruction_rows: 32
+  behavior_parity_min: 0.99
+  identity_max_logit_error: 0.0
+  single_row_other_max_logit_change: 0.0
+  intervention_selected_logit_change_min: 1.0
+  cuda_available: true
+  within_vram_budget: true
+  max_allowed_gpu_gb: 24
+controls:
+  - matched_same_multiset_bag_of_tokens_reconstructor
+  - prompt_only_factor_text_with_matched_template
+  - direct_factor_affine_decoder
+  - class_mean_replacement
+  - class_mean_conditioned_ar_training
+  - lexical_noun_relabeling
+  - independently_shuffled_av_targets_negative_control_for_eight_seeds
+  - zero_filled_training_rejection
+  - identity_hook_parity
+  - cross_example_single_row_hook_locality
+  - real_text_edit_causal_effect
+rejected_legacy_evidence:
+  - phrase-id bottleneck presented as natural-language generation
+  - raw-vector FVE without row normalization
+  - factor and class-mean controls without a lexical bypass
+  - bag-of-tokens control omitted from the learner-facing signature
+  - CPU-only evidence presented as CUDA verification
+safety_notes:
+  - All prompts are short benign grammatical-agreement fragments.
+  - The checkpoint is pinned and loaded offline from the local cache.
+  - The CUDA path fails closed when CUDA is unavailable.
+  - Verification JSON is supporting evidence and is never an acceptance input.
+freshness_inputs:
+  - chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders/build_notebooks.py

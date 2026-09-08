@@ -1,0 +1,10 @@
+{
+  "accepted": true,
+  "claim_scope": "Contract check; not a full real-model validation.",
+  "evidence_level": "notebook_contract",
+  "gt_tier": "GT-3",
+  "notebook_id": "9_3_emergent_misalignment_detection",
+  "section": "9.3",
+  "tests_passed": true,
+  "title": "Emergent Misalignment Detection"
+}

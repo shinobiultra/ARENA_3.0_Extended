@@ -1,0 +1,149 @@
+notebook_id: 12_3_mini_vlm_from_scratch
+section: '12.3'
+title: Mini VLM from Scratch
+exercise_metadata:
+  EXERCISE_ID: 12_3_mini_vlm_from_scratch
+  GT_TIER: GT-3
+  DIFFICULTY: 4
+  IMPORTANCE: 5
+  EXPECTED_RUNTIME: two to three study days; about ten minutes of CPU experiments
+  REQUIRES_GPU: false
+gt_tier: GT-3
+evidence_level: exact_patch_warmup_plus_complete_cpu_word_model_and_separate_fresh_cuda_controls
+claim_scope: Students build a learned RGB patch encoder, bidirectional ViT, connector, explicit multimodal
+  word sequence and causal word decoder, then train answers/captions and generate through EOS. Three
+  CPU seeds and four trained modality/pairing modes are frozen on development before all final conditions.
+  Familiar generation is strong; excluded color-shape caption combinations fail and remain visible.
+  Region/stage interventions retain all pairs and all background/unrestricted random draws with explicit
+  joint-correct denominators and full-sequence controls. A separate four-mode seed-0 CUDA study provides
+  fresh hardware evidence. Neither the categorical warm-up nor stored metrics stand in for the complete
+  word learner.
+required_gpu_gb: 0
+max_allowed_gpu_gb: 24
+models:
+- id: arena_word_minivlm_v1
+  source: course_implementation_trained_from_rgb
+  revision: exact_source_in_report_inputs
+  precision: float32
+  gated: false
+  parameters: 127392
+  vocabulary_size: 24
+  image_size: 32
+  patch_size: 4
+  vision_width: 48
+  decoder_width: 48
+  attention_heads: 4
+  vision_layers: 2
+  decoder_layers: 2
+  learner_device: cpu
+  separate_verification_device: cuda
+- id: exact_additive_visual_patch_game
+  source: generated_analytic_model
+  claim_scope: GT-0 warm-up with engineered RGB/occupancy tokens and known additive contributions
+datasets:
+- id: word_vlm_colored_shapes_v1
+  source: course_renderer
+  train_images: 288
+  development_images: 108
+  train_seed: 100
+  development_seed: 200
+  familiar_images_per_condition: 144
+  familiar_seed: 300
+  compositional_images: 96
+  compositional_seed: 400
+  requests_per_image:
+  - color question
+  - shape question
+  - caption
+  familiar_conditions:
+  - solid
+  - muted
+  excluded_combinations:
+  - - red
+    - triangle
+  - - blue
+    - circle
+  - - green
+    - square
+  paired_palette_shift: familiar solid and muted share geometry and sensor noise
+- id: word_vlm_matched_counterfactuals_v1
+  source: fixed_first_four_of_every_familiar_combination_in_final_recipe
+  pairs_per_seed: 72
+  donor_rule: cycle only queried attribute, preserve geometry/background/noise
+  object_mask: union of occupied clean and donor pixels
+  control_seed: 701
+  background_draws: 8
+  unrestricted_random_draws: 8
+training:
+  steps: 600
+  batch_size: 48
+  learning_rate: 0.003
+  weight_decay: 0.0001
+  gradient_norm_clip: 1.0
+  evaluation_every: 100
+  checkpoint_selection: earliest maximum development exact generated sequence
+  cpu_model_seeds:
+  - 0
+  - 1
+  - 2
+  cuda_model_seeds:
+  - 0
+  modes:
+  - joint
+  - text-only
+  - image-only
+  - shuffled-pairs
+  final_scores_select_checkpoints: false
+expected_metrics:
+  tests_passed: true
+  accepted: true
+  max_allowed_gpu_gb: 24
+  word_learner_completed_from_own_answers: true
+  word_learner_code_cells: 34
+  word_learner_metrics_recomputed_from_tokens: true
+  word_fresh_cuda_training_runs: 4
+  word_fresh_cuda_final_evaluations: 12
+  word_fresh_cuda_stage_region_experiments: 95
+  word_cuda_joint_familiar_exact_min: 0.75
+  word_cuda_familiar_control_gap_min: 0.2
+  word_cuda_structural_patch_controls_passed: true
+controls:
+- independent pixel-window and attention forward/gradient oracles
+- future/pad invariance and exact marker/word position mapping
+- shifted answer/EOS loss and rejected answer leakage in generated evaluation
+- two independent AdamW updates including clipping and weight decay
+- all twelve training/development histories and every model seed
+- trained text-only, image-only and shuffled-pair baselines
+- familiar solid/muted paired appearance shift
+- excluded color-shape combinations never used in checkpoint selection
+- object rows plus all eight background and eight unrestricted random samples
+- all 72 endpoint pairs retained with explicit joint-correct denominator
+- full-sequence donor generation parity at every stage
+- final decoder visual-only structural negative control
+safety_notes:
+- All images and language are course-generated colored shapes and simple questions.
+- The vocabulary and visual world are narrow; no open-domain VLM or paper-scale replication claim
+  is made.
+- Unseen-combination caption failures are retained and do not select or reject checkpoints.
+- The learner runs on CPU; the report labels its separate fresh CUDA experiments explicitly.
+freshness_inputs:
+- chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/build_notebooks.py
+- chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/execute_learner.py
+- chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/language_data.py
+- chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/language_data_tests.py
+- chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/language_figures.py
+- chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/language_patching.py
+- chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/language_patching_tests.py
+- chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/language_training.py
+- chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/language_training_tests.py
+- chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/language_vlm.py
+- chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/language_vlm_tests.py
+- chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/run_word_patching.py
+- chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/solutions.py
+- chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/tests.py
+- chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/word_cuda.py
+- chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/word_evidence.py
+- chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/word_evidence_tests.py
+- chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/lesson.md
+- chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/expected_outputs/learner_execution.json
+- chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/expected_outputs/completed_word_study.json.gz

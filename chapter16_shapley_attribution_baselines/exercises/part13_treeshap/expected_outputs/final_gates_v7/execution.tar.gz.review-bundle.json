@@ -1,0 +1,137 @@
+{
+  "schema": "arena.review-bundle.v1",
+  "archive": {
+    "name": "execution.tar.gz",
+    "sha256": "8c452bd0212d486556b3ae89b805e29bb266e38bc3c764b843d0282f1e6dfb68",
+    "size_bytes": 6881
+  },
+  "limits": {
+    "archive_bytes": 67108864,
+    "member_bytes": 16777216,
+    "total_member_bytes": 134217728,
+    "tar_container_bytes": 167772160,
+    "decoded_json_bytes": 67108864,
+    "total_decoded_bytes": 536870912,
+    "members": 4096
+  },
+  "provenance": {
+    "kind": "historical_archive_packaging",
+    "packaged_at_utc": "2026-09-08T03:27:02.047608+00:00",
+    "measurement_claim": "Packaging only. This is not a native rerun, scientific revalidation or new review. Retained receipts, failure labels, values, scientific hashes and measurement dates are byte-identical to the original. Historical embedded archive inventories describe that original; this adjacent contract describes the derived review bundle.",
+    "source_archive": {
+      "repository_path": "chapter16_shapley_attribution_baselines/exercises/part13_treeshap/expected_outputs/final_gates_v7/execution.tar.gz",
+      "absolute_path": "/home/bitwise/.cache/arena_extended/evidence_packaging/original_archives/8c452bd0212d486556b3ae89b805e29bb266e38bc3c764b843d0282f1e6dfb68.tar.gz",
+      "sha256": "8c452bd0212d486556b3ae89b805e29bb266e38bc3c764b843d0282f1e6dfb68",
+      "size_bytes": 6881,
+      "git_commit": "ce96ceaae2f91bf0dcd7648052325e07a87b0b5b",
+      "git_blob": "6eb4e7dc6c3901bed01982664c6cb645f8646d50"
+    },
+    "source_archive_members": {
+      "audit_arena_style_depth.log": {
+        "sha256": "559bdd700d5e1971ad91325bb185204b69d1763b52d07c4753d7d2a1f6a8410b",
+        "size_bytes": 73
+      },
+      "audit_course_surface.log": {
+        "sha256": "a2e00c3825989a7411fcd96c79f159ef679acf0f5afc8514ff159bdc7ddf7fed",
+        "size_bytes": 76
+      },
+      "audit_hard_exercise_ladders.log": {
+        "sha256": "81b97c008857aedde8e665c801a5389dcc8563fc108f20792fd254295e2d429c",
+        "size_bytes": 71
+      },
+      "audit_no_minified_files.log": {
+        "sha256": "0e1f09f006190cddc7b69740e057760c4e1abe048cad6571e047c0808551f2dd",
+        "size_bytes": 9952
+      },
+      "audit_original_arena_preservation.log": {
+        "sha256": "74059e8ec1a7ffd5e394efd94f86afb01769ac8f059edf8ff1bee281174f27d6",
+        "size_bytes": 123
+      },
+      "audit_report_evidence_contracts.log": {
+        "sha256": "663dbb06659abade7dc3354e0698948ed70ee6e886d5adf16dd3c44f3169931c",
+        "size_bytes": 77
+      },
+      "audit_roadmap_final_completeness.log": {
+        "sha256": "fd920f9aa80d4cf183a4fcbf04e5c84b654f3d8e647682b801d360b2ac82adfb",
+        "size_bytes": 12884
+      },
+      "build_merged_config.log": {
+        "sha256": "db4ec1dd12435063d118f96cc00f57dfa71fb0a3efb596f58a17b7aa5bca1d97",
+        "size_bytes": 19
+      },
+      "global_tests.log": {
+        "sha256": "5b03e4f171d1bee1979df3b59078e41d3e98cb9cf2ac6f049b5e350fb59a04f6",
+        "size_bytes": 999
+      },
+      "outcomes.json": {
+        "sha256": "00432425c7404e24d00d266cbaf973fecdbc0402af55f317280c71f5652723ac",
+        "size_bytes": 3012
+      }
+    }
+  },
+  "members": {
+    "audit_arena_style_depth.log": {
+      "type": "regular",
+      "size_bytes": 73,
+      "sha256": "559bdd700d5e1971ad91325bb185204b69d1763b52d07c4753d7d2a1f6a8410b",
+      "format": "utf8-text"
+    },
+    "audit_course_surface.log": {
+      "type": "regular",
+      "size_bytes": 76,
+      "sha256": "a2e00c3825989a7411fcd96c79f159ef679acf0f5afc8514ff159bdc7ddf7fed",
+      "format": "utf8-text"
+    },
+    "audit_hard_exercise_ladders.log": {
+      "type": "regular",
+      "size_bytes": 71,
+      "sha256": "81b97c008857aedde8e665c801a5389dcc8563fc108f20792fd254295e2d429c",
+      "format": "utf8-text"
+    },
+    "audit_no_minified_files.log": {
+      "type": "regular",
+      "size_bytes": 9952,
+      "sha256": "0e1f09f006190cddc7b69740e057760c4e1abe048cad6571e047c0808551f2dd",
+      "format": "utf8-text"
+    },
+    "audit_original_arena_preservation.log": {
+      "type": "regular",
+      "size_bytes": 123,
+      "sha256": "74059e8ec1a7ffd5e394efd94f86afb01769ac8f059edf8ff1bee281174f27d6",
+      "format": "utf8-text"
+    },
+    "audit_report_evidence_contracts.log": {
+      "type": "regular",
+      "size_bytes": 77,
+      "sha256": "663dbb06659abade7dc3354e0698948ed70ee6e886d5adf16dd3c44f3169931c",
+      "format": "utf8-text"
+    },
+    "audit_roadmap_final_completeness.log": {
+      "type": "regular",
+      "size_bytes": 12884,
+      "sha256": "fd920f9aa80d4cf183a4fcbf04e5c84b654f3d8e647682b801d360b2ac82adfb",
+      "format": "utf8-text"
+    },
+    "build_merged_config.log": {
+      "type": "regular",
+      "size_bytes": 19,
+      "sha256": "db4ec1dd12435063d118f96cc00f57dfa71fb0a3efb596f58a17b7aa5bca1d97",
+      "format": "utf8-text"
+    },
+    "global_tests.log": {
+      "type": "regular",
+      "size_bytes": 999,
+      "sha256": "5b03e4f171d1bee1979df3b59078e41d3e98cb9cf2ac6f049b5e350fb59a04f6",
+      "format": "utf8-text"
+    },
+    "outcomes.json": {
+      "type": "regular",
+      "size_bytes": 3012,
+      "sha256": "00432425c7404e24d00d266cbaf973fecdbc0402af55f317280c71f5652723ac",
+      "format": "json"
+    }
+  },
+  "external_payloads": {},
+  "member_count": 10,
+  "total_member_bytes": 27286
+}

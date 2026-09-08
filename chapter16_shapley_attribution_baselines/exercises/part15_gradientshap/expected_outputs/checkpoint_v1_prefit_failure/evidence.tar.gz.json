@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "status": "PASS",
+  "label": "v1_prefit_failure",
+  "archive": "/home/bitwise/Documents/ARENA_3.0_Extended/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/expected_outputs/checkpoint_v1_prefit_failure/evidence.tar.gz",
+  "sha256": "b5a5d975ea2a30a5c54eeedd68e3d31203b07e86ea4c115302d32302324d2ef0",
+  "size_bytes": 688474,
+  "verified_included_files": 28,
+  "verified_external_files": 0,
+  "historical_status": {
+    "execution_status": "FAIL",
+    "native_model_executed": false,
+    "last_completed_cell": 19,
+    "changed_sources": [],
+    "failure_preserved": "DID NOT RAISE TypeError before any native fit"
+  },
+  "external_files": {}
+}

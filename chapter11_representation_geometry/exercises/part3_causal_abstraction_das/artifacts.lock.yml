@@ -1,0 +1,121 @@
+notebook_id: 11_3_causal_abstraction_and_distributed_alignment_search
+section: '11.3'
+title: Causal Abstraction and Distributed Alignment Search
+execution_device: cpu
+exercise_metadata:
+  EXERCISE_ID: 11_3_causal_abstraction_and_distributed_alignment_search
+  GT_TIER: GT-0
+  DIFFICULTY: 4
+  IMPORTANCE: 5
+  EXPECTED_RUNTIME: About four hours study; about five minutes for the complete reference
+    CPU notebook
+  REQUIRES_GPU: false
+gt_tier: GT-0
+evidence_level: exact_causal_oracles_and_native_gpt2_distributed_interchanges
+claim_scope: Learner-implemented structural interventions, orthogonal subspace swaps,
+  independent derivatives and frozen-model alignment, followed by 96 new GPT-2 prompts
+  and 384 final interventions per condition. All three fitting seeds, shuffled targets
+  and 32 matched-rank random subspaces remain visible. Output agreement does not establish
+  a unique or minimal causal abstraction, an advantage over whole-position donors,
+  or interchange intervention training of model weights.
+required_gpu_gb: 0
+max_allowed_gpu_gb: 0
+safety_notes:
+- Generated name-role sentences provide the finite task; the notebook measures next-token
+  outputs while keeping the pretrained model weights frozen.
+models:
+- id: gpt2
+  source: huggingface
+  revision: 607a30d783dfa663caf39e06633721c8d4cfcd7e
+  precision: float32
+  gated: false
+datasets:
+- id: frozen_name_role_interchanges_v1
+  source: generated
+  protocol: das_protocol.py
+  train_rows: 72
+  development_rows: 48
+  final_rows: 96
+  final_interventions: 384
+expected_metrics:
+  tests_passed: true
+  accepted: true
+  test_count: 13
+  native_model_reloaded: true
+  actual_learner_passed: true
+  fresh_reproduction_passed: true
+  own_answer_code_cells: 32
+  embedded_figures: 12
+  final_prompt_count: 96
+  retained_final_outcomes: 16512
+  fresh_compared_examples: 16512
+  fresh_condition_batches: 43
+  fresh_native_forward_rows: 17232
+  fresh_max_logit_error_max: 0.0003
+  fresh_top_token_mismatches: 0
+  primary_metric_matches_actual_tokens: true
+  weights_unchanged: true
+  model_gradients_absent: true
+  final_used_for_selection: false
+  whole_paper_replication: false
+controls:
+- exact_rotated_causal_organism
+- perfectly_predictive_unused_copy
+- independent_projector_finite_difference
+- unchanged_side_variable
+- three_alignment_seeds
+- three_shuffled_target_fits
+- 32_equal_rank_random_subspaces
+- no_intervention
+- same_prompt_identity
+- whole_position_donor
+- observational_ridge_role_probe
+- observational_mean_direction
+- training_only_fit
+- development_selected_site_and_rank
+- new_template_and_name_pair_final
+- all_native_errors_retained
+- explicit_counterfactual_prompt
+- conditional_and_unconditional_denominators
+- donor_answer_identity_leakage
+- native_hook_and_cached_gradient_parity
+- fresh_cpu_all_full_vocabulary_outputs
+freshness_inputs:
+- chapter11_representation_geometry/exercises/part3_causal_abstraction_das/build_notebooks.py
+- chapter11_representation_geometry/exercises/part3_causal_abstraction_das/das_ioi_data.py
+- chapter11_representation_geometry/exercises/part3_causal_abstraction_das/das_methods.py
+- chapter11_representation_geometry/exercises/part3_causal_abstraction_das/das_methods_tests.py
+- chapter11_representation_geometry/exercises/part3_causal_abstraction_das/das_native.py
+- chapter11_representation_geometry/exercises/part3_causal_abstraction_das/das_native_tests.py
+- chapter11_representation_geometry/exercises/part3_causal_abstraction_das/das_organism.py
+- chapter11_representation_geometry/exercises/part3_causal_abstraction_das/das_protocol.py
+- chapter11_representation_geometry/exercises/part3_causal_abstraction_das/das_reproduction.py
+- chapter11_representation_geometry/exercises/part3_causal_abstraction_das/das_reproduction_tests.py
+- chapter11_representation_geometry/exercises/part3_causal_abstraction_das/das_training_methods.py
+- chapter11_representation_geometry/exercises/part3_causal_abstraction_das/das_training_tests.py
+- chapter11_representation_geometry/exercises/part3_causal_abstraction_das/execute_learner.py
+- chapter11_representation_geometry/exercises/part3_causal_abstraction_das/publish_study.py
+- chapter11_representation_geometry/exercises/part3_causal_abstraction_das/run_das_screen.py
+- chapter11_representation_geometry/exercises/part3_causal_abstraction_das/run_native_development.py
+- chapter11_representation_geometry/exercises/part3_causal_abstraction_das/run_organism_development.py
+- chapter11_representation_geometry/exercises/part3_causal_abstraction_das/solutions.py
+- chapter11_representation_geometry/exercises/part3_causal_abstraction_das/tests.py
+- chapter11_representation_geometry/exercises/part3_causal_abstraction_das/lesson.md
+- chapter11_representation_geometry/exercises/part3_causal_abstraction_das/native_protocol.md
+- chapter11_representation_geometry/exercises/part3_causal_abstraction_das/README.md
+- chapter11_representation_geometry/exercises/part3_causal_abstraction_das/expected_outputs/learner_execution.json
+- chapter11_representation_geometry/exercises/part3_causal_abstraction_das/expected_outputs/native_summary.json
+- chapter11_representation_geometry/exercises/part3_causal_abstraction_das/expected_outputs/fresh_reproduction.json
+- chapter11_representation_geometry/exercises/part3_causal_abstraction_das/expected_outputs/README.md
+- chapter11_representation_geometry/instructions/assets/das_exact_interchanges.png
+- chapter11_representation_geometry/instructions/assets/das_learning_and_controls.png
+- chapter11_representation_geometry/instructions/assets/das_coordinate_and_specificity.png
+- chapter11_representation_geometry/instructions/assets/das_angle_play.png
+- chapter11_representation_geometry/instructions/assets/das_native_site_comparison.png
+- chapter11_representation_geometry/instructions/assets/das_native_site_play.png
+- chapter11_representation_geometry/instructions/assets/das_native_rank_selection.png
+- chapter11_representation_geometry/instructions/assets/das_native_final_controls.png
+- chapter11_representation_geometry/instructions/assets/das_native_specificity.png
+- chapter11_representation_geometry/instructions/assets/das_native_generalization.png
+- chapter11_representation_geometry/instructions/assets/das_native_token_examples.png
+- chapter11_representation_geometry/instructions/assets/das_native_pair_play.png

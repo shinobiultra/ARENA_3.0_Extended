@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="940" height="410" viewBox="0 0 940 410" role="img" aria-labelledby="title desc">
+  <title id="title">Checkpoint archaeology signature result</title>
+  <desc id="desc">A compact summary of the 17.1 CUDA checkpoint archaeology metrics.</desc>
+  <defs>
+    <style>
+      .bg { fill: #fbfbfd; }
+      .card { fill: #ffffff; stroke: #cad2df; stroke-width: 1.4; rx: 8; }
+      .pass { fill: #e9f8ef; stroke: #57a773; stroke-width: 1.4; rx: 8; }
+      .warn { fill: #fff7ed; stroke: #d97706; stroke-width: 1.4; rx: 8; }
+      .title { font: 700 18px Inter, Arial, sans-serif; fill: #111827; }
+      .label { font: 700 14px Inter, Arial, sans-serif; fill: #1f2937; }
+      .text { font: 13px Inter, Arial, sans-serif; fill: #374151; }
+      .metric { font: 700 27px Inter, Arial, sans-serif; fill: #0f172a; }
+      .tiny { font: 12px Inter, Arial, sans-serif; fill: #4b5563; }
+      .axis { stroke: #9ca3af; stroke-width: 1.2; }
+      .target { stroke: #2563eb; stroke-width: 3; fill: none; }
+      .control { stroke: #d97706; stroke-width: 3; fill: none; stroke-dasharray: 6 5; }
+      .threshold { stroke: #16a34a; stroke-width: 1.5; stroke-dasharray: 4 4; }
+    </style>
+  </defs>
+  <rect class="bg" width="940" height="410"/>
+  <text x="34" y="38" class="title">Signature result: reloaded mod-13 checkpoints</text>
+  <text x="34" y="64" class="text">The target run solves the complete finite table after saved checkpoints are reloaded; the random-label control stays near chance.</text>
+
+  <rect class="pass" x="34" y="92" width="200" height="98"/>
+  <text x="54" y="122" class="label">Final accuracy</text>
+  <text x="54" y="156" class="metric">1.000</text>
+  <text x="54" y="178" class="tiny">169 / 169 finite pairs</text>
+
+  <rect class="card" x="256" y="92" width="200" height="98"/>
+  <text x="276" y="122" class="label">Stable from</text>
+  <text x="276" y="156" class="metric">step 30</text>
+  <text x="276" y="178" class="tiny">first stable threshold run</text>
+
+  <rect class="card" x="478" y="92" width="200" height="98"/>
+  <text x="498" y="122" class="label">Phase jump</text>
+  <text x="498" y="156" class="metric">0.278</text>
+  <text x="498" y="178" class="tiny">largest adjacent gain</text>
+
+  <rect class="card" x="700" y="92" width="200" height="98"/>
+  <text x="720" y="122" class="label">Peak VRAM</text>
+  <text x="720" y="156" class="metric">0.063 GB</text>
+  <text x="720" y="178" class="tiny">well under 24 GB</text>
+
+  <rect class="card" x="34" y="222" width="426" height="122"/>
+  <text x="54" y="250" class="label">Reloaded checkpoint trajectory</text>
+  <line x1="70" y1="318" x2="420" y2="318" class="axis"/>
+  <line x1="70" y1="318" x2="70" y2="270" class="axis"/>
+  <line x1="70" y1="274" x2="420" y2="274" class="threshold"/>
+  <path d="M70 314 L110 313 L150 312 L190 307 L230 296 L270 278 L310 244 L350 226 L420 224" class="target"/>
+  <path d="M70 314 L110 312 L150 313 L190 316 L230 315 L270 314 L310 313 L350 314 L420 313" class="control"/>
+  <text x="78" y="292" class="tiny">threshold</text>
+  <text x="285" y="242" class="tiny">target labels</text>
+  <text x="288" y="306" class="tiny">random labels</text>
+
+  <rect class="card" x="486" y="222" width="414" height="122"/>
+  <text x="506" y="250" class="label">Controls that make the claim hard to fake</text>
+  <text x="506" y="278" class="text">26 real checkpoints written and reloaded</text>
+  <text x="506" y="302" class="text">Random-label peak accuracy 0.101</text>
+  <text x="506" y="326" class="text">No OOD generalization claimed</text>
+
+  <rect class="warn" x="34" y="368" width="866" height="26"/>
+  <text x="50" y="386" class="tiny">Scope: proves a local checkpoint-archaeology workflow on a finite model organism, not large-model developmental mechanisms.</text>
+</svg>

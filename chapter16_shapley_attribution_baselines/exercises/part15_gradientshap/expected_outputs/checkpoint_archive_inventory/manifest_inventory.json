@@ -1,0 +1,460 @@
+{
+  "schema_version": 1,
+  "status": "PASS",
+  "created_at_utc": "2026-09-07T02:57:36.192230+00:00",
+  "archive_helper": {
+    "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/archive_checkpoint_collections.py",
+    "sha256": "399432d7fcc55223e5cbda3c159a6cfd8e694108756a976658313a293ef9fd77",
+    "adapted_from": "/home/bitwise/.cache/arena_extended/gradientshap/archive_checkpoint.py",
+    "adapted_from_sha256": "11ed71c75e2a5980800b4cac81771962e87f504ae73f033aa63803ed896fc3ef"
+  },
+  "policy": {
+    "inline_limit_bytes": 134217728,
+    "archive_original_cache_sources": true,
+    "archive_members_reread_and_rehashed": true,
+    "external_files_rehashed_after_archive": true,
+    "never_overwrite": true
+  },
+  "archive_count": 9,
+  "archives": [
+    {
+      "label": "v1_prefit_failure",
+      "status": "PASS",
+      "archive": "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/expected_outputs/checkpoint_v1_prefit_failure/evidence.tar.gz",
+      "archive_sha256": "b5a5d975ea2a30a5c54eeedd68e3d31203b07e86ea4c115302d32302324d2ef0",
+      "archive_size_bytes": 688474,
+      "receipt": "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/expected_outputs/checkpoint_v1_prefit_failure/evidence.tar.gz.json",
+      "receipt_sha256": "098249aab0b506acb076ae4ebcc5809658abdb60a4190ac76937d9612f99e53c",
+      "embedded_manifest_sha256": "0f8f983091b7c197c3d273f999d12ce74f0a5d30863c6aeacdced19fcd5100bd",
+      "historical_status": {
+        "execution_status": "FAIL",
+        "native_model_executed": false,
+        "last_completed_cell": 19,
+        "changed_sources": [],
+        "failure_preserved": "DID NOT RAISE TypeError before any native fit"
+      },
+      "included_file_count": 28,
+      "external_file_count": 0,
+      "source_file_count": 28,
+      "source_bytes": 1339466,
+      "external_files": {}
+    },
+    {
+      "label": "v2_own_answer_visual_failure",
+      "status": "PASS",
+      "archive": "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/expected_outputs/checkpoint_v2_own_answer_visual_failure/evidence.tar.gz",
+      "archive_sha256": "bfc1ee381bda375b5608926b2d54001bbdc0839de175bd5b2c367e44237ad9c6",
+      "archive_size_bytes": 59239504,
+      "receipt": "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/expected_outputs/checkpoint_v2_own_answer_visual_failure/evidence.tar.gz.json",
+      "receipt_sha256": "59d1737fd3cc0d1d594d2837c1c4b4904db3cf608c8dc77c7e3cfddea3e69f50",
+      "embedded_manifest_sha256": "93be6c10438c7b966023ace760789b282da726cae68d4aa21b61cb1e365ffd54",
+      "historical_status": {
+        "execution_status": "PASS",
+        "native_model_executed": true,
+        "visual_review_status": "FAIL",
+        "blocking_human_findings": [
+          {
+            "severity": "blocking",
+            "kind": "stale_learner_prose",
+            "source": "lesson.md:1477-1480",
+            "screenshot": "browser_section_15.png",
+            "detail": "The rendered lesson says the study APIs are still under semantic testing, the following cells remain stopped, and no Concrete result exists, although v2 executed those cells and displays native results."
+          },
+          {
+            "severity": "blocking",
+            "kind": "figure_layout_followup",
+            "detail": "Three native-figure presentation fixes are tracked by the figure owner; final approval requires a new browser review after those fixes."
+          }
+        ],
+        "changed_sources": []
+      },
+      "included_file_count": 153,
+      "external_file_count": 3,
+      "source_file_count": 156,
+      "source_bytes": 3581915110,
+      "external_files": {
+        "native-dev-v2/figures/native/evaluated.pt": {
+          "source_absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/native-dev-v2/figures/native/evaluated.pt",
+          "sha256": "462e32a9a0b52617af8ea9fe6c75ea10b2614bac2ae7b09a28bdcab9a450f49d",
+          "size_bytes": 1577241419,
+          "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/native-dev-v2/figures/native/evaluated.pt",
+          "recursive_manifest": {
+            "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/native-dev-v2/figures/native/evaluated.manifest.json",
+            "sha256": "ad2e546b0ebc9c21bef1d67ddbc066081021d3c6f329fe424ed5587b664cb15f",
+            "artifact_sha256": "462e32a9a0b52617af8ea9fe6c75ea10b2614bac2ae7b09a28bdcab9a450f49d",
+            "artifact_size_bytes": 1577241419,
+            "record_count": 1019,
+            "counts": {
+              "arrays": 720,
+              "array_elements": 216054404,
+              "records": 1019
+            }
+          }
+        },
+        "native-dev-v2/figures/native/prepared.pt": {
+          "source_absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/native-dev-v2/figures/native/prepared.pt",
+          "sha256": "af7079beb52083d3c1955aabe20f13d3a8a71f40404e5f10dc4f8ac6822e7853",
+          "size_bytes": 302399289,
+          "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/native-dev-v2/figures/native/prepared.pt",
+          "recursive_manifest": {
+            "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/native-dev-v2/figures/native/prepared.manifest.json",
+            "sha256": "756c577d673fec5e816b88f82883b02dad040a84028dff11240f1b8d4b3b83fb",
+            "artifact_sha256": "af7079beb52083d3c1955aabe20f13d3a8a71f40404e5f10dc4f8ac6822e7853",
+            "artifact_size_bytes": 302399289,
+            "record_count": 371,
+            "counts": {
+              "arrays": 217,
+              "array_elements": 41552409,
+              "records": 371
+            }
+          }
+        },
+        "native-dev-v2/figures/native/replicate_samples.pt": {
+          "source_absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/native-dev-v2/figures/native/replicate_samples.pt",
+          "sha256": "46238cad0348f56be4807507256233884af3588037a434197f0cbe0f0aa1a0fa",
+          "size_bytes": 1610614447,
+          "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/native-dev-v2/figures/native/replicate_samples.pt",
+          "recursive_manifest": {
+            "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/native-dev-v2/figures/native/replicate_samples.manifest.json",
+            "sha256": "b4715a058eb3acb905a573d162a6fa5e79a5b90929af269d4085022e072dee4c",
+            "artifact_sha256": "46238cad0348f56be4807507256233884af3588037a434197f0cbe0f0aa1a0fa",
+            "artifact_size_bytes": 1610614447,
+            "record_count": 1,
+            "counts": {
+              "arrays": 1,
+              "array_elements": 201326592,
+              "records": 1
+            }
+          }
+        }
+      }
+    },
+    {
+      "label": "v2_fresh_reproduction",
+      "status": "PASS",
+      "archive": "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/expected_outputs/checkpoint_v2_fresh_reproduction/evidence.tar.gz",
+      "archive_sha256": "6868ea9f27081b80fdb3667345c693ca2cdc5bf2f5ddf505785ce690493ca8ef",
+      "archive_size_bytes": 31924279,
+      "receipt": "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/expected_outputs/checkpoint_v2_fresh_reproduction/evidence.tar.gz.json",
+      "receipt_sha256": "4bbeb89627713305f6c246ec8ec7192f9be331de771ffe2683a81559d0b5cbc6",
+      "embedded_manifest_sha256": "9d9edbe120848f9383bf0fe8d9a06bea9981b40e05a2cab0bb53f7795c797ef3",
+      "historical_status": {
+        "reproduction_status": "PASS",
+        "native_model_retrained": true,
+        "cached_model_inputs_used": false,
+        "changed_sources": [],
+        "comparisons": {
+          "arrays": 1442,
+          "array_elements": 464237288,
+          "records": 2730,
+          "scalars": 872,
+          "max_absolute_error": 0.0,
+          "comparison": "exact_recursive_value_sha256"
+        }
+      },
+      "included_file_count": 53,
+      "external_file_count": 3,
+      "source_file_count": 56,
+      "source_bytes": 3550015597,
+      "external_files": {
+        "reproduction-v2/fresh_run/evaluated.pt": {
+          "source_absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/reproduction-v2/fresh_run/evaluated.pt",
+          "sha256": "462e32a9a0b52617af8ea9fe6c75ea10b2614bac2ae7b09a28bdcab9a450f49d",
+          "size_bytes": 1577241419,
+          "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/reproduction-v2/fresh_run/evaluated.pt",
+          "recursive_manifest": {
+            "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/reproduction-v2/fresh_run/evaluated.manifest.json",
+            "sha256": "ad2e546b0ebc9c21bef1d67ddbc066081021d3c6f329fe424ed5587b664cb15f",
+            "artifact_sha256": "462e32a9a0b52617af8ea9fe6c75ea10b2614bac2ae7b09a28bdcab9a450f49d",
+            "artifact_size_bytes": 1577241419,
+            "record_count": 1019,
+            "counts": {
+              "arrays": 720,
+              "array_elements": 216054404,
+              "records": 1019
+            }
+          }
+        },
+        "reproduction-v2/fresh_run/prepared.pt": {
+          "source_absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/reproduction-v2/fresh_run/prepared.pt",
+          "sha256": "af7079beb52083d3c1955aabe20f13d3a8a71f40404e5f10dc4f8ac6822e7853",
+          "size_bytes": 302399289,
+          "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/reproduction-v2/fresh_run/prepared.pt",
+          "recursive_manifest": {
+            "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/reproduction-v2/fresh_run/prepared.manifest.json",
+            "sha256": "756c577d673fec5e816b88f82883b02dad040a84028dff11240f1b8d4b3b83fb",
+            "artifact_sha256": "af7079beb52083d3c1955aabe20f13d3a8a71f40404e5f10dc4f8ac6822e7853",
+            "artifact_size_bytes": 302399289,
+            "record_count": 371,
+            "counts": {
+              "arrays": 217,
+              "array_elements": 41552409,
+              "records": 371
+            }
+          }
+        },
+        "reproduction-v2/fresh_run/replicate_samples.pt": {
+          "source_absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/reproduction-v2/fresh_run/replicate_samples.pt",
+          "sha256": "46238cad0348f56be4807507256233884af3588037a434197f0cbe0f0aa1a0fa",
+          "size_bytes": 1610614447,
+          "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/reproduction-v2/fresh_run/replicate_samples.pt",
+          "recursive_manifest": {
+            "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/reproduction-v2/fresh_run/replicate_samples.manifest.json",
+            "sha256": "b4715a058eb3acb905a573d162a6fa5e79a5b90929af269d4085022e072dee4c",
+            "artifact_sha256": "46238cad0348f56be4807507256233884af3588037a434197f0cbe0f0aa1a0fa",
+            "artifact_size_bytes": 1610614447,
+            "record_count": 1,
+            "counts": {
+              "arrays": 1,
+              "array_elements": 201326592,
+              "records": 1
+            }
+          }
+        }
+      }
+    },
+    {
+      "label": "v3_own_answer_browser_visual_pass",
+      "status": "PASS",
+      "archive": "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/expected_outputs/checkpoint_v3_own_answer_visual_pass/evidence.tar.gz",
+      "archive_sha256": "c42991fe5c3f4611d07df22e4d345c530574cedfe6e3004afb811829d9652885",
+      "archive_size_bytes": 57218054,
+      "receipt": "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/expected_outputs/checkpoint_v3_own_answer_visual_pass/evidence.tar.gz.json",
+      "receipt_sha256": "dd12859e286211c0dd9c69d21cb362ed3f0a335a6c18b54485dcd3969d2c06f1",
+      "embedded_manifest_sha256": "2aca25bcde67d712b7d806e5d3e03fec89d03e9ca9af571718fa24c43f8602bb",
+      "historical_status": {
+        "execution_status": "PASS",
+        "native_model_executed": true,
+        "visual_review_status": "PASS",
+        "human_findings": [],
+        "changed_sources": [],
+        "browser_screenshots": 42,
+        "figure_count": 20
+      },
+      "included_file_count": 139,
+      "external_file_count": 3,
+      "source_file_count": 142,
+      "source_bytes": 3579774743,
+      "external_files": {
+        "native-dev-v3/figures/native/evaluated.pt": {
+          "source_absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/native-dev-v3/figures/native/evaluated.pt",
+          "sha256": "462e32a9a0b52617af8ea9fe6c75ea10b2614bac2ae7b09a28bdcab9a450f49d",
+          "size_bytes": 1577241419,
+          "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/native-dev-v3/figures/native/evaluated.pt",
+          "recursive_manifest": {
+            "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/native-dev-v3/figures/native/evaluated.manifest.json",
+            "sha256": "ad2e546b0ebc9c21bef1d67ddbc066081021d3c6f329fe424ed5587b664cb15f",
+            "artifact_sha256": "462e32a9a0b52617af8ea9fe6c75ea10b2614bac2ae7b09a28bdcab9a450f49d",
+            "artifact_size_bytes": 1577241419,
+            "record_count": 1019,
+            "counts": {
+              "arrays": 720,
+              "array_elements": 216054404,
+              "records": 1019
+            }
+          }
+        },
+        "native-dev-v3/figures/native/prepared.pt": {
+          "source_absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/native-dev-v3/figures/native/prepared.pt",
+          "sha256": "af7079beb52083d3c1955aabe20f13d3a8a71f40404e5f10dc4f8ac6822e7853",
+          "size_bytes": 302399289,
+          "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/native-dev-v3/figures/native/prepared.pt",
+          "recursive_manifest": {
+            "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/native-dev-v3/figures/native/prepared.manifest.json",
+            "sha256": "756c577d673fec5e816b88f82883b02dad040a84028dff11240f1b8d4b3b83fb",
+            "artifact_sha256": "af7079beb52083d3c1955aabe20f13d3a8a71f40404e5f10dc4f8ac6822e7853",
+            "artifact_size_bytes": 302399289,
+            "record_count": 371,
+            "counts": {
+              "arrays": 217,
+              "array_elements": 41552409,
+              "records": 371
+            }
+          }
+        },
+        "native-dev-v3/figures/native/replicate_samples.pt": {
+          "source_absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/native-dev-v3/figures/native/replicate_samples.pt",
+          "sha256": "46238cad0348f56be4807507256233884af3588037a434197f0cbe0f0aa1a0fa",
+          "size_bytes": 1610614447,
+          "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/native-dev-v3/figures/native/replicate_samples.pt",
+          "recursive_manifest": {
+            "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/native-dev-v3/figures/native/replicate_samples.manifest.json",
+            "sha256": "b4715a058eb3acb905a573d162a6fa5e79a5b90929af269d4085022e072dee4c",
+            "artifact_sha256": "46238cad0348f56be4807507256233884af3588037a434197f0cbe0f0aa1a0fa",
+            "artifact_size_bytes": 1610614447,
+            "record_count": 1,
+            "counts": {
+              "arrays": 1,
+              "array_elements": 201326592,
+              "records": 1
+            }
+          }
+        }
+      }
+    },
+    {
+      "label": "v3_fresh_reproduction",
+      "status": "PASS",
+      "archive": "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/expected_outputs/checkpoint_v3_fresh_reproduction/evidence.tar.gz",
+      "archive_sha256": "52ee16ce70cdb05fbbc6502bda79f354576babb1d4a94a8d42538bcd8d7a6efa",
+      "archive_size_bytes": 31924703,
+      "receipt": "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/expected_outputs/checkpoint_v3_fresh_reproduction/evidence.tar.gz.json",
+      "receipt_sha256": "e078fc8614b4b07e68c471485266eccd80aca768f25dd8214955984723f7294d",
+      "embedded_manifest_sha256": "653e2daa28d0e899e064ac0585b4ac37d5825c37afd7951d136b2d5e84f4810f",
+      "historical_status": {
+        "reproduction_status": "PASS",
+        "native_model_retrained": true,
+        "cached_model_inputs_used": false,
+        "changed_sources": [],
+        "comparisons": {
+          "arrays": 1442,
+          "array_elements": 464237288,
+          "records": 2730,
+          "scalars": 872,
+          "max_absolute_error": 0.0,
+          "comparison": "exact_recursive_value_sha256"
+        }
+      },
+      "included_file_count": 53,
+      "external_file_count": 3,
+      "source_file_count": 56,
+      "source_bytes": 3550016836,
+      "external_files": {
+        "reproduction-v3/fresh_run/evaluated.pt": {
+          "source_absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/reproduction-v3/fresh_run/evaluated.pt",
+          "sha256": "462e32a9a0b52617af8ea9fe6c75ea10b2614bac2ae7b09a28bdcab9a450f49d",
+          "size_bytes": 1577241419,
+          "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/reproduction-v3/fresh_run/evaluated.pt",
+          "recursive_manifest": {
+            "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/reproduction-v3/fresh_run/evaluated.manifest.json",
+            "sha256": "ad2e546b0ebc9c21bef1d67ddbc066081021d3c6f329fe424ed5587b664cb15f",
+            "artifact_sha256": "462e32a9a0b52617af8ea9fe6c75ea10b2614bac2ae7b09a28bdcab9a450f49d",
+            "artifact_size_bytes": 1577241419,
+            "record_count": 1019,
+            "counts": {
+              "arrays": 720,
+              "array_elements": 216054404,
+              "records": 1019
+            }
+          }
+        },
+        "reproduction-v3/fresh_run/prepared.pt": {
+          "source_absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/reproduction-v3/fresh_run/prepared.pt",
+          "sha256": "af7079beb52083d3c1955aabe20f13d3a8a71f40404e5f10dc4f8ac6822e7853",
+          "size_bytes": 302399289,
+          "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/reproduction-v3/fresh_run/prepared.pt",
+          "recursive_manifest": {
+            "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/reproduction-v3/fresh_run/prepared.manifest.json",
+            "sha256": "756c577d673fec5e816b88f82883b02dad040a84028dff11240f1b8d4b3b83fb",
+            "artifact_sha256": "af7079beb52083d3c1955aabe20f13d3a8a71f40404e5f10dc4f8ac6822e7853",
+            "artifact_size_bytes": 302399289,
+            "record_count": 371,
+            "counts": {
+              "arrays": 217,
+              "array_elements": 41552409,
+              "records": 371
+            }
+          }
+        },
+        "reproduction-v3/fresh_run/replicate_samples.pt": {
+          "source_absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/reproduction-v3/fresh_run/replicate_samples.pt",
+          "sha256": "46238cad0348f56be4807507256233884af3588037a434197f0cbe0f0aa1a0fa",
+          "size_bytes": 1610614447,
+          "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/reproduction-v3/fresh_run/replicate_samples.pt",
+          "recursive_manifest": {
+            "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/reproduction-v3/fresh_run/replicate_samples.manifest.json",
+            "sha256": "b4715a058eb3acb905a573d162a6fa5e79a5b90929af269d4085022e072dee4c",
+            "artifact_sha256": "46238cad0348f56be4807507256233884af3588037a434197f0cbe0f0aa1a0fa",
+            "artifact_size_bytes": 1610614447,
+            "record_count": 1,
+            "counts": {
+              "arrays": 1,
+              "array_elements": 201326592,
+              "records": 1
+            }
+          }
+        }
+      }
+    },
+    {
+      "label": "completed_protocol_review",
+      "status": "PASS",
+      "archive": "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/expected_outputs/checkpoint_protocol_review/evidence.tar.gz",
+      "archive_sha256": "4924e77446e1e32bbb2027ae3f10e36143577b02a461e6e28392b4112628d1a3",
+      "archive_size_bytes": 6779,
+      "receipt": "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/expected_outputs/checkpoint_protocol_review/evidence.tar.gz.json",
+      "receipt_sha256": "31d443095925ebe927238efd8f01008b7f73222f046f77a75c574439abcda990",
+      "embedded_manifest_sha256": "e7cde9d1787967dfed792ddac44016a0858a173105ea196b8e02e759d4696f64",
+      "historical_status": {
+        "review_status": "APPROVE",
+        "source_sha256": "8ff9ae80ae42665a4f33fe70df1d0f581a814986d9d7dddbfc4071899f31c38c"
+      },
+      "included_file_count": 1,
+      "external_file_count": 0,
+      "source_file_count": 1,
+      "source_bytes": 14028,
+      "external_files": {}
+    },
+    {
+      "label": "completed_implementation_review",
+      "status": "PASS",
+      "archive": "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/expected_outputs/checkpoint_implementation_review/evidence.tar.gz",
+      "archive_sha256": "3845dd0a959549c02cd995988607b771d2353b0f439261501b507822e88b6a17",
+      "archive_size_bytes": 5443,
+      "receipt": "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/expected_outputs/checkpoint_implementation_review/evidence.tar.gz.json",
+      "receipt_sha256": "4fc6bddaec8ec9303c010a5093dce8dc74b0b28b05ef6bd2c4daa8eb7af7cc2b",
+      "embedded_manifest_sha256": "5337e3ea657fe322fdaba4b30866c7c95e7ea362aa48bc384d06587056d57d26",
+      "historical_status": {
+        "review_status": "APPROVE",
+        "source_sha256": "055a3e9ec150914643316924c61d3d2f259b025d9c3c8cb65ffcb2140f3f6af4"
+      },
+      "included_file_count": 1,
+      "external_file_count": 0,
+      "source_file_count": 1,
+      "source_bytes": 10234,
+      "external_files": {}
+    },
+    {
+      "label": "completed_frontend_reviews",
+      "status": "PASS",
+      "archive": "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/expected_outputs/checkpoint_frontend_review/evidence.tar.gz",
+      "archive_sha256": "ac90daabe3b624dff3ae5555ca222d205d7f516ff41ed6b28a25a6904a3393a1",
+      "archive_size_bytes": 6210,
+      "receipt": "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/expected_outputs/checkpoint_frontend_review/evidence.tar.gz.json",
+      "receipt_sha256": "c7605f26672a67588da1e39487e9f89be3b30483595649a195a1fdd290d4cb97",
+      "embedded_manifest_sha256": "2b3e0aac764557eeabe9c7e869a17a4e9ed979f6d8d0fc6a6f303bbe1e522cf1",
+      "historical_status": {
+        "initial_review_status": "BLOCKERS_RECORDED",
+        "final_recheck_status": "PASS",
+        "initial_sha256": "159594547085dc4f4a87a4fd4d1341599a4683b12454ab8709f11169cc336a64",
+        "final_sha256": "23b666cb58a9f33ca93e2d5b8942816f8d180574cbaf8e23ff649c0e164d1832"
+      },
+      "included_file_count": 2,
+      "external_file_count": 0,
+      "source_file_count": 2,
+      "source_bytes": 13454,
+      "external_files": {}
+    },
+    {
+      "label": "completed_publication_review",
+      "status": "PASS",
+      "archive": "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/expected_outputs/checkpoint_publication_review/evidence.tar.gz",
+      "archive_sha256": "c038a05a20cdf11f440b9bab5100bf10d8a56ffb164fe85a8c021623e4ef01b9",
+      "archive_size_bytes": 12018,
+      "receipt": "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/expected_outputs/checkpoint_publication_review/evidence.tar.gz.json",
+      "receipt_sha256": "8eafe08308192335ee8f42f1b083f158b5d332443968e8c1ba321235bb07b42a",
+      "embedded_manifest_sha256": "e86cae992e7beab9e37a415a7e4481035ad173e76520867f7ab48b35ece9ce65",
+      "historical_status": {
+        "publication_status": "PASS",
+        "input_validation_status": "PASS",
+        "output_verification_status": "PASS",
+        "publication_record_sha256": "ddac3a2451f543ec2fa1532f63b762b81526aeb26305f9437d29181ff7491d69"
+      },
+      "included_file_count": 7,
+      "external_file_count": 0,
+      "source_file_count": 7,
+      "source_bytes": 52288,
+      "external_files": {}
+    }
+  ]
+}

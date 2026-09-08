@@ -1,0 +1,18 @@
+[
+  {
+    "name": "root_cpu_suite_before_final_tracking.log",
+    "raw_path": "/home/bitwise/.cache/arena_extended/maintenance/2026-09-08_resumption/raw_root_test_logs/root_cpu_suite_before_final_tracking.log",
+    "raw_sha256": "f09eae177798aa357f458873b9e0d3f4df2e8607b75b1c57f9b3f1531fb7621a",
+    "readable_sha256": "f691f23d1032564bf897d479d3050bf0ec47cecd15c68c6027aa391cec967f39",
+    "change": "trailing line whitespace only",
+    "same_tokens": true
+  },
+  {
+    "name": "root_cpu_suite_after_formatting.txt",
+    "raw_path": "/home/bitwise/.cache/arena_extended/maintenance/2026-09-08_resumption/raw_root_test_logs/root_cpu_suite_after_formatting.txt",
+    "raw_sha256": "be7ab7bee3da13197fbd0cb2cb4f1a0db102a7fb5443081539063540e5e274bd",
+    "readable_sha256": "bbd96850f8db8cd4da2d2d3b5d32f61b6da73524c1da803bd6ddcf2babfe3e44",
+    "change": "trailing line whitespace only",
+    "same_tokens": true
+  }
+]

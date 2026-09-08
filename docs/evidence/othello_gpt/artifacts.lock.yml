@@ -1,0 +1,63 @@
+notebook_id: 1_5_3_othellogpt
+section: 1.5.3
+title: Othello-GPT GT-2 Board-State Evidence
+exercise_metadata:
+  EXERCISE_ID: 1_5_3_othellogpt
+  GT_TIER: GT-2
+  DIFFICULTY: 5
+  IMPORTANCE: 5
+  EXPECTED_RUNTIME: minutes on CUDA after Othello-GPT is cached
+  REQUIRES_GPU: true
+gt_tier: GT-2
+evidence_level: pinned_othello_gpt_cuda_legal_move_and_board_probe_smoke
+claim_scope: 'GT-2 Othello-GPT world-model smoke replication using the pinned
+  NeelNanda/Othello-GPT-Transformer-Lens synthetic checkpoint, the existing ARENA
+  board-sequence fixture, and the bundled linear probe. The report verifies real
+  CUDA model loading, legal-move prediction, and linear board-state decoding; it
+  does not claim new SAE/circuit discovery or a fresh probe-training replication.'
+required_gpu_gb: 2
+max_allowed_gpu_gb: 8
+models:
+- id: NeelNanda/Othello-GPT-Transformer-Lens
+  source: huggingface
+  revision: 905ca1a68b9f7dff77adc56af1962e5f6fcac274
+  precision: float32
+  gated: false
+  weights_file: synthetic_model.pth
+- id: main_linear_probe.pth
+  source: local_fixture
+  revision: bundled_arena_probe_sha256_eb8ab01a70e63305661c97a211a1321decc16451baff909481cde3b615a7fb16
+  precision: float32
+  gated: false
+datasets:
+- id: board_seqs_id_small.npy
+  source: bundled_arena_othello_fixture
+  sha256: fb11a862c50f933e029e0708d5266e838fcc3dad8021cbc6d9ec964dfedb2f77
+  games_used: 64
+  moves_per_game: 59
+- id: board_seqs_square_small.npy
+  source: bundled_arena_othello_fixture
+  sha256: 99565a9962ed79064f0e114224325c81599a8f03e5e6b8ea6cecdb0df687aa37
+  games_used: 64
+  moves_per_game: 59
+expected_metrics:
+  tests_passed: true
+  accepted: true
+  max_allowed_gpu_gb: 8
+  sample_first_top3:
+  - 21
+  - 33
+  - 19
+  sample_first_top3_matches_expected: true
+  legal_top1_accuracy_min: 0.99
+  board_probe_accuracy_min: 0.95
+  swapped_parity_probe_accuracy_max: 0.6
+controls:
+- expected_sample_legal_move_top3
+- random_legal_move_baseline
+- swapped_player_parity_probe_negative_control
+- bundled_linear_probe_reference
+safety_notes:
+- Othello-GPT is a board-game model; no unsafe prompts or personal data are used.
+- No raw model weights are added to the repository; the checkpoint is loaded from
+  the pinned Hugging Face revision.

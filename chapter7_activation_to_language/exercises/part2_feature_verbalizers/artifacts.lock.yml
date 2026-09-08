@@ -1,0 +1,103 @@
+notebook_id: 7_2_feature_verbalizers
+section: '7.2'
+title: Feature Verbalizers
+exercise_metadata:
+  EXERCISE_ID: 7_2_feature_verbalizers
+  GT_TIER: GT-1
+  DIFFICULTY: 4
+  IMPORTANCE: 5
+  EXPECTED_RUNTIME: 60-90 minutes; under one minute for CUDA verification
+  REQUIRES_GPU: true
+gt_tier: GT-1
+evidence_level: exact_toy_oracles_plus_pinned_pythia_cuda_causal_intervention
+claim_scope: >-
+  A unit mean-difference direction fit only on layer-3 residual activations from
+  24 regular Pythia-70m training prompts predicts grammatical number on 24
+  unseen regular, irregular, and nonce prompts, but 548 of all 4,096
+  pair-preserving label-swap nulls also reach accuracy 1.0 (p=0.134, p95=1.0),
+  so decoding alone is not significant. A final-token-ID lookup is at chance.
+  Replacing the direction component through a real block-3 hook changes
+  downstream are-versus-is logits in both directions by 8.48 and 9.62, versus
+  separate 64-direction coefficient-matched orthogonal p95 values 1.09 and
+  1.85. The suffix rule remains perfect on regular and nonce rows and fails only
+  on irregulars. Embedding and orthographic baselines expose lexical structure.
+  Each causal direction must also beat 256 fixed-seed decoder directions fit
+  from within-pair training-label swaps with the same per-example edit sizes;
+  both Monte Carlo plus-one p-values must be below 0.05. This is causal sensitivity in a controlled prompt family, not
+  a unique feature, complete agreement circuit, or general verbalization benchmark.
+required_gpu_gb: 2
+max_allowed_gpu_gb: 24
+models:
+  - id: EleutherAI/pythia-70m
+    source: huggingface_local_cache
+    revision: a39f36b100fe8a5377810d56c3f4789b9c53ac42
+    precision: float32
+    device: cuda
+    gated: false
+    local_files_only: true
+    layer: 3
+datasets:
+  - id: paired_subject_number_prompts_v2
+    source: exact_course_prompt_table
+    train_count: 24
+    validation_count: 12
+    heldout_count: 24
+    noun_overlap: 0
+    final_token_id_overlap: 0
+    heldout_regular_count: 8
+    heldout_irregular_count: 8
+    heldout_nonce_count: 8
+    prompt_template: The {noun}
+expected_metrics:
+  tests_passed: true
+  accepted: true
+  heldout_activation_accuracy_min: 0.95
+  suffix_accuracy_max: 0.84
+  lookup_accuracy_max: 0.50
+  paired_null_accuracy_p95: 1.0
+  paired_null_exact_p_min: 0.10
+  paired_null_count: 4096
+  paired_null_perfect_count: 548
+  embedding_accuracy: 1.0
+  paired_causal_count: 256
+  forward_paired_causal_p_max: 0.05
+  reverse_paired_causal_p_max: 0.05
+  train_heldout_final_token_overlap: 0
+  heldout_multi_token_noun_count_min: 1
+  target_delta_min: 8.0
+  reverse_target_delta_min: 8.0
+  forward_orthogonal_absolute_p95_max: 1.25
+  reverse_orthogonal_absolute_p95_max: 2.10
+  target_plural_preference_rate_min: 0.90
+  reverse_singular_preference_rate_min: 0.90
+  cuda_available: true
+  within_vram_budget: true
+  max_allowed_gpu_gb: 24
+controls:
+  - exact_mean_difference_toy_oracle
+  - exact_component_replacement_oracle
+  - semantic_hypothesis_order_invariance
+  - regular_irregular_nonce_separate_reporting
+  - surface_suffix_s_verbalizer
+  - final_token_id_training_lookup
+  - exhaustive_4096_pair_preserving_label_swap_negative_result
+  - matched_heldout_subset_comparison
+  - bidirectional_real_block3_component_replacement
+  - separate_forward_and_reverse_64_direction_random_negative_controls
+  - explicit_orthogonality_and_norm_checks
+  - embedding_and_orthographic_shortcut_baselines
+  - fixed_seed_256_within_pair_causal_randomization_directions
+  - validation_counterexample_mining_and_brevity_frontier
+  - custom_prompt_real_hook_play_cell
+rejected_legacy_evidence:
+  - planted score containing the exact label
+  - arithmetic-only intervention score shift
+  - answer-letter next-token selection
+  - deterministic expansion from one decoy to a held-out answer-key lexicon
+  - shuffled-null mean presented as if every null fit failed
+  - unrestricted individual-label permutation used despite paired sampling
+safety_notes:
+  - All prompts are short benign subject noun phrases.
+  - The checkpoint is pinned and loaded offline from the local cache.
+freshness_inputs:
+  - chapter7_activation_to_language/exercises/part2_feature_verbalizers/build_notebooks.py

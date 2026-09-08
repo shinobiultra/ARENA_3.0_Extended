@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "status": "PASS",
+  "label": "completed_frontend_reviews",
+  "archive": "/home/bitwise/Documents/ARENA_3.0_Extended/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/expected_outputs/checkpoint_frontend_review/evidence.tar.gz",
+  "sha256": "ac90daabe3b624dff3ae5555ca222d205d7f516ff41ed6b28a25a6904a3393a1",
+  "size_bytes": 6210,
+  "verified_included_files": 2,
+  "verified_external_files": 0,
+  "historical_status": {
+    "initial_review_status": "BLOCKERS_RECORDED",
+    "final_recheck_status": "PASS",
+    "initial_sha256": "159594547085dc4f4a87a4fd4d1341599a4683b12454ab8709f11169cc336a64",
+    "final_sha256": "23b666cb58a9f33ca93e2d5b8942816f8d180574cbaf8e23ff649c0e164d1832"
+  },
+  "external_files": {}
+}

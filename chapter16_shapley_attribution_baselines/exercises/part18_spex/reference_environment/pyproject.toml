@@ -1,0 +1,48 @@
+[project]
+name = "arena-spex-fixed-query-reference"
+version = "0.1.0"
+requires-python = "==3.12.12"
+dependencies = [
+  "spectralexplain==0.0.4",
+  "shapiq==1.5.2",
+]
+
+[tool.uv]
+package = false
+constraint-dependencies = [
+  "certifi==2026.7.22",
+  "charset-normalizer==3.5.1",
+  "cloudpickle==3.1.2",
+  "colour==0.1.5",
+  "contourpy==1.3.3",
+  "cycler==0.12.1",
+  "fonttools==4.64.0",
+  "galois==0.4.11",
+  "idna==3.19",
+  "joblib==1.6.0",
+  "kiwisolver==1.5.1",
+  "lightgbm==4.7.0",
+  "llvmlite==0.49.0",
+  "matplotlib==3.11.1",
+  "narwhals==2.25.0",
+  "networkx==3.6.1",
+  "numba==0.67.0",
+  "numpy==2.5.3",
+  "packaging==26.3",
+  "pandas==3.0.5",
+  "pillow==12.3.0",
+  "pyparsing==3.3.2",
+  "python-dateutil==2.9.0.post0",
+  "requests==2.34.2",
+  "scikit-learn==1.9.0",
+  "scipy==1.18.1",
+  "six==1.17.0",
+  "sparse-transform==0.2.1",
+  "threadpoolctl==3.6.0",
+  "tqdm==4.70.0",
+  "typing-extensions==4.16.0",
+  "urllib3==2.7.0",
+]
+
+[tool.uv.sources]
+spectralexplain = { git = "https://github.com/basics-lab/spectral-explain", rev = "61400b5388b8ecbf18fe18c4d821ffe3e8a5f9c8" }

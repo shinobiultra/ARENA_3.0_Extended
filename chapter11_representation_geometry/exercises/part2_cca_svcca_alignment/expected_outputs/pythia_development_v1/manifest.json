@@ -1,0 +1,26 @@
+{
+  "source_directory": "/home/bitwise/.cache/arena_extended/alignment/development-v1",
+  "archive_sha256": "d2c878619c38d14da0fe9b5027c5233ed633476e60277b86289a772642b4f745",
+  "members_sha256": {
+    "development.json": "fc12f1d8ac65b7543d2b1927cfb9c596276058e9ec72c16246aab4e40842e60b",
+    "source_snapshot/alignment_data.py": "a9733c58b03cc0bd52fc9ff94d5839ae06a1356b61a1a1b44dd2f786adcb16ee",
+    "source_snapshot/alignment_methods.py": "1cdfc250494f7bed105c6449e4bf547bdc60c313805f3111c81fb0fbe0147f27",
+    "source_snapshot/alignment_model.py": "134b3505c18c45a425bb4584f458b7b6f1452e543b435f06821a0e3d94febd6e",
+    "source_snapshot/run_alignment_development.py": "b49cad756aee1981ac8a97d9492c48f049543413e3739fd6cd9c6c796f3e62c7"
+  },
+  "large_tensors_retained_in_source_directory": {
+    "actual_captures.pt": {
+      "sha256": "97c7c99701972d07a5d6142eb68540fe669e322e2f33d7ece761d9581de007f3",
+      "size_bytes": 25883117
+    },
+    "actual_intervention_logits.pt": {
+      "sha256": "9170ebef76927dedc73a8546d5715f9eac129620b42964ce3df97561391ca845",
+      "size_bytes": 531228165
+    },
+    "training_fits.pt": {
+      "sha256": "fef80d1ff0c0d13e7ce60765776eea5637aa53b5848e9415d3ba2aff9f8f8e8b",
+      "size_bytes": 118325599
+    }
+  },
+  "all_archive_members_read_back_and_verified": true
+}

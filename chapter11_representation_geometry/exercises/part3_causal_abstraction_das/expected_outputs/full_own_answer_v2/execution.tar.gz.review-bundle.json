@@ -1,0 +1,357 @@
+{
+  "schema": "arena.review-bundle.v1",
+  "archive": {
+    "name": "execution.tar.gz",
+    "sha256": "da5032cbd0e37bef4d54dedacb4dbad24c52e4e09b742decb9d05a2848ef9b82",
+    "size_bytes": 1589894
+  },
+  "limits": {
+    "archive_bytes": 67108864,
+    "member_bytes": 16777216,
+    "total_member_bytes": 134217728,
+    "tar_container_bytes": 167772160,
+    "decoded_json_bytes": 67108864,
+    "total_decoded_bytes": 536870912,
+    "members": 4096
+  },
+  "provenance": {
+    "kind": "historical_archive_packaging",
+    "packaged_at_utc": "2026-09-08T03:26:53.384659+00:00",
+    "measurement_claim": "Packaging only. This is not a native rerun, scientific revalidation or new review. Retained receipts, failure labels, values, scientific hashes and measurement dates are byte-identical to the original. Historical embedded archive inventories describe that original; this adjacent contract describes the derived review bundle.",
+    "source_archive": {
+      "repository_path": "chapter11_representation_geometry/exercises/part3_causal_abstraction_das/expected_outputs/full_own_answer_v2/execution.tar.gz",
+      "absolute_path": "/home/bitwise/.cache/arena_extended/evidence_packaging/original_archives/da5032cbd0e37bef4d54dedacb4dbad24c52e4e09b742decb9d05a2848ef9b82.tar.gz",
+      "sha256": "da5032cbd0e37bef4d54dedacb4dbad24c52e4e09b742decb9d05a2848ef9b82",
+      "size_bytes": 1589894,
+      "git_commit": "ce96ceaae2f91bf0dcd7648052325e07a87b0b5b",
+      "git_blob": "4fb49c8420ca5b459ea037248a1a7329408bfeb7"
+    },
+    "source_archive_members": {
+      "completed_learner.ipynb": {
+        "sha256": "c3c7031d5d3255308460336f2ea9d926984d9e2ce102dcb8c16b48b19830593a",
+        "size_bytes": 895394
+      },
+      "execution.json": {
+        "sha256": "85ad9d11cfff8ffd619f8f6be342d13c7ef7bebbff27d25a3f9f109014bdabf0",
+        "size_bytes": 411430
+      },
+      "figures/das_angle_play.png": {
+        "sha256": "d0de23e4bb095a152f1fd2dc77fa625e7b6bbc1de0c2c30c279b606c0a1ae121",
+        "size_bytes": 38572
+      },
+      "figures/das_coordinate_and_specificity.png": {
+        "sha256": "d887161fe3b108e543666513622cfee277bcbbc8c2e8a20c503768da6f9773ff",
+        "size_bytes": 82161
+      },
+      "figures/das_exact_interchanges.png": {
+        "sha256": "11b9a69d0b76bf816c28fb3f1661a18b3372cfc8722a02d50d5b6d9b2ed3b032",
+        "size_bytes": 62313
+      },
+      "figures/das_learning_and_controls.png": {
+        "sha256": "d1a04e7b77668b682fca366c03c69e482defe5603f73dc86149e06c304133b23",
+        "size_bytes": 131718
+      },
+      "figures/das_native_final_controls.png": {
+        "sha256": "559651eba1b28e50f2d5ac20df1e4cb647630ee186938e6b86306c29bc7a2ac9",
+        "size_bytes": 109650
+      },
+      "figures/das_native_generalization.png": {
+        "sha256": "348f94ae87490d725101457c33d660ebdc4c65908659fe3a32034697d722b122",
+        "size_bytes": 49587
+      },
+      "figures/das_native_pair_play.png": {
+        "sha256": "6173e6b8169a02e1988d25a60d567ce80a6cdcdf31a8691dc7e6b2fa4a4a2126",
+        "size_bytes": 37088
+      },
+      "figures/das_native_rank_selection.png": {
+        "sha256": "2c49e4d17c53c9fece67a7e56ef54ba8a511f3cfe098dc34dbd86bf42c94a2c8",
+        "size_bytes": 62820
+      },
+      "figures/das_native_site_comparison.png": {
+        "sha256": "86fa92bd21ea9bae2f3e9274e3276814d50e5a92efc4934ed9bde1d7504f3319",
+        "size_bytes": 93826
+      },
+      "figures/das_native_site_play.png": {
+        "sha256": "39deac55e1e36c263869b1aa9da8cc17e4cc0a5277c79d739c203928971258a2",
+        "size_bytes": 30796
+      },
+      "figures/das_native_specificity.png": {
+        "sha256": "0252e6ba5e8b20296083fc44bccb4d7c34e06dfba809e1282207566caae9e245",
+        "size_bytes": 91431
+      },
+      "figures/das_native_token_examples.png": {
+        "sha256": "ee7b6bf9583cb0060c9068245a44e4b3600c5b22dc6da1c635f53196427eb74a",
+        "size_bytes": 226890
+      },
+      "figures/native_summary.json": {
+        "sha256": "2431602e29fb25e331d49689355ebd4dc56d32cbe4ffef5b3a5b00ae13f57fa9",
+        "size_bytes": 362904
+      },
+      "published_prose_equivalence.json": {
+        "sha256": "fdd71335b241bbad584e314a2c99cbf823ad7747c2e4c3f6c7200a0350043dd9",
+        "size_bytes": 319
+      },
+      "source_snapshot/build_notebooks.py": {
+        "sha256": "fcb06b82351610f5773e15176119c2239e909ad3272a146ec566185528fdf3a5",
+        "size_bytes": 4560
+      },
+      "source_snapshot/das_ioi_data.py": {
+        "sha256": "c8cdaf671dce1282065966f0981b446de98511b353d6b1fac12c292f437ead19",
+        "size_bytes": 4895
+      },
+      "source_snapshot/das_methods.py": {
+        "sha256": "606c7446aee48d96367a258875040f03ad75adc2aead99d1cff46eae5ec9db0f",
+        "size_bytes": 6994
+      },
+      "source_snapshot/das_methods_tests.py": {
+        "sha256": "c02a53380103ac9a12cb8c6dfc8f948cdae9f35812d821f780fe600c2179230d",
+        "size_bytes": 10023
+      },
+      "source_snapshot/das_native.py": {
+        "sha256": "c25c36e165528797eb9377e72dd09fa6e1fdf80c21712986b0e16136f769c0de",
+        "size_bytes": 6897
+      },
+      "source_snapshot/das_native_tests.py": {
+        "sha256": "0b9d4214d9c8b6b8125b90d4401b338bde062aa06fd0ce189935a4e5844917ca",
+        "size_bytes": 3518
+      },
+      "source_snapshot/das_organism.py": {
+        "sha256": "97302ad3c0ee5397704a6a04e2fe5164ac81bd15ebd03c5d15a01185fed356a6",
+        "size_bytes": 3116
+      },
+      "source_snapshot/das_protocol.py": {
+        "sha256": "2be338d2be230544231b50cbaaac76ac2c88e28872bd4364713e686fd76563a3",
+        "size_bytes": 821
+      },
+      "source_snapshot/das_training_methods.py": {
+        "sha256": "dc2f1645a2b0c651c358b9e973e5876fb654a535758752a4ccc1081b86982453",
+        "size_bytes": 4198
+      },
+      "source_snapshot/das_training_tests.py": {
+        "sha256": "ababa8da82e0e78a3342471e4035ffa016af1abf1dc046336be3ed1771e3f514",
+        "size_bytes": 4271
+      },
+      "source_snapshot/execute_learner.py": {
+        "sha256": "ac729943d3388661576b67761112c8e82ad35df8fa92ee7d073f1dc748cb2f09",
+        "size_bytes": 4682
+      },
+      "source_snapshot/lesson.md": {
+        "sha256": "33ec64e56bd3cf1767a9d950d089e25ea65056a18c399ad29d9c2954d908790e",
+        "size_bytes": 86318
+      },
+      "source_snapshot/native_protocol.md": {
+        "sha256": "12f052d2259789c546c6b147c5c3313b74e42269e18ddde4e6c296261441aa78",
+        "size_bytes": 6541
+      },
+      "source_snapshot/run_das_screen.py": {
+        "sha256": "0c2b82e083249b339bb28643371e49a298ccd2cb0fa526bdbe049219b8b0ced2",
+        "size_bytes": 14166
+      },
+      "source_snapshot/run_native_development.py": {
+        "sha256": "3a0b72d3b79c7683548db702fede8f424ff7f29cdd1b1494381e46d8bc16f8f4",
+        "size_bytes": 9774
+      },
+      "visual_review.json": {
+        "sha256": "dfc36c797473c0ac04a429ad2ea18a2f42c251f979e9019195e08d781c3315db",
+        "size_bytes": 2512
+      }
+    }
+  },
+  "members": {
+    "completed_learner.ipynb": {
+      "type": "regular",
+      "size_bytes": 895394,
+      "sha256": "c3c7031d5d3255308460336f2ea9d926984d9e2ce102dcb8c16b48b19830593a",
+      "format": "notebook-json"
+    },
+    "execution.json": {
+      "type": "regular",
+      "size_bytes": 411430,
+      "sha256": "85ad9d11cfff8ffd619f8f6be342d13c7ef7bebbff27d25a3f9f109014bdabf0",
+      "format": "json"
+    },
+    "figures/das_angle_play.png": {
+      "type": "regular",
+      "size_bytes": 38572,
+      "sha256": "d0de23e4bb095a152f1fd2dc77fa625e7b6bbc1de0c2c30c279b606c0a1ae121",
+      "format": "png"
+    },
+    "figures/das_coordinate_and_specificity.png": {
+      "type": "regular",
+      "size_bytes": 82161,
+      "sha256": "d887161fe3b108e543666513622cfee277bcbbc8c2e8a20c503768da6f9773ff",
+      "format": "png"
+    },
+    "figures/das_exact_interchanges.png": {
+      "type": "regular",
+      "size_bytes": 62313,
+      "sha256": "11b9a69d0b76bf816c28fb3f1661a18b3372cfc8722a02d50d5b6d9b2ed3b032",
+      "format": "png"
+    },
+    "figures/das_learning_and_controls.png": {
+      "type": "regular",
+      "size_bytes": 131718,
+      "sha256": "d1a04e7b77668b682fca366c03c69e482defe5603f73dc86149e06c304133b23",
+      "format": "png"
+    },
+    "figures/das_native_final_controls.png": {
+      "type": "regular",
+      "size_bytes": 109650,
+      "sha256": "559651eba1b28e50f2d5ac20df1e4cb647630ee186938e6b86306c29bc7a2ac9",
+      "format": "png"
+    },
+    "figures/das_native_generalization.png": {
+      "type": "regular",
+      "size_bytes": 49587,
+      "sha256": "348f94ae87490d725101457c33d660ebdc4c65908659fe3a32034697d722b122",
+      "format": "png"
+    },
+    "figures/das_native_pair_play.png": {
+      "type": "regular",
+      "size_bytes": 37088,
+      "sha256": "6173e6b8169a02e1988d25a60d567ce80a6cdcdf31a8691dc7e6b2fa4a4a2126",
+      "format": "png"
+    },
+    "figures/das_native_rank_selection.png": {
+      "type": "regular",
+      "size_bytes": 62820,
+      "sha256": "2c49e4d17c53c9fece67a7e56ef54ba8a511f3cfe098dc34dbd86bf42c94a2c8",
+      "format": "png"
+    },
+    "figures/das_native_site_comparison.png": {
+      "type": "regular",
+      "size_bytes": 93826,
+      "sha256": "86fa92bd21ea9bae2f3e9274e3276814d50e5a92efc4934ed9bde1d7504f3319",
+      "format": "png"
+    },
+    "figures/das_native_site_play.png": {
+      "type": "regular",
+      "size_bytes": 30796,
+      "sha256": "39deac55e1e36c263869b1aa9da8cc17e4cc0a5277c79d739c203928971258a2",
+      "format": "png"
+    },
+    "figures/das_native_specificity.png": {
+      "type": "regular",
+      "size_bytes": 91431,
+      "sha256": "0252e6ba5e8b20296083fc44bccb4d7c34e06dfba809e1282207566caae9e245",
+      "format": "png"
+    },
+    "figures/das_native_token_examples.png": {
+      "type": "regular",
+      "size_bytes": 226890,
+      "sha256": "ee7b6bf9583cb0060c9068245a44e4b3600c5b22dc6da1c635f53196427eb74a",
+      "format": "png"
+    },
+    "figures/native_summary.json": {
+      "type": "regular",
+      "size_bytes": 362904,
+      "sha256": "2431602e29fb25e331d49689355ebd4dc56d32cbe4ffef5b3a5b00ae13f57fa9",
+      "format": "json"
+    },
+    "published_prose_equivalence.json": {
+      "type": "regular",
+      "size_bytes": 319,
+      "sha256": "fdd71335b241bbad584e314a2c99cbf823ad7747c2e4c3f6c7200a0350043dd9",
+      "format": "json"
+    },
+    "source_snapshot/build_notebooks.py": {
+      "type": "regular",
+      "size_bytes": 4560,
+      "sha256": "fcb06b82351610f5773e15176119c2239e909ad3272a146ec566185528fdf3a5",
+      "format": "utf8-text"
+    },
+    "source_snapshot/das_ioi_data.py": {
+      "type": "regular",
+      "size_bytes": 4895,
+      "sha256": "c8cdaf671dce1282065966f0981b446de98511b353d6b1fac12c292f437ead19",
+      "format": "utf8-text"
+    },
+    "source_snapshot/das_methods.py": {
+      "type": "regular",
+      "size_bytes": 6994,
+      "sha256": "606c7446aee48d96367a258875040f03ad75adc2aead99d1cff46eae5ec9db0f",
+      "format": "utf8-text"
+    },
+    "source_snapshot/das_methods_tests.py": {
+      "type": "regular",
+      "size_bytes": 10023,
+      "sha256": "c02a53380103ac9a12cb8c6dfc8f948cdae9f35812d821f780fe600c2179230d",
+      "format": "utf8-text"
+    },
+    "source_snapshot/das_native.py": {
+      "type": "regular",
+      "size_bytes": 6897,
+      "sha256": "c25c36e165528797eb9377e72dd09fa6e1fdf80c21712986b0e16136f769c0de",
+      "format": "utf8-text"
+    },
+    "source_snapshot/das_native_tests.py": {
+      "type": "regular",
+      "size_bytes": 3518,
+      "sha256": "0b9d4214d9c8b6b8125b90d4401b338bde062aa06fd0ce189935a4e5844917ca",
+      "format": "utf8-text"
+    },
+    "source_snapshot/das_organism.py": {
+      "type": "regular",
+      "size_bytes": 3116,
+      "sha256": "97302ad3c0ee5397704a6a04e2fe5164ac81bd15ebd03c5d15a01185fed356a6",
+      "format": "utf8-text"
+    },
+    "source_snapshot/das_protocol.py": {
+      "type": "regular",
+      "size_bytes": 821,
+      "sha256": "2be338d2be230544231b50cbaaac76ac2c88e28872bd4364713e686fd76563a3",
+      "format": "utf8-text"
+    },
+    "source_snapshot/das_training_methods.py": {
+      "type": "regular",
+      "size_bytes": 4198,
+      "sha256": "dc2f1645a2b0c651c358b9e973e5876fb654a535758752a4ccc1081b86982453",
+      "format": "utf8-text"
+    },
+    "source_snapshot/das_training_tests.py": {
+      "type": "regular",
+      "size_bytes": 4271,
+      "sha256": "ababa8da82e0e78a3342471e4035ffa016af1abf1dc046336be3ed1771e3f514",
+      "format": "utf8-text"
+    },
+    "source_snapshot/execute_learner.py": {
+      "type": "regular",
+      "size_bytes": 4682,
+      "sha256": "ac729943d3388661576b67761112c8e82ad35df8fa92ee7d073f1dc748cb2f09",
+      "format": "utf8-text"
+    },
+    "source_snapshot/lesson.md": {
+      "type": "regular",
+      "size_bytes": 86318,
+      "sha256": "33ec64e56bd3cf1767a9d950d089e25ea65056a18c399ad29d9c2954d908790e",
+      "format": "utf8-text"
+    },
+    "source_snapshot/native_protocol.md": {
+      "type": "regular",
+      "size_bytes": 6541,
+      "sha256": "12f052d2259789c546c6b147c5c3313b74e42269e18ddde4e6c296261441aa78",
+      "format": "utf8-text"
+    },
+    "source_snapshot/run_das_screen.py": {
+      "type": "regular",
+      "size_bytes": 14166,
+      "sha256": "0c2b82e083249b339bb28643371e49a298ccd2cb0fa526bdbe049219b8b0ced2",
+      "format": "utf8-text"
+    },
+    "source_snapshot/run_native_development.py": {
+      "type": "regular",
+      "size_bytes": 9774,
+      "sha256": "3a0b72d3b79c7683548db702fede8f424ff7f29cdd1b1494381e46d8bc16f8f4",
+      "format": "utf8-text"
+    },
+    "visual_review.json": {
+      "type": "regular",
+      "size_bytes": 2512,
+      "sha256": "dfc36c797473c0ac04a429ad2ea18a2f42c251f979e9019195e08d781c3315db",
+      "format": "json"
+    }
+  },
+  "external_payloads": {},
+  "member_count": 32,
+  "total_member_bytes": 2860185
+}

@@ -1,0 +1,327 @@
+{
+  "schema": "arena.review-bundle.v1",
+  "archive": {
+    "name": "execution.tar.gz",
+    "sha256": "434c4a7ecd841aae5c8d31c7ff9eeb39c836aec5425f0da84d02428d6f37e1c0",
+    "size_bytes": 73158
+  },
+  "limits": {
+    "archive_bytes": 67108864,
+    "member_bytes": 16777216,
+    "total_member_bytes": 134217728,
+    "tar_container_bytes": 167772160,
+    "decoded_json_bytes": 67108864,
+    "total_decoded_bytes": 536870912,
+    "members": 4096
+  },
+  "provenance": {
+    "kind": "historical_archive_packaging",
+    "packaged_at_utc": "2026-09-08T03:26:59.050545+00:00",
+    "measurement_claim": "Packaging only. This is not a native rerun, scientific revalidation or new review. Retained receipts, failure labels, values, scientific hashes and measurement dates are byte-identical to the original. Historical embedded archive inventories describe that original; this adjacent contract describes the derived review bundle.",
+    "source_archive": {
+      "repository_path": "chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/development_evidence/early_report_native_v1/execution.tar.gz",
+      "absolute_path": "/home/bitwise/.cache/arena_extended/evidence_packaging/original_archives/434c4a7ecd841aae5c8d31c7ff9eeb39c836aec5425f0da84d02428d6f37e1c0.tar.gz",
+      "sha256": "434c4a7ecd841aae5c8d31c7ff9eeb39c836aec5425f0da84d02428d6f37e1c0",
+      "size_bytes": 73158,
+      "git_commit": "ce96ceaae2f91bf0dcd7648052325e07a87b0b5b",
+      "git_blob": "4cccc832f92745b438c0f4fb9b6938408b00753c"
+    },
+    "source_archive_members": {
+      "fresh_run/before_audit.json": {
+        "sha256": "e1cae14769f0b75c801d5286ae5144064f45cf1af73a401377a1814636057afd",
+        "size_bytes": 160
+      },
+      "fresh_run/run.json": {
+        "sha256": "ec980dfaefd5475bd398f1f959f8572344a3df8df14d5d77170040032fd40004",
+        "size_bytes": 3610
+      },
+      "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/author_reference.json": {
+        "sha256": "3ec06e257a59da00a9ceeca46b7116617e377d9aabc80e754987ba3a30e4a997",
+        "size_bytes": 794
+      },
+      "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/data_manifest.json": {
+        "sha256": "4262d471486ed5b26cbcaa804950e878b1ef00318b4141eaa52b554eb26de47a",
+        "size_bytes": 12493
+      },
+      "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/protocol.md": {
+        "sha256": "d19cbb3593dc512b1e211badf7092d77ba3ee9418445406d5ee8c90679c39c39",
+        "size_bytes": 7413
+      },
+      "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/protocol_freeze.json": {
+        "sha256": "11b553de2cd72af1f242fac53b1583d738f09dc018e0a15a4a8b9183387f8f65",
+        "size_bytes": 365
+      },
+      "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/run_native.py": {
+        "sha256": "5047196618df791bb35103487b0a81dec54bf3d533bf1598fb55dd9f8079450e",
+        "size_bytes": 5424
+      },
+      "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/sage_data.py": {
+        "sha256": "5d9d12b16444f29ac4cf51b6f5e0995a105665c4c86d955d3f3990fd77c5350c",
+        "size_bytes": 1780
+      },
+      "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/sage_methods.py": {
+        "sha256": "c19bedefe97edd8f076129db4b09f5f443e6564a40a8abdcc1006e4524878a32",
+        "size_bytes": 7094
+      },
+      "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/sage_methods_tests.py": {
+        "sha256": "b11009c04556dd26cdac1a865a04d5683b3e8ddc3885fbe868c3b05603a5a1ab",
+        "size_bytes": 6348
+      },
+      "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/sage_reference.py": {
+        "sha256": "4bdddef0954596b4a009eadf3af0a46e1cab7cba6266f0a3ae2fbe1eef0dda35",
+        "size_bytes": 5625
+      },
+      "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/sage_study.py": {
+        "sha256": "5df36a109b0a549b3491c31809a510e3a76d401886bd2c64e4114a6a6b03714e",
+        "size_bytes": 12528
+      },
+      "fresh_run/summary.json": {
+        "sha256": "0abf83cb0fcab8e2566a543e7f6dfa523ac8f359303cffac1e0825d3e2b6d533",
+        "size_bytes": 1592
+      },
+      "reproduction.json": {
+        "sha256": "5b8e3bf8dc5090a2bcb06489e6387163c6556cf3611e06439ad7e82a0d26d529",
+        "size_bytes": 7619
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/author_reference.json": {
+        "sha256": "3ec06e257a59da00a9ceeca46b7116617e377d9aabc80e754987ba3a30e4a997",
+        "size_bytes": 794
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/build_notebooks.py": {
+        "sha256": "57b765b521646498f497948bbdbf08b9c642c8dea62f253451188d1a8bc3cdf6",
+        "size_bytes": 4660
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/data_manifest.json": {
+        "sha256": "4262d471486ed5b26cbcaa804950e878b1ef00318b4141eaa52b554eb26de47a",
+        "size_bytes": 12493
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/execute_learner.py": {
+        "sha256": "3a2adcdcac882050c7f2d430c06a5bf9b34c1dd2aae300bbcd7d6a73995976ee",
+        "size_bytes": 5849
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/lesson.md": {
+        "sha256": "87464460ae3c0b707c5bd3362015d795ba2e476fa2049328946eced5e5776573",
+        "size_bytes": 86148
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/protocol.md": {
+        "sha256": "d19cbb3593dc512b1e211badf7092d77ba3ee9418445406d5ee8c90679c39c39",
+        "size_bytes": 7413
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/protocol_freeze.json": {
+        "sha256": "11b553de2cd72af1f242fac53b1583d738f09dc018e0a15a4a8b9183387f8f65",
+        "size_bytes": 365
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/reproduce_native.py": {
+        "sha256": "2a3374ed78563a6e8eb8415f271e83ee1e92a2c7a45bfeae2f8ebfad325e53e0",
+        "size_bytes": 6246
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/run_native.py": {
+        "sha256": "5047196618df791bb35103487b0a81dec54bf3d533bf1598fb55dd9f8079450e",
+        "size_bytes": 5424
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/sage_contract_tests.py": {
+        "sha256": "ab7a6b9ffb8f34980afda3c6a1a4786e32f49caefb599a4012ba5b19861206f7",
+        "size_bytes": 5276
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/sage_data.py": {
+        "sha256": "5d9d12b16444f29ac4cf51b6f5e0995a105665c4c86d955d3f3990fd77c5350c",
+        "size_bytes": 1780
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/sage_methods.py": {
+        "sha256": "c19bedefe97edd8f076129db4b09f5f443e6564a40a8abdcc1006e4524878a32",
+        "size_bytes": 7094
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/sage_methods_tests.py": {
+        "sha256": "b11009c04556dd26cdac1a865a04d5683b3e8ddc3885fbe868c3b05603a5a1ab",
+        "size_bytes": 6348
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/sage_reference.py": {
+        "sha256": "4bdddef0954596b4a009eadf3af0a46e1cab7cba6266f0a3ae2fbe1eef0dda35",
+        "size_bytes": 5625
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/sage_study.py": {
+        "sha256": "5df36a109b0a549b3491c31809a510e3a76d401886bd2c64e4114a6a6b03714e",
+        "size_bytes": 12528
+      }
+    }
+  },
+  "members": {
+    "fresh_run/before_audit.json": {
+      "type": "regular",
+      "size_bytes": 160,
+      "sha256": "e1cae14769f0b75c801d5286ae5144064f45cf1af73a401377a1814636057afd",
+      "format": "json"
+    },
+    "fresh_run/run.json": {
+      "type": "regular",
+      "size_bytes": 3610,
+      "sha256": "ec980dfaefd5475bd398f1f959f8572344a3df8df14d5d77170040032fd40004",
+      "format": "json"
+    },
+    "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/author_reference.json": {
+      "type": "regular",
+      "size_bytes": 794,
+      "sha256": "3ec06e257a59da00a9ceeca46b7116617e377d9aabc80e754987ba3a30e4a997",
+      "format": "json"
+    },
+    "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/data_manifest.json": {
+      "type": "regular",
+      "size_bytes": 12493,
+      "sha256": "4262d471486ed5b26cbcaa804950e878b1ef00318b4141eaa52b554eb26de47a",
+      "format": "json"
+    },
+    "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/protocol.md": {
+      "type": "regular",
+      "size_bytes": 7413,
+      "sha256": "d19cbb3593dc512b1e211badf7092d77ba3ee9418445406d5ee8c90679c39c39",
+      "format": "utf8-text"
+    },
+    "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/protocol_freeze.json": {
+      "type": "regular",
+      "size_bytes": 365,
+      "sha256": "11b553de2cd72af1f242fac53b1583d738f09dc018e0a15a4a8b9183387f8f65",
+      "format": "json"
+    },
+    "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/run_native.py": {
+      "type": "regular",
+      "size_bytes": 5424,
+      "sha256": "5047196618df791bb35103487b0a81dec54bf3d533bf1598fb55dd9f8079450e",
+      "format": "utf8-text"
+    },
+    "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/sage_data.py": {
+      "type": "regular",
+      "size_bytes": 1780,
+      "sha256": "5d9d12b16444f29ac4cf51b6f5e0995a105665c4c86d955d3f3990fd77c5350c",
+      "format": "utf8-text"
+    },
+    "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/sage_methods.py": {
+      "type": "regular",
+      "size_bytes": 7094,
+      "sha256": "c19bedefe97edd8f076129db4b09f5f443e6564a40a8abdcc1006e4524878a32",
+      "format": "utf8-text"
+    },
+    "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/sage_methods_tests.py": {
+      "type": "regular",
+      "size_bytes": 6348,
+      "sha256": "b11009c04556dd26cdac1a865a04d5683b3e8ddc3885fbe868c3b05603a5a1ab",
+      "format": "utf8-text"
+    },
+    "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/sage_reference.py": {
+      "type": "regular",
+      "size_bytes": 5625,
+      "sha256": "4bdddef0954596b4a009eadf3af0a46e1cab7cba6266f0a3ae2fbe1eef0dda35",
+      "format": "utf8-text"
+    },
+    "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/sage_study.py": {
+      "type": "regular",
+      "size_bytes": 12528,
+      "sha256": "5df36a109b0a549b3491c31809a510e3a76d401886bd2c64e4114a6a6b03714e",
+      "format": "utf8-text"
+    },
+    "fresh_run/summary.json": {
+      "type": "regular",
+      "size_bytes": 1592,
+      "sha256": "0abf83cb0fcab8e2566a543e7f6dfa523ac8f359303cffac1e0825d3e2b6d533",
+      "format": "json"
+    },
+    "reproduction.json": {
+      "type": "regular",
+      "size_bytes": 7619,
+      "sha256": "5b8e3bf8dc5090a2bcb06489e6387163c6556cf3611e06439ad7e82a0d26d529",
+      "format": "json"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/author_reference.json": {
+      "type": "regular",
+      "size_bytes": 794,
+      "sha256": "3ec06e257a59da00a9ceeca46b7116617e377d9aabc80e754987ba3a30e4a997",
+      "format": "json"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/build_notebooks.py": {
+      "type": "regular",
+      "size_bytes": 4660,
+      "sha256": "57b765b521646498f497948bbdbf08b9c642c8dea62f253451188d1a8bc3cdf6",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/data_manifest.json": {
+      "type": "regular",
+      "size_bytes": 12493,
+      "sha256": "4262d471486ed5b26cbcaa804950e878b1ef00318b4141eaa52b554eb26de47a",
+      "format": "json"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/execute_learner.py": {
+      "type": "regular",
+      "size_bytes": 5849,
+      "sha256": "3a2adcdcac882050c7f2d430c06a5bf9b34c1dd2aae300bbcd7d6a73995976ee",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/lesson.md": {
+      "type": "regular",
+      "size_bytes": 86148,
+      "sha256": "87464460ae3c0b707c5bd3362015d795ba2e476fa2049328946eced5e5776573",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/protocol.md": {
+      "type": "regular",
+      "size_bytes": 7413,
+      "sha256": "d19cbb3593dc512b1e211badf7092d77ba3ee9418445406d5ee8c90679c39c39",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/protocol_freeze.json": {
+      "type": "regular",
+      "size_bytes": 365,
+      "sha256": "11b553de2cd72af1f242fac53b1583d738f09dc018e0a15a4a8b9183387f8f65",
+      "format": "json"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/reproduce_native.py": {
+      "type": "regular",
+      "size_bytes": 6246,
+      "sha256": "2a3374ed78563a6e8eb8415f271e83ee1e92a2c7a45bfeae2f8ebfad325e53e0",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/run_native.py": {
+      "type": "regular",
+      "size_bytes": 5424,
+      "sha256": "5047196618df791bb35103487b0a81dec54bf3d533bf1598fb55dd9f8079450e",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/sage_contract_tests.py": {
+      "type": "regular",
+      "size_bytes": 5276,
+      "sha256": "ab7a6b9ffb8f34980afda3c6a1a4786e32f49caefb599a4012ba5b19861206f7",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/sage_data.py": {
+      "type": "regular",
+      "size_bytes": 1780,
+      "sha256": "5d9d12b16444f29ac4cf51b6f5e0995a105665c4c86d955d3f3990fd77c5350c",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/sage_methods.py": {
+      "type": "regular",
+      "size_bytes": 7094,
+      "sha256": "c19bedefe97edd8f076129db4b09f5f443e6564a40a8abdcc1006e4524878a32",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/sage_methods_tests.py": {
+      "type": "regular",
+      "size_bytes": 6348,
+      "sha256": "b11009c04556dd26cdac1a865a04d5683b3e8ddc3885fbe868c3b05603a5a1ab",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/sage_reference.py": {
+      "type": "regular",
+      "size_bytes": 5625,
+      "sha256": "4bdddef0954596b4a009eadf3af0a46e1cab7cba6266f0a3ae2fbe1eef0dda35",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance/sage_study.py": {
+      "type": "regular",
+      "size_bytes": 12528,
+      "sha256": "5df36a109b0a549b3491c31809a510e3a76d401886bd2c64e4114a6a6b03714e",
+      "format": "utf8-text"
+    }
+  },
+  "external_payloads": {},
+  "member_count": 29,
+  "total_member_bytes": 240888
+}

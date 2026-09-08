@@ -1,0 +1,10 @@
+{
+  "accepted": true,
+  "claim_scope": "Contract check; not a full real-model validation.",
+  "evidence_level": "notebook_contract",
+  "gt_tier": "GT-1",
+  "notebook_id": "5_4_mamba_state_tracking",
+  "section": "5.4",
+  "tests_passed": true,
+  "title": "Mamba State Tracking"
+}

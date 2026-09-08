@@ -1,0 +1,349 @@
+{
+  "schema_version": 1,
+  "protocol_freeze_sha256": "3fe5047026188b6446adb010403fede0bbee145779fd5aba3826ad75f9acdf7f",
+  "independent_approval": false,
+  "publication_authorized": false,
+  "entries": [
+    {
+      "id": 1,
+      "classification": "implementation_correction",
+      "recorded_at_utc": "2026-09-07T08:59:30.036568+00:00",
+      "scientific_design_changed": false,
+      "reason": "Fix a reproduced Python 3.14 / NumPy 1.x temporary-elision defect: error calculations must preserve the retained reference coefficient arrays. Explicit subtract ufuncs change no scientific definition or tolerance. Retain post-execution correction provenance and independent publication blocking.",
+      "source_changes": {
+        "artifacts.lock.yml": {
+          "before": "f18535923b76f853d0813c9601fadc3e4261a500776bec2cee8ad26e7825518b",
+          "after": "f681f1393e36d223284a9f7df8a0565ef20696e2d829223919ff974ab5c4c881"
+        },
+        "interaction_contracts.py": {
+          "before": "b496ae050b7b181f0326caa2718744b468a4227d7870348cc3b607521201cff6",
+          "after": "766fc31a44f858482cc8abfc395c4202a272614e2b577ca2c88cc57ca36080b0"
+        },
+        "interaction_reference.py": {
+          "before": "e6a11d2b45194815e0122e481cae226620c21b604a2206ab2d07ff564bcd6825",
+          "after": "cc946c91482166b9c4932ee4cbb3d2340f590bc0d312fc94e993203c2c9aff9e"
+        },
+        "interaction_reference_tests.py": {
+          "before": "d6eef21708e88e9913c3ba86e1ca44346d5f18a786830cf11a29c95a024c0ad4",
+          "after": "bbf5572179bf5cb704ea9bc9e033e1ac8448a0631561b9f6800054a2faaf3280"
+        },
+        "run_native.py": {
+          "before": "49431fe155039511db060e5ab172402f5e2ea8f66bddd8a4a498c3fcc29923e6",
+          "after": "df2d8a5a6f3485e0b022b7ebd3826a3d3a0452da97143e5a3d8d8cbe64304669"
+        }
+      },
+      "evidence_files": {
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/numpy_compatibility_correction_v1.md": {
+          "sha256": "e840c1e0f12270c577f35883ba49123a1f0c93039fe9b8401a0f8eec01a358c6",
+          "size_bytes": 2565
+        },
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/numpy_operand_preservation_probe_v1.py": {
+          "sha256": "68e4911d172d455cf3d16076ca8ddaba0dd3ad8e83b15997ef5fa0ef9ebfb889",
+          "size_bytes": 1143
+        },
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/numpy_operand_preservation_probe_v1.ipynb": {
+          "sha256": "ca07f690334d17c4528033bc52ec0015d9be0ecb1ec769ca20e4f6191e9786a5",
+          "size_bytes": 1783
+        },
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/debug_learner_reference_failure_v4.json": {
+          "sha256": "ea68bf32ecac245ab02929c46013ccb8b8f75db9ce00993d4915153bd6ef130b",
+          "size_bytes": 4076
+        },
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/native-development-v1/execution.json": {
+          "sha256": "572520566432760ecd3df17bd8abda0ca1dabd6bb828600e4a7e891c83e55641",
+          "size_bytes": 8335
+        },
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/debug_reference_full_native_v3.log": {
+          "sha256": "a3e4a347787a77332a44418f258712211876ab2e49d19352d740072003b1759f",
+          "size_bytes": 371
+        }
+      }
+    },
+    {
+      "id": 2,
+      "classification": "implementation_correction",
+      "recorded_at_utc": "2026-09-07T09:08:23.805644+00:00",
+      "scientific_design_changed": false,
+      "reason": "Use the mathematically identical full-order M\u00f6bius interpolant to avoid a reproduced n=7 KKT conditioning failure. Empirical order-two computation and all frozen bounds remain unchanged. Explain the exact shortcut in the student exercise and test the complete frozen exact suite.",
+      "source_changes": {
+        "interaction_methods.py": {
+          "before": "3975601cc5ec724981c48154b3b2339be4c18d132c631d78598a41b49f697b37",
+          "after": "8287979f6693825fd4519b6eabc136f13dd2672f30ad1316b9b1f89638d1d52b"
+        },
+        "interaction_study_tests.py": {
+          "before": "7334e8c4d7788db4c33ff2b0e454c0ba6e49220a203fb84eca099821666b09d9",
+          "after": "697ab3b451f01f3caba08ce51dc42c3645c268b1cf02816a690a9dd8eb75048d"
+        },
+        "lesson.md": {
+          "before": "63cb77001ad0b6dc82f18a138349c3284256496ad2a26deb8680c3d728ea9ec9",
+          "after": "9859a353e3853ca76f3b3cd280216add045ab472ddf6f5f859fbb32bdde52f80"
+        }
+      },
+      "evidence_files": {
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/full_order_interpolation_correction_v2.md": {
+          "sha256": "a1e52178c984f8523a19c4333ff8f0ee141f3627b920f76ea04f5a306cf2a537",
+          "size_bytes": 2002
+        },
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/debug_learner_reference_failure_v5.json": {
+          "sha256": "a08b4eb0b3d93e3410fa0556ae2927f93d2ae3cd1fd9a4832c455eec16d6e3c1",
+          "size_bytes": 348
+        },
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/native-development-v2/execution.json": {
+          "sha256": "fb03db0f1d4a305aa3e28dbb3281e807e67eaf55507970a2d72a2e07a69434c9",
+          "size_bytes": 11728
+        },
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/debug_learner_instrumented_v5.log": {
+          "sha256": "ad008a4e0159c23eec6093545f20c340d85f52def87d60545e2c142664d4b387",
+          "size_bytes": 8564
+        }
+      }
+    },
+    {
+      "id": 3,
+      "classification": "implementation_correction",
+      "recorded_at_utc": "2026-09-07T09:14:40.834388+00:00",
+      "scientific_design_changed": false,
+      "reason": "Define the visible donor-context helper before the fixed comparison calls it in a fresh learner kernel. Source ordering only; no scientific computation changes.",
+      "source_changes": {
+        "lesson.md": {
+          "before": "9859a353e3853ca76f3b3cd280216add045ab472ddf6f5f859fbb32bdde52f80",
+          "after": "e3a93921183eba40cdf3daa3122a13a1c492c5e50ffbd8a0cbc6d20c9f1ed922"
+        }
+      },
+      "evidence_files": {
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/notebook_dependency_order_correction_v3.md": {
+          "sha256": "68b670ce35a074fecb94dc61ac7951ad413a4cdb6e84ddc74ffe4084e90b53c0",
+          "size_bytes": 697
+        },
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/native-development-v3/execution.json": {
+          "sha256": "923a0086d26aa716b002d2a6815deb86a76a6fea890a82c26dc6c355d00cae33",
+          "size_bytes": 6587
+        },
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/native-development-v3-budget.json": {
+          "sha256": "90e5bb8fd56c04874808e0160a8d8ae0a964d6f3bd869d578c39c688067fd488",
+          "size_bytes": 473
+        }
+      }
+    },
+    {
+      "id": 4,
+      "classification": "implementation_correction",
+      "recorded_at_utc": "2026-09-07T09:19:39.223236+00:00",
+      "scientific_design_changed": false,
+      "reason": "Compact the local play game storage and supply two missing predeclared metadata fields, retaining all scientific arrays and original design.",
+      "source_changes": {
+        "interaction_study.py": {
+          "before": "ff0a6bddba80baf629694edd6bf2138a470c1c075409cc0168f0c1f2236f2535",
+          "after": "dbfa669f140750156490503a0ea8ed8f6029414662460847ed8942263131be27"
+        },
+        "interaction_study_tests.py": {
+          "before": "697ab3b451f01f3caba08ce51dc42c3645c268b1cf02816a690a9dd8eb75048d",
+          "after": "46f7687ff4686f97e3302afe0d7f1f2d0c863c812cb76b4c2e82ec136a9dcc49"
+        },
+        "lesson.md": {
+          "before": "e3a93921183eba40cdf3daa3122a13a1c492c5e50ffbd8a0cbc6d20c9f1ed922",
+          "after": "97be433fe62372e7d1c93cb83464a360897c1a5afa239d8abd26503dd25e285f"
+        }
+      },
+      "evidence_files": {
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/retained_payload_correction_v4.md": {
+          "sha256": "c8ecb76f05783b5ee27a2650ce45424f0e2ea0fb3ffb90de2c69b03e5fe09c5f",
+          "size_bytes": 1452
+        },
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/native-development-v4/execution.json": {
+          "sha256": "0a6d7ba684593eb56beaf7a8e083221d9dcdce6f20a71654d99e707c7a2d42b9",
+          "size_bytes": 16554
+        },
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/native-development-v4-budget.json": {
+          "sha256": "5cbf767cbabe8c74eab0ceab09ca34dd36665700176dfea51e54e26b44eaae8b",
+          "size_bytes": 507
+        },
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/native-development-v4/prospective_payload_validation_v2.json": {
+          "sha256": "e73b68784c610cf22216ed3e608abb2b6d8b7c18f84ee6fdc381114bcdf53ee9",
+          "size_bytes": 681
+        },
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/validate_prospective_payload_v2.py": {
+          "sha256": "cdcd849f14e0043be5c99d0d156c2772951c1028fcf96bbacdc929c7de1cbea4",
+          "size_bytes": 4587
+        }
+      }
+    },
+    {
+      "id": 5,
+      "classification": "implementation_correction",
+      "recorded_at_utc": "2026-09-07T09:22:50.892222+00:00",
+      "scientific_design_changed": false,
+      "reason": "Clarify existing native plot scales and control markers and explain their observed interpretation, preserving all scientific data and display selections.",
+      "source_changes": {
+        "interaction_plots.py": {
+          "before": "90e8b4f1edadc26365e65cb578477c789f55d913d7ac4c8551a4cf63abede2aa",
+          "after": "7a9a9ae5845b0597976f5102fb77fa5f3447aee4cf49a8651a6dbfc2d1a62ded"
+        },
+        "lesson.md": {
+          "before": "97be433fe62372e7d1c93cb83464a360897c1a5afa239d8abd26503dd25e285f",
+          "after": "26be4f54147b48a4abf9c7c899113701acb973dc9d5eb89224dd5a10c7d9091d"
+        }
+      },
+      "evidence_files": {
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/visual_clarity_correction_v5.md": {
+          "sha256": "72898a9a19dea89bc203b2c3619e7ee26c965ccbc2b1245f3c75266b19e9369d",
+          "size_bytes": 1303
+        },
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/native-development-v5/execution.json": {
+          "sha256": "d4bdba223affb9d0354959e5a4357a6ce95c3cd3f71592d8072761e6d93c386a",
+          "size_bytes": 16554
+        },
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/native-development-v5-budget.json": {
+          "sha256": "aa3446d946e8582239a89dfc163c659d5d4d2571cccb905179f7613e9b4bed6e",
+          "size_bytes": 474
+        },
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/native-development-v5/prospective_payload_validation_v2.json": {
+          "sha256": "1e2cfc0ab981c7a1c91553a696f98555a745734abeb892b71c282adba837694c",
+          "size_bytes": 485
+        },
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/visual_revision_v1/04_fixed_row_interaction_graph.png": {
+          "sha256": "8f2f81a3d02157c16287a5a4d076e9480395b913b0b3b4cfa3b77b8e0f9bc21c",
+          "size_bytes": 260801
+        },
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/visual_revision_v1/06_heldout_pair_order_capture.png": {
+          "sha256": "753786293cb32f3e507c81a3c8edae245ac1fe4e58f827da4ad3e2243e12ecbc",
+          "size_bytes": 420273
+        }
+      }
+    },
+    {
+      "id": 6,
+      "classification": "implementation_correction",
+      "recorded_at_utc": "2026-09-07T09:27:45.406522+00:00",
+      "scientific_design_changed": false,
+      "reason": "Match standalone reference dictionary insertion order and repair Markdown parsing of an unchanged endpoint equation; simplify persistence feedback.",
+      "source_changes": {
+        "lesson.md": {
+          "before": "26be4f54147b48a4abf9c7c899113701acb973dc9d5eb89224dd5a10c7d9091d",
+          "after": "12a4724e1540360ddfac26af6e5d5ed63dd34b528b561081b48252a48c0d2754"
+        }
+      },
+      "evidence_files": {
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/browser_and_reference_order_correction_v6.md": {
+          "sha256": "b86480914795463c839ddfc9015afe3f6ec4019519af2c3d307b5e1555950f58",
+          "size_bytes": 1357
+        },
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/reproduction-v6/reproduction.json": {
+          "sha256": "bfe0f0880c111e05321f07a775f795b230711349b7d02ba2220f870a3a5c39e4",
+          "size_bytes": 4683
+        },
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/reproduction-v6/path_aligned_diagnostic.json": {
+          "sha256": "0244345bbfbf3efa45a2fa6ede796ac9019b1da2a5f717496fdc5f121e5c91c7",
+          "size_bytes": 4687
+        },
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/native-development-v6/html_review/browser_initial_audit.json": {
+          "sha256": "cbd92f4bf3547d7a4200c28504fe0d368d1069ebe8af722096250b69b47dee61",
+          "size_bytes": 5282
+        },
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/native-development-v6/html_review/broken_endpoint_formula.png": {
+          "sha256": "a8e1c3108c744e068900b408dd76bf79e4e8a97b996a27f5438c9c934058d6f2",
+          "size_bytes": 70687
+        }
+      }
+    },
+    {
+      "id": 7,
+      "classification": "implementation_correction",
+      "recorded_at_utc": "2026-09-08T03:54:59.241077+00:00",
+      "scientific_design_changed": false,
+      "reason": "Resolve the independent v7 block with explicit float64 feature-index distance accumulation and a distinguishing regression; record the previously unbound README history; require the current unchanged maintenance lock while preserving all pinned shapiq sources; wrap two Python lines with complete AST equivalence. Preserve all historical evidence, scientific design and numerical bounds, and require fresh v8 execution and independent review.",
+      "source_changes": {
+        "README.md": {
+          "before": "f7628ad83fd1f054d411f0fe9fa186eef348edcd2e11a002f4f309d397d28b61",
+          "after": "e7ca449f0659de476dea0da39fe15cbb47748e751cf03f5bdc79c53e141ef0ec"
+        },
+        "interaction_study.py": {
+          "before": "dbfa669f140750156490503a0ea8ed8f6029414662460847ed8942263131be27",
+          "after": "2a4288f9bd3d1e5772e87c6c2986e4a98288efbb4bc73a401113d20c183192ef"
+        },
+        "interaction_study_tests.py": {
+          "before": "46f7687ff4686f97e3302afe0d7f1f2d0c863c812cb76b4c2e82ec136a9dcc49",
+          "after": "ca154072c12157b2e5886f6a29c90ae41d4c32bb06990430adbdc5218e9d3b33"
+        },
+        "interaction_reference.py": {
+          "before": "cc946c91482166b9c4932ee4cbb3d2340f590bc0d312fc94e993203c2c9aff9e",
+          "after": "bfbac8cf51bb2fec355f4382283d39d97ce7746740d9a107981c0af0966a4c73"
+        },
+        "build_notebooks.py": {
+          "before": "f938b50a1e79bd3a931d7ae0757f212b4e1009058501118a5ae7f101385f0e79",
+          "after": "b13a17c22ed4f98a7663728e08a2878dae5cb0e7aeadafa817eade73218d6150"
+        },
+        "interaction_plots.py": {
+          "before": "7a9a9ae5845b0597976f5102fb77fa5f3447aee4cf49a8651a6dbfc2d1a62ded",
+          "after": "490c6549ddbb9b20d57e6bacc84217b1330269b8c975f70888024b1be4d42133"
+        }
+      },
+      "evidence_files": {
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/correction-v8/AMENDMENT.md": {
+          "sha256": "de3e40abc43f5e99c943bf1778420dd9d131597f87c28a434ec452621158c76b",
+          "size_bytes": 2222
+        },
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/correction-v8/pre_run_proof.json": {
+          "sha256": "9a18acac8050400cb7e0a86d73bd06977926e3584f29d65a75ae077e0218511c",
+          "size_bytes": 3444
+        },
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/correction-v8/before_index.json": {
+          "sha256": "a86a0fe6121994d228e6642333d907f4b82a757bd703856ffa9b9e51f5dfb00c",
+          "size_bytes": 6578
+        },
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/correction-v8/regression_before.log": {
+          "sha256": "b9cc21102355c21f8ae1486e79de1f7ccdbef13ec13c4a9397ad44bc31abdfaa",
+          "size_bytes": 2391
+        },
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/correction-v8/regression_after.log": {
+          "sha256": "82a5d30a890be917c24adc4a91ca9bcfaf7a4017ba136230a81859188ed3a6dc",
+          "size_bytes": 98
+        },
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/correction-v8/historical_uv.lock": {
+          "sha256": "03f77ffac99858cd34a653cd703728b9a868c87686a86cef78523a7afa9a6494",
+          "size_bytes": 588124
+        },
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/correction-v8/before/uv.lock": {
+          "sha256": "e96e946bb00f50592d32c1b3bf453fca4482a0097731120defbebcd978f019eb",
+          "size_bytes": 610963
+        },
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/correction-v8/historical_chain_README.md": {
+          "sha256": "f7628ad83fd1f054d411f0fe9fa186eef348edcd2e11a002f4f309d397d28b61",
+          "size_bytes": 6457
+        },
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/correction-v8/record_amendment.py": {
+          "sha256": "8185f4e753ea5179d9aca50625c3a24ef5f9a4b44d95103a370b0b6fb2793758",
+          "size_bytes": 6268
+        },
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/independent-review-resumed-v7/REVIEW.md": {
+          "sha256": "b768fbfb34c2ee71744aa6b5acc16d9ba5c393fb924b49fb5f6a49a655187d84",
+          "size_bytes": 11945
+        },
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/correction-v8/before/chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/README.md": {
+          "sha256": "c2fde2e74e5b74840f26254755ca831ad73969b2b09ffc5a368d3e4bbe08b14b",
+          "size_bytes": 7911
+        },
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/correction-v8/before/chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_study.py": {
+          "sha256": "dbfa669f140750156490503a0ea8ed8f6029414662460847ed8942263131be27",
+          "size_bytes": 77735
+        },
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/correction-v8/before/chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_study_tests.py": {
+          "sha256": "46f7687ff4686f97e3302afe0d7f1f2d0c863c812cb76b4c2e82ec136a9dcc49",
+          "size_bytes": 19277
+        },
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/correction-v8/before/chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_reference.py": {
+          "sha256": "cc946c91482166b9c4932ee4cbb3d2340f590bc0d312fc94e993203c2c9aff9e",
+          "size_bytes": 57253
+        },
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/correction-v8/before/chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/build_notebooks.py": {
+          "sha256": "f938b50a1e79bd3a931d7ae0757f212b4e1009058501118a5ae7f101385f0e79",
+          "size_bytes": 24186
+        },
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/correction-v8/before/chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_plots.py": {
+          "sha256": "7a9a9ae5845b0597976f5102fb77fa5f3447aee4cf49a8651a6dbfc2d1a62ded",
+          "size_bytes": 50291
+        }
+      }
+    }
+  ]
+}

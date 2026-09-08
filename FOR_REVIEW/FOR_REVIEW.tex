@@ -1,0 +1,375 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.85in]{geometry}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{longtable}
+\usepackage{xurl}
+\usepackage{fvextra}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+
+\hypersetup{colorlinks=true, linkcolor=black, urlcolor=blue}
+\setlist[itemize]{leftmargin=1.2em, itemsep=0.15em, topsep=0.15em}
+\setlist[enumerate]{leftmargin=1.4em, itemsep=0.15em, topsep=0.15em}
+\emergencystretch=3em
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\status}[1]{\textbf{\texttt{#1}}}
+\DefineVerbatimEnvironment{verbatim}{Verbatim}{breaklines=true,breakanywhere=true}
+
+\title{ARENA 3.0 Extended: Review Packet}
+\author{Local verification packet for the ARENA Frontier Lab extension}
+\date{2026-07-02}
+
+\begin{document}
+\maketitle
+
+\section*{Verdict}
+This branch is now an append-only ARENA 3.0 extension with 41 sections marked
+\status{course\_ready}. The original ARENA material is preserved as the
+canonical base and is checked by an original-preservation audit. The extension
+adds modern architecture, sparse-feature, activation-to-language, automated
+circuit, alignment, representation-geometry, vision-language, image-generation,
+world-model, adapter, Shapley, and training-dynamics notebooks. The local
+release gate regenerated all 41 extension verification reports on the RTX 5090
+Laptop GPU, accepted all 41, and finished with \status{STRICT\_COMPLETION=PASS}.
+
+The strongest honest statement is: the extension now follows the ARENA-style
+course contract defined for this fork, with real CUDA-backed evidence and no
+mock, fake, placeholder, or fallback-only claims counted as course-ready. It is
+still appropriate for a human reviewer to judge prose polish and pedagogical
+taste against original ARENA, because an audit can enforce structure and
+evidence but cannot fully replace editorial judgment.
+
+\section{Motivation And Research Question}
+Can this fork extend ARENA 3.0 into a local-first frontier interpretability
+course without damaging the original course, diluting the exercise style into
+survey prose, or replacing real results with smoke tests and placeholder plots?
+
+The answer in this packet is scoped:
+\begin{itemize}
+  \item Original ARENA is preserved and remains first in the merged course
+  configuration.
+  \item New sections must start with toy or generated ground truth before
+  escalating to pretrained model claims.
+  \item Each course-ready section has one core question, one signature result,
+  expected outputs, solution/help/interpretation dropdowns, limitations, and
+  anomaly-hunting follow-ups.
+  \item Hard exercises must expose sub-function tests, toy or reference oracles,
+  controls, and a committed verification report.
+  \item Reports are evidence, not the course itself; notebooks and pages still
+  have to read as learner-facing ARENA material.
+\end{itemize}
+
+\section{Repository And Review Bundle}
+The core review artifacts are:
+\begin{itemize}
+  \item \path{FOR_REVIEW/FOR_REVIEW.pdf}: this human review packet.
+  \item \path{FOR_REVIEW/FOR_REVIEW.tex}: LaTeX source for the packet.
+  \item \path{FOR_REVIEW/ARENA_core_chapters_exercises_solutions.tar.gz}: a
+  narrow course archive containing only chapter instruction pages and paired
+  exercise/solution notebooks.
+\end{itemize}
+
+The archive intentionally excludes verification reports, tests, Python support
+files, caches, external model artifacts, Git metadata, environment files, and
+generated expected-output assets. Its purpose is quick pedagogical review of
+the core chapter and notebook surface, not reproduction of the whole repo.
+
+\section{Dataset And Course Structure}
+This packet does not review a single tabular dataset. The review object is the
+course corpus itself: chapter instruction pages, paired exercise notebooks,
+paired solution notebooks, and their verification artifacts. The companion
+archive contains the human-facing subset of that corpus: 78 instruction pages,
+77 exercise notebooks, and 77 solution notebooks. The full repository remains
+the reproducibility source for tests, helper modules, expected outputs, and
+verification reports.
+
+\section{What Was Added}
+\begin{longtable}{@{}p{0.13\linewidth}p{0.29\linewidth}p{0.48\linewidth}@{}}
+\toprule
+Track & Sections & Signature learning progression \\
+\midrule
+\endhead
+Skepticism and infrastructure &
+0.6, 1.6 &
+Reject fake interpretability results with leakage, cherry-pick, probe-overfit,
+and random-direction controls; then prove the local uv, CUDA, VRAM, parity, and
+activation-store contracts before trusting later notebooks. \\
+\addlinespace
+Modern architectures &
+5.1--5.6 &
+Implement Gemma-style blocks, feature steering, Mamba scans and state tracking,
+toy diffusion language models, DiffusionGemma local-proof boundaries, embedding
+retrieval, and function-calling controls. \\
+\addlinespace
+Sparse feature methods &
+6.1--6.4 &
+Compare SAE variants, inspect released Gemma Scope artifacts, build transcoders
+and attribution graphs, and use crosscoders for paired-model diffing. \\
+\addlinespace
+Activation to language &
+7.1--7.5 &
+Move from logit/tuned/attention lenses to feature verbalizers, activation
+oracles, natural-language autoencoders, and predictive concept decoders with
+held-out and random-control checks. \\
+\addlinespace
+Automated circuits &
+8.1--8.5 &
+Rebuild activation patching, attribution patching, EAP, ACDC metrics, circuit
+tracing, and sparse feature circuits with completeness, faithfulness,
+minimality, and same-size random controls. \\
+\addlinespace
+Alignment interpretability &
+9.1--9.4 &
+Study refusal directions, chain-of-thought faithfulness, benign proxy drift,
+and white-box monitors using no-generation or aggregate-safe paths where
+appropriate. \\
+\addlinespace
+Capstone and geometry &
+10.1, 11.1 &
+Run a mini research sprint and geometry-control lab with held-out templates,
+ablation, counterfactual patching, PCA/SVD, UMAP, white-noise, and seed
+stability controls. \\
+\addlinespace
+Vision, images, and world models &
+12.1--14.1 &
+Teach CLIP/SigLIP/VLM controls, diffusion/image-generation attribution, and
+JEPA/world-model latent prediction using controlled scenes before real-model
+claims. \\
+\addlinespace
+Adapters and attribution baselines &
+15.1, 16.1--16.8 &
+Compare LoRA/DoRA/full finetuning on generated proxy tasks; build exact
+Shapley, KernelSHAP, PartitionSHAP, interaction, TokenSHAP, VLM-region SHAP,
+SHAP-vs-patching, Data Shapley, and agreement/disagreement labs. \\
+\addlinespace
+Training dynamics &
+17.1 &
+Save and reload checkpoints, detect stable mechanism emergence, compare
+phase-transition timing, and reject random-label checkpoint controls. \\
+\bottomrule
+\end{longtable}
+
+\section{Methodology: How Sections Are Graded And Tested}
+Course-ready status is not assigned from a passing notebook cell alone. The
+acceptance ladder is:
+\begin{enumerate}
+  \item \textbf{Student surface.} The instruction page and notebooks must state
+  one core question, give expected outputs, include help and interpretation
+  dropdowns, expose solution dropdowns, and end with limitations plus anomaly
+  hunting.
+  \item \textbf{Sub-function tests.} Hard implementation steps have tests for
+  individual functions before the final result is trusted.
+  \item \textbf{Toy or reference oracle.} New topics start from ground-truth
+  games, generated tasks, exact coalition tables, analytic rules, or reference
+  model parity before real-model claims.
+  \item \textbf{Controls.} Every plot or headline metric must include a control:
+  shuffled labels, random directions, random activations, text-only baselines,
+  same-size random patches, copy baselines, mismatched partitions, or
+  equivalent negative controls.
+  \item \textbf{Verification report.} Each section has a committed
+  \path{verification_report.json} recording accepted metrics, claim scope,
+  GPU evidence, known failures, and paths.
+  \item \textbf{Global audits.} The repo-level gates check course surface,
+  original ARENA preservation, style depth, hard-exercise ladders,
+  report-evidence contracts, artifact hygiene, no minified files, roadmap
+  completion, and strict completion.
+\end{enumerate}
+
+\subsection*{Pseudocode}
+\begin{verbatim}
+for section in extension_sections:
+    require original_arena_preserved()
+    require one_core_question(section)
+    require one_signature_result(section)
+    require expected_outputs_and_dropdowns(section.notebooks)
+    require hard_exercise_subfunction_tests(section)
+    require toy_or_reference_oracle_before_real_model_claim(section)
+    require negative_controls_for_plots_and_metrics(section)
+    require accepted_verification_report(section)
+
+run hosted_cpu_gate()
+run full_cuda_release_gate(max_vram_gb=24)
+accept only if strict_completion_passes()
+\end{verbatim}
+
+\section{Results: Representative Signature Results}
+\begin{longtable}{@{}p{0.16\linewidth}p{0.33\linewidth}p{0.41\linewidth}@{}}
+\toprule
+Section & Signature result & Why it is meaningful \\
+\midrule
+\endhead
+0.6 &
+All four bogus interpretability claims are rejected: label leakage,
+cherry-picking, probe overfit, and weak random-direction claims. &
+The detectors are input-driven and include positive controls, so the result is
+not a hard-coded default-fixture pass. \\
+\addlinespace
+1.6 &
+Local readiness checks pass: uv, CUDA, BF16, VRAM, parity, and activation-store
+metadata. &
+Later model claims are blocked unless the intended runtime and evidence path are
+actually present. \\
+\addlinespace
+5.1--5.4 &
+Gemma and Mamba implementations match reference/parity targets and expose cache,
+scan, state, and intervention controls. &
+Students implement the mechanism first, then verify against known behavior. \\
+\addlinespace
+8.1--8.5 &
+Patch, attribution, ACDC, graph, and sparse-feature circuit methods recover
+target positions or features while random/same-size controls fail. &
+Circuit claims are tied to causal or attribution evidence, not visually pleasing
+graphs alone. \\
+\addlinespace
+12.1--14.1 &
+Controlled images/videos produce localized retrieval, patching, diffusion, and
+world-model results before broader real-model claims. &
+The visual sections reject white-noise or generic pretty outputs by requiring
+localized metrics and controls. \\
+\addlinespace
+16.1--16.8 &
+Exact ground-truth Shapley and interaction games are recovered before sampling,
+VLM, activation-patching, or data-attribution comparisons are trusted. &
+Attribution methods are taught against mathematical objects where correctness is
+auditable. \\
+\bottomrule
+\end{longtable}
+
+\section{Qualitative Examples}
+The qualitative review target is not a single generated answer. It is whether
+the learner experience repeatedly follows the ARENA pattern: a concrete
+question, a small implementation, an immediate test, an expected output, a
+control, and an interpretation. Representative examples include:
+\begin{itemize}
+  \item Section 0.6 asks students to reject plausible-looking interpretability
+  claims, then shows why each claim fails under a targeted control.
+  \item Section 8.5 asks students to build sparse feature circuits only after
+  exact patching and same-size random graph controls are in place.
+  \item Section 16.1 asks students to compute exact Shapley values on a finite
+  game before trusting any sampled or model-based attribution shortcut.
+\end{itemize}
+
+\section{Metrics Primer}
+The primary metrics are course-readiness and evidence metrics, not a single
+classifier score. Accuracy, reconstruction error, logit-difference recovery,
+Shapley error, held-out probe performance, random-control margins, and peak
+VRAM appear in the section reports where appropriate. MCC is not a primary
+metric for this packet because the packet is not evaluating one binary
+classification dataset; individual sections use task-appropriate metrics and
+controls instead.
+
+\section{CUDA And Environment Evidence}
+The final local release run was:
+\begin{verbatim}
+BNB_CUDA_VERSION=130 uv run python scripts/ci_quality_gate.py --mode release
+\end{verbatim}
+It performed a real CUDA preflight with \code{nvidia-smi}, confirmed
+\code{torch.cuda.is\_available()}, regenerated all 41 extension reports with a
+24 GiB VRAM limit, accepted all 41, then ran the GPU-report, report-evidence,
+roadmap-final-completeness, and strict-completion audits. The final line was
+\status{STRICT\_COMPLETION=PASS}.
+
+\begin{center}
+\begin{tabular}{@{}ll@{}}
+\toprule
+Item & Observed value \\
+\midrule
+Python & 3.14.6 \\
+PyTorch & 2.12.1+cu132 \\
+torchvision & 0.27.1+cu132 \\
+PyTorch CUDA runtime & 13.2 \\
+Driver CUDA UMD reported by \code{nvidia-smi} & 13.3 \\
+GPU & NVIDIA GeForce RTX 5090 Laptop GPU \\
+Visible VRAM & 23.4597 GiB \\
+Extension reports regenerated & 41 \\
+Extension reports accepted & 41 \\
+CUDA-backed reports audited & 43 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+One package caveat remains: \code{bitsandbytes 0.49.2} does not ship
+\code{libbitsandbytes\_cuda132.so}. Local bitsandbytes CUDA paths therefore use
+\code{BNB\_CUDA\_VERSION=130} with the package's CUDA 13.0 binary. This is not
+represented as native CUDA 13.2 support for bitsandbytes.
+
+\section{Archive Contents}
+The companion tarball is deliberately small in scope. It contains:
+\begin{itemize}
+  \item 78 chapter instruction-page Markdown files from
+  \path{chapter*/instructions/pages/*.md}.
+  \item 77 exercise notebooks matching \path{chapter*/exercises/**/*_exercises.ipynb}.
+  \item 77 solution notebooks matching \path{chapter*/exercises/**/*_solutions.ipynb}.
+\end{itemize}
+It contains no verification reports, expected-output images, tests, Python
+support modules, hidden caches, downloaded models, LaTeX files, or Git metadata.
+This makes the archive suitable for quick review of the learner-facing course
+surface while keeping the full repo as the source of reproducibility evidence.
+
+\section{Limitations, Blockers, And Deferrals}
+\begin{itemize}
+  \item There are no remaining non-\status{course\_ready} extension pages tracked
+  in \path{docs/arena_style_rewrite_status.yml}.
+  \item Huge-model routes that exceed the 24 GiB local GPU remain deferred until
+  they can be validated honestly. They are not replaced with mock results.
+  \item GitHub hosted CI passes CPU audits, but the self-hosted CUDA job is
+  skipped unless a CUDA runner is attached. The CUDA evidence in this packet was
+  run locally.
+  \item Some sections intentionally make narrow claims, for example a
+  one-prompt local-generation proof or a controlled generated-scene result. The
+  claim boundary is part of the course material and should not be inflated into
+  broad model-quality or mechanism-generalization claims.
+  \item Automated checks can enforce structure, evidence, and known failure
+  modes. They cannot fully replace a human review of whether the writing has the
+  elegance, pacing, and taste of original ARENA.
+\end{itemize}
+
+\section{Reviewer Questions}
+\begin{enumerate}
+  \item Does the extension feel like original ARENA in progression: implement,
+  test, interpret, control, then escalate?
+  \item Are any sections still too survey-like despite having a core question and
+  signature result?
+  \item Are the toy ground-truth tasks strong enough bridges to the real-model
+  claims?
+  \item Which signature results are visually or pedagogically weak even if the
+  verification report passes?
+  \item Are any deferred huge-model paths too important to leave as optional
+  follow-up work for a 24 GiB local course?
+\end{enumerate}
+
+\appendix
+\section{Artifact Index}
+\begin{itemize}
+  \item \path{Extension-Roadmap.md}: final roadmap and scope.
+  \item \path{README.md}: course overview and section list.
+  \item \path{docs/arena_style_rewrite_status.yml}: course-ready status ledger.
+  \item \path{scripts/ci_quality_gate.py}: hosted, GPU, and release gate wrapper.
+  \item \path{scripts/audit_extension_completion_strict.py}: strict completion
+  audit.
+  \item \path{scripts/audit_original_arena_preservation.py}: original ARENA
+  preservation audit.
+  \item \path{chapter*/exercises/*/verification_report.json}: per-section
+  evidence reports.
+  \item \path{FOR_REVIEW/ARENA_core_chapters_exercises_solutions.tar.gz}:
+  learner-facing chapter and notebook archive.
+\end{itemize}
+
+\section{Rebuild Commands}
+\begin{verbatim}
+tectonic FOR_REVIEW/FOR_REVIEW.tex --outdir FOR_REVIEW
+pdftotext FOR_REVIEW/FOR_REVIEW.pdf -
+
+find chapter* -path '*/instructions/pages/*.md' -type f -print
+find chapter* -path '*/exercises/*' -type f \
+  \( -name '*_exercises.ipynb' -o -name '*_solutions.ipynb' \) -print
+
+BNB_CUDA_VERSION=130 uv run python scripts/ci_quality_gate.py --mode hosted-cpu
+BNB_CUDA_VERSION=130 uv run python scripts/ci_quality_gate.py --mode release
+\end{verbatim}
+
+\end{document}

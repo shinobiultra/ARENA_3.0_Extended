@@ -1,0 +1,7 @@
+{
+  "files_sha256": {
+    "verification_report.json": "b6bb444b813dcb63052b989ae06b02586cc2bf8ef43c4a03e7566aea0a806bbd",
+    "normal_report.log": "ffb16e6d33875389e4449d16e9d8ca8257908c99aade550086675599ff49ba69"
+  },
+  "reason": "Complete missing schema/fixture metadata and explicit zero GPU budget; scientific sources and learner unchanged. Fresh CPU model rerun executed."
+}

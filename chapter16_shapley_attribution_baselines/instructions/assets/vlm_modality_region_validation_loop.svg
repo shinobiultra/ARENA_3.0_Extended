@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="270" viewBox="0 0 960 270" role="img" aria-labelledby="title desc">
+  <title id="title">VLM modality and region SHAP validation loop</title>
+  <desc id="desc">Toy ground-truth modality and region games are checked before pinned CLIP rendered-image evidence.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f8fafc; }
+      .box { fill: #ffffff; stroke: #24364f; stroke-width: 2; rx: 8; }
+      .accent { fill: #eaf4ff; stroke: #1f669e; stroke-width: 2; rx: 8; }
+      .control { fill: #fff4e6; stroke: #a65d12; stroke-width: 2; rx: 8; }
+      .text { font-family: Inter, Arial, sans-serif; fill: #172033; font-size: 18px; font-weight: 700; }
+      .small { font-family: Inter, Arial, sans-serif; fill: #354154; font-size: 14px; }
+      .arrow { stroke: #24364f; stroke-width: 3; fill: none; marker-end: url(#arrowhead); }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#24364f"/>
+    </marker>
+  </defs>
+  <rect class="bg" x="0" y="0" width="960" height="270" rx="12"/>
+  <rect class="box" x="30" y="54" width="190" height="128"/>
+  <text class="text" x="55" y="91">Toy modality</text>
+  <text class="small" x="55" y="124">image/text players</text>
+  <text class="small" x="55" y="148">synergy = 2.0</text>
+  <path class="arrow" d="M228 118 H288"/>
+  <rect class="accent" x="300" y="54" width="190" height="128"/>
+  <text class="text" x="327" y="91">Toy regions</text>
+  <text class="small" x="327" y="124">object/background/OCR</text>
+  <text class="small" x="327" y="148">background = control</text>
+  <path class="arrow" d="M498 118 H558"/>
+  <rect class="box" x="570" y="54" width="190" height="128"/>
+  <text class="text" x="594" y="91">Exact SHAP</text>
+  <text class="small" x="594" y="124">efficiency required</text>
+  <text class="small" x="594" y="148">target margin required</text>
+  <path class="arrow" d="M768 118 H828"/>
+  <rect class="control" x="838" y="54" width="92" height="128"/>
+  <text class="text" x="858" y="91">CLIP</text>
+  <text class="small" x="853" y="124">pinned</text>
+  <text class="small" x="852" y="148">rendered</text>
+  <text class="small" x="853" y="172">control</text>
+  <text class="small" x="112" y="224">Real-logit claims are accepted only after toy ground truth, efficiency, object/background controls, and a target-vs-distractor margin.</text>
+</svg>

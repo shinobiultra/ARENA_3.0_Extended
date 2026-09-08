@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="410" viewBox="0 0 920 410" role="img" aria-labelledby="title desc">
+  <title id="title">Refusal-direction signature result</title>
+  <desc id="desc">Summary of 9.1 report metrics: held-out accuracy, layer sweep, PCA variance, behavioral steering deltas, random controls, and VRAM.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f8fafc; }
+      .panel { fill: #ffffff; stroke: #334155; stroke-width: 1.4; rx: 8; }
+      .axis { stroke: #475569; stroke-width: 1.2; }
+      .grid { stroke: #cbd5e1; stroke-width: 1; }
+      .bar1 { fill: #2563eb; }
+      .bar2 { fill: #16a34a; }
+      .bar3 { fill: #f97316; }
+      .bar4 { fill: #dc2626; }
+      .title { font: 700 16px Arial, sans-serif; fill: #0f172a; }
+      .text { font: 13px Arial, sans-serif; fill: #334155; }
+      .small { font: 12px Arial, sans-serif; fill: #475569; }
+      .metric { font: 700 22px Arial, sans-serif; fill: #0f172a; }
+      .ok { fill: #dcfce7; stroke: #15803d; }
+    </style>
+  </defs>
+  <rect class="bg" width="920" height="410"/>
+  <text class="title" x="28" y="34">9.1 signature result: one direction is useful, but the claim is control-scoped</text>
+
+  <rect class="panel" x="28" y="58" width="264" height="128"/>
+  <text class="title" x="48" y="86">Held-out separation</text>
+  <text class="metric" x="48" y="122">1.000</text>
+  <text class="text" x="116" y="121">GT-2 accuracy</text>
+  <text class="metric" x="48" y="158">6.577</text>
+  <text class="text" x="116" y="157">held-out margin</text>
+
+  <rect class="panel" x="328" y="58" width="264" height="128"/>
+  <text class="title" x="348" y="86">Layer and PCA controls</text>
+  <text class="metric" x="348" y="122">23</text>
+  <text class="text" x="396" y="121">best Qwen layer</text>
+  <text class="metric" x="348" y="158">0.253</text>
+  <text class="text" x="424" y="157">PC1 variance fraction</text>
+
+  <rect class="panel" x="628" y="58" width="264" height="128"/>
+  <text class="title" x="648" y="86">Evidence hygiene</text>
+  <rect class="ok" x="650" y="103" width="86" height="28" rx="6"/>
+  <text class="text" x="666" y="122">GT-2 ready</text>
+  <text class="metric" x="648" y="164">1.903 GB</text>
+  <text class="text" x="754" y="163">peak VRAM</text>
+
+  <rect class="panel" x="28" y="222" width="408" height="150"/>
+  <text class="title" x="48" y="250">Behavioral refusal rates</text>
+  <line class="axis" x1="74" y1="336" x2="390" y2="336"/>
+  <line class="grid" x1="74" y1="298" x2="390" y2="298"/>
+  <text class="small" x="48" y="302">0.5</text>
+  <rect class="bar1" x="105" y="274" width="48" height="62"/>
+  <rect class="bar2" x="177" y="336" width="48" height="0.5"/>
+  <rect class="bar3" x="249" y="331" width="48" height="5"/>
+  <rect class="bar4" x="321" y="336" width="48" height="0.5"/>
+  <text class="small" x="93" y="356">base refusal</text>
+  <text class="small" x="169" y="356">base comp.</text>
+  <text class="small" x="241" y="356">add comp.</text>
+  <text class="small" x="313" y="356">random</text>
+  <text class="small" x="112" y="267">0.8125</text>
+  <text class="small" x="177" y="326">0.0</text>
+  <text class="small" x="251" y="322">0.0625</text>
+
+  <rect class="panel" x="484" y="222" width="408" height="150"/>
+  <text class="title" x="504" y="250">Projection and controls</text>
+  <line class="axis" x1="530" y1="304" x2="846" y2="304"/>
+  <rect class="bar4" x="570" y="304" width="76" height="48"/>
+  <rect class="bar2" x="710" y="258" width="76" height="46"/>
+  <text class="small" x="556" y="371">projection delta</text>
+  <text class="small" x="700" y="371">random margin gap</text>
+  <text class="small" x="576" y="296">-0.8125</text>
+  <text class="small" x="720" y="251">6.423</text>
+  <text class="text" x="504" y="286">Projection-out lowers refusal on refusal prompts;</text>
+  <text class="text" x="504" y="398">random and label-shuffled directions fail the acceptance controls.</text>
+</svg>

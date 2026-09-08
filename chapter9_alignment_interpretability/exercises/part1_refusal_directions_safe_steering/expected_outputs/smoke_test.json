@@ -1,0 +1,8 @@
+{
+  "accepted": true,
+  "scope": "analytic_train_only_threshold_and_projection_smoke",
+  "shifted_accuracy": 0.5,
+  "shifted_auroc": 1.0,
+  "projection_error": 0.0,
+  "real_model_experiment": false
+}

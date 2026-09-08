@@ -1,0 +1,377 @@
+{
+  "archive": "execution_review.tar.gz",
+  "sha256": "470407a4d90c3083efed4247b4be1ae32180162cd13120ca01e892fb7863fce4",
+  "bytes": 13995638,
+  "scope": "Own-answer notebook, source snapshots, actual figures, author browser and play review, and complete check receipts. Numerical .pt arrays remain external and physically hashed in native_summary.json.",
+  "files": {
+    "checks/archive_current_environment.py": {
+      "sha256": "1371a4ac3bebe8c443b599b93b2de5b377a78c732ae2a1682aaafc9c6d2c8802",
+      "bytes": 4584
+    },
+    "checks/direct_current_environment_png_review.json": {
+      "sha256": "94da226d2ed01f901f2b4d3916699ecbb8dc17d9aff4cf1592eaffc6f7a899ae",
+      "bytes": 3669
+    },
+    "checks/new-environment-learner-v4-budget.json": {
+      "sha256": "064d7da8f389ad5960fd8a43c1a63a07686ed83529d362b2109214c78cb193cc",
+      "bytes": 794
+    },
+    "checks/new-environment-normal-report-v4.log": {
+      "sha256": "8c6afe71bd3074720184b4bd59ddf8851cc6148ecb5650acc8015305c450188d",
+      "bytes": 1557
+    },
+    "checks/new-environment-original-preservation.log": {
+      "sha256": "1bb96e626ad5c3bcd6fd28a9d62ea697f83b2f6b90c57c6dec8f0375387752bd",
+      "bytes": 120
+    },
+    "checks/new-environment-play-review-v4.log": {
+      "sha256": "c0c97a1eab59ebfa615b2c4fb167773054f6465985592636a6bd47a1100a638b",
+      "bytes": 511
+    },
+    "checks/new-environment-play-review-v4.py": {
+      "sha256": "dd464bd5979b5bb8ed7e5076b1a24444f951b14359caa6646857a033602952d2",
+      "bytes": 4509
+    },
+    "checks/new-environment-scientific-tests-v3.log": {
+      "sha256": "50f6f225a5694c08e3a73e05e170687602389870458677266fc8447b68e925fd",
+      "bytes": 99
+    },
+    "checks/new-environment-section-gates-v4.json": {
+      "sha256": "3fdfcf796b67f58166f97fd1b32f07bc57a1cd8980b70c52b160885091659f72",
+      "bytes": 230
+    },
+    "checks/new-environment-section-tests-v4.log": {
+      "sha256": "d82e72a44198f03799fb3e0d3fa65f76a877c023fe47c63d07e85562dbc4981a",
+      "bytes": 99
+    },
+    "checks/publication_fresh_reproduction.json": {
+      "sha256": "a40962586706d82c74c8b2e4f474f63f33e14bf6ffdbef35d7c910540b085fe1",
+      "bytes": 326157
+    },
+    "checks/published_fresh_reproduction.json": {
+      "sha256": "d4d92e5c74c9ee94da3d23bce82af9f314603aa45bd18db5a00fd7ab8bdc2d3d",
+      "bytes": 326172
+    },
+    "checks/published_learner_execution.json": {
+      "sha256": "f6a8823d6d583415256165f5fb6670150d758b9494a0a6add70702dce752fbb3",
+      "bytes": 9113
+    },
+    "checks/published_reference_metrics.json": {
+      "sha256": "2e28cb04fe5e7a67a3c5022e806e59f72a79eae19bf63b7f63cb78bb33d9445f",
+      "bytes": 19891
+    },
+    "checks/verification_report.json": {
+      "sha256": "e9556cf9808130c771cf24c6e055e640e7c3b40563857b296819935c247e9d6c",
+      "bytes": 40791
+    },
+    "learner/completed_learner.ipynb": {
+      "sha256": "f95c84427e55494c4717bd06ab57dc3ad5720aa9e3f725ffdac6093be90f7dd0",
+      "bytes": 2268426
+    },
+    "learner/execution.json": {
+      "sha256": "3d93732521e1f2ec1c2590acb6dcdae27ec9580602d7012e683b676c9e0be753",
+      "bytes": 7243
+    },
+    "learner/figures/01_shared_query.png": {
+      "sha256": "8e0e7004a2f72e8aae6b7fb9379d709722b27a41b115fccc87f791b2974f6e9a",
+      "bytes": 83178
+    },
+    "learner/figures/02_query_play.png": {
+      "sha256": "8e0e7004a2f72e8aae6b7fb9379d709722b27a41b115fccc87f791b2974f6e9a",
+      "bytes": 83178
+    },
+    "learner/figures/03_sampling_and_cost.png": {
+      "sha256": "e68a7df66e110e10deca637eac2b4c9ebf0ce210344f6c7053ee6d9e2b20bdf0",
+      "bytes": 110954
+    },
+    "learner/figures/04_boundary_limit.png": {
+      "sha256": "cd99c47e2e1791b9d7c9d4ce8ee09c71289602955137bc6ca23f723a74e50f0a",
+      "bytes": 102960
+    },
+    "learner/figures/05_model_controls.png": {
+      "sha256": "b41a792c5c23ba5234b2d2e41d2dff45f22d3f49e8563c7002290a031733ab19",
+      "bytes": 72814
+    },
+    "learner/figures/06_query_budget_errors.png": {
+      "sha256": "e2abf92c2914cb90ddf109782d5bebb50b936d6825503fe46f28af72949348da",
+      "bytes": 856705
+    },
+    "learner/figures/07_signed_pair_comparison.png": {
+      "sha256": "5f656f9ae215f9215dad217e536c2f9bfdcff59f2bff9b170405a1b0f25268c7",
+      "bytes": 155370
+    },
+    "learner/figures/08_sampling_variance.png": {
+      "sha256": "3a3d1a4cf35cc096f97f071440af45d3182c3a1bcc4a5070e1eddb7b373f11bd",
+      "bytes": 621897
+    },
+    "learner/figures/09_unique_queries_and_rank.png": {
+      "sha256": "32c4aef1562b7c8d9d3efb6f1761a16821013136029c80ace3326e9907c78306",
+      "bytes": 160316
+    },
+    "learner/figures/10_native_query_play.png": {
+      "sha256": "b7df1fb079f047a037cdf06b15b78889d2892327ffe2b355887c084deb8d66ec",
+      "bytes": 160311
+    },
+    "learner/figures/native/summary.json": {
+      "sha256": "4ef0ef51636fe980561a0ac41703d179e3309b4a58008fabf3fad0aac3811cb6",
+      "bytes": 1406
+    },
+    "learner/html_review/DRAFT_16.17_One_Query_Many_Interactions_exercises.ipynb": {
+      "sha256": "18825ba022f46d2117cfc698fb9f6211afbe7793837d0ad30989d701ea9bc665",
+      "bytes": 2267565
+    },
+    "learner/html_review/DRAFT_16.17_One_Query_Many_Interactions_solutions.ipynb": {
+      "sha256": "f95c84427e55494c4717bd06ab57dc3ad5720aa9e3f725ffdac6093be90f7dd0",
+      "bytes": 2268426
+    },
+    "learner/html_review/author_visual_review.json": {
+      "sha256": "7b092cf0eddbd4420b413228d67cac0301fbc598e33c08ebc91af15baeffcfb8",
+      "bytes": 7230
+    },
+    "learner/html_review/browser_budget_curves.png": {
+      "sha256": "88020fea2e6a47dfb3724c35f4677cb197d2c31172a62856b433f7abad58dbd4",
+      "bytes": 110262
+    },
+    "learner/html_review/browser_native_play.png": {
+      "sha256": "c8c6dd0fdf50fca6a22b9ee54b09140f654430ca77ec3b786b9ea0e55562ac4d",
+      "bytes": 146499
+    },
+    "learner/html_review/browser_nullspace_derivation.png": {
+      "sha256": "5d8d87f15c2716c2b0b522ac6fcb385d64beb7869e233f584fa8cc2e453fafd8",
+      "bytes": 120335
+    },
+    "learner/html_review/browser_pair_derivation.png": {
+      "sha256": "ed3122fee24e46881c37b6cf456327d08c3439c3f80c21db6bec45cd6fceef69",
+      "bytes": 112838
+    },
+    "learner/html_review/browser_signed_pairs.png": {
+      "sha256": "854fa90e259f2075804e2730897a254da7b676f80fca7d51919f7746aa4e02f0",
+      "bytes": 118498
+    },
+    "learner/html_review/exercises.html": {
+      "sha256": "ad912bc12b82749973dada93bc44f886513aa4e30983dca8800369cedee811cc",
+      "bytes": 2632382
+    },
+    "learner/html_review/figure_author_review.json": {
+      "sha256": "96a1174e5d8a3958ec46e938629ab936adcf5ca428ae440b33c8e7f03660c8a2",
+      "bytes": 4052
+    },
+    "learner/html_review/play_figures/analytic_00.png": {
+      "sha256": "104e3af6c93096471f09b51694e232d688b66361fda0e71a1073f965c118e9a3",
+      "bytes": 84461
+    },
+    "learner/html_review/play_figures/analytic_01.png": {
+      "sha256": "e0abe1a9ffd4f290c257791896715dba518205aa4730501bed2b2c609a9c5572",
+      "bytes": 83045
+    },
+    "learner/html_review/play_figures/analytic_02.png": {
+      "sha256": "78a5b64fe1c3de870f41197ddec73eaa63814380964a078907fd8f15b74c9025",
+      "bytes": 80579
+    },
+    "learner/html_review/play_figures/analytic_03.png": {
+      "sha256": "3533bf643b4433ed7e4bc84e35c28cba5013f9fc0d4e91561bacb36caa5cac2a",
+      "bytes": 80794
+    },
+    "learner/html_review/play_figures/analytic_04.png": {
+      "sha256": "d6438cee85b31dca3be1979a054a92defd5997951585bc138496f273b5163368",
+      "bytes": 80461
+    },
+    "learner/html_review/play_figures/analytic_05.png": {
+      "sha256": "d38a46b2e6a94a7d9f02113e9895a7b90aa123ef27910ad578db109fe825509e",
+      "bytes": 86097
+    },
+    "learner/html_review/play_figures/native_00.png": {
+      "sha256": "b7df1fb079f047a037cdf06b15b78889d2892327ffe2b355887c084deb8d66ec",
+      "bytes": 160311
+    },
+    "learner/html_review/play_figures/native_01.png": {
+      "sha256": "89827a051a52dcd72b2298590739f7beb5226afeb35aa25e6c46fc3ad1722d88",
+      "bytes": 156320
+    },
+    "learner/html_review/play_figures/native_02.png": {
+      "sha256": "2f8bcbf7be7f9de7a1c5f5efe6d4e3de2c88b99d1dca141a6f880203c2311676",
+      "bytes": 163387
+    },
+    "learner/html_review/play_figures/native_03.png": {
+      "sha256": "cad8f8d2db082202f1168c71e5262b89d8ad9913ff5cf4004b2ba7049a107f4d",
+      "bytes": 160454
+    },
+    "learner/html_review/play_figures/native_04.png": {
+      "sha256": "8ef9cb393972fdf125ce21446ed1fd519333abe3cd6d47ea804a7919ce035aab",
+      "bytes": 157955
+    },
+    "learner/html_review/play_figures/native_05.png": {
+      "sha256": "c44a469c7c9a12b6ef08771516b41bc6ca31a63f71c562c716cc8b899d2d27d0",
+      "bytes": 160391
+    },
+    "learner/html_review/play_figures/native_06.png": {
+      "sha256": "54fea42ef660f32512dae669264738c8a0eaa6a5fab0c7fa2420c7273dad11b8",
+      "bytes": 168430
+    },
+    "learner/html_review/play_figures/native_07.png": {
+      "sha256": "397ed4af3ba732d9f0b5a650fc3bc36dad871c57d325b4f13aed15463106d5f9",
+      "bytes": 148452
+    },
+    "learner/html_review/play_figures/native_08.png": {
+      "sha256": "c16b5018cf44ad51fb80f6ca2e05517d89e4ca9faa7e3e86345de9dcc2e71fa9",
+      "bytes": 160734
+    },
+    "learner/html_review/play_figures/native_09.png": {
+      "sha256": "6fcfcef04de3030dc2bcaea6e7bfa3dfb58a9184e6dfdc0320c0ae69a073f43b",
+      "bytes": 143529
+    },
+    "learner/html_review/play_figures/native_10.png": {
+      "sha256": "a0c8835ad2b1ca2283a07457a2185d042213429a471e4de6c039ebbfdf71c425",
+      "bytes": 154285
+    },
+    "learner/html_review/play_figures/native_11.png": {
+      "sha256": "a25b9c924e7f2ed4931907e29767c6a24b3910c9d8e1a8a70d5aec800218b66d",
+      "bytes": 164263
+    },
+    "learner/html_review/play_variations.json": {
+      "sha256": "5ef018152fbbe7453c7265574bab9fd183ed83a21acf0da78b65ccd7e5aa5a69",
+      "bytes": 6385
+    },
+    "learner/html_review/render.json": {
+      "sha256": "cf086e6eccb58551f797b183b24bec7846f2248d2d0cef02487cadc1ccafc90b",
+      "bytes": 558
+    },
+    "learner/html_review/root_browser_review.json": {
+      "sha256": "97a0e07ab8042b1e0fc237ad5806824a9e1064bc9050d5c0534617a7abfbd505",
+      "bytes": 2468
+    },
+    "learner/html_review/solutions.html": {
+      "sha256": "607b41c61d533cd9ec91ecbacefd41f970e53b83a37d1f7f7498907dafc26377",
+      "bytes": 2620929
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/build_notebooks.py": {
+      "sha256": "0b1b09ca7c3ecb58dde9f89ac993600f86837603e0d167dd8c0b0520d7085395",
+      "bytes": 16690
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/data_manifest.json": {
+      "sha256": "bcf41f96c9f6839ee4cbf24df82ca8467b35a6ed9090a9c4c56fce0b1a23120c",
+      "bytes": 38183
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/execute_learner.py": {
+      "sha256": "0dfd6ee46e87b0091466c47d6a61e6b451ccdf34758e6a68399ac9f7b42cbc38",
+      "bytes": 10796
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_contracts.py": {
+      "sha256": "3b52d90376e81b75e90ee4f9adfffa35073982708372143542e0a0349b1b319a",
+      "bytes": 24587
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_data.py": {
+      "sha256": "9c9c1016ffd6fe839a004c06e801cdcd24d4d71a85ccd3f0707168dec390c7ce",
+      "bytes": 3795
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_diagnostics.py": {
+      "sha256": "d3b60c3d5e9565a3c693fa4d8146a8115eae1ac1708986692197dadfdbee5e7f",
+      "bytes": 25759
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_diagnostics_tests.py": {
+      "sha256": "420c535748a2dedb4a1e6a3d3e4c99e4cb0ace78d51af01e1141d136b153b029",
+      "bytes": 6350
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_methods.py": {
+      "sha256": "2c56ae4e108d13b8e2994f12944af49af3915fcf95d684da96ddec7ed46c5be5",
+      "bytes": 16834
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_methods_tests.py": {
+      "sha256": "fafa0eaa80591793198f23e884c21b3f457eaf240841ae10c9cfd58e721eae12",
+      "bytes": 26153
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_plots.py": {
+      "sha256": "f7369b14f53d0ac3cac2c54efa12ed2b9b799bb2e94336cb0b030b5d585380d0",
+      "bytes": 54585
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_plots_tests.py": {
+      "sha256": "b5acaabd5d2062a31c8b36c132cd48c5b9e33fc8f8f6e7f04158248a8f31f93a",
+      "bytes": 13395
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py": {
+      "sha256": "c063d120d7449a9b20b4ac370247b2b5971e809575d44ab9d7c8719cc551292f",
+      "bytes": 43620
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference_tests.py": {
+      "sha256": "95bfe943a98b7353e29328992ee4cbf0a0558cdf3c8d64a692129e47bf1dbc4e",
+      "bytes": 18899
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_study.py": {
+      "sha256": "f49e4f5872beca780c95a3689b919690e5be8c344df3f0625178476ff163ad02",
+      "bytes": 67704
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_study_tests.py": {
+      "sha256": "ef938b660a7b6388023654bd977cfd94e999540ee6d827ead6f5382f757eb3a5",
+      "bytes": 16879
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/publish_study.py": {
+      "sha256": "ea001e7f27cadc4b37a9d63f3766cc67e7450c4ce053a5c2a4f0466beb5034a0",
+      "bytes": 18278
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/reproduce_native.py": {
+      "sha256": "382d67ea67ecd6c02d0c1148dbb812c567e6635f706c351f02f85f9cb7d367db",
+      "bytes": 13098
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/run_native.py": {
+      "sha256": "f4c359e12c25d77b14100da9e66145480fe0dfa591f9387cf1fe1d8c938f205c",
+      "bytes": 31408
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/solutions.py": {
+      "sha256": "29471f5b57fa41cff1e4db5fe08b5c5f0f22ae20cf71f06a0e2c2323e4a2edc1",
+      "bytes": 15822
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/tests.py": {
+      "sha256": "a6525e5184bfb8a9cb6117b8d447c1feaab2343af9a73c00f41052dd19e4fe84",
+      "bytes": 167
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/build_notebooks.py": {
+      "sha256": "9d2ccd0d791b479d0978b5a4b670e750e9b1374c27815da4547332c34cec5b7f",
+      "bytes": 4996
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/data_manifest.json": {
+      "sha256": "9f2b4351ac056d109d63ee99c108df5249c3185c84a68d61bb9384d99940f3c8",
+      "bytes": 17745
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/estimator_methods.py": {
+      "sha256": "f173ff6d56b4bdd08fb044ddfb9d18c3cdc7e79cff94b940eb66f51b73fb208c",
+      "bytes": 14759
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/estimator_methods_tests.py": {
+      "sha256": "760c871a37c4840b66300b4ec7dc84f17feb2c70e0c26c6836c2f6cf8d56489a",
+      "bytes": 11517
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/estimator_plots.py": {
+      "sha256": "835d66ec52d0d7040df7b6ea2ddccf6bb12e0008bc496f6e3f1d0cabd09b0735",
+      "bytes": 16405
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/estimator_study.py": {
+      "sha256": "846faa75ed7ccc6b4c59bbb2df6501c7b69500cf27c24b495288a573cdbb3c55",
+      "bytes": 14864
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/execute_learner.py": {
+      "sha256": "11695b4c9a40a9ff06147d6ba252eaf542f41305e42b40713bdbce9a7cad6f3b",
+      "bytes": 5118
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/lesson.md": {
+      "sha256": "f242daacaafab111f92ed347417a6ce9e8e99064d142dc375c0624a6a32d41eb",
+      "bytes": 28126
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/lesson_cells.py": {
+      "sha256": "d6c844ab2a307ea8db0b4dcb2a134de56a1d9eb44d954cd4ea05a1b84512b6b2",
+      "bytes": 4985
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/protocol.md": {
+      "sha256": "5ca23cc6f18ce83c82cac60ad495d2deeabba2c0d9da01c4f61b32e9bb68433a",
+      "bytes": 7363
+    },
+    "learner/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/protocol_freeze.json": {
+      "sha256": "8d66f3eb399688712acd557a4b91b2e39612440a1444b6aa31afdba04d479656",
+      "bytes": 1322
+    },
+    "learner/source_snapshot/uv.lock": {
+      "sha256": "e96e946bb00f50592d32c1b3bf453fca4482a0097731120defbebcd978f019eb",
+      "bytes": 610963
+    }
+  },
+  "external_native_directory": "/home/bitwise/.cache/arena_extended/shapiq_estimators/new-environment-learner-v4/figures/native"
+}

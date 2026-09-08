@@ -1,0 +1,16 @@
+{
+  "utils.py": {
+    "url": "https://raw.githubusercontent.com/iancovert/sage/0e34e6c7e2a6b1666e39043e83b9929e68ee68f3/sage/utils.py",
+    "sha256": "efe267d7f149085eef4060205b035e7569baa46c01a22b2f06dc2a60bb54b499"
+  },
+  "imputers.py": {
+    "url": "https://raw.githubusercontent.com/iancovert/sage/0e34e6c7e2a6b1666e39043e83b9929e68ee68f3/sage/imputers.py",
+    "sha256": "3aa7ae2727dfcc881d48c6dc3c9c93f7ea4471bf8073b544ebbcf6e24a5445bd"
+  },
+  "license": {
+    "name": "MIT",
+    "url": "https://github.com/iancovert/sage/blob/0e34e6c7e2a6b1666e39043e83b9929e68ee68f3/LICENSE",
+    "sha256": "572252e99d3028be745e418cde53d2e6f0f6b032f6a6fe8d71f63123a66398b4"
+  },
+  "attribution": "Ian Covert and contributors; unmodified author imputer and utilities used only for independent parity."
+}

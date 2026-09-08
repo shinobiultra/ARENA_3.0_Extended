@@ -1,0 +1,65 @@
+{
+  "readback_verified": true,
+  "members": {
+    "audit_roadmap_final_completeness-final-v1.log": {
+      "source": "/home/bitwise/.cache/arena_extended/erasure/audit_roadmap_final_completeness-final-v1.log",
+      "sha256": "5008e8fb0ace3d9a7d46eaf2201e8c2536556961afb6ae9ae59fdffd9a1345b6",
+      "size_bytes": 13984
+    },
+    "audit_original_arena_preservation-final-v1.log": {
+      "source": "/home/bitwise/.cache/arena_extended/erasure/audit_original_arena_preservation-final-v1.log",
+      "sha256": "e7b2b7a501650217529afe3d9b61544c3661b475b53750cdb6e27ea2213082fc",
+      "size_bytes": 123
+    },
+    "audit_course_surface-final-v1.log": {
+      "source": "/home/bitwise/.cache/arena_extended/erasure/audit_course_surface-final-v1.log",
+      "sha256": "a2e00c3825989a7411fcd96c79f159ef679acf0f5afc8514ff159bdc7ddf7fed",
+      "size_bytes": 76
+    },
+    "audit_arena_style_depth-final-v1.log": {
+      "source": "/home/bitwise/.cache/arena_extended/erasure/audit_arena_style_depth-final-v1.log",
+      "sha256": "10f08cdb746ec0d424b0b5768adfd608704515aafed64947e5971cd48be7f6be",
+      "size_bytes": 73
+    },
+    "audit_hard_exercise_ladders-final-v1.log": {
+      "source": "/home/bitwise/.cache/arena_extended/erasure/audit_hard_exercise_ladders-final-v1.log",
+      "sha256": "8d18cd4db42714f01dc21115ad1658f07233e26f6a17012405c103439b363c4a",
+      "size_bytes": 71
+    },
+    "audit_report_evidence_contracts-final-v1.log": {
+      "source": "/home/bitwise/.cache/arena_extended/erasure/audit_report_evidence_contracts-final-v1.log",
+      "sha256": "4af7394dd7de6e70bf84f25ad2019d9d09e9af4ec8dce0dae5cf069afc7d0b16",
+      "size_bytes": 77
+    },
+    "integration-tests-final-v1.log": {
+      "source": "/home/bitwise/.cache/arena_extended/erasure/integration-tests-final-v1.log",
+      "sha256": "9f53204b8ebb16f58f7b557b1408eb5993f6b2461ddec0769095c31329e7d81d",
+      "size_bytes": 639
+    },
+    "normal-report-v1.log": {
+      "source": "/home/bitwise/.cache/arena_extended/erasure/normal-report-v1.log",
+      "sha256": "571e49edf14bf0cfa8096bce1bd5dc4df8a1db616b95bb590199b74c739445b0",
+      "size_bytes": 2248
+    },
+    "integration-tests-v1.log": {
+      "source": "/home/bitwise/.cache/arena_extended/erasure/integration-tests-v1.log",
+      "sha256": "5a63fb6b51d6bdb1b1831add483f01751ecc0f73be6bbe674e0dae06daf93f28",
+      "size_bytes": 8470
+    },
+    "course-surface-tests-v2.log": {
+      "source": "/home/bitwise/.cache/arena_extended/erasure/course-surface-tests-v2.log",
+      "sha256": "eed9586fb3f0a7335b4ba8ddbd11481b262925f62b3f8a405805b304537df841",
+      "size_bytes": 113
+    },
+    "readability-v1.log": {
+      "source": "/home/bitwise/.cache/arena_extended/erasure/readability-v1.log",
+      "sha256": "46d745a915ca6cc743f0e7891acfb7827956ad5f2d25171b86f94dccad3e5aaf",
+      "size_bytes": 9952
+    },
+    "verification_report.json": {
+      "source": "/home/bitwise/Documents/ARENA_3.0_Extended/chapter11_representation_geometry/exercises/part4_concept_erasure/verification_report.json",
+      "sha256": "7f02ee46fee5c56bfe958ff45446230ff933bd4f0bf3644ec3751006fa007cd4",
+      "size_bytes": 16426
+    }
+  }
+}

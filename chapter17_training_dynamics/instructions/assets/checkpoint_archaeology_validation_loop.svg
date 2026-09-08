@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="940" height="360" viewBox="0 0 940 360" role="img" aria-labelledby="title desc">
+  <title id="title">Checkpoint archaeology validation loop</title>
+  <desc id="desc">A six-step validation loop for mechanism emergence claims over training checkpoints.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#243044"/>
+    </marker>
+    <style>
+      .bg { fill: #f7f8fb; }
+      .panel { fill: #ffffff; stroke: #c8d2e1; stroke-width: 1.5; rx: 8; }
+      .panelStrong { fill: #eef7ff; stroke: #6b9bd2; stroke-width: 1.5; rx: 8; }
+      .pass { fill: #e9f8ef; stroke: #58a66f; stroke-width: 1.4; rx: 8; }
+      .label { font: 700 14px Inter, Arial, sans-serif; fill: #111827; }
+      .text { font: 13px Inter, Arial, sans-serif; fill: #374151; }
+      .small { font: 12px Inter, Arial, sans-serif; fill: #4b5563; }
+      .arrow { stroke: #243044; stroke-width: 1.8; fill: none; marker-end: url(#arrow); }
+      .fail { stroke: #b45309; stroke-width: 1.5; stroke-dasharray: 5 5; fill: none; marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <rect class="bg" width="940" height="360"/>
+  <text x="34" y="38" class="label">Validation loop: make emergence a checkpoint claim, not a vibe</text>
+
+  <rect class="panelStrong" x="34" y="72" width="134" height="88"/>
+  <text x="52" y="102" class="label">1. Train</text>
+  <text x="52" y="126" class="small">Finite mod-13</text>
+  <text x="52" y="144" class="small">model organism</text>
+
+  <rect class="panel" x="210" y="72" width="134" height="88"/>
+  <text x="228" y="102" class="label">2. Save</text>
+  <text x="228" y="126" class="small">Every declared</text>
+  <text x="228" y="144" class="small">checkpoint step</text>
+
+  <rect class="panel" x="386" y="72" width="134" height="88"/>
+  <text x="404" y="102" class="label">3. Reload</text>
+  <text x="404" y="126" class="small">Metrics recomputed</text>
+  <text x="404" y="144" class="small">from files</text>
+
+  <rect class="panel" x="562" y="72" width="134" height="88"/>
+  <text x="580" y="102" class="label">4. Detect</text>
+  <text x="580" y="126" class="small">Stable crossing</text>
+  <text x="580" y="144" class="small">and phase jump</text>
+
+  <rect class="panel" x="738" y="72" width="150" height="88"/>
+  <text x="756" y="102" class="label">5. Control</text>
+  <text x="756" y="126" class="small">Random labels on</text>
+  <text x="756" y="144" class="small">the same schedule</text>
+
+  <path class="arrow" d="M168 116 H200"/>
+  <path class="arrow" d="M344 116 H376"/>
+  <path class="arrow" d="M520 116 H552"/>
+  <path class="arrow" d="M696 116 H728"/>
+
+  <rect class="pass" x="152" y="222" width="636" height="76"/>
+  <text x="174" y="252" class="label">6. Bounded report</text>
+  <text x="174" y="274" class="text">Final accuracy, stable-from step, adjacent jump, checkpoint count, random-control peak, finite-domain scope, and VRAM budget.</text>
+
+  <path class="arrow" d="M814 160 C816 206 790 226 788 260"/>
+  <path class="arrow" d="M152 260 C90 256 87 178 100 160"/>
+  <path class="fail" d="M470 222 C470 190 278 190 278 162"/>
+  <text x="352" y="203" class="small">failed control returns to the exercise</text>
+
+  <rect x="44" y="322" width="852" height="1.5" fill="#c8d2e1"/>
+  <text x="44" y="344" class="small">Passing means: this model organism, this finite table, these checkpoint files, this control, this CUDA report.</text>
+</svg>

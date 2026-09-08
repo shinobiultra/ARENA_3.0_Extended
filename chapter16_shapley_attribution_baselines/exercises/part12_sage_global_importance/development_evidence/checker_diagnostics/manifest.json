@@ -1,0 +1,60 @@
+{
+  "source_directory": "/home/bitwise/.cache/arena_extended/sage/checker-diagnostics",
+  "archive_sha256": "a9adc00642a0e4f867c468e0b85df4779cefbd32d00cdd79b02a19f860a5d9db",
+  "members": {
+    "README.md": {
+      "sha256": "167fe7a419d3089b8bffb25155bc3d89047521f1c4b7ab7a24a2cbfc77a4a39f",
+      "size_bytes": 426
+    },
+    "check_kernel_reference.py": {
+      "sha256": "48e7316a3ccaefd02b16ccaebe2f96f59275dd3ad06dc09a567fd10c55185c97",
+      "size_bytes": 985
+    },
+    "debug_kernel_alias.py": {
+      "sha256": "b63d47f1cf33016eb32383085ec83ecd1e98977004bd971f07a547c6b705eaee",
+      "size_bytes": 1751
+    },
+    "debug_kernel_arrays.py": {
+      "sha256": "852cd77cffdcec3ee33b548b6683fa4adada39d6c902a64436395d9b030b1a7a",
+      "size_bytes": 1458
+    },
+    "kernel_alias.ipynb": {
+      "sha256": "6f64a2579642610a16f409bb7f4ccacfd3d28b2f85c611e6daabab0814565284",
+      "size_bytes": 2955
+    },
+    "kernel_alias.log": {
+      "sha256": "3f2b766f08dfd18a853f26878cf7e0d8cad05ab72687a30d2e374da957f6a5a5",
+      "size_bytes": 283
+    },
+    "kernel_arrays.ipynb": {
+      "sha256": "1c0d93cdc8e2ca56efaab22fb01975a89bc30ae5b20e09729adb1ea74a192ef8",
+      "size_bytes": 2575
+    },
+    "kernel_arrays.log": {
+      "sha256": "3f2b766f08dfd18a853f26878cf7e0d8cad05ab72687a30d2e374da957f6a5a5",
+      "size_bytes": 283
+    },
+    "kernel_arrays.npz": {
+      "sha256": "ecd66d7d4a433bfed8e0d8e97efa383415c425a9960b71ca1ebee6843c405048",
+      "size_bytes": 5487134
+    },
+    "kernel_reference.ipynb": {
+      "sha256": "f9a2a7ffb8a611b7a1f271aed73f3add8d77b3c858908d7749f2884a1c0964b4",
+      "size_bytes": 7602
+    },
+    "kernel_reference.log": {
+      "sha256": "0a3c613bc5a471926c81dce143454fdab7b16354c37493d6d5a90009cbfc80e8",
+      "size_bytes": 6832
+    },
+    "trace-v2.log": {
+      "sha256": "2e49189fe896db9f9b000d9bfb671384b0ec214789dc52118a7039ec42da68e4",
+      "size_bytes": 6889
+    },
+    "trace_notebook_v2.py": {
+      "sha256": "e6a4299d445a75d20c427e68ecf1e3c9d6d0280eaacd19a9ef1561b6f4d5278b",
+      "size_bytes": 1163
+    }
+  },
+  "large_tensors_retained_externally": {},
+  "readback_verified": true
+}

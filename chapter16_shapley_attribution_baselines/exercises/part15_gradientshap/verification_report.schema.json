@@ -1,0 +1,504 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ARENA16.15 Expected Gradients verification report",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "notebook_id",
+    "date_run",
+    "git_commit",
+    "report_inputs",
+    "gt_tier",
+    "evidence_level",
+    "claim_scope",
+    "gpu_name",
+    "peak_vram_gb",
+    "wall_clock_seconds",
+    "models",
+    "datasets",
+    "tests_passed",
+    "metrics",
+    "baselines",
+    "negative_controls",
+    "ood_tests",
+    "known_failures",
+    "safety_notes",
+    "accepted"
+  ],
+  "properties": {
+    "notebook_id": {
+      "const": "16_15_expected_gradients_which_expectation_does_gradientshap_estimate"
+    },
+    "date_run": {
+      "type": "string",
+      "minLength": 1
+    },
+    "git_commit": {
+      "type": "string",
+      "minLength": 1
+    },
+    "report_inputs": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "schema_version",
+        "algorithm",
+        "combined_sha256",
+        "files"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": 1
+        },
+        "algorithm": {
+          "const": "sha256"
+        },
+        "combined_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "files": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "path",
+              "sha256",
+              "size_bytes"
+            ],
+            "properties": {
+              "path": {
+                "type": "string",
+                "minLength": 1
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              },
+              "size_bytes": {
+                "type": "integer",
+                "minimum": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    "gt_tier": {
+      "enum": [
+        "GT-0",
+        "GT-1",
+        "GT-2",
+        "GT-3",
+        "GT-4"
+      ]
+    },
+    "evidence_level": {
+      "type": "string",
+      "minLength": 1
+    },
+    "claim_scope": {
+      "type": "string",
+      "minLength": 1
+    },
+    "gpu_name": {
+      "type": "string"
+    },
+    "peak_vram_gb": {
+      "const": 0.0
+    },
+    "wall_clock_seconds": {
+      "type": "number",
+      "minimum": 0
+    },
+    "models": {
+      "type": "array",
+      "minItems": 2
+    },
+    "datasets": {
+      "type": "array",
+      "minItems": 1
+    },
+    "tests_passed": {
+      "const": true
+    },
+    "metrics": {
+      "type": "object",
+      "required": [
+        "notebook_contract",
+        "gpu_test",
+        "gpu_evidence"
+      ],
+      "properties": {
+        "notebook_contract": {
+          "type": "object",
+          "required": [
+            "tests_passed",
+            "accepted",
+            "test_count",
+            "claim_scope",
+            "student_method_exercises"
+          ],
+          "properties": {
+            "tests_passed": {
+              "const": true
+            },
+            "accepted": {
+              "const": true
+            },
+            "test_count": {
+              "const": 9
+            },
+            "claim_scope": {
+              "type": "string",
+              "minLength": 1
+            },
+            "student_method_exercises": {
+              "const": 9
+            }
+          }
+        },
+        "gpu_test": {
+          "type": "object",
+          "required": [
+            "actual_learner_passed",
+            "embedded_figures",
+            "native_model_retrained",
+            "native_model_retrained_in_this_report",
+            "native_evidence_reused",
+            "fresh_reproduction_passed",
+            "fresh_compared_arrays",
+            "fresh_compared_elements",
+            "fresh_max_error",
+            "fresh_comparison",
+            "study",
+            "model_fits",
+            "fresh_model_fits",
+            "mlp_fits",
+            "shuffled_fits",
+            "optimizer_updates",
+            "known_model_state_hashes_matched",
+            "train_row_count",
+            "explanation_row_count",
+            "heldout_row_count",
+            "cross_split_recipe_overlap",
+            "final_used_for_selection",
+            "model_row_explanations",
+            "primary_sample_coordinates",
+            "model_coalition_values",
+            "primary_hybrid_predictions",
+            "quadrature_pair_coordinates",
+            "nested_budgets",
+            "replicate_sample_coordinates",
+            "replicate_sample_shape",
+            "replicate_seeds_retained",
+            "replicate_file_size_bytes",
+            "background_variants",
+            "noise_variants",
+            "random_order_controls",
+            "replacement_models",
+            "path_distance_points",
+            "coalition_distance_points",
+            "quadrature_is_approximate",
+            "finite_mc_completeness_is_acceptance_gate",
+            "eg_is_exact_feature_shapley",
+            "positive_noise_changes_target",
+            "whole_paper_replication",
+            "author_reference_passed",
+            "author_reference_versions",
+            "author_samples_per_package",
+            "author_model_rows_per_package",
+            "author_total_vectors",
+            "author_total_coordinates",
+            "author_reference_atol",
+            "author_reference_rtol",
+            "package_draw_tables_distinct",
+            "positive_noise_reference_passed",
+            "device",
+            "own_answer_code_cells",
+            "learner_evidence_sha256",
+            "fresh_evidence_sha256",
+            "replicate_sample_sha256",
+            "replicate_file_sha256",
+            "author_shap_max_error",
+            "author_shap_scaled_error",
+            "author_shap_tolerance_bound",
+            "author_captum_max_error",
+            "author_captum_scaled_error",
+            "author_captum_tolerance_bound"
+          ],
+          "properties": {
+            "actual_learner_passed": {
+              "const": true
+            },
+            "embedded_figures": {
+              "const": 20
+            },
+            "native_model_retrained": {
+              "const": true
+            },
+            "native_model_retrained_in_this_report": {
+              "const": true
+            },
+            "native_evidence_reused": {
+              "const": false
+            },
+            "fresh_reproduction_passed": {
+              "const": true
+            },
+            "fresh_compared_arrays": {
+              "type": "number",
+              "minimum": 1
+            },
+            "fresh_compared_elements": {
+              "type": "number",
+              "minimum": 263716864
+            },
+            "fresh_max_error": {
+              "const": 0.0
+            },
+            "fresh_comparison": {
+              "const": "exact_recursive_value_sha256"
+            },
+            "study": {
+              "const": "16.15_gradientshap_expected_gradients"
+            },
+            "model_fits": {
+              "const": 7
+            },
+            "fresh_model_fits": {
+              "const": 7
+            },
+            "mlp_fits": {
+              "const": 6
+            },
+            "shuffled_fits": {
+              "const": 3
+            },
+            "optimizer_updates": {
+              "const": 4800
+            },
+            "known_model_state_hashes_matched": {
+              "const": 21
+            },
+            "train_row_count": {
+              "const": 758
+            },
+            "explanation_row_count": {
+              "const": 153
+            },
+            "heldout_row_count": {
+              "const": 119
+            },
+            "cross_split_recipe_overlap": {
+              "const": 0
+            },
+            "final_used_for_selection": {
+              "const": false
+            },
+            "model_row_explanations": {
+              "const": 1904
+            },
+            "primary_sample_coordinates": {
+              "const": 31195136
+            },
+            "model_coalition_values": {
+              "const": 487424
+            },
+            "primary_hybrid_predictions": {
+              "const": 31195136
+            },
+            "quadrature_pair_coordinates": {
+              "const": {
+                "256": 974848,
+                "512": 974848
+              }
+            },
+            "nested_budgets": {
+              "const": [
+                8,
+                32,
+                128,
+                512,
+                2048
+              ]
+            },
+            "replicate_sample_coordinates": {
+              "const": 201326592
+            },
+            "replicate_sample_shape": {
+              "const": [
+                64,
+                3,
+                64,
+                2048,
+                8
+              ]
+            },
+            "replicate_seeds_retained": {
+              "const": 64
+            },
+            "replicate_file_size_bytes": {
+              "type": "number",
+              "minimum": 1610612736
+            },
+            "background_variants": {
+              "const": 5
+            },
+            "noise_variants": {
+              "const": 3
+            },
+            "random_order_controls": {
+              "const": 100
+            },
+            "replacement_models": {
+              "const": 7
+            },
+            "path_distance_points": {
+              "const": 34816
+            },
+            "coalition_distance_points": {
+              "const": 557056
+            },
+            "quadrature_is_approximate": {
+              "const": true
+            },
+            "finite_mc_completeness_is_acceptance_gate": {
+              "const": false
+            },
+            "eg_is_exact_feature_shapley": {
+              "const": false
+            },
+            "positive_noise_changes_target": {
+              "const": true
+            },
+            "whole_paper_replication": {
+              "const": false
+            },
+            "author_reference_passed": {
+              "const": true
+            },
+            "author_reference_versions": {
+              "const": {
+                "shap": "0.49.1",
+                "captum": "0.9.0"
+              }
+            },
+            "author_samples_per_package": {
+              "const": 128
+            },
+            "author_model_rows_per_package": {
+              "const": 1904
+            },
+            "author_total_vectors": {
+              "const": 3808
+            },
+            "author_total_coordinates": {
+              "const": 30464
+            },
+            "author_reference_atol": {
+              "const": 1e-10
+            },
+            "author_reference_rtol": {
+              "const": 1e-10
+            },
+            "package_draw_tables_distinct": {
+              "const": true
+            },
+            "positive_noise_reference_passed": {
+              "const": true
+            },
+            "device": {
+              "const": "cpu"
+            },
+            "own_answer_code_cells": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "learner_evidence_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "fresh_evidence_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "replicate_sample_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "replicate_file_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "author_shap_max_error": {
+              "type": "number",
+              "minimum": 0
+            },
+            "author_shap_scaled_error": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "author_shap_tolerance_bound": {
+              "type": "number",
+              "minimum": 1e-10
+            },
+            "author_captum_max_error": {
+              "type": "number",
+              "minimum": 0
+            },
+            "author_captum_scaled_error": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "author_captum_tolerance_bound": {
+              "type": "number",
+              "minimum": 1e-10
+            }
+          },
+          "additionalProperties": true
+        },
+        "gpu_evidence": {
+          "type": "object"
+        }
+      }
+    },
+    "baselines": {
+      "type": "object",
+      "required": [
+        "declared_controls",
+        "expected_metrics"
+      ],
+      "properties": {
+        "declared_controls": {
+          "type": "array",
+          "minItems": 1
+        },
+        "expected_metrics": {
+          "type": "object",
+          "minProperties": 1
+        }
+      }
+    },
+    "negative_controls": {
+      "type": "object"
+    },
+    "ood_tests": {
+      "type": "object"
+    },
+    "known_failures": {
+      "type": "array",
+      "maxItems": 0
+    },
+    "safety_notes": {
+      "type": "array",
+      "minItems": 1
+    },
+    "accepted": {
+      "const": true
+    }
+  }
+}

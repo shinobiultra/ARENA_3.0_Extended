@@ -1,0 +1,141 @@
+{
+  "schema_version": 1,
+  "reviewer": "root",
+  "reviewed_at_utc": "2026-09-07T08:36:26.863830+00:00",
+  "independent_recheck": "pending",
+  "publication_authorized": false,
+  "review_context": "The independent reviewer blocked its earlier snapshot pending six resolutions; the final reviewer turn stopped at an account usage limit. This is a local resolution, not independent approval.",
+  "native_fits_before_review": 0,
+  "native_game_runs_before_review": 0,
+  "native_attribution_runs_before_review": 0,
+  "native_audit_reads_before_review": 0,
+  "findings": [
+    {
+      "id": 1,
+      "title": "Authoritative identity and control labels",
+      "status": "RESOLVED_ROOT_CHECK",
+      "resolution": "The protocol explicitly makes the current manifest normative and supersedes obsolete cache design wording, including the mixed_degree2 additive label. The exact additive and ridge games alone are zero-pair controls; mixed_degree2 is a nonadditive agreement control. Current resume/native-design provenance hashes are bound in the manifest."
+    },
+    {
+      "id": 2,
+      "title": "Deterministic RNG bytes",
+      "status": "RESOLVED_ROOT_CHECK",
+      "resolution": "The independent probe was rerun locally on the current manifest. Every exact seed/value/hash, all 256 pair seeds and permutations, all 15232 within-size seeds and their literal 128-by-119 matrix, and the complete within-size permutation hash match. Integer hex, little-endian digest bytes, private PCG64 streams, array dtypes and hash keys are explicit."
+    },
+    {
+      "id": 3,
+      "title": "Numerical comparison policy",
+      "status": "RESOLVED_ROOT_CHECK",
+      "resolution": "Protocol, manifest and reference implementation use the pre-native scale max(1,max(abs(v-v_empty))) and inclusive strict 1e-10+1e-12*scale, package FSII coordinate 1e-8+5e-9*scale and package FSII efficiency 1e-8+3e-8*scale bounds. Exact constraints mean float64 solver precision; above-order zeros remain exact. Full synthetic reference and mutation tests pass."
+    },
+    {
+      "id": 4,
+      "title": "Exact-suite order and call counts",
+      "status": "RESOLVED_ROOT_CHECK",
+      "resolution": "Eight fixed games, 45 random game/order instances and five separately counted full-order boundary instances are explicit: 58 exact instances and 174 index calls, plus 2992 empirical instances and 8976 calls. The separate n3/order3 boundary repeats its grid case intentionally. Finalization does not repeat empirical package calls."
+    },
+    {
+      "id": 5,
+      "title": "Prospective complete leaf and shard map",
+      "status": "RESOLVED_ROOT_CHECK",
+      "resolution": "The manifest enumerates 1075 non-reference tensor leaves and 660 expanded reference leaves. All paths are unique within their family and every shape product equals its declared element count. Ten physical donor shards, two clean_0 views and six logical split mappings are explicit. Synthetic harness tests validate physical seals, live shard byte/value rehashing, split views, tamper rejection and no concatenated donor copy."
+    },
+    {
+      "id": 6,
+      "title": "Executable geometry and aggregation rules",
+      "status": "RESOLVED_ROOT_CHECK",
+      "resolution": "Semantic tests verify feature-order squared-distance accumulation and smallest-source-ID exact ties, equal recipe-group weighting, descending stable pair ranking, retained complete random orders, zero-denominator flags and cardinality-preserving nulls. Actual native geometry and values remain unrun at this review."
+    }
+  ],
+  "source_sha256": {
+    "README.md": "f7628ad83fd1f054d411f0fe9fa186eef348edcd2e11a002f4f309d397d28b61",
+    "artifacts.lock.yml": "f18535923b76f853d0813c9601fadc3e4261a500776bec2cee8ad26e7825518b",
+    "build_notebooks.py": "f938b50a1e79bd3a931d7ae0757f212b4e1009058501118a5ae7f101385f0e79",
+    "data_manifest.json": "192eacd0f1dd137c627d1c4aec58b1eb17c3c31753ff9c496ed1e04717c9651e",
+    "execute_learner.py": "9c564bc9c8c00c9770b5be69ae4aaae666ff5eb41896d8af1a7983e803b37da6",
+    "interaction_contracts.py": "b496ae050b7b181f0326caa2718744b468a4227d7870348cc3b607521201cff6",
+    "interaction_data.py": "9418e01edb3cbc0f812716d2686d4a2d40ceb753112a87b1d18536a19ca2420f",
+    "interaction_diagnostics.py": "9fece8bfeda699cab8ced09ba38ed48787b0c5f82c2d67ea5280f2419e726c46",
+    "interaction_diagnostics_tests.py": "76621b77b5b0e4183a0a5c0e9a1ef0ff7aa107ea145297a1b144af91837b89a7",
+    "interaction_methods.py": "3975601cc5ec724981c48154b3b2339be4c18d132c631d78598a41b49f697b37",
+    "interaction_methods_tests.py": "c5d99d494f4b0e78097674afba70119daed725a2c9f73709f44e821f536af490",
+    "interaction_plots.py": "90e8b4f1edadc26365e65cb578477c789f55d913d7ac4c8551a4cf63abede2aa",
+    "interaction_plots_tests.py": "bd425abbdeff5f1a7d25045e52616d1c2f593ab8e249250cc45b2c999e84f9fc",
+    "interaction_reference.py": "e6a11d2b45194815e0122e481cae226620c21b604a2206ab2d07ff564bcd6825",
+    "interaction_reference_tests.py": "d6eef21708e88e9913c3ba86e1ca44346d5f18a786830cf11a29c95a024c0ad4",
+    "interaction_report_tests.py": "5eb95d4ecd2e5afabb0513d25054cba55c6126a7dac58d88100bce4f9a11b827",
+    "interaction_study.py": "ff0a6bddba80baf629694edd6bf2138a470c1c075409cc0168f0c1f2236f2535",
+    "interaction_study_tests.py": "7334e8c4d7788db4c33ff2b0e454c0ba6e49220a203fb84eca099821666b09d9",
+    "lesson.md": "63cb77001ad0b6dc82f18a138349c3284256496ad2a26deb8680c3d728ea9ec9",
+    "protocol.md": "c0d738cf953743f17b74ca5ced74c15330b8b3be7d7d128563ba36096986ee37",
+    "publish_study.py": "13c7b4cc48d81a6ca05eaecacaa01762890e87ff0f3d913b81a8f5fbaf1b220c",
+    "reproduce_native.py": "155b38b23ee6ec71ada78d6598dfeaf5723fdb947cf769a831a6d048a238393a",
+    "run_native.py": "49431fe155039511db060e5ab172402f5e2ea8f66bddd8a4a498c3fcc29923e6",
+    "solutions.py": "417085f8c9f40b01f098272a5557dc2170ad640547fda8f0ef193414fab1cce3",
+    "tests.py": "0f492a65a223638979067257c68f8171fbae6167b20abdaeda00924f4b9e1dba",
+    "verification_report.schema.json": "87082f935bc3c092eb0b833eed9874937fa400d63dc584bee03838bd73c8c759"
+  },
+  "evidence_files": {
+    "/home/bitwise/.cache/arena_extended/shapley_interactions/independent_pre_freeze_review_v1.md": {
+      "sha256": "6b9f3db08f0379cc0917651043bef9727337899ba4e9000f9e0b29d0fdaa627a",
+      "size_bytes": 14262
+    },
+    "/home/bitwise/.cache/arena_extended/shapley_interactions/root_rerun_independent_probe_v2.py": {
+      "sha256": "424c207ff820f87080981ab228d5647c6d43e1ecf5a3b2a69e5225174a32891a",
+      "size_bytes": 12327
+    },
+    "/home/bitwise/.cache/arena_extended/shapley_interactions/root_rerun_independent_probe_v2.json": {
+      "sha256": "9a4ff6ea94b70d78bd40f28fb7d2b46a8a76efcfa04612c6841d2b1beda10184",
+      "size_bytes": 8607
+    },
+    "/home/bitwise/.cache/arena_extended/shapley_interactions/donor_scaffold_equivalence_v1.json": {
+      "sha256": "c16500414764819f521a6867e5e04298e4c956de098c47da52c0c607d1cec940",
+      "size_bytes": 3641
+    },
+    "/home/bitwise/.cache/arena_extended/shapley_interactions/analytic-learner-v3/execution.json": {
+      "sha256": "2f3dec7e214a84667626e0d575d3d6399e48783ccef26e40526fec462d30d283",
+      "size_bytes": 3107
+    },
+    "/home/bitwise/.cache/arena_extended/shapley_interactions/pedagogy_preflight_v1.md": {
+      "sha256": "30fa0418009eacbe1fae458b44c579bd8d667da807751cc7e6d6c2aba6ec4f7f",
+      "size_bytes": 11455
+    },
+    "/home/bitwise/.cache/arena_extended/shapley_interactions/reference_feasibility_v1.json": {
+      "sha256": "f8a0a7a3c945d3209fb6317593337ca4350ae83e682119428af5deeb9fce8166",
+      "size_bytes": 24507
+    }
+  },
+  "checks": [
+    {
+      "scope": "Methods, study, references, diagnostics, plots and report frontend; only analytic/random/untrained fixtures",
+      "passed": 76,
+      "skipped": 1,
+      "seconds": 32.62,
+      "skip_reason": "Explicit optional post-freeze native fit was not enabled."
+    },
+    {
+      "scope": "Course surface and harness, including development/publication separation",
+      "passed": 42,
+      "seconds": 16.04
+    },
+    {
+      "scope": "Own-answer analytic learner prefix with native access prohibited",
+      "cells": 90,
+      "code_cells": 30,
+      "figures": 3,
+      "seconds": 4.607388707998325
+    },
+    {
+      "scope": "Donor-scaffold refactor versus retained previous implementation on untrained analytic models",
+      "cases": 24,
+      "coordinates": 6432,
+      "max_abs_error": 0,
+      "other_public_function_asts_unchanged": 9
+    }
+  ],
+  "limitations": [
+    "Native outcomes and full empirical payload shape/value checks are still unrun.",
+    "Final scientific, pedagogy, harness and report independent rechecks stopped at the reviewer account limit.",
+    "A development run cannot be registered or published until actual independent review, fresh reproduction, visual review and final report gates pass."
+  ]
+}

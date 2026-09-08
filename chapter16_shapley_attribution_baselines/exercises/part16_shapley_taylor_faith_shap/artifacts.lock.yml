@@ -1,0 +1,170 @@
+notebook_id: 16_16_where_does_higher_order_credit_go
+section: '16.16'
+title: Where Does Higher-Order Credit Go?
+execution_device: cpu
+exercise_metadata:
+  EXERCISE_ID: 16_16_where_does_higher_order_credit_go
+  GT_TIER: GT-0
+  DIFFICULTY: 5
+  IMPORTANCE: 5
+  EXPECTED_RUNTIME: Four to six hours self-study; complete CPU execution measured during validation
+  REQUIRES_GPU: false
+gt_tier: GT-0
+evidence_level: complete_empirical_interaction_games_plus_exhaustive_exact_references
+claim_scope: Student-implemented Shapley-Taylor and exact constrained Faith-Shap compare efficient allocations
+  on complete finite games. All seven known Concrete predictors and 272 held-out rows retain every primary
+  donor prediction, all pair contexts, five clean_0 backgrounds, explanation-derived audit pair rankings, within-size
+  and random-order controls, direct package references and an independent fresh CPU reproduction. Tiny exact
+  games isolate high-order dividends. These are observational empirical games and known-model reproduction,
+  not physical causality or independent model replication.
+required_gpu_gb: 0
+max_allowed_gpu_gb: 0
+models:
+- id: six_float64_8x32x32x1_relu_regressors
+  source: generated_training_run
+  revision: known16_14_models_reproduced_under_frozen16_16_protocol
+  precision: float64
+  gated: false
+- id: affine_ridge_control
+  source: generated_training_run
+  revision: frozen_shapley_interactions_protocol_v1
+  precision: float64
+  gated: false
+datasets:
+- id: uci_concrete_compressive_strength
+  source: uci
+  revision: 8d4b15b6fc68cd932d745cbd663d5ceae66dd54422e99c1e4865f2936ab7e2af
+  license: CC BY 4.0
+  train: 758
+  explanation: 153
+  audit: 119
+  manifest: data_manifest.json
+expected_metrics:
+  tests_passed: true
+  accepted: true
+  test_count: 10
+  student_core_functions: 10
+  student_method_exercises: 8
+  actual_learner_passed: true
+  embedded_figures: 11
+  native_model_retrained: true
+  native_model_retrained_in_this_report: true
+  native_evidence_reused: false
+  fresh_reproduction_passed: true
+  fresh_compared_arrays_min: 1
+  fresh_compared_elements_min: 50135040
+  fresh_max_error: 0.0
+  fresh_comparison: exact_recursive_value_sha256
+  study: 16.16_shapley_taylor_faith_shap
+  model_fits: 7
+  fresh_model_fits: 7
+  mlp_fits: 6
+  shuffled_fits: 3
+  optimizer_updates: 4800
+  known_model_state_hashes_matched: 21
+  train_row_count: 758
+  explanation_row_count: 153
+  heldout_row_count: 119
+  cross_split_recipe_overlap: 0
+  final_used_for_selection: false
+  model_row_explanations: 1904
+  model_coalition_values: 487424
+  unique_empirical_games: 2992
+  background_variants: 5
+  primary_context_values: 3411968
+  direct_four_forward_values: 213248
+  within_size_null_replicates: 128
+  within_size_permutation_elements: 3899392
+  within_size_seeds_retained: 15232
+  random_pair_order_controls: 256
+  support_distance_points: 557056
+  independent_model_replication: false
+  whole_paper_replication: false
+  observational_interactions_are_causal: false
+  sii_joint_efficiency_claimed: false
+  method_superiority_is_acceptance_gate: false
+  background_changes_estimand: true
+  reference_games: 2992
+  reference_student_coordinates: 1615680
+  reference_raw_package_coordinates: 332112
+  reference_relevant_package_coordinates: 305184
+  reference_package_index_calls: 8976
+  reference_versions:
+    shapiq: 1.5.2
+  reference_max_error_to_bound_ratio_max: 1.0
+  reference_passed: true
+  reference_full_direct_package_scope: true
+  physical_hybrid_shards: 10
+  primary_hybrid_predictions: 31195136
+  full_hybrid_predictions: 50135040
+  physical_hybrid_values_rehashed: true
+  exact_fixed_games: 8
+  exact_random_games: 15
+  exact_random_game_order_cases: 45
+  exact_boundary_order_n_cases: 5
+  exact_package_game_instances: 58
+  exact_package_index_calls: 174
+  exact_reference_passed: true
+controls:
+- constant_additive_signed_pair_pure_triple_pure_four_and_degree_two_exact_controls
+- independent_derivative_STII_closed_form_Faith_Shap_KKT_and_pair_SII_formulas
+- direct_shapiq_1_5_2_all_2992_games_and_58_separately_counted_exact_instances
+- all_seven_known_predictors_three_shuffled_target_fits_and_affine_ridge
+- all_256_coalitions_and_64_contexts_for_every_pair
+- five_intact_training_donor_backgrounds_change_the_target_game
+- all_128_within_cardinality_permutations_and_all_256_random_pair_orders
+- direct_four_forward_full_context_checks
+- group_weighted_explanation_orders_fixed_before_audit_pair_capture
+- bounded_nearest_training_geometry_with_smallest_source_id_ties
+- two_editable_analytic_dividend_and_native_donor_context_plays
+- independent_fresh_cpu_fit_and_every_retained_deterministic_value
+safety_notes:
+- Interactions in an observational predictor do not establish physical ingredient effects.
+- Intact-donor hybrids can be unlike observed recipes; nearest-training distance is not density or causal validation.
+freshness_inputs:
+- chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/build_notebooks.py
+- chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/execute_learner.py
+- chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_contracts.py
+- chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_data.py
+- chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_diagnostics.py
+- chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_diagnostics_tests.py
+- chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_methods.py
+- chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_methods_tests.py
+- chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_plots.py
+- chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_plots_tests.py
+- chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_reference.py
+- chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_reference_tests.py
+- chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_report_tests.py
+- chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_study.py
+- chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_study_tests.py
+- chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/publish_study.py
+- chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/reproduce_native.py
+- chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/run_native.py
+- chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/solutions.py
+- chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/tests.py
+- chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/README.md
+- chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/lesson.md
+- chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/protocol.md
+- chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/protocol_freeze.json
+- chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/pre_run_resolution.json
+- chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/implementation_amendments.json
+- chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/independent_recheck.json
+- chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/data_manifest.json
+- chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/verification_report.schema.json
+- chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/expected_outputs/README.md
+- chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/expected_outputs/learner_execution.json
+- chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/expected_outputs/native_summary.json
+- chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/expected_outputs/fresh_reproduction.json
+- uv.lock
+- chapter16_shapley_attribution_baselines/instructions/pages/16_[16.16]_Where_Does_Higher_Order_Credit_Go.md
+- chapter16_shapley_attribution_baselines/instructions/assets/shapley_interactions_01_exact_allocation_ledger.png
+- chapter16_shapley_attribution_baselines/instructions/assets/shapley_interactions_02_why_faith_moves_singletons.png
+- chapter16_shapley_attribution_baselines/instructions/assets/shapley_interactions_03_native_game_and_controls.png
+- chapter16_shapley_attribution_baselines/instructions/assets/shapley_interactions_04_fixed_row_interaction_graph.png
+- chapter16_shapley_attribution_baselines/instructions/assets/shapley_interactions_05_allrow_pair_heatmaps.png
+- chapter16_shapley_attribution_baselines/instructions/assets/shapley_interactions_06_heldout_pair_order_capture.png
+- chapter16_shapley_attribution_baselines/instructions/assets/shapley_interactions_07_order_two_reconstruction.png
+- chapter16_shapley_attribution_baselines/instructions/assets/shapley_interactions_08_background_changes_the_game.png
+- chapter16_shapley_attribution_baselines/instructions/assets/shapley_interactions_09_contextual_pair_interventions.png
+- chapter16_shapley_attribution_baselines/instructions/assets/shapley_interactions_10_dividend_play.png
+- chapter16_shapley_attribution_baselines/instructions/assets/shapley_interactions_11_donor_context_play.png

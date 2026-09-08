@@ -1,0 +1,516 @@
+{
+  "accepted": true,
+  "baselines": {
+    "declared_controls": [
+      "exact_calendar_and_independent_nuisance_oracle",
+      "training_only_pca_and_coordinate_probes",
+      "chronological_class_permutation_512_draws",
+      "all_33_development_boundaries",
+      "frozen_selected_layers_before_final",
+      "all_new_template_donors",
+      "no_op",
+      "mean_only",
+      "full_donor",
+      "same_rank_random_donor_plane_32_draws",
+      "equal_norm_random_edit_32_draws",
+      "class_order_permuted_circular_probe_32_draws",
+      "independent_noise_reducer_control",
+      "permuted_training_labels",
+      "five_seeds_three_settings_per_reducer",
+      "leave_one_calendar_class_out",
+      "actual_full_vocabulary_answers",
+      "fresh_cuda_all_nulls_first_batch"
+    ],
+    "expected_metrics": {
+      "accepted": true,
+      "actual_learner_passed": true,
+      "all_donor_pairs": 5634,
+      "angle_play_rows": 3196,
+      "embedded_figures": 13,
+      "final_prompts": 579,
+      "final_used_for_selection": false,
+      "fresh_compared_examples": 6656,
+      "fresh_condition_batches": 208,
+      "fresh_max_logit_error_max": 1e-06,
+      "fresh_top_token_mismatches": 0,
+      "null_draws_per_kind": 32,
+      "own_answer_code_cells": 35,
+      "paper_equivalent_full_replication": false,
+      "projection_fits": 120,
+      "retained_outcomes": 120649,
+      "tests_passed": true,
+      "tsne_is_transductive": true
+    }
+  },
+  "claim_scope": "Learner-implemented geometry and native interventions on pinned Mistral-7B: 579 new prompts, all 5634 donor pairs, 32 draws of each null, 120 nonlinear fits. Partial causal effects and all failures retained. t-SNE is transductive; broader space/time tasks are not reproduced.",
+  "datasets": [
+    {
+      "development_rows": 100,
+      "final_rows": 579,
+      "id": "frozen_calendar_prompts_v2",
+      "protocol": "geometry_protocol.json",
+      "source": "generated",
+      "train_rows": 93
+    }
+  ],
+  "date_run": "2026-09-06T06:10:51+00:00",
+  "evidence_level": "exact_numerical_oracles_and_real_mistral_calendar_interventions",
+  "git_commit": "8eab192b",
+  "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+  "gt_tier": "GT-0",
+  "known_failures": [],
+  "metrics": {
+    "gpu_evidence": {
+      "category": "cuda_section_metric",
+      "placeholder_only": false,
+      "section_specific_metric_keys": [
+        "actual_learner_passed",
+        "all_donor_pairs",
+        "angle_play_rows",
+        "embedded_figures",
+        "final_prompts",
+        "final_used_for_selection",
+        "fresh_compared_examples",
+        "fresh_condition_batches",
+        "fresh_elapsed_seconds",
+        "fresh_max_logit_error",
+        "fresh_output_directory",
+        "fresh_top_token_mismatches",
+        "native_cuda_executed_this_report",
+        "null_draws_per_kind",
+        "own_answer_code_cells",
+        "paper_equivalent_full_replication",
+        "projection_fits",
+        "reproduction_actual_rows_sha256",
+        "reproduction_manifest_path",
+        "reproduction_manifest_sha256",
+        "reproduction_record_sha256",
+        "retained_outcomes",
+        "reused_native_reproduction",
+        "tasks",
+        "tsne_is_transductive"
+      ],
+      "uses_cuda": true
+    },
+    "gpu_test": {
+      "actual_learner_passed": true,
+      "all_donor_pairs": 5634,
+      "angle_play_rows": 3196,
+      "cuda_available": true,
+      "cuda_version": "13.2",
+      "embedded_figures": 13,
+      "final_prompts": 579,
+      "final_used_for_selection": false,
+      "fresh_compared_examples": 6656,
+      "fresh_condition_batches": 208,
+      "fresh_elapsed_seconds": 21.534263927999746,
+      "fresh_max_logit_error": 0.0,
+      "fresh_output_directory": "/home/bitwise/.cache/arena_extended/geometry/fresh_reproductions/run-hp2xauhn/fresh_cuda",
+      "fresh_top_token_mismatches": 0,
+      "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+      "gpu_total_memory_gb": 23.45965576171875,
+      "native_cuda_executed_this_report": false,
+      "null_draws_per_kind": 32,
+      "own_answer_code_cells": 35,
+      "paper_equivalent_full_replication": false,
+      "peak_vram_gb": 13.6112380027771,
+      "projection_fits": 120,
+      "reproduction_actual_rows_sha256": "9c089f11df6372efdac5713127184f7e8e8c314c04e9d46e8899346fce236131",
+      "reproduction_manifest_path": "/home/bitwise/Documents/ARENA_3.0_Extended/chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/expected_outputs/fresh_cuda_release_v3/manifest.json",
+      "reproduction_manifest_sha256": "218976a8267313dd16feba8fa75eda45e16d30f6ce70d9e5a6248a62c06705f1",
+      "reproduction_record_sha256": "d303b3c9c7f26c5aad508c12b56951150d4171890e9c9c93cee4f6e8817f1a99",
+      "retained_outcomes": 120649,
+      "reused_native_reproduction": true,
+      "tasks": {
+        "month": {
+          "angular_accuracy": 0.9722222089767456,
+          "baseline_calendar_accuracy": 0.7916666666666666,
+          "baseline_full_accuracy": 0.7939814814814815,
+          "coordinate_r2": 0.971741795539856,
+          "new_prompts": 432,
+          "primary_shift_conditions": {
+            "author_raw_mean_ablated": {
+              "desired_calendar_accuracy": 0.5162037037037037,
+              "desired_full_accuracy": 0.5231481481481481,
+              "mean_margin": 2.6694878472222223,
+              "rows": 432
+            },
+            "baseline": {
+              "desired_calendar_accuracy": 0.018518518518518517,
+              "desired_full_accuracy": 0.018518518518518517,
+              "mean_margin": -3.429615162037037,
+              "rows": 432
+            },
+            "centered_mean_ablated": {
+              "desired_calendar_accuracy": 0.5115740740740741,
+              "desired_full_accuracy": 0.5046296296296297,
+              "mean_margin": 2.5614149305555554,
+              "rows": 432
+            },
+            "class_order_permuted_circular_probe": {
+              "desired_calendar_accuracy": 0.19075520833333334,
+              "desired_full_accuracy": 0.19068287037037038,
+              "mean_margin": 0.8929217303240741,
+              "rows": 13824
+            },
+            "equal_norm_random_edit": {
+              "desired_calendar_accuracy": 0.01902488425925926,
+              "desired_full_accuracy": 0.01902488425925926,
+              "mean_margin": -3.3326009114583335,
+              "rows": 13824
+            },
+            "full_donor": {
+              "desired_calendar_accuracy": 0.7916666666666666,
+              "desired_full_accuracy": 0.7939814814814815,
+              "mean_margin": 3.894458912037037,
+              "rows": 432
+            },
+            "mean_only": {
+              "desired_calendar_accuracy": 0.08796296296296297,
+              "desired_full_accuracy": 0.08796296296296297,
+              "mean_margin": 0.0013744212962962963,
+              "rows": 432
+            },
+            "no_op": {
+              "desired_calendar_accuracy": 0.018518518518518517,
+              "desired_full_accuracy": 0.018518518518518517,
+              "mean_margin": -3.429615162037037,
+              "rows": 432
+            },
+            "pca5_donor": {
+              "desired_calendar_accuracy": 0.4166666666666667,
+              "desired_full_accuracy": 0.4074074074074074,
+              "mean_margin": 0.8279803240740741,
+              "rows": 432
+            },
+            "pure_coordinate": {
+              "desired_calendar_accuracy": 0.07175925925925926,
+              "desired_full_accuracy": 0.07407407407407407,
+              "mean_margin": -2.3786168981481484,
+              "rows": 432
+            },
+            "same_rank_random_donor_plane": {
+              "desired_calendar_accuracy": 0.018518518518518517,
+              "desired_full_accuracy": 0.018590856481481483,
+              "mean_margin": -3.4300898799189814,
+              "rows": 13824
+            }
+          },
+          "unseen_class_angular_accuracy": 0.8217592592592593
+        },
+        "weekday": {
+          "angular_accuracy": 0.8367347121238708,
+          "baseline_calendar_accuracy": 0.6462585034013606,
+          "baseline_full_accuracy": 0.6394557823129252,
+          "coordinate_r2": 0.8355668783187866,
+          "new_prompts": 147,
+          "primary_shift_conditions": {
+            "author_raw_mean_ablated": {
+              "desired_calendar_accuracy": 0.4557823129251701,
+              "desired_full_accuracy": 0.46938775510204084,
+              "mean_margin": 1.750637755102041,
+              "rows": 147
+            },
+            "baseline": {
+              "desired_calendar_accuracy": 0.013605442176870748,
+              "desired_full_accuracy": 0.006802721088435374,
+              "mean_margin": -2.4158163265306123,
+              "rows": 147
+            },
+            "centered_mean_ablated": {
+              "desired_calendar_accuracy": 0.4421768707482993,
+              "desired_full_accuracy": 0.4421768707482993,
+              "mean_margin": 1.8994472789115646,
+              "rows": 147
+            },
+            "class_order_permuted_circular_probe": {
+              "desired_calendar_accuracy": 0.2986819727891156,
+              "desired_full_accuracy": 0.29230442176870747,
+              "mean_margin": 0.7267285820578231,
+              "rows": 4704
+            },
+            "equal_norm_random_edit": {
+              "desired_calendar_accuracy": 0.02189625850340136,
+              "desired_full_accuracy": 0.009991496598639456,
+              "mean_margin": -2.135097789115646,
+              "rows": 4704
+            },
+            "full_donor": {
+              "desired_calendar_accuracy": 0.6258503401360545,
+              "desired_full_accuracy": 0.6530612244897959,
+              "mean_margin": 2.415391156462585,
+              "rows": 147
+            },
+            "mean_only": {
+              "desired_calendar_accuracy": 0.1292517006802721,
+              "desired_full_accuracy": 0.10884353741496598,
+              "mean_margin": -0.11522108843537415,
+              "rows": 147
+            },
+            "no_op": {
+              "desired_calendar_accuracy": 0.013605442176870748,
+              "desired_full_accuracy": 0.006802721088435374,
+              "mean_margin": -2.4158163265306123,
+              "rows": 147
+            },
+            "pca5_donor": {
+              "desired_calendar_accuracy": 0.41496598639455784,
+              "desired_full_accuracy": 0.41496598639455784,
+              "mean_margin": 1.2969812925170068,
+              "rows": 147
+            },
+            "pure_coordinate": {
+              "desired_calendar_accuracy": 0.22448979591836735,
+              "desired_full_accuracy": 0.23129251700680273,
+              "mean_margin": 0.304421768707483,
+              "rows": 147
+            },
+            "same_rank_random_donor_plane": {
+              "desired_calendar_accuracy": 0.015093537414965986,
+              "desired_full_accuracy": 0.006802721088435374,
+              "mean_margin": -2.4126873405612246,
+              "rows": 4704
+            }
+          },
+          "unseen_class_angular_accuracy": 0.47619047619047616
+        }
+      },
+      "torch_version": "2.12.1+cu132",
+      "tsne_is_transductive": true,
+      "within_vram_budget": true
+    },
+    "notebook_contract": {
+      "accepted": true,
+      "claim_scope": "Numerical method oracles; real evidence is checked separately.",
+      "test_count": 16,
+      "tests_passed": true
+    }
+  },
+  "models": [
+    {
+      "gated": false,
+      "id": "mistralai/Mistral-7B-v0.1",
+      "precision": "bfloat16",
+      "revision": "27d67f1b5f57dc0953326b2601d68371d40ea8da",
+      "source": "huggingface"
+    }
+  ],
+  "negative_controls": {
+    "declared_controls": [
+      "same_rank_random_donor_plane_32_draws",
+      "equal_norm_random_edit_32_draws"
+    ]
+  },
+  "notebook_id": "11_1_pca_svd_and_geometry_controls",
+  "ood_tests": {
+    "declared": "required_where_applicable"
+  },
+  "peak_vram_gb": 13.6112380027771,
+  "report_inputs": {
+    "schema_version": 1,
+    "algorithm": "sha256",
+    "combined_sha256": "ff8f2dff46b7d2eb40b51d52839662d842df74dfb0ff86999f25ed0e4093f536",
+    "files": [
+      {
+        "path": "arena_ext/readability_compatibility.py",
+        "sha256": "3b46611cac4ae86ddd797339544a2e4fde618cc0effedc02e706eb6f827630d9",
+        "size_bytes": 6524
+      },
+      {
+        "path": "arena_ext/verification.py",
+        "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
+        "size_bytes": 9276
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/11.1_PCA_SVD_and_Geometry_Controls_exercises.ipynb",
+        "sha256": "940bac8f23ff890274531796e1f794b58b65ad25d375134e02c1f3fc988cf947",
+        "size_bytes": 2219572
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/11.1_PCA_SVD_and_Geometry_Controls_solutions.ipynb",
+        "sha256": "71c9a8e61b00b1cde6320cb1fa702d83e165b4b0f0e7f5fbc7b8e08b7c78edc5",
+        "size_bytes": 2233272
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/README.md",
+        "sha256": "27c31eae60d56616ad23882a74db894567d53d2441a0035abcd0c6439674ea73",
+        "size_bytes": 3864
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/artifacts.lock.yml",
+        "sha256": "1311c9692bd12c820849e1f66c724e49d969e8c7ea8601922c90745d263ef08f",
+        "size_bytes": 4847
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/build_notebooks.py",
+        "sha256": "0f34dae75c4c2b7604faeec248b182bd923e5ae6ad86d085a451b74ef25585f0",
+        "size_bytes": 4316
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/execute_learner.py",
+        "sha256": "dccfdc78b78fb625d059ac0558e8e78f74b2ed0ae647178b5c061c68aec884f6",
+        "size_bytes": 3263
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/expected_outputs/README.md",
+        "sha256": "7f591c29da1ba993b5f8cfc2450be9f6b32697b3512a03d5454c7586b32266e0",
+        "size_bytes": 1983
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/expected_outputs/fresh_cuda_release_v3/execution.tar.gz",
+        "sha256": "edc8dae19ec8d4197f7eb01dcb3793e2fb6bd69ee87fe1b04d313a1a25044fcc",
+        "size_bytes": 212942
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/expected_outputs/fresh_cuda_release_v3/manifest.json",
+        "sha256": "218976a8267313dd16feba8fa75eda45e16d30f6ce70d9e5a6248a62c06705f1",
+        "size_bytes": 1291
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/expected_outputs/learner_execution.json",
+        "sha256": "7dacd04c20ca288d0f4f7d3dfa1030f62ad03271ca3a03793fe37220e36b572b",
+        "size_bytes": 10331
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/expected_outputs/measured_geometry/angle_play.json.gz",
+        "sha256": "9136d7e2151abf408f50fd12759a62f9f3ee387fd0fd0d713b3ada4830ebedc0",
+        "size_bytes": 30897
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/expected_outputs/measured_geometry/measured_study.json.gz",
+        "sha256": "2f031ef87a377dc5cc971cd46e9da5e4ef76d6fc383e6af612377c2cab49f6f3",
+        "size_bytes": 4235871
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/expected_outputs/measured_geometry/projection_study.json.gz",
+        "sha256": "284d83b46aa223678917fffdb80485cdaff89a4d82558451262b1f88540fef79",
+        "size_bytes": 742734
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/expected_outputs/measured_geometry/protocol.json",
+        "sha256": "4a4816aaeaa734d5ba3a3ba8860b70e1338fdc4d5388255a6414944f43408f78",
+        "size_bytes": 4451
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/expected_outputs/measured_geometry/runtime.json",
+        "sha256": "fba5e6205ab5eab786e93fc9a310e9436fce1b7cfd5307e2847da73eca184889",
+        "size_bytes": 299
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/expected_outputs/measured_geometry/single_play.json",
+        "sha256": "4ebd2a22ceba719f08251cfd02296215ec4a7c0bb537ca16b4bd9000d019566a",
+        "size_bytes": 1388
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/expected_outputs/reference_metrics.json",
+        "sha256": "b00c34cf56b2f13a71776aac3990f23b4f23d2e8b41d51a5c85c0a3a61b2fbd9",
+        "size_bytes": 374
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/expected_outputs/smoke_test.json",
+        "sha256": "40d6c9a36729be40ea22b99291c066d176c75d56a3bc50d2592252d87b6dd9b5",
+        "size_bytes": 143
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/geometry_cuda.py",
+        "sha256": "2eb46b7f72902ff28dfc537a9d4f4e01cae778099573a7878ff8834d4e286d60",
+        "size_bytes": 8420
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/geometry_data.py",
+        "sha256": "cc8045803c8437d859e44d60fe45414c9e2e95b5246fdb62ae0f8d7b8192037b",
+        "size_bytes": 2676
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/geometry_evidence.py",
+        "sha256": "e11bf414272e4f22b85f7b365647f6b676706a5748b75140e7677f0d6ce13223",
+        "size_bytes": 11362
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/geometry_methods.py",
+        "sha256": "a821887870ebc8e8b38bc5e94aadab6a93a431758b1f22248bf8b8967ff47aed",
+        "size_bytes": 14458
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/geometry_methods_tests.py",
+        "sha256": "abd6502a4858330686a492e9038d9bec727787a5ed109ade557caed4ce6a3533",
+        "size_bytes": 15392
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/geometry_plotting.py",
+        "sha256": "292fde5918baa85cb0db7709b703a4044f04cd0bc9f87f8a0554b89be97f2c61",
+        "size_bytes": 14767
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/geometry_protocol.json",
+        "sha256": "4a4816aaeaa734d5ba3a3ba8860b70e1338fdc4d5388255a6414944f43408f78",
+        "size_bytes": 4451
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/geometry_reproduction_cache.py",
+        "sha256": "50a1a1cfe642079093e1f8d0a3228adda03679c1da7b67fca3d0bfbf6daa1923",
+        "size_bytes": 5901
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/geometry_study.py",
+        "sha256": "c3cdf723ec7e7e557d3e960f29eeb45e73148059cce12d706ed2b3e785a772c6",
+        "size_bytes": 25440
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/lesson.md",
+        "sha256": "a3a82fd91093137b807d77e56f92d16ee3307f7440bc0745eb9a23f97abcce17",
+        "size_bytes": 109191
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/publish_study.py",
+        "sha256": "b81096bebc21fc3c99b5f66aa4be191ce01b3dcf85cb81ad549f9b900ba41248",
+        "size_bytes": 5551
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/solutions.py",
+        "sha256": "1333e364538ab4e562f87af4e5ba9badf756b033dddcf70b19a6a3cc0a92505c",
+        "size_bytes": 3852
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/tests.py",
+        "sha256": "40513ed6e411e2edaa00018c51848b2275bfe1eb34a679e3f9a569a1142ec0e9",
+        "size_bytes": 197
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/utils.py",
+        "sha256": "512c207b189283db8da39dfdaa96017c8a00ed1efca801a615b07bda40655335",
+        "size_bytes": 242
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/verification_report.schema.json",
+        "sha256": "ecd833883885077ad5d7a0e239d984d01462255e94266212cf195ab4d4e27b3d",
+        "size_bytes": 2669
+      },
+      {
+        "path": "chapter11_representation_geometry/instructions/pages/01_[11.1]_PCA_SVD_and_Geometry_Controls.md",
+        "sha256": "9a226426509adcfc562cd6f2b8fdb06419a2c09458744a96c732cc38e436645d",
+        "size_bytes": 108558
+      },
+      {
+        "path": "docs/arena_salvage/2026-09-08_readability_compatibility.json",
+        "sha256": "f6d6fc026d139f46697ee3626ac96869ab49401f600fe5d3c9ddc5e36c941708",
+        "size_bytes": 421821
+      },
+      {
+        "path": "scripts/run_extension_verification_reports.py",
+        "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
+        "size_bytes": 16272
+      },
+      {
+        "path": "tests/test_geometry_reproduction_cache.py",
+        "sha256": "e37739de4b18aaf32f729da4c3d02bcca44aca882459bda94b9ca761886f5739",
+        "size_bytes": 2610
+      }
+    ]
+  },
+  "safety_notes": [
+    "Only generated calendar prompts are used. Native hooks are removed after each forward pass. Weights are never changed."
+  ],
+  "tests_passed": true,
+  "wall_clock_seconds": 2.569727
+}

@@ -1,0 +1,96 @@
+notebook_id: 13_2_denoising_time_causal_patching
+section: '13.2'
+title: Denoising-Time Causal Patching
+exercise_metadata:
+  EXERCISE_ID: 13_2_denoising_time_causal_patching
+  GT_TIER: GT-0
+  DIFFICULTY: 5
+  IMPORTANCE: 5
+  EXPECTED_RUNTIME: 120-180 minutes; the full real sweep runs on CUDA
+  REQUIRES_GPU: true
+gt_tier: GT-0
+evidence_level: cuda_verified_toy_ground_truth_and_pinned_sd15_latent_patching
+claim_scope: >-
+  A fully specified generated image world validates analytic forward noising,
+  end-to-end denoiser training, layer-by-timestep activation caching, and causal
+  replacement at an exact object-feature bottleneck. The executed signature
+  transfers a red square into a matched-seed blue-circle trajectory and beats
+  equal-size channel, location, timestep, shuffled-label, unpatched, and
+  untrained-model controls. A pinned SD1.5 CUDA experiment additionally sweeps
+  all 19 non-initial DDIM intervention times for two same-seed color
+  counterfactuals and shows the selected donor-latent patch beating unpatched,
+  wrong-time, wrong-region, and scale-matched random-latent controls. This is a
+  scoped latent-state color-transfer result, not a full UNet circuit claim.
+required_gpu_gb: 8
+max_allowed_gpu_gb: 24
+models:
+  - id: arena_generated_hookable_object_denoiser_v1
+    source: course_implementation
+    revision: exact_architecture_in_solutions_py
+    precision: float32
+    gated: false
+    claim_scope: required_gt0_cpu_signature
+  - id: stable-diffusion-v1-5/stable-diffusion-v1-5
+    source: huggingface
+    revision: 451f4fe16113bff5a5d2269ed5ad43b0592e9a14
+    precision: float16
+    gated: false
+    claim_scope: pinned_real_cuda_ddim_latent_state_patching
+  - id: openai/clip-vit-base-patch32
+    source: huggingface
+    revision: 3d74acf9a28c67741b2f4f2ea7635f0aaf6f0268
+    precision: float32
+    gated: false
+    claim_scope: pinned_real_cuda_donor_minus_recipient_scoring
+datasets:
+  - id: generated_shape_color_position_world_v1
+    source: exact_course_generator
+    seed: 0
+    examples: 24
+    image_shape: [3, 16, 16]
+    labels: [shape, color, row, column]
+expected_metrics:
+  tests_passed: true
+  accepted: true
+  dataset_size: 24
+  layer_count: 4
+  diffusion_steps: 8
+  heatmap_cell_count: 32
+  training_loss_ratio_max: 0.05
+  best_layer: concept
+  best_timestep: 1
+  best_recovery_min: 0.85
+  best_selectivity_min: 0.80
+  random_channel_selectivity_max: 0.10
+  wrong_timestep_selectivity_max: 0.02
+  shuffled_label_selectivity_max: 0.02
+  untrained_model_selectivity_max: 0.0
+  pixel_patch_recovery: 1.0
+  cuda_available: true
+  sd15_case_count: 2
+  sd15_num_inference_steps_min: 20
+  sd15_min_best_clip_recovery_min: 0.10
+  sd15_min_best_regional_selectivity_min: 0.05
+  sd15_min_target_control_margin_min: 0.05
+  sd15_accepted: true
+  within_vram_budget: true
+  max_allowed_gpu_gb: 24
+controls:
+  - exact_forward_noising_oracle
+  - exact_object_region_mask
+  - matched_seed_unpatched_baseline
+  - same_size_random_channel_patch
+  - same_size_random_location_patch
+  - wrong_timestep_patch
+  - shuffled_label_donor_patch
+  - untrained_model_patch
+  - pixel_space_patch_upper_bound
+  - pinned_sd15_same_seed_donor_recipient
+  - complete_noninitial_ddim_timestep_sweep
+  - wrong_time_sd15_latent_patch
+  - wrong_region_sd15_latent_patch
+  - scale_matched_random_sd15_latent_patch
+safety_notes:
+  - The required model and data are generated locally and contain only geometric objects.
+  - The SD1.5 prompts contain only simple color and shape descriptions.
+  - No gated data, unsafe prompts, or downloaded training corpus is used.

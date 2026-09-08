@@ -1,0 +1,4492 @@
+{
+  "status": "PASS",
+  "learner_directory": "/home/bitwise/.cache/arena_extended/erasure/full-own-answer-v1",
+  "source_inputs": {
+    "chapter11_representation_geometry/exercises/part4_concept_erasure/lesson.md": "6ad24e3664774da4c2e32002ad370b35a20fd59cb25417c39d17e83b2923bf49",
+    "chapter11_representation_geometry/exercises/part4_concept_erasure/native_protocol.md": "b3e389537b27898303db1bb3e7e2a2a49ae95ee2a3fe045fe711308df44474ec",
+    "chapter11_representation_geometry/exercises/part4_concept_erasure/erasure_methods.py": "594d3c56ec40bd32c4418d8645ec26e70280df9c842b9dbb3c2fd87f42711e5e",
+    "chapter11_representation_geometry/exercises/part4_concept_erasure/erasure_methods_tests.py": "89ffc6a48a5fab63d5ae2df5936c48502fbe116c3b566f8848dd9138f76cd1c7",
+    "chapter11_representation_geometry/exercises/part4_concept_erasure/erasure_native.py": "1a49a5d7c147192a77cee8f1271160ed0c1ff9190ba12dc525e105db89512729",
+    "chapter11_representation_geometry/exercises/part4_concept_erasure/erasure_data.py": "f362733d9c1cab259bad33d300a932b041e6b05f23dc033c698de17a141ecb0f",
+    "chapter11_representation_geometry/exercises/part4_concept_erasure/erasure_protocol.py": "99d037a141755a27325d5f23fcf725916c40eea2c0b25655ac87cfb95b72eaf1",
+    "chapter11_representation_geometry/exercises/part4_concept_erasure/reference_parity.py": "ac923a053b61bbc80da6bad234b899b85e0f1c82db7a3ca98e6248b844e076fb",
+    "chapter11_representation_geometry/exercises/part4_concept_erasure/build_notebooks.py": "a7e4b4137a3d5a434d4b31dcacb46139567abb4cea6010622eb5a13f11e12032",
+    "chapter11_representation_geometry/exercises/part4_concept_erasure/execute_learner.py": "8ca191adf4d7c358ae3ce29fe121fe644e508397bdf380ee321fe46fc1305a86",
+    "chapter11_representation_geometry/exercises/part3_causal_abstraction_das/das_native.py": "c25c36e165528797eb9377e72dd09fa6e1fdf80c21712986b0e16136f769c0de",
+    "chapter11_representation_geometry/exercises/part3_causal_abstraction_das/run_native_development.py": "3a0b72d3b79c7683548db702fede8f424ff7f29cdd1b1494381e46d8bc16f8f4",
+    "chapter11_representation_geometry/exercises/part4_concept_erasure/erasure_reproduction.py": "5c08b0f03afa541a5bae1bb4c1469ac4c7cd74bcec37ee0870b0510d152a9d82"
+  },
+  "conditions": [
+    {
+      "site": "6/subject",
+      "method": "No intervention",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.9027777777777778,
+          "correct": 260,
+          "native_correct_count": 260,
+          "preserved_native_correct": 260,
+          "answer_loss": 1.3034027814865112,
+          "answer_probability": 0.3089835047721863,
+          "kl_from_native": 0.0,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.4720160961151123,
+          "answer_probability": 0.038955654948949814,
+          "kl_from_native": 0.0,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site0_method00.pt",
+      "tensor_sha256": "7f701201f98fdfa4d87b69db77bd3d52ca148ee8697b7d8e0c8a343d87729241"
+    },
+    {
+      "site": "6/subject",
+      "method": "Probe coefficient",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 8.392333984375e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8645833333333334,
+          "correct": 249,
+          "native_correct_count": 260,
+          "preserved_native_correct": 249,
+          "answer_loss": 1.3740482330322266,
+          "answer_probability": 0.2905787229537964,
+          "kl_from_native": 0.004199810791760683,
+          "changed_winner_fraction": 0.041666666666666664
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.4721343517303467,
+          "answer_probability": 0.03894871845841408,
+          "kl_from_native": 4.190094387013232e-06,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site0_method01.pt",
+      "tensor_sha256": "3af434fa729178a0e026af7568a06a0fdda5ef220ae9282635ff9cb00ab7ed13"
+    },
+    {
+      "site": "6/subject",
+      "method": "Orthogonal covariance",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 9.1552734375e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8541666666666666,
+          "correct": 246,
+          "native_correct_count": 260,
+          "preserved_native_correct": 246,
+          "answer_loss": 1.401862382888794,
+          "answer_probability": 0.2840408682823181,
+          "kl_from_native": 0.007398886140435934,
+          "changed_winner_fraction": 0.052083333333333336
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 9.1552734375e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.471842050552368,
+          "answer_probability": 0.038958970457315445,
+          "kl_from_native": 1.1309536603221204e-05,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site0_method02.pt",
+      "tensor_sha256": "9d5485a5d33babf2db0968cdcaaba0e2b0f669c982a3ea37bdd6da73f0e2b0b7"
+    },
+    {
+      "site": "6/subject",
+      "method": "LEACE empirical",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.7916666666666666,
+          "correct": 228,
+          "native_correct_count": 260,
+          "preserved_native_correct": 228,
+          "answer_loss": 1.5316224098205566,
+          "answer_probability": 0.25801393389701843,
+          "kl_from_native": 0.0339653454720974,
+          "changed_winner_fraction": 0.11458333333333333
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.4973958333333333,
+          "correct": 191,
+          "native_correct_count": 192,
+          "preserved_native_correct": 191,
+          "answer_loss": 3.465603828430176,
+          "answer_probability": 0.039344627410173416,
+          "kl_from_native": 0.0003677981731016189,
+          "changed_winner_fraction": 0.0026041666666666665
+        }
+      },
+      "tensor_file": "conditions/site0_method03.pt",
+      "tensor_sha256": "d9ea45cc4b9c634480437e7464e199393c4651805471b22c2c8f27daab87d821"
+    },
+    {
+      "site": "6/subject",
+      "method": "LEACE shrinkage .01",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8333333333333334,
+          "correct": 240,
+          "native_correct_count": 260,
+          "preserved_native_correct": 240,
+          "answer_loss": 1.424151062965393,
+          "answer_probability": 0.2779656648635864,
+          "kl_from_native": 0.015893200412392616,
+          "changed_winner_fraction": 0.07291666666666667
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 9.1552734375e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.4973958333333333,
+          "correct": 191,
+          "native_correct_count": 192,
+          "preserved_native_correct": 191,
+          "answer_loss": 3.4664688110351562,
+          "answer_probability": 0.03925032541155815,
+          "kl_from_native": 0.00013654441863764077,
+          "changed_winner_fraction": 0.0026041666666666665
+        }
+      },
+      "tensor_file": "conditions/site0_method04.pt",
+      "tensor_sha256": "7d24b2557cd39b0a5af92d4c3fd6cdd32870c518fed506d319f50deb4e7647d6"
+    },
+    {
+      "site": "6/subject",
+      "method": "Random rank one/draw00",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.90625,
+          "correct": 261,
+          "native_correct_count": 260,
+          "preserved_native_correct": 260,
+          "answer_loss": 1.302626132965088,
+          "answer_probability": 0.30900904536247253,
+          "kl_from_native": 3.0282128136605024e-05,
+          "changed_winner_fraction": 0.003472222222222222
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 8.392333984375e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.4705216884613037,
+          "answer_probability": 0.039003510028123856,
+          "kl_from_native": 2.105503426719224e-06,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site0_method05.pt",
+      "tensor_sha256": "79466b939e1dd4c225d46d3adfa8ce1b4ed2a525108ca55cb1ea7e07d8ee38f6"
+    },
+    {
+      "site": "6/subject",
+      "method": "Random rank one/draw01",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.9027777777777778,
+          "correct": 260,
+          "native_correct_count": 260,
+          "preserved_native_correct": 260,
+          "answer_loss": 1.3126076459884644,
+          "answer_probability": 0.30628156661987305,
+          "kl_from_native": 0.00010365483467467129,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.472015619277954,
+          "answer_probability": 0.03895500674843788,
+          "kl_from_native": 1.6849630810611416e-06,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site0_method06.pt",
+      "tensor_sha256": "70cdbd647c09dbc1cab94340cbda6495bd36fa34ad238185ea5f02ada07af123"
+    },
+    {
+      "site": "6/subject",
+      "method": "Random rank one/draw02",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 8.392333984375e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8958333333333334,
+          "correct": 258,
+          "native_correct_count": 260,
+          "preserved_native_correct": 258,
+          "answer_loss": 1.312253713607788,
+          "answer_probability": 0.306695818901062,
+          "kl_from_native": 0.00011824093235190958,
+          "changed_winner_fraction": 0.010416666666666666
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 8.392333984375e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.4724953174591064,
+          "answer_probability": 0.038937415927648544,
+          "kl_from_native": 1.282205744246312e-06,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site0_method07.pt",
+      "tensor_sha256": "5d3652c654b8f037594aec83407d8bef0391a0ae4be0ffb5ebe77ea7218cbb61"
+    },
+    {
+      "site": "6/subject",
+      "method": "Random rank one/draw03",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.9027777777777778,
+          "correct": 260,
+          "native_correct_count": 260,
+          "preserved_native_correct": 260,
+          "answer_loss": 1.3051763772964478,
+          "answer_probability": 0.3086881637573242,
+          "kl_from_native": 3.5854751331498846e-05,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.475107431411743,
+          "answer_probability": 0.038841452449560165,
+          "kl_from_native": 6.260132522584172e-06,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site0_method08.pt",
+      "tensor_sha256": "7ea02eafbe13b6504c2d52fafc2498078566ce2d39721b8741717f1b9c4979c8"
+    },
+    {
+      "site": "6/subject",
+      "method": "Random rank one/draw04",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.9027777777777778,
+          "correct": 260,
+          "native_correct_count": 260,
+          "preserved_native_correct": 260,
+          "answer_loss": 1.309977412223816,
+          "answer_probability": 0.3073383867740631,
+          "kl_from_native": 9.050263179233298e-05,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.471881628036499,
+          "answer_probability": 0.03895990550518036,
+          "kl_from_native": 7.343233505707758e-07,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site0_method09.pt",
+      "tensor_sha256": "cb101a637314131f799d54d8ce4335afaa2152e3eee8645902c3a0ce49a0d6b3"
+    },
+    {
+      "site": "6/subject",
+      "method": "Random rank one/draw05",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 9.1552734375e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.9027777777777778,
+          "correct": 260,
+          "native_correct_count": 260,
+          "preserved_native_correct": 260,
+          "answer_loss": 1.3034497499465942,
+          "answer_probability": 0.3090474009513855,
+          "kl_from_native": 8.88797967490973e-06,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 8.392333984375e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.472142219543457,
+          "answer_probability": 0.03895065560936928,
+          "kl_from_native": 7.820634095878631e-07,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site0_method10.pt",
+      "tensor_sha256": "fcde51f7ab8d4d7619dec5456a2d2ead45ca6af6e76da4801068b646438fc922"
+    },
+    {
+      "site": "6/subject",
+      "method": "Random rank one/draw06",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.9027777777777778,
+          "correct": 260,
+          "native_correct_count": 260,
+          "preserved_native_correct": 260,
+          "answer_loss": 1.304548740386963,
+          "answer_probability": 0.3084982633590698,
+          "kl_from_native": 0.00010322359594283625,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.471151113510132,
+          "answer_probability": 0.03900481387972832,
+          "kl_from_native": 4.84820293422672e-06,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site0_method11.pt",
+      "tensor_sha256": "81f457cd63c28d0b1f7ad03a94a9d666ecb00d8acdaa260f04a3ede6f3618856"
+    },
+    {
+      "site": "6/subject",
+      "method": "Random rank one/draw07",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.9027777777777778,
+          "correct": 260,
+          "native_correct_count": 260,
+          "preserved_native_correct": 260,
+          "answer_loss": 1.3055568933486938,
+          "answer_probability": 0.3084370791912079,
+          "kl_from_native": 2.295135891472455e-05,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.4719104766845703,
+          "answer_probability": 0.03896716237068176,
+          "kl_from_native": 1.909714001158136e-06,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site0_method12.pt",
+      "tensor_sha256": "cb5e6eafd44aa7f330c9f95fcb36b2558be3568af6b3f5b958e84ed917428b69"
+    },
+    {
+      "site": "6/subject",
+      "method": "Random rank one/draw08",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.9027777777777778,
+          "correct": 260,
+          "native_correct_count": 260,
+          "preserved_native_correct": 260,
+          "answer_loss": 1.3129751682281494,
+          "answer_probability": 0.3064812421798706,
+          "kl_from_native": 8.601916488260031e-05,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 9.918212890625e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.4748055934906006,
+          "answer_probability": 0.03885509446263313,
+          "kl_from_native": 3.172681317664683e-06,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site0_method13.pt",
+      "tensor_sha256": "1a88147878ea0950edf21a430872b951db825c3d9977faec8b38b80ca2cdb131"
+    },
+    {
+      "site": "6/subject",
+      "method": "Random rank one/draw09",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 8.392333984375e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.9027777777777778,
+          "correct": 260,
+          "native_correct_count": 260,
+          "preserved_native_correct": 260,
+          "answer_loss": 1.3037058115005493,
+          "answer_probability": 0.30879271030426025,
+          "kl_from_native": 5.179432264412753e-05,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.472381353378296,
+          "answer_probability": 0.03894112631678581,
+          "kl_from_native": 4.732784418592928e-06,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site0_method14.pt",
+      "tensor_sha256": "f7110ec08f703256d8f6f147c351ece18c8460b8371e379ac786459710ac7ef7"
+    },
+    {
+      "site": "6/subject",
+      "method": "Random rank one/draw10",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8993055555555556,
+          "correct": 259,
+          "native_correct_count": 260,
+          "preserved_native_correct": 259,
+          "answer_loss": 1.3048555850982666,
+          "answer_probability": 0.3086701035499573,
+          "kl_from_native": 5.481536209117621e-05,
+          "changed_winner_fraction": 0.003472222222222222
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.472304344177246,
+          "answer_probability": 0.03894781693816185,
+          "kl_from_native": 1.3219413403930957e-06,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site0_method15.pt",
+      "tensor_sha256": "44b712631ab6455976587b8ccfee07e9d8020f7571a92e3758a65d548f896e31"
+    },
+    {
+      "site": "6/subject",
+      "method": "Random rank one/draw11",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 9.1552734375e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.90625,
+          "correct": 261,
+          "native_correct_count": 260,
+          "preserved_native_correct": 260,
+          "answer_loss": 1.2977678775787354,
+          "answer_probability": 0.31032437086105347,
+          "kl_from_native": 9.00076047400944e-05,
+          "changed_winner_fraction": 0.006944444444444444
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 9.1552734375e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.471961259841919,
+          "answer_probability": 0.03895271196961403,
+          "kl_from_native": 1.6821194321892108e-06,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site0_method16.pt",
+      "tensor_sha256": "2d916af4d0845965daebb0e09c8f7fb3db716b9376b5e47d26cd3ecae4c0e428"
+    },
+    {
+      "site": "6/subject",
+      "method": "Random rank one/draw12",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.9027777777777778,
+          "correct": 260,
+          "native_correct_count": 260,
+          "preserved_native_correct": 260,
+          "answer_loss": 1.2963594198226929,
+          "answer_probability": 0.311057984828949,
+          "kl_from_native": 0.00013103798846714199,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 9.1552734375e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.4700982570648193,
+          "answer_probability": 0.039035115391016006,
+          "kl_from_native": 4.6268219193734694e-06,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site0_method17.pt",
+      "tensor_sha256": "7d3da713ca4119f3f77b8af9186e7473ef583df61e7e3dd620aa3046ee630e1e"
+    },
+    {
+      "site": "6/subject",
+      "method": "Random rank one/draw13",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8993055555555556,
+          "correct": 259,
+          "native_correct_count": 260,
+          "preserved_native_correct": 259,
+          "answer_loss": 1.3016108274459839,
+          "answer_probability": 0.30934977531433105,
+          "kl_from_native": 0.00012153099669376388,
+          "changed_winner_fraction": 0.003472222222222222
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.471517562866211,
+          "answer_probability": 0.0389803908765316,
+          "kl_from_native": 2.037633748841472e-06,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site0_method18.pt",
+      "tensor_sha256": "60c921b07653b6b1a6074cc89a4f664407f8d68f664aee8b7008204a2bad4846"
+    },
+    {
+      "site": "6/subject",
+      "method": "Random rank one/draw14",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.9027777777777778,
+          "correct": 260,
+          "native_correct_count": 260,
+          "preserved_native_correct": 260,
+          "answer_loss": 1.3058785200119019,
+          "answer_probability": 0.30820825695991516,
+          "kl_from_native": 6.124695210019127e-05,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 9.918212890625e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.4708192348480225,
+          "answer_probability": 0.039003606885671616,
+          "kl_from_native": 1.753532160364557e-06,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site0_method19.pt",
+      "tensor_sha256": "09c6465c80e1b20197992c789af2df444436e836489e5ff25c2169905a455f30"
+    },
+    {
+      "site": "6/subject",
+      "method": "Random rank one/draw15",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.90625,
+          "correct": 261,
+          "native_correct_count": 260,
+          "preserved_native_correct": 260,
+          "answer_loss": 1.3056559562683105,
+          "answer_probability": 0.3082197904586792,
+          "kl_from_native": 7.250280032167211e-05,
+          "changed_winner_fraction": 0.003472222222222222
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.4694597721099854,
+          "answer_probability": 0.03907485678792,
+          "kl_from_native": 4.220776645524893e-06,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site0_method20.pt",
+      "tensor_sha256": "6781c8563e644a91524035642777cc3e8edebc584e74e8c3b7d9d0c69e2ea226"
+    },
+    {
+      "site": "6/subject",
+      "method": "Matched empirical/draw00",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8923611111111112,
+          "correct": 257,
+          "native_correct_count": 260,
+          "preserved_native_correct": 254,
+          "answer_loss": 1.3291536569595337,
+          "answer_probability": 0.30165228247642517,
+          "kl_from_native": 0.0022469153627753258,
+          "changed_winner_fraction": 0.03125
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 9.918212890625e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.4624834060668945,
+          "answer_probability": 0.03926102817058563,
+          "kl_from_native": 8.213340333895758e-05,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site0_method21.pt",
+      "tensor_sha256": "10d8f87e4c8861a36a2d38b5645ac4af704824346fee32ad28f94b41738db0fa"
+    },
+    {
+      "site": "6/subject",
+      "method": "Matched empirical/draw01",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.875,
+          "correct": 252,
+          "native_correct_count": 260,
+          "preserved_native_correct": 250,
+          "answer_loss": 1.3598474264144897,
+          "answer_probability": 0.2932373583316803,
+          "kl_from_native": 0.004310046788305044,
+          "changed_winner_fraction": 0.041666666666666664
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.4710705280303955,
+          "answer_probability": 0.038982030004262924,
+          "kl_from_native": 0.0001264934689970687,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site0_method22.pt",
+      "tensor_sha256": "5da68d140c18226c451f97f2b8fce2d5709c88ddce704c67bd78af5d3aa6bc2a"
+    },
+    {
+      "site": "6/subject",
+      "method": "Matched empirical/draw02",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.875,
+          "correct": 252,
+          "native_correct_count": 260,
+          "preserved_native_correct": 250,
+          "answer_loss": 1.3616288900375366,
+          "answer_probability": 0.2948204576969147,
+          "kl_from_native": 0.005365562159568071,
+          "changed_winner_fraction": 0.04513888888888889
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 8.392333984375e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.4973958333333333,
+          "correct": 191,
+          "native_correct_count": 192,
+          "preserved_native_correct": 191,
+          "answer_loss": 3.4733219146728516,
+          "answer_probability": 0.03891220688819885,
+          "kl_from_native": 0.0001619417016627267,
+          "changed_winner_fraction": 0.0026041666666666665
+        }
+      },
+      "tensor_file": "conditions/site0_method23.pt",
+      "tensor_sha256": "9c7b9b13a9fe291f323a08065d7dbd015a929af84b73a9232c055dac3d47ede0"
+    },
+    {
+      "site": "6/subject",
+      "method": "Matched empirical/draw03",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 0.0001068115234375,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8993055555555556,
+          "correct": 259,
+          "native_correct_count": 260,
+          "preserved_native_correct": 258,
+          "answer_loss": 1.324111819267273,
+          "answer_probability": 0.30347952246665955,
+          "kl_from_native": 0.0021856215316802263,
+          "changed_winner_fraction": 0.013888888888888888
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.4973958333333333,
+          "correct": 191,
+          "native_correct_count": 192,
+          "preserved_native_correct": 191,
+          "answer_loss": 3.484358072280884,
+          "answer_probability": 0.038467396050691605,
+          "kl_from_native": 0.00015684947720728815,
+          "changed_winner_fraction": 0.0026041666666666665
+        }
+      },
+      "tensor_file": "conditions/site0_method24.pt",
+      "tensor_sha256": "8d6ebee47ec9fc64a4d02e700c43779e61a940f5847199ba03e7882764275b43"
+    },
+    {
+      "site": "6/subject",
+      "method": "Matched empirical/draw04",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.875,
+          "correct": 252,
+          "native_correct_count": 260,
+          "preserved_native_correct": 252,
+          "answer_loss": 1.3629472255706787,
+          "answer_probability": 0.2971171736717224,
+          "kl_from_native": 0.006162444595247507,
+          "changed_winner_fraction": 0.027777777777777776
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 9.918212890625e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.473067045211792,
+          "answer_probability": 0.038908395916223526,
+          "kl_from_native": 4.495172106544487e-05,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site0_method25.pt",
+      "tensor_sha256": "20af59e4f4ed17557ccf1093b1c01fb65c1eeb7369dc093ac9d9bc3b1a1ea2e1"
+    },
+    {
+      "site": "6/subject",
+      "method": "Matched empirical/draw05",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8958333333333334,
+          "correct": 258,
+          "native_correct_count": 260,
+          "preserved_native_correct": 258,
+          "answer_loss": 1.319710612297058,
+          "answer_probability": 0.30544933676719666,
+          "kl_from_native": 0.001131439465098083,
+          "changed_winner_fraction": 0.010416666666666666
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.4973958333333333,
+          "correct": 191,
+          "native_correct_count": 192,
+          "preserved_native_correct": 191,
+          "answer_loss": 3.4726457595825195,
+          "answer_probability": 0.038931842893362045,
+          "kl_from_native": 5.6973662140080705e-05,
+          "changed_winner_fraction": 0.0026041666666666665
+        }
+      },
+      "tensor_file": "conditions/site0_method26.pt",
+      "tensor_sha256": "838cf1697fedce6f31238f81dbd0377bc1716f2cdbc32f814fe34410638920f8"
+    },
+    {
+      "site": "6/subject",
+      "method": "Matched empirical/draw06",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.9027777777777778,
+          "correct": 260,
+          "native_correct_count": 260,
+          "preserved_native_correct": 257,
+          "answer_loss": 1.342726469039917,
+          "answer_probability": 0.2975262999534607,
+          "kl_from_native": 0.007187528070062399,
+          "changed_winner_fraction": 0.020833333333333332
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.4693334102630615,
+          "answer_probability": 0.039149560034275055,
+          "kl_from_native": 0.0002783303789328784,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site0_method27.pt",
+      "tensor_sha256": "070bc1478cfaade837ead9c5db3bd3d38e7d748501046d3342714196ab9c528e"
+    },
+    {
+      "site": "6/subject",
+      "method": "Matched empirical/draw07",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8888888888888888,
+          "correct": 256,
+          "native_correct_count": 260,
+          "preserved_native_correct": 256,
+          "answer_loss": 1.3361679315567017,
+          "answer_probability": 0.3009070158004761,
+          "kl_from_native": 0.0015264794928953052,
+          "changed_winner_fraction": 0.017361111111111112
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.4711132049560547,
+          "answer_probability": 0.03902431204915047,
+          "kl_from_native": 5.7942947023548186e-05,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site0_method28.pt",
+      "tensor_sha256": "3ffeef7122ce78b3a3c9bcdfe54bd38fb1fda3b1d4bd46d87f3ca5f69af9b6e6"
+    },
+    {
+      "site": "6/subject",
+      "method": "Matched empirical/draw08",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8541666666666666,
+          "correct": 246,
+          "native_correct_count": 260,
+          "preserved_native_correct": 246,
+          "answer_loss": 1.4039032459259033,
+          "answer_probability": 0.28468427062034607,
+          "kl_from_native": 0.007350870408117771,
+          "changed_winner_fraction": 0.04861111111111111
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.4973958333333333,
+          "correct": 191,
+          "native_correct_count": 192,
+          "preserved_native_correct": 191,
+          "answer_loss": 3.483820676803589,
+          "answer_probability": 0.03849129006266594,
+          "kl_from_native": 7.313058449653909e-05,
+          "changed_winner_fraction": 0.0026041666666666665
+        }
+      },
+      "tensor_file": "conditions/site0_method29.pt",
+      "tensor_sha256": "4edac163042813eec432d7a79d2d72f81aad5763bcc9017fbc67a99a5b550f33"
+    },
+    {
+      "site": "6/subject",
+      "method": "Matched empirical/draw09",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8888888888888888,
+          "correct": 256,
+          "native_correct_count": 260,
+          "preserved_native_correct": 255,
+          "answer_loss": 1.3250600099563599,
+          "answer_probability": 0.3025432825088501,
+          "kl_from_native": 0.0027575513813644648,
+          "changed_winner_fraction": 0.024305555555555556
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.4973958333333333,
+          "correct": 191,
+          "native_correct_count": 192,
+          "preserved_native_correct": 191,
+          "answer_loss": 3.471184492111206,
+          "answer_probability": 0.03899155557155609,
+          "kl_from_native": 0.00016339817375410348,
+          "changed_winner_fraction": 0.0026041666666666665
+        }
+      },
+      "tensor_file": "conditions/site0_method30.pt",
+      "tensor_sha256": "926ef931ed9a48af6065d9b53d724f71a5319b250b8ca6e42eaaef457a0b6397"
+    },
+    {
+      "site": "6/subject",
+      "method": "Matched empirical/draw10",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 8.392333984375e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.875,
+          "correct": 252,
+          "native_correct_count": 260,
+          "preserved_native_correct": 252,
+          "answer_loss": 1.3225648403167725,
+          "answer_probability": 0.3065897822380066,
+          "kl_from_native": 0.0037166965194046497,
+          "changed_winner_fraction": 0.03125
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 9.1552734375e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.4973958333333333,
+          "correct": 191,
+          "native_correct_count": 192,
+          "preserved_native_correct": 191,
+          "answer_loss": 3.4697885513305664,
+          "answer_probability": 0.03908969834446907,
+          "kl_from_native": 7.069372804835439e-05,
+          "changed_winner_fraction": 0.0026041666666666665
+        }
+      },
+      "tensor_file": "conditions/site0_method31.pt",
+      "tensor_sha256": "5607b249c88afd9ca240f96de238cace80b52f77bb19c4ef9cc3de83d30e8514"
+    },
+    {
+      "site": "6/subject",
+      "method": "Matched empirical/draw11",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8993055555555556,
+          "correct": 259,
+          "native_correct_count": 260,
+          "preserved_native_correct": 256,
+          "answer_loss": 1.3037033081054688,
+          "answer_probability": 0.30828657746315,
+          "kl_from_native": 0.005602148361504078,
+          "changed_winner_fraction": 0.027777777777777776
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 8.392333984375e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.4731855392456055,
+          "answer_probability": 0.03887718543410301,
+          "kl_from_native": 0.00016464147483929992,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site0_method32.pt",
+      "tensor_sha256": "1100c980408c4ff53460d1e535f42ae09a2e3ed67aa109a0b4c8738d646a6b2b"
+    },
+    {
+      "site": "6/subject",
+      "method": "Matched empirical/draw12",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.103515625e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8854166666666666,
+          "correct": 255,
+          "native_correct_count": 260,
+          "preserved_native_correct": 252,
+          "answer_loss": 1.2760646343231201,
+          "answer_probability": 0.3209359347820282,
+          "kl_from_native": 0.007642803248018026,
+          "changed_winner_fraction": 0.041666666666666664
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 8.392333984375e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.4973958333333333,
+          "correct": 191,
+          "native_correct_count": 192,
+          "preserved_native_correct": 191,
+          "answer_loss": 3.4620940685272217,
+          "answer_probability": 0.03937636315822601,
+          "kl_from_native": 0.00020264729391783476,
+          "changed_winner_fraction": 0.0026041666666666665
+        }
+      },
+      "tensor_file": "conditions/site0_method33.pt",
+      "tensor_sha256": "daf3a9e07bd2528aa56f3c385b84e67df4830678a821f874cdf897ddb85b0c29"
+    },
+    {
+      "site": "6/subject",
+      "method": "Matched empirical/draw13",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 9.1552734375e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8819444444444444,
+          "correct": 254,
+          "native_correct_count": 260,
+          "preserved_native_correct": 250,
+          "answer_loss": 1.2920737266540527,
+          "answer_probability": 0.31660759449005127,
+          "kl_from_native": 0.013292135670781136,
+          "changed_winner_fraction": 0.052083333333333336
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 0.0001068115234375,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.4643352031707764,
+          "answer_probability": 0.03931916132569313,
+          "kl_from_native": 0.0001453037839382887,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site0_method34.pt",
+      "tensor_sha256": "f2c18084dca02ccc7f8cf5dace2596c488086e19df170b8ba420729cb9032533"
+    },
+    {
+      "site": "6/subject",
+      "method": "Matched empirical/draw14",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 8.392333984375e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8888888888888888,
+          "correct": 256,
+          "native_correct_count": 260,
+          "preserved_native_correct": 256,
+          "answer_loss": 1.3241137266159058,
+          "answer_probability": 0.3035123348236084,
+          "kl_from_native": 0.0031547313556075096,
+          "changed_winner_fraction": 0.013888888888888888
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 9.1552734375e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.4973958333333333,
+          "correct": 191,
+          "native_correct_count": 192,
+          "preserved_native_correct": 191,
+          "answer_loss": 3.467419385910034,
+          "answer_probability": 0.03909967094659805,
+          "kl_from_native": 5.757003964390606e-05,
+          "changed_winner_fraction": 0.0026041666666666665
+        }
+      },
+      "tensor_file": "conditions/site0_method35.pt",
+      "tensor_sha256": "4ff94cbc9ce4514262e24745e1724a38d5fccda176f26736c9b10fbad3bb5499"
+    },
+    {
+      "site": "6/subject",
+      "method": "Matched empirical/draw15",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 9.1552734375e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8819444444444444,
+          "correct": 254,
+          "native_correct_count": 260,
+          "preserved_native_correct": 251,
+          "answer_loss": 1.3450744152069092,
+          "answer_probability": 0.298054575920105,
+          "kl_from_native": 0.004031072370707989,
+          "changed_winner_fraction": 0.04513888888888889
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.4612820148468018,
+          "answer_probability": 0.03946400806307793,
+          "kl_from_native": 9.881352889351547e-05,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site0_method36.pt",
+      "tensor_sha256": "5b17e2410c9016cd5ffab830670d2424a7d427f4e2b38aa2cba29c2049469ce6"
+    },
+    {
+      "site": "6/subject",
+      "method": "Matched shrinkage/draw00",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8993055555555556,
+          "correct": 259,
+          "native_correct_count": 260,
+          "preserved_native_correct": 257,
+          "answer_loss": 1.3104515075683594,
+          "answer_probability": 0.30608516931533813,
+          "kl_from_native": 0.0010909378761425614,
+          "changed_winner_fraction": 0.017361111111111112
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 9.1552734375e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.4667999744415283,
+          "answer_probability": 0.0391245074570179,
+          "kl_from_native": 4.156283466727473e-05,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site0_method37.pt",
+      "tensor_sha256": "e87cbdde916ba6850abbe80964bb9f7d672d50c97eb1b75ff31b7148419e2cfb"
+    },
+    {
+      "site": "6/subject",
+      "method": "Matched shrinkage/draw01",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8784722222222222,
+          "correct": 253,
+          "native_correct_count": 260,
+          "preserved_native_correct": 252,
+          "answer_loss": 1.3430826663970947,
+          "answer_probability": 0.29835641384124756,
+          "kl_from_native": 0.002076296368613839,
+          "changed_winner_fraction": 0.03125
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 9.1552734375e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.471761703491211,
+          "answer_probability": 0.038963187485933304,
+          "kl_from_native": 4.430768240126781e-05,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site0_method38.pt",
+      "tensor_sha256": "49a2b9807acd184f66790d233253327690ad5d41898fe9122e68bb4b1e71e5f0"
+    },
+    {
+      "site": "6/subject",
+      "method": "Matched shrinkage/draw02",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8645833333333334,
+          "correct": 249,
+          "native_correct_count": 260,
+          "preserved_native_correct": 246,
+          "answer_loss": 1.3578243255615234,
+          "answer_probability": 0.2954108417034149,
+          "kl_from_native": 0.003938757814466953,
+          "changed_winner_fraction": 0.0625
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.472879409790039,
+          "answer_probability": 0.03892052173614502,
+          "kl_from_native": 3.523587292875163e-05,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site0_method39.pt",
+      "tensor_sha256": "f9a29cc0ee50ac9bf1088e80557e032b7f326650d3524e900777d2f9fc975d3d"
+    },
+    {
+      "site": "6/subject",
+      "method": "Matched shrinkage/draw03",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8993055555555556,
+          "correct": 259,
+          "native_correct_count": 260,
+          "preserved_native_correct": 258,
+          "answer_loss": 1.3193938732147217,
+          "answer_probability": 0.30540573596954346,
+          "kl_from_native": 0.0011498559033498168,
+          "changed_winner_fraction": 0.013888888888888888
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.4810612201690674,
+          "answer_probability": 0.038619909435510635,
+          "kl_from_native": 6.353445496642962e-05,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site0_method40.pt",
+      "tensor_sha256": "17cf36c81ae4f0c18624a275627b95ad3f3b0f64a3dc79a568d69e1400e65fe2"
+    },
+    {
+      "site": "6/subject",
+      "method": "Matched shrinkage/draw04",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8715277777777778,
+          "correct": 251,
+          "native_correct_count": 260,
+          "preserved_native_correct": 250,
+          "answer_loss": 1.3396929502487183,
+          "answer_probability": 0.3020251989364624,
+          "kl_from_native": 0.004713871981948614,
+          "changed_winner_fraction": 0.03819444444444445
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.471822738647461,
+          "answer_probability": 0.03896110877394676,
+          "kl_from_native": 1.7051333998097107e-05,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site0_method41.pt",
+      "tensor_sha256": "f6c2f2735b6fee246dd19f090a98c1b7ab3f07401d3c885cdaca896430e4c75f"
+    },
+    {
+      "site": "6/subject",
+      "method": "Matched shrinkage/draw05",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.103515625e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8993055555555556,
+          "correct": 259,
+          "native_correct_count": 260,
+          "preserved_native_correct": 259,
+          "answer_loss": 1.3111014366149902,
+          "answer_probability": 0.30738067626953125,
+          "kl_from_native": 0.0006117250304669142,
+          "changed_winner_fraction": 0.003472222222222222
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.4720871448516846,
+          "answer_probability": 0.03894569352269173,
+          "kl_from_native": 2.0518889868981205e-05,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site0_method42.pt",
+      "tensor_sha256": "1a57d04b5d6453855c7eb970dd4242fa7bc6631cc0c1767a5977efd0396ff7ed"
+    },
+    {
+      "site": "6/subject",
+      "method": "Matched shrinkage/draw06",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 8.392333984375e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8993055555555556,
+          "correct": 259,
+          "native_correct_count": 260,
+          "preserved_native_correct": 257,
+          "answer_loss": 1.3230491876602173,
+          "answer_probability": 0.3026160001754761,
+          "kl_from_native": 0.004471949301660061,
+          "changed_winner_fraction": 0.017361111111111112
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.469712972640991,
+          "answer_probability": 0.039087530225515366,
+          "kl_from_native": 7.928186096251011e-05,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site0_method43.pt",
+      "tensor_sha256": "d378d1e517ee4aca1b4a09ea400b9d900c59bbaab7f46528a6a22d5a9de70150"
+    },
+    {
+      "site": "6/subject",
+      "method": "Matched shrinkage/draw07",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.103515625e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8923611111111112,
+          "correct": 257,
+          "native_correct_count": 260,
+          "preserved_native_correct": 257,
+          "answer_loss": 1.3211005926132202,
+          "answer_probability": 0.30431923270225525,
+          "kl_from_native": 0.0005771174910478294,
+          "changed_winner_fraction": 0.013888888888888888
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 8.392333984375e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.4713938236236572,
+          "answer_probability": 0.03900241479277611,
+          "kl_from_native": 1.9633469491964206e-05,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site0_method44.pt",
+      "tensor_sha256": "b316e049919591db6785d919c616b5ebb2db1c3fdecd11af7e627a80bb1a10f6"
+    },
+    {
+      "site": "6/subject",
+      "method": "Matched shrinkage/draw08",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8611111111111112,
+          "correct": 248,
+          "native_correct_count": 260,
+          "preserved_native_correct": 248,
+          "answer_loss": 1.3711451292037964,
+          "answer_probability": 0.29122355580329895,
+          "kl_from_native": 0.0037608977872878313,
+          "changed_winner_fraction": 0.041666666666666664
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 9.1552734375e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.4803106784820557,
+          "answer_probability": 0.038650598376989365,
+          "kl_from_native": 2.9206757972133346e-05,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site0_method45.pt",
+      "tensor_sha256": "4068e3654a94e71fb39ff09fbcba875c5bfbb79c3c1299ba1d969036c9698906"
+    },
+    {
+      "site": "6/subject",
+      "method": "Matched shrinkage/draw09",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8993055555555556,
+          "correct": 259,
+          "native_correct_count": 260,
+          "preserved_native_correct": 258,
+          "answer_loss": 1.3146734237670898,
+          "answer_probability": 0.30536341667175293,
+          "kl_from_native": 0.001453673467040062,
+          "changed_winner_fraction": 0.010416666666666666
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.472768783569336,
+          "answer_probability": 0.03893785551190376,
+          "kl_from_native": 5.280095501802862e-05,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site0_method46.pt",
+      "tensor_sha256": "1016f489d0b554f127fe10020c672cb4dbde1c78d9a6b7b1948fe24e35b5d61d"
+    },
+    {
+      "site": "6/subject",
+      "method": "Matched shrinkage/draw10",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8784722222222222,
+          "correct": 253,
+          "native_correct_count": 260,
+          "preserved_native_correct": 252,
+          "answer_loss": 1.3102670907974243,
+          "answer_probability": 0.30863046646118164,
+          "kl_from_native": 0.0020217751152813435,
+          "changed_winner_fraction": 0.034722222222222224
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.4700229167938232,
+          "answer_probability": 0.03906102105975151,
+          "kl_from_native": 2.602373751869891e-05,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site0_method47.pt",
+      "tensor_sha256": "769e91bb53fe08c6e18722907d48b8130895d532398a1bf2be7fb996de343cef"
+    },
+    {
+      "site": "6/subject",
+      "method": "Matched shrinkage/draw11",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.9131944444444444,
+          "correct": 263,
+          "native_correct_count": 260,
+          "preserved_native_correct": 258,
+          "answer_loss": 1.2870125770568848,
+          "answer_probability": 0.3122573792934418,
+          "kl_from_native": 0.0036228750832378864,
+          "changed_winner_fraction": 0.027777777777777776
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.472551107406616,
+          "answer_probability": 0.03891914337873459,
+          "kl_from_native": 5.848689761478454e-05,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site0_method48.pt",
+      "tensor_sha256": "243e113d7b5d5c02cabb10cf1abf44fbab98d1002e0e4535e28c3c3f5dee1d50"
+    },
+    {
+      "site": "6/subject",
+      "method": "Matched shrinkage/draw12",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.103515625e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8958333333333334,
+          "correct": 258,
+          "native_correct_count": 260,
+          "preserved_native_correct": 254,
+          "answer_loss": 1.277923822402954,
+          "answer_probability": 0.31834495067596436,
+          "kl_from_native": 0.004177963826805353,
+          "changed_winner_fraction": 0.034722222222222224
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.464568853378296,
+          "answer_probability": 0.039258331060409546,
+          "kl_from_native": 7.886185630923137e-05,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site0_method49.pt",
+      "tensor_sha256": "eebcf9ae3c025a6d2b9af80527fd27cbd626326c58f7c3548b29399fe62bb249"
+    },
+    {
+      "site": "6/subject",
+      "method": "Matched shrinkage/draw13",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 9.1552734375e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8923611111111112,
+          "correct": 257,
+          "native_correct_count": 260,
+          "preserved_native_correct": 253,
+          "answer_loss": 1.266715168952942,
+          "answer_probability": 0.3213311433792114,
+          "kl_from_native": 0.00878347922116518,
+          "changed_winner_fraction": 0.041666666666666664
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 9.918212890625e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.4689531326293945,
+          "answer_probability": 0.03909776732325554,
+          "kl_from_native": 4.311588782002218e-05,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site0_method50.pt",
+      "tensor_sha256": "beea8c1918a22c0475b564b6400e71a3d75dd438fdc20e1c246d27e0b29e4e42"
+    },
+    {
+      "site": "6/subject",
+      "method": "Matched shrinkage/draw14",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8888888888888888,
+          "correct": 256,
+          "native_correct_count": 260,
+          "preserved_native_correct": 256,
+          "answer_loss": 1.3232156038284302,
+          "answer_probability": 0.30372393131256104,
+          "kl_from_native": 0.0016576709458604455,
+          "changed_winner_fraction": 0.013888888888888888
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 0.0001068115234375,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.4690139293670654,
+          "answer_probability": 0.03906792029738426,
+          "kl_from_native": 2.1223415387794375e-05,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site0_method51.pt",
+      "tensor_sha256": "d7d028e9d5d18cf7279f54eedb5276f946788aefc0208d30482cfe7b840b3e5e"
+    },
+    {
+      "site": "6/subject",
+      "method": "Matched shrinkage/draw15",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8854166666666666,
+          "correct": 255,
+          "native_correct_count": 260,
+          "preserved_native_correct": 253,
+          "answer_loss": 1.3249096870422363,
+          "answer_probability": 0.3026248514652252,
+          "kl_from_native": 0.0023295427672564983,
+          "changed_winner_fraction": 0.034722222222222224
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 9.918212890625e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.464996099472046,
+          "answer_probability": 0.03928402066230774,
+          "kl_from_native": 3.161119093419984e-05,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site0_method52.pt",
+      "tensor_sha256": "edc2e307880a185f4ba450f9a4389321bfa9aa8ec57cecc8b6327776bb2af610"
+    },
+    {
+      "site": "9/end",
+      "method": "No intervention",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.9027777777777778,
+          "correct": 260,
+          "native_correct_count": 260,
+          "preserved_native_correct": 260,
+          "answer_loss": 1.3034027814865112,
+          "answer_probability": 0.3089835047721863,
+          "kl_from_native": 0.0,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 8.392333984375e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.4720160961151123,
+          "answer_probability": 0.038955654948949814,
+          "kl_from_native": 0.0,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site1_method00.pt",
+      "tensor_sha256": "464ce52d7fd901e7eedb5e678241d727953e9ba79867d30694431340ff29ba56"
+    },
+    {
+      "site": "9/end",
+      "method": "Probe coefficient",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 9.1552734375e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8819444444444444,
+          "correct": 254,
+          "native_correct_count": 260,
+          "preserved_native_correct": 253,
+          "answer_loss": 1.3367260694503784,
+          "answer_probability": 0.30020517110824585,
+          "kl_from_native": 0.0038868465926498175,
+          "changed_winner_fraction": 0.03125
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.4493253231048584,
+          "answer_probability": 0.0399148054420948,
+          "kl_from_native": 0.00034640729427337646,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site1_method01.pt",
+      "tensor_sha256": "bdf322371fba0a57b4d2c2739080e75b650583d170c80617548766866d7c3dc6"
+    },
+    {
+      "site": "9/end",
+      "method": "Orthogonal covariance",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8611111111111112,
+          "correct": 248,
+          "native_correct_count": 260,
+          "preserved_native_correct": 248,
+          "answer_loss": 1.4109646081924438,
+          "answer_probability": 0.28017833828926086,
+          "kl_from_native": 0.007838165387511253,
+          "changed_winner_fraction": 0.041666666666666664
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.4973958333333333,
+          "correct": 191,
+          "native_correct_count": 192,
+          "preserved_native_correct": 191,
+          "answer_loss": 3.4587202072143555,
+          "answer_probability": 0.039583828300237656,
+          "kl_from_native": 0.0005092276842333376,
+          "changed_winner_fraction": 0.0026041666666666665
+        }
+      },
+      "tensor_file": "conditions/site1_method02.pt",
+      "tensor_sha256": "df92f82b51d3fe60b5bbb95e66b48987e452382260a9902fe9985e5b74a4fd6e"
+    },
+    {
+      "site": "9/end",
+      "method": "LEACE empirical",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.7430555555555556,
+          "correct": 214,
+          "native_correct_count": 260,
+          "preserved_native_correct": 208,
+          "answer_loss": 1.58341646194458,
+          "answer_probability": 0.2683153748512268,
+          "kl_from_native": 0.08966877311468124,
+          "changed_winner_fraction": 0.22569444444444445
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.103515625e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.25,
+          "correct": 96,
+          "native_correct_count": 192,
+          "preserved_native_correct": 96,
+          "answer_loss": 4.517491817474365,
+          "answer_probability": 0.024456100538372993,
+          "kl_from_native": 0.26283344626426697,
+          "changed_winner_fraction": 0.3203125
+        }
+      },
+      "tensor_file": "conditions/site1_method03.pt",
+      "tensor_sha256": "fd8877c4b4dac69f54b8fa5b2031c1100ff06769f9c7c604ce6c2e546c416d9e"
+    },
+    {
+      "site": "9/end",
+      "method": "LEACE shrinkage .01",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.7951388888888888,
+          "correct": 229,
+          "native_correct_count": 260,
+          "preserved_native_correct": 228,
+          "answer_loss": 1.4658827781677246,
+          "answer_probability": 0.2719295918941498,
+          "kl_from_native": 0.019803160801529884,
+          "changed_winner_fraction": 0.12152777777777778
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.4817708333333333,
+          "correct": 185,
+          "native_correct_count": 192,
+          "preserved_native_correct": 185,
+          "answer_loss": 3.4269864559173584,
+          "answer_probability": 0.04198553040623665,
+          "kl_from_native": 0.007867778651416302,
+          "changed_winner_fraction": 0.018229166666666668
+        }
+      },
+      "tensor_file": "conditions/site1_method04.pt",
+      "tensor_sha256": "5c28e76bfb086dd4922c5b0fb939761b9926b9ac72fa4076ec156b1bdc2d31e9"
+    },
+    {
+      "site": "9/end",
+      "method": "Random rank one/draw00",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.9027777777777778,
+          "correct": 260,
+          "native_correct_count": 260,
+          "preserved_native_correct": 260,
+          "answer_loss": 1.3011319637298584,
+          "answer_probability": 0.3090866208076477,
+          "kl_from_native": 6.0065700381528586e-05,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.4981300830841064,
+          "answer_probability": 0.03764692321419716,
+          "kl_from_native": 0.0005232923431321979,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site1_method05.pt",
+      "tensor_sha256": "71390cc78239f93d3c748276f3392bdaa7b2f734bb58e15d2bb0d238d2b2cde3"
+    },
+    {
+      "site": "9/end",
+      "method": "Random rank one/draw01",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 8.392333984375e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.9027777777777778,
+          "correct": 260,
+          "native_correct_count": 260,
+          "preserved_native_correct": 260,
+          "answer_loss": 1.3026570081710815,
+          "answer_probability": 0.30924487113952637,
+          "kl_from_native": 5.983161463518627e-05,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 8.392333984375e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.4725568294525146,
+          "answer_probability": 0.03887086734175682,
+          "kl_from_native": 0.00028249318711459637,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site1_method06.pt",
+      "tensor_sha256": "82a578d1adaaa778b9ae85d751f96284d48d1c2499eb43801f365246e51f2301"
+    },
+    {
+      "site": "9/end",
+      "method": "Random rank one/draw02",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.103515625e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.9027777777777778,
+          "correct": 260,
+          "native_correct_count": 260,
+          "preserved_native_correct": 260,
+          "answer_loss": 1.3034149408340454,
+          "answer_probability": 0.3095022141933441,
+          "kl_from_native": 4.267535769031383e-05,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 8.392333984375e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.4697258472442627,
+          "answer_probability": 0.03903684765100479,
+          "kl_from_native": 1.6998028513626195e-05,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site1_method07.pt",
+      "tensor_sha256": "7cc554db972bf03ba07aa0872f7797551ca439be29ac46b5959ecae8e1fdb724"
+    },
+    {
+      "site": "9/end",
+      "method": "Random rank one/draw03",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.9027777777777778,
+          "correct": 260,
+          "native_correct_count": 260,
+          "preserved_native_correct": 260,
+          "answer_loss": 1.3098136186599731,
+          "answer_probability": 0.30725106596946716,
+          "kl_from_native": 3.818499681074172e-05,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 8.392333984375e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.475451707839966,
+          "answer_probability": 0.038415491580963135,
+          "kl_from_native": 0.0001473371230531484,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site1_method08.pt",
+      "tensor_sha256": "471c5b0c8d00d5f10a69a547ab4f0346f87a94b423acaf2701ab4ac40b3cf421"
+    },
+    {
+      "site": "9/end",
+      "method": "Random rank one/draw04",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.9027777777777778,
+          "correct": 260,
+          "native_correct_count": 260,
+          "preserved_native_correct": 260,
+          "answer_loss": 1.302635669708252,
+          "answer_probability": 0.30922555923461914,
+          "kl_from_native": 2.8743188522639684e-05,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 8.392333984375e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.473160743713379,
+          "answer_probability": 0.03892175480723381,
+          "kl_from_native": 0.00013755600957665592,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site1_method09.pt",
+      "tensor_sha256": "bc39756a53783708b61b58ed548278aa152115248553885597b016044a4f8fd2"
+    },
+    {
+      "site": "9/end",
+      "method": "Random rank one/draw05",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8958333333333334,
+          "correct": 258,
+          "native_correct_count": 260,
+          "preserved_native_correct": 258,
+          "answer_loss": 1.3046844005584717,
+          "answer_probability": 0.30875205993652344,
+          "kl_from_native": 0.00020225073967594653,
+          "changed_winner_fraction": 0.006944444444444444
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.4712460041046143,
+          "answer_probability": 0.038811489939689636,
+          "kl_from_native": 1.6380256056436338e-05,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site1_method10.pt",
+      "tensor_sha256": "6792bda155bfd53eef02701a36f7f375eea5304839d00ed3db1735412f61efe8"
+    },
+    {
+      "site": "9/end",
+      "method": "Random rank one/draw06",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8993055555555556,
+          "correct": 259,
+          "native_correct_count": 260,
+          "preserved_native_correct": 259,
+          "answer_loss": 1.3046449422836304,
+          "answer_probability": 0.3087763488292694,
+          "kl_from_native": 3.623390875873156e-05,
+          "changed_winner_fraction": 0.003472222222222222
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 9.1552734375e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.4973958333333333,
+          "correct": 191,
+          "native_correct_count": 192,
+          "preserved_native_correct": 191,
+          "answer_loss": 3.569023370742798,
+          "answer_probability": 0.036199189722537994,
+          "kl_from_native": 0.001861434313468635,
+          "changed_winner_fraction": 0.0026041666666666665
+        }
+      },
+      "tensor_file": "conditions/site1_method11.pt",
+      "tensor_sha256": "f81e7c4393b51ad2c03b01c0568b1818bc4b60c628b9842dfd31bedf455680ac"
+    },
+    {
+      "site": "9/end",
+      "method": "Random rank one/draw07",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.9027777777777778,
+          "correct": 260,
+          "native_correct_count": 260,
+          "preserved_native_correct": 260,
+          "answer_loss": 1.3007347583770752,
+          "answer_probability": 0.3095303177833557,
+          "kl_from_native": 3.7504327337956056e-05,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 9.918212890625e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.4973958333333333,
+          "correct": 191,
+          "native_correct_count": 192,
+          "preserved_native_correct": 191,
+          "answer_loss": 3.485192060470581,
+          "answer_probability": 0.03844020888209343,
+          "kl_from_native": 0.0002129371277987957,
+          "changed_winner_fraction": 0.0026041666666666665
+        }
+      },
+      "tensor_file": "conditions/site1_method12.pt",
+      "tensor_sha256": "3d72d2c650ee95b5c4093f3bb6f44082a44ad47b23bc97d9f0b859506ffac1b8"
+    },
+    {
+      "site": "9/end",
+      "method": "Random rank one/draw08",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.9027777777777778,
+          "correct": 260,
+          "native_correct_count": 260,
+          "preserved_native_correct": 260,
+          "answer_loss": 1.3024265766143799,
+          "answer_probability": 0.3092561960220337,
+          "kl_from_native": 3.882527016685344e-05,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.4973958333333333,
+          "correct": 191,
+          "native_correct_count": 192,
+          "preserved_native_correct": 191,
+          "answer_loss": 3.541447877883911,
+          "answer_probability": 0.036615412682294846,
+          "kl_from_native": 0.0005146384937688708,
+          "changed_winner_fraction": 0.0026041666666666665
+        }
+      },
+      "tensor_file": "conditions/site1_method13.pt",
+      "tensor_sha256": "c4ad8f9607190398de075cac080036b50ffc2cf3094b3b9c01659961af7e4fe8"
+    },
+    {
+      "site": "9/end",
+      "method": "Random rank one/draw09",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.9027777777777778,
+          "correct": 260,
+          "native_correct_count": 260,
+          "preserved_native_correct": 260,
+          "answer_loss": 1.2935658693313599,
+          "answer_probability": 0.31138166785240173,
+          "kl_from_native": 0.00013393456174526364,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 8.392333984375e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.4483063220977783,
+          "answer_probability": 0.0401853583753109,
+          "kl_from_native": 0.00030770761077292264,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site1_method14.pt",
+      "tensor_sha256": "1cad759cea8b45b10f65c431313fab4d12a120b10bf3aac54ecd90c8911b9689"
+    },
+    {
+      "site": "9/end",
+      "method": "Random rank one/draw10",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8993055555555556,
+          "correct": 259,
+          "native_correct_count": 260,
+          "preserved_native_correct": 259,
+          "answer_loss": 1.299280047416687,
+          "answer_probability": 0.31020087003707886,
+          "kl_from_native": 8.055259968386963e-05,
+          "changed_winner_fraction": 0.003472222222222222
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.484124183654785,
+          "answer_probability": 0.038813989609479904,
+          "kl_from_native": 0.00023418874479830265,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site1_method15.pt",
+      "tensor_sha256": "bafa73f271b5c2046d6b1fefb374dbca23af36eeb02df2b71ec92e1455bf2eba"
+    },
+    {
+      "site": "9/end",
+      "method": "Random rank one/draw11",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.9027777777777778,
+          "correct": 260,
+          "native_correct_count": 260,
+          "preserved_native_correct": 260,
+          "answer_loss": 1.2942222356796265,
+          "answer_probability": 0.3109310567378998,
+          "kl_from_native": 9.228612907463685e-05,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.468520164489746,
+          "answer_probability": 0.03909643366932869,
+          "kl_from_native": 4.7902565711410716e-05,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site1_method16.pt",
+      "tensor_sha256": "a7f30207d718db7492be5a1d8c894afbc5f41fafd295e4b955bad3be4e290014"
+    },
+    {
+      "site": "9/end",
+      "method": "Random rank one/draw12",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.9027777777777778,
+          "correct": 260,
+          "native_correct_count": 260,
+          "preserved_native_correct": 260,
+          "answer_loss": 1.303934931755066,
+          "answer_probability": 0.30889391899108887,
+          "kl_from_native": 9.120547474594787e-06,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.4778316020965576,
+          "answer_probability": 0.03851718083024025,
+          "kl_from_native": 0.00012052565580233932,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site1_method17.pt",
+      "tensor_sha256": "a2f6ad4c372fcf2db1e90cef19824eff27aa91e23dcfab21dfe9a2028cd1c278"
+    },
+    {
+      "site": "9/end",
+      "method": "Random rank one/draw13",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 8.392333984375e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.9027777777777778,
+          "correct": 260,
+          "native_correct_count": 260,
+          "preserved_native_correct": 260,
+          "answer_loss": 1.3026938438415527,
+          "answer_probability": 0.30925437808036804,
+          "kl_from_native": 5.410261292126961e-05,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.4703314304351807,
+          "answer_probability": 0.039018142968416214,
+          "kl_from_native": 9.9903800219181e-06,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site1_method18.pt",
+      "tensor_sha256": "971254a8732e6bc07944bed46fa7ca5923de928bdc8ffd5a31b43b4f2ed297f9"
+    },
+    {
+      "site": "9/end",
+      "method": "Random rank one/draw14",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.9027777777777778,
+          "correct": 260,
+          "native_correct_count": 260,
+          "preserved_native_correct": 260,
+          "answer_loss": 1.3043795824050903,
+          "answer_probability": 0.3086082637310028,
+          "kl_from_native": 3.71071946574375e-05,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 8.392333984375e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.4973958333333333,
+          "correct": 191,
+          "native_correct_count": 192,
+          "preserved_native_correct": 191,
+          "answer_loss": 3.48575758934021,
+          "answer_probability": 0.0380220040678978,
+          "kl_from_native": 0.0007235805969685316,
+          "changed_winner_fraction": 0.0026041666666666665
+        }
+      },
+      "tensor_file": "conditions/site1_method19.pt",
+      "tensor_sha256": "0fda58b7316c872c55989cfd85685dee8af13d1ae099d1b812e749b153e5ca81"
+    },
+    {
+      "site": "9/end",
+      "method": "Random rank one/draw15",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.9027777777777778,
+          "correct": 260,
+          "native_correct_count": 260,
+          "preserved_native_correct": 260,
+          "answer_loss": 1.304893970489502,
+          "answer_probability": 0.30863669514656067,
+          "kl_from_native": 0.00013337095151655376,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 0.00011444091796875,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.461827278137207,
+          "answer_probability": 0.03960542008280754,
+          "kl_from_native": 0.0001319681032327935,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site1_method20.pt",
+      "tensor_sha256": "b5edca66ef80e43df7e332441a83e05a0c78edf829f6e410d0f0d50731d646ef"
+    },
+    {
+      "site": "9/end",
+      "method": "Matched empirical/draw00",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8958333333333334,
+          "correct": 258,
+          "native_correct_count": 260,
+          "preserved_native_correct": 254,
+          "answer_loss": 1.3415933847427368,
+          "answer_probability": 0.29487383365631104,
+          "kl_from_native": 0.02295316755771637,
+          "changed_winner_fraction": 0.03819444444444445
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.041666666666666664,
+          "correct": 16,
+          "native_correct_count": 192,
+          "preserved_native_correct": 16,
+          "answer_loss": 4.800172328948975,
+          "answer_probability": 0.00928270723670721,
+          "kl_from_native": 0.3575350046157837,
+          "changed_winner_fraction": 0.703125
+        }
+      },
+      "tensor_file": "conditions/site1_method21.pt",
+      "tensor_sha256": "75a4c7c5e7a83fffd90718e4e741d6b10b41789f4432c811836d232a2c36710d"
+    },
+    {
+      "site": "9/end",
+      "method": "Matched empirical/draw01",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.103515625e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8888888888888888,
+          "correct": 256,
+          "native_correct_count": 260,
+          "preserved_native_correct": 253,
+          "answer_loss": 1.3490021228790283,
+          "answer_probability": 0.30230018496513367,
+          "kl_from_native": 0.022936716675758362,
+          "changed_winner_fraction": 0.04513888888888889
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 9.1552734375e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.020833333333333332,
+          "correct": 8,
+          "native_correct_count": 192,
+          "preserved_native_correct": 6,
+          "answer_loss": 5.027250289916992,
+          "answer_probability": 0.01150371041148901,
+          "kl_from_native": 0.5211696028709412,
+          "changed_winner_fraction": 0.9375
+        }
+      },
+      "tensor_file": "conditions/site1_method22.pt",
+      "tensor_sha256": "36036cd331d60e4748cf4e6dda2981535c2095fd16c5fdb006d4594be7938e52"
+    },
+    {
+      "site": "9/end",
+      "method": "Matched empirical/draw02",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.7708333333333334,
+          "correct": 222,
+          "native_correct_count": 260,
+          "preserved_native_correct": 220,
+          "answer_loss": 1.4183554649353027,
+          "answer_probability": 0.3008791208267212,
+          "kl_from_native": 0.032970741391181946,
+          "changed_winner_fraction": 0.14930555555555555
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.103515625e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.4244791666666667,
+          "correct": 163,
+          "native_correct_count": 192,
+          "preserved_native_correct": 123,
+          "answer_loss": 3.578730583190918,
+          "answer_probability": 0.03786614164710045,
+          "kl_from_native": 0.2567179203033447,
+          "changed_winner_fraction": 0.2942708333333333
+        }
+      },
+      "tensor_file": "conditions/site1_method23.pt",
+      "tensor_sha256": "4f45cbc9d5f080e66b9d3db9aca1939fe8f3c39ac9a98153b3d18b002fdeb1a1"
+    },
+    {
+      "site": "9/end",
+      "method": "Matched empirical/draw03",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.78125,
+          "correct": 225,
+          "native_correct_count": 260,
+          "preserved_native_correct": 225,
+          "answer_loss": 1.527757167816162,
+          "answer_probability": 0.2603062689304352,
+          "kl_from_native": 0.029569867998361588,
+          "changed_winner_fraction": 0.125
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5078125,
+          "correct": 195,
+          "native_correct_count": 192,
+          "preserved_native_correct": 99,
+          "answer_loss": 4.145454406738281,
+          "answer_probability": 0.01943890191614628,
+          "kl_from_native": 0.29337993264198303,
+          "changed_winner_fraction": 0.5494791666666666
+        }
+      },
+      "tensor_file": "conditions/site1_method24.pt",
+      "tensor_sha256": "e8579ef0c416d6f89742ca1a183b6cca84a57268aed04e50b60021b9a57392d8"
+    },
+    {
+      "site": "9/end",
+      "method": "Matched empirical/draw04",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8645833333333334,
+          "correct": 249,
+          "native_correct_count": 260,
+          "preserved_native_correct": 247,
+          "answer_loss": 1.35698664188385,
+          "answer_probability": 0.2994025647640228,
+          "kl_from_native": 0.017100512981414795,
+          "changed_winner_fraction": 0.05555555555555555
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.11197916666666667,
+          "correct": 43,
+          "native_correct_count": 192,
+          "preserved_native_correct": 43,
+          "answer_loss": 4.486323833465576,
+          "answer_probability": 0.013380362652242184,
+          "kl_from_native": 0.34029459953308105,
+          "changed_winner_fraction": 0.5989583333333334
+        }
+      },
+      "tensor_file": "conditions/site1_method25.pt",
+      "tensor_sha256": "cffdd9854bdfa1d1871c4367a11ace9ab5b3f8fb9a944770761414eaa99b76f7"
+    },
+    {
+      "site": "9/end",
+      "method": "Matched empirical/draw05",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 8.392333984375e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.7743055555555556,
+          "correct": 223,
+          "native_correct_count": 260,
+          "preserved_native_correct": 222,
+          "answer_loss": 1.4264254570007324,
+          "answer_probability": 0.2831827998161316,
+          "kl_from_native": 0.027718985453248024,
+          "changed_winner_fraction": 0.13541666666666666
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.103515625e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.4140625,
+          "correct": 159,
+          "native_correct_count": 192,
+          "preserved_native_correct": 7,
+          "answer_loss": 4.735626697540283,
+          "answer_probability": 0.01524270698428154,
+          "kl_from_native": 0.4261249005794525,
+          "changed_winner_fraction": 0.8880208333333334
+        }
+      },
+      "tensor_file": "conditions/site1_method26.pt",
+      "tensor_sha256": "b3085e2cefbde4a89bd8e50ebf3fc02f0508874eeb4c61a507be97c6fd3476bb"
+    },
+    {
+      "site": "9/end",
+      "method": "Matched empirical/draw06",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8020833333333334,
+          "correct": 231,
+          "native_correct_count": 260,
+          "preserved_native_correct": 228,
+          "answer_loss": 1.4093832969665527,
+          "answer_probability": 0.28946244716644287,
+          "kl_from_native": 0.024407900869846344,
+          "changed_winner_fraction": 0.1284722222222222
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.103515625e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.171875,
+          "correct": 66,
+          "native_correct_count": 192,
+          "preserved_native_correct": 66,
+          "answer_loss": 5.032431125640869,
+          "answer_probability": 0.013299654237926006,
+          "kl_from_native": 0.3656751215457916,
+          "changed_winner_fraction": 0.4557291666666667
+        }
+      },
+      "tensor_file": "conditions/site1_method27.pt",
+      "tensor_sha256": "7953123d98839c1709154de6f1938e37b4b5c93e7a982ef716e2f701a8429046"
+    },
+    {
+      "site": "9/end",
+      "method": "Matched empirical/draw07",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8784722222222222,
+          "correct": 253,
+          "native_correct_count": 260,
+          "preserved_native_correct": 248,
+          "answer_loss": 1.328385829925537,
+          "answer_probability": 0.30054405331611633,
+          "kl_from_native": 0.02316075935959816,
+          "changed_winner_fraction": 0.06944444444444445
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.2864583333333333,
+          "correct": 110,
+          "native_correct_count": 192,
+          "preserved_native_correct": 94,
+          "answer_loss": 4.511864185333252,
+          "answer_probability": 0.01634136773645878,
+          "kl_from_native": 0.40259113907814026,
+          "changed_winner_fraction": 0.75
+        }
+      },
+      "tensor_file": "conditions/site1_method28.pt",
+      "tensor_sha256": "9cb5adc5b816946d695814b15c42450877c80b9a2e58779f456f5204a6f4dc8f"
+    },
+    {
+      "site": "9/end",
+      "method": "Matched empirical/draw08",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.103515625e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8854166666666666,
+          "correct": 255,
+          "native_correct_count": 260,
+          "preserved_native_correct": 252,
+          "answer_loss": 1.3521851301193237,
+          "answer_probability": 0.2981675863265991,
+          "kl_from_native": 0.01637241058051586,
+          "changed_winner_fraction": 0.041666666666666664
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.103515625e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.0,
+          "correct": 0,
+          "native_correct_count": 192,
+          "preserved_native_correct": 0,
+          "answer_loss": 5.444956302642822,
+          "answer_probability": 0.007281497586518526,
+          "kl_from_native": 0.39471399784088135,
+          "changed_winner_fraction": 0.7213541666666666
+        }
+      },
+      "tensor_file": "conditions/site1_method29.pt",
+      "tensor_sha256": "4c0b79b3a5a81958a47857d0191730981bee0fdbfad1376faae00c70adf84397"
+    },
+    {
+      "site": "9/end",
+      "method": "Matched empirical/draw09",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 8.392333984375e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8958333333333334,
+          "correct": 258,
+          "native_correct_count": 260,
+          "preserved_native_correct": 254,
+          "answer_loss": 1.222177267074585,
+          "answer_probability": 0.32989272475242615,
+          "kl_from_native": 0.02853207103908062,
+          "changed_winner_fraction": 0.034722222222222224
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.75,
+          "correct": 288,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.215085029602051,
+          "answer_probability": 0.05990077555179596,
+          "kl_from_native": 0.27639836072921753,
+          "changed_winner_fraction": 0.5
+        }
+      },
+      "tensor_file": "conditions/site1_method30.pt",
+      "tensor_sha256": "189317e07604c387e67a1c21ba186104b4c410e002ae27969669da564700f05a"
+    },
+    {
+      "site": "9/end",
+      "method": "Matched empirical/draw10",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8576388888888888,
+          "correct": 247,
+          "native_correct_count": 260,
+          "preserved_native_correct": 243,
+          "answer_loss": 1.3129647970199585,
+          "answer_probability": 0.3097904920578003,
+          "kl_from_native": 0.02577909827232361,
+          "changed_winner_fraction": 0.0763888888888889
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.4973958333333333,
+          "correct": 191,
+          "native_correct_count": 192,
+          "preserved_native_correct": 191,
+          "answer_loss": 4.1038360595703125,
+          "answer_probability": 0.024770347401499748,
+          "kl_from_native": 0.3219631016254425,
+          "changed_winner_fraction": 0.484375
+        }
+      },
+      "tensor_file": "conditions/site1_method31.pt",
+      "tensor_sha256": "71a70f9d49c22b7c3bfa1b4b98ecdf54009a8ace4338f3e3263003e62840ed13"
+    },
+    {
+      "site": "9/end",
+      "method": "Matched empirical/draw11",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 9.1552734375e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.9131944444444444,
+          "correct": 263,
+          "native_correct_count": 260,
+          "preserved_native_correct": 258,
+          "answer_loss": 1.2257007360458374,
+          "answer_probability": 0.3275187313556671,
+          "kl_from_native": 0.023331398144364357,
+          "changed_winner_fraction": 0.024305555555555556
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 5.340576171875e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.11458333333333333,
+          "correct": 44,
+          "native_correct_count": 192,
+          "preserved_native_correct": 44,
+          "answer_loss": 3.8967597484588623,
+          "answer_probability": 0.025505179539322853,
+          "kl_from_native": 0.47478172183036804,
+          "changed_winner_fraction": 0.8515625
+        }
+      },
+      "tensor_file": "conditions/site1_method32.pt",
+      "tensor_sha256": "a54adca7e00cda50a5cd588923b8c1979c19f6d1b2fb95979edfa5a5bdecee49"
+    },
+    {
+      "site": "9/end",
+      "method": "Matched empirical/draw12",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.103515625e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8923611111111112,
+          "correct": 257,
+          "native_correct_count": 260,
+          "preserved_native_correct": 252,
+          "answer_loss": 1.4114441871643066,
+          "answer_probability": 0.2891067564487457,
+          "kl_from_native": 0.029093163087964058,
+          "changed_winner_fraction": 0.04861111111111111
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.0,
+          "correct": 0,
+          "native_correct_count": 192,
+          "preserved_native_correct": 0,
+          "answer_loss": 5.670847415924072,
+          "answer_probability": 0.005856912583112717,
+          "kl_from_native": 0.5045114755630493,
+          "changed_winner_fraction": 0.9270833333333334
+        }
+      },
+      "tensor_file": "conditions/site1_method33.pt",
+      "tensor_sha256": "baf33580880a9bb204f091522fd9d37fd7358a32deb499cfa3c2e81c238f0819"
+    },
+    {
+      "site": "9/end",
+      "method": "Matched empirical/draw13",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8680555555555556,
+          "correct": 250,
+          "native_correct_count": 260,
+          "preserved_native_correct": 246,
+          "answer_loss": 1.387888789176941,
+          "answer_probability": 0.29088523983955383,
+          "kl_from_native": 0.02182522602379322,
+          "changed_winner_fraction": 0.06944444444444445
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.103515625e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.2604166666666667,
+          "correct": 100,
+          "native_correct_count": 192,
+          "preserved_native_correct": 100,
+          "answer_loss": 4.188859939575195,
+          "answer_probability": 0.020540250465273857,
+          "kl_from_native": 0.33799827098846436,
+          "changed_winner_fraction": 0.4895833333333333
+        }
+      },
+      "tensor_file": "conditions/site1_method34.pt",
+      "tensor_sha256": "e3a338897856321fc3512da7a6e7739fd31c961b2794c0d5f7e5aacbb8316231"
+    },
+    {
+      "site": "9/end",
+      "method": "Matched empirical/draw14",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8159722222222222,
+          "correct": 235,
+          "native_correct_count": 260,
+          "preserved_native_correct": 231,
+          "answer_loss": 1.434705138206482,
+          "answer_probability": 0.27981194853782654,
+          "kl_from_native": 0.029323015362024307,
+          "changed_winner_fraction": 0.11805555555555555
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 9.1552734375e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.25,
+          "correct": 96,
+          "native_correct_count": 192,
+          "preserved_native_correct": 96,
+          "answer_loss": 4.863202095031738,
+          "answer_probability": 0.012647631578147411,
+          "kl_from_native": 0.5365415215492249,
+          "changed_winner_fraction": 0.59375
+        }
+      },
+      "tensor_file": "conditions/site1_method35.pt",
+      "tensor_sha256": "9e3842346b13040085fc129b405e97df19710b56196e74fa1fa265f36e33092e"
+    },
+    {
+      "site": "9/end",
+      "method": "Matched empirical/draw15",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8715277777777778,
+          "correct": 251,
+          "native_correct_count": 260,
+          "preserved_native_correct": 246,
+          "answer_loss": 1.3905881643295288,
+          "answer_probability": 0.2909003794193268,
+          "kl_from_native": 0.020443227142095566,
+          "changed_winner_fraction": 0.07291666666666667
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.103515625e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.4713541666666667,
+          "correct": 181,
+          "native_correct_count": 192,
+          "preserved_native_correct": 181,
+          "answer_loss": 3.6005585193634033,
+          "answer_probability": 0.0439293272793293,
+          "kl_from_native": 0.24770306050777435,
+          "changed_winner_fraction": 0.34375
+        }
+      },
+      "tensor_file": "conditions/site1_method36.pt",
+      "tensor_sha256": "2308a00d452487bd38435e70efc01b2c2e95ef6d44c2aab88e048532091b8090"
+    },
+    {
+      "site": "9/end",
+      "method": "Matched shrinkage/draw00",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 8.392333984375e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8888888888888888,
+          "correct": 256,
+          "native_correct_count": 260,
+          "preserved_native_correct": 254,
+          "answer_loss": 1.314976692199707,
+          "answer_probability": 0.30417340993881226,
+          "kl_from_native": 0.005064049735665321,
+          "changed_winner_fraction": 0.03125
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.4947916666666667,
+          "correct": 190,
+          "native_correct_count": 192,
+          "preserved_native_correct": 190,
+          "answer_loss": 3.602410316467285,
+          "answer_probability": 0.03309464082121849,
+          "kl_from_native": 0.012039062567055225,
+          "changed_winner_fraction": 0.005208333333333333
+        }
+      },
+      "tensor_file": "conditions/site1_method37.pt",
+      "tensor_sha256": "b561f84b652b4ee09010c6ded2f4157c72ad26024bde62a5c362ecff30fcc046"
+    },
+    {
+      "site": "9/end",
+      "method": "Matched shrinkage/draw01",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.9027777777777778,
+          "correct": 260,
+          "native_correct_count": 260,
+          "preserved_native_correct": 258,
+          "answer_loss": 1.3181629180908203,
+          "answer_probability": 0.3052300810813904,
+          "kl_from_native": 0.00521963182836771,
+          "changed_winner_fraction": 0.013888888888888888
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.4973958333333333,
+          "correct": 191,
+          "native_correct_count": 192,
+          "preserved_native_correct": 191,
+          "answer_loss": 3.5301525592803955,
+          "answer_probability": 0.03672817721962929,
+          "kl_from_native": 0.013347330503165722,
+          "changed_winner_fraction": 0.11458333333333333
+        }
+      },
+      "tensor_file": "conditions/site1_method38.pt",
+      "tensor_sha256": "7cfb41f1704acb29f2350e4167955adda9d4fdd1509be5b06665d5eb1044146c"
+    },
+    {
+      "site": "9/end",
+      "method": "Matched shrinkage/draw02",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 9.918212890625e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8506944444444444,
+          "correct": 245,
+          "native_correct_count": 260,
+          "preserved_native_correct": 243,
+          "answer_loss": 1.347172498703003,
+          "answer_probability": 0.3031379282474518,
+          "kl_from_native": 0.00860525295138359,
+          "changed_winner_fraction": 0.06944444444444445
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.4973958333333333,
+          "correct": 191,
+          "native_correct_count": 192,
+          "preserved_native_correct": 191,
+          "answer_loss": 3.442599296569824,
+          "answer_probability": 0.04036638140678406,
+          "kl_from_native": 0.01202957984060049,
+          "changed_winner_fraction": 0.0026041666666666665
+        }
+      },
+      "tensor_file": "conditions/site1_method39.pt",
+      "tensor_sha256": "0ce294f18e4fce7498ae408890bbc351e674e49fa151621395e10a1abd8f2582"
+    },
+    {
+      "site": "9/end",
+      "method": "Matched shrinkage/draw03",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.103515625e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8541666666666666,
+          "correct": 246,
+          "native_correct_count": 260,
+          "preserved_native_correct": 245,
+          "answer_loss": 1.3743168115615845,
+          "answer_probability": 0.2913706302642822,
+          "kl_from_native": 0.006335928104817867,
+          "changed_winner_fraction": 0.059027777777777776
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.4973958333333333,
+          "correct": 191,
+          "native_correct_count": 192,
+          "preserved_native_correct": 191,
+          "answer_loss": 3.5516769886016846,
+          "answer_probability": 0.033416252583265305,
+          "kl_from_native": 0.011671732179820538,
+          "changed_winner_fraction": 0.005208333333333333
+        }
+      },
+      "tensor_file": "conditions/site1_method40.pt",
+      "tensor_sha256": "05c289afb78f8b5bfec3561c52a777552092f813b0ea050ad05b2afa990cc801"
+    },
+    {
+      "site": "9/end",
+      "method": "Matched shrinkage/draw04",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8923611111111112,
+          "correct": 257,
+          "native_correct_count": 260,
+          "preserved_native_correct": 256,
+          "answer_loss": 1.3208565711975098,
+          "answer_probability": 0.30439454317092896,
+          "kl_from_native": 0.0029991348274052143,
+          "changed_winner_fraction": 0.017361111111111112
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.510545492172241,
+          "answer_probability": 0.03755210340023041,
+          "kl_from_native": 0.011495082639157772,
+          "changed_winner_fraction": 0.0
+        }
+      },
+      "tensor_file": "conditions/site1_method41.pt",
+      "tensor_sha256": "c57d07cdfdf2230faa50b968ddffd7d8b02f3763e851517ce54f3b53e2a6e3ae"
+    },
+    {
+      "site": "9/end",
+      "method": "Matched shrinkage/draw05",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8854166666666666,
+          "correct": 255,
+          "native_correct_count": 260,
+          "preserved_native_correct": 254,
+          "answer_loss": 1.3261511325836182,
+          "answer_probability": 0.3028176426887512,
+          "kl_from_native": 0.0048290640115737915,
+          "changed_winner_fraction": 0.024305555555555556
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.103515625e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.4427083333333333,
+          "correct": 170,
+          "native_correct_count": 192,
+          "preserved_native_correct": 170,
+          "answer_loss": 3.522700309753418,
+          "answer_probability": 0.03345770761370659,
+          "kl_from_native": 0.01554032415151596,
+          "changed_winner_fraction": 0.057291666666666664
+        }
+      },
+      "tensor_file": "conditions/site1_method42.pt",
+      "tensor_sha256": "dd81222c0c75e6dcd1972b3c20a2205431163d7e3ec2204bcf488aa9b3036279"
+    },
+    {
+      "site": "9/end",
+      "method": "Matched shrinkage/draw06",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8784722222222222,
+          "correct": 253,
+          "native_correct_count": 260,
+          "preserved_native_correct": 251,
+          "answer_loss": 1.3439006805419922,
+          "answer_probability": 0.29928499460220337,
+          "kl_from_native": 0.005135688930749893,
+          "changed_winner_fraction": 0.041666666666666664
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 8.392333984375e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.4765625,
+          "correct": 183,
+          "native_correct_count": 192,
+          "preserved_native_correct": 183,
+          "answer_loss": 3.758596420288086,
+          "answer_probability": 0.031701523810625076,
+          "kl_from_native": 0.015881432220339775,
+          "changed_winner_fraction": 0.0234375
+        }
+      },
+      "tensor_file": "conditions/site1_method43.pt",
+      "tensor_sha256": "ee26a28adb5f8f09241b604f47dd43b7666edf8633d63040215804ffe70a95d4"
+    },
+    {
+      "site": "9/end",
+      "method": "Matched shrinkage/draw07",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8819444444444444,
+          "correct": 254,
+          "native_correct_count": 260,
+          "preserved_native_correct": 253,
+          "answer_loss": 1.3119126558303833,
+          "answer_probability": 0.30600184202194214,
+          "kl_from_native": 0.004483303986489773,
+          "changed_winner_fraction": 0.027777777777777776
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.4635416666666667,
+          "correct": 178,
+          "native_correct_count": 192,
+          "preserved_native_correct": 178,
+          "answer_loss": 3.5782735347747803,
+          "answer_probability": 0.03484853357076645,
+          "kl_from_native": 0.011769824661314487,
+          "changed_winner_fraction": 0.041666666666666664
+        }
+      },
+      "tensor_file": "conditions/site1_method44.pt",
+      "tensor_sha256": "218330ffaac386fc65823ac71b7c25f45d950d07068f27e9bae3fa63adf6886f"
+    },
+    {
+      "site": "9/end",
+      "method": "Matched shrinkage/draw08",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8958333333333334,
+          "correct": 258,
+          "native_correct_count": 260,
+          "preserved_native_correct": 257,
+          "answer_loss": 1.3097935914993286,
+          "answer_probability": 0.3075317442417145,
+          "kl_from_native": 0.002907617250457406,
+          "changed_winner_fraction": 0.013888888888888888
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 8.392333984375e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.484375,
+          "correct": 186,
+          "native_correct_count": 192,
+          "preserved_native_correct": 186,
+          "answer_loss": 3.8162145614624023,
+          "answer_probability": 0.028648287057876587,
+          "kl_from_native": 0.012105117551982403,
+          "changed_winner_fraction": 0.015625
+        }
+      },
+      "tensor_file": "conditions/site1_method45.pt",
+      "tensor_sha256": "1fa5db50a7979267be80c2c5d3fa9fa3023a3d8c75cb5eca0334977cf7421dca"
+    },
+    {
+      "site": "9/end",
+      "method": "Matched shrinkage/draw09",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.9097222222222222,
+          "correct": 262,
+          "native_correct_count": 260,
+          "preserved_native_correct": 259,
+          "answer_loss": 1.255746603012085,
+          "answer_probability": 0.32260873913764954,
+          "kl_from_native": 0.006387082394212484,
+          "changed_winner_fraction": 0.013888888888888888
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 0.0001068115234375,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5078125,
+          "correct": 195,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.3104069232940674,
+          "answer_probability": 0.04718894883990288,
+          "kl_from_native": 0.012554039247334003,
+          "changed_winner_fraction": 0.046875
+        }
+      },
+      "tensor_file": "conditions/site1_method46.pt",
+      "tensor_sha256": "4e34340e85b31481b9871423a7632fe01bb9a51ef191fb34bd44319dcf9e71e1"
+    },
+    {
+      "site": "9/end",
+      "method": "Matched shrinkage/draw10",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.103515625e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8888888888888888,
+          "correct": 256,
+          "native_correct_count": 260,
+          "preserved_native_correct": 255,
+          "answer_loss": 1.3056039810180664,
+          "answer_probability": 0.3087253272533417,
+          "kl_from_native": 0.005078472197055817,
+          "changed_winner_fraction": 0.024305555555555556
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 9.1552734375e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.543224573135376,
+          "answer_probability": 0.03781396150588989,
+          "kl_from_native": 0.013591929338872433,
+          "changed_winner_fraction": 0.010416666666666666
+        }
+      },
+      "tensor_file": "conditions/site1_method47.pt",
+      "tensor_sha256": "815174f8887e929e1b6a0e02ea897515138bd50a2ac8e9ac37977c215c2f77da"
+    },
+    {
+      "site": "9/end",
+      "method": "Matched shrinkage/draw11",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.9131944444444444,
+          "correct": 263,
+          "native_correct_count": 260,
+          "preserved_native_correct": 260,
+          "answer_loss": 1.2704205513000488,
+          "answer_probability": 0.31553518772125244,
+          "kl_from_native": 0.005195626989006996,
+          "changed_winner_fraction": 0.010416666666666666
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.4947916666666667,
+          "correct": 190,
+          "native_correct_count": 192,
+          "preserved_native_correct": 190,
+          "answer_loss": 3.4087953567504883,
+          "answer_probability": 0.04129414260387421,
+          "kl_from_native": 0.021515483036637306,
+          "changed_winner_fraction": 0.06770833333333333
+        }
+      },
+      "tensor_file": "conditions/site1_method48.pt",
+      "tensor_sha256": "85ae8493415175e675629a1a2c5f0d6974a5e97db2a09575664d0bace2e2f335"
+    },
+    {
+      "site": "9/end",
+      "method": "Matched shrinkage/draw12",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8923611111111112,
+          "correct": 257,
+          "native_correct_count": 260,
+          "preserved_native_correct": 255,
+          "answer_loss": 1.3129057884216309,
+          "answer_probability": 0.3072490692138672,
+          "kl_from_native": 0.006000732071697712,
+          "changed_winner_fraction": 0.024305555555555556
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.4947916666666667,
+          "correct": 190,
+          "native_correct_count": 192,
+          "preserved_native_correct": 190,
+          "answer_loss": 3.6159870624542236,
+          "answer_probability": 0.03236282244324684,
+          "kl_from_native": 0.014275755733251572,
+          "changed_winner_fraction": 0.005208333333333333
+        }
+      },
+      "tensor_file": "conditions/site1_method49.pt",
+      "tensor_sha256": "a35e5334f87bb5cfc5a33880eecde68fdd6224363522916c49be995228df82f9"
+    },
+    {
+      "site": "9/end",
+      "method": "Matched shrinkage/draw13",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.103515625e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8923611111111112,
+          "correct": 257,
+          "native_correct_count": 260,
+          "preserved_native_correct": 255,
+          "answer_loss": 1.3197814226150513,
+          "answer_probability": 0.30534520745277405,
+          "kl_from_native": 0.004711167886853218,
+          "changed_winner_fraction": 0.03125
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.454374313354492,
+          "answer_probability": 0.040038928389549255,
+          "kl_from_native": 0.013246896676719189,
+          "changed_winner_fraction": 0.0078125
+        }
+      },
+      "tensor_file": "conditions/site1_method50.pt",
+      "tensor_sha256": "947da6ab307f02f92afdd9513d8d567bf8d5855d30dca152e1f312fb4a842ba3"
+    },
+    {
+      "site": "9/end",
+      "method": "Matched shrinkage/draw14",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.103515625e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8888888888888888,
+          "correct": 256,
+          "native_correct_count": 260,
+          "preserved_native_correct": 252,
+          "answer_loss": 1.3337700366973877,
+          "answer_probability": 0.3003675639629364,
+          "kl_from_native": 0.005236797034740448,
+          "changed_winner_fraction": 0.041666666666666664
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 6.866455078125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.4583333333333333,
+          "correct": 176,
+          "native_correct_count": 192,
+          "preserved_native_correct": 176,
+          "answer_loss": 3.547806739807129,
+          "answer_probability": 0.03459595888853073,
+          "kl_from_native": 0.01845724508166313,
+          "changed_winner_fraction": 0.09375
+        }
+      },
+      "tensor_file": "conditions/site1_method51.pt",
+      "tensor_sha256": "4c2aa9fa7f61ddfb53eaf328339a50050c1540a527a02039b884b4ee3e2a8901"
+    },
+    {
+      "site": "9/end",
+      "method": "Matched shrinkage/draw15",
+      "final": {
+        "rows": 288,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 7.62939453125e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 288,
+          "accuracy": 0.8993055555555556,
+          "correct": 259,
+          "native_correct_count": 260,
+          "preserved_native_correct": 256,
+          "answer_loss": 1.331740140914917,
+          "answer_probability": 0.30184686183929443,
+          "kl_from_native": 0.0043219756335020065,
+          "changed_winner_fraction": 0.027777777777777776
+        }
+      },
+      "object_final": {
+        "rows": 384,
+        "full_vocabulary_max_error": 0.0,
+        "replacement_max_error": 0.0,
+        "native_hook_max_error": 8.392333984375e-05,
+        "all_winners_equal": true,
+        "metrics": {
+          "rows": 384,
+          "accuracy": 0.5,
+          "correct": 192,
+          "native_correct_count": 192,
+          "preserved_native_correct": 192,
+          "answer_loss": 3.381458044052124,
+          "answer_probability": 0.04477323964238167,
+          "kl_from_native": 0.010201210156083107,
+          "changed_winner_fraction": 0.0026041666666666665
+        }
+      },
+      "tensor_file": "conditions/site1_method52.pt",
+      "tensor_sha256": "123267c94f809f716e46586d1625a2f8270af8a64e6299c70b791684ee71804d"
+    }
+  ],
+  "actual_intervention_rows": 71232,
+  "elapsed_seconds": 302.1978382140005,
+  "learner_execution_sha256": "969dc700d15acc44fd623b4e5132a1c9f69c244b4a43da6b0107a24c394df8c7",
+  "fitted_conditions_sha256": "852da2ff54c762a6842c59c930929ebca655c887b7c4dc97d0e1630a2dcfca97",
+  "baseline_max_errors": {
+    "train": 0.0,
+    "probe_train": 0.0,
+    "development": 0.0,
+    "final": 0.0,
+    "object_development": 0.0,
+    "object_final": 0.0
+  },
+  "model_id": "gpt2",
+  "revision": "607a30d783dfa663caf39e06633721c8d4cfcd7e",
+  "weights_sha256": "e563ffe10e2eefeaf9d9a869d4cb43369cdddbe6875789caec4e1abd7c6adfd9",
+  "weights_unchanged": true,
+  "model_gradients_absent": true,
+  "actual_comparisons_sha256": "ea51797af561660bd78e7b181312faae6f12c16828db8c3aa5c42659157d0c72",
+  "changed_sources": []
+}

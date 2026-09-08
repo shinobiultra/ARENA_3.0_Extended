@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="300" viewBox="0 0 920 300" role="img" aria-labelledby="title desc">
+  <title id="title">Evidence ladder for [6.4] Crosscoders and Model Diffing</title>
+  <desc id="desc">A four-step validation ladder for paired model diffing with crosscoders.</desc>
+  <rect width="920" height="300" fill="#f8fafc"/>
+  <style>
+    .box { fill: #ffffff; stroke: #334155; stroke-width: 2; rx: 10; }
+    .title { font: 700 18px sans-serif; fill: #0f172a; }
+    .body { font: 14px sans-serif; fill: #334155; }
+    .small { font: 12px sans-serif; fill: #475569; }
+    .arrow { stroke: #475569; stroke-width: 2.5; fill: none; marker-end: url(#arrow); }
+    .blue { fill: #dbeafe; stroke: #2563eb; }
+    .green { fill: #dcfce7; stroke: #16a34a; }
+    .orange { fill: #ffedd5; stroke: #f97316; }
+    .violet { fill: #ede9fe; stroke: #7c3aed; }
+  </style>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#475569"/>
+    </marker>
+  </defs>
+
+  <text x="36" y="40" class="title">Crosscoder model-diffing validation ladder</text>
+  <text x="36" y="64" class="body">A model-diff feature matters only after reconstruction, ownership, behavior, and controls agree.</text>
+
+  <rect x="36" y="100" width="185" height="125" class="box blue"/>
+  <text x="58" y="130" class="title">1. Reconstruct</text>
+  <text x="58" y="158" class="body">Shared features</text>
+  <text x="58" y="180" class="body">plus model-specific</text>
+  <text x="58" y="202" class="body">delta features</text>
+
+  <rect x="267" y="100" width="185" height="125" class="box green"/>
+  <text x="289" y="130" class="title">2. Classify</text>
+  <text x="289" y="158" class="body">Shared</text>
+  <text x="289" y="180" class="body">model A-specific</text>
+  <text x="289" y="202" class="body">model B-specific</text>
+
+  <rect x="498" y="100" width="185" height="125" class="box orange"/>
+  <text x="520" y="130" class="title">3. Predict</text>
+  <text x="520" y="158" class="body">Feature scores</text>
+  <text x="520" y="180" class="body">separate behavior</text>
+  <text x="520" y="202" class="body">delta labels</text>
+
+  <rect x="729" y="100" width="155" height="125" class="box violet"/>
+  <text x="751" y="130" class="title">4. Control</text>
+  <text x="751" y="158" class="body">Top direction</text>
+  <text x="751" y="180" class="body">removal beats</text>
+  <text x="751" y="202" class="body">orthogonal control</text>
+
+  <path d="M221 162 C238 162 250 162 267 162" class="arrow"/>
+  <path d="M452 162 C469 162 481 162 498 162" class="arrow"/>
+  <path d="M683 162 C700 162 712 162 729 162" class="arrow"/>
+
+  <text x="36" y="262" class="small">This section proves a scoped GELU-1L vs SoLU-1L paired-checkpoint preflight, not a full trained crosscoder paper replication.</text>
+</svg>

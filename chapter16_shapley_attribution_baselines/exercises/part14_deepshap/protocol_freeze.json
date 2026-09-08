@@ -1,0 +1,17 @@
+{
+  "frozen_at_utc": "2026-09-06T13:44:46.561585+00:00",
+  "native_fits_before_freeze": 0,
+  "sha256": {
+    "protocol.md": "ceca1c3d0fa9bd5635915b4f7c8ec9d2353c3e55b6816788ce69b58d8e67869e",
+    "data_manifest.json": "c1c072ef4a540f1d7d878b828ce09b27085ffe085e328587fcc6fd83de6dbc58",
+    "deepshap_data.py": "ec2a7f4337c4c7dfa7649d5cf2794be041a16e258f50d0844c2e2b4bed882918"
+  },
+  "versions": {
+    "numpy": "1.26.4",
+    "torch": "2.12.1+cu132",
+    "scikit-learn": "1.9.0",
+    "shap": "0.49.1"
+  },
+  "pre_fit_review_sha256": "5f497a3a54d7001bbe9850dccd49ce4ec37aa625a72b407e8ab88319188216cc",
+  "pre_fit_scope": "Hand-derived and untrained fixed-network probes and throughput measurements were performed; no native Concrete model was fitted for this section."
+}

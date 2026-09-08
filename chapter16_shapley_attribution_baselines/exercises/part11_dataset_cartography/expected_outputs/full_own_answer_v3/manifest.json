@@ -1,0 +1,245 @@
+{
+  "source_directory": "/home/bitwise/.cache/arena_extended/cartography/own-full-v3",
+  "archive_sha256": "bfddd055bd9e383ee23cd40128abe7d604e92bc7301174bb9582578b461b88ef",
+  "members": {
+    "completed_learner.ipynb": {
+      "sha256": "e05a24e40afbeb53f817f0f8d93b4a8ca1c6e2a0defcd4bef10d42472edc6333",
+      "size_bytes": 2344741
+    },
+    "execution.json": {
+      "sha256": "0ec5b37b95a75f09b113185c755120942bee072ab0a5f7ef2bec81ce0aef94e7",
+      "size_bytes": 28533
+    },
+    "figures/before_evaluation.json": {
+      "sha256": "a8acc2a7e0010762e5aff23ea679cad30c7414975b72271310b4843551240194",
+      "size_bytes": 278
+    },
+    "figures/cartography_class_accuracy.png": {
+      "sha256": "e21da34b83e06ffb27ba0fc34b6913bac81796e0100a947736e842df26594f17",
+      "size_bytes": 117022
+    },
+    "figures/cartography_class_counts.png": {
+      "sha256": "ce2bb19f57879608cc5b666ef9ec2ec3b832097efa97e727a1cf8e88be38cf05",
+      "size_bytes": 102603
+    },
+    "figures/cartography_equal_updates.png": {
+      "sha256": "fec2f8174b8c7506717c816d2bf8e313ff0e4d0c0d6bae611dc0115fb97e5d5f",
+      "size_bytes": 62079
+    },
+    "figures/cartography_error_retrieval.png": {
+      "sha256": "78598db954031a4ec120802e04f5c259069dd061209fc2c644a0bd45339afae4",
+      "size_bytes": 100655
+    },
+    "figures/cartography_images.png": {
+      "sha256": "12bcafe7c10e55659b01923af6920066ed0f8f3f271336044cffe9529973c859",
+      "size_bytes": 60742
+    },
+    "figures/cartography_logging.png": {
+      "sha256": "04fd191d8ff24a745085df0b82ae1456c38b8bbea9e88f7e6a49a6e59fbc4661",
+      "size_bytes": 121333
+    },
+    "figures/cartography_mapping_generalization.png": {
+      "sha256": "8bf77e369a9ee090fb52b48ea8ab50319cab641980dc99a843bb0f79f738dfbd",
+      "size_bytes": 67334
+    },
+    "figures/cartography_maps.png": {
+      "sha256": "68691ac66736fa901630634c52e035e49d5d3402b6ce40c749085b28a4d37f5f",
+      "size_bytes": 374917
+    },
+    "figures/cartography_measurement_stability.png": {
+      "sha256": "a16c6513a16f1b6c1c761a248edbee02b47455fc203003ece0625cb6bfd14a20",
+      "size_bytes": 85765
+    },
+    "figures/cartography_noise_gallery.png": {
+      "sha256": "4e03b40fbd9942d4739bed9e8414593af3350168bddd255ad5567d1c5036282c",
+      "size_bytes": 70255
+    },
+    "figures/cartography_paired_changes.png": {
+      "sha256": "8f698535236524fa33aa2f279d5b9e35b8093849018b758a72d2e9fa900b0c01",
+      "size_bytes": 46834
+    },
+    "figures/cartography_real_play.png": {
+      "sha256": "45a0e570ddaad2f495c0213920193aa3fa26545077469a3c8491feb2da799d4a",
+      "size_bytes": 109208
+    },
+    "figures/cartography_region_gallery.png": {
+      "sha256": "c0f2cdb17918a2701f249e9454256e63354b7962897f4bf53330b275c0eb3fe2",
+      "size_bytes": 99963
+    },
+    "figures/cartography_region_trajectories.png": {
+      "sha256": "5299f1e918854b183367ee028f72b375c9a2031b6c3e2aa7f3aabfd5080a0131",
+      "size_bytes": 227781
+    },
+    "figures/cartography_seed_stability.png": {
+      "sha256": "507fbcb8a4fb1a72dd3f5d476b0b5a2319e01ca48e29501d2eb4a803929fcef6",
+      "size_bytes": 115801
+    },
+    "figures/cartography_selection_accuracy.png": {
+      "sha256": "6041bd5c537dcbd552576a9f198506bb97a450387ebd56276036cacd87198870",
+      "size_bytes": 256971
+    },
+    "figures/cartography_selection_loss.png": {
+      "sha256": "deda73b2a7313eeee3aaf4302577074818117690bcb6a7b1f06df8d35abcc075",
+      "size_bytes": 243613
+    },
+    "figures/cartography_training.png": {
+      "sha256": "673a6c4f2745e44cb550a325c1d30a07cfbd7e31079f583605ffd56a2e48e6ac",
+      "size_bytes": 87534
+    },
+    "figures/cartography_trajectory_play.png": {
+      "sha256": "fd6ce2c364599fcb2b15184e322353cca9f294877c4d90179e762cf0eaa3efbc",
+      "size_bytes": 82877
+    },
+    "figures/cartography_windows.png": {
+      "sha256": "de3a98d9d18376e30e0eae8aecb33b2d5292b745595a2c02a91bcacccc6c81d1",
+      "size_bytes": 252106
+    },
+    "figures/native_summary.json": {
+      "sha256": "9431942b6514a0c7bd670fa53c13f69b2a611c7d5111ab4b1b50148a5f4924c1",
+      "size_bytes": 20558
+    },
+    "figures/reference_checks.json": {
+      "sha256": "c1f452caec6810f7c9abb85e30a0788389995ebde0d33b5a7c86158dafa251d9",
+      "size_bytes": 2231
+    },
+    "html_review/browser_coordinates.png": {
+      "sha256": "8ed489c170b20b4eac6a735f8ff93fef2d967ad817e040dc7ff707d4ca4cc92a",
+      "size_bytes": 110572
+    },
+    "html_review/browser_evaluation.png": {
+      "sha256": "940211e44b2a88e450d6539be29b42a97358211e99196cc2a2b9f32a0da9f46f",
+      "size_bytes": 127147
+    },
+    "html_review/browser_interpretation.png": {
+      "sha256": "46b1fccceac1212801c8cced8901fd4bafd36eccde876eeee55ff42228b1e22b",
+      "size_bytes": 183804
+    },
+    "html_review/browser_intro.png": {
+      "sha256": "4de0a87a885967c6128b26c73a20efb3499fdaa5d25732e6f6f2a7081059499b",
+      "size_bytes": 141128
+    },
+    "html_review/browser_measurement.png": {
+      "sha256": "b5962be9938a4b7abaf9cdbde7b7a7c2bc1f74288c237be9633d7e58e337c969",
+      "size_bytes": 193721
+    },
+    "html_review/browser_noise.png": {
+      "sha256": "6af11135705fa8c57a11781a037a8dd94bf3034de8aaa7baa01a51b58766db7f",
+      "size_bytes": 235363
+    },
+    "html_review/browser_play.png": {
+      "sha256": "543a821be6338a13366a25ca3a302955971dd165d7e1c4fb645dff92ae2348df",
+      "size_bytes": 122472
+    },
+    "html_review/browser_refits.png": {
+      "sha256": "c1c67e671fe3a4d883dc1921fc745be01947f1fb9693dfb7f64360f5eaa9563e",
+      "size_bytes": 158605
+    },
+    "html_review/browser_review.json": {
+      "sha256": "848aa31bebecf6b8b130ea677496a193e2ea1fb89b4a4400e8678922c447d182",
+      "size_bytes": 2450
+    },
+    "html_review/browser_training.png": {
+      "sha256": "1bb39e8b4bfaea7193fce70a2b629d11d613518419426fbd6952205fe2f59b1c",
+      "size_bytes": 152448
+    },
+    "html_review/browser_variance.png": {
+      "sha256": "d428fad8e938adc88525dba86bd17d5db78146c9eeb56ce1f861bbaf84725dd4",
+      "size_bytes": 159022
+    },
+    "html_review/reviewed_learner.html": {
+      "sha256": "b85756eca9d187ade381caba0ded0b638028a8e9a8f1ad0c0802500967fb5f62",
+      "size_bytes": 2868567
+    },
+    "html_review/reviewed_learner.ipynb": {
+      "sha256": "e05a24e40afbeb53f817f0f8d93b4a8ca1c6e2a0defcd4bef10d42472edc6333",
+      "size_bytes": 2344741
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/build_notebooks.py": {
+      "sha256": "f3fa008011db92ff40c4fe491a2bdb30c9ca7087439060733b3c999127da1cf1",
+      "size_bytes": 4657
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/cartography_contract_tests.py": {
+      "sha256": "cb38db82ca0fe6ac707a3ffafe31049ca04d296763ab8c2b73cdfb84b2d15411",
+      "size_bytes": 6108
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/cartography_data.py": {
+      "sha256": "e31bebc991561d103c1e50bf3399c21361ac4201adffcce1fdf88007d5d9068e",
+      "size_bytes": 3684
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/cartography_methods.py": {
+      "sha256": "bc5e5f10614cd4a700a0110ebc2dd1d157de29556b8118c8802360a361d387a0",
+      "size_bytes": 9247
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/cartography_methods_tests.py": {
+      "sha256": "be257cfea0b1efb040d87f9bbdf8bd767fd02991e95c2cd5db0d5d5d6036428f",
+      "size_bytes": 8300
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/cartography_reference.py": {
+      "sha256": "6eeeac9106212f4c9d649b7d128649d03b1f37aa4422dd5f2fd0ae4239cda781",
+      "size_bytes": 2279
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/cartography_study.py": {
+      "sha256": "fc9d7c4ee489101891c0c627239c325686a04f9ab4ec74e77628dcec5f3002ee",
+      "size_bytes": 6773
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/data_manifest.json": {
+      "sha256": "4677e7425a872b6cbc1caab44fa99f72480c95aeef6f34c6b13f2b10f4b84be4",
+      "size_bytes": 176326
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/execute_learner.py": {
+      "sha256": "537acf44c1ff58b94efaa98adb2033de49ea94a6db322a084e3878dd45174366",
+      "size_bytes": 5866
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/lesson.md": {
+      "sha256": "0155183390f3b0a70ef8e19567d0610e81ded4425a5adbbf0abf16f25d91a7b9",
+      "size_bytes": 76960
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/protocol.md": {
+      "sha256": "91d9857f36b162730773cce3868b5ffe8145a7ea40f9516b0f58c7849a545637",
+      "size_bytes": 6994
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/protocol_freeze.json": {
+      "sha256": "9cc8fdfcc193d75249985cb0b4b8f5c6cc4e2a5c148f80ad28793bbed235dcc8",
+      "size_bytes": 387
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/reproduce_native.py": {
+      "sha256": "947188b0f726ac153132ccb82917031583111cf9f21d0ff8488e1fb6b5a23024",
+      "size_bytes": 6438
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/run_native.py": {
+      "sha256": "a25db84475dfa80b0a825d99264d8e0b0c50efc949014b6f41a7eed9a648d55d",
+      "size_bytes": 9487
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/attribution_data.py": {
+      "sha256": "eaa4954f3255d3f82082dc30baef1051f03c0cad4afab806e9cb16d810101ab3",
+      "size_bytes": 5582
+    },
+    "visual_review.json": {
+      "sha256": "dc422a68cb232bbb0528bad4a1f47946cf2406be30c871f1af879fe1e5a9b438",
+      "size_bytes": 4859
+    }
+  },
+  "large_tensors_retained_externally": {
+    "figures/native-6dge0kjr/study/evaluated.pt": {
+      "sha256": "579d199fc63922fed70fac36dde3c0fc2484d3cdbadb9c844021835ebd48b768",
+      "size_bytes": 16682827
+    },
+    "figures/native-6dge0kjr/study/mapping.pt": {
+      "sha256": "b83f3e84f39928212554699c1830bf2d9057b4c5de24ddbf48473f15ff1dff99",
+      "size_bytes": 146397357
+    },
+    "figures/native-6dge0kjr/study/play.pt": {
+      "sha256": "acab2d257e5cc3ebfeff864df6542a265435b6416cd5b88bd68d3fc14cfa5210",
+      "size_bytes": 296601
+    },
+    "figures/native-6dge0kjr/study/prepared.pt": {
+      "sha256": "1c6e417b50dd1386da26003770c97fd54287fe1536fed82eb59a928db4c45eee",
+      "size_bytes": 3587461
+    },
+    "figures/native-6dge0kjr/study/selections_before_refits.pt": {
+      "sha256": "b0db2242b71f6b65fd713644dabe318196ccac49fdfd07c8ab57721f7a465a2d",
+      "size_bytes": 1051517
+    }
+  },
+  "readback_verified": true
+}

@@ -1,0 +1,58 @@
+{
+  "study": "16.15_gradientshap_expected_gradients",
+  "phase": "evaluated_after_audit",
+  "model_keys": [
+    "clean_0",
+    "clean_1",
+    "clean_2",
+    "shuffled_0",
+    "shuffled_1",
+    "shuffled_2",
+    "ridge"
+  ],
+  "model_fits": 7,
+  "optimizer_updates": 4800,
+  "train_rows": 758,
+  "explanation_rows": 153,
+  "audit_rows": 119,
+  "all_model_rows": 1904,
+  "nested_budgets": [
+    8,
+    32,
+    128,
+    512,
+    2048
+  ],
+  "quadrature_nodes": [
+    256,
+    512
+  ],
+  "background_variants": 5,
+  "noise_variants": 3,
+  "sampling_replicates": 64,
+  "replicate_sample_shape": [
+    64,
+    3,
+    64,
+    2048,
+    8
+  ],
+  "replicate_sample_dtype": "float64",
+  "replicate_sample_coordinates": 201326592,
+  "replicate_sample_sha256": "521ce9f2e1f23c239e6863166333fb0a3f5f52dbec980a4a527118cee7391c6f",
+  "primary_sample_coordinates": 31195136,
+  "audit_used_for_selection": false,
+  "reference_status": "PASS",
+  "deterministic_artifacts": [
+    "fitted.pt",
+    "prepared.pt",
+    "evaluated.pt",
+    "reference.pt",
+    "diagnostics.pt",
+    "play.pt",
+    "replicate_samples.pt"
+  ],
+  "manifest_array_count": 1442,
+  "manifest_array_elements": 464237288,
+  "native_directory": "/home/bitwise/.cache/arena_extended/gradientshap/new-environment-learner-v1/figures/native"
+}

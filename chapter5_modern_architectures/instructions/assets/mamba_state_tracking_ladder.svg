@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="300" viewBox="0 0 920 300" role="img" aria-labelledby="title desc">
+  <title id="title">Mamba state-tracking validation ladder</title>
+  <desc id="desc">A left-to-right diagram showing generated latent-state tasks, probes, interventions, trained Mamba and Transformer controls, and official Mamba hidden-state extraction.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#344054"/>
+    </marker>
+    <style>
+      .box { fill: #f8fafc; stroke: #344054; stroke-width: 1.5; rx: 7; }
+      .green { fill: #ecfdf3; stroke: #027a48; stroke-width: 1.5; rx: 7; }
+      .blue { fill: #e0f2fe; stroke: #0369a1; stroke-width: 1.5; rx: 7; }
+      .amber { fill: #fffaeb; stroke: #b54708; stroke-width: 1.5; rx: 7; }
+      .title { font: 700 16px Arial, sans-serif; fill: #101828; }
+      .body { font: 13px Arial, sans-serif; fill: #344054; }
+      .small { font: 12px Arial, sans-serif; fill: #475467; }
+      .arrow { stroke: #344054; stroke-width: 1.5; fill: none; marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <rect width="920" height="300" fill="#ffffff"/>
+  <text x="28" y="34" class="title">Mamba State Tracking: evidence ladder</text>
+  <text x="28" y="56" class="body">Probe accuracy is only the first step; interventions and controls decide whether the state claim survives.</text>
+
+  <rect x="30" y="92" width="130" height="96" class="blue"/>
+  <text x="48" y="120" class="title">Known state</text>
+  <text x="48" y="144" class="body">parity</text>
+  <text x="48" y="164" class="body">bracket depth</text>
+
+  <path d="M 166 140 H 205" class="arrow"/>
+  <rect x="210" y="92" width="130" height="96" class="box"/>
+  <text x="232" y="120" class="title">Probe</text>
+  <text x="232" y="144" class="body">held-out positions</text>
+  <text x="232" y="164" class="body">one-hot control</text>
+
+  <path d="M 346 140 H 385" class="arrow"/>
+  <rect x="390" y="92" width="130" height="96" class="green"/>
+  <text x="410" y="120" class="title">Intervene</text>
+  <text x="410" y="144" class="body">target-source</text>
+  <text x="410" y="164" class="body">random control</text>
+
+  <path d="M 526 140 H 565" class="arrow"/>
+  <rect x="570" y="58" width="140" height="86" class="green"/>
+  <text x="590" y="86" class="title">Train Mamba</text>
+  <text x="590" y="110" class="body">long sequence</text>
+  <text x="590" y="130" class="body">state organism</text>
+
+  <rect x="570" y="164" width="140" height="86" class="amber"/>
+  <text x="590" y="192" class="title">Controls</text>
+  <text x="590" y="216" class="body">random labels</text>
+  <text x="590" y="236" class="body">Transformer baseline</text>
+
+  <path d="M 716 102 H 755" class="arrow"/>
+  <path d="M 716 208 H 755" class="arrow"/>
+  <rect x="760" y="104" width="130" height="96" class="box"/>
+  <text x="780" y="132" class="title">Official model</text>
+  <text x="780" y="156" class="body">Mamba-130M-HF</text>
+  <text x="780" y="176" class="body">hidden states</text>
+
+  <text x="40" y="272" class="small">Signature evidence: Mamba long accuracy 0.93, Transformer long accuracy 0.62, intervention success 0.99, official hidden shape [4, 11, 768].</text>
+</svg>

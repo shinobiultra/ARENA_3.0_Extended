@@ -1,0 +1,167 @@
+{
+  "status": "PASS",
+  "learner_directory": "/home/bitwise/.cache/arena_extended/gradientshap/new-environment-learner-v1",
+  "learner_execution_sha256": "7946d1e801856e968d6ec6e78ca613e24d84681d1d13d81e13748d8e5fa44b1b",
+  "source_inputs": {
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_data.py": "9c9c1016ffd6fe839a004c06e801cdcd24d4d71a85ccd3f0707168dec390c7ce",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_methods.py": "2c56ae4e108d13b8e2994f12944af49af3915fcf95d684da96ddec7ed46c5be5",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_methods_tests.py": "fafa0eaa80591793198f23e884c21b3f457eaf240841ae10c9cfd58e721eae12",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_study.py": "f49e4f5872beca780c95a3689b919690e5be8c344df3f0625178476ff163ad02",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_study_tests.py": "ef938b660a7b6388023654bd977cfd94e999540ee6d827ead6f5382f757eb3a5",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py": "c063d120d7449a9b20b4ac370247b2b5971e809575d44ab9d7c8719cc551292f",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference_tests.py": "95bfe943a98b7353e29328992ee4cbf0a0558cdf3c8d64a692129e47bf1dbc4e",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_diagnostics.py": "d3b60c3d5e9565a3c693fa4d8146a8115eae1ac1708986692197dadfdbee5e7f",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_plots.py": "f7369b14f53d0ac3cac2c54efa12ed2b9b799bb2e94336cb0b030b5d585380d0",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/protocol.md": "4ed1d1d45a0b5db304cb45e7c5abe1c85c97434e53b4c9c156ce05b2b489a83b",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/protocol_freeze.json": "79fc20a6b600cc17b9e942927d44ac135e192538e124fcf7b7889407940afcf5",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/data_manifest.json": "bcf41f96c9f6839ee4cbf24df82ca8467b35a6ed9090a9c4c56fce0b1a23120c",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/run_native.py": "f4c359e12c25d77b14100da9e66145480fe0dfa591f9387cf1fe1d8c938f205c",
+    "chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_methods.py": "8d5e9d04624e3941768a710ba9c72dfd281c25c39b495845beda296a1628c4c6",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/lesson.md": "ec76a8b487de0d623b28c38ab6e2dded30e09dbde51d7d167fd15bcd3c34f2c5",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/build_notebooks.py": "0b1b09ca7c3ecb58dde9f89ac993600f86837603e0d167dd8c0b0520d7085395",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/execute_learner.py": "0dfd6ee46e87b0091466c47d6a61e6b451ccdf34758e6a68399ac9f7b42cbc38",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_contracts.py": "3b52d90376e81b75e90ee4f9adfffa35073982708372143542e0a0349b1b319a",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/reproduce_native.py": "382d67ea67ecd6c02d0c1148dbb812c567e6635f706c351f02f85f9cb7d367db",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/publish_study.py": "ea001e7f27cadc4b37a9d63f3766cc67e7450c4ce053a5c2a4f0466beb5034a0"
+  },
+  "native_model_retrained": true,
+  "cached_model_inputs_used": false,
+  "comparisons": {
+    "arrays": 1442,
+    "array_elements": 464237288,
+    "records": 2730,
+    "scalars": 872,
+    "max_absolute_error": 0.0,
+    "comparison": "exact_recursive_value_sha256"
+  },
+  "timing_comparison": {
+    "original": {
+      "measured_scalars": 0,
+      "containers": 1
+    },
+    "fresh": {
+      "measured_scalars": 5,
+      "containers": 2
+    },
+    "durations_are_descriptive": true
+  },
+  "native_execution": {
+    "status": "PASS",
+    "source_inputs": {
+      "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_data.py": "9c9c1016ffd6fe839a004c06e801cdcd24d4d71a85ccd3f0707168dec390c7ce",
+      "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_methods.py": "2c56ae4e108d13b8e2994f12944af49af3915fcf95d684da96ddec7ed46c5be5",
+      "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_methods_tests.py": "fafa0eaa80591793198f23e884c21b3f457eaf240841ae10c9cfd58e721eae12",
+      "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_study.py": "f49e4f5872beca780c95a3689b919690e5be8c344df3f0625178476ff163ad02",
+      "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_study_tests.py": "ef938b660a7b6388023654bd977cfd94e999540ee6d827ead6f5382f757eb3a5",
+      "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py": "c063d120d7449a9b20b4ac370247b2b5971e809575d44ab9d7c8719cc551292f",
+      "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference_tests.py": "95bfe943a98b7353e29328992ee4cbf0a0558cdf3c8d64a692129e47bf1dbc4e",
+      "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_diagnostics.py": "d3b60c3d5e9565a3c693fa4d8146a8115eae1ac1708986692197dadfdbee5e7f",
+      "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_plots.py": "f7369b14f53d0ac3cac2c54efa12ed2b9b799bb2e94336cb0b030b5d585380d0",
+      "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/protocol.md": "4ed1d1d45a0b5db304cb45e7c5abe1c85c97434e53b4c9c156ce05b2b489a83b",
+      "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/protocol_freeze.json": "79fc20a6b600cc17b9e942927d44ac135e192538e124fcf7b7889407940afcf5",
+      "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/data_manifest.json": "bcf41f96c9f6839ee4cbf24df82ca8467b35a6ed9090a9c4c56fce0b1a23120c",
+      "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/run_native.py": "f4c359e12c25d77b14100da9e66145480fe0dfa591f9387cf1fe1d8c938f205c",
+      "chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_methods.py": "8d5e9d04624e3941768a710ba9c72dfd281c25c39b495845beda296a1628c4c6"
+    },
+    "new_training": true,
+    "cached_model_reuse": false,
+    "execution_device": "cpu",
+    "model_fits_completed": 7,
+    "native_attribution_started": true,
+    "summary": {
+      "study": "16.15_gradientshap_expected_gradients",
+      "phase": "evaluated_after_audit",
+      "model_keys": [
+        "clean_0",
+        "clean_1",
+        "clean_2",
+        "shuffled_0",
+        "shuffled_1",
+        "shuffled_2",
+        "ridge"
+      ],
+      "model_fits": 7,
+      "optimizer_updates": 4800,
+      "train_rows": 758,
+      "explanation_rows": 153,
+      "audit_rows": 119,
+      "all_model_rows": 1904,
+      "nested_budgets": [
+        8,
+        32,
+        128,
+        512,
+        2048
+      ],
+      "quadrature_nodes": [
+        256,
+        512
+      ],
+      "background_variants": 5,
+      "noise_variants": 3,
+      "sampling_replicates": 64,
+      "replicate_sample_shape": [
+        64,
+        3,
+        64,
+        2048,
+        8
+      ],
+      "replicate_sample_dtype": "float64",
+      "replicate_sample_coordinates": 201326592,
+      "replicate_sample_sha256": "521ce9f2e1f23c239e6863166333fb0a3f5f52dbec980a4a527118cee7391c6f",
+      "primary_sample_coordinates": 31195136,
+      "audit_used_for_selection": false,
+      "reference_status": "PASS",
+      "deterministic_artifacts": [
+        "fitted.pt",
+        "prepared.pt",
+        "evaluated.pt",
+        "reference.pt",
+        "diagnostics.pt",
+        "play.pt",
+        "replicate_samples.pt"
+      ],
+      "manifest_array_count": 1442,
+      "manifest_array_elements": 464237288
+    },
+    "elapsed_seconds": 52.04646896200029,
+    "changed_sources": []
+  },
+  "artifacts": {
+    "fresh_run/diagnostics.pt": {
+      "sha256": "1b2b7f318eaa7b293c3c7fda4bdb88725f652492b42036dbe0f9d33a08cfc050",
+      "size_bytes": 67813
+    },
+    "fresh_run/evaluated.pt": {
+      "sha256": "462e32a9a0b52617af8ea9fe6c75ea10b2614bac2ae7b09a28bdcab9a450f49d",
+      "size_bytes": 1577241419
+    },
+    "fresh_run/fitted.pt": {
+      "sha256": "c8e5bce695edc3e76e02284968ce6c5e6760060a2373a82f659e75700962e4c3",
+      "size_bytes": 467968
+    },
+    "fresh_run/play.pt": {
+      "sha256": "98f107c9935881417758f606124bda1871b89b756b1c7b5db5bde15258861e3f",
+      "size_bytes": 159143
+    },
+    "fresh_run/prepared.pt": {
+      "sha256": "af7079beb52083d3c1955aabe20f13d3a8a71f40404e5f10dc4f8ac6822e7853",
+      "size_bytes": 302399289
+    },
+    "fresh_run/reference.pt": {
+      "sha256": "3acbf133884f07b3dcb80bf6853e4ad88fee83b6a13ec1556f03d5e16ae29502",
+      "size_bytes": 57328569
+    },
+    "fresh_run/replicate_samples.pt": {
+      "sha256": "46238cad0348f56be4807507256233884af3588037a434197f0cbe0f0aa1a0fa",
+      "size_bytes": 1610614447
+    },
+    "fresh_run/timings.pt": {
+      "sha256": "21e405c8ca5f47ce9f7146ee38293d947cc13a0691f9c48f5093415adb054108",
+      "size_bytes": 1453
+    }
+  },
+  "elapsed_seconds": 57.79460081600064,
+  "changed_sources": []
+}

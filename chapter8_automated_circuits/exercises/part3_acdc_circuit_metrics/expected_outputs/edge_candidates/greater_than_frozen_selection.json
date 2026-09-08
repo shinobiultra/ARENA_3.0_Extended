@@ -1,0 +1,52 @@
+{
+  "status": "frozen_before_heldout",
+  "task": "greater_than",
+  "heldout_seed": 13,
+  "heldout_count": 64,
+  "heldout_template": "The {noun} lasted from {year} to {century}",
+  "criteria": {
+    "recovery_minimum": 0.85,
+    "fraction_positive_maximum_drop_from_clean": 0.1,
+    "kl_maximum": 0.5
+  },
+  "selection_data": "32_discovery_seed11_and_32_development_seed12_disjoint_instances",
+  "heldout_selection_prohibited": true,
+  "choices": [
+    {
+      "method": "acdc",
+      "candidate_path": "/tmp/acdc-greater-than-fullgraph-tau0004.json",
+      "candidate_sha256": "50e61fc25aa5132a7076184bbc42b73cc07edc020dad0461d639a74377c8970b",
+      "selection_path": "/home/bitwise/Documents/ARENA_3.0_Extended/chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/expected_outputs/edge_candidates/greater_than_acdc_selection.json",
+      "edge_count": 78,
+      "development_recovery": 0.8549853563308716,
+      "development_kl": 0.13462236523628235
+    },
+    {
+      "method": "eap",
+      "candidate_path": "/home/bitwise/Documents/ARENA_3.0_Extended/chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/expected_outputs/edge_candidates/greater_than_eap_frozen_candidate.json",
+      "candidate_sha256": "b5eeae263aa16c7cb7a52e1eecab996c216fed671b513129f8fe113089bfc10d",
+      "selection_path": "/home/bitwise/Documents/ARENA_3.0_Extended/chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/expected_outputs/edge_candidates/greater_than_eap_selection.json",
+      "edge_count": 300,
+      "development_recovery": 0.927178680896759,
+      "development_kl": 0.11447855830192566
+    },
+    {
+      "method": "eap-ig-inputs",
+      "candidate_path": "/home/bitwise/Documents/ARENA_3.0_Extended/chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/expected_outputs/edge_candidates/greater_than_eap-ig-inputs_frozen_candidate.json",
+      "candidate_sha256": "563e3469235b3de660efd85edc6d534ae4c62e2cb29d7c57fea49c4cb6925f16",
+      "selection_path": "/home/bitwise/Documents/ARENA_3.0_Extended/chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/expected_outputs/edge_candidates/greater_than_eap-ig-inputs_selection.json",
+      "edge_count": 100,
+      "development_recovery": 0.8787939548492432,
+      "development_kl": 0.1535888910293579
+    },
+    {
+      "method": "eap-ig-kl",
+      "candidate_path": "/home/bitwise/Documents/ARENA_3.0_Extended/chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/expected_outputs/edge_candidates/greater_than_eap-ig-kl_frozen_candidate.json",
+      "candidate_sha256": "809b4d09359eb4c65a811969c7816524c8cd5c9d9920b9f86c998de11e8b7f7d",
+      "selection_path": "/home/bitwise/Documents/ARENA_3.0_Extended/chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/expected_outputs/edge_candidates/greater_than_eap-ig-kl_selection.json",
+      "edge_count": 300,
+      "development_recovery": 0.9226335287094116,
+      "development_kl": 0.0969640463590622
+    }
+  ]
+}

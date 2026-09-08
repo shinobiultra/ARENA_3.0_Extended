@@ -1,0 +1,31 @@
+{
+  "notebook_id": "7_4_mini_natural_language_autoencoders",
+  "model_id": "EleutherAI/pythia-70m-deduped",
+  "model_revision": "e93a9faa9c77e5d09219f6c868bfc7a1bd65593c",
+  "device": "cuda",
+  "torch_version": "2.12.1+cu132",
+  "cuda_version": "13.2",
+  "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+  "peak_vram_gb": 1.008443,
+  "train_count": 96,
+  "eval_count": 32,
+  "token_accuracy": 1.0,
+  "exact_text_accuracy": 1.0,
+  "normalized_fve": 0.816460,
+  "within_factor_fve": 0.828169,
+  "mean_cosine": 0.984766,
+  "distinct_rows": 32,
+  "behavior_parity": 1.0,
+  "bag_of_tokens": {
+    "normalized_fve": 0.641777,
+    "within_factor_fve": 0.840526,
+    "behavior_parity": 0.0
+  },
+  "same_context_token_multiset_fraction": 1.0,
+  "original_task_accuracy": 0.9375,
+  "reconstructed_task_accuracy": 0.9375,
+  "identity_max_logit_error": 0.0,
+  "single_row_other_max_logit_change": 0.0,
+  "intervention_selected_logit_change": 5.614258,
+  "signature_passed": true
+}

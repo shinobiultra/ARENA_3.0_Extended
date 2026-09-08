@@ -1,0 +1,101 @@
+notebook_id: 11_2_cca_svcca_and_representation_alignment
+section: '11.2'
+title: CCA, SVCCA, and Representation Alignment
+execution_device: cpu
+exercise_metadata:
+  EXERCISE_ID: 11_2_cca_svcca_and_representation_alignment
+  GT_TIER: GT-0
+  DIFFICULTY: 3
+  IMPORTANCE: 5
+  EXPECTED_RUNTIME: About three hours study; about two minutes for the recorded complete
+    CPU notebook
+  REQUIRES_GPU: false
+gt_tier: GT-0
+evidence_level: exact_alignment_oracles_and_native_gpt2_donor_interventions
+claim_scope: Learner-implemented whitening, CCA, SVCCA, Procrustes and canonical transport
+  with exact mathematical oracles, followed by 96 new GPT-2 IOI prompts, three layer
+  pairs, 17 candidates and 16 matched null draws. Partial causal transfer and failed
+  native donors remain visible. This CPU experiment does not claim cross-model equivalence
+  or a whole-paper replication.
+required_gpu_gb: 0
+max_allowed_gpu_gb: 0
+models:
+- id: gpt2
+  source: huggingface
+  revision: 607a30d783dfa663caf39e06633721c8d4cfcd7e
+  precision: float32
+  gated: false
+datasets:
+- id: frozen_ioi_alignment_prompts_v1
+  source: generated
+  protocol: alignment_protocol.json
+  train_rows: 72
+  development_rows: 48
+  final_rows: 96
+expected_metrics:
+  tests_passed: true
+  accepted: true
+  native_model_reloaded: true
+  actual_learner_passed: true
+  fresh_reproduction_passed: true
+  own_answer_code_cells: 20
+  embedded_figures: 9
+  retained_outcomes: 12816
+  main_forward_rows: 12888
+  fresh_compared_examples: 5184
+  fresh_condition_batches: 108
+  fresh_max_logit_error_max: 1.0e-05
+  fresh_top_token_mismatches: 0
+  final_used_for_selection: false
+  whole_paper_replication: false
+controls:
+- exact_covariance_and_linear_map_oracles
+- independent_views
+- shuffled_training_correspondence
+- five_seed_width_sample_noise_sweep
+- low_variance_causal_feature
+- zero_rank_edit
+- native_no_op
+- actual_target_layer_donor
+- equal_rank_pca_procrustes
+- ridge_transport
+- training_only_fits
+- development_selected_ranks
+- new_template_final_prompts
+- unseen_name_split
+- same_norm_random_edits_16_draws
+- full_vocabulary_winning_tokens
+- fresh_native_cpu_model_all_conditions
+safety_notes:
+- Generated name-role prompts only; hooks are removed after each forward pass and
+  weights are unchanged.
+freshness_inputs:
+- chapter11_representation_geometry/exercises/part2_cca_svcca_alignment/alignment_data.py
+- chapter11_representation_geometry/exercises/part2_cca_svcca_alignment/alignment_evidence.py
+- chapter11_representation_geometry/exercises/part2_cca_svcca_alignment/alignment_ioi_data.py
+- chapter11_representation_geometry/exercises/part2_cca_svcca_alignment/alignment_methods.py
+- chapter11_representation_geometry/exercises/part2_cca_svcca_alignment/alignment_methods_tests.py
+- chapter11_representation_geometry/exercises/part2_cca_svcca_alignment/alignment_model.py
+- chapter11_representation_geometry/exercises/part2_cca_svcca_alignment/alignment_reproduce.py
+- chapter11_representation_geometry/exercises/part2_cca_svcca_alignment/alignment_study.py
+- chapter11_representation_geometry/exercises/part2_cca_svcca_alignment/build_notebooks.py
+- chapter11_representation_geometry/exercises/part2_cca_svcca_alignment/execute_learner.py
+- chapter11_representation_geometry/exercises/part2_cca_svcca_alignment/publish_study.py
+- chapter11_representation_geometry/exercises/part2_cca_svcca_alignment/run_alignment_development.py
+- chapter11_representation_geometry/exercises/part2_cca_svcca_alignment/solutions.py
+- chapter11_representation_geometry/exercises/part2_cca_svcca_alignment/tests.py
+- chapter11_representation_geometry/exercises/part2_cca_svcca_alignment/lesson.md
+- chapter11_representation_geometry/exercises/part2_cca_svcca_alignment/alignment_protocol.json
+- chapter11_representation_geometry/exercises/part2_cca_svcca_alignment/expected_outputs/learner_execution.json
+- chapter11_representation_geometry/exercises/part2_cca_svcca_alignment/expected_outputs/alignment_study.json.gz
+- chapter11_representation_geometry/exercises/part2_cca_svcca_alignment/expected_outputs/fresh_reproduction.json
+- chapter11_representation_geometry/instructions/assets/alignment_known_correlations.png
+- chapter11_representation_geometry/instructions/assets/alignment_noise_overfit.png
+- chapter11_representation_geometry/instructions/assets/alignment_real_correlations.png
+- chapter11_representation_geometry/instructions/assets/alignment_real_name_changes.png
+- chapter11_representation_geometry/instructions/assets/alignment_real_name_generalization.png
+- chapter11_representation_geometry/instructions/assets/alignment_real_play.png
+- chapter11_representation_geometry/instructions/assets/alignment_real_token_gallery.png
+- chapter11_representation_geometry/instructions/assets/alignment_real_transport_curves.png
+- chapter11_representation_geometry/instructions/assets/alignment_variance_causal_failure.png
+- chapter11_representation_geometry/exercises/part2_cca_svcca_alignment/expected_outputs/formatting_equivalence_v3.json

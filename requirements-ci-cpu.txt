@@ -1,0 +1,4 @@
+# Minimal hosted-CI dependencies for metadata and course-surface gates.
+# Do not use this file for notebook execution or GPU evidence generation.
+pytest
+pyyaml

@@ -1,0 +1,17 @@
+{
+  "accepted": true,
+  "claim_scope": "Exact nonlinear eight-site AtP* model organism; no real-model or GPU claim.",
+  "evidence_level": "exact_ground_truth_toy",
+  "gt_tier": "GT-0",
+  "notebook_id": "8_6_atp_star_from_scratch",
+  "section": "8.6",
+  "tests_passed": true,
+  "title": "AtP* from Scratch",
+  "candidate_components": 8,
+  "clean_metric": 2.8999999543100614,
+  "corrupt_metric": 0.0,
+  "atp_star_spearman": 0.9999999999999998,
+  "atp_star_recovery_at_4": 0.8988764005335488,
+  "vanilla_atp_spearman": 0.6265060240963854,
+  "random_recovery_at_4": 0.101123599466451
+}

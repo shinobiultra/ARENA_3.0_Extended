@@ -1,0 +1,20 @@
+{
+  "model": "/home/bitwise/.cache/huggingface/hub/models--nvidia--diffusiongemma-26B-A4B-it-NVFP4/snapshots/2ea837236295d617ac27f8c17d61228081932c40",
+  "prompt": "In one concise sentence, explain why mechanistic interpretability experiments need negative controls.",
+  "rendered_prompt": "<bos><|turn>user\nIn one concise sentence, explain why mechanistic interpretability experiments need negative controls.<turn|>\n<|turn>model\n<|channel>thought\n<channel|>",
+  "used_chat_template": true,
+  "output": "Negative controls are necessary to ensure that observed model behaviors are causally linked to the specific mechanisms being tested rather than artifacts, chance correlations, or noise.",
+  "max_tokens": 128,
+  "max_model_len": 4096,
+  "max_num_seqs": 1,
+  "canvas_length": 256,
+  "load_seconds": 25.02060890197754,
+  "generate_seconds": 0.402371883392334,
+  "torch_version": "2.11.0+cu130",
+  "torch_cuda_version": "13.0",
+  "vllm_version": "0.24.0",
+  "cuda_available": true,
+  "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+  "gpu_total_memory_gib": 23.45965576171875,
+  "parent_process_peak_allocated_gib": 0.0
+}

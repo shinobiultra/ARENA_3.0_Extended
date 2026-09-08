@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ARENA [14.4] Maze Transformer verification report",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "notebook_id",
+    "date_run",
+    "git_commit",
+    "gt_tier",
+    "evidence_level",
+    "claim_scope",
+    "gpu_name",
+    "peak_vram_gb",
+    "wall_clock_seconds",
+    "models",
+    "datasets",
+    "tests_passed",
+    "metrics",
+    "baselines",
+    "negative_controls",
+    "known_failures",
+    "safety_notes",
+    "accepted"
+  ],
+  "properties": {
+    "notebook_id": {"const": "14_4_maze_transformers_and_latent_planning"},
+    "date_run": {"type": "string"},
+    "git_commit": {"type": "string"},
+    "gt_tier": {"const": "GT-3"},
+    "evidence_level": {"type": "string"},
+    "claim_scope": {"type": "string"},
+    "gpu_name": {"type": "string", "minLength": 1},
+    "peak_vram_gb": {"type": "number", "minimum": 0, "maximum": 24},
+    "wall_clock_seconds": {"type": "number", "minimum": 0, "maximum": 300},
+    "models": {"type": "array", "minItems": 1},
+    "datasets": {"type": "array", "minItems": 1},
+    "tests_passed": {"const": true},
+    "metrics": {
+      "type": "object",
+      "required": [
+        "heldout_action_accuracy",
+        "legal_path_rate",
+        "goal_reach_rate",
+        "optimal_path_rate",
+        "best_distance_probe_accuracy",
+        "targeted_patch_effect"
+      ]
+    },
+    "baselines": {"type": "object"},
+    "negative_controls": {"type": "object"},
+    "known_failures": {"type": "array"},
+    "safety_notes": {"type": "array"},
+    "accepted": {"const": false}
+  }
+}

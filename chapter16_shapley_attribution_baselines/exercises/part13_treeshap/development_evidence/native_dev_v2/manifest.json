@@ -1,0 +1,60 @@
+{
+  "source_directory": "/home/bitwise/.cache/arena_extended/treeshap/native-dev-v2",
+  "archive_sha256": "82bfdc3a6a2b8ca1d09b2b438b7d7f0809d52cc25ce7117114f635dd6d8a02e9",
+  "members": {
+    "evaluated.joblib": {
+      "sha256": "f7248cbf40bdcfee7077fbac133c3d5ecebd0c175f78c60592e117f952375088",
+      "size_bytes": 2080695
+    },
+    "fitted.joblib": {
+      "sha256": "8498c07c565be40c75ade6ae2da89976176a42ac34b85589409a70ace2cd960b",
+      "size_bytes": 1940932
+    },
+    "play.joblib": {
+      "sha256": "a524bd45b557aeeaee3eb653c7e1cb2dc8ea8f41021d0ab6a33fe87df217db16",
+      "size_bytes": 730
+    },
+    "prepared.joblib": {
+      "sha256": "bafe40cf56380f1524cc233a4bfee27bc4b0e95f8ac48b7cce19c859cf6d1bff",
+      "size_bytes": 2495159
+    },
+    "source_snapshot/author_reference.json": {
+      "sha256": "c02421610e81d11b4f38baa88d86d463d147ed9a195eeba8fa230ffb35efd5f3",
+      "size_bytes": 651
+    },
+    "source_snapshot/data_manifest.json": {
+      "sha256": "0e829e5632b8b3fec9cdd54393e361fe58f7ea3e40d4e753399c4372509eeb38",
+      "size_bytes": 12657
+    },
+    "source_snapshot/protocol.md": {
+      "sha256": "a62ed351750e5e1c4e77f8d651ecef040267b4df795940052ec73b73017159c7",
+      "size_bytes": 5981
+    },
+    "source_snapshot/protocol_freeze.json": {
+      "sha256": "eb895e76b1ca62e8e654bb1334524be14a8e9b55a14045d427bf001f7558ba00",
+      "size_bytes": 477
+    },
+    "source_snapshot/treeshap_data.py": {
+      "sha256": "329b983afd4b12be1786507a4b585d057e722cfa888adaa99457f2222b82ffe3",
+      "size_bytes": 1784
+    },
+    "source_snapshot/treeshap_methods.py": {
+      "sha256": "cf97fe5ed3ddd8ad068884c1e5820016c4585effbcfbd345c02246bc615848d3",
+      "size_bytes": 9681
+    },
+    "source_snapshot/treeshap_methods_tests.py": {
+      "sha256": "0ef8151b28ab2054dc56c3488133dbb6491fa0d4cdb636fe00ddc1894d9e19a2",
+      "size_bytes": 9053
+    },
+    "source_snapshot/treeshap_study.py": {
+      "sha256": "3a3292b028aa6a4831519b25c6babb4b49fe4302e6188a3e9d73fcf75ede79ae",
+      "size_bytes": 8545
+    },
+    "state.json": {
+      "sha256": "a191319babcca0b9fed01978d5d074b114ad979631eae6fbd41cd18639956b3b",
+      "size_bytes": 924
+    }
+  },
+  "large_tensors_retained_externally": {},
+  "readback_verified": true
+}

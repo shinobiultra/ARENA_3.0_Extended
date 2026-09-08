@@ -1,0 +1,610 @@
+{
+  "accepted": true,
+  "baselines": {
+    "declared_controls": [
+      "constant_additive_signed_pair_pure_triple_pure_four_and_degree_two_exact_controls",
+      "independent_derivative_STII_closed_form_Faith_Shap_KKT_and_pair_SII_formulas",
+      "direct_shapiq_1_5_2_all_2992_games_and_58_separately_counted_exact_instances",
+      "all_seven_known_predictors_three_shuffled_target_fits_and_affine_ridge",
+      "all_256_coalitions_and_64_contexts_for_every_pair",
+      "five_intact_training_donor_backgrounds_change_the_target_game",
+      "all_128_within_cardinality_permutations_and_all_256_random_pair_orders",
+      "direct_four_forward_full_context_checks",
+      "group_weighted_explanation_orders_fixed_before_audit_pair_capture",
+      "bounded_nearest_training_geometry_with_smallest_source_id_ties",
+      "two_editable_analytic_dividend_and_native_donor_context_plays",
+      "independent_fresh_cpu_fit_and_every_retained_deterministic_value"
+    ],
+    "expected_metrics": {
+      "accepted": true,
+      "actual_learner_passed": true,
+      "background_changes_estimand": true,
+      "background_variants": 5,
+      "cross_split_recipe_overlap": 0,
+      "direct_four_forward_values": 213248,
+      "embedded_figures": 11,
+      "exact_boundary_order_n_cases": 5,
+      "exact_fixed_games": 8,
+      "exact_package_game_instances": 58,
+      "exact_package_index_calls": 174,
+      "exact_random_game_order_cases": 45,
+      "exact_random_games": 15,
+      "exact_reference_passed": true,
+      "explanation_row_count": 153,
+      "final_used_for_selection": false,
+      "fresh_compared_arrays_min": 1,
+      "fresh_compared_elements_min": 50135040,
+      "fresh_comparison": "exact_recursive_value_sha256",
+      "fresh_max_error": 0.0,
+      "fresh_model_fits": 7,
+      "fresh_reproduction_passed": true,
+      "full_hybrid_predictions": 50135040,
+      "heldout_row_count": 119,
+      "independent_model_replication": false,
+      "known_model_state_hashes_matched": 21,
+      "method_superiority_is_acceptance_gate": false,
+      "mlp_fits": 6,
+      "model_coalition_values": 487424,
+      "model_fits": 7,
+      "model_row_explanations": 1904,
+      "native_evidence_reused": false,
+      "native_model_retrained": true,
+      "native_model_retrained_in_this_report": true,
+      "observational_interactions_are_causal": false,
+      "optimizer_updates": 4800,
+      "physical_hybrid_shards": 10,
+      "physical_hybrid_values_rehashed": true,
+      "primary_context_values": 3411968,
+      "primary_hybrid_predictions": 31195136,
+      "random_pair_order_controls": 256,
+      "reference_full_direct_package_scope": true,
+      "reference_games": 2992,
+      "reference_max_error_to_bound_ratio_max": 1.0,
+      "reference_package_index_calls": 8976,
+      "reference_passed": true,
+      "reference_raw_package_coordinates": 332112,
+      "reference_relevant_package_coordinates": 305184,
+      "reference_student_coordinates": 1615680,
+      "reference_versions": {
+        "shapiq": "1.5.2"
+      },
+      "shuffled_fits": 3,
+      "sii_joint_efficiency_claimed": false,
+      "student_core_functions": 10,
+      "student_method_exercises": 8,
+      "study": "16.16_shapley_taylor_faith_shap",
+      "support_distance_points": 557056,
+      "test_count": 10,
+      "tests_passed": true,
+      "train_row_count": 758,
+      "unique_empirical_games": 2992,
+      "whole_paper_replication": false,
+      "within_size_null_replicates": 128,
+      "within_size_permutation_elements": 3899392,
+      "within_size_seeds_retained": 15232
+    }
+  },
+  "claim_scope": "Student-implemented Shapley-Taylor and exact constrained Faith-Shap compare efficient allocations on complete finite games. All seven known Concrete predictors and 272 held-out rows retain every primary donor prediction, all pair contexts, five clean_0 backgrounds, explanation-derived audit pair rankings, within-size and random-order controls, direct package references and an independent fresh CPU reproduction. Tiny exact games isolate high-order dividends. These are observational empirical games and known-model reproduction, not physical causality or independent model replication.",
+  "datasets": [
+    {
+      "audit": 119,
+      "explanation": 153,
+      "id": "uci_concrete_compressive_strength",
+      "license": "CC BY 4.0",
+      "manifest": "data_manifest.json",
+      "revision": "8d4b15b6fc68cd932d745cbd663d5ceae66dd54422e99c1e4865f2936ab7e2af",
+      "source": "uci",
+      "train": 758
+    }
+  ],
+  "date_run": "2026-09-08T04:46:45+00:00",
+  "evidence_level": "complete_empirical_interaction_games_plus_exhaustive_exact_references",
+  "git_commit": "ce96ceaa",
+  "gpu_name": "unavailable",
+  "gt_tier": "GT-0",
+  "known_failures": [],
+  "metrics": {
+    "gpu_evidence": {
+      "category": "cpu_or_budget_metric",
+      "placeholder_only": false,
+      "section_specific_metric_keys": [
+        "actual_learner_passed",
+        "background_changes_estimand",
+        "background_variants",
+        "cross_split_recipe_overlap",
+        "direct_four_forward_values",
+        "direct_vs_table_context_difference_max",
+        "efficient_decomposition_residual_max",
+        "embedded_figures",
+        "exact_boundary_order_n_cases",
+        "exact_fixed_games",
+        "exact_package_game_instances",
+        "exact_package_index_calls",
+        "exact_random_game_order_cases",
+        "exact_random_games",
+        "exact_reference_coordinates",
+        "exact_reference_passed",
+        "explanation_row_count",
+        "faith_kernel_mse_max",
+        "final_used_for_selection",
+        "fresh_compared_arrays",
+        "fresh_compared_elements",
+        "fresh_comparison",
+        "fresh_elapsed_seconds",
+        "fresh_evidence_sha256",
+        "fresh_max_error",
+        "fresh_model_fits",
+        "fresh_output_directory",
+        "fresh_reproduction_passed",
+        "full_hybrid_predictions",
+        "heldout_row_count",
+        "independent_model_replication",
+        "known_model_state_hashes_matched",
+        "learner_evidence_sha256",
+        "method_superiority_is_acceptance_gate",
+        "mlp_fits",
+        "model_coalition_values",
+        "model_fits",
+        "model_keys",
+        "model_row_explanations",
+        "native_evidence_reused",
+        "native_model_retrained",
+        "native_model_retrained_in_this_report",
+        "observational_interactions_are_causal",
+        "optimizer_updates",
+        "own_answer_code_cells",
+        "physical_hybrid_file_sha256",
+        "physical_hybrid_shards",
+        "physical_hybrid_values_rehashed",
+        "primary_context_values",
+        "primary_hybrid_predictions",
+        "random_pair_order_controls",
+        "reference_error_to_bound_ratios",
+        "reference_full_direct_package_scope",
+        "reference_games",
+        "reference_max_error_to_bound_ratio",
+        "reference_package_index_calls",
+        "reference_passed",
+        "reference_raw_package_coordinates",
+        "reference_relevant_package_coordinates",
+        "reference_source_files_rehashed",
+        "reference_student_coordinates",
+        "reference_versions",
+        "shuffled_fits",
+        "sii_joint_efficiency_claimed",
+        "stii_faith_coordinate_difference_max",
+        "stii_kernel_mse_max",
+        "study",
+        "support_distance_points",
+        "train_row_count",
+        "unique_empirical_games",
+        "whole_paper_replication",
+        "within_size_null_replicates",
+        "within_size_permutation_elements",
+        "within_size_seeds_retained"
+      ],
+      "uses_cuda": false
+    },
+    "gpu_test": {
+      "actual_learner_passed": true,
+      "background_changes_estimand": true,
+      "background_variants": 5,
+      "cross_split_recipe_overlap": 0,
+      "cuda_available": false,
+      "cuda_version": "13.2",
+      "device": "cpu",
+      "direct_four_forward_values": 213248,
+      "direct_vs_table_context_difference_max": 4.902744876744691e-13,
+      "efficient_decomposition_residual_max": 7.105427357601002e-14,
+      "embedded_figures": 11,
+      "exact_boundary_order_n_cases": 5,
+      "exact_fixed_games": 8,
+      "exact_package_game_instances": 58,
+      "exact_package_index_calls": 174,
+      "exact_random_game_order_cases": 45,
+      "exact_random_games": 15,
+      "exact_reference_coordinates": 5814,
+      "exact_reference_passed": true,
+      "explanation_row_count": 153,
+      "faith_kernel_mse_max": 179.69175367461395,
+      "final_used_for_selection": false,
+      "fresh_compared_arrays": 1797,
+      "fresh_compared_elements": 94604271,
+      "fresh_comparison": "exact_recursive_value_sha256",
+      "fresh_elapsed_seconds": 49.444545317999655,
+      "fresh_evidence_sha256": "2459a062b29ab6f703bafcf16d25a104e5ca028e987f433b9623382049f7553d",
+      "fresh_max_error": 0.0,
+      "fresh_model_fits": 7,
+      "fresh_output_directory": "/home/bitwise/.cache/arena_extended/shapley_interactions/report_reproductions/report-5zotj9qz/fresh_cpu",
+      "fresh_reproduction_passed": true,
+      "full_hybrid_predictions": 50135040,
+      "gpu_total_memory_gb": null,
+      "heldout_row_count": 119,
+      "independent_model_replication": false,
+      "known_model_state_hashes_matched": 21,
+      "learner_evidence_sha256": "36aeb068584f017a63a2845a26306dee2400a128b4f75970c96b10258b49f806",
+      "method_superiority_is_acceptance_gate": false,
+      "mlp_fits": 6,
+      "model_coalition_values": 487424,
+      "model_fits": 7,
+      "model_keys": [
+        "clean_0",
+        "clean_1",
+        "clean_2",
+        "shuffled_0",
+        "shuffled_1",
+        "shuffled_2",
+        "ridge"
+      ],
+      "model_row_explanations": 1904,
+      "native_evidence_reused": false,
+      "native_model_retrained": true,
+      "native_model_retrained_in_this_report": true,
+      "observational_interactions_are_causal": false,
+      "optimizer_updates": 4800,
+      "own_answer_code_cells": 55,
+      "peak_vram_gb": 0.0,
+      "physical_hybrid_file_sha256": {
+        "independent64_a_audit_hybrid.pt": "e2706f609838dd5f1e04151b5658e590599871a00113cc6adc003fc531b7c813",
+        "independent64_a_explain_hybrid.pt": "408051bade31dcf99b1afe87d0d4382ea224103c926045688b7d5b86e4598a52",
+        "independent64_b_audit_hybrid.pt": "83c834be1624b473ce7f1a20b3d5c5edcf930712653154d317f27591de9639ec",
+        "independent64_b_explain_hybrid.pt": "599d885d81f643a84f0efe2553eb642c571023bd5197ea0b644fefc6fc50fe60",
+        "nested128_audit_hybrid.pt": "3fc49370a9d426a993954e7ea8b5c5db3d741d08bff4808823c85a1e4dfd8dc2",
+        "nested128_explain_hybrid.pt": "3a0ba3a873befcebeb4d9f0fbdaac6f01bcc86a731e3c12d8b7f4c8daf3f85dd",
+        "nested16_audit_hybrid.pt": "d3c224de38dc13d5d8f06c7c84881be3ebf3c453cc96f72fdcfbee129bb314e4",
+        "nested16_explain_hybrid.pt": "541fc72b0d6182a277ea20c3538587d1d17423cc8bee8e7800f8919685d75c21",
+        "primary_audit_hybrid.pt": "bbf17c6a7e2641d1e40068fbf2630471c0519ccd05d74289b3c43c02b93cf6af",
+        "primary_explain_hybrid.pt": "18e2ccb64da6f4d8170984d4232a3df786fbb24b6055f4ccd61e2bed36be038a"
+      },
+      "physical_hybrid_shards": 10,
+      "physical_hybrid_values_rehashed": true,
+      "primary_context_values": 3411968,
+      "primary_hybrid_predictions": 31195136,
+      "random_pair_order_controls": 256,
+      "reference_error_to_bound_ratios": {
+        "efficiency_errors.independent_fsii_closed": 0.000712073212294107,
+        "efficiency_errors.independent_fsii_kkt": 0.0002201639885613356,
+        "efficiency_errors.independent_stii": 0.0009938077949386394,
+        "efficiency_errors.shapiq_fsii": 0.24583606921636808,
+        "efficiency_errors.shapiq_stii": 0.0005027098394020255,
+        "efficiency_errors.student_fsii": 0.00035489689060608524,
+        "efficiency_errors.student_stii": 0.0003581953260575981,
+        "errors.independent_kkt_minus_closed_fsii": 0.003298565856520221,
+        "errors.shapiq_fsii_minus_independent": 0.13699955232829017,
+        "errors.shapiq_sii_pairs_minus_independent": 0.0002908381612950765,
+        "errors.shapiq_stii_minus_independent": 0.0003978134156267452,
+        "errors.student_fsii_minus_independent_closed": 0.00331531441369844,
+        "errors.student_sii_pairs_minus_independent": 0.0003536119250015513,
+        "errors.student_stii_minus_independent": 0.0005351272741977289
+      },
+      "reference_full_direct_package_scope": true,
+      "reference_games": 2992,
+      "reference_max_error_to_bound_ratio": 0.24583606921636808,
+      "reference_package_index_calls": 8976,
+      "reference_passed": true,
+      "reference_raw_package_coordinates": 332112,
+      "reference_relevant_package_coordinates": 305184,
+      "reference_source_files_rehashed": 6,
+      "reference_student_coordinates": 1615680,
+      "reference_versions": {
+        "shapiq": "1.5.2"
+      },
+      "shuffled_fits": 3,
+      "sii_joint_efficiency_claimed": false,
+      "stii_faith_coordinate_difference_max": 20.93304350156714,
+      "stii_kernel_mse_max": 464.0544435329741,
+      "study": "16.16_shapley_taylor_faith_shap",
+      "support_distance_points": 557056,
+      "torch_version": "2.12.1+cu132",
+      "train_row_count": 758,
+      "unique_empirical_games": 2992,
+      "whole_paper_replication": false,
+      "within_size_null_replicates": 128,
+      "within_size_permutation_elements": 3899392,
+      "within_size_seeds_retained": 15232,
+      "within_vram_budget": true
+    },
+    "notebook_contract": {
+      "accepted": true,
+      "claim_scope": "Analytic checks of Mobius dividends, Shapley-Taylor, exact constrained Faith-Shap and its closed form, reconstruction, complete donor games and context derivatives.",
+      "student_core_functions": 10,
+      "student_method_exercises": 8,
+      "test_count": 10,
+      "tests_passed": true
+    }
+  },
+  "models": [
+    {
+      "gated": false,
+      "id": "six_float64_8x32x32x1_relu_regressors",
+      "precision": "float64",
+      "revision": "known16_14_models_reproduced_under_frozen16_16_protocol",
+      "source": "generated_training_run"
+    },
+    {
+      "gated": false,
+      "id": "affine_ridge_control",
+      "precision": "float64",
+      "revision": "frozen_shapley_interactions_protocol_v1",
+      "source": "generated_training_run"
+    }
+  ],
+  "negative_controls": {
+    "declared_controls": [
+      "all_128_within_cardinality_permutations_and_all_256_random_pair_orders"
+    ]
+  },
+  "notebook_id": "16_16_where_does_higher_order_credit_go",
+  "ood_tests": {
+    "declared": "required_where_applicable"
+  },
+  "peak_vram_gb": 0.0,
+  "report_inputs": {
+    "algorithm": "sha256",
+    "combined_sha256": "6bff28e133e59c05bcfcc0a6e6d130e39eaf865e0bdaa9b35a5c0e2680216758",
+    "files": [
+      {
+        "path": "arena_ext/verification.py",
+        "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
+        "size_bytes": 9276
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/16.16_Where_Does_Higher_Order_Credit_Go_exercises.ipynb",
+        "sha256": "b9a1c5c029f35e78a37613c9966f0fd057747855fddcab4711ca31352edec8a6",
+        "size_bytes": 2050447
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/16.16_Where_Does_Higher_Order_Credit_Go_solutions.ipynb",
+        "sha256": "aed3fb8fdd708f6915158b337cf4c12c9f341ec217eb73a856982ba7a2bef690",
+        "size_bytes": 2046943
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/README.md",
+        "sha256": "e7ca449f0659de476dea0da39fe15cbb47748e751cf03f5bdc79c53e141ef0ec",
+        "size_bytes": 8662
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/artifacts.lock.yml",
+        "sha256": "f681f1393e36d223284a9f7df8a0565ef20696e2d829223919ff974ab5c4c881",
+        "size_bytes": 9843
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/build_notebooks.py",
+        "sha256": "b13a17c22ed4f98a7663728e08a2878dae5cb0e7aeadafa817eade73218d6150",
+        "size_bytes": 24281
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/data_manifest.json",
+        "sha256": "192eacd0f1dd137c627d1c4aec58b1eb17c3c31753ff9c496ed1e04717c9651e",
+        "size_bytes": 1174840
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/execute_learner.py",
+        "sha256": "9c564bc9c8c00c9770b5be69ae4aaae666ff5eb41896d8af1a7983e803b37da6",
+        "size_bytes": 10689
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/expected_outputs/README.md",
+        "sha256": "2ae89aa86eeb00d51bf36398e15801669aa675c6f04601d7e7a30c69ed80cf84",
+        "size_bytes": 7966
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/expected_outputs/fresh_reproduction.json",
+        "sha256": "2459a062b29ab6f703bafcf16d25a104e5ca028e987f433b9623382049f7553d",
+        "size_bytes": 12985
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/expected_outputs/learner_execution.json",
+        "sha256": "36aeb068584f017a63a2845a26306dee2400a128b4f75970c96b10258b49f806",
+        "size_bytes": 28045
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/expected_outputs/native_summary.json",
+        "sha256": "6908ad22470c6215c4417b0fd0bc7b6300cae6c5f4e0c128677fc2c85cc52a21",
+        "size_bytes": 1943
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/implementation_amendments.json",
+        "sha256": "30a1054729e0b5ce9f9b8b4378da3ae395496fbcaa30b30c59c1ab7c69cdec25",
+        "size_bytes": 19512
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/independent_recheck.json",
+        "sha256": "706478b279e279d4c277141add921008a33f2ca96fac309218f7c7bbf7ccb770",
+        "size_bytes": 25169
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_contracts.py",
+        "sha256": "766fc31a44f858482cc8abfc395c4202a272614e2b577ca2c88cc57ca36080b0",
+        "size_bytes": 31252
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_data.py",
+        "sha256": "9418e01edb3cbc0f812716d2686d4a2d40ceb753112a87b1d18536a19ca2420f",
+        "size_bytes": 5173
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_diagnostics.py",
+        "sha256": "9fece8bfeda699cab8ced09ba38ed48787b0c5f82c2d67ea5280f2419e726c46",
+        "size_bytes": 25302
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_diagnostics_tests.py",
+        "sha256": "76621b77b5b0e4183a0a5c0e9a1ef0ff7aa107ea145297a1b144af91837b89a7",
+        "size_bytes": 10644
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_methods.py",
+        "sha256": "8287979f6693825fd4519b6eabc136f13dd2672f30ad1316b9b1f89638d1d52b",
+        "size_bytes": 17665
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_methods_tests.py",
+        "sha256": "c5d99d494f4b0e78097674afba70119daed725a2c9f73709f44e821f536af490",
+        "size_bytes": 27061
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_plots.py",
+        "sha256": "490c6549ddbb9b20d57e6bacc84217b1330269b8c975f70888024b1be4d42133",
+        "size_bytes": 50369
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_plots_tests.py",
+        "sha256": "bd425abbdeff5f1a7d25045e52616d1c2f593ab8e249250cc45b2c999e84f9fc",
+        "size_bytes": 16926
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_reference.py",
+        "sha256": "bfbac8cf51bb2fec355f4382283d39d97ce7746740d9a107981c0af0966a4c73",
+        "size_bytes": 57253
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_reference_tests.py",
+        "sha256": "bbf5572179bf5cb704ea9bc9e033e1ac8448a0631561b9f6800054a2faaf3280",
+        "size_bytes": 23941
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_report_tests.py",
+        "sha256": "5eb95d4ecd2e5afabb0513d25054cba55c6126a7dac58d88100bce4f9a11b827",
+        "size_bytes": 4514
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_study.py",
+        "sha256": "2a4288f9bd3d1e5772e87c6c2986e4a98288efbb4bc73a401113d20c183192ef",
+        "size_bytes": 78092
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_study_tests.py",
+        "sha256": "ca154072c12157b2e5886f6a29c90ae41d4c32bb06990430adbdc5218e9d3b33",
+        "size_bytes": 20198
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/lesson.md",
+        "sha256": "12a4724e1540360ddfac26af6e5d5ed63dd34b528b561081b48252a48c0d2754",
+        "size_bytes": 69636
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/pre_run_resolution.json",
+        "sha256": "0a6f19aa82ec5691a7ad38382d7e6a3a82a7cdc52aeaae28a01bf13ab587b923",
+        "size_bytes": 8880
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/protocol.md",
+        "sha256": "c0d738cf953743f17b74ca5ced74c15330b8b3be7d7d128563ba36096986ee37",
+        "size_bytes": 22895
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/protocol_freeze.json",
+        "sha256": "3fe5047026188b6446adb010403fede0bbee145779fd5aba3826ad75f9acdf7f",
+        "size_bytes": 772
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/publish_study.py",
+        "sha256": "13c7b4cc48d81a6ca05eaecacaa01762890e87ff0f3d913b81a8f5fbaf1b220c",
+        "size_bytes": 24860
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/reproduce_native.py",
+        "sha256": "155b38b23ee6ec71ada78d6598dfeaf5723fdb947cf769a831a6d048a238393a",
+        "size_bytes": 16993
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/run_native.py",
+        "sha256": "df2d8a5a6f3485e0b022b7ebd3826a3d3a0452da97143e5a3d8d8cbe64304669",
+        "size_bytes": 43108
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/solutions.py",
+        "sha256": "417085f8c9f40b01f098272a5557dc2170ad640547fda8f0ef193414fab1cce3",
+        "size_bytes": 23649
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/tests.py",
+        "sha256": "0f492a65a223638979067257c68f8171fbae6167b20abdaeda00924f4b9e1dba",
+        "size_bytes": 190
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/verification_report.schema.json",
+        "sha256": "87082f935bc3c092eb0b833eed9874937fa400d63dc584bee03838bd73c8c759",
+        "size_bytes": 12897
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/shapley_interactions_01_exact_allocation_ledger.png",
+        "sha256": "7dd1118380c92226088a2528a4da3bf045bec7c5cbeecbfd2f96dd1b8cfba5a6",
+        "size_bytes": 132999
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/shapley_interactions_02_why_faith_moves_singletons.png",
+        "sha256": "9d1b0a9955b7905d46b296b4c06ee935a5c5e5e5f3cde45057b8f5e10ae316e2",
+        "size_bytes": 157102
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/shapley_interactions_03_native_game_and_controls.png",
+        "sha256": "cb0c486bcfd1fe6847b0113fb1ad84b051a73faa2a40db47c391e2c054d4efdd",
+        "size_bytes": 146636
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/shapley_interactions_04_fixed_row_interaction_graph.png",
+        "sha256": "401f76de336bb37a7d90b6c2076bae0adef0ee5864957d9a5b84420077267e90",
+        "size_bytes": 361239
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/shapley_interactions_05_allrow_pair_heatmaps.png",
+        "sha256": "4fb3da7bc1ca830628bab50165d748855792299334c0bb377ce9c85a15b44d3b",
+        "size_bytes": 332954
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/shapley_interactions_06_heldout_pair_order_capture.png",
+        "sha256": "100b2cd32370fed1a5b33e947e45fef9a785b31a2d2921bb9a4331357b0893f2",
+        "size_bytes": 611491
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/shapley_interactions_07_order_two_reconstruction.png",
+        "sha256": "a9be099504fb8825203c226b53886ae4d070346a833bcae55d5d3a0e5b58ea50",
+        "size_bytes": 267481
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/shapley_interactions_08_background_changes_the_game.png",
+        "sha256": "1a66796b6bfeedf2533112116169a38f8061e933b11c9ff7a87308bde5d076ce",
+        "size_bytes": 181547
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/shapley_interactions_09_contextual_pair_interventions.png",
+        "sha256": "db497c3b27fc431e167037e030413ad3de4d6fb57f6b6b31ff7c0df14cccca13",
+        "size_bytes": 242565
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/shapley_interactions_10_dividend_play.png",
+        "sha256": "c75f494399d7e79973e21459425551682e49b40cb67bddc73067bde31d0e5697",
+        "size_bytes": 84577
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/assets/shapley_interactions_11_donor_context_play.png",
+        "sha256": "0f2cf0ff7adbca5c6ff63b3d9e38541a5522e173f759d655509c71d92bbea638",
+        "size_bytes": 109396
+      },
+      {
+        "path": "chapter16_shapley_attribution_baselines/instructions/pages/16_[16.16]_Where_Does_Higher_Order_Credit_Go.md",
+        "sha256": "d57e19d421da4a5221ff44c39e9b4ef289fa8c43ecf26a6629eb6f212ae22997",
+        "size_bytes": 123245
+      },
+      {
+        "path": "scripts/run_extension_verification_reports.py",
+        "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
+        "size_bytes": 16272
+      },
+      {
+        "path": "uv.lock",
+        "sha256": "e96e946bb00f50592d32c1b3bf453fca4482a0097731120defbebcd978f019eb",
+        "size_bytes": 610963
+      }
+    ],
+    "schema_version": 1
+  },
+  "safety_notes": [
+    "Interactions in an observational predictor do not establish physical ingredient effects.",
+    "Intact-donor hybrids can be unlike observed recipes; nearest-training distance is not density or causal validation."
+  ],
+  "tests_passed": true,
+  "wall_clock_seconds": 58.905692
+}

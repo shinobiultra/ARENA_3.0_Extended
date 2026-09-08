@@ -1,0 +1,41 @@
+{
+  "source_directory": "/home/bitwise/.cache/arena_extended/alignment/full-own-answer-v3",
+  "archive_sha256": "2ff092513aab51b2f9e3c5662d63f4f963ab2a62710f5e96f816a1fec0aaff19",
+  "members_sha256": {
+    "actual_alignment_study/alignment_study.json.gz": "62587736598807ada6bb224a0931946444e5ccf87fc61bd06c4776b29f52bcd5",
+    "actual_alignment_study/protocol.json": "d334f056f827eb5d26e5e08fa7e83bd6b0030c56cfca5d00651fc8816d8d1b65",
+    "completed_learner.ipynb": "9c7904f8cf7f292814232223d8fa812679362a183058fd21e2871669aca90ef5",
+    "execution.json": "75c3cb6fb9cc9ca6734e86dad88cee435ad28437e6f089594db4d6b477b23cd1",
+    "figures/alignment_known_correlations.png": "288e0cc914e8678a1025027189e4af3f3c0f5216b965c7b2cf92ebbdfabd5c6d",
+    "figures/alignment_noise_overfit.png": "c5b463207f85d1d220dc0932a46ee1f6eff714f52c4c17fa4937d5a88343a8a3",
+    "figures/alignment_real_correlations.png": "7d31ac6cc86b407588cb84d4eb3b7c281158bb69211a6272ce58f4dee1625008",
+    "figures/alignment_real_name_changes.png": "bff140d827d04e73271feceda7a5cb07976d83f2a59bcc5b6b035479ea4b53ff",
+    "figures/alignment_real_name_generalization.png": "9c0aa006cd9dee777bdf79bb11d1c7d82247eff29035bd63234105f12975ce65",
+    "figures/alignment_real_play.png": "9b71c7c6883d785d0293456d879f28d2657c85c99bb7be0793c3172789af56c0",
+    "figures/alignment_real_token_gallery.png": "5736b12e03499582ab39c49bb0140f0e0ed2858e7a4f120d2a91ad85cf6f6d31",
+    "figures/alignment_real_transport_curves.png": "67d085ba86073d762527b4f1a8db6ff93935f6aa593e56b7306e765d94388ed0",
+    "figures/alignment_variance_causal_failure.png": "974ca164487967bf1ac078e0e681a60566c145de0124c1f42aeffe9ab47ee46c",
+    "source_snapshot/alignment_data.py": "e03c33969ba6629652ae3db88df0a9f5a01801859d9eb40ff50b9fc70be3286e",
+    "source_snapshot/alignment_ioi_data.py": "24dcca4b91674bda2411c19ddd283f7e1f7df3a91a9ef9565fd2a37ab8f9185f",
+    "source_snapshot/alignment_methods.py": "9745adae5294110c32394d0668b336fbe2934e1edcf9b7591090f13fb764930f",
+    "source_snapshot/alignment_methods_tests.py": "16195ddf1b98a1db196fd1a5ed63c150850833e830e4af6a715e16b1989a372b",
+    "source_snapshot/alignment_model.py": "92b8bb8302e74a66ca2dcf262a6219aecffa5453fe8bca345ee84904b12b95b4",
+    "source_snapshot/alignment_protocol.json": "d334f056f827eb5d26e5e08fa7e83bd6b0030c56cfca5d00651fc8816d8d1b65",
+    "source_snapshot/alignment_study.py": "080fd194994b7b5dc719885494b614cea9c31bc985887dbe0baa8335e9e3b862",
+    "source_snapshot/build_notebooks.py": "e9d9787fc371828b8114c259ecc51482497af23cce7c82ca5b4af5d44fb440ed",
+    "source_snapshot/execute_learner.py": "e0849ac0f174f6108e72fc9e92d1097282675fa125f25e744d3f489fc5479b0a",
+    "source_snapshot/lesson.md": "636b02bd30bc86104251a00051a3a3ddcc827fc902417b6acb93c4114bd21022",
+    "source_snapshot/run_alignment_development.py": "0a0d0f7aac9975d02f196ac13843e1d26f1f6040bfccecd473dc0448a7ae9463"
+  },
+  "large_tensors_retained_in_source_directory": {
+    "actual_alignment_study/actual_play.pt": {
+      "sha256": "06718ab1e81782b348f5c2c9f805c43793301d27d0f8517c31c813de6c128d11",
+      "size_bytes": 1101125
+    },
+    "actual_alignment_study/actual_tensors.pt": {
+      "sha256": "d5105bb038479c08aa33a279a09d6976e81ed521bb8183a3b1eaeb6297242c37",
+      "size_bytes": 2855233725
+    }
+  },
+  "all_archive_members_read_back_and_verified": true
+}

@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="360" viewBox="0 0 920 360" role="img" aria-labelledby="title desc">
+  <title id="title">Representation geometry validation loop</title>
+  <desc id="desc">A validation loop from activations to centered geometry, held-out prediction, controls, stability, and claim boundaries.</desc>
+  <rect width="920" height="360" fill="#f7f8fb"/>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#2f4156"/>
+    </marker>
+    <style>
+      .box { fill: #ffffff; stroke: #2f4156; stroke-width: 2; rx: 7; }
+      .accent { fill: #e6f1ff; stroke: #2266aa; stroke-width: 2; rx: 7; }
+      .warn { fill: #fff4df; stroke: #a45a00; stroke-width: 2; rx: 7; }
+      .ok { fill: #e7f5ec; stroke: #1f7a45; stroke-width: 2; rx: 7; }
+      .text { font: 16px sans-serif; fill: #172033; }
+      .small { font: 13px sans-serif; fill: #46566d; }
+      .arrow { stroke: #2f4156; stroke-width: 2.5; fill: none; marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <rect x="38" y="62" width="150" height="92" class="box"/>
+  <text x="113" y="92" text-anchor="middle" class="text">Hidden states</text>
+  <text x="113" y="120" text-anchor="middle" class="small">weekday/month prompts</text>
+  <text x="113" y="140" text-anchor="middle" class="small">no generation</text>
+  <path d="M188 108 H252" class="arrow"/>
+  <rect x="252" y="62" width="155" height="92" class="accent"/>
+  <text x="329" y="92" text-anchor="middle" class="text">Center geometry</text>
+  <text x="329" y="120" text-anchor="middle" class="small">PCA/SVD</text>
+  <text x="329" y="140" text-anchor="middle" class="small">template means removed</text>
+  <path d="M407 108 H470" class="arrow"/>
+  <rect x="470" y="62" width="160" height="92" class="ok"/>
+  <text x="550" y="92" text-anchor="middle" class="text">Held-out transfer</text>
+  <text x="550" y="120" text-anchor="middle" class="small">centroid + kNN</text>
+  <text x="550" y="140" text-anchor="middle" class="small">OOD templates</text>
+  <path d="M630 108 H696" class="arrow"/>
+  <rect x="696" y="62" width="170" height="92" class="warn"/>
+  <text x="781" y="92" text-anchor="middle" class="text">Null controls</text>
+  <text x="781" y="120" text-anchor="middle" class="small">white noise</text>
+  <text x="781" y="140" text-anchor="middle" class="small">random labels/tokens</text>
+  <path d="M781 154 V220 H565" class="arrow"/>
+  <rect x="392" y="220" width="173" height="92" class="box"/>
+  <text x="478" y="250" text-anchor="middle" class="text">Stability checks</text>
+  <text x="478" y="278" text-anchor="middle" class="small">5 seeds x 3 settings</text>
+  <text x="478" y="298" text-anchor="middle" class="small">trustworthiness + neighbors</text>
+  <path d="M392 266 H322" class="arrow"/>
+  <rect x="124" y="220" width="198" height="92" class="ok"/>
+  <text x="223" y="250" text-anchor="middle" class="text">Bounded claim</text>
+  <text x="223" y="278" text-anchor="middle" class="small">geometry evidence only</text>
+  <text x="223" y="298" text-anchor="middle" class="small">not a causal behavior claim</text>
+</svg>

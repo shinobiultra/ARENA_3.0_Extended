@@ -1,0 +1,285 @@
+{
+  "accepted": false,
+  "baselines": {
+    "declared_controls": [
+      "exact_calendar_and_independent_nuisance_oracle",
+      "training_only_pca_and_coordinate_probes",
+      "chronological_class_permutation_512_draws",
+      "all_33_development_boundaries",
+      "frozen_selected_layers_before_final",
+      "all_new_template_donors",
+      "no_op",
+      "mean_only",
+      "full_donor",
+      "same_rank_random_donor_plane_32_draws",
+      "equal_norm_random_edit_32_draws",
+      "class_order_permuted_circular_probe_32_draws",
+      "independent_noise_reducer_control",
+      "permuted_training_labels",
+      "five_seeds_three_settings_per_reducer",
+      "leave_one_calendar_class_out",
+      "actual_full_vocabulary_answers",
+      "fresh_cuda_all_nulls_first_batch"
+    ],
+    "expected_metrics": {
+      "accepted": true,
+      "actual_learner_passed": true,
+      "all_donor_pairs": 5634,
+      "angle_play_rows": 3196,
+      "embedded_figures": 13,
+      "final_prompts": 579,
+      "final_used_for_selection": false,
+      "fresh_compared_examples": 6656,
+      "fresh_condition_batches": 208,
+      "fresh_max_logit_error_max": 1e-06,
+      "fresh_top_token_mismatches": 0,
+      "null_draws_per_kind": 32,
+      "own_answer_code_cells": 35,
+      "paper_equivalent_full_replication": false,
+      "projection_fits": 120,
+      "retained_outcomes": 120649,
+      "tests_passed": true,
+      "tsne_is_transductive": true
+    }
+  },
+  "claim_scope": "Learner-implemented geometry and native interventions on pinned Mistral-7B: 579 new prompts, all 5634 donor pairs, 32 draws of each null, 120 nonlinear fits. Partial causal effects and all failures retained. t-SNE is transductive; broader space/time tasks are not reproduced.",
+  "datasets": [
+    {
+      "development_rows": 100,
+      "final_rows": 579,
+      "id": "frozen_calendar_prompts_v2",
+      "protocol": "geometry_protocol.json",
+      "source": "generated",
+      "train_rows": 93
+    }
+  ],
+  "date_run": "2026-09-05T15:11:25+00:00",
+  "evidence_level": "exact_numerical_oracles_and_real_mistral_calendar_interventions",
+  "git_commit": "8eab192b",
+  "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+  "gt_tier": "GT-0",
+  "known_failures": [
+    "ValueError('Fresh first-batch regeneration differs from the actual learner.')",
+    "expected metric 'actual_learner_passed' but no actual metric 'actual_learner_passed' was found",
+    "expected metric 'own_answer_code_cells' but no actual metric 'own_answer_code_cells' was found",
+    "expected metric 'embedded_figures' but no actual metric 'embedded_figures' was found",
+    "expected metric 'final_prompts' but no actual metric 'final_prompts' was found",
+    "expected metric 'all_donor_pairs' but no actual metric 'all_donor_pairs' was found",
+    "expected metric 'retained_outcomes' but no actual metric 'retained_outcomes' was found",
+    "expected metric 'null_draws_per_kind' but no actual metric 'null_draws_per_kind' was found",
+    "expected metric 'projection_fits' but no actual metric 'projection_fits' was found",
+    "expected metric 'angle_play_rows' but no actual metric 'angle_play_rows' was found",
+    "expected metric 'fresh_compared_examples' but no actual metric 'fresh_compared_examples' was found",
+    "expected metric 'fresh_condition_batches' but no actual metric 'fresh_condition_batches' was found",
+    "expected metric 'fresh_max_logit_error_max' but no actual metric 'fresh_max_logit_error' was found",
+    "expected metric 'fresh_top_token_mismatches' but no actual metric 'fresh_top_token_mismatches' was found",
+    "expected metric 'final_used_for_selection' but no actual metric 'final_used_for_selection' was found",
+    "expected metric 'tsne_is_transductive' but no actual metric 'tsne_is_transductive' was found",
+    "expected metric 'paper_equivalent_full_replication' but no actual metric 'paper_equivalent_full_replication' was found"
+  ],
+  "metrics": {
+    "notebook_contract": {
+      "accepted": true,
+      "claim_scope": "Numerical method oracles; real evidence is checked separately.",
+      "test_count": 15,
+      "tests_passed": true
+    }
+  },
+  "models": [
+    {
+      "gated": false,
+      "id": "mistralai/Mistral-7B-v0.1",
+      "precision": "bfloat16",
+      "revision": "27d67f1b5f57dc0953326b2601d68371d40ea8da",
+      "source": "huggingface"
+    }
+  ],
+  "negative_controls": {
+    "declared_controls": [
+      "same_rank_random_donor_plane_32_draws",
+      "equal_norm_random_edit_32_draws"
+    ]
+  },
+  "notebook_id": "11_1_pca_svd_and_geometry_controls",
+  "ood_tests": {
+    "declared": "required_where_applicable"
+  },
+  "peak_vram_gb": 13.602812,
+  "report_inputs": {
+    "algorithm": "sha256",
+    "combined_sha256": "f6646524426f8a256c47a4d9494d0cb90ba0a258d557a93a451103f8f9ef1fb0",
+    "files": [
+      {
+        "path": "arena_ext/verification.py",
+        "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
+        "size_bytes": 9276
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/11.1_PCA_SVD_and_Geometry_Controls_exercises.ipynb",
+        "sha256": "4021d452ba242036d73cefc4fcd8d1b6aca32ebf4358d3f4289bc863cd899058",
+        "size_bytes": 2204890
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/11.1_PCA_SVD_and_Geometry_Controls_solutions.ipynb",
+        "sha256": "26d9e190b4759351d18ad582158d86d8707250416267979778130628c8771e75",
+        "size_bytes": 2216633
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/README.md",
+        "sha256": "d7691d28acf89e259917844b089b26c9081c8a59a3902566223e72269c379542",
+        "size_bytes": 2523
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/artifacts.lock.yml",
+        "sha256": "354045dc7b4d40ac8fc5f852ed3dbdf4699c7541917135d9600f5185a27774af",
+        "size_bytes": 4429
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/build_notebooks.py",
+        "sha256": "0f34dae75c4c2b7604faeec248b182bd923e5ae6ad86d085a451b74ef25585f0",
+        "size_bytes": 4316
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/execute_learner.py",
+        "sha256": "dccfdc78b78fb625d059ac0558e8e78f74b2ed0ae647178b5c061c68aec884f6",
+        "size_bytes": 3263
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/expected_outputs/README.md",
+        "sha256": "7f591c29da1ba993b5f8cfc2450be9f6b32697b3512a03d5454c7586b32266e0",
+        "size_bytes": 1983
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/expected_outputs/learner_execution.json",
+        "sha256": "2556feed1fb6de4550d3e9c1187ad3b8e77e432531e4ac93d7156aa49e3ac995",
+        "size_bytes": 10713
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/expected_outputs/measured_geometry/angle_play.json.gz",
+        "sha256": "54e78035f517e18c95f46881cac9af6c65b15dbbf0a9b29bd1a79e6befee0fd1",
+        "size_bytes": 30956
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/expected_outputs/measured_geometry/measured_study.json.gz",
+        "sha256": "7a1e52fd4c42aee162f673ecb5c4193481eb3351a225134e1af94ecb24c1f534",
+        "size_bytes": 4235840
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/expected_outputs/measured_geometry/projection_study.json.gz",
+        "sha256": "284d83b46aa223678917fffdb80485cdaff89a4d82558451262b1f88540fef79",
+        "size_bytes": 742734
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/expected_outputs/measured_geometry/protocol.json",
+        "sha256": "d9e21dbb2203f581892863255bce312b77dc2a9b55c6db42119eaba3e0e28c96",
+        "size_bytes": 4280
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/expected_outputs/measured_geometry/runtime.json",
+        "sha256": "cbd02b709c66b7e0f297590e1c23bd4d45d3270df7ce89292f36381446ac5645",
+        "size_bytes": 299
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/expected_outputs/measured_geometry/single_play.json",
+        "sha256": "4ebd2a22ceba719f08251cfd02296215ec4a7c0bb537ca16b4bd9000d019566a",
+        "size_bytes": 1388
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/expected_outputs/reference_metrics.json",
+        "sha256": "b00c34cf56b2f13a71776aac3990f23b4f23d2e8b41d51a5c85c0a3a61b2fbd9",
+        "size_bytes": 374
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/expected_outputs/smoke_test.json",
+        "sha256": "87e53e49535f858fb1bf048e7c1fe24ebe737a97f9ed12c20d471bf70d664577",
+        "size_bytes": 143
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/geometry_cuda.py",
+        "sha256": "2eb46b7f72902ff28dfc537a9d4f4e01cae778099573a7878ff8834d4e286d60",
+        "size_bytes": 8420
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/geometry_data.py",
+        "sha256": "cc8045803c8437d859e44d60fe45414c9e2e95b5246fdb62ae0f8d7b8192037b",
+        "size_bytes": 2676
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/geometry_evidence.py",
+        "sha256": "7d800a28bafeaae39926b098842f5edcb20d6d8f9a1b40caad3f7271e788c548",
+        "size_bytes": 11244
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/geometry_methods.py",
+        "sha256": "13a67de4475c3e6ba746489e2aaa06ef1a1ed26347438b90aee236305dfdf409",
+        "size_bytes": 14404
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/geometry_methods_tests.py",
+        "sha256": "29422632828b9f6b52a2f1caf67e450dd98e02eb97031b68851634d640074e25",
+        "size_bytes": 12696
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/geometry_plotting.py",
+        "sha256": "d185bc99e49504e6e32d39a39a2782bfd2a20814ac706aaa15eac39f3fadc1fe",
+        "size_bytes": 14510
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/geometry_protocol.json",
+        "sha256": "d9e21dbb2203f581892863255bce312b77dc2a9b55c6db42119eaba3e0e28c96",
+        "size_bytes": 4280
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/geometry_study.py",
+        "sha256": "c3cdf723ec7e7e557d3e960f29eeb45e73148059cce12d706ed2b3e785a772c6",
+        "size_bytes": 25440
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/lesson.md",
+        "sha256": "da0af2ce69bbc48a23f8d70404cee7875a0993590213524a63e3db94f875d82f",
+        "size_bytes": 100534
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/publish_study.py",
+        "sha256": "b81096bebc21fc3c99b5f66aa4be191ce01b3dcf85cb81ad549f9b900ba41248",
+        "size_bytes": 5551
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/solutions.py",
+        "sha256": "0a6d991d43b58f755d3d932e2dd0eb6d347fc2d7f1e684fa13ff922a5bc45da7",
+        "size_bytes": 2915
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/tests.py",
+        "sha256": "40513ed6e411e2edaa00018c51848b2275bfe1eb34a679e3f9a569a1142ec0e9",
+        "size_bytes": 197
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/utils.py",
+        "sha256": "512c207b189283db8da39dfdaa96017c8a00ed1efca801a615b07bda40655335",
+        "size_bytes": 242
+      },
+      {
+        "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/verification_report.schema.json",
+        "sha256": "ecd833883885077ad5d7a0e239d984d01462255e94266212cf195ab4d4e27b3d",
+        "size_bytes": 2669
+      },
+      {
+        "path": "chapter11_representation_geometry/instructions/pages/01_[11.1]_PCA_SVD_and_Geometry_Controls.md",
+        "sha256": "922b16538027d31cac91e340259fcef0639f6deac3b2daa11c6b9c782bc49713",
+        "size_bytes": 99899
+      },
+      {
+        "path": "scripts/run_extension_verification_reports.py",
+        "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
+        "size_bytes": 16272
+      }
+    ],
+    "schema_version": 1
+  },
+  "safety_notes": [
+    "Only generated calendar prompts are used. Native hooks are removed after each forward pass. Weights are never changed."
+  ],
+  "tests_passed": false,
+  "wall_clock_seconds": 27.794304
+}

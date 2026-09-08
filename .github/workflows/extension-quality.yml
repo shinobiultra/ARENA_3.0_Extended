@@ -1,0 +1,58 @@
+name: Extension Quality
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      run_gpu:
+        description: "Run self-hosted CUDA report regeneration"
+        required: false
+        type: boolean
+        default: false
+      section:
+        description: "Optional section number for GPU regeneration, for example 8.5"
+        required: false
+        type: string
+        default: ""
+
+jobs:
+  hosted-cpu:
+    name: Hosted CPU audits
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: astral-sh/setup-uv@v6
+      - name: Prepare minimal audit environment
+        run: |
+          uv venv --python 3.14
+          uv pip install -r requirements-ci-cpu.txt
+      - name: Run hosted CPU quality gate
+        run: .venv/bin/python scripts/ci_quality_gate.py --mode hosted-cpu
+
+  self-hosted-gpu:
+    name: Self-hosted CUDA reports
+    if: github.event_name == 'workflow_dispatch' && inputs.run_gpu
+    runs-on: [self-hosted, linux, x64, gpu]
+    timeout-minutes: 360
+    env:
+      BNB_CUDA_VERSION: "130"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: astral-sh/setup-uv@v6
+      - name: Prepare CUDA 13.2 uv environment
+        run: |
+          uv venv --python 3.14
+          uv sync --locked
+      - name: Run GPU quality gate
+        run: |
+          if [ -n "${{ inputs.section }}" ]; then
+            .venv/bin/python scripts/ci_quality_gate.py --mode gpu --section "${{ inputs.section }}"
+          else
+            .venv/bin/python scripts/ci_quality_gate.py --mode release
+          fi

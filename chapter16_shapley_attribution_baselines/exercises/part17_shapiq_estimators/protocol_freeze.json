@@ -1,0 +1,24 @@
+{
+  "status": "FIXED_BEFORE_NATIVE_EXECUTION",
+  "recorded_utc": "2026-09-07T10:17:45.824782+00:00",
+  "author": "root",
+  "review_scope": "Author design and implementation review; not an independent reviewer verdict.",
+  "native_fits_at_freeze": 0,
+  "native_estimator_runs_at_freeze": 0,
+  "scientific_design": {
+    "protocol.md": "5ca23cc6f18ce83c82cac60ad495d2deeabba2c0d9da01c4f61b32e9bb68433a",
+    "data_manifest.json": "9f2b4351ac056d109d63ee99c108df5249c3185c84a68d61bb9384d99940f3c8"
+  },
+  "analytic_validation": {
+    "path": "/home/bitwise/.cache/arena_extended/shapiq_estimators/pre-native-tests-v1.log",
+    "sha256": "5b881b4537ccc6f9a2ef9a8ca6146ea05212d4441a82a3e1e0ea31119376795e",
+    "result": "31 passed; analytic fixtures and package references only"
+  },
+  "initial_scientific_implementation": {
+    "estimator_methods.py": "f173ff6d56b4bdd08fb044ddfb9d18c3cdc7e79cff94b940eb66f51b73fb208c",
+    "estimator_methods_tests.py": "9315702657a2a81795e273e0a9c4f457100cee98092a0f933e02e010b6dd5a99",
+    "estimator_reference_tests.py": "b45a5f3bc4bc8be046e8642e10c69be88c794a742b88a45b852d0a99471e5a2f",
+    "estimator_study.py": "846faa75ed7ccc6b4c59bbb2df6501c7b69500cf27c24b495288a573cdbb3c55",
+    "estimator_study_tests.py": "ed7b99edac4c2a72d19e64ad1ef877a75b66089783907fb96ccb72830aad2c73"
+  }
+}

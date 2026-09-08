@@ -1,0 +1,67 @@
+{
+  "notebook_id": "7_2_feature_verbalizers",
+  "model_id": "EleutherAI/pythia-70m",
+  "model_revision": "a39f36b100fe8a5377810d56c3f4789b9c53ac42",
+  "layer": 3,
+  "selected_hypothesis": "subject_number_plural",
+  "metrics": {
+    "accuracy": 1.0,
+    "baseline_accuracy": 0.8333333134651184,
+    "beats_baseline": true,
+    "embedding_accuracy": 1.0,
+    "forward_orthogonal_absolute_p95": 1.0893045663833618,
+    "forward_paired_causal_p": 0.01556420233463035,
+    "forward_paired_causal_p95": 8.103589057922363,
+    "heldout_activation_accuracy": 1.0,
+    "heldout_behavior_accuracy": 1.0,
+    "heldout_multi_token_noun_count": 10,
+    "lookup_accuracy": 0.5,
+    "orthographic_accuracy": 0.8333333134651184,
+    "paired_causal_count": 256,
+    "paired_null_accuracy_max": 1.0,
+    "paired_null_accuracy_mean": 0.4999999999126885,
+    "paired_null_accuracy_p95": 1.0,
+    "paired_null_count": 4096,
+    "paired_null_exact_p": 0.1337890625,
+    "paired_null_perfect_count": 548,
+    "reverse_orthogonal_absolute_p95": 1.8483564853668213,
+    "reverse_paired_causal_p": 0.007782101167315175,
+    "reverse_paired_causal_p95": 9.018758773803711,
+    "subset_accuracy": 1.0,
+    "subset_baseline_accuracy": 0.75,
+    "suffix_accuracy": 0.8333333134651184,
+    "survives_subset": true,
+    "train_heldout_final_token_overlap": 0,
+    "validation_activation_accuracy": 1.0
+  },
+  "morphology": {
+    "regular": {
+      "activation": 1.0,
+      "suffix": 1.0,
+      "token_lookup": 0.5
+    },
+    "irregular": {
+      "activation": 1.0,
+      "suffix": 0.5,
+      "token_lookup": 0.5
+    },
+    "nonce": {
+      "activation": 1.0,
+      "suffix": 1.0,
+      "token_lookup": 0.5
+    }
+  },
+  "intervention": {
+    "singular_to_plural_delta": 8.4778,
+    "plural_to_singular_delta": 9.6178,
+    "forward_orthogonal_absolute_p95": 1.0893,
+    "forward_orthogonal_absolute_max": 1.4316,
+    "reverse_orthogonal_absolute_p95": 1.8484,
+    "reverse_orthogonal_absolute_max": 2.4096,
+    "target_plural_preference_rate": 1.0,
+    "reverse_singular_preference_rate": 1.0,
+    "forward_paired_causal_p95": 8.103589057922363,
+    "reverse_paired_causal_p95": 9.018758773803711
+  },
+  "signature_passed": true
+}

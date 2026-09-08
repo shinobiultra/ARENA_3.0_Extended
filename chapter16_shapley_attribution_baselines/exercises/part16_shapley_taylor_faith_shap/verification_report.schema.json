@@ -1,0 +1,485 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ARENA16.16 Shapley-Taylor and Faith-Shap verification report",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "notebook_id",
+    "date_run",
+    "git_commit",
+    "report_inputs",
+    "gt_tier",
+    "evidence_level",
+    "claim_scope",
+    "gpu_name",
+    "peak_vram_gb",
+    "wall_clock_seconds",
+    "models",
+    "datasets",
+    "tests_passed",
+    "metrics",
+    "baselines",
+    "negative_controls",
+    "ood_tests",
+    "known_failures",
+    "safety_notes",
+    "accepted"
+  ],
+  "properties": {
+    "notebook_id": {
+      "const": "16_16_where_does_higher_order_credit_go"
+    },
+    "date_run": {
+      "type": "string",
+      "minLength": 1
+    },
+    "git_commit": {
+      "type": "string",
+      "minLength": 1
+    },
+    "report_inputs": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "schema_version",
+        "algorithm",
+        "combined_sha256",
+        "files"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": 1
+        },
+        "algorithm": {
+          "const": "sha256"
+        },
+        "combined_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "files": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "path",
+              "sha256",
+              "size_bytes"
+            ],
+            "properties": {
+              "path": {
+                "type": "string",
+                "minLength": 1
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              },
+              "size_bytes": {
+                "type": "integer",
+                "minimum": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    "gt_tier": {
+      "enum": [
+        "GT-0",
+        "GT-1",
+        "GT-2",
+        "GT-3",
+        "GT-4"
+      ]
+    },
+    "evidence_level": {
+      "type": "string",
+      "minLength": 1
+    },
+    "claim_scope": {
+      "type": "string",
+      "minLength": 1
+    },
+    "gpu_name": {
+      "type": "string"
+    },
+    "peak_vram_gb": {
+      "const": 0.0
+    },
+    "wall_clock_seconds": {
+      "type": "number",
+      "minimum": 0
+    },
+    "models": {
+      "type": "array",
+      "minItems": 2
+    },
+    "datasets": {
+      "type": "array",
+      "minItems": 1
+    },
+    "tests_passed": {
+      "const": true
+    },
+    "metrics": {
+      "type": "object",
+      "required": [
+        "notebook_contract",
+        "gpu_test",
+        "gpu_evidence"
+      ],
+      "properties": {
+        "notebook_contract": {
+          "type": "object",
+          "required": [
+            "tests_passed",
+            "accepted",
+            "test_count",
+            "claim_scope",
+            "student_method_exercises",
+            "student_core_functions"
+          ],
+          "properties": {
+            "tests_passed": {
+              "const": true
+            },
+            "accepted": {
+              "const": true
+            },
+            "test_count": {
+              "const": 10
+            },
+            "claim_scope": {
+              "type": "string",
+              "minLength": 1
+            },
+            "student_method_exercises": {
+              "const": 8
+            },
+            "student_core_functions": {
+              "const": 10
+            }
+          }
+        },
+        "gpu_test": {
+          "type": "object",
+          "required": [
+            "actual_learner_passed",
+            "embedded_figures",
+            "native_model_retrained",
+            "native_model_retrained_in_this_report",
+            "native_evidence_reused",
+            "fresh_reproduction_passed",
+            "fresh_compared_arrays",
+            "fresh_compared_elements",
+            "fresh_max_error",
+            "fresh_comparison",
+            "study",
+            "model_fits",
+            "fresh_model_fits",
+            "mlp_fits",
+            "shuffled_fits",
+            "optimizer_updates",
+            "known_model_state_hashes_matched",
+            "train_row_count",
+            "explanation_row_count",
+            "heldout_row_count",
+            "cross_split_recipe_overlap",
+            "final_used_for_selection",
+            "model_row_explanations",
+            "model_coalition_values",
+            "unique_empirical_games",
+            "background_variants",
+            "primary_context_values",
+            "direct_four_forward_values",
+            "within_size_null_replicates",
+            "within_size_permutation_elements",
+            "within_size_seeds_retained",
+            "random_pair_order_controls",
+            "support_distance_points",
+            "independent_model_replication",
+            "whole_paper_replication",
+            "observational_interactions_are_causal",
+            "sii_joint_efficiency_claimed",
+            "method_superiority_is_acceptance_gate",
+            "background_changes_estimand",
+            "reference_games",
+            "reference_student_coordinates",
+            "reference_raw_package_coordinates",
+            "reference_relevant_package_coordinates",
+            "reference_package_index_calls",
+            "reference_versions",
+            "reference_max_error_to_bound_ratio",
+            "reference_passed",
+            "reference_full_direct_package_scope",
+            "physical_hybrid_shards",
+            "primary_hybrid_predictions",
+            "full_hybrid_predictions",
+            "physical_hybrid_values_rehashed",
+            "exact_fixed_games",
+            "exact_random_games",
+            "exact_random_game_order_cases",
+            "exact_boundary_order_n_cases",
+            "exact_package_game_instances",
+            "exact_package_index_calls",
+            "exact_reference_passed",
+            "device",
+            "own_answer_code_cells",
+            "learner_evidence_sha256",
+            "fresh_evidence_sha256",
+            "physical_hybrid_file_sha256"
+          ],
+          "properties": {
+            "actual_learner_passed": {
+              "const": true
+            },
+            "embedded_figures": {
+              "const": 11
+            },
+            "native_model_retrained": {
+              "const": true
+            },
+            "native_model_retrained_in_this_report": {
+              "const": true
+            },
+            "native_evidence_reused": {
+              "const": false
+            },
+            "fresh_reproduction_passed": {
+              "const": true
+            },
+            "fresh_compared_arrays": {
+              "type": "number",
+              "minimum": 1
+            },
+            "fresh_compared_elements": {
+              "type": "number",
+              "minimum": 50135040
+            },
+            "fresh_max_error": {
+              "const": 0.0
+            },
+            "fresh_comparison": {
+              "const": "exact_recursive_value_sha256"
+            },
+            "study": {
+              "const": "16.16_shapley_taylor_faith_shap"
+            },
+            "model_fits": {
+              "const": 7
+            },
+            "fresh_model_fits": {
+              "const": 7
+            },
+            "mlp_fits": {
+              "const": 6
+            },
+            "shuffled_fits": {
+              "const": 3
+            },
+            "optimizer_updates": {
+              "const": 4800
+            },
+            "known_model_state_hashes_matched": {
+              "const": 21
+            },
+            "train_row_count": {
+              "const": 758
+            },
+            "explanation_row_count": {
+              "const": 153
+            },
+            "heldout_row_count": {
+              "const": 119
+            },
+            "cross_split_recipe_overlap": {
+              "const": 0
+            },
+            "final_used_for_selection": {
+              "const": false
+            },
+            "model_row_explanations": {
+              "const": 1904
+            },
+            "model_coalition_values": {
+              "const": 487424
+            },
+            "unique_empirical_games": {
+              "const": 2992
+            },
+            "background_variants": {
+              "const": 5
+            },
+            "primary_context_values": {
+              "const": 3411968
+            },
+            "direct_four_forward_values": {
+              "const": 213248
+            },
+            "within_size_null_replicates": {
+              "const": 128
+            },
+            "within_size_permutation_elements": {
+              "const": 3899392
+            },
+            "within_size_seeds_retained": {
+              "const": 15232
+            },
+            "random_pair_order_controls": {
+              "const": 256
+            },
+            "support_distance_points": {
+              "const": 557056
+            },
+            "independent_model_replication": {
+              "const": false
+            },
+            "whole_paper_replication": {
+              "const": false
+            },
+            "observational_interactions_are_causal": {
+              "const": false
+            },
+            "sii_joint_efficiency_claimed": {
+              "const": false
+            },
+            "method_superiority_is_acceptance_gate": {
+              "const": false
+            },
+            "background_changes_estimand": {
+              "const": true
+            },
+            "reference_games": {
+              "const": 2992
+            },
+            "reference_student_coordinates": {
+              "const": 1615680
+            },
+            "reference_raw_package_coordinates": {
+              "const": 332112
+            },
+            "reference_relevant_package_coordinates": {
+              "const": 305184
+            },
+            "reference_package_index_calls": {
+              "const": 8976
+            },
+            "reference_versions": {
+              "const": {
+                "shapiq": "1.5.2"
+              }
+            },
+            "reference_max_error_to_bound_ratio": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1.0
+            },
+            "reference_passed": {
+              "const": true
+            },
+            "reference_full_direct_package_scope": {
+              "const": true
+            },
+            "physical_hybrid_shards": {
+              "const": 10
+            },
+            "primary_hybrid_predictions": {
+              "const": 31195136
+            },
+            "full_hybrid_predictions": {
+              "const": 50135040
+            },
+            "physical_hybrid_values_rehashed": {
+              "const": true
+            },
+            "exact_fixed_games": {
+              "const": 8
+            },
+            "exact_random_games": {
+              "const": 15
+            },
+            "exact_random_game_order_cases": {
+              "const": 45
+            },
+            "exact_boundary_order_n_cases": {
+              "const": 5
+            },
+            "exact_package_game_instances": {
+              "const": 58
+            },
+            "exact_package_index_calls": {
+              "const": 174
+            },
+            "exact_reference_passed": {
+              "const": true
+            },
+            "device": {
+              "const": "cpu"
+            },
+            "own_answer_code_cells": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "learner_evidence_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "fresh_evidence_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "physical_hybrid_file_sha256": {
+              "type": "object",
+              "minProperties": 10,
+              "maxProperties": 10,
+              "additionalProperties": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            }
+          },
+          "additionalProperties": true
+        },
+        "gpu_evidence": {
+          "type": "object"
+        }
+      }
+    },
+    "baselines": {
+      "type": "object",
+      "required": [
+        "declared_controls",
+        "expected_metrics"
+      ],
+      "properties": {
+        "declared_controls": {
+          "type": "array",
+          "minItems": 1
+        },
+        "expected_metrics": {
+          "type": "object",
+          "minProperties": 1
+        }
+      }
+    },
+    "negative_controls": {
+      "type": "object"
+    },
+    "ood_tests": {
+      "type": "object"
+    },
+    "known_failures": {
+      "type": "array",
+      "maxItems": 0
+    },
+    "safety_notes": {
+      "type": "array",
+      "minItems": 1
+    },
+    "accepted": {
+      "const": true
+    }
+  }
+}

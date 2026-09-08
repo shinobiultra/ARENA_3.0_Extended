@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ARENA prompt artifact record",
+  "type": "object",
+  "required": [
+    "id",
+    "task",
+    "prompt",
+    "label",
+    "safe_to_display",
+    "contains_sensitive_content",
+    "target_token",
+    "counterfactual_id",
+    "metadata"
+  ],
+  "properties": {
+    "id": {"type": "string"},
+    "task": {"type": "string"},
+    "prompt": {"type": "string"},
+    "prompt_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "label": {"type": "string"},
+    "safe_to_display": {"type": "boolean"},
+    "contains_sensitive_content": {"type": "boolean"},
+    "target_token": {"type": ["string", "null"]},
+    "counterfactual_id": {"type": "string"},
+    "metadata": {
+      "type": "object",
+      "required": ["template", "split", "source", "seed"],
+      "properties": {
+        "template": {"type": "string"},
+        "split": {"type": "string", "enum": ["train", "validation", "test", "ood"]},
+        "source": {"type": "string"},
+        "seed": {"type": "integer"}
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

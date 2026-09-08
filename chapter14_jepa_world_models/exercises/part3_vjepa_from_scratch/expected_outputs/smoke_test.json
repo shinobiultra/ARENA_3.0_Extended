@@ -1,0 +1,38 @@
+{
+  "notebook_id": "14_3_vjepa_from_scratch",
+  "protocol_version": "vjepa-14.3-paper-l1-tube-mask-v4",
+  "seed": 0,
+  "video_shape": [16, 6, 3, 16, 16],
+  "state_count": 8,
+  "clip_key_fields": ["color", "direction", "start_x", "start_y"],
+  "required_duplicate_audit": {
+    "train_duplicates": 0,
+    "test_duplicates": 0,
+    "train_test_overlap": 0
+  },
+  "required_reversal_audit": {
+    "reversed_duplicates": 0,
+    "reversed_pretraining_overlap": 0,
+    "reversed_probe_fit_overlap": 0,
+    "reversed_test_overlap": 0
+  },
+  "tubelet_grid": [3, 4, 4],
+  "token_count": 48,
+  "spatial_tube_training_target_tokens": 12,
+  "future_diagnostic_target_tokens": 16,
+  "state_readout_columns": 96,
+  "state_readout_effective_rank_max": 72,
+  "primary_training_history_keys": ["vjepa_l1"],
+  "active_auxiliary_regularizers": [],
+  "reversed_direction_labels": [1, 0, 3, 2],
+  "tie_aware_credit_for_two_way_true_tie": 0.5,
+  "ema_oracle": {
+    "target": 0.0,
+    "online": 2.0,
+    "momentum": 0.75,
+    "updated": 0.5
+  },
+  "exact_dynamics_pixel_mse": 0.0,
+  "exact_dynamics_teacher_latent_cosine": 1.0,
+  "exact_dynamics_retrieval_accuracy": 1.0
+}

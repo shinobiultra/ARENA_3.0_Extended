@@ -1,0 +1,229 @@
+{
+  "source_directory": "/home/bitwise/.cache/arena_extended/datamodels/own-full-v3",
+  "archive_sha256": "3166151bbfd6c98c4c7a99001312b3c62ee4987c470b04afb606c1184c8ae719",
+  "members": {
+    "completed_learner.ipynb": {
+      "sha256": "3fc38bc43f5b88c064aee5f7643ce6ac49e761e6034b90873f742b1a7946aaf9",
+      "size_bytes": 1442814
+    },
+    "execution.json": {
+      "sha256": "a87ee619bfb88c1583bae6fb64f36f6b39eff1938a5fabf487fa074cfc1cc82c",
+      "size_bytes": 6030
+    },
+    "figures/datamodel_coefficient_gallery.png": {
+      "sha256": "c2fdd881b41287e261bf896a89010fd776ae2e987adfa0e238c83010b6854c39",
+      "size_bytes": 142024
+    },
+    "figures/datamodel_cross_fraction.png": {
+      "sha256": "6fb1bcce812b17824fec464eab2f99b2215e07cb47dc36a6d74a1094aebed77b",
+      "size_bytes": 50611
+    },
+    "figures/datamodel_deletion_curves.png": {
+      "sha256": "25529549b94f4b6df4670a9e11a2950ce2f21c97828b158748d39abfad3e74ee",
+      "size_bytes": 175604
+    },
+    "figures/datamodel_fixture_play.png": {
+      "sha256": "54bd3dfb6364d0e4d43e5c0028e073f7b9f4efcc516a3d360da6ba47d9434d44",
+      "size_bytes": 80985
+    },
+    "figures/datamodel_gauge.png": {
+      "sha256": "25310255b7c2e05350f9a26067d0ec50046ca9f0e76da1d3e3d196cc6bce9411",
+      "size_bytes": 85117
+    },
+    "figures/datamodel_heldout_predictions.png": {
+      "sha256": "6f2ae9a271683890fb1a5f6ebc817f96e80d0f7f012106448af492e1211b2914",
+      "size_bytes": 174758
+    },
+    "figures/datamodel_images.png": {
+      "sha256": "f042428abf8f3893ae9fbbd9df98c2ae0d953c1a703c1e8045ffea7f62dda1d9",
+      "size_bytes": 39237
+    },
+    "figures/datamodel_individual_flips.png": {
+      "sha256": "fe251d46a16fc8b4e63bd27270cbf95a05f7e6ffd6d032c29788e6f2b70b046a",
+      "size_bytes": 179445
+    },
+    "figures/datamodel_membership.png": {
+      "sha256": "5dce0ea5245d97312b26c528e8513bcf5496104ad6b4021dde442cfb7c52776b",
+      "size_bytes": 53470
+    },
+    "figures/datamodel_query_r2.png": {
+      "sha256": "78f1819aa53bd64ecef7a13436dbda1fae923a1bda9b845180c0abdca38779cd",
+      "size_bytes": 141858
+    },
+    "figures/datamodel_real_play.png": {
+      "sha256": "10f6e876e3fb4273a55db124b64718f4130d2ede9551310be862959c32ce0931",
+      "size_bytes": 54766
+    },
+    "figures/datamodel_sample_complexity.png": {
+      "sha256": "98f5d65b4b2b3bcbc0315e020f427cc13060f8e0d85737f94d453ec615259e17",
+      "size_bytes": 135291
+    },
+    "figures/datamodel_similarity.png": {
+      "sha256": "17ca313bc1d19e3b0efab9bd63373acd40b0a03f91e15391a9aa3370ffe29529",
+      "size_bytes": 114110
+    },
+    "figures/datamodel_soft_threshold.png": {
+      "sha256": "f1b8fc3538dca197184c1de83d922d40b9516b2ac5d409b73b3a8e833a04848e",
+      "size_bytes": 56951
+    },
+    "figures/datamodel_validation_path.png": {
+      "sha256": "51babf208ed2dd40070087489feb136f6185afee5a1260a4dbe0cb351ce3481c",
+      "size_bytes": 160331
+    },
+    "figures/native_summary.json": {
+      "sha256": "77336a4ac2c0d2c3f4c548fdb239ae4b2e82eea712969e5cf9d80672cae78b2a",
+      "size_bytes": 464
+    },
+    "figures/reference_checks.json": {
+      "sha256": "bc6bf2729e21b4369384d421ae41a76843aba37ded982985611364964166538e",
+      "size_bytes": 4736
+    },
+    "figures/selection_boundary.json": {
+      "sha256": "15afc43f73b7ad3897e2ac833fd51c1c99a4811a85e3993440527dfdd853c66a",
+      "size_bytes": 234
+    },
+    "html_review/browser_centering.png": {
+      "sha256": "e26f44da1aa283475621c10e2d1e6795b8d538b2f454b26940297f6e0972a542",
+      "size_bytes": 149657
+    },
+    "html_review/browser_deletion.png": {
+      "sha256": "56f23bd75c17db98b634a54e98a70602e6ccbb272a5524d0891f37e926826181",
+      "size_bytes": 184001
+    },
+    "html_review/browser_evaluation.png": {
+      "sha256": "149fb438e342a0a378ac18fce7dc2f4d79a20f25a670c2750e64fbb361bd79b8",
+      "size_bytes": 202264
+    },
+    "html_review/browser_gallery.png": {
+      "sha256": "6daf74f216ca1c6a03a989a3cee1280876e60879d19e3372bae4cc4e12fb82bf",
+      "size_bytes": 128500
+    },
+    "html_review/browser_gauge.png": {
+      "sha256": "9bb7e8cf7948d8c063a0c662207fe3b980feecd68395242a4ae5feb7710b06e3",
+      "size_bytes": 147329
+    },
+    "html_review/browser_interpretation.png": {
+      "sha256": "6a14c3a3bbddd00f020bd7d65d33115470af5b8be2bee0756a4b417e35d5d717",
+      "size_bytes": 125065
+    },
+    "html_review/browser_intro.png": {
+      "sha256": "b737f0a9f5db925b57ab2878083d0f601fdb6da0da942beae7c5c0fc099fc19f",
+      "size_bytes": 128104
+    },
+    "html_review/browser_lasso.png": {
+      "sha256": "afa1f9bd60dc82a5da40c301528f1fd14756e1ef28da7ed1b7803b554f9a4ff4",
+      "size_bytes": 157309
+    },
+    "html_review/browser_native.png": {
+      "sha256": "2037bce3663452009f98d20f416ed72c38f5a95632e93f1179014d783c801b2e",
+      "size_bytes": 189146
+    },
+    "html_review/browser_play.png": {
+      "sha256": "74743c45b17fd11f0e439d7897349745d8d4d62a33fc3db20a2251cb44def51d",
+      "size_bytes": 216160
+    },
+    "html_review/browser_review.json": {
+      "sha256": "d8df8bd03f54ad0721e95f421495a0b0cf58f03b829dd816162da230f3126781",
+      "size_bytes": 1819
+    },
+    "html_review/browser_subsets.png": {
+      "sha256": "89629f8e2e114a26e6a8a1c067f928d15848c33c378bb44dd82e38671c243753",
+      "size_bytes": 103886
+    },
+    "html_review/reviewed_learner.html": {
+      "sha256": "530ac3f7ae6e85d87c015a7230e15debc1beb0ad32ea7bcfab3931f71428688d",
+      "size_bytes": 1988200
+    },
+    "html_review/reviewed_learner.ipynb": {
+      "sha256": "3fc38bc43f5b88c064aee5f7643ce6ac49e761e6034b90873f742b1a7946aaf9",
+      "size_bytes": 1442814
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part10_datamodels/build_notebooks.py": {
+      "sha256": "e11d5d9692e92acc3d9e6895c67fe3965abd211cc13a6e6b0d202009aa6271a7",
+      "size_bytes": 4648
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part10_datamodels/data_manifest.json": {
+      "sha256": "153c7cd06df8988ff10032de373f8ccda1b42ba43bfe1da427357b3a5fb0f0e3",
+      "size_bytes": 6911
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part10_datamodels/datamodel_contract_tests.py": {
+      "sha256": "a2e12eb3d2a76201f131c6e72fbb4c479c3b602b7e38985db524a5ff06f59dd3",
+      "size_bytes": 6382
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part10_datamodels/datamodel_data.py": {
+      "sha256": "b4592f2233b1b29cd1dd640ae8085a523c766a523c395acce5420272ea645384",
+      "size_bytes": 2478
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part10_datamodels/datamodel_methods.py": {
+      "sha256": "889eb435db076656b2e98fbbdf23d8974ed1858fadab409eb7750e5138f4d5d1",
+      "size_bytes": 9767
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part10_datamodels/datamodel_methods_tests.py": {
+      "sha256": "aea894497e616402244d5a1d18e628aa216b7be1a5e2efa3261c37226252df37",
+      "size_bytes": 11354
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part10_datamodels/datamodel_study.py": {
+      "sha256": "eab8c349cfdd78cf533be33492d51ff6031eb940ad2adc1bb2e05f3389a4a735",
+      "size_bytes": 11315
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part10_datamodels/execute_learner.py": {
+      "sha256": "fd181c053d386c61d8fadd01ae31cf51424575045bb0f4574717d0eecac676d0",
+      "size_bytes": 5903
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part10_datamodels/lesson.md": {
+      "sha256": "83138abc0bda16d67d01da6fd7ee900b9f2ffe2d2cef39c62a2bf93c32e87bac",
+      "size_bytes": 77663
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part10_datamodels/protocol.md": {
+      "sha256": "01061ec436553e02d6496e8e2f5faa65d06cdff3345bca4d19f6ef490a8a06af",
+      "size_bytes": 7097
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part10_datamodels/protocol_freeze.json": {
+      "sha256": "dcc5b5de9e5897a5f8e03737afd6c0b195742b46be5052969c3f93b33831ca9b",
+      "size_bytes": 523
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part10_datamodels/reproduce_native.py": {
+      "sha256": "df15b22764cc62b4cd04fee3d2d16ee653420229ee66a4abfdb719f8e23301af",
+      "size_bytes": 4861
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part10_datamodels/run_native.py": {
+      "sha256": "7f591260f8cef12595b75158847c7c937985bb2349e653c0c1dd2878e07961e6",
+      "size_bytes": 9854
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/attribution_data.py": {
+      "sha256": "eaa4954f3255d3f82082dc30baef1051f03c0cad4afab806e9cb16d810101ab3",
+      "size_bytes": 5582
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/attribution_methods.py": {
+      "sha256": "f6f0712d185182b7e43a6bc8bb8b6e401e019e33326f0e59d2d75dda522df046",
+      "size_bytes": 16788
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/attribution_reference.py": {
+      "sha256": "bd342601bc81ba5e5b3f3bc193900643f089b9d8e8f6cdd22022cc0688ed8303",
+      "size_bytes": 1119
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/reproduce_native.py": {
+      "sha256": "db9ceda4b56d549fb448f8bcd003d034db7502b0e5696c49af030065c5a862d0",
+      "size_bytes": 8482
+    },
+    "visual_review.json": {
+      "sha256": "f3b58982d13f72211a90a5b2a5ef59964b1bdb014d7e7f665c2f421c7be6a90f",
+      "size_bytes": 3083
+    }
+  },
+  "large_tensors_retained_externally": {
+    "figures/native-9otfrd6o/study/evaluated.pt": {
+      "sha256": "4bacdc5a4d0436e09951029baf95c6e2de74539c7d01d12efb48385a57082ff2",
+      "size_bytes": 11861619
+    },
+    "figures/native-9otfrd6o/study/play.pt": {
+      "sha256": "d665653a0268e57a31610b7f470281f264518f9fdbabb6c4aaaa3c69766a46df",
+      "size_bytes": 25699
+    },
+    "figures/native-9otfrd6o/study/prepared.pt": {
+      "sha256": "2faaf5705cb4d904f97469e80c4ea0cdfe7f054ed676dda276f0e5c0944f9423",
+      "size_bytes": 23646338
+    }
+  },
+  "readback_verified": true
+}

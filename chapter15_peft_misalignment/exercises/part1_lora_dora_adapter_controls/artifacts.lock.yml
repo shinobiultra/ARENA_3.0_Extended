@@ -1,0 +1,106 @@
+notebook_id: 15_1_lora_dora_and_adapter_controls
+section: '15.1'
+title: LoRA, DoRA, and Adapter Controls
+exercise_metadata:
+  EXERCISE_ID: 15_1_lora_dora_and_adapter_controls
+  GT_TIER: GT-0
+  DIFFICULTY: 3
+  IMPORTANCE: 3
+  EXPECTED_RUNTIME: seconds on toy contract; minutes on local real-model path
+  REQUIRES_GPU: true
+gt_tier: GT-0
+evidence_level: exact_lora_dora_controls_plus_matched_lora_dora_full_finetune_proxy_preflight
+claim_scope: GT-0 exact LoRA/DoRA tensor controls plus a generated rank-1 safe proxy
+  LoRA training preflight on a planted target-direction classification task. The report
+  verifies merge/unmerge parity, rank constraint, monitored target-direction projection,
+  random-label failure, same-norm random-adapter failure, and a matched generated-task
+  comparison against rank-1 DoRA and full linear finetuning. The reported target-direction
+  projection is a known-mechanism positive control, not a claim about a malicious
+  adapter.
+required_gpu_gb: 1
+max_allowed_gpu_gb: 24
+models:
+- id: toy_or_generated_inputs
+  source: generated
+  revision: seed_0
+  precision: float32
+  gated: false
+- id: course_rank1_lora_safe_proxy_adapter_v1
+  source: generated_training_run
+  revision: seed_0_steps_160_alpha_4_rank_1
+  precision: float32
+  gated: false
+  claim_scope: trained_safe_proxy_lora_adapter
+- id: course_rank1_dora_safe_proxy_adapter_v1
+  source: generated_training_run
+  revision: init_seed_2_data_seed_0_steps_160_alpha_4_rank_1
+  precision: float32
+  gated: false
+  claim_scope: matched_safe_proxy_dora_adapter
+- id: course_full_finetune_safe_proxy_classifier_v1
+  source: generated_training_run
+  revision: init_seed_3_data_seed_0_steps_160
+  precision: float32
+  gated: false
+  claim_scope: matched_safe_proxy_full_finetune_baseline
+datasets:
+- id: 15_1_lora_dora_and_adapter_controls_toy_inputs
+  source: generated
+  seed: 0
+- id: course_generated_lora_target_direction_proxy_v1
+  source: generated_gaussian_binary_classification
+  seed: 0
+  input_dim: 8
+  target_direction: feature_0
+  frozen_baseline_direction: feature_1
+  random_label_control: true
+  same_norm_random_adapter_control: true
+  matched_lora_dora_full_finetune_comparison: true
+expected_metrics:
+  tests_passed: true
+  accepted: true
+  max_allowed_gpu_gb: 24
+  adapter_nonzero_update: true
+  dora_norm_preserved: true
+  trained_lora_preflight_passed: true
+  trained_lora_adapter_accuracy_min: 0.95
+  trained_lora_baseline_accuracy_max: 0.65
+  trained_lora_random_label_accuracy_max: 0.65
+  trained_lora_random_adapter_accuracy_max: 0.75
+  trained_lora_target_direction_cosine_min: 0.95
+  trained_lora_merge_max_abs_diff_max: 1.0e-05
+  trained_lora_adapter_rank_max: 1
+  trained_lora_dora_norm_preserved: true
+  matched_peft_comparison_passed: true
+  matched_accuracy_floor_min: 0.95
+  matched_target_alignment_floor_min: 0.95
+  matched_max_distractor_abs_cosine_max: 0.25
+  matched_dora_norm_preserved: true
+  matched_lora_trainable_parameters: 10
+  matched_dora_trainable_parameters: 12
+  matched_full_finetune_trainable_parameters: 18
+  trained_lora_peak_vram_gb_max: 1.0
+controls:
+- baseline_or_reference_check
+- negative_control_where_applicable
+- shape_dtype_or_exact_value_check
+- exact_lora_delta_contract
+- exact_dora_row_magnitude_contract
+- protected_direction_projection_contract
+- adapter_accuracy_and_mechanism_contract
+- trained_rank1_lora_safe_proxy_adapter
+- merge_unmerge_logit_parity
+- low_rank_update_constraint
+- planted_target_direction_alignment
+- random_label_training_control
+- same_norm_random_adapter_control
+- dora_on_learned_delta_norm_preservation
+- matched_rank1_lora_vs_rank1_dora_vs_full_finetune_comparison
+- matched_target_direction_alignment_floor
+- matched_distractor_direction_suppression_control
+safety_notes:
+- No unsafe prompts, unsafe adapters, raw gated weights, or large data artifacts.
+- The trained adapter path uses generated Gaussian binary labels only. No unsafe adapters,
+  refusal-suppression adapters, or user-facing harmful prompt completions are trained
+  or distributed. The LoRA, DoRA, and full-finetune comparison is limited to the generated
+  safe proxy task.

@@ -1,0 +1,4 @@
+hard_exercises_checked=47
+ladder_blockers=1
+HARD_EXERCISE_LADDERS=FAIL
+- 11_3_causal_abstraction_and_distributed_alignment_search: fixture README missing ['How this fixture was produced', 'Trusted implementation', 'Random seed', 'Allowed tolerances', 'When to regenerate', 'rtol=', 'atol=']

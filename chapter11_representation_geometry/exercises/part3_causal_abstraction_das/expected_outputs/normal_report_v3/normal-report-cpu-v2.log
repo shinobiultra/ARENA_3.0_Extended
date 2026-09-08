@@ -1,0 +1,442 @@
+W0906 15:52:39.015000 1862546 .venv/lib/python3.14/site-packages/torch/utils/_pytree.py:630] <enum 'KernelPreference'> is an Enum subclass and is now natively supported by torch.compile as an opaque value type. Calling register_constant() on Enum subclasses is deprecated and will be an error in a future release.
+W0906 15:52:39.025000 1862546 .venv/lib/python3.14/site-packages/torch/utils/_pytree.py:630] <enum 'ScaleCalculationMode'> is an Enum subclass and is now natively supported by torch.compile as an opaque value type. Calling register_constant() on Enum subclasses is deprecated and will be an error in a future release.
+[transformers] Model config: bos_token_id must be `None` or an integer within the vocabulary (between 0 and 30), got 50256. This may result in unexpected behavior.
+[transformers] Model config: eos_token_id must be `None` or an integer within the vocabulary (between 0 and 30), got 50256. This may result in unexpected behavior.
+High-level intervention and output tests passed!
+Zero/full-rank, donor coordinate and complement tests passed!
+Orthonormal basis, zero-rank and invalid-column tests passed!
+Intervention composition tests passed!
+QR and independent finite-difference gradient tests passed!
+Stable loss and intervention-distribution metric tests passed!
+Perfect-probe counterexample and causal oracle tests passed!
+Alignment training, held-out intervention and frozen-model tests passed!
+Minibatch alignment and recipient-context tests passed!
+Observational probe tests passed!
+High-level name-role intervention and split tests passed; no model execution!
+Native continuation logits and gradient tests passed!
+Loading weights:   0%|          | 0/148 [00:00<?, ?it/s]Loading weights: 100%|██████████| 148/148 [00:00<00:00, 25906.97it/s]
+{
+  "status": "PASS",
+  "scope": "fresh_native_all_final_interventions",
+  "native_model_executed": true,
+  "source_inputs": {
+    "das_reproduction.py": "568f5bea49b4f18b22b558eeecf35d9068b004a04f30b95457328e9092960895",
+    "das_native.py": "c25c36e165528797eb9377e72dd09fa6e1fdf80c21712986b0e16136f769c0de",
+    "das_ioi_data.py": "c8cdaf671dce1282065966f0981b446de98511b353d6b1fac12c292f437ead19",
+    "das_protocol.py": "2be338d2be230544231b50cbaaac76ac2c88e28872bd4364713e686fd76563a3",
+    "run_native_development.py": "3a0b72d3b79c7683548db702fede8f424ff7f29cdd1b1494381e46d8bc16f8f4",
+    "lesson.md": "1b5cbd0738f0448ad8626875d4fa6e6b688dc13a5a77fac55b7b8f6bfb2c1e38",
+    "build_notebooks.py": "fcb06b82351610f5773e15176119c2239e909ad3272a146ec566185528fdf3a5"
+  },
+  "learner_directory": "/home/bitwise/.cache/arena_extended/das/full-own-answer-v2",
+  "device": "cpu",
+  "dtype": "float32",
+  "model_id": "gpt2",
+  "revision": "607a30d783dfa663caf39e06633721c8d4cfcd7e",
+  "conditions": [
+    {
+      "name": "DAS/seed0",
+      "rows": 384,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0,
+      "native_hook_max_logit_error": 9.1552734375e-05,
+      "cross_changed_iia": 0.7395833333333334,
+      "cross_changed_count": 96
+    },
+    {
+      "name": "Shuffled/seed0",
+      "rows": 384,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0,
+      "native_hook_max_logit_error": 9.918212890625e-05,
+      "cross_changed_iia": 0.22916666666666666,
+      "cross_changed_count": 96
+    },
+    {
+      "name": "DAS/seed1",
+      "rows": 384,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0,
+      "native_hook_max_logit_error": 9.918212890625e-05,
+      "cross_changed_iia": 0.7604166666666666,
+      "cross_changed_count": 96
+    },
+    {
+      "name": "Shuffled/seed1",
+      "rows": 384,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0,
+      "native_hook_max_logit_error": 9.1552734375e-05,
+      "cross_changed_iia": 0.2916666666666667,
+      "cross_changed_count": 96
+    },
+    {
+      "name": "DAS/seed2",
+      "rows": 384,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0,
+      "native_hook_max_logit_error": 9.918212890625e-05,
+      "cross_changed_iia": 0.75,
+      "cross_changed_count": 96
+    },
+    {
+      "name": "Shuffled/seed2",
+      "rows": 384,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0,
+      "native_hook_max_logit_error": 9.1552734375e-05,
+      "cross_changed_iia": 0.28125,
+      "cross_changed_count": 96
+    },
+    {
+      "name": "Role probe",
+      "rows": 384,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0,
+      "native_hook_max_logit_error": 9.1552734375e-05,
+      "cross_changed_iia": 0.09375,
+      "cross_changed_count": 96
+    },
+    {
+      "name": "Mean direction",
+      "rows": 384,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0,
+      "native_hook_max_logit_error": 9.918212890625e-05,
+      "cross_changed_iia": 0.5625,
+      "cross_changed_count": 96
+    },
+    {
+      "name": "No intervention",
+      "rows": 384,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0,
+      "native_hook_max_logit_error": 9.1552734375e-05,
+      "cross_changed_iia": 0.10416666666666667,
+      "cross_changed_count": 96
+    },
+    {
+      "name": "Random/seed700",
+      "rows": 384,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0,
+      "native_hook_max_logit_error": 9.1552734375e-05,
+      "cross_changed_iia": 0.10416666666666667,
+      "cross_changed_count": 96
+    },
+    {
+      "name": "Random/seed701",
+      "rows": 384,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0,
+      "native_hook_max_logit_error": 0.00011444091796875,
+      "cross_changed_iia": 0.10416666666666667,
+      "cross_changed_count": 96
+    },
+    {
+      "name": "Random/seed702",
+      "rows": 384,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0,
+      "native_hook_max_logit_error": 9.1552734375e-05,
+      "cross_changed_iia": 0.10416666666666667,
+      "cross_changed_count": 96
+    },
+    {
+      "name": "Random/seed703",
+      "rows": 384,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0,
+      "native_hook_max_logit_error": 9.1552734375e-05,
+      "cross_changed_iia": 0.11458333333333333,
+      "cross_changed_count": 96
+    },
+    {
+      "name": "Random/seed704",
+      "rows": 384,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0,
+      "native_hook_max_logit_error": 9.1552734375e-05,
+      "cross_changed_iia": 0.10416666666666667,
+      "cross_changed_count": 96
+    },
+    {
+      "name": "Random/seed705",
+      "rows": 384,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0,
+      "native_hook_max_logit_error": 9.1552734375e-05,
+      "cross_changed_iia": 0.11458333333333333,
+      "cross_changed_count": 96
+    },
+    {
+      "name": "Random/seed706",
+      "rows": 384,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0,
+      "native_hook_max_logit_error": 9.918212890625e-05,
+      "cross_changed_iia": 0.10416666666666667,
+      "cross_changed_count": 96
+    },
+    {
+      "name": "Random/seed707",
+      "rows": 384,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0,
+      "native_hook_max_logit_error": 9.1552734375e-05,
+      "cross_changed_iia": 0.09375,
+      "cross_changed_count": 96
+    },
+    {
+      "name": "Random/seed708",
+      "rows": 384,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0,
+      "native_hook_max_logit_error": 9.1552734375e-05,
+      "cross_changed_iia": 0.10416666666666667,
+      "cross_changed_count": 96
+    },
+    {
+      "name": "Random/seed709",
+      "rows": 384,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0,
+      "native_hook_max_logit_error": 9.1552734375e-05,
+      "cross_changed_iia": 0.11458333333333333,
+      "cross_changed_count": 96
+    },
+    {
+      "name": "Random/seed710",
+      "rows": 384,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0,
+      "native_hook_max_logit_error": 9.1552734375e-05,
+      "cross_changed_iia": 0.09375,
+      "cross_changed_count": 96
+    },
+    {
+      "name": "Random/seed711",
+      "rows": 384,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0,
+      "native_hook_max_logit_error": 9.918212890625e-05,
+      "cross_changed_iia": 0.10416666666666667,
+      "cross_changed_count": 96
+    },
+    {
+      "name": "Random/seed712",
+      "rows": 384,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0,
+      "native_hook_max_logit_error": 9.918212890625e-05,
+      "cross_changed_iia": 0.11458333333333333,
+      "cross_changed_count": 96
+    },
+    {
+      "name": "Random/seed713",
+      "rows": 384,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0,
+      "native_hook_max_logit_error": 9.1552734375e-05,
+      "cross_changed_iia": 0.10416666666666667,
+      "cross_changed_count": 96
+    },
+    {
+      "name": "Random/seed714",
+      "rows": 384,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0,
+      "native_hook_max_logit_error": 9.1552734375e-05,
+      "cross_changed_iia": 0.09375,
+      "cross_changed_count": 96
+    },
+    {
+      "name": "Random/seed715",
+      "rows": 384,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0,
+      "native_hook_max_logit_error": 9.1552734375e-05,
+      "cross_changed_iia": 0.11458333333333333,
+      "cross_changed_count": 96
+    },
+    {
+      "name": "Random/seed716",
+      "rows": 384,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0,
+      "native_hook_max_logit_error": 9.1552734375e-05,
+      "cross_changed_iia": 0.11458333333333333,
+      "cross_changed_count": 96
+    },
+    {
+      "name": "Random/seed717",
+      "rows": 384,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0,
+      "native_hook_max_logit_error": 9.1552734375e-05,
+      "cross_changed_iia": 0.09375,
+      "cross_changed_count": 96
+    },
+    {
+      "name": "Random/seed718",
+      "rows": 384,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0,
+      "native_hook_max_logit_error": 9.1552734375e-05,
+      "cross_changed_iia": 0.11458333333333333,
+      "cross_changed_count": 96
+    },
+    {
+      "name": "Random/seed719",
+      "rows": 384,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0,
+      "native_hook_max_logit_error": 9.918212890625e-05,
+      "cross_changed_iia": 0.10416666666666667,
+      "cross_changed_count": 96
+    },
+    {
+      "name": "Random/seed720",
+      "rows": 384,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0,
+      "native_hook_max_logit_error": 9.1552734375e-05,
+      "cross_changed_iia": 0.10416666666666667,
+      "cross_changed_count": 96
+    },
+    {
+      "name": "Random/seed721",
+      "rows": 384,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0,
+      "native_hook_max_logit_error": 9.1552734375e-05,
+      "cross_changed_iia": 0.11458333333333333,
+      "cross_changed_count": 96
+    },
+    {
+      "name": "Random/seed722",
+      "rows": 384,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0,
+      "native_hook_max_logit_error": 9.1552734375e-05,
+      "cross_changed_iia": 0.10416666666666667,
+      "cross_changed_count": 96
+    },
+    {
+      "name": "Random/seed723",
+      "rows": 384,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0,
+      "native_hook_max_logit_error": 9.1552734375e-05,
+      "cross_changed_iia": 0.10416666666666667,
+      "cross_changed_count": 96
+    },
+    {
+      "name": "Random/seed724",
+      "rows": 384,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0,
+      "native_hook_max_logit_error": 9.1552734375e-05,
+      "cross_changed_iia": 0.11458333333333333,
+      "cross_changed_count": 96
+    },
+    {
+      "name": "Random/seed725",
+      "rows": 384,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0,
+      "native_hook_max_logit_error": 9.1552734375e-05,
+      "cross_changed_iia": 0.11458333333333333,
+      "cross_changed_count": 96
+    },
+    {
+      "name": "Random/seed726",
+      "rows": 384,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0,
+      "native_hook_max_logit_error": 9.918212890625e-05,
+      "cross_changed_iia": 0.11458333333333333,
+      "cross_changed_count": 96
+    },
+    {
+      "name": "Random/seed727",
+      "rows": 384,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0,
+      "native_hook_max_logit_error": 9.918212890625e-05,
+      "cross_changed_iia": 0.10416666666666667,
+      "cross_changed_count": 96
+    },
+    {
+      "name": "Random/seed728",
+      "rows": 384,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0,
+      "native_hook_max_logit_error": 9.918212890625e-05,
+      "cross_changed_iia": 0.10416666666666667,
+      "cross_changed_count": 96
+    },
+    {
+      "name": "Random/seed729",
+      "rows": 384,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0,
+      "native_hook_max_logit_error": 9.1552734375e-05,
+      "cross_changed_iia": 0.09375,
+      "cross_changed_count": 96
+    },
+    {
+      "name": "Random/seed730",
+      "rows": 384,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0,
+      "native_hook_max_logit_error": 9.1552734375e-05,
+      "cross_changed_iia": 0.09375,
+      "cross_changed_count": 96
+    },
+    {
+      "name": "Random/seed731",
+      "rows": 384,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0,
+      "native_hook_max_logit_error": 9.1552734375e-05,
+      "cross_changed_iia": 0.10416666666666667,
+      "cross_changed_count": 96
+    },
+    {
+      "name": "Whole donor",
+      "rows": 384,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0,
+      "native_hook_max_logit_error": 9.918212890625e-05,
+      "cross_changed_iia": 0.75,
+      "cross_changed_count": 96
+    },
+    {
+      "name": "Explicit counterfactual",
+      "rows": 384,
+      "max_logit_error": 0.0,
+      "top_token_mismatches": 0,
+      "native_hook_max_logit_error": 0,
+      "cross_changed_iia": 0.7916666666666666,
+      "cross_changed_count": 96
+    }
+  ],
+  "actual_intervention_rows": 16512,
+  "elapsed_seconds": 43.107425623999916,
+  "learner_execution_sha256": "85ad9d11cfff8ffd619f8f6be342d13c7ef7bebbff27d25a3f9f109014bdabf0",
+  "learner_tensor_sha256": "5f95d395fdd0ec066d43c4696c369f9907622a4742163c9ecc868e8466409d67",
+  "baseline_max_logit_error": 0.0,
+  "actual_tensor_sha256": "527e10a44287401dfdb2cee869a2a75da825d01c9088d9f7eb714dabd06aa16f",
+  "actual_comparisons_sha256": "a5b141f3811f6bfa0d2299ecd79d655892016f98c6f9638f5a5275f56240d589",
+  "native_tail_forward_rows": 16128,
+  "cached_counterfactual_comparison_rows": 384,
+  "total_native_forward_rows": 17232,
+  "weights_unchanged": true,
+  "model_gradients_absent": true,
+  "baseline_prompt_rows": 96,
+  "full_native_hook_rows": 1008,
+  "changed_sources": []
+}
+PASS 11.3 Causal Abstraction and Distributed Alignment Search
+Wrote 1 verification reports; 1 accepted.

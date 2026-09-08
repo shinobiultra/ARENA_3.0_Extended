@@ -1,0 +1,81 @@
+{
+  "acceptance": {
+    "accepted": true,
+    "best_layer": "concept",
+    "best_recovery_min": 0.85,
+    "best_selectivity_min": 0.8,
+    "best_timestep": 1,
+    "pixel_patch_recovery": 1.0,
+    "random_channel_selectivity_max": 0.1,
+    "shuffled_label_selectivity_max": 0.02,
+    "training_loss_ratio_max": 0.05,
+    "untrained_model_selectivity_max": 0.0,
+    "wrong_timestep_selectivity_max": 0.02
+  },
+  "observed_cpu_seed_0": {
+    "best_layer": "concept",
+    "best_recovery": 0.9620839357376099,
+    "best_selectivity": 0.9179929047822952,
+    "best_timestep": 1,
+    "controls": {
+      "matched_seed_unpatched": 0.0,
+      "pixel_patch_upper_bound": 1.0,
+      "same_size_random_channels": 0.05330792814493179,
+      "same_size_random_location": -0.24797575175762177,
+      "shuffled_labels": 0.00019221107322664466,
+      "untrained_model": -0.10983790270984173,
+      "wrong_timestep": -0.00024441546702291816
+    },
+    "runtime_seconds_reference": 7.47,
+    "training_final_loss": 0.013204962685704232,
+    "training_first_loss": 0.6131671786308288,
+    "training_loss_ratio": 0.02153566457224642
+  },
+  "observed_cuda_13_2": {
+    "accepted": true,
+    "torch_version": "2.12.1+cu132",
+    "cuda_version": "13.2",
+    "gpu_name": "NVIDIA GeForce RTX 5090 Laptop GPU",
+    "peak_vram_gb": 3.2346906661987305,
+    "toy": {
+      "training_loss_ratio": 0.0038052895761988936,
+      "best_recovery": 0.9936832189559937,
+      "best_selectivity": 0.9780977563932538,
+      "random_channel_selectivity": 0.07079106010496616,
+      "wrong_timestep_selectivity": -0.00010382572463640827,
+      "shuffled_label_selectivity": 0.000031580223549099173,
+      "untrained_model_selectivity": -0.11265626829117537
+    },
+    "sd15": {
+      "model_revision": "451f4fe16113bff5a5d2269ed5ad43b0592e9a14",
+      "clip_revision": "3d74acf9a28c67741b2f4f2ea7635f0aaf6f0268",
+      "num_inference_steps": 20,
+      "cases": [
+        {
+          "case_id": "red_into_blue_square",
+          "seed": 4,
+          "best_step_index": 2,
+          "best_scheduler_timestep": 851,
+          "best_clip_recovery": 0.6536844959581614,
+          "best_regional_selectivity": 0.2220655260594271,
+          "wrong_timestep_recovery": 0.46006613983872385,
+          "wrong_region_recovery": -0.43929027256815417,
+          "random_latent_recovery": 0.22108890106431006,
+          "target_control_margin": 0.19361835611943757
+        },
+        {
+          "case_id": "blue_into_red_circle",
+          "seed": 2,
+          "best_step_index": 4,
+          "best_scheduler_timestep": 751,
+          "best_clip_recovery": 0.5049675850674304,
+          "best_regional_selectivity": 0.22201977337668655,
+          "wrong_timestep_recovery": 0.29204248711841796,
+          "wrong_region_recovery": -0.2574092778008901,
+          "random_latent_recovery": 0.15139394352273522,
+          "target_control_margin": 0.21292509794901243
+        }
+      ]
+    }
+  }
+}
