@@ -577,6 +577,15 @@ def has_native_cpu_model_evidence(lock: dict[str, Any], report: dict[str, Any]) 
         and evidence.get("uses_cuda") is False
         and has_native_evidence(report)
     )
+    from chapter16_shapley_attribution_baselines.exercises.part18_spex.native_report import (
+        has_native_evidence as has_sparse_native_evidence,
+    )
+
+    sparse_interactions_native = (
+        evidence.get("category") == "cpu_or_budget_metric"
+        and evidence.get("uses_cuda") is False
+        and has_sparse_native_evidence(report)
+    )
     return (
         pretrained
         or (retrained and (optimized_classifiers or training_dynamics or global_regression))
@@ -585,6 +594,7 @@ def has_native_cpu_model_evidence(lock: dict[str, Any], report: dict[str, Any]) 
         or gradientshap_native
         or shapley_interactions_native
         or shapiq_native
+        or sparse_interactions_native
     )
 
 

@@ -174,30 +174,211 @@ def evaluate_predictions(values, predictions):
 
 
 def validate_freeze(path):
+    """Check the original scientific approval or its narrowly bound cap amendment."""
+    import ast
+    from collections import Counter
+    from datetime import datetime
+    import sqlite3
+
+    def file_hash(path):
+        with Path(path).open("rb") as stream:
+            return hashlib.file_digest(stream, "sha256").hexdigest()
+
+    def linked_json(path, expected, label):
+        path = Path(path)
+        if file_hash(path) != expected:
+            raise ValueError(f"{label} bytes changed.")
+        return json.loads(path.read_text())
+
+    def approved(candidate_record, status):
+        if candidate_record.get("status") != "APPROVED" or not candidate_record.get("independent_review_sha256"):
+            raise ValueError("An actual source-bound independent protocol approval is required.")
+        review = linked_json(candidate_record["independent_review_path"],
+                             candidate_record["independent_review_sha256"], "Independent review")
+        candidate = linked_json(candidate_record["candidate_manifest_path"],
+                                candidate_record["candidate_manifest_sha256"], "Candidate manifest")
+        if (review.get("candidate_manifest_sha256") != candidate_record["candidate_manifest_sha256"]
+                or review.get("status") != status):
+            raise ValueError("Independent approval does not cover this exact native candidate.")
+        if any(candidate_record.get(key) != value for key, value in candidate.items()):
+            raise ValueError("Approved scientific or execution fields changed.")
+        return candidate
+
     record = json.loads(Path(path).read_text())
-    if record.get("status") != "APPROVED" or not record.get("independent_review_sha256"):
-        raise ValueError("An actual source-bound independent protocol approval is required.")
+    amendment = record.get("freeze_kind") == "RESOURCE_ONLY_AMENDMENT"
+    if record.get("freeze_kind") not in (None, "RESOURCE_ONLY_AMENDMENT"):
+        raise ValueError("Unknown native freeze kind.")
+    candidate = approved(record, "APPROVE_RESOURCE_ONLY_AMENDMENT" if amendment else "APPROVE_NATIVE_PROTOCOL")
     if record.get("native_queries_before_freeze") != 0 or record.get("native_fits_before_freeze") != 0:
-        raise ValueError("This freeze must predate native outcomes.")
+        raise ValueError("The original scientific freeze must predate native outcomes.")
     for name, expected in record["source_inputs"].items():
-        if hashlib.sha256((ROOT / name).read_bytes()).hexdigest() != expected:
+        source = (ROOT / name).resolve()
+        if not source.is_relative_to(ROOT.resolve()) or file_hash(source) != expected:
             raise ValueError(f"Frozen native source changed: {name}")
-    review_path = Path(record["independent_review_path"])
-    if hashlib.sha256(review_path.read_bytes()).hexdigest() != record["independent_review_sha256"]:
-        raise ValueError("Independent review bytes changed.")
-    review = json.loads(review_path.read_text())
-    candidate_path = Path(record["candidate_manifest_path"])
-    candidate_hash = hashlib.sha256(candidate_path.read_bytes()).hexdigest()
-    if (candidate_hash != record["candidate_manifest_sha256"]
-            or review.get("candidate_manifest_sha256") != candidate_hash
-            or review.get("status") != "APPROVE_NATIVE_PROTOCOL"):
-        raise ValueError("Independent approval does not cover this exact native candidate.")
-    candidate = json.loads(candidate_path.read_text())
-    if any(record.get(key) != value for key, value in candidate.items()):
-        raise ValueError("Approved scientific or execution fields changed.")
+    if amendment:
+        envelope_fields = {"status", "candidate_manifest_path", "candidate_manifest_sha256",
+                           "independent_review_path", "independent_review_sha256", "approved_envelope_written_at_utc"}
+        if set(record) - envelope_fields != set(candidate):
+            raise ValueError("Every amendment field must be bound by its independently approved candidate.")
+        original = linked_json(record["original_scientific_freeze_path"],
+                               record["original_scientific_freeze_sha256"], "Original scientific freeze")
+        approved(original, "APPROVE_NATIVE_PROTOCOL")
+        if (original.get("freeze_kind") is not None or record.get("counts_scope") != "original_scientific_freeze"
+                or original.get("native_queries_before_freeze") != 0 or original.get("native_fits_before_freeze") != 0):
+            raise ValueError("Legacy zero counts must refer to the original, unamended scientific freeze.")
+        extra_fields = {"freeze_kind", "counts_scope", "original_scientific_freeze_path",
+                        "original_scientific_freeze_sha256", "prior_execution_path", "prior_execution_sha256",
+                        "prior_interruption_inventory_path", "prior_interruption_inventory_sha256",
+                        "native_queries_before_amendment", "native_fits_before_amendment",
+                        "native_fits_before_amendment_units"}
+        if set(record) != set(original) | extra_fields:
+            raise ValueError("Resource amendment field inventory differs from the explicit schema.")
+        mutable = envelope_fields | {"created_at_utc", "source_inputs", "resources", "native_execution_started"}
+        if any(record.get(key) != value for key, value in original.items() if key not in mutable):
+            raise ValueError("Resource amendment changed an original scientific field.")
+        if original["resources"]["wall_seconds"] != 5400:
+            raise ValueError("The historical joint cap must be 5400 seconds.")
+        if record["resources"] != {**original["resources"], "wall_seconds": 10800}:
+            raise ValueError("Only the joint wall cap may change, from 5400 to 10800 seconds.")
+        if record.get("native_execution_started") is not True:
+            raise ValueError("The resource envelope must acknowledge prior native execution.")
+        inventory = linked_json(record["prior_interruption_inventory_path"],
+                                record["prior_interruption_inventory_sha256"], "Prior interruption inventory")
+        execution = linked_json(record["prior_execution_path"], record["prior_execution_sha256"], "Prior execution")
+        prior = Path(record["prior_execution_path"]).resolve().parent
+        # Each historical link is physically checked, not accepted as a label.
+        for label in ("execution", "original_scientific_freeze", "oracle_database", "child_log", "runtime_basis"):
+            item = inventory[label]
+            actual = Path(item["path"])
+            if actual.stat().st_size != item["size_bytes"] or file_hash(actual) != item["sha256"]:
+                raise ValueError(f"Prior interruption evidence changed: {label}")
+        if (inventory["execution"]["path"] != str(Path(record["prior_execution_path"]))
+                or inventory["execution"]["sha256"] != record["prior_execution_sha256"]
+                or inventory["original_scientific_freeze"]["path"] != record["original_scientific_freeze_path"]
+                or inventory["original_scientific_freeze"]["sha256"] != record["original_scientific_freeze_sha256"]):
+            raise ValueError("Prior inventory belongs to a different execution or scientific freeze.")
+        original_path = str(Path(record["original_scientific_freeze_path"]).resolve())
+        if (execution["fixed_inputs"]["freeze_path"] != original_path
+                or execution["source_inputs"].get(original_path, {}).get("sha256") != record["original_scientific_freeze_sha256"]
+                or execution["fixed_inputs"]["plan_dir"] != original["query_plan_directory"]
+                or execution["fixed_inputs"]["snapshot_path"] != original["model_snapshot_path"]
+                or execution["joint_limits"]["wall_seconds"] != 5400):
+            raise ValueError("The interrupted execution must have used the original frozen scientific inputs and cap.")
+        if (execution.get("status") != "FAIL" or execution.get("returncode") != -2
+                or execution.get("changed_sources") or execution.get("resource_violations")
+                or inventory["status"] != "INTERRUPTED_RESOURCE_FEASIBILITY"
+                or inventory["partial_values_or_fits_will_be_reused_for_new_cold_execution"] is not False
+                or inventory["proposed_joint_wall_seconds"] != 10800):
+            raise ValueError("The retained prior execution must be the unchanged-source SIGINT interruption.")
+        times = [datetime.fromisoformat(value) for value in (
+            original["created_at_utc"], execution["finished_at_utc"], inventory["recorded_at_utc"], record["created_at_utc"])]
+        if any(value.tzinfo is None for value in times) or times != sorted(times) or times[2] == times[3]:
+            raise ValueError("The amendment creation time must follow the retained interrupted execution and inventory.")
+        relative = "chapter16_shapley_attribution_baselines/exercises/part18_spex/"
+        allowed = {relative + name for name in ("run_native.py", "native_study.py", "native_protocol.md")}
+        if set(record["source_inputs"]) != set(original["source_inputs"]):
+            raise ValueError("Resource amendment changed the native source inventory.")
+        changed = {name for name in record["source_inputs"] if record["source_inputs"][name] != original["source_inputs"][name]}
+        if changed != allowed:
+            raise ValueError("Only the supervisor, freeze validator and protocol appendix may change.")
+        old_sources = {}
+        for name, expected in original["source_inputs"].items():
+            old_path = prior / "source_snapshot" / name
+            receipt_entry = execution["source_inputs"].get(str((ROOT / name).resolve()), {})
+            if file_hash(old_path) != expected or receipt_entry.get("sha256") != expected:
+                raise ValueError(f"Historical native source is not bound to the original freeze: {name}")
+            if name in allowed:
+                old_sources[name] = old_path.read_text()
+
+        class DoubleJointCap(ast.NodeTransformer):
+            count = 0
+
+            def visit_Constant(self, node):
+                if type(node.value) in (int, float) and node.value == 5400:
+                    node.value *= 2
+                    self.count += 1
+                return node
+
+        transform = DoubleJointCap()
+        old_runner = transform.visit(ast.parse(old_sources[relative + "run_native.py"]))
+        new_runner = ast.parse((ROOT / relative / "run_native.py").read_text())
+        if transform.count != 4 or ast.dump(old_runner) != ast.dump(new_runner):
+            raise ValueError("Supervisor AST changed beyond the four joint wall-cap substitutions.")
+        trees = [ast.parse(text) for text in (old_sources[relative + "native_study.py"],
+                                             (ROOT / relative / "native_study.py").read_text())]
+        for tree in trees:
+            validators = [node for node in tree.body if isinstance(node, ast.FunctionDef) and node.name == "validate_freeze"]
+            if len(validators) != 1:
+                raise ValueError("Require exactly one freeze-validation function.")
+            validators[0].body = [ast.Pass()]
+        if ast.dump(trees[0]) != ast.dump(trees[1]):
+            raise ValueError("Study AST changed outside the freeze-validation body.")
+        old_protocol = old_sources[relative + "native_protocol.md"]
+        protocol = (ROOT / relative / "native_protocol.md").read_text()
+        appendix = "\n\n## Resource-only execution amendment: 180-minute joint cap\n"
+        if not protocol.startswith(old_protocol + appendix):
+            raise ValueError("The original protocol must be an exact prefix of its explicit resource appendix.")
+        database = Path(inventory["oracle_database"]["path"]).resolve()
+        if database != prior / "study/oracle/oracle.sqlite3":
+            raise ValueError("Prior inventory must bind the interrupted execution's own oracle database.")
+        with sqlite3.connect(database.as_uri() + "?mode=ro", uri=True) as connection:
+            table_counts = {name: connection.execute(f"SELECT COUNT(*) FROM {name}").fetchone()[0]
+                            for name in ("calls", "batches", "physical_rows", "cache")}
+            batch_status = dict(connection.execute("SELECT status,COUNT(*) FROM batches GROUP BY status"))
+            call_status = dict(connection.execute("SELECT json_extract(receipt,'$.status'),COUNT(*) FROM calls GROUP BY 1"))
+            call_stages = dict(connection.execute("SELECT json_extract(receipt,'$.stage'),COUNT(*) FROM calls GROUP BY 1"))
+            attempted = connection.execute("SELECT SUM(json_extract(identity,'$.rows')) FROM batches").fetchone()[0]
+        if (table_counts != inventory["table_counts"] or batch_status != inventory["batch_status_counts"]
+                or call_status != inventory["call_status_counts"] or call_stages != inventory["call_stages"]
+                or attempted != inventory["attempted_physical_rows_from_started_batches"]
+                or table_counts["physical_rows"] != inventory["completed_physical_rows"]
+                or table_counts["cache"] != inventory["completed_cached_rows"]):
+            raise ValueError("Prior query counts differ from the retained physical database.")
+        if (set(call_stages) != {"invariance", "training"} or inventory["audits_saved"] != 0
+                or inventory["reference_stage_records"] != 0 or (prior / "study/audit").exists()
+                or (prior / "study/references").exists()):
+            raise ValueError("The interrupted envelope must precede every audit and reference outcome.")
+        accounting = Counter()
+        identities, paths, seconds = [], [], 0.0
+        for entry in inventory["saved_conditions"]:
+            condition_path = (prior / entry["path"]).resolve()
+            if not condition_path.is_relative_to(prior / "study/conditions"):
+                raise ValueError("A retained fit must belong to the interrupted study.")
+            if json.loads((condition_path / "hashes.json").read_text()) != entry["hashes"]:
+                raise ValueError("Prior condition hash binding changed.")
+            for name, expected in entry["hashes"].items():
+                if name not in {"arrays.npz", "record.json"} or file_hash(condition_path / name) != expected:
+                    raise ValueError("A prior saved fit changed after the interruption inventory.")
+            if set(entry["hashes"]) != {"arrays.npz", "record.json"}:
+                raise ValueError("Incomplete retained fit payload inventory.")
+            fields = dict(json.loads((condition_path / "record.json").read_text())["__mapping__"])
+            identity = [fields[name] for name in ("prompt_index", "method", "seed", "budget", "condition")]
+            if identity != entry["identity"]:
+                raise ValueError("Prior saved fit identity changed.")
+            identities.append(tuple(identity))
+            paths.append(condition_path)
+            work = _decode(fields["fit_accounting"], {})
+            for key in ("oracle_calls_by_methods", "ensemble_fits", "residual_tree_fits", "ridge_candidate_fits",
+                        "ridge_matrix_decompositions", "spex_recoveries"):
+                accounting[key] += work.get(key, 0)
+            accounting["baseline_fits"] += dict(fields["baseline_fit"]["__mapping__"])["fits"]
+            seconds += fields["fit_seconds"]
+        actual_paths = {path.parent.resolve() for path in (prior / "study/conditions").glob("*/hashes.json")}
+        if (len(set(identities)) != len(identities) or set(paths) != actual_paths
+                or len(paths) != len(set(paths)) or dict(accounting) != inventory["saved_fit_accounting"]
+                or not np.isclose(seconds, inventory["saved_fit_seconds"], rtol=0, atol=1e-9)
+                or len(identities) != inventory["native_fits_before_amendment"]):
+            raise ValueError("Prior saved-fit counts or physical inventory changed.")
+        units = "completed, saved method-condition fits; lower bound on attempted work, not an exact attempted fit count"
+        if (type(record["native_queries_before_amendment"]) is not int or record["native_queries_before_amendment"] <= 0
+                or record["native_queries_before_amendment"] != table_counts["physical_rows"]
+                or type(record["native_fits_before_amendment"]) is not int or record["native_fits_before_amendment"] <= 0
+                or record["native_fits_before_amendment"] != len(identities)
+                or record["native_fits_before_amendment_units"] != units
+                or inventory["native_fits_before_amendment_units"] != units):
+            raise ValueError("Amendment counts must disclose actual completed queries and saved fits with explicit units.")
     validate_environment(record)
     return record
-
 
 def environment_snapshot():
     return {"python": sys.version, "executable": sys.executable,

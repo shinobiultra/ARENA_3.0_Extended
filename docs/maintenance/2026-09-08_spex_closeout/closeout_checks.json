@@ -1,0 +1,261 @@
+{
+  "schema": "arena.spex.daily-closeout.v1",
+  "recorded_at_utc": "2026-09-08T06:26:36.149518+00:00",
+  "scope": "Prepared learner, reporting and publication integration; incomplete native study retained. No native completion or publication approval.",
+  "base_commit": "7c1c3cf0ea4a20e76bb911655e58c848a1d4dd38",
+  "original_preservation_base": "f9f034bdb5b8748f44e8b4533b5c5bea68dc8bc0",
+  "root_suite": {
+    "command": "env CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 BNB_CUDA_VERSION=130 uv run --locked python -m pytest -q tests",
+    "exit_code": 0,
+    "passed": 971,
+    "seconds": 40.79,
+    "log_path": "/home/bitwise/.cache/arena_extended/sparse_interaction_discovery/course_integration_v1/root_tests_final.log",
+    "log_sha256": "bf072a5b54f8daf3f8e5446e2aec972849b98d4656502e653a20e50115a1dfee",
+    "log_size_bytes": 1141,
+    "intermediate_failed_run_retained": "/home/bitwise/.cache/arena_extended/sparse_interaction_discovery/course_integration_v1/root_tests_before_publication.log"
+  },
+  "metadata_copies": {
+    "files": 8,
+    "exact_bytes_and_sha256_rechecked": true,
+    "manifest": "docs/maintenance/2026-09-08_spex_closeout/evidence_copy_manifest.json"
+  },
+  "runtime_state": {
+    "all_eight_astra_agents_completed": true,
+    "native_run_v1": "interrupted and retained with FAIL / -2",
+    "native_run_v2_directory_exists": false,
+    "native_reproduction_v2_directory_exists": false,
+    "task_owned_native_processes_running": false,
+    "automatic_restart_scheduled": false
+  },
+  "source_inventory_scope": "Current bytes of every staged non-closeout path. Final post-test edits are documentation only; executable sources are unchanged.",
+  "source_files": [
+    {
+      "path": "HANDOFF.md",
+      "sha256": "34665478f6ee0dd1d6aff57510ae9595850f44cb596c9460c0da3cd33f605520",
+      "size_bytes": 295531
+    },
+    {
+      "path": "chapter16_shapley_attribution_baselines/exercises/part18_spex/NATIVE_LEARNER_API.md",
+      "sha256": "ed66daef793c5d518b659a61ac8521be1342e0597a4c7eff33f48adf63a85382",
+      "size_bytes": 4755
+    },
+    {
+      "path": "chapter16_shapley_attribution_baselines/exercises/part18_spex/NATIVE_REPORT_API.md",
+      "sha256": "fa9cc4cd9a5de9c067532a825562ea89f7a099c9fc5f4e04073a890a0aa2a227",
+      "size_bytes": 8127
+    },
+    {
+      "path": "chapter16_shapley_attribution_baselines/exercises/part18_spex/PUBLICATION_API.md",
+      "sha256": "fa3d6e4d815ee187f5c19bc29d5964164f27cf4abeb8ec14080cd6d7eb376c95",
+      "size_bytes": 10682
+    },
+    {
+      "path": "chapter16_shapley_attribution_baselines/exercises/part18_spex/README.md",
+      "sha256": "68d5b2f524244f773eb8f568db8af5d45a7d4bf01b750961866a6a2bce4a6ba8",
+      "size_bytes": 2160
+    },
+    {
+      "path": "chapter16_shapley_attribution_baselines/exercises/part18_spex/build_notebooks.py",
+      "sha256": "e46243459222683506e584b96b0aa2547cdfd16f69f698b35a8bd82f0c25575c",
+      "size_bytes": 15115
+    },
+    {
+      "path": "chapter16_shapley_attribution_baselines/exercises/part18_spex/lesson.md",
+      "sha256": "95be45a2f113dee9ee78c078f0ec023fe31d9ca410539c5c66458e819574ca28",
+      "size_bytes": 32599
+    },
+    {
+      "path": "chapter16_shapley_attribution_baselines/exercises/part18_spex/lesson_build_tests.py",
+      "sha256": "debb0e9a57ee6406dc1593940d1642654d8ac0d5a960f3107e2429d47b5c27df",
+      "size_bytes": 5789
+    },
+    {
+      "path": "chapter16_shapley_attribution_baselines/exercises/part18_spex/lesson_cells.py",
+      "sha256": "a243bf321b22889e6e10a8427c9f4d71dc36d8faab910e813af68105caf1edee",
+      "size_bytes": 15316
+    },
+    {
+      "path": "chapter16_shapley_attribution_baselines/exercises/part18_spex/native_freeze_runtime_v2.json",
+      "sha256": "532022a66dcd69b7cd900ae7eeaa83e33eb3a2e35f5864fcc173913b04e473cb",
+      "size_bytes": 6872
+    },
+    {
+      "path": "chapter16_shapley_attribution_baselines/exercises/part18_spex/native_learner.py",
+      "sha256": "02fb47f8c44c9c9581e30961601be821d7d501abcea2eeff5102e354a36e44d8",
+      "size_bytes": 23990
+    },
+    {
+      "path": "chapter16_shapley_attribution_baselines/exercises/part18_spex/native_learner_tests.py",
+      "sha256": "2719f0b79310821829e4a0564b07fe3906b1dd42009dc4c9a8c12aefb30b5ced",
+      "size_bytes": 13780
+    },
+    {
+      "path": "chapter16_shapley_attribution_baselines/exercises/part18_spex/native_protocol.md",
+      "sha256": "4c60e023a131806674222af0f116a8c8b9aa631917135c46d196db14ba7a0f32",
+      "size_bytes": 20872
+    },
+    {
+      "path": "chapter16_shapley_attribution_baselines/exercises/part18_spex/native_report.py",
+      "sha256": "e338c2826874d1f6b59e53fefd05c1d9c3e66cb0c11206395570aa0860cdda06",
+      "size_bytes": 37247
+    },
+    {
+      "path": "chapter16_shapley_attribution_baselines/exercises/part18_spex/native_report_tests.py",
+      "sha256": "538f834bf48c37e5fe73667a657fd70a9486a1dd088c2e7fe8d531b20839122b",
+      "size_bytes": 20221
+    },
+    {
+      "path": "chapter16_shapley_attribution_baselines/exercises/part18_spex/native_resource_amendment_tests.py",
+      "sha256": "9790dfca8cf50737ca93e01366b147dbe89bf56a88d0c989e72923f976855b1f",
+      "size_bytes": 16203
+    },
+    {
+      "path": "chapter16_shapley_attribution_baselines/exercises/part18_spex/native_study.py",
+      "sha256": "6995a081626ab6796e4554402f4657fea2b5f40ded507830ef020da59e8ba4f6",
+      "size_bytes": 38361
+    },
+    {
+      "path": "chapter16_shapley_attribution_baselines/exercises/part18_spex/publication_tests.py",
+      "sha256": "4477990cecd6f310a440946916247c5b4690deb263c01c7f5f6e1474f3d1c613",
+      "size_bytes": 17202
+    },
+    {
+      "path": "chapter16_shapley_attribution_baselines/exercises/part18_spex/publish_study.py",
+      "sha256": "b55624bf87dacc456dce5984aa644cbb1382c17b437342068032b9ed18a40ef2",
+      "size_bytes": 29124
+    },
+    {
+      "path": "chapter16_shapley_attribution_baselines/exercises/part18_spex/run_native.py",
+      "sha256": "5faaacee83b0113ab0beaaae7f49aa5dbcd4b42fb5e7e6ed5af1cd568a6d1547",
+      "size_bytes": 44191
+    },
+    {
+      "path": "chapter16_shapley_attribution_baselines/exercises/part18_spex/spex_plots.py",
+      "sha256": "4b7496694da38e5b4d6fc73fc17347fa8239c76e82be035b6f0d8c76d1ff949d",
+      "size_bytes": 28944
+    },
+    {
+      "path": "chapter16_shapley_attribution_baselines/exercises/part19_proxyspex/README.md",
+      "sha256": "c9ff293af029a9cae63d4f31c37eae7187639402059fb0749d8931f8d3732c15",
+      "size_bytes": 5433
+    },
+    {
+      "path": "chapter16_shapley_attribution_baselines/exercises/part19_proxyspex/build_notebooks.py",
+      "sha256": "b5e07884d0d14d5a415517f834c0b5089377bf4ff7986e2edb203161c89b8645",
+      "size_bytes": 19698
+    },
+    {
+      "path": "chapter16_shapley_attribution_baselines/exercises/part19_proxyspex/lesson.md",
+      "sha256": "cbbb8f5ae1e45f2ebd865cf4ee9ea06fa3983b8e742b7447e998176e19d47716",
+      "size_bytes": 42002
+    },
+    {
+      "path": "chapter16_shapley_attribution_baselines/exercises/part19_proxyspex/lesson_cells.py",
+      "sha256": "881e0b40ff5c2f5070f09da58622f464e9344ffe1a713fa22facb9c674336395",
+      "size_bytes": 18825
+    },
+    {
+      "path": "chapter16_shapley_attribution_baselines/exercises/part19_proxyspex/proxy_learner_tests.py",
+      "sha256": "e298606978976148047f5d448f0db2bc288c94baf68e492a3713cad5cda764a6",
+      "size_bytes": 14925
+    },
+    {
+      "path": "chapter16_shapley_attribution_baselines/exercises/part19_proxyspex/proxy_plots.py",
+      "sha256": "f1d63171a3d14c7b6d389395b93895cce4a2cd6f7a8651f1c208d3dc536d0222",
+      "size_bytes": 24521
+    },
+    {
+      "path": "docs/roadmap_requirement_registry.yml",
+      "sha256": "90307936c28e2f88832c5ba5bbe853d4ff24d7cd765e5b0be9cdff324a5e2145",
+      "size_bytes": 129258
+    },
+    {
+      "path": "scripts/audit_course_surface.py",
+      "sha256": "0ff4b0e92827f35a338b68e7f67e7dd96654fddd5cc671fd9b27e41ce5502da5",
+      "size_bytes": 108823
+    },
+    {
+      "path": "scripts/audit_report_evidence_contracts.py",
+      "sha256": "9306ab707251c4de4452978c8d9589d35b0ee5bd611db326ac9dc0aa028ccdf9",
+      "size_bytes": 36046
+    },
+    {
+      "path": "scripts/sparse_interaction_learner_contract.py",
+      "sha256": "d084d57ac265e22b6d173358e0ee07d14d476d7fed550ea1887d295cf5ed48a9",
+      "size_bytes": 31422
+    },
+    {
+      "path": "scripts/verification_fixture_contract.py",
+      "sha256": "cd22bd37c168686e90acb4805892221ef1edb85b0cf01f3f6eec76a241b08b3c",
+      "size_bytes": 12244
+    },
+    {
+      "path": "tests/test_extension_verification_assets.py",
+      "sha256": "f9a4efe90544bdfa2788e2e05c4edb87c825cb6ab04953022a09ba1a6c86e730",
+      "size_bytes": 20812
+    },
+    {
+      "path": "tests/test_sparse_interaction_learner_contract.py",
+      "sha256": "8fb86417cbb01bf762d44eb77de4fb2628b3db7061326b022ebb1e2fa3cbcc12",
+      "size_bytes": 17459
+    },
+    {
+      "path": "tests/test_sparse_verification_integration.py",
+      "sha256": "a223562b8be85020a15b134a03aa3b7d18638f6184d805e016b9f76efb89d7d1",
+      "size_bytes": 4872
+    }
+  ],
+  "remaining_work": [
+    "complete cold native v2",
+    "complete independent cold reproduction",
+    "independent outcome audit",
+    "actual portable fixture export",
+    "complete own-answer notebook execution and figure/browser review",
+    "standalone reports and independent publication approval",
+    "install and integrate the two sections"
+  ],
+  "course_counts_unchanged": {
+    "TAUGHT": 54,
+    "PREFLIGHT_ONLY": 35,
+    "TOY_ONLY": 20,
+    "DEFERRED": 13,
+    "UNIMPLEMENTED": 83
+  },
+  "audits": [
+    {
+      "name": "original_preservation",
+      "exit_code": 0,
+      "stdout": "changed_paths_checked=45\ntracked_paths=45\nuntracked_paths=0\npreservation_blockers=0\nORIGINAL_ARENA_PRESERVATION=PASS\n"
+    },
+    {
+      "name": "report_evidence",
+      "exit_code": 0,
+      "stdout": "reports_checked=61\nreport_evidence_blockers=0\nREPORT_EVIDENCE_CONTRACTS=PASS\n"
+    },
+    {
+      "name": "artifact_hygiene",
+      "exit_code": 0,
+      "stdout": "extension_files_checked=2981\nprompt_artifacts_checked=3\nartifact_hygiene_blockers=0\nEXTENSION_ARTIFACT_HYGIENE=PASS\n"
+    },
+    {
+      "name": "readability",
+      "exit_code": 0,
+      "stdout": "minified_file_blockers=0\nNO_MINIFIED_FILES=PASS\n"
+    },
+    {
+      "name": "staged_whitespace",
+      "exit_code": 0,
+      "stdout": ""
+    },
+    {
+      "name": "approved_freeze",
+      "exit_code": 0,
+      "stdout": "ACTUAL_APPROVED_FREEZE=PASS\ndict\n"
+    },
+    {
+      "name": "source_and_cache_boundary",
+      "exit_code": 0,
+      "stdout": "Eight metadata copies exactly match authoritative bytes and SHA256. Both v2 directories absent. uv.lock and original scientific freeze match retained SHA256."
+    }
+  ]
+}

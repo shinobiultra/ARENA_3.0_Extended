@@ -203,11 +203,89 @@ def plot_cv(fit):
 
 def _native_records(payload, prompt_index, seed):
     if not payload or not payload.get("results"):
-        raise ValueError("Native results are unexecuted; run the common study before plotting.")
-    records = [r for r in payload["results"] if r["prompt_index"] == prompt_index and r["seed"] == seed]
+        raise ValueError("Native results are unexecuted; load completed evidence before plotting.")
+    all_records = [*payload["results"], *payload.get("recorded_comparators", [])]
+    records = [r for r in all_records if r["prompt_index"] == prompt_index and r["seed"] == seed]
     if not records:
         raise ValueError("The selected prompt/seed has no completed native results.")
     return records
+
+
+def _native_metric(record, name, metric="rmse"):
+    """Use full predictions when supplied; compact saved comparators carry labeled metrics."""
+    predictions = {**record.get("predictions", {}), **record.get("baseline_predictions", {})}
+    if name in predictions and "audit_values" in record:
+        values, predicted = np.asarray(record["audit_values"]), np.asarray(predictions[name])
+        if values.shape != predicted.shape or not np.isfinite(predicted).all():
+            raise ValueError("Audit predictions have incompatible shapes or nonfinite values.")
+        error = float(np.sqrt(np.mean((values - predicted)**2)))
+        if metric == "nrmse":
+            return error / values.std() if values.std() else np.nan
+        return error
+    value = record["metrics"][name][metric]
+    return np.nan if value is None else float(value)
+
+
+def _native_stage(record, key):
+    if "stage_errors" in record:
+        return float(record["stage_errors"][key])
+    left, right = {
+        "model_to_proxy_rmse": ("target", "proxy"),
+        "proxy_to_extraction_rmse": ("proxy", "extracted"),
+        "extraction_to_truncation_rmse": ("extracted", "truncated"),
+        "model_to_refinement_rmse": ("target", "refined"),
+    }[key]
+    first = record["audit_values"] if left == "target" else record["predictions"][left]
+    return float(np.sqrt(np.mean((np.asarray(first) - record["predictions"][right])**2)))
+
+
+def plot_native_population(payload):
+    """All recorded prompt-seed conditions, plus the independent behavior sign control."""
+    if not payload or not payload.get("results"):
+        raise ValueError("Native results are unexecuted; load completed evidence before plotting.")
+    records = payload["results"]
+    budgets = sorted({row["budget"] for row in records})
+    figure, axes = plt.subplots(1, 2, figsize=(14, 5.4), layout="constrained")
+    series = [(method, condition, "final" if method == "spex" else "refined", color, style)
+              for method, color in (("spex", COLORS["proxy"]), ("proxyspex", COLORS["refined"]))
+              for condition, style in (("real", "-"), ("shuffled", "--"))]
+    series += [("proxyspex", "real", name, COLORS[name], ":") for name in ("constant", "additive")]
+    omitted = 0
+    for method, condition, stage, color, style in series:
+        median, lower, upper = [], [], []
+        for budget in budgets:
+            values = np.asarray([_native_metric(row, stage, "nrmse") for row in records
+                                 if (row["method"], row["condition"], row["budget"]) == (method, condition, budget)])
+            omitted += int(np.sum(~np.isfinite(values)))
+            values = values[np.isfinite(values)]
+            if not len(values):
+                raise ValueError("No finite normalized audit errors for a plotted condition.")
+            low, mid, high = np.quantile(values, [.25, .5, .75])
+            lower.append(low); median.append(mid); upper.append(high)
+        label = f"{method}: {condition}" if stage not in {"constant", "additive"} else f"{stage} (proxy queries)"
+        axes[0].plot(budgets, median, "o"+style, color=color, label=label)
+        axes[0].fill_between(budgets, lower, upper, color=color, alpha=.07)
+    axes[0].set(xlabel="requested training rows per prompt", ylabel="audit RMSE / audit score standard deviation",
+                title="Complete recorded comparison: median and middle 50%", xticks=budgets)
+    axes[0].legend(frameon=False, fontsize=8)
+    if omitted:
+        axes[0].text(.02, .02, f"{omitted} zero-variance metric entries omitted", transform=axes[0].transAxes, fontsize=8)
+    audits = payload["audit"]
+    indices = sorted(int(index) for index in audits)
+    primary = [float(np.asarray(audits[index]["unmasked"]).item()) for index in indices]
+    counter = [float(np.asarray(audits[index]["counterfactual"]).item()) for index in indices]
+    axes[1].plot(indices, primary, "o", color=COLORS["proxy"], label="original prompt (expected > 0)")
+    axes[1].plot(indices, counter, "x", color=COLORS["shuffled"], label="subject-only counterfactual (expected < 0)")
+    for index, first, second in zip(indices, primary, counter, strict=True):
+        axes[1].plot([index, index], [first, second], color="gray", alpha=.25, linewidth=.8)
+    axes[1].axhline(0, color="black", linewidth=.8)
+    correct = sum(first > 0 and second < 0 for first, second in zip(primary, counter, strict=True))
+    axes[1].set(xlabel="fixed prompt index", ylabel="first-name minus second-name next-token logit",
+                title=f"Model behavior control: both expected signs in {correct}/{len(indices)} prompts")
+    axes[1].legend(frameon=False, fontsize=8)
+    for axis in axes:
+        _clean(axis)
+    return figure
 
 
 def plot_native_stages(payload, *, prompt_index, seed, budget=None):
@@ -218,59 +296,93 @@ def plot_native_stages(payload, *, prompt_index, seed, budget=None):
             selected = sorted((r for r in records if r["method"] == method and r["condition"] == condition), key=lambda r:r["budget"])
             if not selected:
                 continue
-            key = "final" if method == "spex" else "refined"
-            errors = [np.sqrt(np.mean((np.asarray(r["predictions"][key])-r["audit_values"])**2)) for r in selected]
-            axes[0].plot([r["query_receipt"]["raw_requested"] for r in selected], errors, "o"+linestyle,
-                         color=color, label=f"{method}: {condition}")
+            stage = "final" if method == "spex" else "refined"
+            axes[0].plot([r["query_receipt"]["raw_requested"] for r in selected], [_native_metric(r, stage) for r in selected],
+                         "o"+linestyle, color=color, label=f"{method}: {condition}")
     real = sorted((r for r in records if r["method"] == "proxyspex" and r["condition"] == "real"), key=lambda r:r["budget"])
     for name in ("constant", "additive"):
-        errors = [np.sqrt(np.mean((np.asarray(r["baseline_predictions"][name])-r["audit_values"])**2)) for r in real]
-        axes[0].plot([r["query_receipt"]["raw_requested"] for r in real], errors, ":", color=COLORS[name],
-                     label=f"{name} (proxy training rows)")
-    for name, left, right, color in (("model → proxy", "target", "proxy", COLORS["proxy"]),
-                                   ("proxy → extraction", "proxy", "extracted", COLORS["additive"]),
-                                   ("extraction → truncation", "extracted", "truncated", COLORS["truncated"]),
-                                   ("model → refined", "target", "refined", COLORS["refined"])):
-        errors=[]
-        for record in real:
-            first = record["audit_values"] if left == "target" else record["predictions"][left]
-            errors.append(np.sqrt(np.mean((np.asarray(first)-record["predictions"][right])**2)))
-        axes[1].plot([r["query_receipt"]["raw_requested"] for r in real], errors, "o-", color=color, label=name)
+        axes[0].plot([r["query_receipt"]["raw_requested"] for r in real], [_native_metric(r, name) for r in real],
+                     ":", color=COLORS[name], label=f"{name} (proxy training rows)")
+    for name, key, color in (("model → proxy", "model_to_proxy_rmse", COLORS["proxy"]),
+                             ("proxy → extraction", "proxy_to_extraction_rmse", COLORS["additive"]),
+                             ("extraction → truncation", "extraction_to_truncation_rmse", COLORS["truncated"]),
+                             ("model → refined", "model_to_refinement_rmse", COLORS["refined"])):
+        axes[1].plot([r["query_receipt"]["raw_requested"] for r in real], [_native_stage(r, key) for r in real],
+                     "o-", color=color, label=name)
     for axis in axes:
         axis.set(xlabel="raw requested query rows", ylabel="audit RMSE")
         if budget is not None:
             axis.axvline(budget, color="gray", alpha=.35, linewidth=1)
         axis.legend(frameon=False, fontsize=8); _clean(axis)
-    axes[0].set_title("Common model audit: methods and negative controls")
-    axes[1].set_title("Separate the ProxySPEX error stages")
+    axes[0].set_title(f"Recorded comparison · prompt {prompt_index}, seed {seed}")
+    axes[1].set_title("Recorded ProxySPEX error stages")
+    return figure
+
+
+def _word_bars(axis, record, feature_names, *, title):
+    spectrum = record["spectrum"]
+    supports = sorted((support for support in spectrum if support), key=lambda support:(-abs(spectrum[support]), support))[:8]
+    values = np.asarray([spectrum[support] for support in supports])
+    if supports:
+        axis.barh(np.arange(len(supports)), values, color=np.where(values >= 0, COLORS["proxy"], COLORS["shuffled"]))
+        axis.set(yticks=np.arange(len(supports)), yticklabels=[support_label(support, feature_names) for support in supports])
+        axis.invert_yaxis()
+    else:
+        axis.text(.5, .5, "No nonconstant support recovered", ha="center", va="center", transform=axis.transAxes)
+    axis.axvline(0, color="black", linewidth=.7)
+    axis.set(xlabel="signed Fourier coefficient (not SII); largest eight shown", title=title)
+    _clean(axis)
+
+
+def plot_native_refit(payload, *, prompt_index, seed, budget):
+    """Predictions from the student's fresh proxy fit; compact SPEX remains a saved metric."""
+    records = _native_records(payload, prompt_index, seed)
+    own = [row for row in records if row["method"] == "proxyspex" and row["budget"] == budget]
+    real = next(row for row in own if row["condition"] == "real")
+    shuffled = next(row for row in own if row["condition"] == "shuffled")
+    comparator = next(row for row in records if row["method"] == "spex" and row["condition"] == "real" and row["budget"] == budget)
+    values, predictions = np.asarray(real["audit_values"]), real["predictions"]
+    figure, axes = plt.subplots(2, 2, figsize=(14, 9), layout="constrained")
+    labels = ["proxy", "truncated", "refined", "shuffled", "constant", "additive", "SPEX\n(saved)"]
+    errors = [_native_metric(real, stage) for stage in ("proxy", "truncated", "refined")]
+    errors += [_native_metric(shuffled, "refined"), _native_metric(real, "constant"), _native_metric(real, "additive"),
+               _native_metric(comparator, "final")]
+    axes[0, 0].bar(labels, errors, color=[COLORS.get(label, COLORS["proxy"]) for label in labels])
+    axes[0, 0].tick_params(axis="x", labelrotation=25)
+    axes[0, 0].set(ylabel="RMSE against held-out GPT-2 responses", title=f"Your refit · prompt {prompt_index}, seed {seed}, {budget} rows")
+    for stage in ("proxy", "refined"):
+        axes[0, 1].scatter(values, predictions[stage], s=12, alpha=.4, color=COLORS[stage], label=stage)
+    endpoints = [min(values.min(), *(np.min(predictions[stage]) for stage in ("proxy", "refined"))),
+                 max(values.max(), *(np.max(predictions[stage]) for stage in ("proxy", "refined")))]
+    axes[0, 1].plot(endpoints, endpoints, "k--", linewidth=1, label="identity")
+    axes[0, 1].set(xlabel="held-out GPT-2 response", ylabel="your prediction", title="Fidelity to the model's mask game")
+    axes[0, 1].legend(frameon=False, fontsize=8)
+    axes[1, 0].scatter(predictions["proxy"], predictions["extracted"], s=12, alpha=.4, color=COLORS["additive"])
+    endpoints = [np.min(predictions["proxy"]), np.max(predictions["proxy"])]
+    axes[1, 0].plot(endpoints, endpoints, "k--", linewidth=1, label="identity control")
+    error = _native_stage(real, "proxy_to_extraction_rmse")
+    axes[1, 0].set(xlabel="your boosted-tree prediction", ylabel="your full Fourier reconstruction",
+                   title=f"Extraction fidelity · RMSE {error:.3g}")
+    axes[1, 0].legend(frameon=False, fontsize=8)
+    names = payload["prompts"][prompt_index]["feature_names"]
+    _word_bars(axes[1, 1], real, names, title="Your refined spectrum · read with model error above")
+    for axis in axes.flat:
+        _clean(axis)
     return figure
 
 
 def plot_native_spectrum(payload, *, prompt_index, seed, budget):
     records = _native_records(payload, prompt_index, seed)
-    prompts = payload["prompts"]
-    prompt = next((p for i,p in enumerate(prompts) if p.get("prompt_index", i) == prompt_index), None)
-    if prompt is None:
-        raise ValueError("Prompt metadata is absent.")
+    prompt = payload["prompts"][prompt_index]
     figure, axes = plt.subplots(1, 2, figsize=(14, 5), layout="constrained")
     for axis, method in zip(axes, ("spex", "proxyspex"), strict=True):
         found = [r for r in records if r["method"] == method and r["condition"] == "real" and r["budget"] == budget]
         if len(found) != 1:
             raise ValueError("Require one completed real run per method at the selected budget.")
         record = found[0]
-        spectrum = record["spectrum"]
-        supports = sorted((s for s in spectrum if s), key=lambda s:(-abs(spectrum[s]), s))[:10]
-        values = np.asarray([spectrum[s] for s in supports])
-        if supports:
-            axis.barh(np.arange(len(supports)), values, color=np.where(values>=0, COLORS["proxy"], COLORS["shuffled"]))
-            axis.set(yticks=np.arange(len(supports)), yticklabels=[support_label(s,prompt["feature_names"]) for s in supports])
-            axis.invert_yaxis()
-        else:
-            axis.text(.5,.5,"No nonconstant support recovered",ha="center",va="center",transform=axis.transAxes)
-        key="final" if method=="spex" else "refined"
-        error=np.sqrt(np.mean((np.asarray(record["predictions"][key])-record["audit_values"])**2))
-        axis.axvline(0,color="black",linewidth=.7)
-        axis.set(xlabel="signed Fourier coefficient (not SII)",
-                 title=f"{method} · audit RMSE {error:.3g}\n{record['query_receipt']['unique_model_masks']} unique queried masks")
-        _clean(axis)
+        stage = "final" if method == "spex" else "refined"
+        error = _native_metric(record, stage)
+        origin = "SPEX saved comparator" if method == "spex" else "ProxySPEX: your refit"
+        title = f"{origin} · audit RMSE {error:.3g}\n{record['query_receipt']['unique_model_masks']} unique queried masks"
+        _word_bars(axis, record, prompt["feature_names"], title=title)
     return figure

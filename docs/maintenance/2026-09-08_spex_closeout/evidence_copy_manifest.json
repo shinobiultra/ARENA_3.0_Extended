@@ -1,0 +1,53 @@
+{
+  "scope": "Exact unchanged metadata copies; original caches, incomplete-run data and historical sources remain at their bound paths. No native completion or publication claim.",
+  "files": [
+    {
+      "repository_copy": "docs/maintenance/2026-09-08_spex_closeout/interrupted_execution.json",
+      "authoritative_path": "/home/bitwise/.cache/arena_extended/sparse_interaction_discovery/native_run_v1/execution.json",
+      "sha256": "729b03bd6566e7c776bb4a8870823dc2c8ccd03d791d53b2b7d162d896d54a07",
+      "size_bytes": 42361
+    },
+    {
+      "repository_copy": "docs/maintenance/2026-09-08_spex_closeout/interruption_inventory.json",
+      "authoritative_path": "/home/bitwise/.cache/arena_extended/sparse_interaction_discovery/runtime_amendment_v1/interruption_inventory_v2.json",
+      "sha256": "11b37b67de28be4695c56b8f0bb1d2d71694830bc36db790cb1223f1116a24a9",
+      "size_bytes": 50356
+    },
+    {
+      "repository_copy": "docs/maintenance/2026-09-08_spex_closeout/resource_amendment_review.json",
+      "authoritative_path": "/home/bitwise/.cache/arena_extended/sparse_interaction_discovery/protocol_review_v3/runtime_amendment_review_v1/review.json",
+      "sha256": "19282660bda46c1130b43eaa08d273faa8145e3f5ef265edfdecb32d675fbab9",
+      "size_bytes": 8636
+    },
+    {
+      "repository_copy": "docs/maintenance/2026-09-08_spex_closeout/independent_interruption_verification.json",
+      "authoritative_path": "/home/bitwise/.cache/arena_extended/sparse_interaction_discovery/protocol_review_v3/runtime_amendment_review_v1/interruption_verification.json",
+      "sha256": "47a86fbf190fb53db3314094db84e7dd42b09be0cf63c2fa614845a980aaaedc",
+      "size_bytes": 1152
+    },
+    {
+      "repository_copy": "docs/maintenance/2026-09-08_spex_closeout/independent_approved_validator_check.json",
+      "authoritative_path": "/home/bitwise/.cache/arena_extended/sparse_interaction_discovery/protocol_review_v3/runtime_amendment_review_v1/actual_approved_validator_check.json",
+      "sha256": "042c1d857ca3239eb330167614550c666698757b94cc7e268d4d4bd90e87bc70",
+      "size_bytes": 986
+    },
+    {
+      "repository_copy": "docs/maintenance/2026-09-08_spex_closeout/spex_integration_checkpoint.json",
+      "authoritative_path": "/home/bitwise/.cache/arena_extended/sparse_interaction_discovery/lesson_1618_native_integration_v2/integration_checkpoint.json",
+      "sha256": "434c9b2bf399f31f46a485176b9d1cefa8dd595d6f56703da95de144e406633d",
+      "size_bytes": 3158
+    },
+    {
+      "repository_copy": "docs/maintenance/2026-09-08_spex_closeout/proxyspex_analytic_execution.json",
+      "authoritative_path": "/home/bitwise/.cache/arena_extended/sparse_interaction_discovery/part19_learner_drafts/draft_execution_v6/execution.json",
+      "sha256": "68287512c76a7181b0dc2c7bfd5854efec68a8edc8a6a31a736e76930731c58a",
+      "size_bytes": 4752
+    },
+    {
+      "repository_copy": "docs/maintenance/2026-09-08_spex_closeout/pending_outcome_auditor.json",
+      "authoritative_path": "/home/bitwise/.cache/arena_extended/sparse_interaction_discovery/protocol_review_v3/outcome_review_v1/PENDING_STATUS.json",
+      "sha256": "7c675101ea0aebd7a442ee184505d063c26464cc6601ea6002ec83e89c128b27",
+      "size_bytes": 1144
+    }
+  ]
+}

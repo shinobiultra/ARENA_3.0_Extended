@@ -2083,7 +2083,9 @@ requirements:
     roadmap_refs: [Extension-Roadmap.md:2665-2675, Extension-Roadmap.md:2840-2890]
     evidence: []
     reason: SPEX/ProxySPEX is explicitly named as the scalable LLM interaction family.
-    blocker: No sparse interaction recovery, query complexity, or LLM comparison notebook exists.
+    blocker: Analytical implementations and unpublished portable learner drafts exist. Complete native
+      execution, cold reproduction, native learner review and publication remain pending after the
+      retained runtime-feasibility interruption; the joint requirement is not yet taught.
 
   - id: shapley.vlm_modality_region
     topic: VLM modality, object, background, OCR, and region Shapley

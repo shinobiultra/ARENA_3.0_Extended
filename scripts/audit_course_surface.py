@@ -146,6 +146,13 @@ def _exercise_notebook_source(path: Path) -> str:
 
 
 def _exercise_notebook_declares_verification_contract(path: Path) -> bool:
+    if path.name in {
+        "16.18_Find_the_Interactions_Without_Trying_Every_Subset_exercises.ipynb",
+        "16.19_Explain_the_Proxy_Check_the_Model_exercises.ipynb",
+    }:
+        from scripts.sparse_interaction_learner_contract import has_learner_contract
+
+        return has_learner_contract(path)
     if path.name == "16.17_One_Query_Many_Interactions_exercises.ipynb":
         from scripts.shapiq_learner_contract import has_learner_contract
 

@@ -1,7 +1,7 @@
-"""Build and execute unpublished drafts from prose and visible frozen sources.
+"""Build unpublished lessons with visible methods and portable native replay.
 
-No default writes to the canonical notebook/page locations. Native execution is
-disabled in this analytic own-answer run. Generated artifacts belong in cache.
+No default writes to canonical notebook/page locations. Native cells refit from
+the portable score fixture and never start a model or a cold query experiment.
 """
 from __future__ import annotations
 
@@ -95,7 +95,7 @@ def build_notebooks():
         kind, key = token.groups()
         if kind == "code":
             cell = _cell("code", CELLS[key].strip(), calling_cell=key,
-                         native_execution=key in ("native_study", "native_play"))
+                         native_execution=key.startswith("native_"))
             student.append(copy.deepcopy(cell)); solved.append(cell)
         else:
             functions = EXERCISES[key]["functions"]
@@ -117,8 +117,8 @@ def build_notebooks():
     assert found_exercises == found_solutions == list(EXERCISES), "Every exercise needs its adjacent own solution"
     metadata = {"kernelspec": {"display_name": "Python 3", "language": "python", "name": "python3"},
                 "language_info": {"name": "python", "version": "3.14"},
-                "arena": {"section": "16.18", "status": "unpublished_analytic_draft",
-                          "native_status": "UNEXECUTED", "original_chapters_modified": False,
+                "arena": {"section": "16.18", "status": "unpublished_integration_draft",
+                          "native_status": "PORTABLE_REPLAY_REQUIRED", "original_chapters_modified": False,
                           "exercise_groups": len(EXERCISES), "student_functions": sum(len(r["functions"]) for r in EXERCISES.values())}}
     def make(cells):
         return {"nbformat": 4, "nbformat_minor": 5, "metadata": copy.deepcopy(metadata), "cells": cells}
@@ -152,7 +152,7 @@ def _sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
-def execute_own_answers(student, output_dir):
+def execute_own_answers(student, output_dir, *, native_fixture=None):
     """Use a real kernel bound to this Python, with source/outputs retained."""
     import nbformat
     from nbclient import NotebookClient
@@ -164,14 +164,18 @@ def execute_own_answers(student, output_dir):
     kernel_dir.mkdir(parents=True, exist_ok=True)
     (kernel_dir / "kernel.json").write_text(json.dumps({"argv": [sys.executable, "-m", "ipykernel_launcher", "-f", "{connection_file}"],
         "display_name": "ARENA SPEX analytic draft", "language": "python"}))
-    old = {key: os.environ.get(key) for key in ("JUPYTER_PATH", "ARENA_SPEX_OUTPUT_DIRECTORY", "MPLBACKEND", "OPENBLAS_NUM_THREADS", "OMP_NUM_THREADS")}
+    old = {key: os.environ.get(key) for key in ("JUPYTER_PATH", "ARENA_SPEX_OUTPUT_DIRECTORY", "MPLBACKEND",
+           "OPENBLAS_NUM_THREADS", "OMP_NUM_THREADS", "ARENA_NATIVE_QUERY_FIXTURE")}
     os.environ["JUPYTER_PATH"] = str(jupyter_root) + (os.pathsep + old["JUPYTER_PATH"] if old["JUPYTER_PATH"] else "")
     os.environ["ARENA_SPEX_OUTPUT_DIRECTORY"] = str(output_dir / "figures")
     os.environ["MPLBACKEND"] = "module://matplotlib_inline.backend_inline"
-    os.environ["OPENBLAS_NUM_THREADS"] = os.environ["OMP_NUM_THREADS"] = "4"
+    os.environ["OPENBLAS_NUM_THREADS"] = os.environ["OMP_NUM_THREADS"] = "2"
+    if native_fixture is not None:
+        os.environ["ARENA_NATIVE_QUERY_FIXTURE"] = str(Path(native_fixture).resolve())
     started = time.time()
     sources = ["spex_methods.py", "spex_coding.py", "spex_methods_tests.py", "native_data.py",
-               "native_data_tests.py", "lesson.md", "lesson_cells.py", "lesson_tests.py", "spex_plots.py", "build_notebooks.py"]
+               "native_data_tests.py", "native_learner.py", "native_learner_tests.py", "native_query_plan.py",
+               "native_study.py", "lesson.md", "lesson_cells.py", "lesson_tests.py", "spex_plots.py", "build_notebooks.py"]
     source_dir = output_dir / "sources"
     source_dir.mkdir(exist_ok=True)
     for name in sources:
@@ -190,7 +194,12 @@ def execute_own_answers(student, output_dir):
         after_hashes = {name: _sha(HERE / name) for name in sources}
         if after_hashes != before_hashes and status == "passed":
             status, failure = "source_changed", "A source changed during execution; compare the retained before/after hashes."
-        receipt = {"status": status, "scope": "analytic own-answer notebook execution", "native_status": "UNEXECUTED",
+        binding_path = output_dir / "native_replay_binding.json"
+        native_binding = json.loads(binding_path.read_text()) if binding_path.exists() else {}
+        replay_directories = [output_dir / "figures" / name for name in ("native_default_replay", "native_play_replay")]
+        replay_complete = all((path / "hashes.json").exists() for path in replay_directories)
+        receipt = {"status": status, "scope": "own-answer analytic and portable native replay execution",
+                   "native_status": "PORTABLE_REPLAY_COMPLETE" if replay_complete and status == "passed" else "INCOMPLETE",
                    "python": sys.executable, "elapsed_seconds": time.time() - started,
                    "source_sha256": before_hashes, "source_sha256_after": after_hashes,
                    "sources_unchanged": before_hashes == after_hashes,
@@ -198,7 +207,14 @@ def execute_own_answers(student, output_dir):
                    "executed_code_cells": sum(c["cell_type"] == "code" and c.get("execution_count") is not None for c in notebook.cells),
                    "total_code_cells": sum(c["cell_type"] == "code" for c in notebook.cells),
                    "figures": {p.name: _sha(p) for p in sorted((output_dir / "figures").glob("*.png"))},
-                   "failure": failure}
+                   "failure": failure,
+                   "native_execution_sha256": native_binding.get("native_execution_sha256"),
+                   "fresh_reproduction_sha256": native_binding.get("fresh_reproduction_sha256"),
+                   "portable_replay": {"status": "PASS" if replay_complete and status == "passed" else "INCOMPLETE",
+                                       "fixture_sha256": native_binding.get("fixture_sha256"),
+                                       "no_full_study_cache_required": True,
+                                       "new_model_queries": 0,
+                                       "replay_records": [str(path) for path in replay_directories]}}
         (output_dir / "own_answer_execution.json").write_text(json.dumps(receipt, indent=2) + "\n")
         for key, value in old.items():
             if value is None:
@@ -218,11 +234,42 @@ def render_html(notebook, path):
     return Path(path)
 
 
+def render_instruction_markdown(student, executed, path):
+    """Use the student's actual prose/stubs/solutions with executed PNG results.
+
+    This is a publication input only; the builder never writes the canonical
+    instruction page. The publisher installs these exact bytes and named assets.
+    """
+    executed_by_key = {cell.get("metadata", {}).get("arena", {}).get("calling_cell"): cell
+                       for cell in executed["cells"] if cell["cell_type"] == "code"}
+    blocks = []
+    for cell in student["cells"]:
+        if cell["cell_type"] == "markdown":
+            blocks.append(cell["source"])
+            continue
+        blocks.append("```python\n" + cell["source"] + "\n```")
+        key = cell.get("metadata", {}).get("arena", {}).get("calling_cell")
+        completed = executed_by_key.get(key)
+        if completed is None:
+            continue
+        figures = re.findall(r'show_figure\([\s\S]*?,\s*"([0-9][\w]+)"\s*\)', cell["source"])
+        for name in figures:
+            blocks.append(f"![{name.replace('_', ' ')}](../assets/1618_{name}.png)")
+        for output in completed.get("outputs", []):
+            if output.get("output_type") == "stream":
+                blocks.append("```text\n" + output["text"].rstrip() + "\n```")
+            elif "text/html" in output.get("data", {}):
+                blocks.append(output["data"]["text/html"])
+    Path(path).write_text("\n\n".join(blocks) + "\n")
+    return Path(path)
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--draft-output", type=Path, required=True)
     parser.add_argument("--execute-own-answers", action="store_true")
     parser.add_argument("--render-html", action="store_true")
+    parser.add_argument("--native-fixture", type=Path)
     args = parser.parse_args()
     output = args.draft_output.resolve()
     if output == HERE or HERE in output.parents:
@@ -237,9 +284,10 @@ def main():
             render_html(notebook, output / f"DRAFT_{STEM}_{name}.html")
         print(path, flush=True)
     if args.execute_own_answers:
-        notebook, receipt = execute_own_answers(student, output)
+        notebook, receipt = execute_own_answers(student, output, native_fixture=args.native_fixture)
         if args.render_html:
             render_html(notebook, output / f"DRAFT_{STEM}_own_answer_executed.html")
+        render_instruction_markdown(student, notebook, output / f"DRAFT_{STEM}_instructions.md")
         print(json.dumps({key: receipt[key] for key in ("status", "native_status", "executed_code_cells", "total_code_cells", "elapsed_seconds")}), flush=True)
 
 

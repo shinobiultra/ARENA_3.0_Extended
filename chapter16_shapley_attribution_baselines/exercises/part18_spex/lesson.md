@@ -2,7 +2,9 @@
 
 Can a few carefully chosen groups of queries identify a sparse, signed interaction spectrum?
 
-> **Unpublished analytic draft.** The exercises and analytic figures execute. The shared GPT-2 study and its native play are **UNEXECUTED** here. No native result is implied by the analytic examples.
+> **Unpublished integration draft.** The analytic exercises have passed execution and independent review.
+> The native cells below require the completed, hash-bound portable score fixture. Native learner execution
+> is pending; the analytic examples do not imply a GPT-2 result.
 
 # Introduction
 
@@ -471,20 +473,75 @@ Index the feature mask by the token-to-feature map for every variable token. If 
 
 <!-- code: word_masking_example -->
 
-## Native comparison - Pending shared execution
+## Native comparison - Reconstruct a queried GPT-2 game
 
-The code below passes your completed method namespace to the shared study. That study also needs the completed ProxySPEX namespace from 16.19, so the two estimators use the same declared prompts, budgets, audit masks and controls. It must bind the model revision and all query settings before native outcomes.
+The portable fixture contains actual scores from the shared fixed-query experiment. For each prompt the
+score is **logit(name A) minus logit(name B)**, evaluated after the fixed suffix ` to`. There are 28 word
+features, 32 predeclared prompts, three seeds and three requested-mask budgets: 456, 912 and 1,824. Every
+method uses the same 512 audit masks for a prompt. Those audit masks are absent from every training design.
 
-This draft leaves `RUN_NATIVE_STUDY=False`. The analytic figures above do not establish GPT-2 fidelity. When
-the shared run is executed, inspect actual model scores beside SPEX predictions, word-labelled signed terms,
-query-matched constant/additive baselines and shuffled-response failures. Keep incorrect unmasked answers
-visible: approximating an incorrect answer accurately is still approximation, not semantic correctness.
+The fixture stores queried scores, not a fitted SPEX model. Loading checks its compressed and decoded
+hashes, its mask ordering and its complete case inventory. You can run the replay from a clean checkout
+without access to the original model cache. The full cold query experiment is documented separately in
+`NATIVE_LEARNER_API.md`; this notebook makes no new model evaluations.
+
+<!-- code: native_load -->
+
+### Your recovered spectrum, on actual word-mask scores
+
+The next cell calls your `make_query_design`, `recover_spectrum` and `predict_spectrum` through the shared
+fitting boundary. It supplies ordered training responses and audit **masks**. Audit target values are
+attached only after your predictions have been produced. Prompt 0, seed 0 and the 1,824-request budget
+were selected before inspecting native outcomes.
+
+Compare your 512 predictions with actual scores, the fitted constant/additive baselines and the shuffled
+training-response control. The other method's bar is explicitly a recorded comparison from the shared
+study. The signed terms are your newly recovered spectrum. The diagonal shows perfect prediction; points
+far from it are approximation errors that must remain visible. Labels include each word's feature index,
+so repeated occurrences of the same name remain distinct features.
 
 <!-- code: native_study -->
 
-## Try It Yourself - Inspect a completed native prompt
+**Expected:** two fresh SPEX recoveries, one for real responses and one for shuffled responses; four simple
+baseline fits; zero new model evaluations. A completed recovery does not imply a small audit error.
 
-After a completed shared study, change the prompt, seed or an existing budget below. This play reuses the recorded predictions and makes zero additional model evaluations. Looking at its audit outcomes is exploratory; it does not change the fixed study's selected settings.
+<details><summary>Interpretation - A plausible group of words is not enough</summary>
+
+A large signed coefficient says how a Boolean character contributes to this fitted mask game. It does
+not establish that the selected words form a linguistic mechanism. Check the held-out errors and the
+shuffled control before interpreting a term. If the spectrum misses most of the variation, describe it
+as a poor approximation even if a few word groups look sensible.
+
+</details>
+
+### Keep the full prompt collection in view
+
+The curves below display **recorded metrics from the complete shared study**, rather than refitting every
+condition in this notebook. Each budget includes all 32 prompts and all three seeds. The heatmap keeps
+individual poor fits visible beside the aggregate curve. Requested masks are the horizontal cost measure;
+overlapping masks can make the number of distinct model evaluations smaller.
+
+The subject-only counterfactual changes the repeated subject name while keeping the rest of the prompt
+fixed. Its expected answer sign reverses. Keep incorrect unmasked answers in the plot: approximating an
+incorrect answer accurately is still approximation, not semantic correctness.
+
+<!-- code: native_population -->
+
+### Check the actual author implementations
+
+These fixed prompt-0, seed-0 reference stages used the declared cached masks and responses. The table keeps
+their actual statuses, stage errors and exceptions. A failed reference stage supplies no replacement
+prediction. These source comparisons complement the controlled learner figures above.
+
+<!-- code: native_references -->
+
+## Try It Yourself - Refit another native prompt
+
+Change the prompt, seed or budget below and run the cell again. It calls your SPEX functions on that
+condition's exact saved training responses, including the shuffled control. This is a new estimator fit
+and makes zero additional model evaluations. The default play uses prompt 1, seed 0 and 912 requested
+masks. Looking at audit outcomes and changing the play is exploratory; it does not change the fixed
+study's selected settings.
 
 <!-- code: native_play -->
 

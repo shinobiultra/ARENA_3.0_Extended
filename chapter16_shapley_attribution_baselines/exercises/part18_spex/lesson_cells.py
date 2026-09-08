@@ -33,6 +33,7 @@ CELLS = {
 import os
 import sys
 import heapq
+import json
 from functools import lru_cache
 from itertools import combinations
 from pathlib import Path
@@ -64,8 +65,6 @@ from chapter16_shapley_attribution_baselines.exercises.part18_spex.spex_methods 
 
 OUTPUT_DIR = Path(os.environ.get("ARENA_SPEX_OUTPUT_DIRECTORY", "./spex_outputs"))
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-RUN_NATIVE_STUDY = False  # Frozen analytic draft: no model is queried by default.
-native_payload = None
 
 def show_figure(figure, name):
     figure.savefig(OUTPUT_DIR / f"{name}.png", dpi=140, bbox_inches="tight")
@@ -201,29 +200,64 @@ display(pd.DataFrame({
 }))
 methods.masked_word_inputs = masked_word_inputs
 ''',
-"native_study": '''# This cell needs the shared, frozen native protocol and BOTH completed methods.
-# Set RUN_NATIVE_STUDY=True only in a run that is meant to execute that protocol.
-if RUN_NATIVE_STUDY:
-    if "proxy_methods" not in globals():
-        raise RuntimeError("Complete 16.19 and supply its student proxy_methods namespace first.")
-    from chapter16_shapley_attribution_baselines.exercises.part18_spex import native_study
-    native_payload = native_study.run_study(
-        OUTPUT_DIR / "native", spex_methods=methods, proxy_methods=proxy_methods,
-    )
-    show_figure(plots.plot_native_comparison(native_payload), "09_native_model_comparison")
-else:
-    print("UNEXECUTED — native GPT-2 study. This draft has no native result.")
+"native_load": '''# Read actual cached model responses; this does not load a model or fit an estimator.
+from chapter16_shapley_attribution_baselines.exercises.part18_spex import native_learner
+native_evidence = native_learner.load_native_evidence()
+native_payload = native_evidence["payload"]
+(OUTPUT_DIR.parent / "native_replay_binding.json").write_text(
+    json.dumps(native_evidence["binding"], indent=2) + "\\n"
+)
+prompt = native_payload["prompts"][0]
+print("Prompt 0:", prompt["prompt"])
+print("Subject-only counterfactual:", prompt["counterfactual_prompt"])
+print(f"Score = logit({prompt['name_a']!r}) - logit({prompt['name_b']!r}) at the fixed suffix.")
+print("Portable raw scores cover all 32 prompts, three seeds and three budgets.")
+print("Loading made 0 new model evaluations and 0 estimator fits.")
 ''',
-"native_play": '''# Try It Yourself after a completed native study: inspect existing held-out results.
-PROMPT_INDEX = 0
-NATIVE_BUDGET = None  # None selects the largest completed budget; or use an existing value.
+"native_study": '''# Fixed before native outcomes: prompt 0, seed 0, 1,824 requested masks.
+# The helper passes TRAINING values and audit MASKS to your functions; no audit targets.
+native_replay = native_learner.replay_condition(
+    native_evidence, method="spex", methods=methods,
+    prompt_index=0, seed=0, budget=1824, output_dir=OUTPUT_DIR / "native_default_replay",
+)
+for comparison in native_replay["replay"]["comparisons"]:
+    assert comparison["prediction_allclose"] and all(comparison["prediction_allclose"].values()), (
+        "Your selected replay differs from the recorded prediction; inspect the retained comparison."
+    )
+show_figure(plots.plot_native_comparison(native_replay), "09_student_native_recovery")
+print("Your functions refitted real and shuffled scores: 2 SPEX recoveries, 4 simple baseline fits.")
+print("New model evaluations: 0. Cached requested masks: 1824 per condition.")
+for row in native_replay["results"]:
+    print(row["condition"], "returned", len(row["spectrum"]), "signed terms;", row["recovery"]["stop_reason"])
+''',
+"native_population": '''# These full-population curves reuse recorded completed-study metrics.
+# They do not claim to refit all 1,152 cases in this notebook.
+show_figure(plots.plot_native_population(native_payload), "10_recorded_native_budget_curves")
+show_figure(plots.plot_native_prompt_checks(native_payload), "11_native_answer_and_counterfactual_checks")
+print("Population display: all 32 prompts, all 3 seeds and all 3 budgets; 0 extra fits or model evaluations.")
+''',
+"native_references": '''# Fixed prompt-0/seed-0 author comparisons; failed stages keep their source status.
+display(pd.DataFrame([
+    {"reference": row["stage_id"], "status": row["status"],
+     "stage": stage, "audit RMSE": metric["rmse"],
+     "source failure": row.get("source_exception_type_message", "")}
+    for row in native_payload["references"]
+    for stage, metric in (row["metrics"].items() or [("no completed prediction", {"rmse": None})])
+]))
+print("These are recorded reference outcomes on the same declared masks; no reference process was started.")
+''',
+"native_play": '''# Try It Yourself: refit your method on another existing prompt/seed/budget.
+PROMPT_INDEX = 1  # Choose 0 through 31.
+NATIVE_BUDGET = 912  # Choose 456, 912 or 1824 requested masks.
 NATIVE_SEED = 0
-if native_payload is not None:
-    show_figure(plots.plot_native_comparison(native_payload, prompt_index=PROMPT_INDEX,
-        budget=NATIVE_BUDGET, seed=NATIVE_SEED), "10_native_prompt_play")
-    print("This inspection reuses completed predictions: 0 extra model evaluations.")
-    print("Audit reuse is exploratory; it does not select a new fixed-study setting.")
-else:
-    print("UNEXECUTED — native prompt play requires a completed native_payload.")
+play_native = native_learner.replay_condition(
+    native_evidence, method="spex", methods=methods, prompt_index=PROMPT_INDEX,
+    budget=NATIVE_BUDGET, seed=NATIVE_SEED, output_dir=OUTPUT_DIR / "native_play_replay",
+)
+print(native_payload["prompts"][PROMPT_INDEX]["prompt"])
+show_figure(plots.plot_native_comparison(play_native, prompt_index=PROMPT_INDEX,
+    budget=NATIVE_BUDGET, seed=NATIVE_SEED), "12_student_native_prompt_play")
+print("This play makes 2 estimator refits and 4 baseline fits; 0 extra model evaluations.")
+print("Audit reuse is exploratory; it does not select a new fixed-study setting.")
 ''',
 }

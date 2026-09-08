@@ -78,3 +78,28 @@ def test_native_plot_contract_without_model_queries():
     assert "456 requests, 418 unique masks" in figure._suptitle.get_text()
     assert any("word0" in label.get_text() and "word2" in label.get_text() for label in figure.axes[1].get_yticklabels())
     plt.close(figure)
+
+
+def test_native_cells_refit_student_namespace_and_have_no_live_run_switch():
+    student, _ = builder.build_notebooks()
+    cells = {c.get("metadata", {}).get("arena", {}).get("calling_cell"): c
+             for c in student["cells"] if c["cell_type"] == "code"}
+    native = "\n".join(cells[key]["source"] for key in cells if key and key.startswith("native_"))
+    assert "run_study(" not in native and "RUN_NATIVE_STUDY" not in native
+    assert "load_native_evidence()" in native
+    assert native.count("native_learner.replay_condition(") == 2
+    assert native.count('method="spex", methods=methods') == 2
+    assert "prompt_index=0, seed=0, budget=1824" in native
+    assert "recorded completed-study metrics" in native
+    assert "if native_payload" not in native
+
+
+def test_generated_page_uses_canonical_asset_names(tmp_path):
+    student, solved = builder.build_notebooks()
+    path = builder.render_instruction_markdown(student, solved, tmp_path / "page.md")
+    text = path.read_text()
+    assert "<!-- code:" not in text and "<!-- exercise:" not in text
+    assert text.count("](../assets/1618_") == 12
+    assert "1618_09_student_native_recovery.png" in text
+    assert "1618_12_student_native_prompt_play.png" in text
+    assert "<details><summary>Solution" in text

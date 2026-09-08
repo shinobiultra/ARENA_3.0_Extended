@@ -1,0 +1,60 @@
+{
+  "status": "PREPARED_NATIVE_UNEXECUTED",
+  "created_at_utc": "2026-09-08T06:04:59.012335+00:00",
+  "scope": "Portable integration code, synthetic contracts and unexecuted draft snapshot only",
+  "source_sha256": {
+    "native_learner.py": "02fb47f8c44c9c9581e30961601be821d7d501abcea2eeff5102e354a36e44d8",
+    "native_learner_tests.py": "2719f0b79310821829e4a0564b07fe3906b1dd42009dc4c9a8c12aefb30b5ced",
+    "NATIVE_LEARNER_API.md": "ed66daef793c5d518b659a61ac8521be1342e0597a4c7eff33f48adf63a85382",
+    "lesson.md": "95be45a2f113dee9ee78c078f0ec023fe31d9ca410539c5c66458e819574ca28",
+    "lesson_cells.py": "a243bf321b22889e6e10a8427c9f4d71dc36d8faab910e813af68105caf1edee",
+    "build_notebooks.py": "e46243459222683506e584b96b0aa2547cdfd16f69f698b35a8bd82f0c25575c",
+    "spex_plots.py": "4b7496694da38e5b4d6fc73fc17347fa8239c76e82be035b6f0d8c76d1ff949d",
+    "lesson_build_tests.py": "debb0e9a57ee6406dc1593940d1642654d8ac0d5a960f3107e2429d47b5c27df"
+  },
+  "draft_artifacts": {
+    "DRAFT_16.18_Find_the_Interactions_Without_Trying_Every_Subset_exercises.html": {
+      "sha256": "4a538a40f67a8f027748382b8692070efcc8a64706fca61ca4d17cc686938aa8",
+      "size_bytes": 470918
+    },
+    "DRAFT_16.18_Find_the_Interactions_Without_Trying_Every_Subset_exercises.ipynb": {
+      "sha256": "6a822e564c329ddd1be478d337e70f40a11457ee113497f7e288d37b79ae515c",
+      "size_bytes": 98593
+    },
+    "DRAFT_16.18_Find_the_Interactions_Without_Trying_Every_Subset_solutions.html": {
+      "sha256": "b16d82c59425ba5b4d36a8cfd7edb2d6a16d5a881c9ba11de2f7a5e496d20223",
+      "size_bytes": 540698
+    },
+    "DRAFT_16.18_Find_the_Interactions_Without_Trying_Every_Subset_solutions.ipynb": {
+      "sha256": "015fac20eb6ba4603e344ddb87f7c8baccbd8c0cadbe318600cd39494ad6bc55",
+      "size_bytes": 84697
+    }
+  },
+  "student_functions": 22,
+  "code_cells": 31,
+  "planned_figures": 12,
+  "actual_native_fixture_exported": false,
+  "actual_native_learner_fits": 0,
+  "native_model_queries_by_this_task": 0,
+  "tests": {
+    "status": "PASS",
+    "passed": 41,
+    "elapsed_seconds": 9.02,
+    "threads": 1,
+    "command": ".venv/bin/python3 -m pytest -q spex_methods_tests.py lesson_tests.py lesson_build_tests.py native_learner_tests.py",
+    "py_compile": "PASS"
+  },
+  "frozen_core_sha256": {
+    "spex_methods.py": "7545eb3727e1f696d4f3e8642686b4482d790f66b5865a90693084c98b20d56b",
+    "spex_coding.py": "dc2e4b564e03504a02da7a0ed5f1e3570c31f530883aa200cc3d667187d3fdc4"
+  },
+  "previous_reviewed_analytic_draft": "/home/bitwise/.cache/arena_extended/sparse_interaction_discovery/lesson_1618_v7",
+  "synthetic_plot_contracts": "/home/bitwise/.cache/arena_extended/sparse_interaction_discovery/native_learner_integration_v1",
+  "remaining": [
+    "Complete root-owned native run and cold reproduction",
+    "Export and seal actual portable fixture with exact completed-run binding; measure actual encoded/decoded sizes",
+    "Execute own-answer notebook with that fixture, inspect actual native outcomes and all12figures",
+    "Independent native/portable learner review; DATA_ACCESS and report/publication integration"
+  ],
+  "publication_performed": false
+}

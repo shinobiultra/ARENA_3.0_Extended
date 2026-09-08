@@ -49,7 +49,7 @@ CPU_ENVIRONMENT = {
 
 @dataclass(frozen=True)
 class ResourceLimits:
-    wall_seconds: float = 5400.0
+    wall_seconds: float = 10800.0
     rss_bytes: int = 8 * 1024**3
     output_bytes: int = 8 * 1024**3
     sample_seconds: float = 0.05
@@ -379,12 +379,12 @@ def _run_native_impl(output, *, freeze_path, plan_dir, snapshot_path, spex_modul
                "--snapshot-path", str(snapshot_path), "--spex-module", spex_module,
                "--proxy-module", proxy_module]
     environment = {
-        "ARENA_SPEX_SUPERVISED_CHILD": "1", "ARENA_SPEX_JOINT_DEADLINE_UNIX": str(start + 5400),
+        "ARENA_SPEX_SUPERVISED_CHILD": "1", "ARENA_SPEX_JOINT_DEADLINE_UNIX": str(start + 10800),
         "ARENA_SPEX_REFERENCE_STAGE_IDS": json.dumps(list(REFERENCE_STAGE_IDS)),
         "ARENA_SPEX_REFERENCE_REGISTRY": str(output / "reference_stages.jsonl"),
     }
     preflight_elapsed = time.time() - start
-    remaining_limits = ResourceLimits(wall_seconds=max(0.0, 5400 - preflight_elapsed))
+    remaining_limits = ResourceLimits(wall_seconds=max(0.0, 10800 - preflight_elapsed))
     record = supervise(command, output, source_paths=sources, env=environment, limits=remaining_limits,
                        manifest_extra={"execution_kind": "cold_source_native", "model_device": "cpu",
                                        "native_torch_threads": NATIVE_TORCH_THREADS,
@@ -398,7 +398,7 @@ def _run_native_impl(output, *, freeze_path, plan_dir, snapshot_path, spex_modul
                                        "joint_limits": asdict(NATIVE_LIMITS),
                                        "preflight_elapsed_seconds": preflight_elapsed})
     record["joint_elapsed_seconds"] = time.time() - start
-    if record["joint_elapsed_seconds"] > 5400:
+    if record["joint_elapsed_seconds"] > 10800:
         record["status"] = "FAIL"
         if "wall_seconds" not in record["resource_violations"]:
             record["resource_violations"].append("wall_seconds")

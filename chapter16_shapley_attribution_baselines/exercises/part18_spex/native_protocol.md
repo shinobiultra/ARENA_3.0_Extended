@@ -296,3 +296,43 @@ all help/solution/play checks, and truthful primary-source citations.
 The joint requirement stays UNIMPLEMENTED until both learner sections pass.
 Reports and review archives are evidence supporting those notebooks; they are
 not their signature result or a substitute for instruction.
+
+
+## Resource-only execution amendment: 180-minute joint cap
+
+The original 90-minute envelope above is retained as the historical scientific
+freeze. A separately approved resource amendment permits 10,800 seconds
+(180 minutes) for a complete cold native execution and for a complete cold
+source-only reproduction, including its subsequent supervised comparison.
+The reference stages retain their individual 300-second, 8 GiB process-tree
+RSS and 256 MiB output limits. The joint 8 GiB RSS and output limits, CPU-only
+execution, eight inference threads and four numerical/inter-op threads are
+unchanged. No query, method, model, seed, fold, control, tolerance or outcome
+criterion changes under this amendment.
+
+This amendment follows an interrupted native attempt, so it is not a new
+zero-outcome scientific freeze. Its envelope records positive completed
+physical-query and persisted method-fit counts before amendment, with explicit
+count units and any lower-bound limitation. The immutable original approval,
+its candidate and review, the failed execution receipt, and the interruption
+inventory are all linked by physical hashes. Legacy zero-before-freeze fields
+refer exclusively to the original scientific freeze, as stated by
+`counts_scope="original_scientific_freeze"`; they do not describe the time of
+the new resource envelope. The new envelope records that native execution has
+already started and carries its own creation time and independent approval.
+
+Validation requires all scientific fields and source hashes to match that
+original approval. The only changed native source files are this append-only
+protocol explanation, the joint-cap constants in `run_native.py`, and the
+amendment-validation body in `native_study.py`. Mechanical AST comparison
+rejects any other supervisor or study change, and original method, model-input,
+oracle, query-plan, reference and environment identities remain exact. Failed
+and partial runs retain their original status and bytes; the amended execution
+starts in a new empty output directory and does not reuse their values or fits.
+
+Cold execution may read and hash historical files to validate provenance.
+That validation remains local to the freeze guard: historical labels, spectra,
+predictions, coefficients and fitted models never become inputs to the new
+oracle queries or method fits. The supervisor's
+`child_received_learner_payloads=false` records absence of learner-input reuse;
+it does not claim that the provenance validator cannot access historical files.

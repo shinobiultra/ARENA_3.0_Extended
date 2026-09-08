@@ -6,7 +6,9 @@ from pathlib import Path
 import yaml
 
 from scripts.run_extension_verification_reports import expected_metric_failures, load_solution
-from scripts.verification_fixture_contract import fixture_paths, native_receipt_blockers, uses_native_receipts
+from scripts.verification_fixture_contract import (
+    fixture_paths, native_receipt_blockers, uses_native_receipts, verification_entrypoint,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -261,7 +263,7 @@ def test_artifact_locks_and_report_schemas_have_required_fields():
         assert report["report_inputs"]["combined_sha256"]
         input_paths = {item["path"] for item in report["report_inputs"]["files"]}
         assert input_paths
-        assert (exercise_dir / "solutions.py").relative_to(ROOT).as_posix() in input_paths
+        assert verification_entrypoint(ROOT, exercise_dir).relative_to(ROOT).as_posix() in input_paths
         assert (exercise_dir / "artifacts.lock.yml").relative_to(ROOT).as_posix() in input_paths
         exercise_prefix = exercise_dir.relative_to(ROOT).as_posix()
         assert any(
@@ -441,8 +443,12 @@ def test_hard_exercise_ladder_registry_tracks_all_hard_sections():
 def test_extension_full_experiment_hooks_are_callable_not_placeholders():
     placeholder_hooks = []
     for exercise_dir in extension_exercise_dirs():
-        solution_path = exercise_dir / "solutions.py"
+        solution_path = verification_entrypoint(ROOT, exercise_dir)
         tree = ast.parse(solution_path.read_text(), filename=str(solution_path))
+        if solution_path.name == "native_report.py":
+            assert {"build_report", "has_native_evidence", "receipt_blockers"} <= {
+                node.name for node in tree.body if isinstance(node, ast.FunctionDef)
+            }
         for node in ast.walk(tree):
             if not isinstance(node, ast.FunctionDef) or node.name != "run_full_experiment":
                 continue

@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "checked_at_utc": "2026-09-08T06:03:40.445437+00:00",
+  "validator": "native_study.validate_freeze",
+  "actual_review_path": "/home/bitwise/.cache/arena_extended/sparse_interaction_discovery/protocol_review_v3/runtime_amendment_review_v1/review.json",
+  "actual_review_sha256": "19282660bda46c1130b43eaa08d273faa8145e3f5ef265edfdecb32d675fbab9",
+  "candidate_manifest_sha256": "b851613780948f81aa3e203a4a29a10515447e46213e03411aea2101734a77ca",
+  "test_envelope_path": "/home/bitwise/.cache/arena_extended/sparse_interaction_discovery/protocol_review_v3/runtime_amendment_review_v1/REVIEWER_VALIDATION_ONLY_approved_envelope.json",
+  "test_envelope_sha256": "fa3c41e07c4712d2d081d55aa7aa03d30d9dadc7b6ce458719b5fe4839b3549f",
+  "mocks_used": false,
+  "validator_returned_only_exact_new_freeze_record": true,
+  "native_queries_performed": 0,
+  "native_fits_performed": 0,
+  "scope": "Read-only exact approved envelope validation; no native execution launched."
+}

@@ -25,7 +25,7 @@ def _finish(figure, title):
 def _label(support, feature_names=None):
     if not support:
         return "constant"
-    return " × ".join(str(feature_names[i]) if feature_names is not None else f"x{i}" for i in support)
+    return " × ".join(f"{i}:{feature_names[i]}" if feature_names is not None else f"x{i}" for i in support)
 
 
 def analytic_games(n=31):
@@ -364,9 +364,80 @@ def plot_native_comparison(payload, *, prompt_index=0, budget=None, seed=0):
     if shuffled is not None:
         names.append("Shuffled response")
         errors.append(float(np.sqrt(np.mean((np.asarray(shuffled["predictions"]["final"]) - truth) ** 2))))
-    axes[2].bar(range(len(names)), errors, color=[COLORS["sparse"], "#888888", COLORS["additive"], COLORS["shuffled"]][:len(names)])
+    comparator = next((row for row in payload.get("recorded_comparators", [])
+                       if row["method"] == "proxyspex" and row["condition"] == "real"), None)
+    if comparator is not None:
+        names.append("Recorded ProxySPEX")
+        errors.append(comparator["metrics"]["refined"]["rmse"])
+    palette = [COLORS["sparse"], "#888888", COLORS["additive"], COLORS["shuffled"], "#6f4a8e"]
+    axes[2].bar(range(len(names)), errors, color=palette[:len(names)])
     axes[2].set_xticks(range(len(names)), names, rotation=35, ha="right")
     axes[2].set(title="Same audit; simple controls remain visible", ylabel="Audit RMSE")
     receipt = real["query_receipt"]
-    title = f"Prompt {prompt_index}, seed {seed}: {receipt['raw_requested']} requests, {receipt['unique_model_masks']} unique masks"
+    origin = "Student replay" if payload.get("replay") else "Recorded study"
+    title = f"{origin} — prompt {prompt_index}, seed {seed}: {receipt['raw_requested']} requests, {receipt['unique_model_masks']} unique masks"
     return _finish(fig, title)
+
+
+def plot_native_population(payload):
+    """Show all declared cases using recorded, hash-bound aggregate metrics."""
+    rows = payload["results"]
+    budgets = sorted({row["budget"] for row in rows})
+    series = [
+        ("SPEX", "spex", "real", "final", COLORS["sparse"], "-"),
+        ("ProxySPEX", "proxyspex", "real", "refined", "#6f4a8e", "-"),
+        ("SPEX shuffled", "spex", "shuffled", "final", COLORS["shuffled"], "--"),
+        ("Proxy shuffled", "proxyspex", "shuffled", "refined", "#b98bb3", "--"),
+        ("SPEX additive baseline", "spex", "real", "additive", COLORS["additive"], ":"),
+        ("Proxy additive baseline", "proxyspex", "real", "additive", "#b89c4a", ":"),
+    ]
+    fig, axes = plt.subplots(1, 2, figsize=(16, 8))
+    for label, method, condition, stage, color, style in series:
+        samples = [[row["metrics"][stage]["nrmse"] for row in rows
+                    if (row["method"], row["condition"], row["budget"]) == (method, condition, budget)]
+                   for budget in budgets]
+        samples = [np.asarray([value for value in values if value is not None]) for values in samples]
+        centers = [np.median(values) for values in samples]
+        axes[0].plot(budgets, centers, style, marker="o", label=label, color=color)
+        axes[0].fill_between(budgets, [np.quantile(values, .1) for values in samples],
+                             [np.quantile(values, .9) for values in samples], color=color, alpha=.07)
+    axes[0].set(xlabel="Requested training masks per method", ylabel="Audit NRMSE",
+                xticks=budgets, title="Recorded budget curves: median and 10–90% band")
+    axes[0].legend(fontsize=9)
+    axes[0].grid(alpha=.2)
+    heat = np.full((len(payload["prompts"]), len(series)), np.nan)
+    for index in range(len(payload["prompts"])):
+        for column, (_, method, condition, stage, _, _) in enumerate(series):
+            values = [row["metrics"][stage]["nrmse"] for row in rows
+                      if (row["prompt_index"], row["method"], row["condition"], row["budget"])
+                      == (index, method, condition, budgets[-1])]
+            values = [value for value in values if value is not None]
+            if values:
+                heat[index, column] = np.mean(values)
+    shown = axes[1].imshow(heat, cmap="magma_r", aspect="auto", vmin=0)
+    axes[1].set_xticks(range(len(series)), [item[0] for item in series], rotation=35, ha="right", fontsize=8)
+    axes[1].set_yticks(range(len(payload["prompts"])))
+    axes[1].set(ylabel="Prompt index (all declared prompts)", title=f"{budgets[-1]} requests: mean over the three seeds")
+    fig.colorbar(shown, ax=axes[1], label="Audit NRMSE")
+    return _finish(fig, "Recorded complete native study — all prompts and seeds, including poor fits")
+
+
+def plot_native_prompt_checks(payload):
+    """Keep incorrect unmasked answers beside the subject-only counterfactual."""
+    prompts, audits = payload["prompts"], payload["audit"]
+    primary = np.array([float(np.asarray(audits[i]["unmasked"]).item()) for i in range(len(prompts))])
+    changed = np.array([float(np.asarray(audits[i]["counterfactual"]).item()) for i in range(len(prompts))])
+    fig, ax = plt.subplots(figsize=(14, 4.5))
+    x = np.arange(len(prompts))
+    ax.plot(x, primary, "o-", color=COLORS["sparse"], label="Original prompt: expected positive")
+    ax.plot(x, changed, "s--", color=COLORS["dense"], label="Subject-only counterfactual: expected negative")
+    wrong = (primary <= 0) | (changed >= 0)
+    ax.scatter(x[primary <= 0], primary[primary <= 0], s=110, facecolors="none", edgecolors="red", linewidths=2)
+    ax.scatter(x[changed >= 0], changed[changed >= 0], s=110, facecolors="none", edgecolors="red", linewidths=2,
+               label="Red ring: incorrect or tied sign")
+    ax.axhline(0, color="black", linewidth=.8)
+    ax.set(xticks=x, xlabel="Prompt index", ylabel="Logit(name A) − logit(name B)",
+           title=f"All 32 prompt pairs retained; {wrong.sum()} pairs have at least one incorrect/tied sign")
+    ax.legend(fontsize=9, ncol=3)
+    ax.grid(alpha=.15)
+    return _finish(fig, "Predictive fidelity and answer correctness are separate checks")

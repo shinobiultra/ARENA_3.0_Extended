@@ -32,6 +32,13 @@ NATIVE_RECEIPT_SECTIONS = {
     "part16_shapley_taylor_faith_shap": ("16_16_where_does_higher_order_credit_go", "model_fits", "model_fits"),
     "part17_shapiq_estimators": ("16_17_one_query_many_interactions", "models", "model_fits"),
 }
+# These new pretrained-model lessons have a separate, explicit receipt schema:
+# their notebook replays fit estimators from portable model queries, while the
+# complete cold model study and reproduction remain separately recorded.
+SPARSE_RECEIPT_SECTIONS = {
+    "part18_spex": ("16.18", "16_18_find_the_interactions_without_trying_every_subset"),
+    "part19_proxyspex": ("16.19", "16_19_explain_the_proxy_check_the_model"),
+}
 NATIVE_FIXTURE_NAMES = ("native_summary.json", "learner_execution.json", "fresh_reproduction.json")
 LEGACY_FIXTURE_NAMES = ("smoke_test.json", "reference_metrics.json")
 TENSOR_RECEIPT_SECTIONS = {
@@ -42,7 +49,16 @@ TENSOR_RECEIPT_SECTIONS = {
 
 def uses_native_receipts(root: Path, exercise_dir: Path) -> bool:
     relative = exercise_dir.relative_to(root)
-    return relative.parent.as_posix() == CHAPTER and relative.name in NATIVE_RECEIPT_SECTIONS
+    return relative.parent.as_posix() == CHAPTER and (
+        relative.name in NATIVE_RECEIPT_SECTIONS or relative.name in SPARSE_RECEIPT_SECTIONS
+    )
+
+
+def verification_entrypoint(root: Path, exercise_dir: Path) -> Path:
+    """Locate the real report entrypoint without inventing a legacy GPU hook."""
+    if uses_native_receipts(root, exercise_dir) and exercise_dir.name in SPARSE_RECEIPT_SECTIONS:
+        return root / CHAPTER / "part18_spex/native_report.py"
+    return exercise_dir / "solutions.py"
 
 
 def fixture_paths(root: Path, exercise_dir: Path) -> list[Path]:
@@ -68,7 +84,11 @@ def native_receipt_blockers(
     """Validate an accepted native triplet without executing or fitting anything."""
     if not uses_native_receipts(root, exercise_dir):
         return ["section has not migrated from the legacy fixture contract"]
-    notebook_id, summary_fit_key, report_fit_key = NATIVE_RECEIPT_SECTIONS[exercise_dir.name]
+    sparse = SPARSE_RECEIPT_SECTIONS.get(exercise_dir.name)
+    if sparse is not None:
+        section, notebook_id = sparse
+    else:
+        notebook_id, summary_fit_key, report_fit_key = NATIVE_RECEIPT_SECTIONS[exercise_dir.name]
     blockers: list[str] = []
     if lock.get("notebook_id") != notebook_id or report.get("notebook_id") != notebook_id:
         blockers.append("native receipt section identity does not match lock/report")
@@ -116,6 +136,10 @@ def native_receipt_blockers(
         return blockers
 
     summary, learner, fresh = (receipts[name] for name in NATIVE_FIXTURE_NAMES)
+    if sparse is not None:
+        from chapter16_shapley_attribution_baselines.exercises.part18_spex.native_report import receipt_blockers
+
+        return blockers + receipt_blockers(section, summary, learner, fresh, report)
     metrics = report.get("metrics", {})
     measured = metrics.get("gpu_test", {}) if isinstance(metrics, dict) else {}
     if not isinstance(measured, dict):

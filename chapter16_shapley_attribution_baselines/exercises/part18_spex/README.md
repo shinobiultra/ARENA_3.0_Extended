@@ -11,13 +11,24 @@ author review are under
 The independent review of both 16.18 and 16.19 is under `learner_review_v1/` in the
 same cache. It verifies all 54 code-cell outputs and 17 figure hashes exactly.
 
-`native_freeze.json` binds the independently approved prospective GPT-2 protocol,
-candidate v2, all executed inputs and the exact review. **Native execution has not
-started.** Use the supervised `run_native.py` entry point described in root
-`HANDOFF.md`; direct execution without its resource supervisor is rejected.
+The first GPT-2 attempt was interrupted after its measured runtime showed the
+90-minute cap was insufficient. Its partial queries, fits and FAIL receipt are
+preserved. No audit labels or reference stages were reached.
+`native_freeze.json` preserves the original scientific freeze;
+`native_freeze_runtime_v2.json` is the independently approved resource-only
+amendment to 180 minutes. No second native execution is started today.
+Use the supervised `run_native.py` entrypoint and exact restart instructions in
+root `HANDOFF.md` when work resumes.
 The two lessons should share the one completed experiment. The joint requirement
 remains UNIMPLEMENTED until native execution, cold reproduction, full learner
 integration, figure/play review and publication are complete.
+
+The newer portable integration draft is under
+`~/.cache/arena_extended/sparse_interaction_discovery/lesson_1618_native_integration_v2/`.
+It prepares 31 code cells, the same 22 student functions and twelve figures;
+its complete native execution is pending. The shared loader/replay tests pass
+41 cases. `NATIVE_LEARNER_API.md` describes the exact-score fixture and
+student-owned main/play refits. No actual native fixture has been exported.
 
 `MODULE_API.md` documents the visible implementation and exact author-code
 differences. Those differences and failed reference runs must remain explicit.

@@ -3,9 +3,9 @@
 import inspect
 
 
-def run_native_bridge(output_dir, *, proxy_namespace, spex_namespace):
-    """Execute the fixed common study with completed notebook methods, when ready."""
-    from chapter16_shapley_attribution_baselines.exercises.part18_spex import native_study
+def run_native_bridge(evidence, *, proxy_namespace, prompt_index=0, seed=0, budget=1824, output_dir=None):
+    """Refit the completed learner's proxy on saved query responses, with no model calls."""
+    from chapter16_shapley_attribution_baselines.exercises.part18_spex import native_learner
     required = ("character_matrix", "predict_spectrum", "path_indicator_fourier", "tree_to_fourier",
                 "fit_boosted_trees", "predict_boosted_trees", "ensemble_to_fourier",
                 "select_energy_support", "grouped_mask_folds", "ridge_path", "refine_coefficients",
@@ -14,12 +14,16 @@ def run_native_bridge(output_dir, *, proxy_namespace, spex_namespace):
         function = getattr(proxy_namespace, name)
         if not callable(function) or proxy_namespace.fit_proxy.__globals__.get(name) is not function:
             raise ValueError(f"{name} must come from the same completed learner namespace as fit_proxy")
-    return native_study.run_study(output_dir, spex_methods=spex_namespace, proxy_methods=proxy_namespace)
+    return native_learner.replay_condition(
+        evidence, method="proxyspex", methods=proxy_namespace, prompt_index=prompt_index,
+        seed=seed, budget=budget, output_dir=output_dir,
+    )
 
 
 CELLS = {
 "setup": '''from __future__ import annotations
 from itertools import product
+import json
 import os
 import sys
 from pathlib import Path
@@ -50,7 +54,7 @@ PROXY_CANDIDATES = tuple(
     for depth, count in product((1, 3), (128, 512))
 )
 RIDGE_ALPHAS = (1e-6, 1e-3, .1, 1., 10.)
-thread_limit = threadpool_limits(limits=4)
+thread_limit = threadpool_limits(limits=int(os.environ.get("ARENA_LEARNER_THREADS", "2")))
 OUTPUT_DIR = Path(os.environ.get("ARENA_PROXYSPEX_OUTPUT_DIRECTORY", "./proxyspex_outputs"))
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 plt.rcParams.update({"font.size": 10, "axes.titlesize": 11, "figure.dpi": 100})
@@ -236,26 +240,49 @@ show_figure(plots.plot_path(path_masks, play_spectrum, play_contributions, play_
 print(f"Actual retained nonconstant energy: {play_selection['retained_energy_fraction']:.1%}; extra model queries: 0")
 ''',
 "native_bridge": inspect.getsource(run_native_bridge),
-"native_study": '''# UNEXECUTED_NATIVE_CELL: the common GPT-2 study has not run in this development draft.
-payload = None
-NATIVE_EXECUTED = False
-display(Markdown("**UNEXECUTED:** the common GPT-2 word-mask experiment has no results in this draft."))
-# Once the shared study is ready, the complete learner run calls the bridge with
-# the completed 16.18 functions and this notebook's `methods` namespace:
-# payload = run_native_bridge(OUTPUT_DIR / "native", proxy_namespace=methods, spex_namespace=spex_methods)
-# NATIVE_EXECUTED = True
+"native_study": '''from chapter16_shapley_attribution_baselines.exercises.part18_spex import native_learner
+
+# The shared loader checks the published file's hashes and saved query plan.
+# The population overview uses all recorded conditions; the next figure refits your own code.
+native_evidence = native_learner.load_native_evidence()
+population = native_evidence["payload"]
+show_figure(plots.plot_native_population(population), "10_native_population")
+native_default = run_native_bridge(native_evidence, proxy_namespace=methods, prompt_index=0, seed=0, budget=1824)
+show_figure(plots.plot_native_refit(native_default, prompt_index=0, seed=0, budget=1824), "11_native_refit")
+native_real = next(row for row in native_default["results"]
+                   if row["method"] == "proxyspex" and row["condition"] == "real")
+native_fit = native_real["fit"]
+print("Your selected tree settings:", native_fit["proxy_cv"]["selected_parameters"])
+print("Your selected ridge alpha:", native_fit["ridge_cv"]["selected_alpha"])
+print("Your refit counts:", native_real["fit_accounting"])
+print("These fits used the saved training responses. Additional GPT-2 queries: 0.")
+(OUTPUT_DIR.parent / "native_replay_binding.json").write_text(json.dumps(native_evidence["binding"], indent=2) + "\\n")
+(OUTPUT_DIR.parent / "native_default_replay.json").write_text(json.dumps(native_default["replay"], indent=2) + "\\n")
+''',
+"native_references": '''# These are actual saved author/maintained runs on prompt 0, seed 0, not another fit here.
+reference_rows = []
+for reference in population["references"]:
+    row = {"implementation": reference["variant"], "requested rows": 57 * 2 ** reference["b"],
+           "recorded status": reference["status"]}
+    for stage in ("tree", "full", "selected", "final"):
+        row[f"{stage} RMSE"] = reference["metrics"].get(stage, {}).get("rmse", np.nan)
+    row["retained source failure"] = reference.get("source_exception_type_message", "")
+    reference_rows.append(row)
+display(pd.DataFrame(reference_rows).set_index(["implementation", "requested rows"]))
 ''',
 "native_play": '''PROMPT_INDEX = 0
 QUERY_BUDGET = 456
 SEED = 0
-if payload is None or not NATIVE_EXECUTED:
-    display(Markdown("**UNEXECUTED:** run the common model experiment before inspecting a prompt. No extra queries made."))
-else:
-    show_figure(plots.plot_native_stages(payload, prompt_index=PROMPT_INDEX, seed=SEED, budget=QUERY_BUDGET),
-                "10_native_error_play")
-    show_figure(plots.plot_native_spectrum(payload, prompt_index=PROMPT_INDEX, seed=SEED, budget=QUERY_BUDGET),
-                "11_native_spectrum_play")
-    print("Exploratory selection from the fixed completed study; extra model queries: 0.")
+native_play = run_native_bridge(native_evidence, proxy_namespace=methods,
+                                prompt_index=PROMPT_INDEX, seed=SEED, budget=QUERY_BUDGET)
+selected_prompt = population["prompts"][PROMPT_INDEX]
+display(Markdown(f"**Prompt {PROMPT_INDEX}:** {selected_prompt['prompt']}"))
+show_figure(plots.plot_native_stages(population, prompt_index=PROMPT_INDEX, seed=SEED, budget=QUERY_BUDGET),
+            "12_native_budget_play")
+show_figure(plots.plot_native_spectrum(native_play, prompt_index=PROMPT_INDEX, seed=SEED, budget=QUERY_BUDGET),
+            "13_native_spectrum_play")
+print("ProxySPEX was fitted again by your functions; SPEX is a labeled saved comparator. Extra model queries: 0.")
+(OUTPUT_DIR.parent / "native_play_replay.json").write_text(json.dumps(native_play["replay"], indent=2) + "\\n")
 ''',
 }
 

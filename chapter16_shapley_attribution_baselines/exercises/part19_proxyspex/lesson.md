@@ -8,10 +8,10 @@ Today you'll build the boosted-tree route used by **ProxySPEX**. You will fit tr
 
 We'll start with a four-feature function whose answer we can inspect completely. Then we'll separate
 fitting, extraction and truncation on larger analytic games, including a pure parity function that
-the proxy fails to learn. The final section is prepared for the common GPT-2 word-mask experiment
-from 16.18. In this development draft, that model experiment is **unexecuted**; its plots and
-results will appear only after the actual common study runs. The analytic plots below are generated
-by the functions you implement.
+the proxy fails to learn. Finally, we'll use saved GPT-2 responses from the common word-mask
+experiment in 16.18. Your functions will fit fresh proxies on those responses, extract their
+spectra and make predictions before comparing them with the held-out model responses.
+Both the analytic experiments and the native refits run the functions you implement.
 
 This lesson continues the Boolean Fourier convention from 16.18. A Fourier coefficient describes a signed parity pattern in a function. It is **not** a Shapley Interaction Index coefficient. The conversion in 16.18 is a separate mathematical operation, and it should be labeled when used.
 
@@ -48,7 +48,7 @@ This lesson continues the Boolean Fourier convention from 16.18. A Fourier coeff
 >
 > - Compare model-to-proxy, extraction, truncation and refinement errors.
 > - Interpret negative controls alongside successful examples.
-> - Explore a path and an energy setting, then inspect a fixed prompt and query budget when the common model experiment is available.
+> - Explore a path and an energy setting, then refit a word-mask explanation at a chosen prompt and query budget.
 
 The ten exercise groups should take about 2–3 hours, plus time to explore the figures. If implementing the orchestration in the final exercise feels mechanical, read its fold loop carefully, use the solution and spend the saved time predicting the failure cases. The central ideas are the residual update, path multiplication and separation of the different errors.
 
@@ -610,27 +610,82 @@ Edit `PLAY_PATH` and `PLAY_ENERGY` below. Start with a repeated constraint, then
 
 ## Apply the same check to word masks
 
-In the common experiment with 16.18, features are fixed word groups in a GPT-2 prompt. A retention
-mask determines which groups remain visible under the defined masking operation. The scalar response
-is specified by the common experiment, so the proxy is learning that response as a function of the
-masks. Prediction fidelity to this mask game is separate from whether the unmasked model answers the
-prompt correctly.
+In the common experiment with 16.18, each of the 28 features is one word position in a GPT-2
+prompt. Retaining a word keeps all its tokens. Masking it replaces those tokens by the EOS token
+and removes their attention keys, while keeping every absolute position fixed. The final ` to`
+suffix remains visible. Repeated occurrences of the same word are separate features.
+
+The response is the next-token logit of the first name minus that of the second name. A positive
+unmasked response favors the intended recipient in the original prompt. A subject-only
+counterfactual changes the intended recipient, so its expected sign reverses. These controls ask
+whether GPT-2 exhibits the behavior we want to explain. Approximation error asks whether the
+explanation predicts its responses under masking. Neither question answers the other.
 
 The comparison must show SPEX, ProxySPEX, constant/additive baselines and shuffled-response controls on the same independent audit masks. The word-labeled spectrum should sit beside its prediction errors. A large interaction over names or other words is interesting only with its sign convention, model behavior and fidelity evidence in view.
 
-**Development status: the common GPT-2 experiment has not been executed in this draft.** The next cell constructs the bridge using your notebook functions but leaves the actual call unexecuted. No expected GPT-2 numbers are supplied. A future execution must run the shared study rather than replace this cell with fitted answers from a report.
+The shared data file contains actual queried responses, the fixed mask plan and the recorded
+comparison across 32 prompts, three seeds and three query budgets. The loader verifies its data
+contract and hashes. It does not load a fitted tree model. The function below requires all thirteen
+algorithm functions to belong to your completed notebook namespace, then fits real and shuffled
+responses using those functions. It attaches audit responses only after constructing predictions.
+
+The first plot describes the complete recorded comparison. Its shaded bands show the middle half
+of the prompt-seed results, not a confidence interval: templates and name swaps are related.
+The second plot is your own fresh refit at prompt 0, seed 0 and 1,824 requested training rows,
+chosen before inspecting outcomes. All 512 audit masks remain outside training and selection.
+The fixed SPEX result is labeled as a saved comparator; you can reconstruct SPEX yourself in 16.18.
 
 <!-- code: native_bridge -->
 
 <!-- code: native_study -->
 
+<details>
+<summary>Expected output and interpretation - separate fidelity, algebra and behavior</summary>
+
+The native cell renders the complete comparison and your selected refit's predictions, stage
+errors and signed word terms. It prints the settings selected by training-only cross-validation
+and the actual ensemble and tree fit counts. The extraction predictions should lie on the
+proxy identity line, within floating-point error. There is no corresponding guarantee that
+the proxy or refined spectrum beats the additive baseline or that shuffled labels always do worse
+on every individual prompt.
+
+Start with the unmasked and counterfactual signs. Then compare the real-response fit with
+query-matched baselines and shuffled-response fits. Finally, locate any loss of fidelity between
+fitting, truncation and refinement. A negative Fourier coefficient means the score is lower when
+its character is positive; it does not directly mean that each named word has a negative causal
+effect. A parity term changes sign when any one of its retained bits changes.
+
+</details>
+
+## Compare the visible ensemble with the actual implementations
+
+Our residual loop uses scikit-learn CART trees and the small disclosed grid. The author's
+ProxySPEX and the maintained implementation use LightGBM with their own actual grids and
+selection code. The shared experiment also ran those implementations at prompt 0, seed 0 and
+each budget, supplying the fixed query responses to their fitting routines. The table below
+shows their recorded stage errors. `full` is the extracted spectrum, `selected` is its truncated
+spectrum, and `final` is the implementation's returned result. Missing stages remain missing;
+the accompanying status and source exception explain why.
+
+These are fixed-query algorithm comparisons. They do not reproduce the packages' public random
+sampling interfaces, and they do not establish equivalence between our boosting loop and LightGBM.
+Compare a reference's tree error with its full-spectrum error before attributing a difference to
+support selection. The exact-query records also preserve the author's SPEX early-return behavior.
+
+<!-- code: native_references -->
+
 ## Try It Yourself: inspect a prompt and budget
 
-Once the common experiment has executed, change `PROMPT_INDEX`, `QUERY_BUDGET` and `SEED` to inspect
-its fixed comparisons. This selection reuses the completed experiment and makes zero additional
-model queries; it does not refit a method or turn the audit into training data. Asking about a new
-prompt or requesting new masks is a separate experiment with additional query costs. In this draft,
-the cell displays the unexecuted status instead of inventing a spectrum.
+Change `PROMPT_INDEX` from 0 to 31, `QUERY_BUDGET` among 456, 912 and 1824, and `SEED` among 0, 1
+and 2. Predict whether a larger query budget will change the support, the error or both. Executing
+the cell fits a new proxy and shuffled-response control with your functions on the saved training
+responses. It makes zero additional model queries. The budget curves describe the fixed recorded
+study; the word plot shows the proxy you have just refitted beside the saved SPEX comparator.
+
+Inspecting another prompt after seeing its audit is exploration. It does not supply a new
+independent test. Keep the complete comparison in view when discussing a striking interaction,
+and remember that equal requested budgets can contain different numbers of unique masks.
+Requesting a new prompt or new model responses would be a separate experiment with additional costs.
 
 <!-- code: native_play -->
 
@@ -649,7 +704,11 @@ not a result that the corrected implementation should inherit or conceal. The co
 was used only for small analytic checks; the 28-feature examples use sampled masks with
 independently computed audit values.
 
-The word-mask experiment will measure approximation to a defined intervention on GPT-2. It will not establish the causes of natural-language behavior, transfer to arbitrary prompts or demonstrate performance on a much larger model. Until that experiment and the complete learner execution are reviewed, this is an analytic development draft.
+The word-mask experiment measures approximation to a defined intervention on GPT-2. Its prompts
+share four templates and a small name inventory, and masking creates unusual inputs. The results
+do not establish the causes of natural-language behavior, transfer to arbitrary prompts or
+performance on a much larger model. Replaying cached responses verifies your implementation's
+use of those data; it does not reproduce the model's original inference or create a fresh audit.
 
 ## Further research: investigate a failure you can explain
 
