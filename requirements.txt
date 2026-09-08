@@ -26,7 +26,7 @@ openai>=1.56.2
 sentence-transformers
 peft
 # Current wheel ships CUDA 13.0, not 13.2; use BNB_CUDA_VERSION=130 locally.
-bitsandbytes
+bitsandbytes==0.50.2
 # Mamba fast path: Transformers uses these CUDA extensions when available.
 # For this Python 3.14 + torch cu132 stack these may build from source; if uv
 # build isolation cannot see torch, install them with `uv pip install
@@ -87,7 +87,7 @@ shapiq==1.5.2
 
 # Chapter 1 (interp)
 transformer_lens>=2.16.1,<3.0.0
-transformers>=4.51,<5
+transformers>=5.12.1,<6
 sae-lens>=6.37.4,<7.0.0
 sae-vis==0.3.7
 git+https://github.com/callummcdougall/CircuitsVis.git#subdirectory=python

@@ -1,0 +1,182 @@
+........................................................................ [ 15%]
+.....................F.................................................F [ 30%]
+...F.FF..F.............................................................. [ 46%]
+...................................F.................................... [ 61%]
+..............................F......................................... [ 76%]
+F....................................................................... [ 92%]
+.....................................                                    [100%]
+=================================== FAILURES ===================================
+______________________ test_current_course_surface_passes ______________________
+
+    def test_current_course_surface_passes():
+>       assert course_surface_blockers() == []
+E       AssertionError: assert ['16.17: exer...tion surface'] == []
+E
+E         Left contains one more item: '16.17: exercise notebook lacks a complete learner execution or GPU/full verification surface'
+E         Use -v to get more diff
+
+tests/test_course_surface_audit.py:72: AssertionError
+________________ test_current_extension_artifact_hygiene_passes ________________
+
+    def test_current_extension_artifact_hygiene_passes():
+>       assert artifact_hygiene_blockers() == []
+E       AssertionError: assert ['raw artifac....tar.gz', ...] == []
+E
+E         Left contains 204 more items, first extra item: 'raw artifact forbidden in extension path: chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/expected_outputs/fresh_cuda_release_v2/execution.tar.gz'
+E         Use -v to get more diff
+
+tests/test_extension_artifact_hygiene.py:141: AssertionError
+____________ test_every_extension_notebook_has_verification_assets _____________
+
+    def test_every_extension_notebook_has_verification_assets():
+        missing = []
+        for exercise_dir in extension_exercise_dirs():
+            expected_paths = [
+                exercise_dir / "README.md",
+                exercise_dir / "artifacts.lock.yml",
+                exercise_dir / "verification_report.json",
+                exercise_dir / "verification_report.schema.json",
+                exercise_dir / "expected_outputs/README.md",
+                exercise_dir / "expected_outputs/smoke_test.json",
+                exercise_dir / "expected_outputs/reference_metrics.json",
+            ]
+            missing.extend(path for path in expected_paths if not path.exists())
+
+>       assert missing == []
+E       AssertionError: assert [PosixPath('/...t.json'), ...] == []
+E
+E         Left contains 14 more items, first extra item: PosixPath('/home/bitwise/Documents/ARENA_3.0_Extended/chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/expected_outputs/smoke_test.json')
+E         Use -v to get more diff
+
+tests/test_extension_verification_assets.py:195: AssertionError
+_________ test_artifact_locks_and_report_schemas_have_required_fields __________
+
+    def test_artifact_locks_and_report_schemas_have_required_fields():
+        for exercise_dir in extension_exercise_dirs():
+            lock = yaml.safe_load((exercise_dir / "artifacts.lock.yml").read_text())
+            report = json.loads((exercise_dir / "verification_report.json").read_text())
+            schema = json.loads((exercise_dir / "verification_report.schema.json").read_text())
+>           smoke = json.loads((exercise_dir / "expected_outputs/smoke_test.json").read_text())
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_extension_verification_assets.py:246:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+../../.local/share/uv/python/cpython-3.14.2-linux-x86_64-gnu/lib/python3.14/pathlib/__init__.py:787: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = PosixPath('/home/bitwise/Documents/ARENA_3.0_Extended/chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/expected_outputs/smoke_test.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/home/bitwise/Documents/ARENA_3.0_Extended/chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/expected_outputs/smoke_test.json'
+
+../../.local/share/uv/python/cpython-3.14.2-linux-x86_64-gnu/lib/python3.14/pathlib/__init__.py:771: FileNotFoundError
+____ test_expected_output_fixture_readmes_record_provenance_and_tolerances _____
+
+    def test_expected_output_fixture_readmes_record_provenance_and_tolerances():
+        with (ROOT / "docs/hard_exercise_ladder_registry.csv").open(newline="") as handle:
+            provenance = {row["notebook_id"]: ROOT / row["fixture_provenance_source"]
+                          for row in csv.DictReader(handle)}
+        required_phrases = [
+            "How this fixture was produced",
+            "Trusted implementation",
+            "Random seed",
+            "Allowed tolerances",
+            "When to regenerate",
+            "rtol=",
+            "atol=",
+        ]
+        for exercise_dir in extension_exercise_dirs():
+            lock = yaml.safe_load((exercise_dir / "artifacts.lock.yml").read_text())
+            source = provenance.get(lock["notebook_id"], exercise_dir / "expected_outputs/README.md")
+            readme = source.read_text()
+            missing_phrases = [phrase for phrase in required_phrases if phrase not in readme]
+>           assert missing_phrases == [], f"{exercise_dir}: missing provenance {missing_phrases}"
+E           AssertionError: /home/bitwise/Documents/ARENA_3.0_Extended/chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators: missing provenance ['How this fixture was produced', 'Trusted implementation', 'Random seed', 'Allowed tolerances', 'When to regenerate', 'rtol=', 'atol=']
+E           assert ['How this fi... 'rtol=', ...] == []
+E
+E             Left contains 7 more items, first extra item: 'How this fixture was produced'
+E             Use -v to get more diff
+
+tests/test_extension_verification_assets.py:330: AssertionError
+_________ test_hard_exercise_ladder_registry_tracks_all_hard_sections __________
+
+    def test_hard_exercise_ladder_registry_tracks_all_hard_sections():
+        csv_path = ROOT / "docs/hard_exercise_ladder_registry.csv"
+        md_path = ROOT / "docs/hard_exercise_ladder_registry.md"
+        lock_path = ROOT / "docs/hard_exercise_ladder_registry.lock.yml"
+
+        assert csv_path.exists()
+        assert md_path.exists()
+        assert lock_path.exists()
+
+        with csv_path.open(newline="") as handle:
+            rows = list(csv.DictReader(handle))
+
+        assert rows
+        assert set(rows[0]) == LADDER_REGISTRY_COLUMNS
+
+        hard_notebook_ids = set()
+        for exercise_dir in extension_exercise_dirs():
+            lock = yaml.safe_load((exercise_dir / "artifacts.lock.yml").read_text())
+            if lock["exercise_metadata"]["DIFFICULTY"] >= 3:
+                hard_notebook_ids.add(lock["notebook_id"])
+
+>       assert {row["notebook_id"] for row in rows} == hard_notebook_ids
+E       AssertionError: assert {'10_1_capsto..._search', ...} == {'10_1_capsto..._search', ...}
+E
+E         Extra items in the right set:
+E         '16_17_one_query_many_interactions'
+E         Use -v to get more diff
+
+tests/test_extension_verification_assets.py:410: AssertionError
+_______________ test_current_extension_sources_are_not_minified ________________
+
+    def test_current_extension_sources_are_not_minified():
+>       assert audit.minified_file_blockers() == []
+E       AssertionError: assert ['chapter11_r...eds 240', ...] == []
+E
+E         Left contains 91 more items, first extra item: 'chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/geometry_plotting.py:107: line length 277 exceeds 240'
+E         Use -v to get more diff
+
+tests/test_no_minified_files_audit.py:44: AssertionError
+_________________ test_current_report_evidence_contracts_pass __________________
+
+    def test_current_report_evidence_contracts_pass():
+>       assert report_evidence_blockers() == []
+E       AssertionError: assert ['16_17_one_q...rrent inputs'] == []
+E
+E         Left contains 3 more items, first extra item: '16_17_one_query_many_interactions: report input hash changed: uv.lock'
+E         Use -v to get more diff
+
+tests/test_report_evidence_contract_audit.py:121: AssertionError
+____________________ test_actual_published_learner_contract ____________________
+
+    def test_actual_published_learner_contract():
+>       assert has_learner_contract(HERE / (STEM + '_exercises.ipynb'))
+E       AssertionError: assert False
+E        +  where False = has_learner_contract((PosixPath('/home/bitwise/Documents/ARENA_3.0_Extended/chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators') / ('16.17_One_Query_Many_Interactions' + '_exercises.ipynb')))
+
+tests/test_shapiq_learner_contract.py:19: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_course_surface_audit.py::test_current_course_surface_passes
+FAILED tests/test_extension_artifact_hygiene.py::test_current_extension_artifact_hygiene_passes
+FAILED tests/test_extension_verification_assets.py::test_every_extension_notebook_has_verification_assets
+FAILED tests/test_extension_verification_assets.py::test_artifact_locks_and_report_schemas_have_required_fields
+FAILED tests/test_extension_verification_assets.py::test_expected_output_fixture_readmes_record_provenance_and_tolerances
+FAILED tests/test_extension_verification_assets.py::test_hard_exercise_ladder_registry_tracks_all_hard_sections
+FAILED tests/test_no_minified_files_audit.py::test_current_extension_sources_are_not_minified
+FAILED tests/test_report_evidence_contract_audit.py::test_current_report_evidence_contracts_pass
+FAILED tests/test_shapiq_learner_contract.py::test_actual_published_learner_contract
+9 failed, 460 passed in 25.70s

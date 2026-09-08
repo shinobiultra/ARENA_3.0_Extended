@@ -1,24 +1,34 @@
 # ARENA 3.0 Extended Salvage Handoff
 
-Snapshot date: 2026-09-07 (Asia/Tokyo)
+Snapshot date: 2026-09-08 (Asia/Tokyo)
 
-**Current instruction — stopped for today:** after the September 7 continuation,
-the user asked: **“Finish what's started and don't start new task so within ~1:30h
-you're finished for today.”** The active work was wrapped up within that window.
-Section 16.17 is published and verified. The SPEX/ProxySPEX source downloads and
-research checkpoint are complete; no new lesson or native study was started after
-the stop instruction. Both local preview servers were shut down. Resume development
-only after the next explicit user instruction.
+**Current instruction — resumed:** after wrapping up September 7's active work and
+project-only Git/package maintenance, the user said **“Continue at superhuman speed.”**
+The selected-topic course objective is active again for this conversation. Preserve
+original ARENA and use only `gpt-5.6-sol` / `xhigh` for parallel workers and reviewers.
+The app goal may still show paused; do not fabricate a status transition.
 
-The full-course objective remains unfinished. Its app goal is already paused;
+**Package maintenance boundary:** the prior course and tested lockfile are preserved in
+Git checkpoint `ff6d06e3`. The updated environment passes 28 imports, model/plot/kernel
+smokes and 31 scientific method tests. The root CPU suite has 460 passes and 9 failures:
+six pre-existing integration failures and three new stale-evidence failures due to
+`uv.lock`. Saved native receipts have not been relabeled as current. See
+[the maintenance record](docs/maintenance/2026-09-07_python_update/README.md) for versions,
+exact logs, fixture packaging correction and the prior-environment reproduction route.
+First continuation work is current-environment revalidation and independent 16.16 review.
+
+The full-course objective remains unfinished. Its app goal was last observed paused;
 no completion or blocked status was fabricated. Section 16.16 remains an unpublished,
 validated development candidate pending its separate independent publication review.
 
 **Current authorization:** use parallel subagents to finish the selected topics,
 with only `gpt-5.6-sol` / `xhigh` for every worker and reviewer. Preserve original
 ARENA chapters and their exact teaching style. Legacy extension implementation
-may be replaced. Do not reset or clean the shared dirty worktree; no commit, push
-or memory write is requested. Work is CPU-only; unrelated GPU jobs stay untouched.
+may be replaced. Do not reset or clean shared work. The subsequent September 7
+maintenance request authorizes committing/pushing the existing work and updating
+project Python packages while retaining compatibility pins. System packages and
+memory writes are outside that request. Work remains CPU-only; unrelated GPU jobs
+stay untouched.
 
 ## Completed continuation — 16.17 SHAP-IQ / KernelSHAP-IQ
 

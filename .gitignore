@@ -109,3 +109,8 @@ dictionaries_*.zip
 
 # Local guidance-pack input; the unpacked docs/scripts are tracked instead.
 arena_salvage_guidance_pack.zip
+
+# Versioned diffusion-text lesson fixtures (the broad *data rule otherwise hides these).
+!chapter5_modern_architectures/exercises/part5_diffusion_language_models/expected_outputs/text_data/
+!chapter5_modern_architectures/exercises/part5_diffusion_language_models/expected_outputs/text_data/manifest.json
+!chapter5_modern_architectures/exercises/part5_diffusion_language_models/expected_outputs/text_data/*.json.gz
