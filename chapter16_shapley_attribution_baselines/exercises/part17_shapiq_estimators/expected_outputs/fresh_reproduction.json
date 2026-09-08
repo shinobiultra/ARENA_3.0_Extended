@@ -1,13 +1,13 @@
 {
   "status": "PASS",
-  "learner_directory": "/home/bitwise/.cache/arena_extended/shapiq_estimators/native-learner-v2",
-  "learner_execution_sha256": "1e8364fefbf88c3f25af9db6af1233d703251ff8c618b90c8dfea75d5e74c688",
+  "learner_directory": "/home/bitwise/.cache/arena_extended/shapiq_estimators/new-environment-learner-v4",
+  "learner_execution_sha256": "3d93732521e1f2ec1c2590acb6dcdae27ec9580602d7012e683b676c9e0be753",
   "source_inputs": {
     "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/estimator_methods.py": "f173ff6d56b4bdd08fb044ddfb9d18c3cdc7e79cff94b940eb66f51b73fb208c",
-    "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/estimator_methods_tests.py": "9315702657a2a81795e273e0a9c4f457100cee98092a0f933e02e010b6dd5a99",
+    "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/estimator_methods_tests.py": "760c871a37c4840b66300b4ec7dc84f17feb2c70e0c26c6836c2f6cf8d56489a",
     "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/estimator_study.py": "846faa75ed7ccc6b4c59bbb2df6501c7b69500cf27c24b495288a573cdbb3c55",
     "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/estimator_plots.py": "835d66ec52d0d7040df7b6ea2ddccf6bb12e0008bc496f6e3f1d0cabd09b0735",
-    "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/lesson.md": "31174dc3d6f95a3dc3d380647ebd69bbd49f9aaa7b5443c35cc78e194ebecf3b",
+    "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/lesson.md": "f242daacaafab111f92ed347417a6ce9e8e99064d142dc375c0624a6a32d41eb",
     "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/lesson_cells.py": "d6c844ab2a307ea8db0b4dcb2a134de56a1d9eb44d954cd4ea05a1b84512b6b2",
     "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/build_notebooks.py": "9d2ccd0d791b479d0978b5a4b670e750e9b1374c27815da4547332c34cec5b7f",
     "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/execute_learner.py": "11695b4c9a40a9ff06147d6ba252eaf542f41305e42b40713bdbce9a7cad6f3b",
@@ -28,20 +28,20 @@
     "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference_tests.py": "95bfe943a98b7353e29328992ee4cbf0a0558cdf3c8d64a692129e47bf1dbc4e",
     "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_study.py": "f49e4f5872beca780c95a3689b919690e5be8c344df3f0625178476ff163ad02",
     "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_study_tests.py": "ef938b660a7b6388023654bd977cfd94e999540ee6d827ead6f5382f757eb3a5",
-    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/publish_study.py": "9be2df77f3074d1b741108eb77e47c94132cee7f5ed1e8dd8ea5726e78be8003",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/publish_study.py": "ea001e7f27cadc4b37a9d63f3766cc67e7450c4ce053a5c2a4f0466beb5034a0",
     "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/reproduce_native.py": "382d67ea67ecd6c02d0c1148dbb812c567e6635f706c351f02f85f9cb7d367db",
     "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/run_native.py": "f4c359e12c25d77b14100da9e66145480fe0dfa591f9387cf1fe1d8c938f205c",
     "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/solutions.py": "29471f5b57fa41cff1e4db5fe08b5c5f0f22ae20cf71f06a0e2c2323e4a2edc1",
     "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/tests.py": "a6525e5184bfb8a9cb6117b8d447c1feaab2343af9a73c00f41052dd19e4fe84",
     "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/data_manifest.json": "bcf41f96c9f6839ee4cbf24df82ca8467b35a6ed9090a9c4c56fce0b1a23120c",
-    "uv.lock": "03f77ffac99858cd34a653cd703728b9a868c87686a86cef78523a7afa9a6494"
+    "uv.lock": "e96e946bb00f50592d32c1b3bf453fca4482a0097731120defbebcd978f019eb"
   },
   "reproduction_script_sha256": "683a0aa4b4530ea7e9b44f8dee028d412c14a9ded0df062b7e40c14861282a56",
   "fresh_child_command": [
     "/home/bitwise/Documents/ARENA_3.0_Extended/.venv/bin/python3",
     "/home/bitwise/Documents/ARENA_3.0_Extended/chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/reproduce_native.py",
     "--child-output",
-    "/home/bitwise/.cache/arena_extended/shapiq_estimators/report_reproductions/report-fzz6_8nc/fresh_cpu/fresh_native"
+    "/home/bitwise/.cache/arena_extended/shapiq_estimators/report_reproductions/report-xqkhcg5z/fresh_cpu/fresh_native"
   ],
   "native_models_refit": true,
   "child_received_learner_payloads": false,
@@ -54,7 +54,7 @@
     "containers": 160
   },
   "mismatches": [],
-  "elapsed_seconds": 21.682606337002653,
+  "elapsed_seconds": 22.275977882000007,
   "inventories": {
     "fitted": {
       "original": {

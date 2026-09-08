@@ -5,30 +5,163 @@ Snapshot date: 2026-09-08 (Asia/Tokyo)
 **Current instruction — resumed:** after wrapping up September 7's active work and
 project-only Git/package maintenance, the user said **“Continue at superhuman speed.”**
 The selected-topic course objective is active again for this conversation. Preserve
-original ARENA and use only `gpt-5.6-sol` / `xhigh` for parallel workers and reviewers.
-The app goal may still show paused; do not fabricate a status transition.
+original ARENA. The latest model-routing override is **Astra only**
+(`gpt-6-astra`), for every parallel worker and reviewer; never spawn Sol. Existing
+Sol workers were interrupted and their saved work is being reassigned to Astra.
+The app goal was refreshed at shutdown and is **active**; no completion or blocked
+transition was made. The selected-topic objective remains open.
 
 **Package maintenance boundary:** the prior course and tested lockfile are preserved in
-Git checkpoint `ff6d06e3`. The updated environment passes 28 imports, model/plot/kernel
-smokes and 31 scientific method tests. The root CPU suite has 460 passes and 9 failures:
-six pre-existing integration failures and three new stale-evidence failures due to
-`uv.lock`. Saved native receipts have not been relabeled as current. See
+Git checkpoint `ff6d06e3`; package maintenance was pushed as `ce96ceaa`. The updated
+environment passes 28 imports and actual model/plot/kernel smokes. The initial root
+CPU suite's 460 passes and 9 failures are historical baseline evidence, not the
+current result: fresh 16.15/16.17 native runs and integration repairs have now closed
+the known stale report contracts. Saved historical receipts were not relabeled. See
 [the maintenance record](docs/maintenance/2026-09-07_python_update/README.md) for versions,
 exact logs, fixture packaging correction and the prior-environment reproduction route.
-First continuation work is current-environment revalidation and independent 16.16 review.
+The final root-suite refresh has **917 passing tests**. Initial tracking/readability
+failures are preserved in earlier logs and resolved in this checkpoint. Logs are in
+`docs/maintenance/2026-09-08_resumption/`.
 
-The full-course objective remains unfinished. Its app goal was last observed paused;
-no completion or blocked status was fabricated. Section 16.16 remains an unpublished,
-validated development candidate pending its separate independent publication review.
+The full-course objective remains unfinished. Its app goal is active;
+no completion or blocked status was fabricated. Section 16.16 is now published after
+its independent v8 approval; 459 final integration tests and all section gates pass.
+Its current accepted report reproduces every numerical value exactly.
 
 **Current authorization:** use parallel subagents to finish the selected topics,
-with only `gpt-5.6-sol` / `xhigh` for every worker and reviewer. Preserve original
+with only `gpt-6-astra` for every worker and reviewer (latest explicit override). Preserve original
 ARENA chapters and their exact teaching style. Legacy extension implementation
 may be replaced. Do not reset or clean shared work. The subsequent September 7
 maintenance request authorizes committing/pushing the existing work and updating
 project Python packages while retaining compatibility pins. System packages and
 memory writes are outside that request. Work remains CPU-only; unrelated GPU jobs
 stay untouched.
+
+## September 8 resumption — current evidence
+
+All active workers/reviewers use **Astra**, following the latest user override.
+Completed current-environment checks are documented in
+`docs/arena_salvage/2026-09-08_shapiq_environment_revalidation.md` and
+`docs/arena_salvage/2026-09-08_gradientshap_environment_revalidation.md`.
+
+- **16.17 v4:** complete own-answer learner, 49 cells / 22 code / ten figures;
+  fresh source-only refits reproduce 663 arrays / 118,275,724 elements exactly.
+  All ten figure pixels, twelve native plays and six analytic plays were reviewed;
+  root browser review opened all 30 dropdowns and eight solutions with no math or
+  layout errors. The published registered report and sealed 92-member archive are
+  current. This is author review, not an invented independent scientific approval.
+- **16.15 current-environment v1:** 126 cells / 79 code / twenty figures; learner
+  and registered-report refits each reproduce 1,442 arrays / 464,237,288 elements
+  exactly. All twenty regenerated PNGs have identical pixels to the earlier run;
+  the changed bytes are Matplotlib version metadata. Root checked all 43 dropdowns,
+  nine solutions and 63 math expressions. A failed extra batch-prefix equality
+  observation (maximum roundoff 1.776e-14) remains recorded rather than hidden.
+  Historical scientific source/protocol and the publisher stayed frozen.
+- The completed 16.15 worker's final checks have **379 passing tests**, a global
+  report audit of **60 reports / zero evidence blockers**, and zero original
+  preservation blockers. Full-root validation is a separate pending checkpoint.
+- **16.16 v8:** actual independent approval is in
+  `~/.cache/arena_extended/shapley_interactions/independent-review-v8/`.
+  It checks all 1,797 arrays, 557,056 support distances and IDs, the exact tie sets
+  for all 108 changed IDs, 99 tests plus one optional fit skip, eleven actual
+  figures and 54 open dropdowns. Earlier v7 BLOCK evidence and all seven prospective
+  amendments remain intact. Publication is complete, including pair/page/eleven
+  figures, native receipts, explicit migration from legacy fixtures and the one
+  requirement promotion. The accepted report SHA256 is
+  `adacad9f9b91bfb7fcd59953e858f6a0bcba4fd79bb35d2cb0706512eb1c8654`.
+  Its readable supplemental review copy is whitespace-equivalent to the untouched
+  authoritative review; the proof and exact 45-file inventory are in
+  `~/.cache/arena_extended/shapley_interactions/publication-v8/`.
+- Readability repair resolves all 80 assigned flags with exact retained before/after
+  source proofs. `arena_ext/readability_compatibility.py` binds the narrow record
+  `docs/arena_salvage/2026-09-08_readability_compatibility.json`; it is not a general
+  freshness bypass. Four explicitly reviewed guard changes are distinguished from
+  AST-identical edits. The historical 5.5 full native input paths are absent, so its
+  complete native validator was not rerun; all sixteen archived source bindings
+  passed. See the dated readability plan/equivalence record.
+- Evidence packaging validates all 169 bundles with a strict member contract.
+  The ten raw-containing review archives now have bounded review copies; all 168
+  prior archives are retained and verified through exact cache bytes and Git blob
+  identities. Scientific measurements/dates were not changed. See
+  `docs/maintenance/2026-09-08_evidence_packaging/`.
+
+The selected **SPEX / ProxySPEX** work is implementation in progress, not merely the
+September 7 research checkpoint below. Actual source-pinned author and maintained
+algorithms have been executed in an isolated Python 3.12 environment; the project
+lockfile is unchanged. New `part18_spex` and `part19_proxyspex` contain visible
+methods, analytical tests, draft teaching material and prospective native plumbing.
+The plan and honest source differences are recorded in
+`docs/arena_salvage/2026-09-08_spex_proxyspex_learner_plan.md` and
+`docs/arena_salvage/2026-09-08_spex_reference_execution.md`.
+
+The native protocol is **independently approved but unexecuted**. No GPT-2 weights have
+been loaded or queried for this experiment and no native proxy has been fitted.
+Tokenizer-only input checks cover all 32 primary and subject-only counterfactual
+prompts. The fixed `query_plan_v1` under the sparse-interaction cache binds 183 arrays,
+18 method/seed/budget conditions and the common 512-mask audit, disjoint from all
+14,549 training masks. Candidate v2 is
+`~/.cache/arena_extended/sparse_interaction_discovery/protocol_candidate_v2/candidate_manifest.json`,
+SHA256 `740fa75cee6523e00781a967d09472c99c4d56193918230ef50f5b48129389c7`.
+It binds all fourteen actual native inputs, physical model/token identities,
+Python/package environment, exact query/fold/shuffle arrays, the tested reference
+adapter and resource/tolerance contract. The two final candidate-v1 findings were
+fixed prospectively: actual per-reference output caps now match the stated 256 MiB,
+and the actual running Python/distribution environment is checked against its
+bound preflight. The old unapproved candidate and all old reference results remain.
+Native PyTorch will use eight threads, with four inter-op/BLAS/reference threads,
+CPU float32 and eager attention. There have been **zero native queries or fits**.
+
+The 16.18 draft has twelve exercise groups, twenty-two student functions, eight
+figures and 28 executed own-answer code cells. Its final author-reviewed cache is
+`~/.cache/arena_extended/sparse_interaction_discovery/lesson_1618_v7/`.
+The 16.19 draft has ten exercise groups, thirteen functions, nine figures and 26
+executed code cells. All three historical drafts were moved byte-for-byte outside
+the repository; the final one is
+`~/.cache/arena_extended/sparse_interaction_discovery/part19_learner_drafts/draft_execution_v3/`.
+Its relocation manifest preserves all 105 file identities and historical paths.
+Independent analytical learner review passed under `learner_review_v1/` in
+the same sparse-interaction cache: all 54 code-cell outputs, 17 PNG hashes and
+451 arrays match, with 46 tests and 25 extra play cases passing. Native cells
+remain visibly UNEXECUTED.
+
+The supervised native wrapper has forty synthetic tests; oracle/data/full-harness
+tests have twenty-eight passes. A full **synthetic** run covers all 1,152 records,
+32 audits, nine reference stubs and 481,999 synthetic row evaluations. This checks
+orchestration, accounting and tamper rejection, not real-model performance.
+The actual source-pinned reference adapter has fifteen analytical stage checks plus
+one corrected-cap actual smoke. Its current contract SHA256 is
+`3680dfd90c6b3cf88f6d7f454f978d031a81584e6b9f2ad666ea8e77b0fd949b`.
+The joint requirement remains UNIMPLEMENTED; full-course counts now have 54 TAUGHT
+and 83 UNIMPLEMENTED, with the other prior categories unchanged.
+
+The exact candidate received `APPROVE_NATIVE_PROTOCOL` in
+`~/.cache/arena_extended/sparse_interaction_discovery/protocol_review_v3/review.json`,
+SHA256 `1ce12d33b5ff5538a29d111ea8c7c96a795aa1ddb6d1cb79ab4f60e0861cf01e`.
+The actual reviewer checked 49 focused tests and 33 independent cases, all fourteen
+executed inputs, physical model/tokenizer files, prompt inventories, the running
+Python environment and zero prior native rows. The immutable approved envelope is
+`chapter16_shapley_attribution_baselines/exercises/part18_spex/native_freeze.json`,
+SHA256 `a2a6619beb5d6777742a46bc062685444842d580dcfb324d591a93c9d2fe9179`.
+Root validated it without loading weights or executing a model. Publication remains
+unapproved. All task-owned HTTP preview servers were stopped for today's shutdown.
+
+Next session, use that exact approved envelope to run the complete cold
+native experiment with `part18_spex/run_native.py --output NEW_CACHE_DIR
+--freeze-path APPROVED_FREEZE --plan-dir QUERY_PLAN_V1 --snapshot-path PINNED_GPT2`.
+The wrapper provides CPU and resource enforcement. Repeat with `--reproduce-from
+FIRST_RUN` and a new output path; no fitted models or learner query values may enter
+that cold child. Preserve failed runs. Each run has a 90-minute joint cap; every
+reference stage is separately capped at 300 seconds inside that limit. Runtime and
+real-model quality are still unmeasured. Then integrate the shared actual result
+into both notebooks, execute the student-owned methods/plays on the native inputs,
+inspect all native figures/browser output, obtain independent review and publish
+both sections before promoting the one joint requirement. Do not duplicate the
+long native query study merely to render the two connected lessons.
+
+The final resumption checkpoint follows `ce96ceaa`; inspect `git log` and `git status`
+for the saved commit and any later changes. Other workers' changes are shared and
+must not be reset.
+The older completed/paused sections below retain their historical context and hashes.
 
 ## Completed continuation — 16.17 SHAP-IQ / KernelSHAP-IQ
 

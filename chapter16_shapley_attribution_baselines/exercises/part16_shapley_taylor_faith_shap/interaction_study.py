@@ -1497,7 +1497,13 @@ def nearest_training_diagnostics(
         for index in range(0, len(flat), DISTANCE_BATCH):
             query_block = flat[index : index + DISTANCE_BATCH]
             delta = query_block[:, None, :] - train_standard[None, :, :]
-            block = delta.square().sum(-1).sqrt()
+            squared = delta.square()
+            accumulated = t.zeros(squared.shape[:-1], dtype=t.float64)
+            # The frozen protocol defines feature-index-order addition;
+            # a reduction may regroup terms and change the retained distance.
+            for feature in range(FEATURES):
+                accumulated = accumulated + squared[..., feature]
+            block = accumulated.sqrt()
             block_min = block.min(-1).values
             tied_ids = t.where(
                 block == block_min[:, None],

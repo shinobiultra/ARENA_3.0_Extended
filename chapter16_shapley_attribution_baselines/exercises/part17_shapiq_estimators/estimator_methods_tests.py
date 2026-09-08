@@ -170,6 +170,7 @@ def test_complete_basis_operators(n):
         t.testing.assert_close(observed[key], derivative_reference, rtol=0, atol=2e-12)
         gamma_reference = m.sii_query_weights(t.arange(2**n), n_players=n, order=order)
         t.testing.assert_close(gamma_reference, derivative_reference, rtol=0, atol=2e-14)
+    print(f"All tests in test_complete_basis_operators passed! ({n} players; all {2**n} basis games)")
 
 
 def test_exact_shapiq_expectation_and_variance():
@@ -186,6 +187,7 @@ def test_exact_shapiq_expectation_and_variance():
     t.testing.assert_close(means.mean(0),exact,rtol=0,atol=2e-13)
     true_variance=(means-exact).square().mean(0)
     t.testing.assert_close(variances.mean(0),true_variance,rtol=1e-13,atol=1e-13)
+    print("All tests in test_exact_shapiq_expectation_and_variance passed! (complete two-draw law)")
 
 
 def test_kernel_additive_control_at_sampled_budgets():
@@ -194,6 +196,7 @@ def test_kernel_additive_control_at_sampled_budgets():
     result=m.kernelshap_iq(v[edges],v[masks],masks,p,n_players=n)
     t.testing.assert_close(result['shapley'],t.arange(1,n+1,dtype=t.float64),rtol=0,atol=1e-11)
     t.testing.assert_close(result['pairs'],t.zeros(math.comb(n,2),dtype=t.float64),rtol=0,atol=1e-11)
+    print("All tests in test_kernel_additive_control_at_sampled_budgets passed! (zero pair control)")
 
 
 @pytest.mark.parametrize('function,kwargs',[
@@ -206,3 +209,4 @@ def test_kernel_additive_control_at_sampled_budgets():
 def test_invalid_inputs(function,kwargs):
     with pytest.raises((TypeError,ValueError)):
         function(**kwargs)
+    print(f"All tests in test_invalid_inputs passed! ({function.__name__} rejected {kwargs})")

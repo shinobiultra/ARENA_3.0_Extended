@@ -1575,7 +1575,16 @@ METHOD_ROWS: list[dict[str, str]] = [
         "implementation_status": "REQUIRED_IMPLEMENT",
         "verification_status": "OWN_ANSWER_TEXT_STUDY_AND_FRESH_CUDA_REGENERATION",
         "baseline_status": "MATCHED_CACHED_AR_SHUFFLED_UNTRAINED_AND_CHECKPOINT_CONTROLS",
-        "notes": "Section 5.5 retains the exact copy warm-up and adds a 90-cell, 23-exercise text progression: finite absorbing loss, reverse kernel, uniform/confidence sampling, temperature and blocks, a shared bidirectional/causal Transformer, twelve matched fits on three seeds, and 126 frozen final conditions. Twelve actual figures show words, trajectories, control failures and cached-AR cost. All 43 own-answer code cells pass; fresh CUDA refits four models and exactly regenerates 21,504 examples. TinyStories continuations remain weak; reference edit distance is not story correctness. DiffusionGemma local inference is tracked separately.",
+        "notes": (
+            "Section 5.5 retains the exact copy warm-up and adds a 90-cell, 23-exercise text "
+            "progression: finite absorbing loss, reverse kernel, uniform/confidence sampling, "
+            "temperature and blocks, a shared bidirectional/causal Transformer, twelve matched "
+            "fits on three seeds, and 126 frozen final conditions. Twelve actual figures show "
+            "words, trajectories, control failures and cached-AR cost. All 43 own-answer code "
+            "cells pass; fresh CUDA refits four models and exactly regenerates 21,504 examples. "
+            "TinyStories continuations remain weak; reference edit distance is not story "
+            "correctness. DiffusionGemma local inference is tracked separately."
+        ),
     },
     {
         "method_name": "DiffusionGemma local inference",
@@ -1953,7 +1962,15 @@ METHOD_ROWS: list[dict[str, str]] = [
         "implementation_status": "REQUIRED_IMPLEMENT",
         "verification_status": "IMPLEMENTED_OWN_ANSWER_AND_FRESH_MISTRAL_CALENDAR_STUDY",
         "baseline_status": "HAS_EXACT_ORACLES_NATIVE_DONORS_32_DRAW_NULLS_AND_NONLINEAR_STABILITY",
-        "notes": "Section 11.1 teaches eleven visible exercise groups, sixteen immediate tests, thirteen figures and four plays. The full pinned Mistral-7B learner retains 579 new prompts, 5634 donor pairs, 32 draws of three nulls and 120 UMAP/t-SNE fits; fresh CUDA reproduces 6656 outcomes exactly. Pure edits, mean ablation, full donors and failed answers remain distinct. The earlier numerical repeatability failure is archived. This covers controlled calendar geometry; years, cities and broader space/time tasks remain unfinished."
+        "notes": (
+            "Section 11.1 teaches eleven visible exercise groups, sixteen immediate tests, "
+            "thirteen figures and four plays. The full pinned Mistral-7B learner retains 579 new "
+            "prompts, 5634 donor pairs, 32 draws of three nulls and 120 UMAP/t-SNE fits; fresh "
+            "CUDA reproduces 6656 outcomes exactly. Pure edits, mean ablation, full donors and "
+            "failed answers remain distinct. The earlier numerical repeatability failure is "
+            "archived. This covers controlled calendar geometry; years, cities and broader "
+            "space/time tasks remain unfinished."
+        )
     },
     {
         "method_name": "CCA, SVCCA, and Procrustes alignment",
@@ -1967,7 +1984,13 @@ METHOD_ROWS: list[dict[str, str]] = [
         "implementation_status": "REQUIRED_IMPLEMENT",
         "verification_status": "IMPLEMENTED_OWN_ANSWER_AND_FRESH_CPU_MODEL",
         "baseline_status": "HAS_EXACT_ORACLES_RANDOM_VIEWS_SHUFFLED_MAPS_NATIVE_DONORS_AND_RANDOM_EDITS",
-        "notes": "Section 11.2; eight learner-implemented methods, nine figures and three play cells. Native GPT-2 IOI donor transport on 96 new prompts retains all 17 candidates and 16 random draws per layer pair. Fresh CPU model and refitted maps reproduce 5184 checked outcomes exactly. Partial transfer, native-donor failures and cross-layer-only scope remain explicit."
+        "notes": (
+            "Section 11.2; eight learner-implemented methods, nine figures and three play cells. "
+            "Native GPT-2 IOI donor transport on 96 new prompts retains all 17 candidates and 16 "
+            "random draws per layer pair. Fresh CPU model and refitted maps reproduce 5184 "
+            "checked outcomes exactly. Partial transfer, native-donor failures and "
+            "cross-layer-only scope remain explicit."
+        )
     },
     {
         "method_name": "Distributed Alignment Search",
@@ -1981,7 +2004,16 @@ METHOD_ROWS: list[dict[str, str]] = [
         "implementation_status": "REQUIRED_IMPLEMENT",
         "verification_status": "IMPLEMENTED_OWN_ANSWER_AND_FRESH_CPU_MODEL",
         "baseline_status": "HAS_EXACT_ORACLES_NATIVE_DONORS_PROBES_SHUFFLED_TARGETS_AND_32_RANDOM_SUBSPACES",
-        "notes": "Section 11.3; nine visible implementation groups, thirteen immediate tests, twelve figures and three plays. Students fit orthogonal subspace interchanges on a known organism and frozen GPT-2. Development selects the site and rank before 96 new final prompts. Three fits change the correct role on 71/96, 73/96 and 72/96 cross-name interventions; the whole-position donor gets 72/96. All 32 random and three shuffled controls are retained. Fresh CPU execution reproduces all 16512 final outputs exactly. No advantage over whole donors, unique abstraction or model-weight intervention training is claimed."
+        "notes": (
+            "Section 11.3; nine visible implementation groups, thirteen immediate tests, twelve "
+            "figures and three plays. Students fit orthogonal subspace interchanges on a known "
+            "organism and frozen GPT-2. Development selects the site and rank before 96 new final"
+            " prompts. Three fits change the correct role on 71/96, 73/96 and 72/96 cross-name "
+            "interventions; the whole-position donor gets 72/96. All 32 random and three shuffled"
+            " controls are retained. Fresh CPU execution reproduces all 16512 final outputs "
+            "exactly. No advantage over whole donors, unique abstraction or model-weight "
+            "intervention training is claimed."
+        )
     },
     {
         "method_name": "Causal abstraction and interchange interventions",
@@ -1995,7 +2027,15 @@ METHOD_ROWS: list[dict[str, str]] = [
         "implementation_status": "REQUIRED_IMPLEMENT",
         "verification_status": "IMPLEMENTED_OWN_ANSWER_AND_FRESH_CPU_MODEL",
         "baseline_status": "HAS_STRUCTURAL_ORACLES_UNUSED_PREDICTIVE_COPY_SIDE_VARIABLE_AND_NATIVE_COUNTERFACTUALS",
-        "notes": "Section 11.3 explicitly compares high-level and low-level interchanges on a rotated causal organism, including an unused predictive copy and an independent side variable. The native GPT-2 role-transfer study separates observational probes, requested counterfactual answers, actual full-vocabulary winners and donor identity leakage. Conditional and unconditional denominators, failed examples and all controls remain visible. Exact organism agreement and approximate native output agreement do not establish a unique or minimal causal model."
+        "notes": (
+            "Section 11.3 explicitly compares high-level and low-level interchanges on a rotated "
+            "causal organism, including an unused predictive copy and an independent side "
+            "variable. The native GPT-2 role-transfer study separates observational probes, "
+            "requested counterfactual answers, actual full-vocabulary winners and donor identity "
+            "leakage. Conditional and unconditional denominators, failed examples and all "
+            "controls remain visible. Exact organism agreement and approximate native output "
+            "agreement do not establish a unique or minimal causal model."
+        )
     },
     {
         "method_name": "Contrast-Consistent Search",

@@ -862,7 +862,15 @@ def plot_donor_context_play(context_play: Mapping[str, Any], feature_names: Sequ
 
     payload = _mapping(context_play, "context_play")
     feature_names = _names(feature_names, 8, "feature_names")
-    _keys(payload, "context_play", ("model_key", "source_id", "background_key", "pair", "context_mask", "four_values", "four_values_by_donor", "donor_source_ids", "pair_values", "method_keys", "target_unit", "interprets_model_input_intervention_only"))
+    _keys(
+        payload,
+        "context_play",
+        (
+            "model_key", "source_id", "background_key", "pair", "context_mask",
+            "four_values", "four_values_by_donor", "donor_source_ids", "pair_values",
+            "method_keys", "target_unit", "interprets_model_input_intervention_only",
+        ),
+    )
     if payload["interprets_model_input_intervention_only"] is not True:
         raise ValueError("The donor-context play must retain its model-input limitation.")
     pair = tuple(int(item) for item in payload["pair"])

@@ -34,7 +34,11 @@ def test_target_masking(fn=reference.mask_targets):
     assert t.equal(out,again[0]) and t.equal(mask,again[1]), 'Forward corruption must preserve conditioning, follow the chosen probability and reproduce seeded masks. Required condition: t.equal(out, again[0]) and t.equal(mask, again[1])'
     for p in (0.,1.):
         x,m=fn(clean,eligible,t.full_like(probability,p),3)
-        assert t.equal(m,eligible if p else t.zeros_like(eligible)), 'Forward corruption must preserve conditioning, follow the chosen probability and reproduce seeded masks. Required condition: t.equal(m, eligible if p else t.zeros_like(eligible))'
+        assert t.equal(m,eligible if p else t.zeros_like(eligible)), (
+            "Forward corruption must preserve conditioning, follow the chosen probability and "
+            "reproduce seeded masks. Required condition: t.equal(m, eligible if p else "
+            "t.zeros_like(eligible))"
+        )
     print('Conditioning identity, empirical noising and seed checks passed!')
 
 
@@ -73,7 +77,11 @@ def test_finite_loss_exact_bound_and_gradient(fn=reference.finite_diffusion_loss
     actual=t.autograd.grad(estimator,logits,retain_graph=True)[0]
     expected=t.autograd.grad(oracle,logits)[0]
     t.testing.assert_close(actual,expected,rtol=1e-12,atol=1e-12)
-    assert t.equal(actual[...,2],t.zeros_like(actual[...,2])), 'The weighted objective must match the enumerated forward-chain bound and must not train a MASK prediction. Required condition: t.equal(actual[..., 2], t.zeros_like(actual[..., 2]))'
+    assert t.equal(actual[...,2],t.zeros_like(actual[...,2])), (
+        "The weighted objective must match the enumerated forward-chain bound and must not "
+        "train a MASK prediction. Required condition: t.equal(actual[..., 2], "
+        "t.zeros_like(actual[..., 2]))"
+    )
     print('Enumerated forward-chain bound and exact gradient agree!')
 
 
@@ -82,7 +90,11 @@ def test_finite_loss_zero_masks_and_denominator(fn=reference.finite_diffusion_lo
     clean=t.tensor([[0,1,1,1]]); eligible=t.tensor([[False,True,True,True]])
     unmasked=fn(logits,clean,clean,eligible,t.tensor([2]),4,3)
     assert unmasked==0, 'Normalize by every eligible target; a zero-mask sample must have zero loss and zero gradients. Required condition: unmasked == 0'
-    assert t.equal(t.autograd.grad(unmasked,logits,retain_graph=True)[0],t.zeros_like(logits)), 'Normalize by every eligible target; a zero-mask sample must have zero loss and zero gradients. Required condition: t.equal(t.autograd.grad(unmasked, logits, retain_graph=True)[0], t.zeros_like(logits))'
+    assert t.equal(t.autograd.grad(unmasked,logits,retain_graph=True)[0],t.zeros_like(logits)), (
+        "Normalize by every eligible target; a zero-mask sample must have zero loss and zero "
+        "gradients. Required condition: t.equal(t.autograd.grad(unmasked, logits, "
+        "retain_graph=True)[0], t.zeros_like(logits))"
+    )
     corrupted=clean.clone();corrupted[0,1]=3
     loss=fn(logits,clean,corrupted,eligible,t.tensor([2]),4,3)
     t.testing.assert_close(loss,2*t.tensor(3.,dtype=t.float64).log()/3)
@@ -132,13 +144,37 @@ def test_diffusion_sampler_context_and_block_semantics(fn=reference.sample_text_
         seen.clear()
         result,states,records=fn(oracle,conditioning,eligible,3,steps=4,sampler=sampler,
             temperatures=(0.,0.),block_size=2,generator=t.Generator().manual_seed(4))
-        assert t.equal(result[:,2:],conditioning[:,:1].expand(-1,4)), 'The sampler must preserve conditioning and completed blocks, finish every target, and never revise ancestral reveals. Required condition: t.equal(result[:, 2:], conditioning[:, :1].expand(-1, 4))'
-        assert t.equal(states[:,:,:2],conditioning[None,:,:2].expand(len(states),-1,-1)), 'The sampler must preserve conditioning and completed blocks, finish every target, and never revise ancestral reveals. Required condition: t.equal(states[:, :, :2], conditioning[None, :, :2].expand(len(states), -1, -1))'
-        assert len(records)==8 and states.shape==(9,2,6), 'The sampler must preserve conditioning and completed blocks, finish every target, and never revise ancestral reveals. Required condition: len(records) == 8 and states.shape == (9, 2, 6)'
-        assert all(t.equal(state[:,2:4],result[:,2:4]) for state in seen[4:]), 'The sampler must preserve conditioning and completed blocks, finish every target, and never revise ancestral reveals. Required condition: all((t.equal(state[:, 2:4], result[:, 2:4]) for state in seen[4:]))'
-        assert all(state[:,4:].eq(3).all() for state in seen[:4]), 'The sampler must preserve conditioning and completed blocks, finish every target, and never revise ancestral reveals. Required condition: all((state[:, 4:].eq(3).all() for state in seen[:4]))'
+        assert t.equal(result[:,2:],conditioning[:,:1].expand(-1,4)), (
+            "The sampler must preserve conditioning and completed blocks, finish every target, "
+            "and never revise ancestral reveals. Required condition: t.equal(result[:, 2:], "
+            "conditioning[:, :1].expand(-1, 4))"
+        )
+        assert t.equal(states[:,:,:2],conditioning[None,:,:2].expand(len(states),-1,-1)), (
+            "The sampler must preserve conditioning and completed blocks, finish every target, "
+            "and never revise ancestral reveals. Required condition: t.equal(states[:, :, :2], "
+            "conditioning[None, :, :2].expand(len(states), -1, -1))"
+        )
+        assert len(records)==8 and states.shape==(9,2,6), (
+            "The sampler must preserve conditioning and completed blocks, finish every target, "
+            "and never revise ancestral reveals. Required condition: len(records) == 8 and "
+            "states.shape == (9, 2, 6)"
+        )
+        assert all(t.equal(state[:,2:4],result[:,2:4]) for state in seen[4:]), (
+            "The sampler must preserve conditioning and completed blocks, finish every target, "
+            "and never revise ancestral reveals. Required condition: all((t.equal(state[:, 2:4], "
+            "result[:, 2:4]) for state in seen[4:]))"
+        )
+        assert all(state[:,4:].eq(3).all() for state in seen[:4]), (
+            "The sampler must preserve conditioning and completed blocks, finish every target, "
+            "and never revise ancestral reveals. Required condition: all((state[:, "
+            "4:].eq(3).all() for state in seen[:4]))"
+        )
         if sampler=='ancestral':
-            assert not ((states[:-1]!=3)&(states[1:]!=states[:-1])).any(), 'The sampler must preserve conditioning and completed blocks, finish every target, and never revise ancestral reveals. Required condition: not ((states[:-1] != 3) & (states[1:] != states[:-1])).any()'
+            assert not ((states[:-1]!=3)&(states[1:]!=states[:-1])).any(), (
+                "The sampler must preserve conditioning and completed blocks, finish every target, "
+                "and never revise ancestral reveals. Required condition: not ((states[:-1] != 3) & "
+                "(states[1:] != states[:-1])).any()"
+            )
     print('Live sampler context, completed-block identity and ancestral monotonicity passed!')
 
 
@@ -151,7 +187,11 @@ def test_sampler_temperature_schedule_and_seed(fn=reference.sample_text_diffusio
         a=fn(model,context,eligible,4,generator=t.Generator().manual_seed(11),**args)
         b=fn(model,context,eligible,4,generator=t.Generator().manual_seed(11),**args)
         assert t.equal(a[1],b[1]) and not a[0][:,1:].eq(4).any(), 'A fixed seed must reproduce the entire trajectory while applying both schedule endpoints. Required condition: t.equal(a[1], b[1]) and (not a[0][:, 1:].eq(4).any())'
-        assert a[2][0]['temperature']==1 and abs(a[2][-1]['temperature']-.2)<1e-12, "A fixed seed must reproduce the entire trajectory while applying both schedule endpoints. Required condition: a[2][0]['temperature'] == 1 and abs(a[2][-1]['temperature'] - 0.2) < 1e-12"
+        assert a[2][0]['temperature']==1 and abs(a[2][-1]['temperature']-.2)<1e-12, (
+            "A fixed seed must reproduce the entire trajectory while applying both schedule "
+            "endpoints. Required condition: a[2][0]['temperature'] == 1 and "
+            "abs(a[2][-1]['temperature'] - 0.2) < 1e-12"
+        )
     print('Actual temperature schedule and same-seed state parity passed!')
 
 

@@ -11,6 +11,7 @@ from __future__ import annotations
 import ast
 import csv
 import json
+import re
 import sys
 import yaml
 from dataclasses import dataclass
@@ -53,6 +54,27 @@ def registry_rows(path: Path = REGISTRY_PATH) -> list[dict[str, str]]:
 
 def _path_from_source(source: str) -> Path:
     return ROOT / source.split(":", maxsplit=1)[0]
+
+
+def _success_feedback(call: ast.AST) -> bool:
+    if not (isinstance(call, ast.Call) and isinstance(call.func, ast.Name)
+            and call.func.id == "print" and call.args):
+        return False
+    message = call.args[0]
+    if isinstance(message, ast.Constant):
+        return isinstance(message.value, str) and bool(message.value.strip())
+    if isinstance(message, ast.JoinedStr):
+        # Keep the explanation visible in source. Interpolating a raw result or
+        # report is not feedback, but named success plus dynamic case details is.
+        literal_text = " ".join(
+            part.value for part in message.values
+            if isinstance(part, ast.Constant) and isinstance(part.value, str)
+        )
+        return bool(re.search(
+            r"\b(?:passed|succeeded|matches|matched|correct|agrees?|verified|rejected)\b",
+            literal_text, flags=re.IGNORECASE,
+        ))
+    return False
 
 
 def visible_test_summary(path: Path) -> VisibleTestSummary:
@@ -100,11 +122,7 @@ def visible_test_summary(path: Path) -> VisibleTestSummary:
                         if isinstance(node, ast.ExceptHandler)
                         for statement in node.body)
         calls = [node.value for node in feedback if isinstance(node, ast.Expr)]
-        if checks and any(isinstance(call, ast.Call) and isinstance(call.func, ast.Name)
-                and call.func.id == "print" and call.args
-                and isinstance(call.args[0], ast.Constant)
-                and isinstance(call.args[0].value, str) and call.args[0].value.strip()
-                for call in calls):
+        if checks and any(_success_feedback(call) for call in calls):
             success_print_count += 1
 
     return VisibleTestSummary(

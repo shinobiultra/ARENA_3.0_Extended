@@ -41,7 +41,8 @@ PAGE = (
     HERE.parents[1]
     / "instructions/pages/15_[16.15]_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate.md"
 )
-ARCHIVE_INLINE_LIMIT_BYTES = 128 * 1024 * 1024
+# Review archives contain receipts, source and figures; numerical payloads stay hash-bound externally.
+ARCHIVE_INLINE_LIMIT_BYTES = 0
 
 
 def require(condition: Any, message: str) -> None:
@@ -210,11 +211,6 @@ def _archive_members(learner: Path, native: Path) -> list[tuple[Path, str]]:
     members.extend(
         (path, f"native/{path.name}") for path in sorted(native.glob("*.manifest.json"))
     )
-    members.extend(
-        (path, f"native/{path.name}")
-        for path in sorted(native.glob("*.pt"))
-        if path.stat().st_size <= ARCHIVE_INLINE_LIMIT_BYTES
-    )
     return members
 
 
@@ -238,7 +234,7 @@ def archive_evidence(learner: Path, archive: Path) -> dict[str, Any]:
             "manifest": f"native/{manifest_path(Path(name)).name}",
             "manifest_sha256": digest(manifest_path(native / name)),
             "external_large_payload": name == EXTERNAL_DETERMINISTIC_ARTIFACT,
-            "archived_bytes": manifests[name]["size_bytes"] <= ARCHIVE_INLINE_LIMIT_BYTES,
+            "archived_bytes": False,
         }
         for name in (*DETERMINISTIC_ARTIFACTS, TIMING_ARTIFACT)
     }
@@ -272,6 +268,21 @@ def archive_evidence(learner: Path, archive: Path) -> dict[str, Any]:
                 and __import__("hashlib").sha256(data).hexdigest() == record["sha256"],
                 "Archive member failed byte verification: " + name,
             )
+    from scripts.evidence_bundles import seal_review_bundle
+
+    seal_review_bundle(
+        archive,
+        provenance={
+            "kind": "native_execution_packaging",
+            "source_execution": {
+                "absolute_path": str(learner / "execution.json"),
+                "sha256": digest(learner / "execution.json"),
+                "size_bytes": (learner / "execution.json").stat().st_size,
+            },
+            "measurement_claim": "Packaging only; execution dates and scientific receipts are unchanged.",
+        },
+        external_payloads=external,
+    )
     return {
         "path": str(archive),
         "sha256": digest(archive),

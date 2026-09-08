@@ -1,0 +1,391 @@
+"""Shared fixed-query native comparison, with an explicit fit/audit boundary.
+
+The algorithms are supplied by the learner namespace. This module owns only
+study ordering, baselines, persistence and calls to the frozen model oracle.
+"""
+
+from __future__ import annotations
+
+import hashlib
+import importlib.metadata
+import json
+import os
+from pathlib import Path
+import time
+import sys
+
+import numpy as np
+
+from chapter16_shapley_attribution_baselines.exercises.part18_spex import native_data, native_query_plan
+
+HERE = Path(__file__).resolve().parent
+ROOT = HERE.parents[2]
+
+
+def _encode(value, arrays):
+    if isinstance(value, np.ndarray):
+        key = f"a{len(arrays):06d}"
+        arrays[key] = value
+        return {"__array__": key}
+    if isinstance(value, np.generic):
+        return value.item()
+    if isinstance(value, dict):
+        return {"__mapping__": [[_encode(key, arrays), _encode(item, arrays)] for key, item in value.items()]}
+    if isinstance(value, tuple):
+        return {"__tuple__": [_encode(item, arrays) for item in value]}
+    if isinstance(value, list):
+        return [_encode(item, arrays) for item in value]
+    if value is None or isinstance(value, (str, int, float, bool)):
+        return value
+    raise TypeError(f"Do not serialize hidden fitted objects: {type(value).__name__}")
+
+
+def _decode(value, arrays):
+    if isinstance(value, dict):
+        if "__array__" in value:
+            return arrays[value["__array__"]]
+        if "__tuple__" in value:
+            return tuple(_decode(item, arrays) for item in value["__tuple__"])
+        if "__mapping__" in value:
+            return {_decode(key, arrays): _decode(item, arrays) for key, item in value["__mapping__"]}
+        raise ValueError("Unknown study encoding.")
+    if isinstance(value, list):
+        return [_decode(item, arrays) for item in value]
+    return value
+
+
+def save_record(path, record):
+    """Numeric arrays plus structured JSON, without pickle or fitted estimators."""
+    path = Path(path)
+    path.mkdir(parents=True, exist_ok=False)
+    arrays = {}
+    encoded = _encode(record, arrays)
+    np.savez_compressed(path / "arrays.npz", **arrays)
+    (path / "record.json").write_text(json.dumps(encoded, allow_nan=False, separators=(",", ":")) + "\n")
+    hashes = {name: hashlib.sha256((path / name).read_bytes()).hexdigest() for name in ("arrays.npz", "record.json")}
+    (path / "hashes.json").write_text(json.dumps(hashes, indent=2) + "\n")
+    return hashes
+
+
+def load_record(path, *, expected_hashes=None):
+    path = Path(path)
+    hashes = json.loads((path / "hashes.json").read_text())
+    if expected_hashes is not None and hashes != expected_hashes:
+        raise ValueError("Record no longer matches its pre-audit or summary binding.")
+    if set(hashes) != {"arrays.npz", "record.json"}:
+        raise ValueError("Record inventory changed.")
+    for name, expected in hashes.items():
+        if hashlib.sha256((path / name).read_bytes()).hexdigest() != expected:
+            raise ValueError(f"Study record changed: {path / name}")
+    with np.load(path / "arrays.npz", allow_pickle=False) as archive:
+        arrays = {key: archive[key] for key in archive.files}
+    return _decode(json.loads((path / "record.json").read_text()), arrays)
+
+
+def baseline_predictions(train_masks, train_values, audit_masks):
+    """Query-matched constant and unregularized minimum-norm additive baselines."""
+    train_masks, train_values, audit_masks = map(np.asarray, (train_masks, train_values, audit_masks))
+    unique, first = np.unique(train_masks, axis=0, return_index=True)
+    values = train_values[first].astype(np.float64)
+    features = np.column_stack([np.ones(len(unique)), unique.astype(np.float64)])
+    coefficients, _, rank, singular = np.linalg.lstsq(features, values, rcond=None)
+    predictions = {
+        "constant": np.full(len(audit_masks), values.mean(), dtype=np.float64),
+        "additive": np.column_stack([np.ones(len(audit_masks)), audit_masks]) @ coefficients,
+    }
+    return predictions, {"unique_training_masks": len(unique), "coefficients": coefficients,
+                         "rank": int(rank), "singular_values": singular, "fits": 2,
+                         "solver": "numpy.linalg.lstsq float64 rcond=None; intercept; no regularization"}
+
+
+def fit_condition(condition, arrays, train_values, *, spex_methods, proxy_methods):
+    """Fit and predict WITHOUT audit labels; callable separately for learner plays."""
+    key = condition["key"]
+    masks, audit = arrays[key + "_masks"], arrays["audit_masks"]
+    first, inverse, permutation = (arrays[key + suffix] for suffix in ("_unique_first", "_inverse", "_shuffle"))
+    values = np.asarray(train_values, dtype=np.float64)
+    if values.shape != (condition["budget"],) or not np.isfinite(values).all():
+        raise ValueError("Require the frozen, finite ordered query values.")
+    if not np.array_equal(values, values[first][inverse]):
+        raise ValueError("Repeated masks have inconsistent labels.")
+    records = []
+    for label in ("real", "shuffled"):
+        labels = values if label == "real" else values[first][permutation][inverse]
+        start = time.perf_counter()
+        baselines, baseline_record = baseline_predictions(masks, labels, audit)
+        common = {"method": condition["method"], "seed": condition["seed"], "budget": condition["budget"],
+                  "condition": label, "baseline_predictions": baselines, "baseline_fit": baseline_record}
+        if condition["method"] == "spex":
+            design = spex_methods.make_query_design(n=28, t=3, b=condition["b"], C=3, seed=condition["seed"])
+            if not np.array_equal(design.masks, masks):
+                raise ValueError("Student SPEX masks differ from the frozen query plan.")
+            fit = spex_methods.recover_spectrum(design, labels)
+            prediction = spex_methods.predict_spectrum(audit, fit.spectrum)
+            compact_trace = [{"iteration": step["iteration"], "energy_before": step["energy_before"],
+                              "energy_after": step["energy_after"], "updates": step["updates"],
+                              "accepted_bins": len(step["events"]), "rejected_bins": step["rejected_bins"],
+                              "zero_bins": step["zero_bins"], "support_count": len(step["spectrum"])}
+                             for step in fit.trace]
+            common.update({"spectrum": fit.spectrum, "predictions": {"final": prediction},
+                           "recovery": {"trace": compact_trace, "initial_bins": fit.initial_bins,
+                                        "residual_bins": fit.residual_bins, "stop_reason": fit.stop_reason,
+                                        "residual_energy": fit.residual_energy},
+                           "fit_accounting": {"spex_recoveries": 1, "oracle_calls_by_methods": 0}})
+        else:
+            fit = proxy_methods.fit_proxy(masks, labels, fold_seed=condition["seed"])
+            if len(fit["folds"]) != 3:
+                raise ValueError("Exactly three frozen Proxy CV folds are required.")
+            for fold_index, fold in enumerate(fit["folds"]):
+                for field, suffix in (("train_indices", "train"), ("validation_indices", "validation")):
+                    if not np.array_equal(fold[field], arrays[f"{key}_fold{fold_index}_{suffix}"]):
+                        raise ValueError("Proxy CV folds changed after the prospective freeze.")
+            predictions = {"proxy": proxy_methods.predict_boosted_trees(fit["model"], audit)}
+            for stage, field in (("extracted", "full_spectrum"), ("truncated", "truncated_spectrum"),
+                                 ("refined", "refined_spectrum")):
+                predictions[stage] = proxy_methods.predict_spectrum(audit, fit[field])
+            np.testing.assert_allclose(predictions["proxy"], predictions["extracted"], atol=1e-8, rtol=1e-7,
+                                       err_msg="Exact tree extraction failed; retain this run.")
+            common.update({"spectrum": fit["refined_spectrum"], "predictions": predictions,
+                           "fit": {name: value for name, value in fit.items() if name != "model"},
+                           "fit_accounting": fit["accounting"]})
+        for prediction in (*common["predictions"].values(), *baselines.values()):
+            if np.asarray(prediction).shape != (len(audit),) or not np.isfinite(prediction).all():
+                raise ValueError("Require one finite fitted prediction per audit row, without broadcasting.")
+        common["fit_seconds"] = time.perf_counter() - start
+        records.append(common)
+    return records
+
+
+def evaluate_predictions(values, predictions):
+    """Descriptive held-out error; no outcome-dependent passing threshold."""
+    values = np.asarray(values, dtype=np.float64)
+    if values.ndim != 1 or not len(values) or not np.isfinite(values).all():
+        raise ValueError("Audit values must be a nonempty finite vector.")
+    variance = float(np.mean((values - values.mean()) ** 2))
+    result = {}
+    for name, prediction in predictions.items():
+        prediction = np.asarray(prediction)
+        if prediction.shape != values.shape or not np.isfinite(prediction).all():
+            raise ValueError("Prediction and audit vectors must have exactly equal shapes and finite values.")
+        mse = float(np.mean((np.asarray(prediction) - values) ** 2))
+        result[name] = {"rmse": float(np.sqrt(mse)), "nrmse": float(np.sqrt(mse / variance)) if variance else None,
+                        "r2": 1 - mse / variance if variance else None}
+    return result
+
+
+def validate_freeze(path):
+    record = json.loads(Path(path).read_text())
+    if record.get("status") != "APPROVED" or not record.get("independent_review_sha256"):
+        raise ValueError("An actual source-bound independent protocol approval is required.")
+    if record.get("native_queries_before_freeze") != 0 or record.get("native_fits_before_freeze") != 0:
+        raise ValueError("This freeze must predate native outcomes.")
+    for name, expected in record["source_inputs"].items():
+        if hashlib.sha256((ROOT / name).read_bytes()).hexdigest() != expected:
+            raise ValueError(f"Frozen native source changed: {name}")
+    review_path = Path(record["independent_review_path"])
+    if hashlib.sha256(review_path.read_bytes()).hexdigest() != record["independent_review_sha256"]:
+        raise ValueError("Independent review bytes changed.")
+    review = json.loads(review_path.read_text())
+    candidate_path = Path(record["candidate_manifest_path"])
+    candidate_hash = hashlib.sha256(candidate_path.read_bytes()).hexdigest()
+    if (candidate_hash != record["candidate_manifest_sha256"]
+            or review.get("candidate_manifest_sha256") != candidate_hash
+            or review.get("status") != "APPROVE_NATIVE_PROTOCOL"):
+        raise ValueError("Independent approval does not cover this exact native candidate.")
+    candidate = json.loads(candidate_path.read_text())
+    if any(record.get(key) != value for key, value in candidate.items()):
+        raise ValueError("Approved scientific or execution fields changed.")
+    validate_environment(record)
+    return record
+
+
+def environment_snapshot():
+    return {"python": sys.version, "executable": sys.executable,
+            "versions": {distribution.metadata["Name"].lower().replace("_", "-"): distribution.version
+                         for distribution in importlib.metadata.distributions()}}
+
+
+def validate_environment(record):
+    """The actual running environment must equal the pre-native environment."""
+    path = Path(record["main_environment_path"])
+    if hashlib.sha256(path.read_bytes()).hexdigest() != record["main_environment_sha256"]:
+        raise ValueError("The frozen main environment file changed.")
+    if environment_snapshot() != json.loads(path.read_text()):
+        raise ValueError("The actual Python executable/version or installed distributions differ from the freeze.")
+
+
+def validate_inventory(output_dir, conditions, audits, references, plan, inventory):
+    """Reconcile observed saved fits/queries; never copy planned counts as evidence."""
+    if len(conditions) != 1152 or len(audits) != 32 or len(references) != 9:
+        raise ValueError("Incomplete condition, audit or fixed-reference inventory.")
+    audit_ids = [load_record(Path(output_dir) / entry["path"], expected_hashes=entry["hashes"])["prompt_index"]
+                 for entry in audits]
+    if sorted(audit_ids) != list(range(32)):
+        raise ValueError("Audit records must cover every prompt exactly once.")
+    expected_reference_ids = [f"{variant}_b{bits}" for bits in (3, 4, 5)
+                              for variant in ("author_spex", "author_proxy", "maintained_proxy")]
+    if [row["stage_id"] for row in references] != expected_reference_ids:
+        raise ValueError("Reference stages differ from the prospective ordered inventory.")
+    if any(row["audit_values_received"] or row["native_oracle_calls"] or row["fallback_used"] for row in references):
+        raise ValueError("Reference fitting crossed the frozen query/audit boundary.")
+    observed = {"spex_recoveries": 0, "proxy_pipelines": 0, "baseline_fits": 0,
+                "proxy_ensemble_fits": 0, "ridge_candidate_fits": 0,
+                "ridge_matrix_decompositions": 0, "proxy_residual_tree_fits": 0}
+    identities = set()
+    for entry in conditions:
+        row = load_record(Path(output_dir) / entry["path"], expected_hashes=entry["hashes"])
+        identity = (row["prompt_index"], row["method"], row["seed"], row["budget"], row["condition"])
+        if identity in identities:
+            raise ValueError("Duplicate saved method condition.")
+        identities.add(identity)
+        if row["baseline_fit"]["fits"] != 2:
+            raise ValueError("Both query-matched baselines must be fitted in every condition.")
+        observed["baseline_fits"] += 2
+        accounting = row["fit_accounting"]
+        if accounting["oracle_calls_by_methods"] != 0:
+            raise ValueError("An estimator made undeclared model queries.")
+        if row["method"] == "spex":
+            if accounting["spex_recoveries"] != 1:
+                raise ValueError("Each SPEX condition requires one complete recovery.")
+            observed["spex_recoveries"] += 1
+        else:
+            observed["proxy_pipelines"] += 1
+            expected_trees = 3840 + row["fit"]["proxy_cv"]["selected_parameters"]["n_estimators"]
+            expected = {"ensemble_fits": 13, "ridge_candidate_fits": 16,
+                        "ridge_matrix_decompositions": 4, "residual_tree_fits": expected_trees}
+            for name, count in expected.items():
+                if accounting[name] != count:
+                    raise ValueError(f"Proxy fit inventory differs from its frozen grid: {name}")
+            for target, source in (("proxy_ensemble_fits", "ensemble_fits"),
+                                   ("ridge_candidate_fits", "ridge_candidate_fits"),
+                                   ("ridge_matrix_decompositions", "ridge_matrix_decompositions"),
+                                   ("proxy_residual_tree_fits", "residual_tree_fits")):
+                observed[target] += accounting[source]
+    expected_identities = {(prompt, row["method"], row["seed"], row["budget"], condition)
+                           for prompt in range(32) for row in plan["conditions"] for condition in ("real", "shuffled")}
+    if identities != expected_identities:
+        raise ValueError("Saved fits do not cover the complete prospective grid.")
+    for name, value in observed.items():
+        if name != "proxy_residual_tree_fits" and value != plan[name]:
+            raise ValueError(f"Incomplete observed fit inventory: {name}")
+    if not plan["proxy_residual_tree_fits_min"] <= observed["proxy_residual_tree_fits"] <= plan["proxy_residual_tree_fits_max"]:
+        raise ValueError("Observed tree fits lie outside the fixed candidate grid.")
+    physical = plan["primary_training_and_audit_rows"] + plan["counterfactual_rows"] + 15
+    if inventory["physical_evaluations"] != physical or inventory["attempted_physical_evaluations"] != physical:
+        raise ValueError("Physical native queries differ from the complete planned inventory.")
+    if inventory["cached_unique_masks"] != plan["primary_training_and_audit_rows"] + plan["counterfactual_rows"]:
+        raise ValueError("The primary/counterfactual cache contains missing or undeclared masks.")
+    if any(batch["status"] != "PASS" for batch in inventory["batches"]):
+        raise ValueError("A native model batch did not complete.")
+    observed.update(physical_evaluations=physical, completed_condition_records=len(conditions),
+                    audit_records=len(audits), reference_stage_records=len(references))
+    return observed
+
+
+def run_study(output_dir, *, spex_methods, proxy_methods, freeze_path=None, plan_dir=None, snapshot_path=None):
+    """Execute the complete joint study from a cold cache, using learner methods.
+
+    No audit labels are requested until ALL primary/reference fits and all audit
+    predictions have been saved. A completed run is read with load_study; this
+    function never silently resumes an incomplete or mismatched old run.
+    """
+    if os.environ.get("ARENA_SPEX_SUPERVISED_CHILD") != "1":
+        raise ValueError("Run the native study through run_native.run_native so its complete resource caps are enforced.")
+    from transformers import AutoTokenizer
+    from chapter16_shapley_attribution_baselines.exercises.part18_spex.native_oracle import Oracle
+
+    freeze_path = Path(freeze_path or HERE / "native_freeze.json")
+    freeze = validate_freeze(freeze_path)
+    plan_dir = Path(plan_dir or freeze["query_plan_directory"])
+    if hashlib.sha256((plan_dir / "query_plan.json").read_bytes()).hexdigest() != freeze["query_plan_manifest_sha256"]:
+        raise ValueError("Prospective query plan identity changed.")
+    plan, arrays = native_query_plan.validate_student_plan(plan_dir, spex_methods, proxy_methods)
+    snapshot_path = Path(snapshot_path or freeze["model_snapshot_path"])
+    output_dir = Path(output_dir).resolve()
+    output_dir.mkdir(parents=True, exist_ok=False)
+    tokenizer = AutoTokenizer.from_pretrained(snapshot_path, local_files_only=True)
+    prompts = native_data.prompt_records()
+    tokenized = []
+    for prompt in prompts:
+        counterfactual = dict(prompt, prompt=prompt["counterfactual_prompt"])
+        tokenized.append({**prompt, **native_data.tokenize_record(prompt, tokenizer), "feature_names": prompt["words"],
+                          "counterfactual": native_data.tokenize_record(counterfactual, tokenizer)})
+    oracle = Oracle(output_dir / "oracle", tokenized, snapshot_path, freeze_path=freeze_path,
+                    student_mask_inputs=getattr(spex_methods, "masked_word_inputs", native_data.masked_word_inputs))
+    oracle.validate_invariance()
+    saved_conditions, reference_inputs = [], []
+    for prompt_index, prompt in enumerate(prompts):
+        for condition in plan["conditions"]:
+            key = condition["key"]
+            values = oracle.query(prompt_index, arrays[key + "_masks"], stage="training", method=condition["method"],
+                                  seed=condition["seed"], budget=condition["budget"])
+            records = fit_condition(condition, arrays, values, spex_methods=spex_methods, proxy_methods=proxy_methods)
+            for record in records:
+                record.update({"prompt_index": prompt_index, "prompt_id": prompt["id"],
+                               "query_receipt": {"raw_requested": condition["budget"],
+                                                 "unique_model_masks": condition["unique_count"],
+                                                 "control_reuses_training_values": record["condition"] == "shuffled"}})
+                relative = f"conditions/p{prompt_index:02d}_{key}_{record['condition']}"
+                hashes = save_record(output_dir / relative, record)
+                saved_conditions.append({"path": relative, "hashes": hashes})
+            if prompt_index == 0 and condition["seed"] == 0:
+                reference_inputs.append((condition, values.copy()))
+        print(f"Training and prediction saved: prompt {prompt_index + 1}/32", flush=True)
+    references = run_references(output_dir / "references", reference_inputs, arrays, freeze)
+    boundary_hashes = save_record(output_dir / "prediction_boundary",
+                                 {"condition_records": saved_conditions, "references": references,
+                                  "audit_model_queries_so_far": 0})
+    audit_records = []
+    for prompt_index, prompt in enumerate(prompts):
+        values = oracle.query(prompt_index, arrays["audit_masks"], stage="held_out_audit", method="evaluation", seed=7719,
+                              budget=len(arrays["audit_masks"]))
+        unmasked = oracle.query(prompt_index, np.ones((1, 28), dtype=np.uint8), stage="primary_sign", method="control",
+                                seed=0, budget=1)
+        counterfactual = oracle.counterfactual(prompt_index)
+        record = {"prompt_index": prompt_index, "audit_values": values, "unmasked": unmasked,
+                  "counterfactual": counterfactual}
+        relative = f"audit/p{prompt_index:02d}"
+        hashes = save_record(output_dir / relative, record)
+        audit_records.append({"path": relative, "hashes": hashes})
+    inventory = oracle.inventory()
+    observed = validate_inventory(output_dir, saved_conditions, audit_records, references, plan, inventory)
+    oracle_value_hashes = save_record(output_dir / "oracle_values", oracle.export_values())
+    summary = {"status": "COMPLETE", "prompts": [{**prompt, "feature_names": prompt["words"]} for prompt in prompts],
+               "conditions": saved_conditions, "references": references, "query_plan": plan,
+               "oracle_inventory": inventory, "oracle_receipts": oracle.receipts, "observed_inventory": observed,
+               "oracle_value_hashes": oracle_value_hashes,
+               "source_inputs": freeze["source_inputs"], "freeze_sha256": hashlib.sha256(freeze_path.read_bytes()).hexdigest(),
+               "audit_records": audit_records, "prediction_boundary_hashes": boundary_hashes}
+    validate_freeze(freeze_path)
+    save_record(output_dir / "summary", summary)
+    oracle.close()
+    return load_study(output_dir)
+
+
+def run_references(output_dir, inputs, arrays, freeze):
+    """Fixed-query bridge contract is supplied by the independently tested adapter."""
+    from chapter16_shapley_attribution_baselines.exercises.part18_spex import reference_bridge
+    return reference_bridge.run_fixed_query_stages(output_dir, inputs, arrays, freeze)
+
+
+def load_study(output_dir):
+    output_dir = Path(output_dir)
+    summary = load_record(output_dir / "summary")
+    if summary["status"] != "COMPLETE":
+        raise ValueError("Native study is incomplete.")
+    boundary = load_record(output_dir / "prediction_boundary", expected_hashes=summary["prediction_boundary_hashes"])
+    if boundary["condition_records"] != summary["conditions"]:
+        raise ValueError("Condition predictions changed across the audit boundary.")
+    if boundary["references"] != summary["references"]:
+        raise ValueError("Reference predictions changed across the audit boundary.")
+    audit_rows = [load_record(output_dir / entry["path"], expected_hashes=entry["hashes"])
+                  for entry in summary["audit_records"]]
+    audits = {row["prompt_index"]: row for row in audit_rows}
+    results = []
+    for entry in summary["conditions"]:
+        row = load_record(output_dir / entry["path"], expected_hashes=entry["hashes"])
+        row["audit_values"] = audits[row["prompt_index"]]["audit_values"]
+        row["metrics"] = evaluate_predictions(row["audit_values"], {**row["predictions"], **row["baseline_predictions"]})
+        results.append(row)
+    oracle_values = load_record(output_dir / "oracle_values", expected_hashes=summary["oracle_value_hashes"])
+    return {**summary, "results": results, "audit": audits, "oracle_values": oracle_values}

@@ -24,7 +24,7 @@
   "sampling_plans_data_independent": true,
   "estimator_inputs_only_queried_values": true,
   "reference_precomputed_cost_disclosed": true,
-  "elapsed_seconds": 18.64940252499946,
+  "elapsed_seconds": 19.159350781000057,
   "artifacts": {
     "fitted.pt": {
       "sha256": "7db05dd09da70f0b404b47b8bbc33d7a72b085660046829def42125de91072de",

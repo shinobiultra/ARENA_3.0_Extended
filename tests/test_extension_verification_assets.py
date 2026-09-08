@@ -6,6 +6,7 @@ from pathlib import Path
 import yaml
 
 from scripts.run_extension_verification_reports import expected_metric_failures, load_solution
+from scripts.verification_fixture_contract import fixture_paths, native_receipt_blockers, uses_native_receipts
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -187,8 +188,7 @@ def test_every_extension_notebook_has_verification_assets():
             exercise_dir / "verification_report.json",
             exercise_dir / "verification_report.schema.json",
             exercise_dir / "expected_outputs/README.md",
-            exercise_dir / "expected_outputs/smoke_test.json",
-            exercise_dir / "expected_outputs/reference_metrics.json",
+            *fixture_paths(ROOT, exercise_dir),
         ]
         missing.extend(path for path in expected_paths if not path.exists())
 
@@ -243,7 +243,6 @@ def test_artifact_locks_and_report_schemas_have_required_fields():
         lock = yaml.safe_load((exercise_dir / "artifacts.lock.yml").read_text())
         report = json.loads((exercise_dir / "verification_report.json").read_text())
         schema = json.loads((exercise_dir / "verification_report.schema.json").read_text())
-        smoke = json.loads((exercise_dir / "expected_outputs/smoke_test.json").read_text())
 
         assert REQUIRED_LOCK_FIELDS.issubset(lock)
         assert lock["gt_tier"] in {"GT-0", "GT-1", "GT-2", "GT-3", "GT-4"}
@@ -299,6 +298,11 @@ def test_artifact_locks_and_report_schemas_have_required_fields():
         assert report["tests_passed"] is True
         assert report["accepted"] is True
         assert report["peak_vram_gb"] <= lock["max_allowed_gpu_gb"]
+        if uses_native_receipts(ROOT, exercise_dir):
+            blockers = native_receipt_blockers(ROOT, exercise_dir, lock, report)
+            assert blockers == [], f"{exercise_dir}: {blockers}"
+            continue
+        smoke = json.loads((exercise_dir / "expected_outputs/smoke_test.json").read_text())
         # The containing section and hash-bound report identify a fixture.
         # Several actual numerical fixtures use a scope/shape schema instead
         # of duplicating notebook metadata; an explicit ID must still agree.

@@ -1053,3 +1053,49 @@ hard_exercises:
     noise; OOD geometry; random replacement orders
   release_status: released_with_cpu_model_metric
   remaining_release_evidence: ''
+- section: '16.17'
+  notebook_id: 16_17_one_query_many_interactions
+  title: One Query, Many Interactions
+  gt_tier: GT-0
+  difficulty: '4'
+  importance: '5'
+  requires_gpu: 'false'
+  metadata_source: chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/artifacts.lock.yml:exercise_metadata
+  fixture_provenance_source: chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/expected_outputs/README.md
+  visible_tests_source: chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/estimator_methods_tests.py
+  report_source: chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/verification_report.json
+  gpu_evidence_requirement: CPU seven-model refit; all 21 known state hashes; native_summary.json, learner_execution.json
+    and fresh_reproduction.json
+  toy_oracle_requirement: notebook-owned estimators completed from adjacent answers; exact constant, additive,
+    signed pair, triple, four-way and dummy games
+  slow_fast_oracle_requirement: complete SII basis operators at 4..8 players; actual shapiq 1.5.2 algorithms;
+    finite boundary-penalty limits
+  property_test_requirement: shared-query weights; proposal probabilities; cached unique queries; iid
+    SE; constraints; rank and source-only ownership
+  debug_mode_requirement: all 1904 games and 47767552 signed pair estimates retained; shuffled and affine
+    controls; both editable query plays; precomputed-oracle cost disclosed
+  release_status: released_with_cpu_model_metric
+  remaining_release_evidence: ''
+- section: '16.16'
+  notebook_id: 16_16_where_does_higher_order_credit_go
+  title: Where Does Higher-Order Credit Go?
+  gt_tier: GT-0
+  difficulty: '5'
+  importance: '5'
+  requires_gpu: 'false'
+  metadata_source: chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/artifacts.lock.yml:exercise_metadata
+  fixture_provenance_source: chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/expected_outputs/README.md
+  visible_tests_source: chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_methods_tests.py
+  report_source: chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/verification_report.json
+  gpu_evidence_requirement: CPU seven-model refit; all 21 known state hashes; complete native_summary.json,
+    learner_execution.json and fresh_reproduction.json
+  toy_oracle_requirement: notebook-owned exact indices; constant, additive, signed pair, pure triple,
+    pure four-way and degree-two games
+  slow_fast_oracle_requirement: independent derivative STII, constrained KKT and closed-form Faith-Shap;
+    actual shapiq 1.5.2 across all 2992 empirical games and 58 exact instances
+  property_test_requirement: Möbius inversion; exact endpoint efficiency; dummy and symmetry; design/kernel
+    semantics; complete-game masking; four-forward pair contexts
+  debug_mode_requirement: all 1904 model-rows, 50135040 hybrid predictions, 557056 ordered support distances,
+    five backgrounds and within-size/random-order controls retained; both analytic and native plays
+  release_status: released_with_cpu_model_metric
+  remaining_release_evidence: ''

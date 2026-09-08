@@ -307,9 +307,15 @@
   },
   "peak_vram_gb": 13.6112380027771,
   "report_inputs": {
+    "schema_version": 1,
     "algorithm": "sha256",
-    "combined_sha256": "f45b4aabffe953f398c2adef883e69414686ba41fe9ed2f413d5ba5000eefcdd",
+    "combined_sha256": "ff8f2dff46b7d2eb40b51d52839662d842df74dfb0ff86999f25ed0e4093f536",
     "files": [
+      {
+        "path": "arena_ext/readability_compatibility.py",
+        "sha256": "3b46611cac4ae86ddd797339544a2e4fde618cc0effedc02e706eb6f827630d9",
+        "size_bytes": 6524
+      },
       {
         "path": "arena_ext/verification.py",
         "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
@@ -417,8 +423,8 @@
       },
       {
         "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/geometry_evidence.py",
-        "sha256": "7d800a28bafeaae39926b098842f5edcb20d6d8f9a1b40caad3f7271e788c548",
-        "size_bytes": 11244
+        "sha256": "e11bf414272e4f22b85f7b365647f6b676706a5748b75140e7677f0d6ce13223",
+        "size_bytes": 11362
       },
       {
         "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/geometry_methods.py",
@@ -432,8 +438,8 @@
       },
       {
         "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/geometry_plotting.py",
-        "sha256": "d185bc99e49504e6e32d39a39a2782bfd2a20814ac706aaa15eac39f3fadc1fe",
-        "size_bytes": 14510
+        "sha256": "292fde5918baa85cb0db7709b703a4044f04cd0bc9f87f8a0554b89be97f2c61",
+        "size_bytes": 14767
       },
       {
         "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/geometry_protocol.json",
@@ -442,8 +448,8 @@
       },
       {
         "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/geometry_reproduction_cache.py",
-        "sha256": "8f24e1e5cbcc4cae0da25a27ea777c5fe34e5e7611633962743cd593790c053c",
-        "size_bytes": 5827
+        "sha256": "50a1a1cfe642079093e1f8d0a3228adda03679c1da7b67fca3d0bfbf6daa1923",
+        "size_bytes": 5901
       },
       {
         "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/geometry_study.py",
@@ -486,6 +492,11 @@
         "size_bytes": 108558
       },
       {
+        "path": "docs/arena_salvage/2026-09-08_readability_compatibility.json",
+        "sha256": "f6d6fc026d139f46697ee3626ac96869ab49401f600fe5d3c9ddc5e36c941708",
+        "size_bytes": 421821
+      },
+      {
         "path": "scripts/run_extension_verification_reports.py",
         "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
         "size_bytes": 16272
@@ -495,8 +506,7 @@
         "sha256": "e37739de4b18aaf32f729da4c3d02bcca44aca882459bda94b9ca761886f5739",
         "size_bytes": 2610
       }
-    ],
-    "schema_version": 1
+    ]
   },
   "safety_notes": [
     "Only generated calendar prompts are used. Native hooks are removed after each forward pass. Weights are never changed."

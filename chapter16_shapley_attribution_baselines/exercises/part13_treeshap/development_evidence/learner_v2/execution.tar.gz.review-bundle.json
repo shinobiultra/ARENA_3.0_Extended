@@ -1,0 +1,437 @@
+{
+  "schema": "arena.review-bundle.v1",
+  "archive": {
+    "name": "execution.tar.gz",
+    "sha256": "9e62d5d6018f565faf4c90123c88ee96d6746e8912d9a3786ee1076e1d51e261",
+    "size_bytes": 3908608
+  },
+  "limits": {
+    "archive_bytes": 67108864,
+    "member_bytes": 16777216,
+    "total_member_bytes": 134217728,
+    "tar_container_bytes": 167772160,
+    "decoded_json_bytes": 67108864,
+    "total_decoded_bytes": 536870912,
+    "members": 4096
+  },
+  "provenance": {
+    "kind": "historical_archive_packaging",
+    "packaged_at_utc": "2026-09-08T03:27:00.714912+00:00",
+    "measurement_claim": "Packaging only. This is not a native rerun, scientific revalidation or new review. Retained receipts, failure labels, values, scientific hashes and measurement dates are byte-identical to the original. Historical embedded archive inventories describe that original; this adjacent contract describes the derived review bundle.",
+    "source_archive": {
+      "repository_path": "chapter16_shapley_attribution_baselines/exercises/part13_treeshap/development_evidence/learner_v2/execution.tar.gz",
+      "absolute_path": "/home/bitwise/.cache/arena_extended/evidence_packaging/original_archives/9e62d5d6018f565faf4c90123c88ee96d6746e8912d9a3786ee1076e1d51e261.tar.gz",
+      "sha256": "9e62d5d6018f565faf4c90123c88ee96d6746e8912d9a3786ee1076e1d51e261",
+      "size_bytes": 3908608,
+      "git_commit": "ce96ceaae2f91bf0dcd7648052325e07a87b0b5b",
+      "git_blob": "8696bebfbe8687388c693458061aa57d2ab8e53d"
+    },
+    "source_archive_members": {
+      "completed_learner.ipynb": {
+        "sha256": "0b41b9c53a0173575cfe382ba35057adda986348053825ec9522ff95fefeb26c",
+        "size_bytes": 2781379
+      },
+      "execution.json": {
+        "sha256": "c3b71ba3c5ced7db9c3ef825053673478b98d7779e7abd9a82c71fdf5d41aec1",
+        "size_bytes": 3553
+      },
+      "figures/01_missing_feature_games.png": {
+        "sha256": "fd31e73a4fac4e1448319163bea1e6ca01292a55c6dd635bfcc50c02c4c53d83",
+        "size_bytes": 117880
+      },
+      "figures/02_tiny_tree.png": {
+        "sha256": "00197263cdddaa045429c7cd635d96b660bcde204723d51574496036008702b4",
+        "size_bytes": 90624
+      },
+      "figures/03_cardinality_weights.png": {
+        "sha256": "4229f2ca5c1561187c2d8b96178cfae21570f5b223dc527c58282fe0d4135cf9",
+        "size_bytes": 76646
+      },
+      "figures/04_correlated_games.png": {
+        "sha256": "ea2b3295d4b0de0733c46092304feb96263a001992d70d2d53350204d4dd12f8",
+        "size_bytes": 120184
+      },
+      "figures/05_repeated_feature.png": {
+        "sha256": "1215c44899ccc530d3e920ccce9c41ea0ae1e68f570450a9053f2b906d9516d9",
+        "size_bytes": 124629
+      },
+      "figures/06_saabas_control.png": {
+        "sha256": "6fadacd560d4008425f526cd5760cafdccd6537aaaedd062732dfcb767a56aef",
+        "size_bytes": 52590
+      },
+      "figures/07_audit_performance.png": {
+        "sha256": "2286592bfb51d05a2f8ab11bdad9d52a624ba3c344587d466b42e50a66933cc2",
+        "size_bytes": 75243
+      },
+      "figures/08_prediction_waterfall.png": {
+        "sha256": "294eda95409364396eb12a09c19f74399af133cf4776cc2a2e75673cfc5aa61e",
+        "size_bytes": 84378
+      },
+      "figures/09_attribution_heatmaps.png": {
+        "sha256": "2549d27fb742654a2dcafdf9ab0b8ddececed8be9c12f6e48e4b052cc2a1100b",
+        "size_bytes": 146570
+      },
+      "figures/10_model_seed_variation.png": {
+        "sha256": "d48c6bc571796e131fb33f36129e04f832200cfb2ce7ef836ba538ed81b43414",
+        "size_bytes": 129405
+      },
+      "figures/11_background_sensitivity.png": {
+        "sha256": "c226847a750743817791d5a03916499a5c6bbb8fb4676cf34221838ad624b2a0",
+        "size_bytes": 147948
+      },
+      "figures/12_deletion_curves.png": {
+        "sha256": "89d98c34744db64510c89e0e614c22e84bfb2986f78eb4e40bd5df2ab77e0f85",
+        "size_bytes": 217869
+      },
+      "figures/13_runtime_dummy_features.png": {
+        "sha256": "eebb2affdf6db1352b619392624a6ab612e8830b6ec27bbbf28101af944e47c2",
+        "size_bytes": 82182
+      },
+      "figures/14_runtime_depth.png": {
+        "sha256": "ff1c203afec7200f8b379e84d7d7e50c9bd9ca221c3e4a22b46ac5b7ff5a71c8",
+        "size_bytes": 86752
+      },
+      "figures/15_tiny_tree_play.png": {
+        "sha256": "69cfb54ee18bba50b5e5df8ae734e76565043fed66da559bca2596de1226f79b",
+        "size_bytes": 72365
+      },
+      "figures/16_real_recipe_play.png": {
+        "sha256": "d9a6ae6022cd932bab7256266d3f15c9e330f93e40a9ddf63f94d88caee8d07b",
+        "size_bytes": 105400
+      },
+      "figures/17_reference_parity.png": {
+        "sha256": "37cfe8419656c398c3728057b58493d5c949ee60fd70ee3782d1bcedbc5989e3",
+        "size_bytes": 255977
+      },
+      "figures/native/before_audit.json": {
+        "sha256": "51ad3cd73cb365d55839d1343a53139b430699b8c9ec9359ec829c7eedcbb9cd",
+        "size_bytes": 427
+      },
+      "figures/native/summary.json": {
+        "sha256": "2239562943188bfa651268b0e325a02b2b2b86c82be234b6e5b673bc8ecbc04f",
+        "size_bytes": 50568
+      },
+      "figures/native_summary.json": {
+        "sha256": "acd16dfa485be6b899a6bb6f97a5f33352386d201ada55cb79fa1f2d8e97edcd",
+        "size_bytes": 50664
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/author_reference.json": {
+        "sha256": "c02421610e81d11b4f38baa88d86d463d147ed9a195eeba8fa230ffb35efd5f3",
+        "size_bytes": 651
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/build_notebooks.py": {
+        "sha256": "1dde4d4c81acd72acb414d3dea1580e3663070927368ffba9f37f02de11d134b",
+        "size_bytes": 8928
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/data_manifest.json": {
+        "sha256": "0e829e5632b8b3fec9cdd54393e361fe58f7ea3e40d4e753399c4372509eeb38",
+        "size_bytes": 12657
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/execute_learner.py": {
+        "sha256": "ebe9d16f3f2f15dc24e401388497e3f6567e10bba1af129cb08df89b962bf3d2",
+        "size_bytes": 7910
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/lesson.md": {
+        "sha256": "d232083c92827b3e83ff3016e069a7e3a6a93adcb5341c834f97bd0af299e5ee",
+        "size_bytes": 56596
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/protocol.md": {
+        "sha256": "a62ed351750e5e1c4e77f8d651ecef040267b4df795940052ec73b73017159c7",
+        "size_bytes": 5981
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/protocol_freeze.json": {
+        "sha256": "eb895e76b1ca62e8e654bb1334524be14a8e9b55a14045d427bf001f7558ba00",
+        "size_bytes": 477
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/reference_boundary_addendum.md": {
+        "sha256": "2e639c56060d45131a093caeb838a8896399a2d6e89cba9fe477bcd9b816023e",
+        "size_bytes": 4098
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/reproduce_native.py": {
+        "sha256": "b3c11a58e251c2b5c4d319d34bb10ca1a83486d35ad777a7ea13853ab600e44c",
+        "size_bytes": 10421
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/run_native.py": {
+        "sha256": "739b40fcf51fb0704f0356236aea3ccff8e055b903bcef1c2800c00962f06a03",
+        "size_bytes": 13059
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_contract_tests.py": {
+        "sha256": "acd5be5893d03bf9d9931bbc5fb536365126c5b0de32b4b4d15c4ac6b1207dc5",
+        "size_bytes": 7874
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_data.py": {
+        "sha256": "329b983afd4b12be1786507a4b585d057e722cfa888adaa99457f2222b82ffe3",
+        "size_bytes": 1784
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_diagnostics.py": {
+        "sha256": "18ffa61053a6335fc4d31ac81858105e3c771613df032eb2cd3ec854b613fd29",
+        "size_bytes": 15490
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_methods.py": {
+        "sha256": "49b0c781c3eaae5e813d246abafb4dacca7daefbc003b83d1a8be876ba58fb09",
+        "size_bytes": 9719
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_methods_tests.py": {
+        "sha256": "4a067a469465eb31b0897094e0cd82d601dbedb768e8952294df10211dc6636a",
+        "size_bytes": 9766
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_plots.py": {
+        "sha256": "30a59123ee600266b96112572fb1e88b91e55feed6752e4e1b4ddfd229830694",
+        "size_bytes": 41933
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_reference.py": {
+        "sha256": "ac2be0a07cf31449c7974cc26118dc967f1728128fd555539f7e5d6fd56a1303",
+        "size_bytes": 35769
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_study.py": {
+        "sha256": "d7c902e82347fad37307cf7f088f1f2292af04e56a116e9bc39cffb575cd9bfc",
+        "size_bytes": 9152
+      }
+    }
+  },
+  "members": {
+    "completed_learner.ipynb": {
+      "type": "regular",
+      "size_bytes": 2781379,
+      "sha256": "0b41b9c53a0173575cfe382ba35057adda986348053825ec9522ff95fefeb26c",
+      "format": "notebook-json"
+    },
+    "execution.json": {
+      "type": "regular",
+      "size_bytes": 3553,
+      "sha256": "c3b71ba3c5ced7db9c3ef825053673478b98d7779e7abd9a82c71fdf5d41aec1",
+      "format": "json"
+    },
+    "figures/01_missing_feature_games.png": {
+      "type": "regular",
+      "size_bytes": 117880,
+      "sha256": "fd31e73a4fac4e1448319163bea1e6ca01292a55c6dd635bfcc50c02c4c53d83",
+      "format": "png"
+    },
+    "figures/02_tiny_tree.png": {
+      "type": "regular",
+      "size_bytes": 90624,
+      "sha256": "00197263cdddaa045429c7cd635d96b660bcde204723d51574496036008702b4",
+      "format": "png"
+    },
+    "figures/03_cardinality_weights.png": {
+      "type": "regular",
+      "size_bytes": 76646,
+      "sha256": "4229f2ca5c1561187c2d8b96178cfae21570f5b223dc527c58282fe0d4135cf9",
+      "format": "png"
+    },
+    "figures/04_correlated_games.png": {
+      "type": "regular",
+      "size_bytes": 120184,
+      "sha256": "ea2b3295d4b0de0733c46092304feb96263a001992d70d2d53350204d4dd12f8",
+      "format": "png"
+    },
+    "figures/05_repeated_feature.png": {
+      "type": "regular",
+      "size_bytes": 124629,
+      "sha256": "1215c44899ccc530d3e920ccce9c41ea0ae1e68f570450a9053f2b906d9516d9",
+      "format": "png"
+    },
+    "figures/06_saabas_control.png": {
+      "type": "regular",
+      "size_bytes": 52590,
+      "sha256": "6fadacd560d4008425f526cd5760cafdccd6537aaaedd062732dfcb767a56aef",
+      "format": "png"
+    },
+    "figures/07_audit_performance.png": {
+      "type": "regular",
+      "size_bytes": 75243,
+      "sha256": "2286592bfb51d05a2f8ab11bdad9d52a624ba3c344587d466b42e50a66933cc2",
+      "format": "png"
+    },
+    "figures/08_prediction_waterfall.png": {
+      "type": "regular",
+      "size_bytes": 84378,
+      "sha256": "294eda95409364396eb12a09c19f74399af133cf4776cc2a2e75673cfc5aa61e",
+      "format": "png"
+    },
+    "figures/09_attribution_heatmaps.png": {
+      "type": "regular",
+      "size_bytes": 146570,
+      "sha256": "2549d27fb742654a2dcafdf9ab0b8ddececed8be9c12f6e48e4b052cc2a1100b",
+      "format": "png"
+    },
+    "figures/10_model_seed_variation.png": {
+      "type": "regular",
+      "size_bytes": 129405,
+      "sha256": "d48c6bc571796e131fb33f36129e04f832200cfb2ce7ef836ba538ed81b43414",
+      "format": "png"
+    },
+    "figures/11_background_sensitivity.png": {
+      "type": "regular",
+      "size_bytes": 147948,
+      "sha256": "c226847a750743817791d5a03916499a5c6bbb8fb4676cf34221838ad624b2a0",
+      "format": "png"
+    },
+    "figures/12_deletion_curves.png": {
+      "type": "regular",
+      "size_bytes": 217869,
+      "sha256": "89d98c34744db64510c89e0e614c22e84bfb2986f78eb4e40bd5df2ab77e0f85",
+      "format": "png"
+    },
+    "figures/13_runtime_dummy_features.png": {
+      "type": "regular",
+      "size_bytes": 82182,
+      "sha256": "eebb2affdf6db1352b619392624a6ab612e8830b6ec27bbbf28101af944e47c2",
+      "format": "png"
+    },
+    "figures/14_runtime_depth.png": {
+      "type": "regular",
+      "size_bytes": 86752,
+      "sha256": "ff1c203afec7200f8b379e84d7d7e50c9bd9ca221c3e4a22b46ac5b7ff5a71c8",
+      "format": "png"
+    },
+    "figures/15_tiny_tree_play.png": {
+      "type": "regular",
+      "size_bytes": 72365,
+      "sha256": "69cfb54ee18bba50b5e5df8ae734e76565043fed66da559bca2596de1226f79b",
+      "format": "png"
+    },
+    "figures/16_real_recipe_play.png": {
+      "type": "regular",
+      "size_bytes": 105400,
+      "sha256": "d9a6ae6022cd932bab7256266d3f15c9e330f93e40a9ddf63f94d88caee8d07b",
+      "format": "png"
+    },
+    "figures/17_reference_parity.png": {
+      "type": "regular",
+      "size_bytes": 255977,
+      "sha256": "37cfe8419656c398c3728057b58493d5c949ee60fd70ee3782d1bcedbc5989e3",
+      "format": "png"
+    },
+    "figures/native/before_audit.json": {
+      "type": "regular",
+      "size_bytes": 427,
+      "sha256": "51ad3cd73cb365d55839d1343a53139b430699b8c9ec9359ec829c7eedcbb9cd",
+      "format": "json"
+    },
+    "figures/native/summary.json": {
+      "type": "regular",
+      "size_bytes": 50568,
+      "sha256": "2239562943188bfa651268b0e325a02b2b2b86c82be234b6e5b673bc8ecbc04f",
+      "format": "json"
+    },
+    "figures/native_summary.json": {
+      "type": "regular",
+      "size_bytes": 50664,
+      "sha256": "acd16dfa485be6b899a6bb6f97a5f33352386d201ada55cb79fa1f2d8e97edcd",
+      "format": "json"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/author_reference.json": {
+      "type": "regular",
+      "size_bytes": 651,
+      "sha256": "c02421610e81d11b4f38baa88d86d463d147ed9a195eeba8fa230ffb35efd5f3",
+      "format": "json"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/build_notebooks.py": {
+      "type": "regular",
+      "size_bytes": 8928,
+      "sha256": "1dde4d4c81acd72acb414d3dea1580e3663070927368ffba9f37f02de11d134b",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/data_manifest.json": {
+      "type": "regular",
+      "size_bytes": 12657,
+      "sha256": "0e829e5632b8b3fec9cdd54393e361fe58f7ea3e40d4e753399c4372509eeb38",
+      "format": "json"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/execute_learner.py": {
+      "type": "regular",
+      "size_bytes": 7910,
+      "sha256": "ebe9d16f3f2f15dc24e401388497e3f6567e10bba1af129cb08df89b962bf3d2",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/lesson.md": {
+      "type": "regular",
+      "size_bytes": 56596,
+      "sha256": "d232083c92827b3e83ff3016e069a7e3a6a93adcb5341c834f97bd0af299e5ee",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/protocol.md": {
+      "type": "regular",
+      "size_bytes": 5981,
+      "sha256": "a62ed351750e5e1c4e77f8d651ecef040267b4df795940052ec73b73017159c7",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/protocol_freeze.json": {
+      "type": "regular",
+      "size_bytes": 477,
+      "sha256": "eb895e76b1ca62e8e654bb1334524be14a8e9b55a14045d427bf001f7558ba00",
+      "format": "json"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/reference_boundary_addendum.md": {
+      "type": "regular",
+      "size_bytes": 4098,
+      "sha256": "2e639c56060d45131a093caeb838a8896399a2d6e89cba9fe477bcd9b816023e",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/reproduce_native.py": {
+      "type": "regular",
+      "size_bytes": 10421,
+      "sha256": "b3c11a58e251c2b5c4d319d34bb10ca1a83486d35ad777a7ea13853ab600e44c",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/run_native.py": {
+      "type": "regular",
+      "size_bytes": 13059,
+      "sha256": "739b40fcf51fb0704f0356236aea3ccff8e055b903bcef1c2800c00962f06a03",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_contract_tests.py": {
+      "type": "regular",
+      "size_bytes": 7874,
+      "sha256": "acd5be5893d03bf9d9931bbc5fb536365126c5b0de32b4b4d15c4ac6b1207dc5",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_data.py": {
+      "type": "regular",
+      "size_bytes": 1784,
+      "sha256": "329b983afd4b12be1786507a4b585d057e722cfa888adaa99457f2222b82ffe3",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_diagnostics.py": {
+      "type": "regular",
+      "size_bytes": 15490,
+      "sha256": "18ffa61053a6335fc4d31ac81858105e3c771613df032eb2cd3ec854b613fd29",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_methods.py": {
+      "type": "regular",
+      "size_bytes": 9719,
+      "sha256": "49b0c781c3eaae5e813d246abafb4dacca7daefbc003b83d1a8be876ba58fb09",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_methods_tests.py": {
+      "type": "regular",
+      "size_bytes": 9766,
+      "sha256": "4a067a469465eb31b0897094e0cd82d601dbedb768e8952294df10211dc6636a",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_plots.py": {
+      "type": "regular",
+      "size_bytes": 41933,
+      "sha256": "30a59123ee600266b96112572fb1e88b91e55feed6752e4e1b4ddfd229830694",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_reference.py": {
+      "type": "regular",
+      "size_bytes": 35769,
+      "sha256": "ac2be0a07cf31449c7974cc26118dc967f1728128fd555539f7e5d6fd56a1303",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_study.py": {
+      "type": "regular",
+      "size_bytes": 9152,
+      "sha256": "d7c902e82347fad37307cf7f088f1f2292af04e56a116e9bc39cffb575cd9bfc",
+      "format": "utf8-text"
+    }
+  },
+  "external_payloads": {},
+  "member_count": 40,
+  "total_member_bytes": 5125498
+}

@@ -1,7 +1,36 @@
 import importlib, json, pathlib, time, traceback, os
 out = pathlib.Path(__file__).parent
 results=[]
-for name in ['numpy','scipy','pandas','sklearn','torch','torchvision','numba','shap','shapiq','captum','transformers','transformer_lens','diffusers','peft','sentence_transformers','sae_lens','sae_vis','circuitsvis','nnsight','streamlit','plotly','matplotlib','nbformat','IPython','anthropic','openai','inspect_ai','instructor']:
+for name in [
+    'numpy',
+    'scipy',
+    'pandas',
+    'sklearn',
+    'torch',
+    'torchvision',
+    'numba',
+    'shap',
+    'shapiq',
+    'captum',
+    'transformers',
+    'transformer_lens',
+    'diffusers',
+    'peft',
+    'sentence_transformers',
+    'sae_lens',
+    'sae_vis',
+    'circuitsvis',
+    'nnsight',
+    'streamlit',
+    'plotly',
+    'matplotlib',
+    'nbformat',
+    'IPython',
+    'anthropic',
+    'openai',
+    'inspect_ai',
+    'instructor',
+]:
     started=time.monotonic()
     try:
         mod=importlib.import_module(name)
@@ -50,5 +79,19 @@ try:
 finally:
     client.stop_channels();km.shutdown_kernel(now=True)
 print('Matplotlib, Plotly, notebook and live Jupyter kernel PASS',flush=True)
-(out/'package_smoke.json').write_text(json.dumps({'imports_passed':sum(r['status']=='PASS' for r in results),'imports_failed':sum(r['status']=='FAIL' for r in results),'tiny_gpt2_peft':'PASS','tiny_diffusers':'PASS','matplotlib':'PASS','plotly_html':'PASS','notebook_validation':'PASS','live_jupyter_kernel':'PASS'},indent=2)+'\n')
+(out/'package_smoke.json').write_text(
+    json.dumps(
+        {
+            'imports_passed': sum(r['status']=='PASS' for r in results),
+            'imports_failed': sum(r['status']=='FAIL' for r in results),
+            'tiny_gpt2_peft': 'PASS',
+            'tiny_diffusers': 'PASS',
+            'matplotlib': 'PASS',
+            'plotly_html': 'PASS',
+            'notebook_validation': 'PASS',
+            'live_jupyter_kernel': 'PASS',
+        },
+        indent=2,
+    )+'\n'
+)
 assert all(r['status']=='PASS' for r in results)

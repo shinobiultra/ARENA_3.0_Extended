@@ -1,0 +1,107 @@
+{
+  "schema": "arena.review-bundle.v1",
+  "archive": {
+    "name": "execution.tar.gz",
+    "sha256": "7e88f7672c5a05a05338c58edbc80cc6ac7186f81b170cd0d82822ff7bcbb808",
+    "size_bytes": 19732
+  },
+  "limits": {
+    "archive_bytes": 67108864,
+    "member_bytes": 16777216,
+    "total_member_bytes": 134217728,
+    "tar_container_bytes": 167772160,
+    "decoded_json_bytes": 67108864,
+    "total_decoded_bytes": 536870912,
+    "members": 4096
+  },
+  "provenance": {
+    "kind": "historical_archive_packaging",
+    "packaged_at_utc": "2026-09-08T03:26:53.527442+00:00",
+    "measurement_claim": "Packaging only. This is not a native rerun, scientific revalidation or new review. Retained receipts, failure labels, values, scientific hashes and measurement dates are byte-identical to the original. Historical embedded archive inventories describe that original; this adjacent contract describes the derived review bundle.",
+    "source_archive": {
+      "repository_path": "chapter11_representation_geometry/exercises/part3_causal_abstraction_das/expected_outputs/own_foundations_parse_failure_v1/execution.tar.gz",
+      "absolute_path": "/home/bitwise/.cache/arena_extended/evidence_packaging/original_archives/7e88f7672c5a05a05338c58edbc80cc6ac7186f81b170cd0d82822ff7bcbb808.tar.gz",
+      "sha256": "7e88f7672c5a05a05338c58edbc80cc6ac7186f81b170cd0d82822ff7bcbb808",
+      "size_bytes": 19732,
+      "git_commit": "ce96ceaae2f91bf0dcd7648052325e07a87b0b5b",
+      "git_blob": "fcaa556923c8815918dfcdab6ab55b3b25d3a71b"
+    },
+    "source_archive_members": {
+      "execution.json": {
+        "sha256": "239cb1009a5857b65078f2dba30907e08255e8e81e5437949d9026f8d9ed68de",
+        "size_bytes": 930
+      },
+      "source_snapshot/build_notebooks.py": {
+        "sha256": "fcb06b82351610f5773e15176119c2239e909ad3272a146ec566185528fdf3a5",
+        "size_bytes": 4560
+      },
+      "source_snapshot/das_methods.py": {
+        "sha256": "606c7446aee48d96367a258875040f03ad75adc2aead99d1cff46eae5ec9db0f",
+        "size_bytes": 6994
+      },
+      "source_snapshot/das_methods_tests.py": {
+        "sha256": "8724f6e86049537ade77e8b8cbfc4e963e3dd134cc4ea499d15b19c46c75c8ff",
+        "size_bytes": 8947
+      },
+      "source_snapshot/das_organism.py": {
+        "sha256": "97302ad3c0ee5397704a6a04e2fe5164ac81bd15ebd03c5d15a01185fed356a6",
+        "size_bytes": 3116
+      },
+      "source_snapshot/execute_learner.py": {
+        "sha256": "855843b9e0842ca9e413fdfc37904c71c17f643f7b44eee7a8fb06139cef796a",
+        "size_bytes": 3518
+      },
+      "source_snapshot/lesson.md": {
+        "sha256": "4581cf7e2b9ef4e59804101826a53906af9a73a9eb52a4ae0172328d76988fa4",
+        "size_bytes": 34395
+      }
+    }
+  },
+  "members": {
+    "execution.json": {
+      "type": "regular",
+      "size_bytes": 930,
+      "sha256": "239cb1009a5857b65078f2dba30907e08255e8e81e5437949d9026f8d9ed68de",
+      "format": "json"
+    },
+    "source_snapshot/build_notebooks.py": {
+      "type": "regular",
+      "size_bytes": 4560,
+      "sha256": "fcb06b82351610f5773e15176119c2239e909ad3272a146ec566185528fdf3a5",
+      "format": "utf8-text"
+    },
+    "source_snapshot/das_methods.py": {
+      "type": "regular",
+      "size_bytes": 6994,
+      "sha256": "606c7446aee48d96367a258875040f03ad75adc2aead99d1cff46eae5ec9db0f",
+      "format": "utf8-text"
+    },
+    "source_snapshot/das_methods_tests.py": {
+      "type": "regular",
+      "size_bytes": 8947,
+      "sha256": "8724f6e86049537ade77e8b8cbfc4e963e3dd134cc4ea499d15b19c46c75c8ff",
+      "format": "utf8-text"
+    },
+    "source_snapshot/das_organism.py": {
+      "type": "regular",
+      "size_bytes": 3116,
+      "sha256": "97302ad3c0ee5397704a6a04e2fe5164ac81bd15ebd03c5d15a01185fed356a6",
+      "format": "utf8-text"
+    },
+    "source_snapshot/execute_learner.py": {
+      "type": "regular",
+      "size_bytes": 3518,
+      "sha256": "855843b9e0842ca9e413fdfc37904c71c17f643f7b44eee7a8fb06139cef796a",
+      "format": "utf8-text"
+    },
+    "source_snapshot/lesson.md": {
+      "type": "regular",
+      "size_bytes": 34395,
+      "sha256": "4581cf7e2b9ef4e59804101826a53906af9a73a9eb52a4ae0172328d76988fa4",
+      "format": "utf8-text"
+    }
+  },
+  "external_payloads": {},
+  "member_count": 7,
+  "total_member_bytes": 62460
+}

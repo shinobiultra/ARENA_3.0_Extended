@@ -615,8 +615,9 @@
   },
   "peak_vram_gb": 0.12670373916625977,
   "report_inputs": {
+    "schema_version": 1,
     "algorithm": "sha256",
-    "combined_sha256": "6de8f92fb8a2ba1ec1c4ae6af4922a6b63c188d342c3b4676516cb7809ea5aeb",
+    "combined_sha256": "34920bb4054821cfef17cfe60d2efa6befdd2aaa34d6096cf4668b60440a641e",
     "files": [
       {
         "path": "arena_ext/diffusion_lm.py",
@@ -627,6 +628,11 @@
         "path": "arena_ext/gated_artifacts.py",
         "sha256": "ebe80c850c95c3e625559eb99b65186736baa0a094bb2ac77e745a1ed82b7f4a",
         "size_bytes": 8860
+      },
+      {
+        "path": "arena_ext/readability_compatibility.py",
+        "sha256": "3b46611cac4ae86ddd797339544a2e4fde618cc0effedc02e706eb6f827630d9",
+        "size_bytes": 6524
       },
       {
         "path": "arena_ext/verification.py",
@@ -715,7 +721,7 @@
       },
       {
         "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/lesson.md",
-        "sha256": "666c84478d991b048e838d24a3eb362412f85d54fd5a305db35f8110804a0a00",
+        "sha256": "19d366880446ed059e867238ec641b1a211a51c21b7b8dc35b32fe6265e9ca7f",
         "size_bytes": 135183
       },
       {
@@ -735,8 +741,8 @@
       },
       {
         "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/study_evidence.py",
-        "sha256": "393be13a8c1bce83b70a22cb4026f632829749d7f9ad861aa99e1a933b68aa73",
-        "size_bytes": 18346
+        "sha256": "e5c8ed84b69df2998e41069e0a2b120f180281cd6d80ddb163b580f749e6fbfe",
+        "size_bytes": 18424
       },
       {
         "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/study_evidence_tests.py",
@@ -760,8 +766,8 @@
       },
       {
         "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/text_data_tests.py",
-        "sha256": "6ff55c107ffec491e4f4e03091c20caca4ebb4a1115274c23efb189d81b5a443",
-        "size_bytes": 5126
+        "sha256": "3e9167999f757a67e30336b27a699afbe09036647fee8b643f5c88ef8bd8720b",
+        "size_bytes": 5600
       },
       {
         "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/text_diffusion_methods.py",
@@ -770,8 +776,8 @@
       },
       {
         "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/text_diffusion_tests.py",
-        "sha256": "3ec53073ec4f8549d41779c26f81a2e749d4cc06652af89efc021154905d98eb",
-        "size_bytes": 14953
+        "sha256": "120bfd9f6d406e14255e9bb3103c4787daac108b654d00bdb5778a4e67857032",
+        "size_bytes": 15477
       },
       {
         "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/text_evaluation.py",
@@ -790,8 +796,8 @@
       },
       {
         "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/text_model_tests.py",
-        "sha256": "5ee4d1a9e77510a410e436ae14702367b6dcf6745648dd5a0942c1809817b97d",
-        "size_bytes": 9759
+        "sha256": "49ee51cd0b244176f7e2d6cbf4195a4eecb5bc90c274fb4c55771f1d49f94c69",
+        "size_bytes": 9927
       },
       {
         "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/text_plotting.py",
@@ -805,8 +811,8 @@
       },
       {
         "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/text_training_tests.py",
-        "sha256": "7d42ad8566e6cbeff35e7a21549ae8ba124a6b2cdfee87c05ac2ce4713146671",
-        "size_bytes": 7788
+        "sha256": "251f8517b1c2723909e5ea3db9a4b49c76a046984213aef59e6b5ae49b7ecd11",
+        "size_bytes": 8080
       },
       {
         "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/utils.py",
@@ -880,8 +886,13 @@
       },
       {
         "path": "chapter5_modern_architectures/instructions/pages/05_[5.5]_Diffusion_Language_Models.md",
-        "sha256": "0843e3df57eeab30e990337f50f540cf65e408504accd08dc927d597b46b4ed5",
+        "sha256": "b6f2b6d7c391d3a0ef9d9bb39c257a988e070f231993eded8fc5161416ad811d",
         "size_bytes": 134032
+      },
+      {
+        "path": "docs/arena_salvage/2026-09-08_readability_compatibility.json",
+        "sha256": "f6d6fc026d139f46697ee3626ac96869ab49401f600fe5d3c9ddc5e36c941708",
+        "size_bytes": 421821
       },
       {
         "path": "scripts/run_diffusiongemma_vllm_probe.py",
@@ -893,8 +904,7 @@
         "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
         "size_bytes": 16272
       }
-    ],
-    "schema_version": 1
+    ]
   },
   "safety_notes": [
     "Original ARENA chapters remain unchanged.",

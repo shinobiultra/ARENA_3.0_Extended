@@ -245,6 +245,105 @@
           "size_bytes": 70687
         }
       }
+    },
+    {
+      "id": 7,
+      "classification": "implementation_correction",
+      "recorded_at_utc": "2026-09-08T03:54:59.241077+00:00",
+      "scientific_design_changed": false,
+      "reason": "Resolve the independent v7 block with explicit float64 feature-index distance accumulation and a distinguishing regression; record the previously unbound README history; require the current unchanged maintenance lock while preserving all pinned shapiq sources; wrap two Python lines with complete AST equivalence. Preserve all historical evidence, scientific design and numerical bounds, and require fresh v8 execution and independent review.",
+      "source_changes": {
+        "README.md": {
+          "before": "f7628ad83fd1f054d411f0fe9fa186eef348edcd2e11a002f4f309d397d28b61",
+          "after": "e7ca449f0659de476dea0da39fe15cbb47748e751cf03f5bdc79c53e141ef0ec"
+        },
+        "interaction_study.py": {
+          "before": "dbfa669f140750156490503a0ea8ed8f6029414662460847ed8942263131be27",
+          "after": "2a4288f9bd3d1e5772e87c6c2986e4a98288efbb4bc73a401113d20c183192ef"
+        },
+        "interaction_study_tests.py": {
+          "before": "46f7687ff4686f97e3302afe0d7f1f2d0c863c812cb76b4c2e82ec136a9dcc49",
+          "after": "ca154072c12157b2e5886f6a29c90ae41d4c32bb06990430adbdc5218e9d3b33"
+        },
+        "interaction_reference.py": {
+          "before": "cc946c91482166b9c4932ee4cbb3d2340f590bc0d312fc94e993203c2c9aff9e",
+          "after": "bfbac8cf51bb2fec355f4382283d39d97ce7746740d9a107981c0af0966a4c73"
+        },
+        "build_notebooks.py": {
+          "before": "f938b50a1e79bd3a931d7ae0757f212b4e1009058501118a5ae7f101385f0e79",
+          "after": "b13a17c22ed4f98a7663728e08a2878dae5cb0e7aeadafa817eade73218d6150"
+        },
+        "interaction_plots.py": {
+          "before": "7a9a9ae5845b0597976f5102fb77fa5f3447aee4cf49a8651a6dbfc2d1a62ded",
+          "after": "490c6549ddbb9b20d57e6bacc84217b1330269b8c975f70888024b1be4d42133"
+        }
+      },
+      "evidence_files": {
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/correction-v8/AMENDMENT.md": {
+          "sha256": "de3e40abc43f5e99c943bf1778420dd9d131597f87c28a434ec452621158c76b",
+          "size_bytes": 2222
+        },
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/correction-v8/pre_run_proof.json": {
+          "sha256": "9a18acac8050400cb7e0a86d73bd06977926e3584f29d65a75ae077e0218511c",
+          "size_bytes": 3444
+        },
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/correction-v8/before_index.json": {
+          "sha256": "a86a0fe6121994d228e6642333d907f4b82a757bd703856ffa9b9e51f5dfb00c",
+          "size_bytes": 6578
+        },
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/correction-v8/regression_before.log": {
+          "sha256": "b9cc21102355c21f8ae1486e79de1f7ccdbef13ec13c4a9397ad44bc31abdfaa",
+          "size_bytes": 2391
+        },
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/correction-v8/regression_after.log": {
+          "sha256": "82a5d30a890be917c24adc4a91ca9bcfaf7a4017ba136230a81859188ed3a6dc",
+          "size_bytes": 98
+        },
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/correction-v8/historical_uv.lock": {
+          "sha256": "03f77ffac99858cd34a653cd703728b9a868c87686a86cef78523a7afa9a6494",
+          "size_bytes": 588124
+        },
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/correction-v8/before/uv.lock": {
+          "sha256": "e96e946bb00f50592d32c1b3bf453fca4482a0097731120defbebcd978f019eb",
+          "size_bytes": 610963
+        },
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/correction-v8/historical_chain_README.md": {
+          "sha256": "f7628ad83fd1f054d411f0fe9fa186eef348edcd2e11a002f4f309d397d28b61",
+          "size_bytes": 6457
+        },
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/correction-v8/record_amendment.py": {
+          "sha256": "8185f4e753ea5179d9aca50625c3a24ef5f9a4b44d95103a370b0b6fb2793758",
+          "size_bytes": 6268
+        },
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/independent-review-resumed-v7/REVIEW.md": {
+          "sha256": "b768fbfb34c2ee71744aa6b5acc16d9ba5c393fb924b49fb5f6a49a655187d84",
+          "size_bytes": 11945
+        },
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/correction-v8/before/chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/README.md": {
+          "sha256": "c2fde2e74e5b74840f26254755ca831ad73969b2b09ffc5a368d3e4bbe08b14b",
+          "size_bytes": 7911
+        },
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/correction-v8/before/chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_study.py": {
+          "sha256": "dbfa669f140750156490503a0ea8ed8f6029414662460847ed8942263131be27",
+          "size_bytes": 77735
+        },
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/correction-v8/before/chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_study_tests.py": {
+          "sha256": "46f7687ff4686f97e3302afe0d7f1f2d0c863c812cb76b4c2e82ec136a9dcc49",
+          "size_bytes": 19277
+        },
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/correction-v8/before/chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_reference.py": {
+          "sha256": "cc946c91482166b9c4932ee4cbb3d2340f590bc0d312fc94e993203c2c9aff9e",
+          "size_bytes": 57253
+        },
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/correction-v8/before/chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/build_notebooks.py": {
+          "sha256": "f938b50a1e79bd3a931d7ae0757f212b4e1009058501118a5ae7f101385f0e79",
+          "size_bytes": 24186
+        },
+        "/home/bitwise/.cache/arena_extended/shapley_interactions/correction-v8/before/chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_plots.py": {
+          "sha256": "7a9a9ae5845b0597976f5102fb77fa5f3447aee4cf49a8651a6dbfc2d1a62ded",
+          "size_bytes": 50291
+        }
+      }
     }
   ]
 }

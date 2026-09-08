@@ -6,16 +6,23 @@ Shapley-Taylor interactions and Faith-Shap on complete games, keeps pair SII as 
 index, and then uses the three definitions to read a prespecified eight-feature Concrete-strength
 model game.
 
-The section is a **fully executed development candidate awaiting independent review**.
-The v7 learner implements ten visible methods across eight exercises and produces eleven figures
-from the full native study. Fresh source-only reproduction matches all deterministic values exactly.
-The zero-run freeze permits development execution and explicitly does not grant publication approval.
-Reviewer agents exhausted their account allowance before final review; no independent approval is
-inferred from the author's own checks. Canonical notebooks, page, navigation and registry promotion
-remain pending.
+The section is a **development candidate with publication blocked by independent review**.
+The historical v7 learner implements ten visible methods across eight exercises and produced eleven
+figures from the full native study. Its fresh source-only reproduction matched all deterministic
+values exactly. The resumed September 8 independent review found one remaining support-distance
+arithmetic mismatch, a missing README source binding and an outdated environment guard. The review
+and every v7 receipt remain preserved. The zero-run freeze permits development execution and
+explicitly does not grant publication approval. Canonical notebooks, page, navigation and registry
+promotion remain pending.
 
 The complete candidate, rendered exercise draft, author visual review and exact evidence are linked
 from `/home/bitwise/.cache/arena_extended/shapley_interactions/review-packet-v7/README.md`.
+The independent block is recorded in
+`/home/bitwise/.cache/arena_extended/shapley_interactions/independent-review-resumed-v7/REVIEW.md`.
+The v8 correction implements the protocol's explicit float64 feature-order distance accumulation,
+retains a distinguishing regression and binds the current unchanged lock. Its planned fresh evidence
+locations are `native-development-v8`, `reproduction-v8` and `review-packet-v8` under the same cache.
+Use their actual receipts to assess completion; the v7 counts below do not certify v8.
 
 ## Learner arc
 
@@ -70,21 +77,21 @@ The two `Try It Yourself` cells are:
 Run the method tests without changing the protocol boundary:
 
 ```bash
-uv run pytest -q chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_methods_tests.py
+uv run --locked pytest -q chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_methods_tests.py
 ```
 
 Parse the lesson, complete every exercise from its own adjacent answer, and list every unresolved
 strict-build requirement:
 
 ```bash
-uv run python chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/build_notebooks.py --checkpoint-check
+uv run --locked python chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/build_notebooks.py --checkpoint-check
 ```
 
 To inspect paired notebook structure as an unpublished draft, choose a new disposable directory. Draft
 filenames carry a `DRAFT_` prefix and cannot be mistaken for canonical course surfaces:
 
 ```bash
-uv run python chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/build_notebooks.py --draft-output /tmp/arena-16-16-draft
+uv run --locked python chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/build_notebooks.py --draft-output /tmp/arena-16-16-draft
 ```
 
 Strict mode checks the executable source and canonical instruction-page parity. It refuses publication
@@ -92,7 +99,7 @@ while the page is absent. The execution harness can build an unpublished learner
 freeze; the publisher additionally requires independent review and actual native/visual evidence:
 
 ```bash
-uv run python chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/build_notebooks.py --check
+uv run --locked python chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/build_notebooks.py --check
 ```
 
 Do not run `run_native.py` before the recorded zero-run freeze. After that freeze, the execution
@@ -106,13 +113,13 @@ The primary definitions are:
 - Sundararajan, Dhamdhere, and Agarwal, “The Shapley Taylor Interaction Index” (ICML 2020).
 - Tsai, Yeh, and Ravikumar, “Faith-Shap: The Faithful Shapley Interaction Index” (JMLR 2023).
 
-`protocol.md` records the frozen scientific design; `implementation_amendments.json` records six
+`protocol.md` records the frozen scientific design; `implementation_amendments.json` records
 dated implementation corrections without changing that design.
 `data_manifest.json` pins the intended Concrete rows, splits, donor banks, seeds, and known model
 states. Verification reports and package comparisons will support the learner artifact; they do not
 replace the visible derivations, tests, figures, or plays.
 
-## Current evidence and limitations
+## Historical v7 evidence and current limitations
 
 - Complete own-answer learner v7: 141 cells, 55 code cells, eleven embedded figures; all seven known
   models refit and all 21 model-state hashes match. Monitored wall time 53.69 seconds, sampled peak
@@ -125,11 +132,12 @@ replace the visible derivations, tests, figures, or plays.
 - Real browser review by the author: 65 rendered math nodes, 54 working dropdowns, eight solutions,
   eleven loaded figures, no math errors or page horizontal overflow. Both play cells have checked
   parameter variations and invalid-input cases.
-- Independent final review, canonical publication, normal registered report execution and integration
-  audits remain open. `publish_study.validate_publication_review` correctly refuses this development
+- Independent review blocked v7. Corrected execution, its independent publication review, canonical
+  publication, normal registered report execution and integration audits remain open.
+  `publish_study.validate_publication_review` correctly refuses this development
   state. The builder deliberately cannot create canonical surfaces by bypassing that gate.
 - Model/data outcomes are known replications. Intact-donor replacement is observational; changing
   donors changes the game, and an interaction coefficient is not a physical causal effect.
 
-Failed development runs and exact source snapshots are retained in the same cache. The current
-candidate is v7; do not use v6's failed strict reproduction as passing evidence.
+Failed development runs and exact source snapshots are retained in the same cache. Do not use v6's
+failed strict reproduction as passing evidence, or relabel any v7 receipt as a v8 execution.

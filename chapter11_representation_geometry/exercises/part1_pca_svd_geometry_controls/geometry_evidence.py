@@ -1,5 +1,7 @@
 """Audit measured learner outputs; never substitute an independent experiment."""
 from __future__ import annotations
+
+from arena_ext.readability_compatibility import source_matches_execution
 import ast
 from collections import Counter
 import gzip
@@ -56,9 +58,9 @@ def validate_learner(run):
     for name,digest in execution['source_inputs'].items():
         if sha256(run/'source_snapshot'/name)!=digest:raise ValueError('Actual execution source snapshot changed: '+name)
         # Prose can be improved after inspecting results. Executed code is compared below.
-        if name=='geometry_plotting.py' and sha256(HERE/name)!=digest:
+        if name=='geometry_plotting.py' and not source_matches_execution(HERE/name, digest):
             validate_plot_heading_update(run)
-        elif name!='lesson.md' and sha256(HERE/name)!=digest:raise ValueError('Executed dependency changed: '+name)
+        elif name!='lesson.md' and not source_matches_execution(HERE/name, digest):raise ValueError('Executed dependency changed: '+name)
     actual=json.loads((run/'completed_learner.ipynb').read_text())
     solved=complete_learner({'cells':lesson_cells()})
     actual_code=[c for c in actual['cells'] if c['cell_type']=='code']

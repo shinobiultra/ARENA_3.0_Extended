@@ -1,0 +1,197 @@
+{
+  "status": "PASS",
+  "reviewer": "/root/astra_interaction_review",
+  "reviewer_role": "independent",
+  "review_timing": "after_development_execution",
+  "reviewed_at_utc": "2026-09-08T04:27:28.454009+00:00",
+  "scope": "Actual frozen-v8 figures and rendered exercise lesson; fresh inspection of every changed PNG byte hash.",
+  "protocol_freeze_sha256": "3fe5047026188b6446adb010403fede0bbee145779fd5aba3826ad75f9acdf7f",
+  "source_inputs": {
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_data.py": "9418e01edb3cbc0f812716d2686d4a2d40ceb753112a87b1d18536a19ca2420f",
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_methods.py": "8287979f6693825fd4519b6eabc136f13dd2672f30ad1316b9b1f89638d1d52b",
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_methods_tests.py": "c5d99d494f4b0e78097674afba70119daed725a2c9f73709f44e821f536af490",
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_study.py": "2a4288f9bd3d1e5772e87c6c2986e4a98288efbb4bc73a401113d20c183192ef",
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_study_tests.py": "ca154072c12157b2e5886f6a29c90ae41d4c32bb06990430adbdc5218e9d3b33",
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_reference.py": "bfbac8cf51bb2fec355f4382283d39d97ce7746740d9a107981c0af0966a4c73",
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_reference_tests.py": "bbf5572179bf5cb704ea9bc9e033e1ac8448a0631561b9f6800054a2faaf3280",
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_diagnostics.py": "9fece8bfeda699cab8ced09ba38ed48787b0c5f82c2d67ea5280f2419e726c46",
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_plots.py": "490c6549ddbb9b20d57e6bacc84217b1330269b8c975f70888024b1be4d42133",
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_plots_tests.py": "bd425abbdeff5f1a7d25045e52616d1c2f593ab8e249250cc45b2c999e84f9fc",
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/protocol.md": "c0d738cf953743f17b74ca5ced74c15330b8b3be7d7d128563ba36096986ee37",
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/protocol_freeze.json": "3fe5047026188b6446adb010403fede0bbee145779fd5aba3826ad75f9acdf7f",
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/pre_run_resolution.json": "0a6f19aa82ec5691a7ad38382d7e6a3a82a7cdc52aeaae28a01bf13ab587b923",
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/data_manifest.json": "192eacd0f1dd137c627d1c4aec58b1eb17c3c31753ff9c496ed1e04717c9651e",
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/run_native.py": "df2d8a5a6f3485e0b022b7ebd3826a3d3a0452da97143e5a3d8d8cbe64304669",
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/implementation_amendments.json": "30a1054729e0b5ce9f9b8b4378da3ae395496fbcaa30b30c59c1ab7c69cdec25",
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/lesson.md": "12a4724e1540360ddfac26af6e5d5ed63dd34b528b561081b48252a48c0d2754",
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/build_notebooks.py": "b13a17c22ed4f98a7663728e08a2878dae5cb0e7aeadafa817eade73218d6150",
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/execute_learner.py": "9c564bc9c8c00c9770b5be69ae4aaae666ff5eb41896d8af1a7983e803b37da6",
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_contracts.py": "766fc31a44f858482cc8abfc395c4202a272614e2b577ca2c88cc57ca36080b0",
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/reproduce_native.py": "155b38b23ee6ec71ada78d6598dfeaf5723fdb947cf769a831a6d048a238393a",
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/publish_study.py": "13c7b4cc48d81a6ca05eaecacaa01762890e87ff0f3d913b81a8f5fbaf1b220c"
+  },
+  "execution_sha256": "db878afd4787c2ab6fea4e93cf1513e035daee406db87c9790adbaaf99823d0a",
+  "lesson_sha256": "12a4724e1540360ddfac26af6e5d5ed63dd34b528b561081b48252a48c0d2754",
+  "completed_learner_sha256": "ba9aa3094d4bbfc0311dbd7e638fb5b023fcc2801a8297fb1587d88705f177c7",
+  "figures": {
+    "01_exact_allocation_ledger.png": "7dd1118380c92226088a2528a4da3bf045bec7c5cbeecbfd2f96dd1b8cfba5a6",
+    "02_why_faith_moves_singletons.png": "9d1b0a9955b7905d46b296b4c06ee935a5c5e5e5f3cde45057b8f5e10ae316e2",
+    "03_native_game_and_controls.png": "cb0c486bcfd1fe6847b0113fb1ad84b051a73faa2a40db47c391e2c054d4efdd",
+    "04_fixed_row_interaction_graph.png": "401f76de336bb37a7d90b6c2076bae0adef0ee5864957d9a5b84420077267e90",
+    "05_allrow_pair_heatmaps.png": "4fb3da7bc1ca830628bab50165d748855792299334c0bb377ce9c85a15b44d3b",
+    "06_heldout_pair_order_capture.png": "100b2cd32370fed1a5b33e947e45fef9a785b31a2d2921bb9a4331357b0893f2",
+    "07_order_two_reconstruction.png": "a9be099504fb8825203c226b53886ae4d070346a833bcae55d5d3a0e5b58ea50",
+    "08_background_changes_the_game.png": "1a66796b6bfeedf2533112116169a38f8061e933b11c9ff7a87308bde5d076ce",
+    "09_contextual_pair_interventions.png": "db497c3b27fc431e167037e030413ad3de4d6fb57f6b6b31ff7c0df14cccca13",
+    "10_dividend_play.png": "c75f494399d7e79973e21459425551682e49b40cb67bddc73067bde31d0e5697",
+    "11_donor_context_play.png": "0f2cf0ff7adbca5c6ff63b3d9e38541a5522e173f759d655509c71d92bbea638"
+  },
+  "figure_assessments": {
+    "01_exact_allocation_ledger.png": {
+      "status": "PASS",
+      "sha256": "7dd1118380c92226088a2528a4da3bf045bec7c5cbeecbfd2f96dd1b8cfba5a6",
+      "assessment": "Pure-four fractions, signs and endpoint ledgers are correct; pair SII and ordinary Shapley are explicitly separate families; degree-two agreement control is stated.",
+      "inspection": "Individually viewed actual v8 PNG with view_image after its hash changed; reviewed again in context of the v8 rendered lesson."
+    },
+    "02_why_faith_moves_singletons.png": {
+      "status": "PASS",
+      "sha256": "9d1b0a9955b7905d46b296b4c06ee935a5c5e5e5f3cde45057b8f5e10ae316e2",
+      "assessment": "All coalition-size reconstructions show how negative singletons reduce the declared error. True game, endpoint markers and degree-two residual control are visible.",
+      "inspection": "Individually viewed actual v8 PNG with view_image after its hash changed; reviewed again in context of the v8 rendered lesson."
+    },
+    "03_native_game_and_controls.png": {
+      "status": "PASS",
+      "sha256": "cb0c486bcfd1fe6847b0113fb1ad84b051a73faa2a40db47c391e2c054d4efdd",
+      "assessment": "Known-model predictive performance includes every clean/shuffled seed and ridge. Same-donor semantics, ridge near-zero pairs and direct/table agreement are clear.",
+      "inspection": "Individually viewed actual v8 PNG with view_image after its hash changed; reviewed again in context of the v8 rendered lesson."
+    },
+    "04_fixed_row_interaction_graph.png": {
+      "status": "PASS",
+      "sha256": "401f76de336bb37a7d90b6c2076bae0adef0ee5864957d9a5b84420077267e90",
+      "assessment": "Shared layout/scales distinguish singleton signs from signed pair edges. All 36 term differences and separate pair-SII strip remain visible; additive ridge scale is disclosed.",
+      "inspection": "Individually viewed actual v8 PNG with view_image after its hash changed; reviewed again in context of the v8 rendered lesson."
+    },
+    "05_allrow_pair_heatmaps.png": {
+      "status": "PASS",
+      "sha256": "4fb3da7bc1ca830628bab50165d748855792299334c0bb377ce9c85a15b44d3b",
+      "assessment": "All seven audit models and 28 pairs shown. Signed group means and mean absolute magnitudes are separated; difference panels use declared symmetric ranges and ridge column is near zero.",
+      "inspection": "Individually viewed actual v8 PNG with view_image after its hash changed; reviewed again in context of the v8 rendered lesson."
+    },
+    "06_heldout_pair_order_capture.png": {
+      "status": "PASS",
+      "sha256": "100b2cd32370fed1a5b33e947e45fef9a785b31a2d2921bb9a4331357b0893f2",
+      "assessment": "All three fixed ranking rules, seven models and 256 random orders shown. Near overlap is retained; ridge roundoff normalization is disclosed. Within-size diamonds and dots are explained.",
+      "inspection": "Individually viewed actual v8 PNG with view_image after its hash changed; reviewed again in context of the v8 rendered lesson."
+    },
+    "07_order_two_reconstruction.png": {
+      "status": "PASS",
+      "sha256": "a9be099504fb8825203c226b53886ae4d070346a833bcae55d5d3a0e5b58ea50",
+      "assessment": "Size-wise residual curves and kernel MSE agree with the defined objectives. All clean/shuffled seeds and ridge included; no causal or unweighted-optimality claim.",
+      "inspection": "Individually viewed actual v8 PNG with view_image after its hash changed; reviewed again in context of the v8 rendered lesson."
+    },
+    "08_background_changes_the_game.png": {
+      "status": "PASS",
+      "sha256": "1a66796b6bfeedf2533112116169a38f8061e933b11c9ff7a87308bde5d076ce",
+      "assessment": "All singleton/pair movements for five backgrounds shown on shared scale; primary self-difference is a zero baseline. Caption correctly describes alternate estimands, not confidence intervals.",
+      "inspection": "Individually viewed actual v8 PNG with view_image after its hash changed; reviewed again in context of the v8 rendered lesson."
+    },
+    "09_contextual_pair_interventions.png": {
+      "status": "PASS",
+      "sha256": "db497c3b27fc431e167037e030413ad3de4d6fb57f6b6b31ff7c0df14cccca13",
+      "assessment": "Independent forward/table diagonal is an implementation control; all models and rows/pairs included. Fixed donor demonstrates sign cancellation relative to bank mean.",
+      "inspection": "Individually viewed actual v8 PNG with view_image after its hash changed; reviewed again in context of the v8 rendered lesson."
+    },
+    "10_dividend_play.png": {
+      "status": "PASS",
+      "sha256": "c75f494399d7e79973e21459425551682e49b40cb67bddc73067bde31d0e5697",
+      "assessment": "Editable analytic game displays three labeled pair indices and true/reconstructed coalition values; fractional disagreement and reconstruction error are understandable.",
+      "inspection": "Individually viewed actual v8 PNG with view_image after its hash changed; reviewed again in context of the v8 rendered lesson."
+    },
+    "11_donor_context_play.png": {
+      "status": "PASS",
+      "sha256": "0f2cf0ff7adbca5c6ff63b3d9e38541a5522e173f759d655509c71d92bbea638",
+      "assessment": "The four model predictions, individual donor synergies, bank average and three index values expose the context-versus-index distinction. Units and fixed source/background/context are identified.",
+      "inspection": "Individually viewed actual v8 PNG with view_image after its hash changed; reviewed again in context of the v8 rendered lesson."
+    }
+  },
+  "browser_math_and_dropdowns_checked": true,
+  "browser": {
+    "url": "http://127.0.0.1:8873/draft_exercises.html",
+    "browser": "Chrome",
+    "html": {
+      "path": "/home/bitwise/.cache/arena_extended/shapley_interactions/native-development-v8/html_review/draft_exercises.html",
+      "sha256": "e12ddb6e13a6f6267a85eb565869a5beeee326a42559541d530e91bf16abd870",
+      "size_bytes": 2666207
+    },
+    "dropdowns_opened": 54,
+    "solution_dropdowns_opened": 8,
+    "loaded_images": 11,
+    "math_source_elements": 65,
+    "math_error_elements": 0,
+    "console_warnings_errors": [],
+    "horizontal_overflow": false,
+    "visual_math_checks": [
+      "KKT matrix and expanded derivation",
+      "Faith-Shap Mobius closed form"
+    ],
+    "screenshots": {
+      "browser_closed_form.jpg": {
+        "path": "/home/bitwise/.cache/arena_extended/shapley_interactions/independent-review-v8/browser_closed_form.jpg",
+        "sha256": "256dccbe431c03788723eeab9662be55b3f31f0ade3ed19b1fb40e83c8f10ff4",
+        "size_bytes": 125764
+      },
+      "browser_kkt.jpg": {
+        "path": "/home/bitwise/.cache/arena_extended/shapley_interactions/independent-review-v8/browser_kkt.jpg",
+        "sha256": "ac3591a8b390a517b884ed8010937eb48ec9d162390ab972d1365990ceedd93c",
+        "size_bytes": 158055
+      },
+      "browser_native_play.jpg": {
+        "path": "/home/bitwise/.cache/arena_extended/shapley_interactions/independent-review-v8/browser_native_play.jpg",
+        "sha256": "86d43914dab74e2922a68971e42007d4b402aba76605fe100050974a6a173635",
+        "size_bytes": 132260
+      }
+    },
+    "disclosure": "The initial dropdown call timed out after 21 opens. Three bounded batches and a final three clicks completed all 54; final live DOM confirms the result. Actual screenshot bytes are JPEG, 1505x1033, saved via CUA screenshot API and viewed."
+  },
+  "evidence_files": {
+    "browser_report": {
+      "path": "/home/bitwise/.cache/arena_extended/shapley_interactions/independent-review-v8/browser_dom.json",
+      "sha256": "e9b77862fba1e9ec9e2a0bfd022203db44f139125d3b8e06e679ae82643ac89a",
+      "size_bytes": 6211
+    },
+    "browser_stdout": {
+      "path": "/home/bitwise/.cache/arena_extended/shapley_interactions/independent-review-v8/browser_stdout.log",
+      "sha256": "7f9023f6f09485247044b6f223176c1c87ac5a76348ac4bf921e27f64917997e",
+      "size_bytes": 184
+    },
+    "screenshots": {
+      "browser_closed_form.jpg": {
+        "path": "/home/bitwise/.cache/arena_extended/shapley_interactions/independent-review-v8/browser_closed_form.jpg",
+        "sha256": "256dccbe431c03788723eeab9662be55b3f31f0ade3ed19b1fb40e83c8f10ff4",
+        "size_bytes": 125764
+      },
+      "browser_kkt.jpg": {
+        "path": "/home/bitwise/.cache/arena_extended/shapley_interactions/independent-review-v8/browser_kkt.jpg",
+        "sha256": "ac3591a8b390a517b884ed8010937eb48ec9d162390ab972d1365990ceedd93c",
+        "size_bytes": 158055
+      },
+      "browser_native_play.jpg": {
+        "path": "/home/bitwise/.cache/arena_extended/shapley_interactions/independent-review-v8/browser_native_play.jpg",
+        "sha256": "86d43914dab74e2922a68971e42007d4b402aba76605fe100050974a6a173635",
+        "size_bytes": 132260
+      }
+    },
+    "completed_notebook": {
+      "path": "/home/bitwise/.cache/arena_extended/shapley_interactions/native-development-v8/completed_learner.ipynb",
+      "sha256": "ba9aa3094d4bbfc0311dbd7e638fb5b023fcc2801a8297fb1587d88705f177c7",
+      "size_bytes": 2060687
+    },
+    "fresh_reproduction": {
+      "path": "/home/bitwise/.cache/arena_extended/shapley_interactions/reproduction-v8/reproduction.json",
+      "sha256": "0f59e748cc5680681e24759e17796e16f68d38673a9d3d8ad7f50d0d4088b556",
+      "size_bytes": 12983
+    }
+  },
+  "no_blocking_visual_findings": true,
+  "publication_relocation_note": "Coordinator must retain/copy these real files into allowed learner/fresh roots when assembling the separate publisher visual_review.json. No claim that reviewer-cache paths themselves satisfy _resolve_review_file."
+}

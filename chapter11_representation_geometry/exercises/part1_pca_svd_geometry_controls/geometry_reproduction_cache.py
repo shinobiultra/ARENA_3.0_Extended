@@ -7,6 +7,8 @@ its 6,656 actual comparison rows. Report metadata explicitly records reuse.
 
 from __future__ import annotations
 
+from arena_ext.readability_compatibility import source_matches_execution
+
 import hashlib
 import json
 from pathlib import Path
@@ -71,7 +73,7 @@ def validate_native_sources(source: Path, state: dict, here: Path = HERE):
     if set(state["source_inputs"]) != NATIVE_INPUTS:
         raise ValueError("The native reproduction source inventory is incomplete.")
     for name, digest in state["source_inputs"].items():
-        if sha256(source / "source_snapshot" / name) != digest or sha256(here / name) != digest:
+        if not source_matches_execution(here / name, digest, source / "source_snapshot" / name):
             raise ValueError("Native scientific source changed: " + name)
 
 

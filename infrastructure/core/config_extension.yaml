@@ -170,6 +170,9 @@ conversion_map:
   '16.15':
     streamlit_page: 15_[16.15]_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate
     exercise_dir: part15_gradientshap
+  '16.16':
+    streamlit_page: 16_[16.16]_Where_Does_Higher_Order_Credit_Go
+    exercise_dir: part16_shapley_taylor_faith_shap
   '16.17':
     streamlit_page: 17_[16.17]_One_Query_Many_Interactions
     exercise_dir: part17_shapiq_estimators
@@ -957,6 +960,16 @@ chapters:
       streamlit_description: Build Expected Gradients from explicit samples, compare Monte Carlo error
         with changing targets, and test all-row attribution, backgrounds, noise and replacements.
       streamlit_description_short: Which expectation does GradientSHAP estimate?
+    - id: 16_where_does_higher_order_credit_go
+      number: '16.16'
+      title: Where Does Higher-Order Credit Go?
+      exercise_dir: part16_shapley_taylor_faith_shap
+      page_file: 16_[16.16]_Where_Does_Higher_Order_Credit_Go.md
+      header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png
+      status: ARENA-style exact interaction allocations with independent review
+      streamlit_description: Build Shapley-Taylor and exact constrained Faith-Shap, compare higher-order
+        credit allocation and full-coalition reconstruction, and explore intact-donor model games.
+      streamlit_description_short: Where does higher-order credit go when only pairs remain?
     - id: 17_one_query_many_interactions
       number: '16.17'
       title: One Query, Many Interactions

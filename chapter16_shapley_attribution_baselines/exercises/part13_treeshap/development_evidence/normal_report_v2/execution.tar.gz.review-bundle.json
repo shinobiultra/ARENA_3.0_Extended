@@ -1,0 +1,67 @@
+{
+  "schema": "arena.review-bundle.v1",
+  "archive": {
+    "name": "execution.tar.gz",
+    "sha256": "36ac544653a9a2e661c67660925b0c596694b330e13f61988b722d987fb47024",
+    "size_bytes": 14382
+  },
+  "limits": {
+    "archive_bytes": 67108864,
+    "member_bytes": 16777216,
+    "total_member_bytes": 134217728,
+    "tar_container_bytes": 167772160,
+    "decoded_json_bytes": 67108864,
+    "total_decoded_bytes": 536870912,
+    "members": 4096
+  },
+  "provenance": {
+    "kind": "historical_archive_packaging",
+    "packaged_at_utc": "2026-09-08T03:27:02.002499+00:00",
+    "measurement_claim": "Packaging only. This is not a native rerun, scientific revalidation or new review. Retained receipts, failure labels, values, scientific hashes and measurement dates are byte-identical to the original. Historical embedded archive inventories describe that original; this adjacent contract describes the derived review bundle.",
+    "source_archive": {
+      "repository_path": "chapter16_shapley_attribution_baselines/exercises/part13_treeshap/development_evidence/normal_report_v2/execution.tar.gz",
+      "absolute_path": "/home/bitwise/.cache/arena_extended/evidence_packaging/original_archives/36ac544653a9a2e661c67660925b0c596694b330e13f61988b722d987fb47024.tar.gz",
+      "sha256": "36ac544653a9a2e661c67660925b0c596694b330e13f61988b722d987fb47024",
+      "size_bytes": 14382,
+      "git_commit": "ce96ceaae2f91bf0dcd7648052325e07a87b0b5b",
+      "git_blob": "303845765f75d5ccbc66b963b0b2c303afb64d8d"
+    },
+    "source_archive_members": {
+      "README.md": {
+        "sha256": "cb693c9d41f1e77c2260555548ae91a36103e8bb3e1201cc7bfda750cbac714d",
+        "size_bytes": 279
+      },
+      "fresh_reproduction.json": {
+        "sha256": "26620ddb73c783c9eb4493beb1bdad11303e98d309f2ce5ffac52202602095e8",
+        "size_bytes": 60090
+      },
+      "verification_report.json": {
+        "sha256": "a565b048ec91943b948601db98e948d4cc4aef768ec7485d0b42007aa9641dcb",
+        "size_bytes": 25329
+      }
+    }
+  },
+  "members": {
+    "README.md": {
+      "type": "regular",
+      "size_bytes": 279,
+      "sha256": "cb693c9d41f1e77c2260555548ae91a36103e8bb3e1201cc7bfda750cbac714d",
+      "format": "utf8-text"
+    },
+    "fresh_reproduction.json": {
+      "type": "regular",
+      "size_bytes": 60090,
+      "sha256": "26620ddb73c783c9eb4493beb1bdad11303e98d309f2ce5ffac52202602095e8",
+      "format": "json"
+    },
+    "verification_report.json": {
+      "type": "regular",
+      "size_bytes": 25329,
+      "sha256": "a565b048ec91943b948601db98e948d4cc4aef768ec7485d0b42007aa9641dcb",
+      "format": "json"
+    }
+  },
+  "external_payloads": {},
+  "member_count": 3,
+  "total_member_bytes": 85698
+}

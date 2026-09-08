@@ -13,9 +13,9 @@
     "fresh_compared_arrays": 663,
     "fresh_compared_elements": 118275724,
     "fresh_comparison": "exact_recursive_dtype_shape_value_sha256_including_container_order",
-    "fresh_output_directory": "/home/bitwise/.cache/arena_extended/shapiq_estimators/report_reproductions/report-fzz6_8nc/fresh_cpu",
-    "learner_evidence_sha256": "cc6180eec9be95f0ef54a7a596b704fa9f522d3bf76bc0dffc8d399d4ff5e14c",
-    "fresh_evidence_sha256": "f4c0366ab52e5780e8fc47ef0e63f0821ac5b271679f554fc613b6162f347563",
+    "fresh_output_directory": "/home/bitwise/.cache/arena_extended/shapiq_estimators/report_reproductions/report-xqkhcg5z/fresh_cpu",
+    "learner_evidence_sha256": "f6a8823d6d583415256165f5fb6670150d758b9494a0a6add70702dce752fbb3",
+    "fresh_evidence_sha256": "d4d92e5c74c9ee94da3d23bce82af9f314603aa45bd18db5a00fd7ab8bdc2d3d",
     "review_scope": "author_review_not_independent",
     "study": "16.17_shapiq_estimators",
     "model_fits": 7,
@@ -590,7 +590,7 @@
   "consumer_inputs": {
     "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/build_notebooks.py": "9d2ccd0d791b479d0978b5a4b670e750e9b1374c27815da4547332c34cec5b7f",
     "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/estimator_methods.py": "f173ff6d56b4bdd08fb044ddfb9d18c3cdc7e79cff94b940eb66f51b73fb208c",
-    "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/estimator_methods_tests.py": "9315702657a2a81795e273e0a9c4f457100cee98092a0f933e02e010b6dd5a99",
+    "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/estimator_methods_tests.py": "760c871a37c4840b66300b4ec7dc84f17feb2c70e0c26c6836c2f6cf8d56489a",
     "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/estimator_plots.py": "835d66ec52d0d7040df7b6ea2ddccf6bb12e0008bc496f6e3f1d0cabd09b0735",
     "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/estimator_reference_tests.py": "b45a5f3bc4bc8be046e8642e10c69be88c794a742b88a45b852d0a99471e5a2f",
     "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/estimator_study.py": "846faa75ed7ccc6b4c59bbb2df6501c7b69500cf27c24b495288a573cdbb3c55",
@@ -604,5 +604,5 @@
     "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/solutions.py": "3371714bafaedcdabde51df9899944a30b963d1a24d22e69ad25ebba9d6912e0",
     "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/tests.py": "1a6f83207b55ff2b37d738840b1b4e8531b687293884ac0e5b60079dbc1b52f7"
   },
-  "fresh_reproduction_sha256": "f4c0366ab52e5780e8fc47ef0e63f0821ac5b271679f554fc613b6162f347563"
+  "fresh_reproduction_sha256": "d4d92e5c74c9ee94da3d23bce82af9f314603aa45bd18db5a00fd7ab8bdc2d3d"
 }

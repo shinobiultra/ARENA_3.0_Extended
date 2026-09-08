@@ -6,6 +6,8 @@ the frozen circuits and controls; it never presents stored metrics as a run.
 """
 from __future__ import annotations
 
+from arena_ext.readability_compatibility import source_matches_execution
+
 import gzip
 import hashlib
 import json
@@ -36,7 +38,7 @@ def read_completed_learner_evidence(directory: Path | None = None) -> tuple[dict
     if set(manifest["input_files"]) != required_sources:
         raise ValueError("The execution record must bind every section source file")
     for name, expected in manifest["input_files"].items():
-        if sha256(HERE / name) != expected:
+        if not source_matches_execution(HERE / name, expected):
             raise ValueError(f"Completed learner evidence is stale for {name}")
     for suffix, key in (("exercises", "published_exercises_sha256"), ("solutions", "published_notebook_sha256")):
         if sha256(HERE / f"{STEM}_{suffix}.ipynb") != manifest[key]:
@@ -163,5 +165,9 @@ def run_frozen_edge_cuda_recheck(max_vram_gb: float = 24.0) -> dict:
         "peak_vram_gb": peak, "within_vram_budget": True,
         "learner_search_peak_vram_gb": evidence["peak_vram_gb"],
         "ioi": results["ioi"], "greater_than": results["greater_than"],
-        "claim_scope": "Full additive-edge methods, failed IOI selection with development diagnostics, and greater-than controlled transfer; fresh search provenance plus live circuit checks. No successful IOI transfer is claimed when selection fails.",
+        "claim_scope": (
+            "Full additive-edge methods, failed IOI selection with development diagnostics, and "
+            "greater-than controlled transfer; fresh search provenance plus live circuit checks. "
+            "No successful IOI transfer is claimed when selection fails."
+        ),
     }

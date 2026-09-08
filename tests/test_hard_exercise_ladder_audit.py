@@ -1,5 +1,7 @@
 import json
 
+import pytest
+
 from scripts.audit_hard_exercise_ladders import (
     fixture_readme_missing_terms,
     ladder_blockers,
@@ -43,6 +45,29 @@ def test_visible_test_summary_counts_ladder_signals(tmp_path):
     assert summary.assert_count == 3
     assert summary.success_print_count == 2
     assert summary.placeholder_tests == ()
+
+
+@pytest.mark.parametrize("message", [
+    'f"All tests in test_complete_basis_operators passed! ({n} players; all {2**n} basis games)"',
+    'f"All tests in test_invalid_inputs passed! ({function.__name__} rejected {kwargs})"',
+])
+def test_visible_feedback_accepts_explanatory_fstrings_after_checks(tmp_path, message):
+    tests = tmp_path / "tests.py"
+    tests.write_text(f"def test_case():\n    assert actual == expected\n    print({message})\n")
+    assert visible_test_summary(tests).success_print_count == 1
+
+
+@pytest.mark.parametrize("message", ['""', 'f""', 'f" {result} "', 'f"Report: {report}"'])
+def test_visible_feedback_rejects_empty_dynamic_only_and_report_dump_messages(tmp_path, message):
+    tests = tmp_path / "tests.py"
+    tests.write_text(f"def test_case():\n    assert actual == expected\n    print({message})\n")
+    assert visible_test_summary(tests).success_print_count == 0
+
+
+def test_informative_fstring_cannot_replace_a_check(tmp_path):
+    tests = tmp_path / "tests.py"
+    tests.write_text('def test_case():\n    print(f"All tests passed! ({n} cases)")\n')
+    assert visible_test_summary(tests).success_print_count == 0
 
 
 def test_ladder_blockers_flag_non_cuda_report_and_thin_tests(tmp_path, monkeypatch):

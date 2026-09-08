@@ -351,6 +351,23 @@ def test_nearest_training_tie_breaks_by_smallest_source_id() -> None:
     assert float(result["nearest_train_distance"][0, -1, 0]) == 0.0
 
 
+def test_nearest_training_accumulates_squared_distance_in_feature_order() -> None:
+    # The first square is 1e16, so each subsequent unit is rounded away by
+    # feature-order addition. A tensor reduction groups the seven units and
+    # returns a different, still representable square root on this fixture.
+    query = t.tensor([[1e8, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]], dtype=t.float64)
+    assert float(query.square().sum(-1).sqrt()[0]) != 1e8
+    result = study.nearest_training_diagnostics(
+        t.zeros((1, 8), dtype=t.float64),
+        t.tensor([17], dtype=t.int64),
+        query,
+        t.zeros((8, 8), dtype=t.float64),
+        {"x_mean": t.zeros(8, dtype=t.float64), "x_std": t.ones(8, dtype=t.float64)},
+    )
+    assert t.equal(result["nearest_train_distance"][0, -1], t.full((8,), 1e8, dtype=t.float64))
+    assert t.equal(result["nearest_train_source_id"][0, -1], t.full((8,), 17, dtype=t.int64))
+
+
 def test_split_hybrid_combination_retains_physical_tensors_without_concat() -> None:
     shared = {
         "donor_source_ids": t.tensor([10, 11], dtype=t.int64),

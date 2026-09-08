@@ -1145,7 +1145,11 @@ if RUN_COPY_WARMUP:
 <!-- ARENA:cell markdown -->
 <details><summary>Interpretation</summary>
 
-The main model reaches exact held-out reconstruction because the suffix is a deterministic function of the visible prefix. Its loss curve alone does not establish this: the shuffled-label model can also reduce its training objective by memorizing arbitrary training associations. The decisive evidence is held-out iterative sampling, where the real grammar generalizes and the shuffled control does not.
+The main model reaches exact held-out reconstruction because the suffix is a
+deterministic function of the visible prefix. Its loss curve alone does not establish
+this: the shuffled-label model can also reduce its training objective by memorizing
+arbitrary training associations. The decisive evidence is held-out iterative sampling,
+where the real grammar generalizes and the shuffled control does not.
 
 The trajectory heatmaps add mechanism-level intuition. Gray cells are still masked, red cells are visible but wrong, and green cells equal the ground-truth token. Stable commitment is measured only when a token remains correct for all later rows, so temporary guesses do not count.
 

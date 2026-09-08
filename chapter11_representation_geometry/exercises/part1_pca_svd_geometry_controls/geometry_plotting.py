@@ -104,7 +104,14 @@ def plot_calendar_examples(frame,tasks,directory):
         for source in chosen:
             group=frame[frame.row_id.eq(source['id'])&frame['shift'].eq(2)&frame.draw.isna()].set_index('condition')
             ax.text(0,y,'\n'.join(textwrap.wrap(source['prompt'],95)),transform=ax.transAxes,va='top',fontsize=10,fontweight='bold');y-=.07
-            ax.text(0,y,f"Original answer: {task['names'][source['answer']]} | change start to {task['names'][(source['start']+2)%len(task['names'])]} | desired answer: {task['names'][(source['answer']+2)%len(task['names'])]}",transform=ax.transAxes,va='top',fontsize=9);y-=.05
+            ax.text(
+                0, y,
+                f"Original answer: {task['names'][source['answer']]} | "
+                f"change start to {task['names'][(source['start']+2)%len(task['names'])]} | "
+                f"desired answer: {task['names'][(source['answer']+2)%len(task['names'])]}",
+                transform=ax.transAxes, va='top', fontsize=9,
+            )
+            y-=.05
             for condition in ['baseline','pure_coordinate','author_raw_mean_ablated','full_donor','mean_only']:
                 item=group.loc[condition]
                 text=f"{LABELS[condition]:26s}  full-vocabulary top: {item.top_token_text!r:14s}  calendar choice: {task['names'][int(item.restricted_answer)]}"
@@ -148,7 +155,14 @@ def plot_projection_gallery(records,study_tensors,directory,seed=0,setting_index
             train=np.array(record['train_projection']);final=np.array(record['final_projection']);ax=axes[row,col]
             ax.scatter(final[:,0],final[:,1],c=final_y,cmap=plt.get_cmap('tab20',count),vmin=0,vmax=count-1,s=10,alpha=.3,marker='x')
             ax.scatter(train[:,0],train[:,1],c=train_y,cmap=plt.get_cmap('tab20',count),vmin=0,vmax=count-1,s=25,edgecolor='black',linewidth=.4)
-            ax.set(title=f"{family.title()} | {reducer.upper()} | {control.replace('_',' ')}\n3-NN {record['final_knn_accuracy']:.2f}; shuffled {record['permuted_training_labels_accuracy']:.2f}",xlabel='Embedding coordinate 1',ylabel='Embedding coordinate 2')
+            ax.set(
+                title=(
+                    f"{family.title()} | {reducer.upper()} | {control.replace('_',' ')}\n"
+                    f"3-NN {record['final_knn_accuracy']:.2f}; "
+                    f"shuffled {record['permuted_training_labels_accuracy']:.2f}"
+                ),
+                xlabel='Embedding coordinate 1', ylabel='Embedding coordinate 2',
+            )
             ax.set_aspect('equal',adjustable='datalim')
     fig.suptitle(f'Seed {seed}, setting {setting_index+1}: independent noise can also make an attractive picture')
     return finish(fig,directory,'geometry_projection_gallery.png')

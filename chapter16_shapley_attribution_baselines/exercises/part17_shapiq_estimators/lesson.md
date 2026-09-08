@@ -2,7 +2,11 @@
 
 # Introduction
 
-Today you'll build two algorithms that estimate feature interactions without asking a model about every possible feature subset. Your first algorithm will turn **one model response into an update for every pair**. Your second will fit a sequence of weighted regressions to the same responses. You'll be able to see what each query buys you, where sampling noise enters, and when the regression has too little information to identify an answer.
+Today you'll build two algorithms that estimate feature interactions without asking a model
+about every possible feature subset. Your first algorithm will turn **one model response into an
+update for every pair**. Your second will fit a sequence of weighted regressions to the same
+responses. You'll be able to see what each query buys you, where sampling noise enters, and when
+the regression has too little information to identify an answer.
 
 The central question is simple: **how accurately can we estimate every pair interaction when we can query only some coalitions?**
 
@@ -404,7 +408,11 @@ This is a constraint on the **boundary least-squares minimizer**. It does not se
 <details>
 <summary>Worked example - the pure four-way game</summary>
 
-Only the full coalition has value one. Each main Shapley value is `1/4`. The singleton residual is `-1/4`; its complement residual is `-3/4`. Their best common prediction is `-1/2`, leaving residuals `+1/4` and `-1/4`. The incidence constraint says each feature's three pair values sum to one. Symmetry gives each pair `1/3`, the correct SII. Forcing both boundary residuals to zero would demand incompatible predictions.
+Only the full coalition has value one. Each main Shapley value is `1/4`. The singleton residual
+is `-1/4`; its complement residual is `-3/4`. Their best common prediction is `-1/2`, leaving
+residuals `+1/4` and `-1/4`. The incidence constraint says each feature's three pair values sum
+to one. Symmetry gives each pair `1/3`, the correct SII. Forcing both boundary residuals to zero
+would demand incompatible predictions.
 
 </details>
 
@@ -454,7 +462,11 @@ For one held-out Concrete recipe, the game keeps the requested features and take
 
 We refit the same seven known predictors from 16.14/16.15 and require all 21 model-state identities to match. The 758 training rows, 153 explanation rows and 119 audit rows are split by recipe groups. Clean seeds, matched shuffled-label seeds and ridge all remain in the comparison.
 
-For this repeated sampling benchmark, we construct the complete model-game oracle once. Each estimator only receives its queried subset through your `query_sampled_game`. The complete table and exact SII are available to the evaluator afterward. The figures compare **logical query budgets**, not measured speedups over direct model calls. The up-front oracle cost is shown, and it can dominate at eight features.
+For this repeated sampling benchmark, we construct the complete model-game oracle once. Each
+estimator only receives its queried subset through your `query_sampled_game`. The complete table
+and exact SII are available to the evaluator afterward. The figures compare **logical query
+budgets**, not measured speedups over direct model calls. The up-front oracle cost is shown, and
+it can dominate at eight features.
 
 <details>
 <summary>Why keep the exact table outside the estimator?</summary>
@@ -477,7 +489,11 @@ The shuffled-label predictors are controls for learning useful predictive struct
 
 <!-- code: convergence -->
 
-Every line uses all rows of its indicated held-out split, weighting recipe groups equally before averaging pair errors. Replicate variation comes from the 32 sampling streams. Those streams are shared across rows, so rows are not counted as independent Monte Carlo replicates. All model seeds and both sampling proposals remain visible. The zero-pair baseline shows the error of doing no interaction estimation at all.
+Every line uses all rows of its indicated held-out split, weighting recipe groups equally before
+averaging pair errors. Replicate variation comes from the 32 sampling streams. Those streams are
+shared across rows, so rows are not counted as independent Monte Carlo replicates. All model
+seeds and both sampling proposals remain visible. The zero-pair baseline shows the error of
+doing no interaction estimation at all.
 
 ## Signed answers at the fixed recipe
 
@@ -495,7 +511,11 @@ Because this game is finite, we can enumerate the exact one-draw variance under 
 
 <!-- code: query_costs -->
 
-Drawing a coalition twice increases the Monte Carlo sample count while the cache pays for its model evaluation once. Keep both counts. After enough draws, the logical unique-query count approaches 256; complete enumeration is then a serious alternative. The pair fit has twenty free directions after its eight incidence constraints. A low-budget estimate can be rank deficient even if the solver returns a finite coefficient vector.
+Drawing a coalition twice increases the Monte Carlo sample count while the cache pays for its
+model evaluation once. Keep both counts. After enough draws, the logical unique-query count
+approaches 256; complete enumeration is then a serious alternative. The pair fit has twenty free
+directions after its eight incidence constraints. A low-budget estimate can be rank deficient
+even if the solver returns a finite coefficient vector.
 
 ## Try It Yourself: change the query budget
 

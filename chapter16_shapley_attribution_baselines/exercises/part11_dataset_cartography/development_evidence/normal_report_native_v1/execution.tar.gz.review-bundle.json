@@ -1,0 +1,337 @@
+{
+  "schema": "arena.review-bundle.v1",
+  "archive": {
+    "name": "execution.tar.gz",
+    "sha256": "4e8a64e96a6bb1479a5cf231c36f3e3dc4166b7c9d1bd7f39fdb3fd0af5be67e",
+    "size_bytes": 110481
+  },
+  "limits": {
+    "archive_bytes": 67108864,
+    "member_bytes": 16777216,
+    "total_member_bytes": 134217728,
+    "tar_container_bytes": 167772160,
+    "decoded_json_bytes": 67108864,
+    "total_decoded_bytes": 536870912,
+    "members": 4096
+  },
+  "provenance": {
+    "kind": "historical_archive_packaging",
+    "packaged_at_utc": "2026-09-08T03:26:57.539511+00:00",
+    "measurement_claim": "Packaging only. This is not a native rerun, scientific revalidation or new review. Retained receipts, failure labels, values, scientific hashes and measurement dates are byte-identical to the original. Historical embedded archive inventories describe that original; this adjacent contract describes the derived review bundle.",
+    "source_archive": {
+      "repository_path": "chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/development_evidence/normal_report_native_v1/execution.tar.gz",
+      "absolute_path": "/home/bitwise/.cache/arena_extended/evidence_packaging/original_archives/4e8a64e96a6bb1479a5cf231c36f3e3dc4166b7c9d1bd7f39fdb3fd0af5be67e.tar.gz",
+      "sha256": "4e8a64e96a6bb1479a5cf231c36f3e3dc4166b7c9d1bd7f39fdb3fd0af5be67e",
+      "size_bytes": 110481,
+      "git_commit": "ce96ceaae2f91bf0dcd7648052325e07a87b0b5b",
+      "git_blob": "a640d0e419bff038a3ef619a0f67bf3cdea1808c"
+    },
+    "source_archive_members": {
+      "fresh_run/before_evaluation.json": {
+        "sha256": "0e9b7e277ff1bc3bfd803a4a9905c7a7d0721307814a072609d4929eb725b432",
+        "size_bytes": 369
+      },
+      "fresh_run/execution.json": {
+        "sha256": "25ee131970c6257faf385a14edd4e7bfc23b35549622deb2444dffaefd9f434a",
+        "size_bytes": 2677
+      },
+      "fresh_run/native_summary.json": {
+        "sha256": "116e0eff34528c13d4db2f4ef3fcb9cf211ec58a6c4ec6f89b4e23f415669de7",
+        "size_bytes": 20580
+      },
+      "fresh_run/reference_checks.json": {
+        "sha256": "c1f452caec6810f7c9abb85e30a0788389995ebde0d33b5a7c86158dafa251d9",
+        "size_bytes": 2231
+      },
+      "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/cartography_data.py": {
+        "sha256": "e31bebc991561d103c1e50bf3399c21361ac4201adffcce1fdf88007d5d9068e",
+        "size_bytes": 3684
+      },
+      "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/cartography_methods.py": {
+        "sha256": "bc5e5f10614cd4a700a0110ebc2dd1d157de29556b8118c8802360a361d387a0",
+        "size_bytes": 9247
+      },
+      "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/cartography_methods_tests.py": {
+        "sha256": "be257cfea0b1efb040d87f9bbdf8bd767fd02991e95c2cd5db0d5d5d6036428f",
+        "size_bytes": 8300
+      },
+      "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/cartography_reference.py": {
+        "sha256": "6eeeac9106212f4c9d649b7d128649d03b1f37aa4422dd5f2fd0ae4239cda781",
+        "size_bytes": 2279
+      },
+      "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/cartography_study.py": {
+        "sha256": "fc9d7c4ee489101891c0c627239c325686a04f9ab4ec74e77628dcec5f3002ee",
+        "size_bytes": 6773
+      },
+      "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/data_manifest.json": {
+        "sha256": "4677e7425a872b6cbc1caab44fa99f72480c95aeef6f34c6b13f2b10f4b84be4",
+        "size_bytes": 176326
+      },
+      "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/protocol.md": {
+        "sha256": "91d9857f36b162730773cce3868b5ffe8145a7ea40f9516b0f58c7849a545637",
+        "size_bytes": 6994
+      },
+      "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/protocol_freeze.json": {
+        "sha256": "9cc8fdfcc193d75249985cb0b4b8f5c6cc4e2a5c148f80ad28793bbed235dcc8",
+        "size_bytes": 387
+      },
+      "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/run_native.py": {
+        "sha256": "a25db84475dfa80b0a825d99264d8e0b0c50efc949014b6f41a7eed9a648d55d",
+        "size_bytes": 9487
+      },
+      "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/attribution_data.py": {
+        "sha256": "eaa4954f3255d3f82082dc30baef1051f03c0cad4afab806e9cb16d810101ab3",
+        "size_bytes": 5582
+      },
+      "reproduction.json": {
+        "sha256": "6273609f15e3195ade79cdbcb7604d326fdc4d6335b38fc687a9fee4b572651c",
+        "size_bytes": 6641
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/build_notebooks.py": {
+        "sha256": "f3fa008011db92ff40c4fe491a2bdb30c9ca7087439060733b3c999127da1cf1",
+        "size_bytes": 4657
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/cartography_contract_tests.py": {
+        "sha256": "cb38db82ca0fe6ac707a3ffafe31049ca04d296763ab8c2b73cdfb84b2d15411",
+        "size_bytes": 6108
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/cartography_data.py": {
+        "sha256": "e31bebc991561d103c1e50bf3399c21361ac4201adffcce1fdf88007d5d9068e",
+        "size_bytes": 3684
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/cartography_methods.py": {
+        "sha256": "bc5e5f10614cd4a700a0110ebc2dd1d157de29556b8118c8802360a361d387a0",
+        "size_bytes": 9247
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/cartography_methods_tests.py": {
+        "sha256": "be257cfea0b1efb040d87f9bbdf8bd767fd02991e95c2cd5db0d5d5d6036428f",
+        "size_bytes": 8300
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/cartography_reference.py": {
+        "sha256": "6eeeac9106212f4c9d649b7d128649d03b1f37aa4422dd5f2fd0ae4239cda781",
+        "size_bytes": 2279
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/cartography_study.py": {
+        "sha256": "fc9d7c4ee489101891c0c627239c325686a04f9ab4ec74e77628dcec5f3002ee",
+        "size_bytes": 6773
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/data_manifest.json": {
+        "sha256": "4677e7425a872b6cbc1caab44fa99f72480c95aeef6f34c6b13f2b10f4b84be4",
+        "size_bytes": 176326
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/execute_learner.py": {
+        "sha256": "537acf44c1ff58b94efaa98adb2033de49ea94a6db322a084e3878dd45174366",
+        "size_bytes": 5866
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/lesson.md": {
+        "sha256": "0155183390f3b0a70ef8e19567d0610e81ded4425a5adbbf0abf16f25d91a7b9",
+        "size_bytes": 76960
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/protocol.md": {
+        "sha256": "91d9857f36b162730773cce3868b5ffe8145a7ea40f9516b0f58c7849a545637",
+        "size_bytes": 6994
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/protocol_freeze.json": {
+        "sha256": "9cc8fdfcc193d75249985cb0b4b8f5c6cc4e2a5c148f80ad28793bbed235dcc8",
+        "size_bytes": 387
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/reproduce_native.py": {
+        "sha256": "947188b0f726ac153132ccb82917031583111cf9f21d0ff8488e1fb6b5a23024",
+        "size_bytes": 6438
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/run_native.py": {
+        "sha256": "a25db84475dfa80b0a825d99264d8e0b0c50efc949014b6f41a7eed9a648d55d",
+        "size_bytes": 9487
+      },
+      "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/attribution_data.py": {
+        "sha256": "eaa4954f3255d3f82082dc30baef1051f03c0cad4afab806e9cb16d810101ab3",
+        "size_bytes": 5582
+      }
+    }
+  },
+  "members": {
+    "fresh_run/before_evaluation.json": {
+      "type": "regular",
+      "size_bytes": 369,
+      "sha256": "0e9b7e277ff1bc3bfd803a4a9905c7a7d0721307814a072609d4929eb725b432",
+      "format": "json"
+    },
+    "fresh_run/execution.json": {
+      "type": "regular",
+      "size_bytes": 2677,
+      "sha256": "25ee131970c6257faf385a14edd4e7bfc23b35549622deb2444dffaefd9f434a",
+      "format": "json"
+    },
+    "fresh_run/native_summary.json": {
+      "type": "regular",
+      "size_bytes": 20580,
+      "sha256": "116e0eff34528c13d4db2f4ef3fcb9cf211ec58a6c4ec6f89b4e23f415669de7",
+      "format": "json"
+    },
+    "fresh_run/reference_checks.json": {
+      "type": "regular",
+      "size_bytes": 2231,
+      "sha256": "c1f452caec6810f7c9abb85e30a0788389995ebde0d33b5a7c86158dafa251d9",
+      "format": "json"
+    },
+    "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/cartography_data.py": {
+      "type": "regular",
+      "size_bytes": 3684,
+      "sha256": "e31bebc991561d103c1e50bf3399c21361ac4201adffcce1fdf88007d5d9068e",
+      "format": "utf8-text"
+    },
+    "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/cartography_methods.py": {
+      "type": "regular",
+      "size_bytes": 9247,
+      "sha256": "bc5e5f10614cd4a700a0110ebc2dd1d157de29556b8118c8802360a361d387a0",
+      "format": "utf8-text"
+    },
+    "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/cartography_methods_tests.py": {
+      "type": "regular",
+      "size_bytes": 8300,
+      "sha256": "be257cfea0b1efb040d87f9bbdf8bd767fd02991e95c2cd5db0d5d5d6036428f",
+      "format": "utf8-text"
+    },
+    "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/cartography_reference.py": {
+      "type": "regular",
+      "size_bytes": 2279,
+      "sha256": "6eeeac9106212f4c9d649b7d128649d03b1f37aa4422dd5f2fd0ae4239cda781",
+      "format": "utf8-text"
+    },
+    "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/cartography_study.py": {
+      "type": "regular",
+      "size_bytes": 6773,
+      "sha256": "fc9d7c4ee489101891c0c627239c325686a04f9ab4ec74e77628dcec5f3002ee",
+      "format": "utf8-text"
+    },
+    "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/data_manifest.json": {
+      "type": "regular",
+      "size_bytes": 176326,
+      "sha256": "4677e7425a872b6cbc1caab44fa99f72480c95aeef6f34c6b13f2b10f4b84be4",
+      "format": "json"
+    },
+    "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/protocol.md": {
+      "type": "regular",
+      "size_bytes": 6994,
+      "sha256": "91d9857f36b162730773cce3868b5ffe8145a7ea40f9516b0f58c7849a545637",
+      "format": "utf8-text"
+    },
+    "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/protocol_freeze.json": {
+      "type": "regular",
+      "size_bytes": 387,
+      "sha256": "9cc8fdfcc193d75249985cb0b4b8f5c6cc4e2a5c148f80ad28793bbed235dcc8",
+      "format": "json"
+    },
+    "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/run_native.py": {
+      "type": "regular",
+      "size_bytes": 9487,
+      "sha256": "a25db84475dfa80b0a825d99264d8e0b0c50efc949014b6f41a7eed9a648d55d",
+      "format": "utf8-text"
+    },
+    "fresh_run/source_snapshot/chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/attribution_data.py": {
+      "type": "regular",
+      "size_bytes": 5582,
+      "sha256": "eaa4954f3255d3f82082dc30baef1051f03c0cad4afab806e9cb16d810101ab3",
+      "format": "utf8-text"
+    },
+    "reproduction.json": {
+      "type": "regular",
+      "size_bytes": 6641,
+      "sha256": "6273609f15e3195ade79cdbcb7604d326fdc4d6335b38fc687a9fee4b572651c",
+      "format": "json"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/build_notebooks.py": {
+      "type": "regular",
+      "size_bytes": 4657,
+      "sha256": "f3fa008011db92ff40c4fe491a2bdb30c9ca7087439060733b3c999127da1cf1",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/cartography_contract_tests.py": {
+      "type": "regular",
+      "size_bytes": 6108,
+      "sha256": "cb38db82ca0fe6ac707a3ffafe31049ca04d296763ab8c2b73cdfb84b2d15411",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/cartography_data.py": {
+      "type": "regular",
+      "size_bytes": 3684,
+      "sha256": "e31bebc991561d103c1e50bf3399c21361ac4201adffcce1fdf88007d5d9068e",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/cartography_methods.py": {
+      "type": "regular",
+      "size_bytes": 9247,
+      "sha256": "bc5e5f10614cd4a700a0110ebc2dd1d157de29556b8118c8802360a361d387a0",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/cartography_methods_tests.py": {
+      "type": "regular",
+      "size_bytes": 8300,
+      "sha256": "be257cfea0b1efb040d87f9bbdf8bd767fd02991e95c2cd5db0d5d5d6036428f",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/cartography_reference.py": {
+      "type": "regular",
+      "size_bytes": 2279,
+      "sha256": "6eeeac9106212f4c9d649b7d128649d03b1f37aa4422dd5f2fd0ae4239cda781",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/cartography_study.py": {
+      "type": "regular",
+      "size_bytes": 6773,
+      "sha256": "fc9d7c4ee489101891c0c627239c325686a04f9ab4ec74e77628dcec5f3002ee",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/data_manifest.json": {
+      "type": "regular",
+      "size_bytes": 176326,
+      "sha256": "4677e7425a872b6cbc1caab44fa99f72480c95aeef6f34c6b13f2b10f4b84be4",
+      "format": "json"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/execute_learner.py": {
+      "type": "regular",
+      "size_bytes": 5866,
+      "sha256": "537acf44c1ff58b94efaa98adb2033de49ea94a6db322a084e3878dd45174366",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/lesson.md": {
+      "type": "regular",
+      "size_bytes": 76960,
+      "sha256": "0155183390f3b0a70ef8e19567d0610e81ded4425a5adbbf0abf16f25d91a7b9",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/protocol.md": {
+      "type": "regular",
+      "size_bytes": 6994,
+      "sha256": "91d9857f36b162730773cce3868b5ffe8145a7ea40f9516b0f58c7849a545637",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/protocol_freeze.json": {
+      "type": "regular",
+      "size_bytes": 387,
+      "sha256": "9cc8fdfcc193d75249985cb0b4b8f5c6cc4e2a5c148f80ad28793bbed235dcc8",
+      "format": "json"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/reproduce_native.py": {
+      "type": "regular",
+      "size_bytes": 6438,
+      "sha256": "947188b0f726ac153132ccb82917031583111cf9f21d0ff8488e1fb6b5a23024",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography/run_native.py": {
+      "type": "regular",
+      "size_bytes": 9487,
+      "sha256": "a25db84475dfa80b0a825d99264d8e0b0c50efc949014b6f41a7eed9a648d55d",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin/attribution_data.py": {
+      "type": "regular",
+      "size_bytes": 5582,
+      "sha256": "eaa4954f3255d3f82082dc30baef1051f03c0cad4afab806e9cb16d810101ab3",
+      "format": "utf8-text"
+    }
+  },
+  "external_payloads": {},
+  "member_count": 30,
+  "total_member_bytes": 590645
+}

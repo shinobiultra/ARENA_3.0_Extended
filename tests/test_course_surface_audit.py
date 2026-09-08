@@ -183,6 +183,10 @@ def test_plain_cpu_runtime_guidance_accepts_singular_and_plural():
     page = '# [11.4] Concept Erasure\n# Introduction\n## Content & Learning Objectives\nExercise\ntests.check()\nThe examples run on CPU.'
     assert _page_has_arena_shape(page, '11.4', 'Concept Erasure')
     assert _page_has_arena_shape(page.replace('examples run', 'example runs'), '11.4', 'Concept Erasure')
+    assert _page_has_arena_shape(page.replace('Content & Learning Objectives', 'Content and learning objectives'),
+                                 '11.4', 'Concept Erasure')
+    assert not _page_has_arena_shape(page.replace('Content & Learning Objectives', 'Content and lesson notes'),
+                                     '11.4', 'Concept Erasure')
     assert not _page_has_arena_shape(page.replace('run on CPU', 'show a plot'), '11.4', 'Concept Erasure')
 
 

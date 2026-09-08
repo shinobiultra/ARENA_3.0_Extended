@@ -615,8 +615,9 @@
   },
   "peak_vram_gb": 1.9182038307189941,
   "report_inputs": {
+    "schema_version": 1,
     "algorithm": "sha256",
-    "combined_sha256": "2f27c490359fde89fe430099ce64eb9fdf706e1a2dd87071da63e8f6493d81ce",
+    "combined_sha256": "b528c628a988c2a0e0ea71efe24d6d9c8728476bb148ddd620c557a8103abe25",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -635,7 +636,7 @@
       },
       {
         "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/README.md",
-        "sha256": "a2de8480bc4a91f09e6febe79ecfde500b0fa3b72937309a85af5569c527560d",
+        "sha256": "6af142cce3196514db358ae25dba01a34f46391a931918a3cac93bfcc78c8593",
         "size_bytes": 5599
       },
       {
@@ -705,7 +706,7 @@
       },
       {
         "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/expected_outputs/README.md",
-        "sha256": "0cb9c31d1fc7b09b67ca7dce025ce78dea36e09fec1481fa69aeb03f624d80be",
+        "sha256": "425681e2b9f662c7317e7bb7b57e62f3ff9a7488c23545b209f8ea49a3182ed4",
         "size_bytes": 2562
       },
       {
@@ -798,8 +799,7 @@
         "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
         "size_bytes": 16272
       }
-    ],
-    "schema_version": 1
+    ]
   },
   "safety_notes": [
     "Sensitive benchmark prompt/completion text stays in memory; stored rows contain IDs, full hashes and measured outcomes.",

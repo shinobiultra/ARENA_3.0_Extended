@@ -817,3 +817,21 @@ methods:
     use identical queried subsets for all 1904 known Concrete model games; every replicate and budget
     is retained. Logical precomputed-oracle costs are disclosed. Fresh source-only refits reproduce 118275724
     values exactly. Pairwise case and author review only; no measured inference speedup or causal claim.
+- method_name: Shapley-Taylor and Faith-Shap
+  paper: 'The Shapley Taylor Interaction Index; Faith-Shap: The Faithful Shapley Interaction Index'
+  year: 2020/2023
+  category: interaction_attribution
+  model_family: known_neural_regression_games
+  has_code: 'true'
+  has_weights: not_applicable
+  local_24gb_status: LOCAL_GREEN
+  implementation_status: REQUIRED_IMPLEMENT
+  verification_status: IMPLEMENTED_CPU_NATIVE_EXACT_INTERACTION_ALLOCATIONS
+  baseline_status: HAS_EXACT_DIVIDEND_REFERENCE_BACKGROUND_CONTEXT_AND_MODEL_CONTROLS
+  notes: Section 16.16; ten visible functions, eight exercises, eleven figures and two editable plays.
+    Both efficient order-two allocations and separate SII indices retain all seven known predictors and
+    272 held-out rows. Exact dividend controls, all contexts, five backgrounds, shuffled targets and within-size
+    nulls remain visible. Independent Astra review approved v8; fresh CPU refits reproduce 94604271 elements
+    exactly. Corrected ordered support arithmetic changes 108 nearest source IDs versus v7; historical
+    BLOCK and amendments are retained. Observational finite games and known-model reproduction do not
+    establish physical causality, model replication or method superiority.

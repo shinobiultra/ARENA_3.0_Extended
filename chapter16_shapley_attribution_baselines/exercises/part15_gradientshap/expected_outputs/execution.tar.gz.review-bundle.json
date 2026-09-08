@@ -1,0 +1,442 @@
+{
+  "schema": "arena.review-bundle.v1",
+  "archive": {
+    "name": "execution.tar.gz",
+    "sha256": "5d5353090330167bf9aba7148c502b9218b1d60a5eec0f2f7aa97c97fa586cd2",
+    "size_bytes": 5694929
+  },
+  "limits": {
+    "archive_bytes": 67108864,
+    "member_bytes": 16777216,
+    "total_member_bytes": 134217728,
+    "tar_container_bytes": 167772160,
+    "decoded_json_bytes": 67108864,
+    "total_decoded_bytes": 536870912,
+    "members": 4096
+  },
+  "provenance": {
+    "kind": "native_execution_packaging",
+    "source_execution": {
+      "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/new-environment-learner-v1/execution.json",
+      "sha256": "7946d1e801856e968d6ec6e78ca613e24d84681d1d13d81e13748d8e5fa44b1b",
+      "size_bytes": 10491
+    },
+    "measurement_claim": "Packaging only; execution dates and scientific receipts are unchanged."
+  },
+  "members": {
+    "execution.json": {
+      "type": "regular",
+      "size_bytes": 10491,
+      "sha256": "7946d1e801856e968d6ec6e78ca613e24d84681d1d13d81e13748d8e5fa44b1b",
+      "format": "json"
+    },
+    "completed_learner.ipynb": {
+      "type": "regular",
+      "size_bytes": 2753778,
+      "sha256": "4432975f60bacd0f677f72a76a98946d749f63c9eac5d8b8a75610e5f2a0653f",
+      "format": "notebook-json"
+    },
+    "native/before_audit.json": {
+      "type": "regular",
+      "size_bytes": 914,
+      "sha256": "e03e31391558028cf1ec36acb694a2ae5413aa3bdc91db43f10b565345ce6a2a",
+      "format": "json"
+    },
+    "native/summary.json": {
+      "type": "regular",
+      "size_bytes": 1175,
+      "sha256": "edfc70b8a22cf7cc459cd1fb72ecb3081047a148f54ea32087f098f87f68f0d4",
+      "format": "json"
+    },
+    "native/artifact_manifest.json": {
+      "type": "regular",
+      "size_bytes": 2617,
+      "sha256": "f5f8d91f8e0c0f00ec994f14a652390a840d080c9bca1a2c8a99bd2da1889023",
+      "format": "json"
+    },
+    "figures/01_schedule_prefix.png": {
+      "type": "regular",
+      "size_bytes": 232649,
+      "sha256": "3e08b8b53b6df990ebc965c61ba8c3de44327c7401134fdfa440a8bbdec6a360",
+      "format": "png"
+    },
+    "figures/02_path_interpolation.png": {
+      "type": "regular",
+      "size_bytes": 107519,
+      "sha256": "57c4279dfc2960715a8912d77a72fbe34f66cc1d6831ca9f3b9ec2130499bf35",
+      "format": "png"
+    },
+    "figures/03_gradient_controls.png": {
+      "type": "regular",
+      "size_bytes": 77372,
+      "sha256": "4be0a9b1a4c6c4be396f6556b3cddbc6fc6078989d75a7a46c6a64f277d9ae99",
+      "format": "png"
+    },
+    "figures/04_relu_samples.png": {
+      "type": "regular",
+      "size_bytes": 110777,
+      "sha256": "106602992c9816758a4fd6641c5eff76ff4e23188d177ca8f90393ab3f64a88b",
+      "format": "png"
+    },
+    "figures/05_mc_convergence.png": {
+      "type": "regular",
+      "size_bytes": 140633,
+      "sha256": "b438ef93bbcd22d4af7e658fa8a0bf2e9a82c34c627537b465c061a2cf40248b",
+      "format": "png"
+    },
+    "figures/06_estimator_controls.png": {
+      "type": "regular",
+      "size_bytes": 90861,
+      "sha256": "2dacf2b751f0d2e6643cb042919d8b189e5415cfa5c61949ebcdf8c93c5bc303",
+      "format": "png"
+    },
+    "figures/07_quadrature_doubling.png": {
+      "type": "regular",
+      "size_bytes": 125127,
+      "sha256": "123204b6eb994d0279d63d5140bc5ea3db6699b5102454cc9cc3c406a03f4fcd",
+      "format": "png"
+    },
+    "figures/08_background_average.png": {
+      "type": "regular",
+      "size_bytes": 74422,
+      "sha256": "8502f6d9aea4382b2ef47e113b25b9876c7c38a09fa2a0e1cc4b46951d5c7cbf",
+      "format": "png"
+    },
+    "figures/09_gaussian_target_shift.png": {
+      "type": "regular",
+      "size_bytes": 110137,
+      "sha256": "31b7af4220dbfc098f1e44595a3e3093fe3fb9d57f494a12a4f0e4c7a4280a97",
+      "format": "png"
+    },
+    "figures/10_path_vs_coalition.png": {
+      "type": "regular",
+      "size_bytes": 69987,
+      "sha256": "6145c18772fe59d6f40f116d5c65f5831fd11ddd3eb1cb984c91c7fe8acc48aa",
+      "format": "png"
+    },
+    "figures/11_kink_representation.png": {
+      "type": "regular",
+      "size_bytes": 77845,
+      "sha256": "4cdfdbec90b5a037ba9ca059961e3e63df4925e07853827e3ccd2f73514094af",
+      "format": "png"
+    },
+    "figures/12_replacement_fixture.png": {
+      "type": "regular",
+      "size_bytes": 150247,
+      "sha256": "d7c8e6c0320705f8f4138f25a32bf1651b9597b09908120b35b464c15527d4b1",
+      "format": "png"
+    },
+    "figures/13_threshold_play.png": {
+      "type": "regular",
+      "size_bytes": 148255,
+      "sha256": "c93da55000cc7980a5175c03a7a8cac477caf0ec68883fb80eec23200b604131",
+      "format": "png"
+    },
+    "figures/14_native_overview.png": {
+      "type": "regular",
+      "size_bytes": 273433,
+      "sha256": "9e86da52f2fa4846150ae57924f010924ec515be52cb0f09685d35adc50f0ba3",
+      "format": "png"
+    },
+    "figures/15_allrow_method_map.png": {
+      "type": "regular",
+      "size_bytes": 916754,
+      "sha256": "d4b3627f0439957ab142304b2589626b5db4d91266e81c9e2198a9bfd99b4fcb",
+      "format": "png"
+    },
+    "figures/16_fixed_waterfall.png": {
+      "type": "regular",
+      "size_bytes": 158129,
+      "sha256": "7a1781021036e9b5fb838c7763f9e4088c20d46b8016a0c85772f0a6152da648",
+      "format": "png"
+    },
+    "figures/17_background_and_noise.png": {
+      "type": "regular",
+      "size_bytes": 272058,
+      "sha256": "69e72af160d0a1cba08db2c1bff57e2a28d7dc9bfd5c13f23c35d35c8f283491",
+      "format": "png"
+    },
+    "figures/18_replicates_and_distance.png": {
+      "type": "regular",
+      "size_bytes": 173716,
+      "sha256": "2bba011c2a602c269aa43d398aed060e00ebe78f4d0764fc5a10e055af602156",
+      "format": "png"
+    },
+    "figures/19_replacement_curves.png": {
+      "type": "regular",
+      "size_bytes": 234055,
+      "sha256": "521b41627298c82f157b307f781d2bc987e32afeb01e863da761cbdfbcc00e1a",
+      "format": "png"
+    },
+    "figures/20_real_recipe_play.png": {
+      "type": "regular",
+      "size_bytes": 201386,
+      "sha256": "c1464a29c83f15f35fde631b8939da646182b68c8a58fed9ca48e294e7a4903d",
+      "format": "png"
+    },
+    "figures/native_summary.json": {
+      "type": "regular",
+      "size_bytes": 1291,
+      "sha256": "dbd4b01baf1ca7993959b2a160b61df69810c23468a576352cfc917b31b13115",
+      "format": "json"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_methods.py": {
+      "type": "regular",
+      "size_bytes": 14566,
+      "sha256": "8d5e9d04624e3941768a710ba9c72dfd281c25c39b495845beda296a1628c4c6",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/build_notebooks.py": {
+      "type": "regular",
+      "size_bytes": 16690,
+      "sha256": "0b1b09ca7c3ecb58dde9f89ac993600f86837603e0d167dd8c0b0520d7085395",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/data_manifest.json": {
+      "type": "regular",
+      "size_bytes": 38183,
+      "sha256": "bcf41f96c9f6839ee4cbf24df82ca8467b35a6ed9090a9c4c56fce0b1a23120c",
+      "format": "json"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/execute_learner.py": {
+      "type": "regular",
+      "size_bytes": 10796,
+      "sha256": "0dfd6ee46e87b0091466c47d6a61e6b451ccdf34758e6a68399ac9f7b42cbc38",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_contracts.py": {
+      "type": "regular",
+      "size_bytes": 24587,
+      "sha256": "3b52d90376e81b75e90ee4f9adfffa35073982708372143542e0a0349b1b319a",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_data.py": {
+      "type": "regular",
+      "size_bytes": 3795,
+      "sha256": "9c9c1016ffd6fe839a004c06e801cdcd24d4d71a85ccd3f0707168dec390c7ce",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_diagnostics.py": {
+      "type": "regular",
+      "size_bytes": 25759,
+      "sha256": "d3b60c3d5e9565a3c693fa4d8146a8115eae1ac1708986692197dadfdbee5e7f",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_methods.py": {
+      "type": "regular",
+      "size_bytes": 16834,
+      "sha256": "2c56ae4e108d13b8e2994f12944af49af3915fcf95d684da96ddec7ed46c5be5",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_methods_tests.py": {
+      "type": "regular",
+      "size_bytes": 26153,
+      "sha256": "fafa0eaa80591793198f23e884c21b3f457eaf240841ae10c9cfd58e721eae12",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_plots.py": {
+      "type": "regular",
+      "size_bytes": 54585,
+      "sha256": "f7369b14f53d0ac3cac2c54efa12ed2b9b799bb2e94336cb0b030b5d585380d0",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py": {
+      "type": "regular",
+      "size_bytes": 43620,
+      "sha256": "c063d120d7449a9b20b4ac370247b2b5971e809575d44ab9d7c8719cc551292f",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference_tests.py": {
+      "type": "regular",
+      "size_bytes": 18899,
+      "sha256": "95bfe943a98b7353e29328992ee4cbf0a0558cdf3c8d64a692129e47bf1dbc4e",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_study.py": {
+      "type": "regular",
+      "size_bytes": 67704,
+      "sha256": "f49e4f5872beca780c95a3689b919690e5be8c344df3f0625178476ff163ad02",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_study_tests.py": {
+      "type": "regular",
+      "size_bytes": 16879,
+      "sha256": "ef938b660a7b6388023654bd977cfd94e999540ee6d827ead6f5382f757eb3a5",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/lesson.md": {
+      "type": "regular",
+      "size_bytes": 70349,
+      "sha256": "ec76a8b487de0d623b28c38ab6e2dded30e09dbde51d7d167fd15bcd3c34f2c5",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/protocol.md": {
+      "type": "regular",
+      "size_bytes": 22825,
+      "sha256": "4ed1d1d45a0b5db304cb45e7c5abe1c85c97434e53b4c9c156ce05b2b489a83b",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/protocol_freeze.json": {
+      "type": "regular",
+      "size_bytes": 1189,
+      "sha256": "79fc20a6b600cc17b9e942927d44ac135e192538e124fcf7b7889407940afcf5",
+      "format": "json"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/publish_study.py": {
+      "type": "regular",
+      "size_bytes": 18278,
+      "sha256": "ea001e7f27cadc4b37a9d63f3766cc67e7450c4ce053a5c2a4f0466beb5034a0",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/reproduce_native.py": {
+      "type": "regular",
+      "size_bytes": 13098,
+      "sha256": "382d67ea67ecd6c02d0c1148dbb812c567e6635f706c351f02f85f9cb7d367db",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/run_native.py": {
+      "type": "regular",
+      "size_bytes": 31408,
+      "sha256": "f4c359e12c25d77b14100da9e66145480fe0dfa591f9387cf1fe1d8c938f205c",
+      "format": "utf8-text"
+    },
+    "native/diagnostics.manifest.json": {
+      "type": "regular",
+      "size_bytes": 68014,
+      "sha256": "870ea57f0ae06805c0e99a05761b4ff61714746ba55b877bc06f366806d5fc2b",
+      "format": "json"
+    },
+    "native/evaluated.manifest.json": {
+      "type": "regular",
+      "size_bytes": 322694,
+      "sha256": "ad2e546b0ebc9c21bef1d67ddbc066081021d3c6f329fe424ed5587b664cb15f",
+      "format": "json"
+    },
+    "native/fitted.manifest.json": {
+      "type": "regular",
+      "size_bytes": 106561,
+      "sha256": "df829a28703c3fee40f1aac08f4ee6d178d28ceebc0ddddf4463cba98f0abf54",
+      "format": "json"
+    },
+    "native/play.manifest.json": {
+      "type": "regular",
+      "size_bytes": 19042,
+      "sha256": "4837d21511e2d249fb6a445a3b22f670827b60a6b2c06fc34fa82b8104125a9f",
+      "format": "json"
+    },
+    "native/prepared.manifest.json": {
+      "type": "regular",
+      "size_bytes": 109257,
+      "sha256": "756c577d673fec5e816b88f82883b02dad040a84028dff11240f1b8d4b3b83fb",
+      "format": "json"
+    },
+    "native/reference.manifest.json": {
+      "type": "regular",
+      "size_bytes": 171510,
+      "sha256": "940a4e71fbd70777e4e8994a88347fcbea14a234962837ca26d001df02f4111e",
+      "format": "json"
+    },
+    "native/replicate_samples.manifest.json": {
+      "type": "regular",
+      "size_bytes": 577,
+      "sha256": "b4715a058eb3acb905a573d162a6fa5e79a5b90929af269d4085022e072dee4c",
+      "format": "json"
+    },
+    "native/timings.manifest.json": {
+      "type": "regular",
+      "size_bytes": 333,
+      "sha256": "aab5cef6fce8331fb79f18ae8da8902db83e6845022cbcdef8293be08a3780f6",
+      "format": "json"
+    },
+    "archive_manifest.json": {
+      "type": "regular",
+      "size_bytes": 18066,
+      "sha256": "66ecb3fb89864e12f78666010825d47c27527928dc3fbf6e3e3cb279b74443a7",
+      "format": "json"
+    }
+  },
+  "external_payloads": {
+    "fitted.pt": {
+      "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/new-environment-learner-v1/figures/native/fitted.pt",
+      "artifact_sha256": "c8e5bce695edc3e76e02284968ce6c5e6760060a2373a82f659e75700962e4c3",
+      "size_bytes": 467968,
+      "manifest": "native/fitted.manifest.json",
+      "manifest_sha256": "df829a28703c3fee40f1aac08f4ee6d178d28ceebc0ddddf4463cba98f0abf54",
+      "external_large_payload": false,
+      "archived_bytes": false,
+      "sha256": "c8e5bce695edc3e76e02284968ce6c5e6760060a2373a82f659e75700962e4c3"
+    },
+    "prepared.pt": {
+      "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/new-environment-learner-v1/figures/native/prepared.pt",
+      "artifact_sha256": "af7079beb52083d3c1955aabe20f13d3a8a71f40404e5f10dc4f8ac6822e7853",
+      "size_bytes": 302399289,
+      "manifest": "native/prepared.manifest.json",
+      "manifest_sha256": "756c577d673fec5e816b88f82883b02dad040a84028dff11240f1b8d4b3b83fb",
+      "external_large_payload": false,
+      "archived_bytes": false,
+      "sha256": "af7079beb52083d3c1955aabe20f13d3a8a71f40404e5f10dc4f8ac6822e7853"
+    },
+    "evaluated.pt": {
+      "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/new-environment-learner-v1/figures/native/evaluated.pt",
+      "artifact_sha256": "462e32a9a0b52617af8ea9fe6c75ea10b2614bac2ae7b09a28bdcab9a450f49d",
+      "size_bytes": 1577241419,
+      "manifest": "native/evaluated.manifest.json",
+      "manifest_sha256": "ad2e546b0ebc9c21bef1d67ddbc066081021d3c6f329fe424ed5587b664cb15f",
+      "external_large_payload": false,
+      "archived_bytes": false,
+      "sha256": "462e32a9a0b52617af8ea9fe6c75ea10b2614bac2ae7b09a28bdcab9a450f49d"
+    },
+    "reference.pt": {
+      "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/new-environment-learner-v1/figures/native/reference.pt",
+      "artifact_sha256": "3acbf133884f07b3dcb80bf6853e4ad88fee83b6a13ec1556f03d5e16ae29502",
+      "size_bytes": 57328569,
+      "manifest": "native/reference.manifest.json",
+      "manifest_sha256": "940a4e71fbd70777e4e8994a88347fcbea14a234962837ca26d001df02f4111e",
+      "external_large_payload": false,
+      "archived_bytes": false,
+      "sha256": "3acbf133884f07b3dcb80bf6853e4ad88fee83b6a13ec1556f03d5e16ae29502"
+    },
+    "diagnostics.pt": {
+      "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/new-environment-learner-v1/figures/native/diagnostics.pt",
+      "artifact_sha256": "1b2b7f318eaa7b293c3c7fda4bdb88725f652492b42036dbe0f9d33a08cfc050",
+      "size_bytes": 67813,
+      "manifest": "native/diagnostics.manifest.json",
+      "manifest_sha256": "870ea57f0ae06805c0e99a05761b4ff61714746ba55b877bc06f366806d5fc2b",
+      "external_large_payload": false,
+      "archived_bytes": false,
+      "sha256": "1b2b7f318eaa7b293c3c7fda4bdb88725f652492b42036dbe0f9d33a08cfc050"
+    },
+    "play.pt": {
+      "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/new-environment-learner-v1/figures/native/play.pt",
+      "artifact_sha256": "98f107c9935881417758f606124bda1871b89b756b1c7b5db5bde15258861e3f",
+      "size_bytes": 159143,
+      "manifest": "native/play.manifest.json",
+      "manifest_sha256": "4837d21511e2d249fb6a445a3b22f670827b60a6b2c06fc34fa82b8104125a9f",
+      "external_large_payload": false,
+      "archived_bytes": false,
+      "sha256": "98f107c9935881417758f606124bda1871b89b756b1c7b5db5bde15258861e3f"
+    },
+    "replicate_samples.pt": {
+      "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/new-environment-learner-v1/figures/native/replicate_samples.pt",
+      "artifact_sha256": "46238cad0348f56be4807507256233884af3588037a434197f0cbe0f0aa1a0fa",
+      "size_bytes": 1610614447,
+      "manifest": "native/replicate_samples.manifest.json",
+      "manifest_sha256": "b4715a058eb3acb905a573d162a6fa5e79a5b90929af269d4085022e072dee4c",
+      "external_large_payload": true,
+      "archived_bytes": false,
+      "sha256": "46238cad0348f56be4807507256233884af3588037a434197f0cbe0f0aa1a0fa"
+    },
+    "timings.pt": {
+      "absolute_path": "/home/bitwise/.cache/arena_extended/gradientshap/new-environment-learner-v1/figures/native/timings.pt",
+      "artifact_sha256": "67f9ffa21f366d5a3b31a6def1ccb17d1f91c37b4b0d9c1532215ae4c52642e0",
+      "size_bytes": 1261,
+      "manifest": "native/timings.manifest.json",
+      "manifest_sha256": "aab5cef6fce8331fb79f18ae8da8902db83e6845022cbcdef8293be08a3780f6",
+      "external_large_payload": false,
+      "archived_bytes": false,
+      "sha256": "67f9ffa21f366d5a3b31a6def1ccb17d1f91c37b4b0d9c1532215ae4c52642e0"
+    }
+  },
+  "member_count": 55,
+  "total_member_bytes": 7867879
+}

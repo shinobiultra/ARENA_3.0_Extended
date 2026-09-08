@@ -122,7 +122,7 @@ def _requirement_lines(path: Path) -> set[str]:
 def _page_has_arena_shape(text: str, number: str, title: str) -> bool:
     has_title = f"# [{number}] {title}" in text
     has_intro = re.search(r"^#{1,2}\s+(?:Introduction|Core Question)\s*$", text, re.M | re.I) is not None
-    has_learning_objectives = re.search(r"^#{2,5}\s+(?:Content & )?Learning Objectives\s*$", text, re.M | re.I) is not None
+    has_learning_objectives = re.search(r"^#{2,5}\s+(?:Content (?:&|and) )?Learning Objectives\s*$", text, re.M | re.I) is not None
     has_exercise = "Exercise" in text
     has_visible_test = "tests." in text or "run_smoke_test" in text
     has_runtime_contract = ("run_gpu_test" in text or "CUDA" in text or "GPU Contract" in text

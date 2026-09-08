@@ -2032,12 +2032,27 @@ requirements:
   - id: shapley.shapley_taylor_faith_shap
     topic: Shapley-Taylor and Faith-Shap interactions
     chapter: 11 Shapley and attribution baselines
-    section: unassigned
-    status: UNIMPLEMENTED
+    section: '16.16'
+    status: TAUGHT
     roadmap_refs: [Extension-Roadmap.md:2031-2048, Extension-Roadmap.md:2665-2675]
-    evidence: []
-    reason: An unpublished 16.16 development candidate implements both indices with complete native execution, exact fresh reproduction and author visual review; publication review is pending.
-    blocker: Independent final review, canonical publication, registered verification and integration are incomplete.
+    course_sections: ['16.16']
+    method_registry_names: [Shapley-Taylor and Faith-Shap]
+    evidence:
+    - chapter16_shapley_attribution_baselines/instructions/pages/16_[16.16]_Where_Does_Higher_Order_Credit_Go.md
+    - chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/16.16_Where_Does_Higher_Order_Credit_Go_exercises.ipynb
+    - chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/expected_outputs/learner_execution.json
+    - chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/expected_outputs/fresh_reproduction.json
+    - chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/verification_report.json
+    - chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/independent_recheck.json
+    - chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/expected_outputs/independent_review_v8.md
+    reason: Eight exercises implement ten core functions for exact Shapley-Taylor and constrained Faith-Shap.
+      Eleven figures show the differing allocations, reconstruction objectives, contexts, donor backgrounds
+      and model/null controls. All seven known models and 272 held-out rows are retained. Independent Astra
+      review approved v8; both fresh development and registered-report refits reproduce every retained
+      deterministic value exactly. Ordered support arithmetic changes 108 nearest IDs versus v7, whose
+      historical BLOCK is preserved. Finite observational games do not establish physical causality,
+      independent model replication or universal method superiority.
+    blocker: ''
 
   - id: shapley.shap_iq
     topic: SHAP-IQ and KernelSHAP-IQ

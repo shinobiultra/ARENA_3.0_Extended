@@ -11,6 +11,7 @@ from __future__ import annotations
 import importlib.util
 import subprocess
 import sys
+import tarfile
 from pathlib import Path
 from typing import Iterable
 
@@ -34,6 +35,8 @@ load_jsonl_records = _DATA_CONTRACTS_MODULE.load_jsonl_records
 validate_dataset_manifest = _DATA_CONTRACTS_MODULE.validate_dataset_manifest
 validate_prompt_records = _DATA_CONTRACTS_MODULE.validate_prompt_records
 
+from scripts.evidence_bundles import validate_json_data, validate_review_bundle
+
 
 CONFIG_PATH = ROOT / "infrastructure/core/config.yaml"
 MAX_EXTENSION_FILE_BYTES = 5 * 1024 * 1024
@@ -51,6 +54,9 @@ FORBIDDEN_ARTIFACT_SUFFIXES = (
     ".tar",
     ".tar.gz",
     ".mp4",
+    ".joblib",
+    ".pickle",
+    ".pkl",
 )
 REQUIRED_TRACKED_FIXTURE_PATHS = (
     "data/generated/refusal_proxy_prompts_v1/README.md",
@@ -177,6 +183,12 @@ def forbidden_artifact_blockers(files: Iterable[Path]) -> list[str]:
         relative = _display_path(path)
         if _is_allowed_artifact(path):
             continue
+        if name.endswith(".tar.gz") and path.is_file():
+            try:
+                validate_review_bundle(path)
+            except (ValueError, TypeError, KeyError, OSError, EOFError, tarfile.TarError) as error:
+                blockers.append(f"invalid evidence review bundle: {relative}: {error}")
+            continue
         if any(name.endswith(suffix) for suffix in FORBIDDEN_ARTIFACT_SUFFIXES):
             blockers.append(f"raw artifact forbidden in extension path: {relative}")
     return blockers
@@ -190,6 +202,15 @@ def large_file_blockers(files: Iterable[Path]) -> list[str]:
         size = path.stat().st_size
         if size > MAX_EXTENSION_FILE_BYTES:
             relative = _display_path(path)
+            validator = (validate_review_bundle if path.name.lower().endswith(".tar.gz")
+                         else validate_json_data if path.name.lower().endswith(".json.gz") else None)
+            if validator is not None:
+                try:
+                    validator(path)
+                except (ValueError, TypeError, KeyError, OSError, EOFError, tarfile.TarError):
+                    pass
+                else:
+                    continue
             blockers.append(f"oversized extension file: {relative} ({size} bytes)")
     return blockers
 

@@ -1,0 +1,443 @@
+{
+  "decision": "APPROVE_PUBLICATION",
+  "status": "PASS",
+  "reviewer": "/root/astra_interaction_review",
+  "reviewer_model": "gpt-6-astra",
+  "reviewer_role": "independent",
+  "review_timing": "after_development_execution",
+  "reviewed_at_utc": "2026-09-08T04:27:28.454009+00:00",
+  "protocol_freeze_sha256": "3fe5047026188b6446adb010403fede0bbee145779fd5aba3826ad75f9acdf7f",
+  "source_inputs": {
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_data.py": "9418e01edb3cbc0f812716d2686d4a2d40ceb753112a87b1d18536a19ca2420f",
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_methods.py": "8287979f6693825fd4519b6eabc136f13dd2672f30ad1316b9b1f89638d1d52b",
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_methods_tests.py": "c5d99d494f4b0e78097674afba70119daed725a2c9f73709f44e821f536af490",
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_study.py": "2a4288f9bd3d1e5772e87c6c2986e4a98288efbb4bc73a401113d20c183192ef",
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_study_tests.py": "ca154072c12157b2e5886f6a29c90ae41d4c32bb06990430adbdc5218e9d3b33",
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_reference.py": "bfbac8cf51bb2fec355f4382283d39d97ce7746740d9a107981c0af0966a4c73",
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_reference_tests.py": "bbf5572179bf5cb704ea9bc9e033e1ac8448a0631561b9f6800054a2faaf3280",
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_diagnostics.py": "9fece8bfeda699cab8ced09ba38ed48787b0c5f82c2d67ea5280f2419e726c46",
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_plots.py": "490c6549ddbb9b20d57e6bacc84217b1330269b8c975f70888024b1be4d42133",
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_plots_tests.py": "bd425abbdeff5f1a7d25045e52616d1c2f593ab8e249250cc45b2c999e84f9fc",
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/protocol.md": "c0d738cf953743f17b74ca5ced74c15330b8b3be7d7d128563ba36096986ee37",
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/protocol_freeze.json": "3fe5047026188b6446adb010403fede0bbee145779fd5aba3826ad75f9acdf7f",
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/pre_run_resolution.json": "0a6f19aa82ec5691a7ad38382d7e6a3a82a7cdc52aeaae28a01bf13ab587b923",
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/data_manifest.json": "192eacd0f1dd137c627d1c4aec58b1eb17c3c31753ff9c496ed1e04717c9651e",
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/run_native.py": "df2d8a5a6f3485e0b022b7ebd3826a3d3a0452da97143e5a3d8d8cbe64304669",
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/implementation_amendments.json": "30a1054729e0b5ce9f9b8b4378da3ae395496fbcaa30b30c59c1ab7c69cdec25",
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/lesson.md": "12a4724e1540360ddfac26af6e5d5ed63dd34b528b561081b48252a48c0d2754",
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/build_notebooks.py": "b13a17c22ed4f98a7663728e08a2878dae5cb0e7aeadafa817eade73218d6150",
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/execute_learner.py": "9c564bc9c8c00c9770b5be69ae4aaae666ff5eb41896d8af1a7983e803b37da6",
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_contracts.py": "766fc31a44f858482cc8abfc395c4202a272614e2b577ca2c88cc57ca36080b0",
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/reproduce_native.py": "155b38b23ee6ec71ada78d6598dfeaf5723fdb947cf769a831a6d048a238393a",
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/publish_study.py": "13c7b4cc48d81a6ca05eaecacaa01762890e87ff0f3d913b81a8f5fbaf1b220c"
+  },
+  "frozen_sources": {
+    "path": "/home/bitwise/.cache/arena_extended/shapley_interactions/review-packet-v8/frozen_sources.json",
+    "sha256": "c83fce53cf0b76d3e8d8adcbd917e1bb457c85c8f53521fc33b2dd6482579cc0",
+    "size_bytes": 10982
+  },
+  "all_section_sources": {
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/README.md": {
+      "sha256": "e7ca449f0659de476dea0da39fe15cbb47748e751cf03f5bdc79c53e141ef0ec",
+      "size_bytes": 8662
+    },
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/artifacts.lock.yml": {
+      "sha256": "f681f1393e36d223284a9f7df8a0565ef20696e2d829223919ff974ab5c4c881",
+      "size_bytes": 9843
+    },
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/build_notebooks.py": {
+      "sha256": "b13a17c22ed4f98a7663728e08a2878dae5cb0e7aeadafa817eade73218d6150",
+      "size_bytes": 24281
+    },
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/data_manifest.json": {
+      "sha256": "192eacd0f1dd137c627d1c4aec58b1eb17c3c31753ff9c496ed1e04717c9651e",
+      "size_bytes": 1174840
+    },
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/execute_learner.py": {
+      "sha256": "9c564bc9c8c00c9770b5be69ae4aaae666ff5eb41896d8af1a7983e803b37da6",
+      "size_bytes": 10689
+    },
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/implementation_amendments.json": {
+      "sha256": "30a1054729e0b5ce9f9b8b4378da3ae395496fbcaa30b30c59c1ab7c69cdec25",
+      "size_bytes": 19512
+    },
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_contracts.py": {
+      "sha256": "766fc31a44f858482cc8abfc395c4202a272614e2b577ca2c88cc57ca36080b0",
+      "size_bytes": 31252
+    },
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_data.py": {
+      "sha256": "9418e01edb3cbc0f812716d2686d4a2d40ceb753112a87b1d18536a19ca2420f",
+      "size_bytes": 5173
+    },
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_diagnostics.py": {
+      "sha256": "9fece8bfeda699cab8ced09ba38ed48787b0c5f82c2d67ea5280f2419e726c46",
+      "size_bytes": 25302
+    },
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_diagnostics_tests.py": {
+      "sha256": "76621b77b5b0e4183a0a5c0e9a1ef0ff7aa107ea145297a1b144af91837b89a7",
+      "size_bytes": 10644
+    },
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_methods.py": {
+      "sha256": "8287979f6693825fd4519b6eabc136f13dd2672f30ad1316b9b1f89638d1d52b",
+      "size_bytes": 17665
+    },
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_methods_tests.py": {
+      "sha256": "c5d99d494f4b0e78097674afba70119daed725a2c9f73709f44e821f536af490",
+      "size_bytes": 27061
+    },
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_plots.py": {
+      "sha256": "490c6549ddbb9b20d57e6bacc84217b1330269b8c975f70888024b1be4d42133",
+      "size_bytes": 50369
+    },
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_plots_tests.py": {
+      "sha256": "bd425abbdeff5f1a7d25045e52616d1c2f593ab8e249250cc45b2c999e84f9fc",
+      "size_bytes": 16926
+    },
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_reference.py": {
+      "sha256": "bfbac8cf51bb2fec355f4382283d39d97ce7746740d9a107981c0af0966a4c73",
+      "size_bytes": 57253
+    },
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_reference_tests.py": {
+      "sha256": "bbf5572179bf5cb704ea9bc9e033e1ac8448a0631561b9f6800054a2faaf3280",
+      "size_bytes": 23941
+    },
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_report_tests.py": {
+      "sha256": "5eb95d4ecd2e5afabb0513d25054cba55c6126a7dac58d88100bce4f9a11b827",
+      "size_bytes": 4514
+    },
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_study.py": {
+      "sha256": "2a4288f9bd3d1e5772e87c6c2986e4a98288efbb4bc73a401113d20c183192ef",
+      "size_bytes": 78092
+    },
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_study_tests.py": {
+      "sha256": "ca154072c12157b2e5886f6a29c90ae41d4c32bb06990430adbdc5218e9d3b33",
+      "size_bytes": 20198
+    },
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/lesson.md": {
+      "sha256": "12a4724e1540360ddfac26af6e5d5ed63dd34b528b561081b48252a48c0d2754",
+      "size_bytes": 69636
+    },
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/pre_run_resolution.json": {
+      "sha256": "0a6f19aa82ec5691a7ad38382d7e6a3a82a7cdc52aeaae28a01bf13ab587b923",
+      "size_bytes": 8880
+    },
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/protocol.md": {
+      "sha256": "c0d738cf953743f17b74ca5ced74c15330b8b3be7d7d128563ba36096986ee37",
+      "size_bytes": 22895
+    },
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/protocol_freeze.json": {
+      "sha256": "3fe5047026188b6446adb010403fede0bbee145779fd5aba3826ad75f9acdf7f",
+      "size_bytes": 772
+    },
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/publish_study.py": {
+      "sha256": "13c7b4cc48d81a6ca05eaecacaa01762890e87ff0f3d913b81a8f5fbaf1b220c",
+      "size_bytes": 24860
+    },
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/reproduce_native.py": {
+      "sha256": "155b38b23ee6ec71ada78d6598dfeaf5723fdb947cf769a831a6d048a238393a",
+      "size_bytes": 16993
+    },
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/run_native.py": {
+      "sha256": "df2d8a5a6f3485e0b022b7ebd3826a3d3a0452da97143e5a3d8d8cbe64304669",
+      "size_bytes": 43108
+    },
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/solutions.py": {
+      "sha256": "417085f8c9f40b01f098272a5557dc2170ad640547fda8f0ef193414fab1cce3",
+      "size_bytes": 23649
+    },
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/tests.py": {
+      "sha256": "0f492a65a223638979067257c68f8171fbae6167b20abdaeda00924f4b9e1dba",
+      "size_bytes": 190
+    },
+    "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/verification_report.schema.json": {
+      "sha256": "87082f935bc3c092eb0b833eed9874937fa400d63dc584bee03838bd73c8c759",
+      "size_bytes": 12897
+    },
+    "uv.lock": {
+      "sha256": "e96e946bb00f50592d32c1b3bf453fca4482a0097731120defbebcd978f019eb",
+      "size_bytes": 610963
+    }
+  },
+  "execution_sha256": "db878afd4787c2ab6fea4e93cf1513e035daee406db87c9790adbaaf99823d0a",
+  "reproduction_sha256": "0f59e748cc5680681e24759e17796e16f68d38673a9d3d8ad7f50d0d4088b556",
+  "implementation_amendments_sha256": "30a1054729e0b5ce9f9b8b4378da3ae395496fbcaa30b30c59c1ab7c69cdec25",
+  "completed_learner_sha256": "ba9aa3094d4bbfc0311dbd7e638fb5b023fcc2801a8297fb1587d88705f177c7",
+  "frozen_experiment_verdict": "APPROVE_PUBLICATION for exact v8 source and execution bindings; no remaining scientific, learner or visual blocking findings.",
+  "core_interaction_formulas": "PASS",
+  "learner_and_figure_review": "PASS for freshly inspected v8 PNGs and actual rendered page",
+  "current_environment": {
+    "status": "PASS_FOR_V8",
+    "uv_lock_sha256": "e96e946bb00f50592d32c1b3bf453fca4482a0097731120defbebcd978f019eb",
+    "original_v7_lock_sha256": "03f77ffac99858cd34a653cd703728b9a868c87686a86cef78523a7afa9a6494",
+    "package_hash_guards_retained": true,
+    "actual_guard": "PASS",
+    "actual_v8_seven_model_execution_and_source_only_refit_validated": true,
+    "v7_receipts_not_relabeled": true
+  },
+  "findings": [
+    {
+      "id": "R1",
+      "priority": 2,
+      "path": "/home/bitwise/Documents/ARENA_3.0_Extended/chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_study.py",
+      "line": 1500,
+      "status": "RESOLVED",
+      "title": "Feature-order accumulation matches frozen support definition",
+      "evidence": "Full independent support match over 557056 minima and IDs; distinguishing regression fails old source and passes current; all 108 changed-ID old/new tie sets independently rebuilt."
+    },
+    {
+      "id": "R2",
+      "priority": 1,
+      "path": "/home/bitwise/Documents/ARENA_3.0_Extended/chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/implementation_amendments.json",
+      "line": 249,
+      "status": "RESOLVED",
+      "title": "README history honestly bound in amendment 7",
+      "evidence": "All three historical/current README byte identities retained, all amendment evidence rehashed, first six entries unchanged, current validate_freeze passes."
+    },
+    {
+      "id": "E1",
+      "priority": 1,
+      "path": "/home/bitwise/Documents/ARENA_3.0_Extended/chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/interaction_reference.py",
+      "line": 40,
+      "status": "RESOLVED_FOR_V8",
+      "title": "Current locked environment explicitly amended and actually re-executed",
+      "evidence": "Exact current lock and all five pinned package sources pass guards. Actual v8 execution plus separate source-only seven-model refit revalidated; old receipts remain old."
+    }
+  ],
+  "open_findings": [],
+  "numerical_reproduction": {
+    "arrays": 1797,
+    "array_elements": 94604271,
+    "records": 26348,
+    "scalars": 22556
+  },
+  "support": {
+    "status": "PASS",
+    "method": "Independent NumPy explicit subtract, multiply, add.accumulate; pinned Torch sqrt; full training set, all rows/masks/eight donors. Changed-ID old Torch reductions separately recreated.",
+    "retained_distances_checked": 557056,
+    "candidate_comparisons": 422248448,
+    "distance_mismatches": 0,
+    "source_id_mismatches": 0,
+    "historical_distance_changes": 98602,
+    "historical_nearest_id_changes": 108,
+    "max_historical_distance_change": 8.881784197001252e-16,
+    "old_new_training_inputs_normalization_exact": true
+  },
+  "historical_array_changes": {
+    "arrays": 1797,
+    "changed": [
+      {
+        "artifact": "evaluated.pt",
+        "path": "/support/nearest_train_distance",
+        "before": {
+          "path": "/support/nearest_train_distance",
+          "kind": "torch.Tensor",
+          "shape": [
+            272,
+            256,
+            8
+          ],
+          "dtype": "float64",
+          "elements": 557056,
+          "value_sha256": "81e63df242d67029f00d4b4dc8b6dfa8443dd311d2f6775417b4a1ba2f6f7aab"
+        },
+        "after": {
+          "path": "/support/nearest_train_distance",
+          "kind": "torch.Tensor",
+          "shape": [
+            272,
+            256,
+            8
+          ],
+          "dtype": "float64",
+          "elements": 557056,
+          "value_sha256": "b955f9e5926c8344f0c08c1b4ae09c54409814e13e2c0be690604c0fb85a8bc0"
+        }
+      },
+      {
+        "artifact": "evaluated.pt",
+        "path": "/support/nearest_train_source_id",
+        "before": {
+          "path": "/support/nearest_train_source_id",
+          "kind": "torch.Tensor",
+          "shape": [
+            272,
+            256,
+            8
+          ],
+          "dtype": "int64",
+          "elements": 557056,
+          "value_sha256": "fbb72ffa763c676de57e94694c1af165661b3da460dde8c928e9b96e964c37a3"
+        },
+        "after": {
+          "path": "/support/nearest_train_source_id",
+          "kind": "torch.Tensor",
+          "shape": [
+            272,
+            256,
+            8
+          ],
+          "dtype": "int64",
+          "elements": 557056,
+          "value_sha256": "9d740aad4e05a634be21b50fd05374074f35c9d4924df4733aa5af881914b3f2"
+        }
+      }
+    ]
+  },
+  "validation": {
+    "section_tests_passed": 99,
+    "optional_full_fit_skips": 1,
+    "required_tensor_paths_passed": 1735,
+    "prospective_contract_entries_passed": 1772,
+    "reference_payloads_passed": 22,
+    "reference_game_instances": 3050,
+    "independent_derivative_native_games_per_method": 2992,
+    "independent_derivative_pair_coordinates_per_method": 83776,
+    "independent_random_derivative_checks": 42,
+    "native_play_variants": 12,
+    "analytic_play_variants": 5,
+    "invalid_play_inputs_rejected": 3,
+    "publisher_validate_fresh": "PASS",
+    "original_preservation": "PASS; zero blockers"
+  },
+  "methodological_disclosures": [
+    "No new native refit by reviewer; actual separately completed v8 execution and source-only reproduction were physically/source revalidated.",
+    "Prospective payload and play scripts reuse author validation logic with provenance; whole-support and derivative formulas use separately written reviewer checks.",
+    "Independent NumPy squared differences and ordered add.accumulate use pinned Torch sqrt for execution-backend equality. Initial all-NumPy sqrt one-ULP mismatch and local reviewer tooling mistakes remain in scratch failure logs."
+  ],
+  "previous_block": {
+    "path": "/home/bitwise/.cache/arena_extended/shapley_interactions/independent-review-resumed-v7/independent_recheck.json",
+    "sha256": "574a5289a97315c1cf320908bf690762b60e6931613ba9bf54b38445121239f9",
+    "size_bytes": 9278
+  },
+  "previous_block_report": {
+    "path": "/home/bitwise/.cache/arena_extended/shapley_interactions/independent-review-resumed-v7/REVIEW.md",
+    "sha256": "b768fbfb34c2ee71744aa6b5acc16d9ba5c393fb924b49fb5f6a49a655187d84",
+    "size_bytes": 11945
+  },
+  "evidence_files": {
+    "REVIEW.md": {
+      "path": "/home/bitwise/.cache/arena_extended/shapley_interactions/independent-review-v8/REVIEW.md",
+      "sha256": "3cc39e7476d364ca40a64ebc0230b788a6a2521f6c509021ba3794b609992d62",
+      "size_bytes": 12674
+    },
+    "review_probe.py": {
+      "path": "/home/bitwise/.cache/arena_extended/shapley_interactions/independent-review-v8/review_probe.py",
+      "sha256": "b6120371513cd3e142335e64ad40bca890b89057de9a7463b69358e118a27af2",
+      "size_bytes": 15754
+    },
+    "review_probe.json": {
+      "path": "/home/bitwise/.cache/arena_extended/shapley_interactions/independent-review-v8/review_probe.json",
+      "sha256": "ffc2ef45c1bf1eff5e43e0c2808525398f673d50680b9eb82b8c6a8ed2ecf460",
+      "size_bytes": 28500
+    },
+    "review_probe.log": {
+      "path": "/home/bitwise/.cache/arena_extended/shapley_interactions/independent-review-v8/review_probe.log",
+      "sha256": "bddc7ff347c17780bf14208954b11194b4ae8c991fcc40406ee221c9c1b49ee4",
+      "size_bytes": 14620
+    },
+    "regression_recheck.py": {
+      "path": "/home/bitwise/.cache/arena_extended/shapley_interactions/independent-review-v8/regression_recheck.py",
+      "sha256": "f81838407fe297c2f2c645ebf7af373bf5e61d6e795316b9727990093f2b5901",
+      "size_bytes": 1727
+    },
+    "regression_recheck.json": {
+      "path": "/home/bitwise/.cache/arena_extended/shapley_interactions/independent-review-v8/regression_recheck.json",
+      "sha256": "0222a2d57ea42ecfd42310c3f9f19263c9f8a2f5849f5a2c400ed3547d790e10",
+      "size_bytes": 579
+    },
+    "regression_recheck.log": {
+      "path": "/home/bitwise/.cache/arena_extended/shapley_interactions/independent-review-v8/regression_recheck.log",
+      "sha256": "0222a2d57ea42ecfd42310c3f9f19263c9f8a2f5849f5a2c400ed3547d790e10",
+      "size_bytes": 579
+    },
+    "independent_full_support.json": {
+      "path": "/home/bitwise/.cache/arena_extended/shapley_interactions/independent-review-v8/independent_full_support.json",
+      "sha256": "9c32149149243f7448c0fda702ed3a99849e724564aaeef1f070e06bb7ee891f",
+      "size_bytes": 64288
+    },
+    "retained_reference_validation.json": {
+      "path": "/home/bitwise/.cache/arena_extended/shapley_interactions/independent-review-v8/retained_reference_validation.json",
+      "sha256": "e7326893286daa6f4f2ab575df0c5ec4d4b82476304c1ad72a70397bfd70d7ba",
+      "size_bytes": 10176
+    },
+    "prospective_payload_validation.json": {
+      "path": "/home/bitwise/.cache/arena_extended/shapley_interactions/independent-review-v8/prospective_payload_validation.json",
+      "sha256": "d8f3c4fcbfd1fe5d145f7fe78cfc83e6a4427ea9f8843647f5c435600cb90a96",
+      "size_bytes": 504
+    },
+    "prospective_payload_validation.log": {
+      "path": "/home/bitwise/.cache/arena_extended/shapley_interactions/independent-review-v8/prospective_payload_validation.log",
+      "sha256": "d8f3c4fcbfd1fe5d145f7fe78cfc83e6a4427ea9f8843647f5c435600cb90a96",
+      "size_bytes": 504
+    },
+    "reused_prospective_validator.py": {
+      "path": "/home/bitwise/.cache/arena_extended/shapley_interactions/independent-review-v8/reused_prospective_validator.py",
+      "sha256": "71ae78f072450e6d1a6751dee8e93bdc682417e5b5f9173fb88b3f381b44abfc",
+      "size_bytes": 4612
+    },
+    "play_variations.json": {
+      "path": "/home/bitwise/.cache/arena_extended/shapley_interactions/independent-review-v8/play_variations.json",
+      "sha256": "18a4a1cbee8be028d940339ef4a34d1526e2091a9fd58728085fb7168798f886",
+      "size_bytes": 4827
+    },
+    "play_checks.log": {
+      "path": "/home/bitwise/.cache/arena_extended/shapley_interactions/independent-review-v8/play_checks.log",
+      "sha256": "5615007d02ad48eb1315b22566658af14ff5de08c8df8f2c8dd2ab143653bb4e",
+      "size_bytes": 97
+    },
+    "reused_play_checks.py": {
+      "path": "/home/bitwise/.cache/arena_extended/shapley_interactions/independent-review-v8/reused_play_checks.py",
+      "sha256": "da63e30fd107e4fb8f8565622b17c44d2397b3907a0180ddef6022ae8791b694",
+      "size_bytes": 3429
+    },
+    "section_contract_tests.log": {
+      "path": "/home/bitwise/.cache/arena_extended/shapley_interactions/independent-review-v8/section_contract_tests.log",
+      "sha256": "242258f8e4aa5c3e84ee7b8aaf20b010183a4234a27ba05799ef6a01554569c8",
+      "size_bytes": 191
+    },
+    "original_preservation.log": {
+      "path": "/home/bitwise/.cache/arena_extended/shapley_interactions/independent-review-v8/original_preservation.log",
+      "sha256": "f8336bcde18b3422a248601df1827f82a771bce31052c815cd4dd4a9f5c0292e",
+      "size_bytes": 120
+    },
+    "browser_dom.json": {
+      "path": "/home/bitwise/.cache/arena_extended/shapley_interactions/independent-review-v8/browser_dom.json",
+      "sha256": "e9b77862fba1e9ec9e2a0bfd022203db44f139125d3b8e06e679ae82643ac89a",
+      "size_bytes": 6211
+    },
+    "browser_stdout.log": {
+      "path": "/home/bitwise/.cache/arena_extended/shapley_interactions/independent-review-v8/browser_stdout.log",
+      "sha256": "7f9023f6f09485247044b6f223176c1c87ac5a76348ac4bf921e27f64917997e",
+      "size_bytes": 184
+    },
+    "independent_figure_review.json": {
+      "path": "/home/bitwise/.cache/arena_extended/shapley_interactions/independent-review-v8/independent_figure_review.json",
+      "sha256": "1558e21b711b01b229bb35100681508ffe7a34eb9c0d3d6970d738483ca16119",
+      "size_bytes": 15486
+    },
+    "browser_closed_form.jpg": {
+      "path": "/home/bitwise/.cache/arena_extended/shapley_interactions/independent-review-v8/browser_closed_form.jpg",
+      "sha256": "256dccbe431c03788723eeab9662be55b3f31f0ade3ed19b1fb40e83c8f10ff4",
+      "size_bytes": 125764
+    },
+    "browser_kkt.jpg": {
+      "path": "/home/bitwise/.cache/arena_extended/shapley_interactions/independent-review-v8/browser_kkt.jpg",
+      "sha256": "ac3591a8b390a517b884ed8010937eb48ec9d162390ab972d1365990ceedd93c",
+      "size_bytes": 158055
+    },
+    "browser_native_play.jpg": {
+      "path": "/home/bitwise/.cache/arena_extended/shapley_interactions/independent-review-v8/browser_native_play.jpg",
+      "sha256": "86d43914dab74e2922a68971e42007d4b402aba76605fe100050974a6a173635",
+      "size_bytes": 132260
+    }
+  },
+  "repo_files_changed_by_reviewer": [],
+  "new_native_fits": 0,
+  "publication_authorized": true,
+  "scope_exclusions": [
+    "Canonical publisher not executed by reviewer",
+    "Normal registered report and navigation/registry integration not yet completed by this review",
+    "Full-course readiness not assessed"
+  ],
+  "handoff": "Copy reviewer records and actual visual evidence into required locations, assemble separate visual_review.json with allowed-root evidence records, run publisher and then normal registered report and integration gates. No remaining source/science fix or further native refit is requested."
+}

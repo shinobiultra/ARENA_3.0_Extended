@@ -2,11 +2,23 @@
 
 ## How this fixture was produced
 
-The full own-answer learner ran all 34 code cells, twelve fresh training fits, 36 final evaluations, 285 causal conditions and seven live figures. Its manifest binds the exact section sources and paired notebooks. `completed_word_study.json.gz` holds the actual generated tokens and causal results. The neighboring README gives all dataset sizes, training settings, outcomes and conditional denominators. The report records a separate fresh four-mode, seed-0 CUDA run; it is not assumed numerically identical to CPU training.
+The full own-answer learner ran all 34 code cells, twelve fresh training fits, 36 final
+evaluations, 285 causal conditions and seven live figures. Its manifest binds the exact
+section sources and paired notebooks. `completed_word_study.json.gz` holds the actual
+generated tokens and causal results. The neighboring README gives all dataset sizes,
+training settings, outcomes and conditional denominators. The report records a separate
+fresh four-mode, seed-0 CUDA run; it is not assumed numerically identical to CPU
+training.
 
 ## Trusted implementation
 
-Independent explicit-window and attention-value/gradient oracles, shifted-loss and masking checks, independently derived AdamW updates, ragged EOS tests and native clean/donor forward comparisons check the learner's own classes and functions. Engineered RGB features provide a separate exact warm-up; they are not described as a learned vision encoder. All 43 section tests pass. The raw-evidence validator recomputes scores from generated words, retains all seeds and control draws, and checks checkpoint selection and paired denominators.
+Independent explicit-window and attention-value/gradient oracles, shifted-loss and
+masking checks, independently derived AdamW updates, ragged EOS tests and native
+clean/donor forward comparisons check the learner's own classes and functions.
+Engineered RGB features provide a separate exact warm-up; they are not described as a
+learned vision encoder. All 43 section tests pass. The raw-evidence validator recomputes
+scores from generated words, retains all seeds and control draws, and checks checkpoint
+selection and paired denominators.
 
 ## Random seed
 
@@ -14,7 +26,13 @@ Training retains seeds 0/1/2 in each of joint, text-only, image-only and shuffle
 
 ## Allowed tolerances
 
-Token IDs, strings, image-pair backgrounds and exact stage replacement identities use rtol=0, atol=0. Float64 mathematical oracles use explicit rtol=1e-12 to 1e-10 and atol=1e-12 to 1e-10 according to the operation; the two-step float32 optimizer comparison uses rtol=1e-5, atol=1e-6. Each immediate test contains its actual bound. Training on different devices may choose a different development checkpoint; the independent CUDA training is evaluated as a new run, not forced to match CPU weights or token outcomes.
+Token IDs, strings, image-pair backgrounds and exact stage replacement identities use
+rtol=0, atol=0. Float64 mathematical oracles use explicit rtol=1e-12 to 1e-10 and
+atol=1e-12 to 1e-10 according to the operation; the two-step float32 optimizer
+comparison uses rtol=1e-5, atol=1e-6. Each immediate test contains its actual bound.
+Training on different devices may choose a different development checkpoint; the
+independent CUDA training is evaluated as a new run, not forced to match CPU weights or
+token outcomes.
 
 ## When to regenerate
 

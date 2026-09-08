@@ -1197,7 +1197,12 @@ At threshold `0.05`, sequential deletion retains `L0H0`, `L0H4`, and `L0H6`. Tog
 
 <details><summary>Interpretation - the MLP anomaly</summary>
 
-Patching the clean `L0MLP` output alone recovers `99.1%`, more than the selected heads. This does **not** make the heads irrelevant. A downstream patch can overwrite the consequence of upstream computation. The head search recomputes the MLP from hybrid head outputs; the MLP-only patch replaces that computation wholesale. The mismatch is a useful warning that component patching and edge-level causal stories are not interchangeable.
+Patching the clean `L0MLP` output alone recovers `99.1%`, more than the selected heads.
+This does **not** make the heads irrelevant. A downstream patch can overwrite the
+consequence of upstream computation. The head search recomputes the MLP from hybrid head
+outputs; the MLP-only patch replaces that computation wholesale. The mismatch is a
+useful warning that component patching and edge-level causal stories are not
+interchangeable.
 
 </details>
 

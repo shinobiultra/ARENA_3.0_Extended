@@ -93,12 +93,36 @@ def test_matched_initialization_batches_and_shuffle(fn=training.fit_text_model):
                 updates=2,batch_size=4,development_every=2)
             records.append(record)
             permutation=t.tensor(record['target_permutation'])
-            assert t.equal(permutation.sort().values,t.arange(4)), 'All four conditions must share initial weights and batches, with the same valid within-task control permutation. Required condition: t.equal(permutation.sort().values, t.arange(4))'
-            assert t.equal(train['task_ids'][permutation],train['task_ids']), "All four conditions must share initial weights and batches, with the same valid within-task control permutation. Required condition: t.equal(train['task_ids'][permutation], train['task_ids'])"
-    assert len({r['initial_parameters_sha256'] for r in records})==1, "All four conditions must share initial weights and batches, with the same valid within-task control permutation. Required condition: len({r['initial_parameters_sha256'] for r in records}) == 1"
-    assert len({r['batch_indices_sha256'] for r in records})==1, "All four conditions must share initial weights and batches, with the same valid within-task control permutation. Required condition: len({r['batch_indices_sha256'] for r in records}) == 1"
-    assert len({r['development_noisy_sha256'] for r in records})==1, "All four conditions must share initial weights and batches, with the same valid within-task control permutation. Required condition: len({r['development_noisy_sha256'] for r in records}) == 1"
-    assert records[1]['target_permutation']==records[3]['target_permutation'], "All four conditions must share initial weights and batches, with the same valid within-task control permutation. Required condition: records[1]['target_permutation'] == records[3]['target_permutation']"
+            assert t.equal(permutation.sort().values,t.arange(4)), (
+                "All four conditions must share initial weights and batches, with the same valid "
+                "within-task control permutation. Required condition: "
+                "t.equal(permutation.sort().values, t.arange(4))"
+            )
+            assert t.equal(train['task_ids'][permutation],train['task_ids']), (
+                "All four conditions must share initial weights and batches, with the same valid "
+                "within-task control permutation. Required condition: "
+                "t.equal(train['task_ids'][permutation], train['task_ids'])"
+            )
+    assert len({r['initial_parameters_sha256'] for r in records})==1, (
+        "All four conditions must share initial weights and batches, with the same valid "
+        "within-task control permutation. Required condition: "
+        "len({r['initial_parameters_sha256'] for r in records}) == 1"
+    )
+    assert len({r['batch_indices_sha256'] for r in records})==1, (
+        "All four conditions must share initial weights and batches, with the same valid "
+        "within-task control permutation. Required condition: len({r['batch_indices_sha256'] "
+        "for r in records}) == 1"
+    )
+    assert len({r['development_noisy_sha256'] for r in records})==1, (
+        "All four conditions must share initial weights and batches, with the same valid "
+        "within-task control permutation. Required condition: "
+        "len({r['development_noisy_sha256'] for r in records}) == 1"
+    )
+    assert records[1]['target_permutation']==records[3]['target_permutation'], (
+        "All four conditions must share initial weights and batches, with the same valid "
+        "within-task control permutation. Required condition: "
+        "records[1]['target_permutation'] == records[3]['target_permutation']"
+    )
     assert records[1]['target_permutation']!=[0,1,2,3], "All four conditions must share initial weights and batches, with the same valid within-task control permutation. Required condition: records[1]['target_permutation'] != [0, 1, 2, 3]"
     print('Four matched conditions share weights, batches, fixed dev noise and within-task permutations!')
 

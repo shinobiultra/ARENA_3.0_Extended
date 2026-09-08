@@ -1,0 +1,87 @@
+{
+  "schema": "arena.review-bundle.v1",
+  "archive": {
+    "name": "execution.tar.gz",
+    "sha256": "6355edc54cd017a8fa00b4dfa9f735b9ede8d64394de37950715f18221be1003",
+    "size_bytes": 6461
+  },
+  "limits": {
+    "archive_bytes": 67108864,
+    "member_bytes": 16777216,
+    "total_member_bytes": 134217728,
+    "tar_container_bytes": 167772160,
+    "decoded_json_bytes": 67108864,
+    "total_decoded_bytes": 536870912,
+    "members": 4096
+  },
+  "provenance": {
+    "kind": "historical_archive_packaging",
+    "packaged_at_utc": "2026-09-08T03:26:53.565936+00:00",
+    "measurement_claim": "Packaging only. This is not a native rerun, scientific revalidation or new review. Retained receipts, failure labels, values, scientific hashes and measurement dates are byte-identical to the original. Historical embedded archive inventories describe that original; this adjacent contract describes the derived review bundle.",
+    "source_archive": {
+      "repository_path": "chapter11_representation_geometry/exercises/part4_concept_erasure/expected_outputs/author_source_revision/execution.tar.gz",
+      "absolute_path": "/home/bitwise/.cache/arena_extended/evidence_packaging/original_archives/6355edc54cd017a8fa00b4dfa9f735b9ede8d64394de37950715f18221be1003.tar.gz",
+      "sha256": "6355edc54cd017a8fa00b4dfa9f735b9ede8d64394de37950715f18221be1003",
+      "size_bytes": 6461,
+      "git_commit": "ce96ceaae2f91bf0dcd7648052325e07a87b0b5b",
+      "git_blob": "c35412f2d8fcec531c8ec2af7a2b3b6e98e68715"
+    },
+    "source_archive_members": {
+      "LICENSE": {
+        "sha256": "956bd01010229da10d4a0e8c9ab848bdf55050789174dba82b2c1250559180a0",
+        "size_bytes": 1067
+      },
+      "concept_erasure/caching.py": {
+        "sha256": "4bdf3865c0aebd70cf241642e4f4f068625687f82e81c7f2f1906bfc76a9992a",
+        "size_bytes": 1326
+      },
+      "concept_erasure/leace.py": {
+        "sha256": "e4145ae6a1ae6671b3eb68fe1df7dbbbe3ea06eb077dfac8bf169ed4c908b463",
+        "size_bytes": 10314
+      },
+      "concept_erasure/shrinkage.py": {
+        "sha256": "05f3269524e4f612691605325407e72a56a1305678d1b9cee56b1177d3335988",
+        "size_bytes": 2397
+      },
+      "pyproject.toml": {
+        "sha256": "0c9736161198b279e7f9ded5bf2dd4e9600cd7514ef9227855e2bc801f7682c1",
+        "size_bytes": 1414
+      }
+    }
+  },
+  "members": {
+    "LICENSE": {
+      "type": "regular",
+      "size_bytes": 1067,
+      "sha256": "956bd01010229da10d4a0e8c9ab848bdf55050789174dba82b2c1250559180a0",
+      "format": "utf8-text"
+    },
+    "concept_erasure/caching.py": {
+      "type": "regular",
+      "size_bytes": 1326,
+      "sha256": "4bdf3865c0aebd70cf241642e4f4f068625687f82e81c7f2f1906bfc76a9992a",
+      "format": "utf8-text"
+    },
+    "concept_erasure/leace.py": {
+      "type": "regular",
+      "size_bytes": 10314,
+      "sha256": "e4145ae6a1ae6671b3eb68fe1df7dbbbe3ea06eb077dfac8bf169ed4c908b463",
+      "format": "utf8-text"
+    },
+    "concept_erasure/shrinkage.py": {
+      "type": "regular",
+      "size_bytes": 2397,
+      "sha256": "05f3269524e4f612691605325407e72a56a1305678d1b9cee56b1177d3335988",
+      "format": "utf8-text"
+    },
+    "pyproject.toml": {
+      "type": "regular",
+      "size_bytes": 1414,
+      "sha256": "0c9736161198b279e7f9ded5bf2dd4e9600cd7514ef9227855e2bc801f7682c1",
+      "format": "utf8-text"
+    }
+  },
+  "external_payloads": {},
+  "member_count": 5,
+  "total_member_bytes": 16518
+}

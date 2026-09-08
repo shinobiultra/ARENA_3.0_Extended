@@ -18,8 +18,9 @@ signed pair estimates, convergence, sampling variance, unique queries and rank d
 Two editable plays let you change a queried coalition or the model, recipe, seed, proposal and budget.
 
 Run the notebook in the repository's `uv sync --frozen` environment. The complete study uses CPU
-float64 with four threads. The validated learner took about 29 seconds and a sampled peak process-tree
-RSS of 2.85 GB; timing depends on your machine. It writes about 0.95 GB to `estimator_outputs`.
+float64 with four threads. The current-environment learner took about 30 seconds and a sampled
+peak process-tree RSS of 2.80 GB; timing depends on your machine. It writes about 0.95 GB to
+`estimator_outputs`.
 The study requires a new empty `native` output directory: choose a new `OUTPUT_DIR` for a second
 complete run. The two play cells can be rerun freely using the in-memory results.
 
@@ -38,13 +39,20 @@ Sampling SE is conditional on the fixed model and replacement game.
 Validation commands, run from the repository root:
 
 ```bash
-CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 uv run pytest -q chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/estimator_methods_tests.py chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/estimator_reference_tests.py chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/estimator_study_tests.py
-CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 uv run python scripts/run_extension_verification_reports.py --section 16.17 --max-vram-gb 0
+CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 \
+  BNB_CUDA_VERSION=130 uv run --locked pytest -q \
+  chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/estimator_methods_tests.py \
+  chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/estimator_reference_tests.py \
+  chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/estimator_study_tests.py
+CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 \
+  BNB_CUDA_VERSION=130 uv run --locked python scripts/run_extension_verification_reports.py \
+  --section 16.17 --max-vram-gb 0
 ```
 
 The registered report refits all models in a fresh process and compares every deterministic value
 with the actual own-answer learner. The scientific design was fixed before native execution in
 [protocol.md](protocol.md) and [data_manifest.json](data_manifest.json). Evidence paths and scope
-are documented in [expected_outputs](expected_outputs/README.md). Visual and implementation
-review was performed by the author while the authorized subagents were unavailable; it is not
-an independent review. Original ARENA chapters remain unchanged.
+are documented in [expected_outputs](expected_outputs/README.md). Initial implementation review
+was performed by the author while the authorized subagents were unavailable. Current-environment
+figure, browser and editable-play checks retain the same disclosed author-review scope; they do
+not constitute independent approval. Original ARENA chapters remain unchanged.

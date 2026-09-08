@@ -23463,9 +23463,15 @@
   },
   "peak_vram_gb": 9.430299282073975,
   "report_inputs": {
+    "schema_version": 1,
     "algorithm": "sha256",
-    "combined_sha256": "5a9b13efbdf3083fcba15032553c9193aa5cae081b8fc8e191aca179b904e40f",
+    "combined_sha256": "6e7285a9a28cb2de0e9c105c6bb9b4a1b1374dd20319e7de278abd245d8fa25d",
     "files": [
+      {
+        "path": "arena_ext/readability_compatibility.py",
+        "sha256": "3b46611cac4ae86ddd797339544a2e4fde618cc0effedc02e706eb6f827630d9",
+        "size_bytes": 6524
+      },
       {
         "path": "arena_ext/verification.py",
         "sha256": "d9a5c72b6b6af35eedc860807d1806d16a0ad7d88acd54334d3883d9859a3721",
@@ -23508,8 +23514,8 @@
       },
       {
         "path": "chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/edge_evidence.py",
-        "sha256": "ab298ad02eaee3b589963e9125df4758e15dcb533296afe999073892547818d1",
-        "size_bytes": 10741
+        "sha256": "8ca9a2d28ebbec75f45daa0436dbfe9ad9a3db6e3eb72b58d1ea5cdcd5e6c802",
+        "size_bytes": 10889
       },
       {
         "path": "chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/edge_evidence_tests.py",
@@ -23588,7 +23594,7 @@
       },
       {
         "path": "chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/lesson.md",
-        "sha256": "933f685d1c1af089548124f62bbd12eba5bb43975ebb200f41ab10a058f2a8bd",
+        "sha256": "d69e0aad2b5d498411e9acabf643214420ec672451a31e3945951f3aa8b982db",
         "size_bytes": 169669
       },
       {
@@ -23713,16 +23719,20 @@
       },
       {
         "path": "chapter8_automated_circuits/instructions/pages/03_[8.3]_ACDC_and_Circuit_Metrics.md",
-        "sha256": "dea0f50a21ccb35e63d82ec2c9dde2f1b5e6075c8b4d487dae2db4d3dc0b90b2",
+        "sha256": "90d4d6a54039932d65fe2bd9b13f63a0fb54a177655d908d6702caa2a24c757c",
         "size_bytes": 168597
+      },
+      {
+        "path": "docs/arena_salvage/2026-09-08_readability_compatibility.json",
+        "sha256": "f6d6fc026d139f46697ee3626ac96869ab49401f600fe5d3c9ddc5e36c941708",
+        "size_bytes": 421821
       },
       {
         "path": "scripts/run_extension_verification_reports.py",
         "sha256": "b36bd25deaab6dd9557c203db51c5323b24b84e92c46a218a2011ae68beb763c",
         "size_bytes": 16272
       }
-    ],
-    "schema_version": 1
+    ]
   },
   "safety_notes": [
     "The full learner release records an owned interrupted continuation with exact checkpoint and source provenance.",

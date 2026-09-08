@@ -72,7 +72,15 @@ VISIBLE_GROUPS: dict[str, dict[str, tuple[str, ...]]] = {
         "pair_context_diagnostic": ("diagnose_pair_context",),
     },
     "interaction_study.py": {
-        'protocol_constants': ('FEATURES', 'HIDDEN', 'EMPIRICAL_ORDER', 'TRAINING_STEPS', 'LEARNING_RATE', 'WEIGHT_DECAY', 'RIDGE_PENALTY', 'FORWARD_BATCH', 'DISTANCE_BATCH', 'MODEL_KEYS', 'MODEL_SEEDS', 'SHUFFLE_SEEDS', 'BACKGROUND_SPECS', 'METHOD_KEYS', 'METHOD_NAMES', 'FEATURE_NAMES', 'FEATURE_UNITS', 'TARGET_NAME', 'TARGET_UNIT', 'RNG_NAMESPACE', 'RANDOM_EXACT_SEED', 'WITHIN_SIZE_SEED', 'RANDOM_PAIR_SEED', 'WITHIN_SIZE_REPLICATES', 'RANDOM_PAIR_ORDERS', 'SUPPORT_DONORS', 'DEFAULT_PLAY'),
+        'protocol_constants': (
+            'FEATURES', 'HIDDEN', 'EMPIRICAL_ORDER', 'TRAINING_STEPS', 'LEARNING_RATE',
+            'WEIGHT_DECAY', 'RIDGE_PENALTY', 'FORWARD_BATCH', 'DISTANCE_BATCH',
+            'MODEL_KEYS', 'MODEL_SEEDS', 'SHUFFLE_SEEDS', 'BACKGROUND_SPECS',
+            'METHOD_KEYS', 'METHOD_NAMES', 'FEATURE_NAMES', 'FEATURE_UNITS',
+            'TARGET_NAME', 'TARGET_UNIT', 'RNG_NAMESPACE', 'RANDOM_EXACT_SEED',
+            'WITHIN_SIZE_SEED', 'RANDOM_PAIR_SEED', 'WITHIN_SIZE_REPLICATES',
+            'RANDOM_PAIR_ORDERS', 'SUPPORT_DONORS', 'DEFAULT_PLAY',
+        ),
         'model_fit_and_hash_gate': ('_train_mlp', 'fit_known_models', 'verify_known_reproduction'),
         'donor_game_construction': ('donor_replacement_games', 'evaluate_model_games'),
         'exact_fixtures_and_methods': ('pairwise_sii', 'all_pair_context_synergies', 'explain_complete_games'),

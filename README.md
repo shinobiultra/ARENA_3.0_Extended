@@ -286,6 +286,13 @@ builds Expected Gradients from donor and path samples. Convergence, approximate 
 feature games, background and noise changes, package replay and replacement controls show which
 expectation each attribution estimates, with two editable plays and complete fresh reproduction.
 
+The new [16.16 Where Does Higher-Order Credit Go?](chapter16_shapley_attribution_baselines/instructions/pages/16_[16.16]_Where_Does_Higher_Order_Credit_Go.md)
+builds Shapley-Taylor and exact constrained Faith-Shap from complete coalition games. Eleven figures
+show where omitted higher-order credit goes, how the reconstructed game changes, and why donor
+backgrounds and contextual derivatives answer different questions. Eight exercises and two editable
+plays retain clean, shuffled and additive controls. The full CPU study and fresh reproduction passed
+an independent publication review; the results concern known fitted models, not physical causality.
+
 The new [16.17 One Query, Many Interactions](chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/README.md)
 builds SHAP-IQ and pairwise KernelSHAP-IQ from shared model queries. Ten figures compare signed
 interactions, query-budget errors, sampling variance, additive and shuffled-model controls, and

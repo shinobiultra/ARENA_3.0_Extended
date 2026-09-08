@@ -1,10 +1,11 @@
 # Expected Gradients / GradientSHAP execution evidence
 
-This directory contains the published release evidence created by `publish_study.py` from the
-passing learner-v3, fresh-reproduction-v3 and browser-review records. The canonical records are
+This directory contains the current-environment evidence created by `publish_study.py` from the
+new own-answer learner, source-only reproduction and actual author/browser review. The canonical records are
 `learner_execution.json`, `native_summary.json`, `fresh_reproduction.json` and
 `execution.tar.gz`. This README explains their claim boundary and regeneration contract; it is not
-itself a passing release record.
+itself a passing release record. Historical v3 runs and review evidence remain in their original
+cache locations and checkpoint bundles; their dates and scientific receipts have not been relabeled.
 
 ## How this fixture was produced
 
@@ -21,12 +22,19 @@ backgrounds, three noise conditions, K=`8,32,128,512,2048` nested Monte Carlo pr
 512-node path quadrature, all 256 intact-donor coalitions, 100 random replacement orders and 64
 independent sampling schedules.
 
-The actual v3 learner evidence is
-`~/.cache/arena_extended/gradientshap/native-dev-v3/execution.json` (SHA256
-`d9b0506e72ff849d17eb76ddba23f424ea33824dd9086fcbba954888b1af6973`). It records PASS, 126
+The actual current learner evidence is
+`~/.cache/arena_extended/gradientshap/new-environment-learner-v1/execution.json` (SHA256
+`7946d1e801856e968d6ec6e78ca613e24d84681d1d13d81e13748d8e5fa44b1b`). It records PASS, 126
 executed cells, 79 code cells, 20 embedded figures, seven fits, completion from own answers, CPU
 execution and no changed source. Its completed notebook SHA256 is
-`6c2c458fa715f52a62f123ce19c8e0d88c9776f4255fe32b2d1d68a1a8546055`.
+`4432975f60bacd0f677f72a76a98946d749f63c9eac5d8b8a75610e5f2a0653f`.
+
+The existing scientific source inventory does not include `uv.lock`. A separate execution-time
+receipt preserves the actual lock bytes before the fresh run and verifies the same hash afterward:
+`e96e946bb00f50592d32c1b3bf453fca4482a0097731120defbebcd978f019eb`. Python is 3.14.2,
+Torch 2.12.1+cu132 executes on CPU with CUDA hidden, NumPy is 1.26.4, and Matplotlib is 3.11.1.
+The learner took 64.77 seconds including its wrapper; sampled process-tree peak RSS was
+5,492,793,344 bytes. These are observations for this machine, not portable resource guarantees.
 
 ## Trusted implementation and independent oracles
 
@@ -44,9 +52,9 @@ equal integer seed is not evidence of same-draw parity. SHAP's raw `phi_vars` is
 delta has one value per repeated sample and is not the averaged-vector completeness residual. Both
 are retained as diagnostics and excluded from parity acceptance.
 
-The v3 reference passed for 1,904 vectors and 15,232 coordinates per package. The maximum same-draw
-SHAP error was `5.684341886080802e-14`; Captum's was zero. Positive-noise parity uses the separate
-analytic smoothed-ReLU fixture.
+The new reference passed for 1,904 vectors and 15,232 coordinates per package, with unchanged
+source guards and same-draw tolerances. Positive-noise parity uses the separate analytic
+smoothed-ReLU fixture.
 
 ## Random seed and frozen protocol
 
@@ -99,13 +107,12 @@ separate branch.
 
 The external `replicate_samples.pt` retains the complete float64 contribution tensor of shape
 `(64,3,64,2048,8)`: 201,326,592 coordinates and 1,610,612,736 raw tensor bytes before
-serialization. In v3 its serialized file is 1,610,614,447 bytes with SHA256
-`46238cad0348f56be4807507256233884af3588037a434197f0cbe0f0aa1a0fa`. The publication archive
-inlines only payload files no larger than 128 MiB. In this release `prepared.pt`, `evaluated.pt` and
-`replicate_samples.pt` exceed that limit and remain at the persistent cache paths recorded in the
-archive manifest. The archive records their absolute paths, byte sizes, artifact hashes and
-manifest hashes and verifies every included member on read-back. The archive is therefore a review
-bundle, not a self-contained copy of multi-gigabyte numerical evidence.
+serialization. Every `.pt` payload, including timings and smaller fitted/control payloads, remains
+external under the fresh persistent cache directory. The archive records their absolute paths,
+byte sizes, artifact hashes and manifest hashes and verifies every included member on read-back.
+`execution.tar.gz.review-bundle.json` additionally binds all regular archive members and checks
+file types, sizes and archive bounds. The archive contains reviewable execution evidence; full
+numerical replay also needs the hash-bound external payloads or a fresh source-only recomputation.
 
 ## Fresh reproduction scope
 
@@ -114,20 +121,26 @@ refits all seven models on CPU, recomputes schedules, samples, quadrature pairs,
 baseline methods, package-reference replays, sampling replicates, distances, curves and both plays,
 then compares every deterministic payload recursively.
 
-V3 fresh reproduction is PASS at
-`~/.cache/arena_extended/gradientshap/reproduction-v3/reproduction.json` (SHA256
-`0a7eb03c59a6266d5904abd4f73e63e1f927ace2e8f32323b4aaaf3437e97b9d`). It used no cached
+Current fresh reproduction is PASS at
+`~/.cache/arena_extended/gradientshap/new-environment-reproduction-v1/reproduction.json`. It used no cached
 model inputs and matched 1,442 arrays, 464,237,288 elements, 2,730 records and 872 scalars with
 maximum absolute error zero. This establishes exact reproduction of the same seeded known models
 and data; it is not an independent model or dataset replication.
 
-Actual browser review is also PASS. It checked 63 rendered math nodes, opened all 43 dropdowns,
-inspected all 20 figures, found no horizontal overflow or console/page errors, and retained 42
-screenshots. The review record is
-`~/.cache/arena_extended/gradientshap/native-dev-v3/visual_review.json` (SHA256
-`88cf020dd7c39cccd2097f36496c8d54df468a3d4077de9c33c819be2085f5f9`). Independent figure
-review is recorded in `visual_review_v3.md` beside it (SHA256
-`1264775bd00b9309be63da772be5db0541b8f4efb18279c59d8747642877d02d`).
+The current review is author review. Its actual browser receipt and screenshots, all twenty
+PNG inspection notes, rendered exercise/solution pages, play variations and environment records
+are retained in the bounded [current_environment_review.tar.gz](current_environment_review.tar.gz)
+and its strict manifest. The canonical learner receipt embeds the combined review and its source
+identities. All twenty current PNGs have exactly the same pixels and dimensions as historical v3;
+their byte hashes changed because the embedded Matplotlib version metadata changed from 3.11.0 to
+3.11.1. No historical independent approval is reused for these new hashes.
+
+Three threshold and four real-recipe play settings were executed. The default real play matches
+its recorded native payload exactly. Donor and alpha prefixes remain exact after changing K.
+Separately recomputed K=32 and K=2048 gradient batches differ by at most
+`1.7763568394002505e-14` in the first 32 contribution vectors; the failed extra byte-exact assertion
+and measured differences are preserved. This rounding observation does not change the declared
+schedule invariant or weaken the exact full-reproduction check.
 
 ## When to regenerate
 
@@ -145,18 +158,17 @@ off-manifold distances, or unexplained source/package drift.
 
 - [learner_execution.json](learner_execution.json) binds the published notebook pair, instruction
   page, 20 namespaced figures, reviewed learner evidence, screenshots, source identities, native
-  artifacts, reproduction record and archive receipt. Its SHA256 is
-  `ddac3a2451f543ec2fa1532f63b762b81526aeb26305f9437d29181ff7491d69`.
+  artifacts, reproduction record and archive receipt.
 - [native_summary.json](native_summary.json) indexes the seven fits and complete study dimensions
-  without replacing the retained numerical payloads. Its SHA256 is
-  `e44e1f0b7bc98ca4ab9c714cffe89121e74e1e0bfae002d12626abc3da72daa4`.
-- [fresh_reproduction.json](fresh_reproduction.json) records the independent seven-model refit and
-  exact recursive comparison. Its SHA256 is
-  `0a7eb03c59a6266d5904abd4f73e63e1f927ace2e8f32323b4aaaf3437e97b9d`.
+  without replacing the retained numerical payloads.
+- [fresh_reproduction.json](fresh_reproduction.json) records the latest separate seven-model refit
+  and exact recursive comparison. The normal registered report performs another fresh refit and
+  updates this record; the publication receipt retains the initially reviewed reproduction hash.
 - [execution.tar.gz](execution.tar.gz) contains the reviewable execution record, completed notebook,
-  before-audit seal, summaries, source snapshots, figures, manifests and payloads within the 128 MiB
-  inline limit. Its manifest binds the three cache-resident larger payloads. Its SHA256 is
-  `b37b9875e7d6e725146adfb2ca4cb96efe50df5164dff1c5df290a0ac7548ece`.
+  before-audit seal, summaries, source snapshots, figures and numerical manifests. All `.pt`
+  payloads stay outside the archive and are explicitly hash-bound to their cache locations.
+- [current_environment_review.tar.gz](current_environment_review.tar.gz) preserves the new
+  environment, source, figure, browser and play review records without changing scientific receipts.
 
 ## Reproduce and republish
 
@@ -167,14 +179,14 @@ section="chapter16_shapley_attribution_baselines/exercises/part15_gradientshap"
 learner_output="$HOME/.cache/arena_extended/gradientshap/learner-evidence-new"
 fresh_output="$HOME/.cache/arena_extended/gradientshap/reproduction-evidence-new"
 
-uv run python "${section}/build_notebooks.py" --check
-uv run python -m pytest -q "${section}/gradientshap_contracts.py"
+uv run --locked python "${section}/build_notebooks.py" --check
+uv run --locked python -m pytest -q "${section}/gradientshap_contracts.py"
 
 CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 \
-  uv run python "${section}/execute_learner.py" \
+  BNB_CUDA_VERSION=130 uv run --locked python "${section}/execute_learner.py" \
   --output-directory "$learner_output"
 CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 \
-  uv run python "${section}/reproduce_native.py" \
+  BNB_CUDA_VERSION=130 uv run --locked python "${section}/reproduce_native.py" \
   --learner-directory "$learner_output" \
   --output-directory "$fresh_output"
 ```
@@ -183,7 +195,7 @@ After an actual browser review has written a passing `visual_review.json` into t
 the release owner may run:
 
 ```bash
-uv run python "${section}/publish_study.py" \
+uv run --locked python "${section}/publish_study.py" \
   --learner-directory "$learner_output" \
   --fresh-directory "$fresh_output"
 ```

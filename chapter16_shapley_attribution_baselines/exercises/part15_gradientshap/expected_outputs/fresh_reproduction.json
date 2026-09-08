@@ -1,7 +1,7 @@
 {
   "status": "PASS",
-  "learner_directory": "/home/bitwise/.cache/arena_extended/gradientshap/native-dev-v3",
-  "learner_execution_sha256": "d9b0506e72ff849d17eb76ddba23f424ea33824dd9086fcbba954888b1af6973",
+  "learner_directory": "/home/bitwise/.cache/arena_extended/gradientshap/new-environment-learner-v1",
+  "learner_execution_sha256": "7946d1e801856e968d6ec6e78ca613e24d84681d1d13d81e13748d8e5fa44b1b",
   "source_inputs": {
     "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_data.py": "9c9c1016ffd6fe839a004c06e801cdcd24d4d71a85ccd3f0707168dec390c7ce",
     "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_methods.py": "2c56ae4e108d13b8e2994f12944af49af3915fcf95d684da96ddec7ed46c5be5",
@@ -22,7 +22,7 @@
     "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/execute_learner.py": "0dfd6ee46e87b0091466c47d6a61e6b451ccdf34758e6a68399ac9f7b42cbc38",
     "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_contracts.py": "3b52d90376e81b75e90ee4f9adfffa35073982708372143542e0a0349b1b319a",
     "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/reproduce_native.py": "382d67ea67ecd6c02d0c1148dbb812c567e6635f706c351f02f85f9cb7d367db",
-    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/publish_study.py": "9be2df77f3074d1b741108eb77e47c94132cee7f5ed1e8dd8ea5726e78be8003"
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/publish_study.py": "ea001e7f27cadc4b37a9d63f3766cc67e7450c4ce053a5c2a4f0466beb5034a0"
   },
   "native_model_retrained": true,
   "cached_model_inputs_used": false,
@@ -125,7 +125,7 @@
       "manifest_array_count": 1442,
       "manifest_array_elements": 464237288
     },
-    "elapsed_seconds": 50.02326952399926,
+    "elapsed_seconds": 52.04646896200029,
     "changed_sources": []
   },
   "artifacts": {
@@ -158,10 +158,10 @@
       "size_bytes": 1610614447
     },
     "fresh_run/timings.pt": {
-      "sha256": "994ea2c12a51cdd2ecb64af37d648849cf91cbc7854be6e5529ecda0ed96ed09",
+      "sha256": "21e405c8ca5f47ce9f7146ee38293d947cc13a0691f9c48f5093415adb054108",
       "size_bytes": 1453
     }
   },
-  "elapsed_seconds": 55.39662990099987,
+  "elapsed_seconds": 57.79460081600064,
   "changed_sources": []
 }

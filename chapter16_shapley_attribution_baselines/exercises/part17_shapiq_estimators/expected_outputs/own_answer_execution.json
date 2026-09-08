@@ -4,10 +4,10 @@
   "completed_from_own_answers": true,
   "source_inputs": {
     "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/estimator_methods.py": "f173ff6d56b4bdd08fb044ddfb9d18c3cdc7e79cff94b940eb66f51b73fb208c",
-    "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/estimator_methods_tests.py": "9315702657a2a81795e273e0a9c4f457100cee98092a0f933e02e010b6dd5a99",
+    "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/estimator_methods_tests.py": "760c871a37c4840b66300b4ec7dc84f17feb2c70e0c26c6836c2f6cf8d56489a",
     "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/estimator_study.py": "846faa75ed7ccc6b4c59bbb2df6501c7b69500cf27c24b495288a573cdbb3c55",
     "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/estimator_plots.py": "835d66ec52d0d7040df7b6ea2ddccf6bb12e0008bc496f6e3f1d0cabd09b0735",
-    "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/lesson.md": "31174dc3d6f95a3dc3d380647ebd69bbd49f9aaa7b5443c35cc78e194ebecf3b",
+    "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/lesson.md": "f242daacaafab111f92ed347417a6ce9e8e99064d142dc375c0624a6a32d41eb",
     "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/lesson_cells.py": "d6c844ab2a307ea8db0b4dcb2a134de56a1d9eb44d954cd4ea05a1b84512b6b2",
     "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/build_notebooks.py": "9d2ccd0d791b479d0978b5a4b670e750e9b1374c27815da4547332c34cec5b7f",
     "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/execute_learner.py": "11695b4c9a40a9ff06147d6ba252eaf542f41305e42b40713bdbce9a7cad6f3b",
@@ -28,63 +28,63 @@
     "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference_tests.py": "95bfe943a98b7353e29328992ee4cbf0a0558cdf3c8d64a692129e47bf1dbc4e",
     "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_study.py": "f49e4f5872beca780c95a3689b919690e5be8c344df3f0625178476ff163ad02",
     "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_study_tests.py": "ef938b660a7b6388023654bd977cfd94e999540ee6d827ead6f5382f757eb3a5",
-    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/publish_study.py": "9be2df77f3074d1b741108eb77e47c94132cee7f5ed1e8dd8ea5726e78be8003",
+    "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/publish_study.py": "ea001e7f27cadc4b37a9d63f3766cc67e7450c4ce053a5c2a4f0466beb5034a0",
     "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/reproduce_native.py": "382d67ea67ecd6c02d0c1148dbb812c567e6635f706c351f02f85f9cb7d367db",
     "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/run_native.py": "f4c359e12c25d77b14100da9e66145480fe0dfa591f9387cf1fe1d8c938f205c",
     "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/solutions.py": "29471f5b57fa41cff1e4db5fe08b5c5f0f22ae20cf71f06a0e2c2323e4a2edc1",
     "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/tests.py": "a6525e5184bfb8a9cb6117b8d447c1feaab2343af9a73c00f41052dd19e4fe84",
     "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/data_manifest.json": "bcf41f96c9f6839ee4cbf24df82ca8467b35a6ed9090a9c4c56fce0b1a23120c",
-    "uv.lock": "03f77ffac99858cd34a653cd703728b9a868c87686a86cef78523a7afa9a6494"
+    "uv.lock": "e96e946bb00f50592d32c1b3bf453fca4482a0097731120defbebcd978f019eb"
   },
   "execution_device": "cpu",
   "analytic_only": false,
   "changed_sources": [],
-  "elapsed_seconds": 28.704689267000504,
+  "elapsed_seconds": 28.913442872000132,
   "cells": 49,
   "code_cells": 22,
   "executed_code_cells": 22,
   "embedded_figures": 10,
-  "completed_learner_sha256": "b28f70ffc5cd27792e72e99d54a6214f2f44c4d4709c4a8adbdb4fdf617179b5",
+  "completed_learner_sha256": "f95c84427e55494c4717bd06ab57dc3ad5720aa9e3f725ffdac6093be90f7dd0",
   "native_summary_exists": true,
   "figures": {
     "01_shared_query.png": {
-      "sha256": "1d835f1d43d808118557de8a2b896e685966f1681c6b736ca9a7efb855b03916",
+      "sha256": "8e0e7004a2f72e8aae6b7fb9379d709722b27a41b115fccc87f791b2974f6e9a",
       "bytes": 83178
     },
     "02_query_play.png": {
-      "sha256": "1d835f1d43d808118557de8a2b896e685966f1681c6b736ca9a7efb855b03916",
+      "sha256": "8e0e7004a2f72e8aae6b7fb9379d709722b27a41b115fccc87f791b2974f6e9a",
       "bytes": 83178
     },
     "03_sampling_and_cost.png": {
-      "sha256": "7ffa341bfd434c7f6aab30cdcc2b6b530809e4055c59d08b92ec0ae81cfa6beb",
+      "sha256": "e68a7df66e110e10deca637eac2b4c9ebf0ce210344f6c7053ee6d9e2b20bdf0",
       "bytes": 110954
     },
     "04_boundary_limit.png": {
-      "sha256": "47f75f714895a1a0fd1330e3d7018038a6eb7153580fcae8f55c70e07b7d64eb",
+      "sha256": "cd99c47e2e1791b9d7c9d4ce8ee09c71289602955137bc6ca23f723a74e50f0a",
       "bytes": 102960
     },
     "05_model_controls.png": {
-      "sha256": "ff5ae60098fa6a4cc3b4b6303f38684196a5ae170719caa61158c4b60c6a21f2",
+      "sha256": "b41a792c5c23ba5234b2d2e41d2dff45f22d3f49e8563c7002290a031733ab19",
       "bytes": 72814
     },
     "06_query_budget_errors.png": {
-      "sha256": "20e5cc64dce6a854969c89597a3aff944ce19f2b9be7defe2daba1f04eea386c",
+      "sha256": "e2abf92c2914cb90ddf109782d5bebb50b936d6825503fe46f28af72949348da",
       "bytes": 856705
     },
     "07_signed_pair_comparison.png": {
-      "sha256": "50923082be444a9e4c438f9c430ad22c1218c8a9627bb9a29aa11ffd3c21fde1",
+      "sha256": "5f656f9ae215f9215dad217e536c2f9bfdcff59f2bff9b170405a1b0f25268c7",
       "bytes": 155370
     },
     "08_sampling_variance.png": {
-      "sha256": "13e92a731dd08994b5ee437b8129aa66c84389592ecd54a1a1651759a9408a8c",
+      "sha256": "3a3d1a4cf35cc096f97f071440af45d3182c3a1bcc4a5070e1eddb7b373f11bd",
       "bytes": 621897
     },
     "09_unique_queries_and_rank.png": {
-      "sha256": "117d7a59067217f3f1597beac34866c5b2bbdd029007417872901a23d003cce5",
+      "sha256": "32c4aef1562b7c8d9d3efb6f1761a16821013136029c80ace3326e9907c78306",
       "bytes": 160316
     },
     "10_native_query_play.png": {
-      "sha256": "53c5822820024a3602880da2c8a5485a0388b2e046ca45a85d3aed708f6dad78",
+      "sha256": "b7df1fb079f047a037cdf06b15b78889d2892327ffe2b355887c084deb8d66ec",
       "bytes": 160311
     }
   }

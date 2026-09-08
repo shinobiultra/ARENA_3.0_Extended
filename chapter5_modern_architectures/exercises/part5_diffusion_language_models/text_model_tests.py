@@ -100,8 +100,16 @@ def test_ar_cached_uncached_generations(fn=reference.sample_autoregressive):
     cached=fn(model,context,valid,use_cache=True,**args)
     uncached=fn(model,context,valid,use_cache=False,**args)
     assert model.training, 'Cached and uncached generation must agree and restore model mode; caching should reduce token work. Required condition: model.training'
-    assert t.equal(cached[0],uncached[0]) and t.equal(cached[1],uncached[1]), 'Cached and uncached generation must agree and restore model mode; caching should reduce token work. Required condition: t.equal(cached[0], uncached[0]) and t.equal(cached[1], uncached[1])'
-    assert sum(x['input_tokens'] for x in cached[2])<sum(x['input_tokens'] for x in uncached[2]), "Cached and uncached generation must agree and restore model mode; caching should reduce token work. Required condition: sum((x['input_tokens'] for x in cached[2])) < sum((x['input_tokens'] for x in uncached[2]))"
+    assert t.equal(cached[0],uncached[0]) and t.equal(cached[1],uncached[1]), (
+        "Cached and uncached generation must agree and restore model mode; caching should "
+        "reduce token work. Required condition: t.equal(cached[0], uncached[0]) and "
+        "t.equal(cached[1], uncached[1])"
+    )
+    assert sum(x['input_tokens'] for x in cached[2])<sum(x['input_tokens'] for x in uncached[2]), (
+        "Cached and uncached generation must agree and restore model mode; caching should "
+        "reduce token work. Required condition: sum((x['input_tokens'] for x in cached[2])) <"
+        " sum((x['input_tokens'] for x in uncached[2]))"
+    )
     print('Actual cached/uncached generated tokens agree, with input work counted!')
 
 
@@ -131,7 +139,11 @@ def test_timing_path_has_identical_tokens_without_trace_storage():
     a=reference.sample_autoregressive(model,context,valid,record_trace=True,**args)
     b=reference.sample_autoregressive(model,context,valid,record_trace=False,**args)
     assert t.equal(a[0],b[0]) and t.equal(a[1],b[1]), 'Removing trace storage must leave sampled tokens, lengths and forward-call counts unchanged. Required condition: t.equal(a[0], b[0]) and t.equal(a[1], b[1])'
-    assert all('entropy' not in row and 'active' not in row for row in b[2]), "Removing trace storage must leave sampled tokens, lengths and forward-call counts unchanged. Required condition: all(('entropy' not in row and 'active' not in row for row in b[2]))"
+    assert all('entropy' not in row and 'active' not in row for row in b[2]), (
+        "Removing trace storage must leave sampled tokens, lengths and forward-call counts "
+        "unchanged. Required condition: all(('entropy' not in row and 'active' not in row for"
+        " row in b[2]))"
+    )
     inputs=t.cat((context,t.zeros(2,4,dtype=t.long)),1);eligible=t.zeros_like(inputs,dtype=t.bool);eligible[:,2:]=True
     def fn(tokens,p):return model(tokens,t.ones_like(tokens,dtype=t.bool),causal=False)[0]
     for sampler in ('ancestral','uniform','confidence'):
@@ -139,5 +151,9 @@ def test_timing_path_has_identical_tokens_without_trace_storage():
             a=sample_text_diffusion(fn,inputs,eligible,12,steps=4,sampler=sampler,record_trace=True,generator=t.Generator().manual_seed(9))
             b=sample_text_diffusion(fn,inputs,eligible,12,steps=4,sampler=sampler,record_trace=False,generator=t.Generator().manual_seed(9))
         assert t.equal(a[0],b[0]) and b[1] is None, 'Removing trace storage must leave sampled tokens, lengths and forward-call counts unchanged. Required condition: t.equal(a[0], b[0]) and b[1] is None'
-        assert len(a[2])==len(b[2]) and all('entropy' not in row for row in b[2]), "Removing trace storage must leave sampled tokens, lengths and forward-call counts unchanged. Required condition: len(a[2]) == len(b[2]) and all(('entropy' not in row for row in b[2]))"
+        assert len(a[2])==len(b[2]) and all('entropy' not in row for row in b[2]), (
+            "Removing trace storage must leave sampled tokens, lengths and forward-call counts "
+            "unchanged. Required condition: len(a[2]) == len(b[2]) and all(('entropy' not in row "
+            "for row in b[2]))"
+        )
     print('Instrumented and timing-only paths generate identical tokens for AR and all diffusion samplers!')

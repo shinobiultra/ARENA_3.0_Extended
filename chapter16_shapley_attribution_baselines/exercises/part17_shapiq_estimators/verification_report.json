@@ -74,9 +74,9 @@
       "train": 758
     }
   ],
-  "date_run": "2026-09-07T10:46:56+00:00",
+  "date_run": "2026-09-08T03:29:13+00:00",
   "evidence_level": "complete_native_pair_interaction_sampling_with_exact_games_and_author_package_checks",
-  "git_commit": "8eab192b",
+  "git_commit": "ce96ceaa",
   "gpu_name": "unavailable",
   "gt_tier": "GT-0",
   "known_failures": [],
@@ -146,13 +146,13 @@
       "fresh_compared_arrays": 663,
       "fresh_compared_elements": 118275724,
       "fresh_comparison": "exact_recursive_dtype_shape_value_sha256_including_container_order",
-      "fresh_evidence_sha256": "f4c0366ab52e5780e8fc47ef0e63f0821ac5b271679f554fc613b6162f347563",
-      "fresh_output_directory": "/home/bitwise/.cache/arena_extended/shapiq_estimators/report_reproductions/report-fzz6_8nc/fresh_cpu",
+      "fresh_evidence_sha256": "d4d92e5c74c9ee94da3d23bce82af9f314603aa45bd18db5a00fd7ab8bdc2d3d",
+      "fresh_output_directory": "/home/bitwise/.cache/arena_extended/shapiq_estimators/report_reproductions/report-xqkhcg5z/fresh_cpu",
       "fresh_predictive_discovery": false,
       "fresh_reproduction_passed": true,
       "gpu_total_memory_gb": null,
       "known_model_state_hashes_matched": 21,
-      "learner_evidence_sha256": "cc6180eec9be95f0ef54a7a596b704fa9f522d3bf76bc0dffc8d399d4ff5e14c",
+      "learner_evidence_sha256": "f6a8823d6d583415256165f5fb6670150d758b9494a0a6add70702dce752fbb3",
       "logical_query_benchmark": true,
       "method_superiority_is_acceptance_gate": false,
       "model_fits": 7,
@@ -754,7 +754,7 @@
   "peak_vram_gb": 0.0,
   "report_inputs": {
     "algorithm": "sha256",
-    "combined_sha256": "ad4f2f96f33d5e9c97c25cd03010bb1f878f279e531aab8ecb8f8c43b3648e1b",
+    "combined_sha256": "b837c52db79238683aa3d42543c04061d733f0221d59cef295aac4fd9f56261d",
     "files": [
       {
         "path": "arena_ext/verification.py",
@@ -838,8 +838,8 @@
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/publish_study.py",
-        "sha256": "9be2df77f3074d1b741108eb77e47c94132cee7f5ed1e8dd8ea5726e78be8003",
-        "size_bytes": 17833
+        "sha256": "ea001e7f27cadc4b37a9d63f3766cc67e7450c4ce053a5c2a4f0466beb5034a0",
+        "size_bytes": 18278
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/reproduce_native.py",
@@ -863,18 +863,18 @@
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/16.17_One_Query_Many_Interactions_exercises.ipynb",
-        "sha256": "543d8b6bfc2f22df3c40ca24a5adca524337ac80601096cd55dd808b22438f90",
-        "size_bytes": 2267095
+        "sha256": "5823504f59f9b975c27ee252e1993022355584159ca1ccac31fcc974c3b54525",
+        "size_bytes": 2267567
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/16.17_One_Query_Many_Interactions_solutions.ipynb",
-        "sha256": "ab229dc694213097c201015c0fe53f1ddf9bc479a0f4599cd88a007b446f5183",
-        "size_bytes": 2267956
+        "sha256": "40d6f0cfa512483ec9a1dbe1d4fd4ea21682433680f3e6db1ad4881476db3df2",
+        "size_bytes": 2268428
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/README.md",
-        "sha256": "11f8e5e2b2cd38061658bfe4fe100e9016837b61d4a2a979363dc70a2d5f205c",
-        "size_bytes": 3909
+        "sha256": "383d874cfc6fc301ac89dd9e94966df271ad8c47c6928d24b52a6097bfc08a21",
+        "size_bytes": 4120
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/artifacts.lock.yml",
@@ -898,8 +898,8 @@
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/estimator_methods_tests.py",
-        "sha256": "9315702657a2a81795e273e0a9c4f457100cee98092a0f933e02e010b6dd5a99",
-        "size_bytes": 11116
+        "sha256": "760c871a37c4840b66300b4ec7dc84f17feb2c70e0c26c6836c2f6cf8d56489a",
+        "size_bytes": 11517
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/estimator_plots.py",
@@ -928,42 +928,42 @@
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/expected_outputs/README.md",
-        "sha256": "9609645296bd7d24850f23cd3035e3dfcc43a66b55332ef296059bdcea9e314a",
-        "size_bytes": 1815
+        "sha256": "5688973fe36ac13c1ddbfeb0df945e437a9bec24047b08865de620c66301d475",
+        "size_bytes": 5312
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/expected_outputs/author_visual_review.json",
-        "sha256": "b53af15ce0fa1ce71719cc62f2339e36d6f1779e2e227faa83786f491a2aee4a",
-        "size_bytes": 4681
+        "sha256": "7b092cf0eddbd4420b413228d67cac0301fbc598e33c08ebc91af15baeffcfb8",
+        "size_bytes": 7230
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/expected_outputs/fresh_reproduction.json",
-        "sha256": "f4c0366ab52e5780e8fc47ef0e63f0821ac5b271679f554fc613b6162f347563",
-        "size_bytes": 326163
+        "sha256": "d4d92e5c74c9ee94da3d23bce82af9f314603aa45bd18db5a00fd7ab8bdc2d3d",
+        "size_bytes": 326172
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/expected_outputs/learner_execution.json",
-        "sha256": "cc6180eec9be95f0ef54a7a596b704fa9f522d3bf76bc0dffc8d399d4ff5e14c",
-        "size_bytes": 9088
+        "sha256": "f6a8823d6d583415256165f5fb6670150d758b9494a0a6add70702dce752fbb3",
+        "size_bytes": 9113
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/expected_outputs/native_summary.json",
-        "sha256": "e2b94b25bb7008a2ac2a9ea0e0d5e8202e237d72790c6f564487900337b5b972",
-        "size_bytes": 1405
+        "sha256": "4ef0ef51636fe980561a0ac41703d179e3309b4a58008fabf3fad0aac3811cb6",
+        "size_bytes": 1406
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/expected_outputs/own_answer_execution.json",
-        "sha256": "1e8364fefbf88c3f25af9db6af1233d703251ff8c618b90c8dfea75d5e74c688",
+        "sha256": "3d93732521e1f2ec1c2590acb6dcdae27ec9580602d7012e683b676c9e0be753",
         "size_bytes": 7243
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/expected_outputs/reference_metrics.json",
-        "sha256": "6bc1139a1a361051c48a48fdf01712eb14078ab094007e378913da2d7e502592",
+        "sha256": "2e28cb04fe5e7a67a3c5022e806e59f72a79eae19bf63b7f63cb78bb33d9445f",
         "size_bytes": 19891
       },
       {
         "path": "chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators/lesson.md",
-        "sha256": "31174dc3d6f95a3dc3d380647ebd69bbd49f9aaa7b5443c35cc78e194ebecf3b",
+        "sha256": "f242daacaafab111f92ed347417a6ce9e8e99064d142dc375c0624a6a32d41eb",
         "size_bytes": 28126
       },
       {
@@ -1018,57 +1018,57 @@
       },
       {
         "path": "chapter16_shapley_attribution_baselines/instructions/assets/shapiq_01_shared_query.png",
-        "sha256": "1d835f1d43d808118557de8a2b896e685966f1681c6b736ca9a7efb855b03916",
+        "sha256": "8e0e7004a2f72e8aae6b7fb9379d709722b27a41b115fccc87f791b2974f6e9a",
         "size_bytes": 83178
       },
       {
         "path": "chapter16_shapley_attribution_baselines/instructions/assets/shapiq_02_query_play.png",
-        "sha256": "1d835f1d43d808118557de8a2b896e685966f1681c6b736ca9a7efb855b03916",
+        "sha256": "8e0e7004a2f72e8aae6b7fb9379d709722b27a41b115fccc87f791b2974f6e9a",
         "size_bytes": 83178
       },
       {
         "path": "chapter16_shapley_attribution_baselines/instructions/assets/shapiq_03_sampling_and_cost.png",
-        "sha256": "7ffa341bfd434c7f6aab30cdcc2b6b530809e4055c59d08b92ec0ae81cfa6beb",
+        "sha256": "e68a7df66e110e10deca637eac2b4c9ebf0ce210344f6c7053ee6d9e2b20bdf0",
         "size_bytes": 110954
       },
       {
         "path": "chapter16_shapley_attribution_baselines/instructions/assets/shapiq_04_boundary_limit.png",
-        "sha256": "47f75f714895a1a0fd1330e3d7018038a6eb7153580fcae8f55c70e07b7d64eb",
+        "sha256": "cd99c47e2e1791b9d7c9d4ce8ee09c71289602955137bc6ca23f723a74e50f0a",
         "size_bytes": 102960
       },
       {
         "path": "chapter16_shapley_attribution_baselines/instructions/assets/shapiq_05_model_controls.png",
-        "sha256": "ff5ae60098fa6a4cc3b4b6303f38684196a5ae170719caa61158c4b60c6a21f2",
+        "sha256": "b41a792c5c23ba5234b2d2e41d2dff45f22d3f49e8563c7002290a031733ab19",
         "size_bytes": 72814
       },
       {
         "path": "chapter16_shapley_attribution_baselines/instructions/assets/shapiq_06_query_budget_errors.png",
-        "sha256": "20e5cc64dce6a854969c89597a3aff944ce19f2b9be7defe2daba1f04eea386c",
+        "sha256": "e2abf92c2914cb90ddf109782d5bebb50b936d6825503fe46f28af72949348da",
         "size_bytes": 856705
       },
       {
         "path": "chapter16_shapley_attribution_baselines/instructions/assets/shapiq_07_signed_pair_comparison.png",
-        "sha256": "50923082be444a9e4c438f9c430ad22c1218c8a9627bb9a29aa11ffd3c21fde1",
+        "sha256": "5f656f9ae215f9215dad217e536c2f9bfdcff59f2bff9b170405a1b0f25268c7",
         "size_bytes": 155370
       },
       {
         "path": "chapter16_shapley_attribution_baselines/instructions/assets/shapiq_08_sampling_variance.png",
-        "sha256": "13e92a731dd08994b5ee437b8129aa66c84389592ecd54a1a1651759a9408a8c",
+        "sha256": "3a3d1a4cf35cc096f97f071440af45d3182c3a1bcc4a5070e1eddb7b373f11bd",
         "size_bytes": 621897
       },
       {
         "path": "chapter16_shapley_attribution_baselines/instructions/assets/shapiq_09_unique_queries_and_rank.png",
-        "sha256": "117d7a59067217f3f1597beac34866c5b2bbdd029007417872901a23d003cce5",
+        "sha256": "32c4aef1562b7c8d9d3efb6f1761a16821013136029c80ace3326e9907c78306",
         "size_bytes": 160316
       },
       {
         "path": "chapter16_shapley_attribution_baselines/instructions/assets/shapiq_10_native_query_play.png",
-        "sha256": "53c5822820024a3602880da2c8a5485a0388b2e046ca45a85d3aed708f6dad78",
+        "sha256": "b7df1fb079f047a037cdf06b15b78889d2892327ffe2b355887c084deb8d66ec",
         "size_bytes": 160311
       },
       {
         "path": "chapter16_shapley_attribution_baselines/instructions/pages/17_[16.17]_One_Query_Many_Interactions.md",
-        "sha256": "de98cd9f662659f0ebb596a1c60ba3d50810c4cbb1586f4e4c069cf2f1256764",
+        "sha256": "c979fdc985605ede0aeb46625ef75e6f9402cc21683b411944186df3c87055cc",
         "size_bytes": 47608
       },
       {
@@ -1088,8 +1088,8 @@
       },
       {
         "path": "uv.lock",
-        "sha256": "03f77ffac99858cd34a653cd703728b9a868c87686a86cef78523a7afa9a6494",
-        "size_bytes": 588124
+        "sha256": "e96e946bb00f50592d32c1b3bf453fca4482a0097731120defbebcd978f019eb",
+        "size_bytes": 610963
       }
     ],
     "schema_version": 1
@@ -1098,5 +1098,5 @@
     "Predictive interactions in observational replacement games do not establish causal ingredient effects."
   ],
   "tests_passed": true,
-  "wall_clock_seconds": 25.984483
+  "wall_clock_seconds": 26.601722
 }

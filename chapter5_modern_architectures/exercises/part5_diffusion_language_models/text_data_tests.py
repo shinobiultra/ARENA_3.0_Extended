@@ -8,16 +8,32 @@ from .text_diffusion_methods import balanced_parentheses
 
 def test_synthetic_split_semantics():
     splits=data.synthetic_examples({'train':30,'development':12,'final':12})
-    assert splits==data.synthetic_examples({'train':30,'development':12,'final':12}), "Keep questions disjoint and check each task against independently computed grammar, arithmetic or contextual facts. Required condition: splits == data.synthetic_examples({'train': 30, 'development': 12, 'final': 12})"
+    assert splits==data.synthetic_examples({'train':30,'development':12,'final':12}), (
+        "Keep questions disjoint and check each task against independently computed grammar, "
+        "arithmetic or contextual facts. Required condition: splits == "
+        "data.synthetic_examples({'train': 30, 'development': 12, 'final': 12})"
+    )
     seen=set()
     for split,rows in splits.items():
         for row in rows:
             assert row['prompt'] not in seen, "Keep questions disjoint and check each task against independently computed grammar, arithmetic or contextual facts. Required condition: row['prompt'] not in seen";seen.add(row['prompt'])
             if row['task']=='parentheses':
-                assert balanced_parentheses(row['parenthesis_prefix']+row['answer']), "Keep questions disjoint and check each task against independently computed grammar, arithmetic or contextual facts. Required condition: balanced_parentheses(row['parenthesis_prefix'] + row['answer'])"
+                assert balanced_parentheses(row['parenthesis_prefix']+row['answer']), (
+                    "Keep questions disjoint and check each task against independently computed grammar, "
+                    "arithmetic or contextual facts. Required condition: "
+                    "balanced_parentheses(row['parenthesis_prefix'] + row['answer'])"
+                )
                 assert len(row['answer'])==row['pairs'], "Keep questions disjoint and check each task against independently computed grammar, arithmetic or contextual facts. Required condition: len(row['answer']) == row['pairs']"
-            elif row['task']=='arithmetic':assert int(row['answer'])==sum(row['operands']), "Keep questions disjoint and check each task against independently computed grammar, arithmetic or contextual facts. Required condition: int(row['answer']) == sum(row['operands'])"
-            else:assert row['facts'][row['query']]==row['answer'], "Keep questions disjoint and check each task against independently computed grammar, arithmetic or contextual facts. Required condition: row['facts'][row['query']] == row['answer']"
+            elif row['task']=='arithmetic':assert int(row['answer'])==sum(row['operands']), (
+                "Keep questions disjoint and check each task against independently computed grammar, "
+                "arithmetic or contextual facts. Required condition: int(row['answer']) == "
+                "sum(row['operands'])"
+            )
+            else:assert row['facts'][row['query']]==row['answer'], (
+                "Keep questions disjoint and check each task against independently computed grammar, "
+                "arithmetic or contextual facts. Required condition: row['facts'][row['query']] == "
+                "row['answer']"
+            )
     print('Independent grammar/arithmetic/QA scoring and disjoint questions passed!')
 
 
@@ -42,10 +58,22 @@ def test_answer_length_never_changes_input_validity():
     altered=data.encode_examples(modified,empty,tokenizer)
     for split in original:
         for left,right in zip(original[split],altered[split]):
-            assert left['context_ids']==right['context_ids'], "Changing the answer length must not alter conditioning, attention validity, target eligibility or output capacity. Required condition: left['context_ids'] == right['context_ids']"
-            assert left['eligible']==right['eligible'] and left['valid']==right['valid'], "Changing the answer length must not alter conditioning, attention validity, target eligibility or output capacity. Required condition: left['eligible'] == right['eligible'] and left['valid'] == right['valid']"
+            assert left['context_ids']==right['context_ids'], (
+                "Changing the answer length must not alter conditioning, attention validity, target "
+                "eligibility or output capacity. Required condition: left['context_ids'] == "
+                "right['context_ids']"
+            )
+            assert left['eligible']==right['eligible'] and left['valid']==right['valid'], (
+                "Changing the answer length must not alter conditioning, attention validity, target "
+                "eligibility or output capacity. Required condition: left['eligible'] == "
+                "right['eligible'] and left['valid'] == right['valid']"
+            )
             assert all(left['valid'][data.CONTEXT_SLOTS:]), "Changing the answer length must not alter conditioning, attention validity, target eligibility or output capacity. Required condition: all(left['valid'][data.CONTEXT_SLOTS:])"
-            assert len(left['target_ids'])==len(right['target_ids'])==data.TARGET_SLOTS, "Changing the answer length must not alter conditioning, attention validity, target eligibility or output capacity. Required condition: len(left['target_ids']) == len(right['target_ids']) == data.TARGET_SLOTS"
+            assert len(left['target_ids'])==len(right['target_ids'])==data.TARGET_SLOTS, (
+                "Changing the answer length must not alter conditioning, attention validity, target "
+                "eligibility or output capacity. Required condition: len(left['target_ids']) == "
+                "len(right['target_ids']) == data.TARGET_SLOTS"
+            )
     print('Counterfactual answer lengths leave every input validity/eligibility bit unchanged!')
 
 

@@ -1,0 +1,817 @@
+{
+  "date": "2026-09-08",
+  "status": "ASSIGNED_READABILITY_REPAIRS_COMPLETE_WITH_EXPLICIT_REVIEWED_PUBLICATION_COMPATIBILITY",
+  "scope": "All 80 initial readability flags across the 26 assigned non-chapter-16 files, plus four narrowly reviewed validation guard changes and their support. No native experiment or scientific change.",
+  "before_snapshot": "/home/bitwise/.cache/arena-readability-repair-2026-09-08/before",
+  "baseline_index": "/home/bitwise/.cache/arena-readability-repair-2026-09-08/before_index.json",
+  "normalization": "Python AST including every constant, excluding source locations. CommonMark-rendered HTML events preserve code exactly and normalize only non-code text whitespace. Validation guard changes are separately classified and reversed only by exact root-reviewed snippets before whole-AST comparison.",
+  "source_files": [
+    {
+      "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/geometry_evidence.py",
+      "old_sha256": "7d800a28bafeaae39926b098842f5edcb20d6d8f9a1b40caad3f7271e788c548",
+      "new_sha256": "e11bf414272e4f22b85f7b365647f6b676706a5748b75140e7677f0d6ce13223",
+      "old_size_bytes": 11244,
+      "new_size_bytes": 11362,
+      "equivalence": "python_ast_with_reviewed_validation_guard",
+      "whole_source_ast_or_render_identical": false,
+      "old_semantic_sha256": "d879c440e98b608105e78970e355ff53ac3d9bb5f8a4958247571800eacf7646",
+      "new_semantic_sha256": "d250b02b992cd6ceeb40dc9448baaa6a5f62178d367236cf8bc8cc28708d01ca",
+      "after_reversing_only_reviewed_validation_guards_semantic_sha256": "d879c440e98b608105e78970e355ff53ac3d9bb5f8a4958247571800eacf7646",
+      "reviewed_validation_guard_patches": [
+        {
+          "before": "from __future__ import annotations\n",
+          "after": "from __future__ import annotations\n\nfrom arena_ext.readability_compatibility import source_matches_execution\n"
+        },
+        {
+          "before": "        if name=='geometry_plotting.py' and sha256(HERE/name)!=digest:",
+          "after": "        if name=='geometry_plotting.py' and not source_matches_execution(HERE/name, digest):"
+        },
+        {
+          "before": "        elif name!='lesson.md' and sha256(HERE/name)!=digest:raise ValueError('Executed dependency changed: '+name)",
+          "after": "        elif name!='lesson.md' and not source_matches_execution(HERE/name, digest):raise ValueError('Executed dependency changed: '+name)"
+        }
+      ],
+      "resolved_flags": []
+    },
+    {
+      "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/geometry_plotting.py",
+      "old_sha256": "d185bc99e49504e6e32d39a39a2782bfd2a20814ac706aaa15eac39f3fadc1fe",
+      "new_sha256": "292fde5918baa85cb0db7709b703a4044f04cd0bc9f87f8a0554b89be97f2c61",
+      "old_size_bytes": 14510,
+      "new_size_bytes": 14767,
+      "equivalence": "python_ast",
+      "whole_source_ast_or_render_identical": true,
+      "old_semantic_sha256": "92c178f124eca447a228f30af98c288f7fb39df08714b6c5d1e362de51b547a3",
+      "new_semantic_sha256": "92c178f124eca447a228f30af98c288f7fb39df08714b6c5d1e362de51b547a3",
+      "after_reversing_only_reviewed_validation_guards_semantic_sha256": "92c178f124eca447a228f30af98c288f7fb39df08714b6c5d1e362de51b547a3",
+      "reviewed_validation_guard_patches": [],
+      "resolved_flags": [
+        "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/geometry_plotting.py:107: line length 277 exceeds 240",
+        "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/geometry_plotting.py:151: line length 259 exceeds 240"
+      ]
+    },
+    {
+      "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/geometry_reproduction_cache.py",
+      "old_sha256": "8f24e1e5cbcc4cae0da25a27ea777c5fe34e5e7611633962743cd593790c053c",
+      "new_sha256": "50a1a1cfe642079093e1f8d0a3228adda03679c1da7b67fca3d0bfbf6daa1923",
+      "old_size_bytes": 5827,
+      "new_size_bytes": 5901,
+      "equivalence": "python_ast_with_reviewed_validation_guard",
+      "whole_source_ast_or_render_identical": false,
+      "old_semantic_sha256": "14d5e95554a4c15a1af9c02c46ceca64ccb3e0a8d1937f646ce723cfb807145e",
+      "new_semantic_sha256": "6e430e0bce50fe69ea645d987b37619e020ffd708f06422f6c2b9a4b35041e47",
+      "after_reversing_only_reviewed_validation_guards_semantic_sha256": "14d5e95554a4c15a1af9c02c46ceca64ccb3e0a8d1937f646ce723cfb807145e",
+      "reviewed_validation_guard_patches": [
+        {
+          "before": "from __future__ import annotations\n",
+          "after": "from __future__ import annotations\n\nfrom arena_ext.readability_compatibility import source_matches_execution\n"
+        },
+        {
+          "before": "        if sha256(source / \"source_snapshot\" / name) != digest or sha256(here / name) != digest:",
+          "after": "        if not source_matches_execution(here / name, digest, source / \"source_snapshot\" / name):"
+        }
+      ],
+      "resolved_flags": []
+    },
+    {
+      "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/expected_outputs/verification_ladder.md",
+      "old_sha256": "c3b684b6860a1e2b7ef99b25f41f7d880dcaeca1eb39ad5f7d34a6bbf8bb01bf",
+      "new_sha256": "c5e62cda4e4b0f8339b96d9dda80b34dee5d37569a6d1ee3df0cba3ab8ecff91",
+      "old_size_bytes": 2525,
+      "new_size_bytes": 2525,
+      "equivalence": "commonmark_whitespace_only",
+      "whole_source_ast_or_render_identical": true,
+      "old_semantic_sha256": "d51722c49b02f745abfb9e1143e82c07961f702c001b5884f75941de39f3c940",
+      "new_semantic_sha256": "d51722c49b02f745abfb9e1143e82c07961f702c001b5884f75941de39f3c940",
+      "after_reversing_only_reviewed_validation_guards_semantic_sha256": "d51722c49b02f745abfb9e1143e82c07961f702c001b5884f75941de39f3c940",
+      "reviewed_validation_guard_patches": [],
+      "resolved_flags": [
+        "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/expected_outputs/verification_ladder.md:5: line length 525 exceeds 400",
+        "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/expected_outputs/verification_ladder.md:9: line length 540 exceeds 400",
+        "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/expected_outputs/verification_ladder.md:17: line length 516 exceeds 400"
+      ]
+    },
+    {
+      "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/expected_outputs/fresh_cuda_release_v2/README.md",
+      "old_sha256": "e2b79959975f8931c0c8fd01b4300808e2102a000ad89cc5164f2ee66edad73c",
+      "new_sha256": "b723c541d46a96be730025af0bfdfd0fea3faf6bd841b3e7440a1900a217ebb1",
+      "old_size_bytes": 772,
+      "new_size_bytes": 772,
+      "equivalence": "commonmark_whitespace_only",
+      "whole_source_ast_or_render_identical": true,
+      "old_semantic_sha256": "1a92110a2ea173e8f359b415570c79a5addf97da7de94170ffe7c885e214d571",
+      "new_semantic_sha256": "1a92110a2ea173e8f359b415570c79a5addf97da7de94170ffe7c885e214d571",
+      "after_reversing_only_reviewed_validation_guards_semantic_sha256": "1a92110a2ea173e8f359b415570c79a5addf97da7de94170ffe7c885e214d571",
+      "reviewed_validation_guard_patches": [],
+      "resolved_flags": [
+        "chapter5_modern_architectures/exercises/part5_diffusion_language_models/expected_outputs/fresh_cuda_release_v2/README.md:1: line length 771 exceeds 400"
+      ]
+    },
+    {
+      "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/expected_outputs/own_full_release_v1/README.md",
+      "old_sha256": "b1e324c660c47f51394edc213a35ac5474f23e5cbaae93fe0e745b42af622d1a",
+      "new_sha256": "6450bc36b98cc7d4bf2dd0610e4530c82b636c324d03bd86eba33ff484faf535",
+      "old_size_bytes": 530,
+      "new_size_bytes": 530,
+      "equivalence": "commonmark_whitespace_only",
+      "whole_source_ast_or_render_identical": true,
+      "old_semantic_sha256": "c6370952cf5e9a1a11eb5eb67517b0836fbd97e4e87b0e1146fd4e2d21f41285",
+      "new_semantic_sha256": "c6370952cf5e9a1a11eb5eb67517b0836fbd97e4e87b0e1146fd4e2d21f41285",
+      "after_reversing_only_reviewed_validation_guards_semantic_sha256": "c6370952cf5e9a1a11eb5eb67517b0836fbd97e4e87b0e1146fd4e2d21f41285",
+      "reviewed_validation_guard_patches": [],
+      "resolved_flags": [
+        "chapter5_modern_architectures/exercises/part5_diffusion_language_models/expected_outputs/own_full_release_v1/README.md:1: line length 529 exceeds 400"
+      ]
+    },
+    {
+      "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/expected_outputs/report_aggregation_failure_v1/README.md",
+      "old_sha256": "112651028b583d73e869a406bd01f9f5943ff6794cf74d046b604aa842ce277a",
+      "new_sha256": "cde21c8bd082d2b4c33e3bbf082bc476ab3d517f862d325bcce60580fafa8425",
+      "old_size_bytes": 561,
+      "new_size_bytes": 561,
+      "equivalence": "commonmark_whitespace_only",
+      "whole_source_ast_or_render_identical": true,
+      "old_semantic_sha256": "bf72b28285f42a4bc02ea11726ef38e38a7f706c2b7f512e3a05cf74e56e90c0",
+      "new_semantic_sha256": "bf72b28285f42a4bc02ea11726ef38e38a7f706c2b7f512e3a05cf74e56e90c0",
+      "after_reversing_only_reviewed_validation_guards_semantic_sha256": "bf72b28285f42a4bc02ea11726ef38e38a7f706c2b7f512e3a05cf74e56e90c0",
+      "reviewed_validation_guard_patches": [],
+      "resolved_flags": [
+        "chapter5_modern_architectures/exercises/part5_diffusion_language_models/expected_outputs/report_aggregation_failure_v1/README.md:1: line length 560 exceeds 400"
+      ]
+    },
+    {
+      "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/lesson.md",
+      "old_sha256": "666c84478d991b048e838d24a3eb362412f85d54fd5a305db35f8110804a0a00",
+      "new_sha256": "19d366880446ed059e867238ec641b1a211a51c21b7b8dc35b32fe6265e9ca7f",
+      "old_size_bytes": 135183,
+      "new_size_bytes": 135183,
+      "equivalence": "commonmark_whitespace_only",
+      "whole_source_ast_or_render_identical": true,
+      "old_semantic_sha256": "49cb0a998f151d65b2c20ef6f82ed962c2e1efd87a89770875a128e02dc689d1",
+      "new_semantic_sha256": "49cb0a998f151d65b2c20ef6f82ed962c2e1efd87a89770875a128e02dc689d1",
+      "after_reversing_only_reviewed_validation_guards_semantic_sha256": "49cb0a998f151d65b2c20ef6f82ed962c2e1efd87a89770875a128e02dc689d1",
+      "reviewed_validation_guard_patches": [],
+      "resolved_flags": [
+        "chapter5_modern_architectures/exercises/part5_diffusion_language_models/lesson.md:1148: line length 403 exceeds 400"
+      ]
+    },
+    {
+      "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/study_evidence.py",
+      "old_sha256": "393be13a8c1bce83b70a22cb4026f632829749d7f9ad861aa99e1a933b68aa73",
+      "new_sha256": "e5c8ed84b69df2998e41069e0a2b120f180281cd6d80ddb163b580f749e6fbfe",
+      "old_size_bytes": 18346,
+      "new_size_bytes": 18424,
+      "equivalence": "python_ast_with_reviewed_validation_guard",
+      "whole_source_ast_or_render_identical": false,
+      "old_semantic_sha256": "7f7bbddeb37c9d0d2d2815183a6283cf6357fbfa2530daf5edff8196e4f0b8d5",
+      "new_semantic_sha256": "78e015f8b429098c3ab90260d2956774cbfe882d1cb6e07f07ba038b1e1b650c",
+      "after_reversing_only_reviewed_validation_guards_semantic_sha256": "7f7bbddeb37c9d0d2d2815183a6283cf6357fbfa2530daf5edff8196e4f0b8d5",
+      "reviewed_validation_guard_patches": [
+        {
+          "before": "from __future__ import annotations\n",
+          "after": "from __future__ import annotations\n\nfrom arena_ext.readability_compatibility import source_matches_execution\n"
+        },
+        {
+          "before": "        if sha256(HERE/name)!=digest or sha256(run/'source_snapshot'/name)!=digest:",
+          "after": "        if not source_matches_execution(HERE/name, digest, run/'source_snapshot'/name):"
+        }
+      ],
+      "resolved_flags": []
+    },
+    {
+      "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/text_data_tests.py",
+      "old_sha256": "6ff55c107ffec491e4f4e03091c20caca4ebb4a1115274c23efb189d81b5a443",
+      "new_sha256": "3e9167999f757a67e30336b27a699afbe09036647fee8b643f5c88ef8bd8720b",
+      "old_size_bytes": 5126,
+      "new_size_bytes": 5600,
+      "equivalence": "python_ast",
+      "whole_source_ast_or_render_identical": true,
+      "old_semantic_sha256": "217edcd04e24fa14e164849ae7fec7944bf6ea9e6f2629b796e75c3487121b87",
+      "new_semantic_sha256": "217edcd04e24fa14e164849ae7fec7944bf6ea9e6f2629b796e75c3487121b87",
+      "after_reversing_only_reviewed_validation_guards_semantic_sha256": "217edcd04e24fa14e164849ae7fec7944bf6ea9e6f2629b796e75c3487121b87",
+      "reviewed_validation_guard_patches": [],
+      "resolved_flags": [
+        "chapter5_modern_architectures/exercises/part5_diffusion_language_models/text_data_tests.py:11: line length 304 exceeds 240",
+        "chapter5_modern_architectures/exercises/part5_diffusion_language_models/text_data_tests.py:17: line length 287 exceeds 240",
+        "chapter5_modern_architectures/exercises/part5_diffusion_language_models/text_data_tests.py:19: line length 272 exceeds 240",
+        "chapter5_modern_architectures/exercises/part5_diffusion_language_models/text_data_tests.py:20: line length 248 exceeds 240",
+        "chapter5_modern_architectures/exercises/part5_diffusion_language_models/text_data_tests.py:45: line length 242 exceeds 240",
+        "chapter5_modern_architectures/exercises/part5_diffusion_language_models/text_data_tests.py:46: line length 300 exceeds 240",
+        "chapter5_modern_architectures/exercises/part5_diffusion_language_models/text_data_tests.py:48: line length 298 exceeds 240"
+      ]
+    },
+    {
+      "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/text_diffusion_tests.py",
+      "old_sha256": "3ec53073ec4f8549d41779c26f81a2e749d4cc06652af89efc021154905d98eb",
+      "new_sha256": "120bfd9f6d406e14255e9bb3103c4787daac108b654d00bdb5778a4e67857032",
+      "old_size_bytes": 14953,
+      "new_size_bytes": 15477,
+      "equivalence": "python_ast",
+      "whole_source_ast_or_render_identical": true,
+      "old_semantic_sha256": "a3ede66665aed2bcc4ac41537205bc551b27c396db7abbb8d2b87826c92d8334",
+      "new_semantic_sha256": "a3ede66665aed2bcc4ac41537205bc551b27c396db7abbb8d2b87826c92d8334",
+      "after_reversing_only_reviewed_validation_guards_semantic_sha256": "a3ede66665aed2bcc4ac41537205bc551b27c396db7abbb8d2b87826c92d8334",
+      "reviewed_validation_guard_patches": [],
+      "resolved_flags": [
+        "chapter5_modern_architectures/exercises/part5_diffusion_language_models/text_diffusion_tests.py:37: line length 249 exceeds 240",
+        "chapter5_modern_architectures/exercises/part5_diffusion_language_models/text_diffusion_tests.py:76: line length 245 exceeds 240",
+        "chapter5_modern_architectures/exercises/part5_diffusion_language_models/text_diffusion_tests.py:85: line length 299 exceeds 240",
+        "chapter5_modern_architectures/exercises/part5_diffusion_language_models/text_diffusion_tests.py:135: line length 267 exceeds 240",
+        "chapter5_modern_architectures/exercises/part5_diffusion_language_models/text_diffusion_tests.py:136: line length 310 exceeds 240",
+        "chapter5_modern_architectures/exercises/part5_diffusion_language_models/text_diffusion_tests.py:137: line length 245 exceeds 240",
+        "chapter5_modern_architectures/exercises/part5_diffusion_language_models/text_diffusion_tests.py:138: line length 286 exceeds 240",
+        "chapter5_modern_architectures/exercises/part5_diffusion_language_models/text_diffusion_tests.py:139: line length 260 exceeds 240",
+        "chapter5_modern_architectures/exercises/part5_diffusion_language_models/text_diffusion_tests.py:141: line length 275 exceeds 240",
+        "chapter5_modern_architectures/exercises/part5_diffusion_language_models/text_diffusion_tests.py:154: line length 270 exceeds 240"
+      ]
+    },
+    {
+      "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/text_model_tests.py",
+      "old_sha256": "5ee4d1a9e77510a410e436ae14702367b6dcf6745648dd5a0942c1809817b97d",
+      "new_sha256": "49ee51cd0b244176f7e2d6cbf4195a4eecb5bc90c274fb4c55771f1d49f94c69",
+      "old_size_bytes": 9759,
+      "new_size_bytes": 9927,
+      "equivalence": "python_ast",
+      "whole_source_ast_or_render_identical": true,
+      "old_semantic_sha256": "091234d04c041381bfff84fb8c603a51747b2d2e9b0a5491b54882f8b19cf855",
+      "new_semantic_sha256": "091234d04c041381bfff84fb8c603a51747b2d2e9b0a5491b54882f8b19cf855",
+      "after_reversing_only_reviewed_validation_guards_semantic_sha256": "091234d04c041381bfff84fb8c603a51747b2d2e9b0a5491b54882f8b19cf855",
+      "reviewed_validation_guard_patches": [],
+      "resolved_flags": [
+        "chapter5_modern_architectures/exercises/part5_diffusion_language_models/text_model_tests.py:103: line length 267 exceeds 240",
+        "chapter5_modern_architectures/exercises/part5_diffusion_language_models/text_model_tests.py:104: line length 311 exceeds 240",
+        "chapter5_modern_architectures/exercises/part5_diffusion_language_models/text_model_tests.py:134: line length 260 exceeds 240",
+        "chapter5_modern_architectures/exercises/part5_diffusion_language_models/text_model_tests.py:142: line length 268 exceeds 240"
+      ]
+    },
+    {
+      "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/text_training_tests.py",
+      "old_sha256": "7d42ad8566e6cbeff35e7a21549ae8ba124a6b2cdfee87c05ac2ce4713146671",
+      "new_sha256": "251f8517b1c2723909e5ea3db9a4b49c76a046984213aef59e6b5ae49b7ecd11",
+      "old_size_bytes": 7788,
+      "new_size_bytes": 8080,
+      "equivalence": "python_ast",
+      "whole_source_ast_or_render_identical": true,
+      "old_semantic_sha256": "40efd04ff7322a23c063a929763e7a4bb239feae7428cb780a2ac590423443fe",
+      "new_semantic_sha256": "40efd04ff7322a23c063a929763e7a4bb239feae7428cb780a2ac590423443fe",
+      "after_reversing_only_reviewed_validation_guards_semantic_sha256": "40efd04ff7322a23c063a929763e7a4bb239feae7428cb780a2ac590423443fe",
+      "reviewed_validation_guard_patches": [],
+      "resolved_flags": [
+        "chapter5_modern_architectures/exercises/part5_diffusion_language_models/text_training_tests.py:96: line length 249 exceeds 240",
+        "chapter5_modern_architectures/exercises/part5_diffusion_language_models/text_training_tests.py:97: line length 271 exceeds 240",
+        "chapter5_modern_architectures/exercises/part5_diffusion_language_models/text_training_tests.py:98: line length 264 exceeds 240",
+        "chapter5_modern_architectures/exercises/part5_diffusion_language_models/text_training_tests.py:99: line length 254 exceeds 240",
+        "chapter5_modern_architectures/exercises/part5_diffusion_language_models/text_training_tests.py:100: line length 262 exceeds 240",
+        "chapter5_modern_architectures/exercises/part5_diffusion_language_models/text_training_tests.py:101: line length 282 exceeds 240"
+      ]
+    },
+    {
+      "path": "chapter5_modern_architectures/instructions/pages/05_[5.5]_Diffusion_Language_Models.md",
+      "old_sha256": "0843e3df57eeab30e990337f50f540cf65e408504accd08dc927d597b46b4ed5",
+      "new_sha256": "b6f2b6d7c391d3a0ef9d9bb39c257a988e070f231993eded8fc5161416ad811d",
+      "old_size_bytes": 134032,
+      "new_size_bytes": 134032,
+      "equivalence": "commonmark_whitespace_only",
+      "whole_source_ast_or_render_identical": true,
+      "old_semantic_sha256": "3c4ad0ca3774e468339dca4fed0c9702ad4ae398dce7b611bcddaf5289f85ee2",
+      "new_semantic_sha256": "3c4ad0ca3774e468339dca4fed0c9702ad4ae398dce7b611bcddaf5289f85ee2",
+      "after_reversing_only_reviewed_validation_guards_semantic_sha256": "3c4ad0ca3774e468339dca4fed0c9702ad4ae398dce7b611bcddaf5289f85ee2",
+      "reviewed_validation_guard_patches": [],
+      "resolved_flags": [
+        "chapter5_modern_architectures/instructions/pages/05_[5.5]_Diffusion_Language_Models.md:1147: line length 403 exceeds 400"
+      ]
+    },
+    {
+      "path": "chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/edge_evidence.py",
+      "old_sha256": "ab298ad02eaee3b589963e9125df4758e15dcb533296afe999073892547818d1",
+      "new_sha256": "8ca9a2d28ebbec75f45daa0436dbfe9ad9a3db6e3eb72b58d1ea5cdcd5e6c802",
+      "old_size_bytes": 10741,
+      "new_size_bytes": 10889,
+      "equivalence": "python_ast_with_reviewed_validation_guard",
+      "whole_source_ast_or_render_identical": false,
+      "old_semantic_sha256": "d6873647d917cb866a8ad1dfac8bf8c7a8dc12925e6c24edeff2f525d1457611",
+      "new_semantic_sha256": "fc2941efb0c84038e90c071f7bda6d08a6cee87fa838d7f70da88aaf91535a6f",
+      "after_reversing_only_reviewed_validation_guards_semantic_sha256": "d6873647d917cb866a8ad1dfac8bf8c7a8dc12925e6c24edeff2f525d1457611",
+      "reviewed_validation_guard_patches": [
+        {
+          "before": "from __future__ import annotations\n",
+          "after": "from __future__ import annotations\n\nfrom arena_ext.readability_compatibility import source_matches_execution\n"
+        },
+        {
+          "before": "        if sha256(HERE / name) != expected:",
+          "after": "        if not source_matches_execution(HERE / name, expected):"
+        }
+      ],
+      "resolved_flags": [
+        "chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/edge_evidence.py:166: line length 252 exceeds 240"
+      ]
+    },
+    {
+      "path": "chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/expected_outputs/own_full_release_v2/README.md",
+      "old_sha256": "26516f4a71e186607c4770414b71071a070d328c96615c78dde8e6b489e9d2bd",
+      "new_sha256": "df428f0de74ee8bbd3a6bdf0bf5175938f134148ad990396d09359434abd6013",
+      "old_size_bytes": 1820,
+      "new_size_bytes": 1820,
+      "equivalence": "commonmark_whitespace_only",
+      "whole_source_ast_or_render_identical": true,
+      "old_semantic_sha256": "a17c7ee23843354769d3559d1a6434cbaeb88869ede452d52e17cc62fec013cb",
+      "new_semantic_sha256": "a17c7ee23843354769d3559d1a6434cbaeb88869ede452d52e17cc62fec013cb",
+      "after_reversing_only_reviewed_validation_guards_semantic_sha256": "a17c7ee23843354769d3559d1a6434cbaeb88869ede452d52e17cc62fec013cb",
+      "reviewed_validation_guard_patches": [],
+      "resolved_flags": [
+        "chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/expected_outputs/own_full_release_v2/README.md:3: line length 490 exceeds 400",
+        "chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/expected_outputs/own_full_release_v2/README.md:5: line length 523 exceeds 400"
+      ]
+    },
+    {
+      "path": "chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/lesson.md",
+      "old_sha256": "933f685d1c1af089548124f62bbd12eba5bb43975ebb200f41ab10a058f2a8bd",
+      "new_sha256": "d69e0aad2b5d498411e9acabf643214420ec672451a31e3945951f3aa8b982db",
+      "old_size_bytes": 169669,
+      "new_size_bytes": 169669,
+      "equivalence": "commonmark_whitespace_only",
+      "whole_source_ast_or_render_identical": true,
+      "old_semantic_sha256": "0df02c85992630cb6571235a775b99f248db159f3a9951f66afdef620e326640",
+      "new_semantic_sha256": "0df02c85992630cb6571235a775b99f248db159f3a9951f66afdef620e326640",
+      "after_reversing_only_reviewed_validation_guards_semantic_sha256": "0df02c85992630cb6571235a775b99f248db159f3a9951f66afdef620e326640",
+      "reviewed_validation_guard_patches": [],
+      "resolved_flags": [
+        "chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/lesson.md:1200: line length 435 exceeds 400"
+      ]
+    },
+    {
+      "path": "chapter8_automated_circuits/instructions/pages/03_[8.3]_ACDC_and_Circuit_Metrics.md",
+      "old_sha256": "dea0f50a21ccb35e63d82ec2c9dde2f1b5e6075c8b4d487dae2db4d3dc0b90b2",
+      "new_sha256": "90d4d6a54039932d65fe2bd9b13f63a0fb54a177655d908d6702caa2a24c757c",
+      "old_size_bytes": 168597,
+      "new_size_bytes": 168597,
+      "equivalence": "commonmark_whitespace_only",
+      "whole_source_ast_or_render_identical": true,
+      "old_semantic_sha256": "544369f45f028b7211517f945daf4b542d763d4fd8dd513e7b2cbb467efc00cc",
+      "new_semantic_sha256": "544369f45f028b7211517f945daf4b542d763d4fd8dd513e7b2cbb467efc00cc",
+      "after_reversing_only_reviewed_validation_guards_semantic_sha256": "544369f45f028b7211517f945daf4b542d763d4fd8dd513e7b2cbb467efc00cc",
+      "reviewed_validation_guard_patches": [],
+      "resolved_flags": [
+        "chapter8_automated_circuits/instructions/pages/03_[8.3]_ACDC_and_Circuit_Metrics.md:1179: line length 435 exceeds 400"
+      ]
+    },
+    {
+      "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/README.md",
+      "old_sha256": "a2de8480bc4a91f09e6febe79ecfde500b0fa3b72937309a85af5569c527560d",
+      "new_sha256": "6af142cce3196514db358ae25dba01a34f46391a931918a3cac93bfcc78c8593",
+      "old_size_bytes": 5599,
+      "new_size_bytes": 5599,
+      "equivalence": "commonmark_whitespace_only",
+      "whole_source_ast_or_render_identical": true,
+      "old_semantic_sha256": "e1582c928f0c94c439ea920bd784a3ee912305cf0fcf56b7d6d27784d5c17598",
+      "new_semantic_sha256": "e1582c928f0c94c439ea920bd784a3ee912305cf0fcf56b7d6d27784d5c17598",
+      "after_reversing_only_reviewed_validation_guards_semantic_sha256": "e1582c928f0c94c439ea920bd784a3ee912305cf0fcf56b7d6d27784d5c17598",
+      "reviewed_validation_guard_patches": [],
+      "resolved_flags": [
+        "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/README.md:3: line length 475 exceeds 400",
+        "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/README.md:5: line length 426 exceeds 400",
+        "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/README.md:9: line length 513 exceeds 400",
+        "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/README.md:11: line length 488 exceeds 400",
+        "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/README.md:15: line length 401 exceeds 400",
+        "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/README.md:17: line length 523 exceeds 400",
+        "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/README.md:31: line length 482 exceeds 400",
+        "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/README.md:33: line length 497 exceeds 400"
+      ]
+    },
+    {
+      "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/expected_outputs/README.md",
+      "old_sha256": "0cb9c31d1fc7b09b67ca7dce025ce78dea36e09fec1481fa69aeb03f624d80be",
+      "new_sha256": "425681e2b9f662c7317e7bb7b57e62f3ff9a7488c23545b209f8ea49a3182ed4",
+      "old_size_bytes": 2562,
+      "new_size_bytes": 2562,
+      "equivalence": "commonmark_whitespace_only",
+      "whole_source_ast_or_render_identical": true,
+      "old_semantic_sha256": "b20ec6b828aa688f0669ba0acff4923ebc50af14776a1034db0cc5eeb7f891a6",
+      "new_semantic_sha256": "b20ec6b828aa688f0669ba0acff4923ebc50af14776a1034db0cc5eeb7f891a6",
+      "after_reversing_only_reviewed_validation_guards_semantic_sha256": "b20ec6b828aa688f0669ba0acff4923ebc50af14776a1034db0cc5eeb7f891a6",
+      "reviewed_validation_guard_patches": [],
+      "resolved_flags": [
+        "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/expected_outputs/README.md:5: line length 534 exceeds 400",
+        "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/expected_outputs/README.md:9: line length 476 exceeds 400",
+        "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/expected_outputs/README.md:11: line length 562 exceeds 400"
+      ]
+    },
+    {
+      "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/expected_outputs/direction_candidates/README.md",
+      "old_sha256": "2273343cbb9d4741ccd15b0e3ec72e6854ce28e6ad28c2074113be7574ebb1c5",
+      "new_sha256": "a6591c063f1d783bc6fc4a39532e1b60f03f79cbce21fbdff823142f0290ce4f",
+      "old_size_bytes": 734,
+      "new_size_bytes": 734,
+      "equivalence": "commonmark_whitespace_only",
+      "whole_source_ast_or_render_identical": true,
+      "old_semantic_sha256": "7bef1a65c1af534a81a160a02e204aceead7d3047c2acf2e0e7744a1f74d7a0e",
+      "new_semantic_sha256": "7bef1a65c1af534a81a160a02e204aceead7d3047c2acf2e0e7744a1f74d7a0e",
+      "after_reversing_only_reviewed_validation_guards_semantic_sha256": "7bef1a65c1af534a81a160a02e204aceead7d3047c2acf2e0e7744a1f74d7a0e",
+      "reviewed_validation_guard_patches": [],
+      "resolved_flags": [
+        "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/expected_outputs/direction_candidates/README.md:3: line length 668 exceeds 400"
+      ]
+    },
+    {
+      "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/expected_outputs/direction_candidates/own_answer_candidate_v1/README.md",
+      "old_sha256": "2f51699f95d1880b75c621a85d1f54f5ce389d366b4db48f690317204c8fdeb0",
+      "new_sha256": "6f994bee46b5fbd17029e61d81fbad1c9bf377f0bec7b899e4e8e8e88bbc2272",
+      "old_size_bytes": 610,
+      "new_size_bytes": 610,
+      "equivalence": "commonmark_whitespace_only",
+      "whole_source_ast_or_render_identical": true,
+      "old_semantic_sha256": "3bb1f6b735757fb9fae6a0179daa686b7403c8bd8dbe79389d8f274e4da088bd",
+      "new_semantic_sha256": "3bb1f6b735757fb9fae6a0179daa686b7403c8bd8dbe79389d8f274e4da088bd",
+      "after_reversing_only_reviewed_validation_guards_semantic_sha256": "3bb1f6b735757fb9fae6a0179daa686b7403c8bd8dbe79389d8f274e4da088bd",
+      "reviewed_validation_guard_patches": [],
+      "resolved_flags": [
+        "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/expected_outputs/direction_candidates/own_answer_candidate_v1/README.md:3: line length 558 exceeds 400"
+      ]
+    },
+    {
+      "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/expected_outputs/fresh_cuda_release_v1/README.md",
+      "old_sha256": "b38913207304724873bb2d4ec3ea2076f61423f904d84aeb40352f03e475f88d",
+      "new_sha256": "5f1cb2fea1416535118b80e0b79d70e16e2a7acdb18994f006c23229943cec02",
+      "old_size_bytes": 1209,
+      "new_size_bytes": 1209,
+      "equivalence": "commonmark_whitespace_only",
+      "whole_source_ast_or_render_identical": true,
+      "old_semantic_sha256": "d49f7d6e4db54743c21fd531df4498788c35cb282f19204395119c3b713bbb88",
+      "new_semantic_sha256": "d49f7d6e4db54743c21fd531df4498788c35cb282f19204395119c3b713bbb88",
+      "after_reversing_only_reviewed_validation_guards_semantic_sha256": "d49f7d6e4db54743c21fd531df4498788c35cb282f19204395119c3b713bbb88",
+      "reviewed_validation_guard_patches": [],
+      "resolved_flags": [
+        "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/expected_outputs/fresh_cuda_release_v1/README.md:5: line length 546 exceeds 400"
+      ]
+    },
+    {
+      "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/expected_outputs/fresh_cuda_release_v2/README.md",
+      "old_sha256": "88b64d6de5e3f45baa050d2c7935599a01f1005d7734d5779afbc256a255cc53",
+      "new_sha256": "b8678e25787acc1ce7f052398fa27c391720978569991cd4f70cb8f74b70d045",
+      "old_size_bytes": 1267,
+      "new_size_bytes": 1267,
+      "equivalence": "commonmark_whitespace_only",
+      "whole_source_ast_or_render_identical": true,
+      "old_semantic_sha256": "de7fcd6d25558f702327a6c8795d1cace20578c67835e4f7ca3049cadf04f07e",
+      "new_semantic_sha256": "de7fcd6d25558f702327a6c8795d1cace20578c67835e4f7ca3049cadf04f07e",
+      "after_reversing_only_reviewed_validation_guards_semantic_sha256": "de7fcd6d25558f702327a6c8795d1cace20578c67835e4f7ca3049cadf04f07e",
+      "reviewed_validation_guard_patches": [],
+      "resolved_flags": [
+        "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/expected_outputs/fresh_cuda_release_v2/README.md:5: line length 604 exceeds 400"
+      ]
+    },
+    {
+      "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/expected_outputs/verification_ladder.md",
+      "old_sha256": "a172d91402544897d7dc25813b71eb033d29c90bcc13865f1d450501c0bd85fc",
+      "new_sha256": "e06a15e5094e880a86e268886220c08502e5b021922895280b11b46f1741cae3",
+      "old_size_bytes": 2562,
+      "new_size_bytes": 2562,
+      "equivalence": "commonmark_whitespace_only",
+      "whole_source_ast_or_render_identical": true,
+      "old_semantic_sha256": "3ec114db817edae206a57f503e6681f520bbd8fdb51d5bbe55c1a0d70fa08438",
+      "new_semantic_sha256": "3ec114db817edae206a57f503e6681f520bbd8fdb51d5bbe55c1a0d70fa08438",
+      "after_reversing_only_reviewed_validation_guards_semantic_sha256": "3ec114db817edae206a57f503e6681f520bbd8fdb51d5bbe55c1a0d70fa08438",
+      "reviewed_validation_guard_patches": [],
+      "resolved_flags": [
+        "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/expected_outputs/verification_ladder.md:5: line length 525 exceeds 400",
+        "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/expected_outputs/verification_ladder.md:9: line length 669 exceeds 400",
+        "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/expected_outputs/verification_ladder.md:17: line length 427 exceeds 400",
+        "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/expected_outputs/verification_ladder.md:21: line length 423 exceeds 400"
+      ]
+    },
+    {
+      "path": "docs/arena_salvage/2026-09-05_geometry_real_learner_repair_plan.md",
+      "old_sha256": "d9ac12694861e85e320c4d1ec3a09d4b123bbc77bd58886f1dd5318bba2cff6b",
+      "new_sha256": "a666f7ec19a54ea600ef7397afc2a37f0691c3b08cfd2127e0d98d8dc7f28dc1",
+      "old_size_bytes": 6342,
+      "new_size_bytes": 6352,
+      "equivalence": "commonmark_whitespace_only",
+      "whole_source_ast_or_render_identical": true,
+      "old_semantic_sha256": "4bcec486fd93e4f4695fe6861e0f53a15289850e1659e7a87460ceffd4e04672",
+      "new_semantic_sha256": "4bcec486fd93e4f4695fe6861e0f53a15289850e1659e7a87460ceffd4e04672",
+      "after_reversing_only_reviewed_validation_guards_semantic_sha256": "4bcec486fd93e4f4695fe6861e0f53a15289850e1659e7a87460ceffd4e04672",
+      "reviewed_validation_guard_patches": [],
+      "resolved_flags": [
+        "docs/arena_salvage/2026-09-05_geometry_real_learner_repair_plan.md:3: line length 499 exceeds 400",
+        "docs/arena_salvage/2026-09-05_geometry_real_learner_repair_plan.md:5: line length 639 exceeds 400",
+        "docs/arena_salvage/2026-09-05_geometry_real_learner_repair_plan.md:7: line length 541 exceeds 400",
+        "docs/arena_salvage/2026-09-05_geometry_real_learner_repair_plan.md:9: line length 458 exceeds 400",
+        "docs/arena_salvage/2026-09-05_geometry_real_learner_repair_plan.md:11: line length 547 exceeds 400",
+        "docs/arena_salvage/2026-09-05_geometry_real_learner_repair_plan.md:13: line length 511 exceeds 400",
+        "docs/arena_salvage/2026-09-05_geometry_real_learner_repair_plan.md:17: line length 525 exceeds 400",
+        "docs/arena_salvage/2026-09-05_geometry_real_learner_repair_plan.md:19: line length 483 exceeds 400",
+        "docs/arena_salvage/2026-09-05_geometry_real_learner_repair_plan.md:27: line length 453 exceeds 400"
+      ]
+    },
+    {
+      "path": "docs/arena_salvage/2026-09-06_cca_svcca_alignment_plan.md",
+      "old_sha256": "c710dcf05075626cb54201db92755df151485e5b281fe0246f72e3437691633f",
+      "new_sha256": "9b21ff4ad4b9716411e6e430a16cc0d548cb54efc1bdb240599abe9208911392",
+      "old_size_bytes": 3622,
+      "new_size_bytes": 3622,
+      "equivalence": "commonmark_whitespace_only",
+      "whole_source_ast_or_render_identical": true,
+      "old_semantic_sha256": "7a42bf23b906120761819360047103e87eb806de01fc543cb029fff08abdf637",
+      "new_semantic_sha256": "7a42bf23b906120761819360047103e87eb806de01fc543cb029fff08abdf637",
+      "after_reversing_only_reviewed_validation_guards_semantic_sha256": "7a42bf23b906120761819360047103e87eb806de01fc543cb029fff08abdf637",
+      "reviewed_validation_guard_patches": [],
+      "resolved_flags": [
+        "docs/arena_salvage/2026-09-06_cca_svcca_alignment_plan.md:9: line length 405 exceeds 400",
+        "docs/arena_salvage/2026-09-06_cca_svcca_alignment_plan.md:15: line length 471 exceeds 400",
+        "docs/arena_salvage/2026-09-06_cca_svcca_alignment_plan.md:19: line length 473 exceeds 400"
+      ]
+    },
+    {
+      "path": "docs/maintenance/2026-09-07_python_update/package_smoke.py",
+      "old_sha256": "261a6f9e3ccb3d14ce6f42fd28d4372eac12c47b0135c2ec1fdb2348996e162f",
+      "new_sha256": "f4f1763a20496217b5345f666a2de71c74af1e2e87abad2ba6533ecb06c4ba19",
+      "old_size_bytes": 3626,
+      "new_size_bytes": 3920,
+      "equivalence": "python_ast",
+      "whole_source_ast_or_render_identical": true,
+      "old_semantic_sha256": "91779b9c62585e1e2b3994f01e2c27abb28c3cc18c0e01de84ad54d3837d7495",
+      "new_semantic_sha256": "91779b9c62585e1e2b3994f01e2c27abb28c3cc18c0e01de84ad54d3837d7495",
+      "after_reversing_only_reviewed_validation_guards_semantic_sha256": "91779b9c62585e1e2b3994f01e2c27abb28c3cc18c0e01de84ad54d3837d7495",
+      "reviewed_validation_guard_patches": [],
+      "resolved_flags": [
+        "docs/maintenance/2026-09-07_python_update/package_smoke.py:4: line length 328 exceeds 240",
+        "docs/maintenance/2026-09-07_python_update/package_smoke.py:53: line length 331 exceeds 240"
+      ]
+    },
+    {
+      "path": "scripts/generate_extension_verification_assets.py",
+      "old_sha256": "851d732a4d7817efddb039c7c60cb8f3dc75f13c92a225516d9347ef277d5663",
+      "new_sha256": "a1575a346726fed876b81e4f48fb699ac439bb03a9d5dcac7a63118b64567f43",
+      "old_size_bytes": 291966,
+      "new_size_bytes": 292536,
+      "equivalence": "python_ast",
+      "whole_source_ast_or_render_identical": true,
+      "old_semantic_sha256": "26ef6ff48c7bd840fe8ee0654b19c740f66092530088eb53bccd8c11f2388882",
+      "new_semantic_sha256": "26ef6ff48c7bd840fe8ee0654b19c740f66092530088eb53bccd8c11f2388882",
+      "after_reversing_only_reviewed_validation_guards_semantic_sha256": "26ef6ff48c7bd840fe8ee0654b19c740f66092530088eb53bccd8c11f2388882",
+      "reviewed_validation_guard_patches": [],
+      "resolved_flags": [
+        "scripts/generate_extension_verification_assets.py:1578: line length 650 exceeds 240",
+        "scripts/generate_extension_verification_assets.py:1956: line length 537 exceeds 240",
+        "scripts/generate_extension_verification_assets.py:1970: line length 374 exceeds 240",
+        "scripts/generate_extension_verification_assets.py:1984: line length 622 exceeds 240",
+        "scripts/generate_extension_verification_assets.py:1998: line length 560 exceeds 240"
+      ]
+    }
+  ],
+  "new_validation_support": [
+    {
+      "path": "arena_ext/readability_compatibility.py",
+      "sha256": "3b46611cac4ae86ddd797339544a2e4fde618cc0effedc02e706eb6f827630d9"
+    },
+    {
+      "path": "tests/test_readability_compatibility.py",
+      "sha256": "6e4769ffd9d830bcc4884f758eff445510c8c4a464282d3fb2d2583234cd2adb"
+    }
+  ],
+  "reviewed_compatibility": {
+    "reviewed_by": "coordinating root agent",
+    "approval_scope": "Exact named hashes; immutable historical snapshots; whole AST/constants or CommonMark equality; separately classified exact validator-guard changes; no future drift bypass.",
+    "record_path": "docs/arena_salvage/2026-09-08_readability_compatibility.json",
+    "root_reviewed_record_sha256": "f6d6fc026d139f46697ee3626ac96869ab49401f600fe5d3c9ddc5e36c941708",
+    "root_reviewed_helper_sha256": "3b46611cac4ae86ddd797339544a2e4fde618cc0effedc02e706eb6f827630d9",
+    "root_reviewed_validator_sources": {
+      "chapter5_modern_architectures/exercises/part5_diffusion_language_models/study_evidence.py": "e5c8ed84b69df2998e41069e0a2b120f180281cd6d80ddb163b580f749e6fbfe",
+      "chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/edge_evidence.py": "8ca9a2d28ebbec75f45daa0436dbfe9ad9a3db6e3eb72b58d1ea5cdcd5e6c802",
+      "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/geometry_evidence.py": "e11bf414272e4f22b85f7b365647f6b676706a5748b75140e7677f0d6ce13223",
+      "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/geometry_reproduction_cache.py": "50a1a1cfe642079093e1f8d0a3228adda03679c1da7b67fca3d0bfbf6daa1923"
+    },
+    "validation_guard_changes_ast_identical": false,
+    "scientific_ast_and_constants_after_exact_guard_reversal_identical": true,
+    "record_hashes_helper_or_reports": false,
+    "helper_pins_record_digest": true,
+    "report_manifests_bind_helper_and_record": true,
+    "exact_source_diff": "/home/bitwise/.cache/arena-readability-repair-2026-09-08/frozen-publication-review.diff"
+  },
+  "report_manifest_updates": [
+    {
+      "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/verification_report.json",
+      "provenance_kind": "derived_cosmetic_publication_and_explicit_validation_compatibility_not_native_execution",
+      "old_report_sha256": "b9d2f6ff01e1a15337223327ac980bd2a81f5f57823a1c9ebec1b924d061f62c",
+      "new_report_sha256": "585e935e0203a0a5a429f30e20f1ee40c0a62f65129a64cdfafce0e89e625465",
+      "old_manifest_sha256": "6de8f92fb8a2ba1ec1c4ae6af4922a6b63c188d342c3b4676516cb7809ea5aeb",
+      "new_manifest_sha256": "34920bb4054821cfef17cfe60d2efa6befdd2aaa34d6096cf4668b60440a641e",
+      "changed_existing_inputs": [
+        "chapter5_modern_architectures/exercises/part5_diffusion_language_models/lesson.md",
+        "chapter5_modern_architectures/exercises/part5_diffusion_language_models/study_evidence.py",
+        "chapter5_modern_architectures/exercises/part5_diffusion_language_models/text_data_tests.py",
+        "chapter5_modern_architectures/exercises/part5_diffusion_language_models/text_diffusion_tests.py",
+        "chapter5_modern_architectures/exercises/part5_diffusion_language_models/text_model_tests.py",
+        "chapter5_modern_architectures/exercises/part5_diffusion_language_models/text_training_tests.py",
+        "chapter5_modern_architectures/instructions/pages/05_[5.5]_Diffusion_Language_Models.md"
+      ],
+      "added_publication_validation_inputs": [
+        "arena_ext/readability_compatibility.py",
+        "docs/arena_salvage/2026-09-08_readability_compatibility.json"
+      ],
+      "only_report_inputs_changed": true,
+      "all_measurements_dates_claims_controls_tolerances_and_acceptance_unchanged": true,
+      "native_execution_receipts_updated": false,
+      "native_experiments_rerun": false
+    },
+    {
+      "path": "chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/verification_report.json",
+      "provenance_kind": "derived_cosmetic_publication_and_explicit_validation_compatibility_not_native_execution",
+      "old_report_sha256": "679281414e19d0ff4fcfa192fc740d1ee07ea5ba84ab6a93d761684fb8dc3b01",
+      "new_report_sha256": "d7a4af0497149829d450dd00da031c6c7031708bff478778f400b399aa92ceab",
+      "old_manifest_sha256": "5a9b13efbdf3083fcba15032553c9193aa5cae081b8fc8e191aca179b904e40f",
+      "new_manifest_sha256": "6e7285a9a28cb2de0e9c105c6bb9b4a1b1374dd20319e7de278abd245d8fa25d",
+      "changed_existing_inputs": [
+        "chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/edge_evidence.py",
+        "chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/lesson.md",
+        "chapter8_automated_circuits/instructions/pages/03_[8.3]_ACDC_and_Circuit_Metrics.md"
+      ],
+      "added_publication_validation_inputs": [
+        "arena_ext/readability_compatibility.py",
+        "docs/arena_salvage/2026-09-08_readability_compatibility.json"
+      ],
+      "only_report_inputs_changed": true,
+      "all_measurements_dates_claims_controls_tolerances_and_acceptance_unchanged": true,
+      "native_execution_receipts_updated": false,
+      "native_experiments_rerun": false
+    },
+    {
+      "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/verification_report.json",
+      "provenance_kind": "derived_cosmetic_publication_and_explicit_validation_compatibility_not_native_execution",
+      "old_report_sha256": "5e9d88d078139098470026793035d21b607fdceddedb364a71e8c28deda22bce",
+      "new_report_sha256": "d0f36774581c6c1128ff5f68be9e52328257424c8645364c19c1dcd2c19d69c4",
+      "old_manifest_sha256": "2f27c490359fde89fe430099ce64eb9fdf706e1a2dd87071da63e8f6493d81ce",
+      "new_manifest_sha256": "b528c628a988c2a0e0ea71efe24d6d9c8728476bb148ddd620c557a8103abe25",
+      "changed_existing_inputs": [
+        "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/README.md",
+        "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/expected_outputs/README.md"
+      ],
+      "added_publication_validation_inputs": [],
+      "only_report_inputs_changed": true,
+      "all_measurements_dates_claims_controls_tolerances_and_acceptance_unchanged": true,
+      "native_execution_receipts_updated": false,
+      "native_experiments_rerun": false
+    },
+    {
+      "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/verification_report.json",
+      "provenance_kind": "derived_cosmetic_publication_and_explicit_validation_compatibility_not_native_execution",
+      "old_report_sha256": "69a81b6890631ae9981b7d90bb6fb1ff2fa4555f2fbf7e167b0a795f94b63b1e",
+      "new_report_sha256": "df034fc76dd3310a1d1e052fff6ff5766e9e0bd3312e35066e2845a2dd383bd1",
+      "old_manifest_sha256": "f45b4aabffe953f398c2adef883e69414686ba41fe9ed2f413d5ba5000eefcdd",
+      "new_manifest_sha256": "ff8f2dff46b7d2eb40b51d52839662d842df74dfb0ff86999f25ed0e4093f536",
+      "changed_existing_inputs": [
+        "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/geometry_evidence.py",
+        "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/geometry_plotting.py",
+        "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/geometry_reproduction_cache.py"
+      ],
+      "added_publication_validation_inputs": [
+        "arena_ext/readability_compatibility.py",
+        "docs/arena_salvage/2026-09-08_readability_compatibility.json"
+      ],
+      "only_report_inputs_changed": true,
+      "all_measurements_dates_claims_controls_tolerances_and_acceptance_unchanged": true,
+      "native_execution_receipts_updated": false,
+      "native_experiments_rerun": false
+    }
+  ],
+  "publication_provenance": {
+    "kind": "derived_cosmetic_publication_with_explicit_reviewed_validator_compatibility",
+    "accepted_prior_procedure": "docs/arena_salvage/2026-09-05_source_readability_repair_plan.md",
+    "execution_receipts_and_archive_manifests_rewritten_by_this_pass": false,
+    "historical_source_snapshots_rewritten": false,
+    "all_numerical_results_measurement_dates_claims_controls_tolerances_and_acceptance_unchanged": true,
+    "native_or_gpu_experiments_rerun": false,
+    "historical_published_page_binding": {
+      "receipt": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/expected_outputs/text_learner_execution.json",
+      "field": "published_page_sha256",
+      "meaning": "Retains the actual historical publication hash. The current wrapped page is an explicitly proved derived publication, not the original executed publication bytes."
+    }
+  },
+  "unchanged_native_execution_receipts": [
+    {
+      "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/expected_outputs/text_learner_execution.json",
+      "sha256": "865279066de52d012138ac5a1a5ac25c7f5678daa069e6822b707aa3b09d6688",
+      "byte_identical_to_start_and_HEAD": true
+    },
+    {
+      "path": "chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/expected_outputs/learner_execution.json",
+      "sha256": "abd08021556d27b4eb13612f889caf7e5887025f6df3f3d879c973b978f03c71",
+      "byte_identical_to_start_and_HEAD": true
+    },
+    {
+      "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/expected_outputs/learner_execution.json",
+      "sha256": "7dacd04c20ca288d0f4f7d3dfa1030f62ad03271ca3a03793fe37220e36b572b",
+      "byte_identical_to_start_and_HEAD": true
+    }
+  ],
+  "unchanged_published_notebooks_and_original_comparator": [
+    {
+      "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/5.5_Diffusion_Language_Models_exercises.ipynb",
+      "sha256": "88bc2959e27e1146f24403c2137d3d8e92e8af719ca92ab6aa6d02eedd330953",
+      "cells": 90,
+      "code_cells": 43,
+      "inline_png": 0
+    },
+    {
+      "path": "chapter5_modern_architectures/exercises/part5_diffusion_language_models/5.5_Diffusion_Language_Models_solutions.ipynb",
+      "sha256": "a9b6e4e838868643e6830fa848f88e70c349b167999ba1c71f2c131bd6e9dfd0",
+      "cells": 90,
+      "code_cells": 43,
+      "inline_png": 14
+    },
+    {
+      "path": "chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/8.3_ACDC_and_Circuit_Metrics_exercises.ipynb",
+      "sha256": "eb28db4fe67bc0503484e0d1832f1d48e1e93660d55c39203b8f24901131d4c4",
+      "cells": 94,
+      "code_cells": 44,
+      "inline_png": 0
+    },
+    {
+      "path": "chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics/8.3_ACDC_and_Circuit_Metrics_solutions.ipynb",
+      "sha256": "39d3ae0c6fa0dcd8c08b774e394c8e8b733f66edf6d3f5f07f662472060b5a72",
+      "cells": 94,
+      "code_cells": 44,
+      "inline_png": 17
+    },
+    {
+      "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/9.1_Refusal_Directions_and_Safe_Steering_exercises.ipynb",
+      "sha256": "8934e98feb9237b6f56c142e28cb2fb6d4686f6ca1a95d468715dda8144e82a9",
+      "cells": 61,
+      "code_cells": 26,
+      "inline_png": 0
+    },
+    {
+      "path": "chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering/9.1_Refusal_Directions_and_Safe_Steering_solutions.ipynb",
+      "sha256": "03f5541cec6a8980d5aefd04886b22758ecfaba31e811ed8bc1157ee44f5ae2e",
+      "cells": 61,
+      "code_cells": 26,
+      "inline_png": 6
+    },
+    {
+      "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/11.1_PCA_SVD_and_Geometry_Controls_exercises.ipynb",
+      "sha256": "940bac8f23ff890274531796e1f794b58b65ad25d375134e02c1f3fc988cf947",
+      "cells": 71,
+      "code_cells": 35,
+      "inline_png": 13
+    },
+    {
+      "path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/11.1_PCA_SVD_and_Geometry_Controls_solutions.ipynb",
+      "sha256": "71c9a8e61b00b1cde6320cb1fa702d83e165b4b0f0e7f5fbc7b8e08b7c78edc5",
+      "cells": 71,
+      "code_cells": 35,
+      "inline_png": 13
+    },
+    {
+      "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/12.3_Mini_VLM_from_Scratch_exercises.ipynb",
+      "sha256": "a1ed05f183e4b5896e0a9864f899c33f783b8f8b8142418949a0eea8cdb0acfa",
+      "cells": 69,
+      "code_cells": 34,
+      "inline_png": 0
+    },
+    {
+      "path": "chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch/12.3_Mini_VLM_from_Scratch_solutions.ipynb",
+      "sha256": "4d2f3db859fe656d959779b7214b2ab31f4211915683bb05c07f422b6286b2d3",
+      "cells": 69,
+      "code_cells": 34,
+      "inline_png": 11
+    },
+    {
+      "path": "chapter1_transformer_interp/exercises/part41_indirect_object_identification/1.4.1_Indirect_Object_Identification_exercises.ipynb",
+      "sha256": "6231623482653999378970e0886dad5d31d3107854a779be6f8b0912251ce5b7",
+      "cells": 254
+    }
+  ],
+  "validation": {
+    "source_equivalence_or_exact_reviewed_guard_comparisons": 29,
+    "direct_complete_ast_or_render_equivalences": 25,
+    "separately_reviewed_validation_guard_changes": 4,
+    "unchanged_notebook_byte_comparisons": 11,
+    "affected_publication_manifest_freshness": "5.5, 8.3, 9.1 and 11.1 PASS; only report_inputs changed",
+    "initial_targeted_existing_tests": "28 passed, 1 deselected in 1.67s; full readability audited separately",
+    "compatibility_mutation_and_affected_section_tests": "58 passed in 3.39s",
+    "test_log": "/home/bitwise/.cache/arena-readability-repair-2026-09-08/compatibility-and-section-tests.log",
+    "actual_retained_evidence": {
+      "5.5": "All 16 actual archive snapshots match original execution hashes and pass current-source compatibility. Full validate_text_study remains untested because historical data and weight directories are absent.",
+      "8.3": "Actual published raw-evidence reader PASS, including all 24 historical input source bindings and unchanged notebooks/payload.",
+      "11.1": "Actual retained learner AND archived native reproduction cache validators PASS: 120649 learner outcomes, 6656 reproduced examples, 208 conditions, max logit error 0, token mismatches 0. No native model execution.",
+      "actual_validation_log": "/home/bitwise/.cache/arena-readability-repair-2026-09-08/actual-retained-evidence-validation.log",
+      "5.5_archive_source_validation": "/home/bitwise/.cache/arena-readability-repair-2026-09-08/actual_5.5_archive_source_validation.json"
+    },
+    "original_arena_preservation": "PASS; zero blockers and no original source edited",
+    "preservation_log": "/home/bitwise/.cache/arena-readability-repair-2026-09-08/preservation-after.log",
+    "initial_global_readability_flags": 87,
+    "initial_owned_readability_flags": 80,
+    "resolved_owned_readability_flags": 80,
+    "remaining_owned_readability_flags": [],
+    "remaining_global_readability_flags": [],
+    "readability_log": "/home/bitwise/.cache/arena-readability-repair-2026-09-08/readability-after.log",
+    "report_evidence_audit": "60 reports; only 3 remaining 16.15 publish_study.py freshness findings, owned by another agent. No new finding from this pass.",
+    "report_evidence_log": "/home/bitwise/.cache/arena-readability-repair-2026-09-08/report-evidence-after.log"
+  },
+  "limitations": [
+    "5.5 full native validation needs its historical /tmp/diffusion-text-full-own-answer-release-v1 and /tmp/diffusion-text-data-candidate-v3 inputs, including original retained weights; these directories are absent. Source compatibility and unit checks do not recreate native execution.",
+    "Chapter-16 repairs, runtime revalidation and global release decisions belong to other agents.",
+    "No notebook generator, publisher, native experiment, archive packager, commit or staging operation was run by this pass.",
+    "This work does not establish complete course or release readiness."
+  ]
+}

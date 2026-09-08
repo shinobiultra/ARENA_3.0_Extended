@@ -1,0 +1,267 @@
+{
+  "schema": "arena.review-bundle.v1",
+  "archive": {
+    "name": "execution.tar.gz",
+    "sha256": "0c819b85240af6eb77a81b4b43cabad731692807144e092c07ac4e13c7db6fa9",
+    "size_bytes": 1953645
+  },
+  "limits": {
+    "archive_bytes": 67108864,
+    "member_bytes": 16777216,
+    "total_member_bytes": 134217728,
+    "tar_container_bytes": 167772160,
+    "decoded_json_bytes": 67108864,
+    "total_decoded_bytes": 536870912,
+    "members": 4096
+  },
+  "provenance": {
+    "kind": "historical_archive_packaging",
+    "packaged_at_utc": "2026-09-08T03:26:54.115741+00:00",
+    "measurement_claim": "Packaging only. This is not a native rerun, scientific revalidation or new review. Retained receipts, failure labels, values, scientific hashes and measurement dates are byte-identical to the original. Historical embedded archive inventories describe that original; this adjacent contract describes the derived review bundle.",
+    "source_archive": {
+      "repository_path": "chapter11_representation_geometry/exercises/part5_contrast_consistent_search/development_evidence/own_foundation_v2/execution.tar.gz",
+      "absolute_path": "/home/bitwise/.cache/arena_extended/evidence_packaging/original_archives/0c819b85240af6eb77a81b4b43cabad731692807144e092c07ac4e13c7db6fa9.tar.gz",
+      "sha256": "0c819b85240af6eb77a81b4b43cabad731692807144e092c07ac4e13c7db6fa9",
+      "size_bytes": 1953645,
+      "git_commit": "ce96ceaae2f91bf0dcd7648052325e07a87b0b5b",
+      "git_blob": "f4af68695ab580f9d94c8ee9d56a1027837e2312"
+    },
+    "source_archive_members": {
+      "completed_learner.ipynb": {
+        "sha256": "3625e6d6efb4048931883b88bb3044458fd8dc08386a8f23390cd6ca3c068aee",
+        "size_bytes": 700354
+      },
+      "execution.json": {
+        "sha256": "5bca358a8c8162c0102665692b4005367c8e6ffc3417ecb213dbcd77ca8d7938",
+        "size_bytes": 2026
+      },
+      "figures/author_parity.json": {
+        "sha256": "c94dd3270b8412dcebf917287cf42d9a6c9a65229ae5271b7a89db0d8b4601e2",
+        "size_bytes": 909
+      },
+      "figures/ccs_contrast_geometry.png": {
+        "sha256": "9f3cb35b6c340b70e7723c12fd9c8dda5c6ce892de91ec4ed9b5f68d0f6fd977",
+        "size_bytes": 67603
+      },
+      "figures/ccs_direction_baselines.png": {
+        "sha256": "e915cfe8b6ebc9ae792dabb9f934bcb709f1d1952503b67eb29eaf1c4f0814ea",
+        "size_bytes": 68130
+      },
+      "figures/ccs_distractor_strength_play.png": {
+        "sha256": "2d41685daf7fa4e917d62e4b09a694b66d82f3c44393359045dc1a5446efb871",
+        "size_bytes": 93719
+      },
+      "figures/ccs_exact_counterexample.png": {
+        "sha256": "3ee4de3d21c38924def4991d0677663f750060affc8f8b1fc175caeb4102032d",
+        "size_bytes": 76483
+      },
+      "figures/ccs_loss_landscape.png": {
+        "sha256": "621ab601761a8737f875f97f6fa9806235f0f1fdfd7abbc73bc476072b8b1244",
+        "size_bytes": 316424
+      },
+      "figures/ccs_orientation_control.png": {
+        "sha256": "e110decd0f52ffed9645780b19d1abff24ea10a438e85bf8dfa34d0177be8b8e",
+        "size_bytes": 93288
+      },
+      "figures/ccs_restart_outcomes.png": {
+        "sha256": "ad24f9393288c3106477e1d2df5b0e3e81a1819d379de0cec26ab64d3e0bf880",
+        "size_bytes": 156404
+      },
+      "figures/foundation_play.json": {
+        "sha256": "d73c98a957649999db046d38584c7d3336bfbe23187ff8993240693ac14a32de",
+        "size_bytes": 4524
+      },
+      "html_review/browser_fitting_exercise.png": {
+        "sha256": "a1cb8dbdfac80af83f6249286cc097cb416f1a4fbd622708715922d16c043e10",
+        "size_bytes": 156465
+      },
+      "html_review/browser_loss.png": {
+        "sha256": "5039eb775845bd618b18477000651b9b7dc517dcb1bce1962741b5bce6dbaac8",
+        "size_bytes": 129514
+      },
+      "html_review/browser_orientation.png": {
+        "sha256": "f9ca1eb0e6061cbd4d74c4b62f0f70bed7431b7182924295d4c2f77fd2d21ac1",
+        "size_bytes": 180815
+      },
+      "html_review/browser_play.png": {
+        "sha256": "8769130f77b3b5bb9142ff04d5e067ac0d5bf60d0ad39ab9deb8bf6403e3af27",
+        "size_bytes": 177748
+      },
+      "html_review/browser_review.json": {
+        "sha256": "df80a44bf3e9abe9e2d02d4e5f2ef57d9dccc1a3ba201d2732df57d6e798b3e0",
+        "size_bytes": 1831
+      },
+      "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/build_notebooks.py": {
+        "sha256": "7ca1441941f39778849d21c4214f95170c91972f815565fbeabf1044af005303",
+        "size_bytes": 4535
+      },
+      "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/ccs_methods.py": {
+        "sha256": "efc2e1d6e7f73d4774538711f7b8b1d93801f2d0c3d8d259ddd12866583e4dc6",
+        "size_bytes": 9543
+      },
+      "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/ccs_methods_tests.py": {
+        "sha256": "b9bdd836c24330b032478f5b9d152e2b8b69c51514b07a734fe80610c0e9d83b",
+        "size_bytes": 9088
+      },
+      "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/execute_learner.py": {
+        "sha256": "487d4f53ee6d30351cbf762823779a33c26c24701b95143a25b22e5e5ee63dcd",
+        "size_bytes": 3468
+      },
+      "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/lesson.md": {
+        "sha256": "7694caf30c2e65725eea1db9985ef50cbaf32e327a6de06731a622b7389cb032",
+        "size_bytes": 45530
+      },
+      "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/reference_parity.py": {
+        "sha256": "8e60473485fcf00e452d8d4d73247777f750f11ca1998afd62b11861c073d1e3",
+        "size_bytes": 4817
+      },
+      "visual_review.json": {
+        "sha256": "d63f310d9fecf4678187fb94b1a27d52d32945543a4610e8786b81a064ab4e38",
+        "size_bytes": 1778
+      }
+    }
+  },
+  "members": {
+    "completed_learner.ipynb": {
+      "type": "regular",
+      "size_bytes": 700354,
+      "sha256": "3625e6d6efb4048931883b88bb3044458fd8dc08386a8f23390cd6ca3c068aee",
+      "format": "notebook-json"
+    },
+    "execution.json": {
+      "type": "regular",
+      "size_bytes": 2026,
+      "sha256": "5bca358a8c8162c0102665692b4005367c8e6ffc3417ecb213dbcd77ca8d7938",
+      "format": "json"
+    },
+    "figures/author_parity.json": {
+      "type": "regular",
+      "size_bytes": 909,
+      "sha256": "c94dd3270b8412dcebf917287cf42d9a6c9a65229ae5271b7a89db0d8b4601e2",
+      "format": "json"
+    },
+    "figures/ccs_contrast_geometry.png": {
+      "type": "regular",
+      "size_bytes": 67603,
+      "sha256": "9f3cb35b6c340b70e7723c12fd9c8dda5c6ce892de91ec4ed9b5f68d0f6fd977",
+      "format": "png"
+    },
+    "figures/ccs_direction_baselines.png": {
+      "type": "regular",
+      "size_bytes": 68130,
+      "sha256": "e915cfe8b6ebc9ae792dabb9f934bcb709f1d1952503b67eb29eaf1c4f0814ea",
+      "format": "png"
+    },
+    "figures/ccs_distractor_strength_play.png": {
+      "type": "regular",
+      "size_bytes": 93719,
+      "sha256": "2d41685daf7fa4e917d62e4b09a694b66d82f3c44393359045dc1a5446efb871",
+      "format": "png"
+    },
+    "figures/ccs_exact_counterexample.png": {
+      "type": "regular",
+      "size_bytes": 76483,
+      "sha256": "3ee4de3d21c38924def4991d0677663f750060affc8f8b1fc175caeb4102032d",
+      "format": "png"
+    },
+    "figures/ccs_loss_landscape.png": {
+      "type": "regular",
+      "size_bytes": 316424,
+      "sha256": "621ab601761a8737f875f97f6fa9806235f0f1fdfd7abbc73bc476072b8b1244",
+      "format": "png"
+    },
+    "figures/ccs_orientation_control.png": {
+      "type": "regular",
+      "size_bytes": 93288,
+      "sha256": "e110decd0f52ffed9645780b19d1abff24ea10a438e85bf8dfa34d0177be8b8e",
+      "format": "png"
+    },
+    "figures/ccs_restart_outcomes.png": {
+      "type": "regular",
+      "size_bytes": 156404,
+      "sha256": "ad24f9393288c3106477e1d2df5b0e3e81a1819d379de0cec26ab64d3e0bf880",
+      "format": "png"
+    },
+    "figures/foundation_play.json": {
+      "type": "regular",
+      "size_bytes": 4524,
+      "sha256": "d73c98a957649999db046d38584c7d3336bfbe23187ff8993240693ac14a32de",
+      "format": "json"
+    },
+    "html_review/browser_fitting_exercise.png": {
+      "type": "regular",
+      "size_bytes": 156465,
+      "sha256": "a1cb8dbdfac80af83f6249286cc097cb416f1a4fbd622708715922d16c043e10",
+      "format": "png"
+    },
+    "html_review/browser_loss.png": {
+      "type": "regular",
+      "size_bytes": 129514,
+      "sha256": "5039eb775845bd618b18477000651b9b7dc517dcb1bce1962741b5bce6dbaac8",
+      "format": "png"
+    },
+    "html_review/browser_orientation.png": {
+      "type": "regular",
+      "size_bytes": 180815,
+      "sha256": "f9ca1eb0e6061cbd4d74c4b62f0f70bed7431b7182924295d4c2f77fd2d21ac1",
+      "format": "png"
+    },
+    "html_review/browser_play.png": {
+      "type": "regular",
+      "size_bytes": 177748,
+      "sha256": "8769130f77b3b5bb9142ff04d5e067ac0d5bf60d0ad39ab9deb8bf6403e3af27",
+      "format": "png"
+    },
+    "html_review/browser_review.json": {
+      "type": "regular",
+      "size_bytes": 1831,
+      "sha256": "df80a44bf3e9abe9e2d02d4e5f2ef57d9dccc1a3ba201d2732df57d6e798b3e0",
+      "format": "json"
+    },
+    "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/build_notebooks.py": {
+      "type": "regular",
+      "size_bytes": 4535,
+      "sha256": "7ca1441941f39778849d21c4214f95170c91972f815565fbeabf1044af005303",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/ccs_methods.py": {
+      "type": "regular",
+      "size_bytes": 9543,
+      "sha256": "efc2e1d6e7f73d4774538711f7b8b1d93801f2d0c3d8d259ddd12866583e4dc6",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/ccs_methods_tests.py": {
+      "type": "regular",
+      "size_bytes": 9088,
+      "sha256": "b9bdd836c24330b032478f5b9d152e2b8b69c51514b07a734fe80610c0e9d83b",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/execute_learner.py": {
+      "type": "regular",
+      "size_bytes": 3468,
+      "sha256": "487d4f53ee6d30351cbf762823779a33c26c24701b95143a25b22e5e5ee63dcd",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/lesson.md": {
+      "type": "regular",
+      "size_bytes": 45530,
+      "sha256": "7694caf30c2e65725eea1db9985ef50cbaf32e327a6de06731a622b7389cb032",
+      "format": "utf8-text"
+    },
+    "source_snapshot/chapter11_representation_geometry/exercises/part5_contrast_consistent_search/reference_parity.py": {
+      "type": "regular",
+      "size_bytes": 4817,
+      "sha256": "8e60473485fcf00e452d8d4d73247777f750f11ca1998afd62b11861c073d1e3",
+      "format": "utf8-text"
+    },
+    "visual_review.json": {
+      "type": "regular",
+      "size_bytes": 1778,
+      "sha256": "d63f310d9fecf4678187fb94b1a27d52d32945543a4610e8786b81a064ab4e38",
+      "format": "json"
+    }
+  },
+  "external_payloads": {},
+  "member_count": 23,
+  "total_member_bytes": 2304996
+}

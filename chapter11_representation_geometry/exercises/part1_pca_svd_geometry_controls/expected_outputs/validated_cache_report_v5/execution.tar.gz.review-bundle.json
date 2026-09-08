@@ -1,0 +1,147 @@
+{
+  "schema": "arena.review-bundle.v1",
+  "archive": {
+    "name": "execution.tar.gz",
+    "sha256": "bbfc255e4cc6b0d1110d03d53425fe9063d85378cc09b1b6b115b7f8126d78b2",
+    "size_bytes": 45088
+  },
+  "limits": {
+    "archive_bytes": 67108864,
+    "member_bytes": 16777216,
+    "total_member_bytes": 134217728,
+    "tar_container_bytes": 167772160,
+    "decoded_json_bytes": 67108864,
+    "total_decoded_bytes": 536870912,
+    "members": 4096
+  },
+  "provenance": {
+    "kind": "historical_archive_packaging",
+    "packaged_at_utc": "2026-09-08T03:26:52.406152+00:00",
+    "measurement_claim": "Packaging only. This is not a native rerun, scientific revalidation or new review. Retained receipts, failure labels, values, scientific hashes and measurement dates are byte-identical to the original. Historical embedded archive inventories describe that original; this adjacent contract describes the derived review bundle.",
+    "source_archive": {
+      "repository_path": "chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls/expected_outputs/validated_cache_report_v5/execution.tar.gz",
+      "absolute_path": "/home/bitwise/.cache/arena_extended/evidence_packaging/original_archives/bbfc255e4cc6b0d1110d03d53425fe9063d85378cc09b1b6b115b7f8126d78b2.tar.gz",
+      "sha256": "bbfc255e4cc6b0d1110d03d53425fe9063d85378cc09b1b6b115b7f8126d78b2",
+      "size_bytes": 45088,
+      "git_commit": "ce96ceaae2f91bf0dcd7648052325e07a87b0b5b",
+      "git_blob": "10b84f07bde4f96f8426919da75a0b879d736aec"
+    },
+    "source_archive_members": {
+      "README.md": {
+        "sha256": "27c31eae60d56616ad23882a74db894567d53d2441a0035abcd0c6439674ea73",
+        "size_bytes": 3864
+      },
+      "artifacts.lock.yml": {
+        "sha256": "1311c9692bd12c820849e1f66c724e49d969e8c7ea8601922c90745d263ef08f",
+        "size_bytes": 4847
+      },
+      "final-tests-v6.log": {
+        "sha256": "ddd747fbd3cc2e427ba71e90c9d9d6cfdcd9a7ecb1c72aa6517258e493ef28ad",
+        "size_bytes": 99
+      },
+      "geometry_reproduction_cache.py": {
+        "sha256": "8f24e1e5cbcc4cae0da25a27ea777c5fe34e5e7611633962743cd593790c053c",
+        "size_bytes": 5827
+      },
+      "lesson.md": {
+        "sha256": "a3a82fd91093137b807d77e56f92d16ee3307f7440bc0745eb9a23f97abcce17",
+        "size_bytes": 109191
+      },
+      "native_manifest.json": {
+        "sha256": "218976a8267313dd16feba8fa75eda45e16d30f6ce70d9e5a6248a62c06705f1",
+        "size_bytes": 1291
+      },
+      "render_validation.json": {
+        "sha256": "65ff50acd6adabe9957a9163883933fc3d610da989f082a72d4db44879ed8ab2",
+        "size_bytes": 8409
+      },
+      "reproduction-cache-tests-v1.log": {
+        "sha256": "71288863ec9567395a647dd0c8fbf0e2048bee72283202612ad6f90a7a526ef3",
+        "size_bytes": 98
+      },
+      "solutions.py": {
+        "sha256": "1333e364538ab4e562f87af4e5ba9badf756b033dddcf70b19a6a3cc0a92505c",
+        "size_bytes": 3852
+      },
+      "test_geometry_reproduction_cache.py": {
+        "sha256": "e37739de4b18aaf32f729da4c3d02bcca44aca882459bda94b9ca761886f5739",
+        "size_bytes": 2610
+      },
+      "verification_report.json": {
+        "sha256": "69a81b6890631ae9981b7d90bb6fb1ff2fa4555f2fbf7e167b0a795f94b63b1e",
+        "size_bytes": 21608
+      }
+    }
+  },
+  "members": {
+    "README.md": {
+      "type": "regular",
+      "size_bytes": 3864,
+      "sha256": "27c31eae60d56616ad23882a74db894567d53d2441a0035abcd0c6439674ea73",
+      "format": "utf8-text"
+    },
+    "artifacts.lock.yml": {
+      "type": "regular",
+      "size_bytes": 4847,
+      "sha256": "1311c9692bd12c820849e1f66c724e49d969e8c7ea8601922c90745d263ef08f",
+      "format": "utf8-text"
+    },
+    "final-tests-v6.log": {
+      "type": "regular",
+      "size_bytes": 99,
+      "sha256": "ddd747fbd3cc2e427ba71e90c9d9d6cfdcd9a7ecb1c72aa6517258e493ef28ad",
+      "format": "utf8-text"
+    },
+    "geometry_reproduction_cache.py": {
+      "type": "regular",
+      "size_bytes": 5827,
+      "sha256": "8f24e1e5cbcc4cae0da25a27ea777c5fe34e5e7611633962743cd593790c053c",
+      "format": "utf8-text"
+    },
+    "lesson.md": {
+      "type": "regular",
+      "size_bytes": 109191,
+      "sha256": "a3a82fd91093137b807d77e56f92d16ee3307f7440bc0745eb9a23f97abcce17",
+      "format": "utf8-text"
+    },
+    "native_manifest.json": {
+      "type": "regular",
+      "size_bytes": 1291,
+      "sha256": "218976a8267313dd16feba8fa75eda45e16d30f6ce70d9e5a6248a62c06705f1",
+      "format": "json"
+    },
+    "render_validation.json": {
+      "type": "regular",
+      "size_bytes": 8409,
+      "sha256": "65ff50acd6adabe9957a9163883933fc3d610da989f082a72d4db44879ed8ab2",
+      "format": "json"
+    },
+    "reproduction-cache-tests-v1.log": {
+      "type": "regular",
+      "size_bytes": 98,
+      "sha256": "71288863ec9567395a647dd0c8fbf0e2048bee72283202612ad6f90a7a526ef3",
+      "format": "utf8-text"
+    },
+    "solutions.py": {
+      "type": "regular",
+      "size_bytes": 3852,
+      "sha256": "1333e364538ab4e562f87af4e5ba9badf756b033dddcf70b19a6a3cc0a92505c",
+      "format": "utf8-text"
+    },
+    "test_geometry_reproduction_cache.py": {
+      "type": "regular",
+      "size_bytes": 2610,
+      "sha256": "e37739de4b18aaf32f729da4c3d02bcca44aca882459bda94b9ca761886f5739",
+      "format": "utf8-text"
+    },
+    "verification_report.json": {
+      "type": "regular",
+      "size_bytes": 21608,
+      "sha256": "69a81b6890631ae9981b7d90bb6fb1ff2fa4555f2fbf7e167b0a795f94b63b1e",
+      "format": "json"
+    }
+  },
+  "external_payloads": {},
+  "member_count": 11,
+  "total_member_bytes": 161696
+}

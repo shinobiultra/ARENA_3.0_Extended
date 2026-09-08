@@ -1,0 +1,32 @@
+{
+  "checked_at_utc": "2026-09-08T03:54:35.571329+00:00",
+  "extension_files_checked": 2886,
+  "checks": {
+    "forbidden_or_invalid_bundles": [],
+    "oversized_files": [],
+    "prompt_artifacts": [],
+    "required_fixtures": [],
+    "gitignore": [],
+    "untracked_other_worker_payloads": [
+      "required extension payload is untracked: arena_ext/readability_compatibility.py",
+      "required extension payload is untracked: docs/arena_salvage/2026-09-08_readability_compatibility.json",
+      "required extension payload is untracked: docs/arena_salvage/2026-09-08_readability_equivalence.json",
+      "required extension payload is untracked: docs/arena_salvage/2026-09-08_shapiq_environment_revalidation.md",
+      "required extension payload is untracked: docs/arena_salvage/2026-09-08_shapley_interaction_v8_repair_plan.md",
+      "required extension payload is untracked: docs/arena_salvage/2026-09-08_source_readability_repair_plan.md",
+      "required extension payload is untracked: docs/arena_salvage/2026-09-08_spex_proxyspex_learner_plan.md",
+      "required extension payload is untracked: docs/arena_salvage/2026-09-08_spex_reference_execution.md",
+      "required extension payload is untracked: scripts/verification_fixture_contract.py",
+      "required extension payload is untracked: tests/test_readability_compatibility.py",
+      "required extension payload is untracked: tests/test_verification_fixture_contract.py"
+    ]
+  },
+  "focused_pytest": {
+    "command": ".venv/bin/python -m pytest tests/test_extension_artifact_hygiene.py -q -k 'not current_extension_artifact_hygiene_passes'",
+    "passed": 53,
+    "deselected": 1,
+    "seconds": 0.45
+  },
+  "original_preservation_observed": "PASS; 0 blockers",
+  "whole_repository_hygiene": "Awaiting other workers to stage their new files"
+}

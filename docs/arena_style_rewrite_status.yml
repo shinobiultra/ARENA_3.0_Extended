@@ -370,6 +370,21 @@ sections:
       and 100 random-order controls are retained. Fresh reproduction compares 1442 arrays and 464237288
       elements exactly. Ordinary SE and quadrature are qualified; continuous-path attribution differs from
       discrete feature Shapley and is not physical causality.
+  '16.16':
+    status: course_ready
+    page: chapter16_shapley_attribution_baselines/instructions/pages/16_[16.16]_Where_Does_Higher_Order_Credit_Go.md
+    notes: >-
+      149 exercise cells and 141 completed own-answer cells include 55 executed code cells,
+      eight exercises, ten student functions, eleven inspected figures and two editable plays.
+      All seven known predictors and 272 held-out rows retain complete interaction games,
+      50135040 hybrid predictions, five backgrounds and all pair contexts. Exact dividend,
+      shuffled-target, within-size and random-order controls stay visible. Independent Astra
+      v8 review approved publication after actual browser, mathematics and play inspection.
+      Fresh source-only refits reproduce 1797 arrays and 94604271 elements exactly.
+      Ordered support arithmetic changes 98602 distances and 108 nearest IDs versus v7;
+      the full correction, amendments and historical BLOCK remain inspectable. Observational
+      games and known-model reproduction do not establish physical causality or a whole-paper
+      replication. This section-level status does not establish full course readiness.
   '16.17':
     status: course_ready
     page: chapter16_shapley_attribution_baselines/instructions/pages/17_[16.17]_One_Query_Many_Interactions.md

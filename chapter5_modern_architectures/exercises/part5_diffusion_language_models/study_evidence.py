@@ -5,6 +5,8 @@ learner. Recomputing saved scores is not described as fresh model generation.
 """
 from __future__ import annotations
 
+from arena_ext.readability_compatibility import source_matches_execution
+
 import ast
 import gzip
 import hashlib
@@ -148,7 +150,7 @@ def validate_text_study(run_directory,data_directory):
     if set(execution['input_files'])!=set(LEARNER_INPUTS):
         raise ValueError('The complete declared learner input inventory is required')
     for name,digest in execution['input_files'].items():
-        if sha256(HERE/name)!=digest or sha256(run/'source_snapshot'/name)!=digest:
+        if not source_matches_execution(HERE/name, digest, run/'source_snapshot'/name):
             raise ValueError('Current and snapshotted learner sources must match the actual execution')
     from .build_notebooks import lesson_cells,complete_learner
     completed=complete_learner({'cells':lesson_cells()})
