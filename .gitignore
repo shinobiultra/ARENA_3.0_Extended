@@ -114,3 +114,13 @@ arena_salvage_guidance_pack.zip
 !chapter5_modern_architectures/exercises/part5_diffusion_language_models/expected_outputs/text_data/
 !chapter5_modern_architectures/exercises/part5_diffusion_language_models/expected_outputs/text_data/manifest.json
 !chapter5_modern_architectures/exercises/part5_diffusion_language_models/expected_outputs/text_data/*.json.gz
+
+# Extension master files: the .py master is the source of truth; build.py regenerates the .ipynb copy
+infrastructure/chapters/chapter[5-9]_*/master_*.ipynb
+infrastructure/chapters/chapter1[0-8]_*/master_*.ipynb
+infrastructure/chapters/chapter0_fundamentals/master_0_6.ipynb
+infrastructure/chapters/chapter1_transformer_interp/master_1_6.ipynb
+*.FAILED.ipynb
+
+# Local Claude Code preview config
+.claude/launch.json

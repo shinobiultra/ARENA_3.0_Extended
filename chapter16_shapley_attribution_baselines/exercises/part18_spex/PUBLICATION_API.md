@@ -36,6 +36,15 @@ unchanged supporting receipts under `expected_outputs`:
 - `native_comparison_summary.json`: bounded comparison summary; all differences
   remain in the physically hashed external full comparison report.
 
+When the run pair uses independently approved concurrent scheduling, validation
+also requires the outer coordinator's complete resource receipt. An inner native
+or comparison success cannot override an outer failure. Each section receives
+exact `scheduling_supervision.json`, `scheduling_supplement.json`,
+`scheduling_approval.json` and `scheduling_coordinator.py` supporting artifacts.
+The report binds these same files. The outer logs and source snapshots are
+included in the physical external inventory. These additions do not relabel the
+coordinator as the frozen runner's sequential `reproduce()` function.
+
 There is one shared `part18_spex/expected_outputs/execution_review.tar.gz`, with a
 mandatory `.review-bundle.json` contract. Both sections' content and receipts are
 inside it. The archive and its own contract are separately bound installation

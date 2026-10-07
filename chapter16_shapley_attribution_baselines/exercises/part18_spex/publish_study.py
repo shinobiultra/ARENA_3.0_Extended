@@ -132,6 +132,72 @@ def validate_native_run(directory):
     return receipt, summary
 
 
+def validate_concurrent_schedule(reproduction, fresh_run):
+    """An inner PASS never overrides the complete concurrent supervisor receipt."""
+    scheduling = reproduction.get("scheduling")
+    if scheduling is None:
+        parent_receipt = Path(fresh_run).resolve().parent / "execution.json"
+        if parent_receipt.is_file():
+            require(read_json(parent_receipt).get("execution_kind") != "concurrent_cold_reproduction_coordinator",
+                    "Concurrent reproduction omitted its scheduling evidence")
+        return {}
+    require(scheduling.get("mode") == "concurrent_cold_native_then_frozen_comparison",
+            "Unknown reproduction scheduling mode")
+    require(scheduling.get("unchanged_sequential_reproduce_function_used") is False,
+            "Concurrent scheduling must not claim the sequential runner")
+    fresh_run = Path(fresh_run).resolve()
+    outer_path = Path(scheduling["outer_supervision_receipt"]).resolve()
+    require(fresh_run.name == "native" and outer_path == fresh_run.parent / "execution.json",
+            "Foreign concurrent supervision receipt")
+    outer = read_json(outer_path)
+    require(outer.get("status") == "COMPLETE" and outer.get("returncode") == 0
+            and outer.get("execution_kind") == "concurrent_cold_reproduction_coordinator",
+            "Concurrent outer supervision did not complete")
+    require(not any(outer.get(key) for key in ("failures", "resource_violations", "changed_sources")),
+            "Concurrent outer supervision has failures or drift")
+    require(outer.get("source_inputs") and outer["source_inputs"] == outer.get("source_inputs_after"),
+            "Concurrent coordinator sources changed")
+    limits = outer["limits"]
+    require(0 < outer["elapsed_seconds"] <= limits["wall_seconds"] <= 10800
+            and 0 < reproduction["elapsed_seconds"] <= 10800, "Concurrent joint time limit failed")
+    require(0 <= outer["sampled_peak_rss_bytes"] <= limits["rss_bytes"] == 8 * 1024**3,
+            "Concurrent aggregate RSS limit failed")
+    require(0 < outer["new_output_bytes"] <= limits["output_bytes"] == 8 * 1024**3,
+            "Concurrent aggregate output limit failed")
+    inventory = {}
+    for path in sorted(outer_path.parent.rglob("*")):
+        require(not path.is_symlink(), "Concurrent output contains a symlink")
+        if path.is_file():
+            inventory[path.relative_to(outer_path.parent).as_posix()] = path.stat().st_size
+    require(inventory == outer["output_files"] and sum(inventory.values()) == outer["new_output_bytes"],
+            "Concurrent complete output inventory changed")
+    evidence = {"supervision": physical_record(outer_path)}
+    for role, key in (("supplement", "supplement"), ("approval", "independent_approval")):
+        path = Path(scheduling[key + "_path"]).resolve()
+        require(bundles.sha256(path) == scheduling[key + "_sha256"], "Concurrent scheduling evidence changed")
+        require(outer["source_inputs"].get(str(path)) == bundles.file_record(path),
+                "Concurrent scheduling evidence was not supervised")
+        evidence[role] = physical_record(path)
+    supplement, approval = (read_json(evidence[role]["absolute_path"]) for role in ("supplement", "approval"))
+    require(approval.get("status") == "APPROVE_CONCURRENT_COLD_REPRODUCTION"
+            and approval.get("independent_review") is True
+            and approval.get("supplement_sha256") == evidence["supplement"]["sha256"],
+            "Independent concurrent scheduling approval mismatch")
+    require(outer.get("supplement_sha256") == evidence["supplement"]["sha256"]
+            and outer.get("approval_sha256") == evidence["approval"]["sha256"], "Outer scheduling identity changed")
+    require(Path(supplement["primary_run"]).resolve() == Path(reproduction["learner_directory"]).resolve()
+            and Path(supplement["reproduction_root"]).resolve() == outer_path.parent,
+            "Scheduling supplement belongs to another run pair")
+    coordinator = Path(outer["command"][1]).resolve()
+    require(bundles.sha256(coordinator) == supplement["coordinator_sha256"] == scheduling["coordinator_sha256"]
+            and outer["source_inputs"].get(str(coordinator)) == bundles.file_record(coordinator),
+            "Concurrent coordinator source identity changed")
+    for name, record in outer["source_inputs"].items():
+        require(bundles.file_record(Path(name)) == record, "Concurrent supervised input changed: " + name)
+    evidence["coordinator"] = physical_record(coordinator)
+    return evidence
+
+
 def validate_native_pair(native_run, fresh_run):
     native_run, fresh_run = Path(native_run).resolve(), Path(fresh_run).resolve()
     require(native_run != fresh_run, "Reproduction requires two distinct cold runs")
@@ -160,7 +226,8 @@ def validate_native_pair(native_run, fresh_run):
     require(bundles.sha256(details) == comparison["comparison_sha256"] == reproduction["comparison_sha256"], "Comparison detail bytes changed")
     require(comparison["status"] == "PASS" and comparison["mismatch_count"] == 0, "Scientific reproduction mismatch")
     require(summary["observed_inventory"] == fresh_summary["observed_inventory"], "Native measured inventory changed")
-    return {"native_execution": physical_record(native_run / "execution.json"),
+    scheduling = validate_concurrent_schedule(reproduction, fresh_run)
+    result = {"native_execution": physical_record(native_run / "execution.json"),
             "fresh_execution": physical_record(fresh_run / "execution.json"),
             "reproduction": physical_record(fresh_run / "reproduction.json"),
             "comparison_summary": physical_record(fresh_run / "comparison_process/comparison_summary.json"),
@@ -168,6 +235,9 @@ def validate_native_pair(native_run, fresh_run):
             "reference_outcomes": [{key: row.get(key) for key in ("stage_id", "status", "process_status", "scientific_status")}
                                    for row in summary["references"]],
             "bitwise_exact": comparison["bitwise_exact"], "numerical_difference_leaves": comparison["numerical_difference_leaves"]}
+    if scheduling:
+        result["scheduling_evidence"] = scheduling
+    return result
 
 
 def artifact_target(section, role, name=None):
@@ -300,7 +370,19 @@ def stage_candidate(native_run, fresh_run, section_manifests, output):
     require(set(sections) == set(SECTIONS) and FIXTURE in artifacts, "Both sections and their shared portable fixture are required")
     fixture_hash = artifacts[FIXTURE]["sha256"]
     require(all(row["data_access"]["fixture_sha256"] == fixture_hash for row in sections.values()), "Sections use different portable fixtures")
+    for section in sections:
+        for role, evidence in native.get("scheduling_evidence", {}).items():
+            name = "scheduling_" + role + (".py" if role == "coordinator" else ".json")
+            target = artifact_target(section, "supporting_evidence", name)
+            require(target not in artifacts or artifacts[target]["sha256"] == evidence["sha256"],
+                    "Lesson content conflicts with authoritative scheduling evidence")
+            artifacts[target] = {**evidence, "role": "supporting_evidence", "section": section, "name": name}
     external = _full_inventory(native_run, fresh_run)
+    if native.get("scheduling_evidence"):
+        outer = Path(native["scheduling_evidence"]["supervision"]["absolute_path"]).parent
+        for path in sorted(outer.rglob("*")):
+            if path.is_file() and not path.is_relative_to(Path(fresh_run).resolve()):
+                external["coordinator/" + path.relative_to(outer).as_posix()] = physical_record(path)
     for section, row in sections.items():
         for key in ("input_manifest", "learner_execution", "executed_notebook"):
             external[f"learner_{section}/{key}" + Path(row[key]["absolute_path"]).suffix] = row[key]

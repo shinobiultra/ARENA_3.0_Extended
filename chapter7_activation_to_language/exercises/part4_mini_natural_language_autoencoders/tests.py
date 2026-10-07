@@ -1,788 +1,384 @@
-"""Scientific and learner-surface tests for section 7.4."""
+from typing import Callable
 
-from __future__ import annotations
-
-import ast
-import inspect
-import json
-import re
-from collections import Counter
-from pathlib import Path
-
-import pytest
+import numpy as np
 import torch as t
-
-SECTION_DIR = Path(__file__).resolve().parent
-EXERCISE_NOTEBOOK = SECTION_DIR / "7.4_Mini_Natural_Language_Autoencoders_exercises.ipynb"
-SOLUTION_NOTEBOOK = SECTION_DIR / "7.4_Mini_Natural_Language_Autoencoders_solutions.ipynb"
-PAGE = (
-    SECTION_DIR.parents[1]
-    / "instructions"
-    / "pages"
-    / "04_[7.4]_Mini_Natural_Language_Autoencoders.md"
-)
-REPORT = SECTION_DIR / "verification_report.json"
-
-
-def _solutions():
-    from chapter7_activation_to_language.exercises.part4_mini_natural_language_autoencoders import (
-        solutions,
-    )
-
-    return solutions
-
-
-@pytest.fixture(scope="module")
-def cpu_bundle():
-    solutions = _solutions()
-    tokenizer, model = solutions.load_pythia_cpu()
-    dataset = solutions.cache_pythia_nla_dataset(tokenizer, model)
-    return tokenizer, model, dataset
-
-
-@pytest.fixture(scope="module")
-def experiment(cpu_bundle):
-    tokenizer, model, dataset = cpu_bundle
-    return _solutions().evaluate_mini_nla(tokenizer, model, dataset)
-
-
-def check_compositional_split(build_agreement_examples):
-    train, evaluation = build_agreement_examples()
-    assert (
-        len(train) == 96 and len(evaluation) == 32
-    ), "check_compositional_split: expected len(train) == 96 and len(evaluation) == 32."
-    all_examples = (*train, *evaluation)
-    context_counts = Counter(example.context_id for example in all_examples)
-    train_counts = Counter(example.context_id for example in train)
-    eval_counts = Counter(example.context_id for example in evaluation)
-    assert context_counts == Counter(
-        {context_id: 4 for context_id in range(32)}
-    ), "check_compositional_split: expected context_counts == Counter({context_id: 4 for context_id in range(32)})."
-    assert train_counts == Counter(
-        {context_id: 3 for context_id in range(32)}
-    ), "check_compositional_split: expected train_counts == Counter({context_id: 3 for context_id in range(32)})."
-    assert eval_counts == Counter(
-        {context_id: 1 for context_id in range(32)}
-    ), "check_compositional_split: expected eval_counts == Counter({context_id: 1 for context_id in range(32)})."
-    assert Counter(example.factors for example in evaluation) == Counter(
-        {state: 8 for state in _solutions().FACTOR_STATES}
-    ), "check_compositional_split: expected Counter((example.factors for example in evaluation)) == Counter({state: 8 for state in _solutions().FACTOR_...."
-    assert all(
-        example.factors == example.held_out_state for example in evaluation
-    ), "check_compositional_split: expected all((example.factors == example.held_out_state for example in evaluation))."
-    assert not (
-        {example.explanation for example in train} & {example.explanation for example in evaluation}
-    ), "check_compositional_split: expected not {example.explanation for example in train} & {example.explanation for example in evaluation}."
-    print("Compositional split: 32 contexts, 3 train + 1 held-out row each.")
-    print("All tests in `check_compositional_split` passed!")
-
-
-def check_tokenization(tokenizer, train_examples, tokenize_explanations):
-    texts = tuple(example.explanation for example in train_examples)
-    tokens = tokenize_explanations(tokenizer, texts)
-    assert tokens.token_ids.shape == (96, 24), "Expected 96 fixed-length 24-token explanations."
-    assert tokens.local_token_ids.shape == tokens.token_ids.shape, "Local token IDs must align."
-    assert (
-        len(tokens.vocabulary_token_ids) == 33
-    ), "The frozen training vocabulary should have 33 tokens."
-    assert tokens.attention_mask.all(), "Every fixed-length explanation position should be live."
-    assert (
-        tokens.token_ids[:, -1].eq(tokenizer.eos_token_id).all()
-    ), "Every explanation must end in EOS."
-    print("Tokenization: 24-token explanations over a 33-token GPT-NeoX vocabulary.")
-    print("All tests in `check_tokenization` passed!")
-
-
-def check_token_verbalizer(
-    tokenizer,
-    dataset,
-    tokenize_explanations,
-    fit_token_verbalizer,
-    generate_token_explanations,
-    token_generation_accuracy,
-):
-    train_text = tuple(example.explanation for example in dataset.train_examples)
-    eval_text = tuple(example.explanation for example in dataset.eval_examples)
-    train_tokens = tokenize_explanations(tokenizer, train_text)
-    eval_tokens = tokenize_explanations(
-        tokenizer,
-        eval_text,
-        vocabulary_token_ids=train_tokens.vocabulary_token_ids,
-    )
-    verbalizer = fit_token_verbalizer(dataset.train_activations, train_tokens)
-    generated = generate_token_explanations(tokenizer, dataset.eval_activations, verbalizer)
-    token_accuracy, exact_accuracy = token_generation_accuracy(generated, eval_tokens)
-    assert (
-        token_accuracy == 1.0 and exact_accuracy == 1.0
-    ), "Every held-out token sequence should be exact."
-    assert (
-        len(set(generated.texts)) == 32
-    ), "The AV must generate one distinct explanation per context."
-    assert verbalizer.weight.shape[1] == 24 * 33, "The AV must score every position-token pair."
-    print("Token AV: 792 token logits per row; 32/32 held-out sequences exact.")
-    print("All tests in `check_token_verbalizer` passed!")
-
-
-def check_reconstructor_language_features(
-    tokenizer,
-    model,
-    encode_reconstructor_text,
-):
-    texts = (
-        "The topic is key. The wording is plain. Quantity is one. Time is current.",
-        "Current is Time. one is Quantity. plain is wording. key is topic The.",
-    )
-    features = encode_reconstructor_text(tokenizer, model, texts)
-    assert features.shape == (
-        2,
-        512,
-    ), "check_reconstructor_language_features: expected features.shape == (2, 512)."
-    assert not t.allclose(
-        features[0], features[1]
-    ), "check_reconstructor_language_features: expected not t.allclose(features[0], features[1])."
-    assert (
-        float((features[0] - features[1]).norm()) > 1.0
-    ), "check_reconstructor_language_features: expected float((features[0] - features[1]).norm()) > 1.0."
-    print("AR language trunk: same words in different order produce different features.")
-    print("All tests in `check_reconstructor_language_features` passed!")
-
-
-def check_nonprototype_metrics(
-    original,
-    reconstructed,
-    factors,
-    reconstruction_metrics,
-    assert_nonprototype_reconstruction,
-):
-    metrics = reconstruction_metrics(original, reconstructed, factors)
-    assert metrics.fve > 0.75, "check_nonprototype_metrics: expected metrics.fve > 0.75."
-    assert (
-        metrics.within_factor_fve > 0.75
-    ), "check_nonprototype_metrics: expected metrics.within_factor_fve > 0.75."
-    assert (
-        metrics.distinct_rows == 32
-    ), "check_nonprototype_metrics: expected metrics.distinct_rows == 32."
-    assert_nonprototype_reconstruction(original, reconstructed, factors)
-    print(
-        f"Reconstruction: FVE={metrics.fve:.3f}, within-factor FVE="
-        f"{metrics.within_factor_fve:.3f}, distinct rows={metrics.distinct_rows}."
-    )
-    print("All tests in `check_nonprototype_metrics` passed!")
-
-
-def check_bag_of_tokens_control(
-    tokenizer,
-    dataset,
-    bag_of_tokens_features,
-    fit_token_reconstructor,
-    decode_text_features,
-    fraction_variance_explained,
-):
-    train_texts = tuple(example.explanation for example in dataset.train_examples)
-    eval_texts = tuple(example.explanation for example in dataset.eval_examples)
-    train_features, vocabulary = bag_of_tokens_features(tokenizer, train_texts)
-    eval_features, returned_vocabulary = bag_of_tokens_features(
-        tokenizer,
-        eval_texts,
-        vocabulary_token_ids=vocabulary,
-    )
-    assert t.equal(
-        vocabulary, returned_vocabulary
-    ), "Evaluation must reuse the training vocabulary."
-    decoder = fit_token_reconstructor(train_features, dataset.train_activations)
-    reconstructed = decode_text_features(eval_features, decoder)
-    score = fraction_variance_explained(dataset.eval_activations, reconstructed)
-    assert (
-        0.55 < score < 0.75
-    ), "The lexical bypass should recover context but miss ordered factors."
-    print(f"Bag-of-tokens control: normalized held-out FVE={score:.3f}.")
-    print("All tests in `check_bag_of_tokens_control` passed!")
-
-
-def check_identity_and_locality(model, dataset, patch_pythia_candidate_logits):
-    identity = patch_pythia_candidate_logits(model, dataset, dataset.eval_activations)
-    assert t.equal(
-        identity, dataset.original_candidate_logits
-    ), "check_identity_and_locality: expected t.equal(identity, dataset.original_candidate_logits)."
-    replacement = dataset.eval_activations[1:2].clone()
-    changed = patch_pythia_candidate_logits(
-        model,
-        dataset,
-        replacement,
-        row_indices=(0,),
-    )
-    assert (
-        float((changed[0] - dataset.original_candidate_logits[0]).abs().max()) > 1e-3
-    ), "check_identity_and_locality: expected float((changed[0] - dataset.original_candidate_logits[0]).abs().max()) > 0.001."
-    assert t.equal(
-        changed[1:], dataset.original_candidate_logits[1:]
-    ), "check_identity_and_locality: expected t.equal(changed[1:], dataset.original_candidate_logits[1:])."
-    print("Hook parity/locality: identity exact; a cross-example patch changes only row 0.")
-    print("All tests in `check_identity_and_locality` passed!")
-
-
-def test_compositional_split_withholds_one_state_per_lexical_context():
-    check_compositional_split(_solutions().build_agreement_examples)
-    print("All tests in `test_compositional_split_withholds_one_state_per_lexical_context` passed!")
-
-
-def test_real_cache_is_nonzero_and_aligned(cpu_bundle):
-    _, _, dataset = cpu_bundle
-    assert dataset.train_activations.shape == (
-        96,
-        512,
-    ), "test_real_cache_is_nonzero_and_aligned: expected dataset.train_activations.shape == (96, 512)."
-    assert dataset.eval_activations.shape == (
-        32,
-        512,
-    ), "test_real_cache_is_nonzero_and_aligned: expected dataset.eval_activations.shape == (32, 512)."
-    assert (
-        dataset.eval_input_ids.shape == dataset.eval_attention_mask.shape
-    ), "test_real_cache_is_nonzero_and_aligned: expected dataset.eval_input_ids.shape == dataset.eval_attention_mask.shape."
-    assert dataset.original_candidate_logits.shape == (
-        32,
-        4,
-    ), "test_real_cache_is_nonzero_and_aligned: expected dataset.original_candidate_logits.shape == (32, 4)."
-    assert (
-        dataset.train_activations.device.type == "cpu"
-    ), "test_real_cache_is_nonzero_and_aligned: expected dataset.train_activations.device.type == 'cpu'."
-    assert (
-        float(dataset.train_activations.std()) > 0.1
-    ), "test_real_cache_is_nonzero_and_aligned: expected float(dataset.train_activations.std()) > 0.1."
-    assert (
-        int(t.unique(dataset.eval_activations, dim=0).shape[0]) == 32
-    ), "test_real_cache_is_nonzero_and_aligned: expected int(t.unique(dataset.eval_activations, dim=0).shape[0]) == 32."
-    print("All tests in `test_real_cache_is_nonzero_and_aligned` passed!")
-
-
-def test_explanations_are_real_token_sequences(cpu_bundle):
-    tokenizer, _, dataset = cpu_bundle
-    check_tokenization(tokenizer, dataset.train_examples, _solutions().tokenize_explanations)
-    train_tokens = _solutions().tokenize_explanations(
-        tokenizer,
-        tuple(example.explanation for example in dataset.train_examples),
-    )
-    assert (
-        train_tokens.local_token_ids.ndim == 2
-    ), "test_explanations_are_real_token_sequences: expected train_tokens.local_token_ids.ndim == 2."
-    assert (
-        train_tokens.local_token_ids.shape[1] > 8
-    ), "test_explanations_are_real_token_sequences: expected train_tokens.local_token_ids.shape[1] > 8."
-    assert set(dataset.train_factors.flatten().tolist()) == {
-        -1.0,
-        1.0,
-    }, "test_explanations_are_real_token_sequences: expected set(dataset.train_factors.flatten().tolist()) == {-1.0, 1.0}."
-    assert (
-        train_tokens.local_token_ids.shape[1] != dataset.train_factors.shape[1]
-    ), "test_explanations_are_real_token_sequences: expected train_tokens.local_token_ids.shape[1] != dataset.train_factors.shape[1]."
-    print("All tests in `test_explanations_are_real_token_sequences` passed!")
-
-
-def test_token_verbalizer_generalizes_the_omitted_compositions(cpu_bundle):
-    tokenizer, _, dataset = cpu_bundle
-    solutions = _solutions()
-    check_token_verbalizer(
-        tokenizer,
-        dataset,
-        solutions.tokenize_explanations,
-        solutions.fit_token_verbalizer,
-        solutions.generate_token_explanations,
-        solutions.token_generation_accuracy,
-    )
-    print("All tests in `test_token_verbalizer_generalizes_the_omitted_compositions` passed!")
-
-
-def test_reconstructor_uses_contextual_token_order(cpu_bundle):
-    tokenizer, model, _ = cpu_bundle
-    check_reconstructor_language_features(tokenizer, model, _solutions().encode_reconstructor_text)
-    source = inspect.getsource(_solutions().reconstruct_from_explanations)
-    assert (
-        "encode_reconstructor_text" in source
-    ), "test_reconstructor_uses_contextual_token_order: expected 'encode_reconstructor_text' in source."
-    assert (
-        "decode_text_features" in source
-    ), "test_reconstructor_uses_contextual_token_order: expected 'decode_text_features' in source."
-    print("All tests in `test_reconstructor_uses_contextual_token_order` passed!")
-
-
-def test_end_to_end_reconstruction_preserves_within_factor_variation(experiment, cpu_bundle):
-    _, _, dataset = cpu_bundle
-    report = experiment.report
-    check_nonprototype_metrics(
-        dataset.eval_activations,
-        experiment.reconstructed_activations,
-        dataset.eval_factors,
-        _solutions().reconstruction_metrics,
-        _solutions().assert_nonprototype_reconstruction,
-    )
-    assert (
-        report.token_accuracy == report.exact_text_accuracy == 1.0
-    ), "test_end_to_end_reconstruction_preserves_within_factor_variation: expected report.token_accuracy == report.exact_text_accuracy == 1.0."
-    assert (
-        report.reconstruction.mean_cosine > 0.98
-    ), "test_end_to_end_reconstruction_preserves_within_factor_variation: expected report.reconstruction.mean_cosine > 0.98."
-    print("All tests in `test_end_to_end_reconstruction_preserves_within_factor_variation` passed!")
-
-
-def test_order_sensitive_contextual_path_beats_bag_of_tokens(experiment, cpu_bundle):
-    tokenizer, _, dataset = cpu_bundle
-    solutions = _solutions()
-    report = experiment.report
-    assert (
-        report.same_context_token_multiset_fraction == 1.0
-    ), "All four factor states in each lexical context must use the same token multiset."
-    assert (
-        report.reconstruction.fve > report.bag_of_tokens.fve + 0.1
-    ), "Contextual Pythia features must beat the order-blind lexical bypass on normalized FVE."
-    assert (
-        report.behavior_parity_accuracy > report.bag_of_tokens_behavior_parity + 0.5
-    ), "The order-sensitive path must preserve behavior far better than bag-of-tokens."
-    all_examples = (*dataset.train_examples, *dataset.eval_examples)
-    features, _ = solutions.bag_of_tokens_features(
-        tokenizer,
-        tuple(example.explanation for example in all_examples),
-    )
-    for context_id in range(32):
-        rows = [
-            index for index, example in enumerate(all_examples) if example.context_id == context_id
-        ]
-        assert all(
-            t.equal(features[rows[0]], features[row]) for row in rows[1:]
-        ), f"Context {context_id} changes token counts across factor states."
-    print("All tests in `test_order_sensitive_contextual_path_beats_bag_of_tokens` passed!")
-
-
-def test_factor_and_prototype_shortcuts_fail_adversarial_checks(experiment, cpu_bundle):
-    _, _, dataset = cpu_bundle
-    solutions = _solutions()
-    report = experiment.report
-    assert (
-        report.prompt_only_factor.fve < 0.0
-    ), "test_factor_and_prototype_shortcuts_fail_adversarial_checks: expected report.prompt_only_factor.fve < 0.0."
-    assert (
-        report.direct_factor.fve < 0.1
-    ), "test_factor_and_prototype_shortcuts_fail_adversarial_checks: expected report.direct_factor.fve < 0.1."
-    assert (
-        report.class_mean.fve < 0.1
-    ), "test_factor_and_prototype_shortcuts_fail_adversarial_checks: expected report.class_mean.fve < 0.1."
-    assert (
-        report.prompt_only_factor.within_factor_fve <= 1e-3
-    ), "test_factor_and_prototype_shortcuts_fail_adversarial_checks: expected report.prompt_only_factor.within_factor_fve <= 0.001."
-    assert (
-        len(set(solutions.prompt_only_factor_explanations(dataset.eval_examples))) == 4
-    ), "test_factor_and_prototype_shortcuts_fail_adversarial_checks: expected len(set(solutions.prompt_only_factor_explanations(dataset.eval_examples))) == 4."
-    assert (
-        report.direct_factor.distinct_rows <= 4
-    ), "test_factor_and_prototype_shortcuts_fail_adversarial_checks: expected report.direct_factor.distinct_rows <= 4."
-    assert (
-        report.class_mean.distinct_rows == 4
-    ), "test_factor_and_prototype_shortcuts_fail_adversarial_checks: expected report.class_mean.distinct_rows == 4."
-    assert (
-        report.reconstruction.fve > report.class_mean.fve + 0.7
-    ), "test_factor_and_prototype_shortcuts_fail_adversarial_checks: expected report.reconstruction.fve > report.class_mean.fve + 0.7."
-    class_means = solutions.factor_prototype_reconstruction(
-        dataset.train_activations,
-        dataset.train_factors,
-        dataset.eval_factors,
-    )
-    with pytest.raises(AssertionError, match="prototype collapse"):
-        solutions.assert_nonprototype_reconstruction(
-            dataset.eval_activations,
-            class_means,
-            dataset.eval_factors,
-        )
-    assert not t.allclose(
-        experiment.reconstructed_activations, class_means, atol=1e-3
-    ), "test_factor_and_prototype_shortcuts_fail_adversarial_checks: expected not t.allclose(experiment.reconstructed_activations, class_means, atol=0.001)."
-    print("All tests in `test_factor_and_prototype_shortcuts_fail_adversarial_checks` passed!")
-
-
-def test_class_mean_conditioning_does_not_reproduce_the_reconstructor(experiment):
-    report = experiment.report
-    assert (
-        report.mean_conditioned.fve < 0.1
-    ), "test_class_mean_conditioning_does_not_reproduce_the_reconstructor: expected report.mean_conditioned.fve < 0.1."
-    assert (
-        report.mean_conditioned.within_factor_fve <= 1e-3
-    ), "test_class_mean_conditioning_does_not_reproduce_the_reconstructor: expected report.mean_conditioned.within_factor_fve <= 0.001."
-    assert (
-        report.reconstruction.fve > report.mean_conditioned.fve + 0.7
-    ), "test_class_mean_conditioning_does_not_reproduce_the_reconstructor: expected report.reconstruction.fve > report.mean_conditioned.fve + 0.7."
-    print(
-        "All tests in `test_class_mean_conditioning_does_not_reproduce_the_reconstructor` passed!"
-    )
-
-
-def test_lexical_relabeling_destroys_row_alignment_not_just_factor_labels(experiment):
-    report = experiment.report
-    assert (
-        report.lexical_relabel.fve < 0.0
-    ), "test_lexical_relabeling_destroys_row_alignment_not_just_factor_labels: expected report.lexical_relabel.fve < 0.0."
-    assert (
-        report.lexical_relabel.within_factor_fve < 0.0
-    ), "test_lexical_relabeling_destroys_row_alignment_not_just_factor_labels: expected report.lexical_relabel.within_factor_fve < 0.0."
-    assert (
-        report.reconstruction.fve > report.lexical_relabel.fve + 1.0
-    ), "test_lexical_relabeling_destroys_row_alignment_not_just_factor_labels: expected report.reconstruction.fve > report.lexical_relabel.fve + 1.0."
-    assert (
-        report.lexical_relabel.distinct_rows == 32
-    ), "test_lexical_relabeling_destroys_row_alignment_not_just_factor_labels: expected report.lexical_relabel.distinct_rows == 32."
-    print(
-        "All tests in `test_lexical_relabeling_destroys_row_alignment_not_just_factor_labels` passed!"
-    )
-
-
-def test_zero_filled_training_data_is_rejected(cpu_bundle):
-    tokenizer, _, dataset = cpu_bundle
-    solutions = _solutions()
-    tokens = solutions.tokenize_explanations(
-        tokenizer,
-        tuple(example.explanation for example in dataset.train_examples),
-    )
-    with pytest.raises(ValueError, match="zero-filled"):
-        solutions.fit_token_verbalizer(t.zeros_like(dataset.train_activations), tokens)
-    with pytest.raises(ValueError, match="zero-filled"):
-        solutions.fit_token_reconstructor(
-            dataset.train_activations, t.zeros_like(dataset.train_activations)
-        )
-    print("All tests in `test_zero_filled_training_data_is_rejected` passed!")
-
-
-def test_hook_has_identity_parity_and_single_row_locality(cpu_bundle):
-    _, model, dataset = cpu_bundle
-    check_identity_and_locality(model, dataset, _solutions().patch_pythia_candidate_logits)
-    print("All tests in `test_hook_has_identity_parity_and_single_row_locality` passed!")
-
-
-def test_real_text_edit_has_nonzero_row_local_causal_effect(experiment):
-    intervention = experiment.report.intervention
-    assert (
-        intervention.activation_delta_norm > 1.0
-    ), "test_real_text_edit_has_nonzero_row_local_causal_effect: expected intervention.activation_delta_norm > 1.0."
-    assert (
-        intervention.selected_logit_change > 1.0
-    ), "test_real_text_edit_has_nonzero_row_local_causal_effect: expected intervention.selected_logit_change > 1.0."
-    assert (
-        intervention.other_rows_max_logit_change == 0.0
-    ), "test_real_text_edit_has_nonzero_row_local_causal_effect: expected intervention.other_rows_max_logit_change == 0.0."
-    assert (
-        intervention.base_text != intervention.edited_text
-    ), "test_real_text_edit_has_nonzero_row_local_causal_effect: expected intervention.base_text != intervention.edited_text."
-    print("All tests in `test_real_text_edit_has_nonzero_row_local_causal_effect` passed!")
-
-
-def test_omitted_composition_metric_is_end_to_end_and_honest(experiment):
-    report = experiment.report
-    assert (
-        report.omitted_composition_end_to_end_parity == 1.0
-    ), "test_omitted_composition_metric_is_end_to_end_and_honest: expected report.omitted_composition_end_to_end_parity == 1.0."
-    assert (
-        report.behavior_parity_accuracy == 1.0
-    ), "test_omitted_composition_metric_is_end_to_end_and_honest: expected report.behavior_parity_accuracy == 1.0."
-    assert report.original_task_accuracy == pytest.approx(
-        30 / 32
-    ), "test_omitted_composition_metric_is_end_to_end_and_honest: expected report.original_task_accuracy == pytest.approx(30 / 32)."
-    assert report.reconstructed_task_accuracy == pytest.approx(
-        30 / 32
-    ), "test_omitted_composition_metric_is_end_to_end_and_honest: expected report.reconstructed_task_accuracy == pytest.approx(30 / 32)."
-    assert (
-        report.original_task_accuracy != report.omitted_composition_end_to_end_parity
-    ), "test_omitted_composition_metric_is_end_to_end_and_honest: expected report.original_task_accuracy != report.omitted_composition_end_to_end_parity."
-    print("All tests in `test_omitted_composition_metric_is_end_to_end_and_honest` passed!")
-
-
-def test_each_shuffled_seed_is_reported_and_fails(experiment):
-    report = experiment.report
-    assert tuple(seed for seed, _ in report.shuffled_fve_by_seed) == tuple(
-        range(8)
-    ), "test_each_shuffled_seed_is_reported_and_fails: expected tuple((seed for seed, _ in report.shuffled_fve_by_seed)) == tuple(range(8))."
-    assert tuple(seed for seed, _ in report.shuffled_behavior_parity_by_seed) == tuple(
-        range(8)
-    ), "test_each_shuffled_seed_is_reported_and_fails: expected tuple((seed for seed, _ in report.shuffled_behavior_parity_by_seed)) == tuple(range(8))."
-    shuffled_fves = tuple(value for _, value in report.shuffled_fve_by_seed)
-    shuffled_parities = tuple(value for _, value in report.shuffled_behavior_parity_by_seed)
-    assert (
-        len(set(shuffled_fves)) == 8
-    ), "test_each_shuffled_seed_is_reported_and_fails: expected len(set(shuffled_fves)) == 8."
-    assert (
-        max(shuffled_fves) < 0.0
-    ), "test_each_shuffled_seed_is_reported_and_fails: expected max(shuffled_fves) < 0.0."
-    assert (
-        max(shuffled_parities) <= 0.5
-    ), "test_each_shuffled_seed_is_reported_and_fails: expected max(shuffled_parities) <= 0.5."
-    assert (
-        min(shuffled_parities) >= 0.0
-    ), "test_each_shuffled_seed_is_reported_and_fails: expected min(shuffled_parities) >= 0.0."
-    print("All tests in `test_each_shuffled_seed_is_reported_and_fails` passed!")
-
-
-def test_fabricated_report_cannot_grant_acceptance():
-    solutions = _solutions()
-    fake_report = {"accepted": True, "fve": 999.0, "tests_passed": True}
-    with pytest.raises(TypeError):
-        solutions.run_smoke_test(report=fake_report)
-    smoke = solutions.run_smoke_test()
-    assert (
-        "accepted" not in smoke
-    ), "test_fabricated_report_cannot_grant_acceptance: expected 'accepted' not in smoke."
-    assert (
-        "tests_passed" not in smoke
-    ), "test_fabricated_report_cannot_grant_acceptance: expected 'tests_passed' not in smoke."
-    assert (
-        "contract_passed" not in smoke
-    ), "test_fabricated_report_cannot_grant_acceptance: expected 'contract_passed' not in smoke."
-    source = inspect.getsource(solutions)
-    assert (
-        "verification_report.json" not in source
-    ), "test_fabricated_report_cannot_grant_acceptance: expected 'verification_report.json' not in source."
-    assert (
-        "json.load" not in source
-    ), "test_fabricated_report_cannot_grant_acceptance: expected 'json.load' not in source."
-    stored_report = json.loads(REPORT.read_text())
-    assert (
-        stored_report["notebook_id"] == "7_4_mini_natural_language_autoencoders"
-    ), "The release report must identify this exact learner section."
-    assert (
-        stored_report.get("report_inputs", {}).get("algorithm") == "sha256"
-    ), "The release report must bind evidence to the current source files."
-    print("All tests in `test_fabricated_report_cannot_grant_acceptance` passed!")
-
-
-def _notebook_text(path: Path) -> tuple[str, str]:
-    notebook = json.loads(path.read_text())
-    markdown = "\n".join(
-        "".join(cell.get("source", []))
-        for cell in notebook["cells"]
-        if cell.get("cell_type") == "markdown"
-    )
-    code = "\n".join(
-        "".join(cell.get("source", []))
-        for cell in notebook["cells"]
-        if cell.get("cell_type") == "code"
-    )
-    return markdown, code
-
-
-def _unfinished_functions(code: str) -> list[str]:
-    result = []
-    for node in ast.walk(ast.parse(code)):
-        if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
-            continue
-        body = [
-            statement
-            for statement in node.body
-            if not (
-                isinstance(statement, ast.Expr)
-                and isinstance(statement.value, ast.Constant)
-                and isinstance(statement.value.value, str)
-            )
-        ]
-        if not body or all(isinstance(statement, (ast.Raise, ast.Pass)) for statement in body):
-            result.append(node.name)
-    return result
-
-
-def test_notebooks_expose_progressive_core_functions_and_immediate_tests():
-    required_functions = {
-        "build_agreement_examples",
-        "tokenize_explanations",
-        "fit_token_verbalizer",
-        "generate_token_explanations",
-        "encode_reconstructor_text",
-        "bag_of_tokens_features",
-        "fit_token_reconstructor",
-        "decode_text_features",
-        "fraction_variance_explained",
-        "within_factor_fve",
-        "assert_nonprototype_reconstruction",
-        "patch_pythia_candidate_logits",
-        "run_text_edit_intervention",
-    }
-    immediate_checks = (
-        "check_compositional_split",
-        "check_tokenization",
-        "check_token_verbalizer",
-        "check_reconstructor_language_features",
-        "check_nonprototype_metrics",
-        "check_bag_of_tokens_control",
-        "check_identity_and_locality",
-    )
-    for path in (EXERCISE_NOTEBOOK, SOLUTION_NOTEBOOK):
-        markdown, code = _notebook_text(path)
-        parsed = ast.parse(code)
-        defined = {
-            node.name
-            for node in ast.walk(parsed)
-            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
-        }
-        assert (
-            required_functions <= defined
-        ), "test_notebooks_expose_progressive_core_functions_and_immediate_tests: expected required_functions <= defined."
-        assert all(
-            name in code for name in immediate_checks
-        ), "test_notebooks_expose_progressive_core_functions_and_immediate_tests: expected all((name in code for name in immediate_checks))."
-        assert (
-            "## Core Question" in markdown
-        ), "test_notebooks_expose_progressive_core_functions_and_immediate_tests: expected '## Core Question' in markdown."
-        assert (
-            "## Signature Result" in markdown
-        ), "test_notebooks_expose_progressive_core_functions_and_immediate_tests: expected '## Signature Result' in markdown."
-        assert (
-            "## Try It Yourself" in markdown
-        ), "test_notebooks_expose_progressive_core_functions_and_immediate_tests: expected '## Try It Yourself' in markdown."
-        assert (
-            "## Anomaly Hunt" in markdown
-        ), "test_notebooks_expose_progressive_core_functions_and_immediate_tests: expected '## Anomaly Hunt' in markdown."
-        assert (
-            "## Limitations" in markdown
-        ), "test_notebooks_expose_progressive_core_functions_and_immediate_tests: expected '## Limitations' in markdown."
-        assert (
-            "Expected output" in markdown
-        ), "test_notebooks_expose_progressive_core_functions_and_immediate_tests: expected 'Expected output' in markdown."
-        assert (
-            "<summary>Help" in markdown
-        ), "test_notebooks_expose_progressive_core_functions_and_immediate_tests: expected '<summary>Help' in markdown."
-        assert (
-            "<summary>Interpretation" in markdown
-        ), "test_notebooks_expose_progressive_core_functions_and_immediate_tests: expected '<summary>Interpretation' in markdown."
-        assert (
-            "<summary>Solution" in markdown
-        ), "test_notebooks_expose_progressive_core_functions_and_immediate_tests: expected '<summary>Solution' in markdown."
-        assert (
-            "verification_report.json" not in code
-        ), "test_notebooks_expose_progressive_core_functions_and_immediate_tests: expected 'verification_report.json' not in code."
-    _, exercise_code = _notebook_text(EXERCISE_NOTEBOOK)
-    _, solution_code = _notebook_text(SOLUTION_NOTEBOOK)
-    assert required_functions <= set(
-        _unfinished_functions(exercise_code)
-    ), "The learner must implement every core operation."
-    assert not _unfinished_functions(
-        solution_code
-    ), "The completed notebook must supply every operation."
-    print(
-        "All tests in `test_notebooks_expose_progressive_core_functions_and_immediate_tests` passed!"
-    )
-
-
-def test_solution_dropdowns_supply_every_exercise_dependency():
-    notebook = json.loads(EXERCISE_NOTEBOOK.read_text())
-    count = 0
-    for index, cell in enumerate(notebook["cells"]):
-        source = "".join(cell["source"])
-        if cell["cell_type"] != "markdown" or "<summary>Solution</summary>" not in source:
-            continue
-        count += 1
-        dropdown = re.search(r"<summary>Solution</summary>(.*?)</details>", source, re.S)[1]
-        answer = "\n".join(re.findall(r"```python\n(.*?)```", dropdown, re.S))
-        names = {node.name for node in ast.parse(answer).body if isinstance(node, ast.FunctionDef)}
-        required = set(_unfinished_functions("".join(notebook["cells"][index + 1]["source"])))
-        assert required <= names, f"Answer {count} omits {required - names}"
-        assert not _unfinished_functions(
-            answer
-        ), "A solution must contain implemented function bodies."
-    assert count == 9, "All nine progressive exercises need a copyable solution."
-    print("All tests in `test_solution_dropdowns_supply_every_exercise_dependency` passed!")
-
-
-def test_learned_path_has_no_factor_parser_or_phrase_lookup():
-    source = inspect.getsource(_solutions())
-    forbidden = (
-        "phrase_feature_matrix",
-        "agreement_phrase_features",
-        "train_phrase_ids",
-        "eval_phrase_ids",
-        "phrase_to_activation",
-    )
-    assert not any(
-        term in source for term in forbidden
-    ), "test_learned_path_has_no_factor_parser_or_phrase_lookup: expected not any((term in source for term in forbidden))."
-    learned = inspect.getsource(_solutions().evaluate_mini_nla)
-    assert (
-        "fit_direct_factor_decoder" in learned
-    ), "test_learned_path_has_no_factor_parser_or_phrase_lookup: expected 'fit_direct_factor_decoder' in learned."
-    assert (
-        "direct_reconstruction" in learned
-    ), "test_learned_path_has_no_factor_parser_or_phrase_lookup: expected 'direct_reconstruction' in learned."
-    assert (
-        "generated.texts" in learned
-    ), "test_learned_path_has_no_factor_parser_or_phrase_lookup: expected 'generated.texts' in learned."
-    assert (
-        "encode_reconstructor_text" in learned
-    ), "test_learned_path_has_no_factor_parser_or_phrase_lookup: expected 'encode_reconstructor_text' in learned."
-    print("All tests in `test_learned_path_has_no_factor_parser_or_phrase_lookup` passed!")
-
-
-def test_instruction_page_matches_the_repaired_claim():
-    text = PAGE.read_text()
-    assert (
-        "96" in text and "32" in text
-    ), "test_instruction_page_matches_the_repaired_claim: expected '96' in text and '32' in text."
-    assert (
-        "token sequence" in text.lower()
-    ), "test_instruction_page_matches_the_repaired_claim: expected 'token sequence' in text.lower()."
-    assert (
-        "within-factor FVE" in text
-    ), "test_instruction_page_matches_the_repaired_claim: expected 'within-factor FVE' in text."
-    assert (
-        "identity" in text.lower() and "single-row" in text.lower()
-    ), "test_instruction_page_matches_the_repaired_claim: expected 'identity' in text.lower() and 'single-row' in text.lower()."
-    assert (
-        "lexical relabel" in text.lower()
-    ), "test_instruction_page_matches_the_repaired_claim: expected 'lexical relabel' in text.lower()."
-    assert (
-        "eight" in text.lower() and "shuffle" in text.lower()
-    ), "test_instruction_page_matches_the_repaired_claim: expected 'eight' in text.lower() and 'shuffle' in text.lower()."
-    assert (
-        "This is not" in text
-    ), "test_instruction_page_matches_the_repaired_claim: expected 'This is not' in text."
-    assert (
-        "unseen nouns" not in text
-    ), "test_instruction_page_matches_the_repaired_claim: expected 'unseen nouns' not in text."
-    assert (
-        "four-phrase" not in text.lower()
-    ), "test_instruction_page_matches_the_repaired_claim: expected 'four-phrase' not in text.lower()."
-    assert (
-        "supporting provenance" in text
-    ), "The page must explain that the verification report supports provenance only."
-    print("All tests in `test_instruction_page_matches_the_repaired_claim` passed!")
-
-
-def test_structural_smoke_contract_is_not_an_acceptance_report():
-    smoke = _solutions().run_smoke_test(cpu=True)
-    assert (
-        smoke["train_count"] == 96
-    ), "test_structural_smoke_contract_is_not_an_acceptance_report: expected smoke['train_count'] == 96."
-    assert (
-        smoke["eval_count"] == 32
-    ), "test_structural_smoke_contract_is_not_an_acceptance_report: expected smoke['eval_count'] == 32."
-    assert (
-        smoke["contexts"] == 32
-    ), "test_structural_smoke_contract_is_not_an_acceptance_report: expected smoke['contexts'] == 32."
-    assert set(smoke["eval_factor_counts"].values()) == {
-        8
-    }, "test_structural_smoke_contract_is_not_an_acceptance_report: expected set(smoke['eval_factor_counts'].values()) == {8}."
-    assert (
-        not {"accepted", "tests_passed", "contract_passed"} & smoke.keys()
-    ), "test_structural_smoke_contract_is_not_an_acceptance_report: expected not {'accepted', 'tests_passed', 'contract_passed'} & smoke.keys()."
-    print("All tests in `test_structural_smoke_contract_is_not_an_acceptance_report` passed!")
-
-
-def test_gpu_entrypoint_is_strict_and_has_no_cpu_fallback():
-    source = inspect.getsource(_solutions().run_gpu_test)
-    assert "t.cuda.is_available" in source, "The release entrypoint must require CUDA explicitly."
-    assert 'load_pythia("cuda")' in source, "The scientific run must load Pythia on CUDA."
-    assert "run_cpu_test" not in source, "The CUDA entrypoint must not delegate to a CPU fallback."
-    assert "bag_of_tokens_fve" in source, "CUDA acceptance must include the lexical bypass metric."
-    print("All tests in `test_gpu_entrypoint_is_strict_and_has_no_cpu_fallback` passed!")
-
-
-def test_executed_solution_notebook_contains_visible_signature():
-    notebook = json.loads(SOLUTION_NOTEBOOK.read_text())
-    rendered = json.dumps(notebook)
-    assert (
-        '"image/png"' in rendered
-    ), "The executed solution notebook must embed the live signature figure."
-    assert (
-        '"output_type": "error"' not in rendered
-    ), "The executed solution notebook must not contain stored error outputs."
-    print("All tests in `test_executed_solution_notebook_contains_visible_signature` passed!")
+import torch.nn.functional as F
+from sklearn.decomposition import PCA
+from sklearn.linear_model import Ridge
+from sklearn.metrics import r2_score
+from transformer_lens import HookedTransformer
+
+
+def test_get_final_activations(get_final_activations: Callable, model: HookedTransformer):
+    tokens = model.to_tokens(["Yesterday, the keys near the cat really", "Today, the dog with the trees really"])
+    result = get_final_activations(model, tokens, [2, 5], batch_size=1)
+    assert result.shape == (2, 2, model.cfg.d_model), f"Expected shape (layer, batch, d_model) = (2, 2, {model.cfg.d_model}), got {tuple(result.shape)}"
+    assert result.device.type == "cpu", "Return a CPU tensor"
+    _, cache = model.run_with_cache(tokens)
+    for i, layer in enumerate([2, 5]):
+        t.testing.assert_close(result[i], cache["resid_pre", layer][:, -1].cpu(), atol=1e-4, rtol=1e-4,
+                               msg=f"Wrong activations for layer {layer} (did you take resid_pre at the final position?)")
+    print("All tests in `test_get_final_activations` passed!")
+
+
+def test_fve(fve: Callable):
+    t.manual_seed(0)
+    h = t.randn(50, 8) * t.rand(50, 1) * 10  # rows with different norms
+    h_unit = F.normalize(h, dim=-1)
+    assert abs(fve(h, h_unit) - 1.0) < 1e-5, "Perfect reconstruction of the normalised activations should give FVE = 1"
+    assert abs(fve(h, h_unit.mean(0, keepdim=True).expand_as(h))) < 1e-5, "Predicting the mean should give FVE = 0"
+    noisy = h_unit + 0.3 * t.randn_like(h_unit)
+    expected = r2_score(h_unit.numpy(), noisy.numpy(), multioutput="variance_weighted")
+    assert abs(fve(h, noisy) - expected) < 1e-4, f"Expected FVE {expected:.4f} (sklearn's variance-weighted R^2), got {fve(h, noisy):.4f}"
+    assert abs(fve(3.0 * h, noisy) - expected) < 1e-4, "FVE should not depend on the norm of the original activations"
+    assert fve(h, -h_unit) < 0, "A reconstruction worse than the mean should have negative FVE"
+    assert isinstance(fve(h, noisy), float), "Return a Python float (use .item())"
+    print("All tests in `test_fve` passed!")
+
+
+def test_class_mean_reconstruction(class_mean_reconstruction: Callable):
+    train_h = t.tensor([[2.0, 0.0], [0.0, 3.0], [4.0, 0.0], [0.0, 1.0]])
+    train_labels = ["a", ("b", 1), "a", ("b", 1)]
+    result = class_mean_reconstruction(train_h, train_labels, [("b", 1), "a", "unseen"])
+    expected = t.tensor([[0.0, 1.0], [1.0, 0.0], [0.5, 0.5]])
+    assert result.shape == (3, 2), f"Expected one reconstruction per test label, got shape {tuple(result.shape)}"
+    t.testing.assert_close(result.float(), expected, msg=(
+        "Expected the mean of the *unit-normalised* training activations with the same label, "
+        "and the overall training mean for unseen labels"
+    ))
+    print("All tests in `test_class_mean_reconstruction` passed!")
+
+
+def test_patch_final_position(patch_final_position: Callable, model: HookedTransformer, verb_ids: t.Tensor):
+    tokens = model.to_tokens(["Yesterday, the keys near the cat really", "Today, the dog with the trees really"])
+    layer = 6
+    logits, cache = model.run_with_cache(tokens)
+    own = cache["resid_pre", layer][:, -1]
+    result = patch_final_position(model, tokens, own, layer, verb_ids, batch_size=1)
+    assert result.shape == (2, 4), f"Expected the four verb logits for each sentence, shape (2, 4), got {tuple(result.shape)}"
+    t.testing.assert_close(result, logits[:, -1, verb_ids.to(logits.device)].cpu(), atol=1e-3, rtol=1e-3,
+                           msg="Patching each sentence's own activation back in should not change its output")
+    swapped = patch_final_position(model, tokens, own.flip(0), layer, verb_ids)
+    assert not t.allclose(swapped, result, atol=1e-2), "Patching different vectors should change the output"
+
+    # Independent check of the swapped run: overwrite the final position by hand with a hook
+    def hook(resid, hook):
+        resid[:, -1] = own.flip(0)
+        return resid
+
+    expected = model.run_with_hooks(tokens, fwd_hooks=[(f"blocks.{layer}.hook_resid_pre", hook)])[:, -1, verb_ids.to(logits.device)]
+    t.testing.assert_close(swapped, expected.cpu(), atol=1e-3, rtol=1e-3)
+    t.testing.assert_close(model(tokens)[:, -1], logits[:, -1], msg="patch_final_position left a hook attached to the model")
+    print("All tests in `test_patch_final_position` passed!")
+
+
+def test_verbaliser_forward(ActivationVerbaliser: type):
+    t.manual_seed(0)
+    av = ActivationVerbaliser(d_act=16, n_words=10, d_model=32, n_layers=2, n_heads=4, max_words=4)
+    h = t.randn(3, 16)
+    prev = t.randint(0, 10, (3, 4))
+    out = av(h, prev)
+    assert out.shape == (3, 5, 10), f"Expected logits of shape (batch, t + 1, n_words) = (3, 5, 10), got {tuple(out.shape)}"
+    # Causality: changing word k must not change the outputs at positions <= k
+    prev2 = prev.clone()
+    prev2[:, 2] = (prev2[:, 2] + 1) % 10
+    out2 = av(h, prev2)
+    t.testing.assert_close(out[:, :3], out2[:, :3], msg="Output at position i must not depend on words after position i (causal mask?)")
+    assert not t.allclose(out[:, 3:], out2[:, 3:]), "Output after position k should depend on word k"
+    # The activation should matter, at every position; and only its direction should matter
+    out3 = av(t.randn(3, 16), prev)
+    assert not t.allclose(out[:, -1], out3[:, -1]), "The output should depend on the activation h"
+    t.testing.assert_close(av(5.0 * h, prev), out, msg="The verbaliser should normalise h, so scaling h shouldn't change the output")
+    # Embeddings path
+    t.testing.assert_close(av(h, prev_embeds=av.word_embed(prev)), out)
+    # Zero previous words: just the activation position
+    assert av(h, prev[:, :0]).shape == (3, 1, 10), "With no previous words, the output should have one position"
+    print("All tests in `test_verbaliser_forward` passed!")
+
+
+def test_description_logprobs(description_logprobs: Callable, ActivationVerbaliser: type):
+    t.manual_seed(0)
+    av = ActivationVerbaliser(d_act=16, n_words=10, d_model=32, n_layers=1, n_heads=4, max_words=3)
+    h = t.randn(2, 16)
+    ids = t.tensor([[1, 2, 9, 9], [3, 4, 5, 9]])
+    logprobs, token_logprobs = description_logprobs(av, h, ids)
+    assert logprobs.shape == (2, 4, 10), f"Expected full log-probs of shape (batch, slots, n_words) = (2, 4, 10), got {tuple(logprobs.shape)}"
+    assert token_logprobs.shape == (2, 4), f"Expected per-word log-probs of shape (batch, slots) = (2, 4), got {tuple(token_logprobs.shape)}"
+    t.testing.assert_close(logprobs.exp().sum(-1), t.ones(2, 4), msg="logprobs should be normalised log-probabilities")
+    # Independent oracle: score slot i by running the verbaliser on the first i words only
+    for b in range(2):
+        for i in range(4):
+            expected = av(h[b : b + 1], ids[b : b + 1, :i]).log_softmax(-1)[0, -1, ids[b, i]]
+            t.testing.assert_close(token_logprobs[b, i], expected, atol=1e-5, rtol=1e-5,
+                                   msg=f"Wrong log-probability for slot {i} of description {b}")
+    print("All tests in `test_description_logprobs` passed!")
+
+
+def test_description_mask(description_mask: Callable, EOS: int):
+    other = 0 if EOS != 0 else 1
+    ids = t.tensor([
+        [other, other, EOS, EOS, EOS],
+        [EOS, EOS, EOS, EOS, EOS],
+        [other, other, other, other, EOS],
+        [other, EOS, other, EOS, EOS],
+    ])
+    expected = t.tensor([
+        [True, True, True, False, False],
+        [True, False, False, False, False],
+        [True, True, True, True, True],
+        [True, True, False, False, False],
+    ])
+    result = description_mask(ids)
+    assert result.dtype == t.bool, f"Expected a boolean mask, got {result.dtype}"
+    assert t.equal(result, expected), f"Expected mask\n{expected}\ngot\n{result}"
+    print("All tests in `test_description_mask` passed!")
+
+
+class _FixedLogitsVerbaliser(t.nn.Module):
+    """A stub verbaliser whose next-word logits depend only on the position."""
+
+    def __init__(self, table: t.Tensor, max_words: int):
+        super().__init__()
+        self.table = table  # (max_words, n_words)
+        self.max_words = max_words
+
+    def forward(self, h, prev_ids=None, prev_embeds=None):
+        n_prev = prev_ids.shape[1]
+        return self.table[: n_prev + 1].unsqueeze(0).expand(h.shape[0], -1, -1).clone()
+
+
+def test_sample_descriptions(sample_descriptions: Callable, ActivationVerbaliser: type, EOS: int):
+    n_words = EOS + 1
+    # Deterministic stub: word 2, then word 5, then EOS
+    table = t.full((3, n_words), -1e4)
+    table[0, 2], table[1, 5], table[2, EOS] = 0.0, 0.0, 0.0
+    stub = _FixedLogitsVerbaliser(table, max_words=3)
+    ids = sample_descriptions(stub, t.randn(4, 8))
+    assert ids.shape == (4, 4), f"Expected shape (batch, max_words + 1) = (4, 4), got {tuple(ids.shape)}"
+    assert t.equal(ids, t.tensor([[2, 5, EOS, EOS]] * 4)), f"Expected every row to be [2, 5, EOS, EOS], got {ids.tolist()}"
+    # EOS first, then words: everything after the first EOS must be EOS
+    table = t.full((3, n_words), -1e4)
+    table[0, EOS], table[1, 5], table[2, 6] = 0.0, 0.0, 0.0
+    ids = sample_descriptions(_FixedLogitsVerbaliser(table, 3), t.randn(2, 8))
+    assert t.equal(ids, t.full((2, 4), EOS)), f"Slots after the first EOS should all be EOS, got {ids.tolist()}"
+    # Sampling frequencies with temperature
+    t.manual_seed(0)
+    table = t.full((2, n_words), float("-inf"))
+    table[0, 0], table[0, 1] = 0.0, float(np.log(3.0))  # p(word 1) = 0.75 at temperature 1
+    table[1, EOS] = 0.0
+    ids = sample_descriptions(_FixedLogitsVerbaliser(table, 2), t.randn(4000, 8))
+    freq = (ids[:, 0] == 1).float().mean().item()
+    assert abs(freq - 0.75) < 0.03, f"Expected word 1 to be sampled ~75% of the time, got {freq:.1%}"
+    ids = sample_descriptions(_FixedLogitsVerbaliser(table, 2), t.randn(4000, 8), temperature=1e6)
+    freq = (ids[:, 0] == 1).float().mean().item()
+    assert abs(freq - 0.5) < 0.03, f"At a very high temperature, the two words should be ~equally likely, got {freq:.1%}"
+    ids = sample_descriptions(_FixedLogitsVerbaliser(table, 2), t.randn(10, 8), greedy=True)
+    assert (ids[:, 0] == 1).all(), "Greedy decoding should always pick the most likely word"
+    # Greedy decoding on a real verbaliser matches step-by-step argmax decoding
+    t.manual_seed(1)
+    av = ActivationVerbaliser(d_act=8, n_words=n_words, d_model=32, n_layers=1, n_heads=4, max_words=3)
+    h = t.randn(5, 8)
+    ids = sample_descriptions(av, h, greedy=True)
+    prefix = t.zeros(5, 0, dtype=t.long)
+    for _ in range(3):
+        prefix = t.cat([prefix, av(h, prefix)[:, -1].argmax(-1, keepdim=True)], dim=1)
+    expected = t.cat([prefix, t.full((5, 1), EOS)], dim=1)
+    after_eos = (expected == EOS).long().cumsum(-1) - (expected == EOS).long() > 0
+    expected[after_eos] = EOS
+    assert t.equal(ids, expected), f"Greedy decoding doesn't match step-by-step argmax decoding:\n{ids}\nvs\n{expected}"
+    print("All tests in `test_sample_descriptions` passed!")
+
+
+def test_text_features(text_features: Callable, model: HookedTransformer, WORD_TOKEN_IDS: t.Tensor, encode_descriptions: Callable):
+    ids = encode_descriptions([["houses", "earlier"], ["plural", "past", "behind", "window"]])
+    result = text_features(model, ids.to(model.cfg.device), 10)
+    assert result.shape == (2, model.cfg.d_model), f"Expected shape (batch, d_model), got {tuple(result.shape)}"
+    dot = model.to_single_token(".")
+    for row, words in enumerate([[" houses", " earlier"], [" plural", " past", " behind", " window"]]):
+        toks = [model.tokenizer.bos_token_id] + [model.to_single_token(w) for w in words]
+        toks += [dot] * (6 - len(toks))
+        _, cache = model.run_with_cache(t.tensor([toks]).to(model.cfg.device))
+        t.testing.assert_close(result[row], cache["resid_pre", 10][0, -1], atol=1e-3, rtol=1e-3,
+                               msg=f"Wrong features for description {row}: expected resid_pre[10] at the final '.' of BOS + words + dots")
+    print("All tests in `test_text_features` passed!")
+
+
+def test_reconstructor(ActivationReconstructor: type):
+    t.manual_seed(0)
+    ar = ActivationReconstructor(d_features=12, d_act=6)
+    features = t.randn(4, 12) * 50
+    out = ar(features)
+    assert out.shape == (4, 6), f"Expected shape (batch, d_act) = (4, 6), got {tuple(out.shape)}"
+    t.testing.assert_close(out, ar.head(features / features.norm(dim=-1, keepdim=True)),
+                           msg="Expected head(features / ||features||)")
+    t.testing.assert_close(ar(3.0 * features), out, msg="The output shouldn't depend on the norm of the features")
+    n_params = sum(p.numel() for p in ar.parameters())
+    assert n_params == 12 * 6 + 6, f"The only parameters should be the affine head, expected {12 * 6 + 6}, got {n_params}"
+    print("All tests in `test_reconstructor` passed!")
+
+
+def test_claim_accuracy(claim_accuracy: Callable):
+    fact = {"subject": ["houses"], "number": ["plural"], "tense": ["past"], "time": ["earlier"], "object": ["behind", "window"]}
+    cases = [
+        (["houses earlier"], (1.0, 2.0)),
+        (["houses earlier behind window"], (1.0, 3.0)),
+        (["house past"], (0.5, 2.0)),  # wrong subject, right tense
+        (["houses behind windows"], (0.5, 2.0)),  # object claim with the wrong number is false
+        (["behind"], (0.0, 1.0)),  # a preposition with no noun is a false claim
+        (["singular present today"], (0.0, 3.0)),
+        (["window"], (0.0, 1.0)),  # a noun not after a preposition is a subject claim
+        (["houses earlier", "plural"], (1.0, 1.5)),  # pooled over descriptions
+    ]
+    for descriptions, expected in cases:
+        result = claim_accuracy(descriptions, [fact] * len(descriptions))
+        assert np.allclose(result, expected), f"For {descriptions}, expected (fraction true, claims per description) = {expected}, got {result}"
+    print("All tests in `test_claim_accuracy` passed!")
+
+
+def test_group_advantages(group_advantages: Callable):
+    rewards = t.tensor([1.0, 2.0, 3.0, 10.0, 10.0, 13.0])
+    result = group_advantages(rewards, group_size=3)
+    assert result.shape == (6,), f"Expected the same shape as the rewards, got {tuple(result.shape)}"
+    expected = t.tensor([-1.0, 0.0, 1.0, -1 / np.sqrt(3), -1 / np.sqrt(3), 2 / np.sqrt(3)]).float()
+    t.testing.assert_close(result, expected, atol=1e-4, rtol=1e-4,
+                           msg="Each consecutive group should be normalised by its own mean and (unbiased) std")
+    t.manual_seed(0)
+    r = t.randn(40)
+    a = group_advantages(r, group_size=8).view(5, 8)
+    t.testing.assert_close(a.mean(1), t.zeros(5), atol=1e-5, rtol=0)
+    t.testing.assert_close(a.std(1), t.ones(5), atol=1e-4, rtol=0)
+    print("All tests in `test_group_advantages` passed!")
+
+
+def test_kl_to_reference(kl_to_reference: Callable):
+    t.manual_seed(0)
+    logprobs = t.randn(3, 4, 7).log_softmax(-1)
+    ref = t.randn(3, 4, 7).log_softmax(-1)
+    mask = t.tensor([[True, True, False, False], [True, True, True, True], [True, False, False, False]])
+    result = kl_to_reference(logprobs, ref, mask)
+    assert result.shape == (3,), f"Expected one KL value per description, got shape {tuple(result.shape)}"
+    expected = t.stack([
+        sum(F.kl_div(ref[b, i], logprobs[b, i], log_target=True, reduction="sum") for i in range(4) if mask[b, i])
+        for b in range(3)
+    ])
+    t.testing.assert_close(result, expected, atol=1e-5, rtol=1e-5, msg="Expected sum over unmasked slots of KL(policy || reference)")
+    t.testing.assert_close(kl_to_reference(logprobs, logprobs, mask), t.zeros(3), atol=1e-6, rtol=0)
+    print("All tests in `test_kl_to_reference` passed!")
+
+
+def test_policy_gradient_loss(policy_gradient_loss: Callable):
+    token_logprobs = t.tensor([[-1.0, -2.0, -3.0], [-0.5, -0.5, -4.0]], requires_grad=True)
+    mask = t.tensor([[True, True, False], [True, True, True]])
+    advantages = t.tensor([1.0, -2.0])
+    loss = policy_gradient_loss(token_logprobs, mask, advantages)
+    assert loss.ndim == 0, "The loss should be a scalar"
+    expected = -((1.0 * (-3.0)) + (-2.0 * (-5.0))) / 2
+    assert abs(loss.item() - expected) < 1e-5, f"Expected {expected}, got {loss.item()}"
+    loss.backward()
+    expected_grad = t.tensor([[-0.5, -0.5, 0.0], [1.0, 1.0, 1.0]])
+    t.testing.assert_close(token_logprobs.grad, expected_grad, msg="Masked slots should get zero gradient")
+    print("All tests in `test_policy_gradient_loss` passed!")
+
+
+def test_straight_through_gumbel(straight_through_gumbel: Callable):
+    t.manual_seed(0)
+    logits = t.tensor([[0.0, float(np.log(3.0)), -1e4]]).expand(20000, -1).clone().requires_grad_(True)
+    y = straight_through_gumbel(logits, tau=1.0)
+    assert y.shape == logits.shape
+    assert t.allclose(y.detach().sum(-1), t.ones(20000)) and set(y.detach().unique().tolist()) <= {0.0, 1.0}, \
+        "The forward value should be exactly one-hot"
+    freq = y.detach()[:, 1].mean().item()
+    assert abs(freq - 0.75) < 0.02, f"Samples should follow softmax(logits): expected word 1 ~75% of the time, got {freq:.1%}"
+    # Backward: the gradient should be that of the soft sample, not zero
+    weights = t.tensor([1.0, 2.0, 3.0])
+    (y * weights).sum().backward()
+    assert logits.grad is not None and logits.grad.abs().sum() > 0, "Gradients should flow to the logits (straight-through)"
+    # Check against the gradient of a softmax evaluated at the same noise: recompute with a fixed seed
+    t.manual_seed(1)
+    l2 = t.randn(4, 5, requires_grad=True)
+    t.manual_seed(2)
+    y2 = straight_through_gumbel(l2, tau=0.5)
+    t.manual_seed(2)
+    u = t.rand_like(l2).clamp(1e-9, 1 - 1e-9)
+    soft = ((l2 + -t.log(-t.log(u))) / 0.5).softmax(-1)
+    g = t.randn(4, 5)
+    grad_st = t.autograd.grad((y2 * g).sum(), l2)[0]
+    grad_soft = t.autograd.grad((soft * g).sum(), l2)[0]
+    t.testing.assert_close(grad_st, grad_soft, msg="The backward pass should be the gradient of softmax((logits + gumbel) / tau)")
+    t.testing.assert_close(y2.detach(), F.one_hot(soft.argmax(-1), 5).float(), msg="The forward value should be the one-hot argmax of (logits + gumbel)")
+    print("All tests in `test_straight_through_gumbel` passed!")
+
+
+def test_pca_reconstruction(pca_reconstruction: Callable):
+    t.manual_seed(0)
+    train = t.randn(200, 10) @ t.randn(10, 10)
+    test = t.randn(50, 10) @ t.randn(10, 10)
+    train_unit, test_unit = F.normalize(train, dim=-1), F.normalize(test, dim=-1)
+    full = pca_reconstruction(train, test, 10)
+    t.testing.assert_close(full, test_unit, atol=1e-4, rtol=1e-4, msg="With all components, PCA should reconstruct the (normalised) test set exactly")
+    pca = PCA(n_components=3).fit(train_unit.numpy())
+    expected = t.tensor(pca.inverse_transform(pca.transform(test_unit.numpy()))).float()
+    t.testing.assert_close(pca_reconstruction(train, test, 3), expected, atol=1e-4, rtol=1e-4,
+                           msg="Doesn't match sklearn's PCA fitted on the normalised training set")
+    print("All tests in `test_pca_reconstruction` passed!")
+
+
+def test_bag_of_words(bag_of_words: Callable):
+    vocab = ["the", "dogs", "cat", "near", "Today"]
+    result = bag_of_words(["Today, the dogs near the cat really", "the cat"], vocab)
+    expected = t.tensor([[2.0, 1.0, 1.0, 1.0, 1.0], [1.0, 0.0, 1.0, 0.0, 0.0]])
+    assert result.shape == (2, 5), f"Expected shape (n_sentences, len(vocab)) = (2, 5), got {tuple(result.shape)}"
+    t.testing.assert_close(result.float(), expected, msg="Expected word counts (with the comma removed, unknown words ignored)")
+    t.testing.assert_close(bag_of_words(["the cat near the dogs"], vocab), bag_of_words(["the dogs near the cat"], vocab),
+                           msg="A bag of words should ignore word order")
+    print("All tests in `test_bag_of_words` passed!")
+
+
+def test_fit_ridge(fit_ridge: Callable):
+    t.manual_seed(0)
+    X = t.randn(100, 5)
+    Y = X @ t.randn(5, 3) + 2.0 + 0.1 * t.randn(100, 3)
+    predict = fit_ridge(X, Y, alpha=3.0)
+    X_new = t.randn(10, 5)
+    sk = Ridge(alpha=3.0, fit_intercept=True).fit(X.numpy(), Y.numpy())
+    t.testing.assert_close(predict(X_new).float(), t.tensor(sk.predict(X_new.numpy())).float(), atol=1e-4, rtol=1e-4,
+                           msg="Doesn't match sklearn's Ridge(alpha, fit_intercept=True)")
+    print("All tests in `test_fit_ridge` passed!")
+
+
+def test_transplant_accuracy(transplant_accuracy: Callable, model: HookedTransformer, verb_ids: t.Tensor):
+    sentences = [
+        "Yesterday, the keys near the cat really",  # were
+        "Today, the dog with the trees really",  # is
+        "Earlier, the house behind the windows really",  # was
+        "Now, the girls beside the door really",  # are
+    ]
+    tokens = model.to_tokens(sentences)
+    labels = t.tensor([3, 0, 2, 1])
+    layer = 10
+    _, cache = model.run_with_cache(tokens)
+    acts = cache["resid_pre", layer][:, -1].cpu()
+    scale = acts.norm(dim=-1).mean().item()
+    src, dst = t.tensor([0, 1, 2, 3]), t.tensor([1, 0, 3, 2])
+
+    # Independent oracle: patch the rescaled vectors in by hand, and count how often the source's verb wins
+    def expected_accuracy(h_hat):
+        vectors = (h_hat / h_hat.norm(dim=-1, keepdim=True) * scale).to(model.cfg.device)
+
+        def hook(resid, hook):
+            resid[:, -1] = vectors
+            return resid
+
+        logits = model.run_with_hooks(tokens[dst], fwd_hooks=[(f"blocks.{layer}.hook_resid_pre", hook)])
+        preds = logits[:, -1, verb_ids.to(logits.device)].argmax(-1).cpu()
+        return (preds == labels[src]).float().mean().item()
+
+    unit = acts / acts.norm(dim=-1, keepdim=True)
+    for h_hat in [unit, 0.3 * unit + 0.01 * t.randn_like(unit), unit[t.tensor([2, 3, 0, 1])]]:
+        result = transplant_accuracy(model, tokens, labels, h_hat, src, dst, scale, layer)
+        expected = expected_accuracy(h_hat)
+        assert abs(result - expected) < 1e-6, f"Expected transplant accuracy {expected:.2f}, got {result:.2f}"
+    assert abs(transplant_accuracy(model, tokens, labels, 7.0 * unit, src, dst, scale, layer)
+               - transplant_accuracy(model, tokens, labels, unit, src, dst, scale, layer)) < 1e-6, \
+        "Reconstructions should be rescaled to unit norm (then multiplied by `scale`) before patching"
+    print("All tests in `test_transplant_accuracy` passed!")

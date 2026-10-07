@@ -1,0 +1,855 @@
+# Syllabus for the ARENA extension (chapters 5-18, plus 0.6 and 1.6).
+#
+# This is the single source of truth for section numbers, titles and directories.
+# `infrastructure/extension/sync_config.py` turns it into `infrastructure/core/config_extension.yaml`.
+#
+# Each section has:
+#   title, dir            -> exercise directory `chapterN_.../exercises/<dir>`
+#   sources               -> previous prototype material to mine for content/code (read, don't copy blindly)
+#   requirements          -> ids in docs/roadmap_requirement_registry.yml that this section teaches
+#   brief                 -> what the section should teach and show
+#   description           -> one-line description for the chapter home page (filled in when the section is written)
+
+chapters:
+  chapter0_fundamentals:
+    number: 0
+    sections:
+      - number: "0.6"
+        page_prefix: "06"
+        title: How to Know When an Interpretability Result Is Fake
+        dir: part6_fake_interpretability_results
+        sources: [chapter0_fundamentals/exercises/part6_fake_interpretability_results, arena_ext/fake_interpretability.py]
+        requirements: [foundations.fake_result_diagnostics, representation.subspace_patching_illusions]
+        brief: >
+          A skepticism lab, done on real small models wherever possible. Parts: (1) leakage and train/test
+          contamination in probes (probe accuracy on shuffled labels, selectivity / control tasks a la Hewitt & Liang);
+          (2) cherry-picking and the garden of forking paths (how many layers/heads/prompts did you look at? permutation nulls,
+          multiple comparisons); (3) steering and direction illusions: random directions, norm effects, and the
+          subspace activation-patching illusion (Makelov et al. 2023) reproduced on a toy model with a dormant direction;
+          (4) a checklist the rest of the course uses. Signature: a figure where a convincing-looking result collapses
+          against its proper null.
+
+  chapter1_transformer_interp:
+    number: 1
+    sections:
+      - number: "1.6"
+        page_prefix: "40"
+        title: Local Frontier ML Infrastructure
+        dir: part6_frontier_ml_infrastructure
+        sources: [chapter1_transformer_interp/exercises/part6_frontier_ml_infrastructure, arena_ext/environment.py, arena_ext/memory_budget.py, arena_ext/hf_parity.py, arena_ext/activation_store.py]
+        requirements: [foundations.local_gpu_reproducibility_harness, modern.gemma_quantized_inference, ui.nnsight_model_internals_dashboards, hardware.large_27b_bf16_models]
+        brief: >
+          Practical infrastructure for doing interpretability on a single consumer GPU. Parts: (1) memory budgets:
+          estimate parameter/activation/KV-cache memory, then measure it; (2) parity checks between TransformerLens,
+          HF transformers and nnsight implementations of the same model (logit diffs, hook equivalence);
+          (3) quantization: load a model in bf16, int8 and 4-bit (bitsandbytes), measure memory, logit drift, and
+          whether an interpretability result (e.g. a probe or patching result) survives quantization; (4) activation
+          stores: caching activations to disk, sharding, and reproducibility (seeds, determinism flags). Use small
+          models (Pythia-160m / Gemma-3-270m / SmolLM2-360M).
+
+  chapter5_modern_architectures:
+    number: 5
+    title: "Chapter 5: Modern Architectures"
+    short_description: Build modern model families from scratch, load their real weights, and interpret them.
+    sections:
+      - number: "5.1"
+        title: Gemma from Scratch
+        dir: part1_gemma_from_scratch
+        sources: [chapter5_modern_architectures/exercises/part1_gemma_from_scratch, arena_ext/gemma.py, arena_ext/hf_parity.py]
+        requirements: [modern.gemma_decoder, modern.llama_like_decoder]
+        brief: >
+          Build a modern decoder (RMSNorm, RoPE, grouped-query attention, sliding-window/global attention
+          interleaving, gated GeLU/SwiGLU MLP, logit soft-capping where relevant, tied embeddings with scaling,
+          KV cache) and load google/gemma-3-270m weights into it with exact logit parity against HF transformers.
+          A later part shows the same components make a Llama-style model (HuggingFaceTB/SmolLM2-360M) with a
+          parity check. Interpretability payoff: RoPE frequency structure, attention to BOS/sinks, local vs global
+          layers' attention distance histograms. Controls: removing embedding scaling / RoPE / GQA ordering breaks parity
+          at a localisable layer.
+      - number: "5.2"
+        title: Mixture of Experts from Scratch
+        dir: part2_mixture_of_experts
+        sources: [chapter5_modern_architectures/exercises/part8_mixture_of_experts]
+        requirements: [modern.mixture_of_experts]
+        brief: >
+          Top-k routing, load-balancing loss, capacity factors, token dropping, shared experts. Train a small MoE on a
+          synthetic task with planted specialisation and recover it; then inspect a real small MoE's routing
+          (e.g. allenai/OLMoE-1B-7B if it fits, otherwise a small public MoE) for token-type specialisation.
+          Controls: shuffled routing, dense baseline with matched active params.
+      - number: "5.3"
+        title: Mamba from Scratch
+        dir: part3_mamba_from_scratch
+        sources: [chapter5_modern_architectures/exercises/part3_mamba_from_scratch, arena_ext/mamba.py]
+        requirements: [modern.mamba_selective_scan]
+        brief: >
+          Selective SSMs: discretisation, the recurrent scan, the parallel/associative scan, causal conv, input-dependent
+          delta/B/C, the full block and LM; load state-spaces/mamba-130m-hf weights with parity. Interpretability:
+          what the delta (step size) does per token, state memory on an associative-recall probe.
+      - number: "5.4"
+        title: Mamba-2 and State-Space Duality
+        dir: part4_mamba2_ssd
+        sources: [chapter5_modern_architectures/exercises/part7_mamba2_ssd]
+        requirements: [modern.mamba2_ssd]
+        brief: >
+          Scalar-identity A, the SSD matrix form (semiseparable masked attention), chunked algorithm, equivalence between
+          recurrent and quadratic forms, multi-head SSD; parity against a released Mamba-2 checkpoint if it runs.
+          Show the "attention matrix" of an SSM layer.
+      - number: "5.5"
+        title: State Tracking in SSMs and Transformers
+        dir: part5_state_tracking
+        sources: [chapter5_modern_architectures/exercises/part4_mamba_state_tracking, arena_ext/state_tracking.py]
+        requirements: [modern.mamba3_state_tracking]
+        brief: >
+          Which architectures can track state (parity, bracket depth, permutation composition / S5)? Train tiny
+          Transformer, Mamba and a negative-eigenvalue / complex-diagonal SSM variant (Mamba-3-style) on state-tracking
+          tasks, test length generalisation, probe and causally patch the recurrent state. Controls: shuffled labels,
+          matched-norm random state edits.
+      - number: "5.6"
+        title: Linear Attention, RetNet and RWKV
+        dir: part6_linear_attention_retnet_rwkv
+        sources: []
+        requirements: [modern.linear_attention, modern.retnet, modern.rwkv]
+        brief: >
+          New section. Linear attention via kernel feature maps and its recurrent form; RetNet retention (decay, parallel /
+          recurrent / chunkwise forms, multi-scale heads); RWKV time-mixing and channel-mixing (implement RWKV-4 style
+          block, load a small released RWKV checkpoint via HF transformers, e.g. RWKV/rwkv-4-169m-pile, with parity).
+          Interpretability: per-head decay spectra and effective context length; associative recall capacity vs
+          softmax attention on a synthetic task.
+      - number: "5.7"
+        title: Griffin, xLSTM, Hyena and Hybrid Models
+        dir: part7_griffin_xlstm_hyena
+        sources: []
+        requirements: [modern.recurrent_gemma_griffin, modern.xlstm, modern.hyena, modern.hybrid_attention_ssm_rnn]
+        brief: >
+          New section. RG-LRU and the Griffin block (RecurrentGemma), xLSTM (sLSTM with exponential gating, mLSTM matrix
+          memory), Hyena (implicit long convolutions via FFT), and a hybrid attention+recurrence stack. Train each as a
+          tiny model on the same synthetic recall/state-tracking suite and compare; inspect recurrence gates and
+          filter shapes. Optional: load a RecurrentGemma checkpoint if it fits in memory.
+      - number: "5.8"
+        title: Discrete Diffusion Language Models
+        dir: part8_diffusion_language_models
+        sources: [chapter5_modern_architectures/exercises/part5_diffusion_language_models, arena_ext/diffusion_lm.py]
+        requirements: [modern.diffusion_language_model, modern.diffusiongemma_inference, modern.diffusiongemma_time_mechanisms]
+        brief: >
+          Masked discrete diffusion (MDLM / LLaDA-style): noising schedule, denoiser, remasking samplers. Train a small
+          one on a toy task then on TinyStories, watch denoising trajectories, measure commitment time per token, and
+          patch activations across denoising steps (denoising-time mechanisms). DiffusionGemma is too large for direct
+          local loading; describe it and the NVFP4/vLLM route as an optional box, without claiming interpretability results.
+      - number: "5.9"
+        title: Embedding, Function-Calling and Specialist Models
+        dir: part9_specialist_models
+        sources: [chapter5_modern_architectures/exercises/part6_multimodal_embedding_function_models, arena_ext/specialist_models.py]
+        requirements: [modern.function_embedding_gemma, modern.medgemma_safety_case]
+        brief: >
+          Embedding models (EmbeddingGemma, BGE): pooling, retrieval, what directions in embedding space mean;
+          function-calling models (FunctionGemma): how tool choice is represented, probing and steering tool selection,
+          abstention. A final part designs an evaluation for a domain-specialist model (MedGemma-style) as a case study in
+          evaluation design and safety, using a small model and synthetic benign data.
+
+  chapter6_sparse_feature_methods:
+    number: 6
+    title: "Chapter 6: Sparse Feature Methods"
+    short_description: SAEs, transcoders and crosscoders, from training them yourself to using released dictionaries.
+    sections:
+      - number: "6.1"
+        title: SAE Variants
+        dir: part1_sae_variants
+        sources: [chapter6_sparse_feature_methods/exercises/part1_sae_variants, arena_ext/sae_variants.py]
+        requirements: [sparse.relu_sae, sparse.topk_sae, sparse.batchtopk_sae, sparse.gated_sae, sparse.jumprelu_sae, sparse.residual_stream_sae, sparse.frontier_scale_sae_training]
+        brief: >
+          Train ReLU-L1, TopK, BatchTopK, Gated and JumpReLU SAEs on real residual-stream activations of a small model
+          (GPT-2 small or Pythia-70m) and compare them on the sparsity-fidelity frontier (L0 vs reconstruction / CE loss
+          recovered), dead latents, and interpretability spot checks. Ground-truth part first: planted sparse features
+          in a toy dataset, where recovery can be measured exactly.
+      - number: "6.2"
+        title: Gemma Scope and Feature Steering
+        dir: part2_gemma_scope
+        sources: [chapter6_sparse_feature_methods/exercises/part2_gemma_scope_deep_dive, chapter5_modern_architectures/exercises/part2_gemma_scope_feature_steering, arena_ext/gemma_scope.py]
+        requirements: [modern.gemma_scope_feature_steering]
+        brief: >
+          Load released Gemma Scope SAEs with SAELens (Gemma 2 2B or Gemma 3 1B and its Gemma Scope 2 release, whichever
+          is available locally), find features for concepts, max-activating examples, direct logit attribution of
+          features, feature ablation, and feature steering with a dose-response curve. Controls: random features,
+          matched-norm random steering, held-out prompts.
+      - number: "6.3"
+        title: Feature Splitting, Absorption and Dashboards
+        dir: part3_sae_pathologies_dashboards
+        sources: []
+        requirements: [sparse.feature_splitting_absorption, sparse.attention_output_sae, sparse.feature_dashboards, ui.sae_vis, ui.neuronpedia]
+        brief: >
+          New section. Feature splitting across dictionary sizes, feature absorption (e.g. first-letter features,
+          Chanin et al.), attention-output SAEs (Kissane et al.) and attributing features to heads, and building a
+          feature dashboard (activation histogram, top examples, logit effects) with a causal check that the
+          dashboard's story predicts ablation effects. Show how to export to / read from Neuronpedia-style formats and
+          sae-vis without depending on network access for the core exercises.
+      - number: "6.4"
+        title: Transcoders and Skip Transcoders
+        dir: part4_transcoders
+        sources: [chapter6_sparse_feature_methods/exercises/part3_transcoders_attribution_graphs, arena_ext/transcoders.py]
+        requirements: [sparse.transcoders, sparse.skip_transcoders]
+        brief: >
+          Train a transcoder that replaces an MLP layer (input -> sparse latents -> MLP output), compare with an SAE on the
+          MLP output, add a skip connection (skip transcoders, Paulo et al.), and measure replacement fidelity and
+          interpretability. Input-invariant feature-to-feature connections ("virtual weights") as the basis for
+          attribution graphs in chapter 8.
+      - number: "6.5"
+        title: Crosscoders and Model Diffing
+        dir: part5_crosscoders
+        sources: [chapter6_sparse_feature_methods/exercises/part4_crosscoders_model_diffing, arena_ext/crosscoders.py]
+        requirements: [sparse.crosscoders]
+        brief: >
+          Acausal crosscoders across layers and across models (base vs chat), shared vs model-specific latents, decoder
+          norm ratios, and the known pitfalls (complete shrinkage, latent decoupling; BatchTopK crosscoders). Diff a base and
+          fine-tuned small model pair and validate model-specific latents causally.
+
+  chapter7_activation_to_language:
+    number: 7
+    title: "Chapter 7: Activation to Language"
+    short_description: Turn hidden states into words, from lenses to activation oracles and automated interpretability agents.
+    sections:
+      - number: "7.1"
+        title: Logit Lens, Tuned Lens and Patchscopes
+        dir: part1_lenses_patchscopes
+        requirements: [activation.logit_tuned_attention_lenses, activation.patchscopes]
+        status: written
+        description: Watch GPT-2 Small retrieve capital cities layer by layer with the logit lens, train a tuned lens and test it against a bigram baseline, then use Patchscopes to let the model decode its own hidden states.
+      - number: "7.2"
+        title: Feature Verbalizers
+        dir: part2_feature_verbalizers
+        sources: [chapter7_activation_to_language/exercises/part2_feature_verbalizers, arena_ext/feature_verbalizers.py]
+        requirements: [activation.feature_verbalizers]
+        brief: >
+          Automated explanations of features: generate an explanation from top-activating examples (with a local LLM),
+          score it by simulation (predict activations from the explanation) and by detection/fuzzing (Bills et al.,
+          EleutherAI autointerp), test counterexamples and intervention-based scoring, and show interpretability
+          illusions (dataset-dependent explanations). Controls: random explanations, shuffled features.
+        status: written
+        description: "Explain 30 random GPT-2 SAE latents with a local LLM, score the explanations by simulation and detection against swapped-explanation, noise and permutation controls, then stress-test them with explanation-written counterexamples, steering and a switch of dataset."
+      - number: "7.3"
+        title: Mini Activation Oracles
+        dir: part3_mini_activation_oracles
+        sources: [chapter7_activation_to_language/exercises/part3_mini_activation_oracles, arena_ext/activation_oracles.py]
+        requirements: [activation.mini_activation_oracle, activation.full_scale_activation_oracles]
+        brief: >
+          Train a small model to answer natural-language questions about another model's activations (LatentQA /
+          Activation Oracles style): inject activations into the oracle's input, train on synthetic Q/A, evaluate on held-out
+          questions and out-of-distribution activations, with text-only and activation-only controls. Full-scale oracles
+          are out of scope; explain what changes at scale. Compare with original ARENA 1.3.4 without duplicating it.
+        status: written
+        description: "Fine-tune GPT-2 Small into an activation oracle that answers English questions about GPT-2's own activations, then test it against probes, text-only/shuffled/random controls, held-out splits, steering and activation patching."
+      - number: "7.4"
+        title: Mini Natural Language Autoencoders
+        dir: part4_mini_natural_language_autoencoders
+        sources: [chapter7_activation_to_language/exercises/part4_mini_natural_language_autoencoders, arena_ext/natural_language_autoencoders.py]
+        requirements: [activation.mini_natural_language_autoencoder, activation.full_scale_natural_language_autoencoders]
+        brief: >
+          An autoencoder whose bottleneck is text: encoder verbalises an activation, decoder reconstructs the activation
+          from the text. Measure fraction of variance explained, compare against bag-of-words bypasses, and show what a
+          text bottleneck can and can't carry.
+        status: written
+        description: "Build a miniature natural language autoencoder on GPT-2 Small: turn a layer-10 activation into a few words, rebuild it with GPT-2 itself, train end-to-end through the text bottleneck with REINFORCE, and see where reconstruction (FVE) and behaviour come apart."
+      - number: "7.5"
+        title: Predictive Concept Decoders
+        dir: part5_predictive_concept_decoders
+        sources: [chapter7_activation_to_language/exercises/part5_predictive_concept_decoders, arena_ext/predictive_concept_decoders.py]
+        requirements: [activation.predictive_concept_decoders]
+        brief: >
+          Decoders that predict which concepts are active from activations, trained end-to-end with a sparse concept
+          bottleneck; evaluate concept accuracy, causal faithfulness of concept removal, and controls.
+        status: written
+        description: "Build a predictive concept decoder (a sparse TopK concept bottleneck plus a question-conditioned decoder) that predicts GPT-2's behaviour, show it ignores loud-but-irrelevant features a same-size SAE latches onto, audit its concepts on held-out stories, and find it is causally faithful only when concepts are removed at every position."
+      - number: "7.6"
+        title: Automated Interpretability Agents
+        dir: part6_interpretability_agents
+        sources: []
+        requirements: [activation.maia, activation.openmaia]
+        brief: >
+          New section. Build a MAIA/OpenMAIA-style agent loop locally: an instruction-tuned LLM (small local model, e.g.
+          gemma-3-1b-it or SmolLM2-360M-Instruct, with an option to use a larger model or API) is given tools
+          (run the model on prompts, read feature activations, ablate/steer a feature) and asked to explain a target
+          feature or neuron. Score explanations with held-out simulation, compare against one-shot explanations and
+          random explanations, and analyse failure modes (confirmation bias, not running the decisive experiment).
+
+  chapter8_automated_circuits:
+    number: 8
+    title: "Chapter 8: Automated Circuits"
+    short_description: Find circuits automatically and check whether they're real, from patching to attribution graphs.
+    sections:
+      - number: "8.1"
+        title: Activation Patching Refresher
+        dir: part1_activation_patching_refresher
+        sources: [chapter8_automated_circuits/exercises/part1_activation_patching_refresher, arena_ext/activation_patching.py]
+        requirements: [circuits.activation_patching, circuits.direct_indirect_total_effects]
+        brief: >
+          Denoising vs noising patching, metrics (logit diff, normalised recovery), position/layer/head sweeps, direct vs
+          indirect vs total effects, on IOI or greater-than in GPT-2 small, building on original ARENA 1.4.1 without
+          repeating it. Pitfalls: metric choice, OOD corruptions, backup behaviour.
+        status: written
+        description: "Activation patching done carefully on GPT-2 IOI and greater-than: choosing corruptions and metrics, denoising vs noising, and direct vs indirect vs total effects, ending with the name movers' Hydra-style self-repair."
+      - number: "8.2"
+        title: Attribution Patching and EAP
+        dir: part2_attribution_patching_eap
+        sources: [chapter8_automated_circuits/exercises/part2_attribution_patching_eap, arena_ext/attribution_patching.py]
+        requirements: [circuits.attribution_patching_eap_integrated_effects, circuits.eap_ig]
+        brief: >
+          Linear approximation to patching, its failure modes (saturation, attention softmax), edge attribution patching,
+          EAP-IG; compare against exact patching on real GPT-2 tasks with rank correlation and scatter plots.
+        status: written
+        description: "Attribution patching as a first-order Taylor expansion of activation patching, where it breaks (attention saturation, large patches), edge attribution patching on GPT-2 Small's 32,491-edge graph, and EAP-IG, with faithfulness curves showing why integrated gradients finds IOI circuit edges that EAP misses."
+      - number: "8.3"
+        title: AtP* from Scratch
+        dir: part3_atp_star
+        sources: [chapter8_automated_circuits/exercises/part6_atp_star]
+        requirements: [circuits.atp_star]
+        brief: >
+          AtP* (Kramar et al. 2024): QK fix for attention saturation, GradDrop for cancellation, and diagnostics for false
+          negatives; show cases where vanilla AtP misses components that AtP* recovers, verified by exact patching.
+      - number: "8.4"
+        title: ACDC and Circuit Metrics
+        dir: part4_acdc_circuit_metrics
+        sources: [chapter8_automated_circuits/exercises/part3_acdc_circuit_metrics, arena_ext/circuit_metrics.py]
+        requirements: [circuits.acdc, circuits.circuit_metrics]
+        brief: >
+          Computational graphs and edge interventions, ACDC's iterative pruning, threshold sweeps, and circuit metrics
+          (faithfulness, completeness, minimality) with same-size random circuit baselines, on greater-than / IOI in GPT-2.
+      - number: "8.5"
+        title: Causal Scrubbing
+        dir: part5_causal_scrubbing
+        sources: []
+        requirements: [circuits.causal_scrubbing]
+        brief: >
+          New section. Hypotheses as correspondences between a model and an interpretation graph; resampling ablations
+          that preserve what the hypothesis says matters; scrubbed loss recovered. Start on a toy model with a known
+          algorithm (e.g. a balanced-bracket or induction toy), then test competing hypotheses for induction in a 2-layer
+          attention-only model, showing a hypothesis that looks right under patching but fails scrubbing.
+      - number: "8.6"
+        title: Sparse Feature Circuits and SHIFT
+        dir: part6_sparse_feature_circuits
+        sources: [chapter8_automated_circuits/exercises/part5_sparse_feature_circuits, arena_ext/sparse_feature_circuits.py]
+        requirements: [circuits.sparse_feature_circuits, circuits.shift_sparse_editing]
+        brief: >
+          Circuits over SAE features and error nodes with attribution patching / integrated gradients (Marks et al.),
+          on Pythia-70m with released dictionaries if available; SHIFT ablation of spurious features to fix a classifier.
+      - number: "8.7"
+        title: Circuit Tracing with Attribution Graphs
+        dir: part7_attribution_graphs
+        sources: [chapter8_automated_circuits/exercises/part4_circuit_tracing_attribution_graphs, arena_ext/circuit_tracing.py]
+        requirements: [circuits.attribution_graphs, circuits.transcoder_attribution_graphs, ui.circuit_tracer_frontend]
+        brief: >
+          Replacement models with (cross-layer) transcoders, local replacement with frozen attention and error nodes,
+          attribution graphs, pruning, supernode grouping and intervention validation (Ameisen et al. 2025, circuit-tracer).
+          Use the open circuit-tracer library and released transcoders for a small model if available; otherwise build a
+          single-layer version from 6.4's transcoders. Visualise graphs in-notebook.
+      - number: "8.8"
+        title: Benchmarking Circuit Discovery on Compiled Transformers
+        dir: part8_circuit_benchmarks
+        sources: []
+        requirements: [circuits.feature_circuit_method_comparison, organisms.tracr_rasp]
+        brief: >
+          New section. RASP programs and Tracr-style compilation into transformer weights (implement a minimal compiler
+          for a few RASP primitives, or use tracr if installable), giving models with known circuits. Run exact
+          patching, EAP, EAP-IG, AtP*, and ACDC on them and on a real GPT-2 task, and compare precision/recall against
+          ground truth, cost, and agreement. Closes the chapter with a method-choice guide.
+
+  chapter9_alignment_interpretability:
+    number: 9
+    title: "Chapter 9: Alignment Interpretability"
+    short_description: White-box tools for safety-relevant behaviour, from refusal directions to editing and unlearning.
+    sections:
+      - number: "9.1"
+        title: Refusal Directions and Representation Engineering
+        dir: part1_refusal_directions
+        sources: [chapter9_alignment_interpretability/exercises/part1_refusal_directions_safe_steering, arena_ext/refusal_steering.py]
+        requirements: [alignment.refusal_direction, alignment.multi_refusal_geometry, representation.representation_engineering]
+        brief: >
+          Replicate "Refusal is mediated by a single direction" on a small instruct model with sanitised prompts:
+          difference-of-means directions, layer/position selection, directional ablation and activation addition, weight
+          orthogonalisation, capability side effects; then multi-direction refusal geometry (PCA, cones) and
+          representation-engineering (RepE) reading vectors. Never print harmful completions; score with aggregate
+          refusal markers. Controls: random and label-shuffled directions.
+      - number: "9.2"
+        title: Truthfulness Directions and Hallucination Probes
+        dir: part2_truthfulness_hallucination
+        sources: []
+        requirements: [alignment.truthfulness_directions, alignment.hallucination_probes]
+        brief: >
+          New section. Geometry of truth (Marks & Tegmark) on simple true/false statement datasets, mass-mean vs logistic
+          probes, generalisation across datasets, causal intervention along the truth direction, inference-time
+          intervention (ITI) style steering, and probing for hallucination / unknown entities (entity recognition
+          directions). Controls: topic-matched negatives, shuffled labels, held-out datasets.
+      - number: "9.3"
+        title: Chain-of-Thought Faithfulness
+        dir: part3_cot_faithfulness
+        sources: [chapter9_alignment_interpretability/exercises/part2_cot_faithfulness, arena_ext/cot_faithfulness.py]
+        requirements: [alignment.cot_faithfulness]
+        brief: >
+          Measuring whether a model's chain of thought is causally used: truncation, adding mistakes, paraphrasing (Lanham
+          et al.), biasing features (Turpin et al.), plus white-box tests (probing for the answer before the CoT,
+          patching the CoT). Use a small instruct model on arithmetic/word problems.
+      - number: "9.4"
+        title: Emergent Misalignment Detection
+        dir: part4_emergent_misalignment
+        sources: [chapter9_alignment_interpretability/exercises/part3_emergent_misalignment_detection, arena_ext/proxy_drift_detection.py]
+        requirements: [alignment.emergent_misalignment_detection]
+        brief: >
+          Fine-tune a small model on a narrow benign proxy task that induces broad behaviour drift (safe proxy, no
+          harmful data), detect the drift with white-box methods (model diffing, persona/misalignment directions,
+          probes) before it shows in behaviour, and mitigate by projection. Builds on original ARENA 4.1 without
+          duplicating it.
+      - number: "9.5"
+        title: White-Box Monitors and Red-Teaming with Internals
+        dir: part5_white_box_monitors
+        sources: [chapter9_alignment_interpretability/exercises/part4_white_box_evals_monitors, arena_ext/white_box_monitors.py]
+        requirements: [alignment.white_box_monitors, alignment.red_teaming_with_internals]
+        brief: >
+          Probe-based monitors (deception/sycophancy-style proxies on benign data), calibration, comparison with
+          black-box monitors, adversarial robustness of monitors (optimising inputs against the probe), and using internals
+          to guide red-teaming (finding inputs that activate a monitored direction). Safe proxies only.
+      - number: "9.6"
+        title: Model Editing with ROME and MEMIT
+        dir: part6_rome_memit
+        sources: [chapter9_alignment_interpretability/exercises/part5_rome_model_editing]
+        requirements: [alignment.rome_model_editing, alignment.memit_model_editing]
+        brief: >
+          Causal tracing of factual recall, rank-one model editing (ROME) with key/value derivation and covariance
+          statistics, MEMIT mass editing across layers, and evaluation (efficacy, paraphrase generalisation, specificity /
+          neighbourhood, fluency), plus known failure modes (edits that don't generalise, the "localisation doesn't
+          predict editing success" result of Hase et al.). GPT-2 small/medium.
+      - number: "9.7"
+        title: Unlearning and How to Evaluate It
+        dir: part7_unlearning
+        sources: []
+        requirements: [alignment.unlearning]
+        brief: >
+          New section. Fine-tune a small model to know a set of fictional facts, then unlearn them with gradient ascent,
+          NPO, RMU-style representation misdirection, and SAE/feature ablation; evaluate forget/retain quality and then
+          attack the unlearning (relearning with few examples, probing for residual knowledge, logit-lens recovery) to show
+          the difference between suppression and removal.
+
+  chapter10_capstone_research_sprint:
+    number: 10
+    title: "Chapter 10: Capstone Research Sprint"
+    short_description: Run a small, honest research project end to end, using the methods from the rest of the course.
+    sections:
+      - number: "10.1"
+        title: Capstone Research Sprint
+        dir: part1_capstone_research_sprint
+        sources: [chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint]
+        requirements: [capstone.research_sprint, foundations.research_process_notebooks]
+        brief: >
+          A guided research sprint: pick a question from a menu (or bring your own), write a pre-registration (hypothesis,
+          metric, controls, what would change your mind), keep a research log, run exploratory then confirmatory
+          experiments on held-out data, and write up the result including negative results. The worked example (the
+          September draft: handwritten-digit MLP, single-coordinate vs learned-direction patching with random and
+          shuffled-label controls) runs end to end in minutes and demonstrates a methodologically sound negative result.
+          Include a menu of capstone project ideas drawn from the roadmap.
+
+        status: written
+        description: 'Run a complete pre-registered research sprint on a handwritten-digit MLP: single-unit vs direction patching with random and shuffled-label controls, a one-shot test on held-out pairs, an honest negative result, then plan your own capstone from a menu of projects with templates.'
+  chapter11_representation_geometry:
+    number: 11
+    title: "Chapter 11: Representation Geometry"
+    short_description: Measure, compare and intervene on the geometry of representations, with the controls that keep you honest.
+    sections:
+      - number: "11.1"
+        title: PCA, SVD and Geometry Controls
+        dir: part1_pca_svd_geometry_controls
+        sources: [chapter11_representation_geometry/exercises/part1_pca_svd_geometry_controls, arena_ext/representation_geometry.py]
+        requirements: [representation.pca_svd_controls, representation.umap_tsne_validation]
+      - number: "11.2"
+        title: CCA, SVCCA and Representation Alignment
+        dir: part2_cca_svcca_alignment
+        sources: [chapter11_representation_geometry/exercises/part2_cca_svcca_alignment]
+        requirements: [representation.cca_svcca_procrustes]
+      - number: "11.3"
+        title: Causal Abstraction and Distributed Alignment Search
+        dir: part3_causal_abstraction_das
+        sources: [chapter11_representation_geometry/exercises/part3_causal_abstraction_das]
+        requirements: [representation.causal_probes_das, representation.causal_abstraction]
+      - number: "11.4"
+        title: Concept Erasure
+        dir: part4_concept_erasure
+        sources: [chapter11_representation_geometry/exercises/part4_concept_erasure]
+        requirements: [representation.concept_erasure]
+      - number: "11.5"
+        title: Contrast-Consistent Search
+        dir: part5_contrast_consistent_search
+        sources: [chapter11_representation_geometry/exercises/part5_contrast_consistent_search]
+        requirements: [representation.ccs]
+      - number: "11.6"
+        title: Feature Manifolds - Days, Months, Space and Time
+        dir: part6_feature_manifolds
+        sources: []
+        requirements: [representation.feature_manifolds, representation.days_months_space_time, world.microscope_ai]
+        brief: >
+          New section. Circular features for days and months (Engels et al.), linear representations of space and time
+          (Gurnee & Tegmark) with probes on place/date names, directions vs planes vs rings, intervening along a circle to
+          shift "Tuesday" to "Thursday", and the dangers of reading structure from 2D projections. Bonus: using such probes
+          as a "microscope" to discover structure the model learned (Microscope AI).
+
+  chapter12_vlm_interpretability:
+    number: 12
+    title: "Chapter 12: VLM Interpretability"
+    short_description: Build vision-language models from scratch and take real ones apart.
+    sections:
+      - number: "12.1"
+        title: CLIP and SigLIP from Scratch
+        dir: part1_clip_siglip
+        sources: [chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls, arena_ext/vlm_interpretability.py]
+        requirements: [vlm.clip_contrastive_from_scratch, vlm.siglip_loss_from_scratch, vlm.real_clip_siglip_retrieval, vlm.clip_siglip_feature_geometry, vlm.clothing_object_color_style_geometry]
+        brief: >
+          Contrastive (InfoNCE) and sigmoid losses, a tiny CLIP trained on synthetic coloured shapes with a retrieval
+          heatmap and random-caption control, then real CLIP/SigLIP (google/siglip-base-patch16-224, an OpenAI CLIP):
+          retrieval, the modality gap, attribute directions (colour, object, material, style) and compositionality failures.
+      - number: "12.2"
+        title: CLIP Features, SAEs and Typographic Attacks
+        dir: part2_clip_saes_typographic
+        sources: []
+        requirements: [vlm.clip_siglip_saes, vlm.typographic_attack_mechanisms]
+        brief: >
+          New section. Train an SAE on CLIP vision embeddings / residual stream, interpret latents with image galleries,
+          steer with latents, then study typographic attacks (an image of an apple labelled "iPod"): locate the text-reading
+          features/heads and mitigate by ablation, with clean-accuracy side effects.
+      - number: "12.3"
+        title: Mini VLM from Scratch
+        dir: part3_mini_vlm_from_scratch
+        sources: [chapter12_vlm_interpretability/exercises/part3_mini_vlm_from_scratch]
+        requirements: [vlm.mini_vlm_from_scratch]
+      - number: "12.4"
+        title: Visual Token Flow in Real VLMs
+        dir: part4_visual_token_flow
+        sources: [chapter12_vlm_interpretability/exercises/part1_clip_siglip_vlm_controls]
+        requirements: [vlm.visual_token_flow, vlm.full_sequence_patching, vlm.qwen25_vl_adapter, vlm.paligemma_adapter, vlm.llava_onevision_adapter, vlm.molmo_adapter, vlm.patchscopes_and_verbalizers]
+        brief: >
+          A uniform hooking adapter for real VLMs (start with the smallest that runs locally, e.g. Qwen2.5-VL-3B or
+          SmolVLM / PaliGemma; describe how LLaVA-OneVision and Molmo map to the same adapter), then: where visual
+          information flows (attention knockout from image tokens, layer at which image tokens stop mattering), logit lens
+          on visual tokens, full-sequence vs last-token patching, and VLM Patchscopes. Controls: background patches,
+          shuffled images, text-only.
+      - number: "12.5"
+        title: Object Hallucination and Modality Arbitration
+        dir: part5_object_hallucination
+        sources: [chapter12_vlm_interpretability/exercises/part2_object_hallucination_arbitration]
+        requirements: [vlm.object_hallucination_grounding_arbitration, vlm.real_object_hallucination_arbitration]
+        brief: >
+          When text priors and visual evidence conflict, who wins? Toy arbitration model first, then a real VLM on
+          POPE-style yes/no object questions with conflicting captions: separate perception, transfer, arbitration and
+          decoding failures with patching and probes, and test a mitigation.
+      - number: "12.6"
+        title: Multimodal SAEs, Transcoders and Crosscoders
+        dir: part6_multimodal_sparse_features
+        sources: []
+        requirements: [vlm.multimodal_saes, vlm.multimodal_transcoders, vlm.multimodal_crosscoders, circuits.vlm_sparse_feature_circuits]
+        brief: >
+          New section. SAEs on a VLM's projector output and language-model residual stream at image vs text positions,
+          cross-modal features (fire for both "dog" images and the word "dog"), a crosscoder between CLIP vision features
+          and VLM visual tokens, and a small sparse-feature circuit from image region to answer token. Use the mini VLM from
+          12.3 where real-model compute is too high.
+      - number: "12.7"
+        title: Dense Vision Features - DINO and SAM
+        dir: part7_dense_vision_features
+        sources: []
+        requirements: [vlm.dino_dense_features, vlm.sam_segmentation_features]
+        brief: >
+          New section. DINO/DINOv2 patch features: PCA visualisations, part correspondence across images, attention maps
+          and register tokens / high-norm artifacts; SAM image-encoder features and what the mask decoder reads from them.
+          Probing and patching patch tokens.
+
+  chapter13_image_generation_interpretability:
+    number: 13
+    title: "Chapter 13: Image-Generation Interpretability"
+    short_description: Look inside diffusion and autoregressive image generators.
+    sections:
+      - number: "13.1"
+        title: Diffusion Models and Cross-Attention Attribution
+        dir: part1_diffusion_cross_attention
+        sources: [chapter13_image_generation_interpretability/exercises/part1_diffusion_image_controls, arena_ext/image_generation_interpretability.py]
+        requirements: [image.sd15_daam]
+        brief: >
+          DDPM/DDIM from scratch on a tiny dataset, then Stable Diffusion 1.5 (or a smaller pipeline if it doesn't fit):
+          UNet cross-attention, DAAM-style token heatmaps aggregated over timesteps and layers, and controls (shuffled
+          tokens, null prompt, segmentation agreement on synthetic scenes).
+      - number: "13.2"
+        title: Denoising-Time Causal Patching
+        dir: part2_denoising_time_causal_patching
+        sources: [chapter13_image_generation_interpretability/exercises/part2_denoising_time_causal_patching]
+        requirements: [image.denoising_time_causal_patching]
+      - number: "13.3"
+        title: Concept Directions and Diffusion LoRA
+        dir: part3_concept_directions_lora
+        sources: [chapter13_image_generation_interpretability/exercises/part1_diffusion_image_controls]
+        requirements: [image.diffusion_concept_directions, image.diffusion_lora]
+        brief: >
+          Semantic directions in diffusion latents and UNet bottleneck (h-space, Kwon et al.), concept sliders, and what a
+          style/concept LoRA changes (train a tiny LoRA, take the SVD of its update, steer with its singular directions).
+          Safety-relevant concept removal as an application.
+      - number: "13.4"
+        title: Sparse Autoencoders for Diffusion Models
+        dir: part4_diffusion_saes
+        sources: []
+        requirements: [image.diffusion_saes_difflens]
+        brief: >
+          New section. Train SAEs on diffusion UNet/transformer activations, interpret features through generated images,
+          steer generation with features, and find bias-relevant features (DiffLens-style) with controlled prompts.
+      - number: "13.5"
+        title: Diffusion Transformers and ConceptAttention
+        dir: part5_dit_concept_attention
+        sources: []
+        requirements: [image.dit_concept_attention, image.sdxl_optional, image.flux_optional]
+        brief: >
+          New section. A small DiT from scratch (patchify, adaLN conditioning), then ConceptAttention on a pretrained DiT
+          that fits locally (e.g. PixArt / Sana-600M): saliency maps from attention-output space vs cross-attention maps,
+          evaluated on synthetic segmentation. SDXL / FLUX discussed as optional larger targets.
+      - number: "13.6"
+        title: Autoregressive Image Tokens
+        dir: part6_autoregressive_image_tokens
+        sources: []
+        requirements: [image.autoregressive_image_tokens]
+        brief: >
+          New section. Train a VQ-VAE tokenizer on a small image dataset, train an autoregressive transformer over image
+          tokens, then interpret it: codebook usage and what codes mean, attention over the 2D token grid, and patching
+          tokens to change generated content.
+
+  chapter14_jepa_world_models:
+    number: 14
+    title: "Chapter 14: JEPAs and World Models"
+    short_description: Predictive representation learning and world models, and how to find the world state inside them.
+    sections:
+      - number: "14.1"
+        title: I-JEPA from Scratch
+        dir: part1_ijepa_from_scratch
+        sources: [chapter14_jepa_world_models/exercises/part2_ijepa_from_scratch]
+        requirements: [jepa.ijepa_from_scratch]
+      - number: "14.2"
+        title: V-JEPA and Video World Models
+        dir: part2_vjepa
+        sources: [chapter14_jepa_world_models/exercises/part3_vjepa_from_scratch, chapter14_jepa_world_models/exercises/part1_jepa_world_model_controls]
+        requirements: [jepa.vjepa_from_scratch, jepa.vjepa2_feature_extraction, world.object_permanence, organisms.bouncing_balls_moving_mnist, vlm.videomae_videoprism_comparison, jepa.vjepa21_dense_features]
+        brief: >
+          V-JEPA from scratch on bouncing balls / moving MNIST (tubelets, spatiotemporal masking, latent prediction), probes
+          for physical state (position, velocity, occluded objects = object permanence), compared with a pixel-reconstruction
+          (VideoMAE-style) objective; then extract features from facebook/vjepa2-vitl-fpc64-256 (cached) and probe them on
+          controlled clips.
+      - number: "14.3"
+        title: Action-Conditioned World Models and Latent Planning
+        dir: part3_action_conditioned_planning
+        sources: [chapter14_jepa_world_models/exercises/part1_jepa_world_model_controls, arena_ext/jepa_world_models.py]
+        requirements: [jepa.vjepa2_action_conditioned, world.latent_planning, world.controllable_variables, jepa.jepa_vla, jepa.act_jepa, world.large_robot_models]
+        brief: >
+          Action-conditioned latent predictors (V-JEPA 2-AC style) on a toy gridworld/physics environment, planning by
+          optimising actions in latent space (CEM / MPC), and separating controllable from nuisance latent variables.
+          Larger robot / VLA models discussed as further reading.
+      - number: "14.4"
+        title: The JEPA Family
+        dir: part4_jepa_family
+        sources: []
+        requirements: [jepa.vljepa, jepa.audio_jepa, jepa.mc_jepa, jepa.3d_jepa, jepa.us_jepa, jepa.time_series_jepa, jepa.mjepa, jepa.bijepa, jepa.llm_jepa, jepa.demo_jepa, jepa.sparse_jepa]
+        brief: >
+          New section. One reusable JEPA core (context encoder, EMA target encoder, predictor, collapse diagnostics),
+          instantiated on several modalities with tiny models: time series (T-JEPA), audio spectrograms (A-JEPA),
+          motion/content split (MC-JEPA), text (LLM-JEPA auxiliary loss), and vision-language embedding prediction (VL-JEPA).
+          Compare what each learns with the same probe suite; brief reading notes for 3D-, US-, Bi-, MJEPA, Demo-JEPA and
+          SparseJEPA.
+      - number: "14.5"
+        title: Maze Transformers and World Models
+        dir: part5_maze_transformers
+        sources: [chapter14_jepa_world_models/exercises/part4_maze_transformer_world_model]
+        requirements: [world.maze_transformers]
+      - number: "14.6"
+        title: Sudoku and Constraint World Models
+        dir: part6_sudoku_transformers
+        sources: []
+        requirements: [world.sudoku_transformers]
+        brief: >
+          New section. Train a small transformer to solve 4x4 (and optionally 9x9) Sudoku / constraint puzzles, probe for
+          board state and candidate sets, find "naked single" features/circuits, and causally edit candidate
+          representations to change the model's move.
+      - number: "14.7"
+        title: Recurrent World Models - Dreamer, TD-MPC2 and IRIS
+        dir: part7_recurrent_world_models
+        sources: []
+        requirements: [world.dreamer_lite, world.tdmpc2_lite, world.iris_lite, organisms.tiny_rl_worlds, alignment.world_model_safety, alignment.robotics_vla_safety]
+        brief: >
+          New section. Tiny versions of an RSSM world model (Dreamer-lite), a TD-MPC2-style latent dynamics model with
+          planning, and an IRIS-style discrete-token transformer world model, trained on small gridworld/CartPole-type
+          environments. Probe latents for true environment state, find where imagined rollouts diverge from reality, and
+          (safety) detect when a world model's imagined reward is being exploited.
+
+  chapter15_peft_misalignment:
+    number: 15
+    title: "Chapter 15: PEFT and Misalignment"
+    short_description: What parameter-efficient fine-tuning actually changes inside a model.
+    sections:
+      - number: "15.1"
+        title: LoRA and DoRA from Scratch
+        dir: part1_lora_dora
+        sources: [chapter15_peft_misalignment/exercises/part1_lora_dora_adapter_controls, arena_ext/peft_interpretability.py]
+        requirements: [peft.lora_from_scratch, peft.dora_from_scratch, peft.adapter_svd_intruder_dimensions]
+      - number: "15.2"
+        title: LoRA vs Full Fine-Tuning
+        dir: part2_lora_vs_full_finetuning
+        sources: [chapter15_peft_misalignment/exercises/part2_lora_vs_full_finetuning]
+        requirements: [peft.lora_vs_full_finetuning]
+      - number: "15.3"
+        title: QLoRA from Scratch
+        dir: part3_qlora_from_scratch
+        sources: [chapter15_peft_misalignment/exercises/part3_qlora_from_scratch]
+        requirements: [peft.qlora]
+      - number: "15.4"
+        title: LoRA Phase Transitions and Misalignment Proxies
+        dir: part4_lora_phase_transitions
+        sources: []
+        requirements: [training.lora_phase_transitions, peft.safe_lora_misalignment_proxy]
+        brief: >
+          New section. Track a behaviour direction during LoRA fine-tuning on a benign narrow proxy task and find the
+          phase transition where broad behaviour shifts (cf. emergent misalignment, "model organisms" with rank-1 LoRA),
+          read the transition off the adapter's singular vectors, and intervene.
+      - number: "15.5"
+        title: VLM LoRA
+        dir: part5_vlm_lora
+        sources: []
+        requirements: [peft.vlm_lora]
+        brief: >
+          New section. LoRA on the mini VLM from 12.3 (and optionally a small real VLM): which modules matter (projector vs
+          LM), what the adapter's directions do to visual-token processing, and whether visual grounding is preserved.
+
+  chapter16_shapley_attribution_baselines:
+    number: 16
+    title: "Chapter 16: Shapley Attribution Baselines"
+    short_description: Shapley values and data attribution, and when they agree with mechanistic interpretability.
+    sections:
+      - number: "16.1"
+        title: Exact Shapley on Ground-Truth Games
+        dir: part1_exact_shapley
+        sources: [chapter16_shapley_attribution_baselines/exercises/part1_exact_shapley_ground_truth_games, arena_ext/shapley_attribution.py]
+        requirements: [shapley.exact_values, shapley.permutation_shap]
+      - number: "16.2"
+        title: KernelSHAP and PartitionSHAP
+        dir: part2_kernelshap_partitionshap
+        sources: [chapter16_shapley_attribution_baselines/exercises/part2_kernelshap_partition_shap_controls]
+        requirements: [shapley.kernelshap, shapley.partitionshap_owen]
+      - number: "16.3"
+        title: TreeSHAP, DeepSHAP and GradientSHAP
+        dir: part3_model_specific_shap
+        sources: [chapter16_shapley_attribution_baselines/exercises/part13_treeshap, chapter16_shapley_attribution_baselines/exercises/part14_deepshap, chapter16_shapley_attribution_baselines/exercises/part15_gradientshap]
+        requirements: [shapley.treeshap, shapley.deepshap, shapley.gradientshap]
+      - number: "16.4"
+        title: SAGE Global Importance
+        dir: part4_sage
+        sources: [chapter16_shapley_attribution_baselines/exercises/part12_sage_global_importance]
+        requirements: [shapley.sage]
+      - number: "16.5"
+        title: Shapley Interactions
+        dir: part5_shapley_interactions
+        sources: [chapter16_shapley_attribution_baselines/exercises/part3_shapley_interactions_shapiq, chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap, chapter16_shapley_attribution_baselines/exercises/part17_shapiq_estimators]
+        requirements: [shapley.interactions_shapiq, shapley.shapley_taylor_faith_shap, shapley.shap_iq]
+      - number: "16.6"
+        title: Sparse Interaction Discovery with SPEX and ProxySPEX
+        dir: part6_spex_proxyspex
+        sources: [chapter16_shapley_attribution_baselines/exercises/part18_spex, chapter16_shapley_attribution_baselines/exercises/part19_proxyspex, docs/arena_salvage/2026-09-08_spex_proxyspex_learner_plan.md]
+        requirements: [shapley.spex_proxyspex]
+        brief: >
+          Close-out of the unfinished September SPEX/ProxySPEX lessons, as one live notebook. Sparse Fourier / Möbius
+          representations of a value function, why most interactions are zero in practice, SPEX's sparse recovery from
+          masked queries (with a from-scratch decoder on a planted sparse game first), ProxySPEX's boosted-tree proxy,
+          and a real LLM experiment sized to run in minutes (e.g. a small model on a sentence with ~16-32 masked words),
+          compared against exact or high-budget references and KernelSHAP-style first-order baselines.
+        status: written
+        description: "Shapley interactions as Fourier/M\u00f6bius coefficients, SPEX's BCH-coded sparse recovery and ProxySPEX's tree-proxy extraction, built from scratch and tested on planted games and on GPT-2 against an exact 2^16-mask reference and controls."
+      - number: "16.7"
+        title: TokenSHAP and Region SHAP for LLMs and VLMs
+        dir: part7_token_region_shap
+        sources: [chapter16_shapley_attribution_baselines/exercises/part4_tokenshap_token_shapley, chapter16_shapley_attribution_baselines/exercises/part5_vlm_modality_region_shap]
+        requirements: [shapley.token_shapley, shapley.vlm_modality_region]
+      - number: "16.8"
+        title: SHAP vs Activation Patching
+        dir: part8_shap_vs_patching
+        sources: [chapter16_shapley_attribution_baselines/exercises/part6_shap_vs_activation_patching, chapter16_shapley_attribution_baselines/exercises/part8_shapley_mechinterp_agreement]
+        requirements: [shapley.shap_vs_activation_patching, shapley.mechanistic_agreement_matrix]
+      - number: "16.9"
+        title: Data Shapley in One Training Run
+        dir: part9_data_shapley
+        sources: [chapter16_shapley_attribution_baselines/exercises/part7_data_shapley_in_one_training_run, docs/arena_salvage/2026-09-22_inrun_data_shapley_plan.md]
+        requirements: [data_attribution.exact_mc_data_shapley, data_attribution.in_run_data_shapley, data_attribution.training_run_simulations, data_attribution.adam_aware_in_run_shapley]
+        brief: >
+          Close-out of the unfinished September In-Run Data Shapley rewrite, as one live notebook: exact data Shapley by
+          retraining on a tiny problem, Monte Carlo / TMC data Shapley, then In-Run Data Shapley (Wang et al. 2024):
+          first- and second-order per-step contributions from per-example gradients (ghost dot products), accumulated over
+          a training run, validated against exact retraining on small problems and with deletion experiments vs random
+          deletion. Keep the honest negative findings of the September draft (first-order accounting can disagree with
+          exact values). Adam-aware variants as a discussion.
+        status: written
+        description: "Value training data exactly and by Monte Carlo retraining, then with In-Run Data Shapley from a single SGD run (ghost dot products, first- and second-order per-step credit), and test every method by deleting data and retraining."
+      - number: "16.10"
+        title: Influence Functions and TracIn
+        dir: part10_influence_tracin
+        sources: [chapter16_shapley_attribution_baselines/exercises/part9_influence_and_tracin]
+        requirements: [data_attribution.influence_functions, data_attribution.tracin, data_attribution.ghostsuite]
+      - number: "16.11"
+        title: Datamodels and Dataset Cartography
+        dir: part11_datamodels_cartography
+        sources: [chapter16_shapley_attribution_baselines/exercises/part10_datamodels, chapter16_shapley_attribution_baselines/exercises/part11_dataset_cartography]
+        requirements: [data_attribution.datamodels, data_attribution.dataset_cartography]
+
+  chapter17_training_dynamics:
+    number: 17
+    title: "Chapter 17: Training Dynamics"
+    short_description: Developmental interpretability - watching mechanisms form during training.
+    sections:
+      - number: "17.1"
+        title: Checkpoint Archaeology and Grokking
+        dir: part1_checkpoint_archaeology
+        sources: [chapter17_training_dynamics/exercises/part1_checkpoint_archaeology, arena_ext/training_dynamics.py]
+        requirements: [training.checkpoint_archaeology, training.grokking, organisms.modular_addition]
+      - number: "17.2"
+        title: Induction Head Emergence
+        dir: part2_induction_head_emergence
+        sources: []
+        requirements: [training.induction_head_emergence]
+        brief: >
+          New section. Train a 2-layer attention-only transformer and watch the induction-head phase change (loss bump,
+          in-context learning score, prefix-matching scores, composition scores) across checkpoints; then confirm on
+          Pythia's public training checkpoints. Intervene during training (e.g. freezing the previous-token head) to test
+          the causal story.
+      - number: "17.3"
+        title: Fine-Tuning Diffs and Capability Emergence
+        dir: part3_finetuning_diffs_emergence
+        sources: []
+        requirements: [training.finetuning_diffs, training.capability_emergence]
+        brief: >
+          New section. Diff checkpoints (weights, activations, crosscoders-lite) across Pythia training steps and before/after
+          a small fine-tune; track when a capability (e.g. a simple factual or syntactic task) emerges and which components
+          change at that point, with attribution of the change to layers/heads.
+      - number: "17.4"
+        title: Training Dynamics Across Architectures
+        dir: part4_cross_architecture_dynamics
+        sources: []
+        requirements: [training.cross_architecture_dynamics]
+        brief: >
+          New section. Train small AR transformer, Mamba, masked-diffusion LM and JEPA models on the same synthetic task
+          suite and compare when and how the same capability appears (loss curves, probe accuracy over training, effective
+          rank, representation similarity across time with CKA).
+
+  chapter18_intrinsic_interpretability:
+    number: 18
+    title: "Chapter 18: Intrinsic Interpretability"
+    short_description: Models designed to be interpretable, and what they cost.
+    new_chapter: true
+    sections:
+      - number: "18.1"
+        title: Concept Bottlenecks, Backpacks and Interchange Intervention Training
+        dir: part1_concept_bottlenecks_backpacks_iit
+        sources: []
+        requirements: [intrinsic.concept_bottleneck_models, intrinsic.backpack_language_models, intrinsic.interchange_intervention_training]
+        brief: >
+          New section. Concept bottleneck models (and their leakage problem), Backpack language models (sense vectors,
+          non-contextual decomposition, editing a sense vector), and interchange intervention training (training a model
+          so a chosen subspace implements a chosen causal variable, verified with DAS from 11.3).
+      - number: "18.2"
+        title: Sparse and Modular Training, KANs and Sparse Trees
+        dir: part2_sparse_modular_kans
+        sources: []
+        requirements: [intrinsic.sparse_modular_training, intrinsic.kans_sparse_trees]
+        brief: >
+          New section. Training with weight sparsity / modularity penalties (brain-inspired modular training, sparse
+          circuits by construction), Kolmogorov-Arnold networks with symbolic regression of learned splines, and sparse
+          decision trees as an interpretable baseline; compare accuracy vs interpretability on the same tasks.

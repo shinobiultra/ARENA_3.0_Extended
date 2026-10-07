@@ -91,7 +91,7 @@ def build_notebooks():
         student.append(_cell("markdown", tail)); solved.append(_cell("markdown", tail))
     metadata = {"kernelspec": {"display_name": "Python 3", "language": "python", "name": "python3"},
                 "language_info": {"name": "python", "version": sys.version.split()[0]},
-                "arena": {"section": "16.19", "status": "draft_requires_own_answer_execution_and_review",
+                "arena": {"section": "16.19",
                           "original_chapters_modified": False, "method_sha256": FROZEN_METHOD_SHA256}}
     make = lambda cells: {"nbformat": 4, "nbformat_minor": 5, "metadata": copy.deepcopy(metadata), "cells": cells}
     return make(student), make(solved)

@@ -1,8 +1,36 @@
 # ARENA 3.0 Extended Salvage Handoff
 
-Snapshot date: 2026-09-08 (Asia/Tokyo)
+Snapshot date: 2026-09-22 (Asia/Tokyo)
 
-**Current instruction — September 8 closeout:** the user requested **“Prepare to
+**STOPPED — latest September 22 instruction:** the user said **“finish for today.”**
+All task-owned experiments and the sole Astra agent have stopped. Do not resume
+work, monitoring, retries or reviews until explicitly requested. The exact
+closeout and unfinished integration state are in
+[September 22 stop handoff](docs/arena_salvage/2026-09-22_stop.md).
+Both SPEX runs are interrupted FAIL receipts (1,016 and 910 completed conditions),
+not accepted native results. New capstone and Data Shapley learner drafts are
+saved and executed, but canonical report migration/review remains unfinished.
+Statements below that say runs are in progress describe earlier checkpoints.
+
+**Current instruction — September 22 continuation:** the user resumed work with
+**at most one subagent**, only where useful for independent parallel work. Use
+only Astra. The September 8 closeout below is historical. The new execution and
+learner integration plan is
+`docs/arena_salvage/2026-09-22_spex_continuation_plan.md`. Native v2 started at
+07:34:39 UTC using the exact frozen `.venv/bin/python3` interpreter; full outcomes,
+reproduction and publication remain pending. Inspect its live receipt before
+starting another run. Do not edit the fourteen frozen native inputs.
+
+The one Astra reviewer approved a prospective concurrent scheduling supplement.
+The second cold run began at 07:49:13 UTC, under an outer supervisor at
+`~/.cache/arena_extended/sparse_interaction_discovery/native_reproduction_v2/`.
+Its actual native evidence is in the nested `native/` directory. The outer clock
+includes cold execution, any wait for the first run, comparison and receipts;
+all original scientific methods, inputs and tolerances remain frozen. Both runs
+are still in progress at this checkpoint. See the September 22 plan for exact
+approval/source hashes. Do not launch a duplicate reproduction.
+
+**Historical instruction — September 8 closeout:** the user requested **“Prepare to
 wrap up for today by 4pm, finish all you planned so far but just don't start new
 things.”** The deadline is 16:00 Asia/Tokyo (07:00 UTC). Finish only the current
 integration/checkpoint work and stop task-owned jobs. Do not start the longer
@@ -29,12 +57,13 @@ audit, and zero original-preservation, artifact-hygiene or readability blockers.
 Exact checks and source hashes are in
 `docs/maintenance/2026-09-08_spex_closeout/closeout_checks.json`.
 
-The full-course objective remains unfinished. Its app goal is active;
-no completion or blocked status was fabricated. Section 16.16 is now published after
+The full-course objective remains unfinished. The app goal still displays the
+earlier paused state; the user's September 22 resumption authorizes current work.
+No completion or blocked status was fabricated. Section 16.16 is now published after
 its independent v8 approval; 459 final integration tests and all section gates pass.
 Its current accepted report reproduces every numerical value exactly.
 
-**Current authorization:** use parallel subagents to finish the selected topics,
+**Current authorization:** use at most one useful subagent to finish the selected topics,
 with only `gpt-6-astra` for every worker and reviewer (latest explicit override). Preserve original
 ARENA chapters and their exact teaching style. Legacy extension implementation
 may be replaced. Do not reset or clean shared work. The subsequent September 7

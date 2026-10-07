@@ -480,6 +480,9 @@ def build_report(section, native_run, fresh_run, learner_execution, fixture, art
     receipt_paths = {"learner_execution.json": Path(learner_execution), "fresh_reproduction.json": Path(fresh_run) / "reproduction.json",
                      "native_execution.json": Path(native_run) / "execution.json", "fresh_native_execution.json": Path(fresh_run) / "execution.json",
                      "native_comparison_summary.json": Path(fresh_run) / "comparison_process/comparison_summary.json"}
+    for role, record in context["native"].get("scheduling_evidence", {}).items():
+        suffix = ".py" if role == "coordinator" else ".json"
+        receipt_paths["scheduling_" + role + suffix] = Path(record["absolute_path"])
     for name, path in receipt_paths.items():
         inputs[prefix + "expected_outputs/" + name] = path
     inputs[publish.FIXTURE] = Path(fixture)

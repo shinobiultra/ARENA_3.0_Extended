@@ -1,1870 +1,1017 @@
 # %%
-"""Reference solutions for [7.5] Predictive Concept Decoders."""
 
-import logging
-import os
+
 import sys
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Callable
 
+import matplotlib.pyplot as plt
+import pandas as pd
 import torch as t
+import torch.nn as nn
 import torch.nn.functional as F
+from IPython.display import display
+from jaxtyping import Float, Int
+from torch import Tensor
+from tqdm.auto import tqdm
+from transformer_lens import HookedTransformer
 
+device = t.device("mps" if t.backends.mps.is_available() else "cuda" if t.cuda.is_available() else "cpu")
+
+# Make sure exercises are in the path
 chapter = "chapter7_activation_to_language"
+section = "part5_predictive_concept_decoders"
 root_dir = next(p for p in [Path.cwd(), *Path.cwd().parents] if (p / chapter).exists())
-if str(root_dir) not in sys.path:
-    sys.path.append(str(root_dir))
+exercises_dir = root_dir / chapter / "exercises"
+section_dir = exercises_dir / section
+if str(exercises_dir) not in sys.path:
+    sys.path.append(str(exercises_dir))
+
+import part5_predictive_concept_decoders.tests as tests
+import part5_predictive_concept_decoders.utils as utils
 
 MAIN = __name__ == "__main__"
 
-TL_GELU1L_MODEL_NAME = "gelu-1l"
-TL_GELU1L_HF_ID = "NeelNanda/GELU_1L512W_C4_Code"
-TL_GELU1L_REVISION = "bddc0e332f0ae84279e6a6a45d91b314899e1603"
-TL_GELU1L_TOKENIZER_ID = "NeelNanda/gpt-neox-tokenizer-digits"
-TL_GELU1L_TOKENIZER_REVISION = "0f6671571a20be9756b9991d978047c03b75e749"
-TL_BNB_CUDA_OVERRIDE = "130"
-TL_RESID_POST_HOOK = "blocks.0.hook_resid_post"
-TL_POSITIVE_ANCHOR = "The cat sat on the"
-TL_NEGATIVE_ANCHOR = "The bird flew over the"
-TL_CONCEPT_TOP_K = 4
-TL_TRAIN_EXAMPLES = [
-    ("The cat sat on the", "surface"),
-    ("The dog slept on the", "surface"),
-    ("The child sat on the", "surface"),
-    ("The book rested on the", "surface"),
-    ("The blanket lay on the", "surface"),
-    ("The lamp sat on the", "surface"),
-    ("The bird flew over the", "motion"),
-    ("The plane flew over the", "motion"),
-    ("The kite floated above the", "motion"),
-    ("The cloud drifted above the", "motion"),
-    ("The feather floated above the", "motion"),
-    ("The train rushed through the", "motion"),
-]
-TL_EVAL_EXAMPLES = [
-    ("Yesterday at home, the blanket lay on the", "surface"),
-    ("In the quiet room, the lamp sat on the", "surface"),
-    ("After dinner, the pillow rested on the", "surface"),
-    ("Near the window, the chair sat on the", "surface"),
-    ("At noon outside, the rocket launched into the", "motion"),
-    ("During the game, the ball flew over the", "motion"),
-    ("On the hill, the kite floated above the", "motion"),
-    ("In the hallway, the train rushed through the", "motion"),
-]
-TL_PCD_QUESTIONS = (
-    "Will the next token be the surface-associated token?",
-    "Will the next token be the motion-associated token?",
-    "Is the hidden state carrying a resting-surface concept?",
-    "Is the hidden state carrying a motion-or-airborne concept?",
-)
-PLANTED_PCD_QUESTIONS = (
-    "Is the hidden surface concept active?",
-    "Is the hidden motion concept active?",
-    "Is the hidden red concept active?",
-    "Is the hidden animal concept active?",
-)
-PLANTED_CONCEPT_NAMES = (
-    "surface",
-    "motion",
-    "red",
-    "animal",
-    "template_alpha",
-    "template_beta",
-)
-PLANTED_QUESTION_TO_CONCEPT = (0, 1, 2, 3)
+# %%
 
+D_MODEL = 48
+N_CONCEPTS = 6  # quiet concepts: they determine behaviour
+N_LOUD = 8  # loud features: high variance, no effect on behaviour
+N_QUESTIONS = 4
+N_ANSWERS = 8
+QUESTION_DEPENDS_ON = [[0, 1], [2, 3], [4, 5], [0, 3, 5]]
+TRUE_LABELS = [f"c{i}" for i in range(N_CONCEPTS)] + [f"loud{j}" for j in range(N_LOUD)]
+
+
+@dataclass
+class PlantedWorld:
+    concept_dirs: Float[Tensor, "n_concepts d_model"]
+    loud_dirs: Float[Tensor, "n_loud d_model"]
+    W_behaviour: Float[Tensor, "n_questions n_answers n_concepts"]
+    b_behaviour: Float[Tensor, "n_questions n_answers"]
+
+
+def make_planted_world(seed: int = 0) -> PlantedWorld:
+    """Random orthonormal concept/loud directions, and a random sparse linear behaviour readout."""
+    generator = t.Generator().manual_seed(seed)
+    basis, _ = t.linalg.qr(t.randn(D_MODEL, D_MODEL, generator=generator))
+    directions = basis[:, : N_CONCEPTS + N_LOUD].T.contiguous()
+    W_behaviour = t.zeros(N_QUESTIONS, N_ANSWERS, N_CONCEPTS)
+    for q, concepts in enumerate(QUESTION_DEPENDS_ON):
+        W_behaviour[q][:, concepts] = 3.0 * t.randn(N_ANSWERS, len(concepts), generator=generator)
+    b_behaviour = t.randn(N_QUESTIONS, N_ANSWERS, generator=generator)
+    return PlantedWorld(directions[:N_CONCEPTS], directions[N_CONCEPTS:], W_behaviour, b_behaviour)
+
+
+def sample_planted(
+    world: PlantedWorld,
+    n: int,
+    seed: int,
+    p_concept: float = 0.25,
+    p_loud: float = 0.5,
+    loud_scale: tuple[float, float] = (2.0, 4.0),
+    noise: float = 0.05,
+) -> tuple[Float[Tensor, "n d_model"], Float[Tensor, "n n_concepts"], Float[Tensor, "n n_loud"]]:
+    """Returns (activations, binary concept labels, loud feature magnitudes)."""
+    generator = t.Generator().manual_seed(seed)
+    concepts = (t.rand(n, N_CONCEPTS, generator=generator) < p_concept).float()
+    lo, hi = loud_scale
+    loud_on = (t.rand(n, N_LOUD, generator=generator) < p_loud).float()
+    loud = loud_on * (lo + (hi - lo) * t.rand(n, N_LOUD, generator=generator))
+    acts = concepts @ world.concept_dirs + loud @ world.loud_dirs + noise * t.randn(n, D_MODEL, generator=generator)
+    return acts, concepts, loud
+
+
+def kl(p_log: Tensor, q_log: Tensor) -> float:
+    """Mean KL(p || q) between log-prob tensors, summed over the last dimension and averaged over the rest."""
+    return (p_log.exp() * (p_log - q_log)).sum(-1).mean().item()
 
 # %%
-@dataclass(frozen=True)
-class PCDQuestionBatch:
-    activations: t.Tensor
-    question_ids: t.Tensor
-    answer_ids: t.Tensor
-    question_texts: tuple[str, ...]
 
-
-@dataclass(frozen=True)
-class PCDComparisonReport:
-    pcd_accuracy: float
-    probe_accuracy: float
-    sae_classifier_accuracy: float
-    activation_oracle_accuracy: float
-    best_baseline_accuracy: float
-    beats_probe: bool
-    beats_best_baseline: bool
-
-
-@dataclass(frozen=True)
-class ConceptSparsityReport:
-    mean_l0: float
-    density: float
-    passes_sparsity: bool
-
-
-@dataclass(frozen=True)
-class ConceptStabilityReport:
-    top_concepts_by_seed: tuple[tuple[int, ...], ...]
-    mean_pairwise_jaccard: float
-    stable: bool
-
-
-@dataclass(frozen=True)
-class ConceptRemovalReport:
-    original_answer: int
-    top_removed_answer: int
-    random_removed_answer: int
-    top_removal_changed: bool
-    random_removal_changed: bool
-    top_removal_delta: float
-    random_removal_delta: float
-    random_removal_does_less: bool
-
-
-@dataclass(frozen=True)
-class ConceptAuditReport:
-    selected_concept_ids: tuple[int, ...]
-    selected_concept_names: tuple[str, ...]
-    explanation: str
-    names_expected_cluster: bool
-
-
-@dataclass(frozen=True)
-class DecoderTrainingReport:
-    final_loss: float
-    train_accuracy: float
-    steps: int
-    seed: int
-
-
-@dataclass(frozen=True)
-class PlantedPCDWorld:
-    train_activations: t.Tensor
-    heldout_activations: t.Tensor
-    train_true_concepts: t.Tensor
-    heldout_true_concepts: t.Tensor
-    concept_directions: t.Tensor
-    train_template_ids: t.Tensor
-    heldout_template_ids: t.Tensor
-    question_texts: tuple[str, ...]
-    concept_names: tuple[str, ...]
-    train_prompts: tuple[str, ...]
-    heldout_prompts: tuple[str, ...]
-
-
-@dataclass(frozen=True)
-class PCDBaselineSweepReport:
-    pcd_accuracy: float
-    question_agnostic_probe_accuracy: float
-    text_template_shortcut_accuracy: float
-    shuffled_question_accuracy: float
-    random_label_accuracy: float
-    single_concept_accuracy: float
-    dense_noninteraction_accuracy: float
-    best_control_accuracy: float
-    pcd_margin_over_best_control: float
-    passes_controls: bool
-
-
-@dataclass(frozen=True)
-class TargetedConceptRemovalReport:
-    row_index: int
-    prompt: str
-    question: str
-    target_concept: str
-    active_control_concept: str
-    original_answer: int
-    target_removed_answer: int
-    active_control_removed_answer: int
-    target_logit_delta: float
-    active_control_logit_delta: float
-    target_removal_changed: bool
-    active_control_changed: bool
-    active_control_does_less: bool
-
-
-def _prediction_accuracy(logits: t.Tensor, labels: t.Tensor) -> float:
-    """Return exact top-1 accuracy for answer logits."""
-
-    if logits.ndim < 2:
-        raise ValueError("logits must have shape (..., classes).")
-    if logits.shape[:-1] != labels.shape:
-        raise ValueError("logits prefix shape must match labels.")
-    return logits.argmax(dim=-1).eq(labels).float().mean().item()
-
-
-def default_pcd_questions() -> tuple[str, ...]:
-    """Return the standard mini PCD behavioral question bank."""
-
-    return (
-        "Will the model answer Paris?",
-        "Will the model refuse?",
-        "Will the next token be a number?",
-        "Is the hidden variable even?",
-    )
-
-
-def build_pcd_question_batch(
-    activations: t.Tensor,
-    question_ids: t.Tensor,
-    answer_ids: t.Tensor,
-    question_texts: tuple[str, ...] | None = None,
-) -> PCDQuestionBatch:
-    """Bundle activations with question ids, binary answers, and question text."""
-
-    if activations.ndim != 2:
-        raise ValueError("activations must have shape (examples, d_model).")
-    if activations.shape[0] == 0:
-        raise ValueError("activations must contain at least one example.")
-    expected_shape = (activations.shape[0],)
-    if question_ids.shape != expected_shape:
-        raise ValueError("question_ids must have shape (examples,).")
-    if answer_ids.shape != expected_shape:
-        raise ValueError("answer_ids must have shape (examples,).")
-    if question_texts is None:
-        question_texts = default_pcd_questions()
-    if not question_texts:
-        raise ValueError("question_texts must be nonempty.")
-    if int(question_ids.min().item()) < 0 or int(question_ids.max().item()) >= len(question_texts):
-        raise ValueError("question_ids must index question_texts.")
-    return PCDQuestionBatch(
-        activations=activations,
-        question_ids=question_ids.long(),
-        answer_ids=answer_ids.long(),
-        question_texts=question_texts,
-    )
-
-
-def sparse_concept_encode(
-    activations: t.Tensor,
-    concept_directions: t.Tensor,
-    *,
-    bias: t.Tensor | None = None,
-    top_k: int | None = None,
-    threshold: float = 0.0,
-) -> t.Tensor:
-    """Encode activations into sparse nonnegative concept activations."""
-
-    if activations.ndim != 2 or concept_directions.ndim != 2:
-        raise ValueError("activations and concept_directions must be rank-2 tensors.")
-    if activations.shape[0] == 0 or concept_directions.shape[1] == 0:
-        raise ValueError("activations and concept_directions must be nonempty.")
-    if activations.shape[-1] != concept_directions.shape[0]:
-        raise ValueError("activation dimension must match concept directions.")
-    if threshold < 0:
-        raise ValueError("threshold must be non-negative.")
-    raw_scores = activations.float() @ concept_directions.float()
-    if bias is not None:
-        if bias.shape != (concept_directions.shape[1],):
-            raise ValueError("bias must have shape (n_concepts,).")
-        raw_scores = raw_scores + bias.to(raw_scores.device)
-    concepts = F.relu(raw_scores)
-    if threshold > 0:
-        concepts = concepts.where(concepts >= threshold, t.zeros_like(concepts))
-    if top_k is not None:
-        if top_k <= 0:
-            raise ValueError("top_k must be positive.")
-        top_k = min(top_k, concepts.shape[-1])
-        values, indices = concepts.topk(k=top_k, dim=-1)
-        concepts = t.zeros_like(concepts).scatter(dim=-1, index=indices, src=values)
-    return concepts
-
-
-def question_conditioned_concept_features(
-    concepts: t.Tensor,
-    question_ids: t.Tensor,
-    question_count: int,
-) -> t.Tensor:
-    """Create question-specific concept slots for a sparse PCD decoder."""
-
-    if concepts.ndim != 2:
-        raise ValueError("concepts must have shape (examples, n_concepts).")
-    if concepts.shape[0] == 0 or concepts.shape[1] == 0:
-        raise ValueError("concepts must be nonempty.")
-    if question_ids.shape != (concepts.shape[0],):
-        raise ValueError("question_ids must have shape (examples,).")
-    if question_count <= 0:
-        raise ValueError("question_count must be positive.")
-    if int(question_ids.min().item()) < 0 or int(question_ids.max().item()) >= question_count:
-        raise ValueError("question_ids must be in [0, question_count).")
-
-    n_examples, n_concepts = concepts.shape
-    features = concepts.new_zeros(n_examples, question_count * n_concepts)
-    offsets = question_ids.long() * n_concepts
-    concept_offsets = t.arange(n_concepts, device=concepts.device)
-    feature_indices = offsets[:, None] + concept_offsets[None, :]
-    return features.scatter(dim=1, index=feature_indices, src=concepts.float())
-
-
-def concept_sparsity_report(
-    concepts: t.Tensor,
-    *,
-    active_threshold: float = 0.0,
-    max_density: float = 0.3,
-) -> ConceptSparsityReport:
-    """Report concept density and mean active concept count."""
-
-    if concepts.ndim != 2:
-        raise ValueError("concepts must have shape (examples, n_concepts).")
-    if concepts.shape[0] == 0 or concepts.shape[1] == 0:
-        raise ValueError("concepts must be nonempty.")
-    if active_threshold < 0:
-        raise ValueError("active_threshold must be non-negative.")
-    if not 0.0 <= max_density <= 1.0:
-        raise ValueError("max_density must be between 0 and 1.")
-    active = concepts.abs() > active_threshold
-    mean_l0 = active.sum(dim=-1).float().mean().item()
-    density = active.float().mean().item()
-    return ConceptSparsityReport(
-        mean_l0=mean_l0,
-        density=density,
-        passes_sparsity=density <= max_density,
-    )
-
-
-def question_conditioned_decoder_logits(
-    concepts: t.Tensor,
-    question_embeddings: t.Tensor,
-    decoder_weight: t.Tensor,
-    *,
-    decoder_bias: t.Tensor | None = None,
-) -> t.Tensor:
-    """Decode sparse concepts and question embeddings into answer logits."""
-
-    if concepts.ndim != 2 or question_embeddings.ndim != 2:
-        raise ValueError("concepts and question_embeddings must be rank-2 tensors.")
-    if concepts.shape[0] != question_embeddings.shape[0]:
-        raise ValueError("concept and question batches must have the same size.")
-    if decoder_weight.ndim != 2:
-        raise ValueError("decoder_weight must be rank-2.")
-    decoder_input = t.cat([concepts.float(), question_embeddings.float()], dim=-1)
-    if decoder_input.shape[-1] != decoder_weight.shape[0]:
-        raise ValueError("decoder_weight rows must match concatenated input width.")
-    logits = decoder_input @ decoder_weight.float()
-    if decoder_bias is not None:
-        if decoder_bias.shape != (decoder_weight.shape[1],):
-            raise ValueError("decoder_bias must have shape (n_answers,).")
-        logits = logits + decoder_bias.to(logits.device)
-    return logits
-
-
-def train_question_conditioned_decoder(
-    concepts: t.Tensor,
-    question_embeddings: t.Tensor,
-    answer_ids: t.Tensor,
-    *,
-    steps: int = 400,
-    lr: float = 0.08,
-    seed: int = 0,
-    weight_decay: float = 0.0,
-) -> tuple[t.Tensor, t.Tensor, DecoderTrainingReport]:
-    """Fit a small question-conditioned linear decoder with cross-entropy."""
-
-    if concepts.ndim != 2 or question_embeddings.ndim != 2:
-        raise ValueError("concepts and question_embeddings must be rank-2 tensors.")
-    if concepts.shape[0] == 0:
-        raise ValueError("training batches must be nonempty.")
-    if concepts.shape[0] != question_embeddings.shape[0]:
-        raise ValueError("concepts and question_embeddings must have the same batch size.")
-    if answer_ids.shape != (concepts.shape[0],):
-        raise ValueError("answer_ids must have shape (examples,).")
-    if steps <= 0:
-        raise ValueError("steps must be positive.")
-    if lr <= 0:
-        raise ValueError("lr must be positive.")
-
-    t.manual_seed(seed)
-    if concepts.device.type == "cuda":
-        t.cuda.manual_seed_all(seed)
-    decoder_width = concepts.shape[1] + question_embeddings.shape[1]
-    decoder_weight = (0.01 * t.randn(decoder_width, 2, device=concepts.device)).requires_grad_()
-    decoder_bias = t.zeros(2, device=concepts.device, requires_grad=True)
-    optimizer = t.optim.Adam(
-        [decoder_weight, decoder_bias],
-        lr=lr,
-        weight_decay=weight_decay,
-    )
-    answer_ids = answer_ids.long()
-    final_loss = float("nan")
-    for _step in range(steps):
-        optimizer.zero_grad(set_to_none=True)
-        logits = question_conditioned_decoder_logits(
-            concepts,
-            question_embeddings,
-            decoder_weight,
-            decoder_bias=decoder_bias,
-        )
-        loss = F.cross_entropy(logits, answer_ids)
-        loss.backward()
-        optimizer.step()
-        final_loss = float(loss.detach().item())
-
-    with t.no_grad():
-        train_logits = question_conditioned_decoder_logits(
-            concepts,
-            question_embeddings,
-            decoder_weight,
-            decoder_bias=decoder_bias,
-        )
-        train_accuracy = _prediction_accuracy(train_logits, answer_ids)
-    report = DecoderTrainingReport(
-        final_loss=final_loss,
-        train_accuracy=train_accuracy,
-        steps=steps,
-        seed=seed,
-    )
-    return decoder_weight.detach(), decoder_bias.detach(), report
-
-
-def pcd_comparison_report(
-    pcd_logits: t.Tensor,
-    probe_logits: t.Tensor,
-    sae_classifier_logits: t.Tensor,
-    activation_oracle_logits: t.Tensor,
-    answer_ids: t.Tensor,
-) -> PCDComparisonReport:
-    """Compare a PCD against probe, SAE-classifier, and oracle-style baselines."""
-
-    pcd_accuracy = _prediction_accuracy(pcd_logits, answer_ids)
-    probe_accuracy = _prediction_accuracy(probe_logits, answer_ids)
-    sae_accuracy = _prediction_accuracy(sae_classifier_logits, answer_ids)
-    oracle_accuracy = _prediction_accuracy(activation_oracle_logits, answer_ids)
-    best_baseline = max(probe_accuracy, sae_accuracy, oracle_accuracy)
-    return PCDComparisonReport(
-        pcd_accuracy=pcd_accuracy,
-        probe_accuracy=probe_accuracy,
-        sae_classifier_accuracy=sae_accuracy,
-        activation_oracle_accuracy=oracle_accuracy,
-        best_baseline_accuracy=best_baseline,
-        beats_probe=pcd_accuracy > probe_accuracy,
-        beats_best_baseline=pcd_accuracy > best_baseline,
-    )
-
-
-def concept_stability_report(
-    concept_scores_by_seed: list[t.Tensor],
-    *,
-    top_k: int = 3,
-    min_jaccard: float = 0.5,
-) -> ConceptStabilityReport:
-    """Check whether top concepts are stable across random seeds."""
-
-    if len(concept_scores_by_seed) == 0:
-        raise ValueError("concept_scores_by_seed must be nonempty.")
-    if top_k <= 0:
-        raise ValueError("top_k must be positive.")
-    if not 0.0 <= min_jaccard <= 1.0:
-        raise ValueError("min_jaccard must be between 0 and 1.")
-
-    top_concepts: list[tuple[int, ...]] = []
-    for scores in concept_scores_by_seed:
-        flat_scores = scores.flatten().float()
-        k = min(top_k, flat_scores.numel())
-        indices = flat_scores.topk(k=k).indices.tolist()
-        top_concepts.append(tuple(int(index) for index in indices))
-
-    overlaps = []
-    for i, left in enumerate(top_concepts):
-        for right in top_concepts[i + 1 :]:
-            left_set = set(left)
-            right_set = set(right)
-            overlaps.append(len(left_set & right_set) / len(left_set | right_set))
-    mean_jaccard = sum(overlaps) / len(overlaps) if overlaps else 1.0
-    return ConceptStabilityReport(
-        top_concepts_by_seed=tuple(top_concepts),
-        mean_pairwise_jaccard=mean_jaccard,
-        stable=mean_jaccard >= min_jaccard,
-    )
-
-
-def concept_removal_report(
-    original_logits: t.Tensor,
-    top_removed_logits: t.Tensor,
-    random_removed_logits: t.Tensor,
-    *,
-    target_answer_id: int | None = None,
-) -> ConceptRemovalReport:
-    """Check that top removal beats a lower-impact comparison removal."""
-
-    if original_logits.ndim != 1:
-        raise ValueError("original_logits must be rank-1.")
-    if top_removed_logits.shape != original_logits.shape:
-        raise ValueError("top_removed_logits must match original_logits.")
-    if random_removed_logits.shape != original_logits.shape:
-        raise ValueError("random_removed_logits must match original_logits.")
-    if target_answer_id is None:
-        target_answer_id = int(original_logits.argmax().item())
-    if not 0 <= target_answer_id < original_logits.shape[0]:
-        raise ValueError("target_answer_id is out of range.")
-
-    original_answer = int(original_logits.argmax().item())
-    top_removed_answer = int(top_removed_logits.argmax().item())
-    random_removed_answer = int(random_removed_logits.argmax().item())
-    top_delta = original_logits[target_answer_id] - top_removed_logits[target_answer_id]
-    random_delta = original_logits[target_answer_id] - random_removed_logits[target_answer_id]
-    return ConceptRemovalReport(
-        original_answer=original_answer,
-        top_removed_answer=top_removed_answer,
-        random_removed_answer=random_removed_answer,
-        top_removal_changed=original_answer != top_removed_answer,
-        random_removal_changed=original_answer != random_removed_answer,
-        top_removal_delta=float(top_delta.item()),
-        random_removal_delta=float(random_delta.item()),
-        random_removal_does_less=abs(random_delta.item()) < abs(top_delta.item()),
-    )
-
-
-def concept_audit_report(
-    concept_scores: t.Tensor,
-    concept_names: list[str],
-    expected_cluster_terms: list[str],
-    *,
-    top_k: int = 2,
-) -> ConceptAuditReport:
-    """Select top concepts and check whether their names match an expected cluster."""
-
-    if top_k <= 0:
-        raise ValueError("top_k must be positive.")
-    if concept_scores.numel() == 0:
-        raise ValueError("concept_scores must be nonempty.")
-    if concept_scores.numel() != len(concept_names):
-        raise ValueError("concept_scores and concept_names must align.")
-    if len(expected_cluster_terms) == 0:
-        raise ValueError("expected_cluster_terms must be nonempty.")
-    flat_scores = concept_scores.flatten().float()
-    k = min(top_k, flat_scores.numel())
-    selected_ids = tuple(int(index) for index in flat_scores.topk(k=k).indices.tolist())
-    selected_names = tuple(concept_names[index] for index in selected_ids)
-    normalized_terms = [term.lower() for term in expected_cluster_terms]
-    matched = any(
-        term in name.lower()
-        for name in selected_names
-        for term in normalized_terms
-    )
-    explanation = "Top concepts: " + ", ".join(selected_names)
-    return ConceptAuditReport(
-        selected_concept_ids=selected_ids,
-        selected_concept_names=selected_names,
-        explanation=explanation,
-        names_expected_cluster=matched,
-    )
-
-
-def _dense_orthonormal_columns(
-    *,
-    d_model: int,
-    columns: int,
-    seed: int,
-) -> t.Tensor:
-    if d_model < columns:
-        raise ValueError("d_model must be at least as large as the requested column count.")
-    generator = t.Generator(device="cpu").manual_seed(seed)
-    matrix = t.randn(d_model, d_model, generator=generator)
-    q, _r = t.linalg.qr(matrix)
-    return q[:, :columns].float()
-
-
-def make_planted_pcd_world(
-    *,
-    seed: int = 0,
-    d_model: int = 12,
-) -> PlantedPCDWorld:
-    """Create an exact sparse-concept world with dense-looking activations."""
-
-    question_count = len(PLANTED_PCD_QUESTIONS)
-    target_concept_count = len(PLANTED_QUESTION_TO_CONCEPT)
-    concept_count = len(PLANTED_CONCEPT_NAMES)
-    if d_model < concept_count + 2:
-        raise ValueError("d_model must leave room for planted concepts and null directions.")
-
-    rows = []
-    for index in range(2**target_concept_count):
-        rows.append([(index >> bit) & 1 for bit in range(target_concept_count)])
-    base_targets = t.tensor(rows, dtype=t.float32).repeat_interleave(2, dim=0)
-    replicate_ids = t.arange(base_targets.shape[0]) % 2
-
-    concept_basis = _dense_orthonormal_columns(
-        d_model=d_model,
-        columns=concept_count + 2,
-        seed=seed,
-    )
-    concept_directions = concept_basis[:, :concept_count]
-    null_directions = concept_basis[:, concept_count : concept_count + 2]
-
-    def build_split(split_name: str, offset: int) -> tuple[t.Tensor, t.Tensor, t.Tensor, tuple[str, ...]]:
-        template_ids = (replicate_ids + offset) % question_count
-        nuisance = t.stack(
-            [
-                replicate_ids.float(),
-                1.0 - replicate_ids.float(),
-            ],
-            dim=1,
-        )
-        concepts = t.cat([base_targets, nuisance], dim=1)
-        null_features = t.stack(
-            [
-                ((t.arange(base_targets.shape[0]) + offset) % 5).float() / 10.0,
-                ((t.arange(base_targets.shape[0]) * 2 + offset) % 7).float() / 10.0,
-            ],
-            dim=1,
-        )
-        activations = concepts @ concept_directions.T + 0.1 * null_features @ null_directions.T
-        prompts = tuple(
-            f"{split_name} latent card {i:02d} / template {int(template_id.item())}"
-            for i, template_id in enumerate(template_ids)
-        )
-        return activations.float(), concepts.float(), template_ids.long(), prompts
-
-    train_activations, train_concepts, train_templates, train_prompts = build_split(
-        "train",
-        offset=0,
-    )
-    heldout_activations, heldout_concepts, heldout_templates, heldout_prompts = build_split(
-        "heldout",
-        offset=1,
-    )
-
-    recovered_train = train_activations @ concept_directions
-    recovered_heldout = heldout_activations @ concept_directions
-    if not t.allclose(recovered_train, train_concepts, atol=1e-5, rtol=1e-5):
-        raise RuntimeError("planted train concepts are not exactly recoverable.")
-    if not t.allclose(recovered_heldout, heldout_concepts, atol=1e-5, rtol=1e-5):
-        raise RuntimeError("planted held-out concepts are not exactly recoverable.")
-
-    return PlantedPCDWorld(
-        train_activations=train_activations,
-        heldout_activations=heldout_activations,
-        train_true_concepts=train_concepts,
-        heldout_true_concepts=heldout_concepts,
-        concept_directions=concept_directions,
-        train_template_ids=train_templates,
-        heldout_template_ids=heldout_templates,
-        question_texts=PLANTED_PCD_QUESTIONS,
-        concept_names=PLANTED_CONCEPT_NAMES,
-        train_prompts=train_prompts,
-        heldout_prompts=heldout_prompts,
-    )
-
-
-def build_planted_question_rows(
-    concepts: t.Tensor,
-    *,
-    question_to_concept: tuple[int, ...] = PLANTED_QUESTION_TO_CONCEPT,
-) -> tuple[t.Tensor, t.Tensor, t.Tensor, t.Tensor]:
-    """Repeat concept rows under each question and label with the planted answer."""
-
-    if concepts.ndim != 2:
-        raise ValueError("concepts must have shape (examples, n_concepts).")
-    if concepts.shape[0] == 0 or concepts.shape[1] == 0:
-        raise ValueError("concepts must be nonempty.")
-    if len(question_to_concept) == 0:
-        raise ValueError("question_to_concept must be nonempty.")
-    if min(question_to_concept) < 0 or max(question_to_concept) >= concepts.shape[1]:
-        raise ValueError("question_to_concept must index concept columns.")
-
-    question_count = len(question_to_concept)
-    row_concepts = concepts.repeat_interleave(question_count, dim=0).float()
-    question_ids = t.arange(question_count, device=concepts.device).repeat(concepts.shape[0])
-    question_embeddings = t.eye(question_count, device=concepts.device).repeat(concepts.shape[0], 1)
-    answer_matrix = concepts[:, list(question_to_concept)].round().long().clamp(0, 1)
-    answer_ids = answer_matrix.reshape(-1)
-    return row_concepts, question_embeddings, question_ids.long(), answer_ids.long()
-
-
-def _fit_eval_decoder(
-    train_features: t.Tensor,
-    train_questions: t.Tensor,
-    train_answers: t.Tensor,
-    heldout_features: t.Tensor,
-    heldout_questions: t.Tensor,
-    *,
-    steps: int,
-    lr: float,
-    seed: int,
-    weight_decay: float = 0.0,
-) -> tuple[t.Tensor, t.Tensor, DecoderTrainingReport, t.Tensor]:
-    decoder_weight, decoder_bias, report = train_question_conditioned_decoder(
-        train_features,
-        train_questions,
-        train_answers,
-        steps=steps,
-        lr=lr,
-        seed=seed,
-        weight_decay=weight_decay,
-    )
-    heldout_logits = question_conditioned_decoder_logits(
-        heldout_features,
-        heldout_questions,
-        decoder_weight,
-        decoder_bias=decoder_bias,
-    )
-    return decoder_weight, decoder_bias, report, heldout_logits
-
-
-def _template_features(template_ids: t.Tensor, *, question_count: int) -> t.Tensor:
-    if template_ids.ndim != 1:
-        raise ValueError("template_ids must have shape (examples,).")
-    repeated_templates = template_ids.long().repeat_interleave(question_count)
-    return F.one_hot(repeated_templates, num_classes=question_count).float()
-
-
-def concept_question_weight_heatmap(
-    decoder_weight: t.Tensor,
-    *,
-    question_count: int,
-    concept_count: int,
-) -> t.Tensor:
-    """Return class-1 minus class-0 interaction weights as [question, concept]."""
-
-    if decoder_weight.ndim != 2 or decoder_weight.shape[1] < 2:
-        raise ValueError("decoder_weight must have shape (features, at least two classes).")
-    interaction_width = question_count * concept_count
-    if decoder_weight.shape[0] < interaction_width:
-        raise ValueError("decoder_weight is too narrow for the requested interaction map.")
-    weights = decoder_weight[:interaction_width, 1] - decoder_weight[:interaction_width, 0]
-    return weights.reshape(question_count, concept_count)
-
-
-def pcd_baseline_sweep_report(
-    *,
-    pcd_logits: t.Tensor,
-    question_agnostic_probe_logits: t.Tensor,
-    text_template_shortcut_logits: t.Tensor,
-    shuffled_question_logits: t.Tensor,
-    random_label_logits: t.Tensor,
-    single_concept_logits: t.Tensor,
-    dense_noninteraction_logits: t.Tensor,
-    answer_ids: t.Tensor,
-    min_margin: float = 0.20,
-) -> PCDBaselineSweepReport:
-    """Score the PCD and every control from independent logits."""
-
-    pcd_accuracy = _prediction_accuracy(pcd_logits, answer_ids)
-    probe_accuracy = _prediction_accuracy(question_agnostic_probe_logits, answer_ids)
-    text_accuracy = _prediction_accuracy(text_template_shortcut_logits, answer_ids)
-    shuffled_accuracy = _prediction_accuracy(shuffled_question_logits, answer_ids)
-    random_label_accuracy = _prediction_accuracy(random_label_logits, answer_ids)
-    single_concept_accuracy = _prediction_accuracy(single_concept_logits, answer_ids)
-    dense_accuracy = _prediction_accuracy(dense_noninteraction_logits, answer_ids)
-    best_control = max(
-        probe_accuracy,
-        text_accuracy,
-        shuffled_accuracy,
-        random_label_accuracy,
-        single_concept_accuracy,
-        dense_accuracy,
-    )
-    margin = pcd_accuracy - best_control
-    return PCDBaselineSweepReport(
-        pcd_accuracy=pcd_accuracy,
-        question_agnostic_probe_accuracy=probe_accuracy,
-        text_template_shortcut_accuracy=text_accuracy,
-        shuffled_question_accuracy=shuffled_accuracy,
-        random_label_accuracy=random_label_accuracy,
-        single_concept_accuracy=single_concept_accuracy,
-        dense_noninteraction_accuracy=dense_accuracy,
-        best_control_accuracy=best_control,
-        pcd_margin_over_best_control=margin,
-        passes_controls=pcd_accuracy == 1.0 and margin >= min_margin,
-    )
-
-
-def targeted_concept_removal_report(
-    row_concepts: t.Tensor,
-    question_ids: t.Tensor,
-    question_embeddings: t.Tensor,
-    decoder_weight: t.Tensor,
-    decoder_bias: t.Tensor,
-    *,
-    prompts: tuple[str, ...],
-    question_texts: tuple[str, ...],
-    concept_names: tuple[str, ...],
-    example_index: int,
-    question_id: int,
-    target_concept_id: int,
-    active_control_concept_id: int,
-) -> TargetedConceptRemovalReport:
-    """Remove the named concept and compare against a matched active control concept."""
-
-    question_count = len(question_texts)
-    n_concepts = len(concept_names)
-    row_index = example_index * question_count + question_id
-    if row_concepts.ndim != 2:
-        raise ValueError("row_concepts must have shape (rows, concepts).")
-    if row_index < 0 or row_index >= row_concepts.shape[0]:
-        raise ValueError("requested removal row is out of range.")
-    if row_concepts.shape[1] != n_concepts:
-        raise ValueError("row_concepts width must match concept_names.")
-    if not 0 <= target_concept_id < n_concepts:
-        raise ValueError("target_concept_id is out of range.")
-    if not 0 <= active_control_concept_id < n_concepts:
-        raise ValueError("active_control_concept_id is out of range.")
-    if row_concepts[row_index, target_concept_id].item() <= 0:
-        raise ValueError("target concept must be active in the selected row.")
-    if row_concepts[row_index, active_control_concept_id].item() <= 0:
-        raise ValueError("active control concept must be active in the selected row.")
-
-    def logits_after_removal(concept_id: int | None) -> t.Tensor:
-        patched = row_concepts[row_index : row_index + 1].clone()
-        if concept_id is not None:
-            patched[0, concept_id] = 0.0
-        features = question_conditioned_concept_features(
-            patched,
-            question_ids[row_index : row_index + 1],
-            question_count,
-        )
-        return question_conditioned_decoder_logits(
-            features,
-            question_embeddings[row_index : row_index + 1],
-            decoder_weight,
-            decoder_bias=decoder_bias,
-        )[0]
-
-    original_logits = logits_after_removal(None)
-    target_removed_logits = logits_after_removal(target_concept_id)
-    active_removed_logits = logits_after_removal(active_control_concept_id)
-    original_answer = int(original_logits.argmax().item())
-    target_removed_answer = int(target_removed_logits.argmax().item())
-    active_removed_answer = int(active_removed_logits.argmax().item())
-    target_delta = original_logits[original_answer] - target_removed_logits[original_answer]
-    active_delta = original_logits[original_answer] - active_removed_logits[original_answer]
-    return TargetedConceptRemovalReport(
-        row_index=row_index,
-        prompt=prompts[example_index],
-        question=question_texts[question_id],
-        target_concept=concept_names[target_concept_id],
-        active_control_concept=concept_names[active_control_concept_id],
-        original_answer=original_answer,
-        target_removed_answer=target_removed_answer,
-        active_control_removed_answer=active_removed_answer,
-        target_logit_delta=float(target_delta.item()),
-        active_control_logit_delta=float(active_delta.item()),
-        target_removal_changed=original_answer != target_removed_answer,
-        active_control_changed=original_answer != active_removed_answer,
-        active_control_does_less=abs(float(active_delta.item())) < abs(float(target_delta.item())),
-    )
-
-
-def run_planted_pcd_experiment(
-    *,
-    seed: int = 0,
-    steps: int = 450,
-    lr: float = 0.08,
-) -> dict:
-    """Train/evaluate PCD and controls on the exact planted sparse-concept world."""
-
-    world = make_planted_pcd_world(seed=seed)
-    train_encoded = sparse_concept_encode(
-        world.train_activations,
-        world.concept_directions,
-        threshold=0.5,
-    )
-    heldout_encoded = sparse_concept_encode(
-        world.heldout_activations,
-        world.concept_directions,
-        threshold=0.5,
-    )
-    train_recovery_error = float((train_encoded - world.train_true_concepts).abs().max().item())
-    heldout_recovery_error = float((heldout_encoded - world.heldout_true_concepts).abs().max().item())
-
-    train_rows, train_questions, train_question_ids, train_answers = build_planted_question_rows(
-        train_encoded,
-    )
-    heldout_rows, heldout_questions, heldout_question_ids, heldout_answers = (
-        build_planted_question_rows(heldout_encoded)
-    )
-    question_count = len(world.question_texts)
-    concept_count = len(world.concept_names)
-
-    train_features = question_conditioned_concept_features(
-        train_rows,
-        train_question_ids,
-        question_count,
-    )
-    heldout_features = question_conditioned_concept_features(
-        heldout_rows,
-        heldout_question_ids,
-        question_count,
-    )
-    decoder_weight, decoder_bias, pcd_training, pcd_logits = _fit_eval_decoder(
-        train_features,
-        train_questions,
-        train_answers,
-        heldout_features,
-        heldout_questions,
-        steps=steps,
-        lr=lr,
-        seed=seed,
-    )
-
-    zero_train_questions = t.zeros(train_rows.shape[0], 0)
-    zero_heldout_questions = t.zeros(heldout_rows.shape[0], 0)
-    _probe_weight, _probe_bias, probe_training, probe_logits = _fit_eval_decoder(
-        train_rows,
-        zero_train_questions,
-        train_answers,
-        heldout_rows,
-        zero_heldout_questions,
-        steps=steps,
-        lr=lr,
-        seed=seed + 1,
-    )
-
-    train_template_features = _template_features(world.train_template_ids, question_count=question_count)
-    heldout_template_features = _template_features(world.heldout_template_ids, question_count=question_count)
-    _text_weight, _text_bias, text_training, text_logits = _fit_eval_decoder(
-        train_template_features,
-        train_questions,
-        train_answers,
-        heldout_template_features,
-        heldout_questions,
-        steps=steps,
-        lr=lr,
-        seed=seed + 2,
-    )
-
-    shuffled_question_ids = heldout_question_ids.roll(shifts=1, dims=0)
-    shuffled_questions = heldout_questions.roll(shifts=1, dims=0)
-    shuffled_features = question_conditioned_concept_features(
-        heldout_rows,
-        shuffled_question_ids,
-        question_count,
-    )
-    shuffled_logits = question_conditioned_decoder_logits(
-        shuffled_features,
-        shuffled_questions,
-        decoder_weight,
-        decoder_bias=decoder_bias,
-    )
-
-    generator = t.Generator(device="cpu").manual_seed(seed + 3)
-    random_train_answers = train_answers[t.randperm(train_answers.numel(), generator=generator)]
-    _rand_weight, _rand_bias, random_training, random_label_logits = _fit_eval_decoder(
-        train_features,
-        train_questions,
-        random_train_answers,
-        heldout_features,
-        heldout_questions,
-        steps=steps,
-        lr=lr,
-        seed=seed + 3,
-    )
-
-    single_train_features = question_conditioned_concept_features(
-        train_rows[:, :1],
-        train_question_ids,
-        question_count,
-    )
-    single_heldout_features = question_conditioned_concept_features(
-        heldout_rows[:, :1],
-        heldout_question_ids,
-        question_count,
-    )
-    _single_weight, _single_bias, single_training, single_logits = _fit_eval_decoder(
-        single_train_features,
-        train_questions,
-        train_answers,
-        single_heldout_features,
-        heldout_questions,
-        steps=steps,
-        lr=lr,
-        seed=seed + 4,
-    )
-
-    train_dense_rows = world.train_activations.repeat_interleave(question_count, dim=0)
-    heldout_dense_rows = world.heldout_activations.repeat_interleave(question_count, dim=0)
-    _dense_weight, _dense_bias, dense_training, dense_logits = _fit_eval_decoder(
-        train_dense_rows,
-        train_questions,
-        train_answers,
-        heldout_dense_rows,
-        heldout_questions,
-        steps=steps,
-        lr=lr,
-        seed=seed + 5,
-    )
-
-    baseline_report = pcd_baseline_sweep_report(
-        pcd_logits=pcd_logits,
-        question_agnostic_probe_logits=probe_logits,
-        text_template_shortcut_logits=text_logits,
-        shuffled_question_logits=shuffled_logits,
-        random_label_logits=random_label_logits,
-        single_concept_logits=single_logits,
-        dense_noninteraction_logits=dense_logits,
-        answer_ids=heldout_answers,
-    )
-    heatmap = concept_question_weight_heatmap(
-        decoder_weight,
-        question_count=question_count,
-        concept_count=concept_count,
-    )
-    removal_example_index = int(
-        (heldout_encoded[:, : len(PLANTED_QUESTION_TO_CONCEPT)] > 0).all(dim=1).nonzero()[0].item()
-    )
-    removal = targeted_concept_removal_report(
-        heldout_rows,
-        heldout_question_ids,
-        heldout_questions,
-        decoder_weight,
-        decoder_bias,
-        prompts=world.heldout_prompts,
-        question_texts=world.question_texts,
-        concept_names=world.concept_names,
-        example_index=removal_example_index,
-        question_id=0,
-        target_concept_id=0,
-        active_control_concept_id=1,
-    )
-    baseline_names = (
-        "PCD",
-        "question-agnostic probe",
-        "text/template shortcut",
-        "shuffled question",
-        "random label",
-        "single concept",
-        "dense non-interaction",
-    )
-    baseline_accuracies = (
-        baseline_report.pcd_accuracy,
-        baseline_report.question_agnostic_probe_accuracy,
-        baseline_report.text_template_shortcut_accuracy,
-        baseline_report.shuffled_question_accuracy,
-        baseline_report.random_label_accuracy,
-        baseline_report.single_concept_accuracy,
-        baseline_report.dense_noninteraction_accuracy,
-    )
-    prediction_rows = planted_prediction_rows(
-        world,
-        heldout_answers=heldout_answers,
-        pcd_logits=pcd_logits,
-        probe_logits=probe_logits,
-        text_template_logits=text_logits,
-        dense_noninteraction_logits=dense_logits,
-    )
-    return {
-        "world": world,
-        "train_encoded": train_encoded,
-        "heldout_encoded": heldout_encoded,
-        "train_recovery_error": train_recovery_error,
-        "heldout_recovery_error": heldout_recovery_error,
-        "train_rows": train_rows,
-        "heldout_rows": heldout_rows,
-        "train_question_ids": train_question_ids,
-        "heldout_question_ids": heldout_question_ids,
-        "train_questions": train_questions,
-        "heldout_questions": heldout_questions,
-        "train_answers": train_answers,
-        "heldout_answers": heldout_answers,
-        "decoder_weight": decoder_weight,
-        "decoder_bias": decoder_bias,
-        "pcd_training": pcd_training,
-        "probe_training": probe_training,
-        "text_training": text_training,
-        "random_training": random_training,
-        "single_training": single_training,
-        "dense_training": dense_training,
-        "pcd_logits": pcd_logits,
-        "probe_logits": probe_logits,
-        "text_template_logits": text_logits,
-        "shuffled_question_logits": shuffled_logits,
-        "random_label_logits": random_label_logits,
-        "single_concept_logits": single_logits,
-        "dense_noninteraction_logits": dense_logits,
-        "baseline_report": baseline_report,
-        "baseline_names": baseline_names,
-        "baseline_accuracies": baseline_accuracies,
-        "heatmap": heatmap,
-        "removal_report": removal,
-        "prediction_rows": prediction_rows,
-    }
-
-
-def planted_prediction_rows(
-    world: PlantedPCDWorld,
-    *,
-    heldout_answers: t.Tensor,
-    pcd_logits: t.Tensor,
-    probe_logits: t.Tensor,
-    text_template_logits: t.Tensor,
-    dense_noninteraction_logits: t.Tensor,
-) -> list[dict[str, object]]:
-    """Create a learner-facing held-out table for the planted world."""
-
-    question_count = len(world.question_texts)
-    rows: list[dict[str, object]] = []
-    pcd_preds = pcd_logits.argmax(dim=-1)
-    probe_preds = probe_logits.argmax(dim=-1)
-    text_preds = text_template_logits.argmax(dim=-1)
-    dense_preds = dense_noninteraction_logits.argmax(dim=-1)
-    for row_index, answer in enumerate(heldout_answers.tolist()):
-        example_index = row_index // question_count
-        question_id = row_index % question_count
-        rows.append(
-            {
-                "prompt": world.heldout_prompts[example_index],
-                "question": world.question_texts[question_id],
-                "answer": int(answer),
-                "pcd_pred": int(pcd_preds[row_index].item()),
-                "probe_pred": int(probe_preds[row_index].item()),
-                "text_template_pred": int(text_preds[row_index].item()),
-                "dense_noninteraction_pred": int(dense_preds[row_index].item()),
-            }
-        )
-    return rows
-
-
-def gelu1l_prompt_prediction_table(report: dict) -> list[dict[str, object]]:
-    """Extract direct gelu-1l rows when present; otherwise make an honest aggregate table."""
-
-    metrics = report.get("metrics", {}).get("gpu_test", report)
-    direct_rows = metrics.get("eval_prediction_rows")
-    if direct_rows is not None:
-        return list(direct_rows)
-
-    required = {
-        "pcd_accuracy",
-        "pcd_row_count",
-        "eval_example_count",
-        "question_count",
-        "preflight_passed",
-    }
-    missing = sorted(key for key in required if key not in metrics)
-    if missing:
-        raise ValueError(f"report is missing required aggregate fields: {missing}")
-    if metrics["eval_example_count"] != len(TL_EVAL_EXAMPLES):
-        raise ValueError("aggregate report eval count does not match the pinned prompt list.")
-    if metrics["question_count"] != len(TL_PCD_QUESTIONS):
-        raise ValueError("aggregate report question count does not match the pinned question bank.")
-    if metrics["pcd_row_count"] != len(TL_EVAL_EXAMPLES) * len(TL_PCD_QUESTIONS):
-        raise ValueError("aggregate report row count does not match prompts times questions.")
-    if metrics["pcd_accuracy"] != 1.0:
-        raise ValueError("cannot infer per-row PCD correctness unless aggregate PCD accuracy is 1.0.")
-
-    rows = []
-    for prompt_index, (prompt, label) in enumerate(TL_EVAL_EXAMPLES):
-        for question_id, question in enumerate(TL_PCD_QUESTIONS):
-            answer = int(
-                (question_id in (0, 2) and label == "surface")
-                or (question_id in (1, 3) and label == "motion")
-            )
-            rows.append(
-                {
-                    "prompt": prompt,
-                    "latent_label": label,
-                    "question": question,
-                    "answer": answer,
-                    "pcd_pred": answer,
-                    "source": "aggregate_report_pcd_accuracy_1.0_no_baseline_row_logits",
-                }
-            )
-    return rows
-
-
-def batch_smoke_test() -> dict:
-    activations = t.eye(4)
-    question_ids = t.tensor([0, 1, 2, 3])
-    answer_ids = t.tensor([1, 0, 1, 0])
-    batch = build_pcd_question_batch(activations, question_ids, answer_ids)
-    return {
-        "activation_shape": list(batch.activations.shape),
-        "num_questions": len(default_pcd_questions()),
-        "answer_ids": batch.answer_ids.tolist(),
-    }
-
-
-def sparse_encoding_smoke_test() -> dict:
-    activations = t.eye(3)
-    concept_directions = t.eye(3)
-    concepts = sparse_concept_encode(activations, concept_directions, top_k=1)
-    sparsity = concept_sparsity_report(concepts, max_density=0.34)
-    return {
-        "concepts": concepts.tolist(),
-        "sparsity": sparsity.__dict__,
-    }
-
-
-def decoder_smoke_test() -> list[list[float]]:
-    concepts = t.tensor([[1.0, 0.0], [0.0, 1.0]])
-    question_embeddings = t.tensor([[0.0, 1.0], [1.0, 0.0]])
-    decoder_weight = t.tensor(
-        [
-            [2.0, 0.0],
-            [0.0, 2.0],
-            [0.0, 1.0],
-            [1.0, 0.0],
-        ]
-    )
-    logits = question_conditioned_decoder_logits(
-        concepts,
-        question_embeddings,
-        decoder_weight,
-    )
-    return logits.tolist()
-
-
-def decoder_training_smoke_test() -> dict:
-    concepts = t.tensor([[2.0, 0.0], [0.0, 2.0]])
-    repeated_concepts = concepts.repeat_interleave(2, dim=0)
-    question_ids = t.tensor([0, 1, 0, 1])
-    question_embeddings = t.eye(2).repeat(2, 1)
-    answer_ids = t.tensor([1, 0, 0, 1])
-    conditioned = question_conditioned_concept_features(
-        repeated_concepts,
-        question_ids,
-        question_count=2,
-    )
-    decoder_weight, decoder_bias, report = train_question_conditioned_decoder(
-        conditioned,
-        question_embeddings,
-        answer_ids,
-        steps=250,
-        lr=0.1,
-        seed=0,
-    )
-    logits = question_conditioned_decoder_logits(
-        conditioned,
-        question_embeddings,
-        decoder_weight,
-        decoder_bias=decoder_bias,
-    )
-    return {
-        "conditioned_shape": list(conditioned.shape),
-        "train_accuracy": report.train_accuracy,
-        "final_loss": report.final_loss,
-        "predictions": logits.argmax(dim=-1).tolist(),
-        "answer_ids": answer_ids.tolist(),
-    }
-
-
-def comparison_smoke_test() -> dict:
-    answer_ids = t.tensor([0, 1, 0, 1])
-    pcd_logits = t.tensor([[2.0, 0.0], [0.0, 2.0], [2.0, 0.0], [0.0, 2.0]])
-    probe_logits = t.tensor([[2.0, 0.0], [2.0, 0.0], [2.0, 0.0], [2.0, 0.0]])
-    sae_logits = probe_logits.clone()
-    oracle_logits = t.tensor([[2.0, 0.0], [0.0, 2.0], [2.0, 0.0], [2.0, 0.0]])
-    return pcd_comparison_report(
-        pcd_logits,
-        probe_logits,
-        sae_logits,
-        oracle_logits,
-        answer_ids,
-    ).__dict__
-
-
-def stability_smoke_test() -> dict:
-    scores_by_seed = [
-        t.tensor([0.9, 0.8, 0.1, 0.0]),
-        t.tensor([0.8, 0.7, 0.2, 0.0]),
-        t.tensor([0.95, 0.85, 0.05, 0.0]),
-    ]
-    return concept_stability_report(scores_by_seed, top_k=2, min_jaccard=0.75).__dict__
-
-
-def removal_smoke_test() -> dict:
-    original_logits = t.tensor([3.0, 1.0])
-    top_removed_logits = t.tensor([0.0, 2.0])
-    random_removed_logits = t.tensor([2.5, 1.0])
-    return concept_removal_report(
-        original_logits,
-        top_removed_logits,
-        random_removed_logits,
-    ).__dict__
-
-
-def audit_smoke_test() -> dict:
-    concept_scores = t.tensor([0.1, 0.9, 0.8])
-    concept_names = ["syntax feature", "refusal feature", "safety refusal"]
-    return concept_audit_report(
-        concept_scores,
-        concept_names,
-        ["refusal"],
-        top_k=2,
-    ).__dict__
-
-
-def run_smoke_test(cpu: bool = True) -> dict:
-    _ = cpu
-    planted = run_planted_pcd_experiment(seed=0, steps=350, lr=0.08)
-    baseline_report = planted["baseline_report"]
-    removal_report = planted["removal_report"]
-    return {
-        "batch": batch_smoke_test(),
-        "sparse_encoding": sparse_encoding_smoke_test(),
-        "decoder": decoder_smoke_test(),
-        "decoder_training": decoder_training_smoke_test(),
-        "comparison": comparison_smoke_test(),
-        "stability": stability_smoke_test(),
-        "removal": removal_smoke_test(),
-        "audit": audit_smoke_test(),
-        "planted": {
-            "train_examples": len(planted["world"].train_prompts),
-            "heldout_examples": len(planted["world"].heldout_prompts),
-            "question_count": len(planted["world"].question_texts),
-            "concept_names": list(planted["world"].concept_names),
-            "train_recovery_error": planted["train_recovery_error"],
-            "heldout_recovery_error": planted["heldout_recovery_error"],
-            "heatmap_shape": list(planted["heatmap"].shape),
-            "heatmap": planted["heatmap"].tolist(),
-            "baselines": baseline_report.__dict__,
-            "baseline_names": list(planted["baseline_names"]),
-            "baseline_accuracies": list(planted["baseline_accuracies"]),
-            "removal": removal_report.__dict__,
-            "prediction_rows_preview": planted["prediction_rows"][:8],
-        },
-    }
-
-
-def _load_gelu1l_model_on_cuda():
-    os.environ.setdefault("BNB_CUDA_VERSION", TL_BNB_CUDA_OVERRIDE)
-    logging.getLogger("bitsandbytes.cextension").setLevel(logging.ERROR)
-    from transformer_lens import HookedTransformer
-
-    return HookedTransformer.from_pretrained(
-        TL_GELU1L_MODEL_NAME,
-        device="cuda",
-        dtype="float32",
-        revision=TL_GELU1L_REVISION,
-    )
-
-
-def _final_residual_and_logits(model, prompt: str) -> tuple[t.Tensor, t.Tensor]:
-    with t.inference_mode():
-        logits, cache = model.run_with_cache(
-            model.to_tokens(prompt),
-            names_filter=lambda name: name == TL_RESID_POST_HOOK,
-        )
-    return cache[TL_RESID_POST_HOOK][0, -1].detach().float(), logits[0, -1].detach()
-
-
-def _residual_direction(model) -> tuple[t.Tensor, int, int]:
-    positive_residual, positive_logits = _final_residual_and_logits(model, TL_POSITIVE_ANCHOR)
-    negative_residual, negative_logits = _final_residual_and_logits(model, TL_NEGATIVE_ANCHOR)
-    direction = positive_residual - negative_residual
-    direction = direction / direction.norm()
-    return direction, int(positive_logits.argmax().item()), int(negative_logits.argmax().item())
-
-
-def _collect_residuals(model, examples: list[tuple[str, str]]) -> tuple[list[str], list[str], t.Tensor]:
-    texts = [text for text, _ in examples]
-    labels = [label for _, label in examples]
-    residuals = [_final_residual_and_logits(model, text)[0] for text in texts]
-    return texts, labels, t.stack(residuals)
-
-
-def _concept_directions(
-    train_residuals: t.Tensor,
-    direction: t.Tensor,
-) -> tuple[t.Tensor, list[str], t.Tensor]:
-    mean_residual = train_residuals.mean(dim=0)
-    _, _, vh = t.linalg.svd(train_residuals - mean_residual, full_matrices=False)
-    pcs: list[t.Tensor] = []
-    for vector in vh:
-        orthogonal = vector.clone()
-        for component in [direction, *pcs]:
-            orthogonal = orthogonal - (orthogonal @ component) * component
-        norm = orthogonal.norm()
-        if norm > 1e-5:
-            pcs.append(orthogonal / norm)
-        if len(pcs) >= 3:
-            break
-    if len(pcs) < 3:
-        raise RuntimeError("could not build the required concept directions.")
-    directions = [direction, -direction]
-    for pc in pcs:
-        directions.extend([pc, -pc])
-    names = [
-        "surface_direction",
-        "motion_direction",
-        "pc1_positive",
-        "pc1_negative",
-        "pc2_positive",
-        "pc2_negative",
-        "pc3_positive",
-        "pc3_negative",
-    ]
-    return t.stack(directions, dim=1), names, mean_residual
-
-
-def _build_question_rows(
-    concepts: t.Tensor,
-    labels: list[str],
-) -> tuple[t.Tensor, t.Tensor, t.Tensor, t.Tensor]:
-    row_concepts = []
-    question_embeddings = []
-    question_ids = []
-    answer_ids = []
-    eye = t.eye(len(TL_PCD_QUESTIONS), device=concepts.device)
-    for row_index, label in enumerate(labels):
-        for question_id in range(len(TL_PCD_QUESTIONS)):
-            row_concepts.append(concepts[row_index])
-            question_embeddings.append(eye[question_id])
-            question_ids.append(question_id)
-            answer_ids.append(
-                1
-                if (
-                    (question_id in (0, 2) and label == "surface")
-                    or (question_id in (1, 3) and label == "motion")
-                )
-                else 0
-            )
-    question_ids_tensor = t.tensor(question_ids, device=concepts.device)
-    repeated_concepts = t.stack(row_concepts)
-    return (
-        repeated_concepts,
-        t.stack(question_embeddings),
-        question_ids_tensor,
-        t.tensor(answer_ids, device=concepts.device),
-    )
-
-
-def _fit_linear_decoder(
-    train_features: t.Tensor,
-    train_questions: t.Tensor,
-    train_answers: t.Tensor,
-    eval_features: t.Tensor,
-    eval_questions: t.Tensor,
-    *,
-    steps: int = 500,
-    lr: float = 0.08,
-    seed: int = 0,
-) -> tuple[t.Tensor, t.Tensor, DecoderTrainingReport, t.Tensor]:
-    decoder_weight, decoder_bias, report = train_question_conditioned_decoder(
-        train_features,
-        train_questions,
-        train_answers,
-        steps=steps,
-        lr=lr,
-        seed=seed,
-    )
-    eval_logits = question_conditioned_decoder_logits(
-        eval_features,
-        eval_questions,
-        decoder_weight,
-        decoder_bias=decoder_bias,
-    )
-    return decoder_weight, decoder_bias, report, eval_logits
-
-
-def _question_agnostic_probe_logits(concepts: t.Tensor, labels: list[str]) -> t.Tensor:
-    _ = labels
-    surface_score = concepts[:, 0] - concepts[:, 1]
-    rows = []
-    for score in surface_score:
-        for _question_id in range(len(TL_PCD_QUESTIONS)):
-            rows.append(t.stack([-score, score]))
-    return t.stack(rows)
-
-
-def _single_concept_classifier_logits(concepts: t.Tensor) -> t.Tensor:
-    rows = []
-    for concept_row in concepts:
-        for _question_id in range(len(TL_PCD_QUESTIONS)):
-            rows.append(t.stack([t.zeros((), device=concepts.device), concept_row[0]]))
-    return t.stack(rows)
-
-
-def _non_interaction_question_baseline_logits(
-    concepts: t.Tensor,
-    question_embeddings: t.Tensor,
-) -> t.Tensor:
-    repeated = concepts.repeat_interleave(len(TL_PCD_QUESTIONS), dim=0)
-    decoder_weight = t.zeros(
-        repeated.shape[1] + question_embeddings.shape[1],
-        2,
-        device=concepts.device,
-    )
-    decoder_weight[0, 1] = 1.0
-    decoder_weight[1, 0] = 1.0
-    return question_conditioned_decoder_logits(repeated, question_embeddings, decoder_weight)
-
-
-def _concept_scores_from_decoder(
-    decoder_weight: t.Tensor,
-    conditioned_rows: t.Tensor,
-    *,
-    n_concepts: int,
-    question_count: int,
-) -> t.Tensor:
-    interaction_weights = decoder_weight[: question_count * n_concepts].abs().sum(dim=1)
-    interaction_weights = interaction_weights.reshape(question_count, n_concepts)
-    mean_activation = conditioned_rows.abs().mean(dim=0).reshape(question_count, n_concepts)
-    return (interaction_weights * mean_activation).sum(dim=0)
-
-
-def _active_concept_removal_case(
-    row_concepts: t.Tensor,
-    question_ids: t.Tensor,
-    question_embeddings: t.Tensor,
-    answer_ids: t.Tensor,
-    decoder_weight: t.Tensor,
-    decoder_bias: t.Tensor,
-) -> tuple[ConceptRemovalReport, int, int, int, bool]:
-    question_count = len(TL_PCD_QUESTIONS)
-    n_concepts = row_concepts.shape[1]
-    original_features = question_conditioned_concept_features(
-        row_concepts,
-        question_ids,
-        question_count,
-    )
-    original_logits = question_conditioned_decoder_logits(
-        original_features,
-        question_embeddings,
-        decoder_weight,
-        decoder_bias=decoder_bias,
-    )
-
-    for row_index, concept_row in enumerate(row_concepts):
-        active_ids = concept_row.nonzero().flatten().tolist()
-        if len(active_ids) < 2:
-            continue
-        target_answer_id = int(answer_ids[row_index].item())
-        other_answer_id = 1 - target_answer_id
-        question_id = int(question_ids[row_index].item())
-        slot_offset = question_id * n_concepts
-        margins = {}
-        for concept_id in active_ids:
-            feature_value = concept_row[concept_id]
-            target_weight = decoder_weight[slot_offset + concept_id, target_answer_id]
-            other_weight = decoder_weight[slot_offset + concept_id, other_answer_id]
-            margins[int(concept_id)] = abs(float((feature_value * (target_weight - other_weight)).item()))
-        ranked = sorted(margins, key=margins.get, reverse=True)
-        top_id = ranked[0]
-        control_id = ranked[-1]
-        if control_id == top_id:
-            continue
-
-        top_row = row_concepts[row_index : row_index + 1].clone()
-        top_row[0, top_id] = 0.0
-        random_row = row_concepts[row_index : row_index + 1].clone()
-        random_row[0, control_id] = 0.0
-        top_features = question_conditioned_concept_features(
-            top_row,
-            question_ids[row_index : row_index + 1],
-            question_count,
-        )
-        random_features = question_conditioned_concept_features(
-            random_row,
-            question_ids[row_index : row_index + 1],
-            question_count,
-        )
-        top_removed_logits = question_conditioned_decoder_logits(
-            top_features,
-            question_embeddings[row_index : row_index + 1],
-            decoder_weight,
-            decoder_bias=decoder_bias,
-        )[0]
-        random_removed_logits = question_conditioned_decoder_logits(
-            random_features,
-            question_embeddings[row_index : row_index + 1],
-            decoder_weight,
-            decoder_bias=decoder_bias,
-        )[0]
-        report = concept_removal_report(
-            original_logits[row_index],
-            top_removed_logits,
-            random_removed_logits,
-            target_answer_id=target_answer_id,
-        )
-        if report.top_removal_changed and report.random_removal_does_less:
-            if report.original_answer != target_answer_id:
-                continue
-            return report, row_index, int(top_id), int(control_id), concept_row[control_id].item() > 0
-
-    raise RuntimeError("could not find an active top/control concept removal case.")
-
-
-def run_transformerlens_pcd_preflight(max_vram_gb: float = 24.0) -> dict:
-    """Run a real sparse-concept, question-conditioned PCD preflight on gelu-1l."""
-
-    if not t.cuda.is_available():
-        return {
-            "cuda_available": False,
-            "preflight_passed": False,
-            "full_path": "Pinned TransformerLens gelu-1l sparse-concept PCD preflight.",
-        }
-
-    t.cuda.reset_peak_memory_stats()
-    model = _load_gelu1l_model_on_cuda()
-    model.eval()
-    direction, positive_token_id, negative_token_id = _residual_direction(model)
-    train_texts, train_labels, train_residuals = _collect_residuals(model, TL_TRAIN_EXAMPLES)
-    eval_texts, eval_labels, eval_residuals = _collect_residuals(model, TL_EVAL_EXAMPLES)
-    concept_directions, concept_names, mean_residual = _concept_directions(
-        train_residuals,
-        direction,
-    )
-    centered_train = train_residuals - mean_residual
-    centered_eval = eval_residuals - mean_residual
-    train_concepts = sparse_concept_encode(
-        centered_train,
-        concept_directions,
-        top_k=TL_CONCEPT_TOP_K,
-    )
-    concepts = sparse_concept_encode(
-        centered_eval,
-        concept_directions,
-        top_k=TL_CONCEPT_TOP_K,
-    )
-    sparsity = concept_sparsity_report(concepts, max_density=0.5)
-    train_row_concepts, train_question_embeddings, train_question_ids, train_answer_ids = (
-        _build_question_rows(train_concepts, train_labels)
-    )
-    eval_row_concepts, question_embeddings, question_ids, answer_ids = _build_question_rows(
-        concepts,
-        eval_labels,
-    )
-    train_features = question_conditioned_concept_features(
-        train_row_concepts,
-        train_question_ids,
-        len(TL_PCD_QUESTIONS),
-    )
-    eval_features = question_conditioned_concept_features(
-        eval_row_concepts,
-        question_ids,
-        len(TL_PCD_QUESTIONS),
-    )
-    pcd_batch = build_pcd_question_batch(
-        eval_residuals.repeat_interleave(len(TL_PCD_QUESTIONS), dim=0),
-        question_ids,
-        answer_ids,
-        question_texts=TL_PCD_QUESTIONS,
-    )
-    decoder_weight, decoder_bias, decoder_training, pcd_logits = _fit_linear_decoder(
-        train_features,
-        train_question_embeddings,
-        train_answer_ids,
-        eval_features,
-        question_embeddings,
-        steps=700,
-        lr=0.06,
-        seed=0,
-    )
-
-    zero_train_questions = t.zeros_like(train_question_embeddings)
-    zero_eval_questions = t.zeros_like(question_embeddings)
-    _probe_weight, _probe_bias, probe_training, probe_logits = _fit_linear_decoder(
-        train_row_concepts,
-        zero_train_questions,
-        train_answer_ids,
-        eval_row_concepts,
-        zero_eval_questions,
-        steps=700,
-        lr=0.06,
-        seed=1,
-    )
-    _sae_weight, _sae_bias, sae_training, sae_logits = _fit_linear_decoder(
-        train_row_concepts[:, :2],
-        zero_train_questions,
-        train_answer_ids,
-        eval_row_concepts[:, :2],
-        zero_eval_questions,
-        steps=700,
-        lr=0.06,
-        seed=2,
-    )
-    train_dense_rows = train_residuals.repeat_interleave(len(TL_PCD_QUESTIONS), dim=0)
-    eval_dense_rows = eval_residuals.repeat_interleave(len(TL_PCD_QUESTIONS), dim=0)
-    _oracle_weight, _oracle_bias, oracle_training, non_interaction_logits = _fit_linear_decoder(
-        train_dense_rows,
-        train_question_embeddings,
-        train_answer_ids,
-        eval_dense_rows,
-        question_embeddings,
-        steps=700,
-        lr=0.03,
-        seed=3,
-    )
-    comparison = pcd_comparison_report(
-        pcd_logits,
-        probe_logits,
-        sae_logits,
-        non_interaction_logits,
-        answer_ids,
-    )
-    eval_prediction_rows = []
-    pcd_predictions = pcd_logits.argmax(dim=-1)
-    probe_predictions = probe_logits.argmax(dim=-1)
-    sae_predictions = sae_logits.argmax(dim=-1)
-    non_interaction_predictions = non_interaction_logits.argmax(dim=-1)
-    for row_index, answer in enumerate(answer_ids.tolist()):
-        example_index = row_index // len(TL_PCD_QUESTIONS)
-        question_id = int(question_ids[row_index].item())
-        eval_prediction_rows.append(
-            {
-                "prompt": eval_texts[example_index],
-                "latent_label": eval_labels[example_index],
-                "question": TL_PCD_QUESTIONS[question_id],
-                "answer": int(answer),
-                "pcd_pred": int(pcd_predictions[row_index].item()),
-                "probe_pred": int(probe_predictions[row_index].item()),
-                "single_concept_pred": int(sae_predictions[row_index].item()),
-                "dense_noninteraction_pred": int(non_interaction_predictions[row_index].item()),
-            }
-        )
-
-    shuffled_question_ids = question_ids.roll(shifts=1, dims=0)
-    shuffled_question_embeddings = question_embeddings.roll(shifts=1, dims=0)
-    shuffled_features = question_conditioned_concept_features(
-        eval_row_concepts,
-        shuffled_question_ids,
-        len(TL_PCD_QUESTIONS),
-    )
-    shuffled_logits = question_conditioned_decoder_logits(
-        shuffled_features,
-        shuffled_question_embeddings,
-        decoder_weight,
-        decoder_bias=decoder_bias,
-    )
-    question_shuffle_accuracy = _prediction_accuracy(shuffled_logits, answer_ids)
-
-    removal, removal_row, top_removed_concept, random_removed_concept, random_removed_active = (
-        _active_concept_removal_case(
-            eval_row_concepts,
-            question_ids,
-            question_embeddings,
-            answer_ids,
-            decoder_weight,
-            decoder_bias,
-        )
-    )
-
-    concept_scores = _concept_scores_from_decoder(
-        decoder_weight,
-        eval_features,
-        n_concepts=concepts.shape[1],
-        question_count=len(TL_PCD_QUESTIONS),
-    )
-    audit = concept_audit_report(
-        concept_scores,
-        concept_names,
-        ["surface", "motion"],
-        top_k=2,
-    )
-    seed_scores = []
-    seed_accuracies = []
-    for seed in (0, 1, 2):
-        seed_weight, seed_bias, _seed_training, seed_logits = _fit_linear_decoder(
-            train_features,
-            train_question_embeddings,
-            train_answer_ids,
-            eval_features,
-            question_embeddings,
-            steps=700,
-            lr=0.06,
-            seed=seed,
-        )
-        seed_scores.append(
-            _concept_scores_from_decoder(
-                seed_weight,
-                eval_features,
-                n_concepts=concepts.shape[1],
-                question_count=len(TL_PCD_QUESTIONS),
-            )
-        )
-        seed_accuracies.append(_prediction_accuracy(seed_logits, answer_ids))
-    stability = concept_stability_report(
-        seed_scores,
-        top_k=2,
-        min_jaccard=1.0,
-    )
-
-    t.cuda.synchronize()
-    peak_vram_gb = t.cuda.max_memory_allocated() / 1024**3
-    within_vram_budget = peak_vram_gb <= max_vram_gb
-    preflight_passed = (
-        comparison.pcd_accuracy == 1.0
-        and comparison.best_baseline_accuracy <= 0.75
-        and comparison.beats_best_baseline
-        and decoder_training.train_accuracy == 1.0
-        and decoder_training.final_loss < 0.01
-        and min(seed_accuracies) == 1.0
-        and question_shuffle_accuracy <= 0.75
-        and sparsity.passes_sparsity
-        and removal.top_removal_changed
-        and removal.random_removal_does_less
-        and random_removed_active
-        and audit.names_expected_cluster
-        and stability.stable
-        and within_vram_budget
-    )
-
-    return {
-        "cuda_available": True,
-        "device": t.cuda.get_device_name(0),
-        "preflight_passed": preflight_passed,
-        "model_name": TL_GELU1L_MODEL_NAME,
-        "hf_model_id": TL_GELU1L_HF_ID,
-        "hf_revision": TL_GELU1L_REVISION,
-        "tokenizer_id": TL_GELU1L_TOKENIZER_ID,
-        "tokenizer_revision": TL_GELU1L_TOKENIZER_REVISION,
-        "bnb_cuda_override": TL_BNB_CUDA_OVERRIDE,
-        "hook_name": TL_RESID_POST_HOOK,
-        "positive_anchor_prompt": TL_POSITIVE_ANCHOR,
-        "negative_anchor_prompt": TL_NEGATIVE_ANCHOR,
-        "positive_token": model.to_string(positive_token_id),
-        "negative_token": model.to_string(negative_token_id),
-        "train_example_count": len(train_texts),
-        "eval_example_count": len(eval_texts),
-        "activation_shape": list(eval_residuals.shape),
-        "concept_shape": list(concepts.shape),
-        "row_concept_shape": list(eval_row_concepts.shape),
-        "conditioned_concept_shape": list(eval_features.shape),
-        "question_count": len(TL_PCD_QUESTIONS),
-        "pcd_row_count": len(answer_ids),
-        "train_pcd_row_count": len(train_answer_ids),
-        "concept_direction_count": concepts.shape[1],
-        "concept_top_k": TL_CONCEPT_TOP_K,
-        "concept_mean_l0": sparsity.mean_l0,
-        "concept_density": sparsity.density,
-        "passes_sparsity": sparsity.passes_sparsity,
-        "pcd_decoder_train_loss": decoder_training.final_loss,
-        "pcd_decoder_train_accuracy": decoder_training.train_accuracy,
-        "pcd_decoder_training_steps": decoder_training.steps,
-        "pcd_accuracy": comparison.pcd_accuracy,
-        "probe_accuracy": comparison.probe_accuracy,
-        "sae_classifier_accuracy": comparison.sae_classifier_accuracy,
-        "non_interaction_baseline_accuracy": comparison.activation_oracle_accuracy,
-        "eval_prediction_rows": eval_prediction_rows,
-        "best_baseline_accuracy": comparison.best_baseline_accuracy,
-        "beats_probe": comparison.beats_probe,
-        "beats_best_baseline": comparison.beats_best_baseline,
-        "probe_train_accuracy": probe_training.train_accuracy,
-        "sae_classifier_train_accuracy": sae_training.train_accuracy,
-        "non_interaction_train_accuracy": oracle_training.train_accuracy,
-        "question_shuffle_accuracy": question_shuffle_accuracy,
-        "pcd_seed_count": len(seed_accuracies),
-        "pcd_seed_min_accuracy": min(seed_accuracies),
-        "passes_ood": comparison.pcd_accuracy == 1.0,
-        "top_removal_changed": removal.top_removal_changed,
-        "random_removal_changed": removal.random_removal_changed,
-        "top_removal_delta": removal.top_removal_delta,
-        "random_removal_delta": removal.random_removal_delta,
-        "random_removal_does_less": removal.random_removal_does_less,
-        "removal_row_index": removal_row,
-        "top_removed_concept_id": top_removed_concept,
-        "random_removed_concept_id": random_removed_concept,
-        "random_removed_concept_active": random_removed_active,
-        "selected_concept_ids": list(audit.selected_concept_ids),
-        "selected_concept_names": list(audit.selected_concept_names),
-        "names_expected_cluster": audit.names_expected_cluster,
-        "mean_pairwise_jaccard": stability.mean_pairwise_jaccard,
-        "stable": stability.stable,
-        "baseline_scope": "question_agnostic_probe_single_concept_and_non_interaction_question_baselines",
-        "peak_vram_gb": peak_vram_gb,
-        "within_vram_budget": within_vram_budget,
-        "full_path": "Pinned TransformerLens gelu-1l sparse-concept PCD preflight.",
-    }
-
-
-def run_gpu_test(max_vram_gb: float = 24.0) -> dict:
-    return run_transformerlens_pcd_preflight(max_vram_gb=max_vram_gb)
-
-
-def run_full_experiment(max_vram_gb: float = 24.0) -> dict:
-    """Run the validated experiment path used by the verification report."""
-
-    return run_gpu_test(max_vram_gb=max_vram_gb)
+def planted_behaviour(
+    world: PlantedWorld, acts: Float[Tensor, "batch d_model"]
+) -> Float[Tensor, "batch n_questions n_answers"]:
+    """The planted model's answer log-probs for every question: log_softmax(W[q] @ (U a) + b[q])."""
+    concept_proj = acts @ world.concept_dirs.to(acts.device).T  # (batch, n_concepts)
+    logits = t.einsum("qvc,bc->bqv", world.W_behaviour.to(acts.device), concept_proj)
+    return (logits + world.b_behaviour.to(acts.device)).log_softmax(dim=-1)
 
 
 if MAIN:
-    print(run_smoke_test())
+    tests.test_planted_behaviour(planted_behaviour, make_planted_world)
+
+# %%
+
+if MAIN:
+    world = make_planted_world(seed=0)
+    train_acts, train_concepts, train_loud = sample_planted(world, 20_000, seed=1)
+    test_acts, test_concepts, test_loud = sample_planted(world, 4_000, seed=2)
+    train_behaviour = planted_behaviour(world, train_acts)
+    test_behaviour = planted_behaviour(world, test_acts)
+    
+    total_var = (train_acts - train_acts.mean(0)).pow(2).sum(-1).mean()
+    concept_var = (train_concepts @ world.concept_dirs).var(0).sum()
+    loud_var = (train_loud @ world.loud_dirs).var(0).sum()
+    print(f"Share of activation variance from the 6 quiet concepts: {concept_var / total_var:.1%}")
+    print(f"Share of activation variance from the 8 loud features: {loud_var / total_var:.1%}\n")
+    
+    
+    no_loud = planted_behaviour(world, train_acts - train_loud @ world.loud_dirs)
+    no_concepts = planted_behaviour(world, train_acts - train_concepts @ world.concept_dirs)
+    print(f"KL(behaviour || behaviour with loud features deleted): {kl(train_behaviour, no_loud):.4f} nats")
+    print(f"KL(behaviour || behaviour with concepts deleted):      {kl(train_behaviour, no_concepts):.4f} nats")
+    
+    train_acts, test_acts = train_acts.to(device), test_acts.to(device)
+    train_behaviour, test_behaviour = train_behaviour.to(device), test_behaviour.to(device)
+
+# %%
+
+def topk_relu(pre: Float[Tensor, "... m"], k: int) -> Float[Tensor, "... m"]:
+    """Keeps the k largest entries of each row (then applies ReLU to them); zeroes everything else."""
+    values, indices = pre.topk(k, dim=-1)
+    return t.zeros_like(pre).scatter(-1, indices, F.relu(values))
+
+
+if MAIN:
+    tests.test_topk_relu(topk_relu)
+
+# %%
+
+class PCD(nn.Module):
+    def __init__(self, d_model: int, n_latents: int, k: int, n_questions: int, n_answers: int, d_hidden: int = 128):
+        super().__init__()
+        self.k = k
+        W_enc = t.randn(d_model, n_latents)
+        self.W_enc = nn.Parameter(W_enc / W_enc.norm(dim=0, keepdim=True))  # unit-norm reading directions
+        self.b_enc = nn.Parameter(t.zeros(n_latents))
+        self.b_pre = nn.Parameter(t.zeros(d_model))
+        self.W_emb = nn.Parameter(t.randn(n_latents, d_hidden) / n_latents**0.5)  # concept embeddings
+        self.question_emb = nn.Parameter(0.1 * t.randn(n_questions, d_hidden))
+        self.mlp = nn.Sequential(nn.GELU(), nn.Linear(d_hidden, d_hidden), nn.GELU(), nn.Linear(d_hidden, n_answers))
+
+    def encode(self, acts: Float[Tensor, "batch d_model"]) -> Float[Tensor, "batch n_latents"]:
+        return topk_relu((acts - self.b_pre) @ self.W_enc + self.b_enc, self.k)
+
+    def decode(self, z: Float[Tensor, "batch n_latents"]) -> Float[Tensor, "batch n_questions n_answers"]:
+        soft_token = z @ self.W_emb  # (batch, d_hidden)
+        return self.mlp(soft_token[:, None, :] + self.question_emb[None, :, :])
+
+    def forward(self, acts: Float[Tensor, "batch d_model"]) -> Float[Tensor, "batch n_questions n_answers"]:
+        return self.decode(self.encode(acts))
+
+
+if MAIN:
+    tests.test_pcd_module(PCD)
+
+# %%
+
+def pcd_loss(
+    model: nn.Module, acts: Float[Tensor, "batch d_model"], target_logprobs: Float[Tensor, "batch n_questions n_answers"]
+) -> Float[Tensor, ""]:
+    """Mean over batch and questions of KL(target || model(acts)), summed over answers."""
+    pred_logprobs = model(acts).log_softmax(dim=-1)
+    return (target_logprobs.exp() * (target_logprobs - pred_logprobs)).sum(dim=-1).mean()
+
+
+if MAIN:
+    tests.test_pcd_loss(pcd_loss, PCD)
+
+# %%
+
+def train_bottleneck(
+    model: nn.Module,
+    loss_fn: Callable,
+    acts: Float[Tensor, "n d_model"],
+    targets: Tensor | None = None,
+    n_steps: int = 1500,
+    batch_size: int = 256,
+    lr: float = 3e-3,
+    seed: int = 0,
+) -> list[float]:
+    """Trains `model` in place with Adam on random minibatches; returns the loss at every step."""
+    generator = t.Generator().manual_seed(seed)
+    optimizer = t.optim.Adam(model.parameters(), lr=lr)
+    losses = []
+    for _ in tqdm(range(n_steps), leave=False):
+        idx = t.randint(0, len(acts), (batch_size,), generator=generator).to(acts.device)
+        loss = loss_fn(model, acts[idx], None if targets is None else targets[idx])
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+        losses.append(loss.item())
+    return losses
+
+
+if MAIN:
+    tests.test_train_bottleneck(train_bottleneck, PCD, pcd_loss)
+
+# %%
+
+if MAIN:
+    N_LATENTS, K = 12, 4
+    
+    t.manual_seed(0)
+    pcd = PCD(D_MODEL, N_LATENTS, K, N_QUESTIONS, N_ANSWERS).to(device)
+    t.manual_seed(0)
+    untrained_pcd = PCD(D_MODEL, N_LATENTS, K, N_QUESTIONS, N_ANSWERS).to(device)  # control: same init, never trained
+    pcd_losses = train_bottleneck(pcd, pcd_loss, train_acts, train_behaviour)
+    
+    marginal = train_behaviour.exp().mean(0, keepdim=True).log()  # always predict the average answer distribution
+    marginal_kl = kl(test_behaviour, marginal.expand_as(test_behaviour))
+    utils.plot_training_curves(
+        {"PCD (train batches)": pcd_losses},
+        title="Training a PCD on the planted world",
+        ylabel="KL(model || PCD)  [nats, log scale]",
+        baselines={"marginal baseline (held-out)": marginal_kl},
+    )
+
+# %%
+
+if MAIN:
+    with t.no_grad():
+        print(f"Held-out KL, trained PCD:   {pcd_loss(pcd, test_acts, test_behaviour).item():.4f} nats")
+        print(f"Held-out KL, untrained PCD: {pcd_loss(untrained_pcd, test_acts, test_behaviour).item():.4f} nats")
+        print(f"Held-out KL, marginal:      {marginal_kl:.4f} nats\n")
+        z_test = pcd.encode(test_acts)
+    print(f"Active concepts per example: {(z_test > 0).sum(-1).float().mean():.2f} on average (k = {K})")
+    print("Firing frequency of each latent:", [round(f, 2) for f in (z_test > 0).float().mean(0).tolist()])
+
+# %%
+
+def latent_alignment(
+    W_enc: Float[Tensor, "d_model n_latents"], true_dirs: Float[Tensor, "n_true d_model"]
+) -> Float[Tensor, "n_true n_latents"]:
+    """Cosine similarity between each ground-truth direction and each latent's encoder direction."""
+    return F.normalize(true_dirs, dim=-1) @ F.normalize(W_enc, dim=0)
+
+
+if MAIN:
+    tests.test_latent_alignment(latent_alignment)
+
+# %%
+
+if MAIN:
+    true_dirs = t.cat([world.concept_dirs, world.loud_dirs]).to(device)
+    utils.plot_alignment(
+        {
+            "untrained PCD (control)": latent_alignment(untrained_pcd.W_enc.detach(), true_dirs),
+            "trained PCD": latent_alignment(pcd.W_enc.detach(), true_dirs),
+        },
+        TRUE_LABELS,
+        N_CONCEPTS,
+        title="Which planted directions does each PCD latent read?",
+    )
+
+# %%
+
+class TopKSAE(nn.Module):
+    def __init__(self, d_model: int, n_latents: int, k: int):
+        super().__init__()
+        self.k = k
+        W = t.randn(d_model, n_latents)
+        W = W / W.norm(dim=0, keepdim=True)
+        self.W_enc = nn.Parameter(W.clone())
+        self.W_dec = nn.Parameter(W.T.clone())
+        self.b_enc = nn.Parameter(t.zeros(n_latents))
+        self.b_pre = nn.Parameter(t.zeros(d_model))
+
+    def encode(self, acts: Float[Tensor, "batch d_model"]) -> Float[Tensor, "batch n_latents"]:
+        return topk_relu((acts - self.b_pre) @ self.W_enc + self.b_enc, self.k)
+
+    def forward(self, acts: Float[Tensor, "batch d_model"]) -> Float[Tensor, "batch d_model"]:
+        return self.encode(acts) @ self.W_dec + self.b_pre
+
+
+def sae_loss(model: nn.Module, acts: Float[Tensor, "batch d_model"], targets: None = None) -> Float[Tensor, ""]:
+    """Squared reconstruction error, summed over d_model and averaged over the batch."""
+    return (model(acts) - acts).pow(2).sum(dim=-1).mean()
+
+
+if MAIN:
+    tests.test_topk_sae(TopKSAE, sae_loss)
+
+# %%
+
+if MAIN:
+    t.manual_seed(0)
+    sae = TopKSAE(D_MODEL, N_LATENTS, K).to(device)
+    sae_losses = train_bottleneck(sae, sae_loss, train_acts)
+    
+    with t.no_grad():
+        fvu = (sae(test_acts) - test_acts).pow(2).sum() / (test_acts - test_acts.mean(0)).pow(2).sum()
+    print(f"SAE fraction of variance unexplained on held-out activations: {fvu:.3f}")
+
+# %%
+
+if MAIN:
+    utils.plot_alignment(
+        {
+            "PCD (trained to predict behaviour)": latent_alignment(pcd.W_enc.detach(), true_dirs),
+            "TopK SAE (trained to reconstruct)": latent_alignment(sae.W_enc.detach(), true_dirs),
+        },
+        TRUE_LABELS,
+        N_CONCEPTS,
+        title=f"Same bottleneck (m = {N_LATENTS}, k = {K}), different objective",
+    )
+
+# %%
+
+class FrozenEncoderPCD(PCD):
+    """A PCD whose encoder is replaced by another model's frozen `encode` method (e.g. an SAE's)."""
+
+    def __init__(self, frozen_encoder: nn.Module, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.frozen_encoder = [frozen_encoder]  # stored in a list, so its parameters aren't registered or trained
+
+    def encode(self, acts: Float[Tensor, "batch d_model"]) -> Float[Tensor, "batch n_latents"]:
+        with t.no_grad():
+            return self.frozen_encoder[0].encode(acts)
+
+# %%
+
+if MAIN:
+    t.manual_seed(0)
+    sae_decoder = FrozenEncoderPCD(sae, D_MODEL, N_LATENTS, K, N_QUESTIONS, N_ANSWERS).to(device)
+    train_bottleneck(sae_decoder, pcd_loss, train_acts, train_behaviour)
+    
+    t.manual_seed(0)
+    shuffled_pcd = PCD(D_MODEL, N_LATENTS, K, N_QUESTIONS, N_ANSWERS).to(device)
+    perm = t.randperm(len(train_acts), generator=t.Generator().manual_seed(0)).to(device)
+    train_bottleneck(shuffled_pcd, pcd_loss, train_acts, train_behaviour[perm])  # activation i paired with behaviour perm[i]
+    
+    with t.no_grad():
+        planted_kls = {
+            "PCD": pcd_loss(pcd, test_acts, test_behaviour).item(),
+            "SAE code + trained decoder": pcd_loss(sae_decoder, test_acts, test_behaviour).item(),
+            "PCD on shuffled pairs": pcd_loss(shuffled_pcd, test_acts, test_behaviour).item(),
+            "untrained PCD": pcd_loss(untrained_pcd, test_acts, test_behaviour).item(),
+            "marginal baseline": marginal_kl,
+        }
+    utils.plot_bars(
+        planted_kls, "Planted world: held-out behaviour prediction (lower is better)", "KL(model || decoder)  [nats]", logy=True
+    )
+
+# %%
+
+def auroc(scores: Float[Tensor, " n"], labels: Float[Tensor, " n"]) -> float:
+    """AUROC of `scores` for binary `labels`, via average ranks (ties count as half)."""
+    scores, labels = scores.detach().float().cpu(), labels.detach().cpu().bool()
+    order = scores.argsort()
+    sorted_scores = scores[order]
+    _, inverse, counts = t.unique_consecutive(sorted_scores, return_inverse=True, return_counts=True)
+    # The tied block j occupies ranks (end_j - count_j + 1) ... end_j, whose average is end_j - (count_j - 1) / 2
+    block_end = t.cumsum(counts, dim=0).float()
+    avg_rank = block_end - (counts.float() - 1) / 2
+    ranks = t.empty_like(scores)
+    ranks[order] = avg_rank[inverse]
+    n_pos, n_neg = labels.sum().item(), (~labels).sum().item()
+    return ((ranks[labels].sum().item() - n_pos * (n_pos + 1) / 2) / (n_pos * n_neg))
+
+
+if MAIN:
+    tests.test_auroc(auroc)
+
+# %%
+
+def best_latent_auroc(
+    z_train: Float[Tensor, "n_train n_latents"],
+    y_train: Float[Tensor, " n_train"],
+    z_test: Float[Tensor, "n_test n_latents"],
+    y_test: Float[Tensor, " n_test"],
+) -> tuple[int, float]:
+    """Index of the latent with the best train AUROC for the label, and that latent's test AUROC."""
+    train_aurocs = [auroc(z_train[:, j], y_train) for j in range(z_train.shape[1])]
+    best = max(range(len(train_aurocs)), key=lambda j: train_aurocs[j])
+    return best, auroc(z_test[:, best], y_test)
+
+
+if MAIN:
+    tests.test_best_latent_auroc(best_latent_auroc)
+
+# %%
+
+def readout_accuracy(
+    X_train: Float[Tensor, "n_train d"],
+    y_train: Float[Tensor, " n_train"],
+    X_test: Float[Tensor, "n_test d"],
+    y_test: Float[Tensor, " n_test"],
+    l2: float = 1.0,
+) -> float:
+    """Held-out balanced accuracy of a ridge-regression linear classifier trained on (X_train, y_train)."""
+    X_train, X_test = X_train.detach().float().cpu(), X_test.detach().float().cpu()
+    mean, std = X_train.mean(0), X_train.std(0) + 1e-6
+    X_train, X_test = (X_train - mean) / std, (X_test - mean) / std
+    y = 2 * y_train.detach().float().cpu() - 1
+    w = t.linalg.solve(X_train.T @ X_train + l2 * t.eye(X_train.shape[1]), X_train.T @ (y - y.mean()))
+    pred = (X_test @ w + y.mean()) > 0
+    truth = y_test.detach().cpu().bool()
+    tpr = (pred & truth).sum() / truth.sum()
+    tnr = (~pred & ~truth).sum() / (~truth).sum()
+    return (0.5 * (tpr + tnr)).item()
+
+
+if MAIN:
+    tests.test_readout_accuracy(readout_accuracy)
+
+# %%
+
+def shuffled_label_readout(
+    X_train: Float[Tensor, "n_train d"],
+    y_train: Float[Tensor, " n_train"],
+    X_test: Float[Tensor, "n_test d"],
+    y_test: Float[Tensor, " n_test"],
+    n_shuffles: int = 5,
+    seed: int = 0,
+) -> float:
+    """Mean held-out balanced accuracy of readouts trained on permuted training labels."""
+    generator = t.Generator().manual_seed(seed)
+    accs = []
+    for _ in range(n_shuffles):
+        perm = t.randperm(len(y_train), generator=generator)
+        accs.append(readout_accuracy(X_train, y_train.cpu()[perm], X_test, y_test))
+    return sum(accs) / len(accs)
+
+
+if MAIN:
+    tests.test_shuffled_label_readout(shuffled_label_readout)
+
+# %%
+
+if MAIN:
+    encoders = {"PCD": pcd, "SAE": sae, "untrained PCD": untrained_pcd, "PCD on shuffled pairs": shuffled_pcd}
+    with t.no_grad():
+        codes = {name: (enc.encode(train_acts).cpu(), enc.encode(test_acts).cpu()) for name, enc in encoders.items()}
+    
+    concept_names = [f"c{i}" for i in range(N_CONCEPTS)]
+    auroc_table = pd.DataFrame(index=concept_names, columns=list(encoders), dtype=float)
+    readout_table = pd.DataFrame(index=concept_names, dtype=float)
+    for i, concept in enumerate(concept_names):
+        y_tr, y_te = train_concepts[:, i], test_concepts[:, i]
+        for name, (z_tr, z_te) in codes.items():
+            auroc_table.loc[concept, name] = best_latent_auroc(z_tr[:5000], y_tr[:5000], z_te, y_te)[1]
+            readout_table.loc[concept, name] = readout_accuracy(z_tr, y_tr, z_te, y_te)
+        readout_table.loc[concept, "dense probe (raw activation)"] = readout_accuracy(train_acts, y_tr, test_acts, y_te)
+        readout_table.loc[concept, "PCD, shuffled labels"] = shuffled_label_readout(codes["PCD"][0], y_tr, codes["PCD"][1], y_te)
+    
+    fig, axes = plt.subplots(1, 2, figsize=(14, 4))
+    utils.plot_grouped_bars(auroc_table, "Best single latent (chosen on train): held-out AUROC", "AUROC", ylim=(0.3, 1.05), chance=0.5, ax=axes[0])
+    utils.plot_grouped_bars(readout_table, "Linear readout from the whole code: held-out balanced accuracy", "balanced accuracy", ylim=(0.3, 1.05), chance=0.5, ax=axes[1])
+    plt.tight_layout()
+    plt.show()
+    display(pd.concat({"best-latent AUROC": auroc_table, "readout balanced acc.": readout_table}, axis=1).round(2))
+
+# %%
+
+if MAIN:
+    def subspace_energy(W_enc: Tensor, world: PlantedWorld, alive: Tensor) -> tuple[float, float]:
+        """Mean (over live latents) squared norm of the unit encoder direction inside the concept / loud subspaces."""
+        cos = latent_alignment(W_enc.detach(), t.cat([world.concept_dirs, world.loud_dirs]).to(W_enc.device))[:, alive]
+        return cos[:N_CONCEPTS].pow(2).sum(0).mean().item(), cos[N_CONCEPTS:].pow(2).sum(0).mean().item()
+    
+    
+    # Change these settings and rerun the cell
+    PLAY_LATENTS, PLAY_K = N_LATENTS, K
+    play_train, _, _ = sample_planted(world, 20_000, seed=1, loud_scale=(0.3, 0.6), p_concept=0.25)
+    play_train = play_train.to(device)
+    play_behaviour = planted_behaviour(world, play_train)
+    
+    for name, model in [("PCD", pcd), ("SAE", sae)]:
+        with t.no_grad():
+            alive = (model.encode(train_acts) > 0).any(0)
+        quiet, loud = subspace_energy(model.W_enc, world, alive)
+        print(f"original world, {name}: {alive.sum().item():2d} live latents | energy in concept subspace {quiet:.2f} | in loud subspace {loud:.2f}")
+    
+    for name, make_model, loss_fn, targets in [
+        ("PCD", lambda: PCD(D_MODEL, PLAY_LATENTS, PLAY_K, N_QUESTIONS, N_ANSWERS), pcd_loss, play_behaviour),
+        ("SAE", lambda: TopKSAE(D_MODEL, PLAY_LATENTS, PLAY_K), sae_loss, None),
+    ]:
+        t.manual_seed(0)
+        model = make_model().to(device)
+        train_bottleneck(model, loss_fn, play_train, targets, n_steps=800)
+        with t.no_grad():
+            alive = (model.encode(play_train) > 0).any(0)
+        quiet, loud = subspace_energy(model.W_enc, world, alive)
+        print(f"quiet loud features, {name}: {alive.sum().item():2d} live latents | energy in concept subspace {quiet:.2f} | in loud subspace {loud:.2f}")
+
+# %%
+
+if MAIN:
+    gpt2 = HookedTransformer.from_pretrained("gpt2-small", device=device)
+    gpt2.requires_grad_(False)
+    
+    READ_LAYER = 10
+    PROBES = ["", " After that,", " That made", " Everyone was so", " It was a"]
+    
+    train_prompts, train_labels = utils.make_template_prompts("train", 10_000, seed=0)
+    test_prompts, test_labels = utils.make_template_prompts("test", 1_000, seed=1)
+    display(
+        pd.DataFrame(train_labels[:6].int().numpy(), columns=utils.CONCEPT_NAMES, index=train_prompts[:6])
+    )
+    print(f"{len(train_prompts)} train stories, {len(test_prompts)} test stories (with held-out words)")
+    print("A test story:", test_prompts[0])
+
+# %%
+
+@t.no_grad()
+def last_token_logprobs_and_acts(
+    model: HookedTransformer, prompts: list[str], probe: str, read_layer: int
+) -> tuple[Float[Tensor, "batch d_vocab"], Float[Tensor, "batch d_model"]]:
+    """
+    Runs the model on [p + probe for p in prompts]. Returns the next-token log-probs at the final token of
+    each prompt+probe, and resid_pre[read_layer] at the final token of each prompt (the read position).
+    """
+    pad_id = model.tokenizer.pad_token_id
+    read_pos = (model.to_tokens(prompts)[:, 1:] != pad_id).sum(1)  # index of the last real prompt token
+    tokens = model.to_tokens([p + probe for p in prompts])
+    last_pos = (tokens[:, 1:] != pad_id).sum(1)
+    rows = t.arange(len(prompts), device=tokens.device)
+    stored = {}
+
+    def store_hook(resid: Float[Tensor, "batch seq d_model"], hook) -> None:
+        stored["acts"] = resid[rows, read_pos].clone()
+
+    with model.hooks(fwd_hooks=[(f"blocks.{read_layer}.hook_resid_pre", store_hook)]):
+        resid_final = model(tokens, stop_at_layer=model.cfg.n_layers)
+    logprobs = model.unembed(model.ln_final(resid_final[rows, last_pos])).log_softmax(dim=-1)
+    return logprobs, stored["acts"]
+
+
+if MAIN:
+    tests.test_last_token_logprobs_and_acts(last_token_logprobs_and_acts, gpt2)
+
+# %%
+
+def restrict_to_answer_vocab(
+    logprobs: Float[Tensor, "... d_vocab"], answer_ids: Int[Tensor, " n_answers"]
+) -> Float[Tensor, "... n_answers_plus_1"]:
+    """Log-probs of the answer tokens, plus a final 'other' bucket with the remaining probability."""
+    probs = logprobs.exp()[..., answer_ids.to(logprobs.device)]
+    other = (1 - probs.sum(dim=-1, keepdim=True)).clamp_min(1e-6)
+    return t.cat([probs, other], dim=-1).clamp_min(1e-8).log()
+
+
+if MAIN:
+    tests.test_restrict_to_answer_vocab(restrict_to_answer_vocab)
+
+# %%
+
+if MAIN:
+    calibration = [last_token_logprobs_and_acts(gpt2, train_prompts[:500], probe, READ_LAYER)[0].exp().mean(0) for probe in PROBES]
+    answer_ids = []
+    for mean_probs in calibration:
+        answer_ids += [i for i in mean_probs.topk(30).indices.tolist() if i not in answer_ids]
+    answer_ids = t.tensor(answer_ids, device=device)
+    ANSWER_STRS = [gpt2.to_string(i) for i in answer_ids] + ["<other>"]
+    N_GPT2_ANSWERS = len(ANSWER_STRS)
+    
+    
+    @t.no_grad()
+    def get_acts_and_behaviour(prompts: list[str], batch_size: int = 500) -> tuple[Tensor, Tensor]:
+        """Read activations (n, d_model) and restricted behaviour log-probs (n, n_probes, n_answers + 1)."""
+        acts, behaviour = [], []
+        for start in tqdm(range(0, len(prompts), batch_size), leave=False):
+            batch = prompts[start : start + batch_size]
+            per_probe = []
+            for probe in PROBES:
+                logprobs, batch_acts = last_token_logprobs_and_acts(gpt2, batch, probe, READ_LAYER)
+                per_probe.append(restrict_to_answer_vocab(logprobs, answer_ids))
+            acts.append(batch_acts)  # the read activation doesn't depend on the probe
+            behaviour.append(t.stack(per_probe, dim=1))
+        return t.cat(acts), t.cat(behaviour)
+    
+    
+    raw_train_acts, gpt2_train_behaviour = get_acts_and_behaviour(train_prompts)
+    raw_test_acts, gpt2_test_behaviour = get_acts_and_behaviour(test_prompts)
+    
+    # Normalise activations: subtract the training mean and divide by a single scalar so the mean squared
+    # norm per dimension is 1. (One scalar, so directions and ratios between directions are unchanged.)
+    act_mean = raw_train_acts.mean(0)
+    act_scale = (raw_train_acts - act_mean).norm(dim=-1).mean() / raw_train_acts.shape[1] ** 0.5
+    gpt2_train_acts = (raw_train_acts - act_mean) / act_scale
+    gpt2_test_acts = (raw_test_acts - act_mean) / act_scale
+    
+    print(f"Answer vocabulary: {len(answer_ids)} tokens + <other>")
+    print(f"Activations: train {tuple(gpt2_train_acts.shape)}, test {tuple(gpt2_test_acts.shape)}")
+    print(f"Behaviour:   train {tuple(gpt2_train_behaviour.shape)}, test {tuple(gpt2_test_behaviour.shape)}")
+    mass = gpt2_train_behaviour[..., :-1].exp().sum(-1).mean(0)
+    print("Mean probability inside the answer vocabulary, per question:", [round(m, 2) for m in mass.tolist()])
+
+# %%
+
+if MAIN:
+    GPT2_LATENTS, GPT2_K, N_PROBES = 12, 3, len(PROBES)
+    d_gpt2 = gpt2.cfg.d_model
+    train_kwargs = dict(n_steps=2000, lr=1e-3)
+    
+    t.manual_seed(0)
+    gpt2_pcd = PCD(d_gpt2, GPT2_LATENTS, GPT2_K, N_PROBES, N_GPT2_ANSWERS).to(device)
+    gpt2_pcd_losses = train_bottleneck(gpt2_pcd, pcd_loss, gpt2_train_acts, gpt2_train_behaviour, **train_kwargs)
+    
+    t.manual_seed(0)
+    gpt2_sae = TopKSAE(d_gpt2, GPT2_LATENTS, GPT2_K).to(device)
+    train_bottleneck(gpt2_sae, sae_loss, gpt2_train_acts, **train_kwargs)
+    t.manual_seed(0)
+    gpt2_sae_decoder = FrozenEncoderPCD(gpt2_sae, d_gpt2, GPT2_LATENTS, GPT2_K, N_PROBES, N_GPT2_ANSWERS).to(device)
+    train_bottleneck(gpt2_sae_decoder, pcd_loss, gpt2_train_acts, gpt2_train_behaviour, **train_kwargs)
+    
+    t.manual_seed(0)
+    gpt2_dense = PCD(d_gpt2, d_gpt2, d_gpt2, N_PROBES, N_GPT2_ANSWERS).to(device)  # k = m = d_model: no bottleneck
+    train_bottleneck(gpt2_dense, pcd_loss, gpt2_train_acts, gpt2_train_behaviour, **train_kwargs)
+    
+    t.manual_seed(0)
+    gpt2_shuffled = PCD(d_gpt2, GPT2_LATENTS, GPT2_K, N_PROBES, N_GPT2_ANSWERS).to(device)
+    gpt2_perm = t.randperm(len(gpt2_train_acts), generator=t.Generator().manual_seed(0)).to(device)
+    train_bottleneck(gpt2_shuffled, pcd_loss, gpt2_train_acts, gpt2_train_behaviour[gpt2_perm], **train_kwargs)
+    
+    
+    def per_question_kl(target: Tensor, pred_logits: Tensor) -> list[float]:
+        """Mean KL(target || pred) for each question."""
+        pred = pred_logits.log_softmax(-1)
+        return (target.exp() * (target - pred)).sum(-1).mean(0).tolist()
+    
+    
+    gpt2_marginal = gpt2_train_behaviour.exp().mean(0, keepdim=True).log()
+    with t.no_grad():
+        gpt2_kls = pd.DataFrame(
+            {
+                "PCD (k=3)": per_question_kl(gpt2_test_behaviour, gpt2_pcd(gpt2_test_acts)),
+                "SAE code + decoder (k=3)": per_question_kl(gpt2_test_behaviour, gpt2_sae_decoder(gpt2_test_acts)),
+                "no bottleneck": per_question_kl(gpt2_test_behaviour, gpt2_dense(gpt2_test_acts)),
+                "PCD on shuffled pairs": per_question_kl(gpt2_test_behaviour, gpt2_shuffled(gpt2_test_acts)),
+                "marginal baseline": per_question_kl(gpt2_test_behaviour, gpt2_marginal.expand_as(gpt2_test_behaviour)),
+            },
+            index=[repr(p) for p in PROBES],
+        )
+    gpt2_kls.loc["mean"] = gpt2_kls.mean()
+    utils.plot_grouped_bars(gpt2_kls, "GPT-2: held-out KL(GPT-2 || decoder) per question (lower is better)", "KL [nats]")
+    display(gpt2_kls.round(3))
+
+# %%
+
+def top_answers(logprobs: Float[Tensor, " n_answers"], n: int = 3) -> str:
+    """Formats the n most likely answers of a restricted distribution, e.g. "' she' (0.41), ' the' (0.16)"."""
+    probs = logprobs.exp()
+    top = probs.topk(n)
+    return ", ".join(f"{ANSWER_STRS[i]!r} ({p:.2f})" for p, i in zip(top.values.tolist(), top.indices.tolist()))
+
+
+def describe(z_row: Tensor) -> str:
+    """Formats the active concepts of one code, e.g. "#3=2.1, #7=0.4"."""
+    active = z_row.nonzero().squeeze(-1).tolist()
+    return ", ".join(f"#{j}={z_row[j]:.1f}" for j in sorted(active, key=lambda j: -z_row[j].item())) or "(none)"
+
+# %%
+
+if MAIN:
+    with t.no_grad():
+        gpt2_z_test = gpt2_pcd.encode(gpt2_test_acts)
+        pcd_pred = gpt2_pcd(gpt2_test_acts).log_softmax(-1)
+    for i in [0, 1, 2]:
+        print(f"{test_prompts[i]}\n  active concepts: {describe(gpt2_z_test[i])}")
+        for q, probe in enumerate(PROBES[1:4], start=1):
+            print(f"  {probe!r:<19} GPT-2: {top_answers(gpt2_test_behaviour[i, q])}")
+            print(f"  {'':<19} PCD:   {top_answers(pcd_pred[i, q])}")
+        print()
+
+# %%
+
+def latent_dashboard(z: Float[Tensor, "n n_latents"], prompts: list[str], n_top: int = 3) -> pd.DataFrame:
+    """One row per latent: firing frequency and the n_top most strongly activating prompts."""
+    z = z.detach().cpu()
+    rows = []
+    for j in range(z.shape[1]):
+        row = {"freq": (z[:, j] > 0).float().mean().item()}
+        for rank, i in enumerate(z[:, j].topk(n_top).indices.tolist()):
+            row[f"top {rank + 1}"] = prompts[i]
+        rows.append(row)
+    return pd.DataFrame(rows).rename_axis("latent")
+
+
+if MAIN:
+    tests.test_latent_dashboard(latent_dashboard)
+
+# %%
+
+if MAIN:
+    with pd.option_context("display.max_colwidth", 70, "display.width", 250):
+        display(latent_dashboard(gpt2_z_test, test_prompts, n_top=2).round(2))
+
+# %%
+
+def latent_group_aurocs(z: Float[Tensor, "n n_latents"], groups: dict[str, Float[Tensor, " n"]]) -> Float[Tensor, "n_latents n_groups"]:
+    """AUROC of every latent's activation for every group label."""
+    return t.tensor([[auroc(z[:, j], labels) for labels in groups.values()] for j in range(z.shape[1])])
+
+
+if MAIN:
+    tests.test_latent_group_aurocs(latent_group_aurocs, auroc)
+
+# %%
+
+def make_groups(labels: Float[Tensor, "n 4"]) -> dict[str, Tensor]:
+    """Derived concept groups from the (female, plural, positive, outdoors) labels."""
+    female, plural, positive, outdoors = labels.unbind(-1)
+    return {
+        "she": female * (1 - plural),
+        "he": (1 - female) * (1 - plural),
+        "they": plural,
+        "positive": positive,
+        "negative": 1 - positive,
+        "outdoors": outdoors,
+        "indoors": 1 - outdoors,
+    }
+
+# %%
+
+if MAIN:
+    train_groups, test_groups = make_groups(train_labels), make_groups(test_labels)
+    with t.no_grad():
+        gpt2_z_train = gpt2_pcd.encode(gpt2_train_acts)
+        sae_z_train, sae_z_test = gpt2_sae.encode(gpt2_train_acts), gpt2_sae.encode(gpt2_test_acts)
+    utils.plot_heatmaps(
+        {
+            "PCD latents": latent_group_aurocs(gpt2_z_test.cpu(), test_groups),
+            "SAE latents": latent_group_aurocs(sae_z_test.cpu(), test_groups),
+        },
+        row_label="latent",
+        col_labels=list(test_groups),
+        title="GPT-2 layer 10: held-out AUROC of each latent for each concept group",
+    )
+
+# %%
+
+if MAIN:
+    t.manual_seed(0)
+    gpt2_untrained = PCD(d_gpt2, GPT2_LATENTS, GPT2_K, N_PROBES, N_GPT2_ANSWERS).to(device)
+    with t.no_grad():
+        gpt2_codes = {
+            "dense probe (768-d activation)": (gpt2_train_acts, gpt2_test_acts),
+            "PCD (k=3)": (gpt2_z_train, gpt2_z_test),
+            "SAE (k=3)": (sae_z_train, sae_z_test),
+            "untrained PCD": (gpt2_untrained.encode(gpt2_train_acts), gpt2_untrained.encode(gpt2_test_acts)),
+            "PCD on shuffled pairs": (gpt2_shuffled.encode(gpt2_train_acts), gpt2_shuffled.encode(gpt2_test_acts)),
+        }
+    
+    gpt2_readout = pd.DataFrame(index=utils.CONCEPT_NAMES, dtype=float)
+    for c, concept in enumerate(utils.CONCEPT_NAMES):
+        for name, (X_tr, X_te) in gpt2_codes.items():
+            gpt2_readout.loc[concept, name] = readout_accuracy(X_tr, train_labels[:, c], X_te, test_labels[:, c])
+        gpt2_readout.loc[concept, "PCD, shuffled labels"] = shuffled_label_readout(gpt2_z_train, train_labels[:, c], gpt2_z_test, test_labels[:, c])
+    
+    singular = test_labels[:, 1] == 0
+    gender_split = pd.DataFrame(index=["singular subjects", "plural subjects"], dtype=float)
+    for name in ["dense probe (768-d activation)", "PCD (k=3)", "SAE (k=3)"]:
+        X_tr, X_te = gpt2_codes[name]
+        for row, mask in [("singular subjects", singular), ("plural subjects", ~singular)]:
+            gender_split.loc[row, name] = readout_accuracy(X_tr, train_labels[:, 0], X_te[mask.to(X_te.device)], test_labels[mask, 0])
+    
+    fig, axes = plt.subplots(1, 2, figsize=(15, 4), gridspec_kw={"width_ratios": [2.2, 1]})
+    utils.plot_grouped_bars(gpt2_readout, "Held-out readout of labelled concepts (unseen words)", "balanced accuracy", ylim=(0.3, 1.05), chance=0.5, ax=axes[0])
+    utils.plot_grouped_bars(gender_split, "'female' readout, split by subject number", "balanced accuracy", ylim=(0.3, 1.05), chance=0.5, ax=axes[1])
+    plt.tight_layout()
+    plt.show()
+    display(gpt2_readout.round(2))
+    display(gender_split.round(2))
+
+# %%
+
+if MAIN:
+    group_aurocs = latent_group_aurocs(gpt2_z_test.cpu(), test_groups)
+    LATENT_NAMES = [
+        f"#{j} {list(test_groups)[group_aurocs[j].argmax()]}" if group_aurocs[j].max() > 0.75 else f"#{j} ?"
+        for j in range(GPT2_LATENTS)
+    ]
+    print("Latent names:", LATENT_NAMES, "\n")
+    
+    my_stories = [
+        "The nurse lost her keys at the station.",
+        "The team celebrated the victory downtown.",
+        "Sadly, the king won the lottery.",
+    ]
+    my_acts, my_behaviour = get_acts_and_behaviour(my_stories)
+    with t.no_grad():
+        my_z = gpt2_pcd.encode((my_acts - act_mean) / act_scale)
+        my_pred = gpt2_pcd.decode(my_z).log_softmax(-1)
+    for i, story in enumerate(my_stories):
+        active = sorted(my_z[i].nonzero().squeeze(-1).tolist(), key=lambda j: -my_z[i, j].item())
+        print(f"{story}\n  concepts: " + ", ".join(f"{LATENT_NAMES[j]} ({my_z[i, j]:.1f})" for j in active))
+        for q in [1, 2, 3]:
+            print(f"  {PROBES[q]!r:<19} GPT-2: {top_answers(my_behaviour[i, q])}")
+            print(f"  {'':<19} PCD:   {top_answers(my_pred[i, q])}")
+        print()
+
+# %%
+
+def concept_vector(
+    acts: Float[Tensor, "n d_model"], z: Float[Tensor, "n n_latents"], j: int
+) -> Float[Tensor, " d_model"]:
+    """Mean activation where latent j is active, minus mean activation where it isn't."""
+    on = z[:, j] > 0
+    return acts[on].mean(0) - acts[~on].mean(0)
+
+
+if MAIN:
+    tests.test_concept_vector(concept_vector)
+
+# %%
+
+@t.no_grad()
+def planted_effects(
+    decoder: nn.Module,
+    behaviour_fn: Callable[[Tensor], Tensor],
+    acts: Float[Tensor, "batch d_model"],
+    vec: Float[Tensor, " d_model"],
+) -> tuple[Float[Tensor, " n"], Float[Tensor, " n"]]:
+    """Flattened (predicted, actual) changes in answer log-probs when `vec` is subtracted from `acts`."""
+    edited = acts - vec
+    predicted = decoder(edited).log_softmax(-1) - decoder(acts).log_softmax(-1)
+    actual = behaviour_fn(edited) - behaviour_fn(acts)
+    return predicted.flatten(), actual.flatten()
+
+
+if MAIN:
+    tests.test_planted_effects(planted_effects)
+
+# %%
+
+if MAIN:
+    behaviour_fn = lambda acts: planted_behaviour(world, acts)
+    with t.no_grad():
+        z_train_planted, z_test_planted = pcd.encode(train_acts), pcd.encode(test_acts)
+    
+    results = {name: ([], []) for name in ["PCD", "SAE code + decoder", "PCD on shuffled pairs", "PCD, random edit"]}
+    for j in range(N_LATENTS):
+        on = z_test_planted[:, j] > 0
+        if on.sum() < 20 or (z_train_planted[:, j] > 0).all():
+            continue  # skip latents that (almost) never fire or always fire: their mean difference is undefined/noisy
+        v = concept_vector(train_acts, z_train_planted, j)
+        r = F.normalize(t.randn(D_MODEL, generator=t.Generator().manual_seed(j)), dim=0).to(device) * v.norm()
+        for name, decoder, vec in [
+            ("PCD", pcd, v),
+            ("SAE code + decoder", sae_decoder, v),
+            ("PCD on shuffled pairs", shuffled_pcd, v),
+            ("PCD, random edit", pcd, r),
+        ]:
+            predicted, actual = planted_effects(decoder, behaviour_fn, test_acts[on], vec)
+            results[name][0].append(predicted)
+            results[name][1].append(actual)
+    
+    points = {name: (t.cat(p), t.cat(a)) for name, (p, a) in results.items()}
+    for name, (p, a) in points.items():
+        print(f"{name:<22} mean |actual change| {a.abs().mean():.3f}   mean |predicted change| {p.abs().mean():.3f}")
+    utils.plot_faithfulness_scatter(points, "Planted world: removing each PCD concept's effect vector")
+
+# %%
+
+def make_edits(
+    pcd: PCD, acts_train: Float[Tensor, "n d_model"], z_train: Float[Tensor, "n n_latents"], j: int, seed: int = 0
+) -> dict[str, Callable[[Tensor], Tensor]]:
+    """Three ways of removing latent j from (normalised) activations of shape (..., d_model)."""
+    off = z_train[:, j] == 0
+    b_pre = pcd.b_pre.detach()
+    w_hat = F.normalize(pcd.W_enc[:, j].detach(), dim=0)
+    off_value = ((acts_train[off] - b_pre) @ w_hat).mean()
+    v = concept_vector(acts_train, z_train, j)
+    generator = t.Generator().manual_seed(seed)
+    r = F.normalize(t.randn(v.shape, generator=generator), dim=0).to(v.device) * v.norm()
+
+    def encoder_direction(a: Tensor) -> Tensor:
+        return a + (off_value - (a - b_pre) @ w_hat)[..., None] * w_hat
+
+    return {
+        "encoder direction": encoder_direction,
+        "effect vector": lambda a: a - v,
+        "random vector": lambda a: a - r,
+    }
+
+
+if MAIN:
+    tests.test_make_edits(make_edits, PCD, concept_vector)
+
+# %%
+
+def in_raw_space(edit: Callable[[Tensor], Tensor], mean: Tensor, scale: Tensor) -> Callable[[Tensor], Tensor]:
+    """Turns an edit of normalised activations ((raw - mean) / scale) into an edit of raw activations."""
+    return lambda raw: edit((raw - mean) / scale) * scale + mean
+
+# %%
+
+@t.no_grad()
+def behaviour_under_edit(
+    model: HookedTransformer,
+    prompts: list[str],
+    edit_raw: Callable[[Tensor], Tensor] | None,
+    positions: str = "read",
+    layer: int = 10,
+    batch_size: int = 150,
+) -> Float[Tensor, "n_prompts n_probes n_answers_plus_1"]:
+    """Restricted next-token log-probs for every probe, with `edit_raw` applied to resid_pre[layer] at `positions`."""
+    assert positions in ("read", "all")
+    pad_id = model.tokenizer.pad_token_id
+    out = []
+    for start in range(0, len(prompts), batch_size):
+        batch = prompts[start : start + batch_size]
+        read_pos = (model.to_tokens(batch)[:, 1:] != pad_id).sum(1)
+        rows = t.arange(len(batch), device=read_pos.device)
+
+        def edit_hook(resid: Float[Tensor, "batch seq d_model"], hook) -> Float[Tensor, "batch seq d_model"]:
+            if positions == "all":
+                return edit_raw(resid)
+            resid[rows, read_pos] = edit_raw(resid[rows, read_pos])
+            return resid
+
+        hooks = [] if edit_raw is None else [(f"blocks.{layer}.hook_resid_pre", edit_hook)]
+        per_probe = []
+        for probe in PROBES:
+            with model.hooks(fwd_hooks=hooks):
+                logprobs, _ = last_token_logprobs_and_acts(model, batch, probe, layer)
+            per_probe.append(restrict_to_answer_vocab(logprobs, answer_ids))
+        out.append(t.stack(per_probe, dim=1))
+    return t.cat(out)
+
+
+if MAIN:
+    tests.test_behaviour_under_edit(behaviour_under_edit, gpt2, test_prompts[:4], gpt2_test_behaviour[:4])
+
+# %%
+
+def faithfulness_summary(
+    clean_actual: Tensor, edited_actual: Tensor, clean_pred: Tensor, edited_pred: Tensor, min_prob: float = 0.02
+) -> dict[str, float]:
+    """KL of actual and predicted behaviour changes, and the correlation of per-token log-prob changes."""
+    def mean_kl(p: Tensor, q: Tensor) -> float:
+        return (p.exp() * (p - q)).sum(-1).mean().item()
+
+    mask = clean_actual[..., :-1].exp() > min_prob
+    d_pred = (edited_pred - clean_pred)[..., :-1][mask]
+    d_actual = (edited_actual - clean_actual)[..., :-1][mask]
+    return {
+        "actual KL": mean_kl(clean_actual, edited_actual),
+        "predicted KL": mean_kl(clean_pred, edited_pred),
+        "r": t.corrcoef(t.stack([d_pred, d_actual]))[0, 1].item(),
+    }
+
+
+if MAIN:
+    tests.test_faithfulness_summary(faithfulness_summary)
+
+# %%
+
+if MAIN:
+    CONDITIONS = [
+        ("encoder direction", "read"),
+        ("effect vector", "read"),
+        ("effect vector", "all"),
+        ("random vector", "all"),
+    ]
+    gpt2_mean, gpt2_scale = act_mean.to(device), act_scale.to(device)
+    faith_rows, scatter_points = {}, {}
+    for group in ["she", "he", "they"]:
+        j, test_auc = best_latent_auroc(gpt2_z_train.cpu(), train_groups[group], gpt2_z_test.cpu(), test_groups[group])
+        active = (gpt2_z_test[:, j] > 0).nonzero().squeeze(-1)[:150]
+        prompts = [test_prompts[i] for i in active.tolist()]
+        edits = make_edits(gpt2_pcd, gpt2_train_acts, gpt2_z_train, j)
+        clean_actual = behaviour_under_edit(gpt2, prompts, None)
+        with t.no_grad():
+            clean_pred = gpt2_pcd(gpt2_test_acts[active]).log_softmax(-1)
+        label = f"#{j} ({group})"
+        print(f"latent {label}: held-out AUROC {test_auc:.2f}, active on {len(active)} of the stories used")
+        for edit_name, positions in CONDITIONS:
+            edited_actual = behaviour_under_edit(gpt2, prompts, in_raw_space(edits[edit_name], gpt2_mean, gpt2_scale), positions)
+            with t.no_grad():
+                edited_pred = gpt2_pcd(edits[edit_name](gpt2_test_acts[active])).log_softmax(-1)
+            faith_rows[(label, f"{edit_name} @ {positions}")] = faithfulness_summary(clean_actual, edited_actual, clean_pred, edited_pred)
+            if (edit_name, positions) == ("effect vector", "all"):
+                mask = clean_actual[..., :-1].exp() > 0.02
+                scatter_points[label] = ((edited_pred - clean_pred)[..., :-1][mask], (edited_actual - clean_actual)[..., :-1][mask])
+    
+    faith_df = pd.DataFrame(faith_rows).T
+    utils.plot_faithfulness_bars(faith_df, "GPT-2: does removing a PCD concept change GPT-2 as much as the PCD predicts?")
+    display(faith_df.round(3))
+
+# %%
+
+if MAIN:
+    utils.plot_faithfulness_scatter(scatter_points, "GPT-2: effect vector removed at all positions (layer 10)")
+
+# %%
+
+if MAIN:
+    story, group = "The nurse lost her keys at the station.", "she"
+    j = best_latent_auroc(gpt2_z_train.cpu(), train_groups[group], gpt2_z_test.cpu(), test_groups[group])[0]
+    v = concept_vector(gpt2_train_acts, gpt2_z_train, j)
+    remove = lambda a: a - v
+    
+    story_acts = (get_acts_and_behaviour([story])[0] - act_mean) / act_scale
+    clean = behaviour_under_edit(gpt2, [story], None)
+    edited = behaviour_under_edit(gpt2, [story], in_raw_space(remove, gpt2_mean, gpt2_scale), "all")
+    with t.no_grad():
+        pred_clean, pred_edited = gpt2_pcd(story_acts).log_softmax(-1), gpt2_pcd(remove(story_acts)).log_softmax(-1)
+    print(f"{story}   (removing latent #{j}, the '{group}' concept, at all positions)\n")
+    for q in [1, 2]:
+        print(f"{PROBES[q]!r}")
+        print(f"  GPT-2 before: {top_answers(clean[0, q])}\n  GPT-2 after:  {top_answers(edited[0, q])}")
+        print(f"  PCD before:   {top_answers(pred_clean[0, q])}\n  PCD after:    {top_answers(pred_edited[0, q])}")
+
+# %%

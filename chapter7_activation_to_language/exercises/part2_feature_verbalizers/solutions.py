@@ -1,1276 +1,1107 @@
 # %%
-"""Reference solutions for [7.2] Feature Verbalizers.
 
-The learner-facing notebooks implement the same core functions inline. This module
-exists so the focused tests and release checks have an importable reference.
-"""
 
-from __future__ import annotations
+import sys
+from functools import partial
+from pathlib import Path
 
-import random
-from dataclasses import asdict, dataclass
-from typing import Literal, Sequence
-
+import matplotlib.pyplot as plt
+import pandas as pd
 import torch as t
+import torch.nn.functional as F
+from IPython.display import display
+from jaxtyping import Float, Int
+from sae_lens import SAE
+from torch import Tensor
+from tqdm.auto import tqdm
+from transformer_lens import HookedTransformer
 
-MODEL_ID = "EleutherAI/pythia-70m"
-MODEL_REVISION = "a39f36b100fe8a5377810d56c3f4789b9c53ac42"
-LAYER = 3
-IS_TOKEN = " is"
-ARE_TOKEN = " are"
-PAIR_CAUSAL_NULL_SEED = 1729
-PAIR_CAUSAL_NULL_COUNT = 256
-Number = Literal["singular", "plural"]
-Split = Literal["train", "validation", "heldout"]
-Morphology = Literal["regular", "irregular", "nonce"]
+device = t.device("mps" if t.backends.mps.is_available() else "cuda" if t.cuda.is_available() else "cpu")
 
+# Make sure exercises are in the path
+chapter = "chapter7_activation_to_language"
+section = "part2_feature_verbalizers"
+root_dir = next(p for p in [Path.cwd(), *Path.cwd().parents] if (p / chapter).exists())
+exercises_dir = root_dir / chapter / "exercises"
+section_dir = exercises_dir / section
+if str(exercises_dir) not in sys.path:
+    sys.path.append(str(exercises_dir))
 
-@dataclass(frozen=True)
-class DirectionDecoder:
-    direction: t.Tensor
-    threshold: float
-    negative_mean: float
-    positive_mean: float
+import part2_feature_verbalizers.tests as tests
+import part2_feature_verbalizers.utils as utils
 
+pd.set_option("display.max_colwidth", 120)
+pd.set_option("display.width", 250)
 
-@dataclass(frozen=True)
-class ActivationCache:
-    prompts: tuple[str, ...]
-    activations: t.Tensor
-    next_token_margins: t.Tensor
+MAIN = __name__ == "__main__"
 
+# %%
 
-@dataclass(frozen=True)
-class NumberExample:
-    prompt: str
-    noun: str
-    number: Number
-    split: Split
-    morphology: Morphology
-    semantic_class: str
+HOOK = "blocks.7.hook_resid_pre"  # the SAE's hook point (and where we steer, in section 5)
+LAYER = 7
 
+# %%
 
-@dataclass(frozen=True)
-class Hypothesis:
-    hypothesis_id: str
-    description: str
+if MAIN:
+    model = HookedTransformer.from_pretrained("gpt2-small", device=device)
+    model.requires_grad_(False)
+    
+    sae = SAE.from_pretrained("gpt2-small-res-jb", HOOK, device=str(device))
+    sae.requires_grad_(False)
+    
+    print(f"SAE: {sae.cfg.d_in} -> {sae.cfg.d_sae} latents, hook = {sae.cfg.metadata.hook_name}")
 
+# %%
 
-@dataclass(frozen=True)
-class BinaryEvaluation:
-    accuracy: float
-    baseline_accuracy: float
-    subset_accuracy: float
-    subset_baseline_accuracy: float
-    beats_baseline: bool
-    survives_subset: bool
+if MAIN:
+    tokens = utils.load_pile_tokens(model, n_sequences=4000, seq_len=64)
+    explain_tokens, score_tokens = tokens[:2000], tokens[2000:]
+    print(f"explain split: {tuple(explain_tokens.shape)}, score split: {tuple(score_tokens.shape)}")
+    print(repr(model.to_string(explain_tokens[0, 1:30])))
 
+# %%
 
-@dataclass(frozen=True)
-class HookIntervention:
-    next_token_margins: t.Tensor
-    hook_calls: int
+def sae_latent_acts(resid: Float[Tensor, "... d_model"], sae: SAE, latents: list[int]) -> Float[Tensor, "... n_latents"]:
+    """Activations of the chosen SAE latents: ReLU((resid - b_dec) @ W_enc[:, latents] + b_enc[latents])."""
+    return F.relu((resid - sae.b_dec) @ sae.W_enc[:, latents] + sae.b_enc[latents])
 
 
-@dataclass(frozen=True)
-class LayerSweepCache:
-    layer_names: tuple[str, ...]
-    activations: tuple[t.Tensor, ...]
+if MAIN:
+    tests.test_sae_latent_acts(sae_latent_acts, sae)
+
+# %%
+
+@t.inference_mode()
+def collect_activations(
+    model: HookedTransformer,
+    tokens: Int[Tensor, "n_seq seq"],
+    hook_name: str,
+    act_fn,
+    batch_size: int = 100,
+) -> Float[Tensor, "n_seq seq n_units"]:
+    """Runs the model on `tokens` in batches and returns act_fn(activation at hook_name), with position 0 zeroed."""
+    layer = int(hook_name.split(".")[1])
+    out = []
+    for batch in tokens.split(batch_size):
+        _, cache = model.run_with_cache(batch.to(model.cfg.device), names_filter=hook_name, stop_at_layer=layer + 1)
+        acts = act_fn(cache[hook_name]).float()
+        acts[:, 0] = 0.0
+        out.append(acts.cpu())
+    return t.cat(out)
 
 
-HYPOTHESES = (
-    Hypothesis(
-        "subject_number_plural",
-        "The final subject noun is grammatically plural.",
-    ),
-    Hypothesis(
-        "surface_suffix_s",
-        "The final subject token ends with the letter s.",
-    ),
-    Hypothesis(
-        "subject_is_person",
-        "The subject denotes a person, regardless of number.",
-    ),
-    Hypothesis(
-        "noun_has_six_letters",
-        "The displayed noun token has at least six letters.",
-    ),
-)
+if MAIN:
+    tests.test_collect_activations(collect_activations, model)
 
-TRAIN_PAIRS = (
-    ("pilot", "pilots", "person"),
-    ("doctor", "doctors", "person"),
-    ("artist", "artists", "person"),
-    ("farmer", "farmers", "person"),
-    ("chef", "chefs", "person"),
-    ("lawyer", "lawyers", "person"),
-    ("student", "students", "person"),
-    ("teacher", "teachers", "person"),
-    ("driver", "drivers", "person"),
-    ("writer", "writers", "person"),
-    ("singer", "singers", "person"),
-    ("guard", "guards", "person"),
-)
+# %%
 
-VALIDATION_PAIRS = (
-    ("baker", "bakers", "regular", "person"),
-    ("dancer", "dancers", "regular", "person"),
-    ("mouse", "mice", "irregular", "animal"),
-    ("goose", "geese", "irregular", "animal"),
-    ("wug", "wugs", "nonce", "nonce"),
-    ("dax", "daxes", "nonce", "nonce"),
-)
-
-HELDOUT_PAIRS = (
-    ("engineer", "engineers", "regular", "person"),
-    ("musician", "musicians", "regular", "person"),
-    ("scientist", "scientists", "regular", "person"),
-    ("gardener", "gardeners", "regular", "person"),
-    ("man", "men", "irregular", "person"),
-    ("woman", "women", "irregular", "person"),
-    ("child", "children", "irregular", "person"),
-    ("person", "people", "irregular", "person"),
-    ("blicket", "blickets", "nonce", "nonce"),
-    ("zorp", "zorps", "nonce", "nonce"),
-    ("plin", "plins", "nonce", "nonce"),
-    ("nup", "nups", "nonce", "nonce"),
-)
-
-
-def _pair_examples(
-    pairs: Sequence[tuple[str, str, str]],
-    *,
-    split: Split,
-    morphology: Morphology,
-) -> list[NumberExample]:
-    examples: list[NumberExample] = []
-    for singular, plural, semantic_class in pairs:
-        examples.extend(
-            [
-                NumberExample(
-                    f"The {singular}", singular, "singular", split, morphology, semantic_class
-                ),
-                NumberExample(
-                    f"The {plural}", plural, "plural", split, morphology, semantic_class
-                ),
-            ]
-        )
-    return examples
-
-
-def make_number_dataset() -> tuple[NumberExample, ...]:
-    """Build paired train, validation, and held-out prompt families."""
-
-    train = _pair_examples(TRAIN_PAIRS, split="train", morphology="regular")
-    validation: list[NumberExample] = []
-    for singular, plural, morphology, semantic_class in VALIDATION_PAIRS:
-        validation.extend(
-            _pair_examples(
-                [(singular, plural, semantic_class)],
-                split="validation",
-                morphology=morphology,
-            )
-        )
-    heldout: list[NumberExample] = []
-    for singular, plural, morphology, semantic_class in HELDOUT_PAIRS:
-        heldout.extend(
-            _pair_examples(
-                [(singular, plural, semantic_class)],
-                split="heldout",
-                morphology=morphology,
-            )
-        )
-    examples = tuple(train + validation + heldout)
-    validate_number_dataset(examples)
-    return examples
-
-
-def split_number_dataset(
-    examples: Sequence[NumberExample],
-) -> tuple[tuple[NumberExample, ...], tuple[NumberExample, ...], tuple[NumberExample, ...]]:
-    return tuple(
-        tuple(example for example in examples if example.split == split)
-        for split in ("train", "validation", "heldout")
-    )
-
-
-def validate_number_dataset(examples: Sequence[NumberExample]) -> None:
-    """Reject overlap and malformed number pairs before any activation fitting."""
-
-    if not examples:
-        raise ValueError("examples must be nonempty.")
-    prompts = [example.prompt for example in examples]
-    if len(set(prompts)) != len(prompts):
-        raise ValueError("prompts must be unique.")
-    train, validation, heldout = split_number_dataset(examples)
-    if not train or not validation or not heldout:
-        raise ValueError("train, validation, and heldout splits must all be nonempty.")
-    split_nouns = [{example.noun for example in split} for split in (train, validation, heldout)]
-    if (
-        split_nouns[0] & split_nouns[1]
-        or split_nouns[0] & split_nouns[2]
-        or split_nouns[1] & split_nouns[2]
-    ):
-        raise ValueError("noun vocabulary must be disjoint across splits.")
-    for name, split in zip(
-        ("train", "validation", "heldout"),
-        (train, validation, heldout),
-        strict=True,
-    ):
-        counts = {
-            number: sum(example.number == number for example in split)
-            for number in ("singular", "plural")
-        }
-        if counts["singular"] != counts["plural"]:
-            raise ValueError(f"{name} must contain balanced singular/plural pairs.")
-
-
-def number_labels(examples: Sequence[NumberExample]) -> t.Tensor:
-    return t.tensor([example.number == "plural" for example in examples], dtype=t.bool)
-
-
-def fit_mean_difference_decoder(activations: t.Tensor, labels: t.Tensor) -> DirectionDecoder:
-    """Fit a unit mean-difference direction using labeled training activations only."""
-
-    if activations.ndim != 2:
-        raise ValueError("activations must have shape [examples, d_model].")
-    labels = labels.flatten().bool()
-    if activations.shape[0] != labels.numel():
-        raise ValueError("activations and labels must contain the same number of examples.")
-    if not labels.any() or labels.all():
-        raise ValueError("labels must contain both classes.")
-    activations = activations.float()
-    negative_mean_vector = activations[~labels].mean(dim=0)
-    positive_mean_vector = activations[labels].mean(dim=0)
-    difference = positive_mean_vector - negative_mean_vector
-    norm = difference.norm()
-    if not t.isfinite(norm) or norm <= 1e-8:
-        raise ValueError("class means do not define a finite nonzero direction.")
-    direction = difference / norm
-    negative_mean = float(negative_mean_vector @ direction)
-    positive_mean = float(positive_mean_vector @ direction)
-    return DirectionDecoder(
-        direction=direction,
-        threshold=(negative_mean + positive_mean) / 2,
-        negative_mean=negative_mean,
-        positive_mean=positive_mean,
-    )
-
-
-def direction_scores(activations: t.Tensor, decoder: DirectionDecoder) -> t.Tensor:
-    if activations.ndim != 2 or activations.shape[1] != decoder.direction.numel():
-        raise ValueError("activations must be [examples, d_model] and match the decoder.")
-    return activations.float() @ decoder.direction.float()
-
-
-def direction_predictions(activations: t.Tensor, decoder: DirectionDecoder) -> t.Tensor:
-    return direction_scores(activations, decoder) >= decoder.threshold
-
-
-def replace_direction_component(
-    activations: t.Tensor,
-    direction: t.Tensor,
-    target_scores: t.Tensor | float,
-) -> t.Tensor:
-    """Replace only the component parallel to a unit direction."""
-
-    if (
-        activations.ndim != 2
-        or direction.ndim != 1
-        or activations.shape[1] != direction.numel()
-    ):
-        raise ValueError("expected activations [batch, d_model] and matching direction [d_model].")
-    direction = direction.to(device=activations.device, dtype=activations.dtype)
-    expected_norm = t.tensor(1.0, device=direction.device, dtype=direction.dtype)
-    if not t.allclose(direction.norm(), expected_norm, atol=1e-5):
-        raise ValueError("direction must have unit norm.")
-    targets = t.as_tensor(target_scores, device=activations.device, dtype=activations.dtype)
-    targets = targets.expand(activations.shape[0])
-    current_scores = activations @ direction
-    return activations + (targets - current_scores).unsqueeze(-1) * direction
-
-
-def _single_token_id(tokenizer, text: str) -> int:
-    token_ids = tokenizer.encode(text, add_special_tokens=False)
-    if len(token_ids) != 1:
-        raise ValueError(f"{text!r} must tokenize to exactly one token, got {token_ids}.")
-    return int(token_ids[0])
-
-
-def load_pinned_model(device: str | t.device = "cpu"):
-    """Load the pinned checkpoint from the local HF cache onto one explicit device."""
-
-    from transformers import AutoModelForCausalLM, AutoTokenizer
-
-    tokenizer = AutoTokenizer.from_pretrained(
-        MODEL_ID,
-        revision=MODEL_REVISION,
-        local_files_only=True,
-    )
-    tokenizer.pad_token = tokenizer.eos_token
-    tokenizer.padding_side = "left"
-    model = AutoModelForCausalLM.from_pretrained(
-        MODEL_ID,
-        revision=MODEL_REVISION,
-        local_files_only=True,
-        dtype=t.float32,
-    ).to(device)
-    model.eval()
-    return model, tokenizer
-
-
-def cache_final_token_activations(
-    model,
-    tokenizer,
-    prompts: Sequence[str],
-    *,
-    layer: int = LAYER,
-) -> ActivationCache:
-    """Cache real final-token residual activations and the downstream are-is margin."""
-
-    if not prompts:
-        raise ValueError("prompts must be nonempty.")
-    if layer < 0 or layer >= len(model.gpt_neox.layers):
-        raise ValueError("layer is outside the model's transformer blocks.")
-    device = next(model.parameters()).device
-    encoded = tokenizer(list(prompts), padding=True, return_tensors="pt").to(device)
+if MAIN:
     with t.inference_mode():
-        output = model(**encoded, output_hidden_states=True)
-    activations = output.hidden_states[layer + 1][:, -1, :].detach().cpu().float()
-    logits = output.logits[:, -1, :].detach().cpu().float()
-    is_id = _single_token_id(tokenizer, IS_TOKEN)
-    are_id = _single_token_id(tokenizer, ARE_TOKEN)
-    margins = logits[:, are_id] - logits[:, is_id]
-    return ActivationCache(tuple(prompts), activations, margins)
+        counts = t.zeros(sae.cfg.d_sae, device=device)
+        for batch in tokens.split(100):
+            _, cache = model.run_with_cache(batch.to(device), names_filter=HOOK, stop_at_layer=LAYER + 1)
+            counts += (sae.encode(cache[HOOK])[:, 1:] > 0).float().sum((0, 1))
+        density = (counts / (tokens.shape[0] * (tokens.shape[1] - 1))).cpu()
+    
+    candidates = ((density > 5e-4) & (density < 1e-2)).nonzero().squeeze(-1)
+    LATENTS = candidates[t.randperm(len(candidates), generator=t.Generator().manual_seed(0))[:30]].tolist()
+    N_LATENTS = len(LATENTS)
+    
+    print(f"{(density == 0).sum()} latents never fire, {len(candidates)} have density in [0.05%, 1%]")
+    print(f"Our {N_LATENTS} latents: {LATENTS}")
+
+# %%
+
+if MAIN:
+    latent_fn = partial(sae_latent_acts, sae=sae, latents=LATENTS)
+    explain_acts = collect_activations(model, explain_tokens, HOOK, latent_fn)
+    score_acts = collect_activations(model, score_tokens, HOOK, latent_fn)
+    print(explain_acts.shape, score_acts.shape)
+
+# %%
+
+WINDOW_BEFORE, WINDOW_AFTER = 15, 4
 
 
-def cache_layer_sweep(
-    model,
+def window_bounds(pos: int, seq_len: int) -> tuple[int, int]:
+    """The [start, end) token range of the example window centred on `pos` (never including BOS)."""
+    return max(1, pos - WINDOW_BEFORE), min(seq_len, pos + WINDOW_AFTER + 1)
+
+
+def get_window(
+    model: HookedTransformer, tokens: Int[Tensor, "n_seq seq"], acts: Float[Tensor, "n_seq seq"], seq: int, pos: int
+) -> tuple[list[str], Float[Tensor, " n_tok"]]:
+    """Returns the string tokens and the activations of the example window centred on (seq, pos)."""
+    start, end = window_bounds(pos, tokens.shape[1])
+    return [model.to_string(tok) for tok in tokens[seq, start:end]], acts[seq, start:end]
+
+# %%
+
+def top_activating_examples(acts: Float[Tensor, "n_seq seq"], k: int) -> list[tuple[int, int]]:
+    """The (seq, pos) of the max activation in each of the k sequences with the largest max activation (> 0)."""
+    max_acts, max_pos = acts.max(dim=-1)
+    order = t.argsort(max_acts, descending=True, stable=True)[:k]
+    return [(int(seq), int(max_pos[seq])) for seq in order if max_acts[seq] > 0]
+
+
+if MAIN:
+    tests.test_top_activating_examples(top_activating_examples)
+
+# %%
+
+def random_examples(acts: Float[Tensor, "n_seq seq"], k: int, generator: t.Generator) -> list[tuple[int, int]]:
+    """k random (seq, pos) pairs, with positions chosen so that the example window is never clipped."""
+    n_seq, seq_len = acts.shape
+    seqs = t.randint(0, n_seq, (k,), generator=generator)
+    positions = t.randint(WINDOW_BEFORE + 1, seq_len - WINDOW_AFTER, (k,), generator=generator)
+    return list(zip(seqs.tolist(), positions.tolist()))
+
+
+def quantile_examples(
+    acts: Float[Tensor, "n_seq seq"], n_bins: int, k_per_bin: int, generator: t.Generator
+) -> list[list[tuple[int, int]]]:
+    """
+    Splits the activating sequences (sorted by max activation, highest first) into n_bins equal bins, and returns
+    k_per_bin random examples (seq, max position) from each bin.
+    """
+    max_acts, max_pos = acts.max(dim=-1)
+    active = (max_acts > 0).nonzero().squeeze(-1)
+    active = active[t.argsort(max_acts[active], descending=True, stable=True)]
+    bins = []
+    for bin_seqs in active.tensor_split(n_bins):
+        chosen = bin_seqs[t.randperm(len(bin_seqs), generator=generator)[:k_per_bin]]
+        bins.append([(int(seq), int(max_pos[seq])) for seq in chosen])
+    return bins
+
+
+if MAIN:
+    tests.test_random_examples(random_examples, WINDOW_BEFORE, WINDOW_AFTER)
+    tests.test_quantile_examples(quantile_examples)
+
+# %%
+
+def format_example(str_toks: list[str], acts: Float[Tensor, " n_tok"], threshold: float) -> str:
+    """Joins the tokens, wrapping each run of tokens with activation > threshold in << >>, and replacing \\n by ↵."""
+    text = "".join(f"<<{tok}>>" if act > threshold else tok for tok, act in zip(str_toks, acts.tolist()))
+    return text.replace(">><<", "").replace("\n", "↵")
+
+
+if MAIN:
+    tests.test_format_example(format_example)
+
+# %%
+
+if MAIN:
+    def show_examples(acts: Float[Tensor, "n_seq seq"], tokens: Int[Tensor, "n_seq seq"], examples: list[tuple[int, int]], threshold: float):
+        for seq, pos in examples:
+            str_toks, window_acts = get_window(model, tokens, acts, seq, pos)
+            print(f"  {window_acts.max().item():5.1f} | {format_example(str_toks, window_acts, threshold)}")
+    
+    
+    FOCUS = LATENTS.index(11803)
+    focus_acts = explain_acts[..., FOCUS]
+    focus_threshold = 0.25 * focus_acts.max().item()
+    gen = t.Generator().manual_seed(0)
+    focus_top = top_activating_examples(focus_acts, 10)
+    focus_quantile = quantile_examples(focus_acts, n_bins=5, k_per_bin=5, generator=gen)
+    focus_random = random_examples(focus_acts, 5, gen)
+    
+    n_active = (focus_acts.max(dim=-1).values > 0).sum().item()
+    print(f"Latent 11803 fires on {(focus_acts[:, 1:] > 0).sum()} tokens, in {n_active} of {len(focus_acts)} explain-split sequences\n")
+    print("Top 10 examples (max activation in window | excerpt):")
+    show_examples(focus_acts, explain_tokens, focus_top, focus_threshold)
+    print("\n5 examples from the 3rd of 5 quantile bins:")
+    show_examples(focus_acts, explain_tokens, focus_quantile[2], focus_threshold)
+    print("\n5 random examples:")
+    show_examples(focus_acts, explain_tokens, focus_random, focus_threshold)
+
+# %%
+
+if MAIN:
+    window_max = lambda examples: [get_window(model, explain_tokens, focus_acts, s, p)[1].max().item() for s, p in examples]
+    utils.plot_activation_distribution(
+        focus_acts,
+        top_values=window_max(focus_top),
+        quantile_values=window_max([ex for b in quantile_examples(focus_acts, 5, 4, gen) for ex in b]),
+        random_values=[v for v in window_max(random_examples(focus_acts, 10, gen)) if v > 0],
+        title="Latent 11803 on the explain split: where do our examples come from?",
+    )
+
+# %%
+
+if MAIN:
+    EXPLAINER_NAME = "Qwen/Qwen3-1.7B"
+    explainer_tok, explainer = utils.load_explainer(EXPLAINER_NAME, device)
+    print(f"Loaded {EXPLAINER_NAME}: {sum(p.numel() for p in explainer.parameters()) / 1e9:.2f}B parameters")
+
+# %%
+
+EXPLAINER_SYSTEM = (
+    "You are an interpretability researcher studying features in a language model. You will see text excerpts where "
+    "a feature is active. The tokens where the feature is active are marked with << >>. Your job is to explain what "
+    "the feature responds to, in one short phrase.\n\n"
+    "Focus on the MARKED tokens, not on the general topic of the excerpts. Ask yourself: what do the marked tokens "
+    "have in common? Often a feature fires on one particular word (e.g. 'the word \"however\"'), on a kind of word "
+    "(e.g. 'names of cities'), or on a word in a particular context (e.g. '\"bank\" meaning the side of a river'). "
+    "Answer with the phrase only, at most 15 words."
+)
+FEWSHOT_EXAMPLES = [
+    "I went to the<< store>> yesterday and",
+    "the nearest<< supermarket>> is closed",
+    "buy it at the local<< shop>>, she said",
+]
+FEWSHOT_MARKED = ["store", "supermarket", "shop"]
+FEWSHOT_EXPLANATION = 'nouns for places where you buy things, such as "store" and "shop"'
+
+# %%
+
+def build_explainer_messages(examples: list[str], marked_tokens: list[str]) -> list[dict[str, str]]:
+    """The explainer conversation: system prompt, one few-shot example, then the real excerpts."""
+    def query(examples: list[str], marked_tokens: list[str]) -> str:
+        lines = [f"{i + 1}. {example}" for i, example in enumerate(examples)]
+        return "Excerpts:\n" + "\n".join(lines) + "\nMarked tokens: " + ", ".join(marked_tokens)
+
+    return [
+        {"role": "system", "content": EXPLAINER_SYSTEM},
+        {"role": "user", "content": query(FEWSHOT_EXAMPLES, FEWSHOT_MARKED)},
+        {"role": "assistant", "content": FEWSHOT_EXPLANATION},
+        {"role": "user", "content": query(examples, marked_tokens)},
+    ]
+
+
+if MAIN:
+    tests.test_build_explainer_messages(build_explainer_messages)
+
+# %%
+
+def clean_explanation(reply: str) -> str:
+    """Keeps the first line of the reply, without surrounding quotes or a final full stop."""
+    line = reply.strip().split("\n")[0].strip()
+    if len(line) > 1 and line[0] == line[-1] == '"':
+        line = line[1:-1].strip()
+    return line.rstrip(".").strip()
+
+
+def explain_units(
+    model: HookedTransformer,
+    tokens: Int[Tensor, "n_seq seq"],
+    acts: Float[Tensor, "n_seq seq n_units"],
     tokenizer,
-    prompts: Sequence[str],
-) -> LayerSweepCache:
-    """Cache the embedding residual and every post-block final-token residual."""
+    llm,
+    k: int = 10,
+    threshold_frac: float = 0.25,
+) -> list[str]:
+    """One explanation per unit, written by `llm` from the unit's top-k examples in `tokens`."""
+    conversations = []
+    for j in range(acts.shape[-1]):
+        unit_acts = acts[..., j]
+        threshold = threshold_frac * unit_acts.max().item()
+        examples, marked = [], []
+        for seq, pos in top_activating_examples(unit_acts, k):
+            str_toks, window_acts = get_window(model, tokens, unit_acts, seq, pos)
+            examples.append(format_example(str_toks, window_acts, threshold))
+            marked.append(model.to_string(tokens[seq, pos]).replace("\n", "↵").strip())
+        conversations.append(build_explainer_messages(examples, marked))
+    replies = utils.generate_chat(tokenizer, llm, conversations, max_new_tokens=40)
+    return [clean_explanation(reply) for reply in replies]
 
-    if not prompts:
-        raise ValueError("prompts must be nonempty.")
-    device = next(model.parameters()).device
-    encoded = tokenizer(list(prompts), padding=True, return_tensors="pt").to(device)
-    with t.inference_mode():
-        output = model(**encoded, output_hidden_states=True)
-    activations = tuple(
-        hidden[:, -1, :].detach().cpu().float() for hidden in output.hidden_states
+# %%
+
+if MAIN:
+    explanations = explain_units(model, explain_tokens, explain_acts, explainer_tok, explainer)
+    
+    top_example_text = []
+    for j in range(N_LATENTS):
+        seq, pos = top_activating_examples(explain_acts[..., j], 1)[0]
+        str_toks, window_acts = get_window(model, explain_tokens, explain_acts[..., j], seq, pos)
+        top_example_text.append(format_example(str_toks, window_acts, 0.25 * explain_acts[..., j].max().item()))
+    
+    for latent, explanation, example in zip(LATENTS, explanations, top_example_text):
+        print(f"{latent:>5}  {explanation}")
+        print(f"{'':>5}    strongest example: {example}")
+
+# %%
+
+if MAIN:
+    NAIVE_SYSTEM = (
+        "We're studying features in a neural network. Each feature activates on particular words or concepts in short "
+        "text excerpts. In each excerpt below, the tokens where the feature activates are marked with << >>. Summarize in "
+        "one short phrase what the feature activates on. Answer with the phrase only, at most 15 words."
     )
-    expected_count = len(model.gpt_neox.layers) + 1
-    if len(activations) != expected_count:
-        raise AssertionError("hidden-state count must equal embedding plus transformer blocks")
-    names = ("embedding",) + tuple(f"block {index}" for index in range(len(activations) - 1))
-    return LayerSweepCache(names, activations)
+    naive_ids = [LATENTS.index(latent) for latent in [16436, 8232, 13638, 11803, 4412, 10483]]
+    naive_conversations = []
+    for j in naive_ids:
+        unit_acts = explain_acts[..., j]
+        examples = [
+            format_example(*get_window(model, explain_tokens, unit_acts, s, p), 0.25 * unit_acts.max().item())
+            for s, p in top_activating_examples(unit_acts, 10)
+        ]
+        excerpts = "Excerpts:\n" + "\n".join(f"{i + 1}. {ex}" for i, ex in enumerate(examples))
+        naive_conversations.append([{"role": "system", "content": NAIVE_SYSTEM}, {"role": "user", "content": excerpts}])
+    naive_explanations = [clean_explanation(r) for r in utils.generate_chat(explainer_tok, explainer, naive_conversations)]
+    
+    for j, naive in zip(naive_ids, naive_explanations):
+        print(f"latent {LATENTS[j]}\n  naive prompt: {naive}\n  our prompt:   {explanations[j]}")
+
+# %%
+
+def shuffle_activations(acts: Float[Tensor, "n_seq seq n_units"], generator: t.Generator) -> Float[Tensor, "n_seq seq n_units"]:
+    """Independently permutes each unit's activations across all non-BOS token positions."""
+    n_seq, seq_len, n_units = acts.shape
+    flat = acts[:, 1:].reshape(-1, n_units)
+    shuffled = t.stack([flat[t.randperm(len(flat), generator=generator), j] for j in range(n_units)], dim=-1)
+    out = t.zeros_like(acts)
+    out[:, 1:] = shuffled.reshape(n_seq, seq_len - 1, n_units)
+    return out
 
 
-def layer_sweep_accuracies(
-    train_cache: LayerSweepCache,
-    train_labels: t.Tensor,
-    test_cache: LayerSweepCache,
-    test_labels: t.Tensor,
-) -> tuple[float, ...]:
-    """Fit on training activations independently at every depth and test held out."""
+if MAIN:
+    tests.test_shuffle_activations(shuffle_activations)
 
-    if train_cache.layer_names != test_cache.layer_names:
-        raise ValueError("train and test sweeps must contain the same layers")
-    return tuple(
-        float(direction_predictions(
-            test_activations, fit_mean_difference_decoder(train_activations, train_labels)
-        ).eq(test_labels.bool()).float().mean())
-        for train_activations, test_activations in zip(
-            train_cache.activations, test_cache.activations, strict=True
-        )
-    )
+# %%
 
+if MAIN:
+    noise_explain_acts = shuffle_activations(explain_acts, t.Generator().manual_seed(1))
+    noise_score_acts = shuffle_activations(score_acts, t.Generator().manual_seed(2))
+    noise_explanations = explain_units(model, explain_tokens, noise_explain_acts, explainer_tok, explainer)
+    
+    print("Top 3 examples of the shuffled version of latent 11803:")
+    show_examples(noise_explain_acts[..., FOCUS], explain_tokens, top_activating_examples(noise_explain_acts[..., FOCUS], 3),
+                  0.25 * noise_explain_acts[..., FOCUS].max().item())
+    print("\nExplanations of noise features:")
+    for j in list(range(6)) + [FOCUS]:
+        print(f"  shuffled latent {LATENTS[j]}: {noise_explanations[j]}")
 
-def hypothesis_predictions(
-    examples: Sequence[NumberExample],
-    hypothesis: Hypothesis,
-) -> t.Tensor:
-    """Execute a verbalizer as a semantic predicate, never as an answer token."""
+# %%
 
-    if hypothesis.hypothesis_id == "subject_number_plural":
-        values = [example.number == "plural" for example in examples]
-    elif hypothesis.hypothesis_id == "surface_suffix_s":
-        values = [example.noun.lower().endswith("s") for example in examples]
-    elif hypothesis.hypothesis_id == "subject_is_person":
-        values = [example.semantic_class == "person" for example in examples]
-    elif hypothesis.hypothesis_id == "noun_has_six_letters":
-        values = [len(example.noun) >= 6 for example in examples]
-    else:
-        raise KeyError(f"Unknown hypothesis id: {hypothesis.hypothesis_id!r}.")
-    return t.tensor(values, dtype=t.bool)
+SIM_SYSTEM = (
+    "We're studying a feature in a language model. You will be given an explanation of what the feature responds to, "
+    "and a text excerpt. For each token of the excerpt, predict how strongly the feature activates on it, from 0 (not "
+    "active) to 9 (maximally active). Most tokens have activation 0."
+)
+SIM_FEWSHOT_TOKENS = ["I", " went", " to", " the", " store", " and", " then", " the", " bakery", "."]
+SIM_FEWSHOT_ACTS = [0, 0, 0, 0, 9, 0, 0, 0, 6, 0]
 
 
-def score_hypotheses(
-    examples: Sequence[NumberExample],
-    activation_predictions: t.Tensor,
-    candidates: Sequence[Hypothesis] = HYPOTHESES,
-    *,
-    seed: int = 0,
-) -> tuple[dict[str, object], ...]:
-    """Score candidate meaning against activations after randomizing display order."""
+def clean_token(text: str) -> str:
+    """Newlines would break the one-token-per-line format, and tabs would break the token/activation separator."""
+    return text.replace("\n", "↵").replace("\t", " ")
 
-    activation_predictions = activation_predictions.flatten().bool()
-    if len(examples) != activation_predictions.numel():
-        raise ValueError("examples and activation_predictions must align.")
-    if not candidates or len({candidate.hypothesis_id for candidate in candidates}) != len(candidates):
-        raise ValueError("candidate ids must be nonempty and unique.")
-    randomized = list(candidates)
-    random.Random(seed).shuffle(randomized)
-    rows = []
-    for display_index, candidate in enumerate(randomized, start=1):
-        predictions = hypothesis_predictions(examples, candidate)
-        rows.append(
-            {
-                "display_index": display_index,
-                "hypothesis_id": candidate.hypothesis_id,
-                "description": candidate.description,
-                "agreement": float(predictions.eq(activation_predictions).float().mean()),
-                "word_count": len(candidate.description.rstrip(".").split()),
-                "counterexample_count": int(predictions.ne(activation_predictions).sum()),
-            }
-        )
-    return tuple(rows)
+# %%
 
-
-def select_hypothesis(rows: Sequence[dict[str, object]]) -> str:
-    if not rows:
-        raise ValueError("rows must be nonempty.")
-    selected = max(
-        rows,
-        key=lambda row: (
-            float(row["agreement"]),
-            -int(row["word_count"]),
-            str(row["hypothesis_id"]),
-        ),
-    )
-    return str(selected["hypothesis_id"])
-
-
-def rank_feature_examples(
-    examples: Sequence[NumberExample],
-    scores: t.Tensor,
-    threshold: float,
-    *,
-    n: int = 2,
-    seed: int = 0,
-) -> tuple[dict[str, object], ...]:
-    """Return top, bottom, random, and near-threshold evidence rows."""
-
-    scores = scores.flatten().float()
-    if len(examples) != scores.numel() or not 0 < n <= len(examples):
-        raise ValueError("scores must align with examples and n must select available rows")
-    order = t.argsort(scores)
-    groups = {
-        "bottom": order[:n].tolist(),
-        "top": order[-n:].flip(0).tolist(),
-        "near miss": t.argsort((scores - threshold).abs())[:n].tolist(),
-        "random": random.Random(seed).sample(range(len(examples)), n),
-    }
-    rows = []
-    for group, indices in groups.items():
-        for index in indices:
-            example = examples[index]
-            rows.append(
-                {
-                    "group": group,
-                    "prompt": example.prompt,
-                    "score": float(scores[index]),
-                    "predicted_side": "positive" if scores[index] >= threshold else "negative",
-                    "morphology": example.morphology,
-                }
-            )
-    return tuple(rows)
-
-
-def mine_counterexamples(
-    examples: Sequence[NumberExample],
-    activation_predictions: t.Tensor,
-    hypothesis: Hypothesis,
-) -> tuple[dict[str, object], ...]:
-    """Find rows where an executable explanation disagrees with the feature side."""
-
-    activation_predictions = activation_predictions.flatten().bool()
-    if len(examples) != activation_predictions.numel():
-        raise ValueError("examples and activation_predictions must align")
-    explanation_predictions = hypothesis_predictions(examples, hypothesis)
-    return tuple(
+def build_simulation_input(tokenizer, explanation: str, str_toks: list[str]) -> tuple[list[int], list[int]]:
+    """Returns (input_ids, slots): the simulator prompt for this excerpt, and the position of the tab after each token."""
+    messages = [
+        {"role": "system", "content": SIM_SYSTEM},
+        {"role": "user", "content": f"Explanation: {FEWSHOT_EXPLANATION}\nExcerpt: {''.join(SIM_FEWSHOT_TOKENS)}"},
         {
-            "prompt": example.prompt,
-            "feature_side": "positive" if feature_value else "negative",
-            "explanation_prediction": "positive" if explanation_value else "negative",
-            "morphology": example.morphology,
-        }
-        for example, feature_value, explanation_value in zip(
-            examples,
-            activation_predictions,
-            explanation_predictions,
-            strict=True,
-        )
-        if bool(feature_value) != bool(explanation_value)
+            "role": "assistant",
+            "content": "".join(f"{clean_token(tok)}\t{act}\n" for tok, act in zip(SIM_FEWSHOT_TOKENS, SIM_FEWSHOT_ACTS)),
+        },
+        {"role": "user", "content": f"Explanation: {explanation}\nExcerpt: {clean_token(''.join(str_toks))}"},
+    ]
+    ids = tokenizer(utils.chat_prompt(tokenizer, messages), add_special_tokens=False).input_ids
+    slots = []
+    for tok in str_toks:
+        ids = ids + tokenizer(f"{clean_token(tok)}\t", add_special_tokens=False).input_ids
+        slots.append(len(ids) - 1)
+        ids = ids + tokenizer("unknown\n", add_special_tokens=False).input_ids
+    return ids, slots
+
+
+if MAIN:
+    tests.test_build_simulation_input(build_simulation_input, explainer_tok)
+
+# %%
+
+if MAIN:
+    example_ids, example_slots = build_simulation_input(explainer_tok, explanations[FOCUS], [" the", " capital", " of", " Bihar", "."])
+    print(explainer_tok.decode(example_ids)[-420:])
+    print(f"slots: {example_slots}, tokens at slots: {[explainer_tok.decode(example_ids[s]) for s in example_slots]}")
+
+# %%
+
+def simulate_activations(tokenizer, llm, requests: list[tuple[str, list[str]]], batch_size: int = 32) -> list[Float[Tensor, " n_tok"]]:
+    """For each (explanation, str_toks) request, the simulator's expected activation (0-9) for every token."""
+    inputs = [build_simulation_input(tokenizer, explanation, str_toks) for explanation, str_toks in requests]
+    digit_ids = [tokenizer.convert_tokens_to_ids(str(d)) for d in range(10)]
+    logits = utils.logits_at_positions(
+        tokenizer, llm, [ids for ids, _ in inputs], [slots for _, slots in inputs], digit_ids, batch_size
     )
+    return [slot_logits.softmax(dim=-1) @ t.arange(10.0) for slot_logits in logits]
 
 
-def brevity_frontier(rows: Sequence[dict[str, object]]) -> tuple[str, ...]:
-    """Return explanations not dominated in both agreement and word count."""
+if MAIN:
+    tests.test_simulate_activations(simulate_activations, build_simulation_input, explainer_tok, explainer)
 
-    frontier = []
-    for row in rows:
-        dominated = any(
-            float(other["agreement"]) >= float(row["agreement"])
-            and int(other["word_count"]) <= int(row["word_count"])
-            and (
-                float(other["agreement"]) > float(row["agreement"])
-                or int(other["word_count"]) < int(row["word_count"])
-            )
-            for other in rows
-        )
-        if not dominated:
-            frontier.append(str(row["hypothesis_id"]))
-    return tuple(sorted(frontier))
+# %%
+
+def correlation_score(pred: Float[Tensor, " n"], true: Float[Tensor, " n"]) -> float:
+    """Pearson correlation of pred and true, or 0.0 if either is constant."""
+    pred = pred.double() - pred.double().mean()
+    true = true.double() - true.double().mean()
+    denom = pred.norm() * true.norm()
+    if denom < 1e-8:
+        return 0.0
+    return (pred @ true / denom).item()
 
 
-def evaluate_binary_predictions(
-    predictions: t.Tensor,
-    labels: t.Tensor,
-    baseline_predictions: t.Tensor,
-    subset_mask: t.Tensor,
-) -> BinaryEvaluation:
-    """Compare method and baseline on both the full set and the exact same subset."""
+if MAIN:
+    tests.test_correlation_score(correlation_score)
 
-    predictions = predictions.flatten().bool()
-    labels = labels.flatten().bool()
-    baseline_predictions = baseline_predictions.flatten().bool()
-    subset_mask = subset_mask.flatten().bool()
-    if not (predictions.shape == labels.shape == baseline_predictions.shape == subset_mask.shape):
-        raise ValueError("predictions, labels, baseline, and subset mask must have matching shape.")
-    if not subset_mask.any():
-        raise ValueError("subset_mask must select at least one example.")
-    accuracy = float(predictions.eq(labels).float().mean())
-    baseline_accuracy = float(baseline_predictions.eq(labels).float().mean())
-    subset_accuracy = float(predictions[subset_mask].eq(labels[subset_mask]).float().mean())
-    subset_baseline_accuracy = float(
-        baseline_predictions[subset_mask].eq(labels[subset_mask]).float().mean()
-    )
-    return BinaryEvaluation(
-        accuracy=accuracy,
-        baseline_accuracy=baseline_accuracy,
-        subset_accuracy=subset_accuracy,
-        subset_baseline_accuracy=subset_baseline_accuracy,
-        beats_baseline=accuracy > baseline_accuracy,
-        survives_subset=subset_accuracy > subset_baseline_accuracy,
-    )
+# %%
+
+def scoring_examples(acts: Float[Tensor, "n_seq seq"], generator: t.Generator, n_top: int = 5, n_random: int = 5) -> list[tuple[int, int]]:
+    """The "top-and-random" scoring set: the n_top top-activating examples plus n_random random examples."""
+    return top_activating_examples(acts, n_top) + random_examples(acts, n_random, generator)
 
 
-def final_noun_token_ids(tokenizer, examples: Sequence[NumberExample]) -> tuple[int, ...]:
-    """Return each noun's final tokenizer id without pretending all nouns are one token."""
-
-    token_ids: list[int] = []
-    for example in examples:
-        encoded = tokenizer.encode(" " + example.noun, add_special_tokens=False)
-        if not encoded:
-            raise ValueError(f"noun {example.noun!r} produced no tokens")
-        token_ids.append(int(encoded[-1]))
-    return tuple(token_ids)
-
-
-def seen_plural_lookup_predictions(
+def simulation_scores(
+    model: HookedTransformer,
+    tokens: Int[Tensor, "n_seq seq"],
+    units: list[Float[Tensor, "n_seq seq"]],
+    explanations: list[str],
+    examples: list[list[tuple[int, int]]],
     tokenizer,
-    train_examples: Sequence[NumberExample],
-    test_examples: Sequence[NumberExample],
-) -> t.Tensor:
-    """Text-only control that memorizes final plural tokenizer ids from training."""
-
-    train_ids = final_noun_token_ids(tokenizer, train_examples)
-    seen_plural_ids = {
-        token_id
-        for token_id, example in zip(train_ids, train_examples, strict=True)
-        if example.number == "plural"
-    }
-    return t.tensor(
-        [token_id in seen_plural_ids for token_id in final_noun_token_ids(tokenizer, test_examples)],
-        dtype=t.bool,
-    )
-
-
-def orthographic_feature_matrix(examples: Sequence[NumberExample]) -> t.Tensor:
-    """Encode a deliberately simple text-only spelling baseline."""
-
-    alphabet = "abcdefghijklmnopqrstuvwxyz"
-    rows = []
-    for example in examples:
-        noun = example.noun.lower()
-        rows.append(
-            [
-                1.0,
-                len(noun) / 10.0,
-                float(noun.endswith("s")),
-                float(noun.endswith("en")),
-                float(noun.endswith("ice")),
-                float(noun.endswith("ese")),
-                *[noun.count(letter) / max(len(noun), 1) for letter in alphabet],
-            ]
-        )
-    return t.tensor(rows, dtype=t.float32)
+    llm,
+) -> tuple[Float[Tensor, " n_pairs"], list[Tensor], list[Tensor]]:
+    """
+    Simulation score of explanations[k] for the unit with activations units[k], on the examples examples[k].
+    Returns (scores, predictions, true activations), where the last two are lists of concatenated windows.
+    """
+    requests, trues, owner = [], [], []
+    for k, (acts, explanation, exs) in enumerate(zip(units, explanations, examples)):
+        for seq, pos in exs:
+            str_toks, true = get_window(model, tokens, acts, seq, pos)
+            requests.append((explanation, str_toks))
+            trues.append(true)
+            owner.append(k)
+    preds = simulate_activations(tokenizer, llm, requests)
+    pred_cat = [t.cat([p for p, o in zip(preds, owner) if o == k]) for k in range(len(units))]
+    true_cat = [t.cat([a for a, o in zip(trues, owner) if o == k]) for k in range(len(units))]
+    scores = t.tensor([correlation_score(p, a) for p, a in zip(pred_cat, true_cat)])
+    return scores, pred_cat, true_cat
 
 
-def orthographic_ridge_predictions(
-    train_examples: Sequence[NumberExample],
-    train_labels: t.Tensor,
-    test_examples: Sequence[NumberExample],
-    *,
-    ridge: float = 1e-2,
-) -> t.Tensor:
-    """Fit a train-only ridge classifier on spelling features, then threshold at 0.5."""
+if MAIN:
+    tests.test_simulation_scores(simulation_scores, get_window, correlation_score, model, explainer_tok, explainer)
 
-    train_features = orthographic_feature_matrix(train_examples)
-    test_features = orthographic_feature_matrix(test_examples)
-    labels = train_labels.flatten().float()
-    if train_features.shape[0] != labels.numel() or ridge <= 0:
-        raise ValueError("training labels must align and ridge must be positive")
-    identity = t.eye(train_features.shape[1], dtype=train_features.dtype)
-    weights = t.linalg.solve(
-        train_features.T @ train_features + ridge * identity,
-        train_features.T @ labels,
-    )
-    return test_features @ weights >= 0.5
+# %%
 
+if MAIN:
+    score_units = [score_acts[..., j] for j in range(N_LATENTS)]
+    SCORE_EXAMPLES = [scoring_examples(score_units[j], t.Generator().manual_seed(j)) for j in range(N_LATENTS)]
+    other_explanations = explanations[1:] + explanations[:1]
+    
+    own_scores, own_preds, own_trues = simulation_scores(model, score_tokens, score_units, explanations, SCORE_EXAMPLES, explainer_tok, explainer)
+    other_scores, _, _ = simulation_scores(model, score_tokens, score_units, other_explanations, SCORE_EXAMPLES, explainer_tok, explainer)
+    noise_expl_scores, _, _ = simulation_scores(model, score_tokens, score_units, noise_explanations, SCORE_EXAMPLES, explainer_tok, explainer)
+    
+    print(f"Mean simulation score over {N_LATENTS} latents:")
+    print(f"  own explanation:              {own_scores.mean():.3f}")
+    print(f"  another latent's explanation: {other_scores.mean():.3f}")
+    print(f"  explanation of noise:         {noise_expl_scores.mean():.3f}")
+    print(f"Own explanation beats both controls for {((own_scores > other_scores) & (own_scores > noise_expl_scores)).sum()} / {N_LATENTS} latents")
 
-def paired_swap_decoder_accuracies(
-    train_activations: t.Tensor,
-    train_labels: t.Tensor,
-    test_activations: t.Tensor,
-    test_labels: t.Tensor,
-) -> tuple[float, ...]:
-    """Enumerate the exact null that swaps labels only within matched noun pairs."""
+# %%
 
-    if train_activations.shape[0] != train_labels.numel() or train_labels.numel() % 2:
-        raise ValueError("training rows must form consecutive singular/plural pairs")
-    paired_labels = train_labels.bool().view(-1, 2)
-    if not t.all(paired_labels.sum(dim=1) == 1):
-        raise ValueError("each training pair must contain one singular and one plural label")
-    pair_count = paired_labels.shape[0]
-    if pair_count > 20:
-        raise ValueError("exact enumeration is limited to at most 20 pairs")
+if MAIN:
+    def simulation_panels(j: int, n_windows: int = 2) -> list[tuple[list[str], Tensor, Tensor]]:
+        """The first n_windows scoring windows for latent index j: (tokens, true activations, simulated activations)."""
+        panels, offset = [], 0
+        for seq, pos in SCORE_EXAMPLES[j][:n_windows]:
+            str_toks, true = get_window(model, score_tokens, score_units[j], seq, pos)
+            panels.append((str_toks, true, own_preds[j][offset : offset + len(str_toks)]))
+            offset += len(str_toks)
+        return panels
+    
+    
+    SIM_EXAMPLES = [LATENTS.index(11803), LATENTS.index(4412)]
+    panels, titles = [], []
+    for j in SIM_EXAMPLES:
+        for k, panel in enumerate(simulation_panels(j)):
+            panels.append(panel)
+            titles.append(f"latent {LATENTS[j]}, top-activating scoring excerpt {k + 1}.  Explanation: {explanations[j]!r}  (score on all 10 excerpts: {own_scores[j]:.2f})")
+    utils.plot_simulation(panels, titles, "True vs simulated activations")
 
-    accuracies = []
-    for pattern in range(2**pair_count):
-        swapped = paired_labels.clone()
-        swap_mask = t.tensor(
-            [(pattern >> pair_index) & 1 for pair_index in range(pair_count)],
-            dtype=t.bool,
-            device=train_labels.device,
-        )
-        swapped[swap_mask] = swapped[swap_mask].flip(dims=(1,))
-        try:
-            decoder = fit_mean_difference_decoder(train_activations, swapped.flatten())
-            predictions = direction_predictions(test_activations, decoder)
-        except ValueError as error:
-            if "nonzero direction" not in str(error):
-                raise
-            predictions = t.zeros_like(test_labels, dtype=t.bool)
-        accuracies.append(float(predictions.eq(test_labels.bool()).float().mean()))
-    return tuple(accuracies)
+# %%
+
+def permutation_null(pred: Float[Tensor, " n"], true: Float[Tensor, " n"], n_perm: int, generator: t.Generator) -> Float[Tensor, " n_perm"]:
+    """Correlations between pred and n_perm random permutations of true."""
+    perms = t.stack([t.randperm(len(true), generator=generator) for _ in range(n_perm)])
+    shuffled = true.double()[perms]
+    shuffled = shuffled - shuffled.mean(dim=-1, keepdim=True)
+    centred_pred = pred.double() - pred.double().mean()
+    denom = centred_pred.norm() * shuffled.norm(dim=-1)
+    corr = (shuffled @ centred_pred) / denom.clamp(min=1e-12)
+    return t.where(denom > 1e-8, corr, t.zeros_like(corr)).float()
 
 
-def paired_swap_decoder_directions(
-    train_activations: t.Tensor,
-    train_labels: t.Tensor,
-    *,
-    count: int = PAIR_CAUSAL_NULL_COUNT,
-    seed: int = PAIR_CAUSAL_NULL_SEED,
-) -> tuple[tuple[int, ...], t.Tensor]:
-    """Precommit decoder directions induced by within-pair label swaps."""
+if MAIN:
+    tests.test_permutation_null(permutation_null, correlation_score)
 
-    if train_activations.shape[0] != train_labels.numel() or train_labels.numel() % 2:
-        raise ValueError("training rows must form consecutive singular/plural pairs")
-    paired_labels = train_labels.bool().view(-1, 2)
-    if not t.all(paired_labels.sum(dim=1) == 1):
-        raise ValueError("each training pair must contain one singular and one plural label")
-    pair_count = paired_labels.shape[0]
-    available_patterns = 2**pair_count - 2
-    if not 0 < count <= available_patterns:
-        raise ValueError("count must fit the non-target, non-inverted swap patterns")
-    patterns = tuple(random.Random(seed).sample(range(1, 2**pair_count - 1), count))
-    directions = []
-    for pattern in patterns:
-        swapped = paired_labels.clone()
-        swap_mask = t.tensor(
-            [(pattern >> pair_index) & 1 for pair_index in range(pair_count)],
-            dtype=t.bool,
-            device=train_labels.device,
-        )
-        swapped[swap_mask] = swapped[swap_mask].flip(dims=(1,))
-        directions.append(
-            fit_mean_difference_decoder(train_activations, swapped.flatten()).direction
-        )
-    bank = t.stack(directions)
-    if not t.allclose(bank.norm(dim=-1), bank.new_ones(count), rtol=1e-5, atol=1e-5):
-        raise AssertionError("every paired-null decoder direction must have unit norm")
-    return patterns, bank
+# %%
 
-
-def orthogonal_random_direction(direction: t.Tensor, *, seed: int = 0) -> t.Tensor:
-    generator = t.Generator(device=direction.device).manual_seed(seed)
-    control = t.randn(direction.shape, generator=generator, device=direction.device)
-    control = control - (control @ direction) * direction
-    return control / control.norm()
-
-
-def orthogonal_random_directions(
-    direction: t.Tensor, *, seeds: Sequence[int] = tuple(range(64))
-) -> t.Tensor:
-    """Construct a distribution of unit directions orthogonal to the target."""
-
-    if not seeds:
-        raise ValueError("seeds must be nonempty")
-    controls = t.stack(
-        [orthogonal_random_direction(direction, seed=int(seed)) for seed in seeds]
-    )
-    if (controls @ direction).abs().max() > 1e-5:
-        raise AssertionError("orthogonal controls are not numerically orthogonal")
-    if (controls.norm(dim=-1) - 1).abs().max() > 1e-5:
-        raise AssertionError("orthogonal controls must have unit norm")
-    return controls
-
-
-def run_residual_edit(
-    model,
-    tokenizer,
-    prompts: Sequence[str],
-    edit_vectors: t.Tensor,
-    *,
-    layer: int = LAYER,
-) -> HookIntervention:
-    """Add per-example edits inside a real transformer block forward hook."""
-
-    if edit_vectors.ndim != 2 or edit_vectors.shape[0] != len(prompts):
-        raise ValueError("edit_vectors must have shape [len(prompts), d_model].")
-    device = next(model.parameters()).device
-    encoded = tokenizer(list(prompts), padding=True, return_tensors="pt").to(device)
-    edits = edit_vectors.to(device=device, dtype=next(model.parameters()).dtype)
-    hook_calls = 0
-
-    def edit_hook(_module, _inputs, output):
-        nonlocal hook_calls
-        hook_calls += 1
-        hidden = output[0] if isinstance(output, tuple) else output
-        if hidden.shape[0] != edits.shape[0] or hidden.shape[-1] != edits.shape[-1]:
-            raise ValueError("hook output and edit vectors do not align.")
-        edited = hidden.clone()
-        edited[:, -1, :] = edited[:, -1, :] + edits
-        if isinstance(output, tuple):
-            return (edited, *output[1:])
-        return edited
-
-    handle = model.gpt_neox.layers[layer].register_forward_hook(edit_hook)
-    try:
-        with t.inference_mode():
-            logits = model(**encoded).logits[:, -1, :].detach().cpu().float()
-    finally:
-        handle.remove()
-    is_id = _single_token_id(tokenizer, IS_TOKEN)
-    are_id = _single_token_id(tokenizer, ARE_TOKEN)
-    return HookIntervention(logits[:, are_id] - logits[:, is_id], hook_calls)
-
-
-def run_orthogonal_control_distribution(
-    model,
-    tokenizer,
-    prompts: Sequence[str],
-    replacement_coefficients: t.Tensor,
-    target_direction: t.Tensor,
-    baseline_margin: float,
-    *,
-    seeds: Sequence[int] = tuple(range(64)),
-) -> dict[str, object]:
-    """Apply many matched-coefficient orthogonal edits in one real model forward."""
-
-    if replacement_coefficients.shape != (len(prompts),):
-        raise ValueError("replacement_coefficients must have one value per prompt")
-    controls = orthogonal_random_directions(target_direction, seeds=seeds)
-    edits = controls[:, None, :] * replacement_coefficients[None, :, None]
-    expanded_prompts = tuple(prompt for _ in seeds for prompt in prompts)
-    intervention = run_residual_edit(
-        model,
-        tokenizer,
-        expanded_prompts,
-        edits.reshape(-1, edits.shape[-1]),
-    )
-    mean_margins = intervention.next_token_margins.view(len(seeds), len(prompts)).mean(dim=1)
-    deltas = mean_margins - baseline_margin
-    return {
-        "deltas": tuple(float(value) for value in deltas),
-        "absolute_p95": float(t.quantile(deltas.abs(), 0.95)),
-        "absolute_max": float(deltas.abs().max()),
-        "orthogonality_max_abs_dot": float((controls @ target_direction).abs().max()),
-        "norm_error_max": float((controls.norm(dim=-1) - 1).abs().max()),
-        "hook_calls": intervention.hook_calls,
-    }
-
-
-def run_direction_control_distribution(
-    model,
-    tokenizer,
-    prompts: Sequence[str],
-    replacement_coefficients: t.Tensor,
-    control_directions: t.Tensor,
-    baseline_margin: float,
-    *,
-    effect_sign: float,
-    chunk_size: int = 32,
-    layer: int = LAYER,
-) -> dict[str, object]:
-    """Run a bank of same-coefficient directions through the real block hook."""
-
-    coefficients = replacement_coefficients.flatten().float()
-    if coefficients.shape != (len(prompts),):
-        raise ValueError("replacement_coefficients must have one value per prompt")
-    expected_dim = int(model.config.hidden_size)
-    if control_directions.ndim != 2 or control_directions.shape[1] != expected_dim:
-        raise ValueError("control_directions must have shape [controls, d_model]")
-    if not len(control_directions) or chunk_size <= 0 or effect_sign not in (-1.0, 1.0):
-        raise ValueError("controls, positive chunk_size, and effect_sign +/-1 are required")
-    if not t.allclose(
-        control_directions.float().norm(dim=-1),
-        control_directions.new_ones(len(control_directions)),
-        rtol=1e-5,
-        atol=1e-5,
-    ):
-        raise ValueError("control directions must be unit norm")
-
-    effects: list[float] = []
-    hook_calls: list[int] = []
-    for start in range(0, len(control_directions), chunk_size):
-        directions = control_directions[start : start + chunk_size]
-        edits = directions[:, None, :] * coefficients[None, :, None]
-        expanded_prompts = tuple(prompt for _ in range(len(directions)) for prompt in prompts)
-        intervention = run_residual_edit(
-            model,
-            tokenizer,
-            expanded_prompts,
-            edits.reshape(-1, edits.shape[-1]),
-            layer=layer,
-        )
-        margins = intervention.next_token_margins.view(len(directions), len(prompts)).mean(dim=1)
-        effects.extend(float(value) for value in effect_sign * (margins - baseline_margin))
-        hook_calls.append(intervention.hook_calls)
-    effect_tensor = t.tensor(effects)
-    return {
-        "effects": tuple(effects),
-        "mean": float(effect_tensor.mean()),
-        "p95": float(t.quantile(effect_tensor, 0.95)),
-        "max": float(effect_tensor.max()),
-        "hook_calls": tuple(hook_calls),
-        "coefficient_checksum": float(coefficients.sum()),
-    }
-
-
-def _accuracy(predictions: t.Tensor, labels: t.Tensor) -> float:
-    return float(predictions.bool().eq(labels.bool()).float().mean())
-
-
-def run_real_model_signature(model=None, tokenizer=None, *, seed: int = 0) -> dict[str, object]:
-    """Run the complete offline signature experiment on real model activations."""
-
-    if model is None or tokenizer is None:
-        model, tokenizer = load_pinned_model()
-    dataset = make_number_dataset()
-    train, validation, heldout = split_number_dataset(dataset)
-    train_labels = number_labels(train)
-    validation_labels = number_labels(validation)
-    heldout_labels = number_labels(heldout)
-
-    train_cache = cache_final_token_activations(model, tokenizer, [x.prompt for x in train])
-    validation_cache = cache_final_token_activations(model, tokenizer, [x.prompt for x in validation])
-    heldout_cache = cache_final_token_activations(model, tokenizer, [x.prompt for x in heldout])
-    train_sweep = cache_layer_sweep(model, tokenizer, [x.prompt for x in train])
-    heldout_sweep = cache_layer_sweep(model, tokenizer, [x.prompt for x in heldout])
-    sweep_accuracies = layer_sweep_accuracies(
-        train_sweep,
-        train_labels,
-        heldout_sweep,
-        heldout_labels,
-    )
-    decoder = fit_mean_difference_decoder(train_cache.activations, train_labels)
-    validation_predictions = direction_predictions(validation_cache.activations, decoder)
-    heldout_predictions = direction_predictions(heldout_cache.activations, decoder)
-
-    hypothesis_rows = score_hypotheses(
-        validation,
-        validation_predictions,
-        HYPOTHESES,
-        seed=seed,
-    )
-    selected_hypothesis = select_hypothesis(hypothesis_rows)
-    feature_examples = rank_feature_examples(
-        validation,
-        direction_scores(validation_cache.activations, decoder),
-        decoder.threshold,
-        n=2,
-        seed=seed,
-    )
-    suffix_hypothesis = next(
-        hypothesis for hypothesis in HYPOTHESES if hypothesis.hypothesis_id == "surface_suffix_s"
-    )
-    suffix_counterexamples = mine_counterexamples(
-        validation,
-        validation_predictions,
-        suffix_hypothesis,
-    )
-    explanation_frontier = brevity_frontier(hypothesis_rows)
-    suffix_predictions = hypothesis_predictions(
-        heldout,
-        suffix_hypothesis,
-    )
-    lookup_predictions = seen_plural_lookup_predictions(tokenizer, train, heldout)
-    orthographic_predictions = orthographic_ridge_predictions(train, train_labels, heldout)
-    contrastive_mask = t.tensor(
-        [example.morphology != "regular" for example in heldout],
-        dtype=t.bool,
-    )
-    decoder_evaluation = evaluate_binary_predictions(
-        heldout_predictions,
-        heldout_labels,
-        suffix_predictions,
-        contrastive_mask,
-    )
-    paired_null_accuracies = paired_swap_decoder_accuracies(
-        train_cache.activations,
-        train_labels,
-        heldout_cache.activations,
-        heldout_labels,
-    )
-    causal_null_patterns, causal_null_directions = paired_swap_decoder_directions(
-        train_cache.activations,
-        train_labels,
-    )
-    singular_indices = t.tensor(
-        [index for index, example in enumerate(heldout) if example.number == "singular"],
-        dtype=t.long,
-    )
-    singular_examples = tuple(heldout[int(index)] for index in singular_indices)
-    singular_activations = heldout_cache.activations[singular_indices]
-    full_replacements = (
-        replace_direction_component(
-            singular_activations,
-            decoder.direction,
-            decoder.positive_mean,
-        )
-        - singular_activations
-    )
-    strengths = (0.0, 0.25, 0.5, 0.75, 1.0)
-    dose_margins = []
-    hook_calls = []
-    for strength in strengths:
-        intervention = run_residual_edit(
-            model,
-            tokenizer,
-            [example.prompt for example in singular_examples],
-            strength * full_replacements,
-        )
-        dose_margins.append(float(intervention.next_token_margins.mean()))
-        hook_calls.append(intervention.hook_calls)
-
-    replacement_coefficients = full_replacements @ decoder.direction
-    baseline_margin = dose_margins[0]
-    target_delta = dose_margins[-1] - baseline_margin
-    target_result = run_residual_edit(
-        model,
-        tokenizer,
-        [example.prompt for example in singular_examples],
-        full_replacements,
-    )
-
-    plural_indices = t.tensor(
-        [index for index, example in enumerate(heldout) if example.number == "plural"],
-        dtype=t.long,
-    )
-    plural_examples = tuple(heldout[int(index)] for index in plural_indices)
-    plural_activations = heldout_cache.activations[plural_indices]
-    reverse_replacements = (
-        replace_direction_component(
-            plural_activations,
-            decoder.direction,
-            decoder.negative_mean,
-        )
-        - plural_activations
-    )
-    reverse_baseline = float(heldout_cache.next_token_margins[plural_indices].mean())
-    reverse_result = run_residual_edit(
-        model,
-        tokenizer,
-        [example.prompt for example in plural_examples],
-        reverse_replacements,
-    )
-    reverse_final_margin = float(reverse_result.next_token_margins.mean())
-
-    orthogonal_distribution = run_orthogonal_control_distribution(
-        model,
-        tokenizer,
-        [example.prompt for example in singular_examples],
-        replacement_coefficients,
-        decoder.direction,
-        baseline_margin,
-        seeds=tuple(range(seed + 101, seed + 165)),
-    )
-    reverse_coefficients = reverse_replacements @ decoder.direction
-    reverse_orthogonal_distribution = run_orthogonal_control_distribution(
-        model,
-        tokenizer,
-        [example.prompt for example in plural_examples],
-        reverse_coefficients,
-        decoder.direction,
-        reverse_baseline,
-        seeds=tuple(range(seed + 201, seed + 265)),
-    )
-    paired_causal_distribution = run_direction_control_distribution(
-        model,
-        tokenizer,
-        [example.prompt for example in singular_examples],
-        replacement_coefficients,
-        causal_null_directions,
-        baseline_margin,
-        effect_sign=1.0,
-    )
-    reverse_paired_causal_distribution = run_direction_control_distribution(
-        model,
-        tokenizer,
-        [example.prompt for example in plural_examples],
-        reverse_coefficients,
-        causal_null_directions,
-        reverse_baseline,
-        effect_sign=-1.0,
-    )
-
-    activation_accuracy = _accuracy(heldout_predictions, heldout_labels)
-    suffix_accuracy = _accuracy(suffix_predictions, heldout_labels)
-    lookup_accuracy = _accuracy(lookup_predictions, heldout_labels)
-    orthographic_accuracy = _accuracy(orthographic_predictions, heldout_labels)
-    behavior_accuracy = _accuracy(heldout_cache.next_token_margins >= 0, heldout_labels)
-    paired_null_tensor = t.tensor(paired_null_accuracies)
-    paired_null_mean = sum(paired_null_accuracies) / len(paired_null_accuracies)
-    paired_null_p95 = float(t.quantile(paired_null_tensor, 0.95))
-    paired_null_exact_p = float((paired_null_tensor >= activation_accuracy).float().mean())
-    forward_causal_p = (
-        1
-        + sum(
-            effect >= target_delta
-            for effect in paired_causal_distribution["effects"]
-        )
-    ) / (len(causal_null_patterns) + 1)
-    reverse_target_delta = reverse_baseline - reverse_final_margin
-    reverse_causal_p = (
-        1
-        + sum(
-            effect >= reverse_target_delta
-            for effect in reverse_paired_causal_distribution["effects"]
-        )
-    ) / (len(causal_null_patterns) + 1)
-    morphology_breakdown = {
-        morphology: {
-            "count": int(sum(example.morphology == morphology for example in heldout)),
-            "activation_accuracy": _accuracy(
-                heldout_predictions[t.tensor([x.morphology == morphology for x in heldout])],
-                heldout_labels[t.tensor([x.morphology == morphology for x in heldout])],
-            ),
-            "suffix_accuracy": _accuracy(
-                suffix_predictions[t.tensor([x.morphology == morphology for x in heldout])],
-                heldout_labels[t.tensor([x.morphology == morphology for x in heldout])],
-            ),
-            "token_lookup_accuracy": _accuracy(
-                lookup_predictions[t.tensor([x.morphology == morphology for x in heldout])],
-                heldout_labels[t.tensor([x.morphology == morphology for x in heldout])],
-            ),
-        }
-        for morphology in ("regular", "irregular", "nonce")
-    }
-    train_final_ids = set(final_noun_token_ids(tokenizer, train))
-    heldout_final_ids = set(final_noun_token_ids(tokenizer, heldout))
-    multi_token_noun_count = sum(
-        len(tokenizer.encode(" " + example.noun, add_special_tokens=False)) > 1
-        for example in heldout
-    )
-    heldout_rows = tuple(
+if MAIN:
+    null_gen = t.Generator().manual_seed(0)
+    null95 = t.tensor([permutation_null(p, a, 1000, null_gen).quantile(0.95).item() for p, a in zip(own_preds, own_trues)])
+    significant = own_scores > null95
+    print(f"{significant.sum()} / {N_LATENTS} explanations beat the 95th percentile of their permutation null")
+    print(f"Median 95th percentile of the null: {null95.median():.3f}")
+    
+    utils.plot_score_dots(
+        [str(latent) for latent in LATENTS],
         {
-            "prompt": example.prompt,
-            "morphology": example.morphology,
-            "number": example.number,
-            "activation_score": float(score),
-            "activation_prediction": "plural" if prediction else "singular",
-            "are_minus_is": float(margin),
-        }
-        for example, score, prediction, margin in zip(
-            heldout,
-            direction_scores(heldout_cache.activations, decoder),
-            heldout_predictions,
-            heldout_cache.next_token_margins,
-            strict=True,
-        )
+            "own explanation": own_scores.tolist(),
+            "another latent's explanation": other_scores.tolist(),
+            "explanation of shuffled (noise) feature": noise_expl_scores.tolist(),
+        },
+        null95.tolist(),
+        title=f"Simulation scores of Qwen3-1.7B explanations for {N_LATENTS} random GPT-2 SAE latents (held-out excerpts)",
+        ylabel="simulation score (correlation)",
+        xlabel="SAE latent (sorted by the score of its own explanation)",
     )
-    return {
-        "claim": (
-            "Pythia-70m's embedding already linearly separates this prompt family, so "
-            "held-out decoding is a lexical negative result. A train-only direction still "
-            "has bidirectional causal effects that exceed precommitted within-pair decoder "
-            "nulls, while an operationalized explanation loop revises an s-suffix story "
-            "using validation counterexamples."
-        ),
-        "model_id": MODEL_ID,
-        "model_revision": MODEL_REVISION,
-        "layer": LAYER,
-        "train_count": len(train),
-        "validation_count": len(validation),
-        "heldout_count": len(heldout),
-        "decoder": {
-            "threshold": decoder.threshold,
-            "negative_mean": decoder.negative_mean,
-            "positive_mean": decoder.positive_mean,
-        },
-        "hypothesis_rows": hypothesis_rows,
-        "selected_hypothesis": selected_hypothesis,
-        "feature_examples": feature_examples,
-        "suffix_counterexamples": suffix_counterexamples,
-        "explanation_frontier": explanation_frontier,
-        "layer_sweep": {
-            "layer_names": train_sweep.layer_names,
-            "heldout_accuracies": sweep_accuracies,
-        },
-        "heldout_rows": heldout_rows,
-        "controls": (
-            {"method": "activation direction", "accuracy": activation_accuracy},
-            {"method": "surface suffix s", "accuracy": suffix_accuracy},
-            {"method": "train final-token-id lookup", "accuracy": lookup_accuracy},
-            {"method": "orthographic ridge", "accuracy": orthographic_accuracy},
-            {"method": "embedding residual direction", "accuracy": sweep_accuracies[0]},
-            {"method": "exact within-pair label-swap null (mean)", "accuracy": paired_null_mean},
-        ),
-        "metrics": {
-            "validation_activation_accuracy": _accuracy(validation_predictions, validation_labels),
-            "heldout_activation_accuracy": activation_accuracy,
-            "heldout_behavior_accuracy": behavior_accuracy,
-            "suffix_accuracy": suffix_accuracy,
-            "lookup_accuracy": lookup_accuracy,
-            "orthographic_accuracy": orthographic_accuracy,
-            "embedding_accuracy": sweep_accuracies[0],
-            "paired_null_accuracy_mean": paired_null_mean,
-            "paired_null_accuracy_max": max(paired_null_accuracies),
-            "paired_null_accuracy_p95": paired_null_p95,
-            "paired_null_exact_p": paired_null_exact_p,
-            "paired_null_count": len(paired_null_accuracies),
-            "paired_null_perfect_count": sum(
-                accuracy >= activation_accuracy for accuracy in paired_null_accuracies
-            ),
-            "forward_orthogonal_absolute_p95": orthogonal_distribution["absolute_p95"],
-            "reverse_orthogonal_absolute_p95": reverse_orthogonal_distribution["absolute_p95"],
-            "paired_causal_count": len(causal_null_patterns),
-            "forward_paired_causal_p95": paired_causal_distribution["p95"],
-            "reverse_paired_causal_p95": reverse_paired_causal_distribution["p95"],
-            "forward_paired_causal_p": forward_causal_p,
-            "reverse_paired_causal_p": reverse_causal_p,
-            "train_heldout_final_token_overlap": len(train_final_ids & heldout_final_ids),
-            "heldout_multi_token_noun_count": multi_token_noun_count,
-            **asdict(decoder_evaluation),
-        },
-        "morphology_breakdown": morphology_breakdown,
-        "paired_null_accuracies": paired_null_accuracies,
-        "intervention": {
-            "strengths": strengths,
-            "target_mean_margins": tuple(dose_margins),
-            "baseline_margin": baseline_margin,
-            "target_delta": target_delta,
-            "orthogonal_distribution": orthogonal_distribution,
-            "reverse_orthogonal_distribution": reverse_orthogonal_distribution,
-            "paired_causal_patterns": causal_null_patterns,
-            "paired_causal_distribution": paired_causal_distribution,
-            "reverse_paired_causal_distribution": reverse_paired_causal_distribution,
-            "target_plural_preference_rate": float(
-                target_result.next_token_margins.gt(0).float().mean()
-            ),
-            "reverse_baseline_margin": reverse_baseline,
-            "reverse_final_margin": reverse_final_margin,
-            "reverse_target_delta": reverse_target_delta,
-            "reverse_singular_preference_rate": float(
-                reverse_result.next_token_margins.lt(0).float().mean()
-            ),
-            "hook_calls": tuple(hook_calls),
-            "mean_edit_norm": float(full_replacements.norm(dim=1).mean()),
-        },
-        "signature_passed": bool(
-            selected_hypothesis == "subject_number_plural"
-            and activation_accuracy >= 0.95
-            and decoder_evaluation.survives_subset
-            and activation_accuracy > suffix_accuracy
-            and len(paired_null_accuracies) == 4096
-            and paired_null_p95 >= activation_accuracy
-            and paired_null_exact_p >= 0.05
-            and target_delta > 2.0
-            and sweep_accuracies[0] >= activation_accuracy
-            and len(causal_null_patterns) == PAIR_CAUSAL_NULL_COUNT
-            and target_delta > float(paired_causal_distribution["p95"])
-            and reverse_target_delta > float(reverse_paired_causal_distribution["p95"])
-            and forward_causal_p < 0.05
-            and reverse_causal_p < 0.05
-            and len(train_final_ids & heldout_final_ids) == 0
-            and all(call_count == 1 for call_count in hook_calls)
-            and int(orthogonal_distribution["hook_calls"]) == 1
-            and int(reverse_orthogonal_distribution["hook_calls"]) == 1
-            and all(call_count == 1 for call_count in paired_causal_distribution["hook_calls"])
-            and all(
-                call_count == 1
-                for call_count in reverse_paired_causal_distribution["hook_calls"]
-            )
-        ),
+
+# %%
+
+if MAIN:
+    HUMAN_EXPLANATIONS = {
+        16436: 'the word "of" right after a title noun such as "Book", "Handbook", "Board" or "Chart" (as in "Book of")',
+        10483: 'the word "first" after "the", as in "for the first time"',
+        4412: 'the word "to" directly after "similar"',
+        18120: 'the word "lot" in "a lot of", or "deal" in "a great deal of"',
+        11803: "names of Indian states such as Kerala, Karnataka, Bihar and Gujarat",
+        23294: 'the word "of" right after "round" (as in "second round of voting")',
+        613: 'the word "one" right after "in" (as in "all in one" or "in one day")',
+        1040: 'the word "from" after "data" or "taken" (as in "data from the study")',
+        9212: 'the word "argument" or "arguments", especially in programming questions',
+        22850: "brand or product names in a list, such as Honda, Sony, Xbox or iPhone",
+        13945: 'the word "is" right after "that" in a relative clause (as in "a tool that is")',
+        18988: 'the abbreviation "prob" (short for probability)',
     }
-
-
-def run_smoke_test(cpu: bool = True) -> dict[str, object]:
-    """Run the pinned-model contract on the explicitly requested device."""
-
-    if not cpu and not t.cuda.is_available():
-        raise RuntimeError("CUDA is required when cpu=False")
-    model, tokenizer = load_pinned_model("cpu" if cpu else "cuda")
-    return run_real_model_signature(model, tokenizer)
-
-
-def run_gpu_test(max_vram_gb: float = 24.0) -> dict[str, object]:
-    """Run the complete real-model signature on CUDA with no CPU fallback."""
-
-    if not t.cuda.is_available():
-        raise RuntimeError("CUDA is required for 7.2 GPU verification")
-    t.cuda.reset_peak_memory_stats()
-    model, tokenizer = load_pinned_model("cuda")
-    result = run_real_model_signature(model, tokenizer)
-    peak_vram_gb = t.cuda.max_memory_allocated() / 2**30
-    if peak_vram_gb > max_vram_gb:
-        raise AssertionError(f"peak VRAM {peak_vram_gb:.3f} GB exceeds {max_vram_gb:.1f} GB")
-    if not result["signature_passed"]:
-        raise AssertionError("7.2 CUDA signature did not satisfy its scientific contract")
-    result.update(
-        {
-            "cuda_available": True,
-            "gpu_name": t.cuda.get_device_name(),
-            "torch_version": t.__version__,
-            "cuda_version": t.version.cuda,
-            "peak_vram_gb": peak_vram_gb,
-            "within_vram_budget": True,
-            "accepted": True,
-        }
+    HUMAN_IDS = [LATENTS.index(latent) for latent in HUMAN_EXPLANATIONS]
+    
+    human_scores, _, _ = simulation_scores(
+        model, score_tokens, [score_units[j] for j in HUMAN_IDS], list(HUMAN_EXPLANATIONS.values()),
+        [SCORE_EXAMPLES[j] for j in HUMAN_IDS], explainer_tok, explainer,
     )
+    for j, (latent, human) in zip(HUMAN_IDS, HUMAN_EXPLANATIONS.items()):
+        print(f"{latent:>5}  LLM   {own_scores[j]:5.2f}  {explanations[j]}")
+        print(f"{'':>5}  human {human_scores[HUMAN_IDS.index(j)]:5.2f}  {human}")
+    print(f"\nMean over these 12 latents: LLM {own_scores[HUMAN_IDS].mean():.3f}, human {human_scores.mean():.3f}")
+    print(f"Human explanation scores higher for {(human_scores > own_scores[HUMAN_IDS]).sum()} / 12 latents")
+
+# %%
+
+if MAIN:
+    pairs = [(i, j) for i in HUMAN_IDS for j in HUMAN_IDS]
+    swap_scores, _, _ = simulation_scores(
+        model, score_tokens, [score_units[j] for _, j in pairs], [explanations[i] for i, _ in pairs],
+        [SCORE_EXAMPLES[j] for _, j in pairs], explainer_tok, explainer,
+    )
+    swap_matrix = swap_scores.reshape(len(HUMAN_IDS), len(HUMAN_IDS))
+    diag = swap_matrix.diag()
+    off_diag = swap_matrix[~t.eye(len(HUMAN_IDS), dtype=t.bool)]
+    print(f"diagonal mean {diag.mean():.3f}, off-diagonal mean {off_diag.mean():.3f}")
+    print(f"the diagonal entry is the best in its column for {(swap_matrix.argmax(0) == t.arange(len(HUMAN_IDS))).sum()} / {len(HUMAN_IDS)} latents")
+    
+    labels = [f"{LATENTS[j]}: {explanations[j][:38]}" for j in HUMAN_IDS]
+    utils.plot_matrix(
+        swap_matrix, row_labels=labels, col_labels=[str(LATENTS[j]) for j in HUMAN_IDS],
+        title="Simulation score of each latent's explanation (rows) on each latent's excerpts (columns)",
+        xlabel="latent being simulated", ylabel="explanation used", cbar_label="simulation score",
+        vmin=-0.1, vmax=0.7, figsize=(10, 7),
+    )
+
+# %%
+
+if MAIN:
+    NEURONS = t.randperm(model.cfg.d_mlp, generator=t.Generator().manual_seed(1))[:30].tolist()
+    neuron_fn = lambda x: x[..., NEURONS]
+    neuron_explain_acts = collect_activations(model, explain_tokens, "blocks.7.mlp.hook_post", neuron_fn)
+    neuron_score_acts = collect_activations(model, score_tokens, "blocks.7.mlp.hook_post", neuron_fn)
+    
+    mean_resid = collect_activations(model, explain_tokens[:200], HOOK, lambda x: x)[:, 1:].reshape(-1, model.cfg.d_model).mean(0)
+    RANDOM_DIRS = t.randn(model.cfg.d_model, 30, generator=t.Generator().manual_seed(2))
+    RANDOM_DIRS = RANDOM_DIRS / RANDOM_DIRS.norm(dim=0)
+    direction_fn = lambda x: F.relu((x - mean_resid.to(x.device)) @ RANDOM_DIRS.to(x.device))
+    direction_explain_acts = collect_activations(model, explain_tokens, HOOK, direction_fn)
+    direction_score_acts = collect_activations(model, score_tokens, HOOK, direction_fn)
+    
+    unit_type_scores = {"SAE latents": own_scores.tolist()}
+    for name, (e_acts, s_acts, e_expl) in {
+        "MLP neurons": (neuron_explain_acts, neuron_score_acts, None),
+        "random directions": (direction_explain_acts, direction_score_acts, None),
+        "noise features (shuffled latents)": (noise_explain_acts, noise_score_acts, noise_explanations),
+    }.items():
+        unit_expl = e_expl if e_expl is not None else explain_units(model, explain_tokens, e_acts, explainer_tok, explainer)
+        units = [s_acts[..., j] for j in range(s_acts.shape[-1])]
+        examples = [scoring_examples(units[j], t.Generator().manual_seed(j)) for j in range(len(units))]
+        scores, _, _ = simulation_scores(model, score_tokens, units, unit_expl, examples, explainer_tok, explainer)
+        unit_type_scores[name] = scores.tolist()
+        print(f"{name:<34} mean score {scores.mean():.3f}   e.g. {unit_expl[0]!r}")
+    
+    utils.plot_unit_types(
+        unit_type_scores, title="The same autointerp pipeline applied to different kinds of unit (30 each)",
+        ylabel="simulation score (correlation)",
+    )
+
+# %%
+
+DETECTION_TEMPLATE = 'Text: "{text}"\n\nDoes this text contain {explanation}? Answer Yes or No.'
+
+
+def detection_scores(
+    tokenizer, llm, requests: list[tuple[str, str]], template: str = DETECTION_TEMPLATE, batch_size: int = 64
+) -> Float[Tensor, " n"]:
+    """logit("Yes") - logit("No") for each (explanation, text) request, asked using `template`."""
+    inputs = []
+    for explanation, text in requests:
+        messages = [{"role": "user", "content": template.format(text=clean_token(text), explanation=explanation)}]
+        inputs.append(tokenizer(utils.chat_prompt(tokenizer, messages), add_special_tokens=False).input_ids)
+    yes_no = [tokenizer.convert_tokens_to_ids("Yes"), tokenizer.convert_tokens_to_ids("No")]
+    logits = utils.logits_at_positions(tokenizer, llm, inputs, [[len(ids) - 1] for ids in inputs], yes_no, batch_size)
+    return t.stack([lg[0, 0] - lg[0, 1] for lg in logits])
+
+
+if MAIN:
+    tests.test_detection_scores(detection_scores, explainer_tok, explainer)
+
+# %%
+
+def auroc(pos_scores: Float[Tensor, " n_pos"], neg_scores: Float[Tensor, " n_neg"]) -> float:
+    """P(random positive scores higher than random negative), with ties counting 1/2."""
+    diff = pos_scores[:, None].double() - neg_scores[None, :].double()
+    return ((diff > 0).double() + 0.5 * (diff == 0).double()).mean().item()
+
+
+if MAIN:
+    tests.test_auroc(auroc)
+
+# %%
+
+def detection_examples(
+    acts: Float[Tensor, "n_seq seq"], generator: t.Generator, n_bins: int = 5, k_per_bin: int = 4, n_negative: int = 20
+) -> tuple[list[list[tuple[int, int]]], list[tuple[int, int]]]:
+    """(quantile bins of activating examples, random examples from sequences where the unit never fires)."""
+    bins = quantile_examples(acts, n_bins, k_per_bin, generator)
+    silent = (acts.max(dim=-1).values == 0).nonzero().squeeze(-1)
+    chosen = silent[t.randperm(len(silent), generator=generator)[:n_negative]]
+    positions = t.randint(WINDOW_BEFORE + 1, acts.shape[1] - WINDOW_AFTER, (len(chosen),), generator=generator)
+    return bins, list(zip(chosen.tolist(), positions.tolist()))
+
+
+def detection_auroc(
+    model: HookedTransformer,
+    tokens: Int[Tensor, "n_seq seq"],
+    explanations: list[str],
+    example_sets: list[tuple[list[list[tuple[int, int]]], list[tuple[int, int]]]],
+    tokenizer,
+    llm,
+) -> Float[Tensor, "n_pairs n_bins"]:
+    """AUROC of each positive bin vs the negatives, for each (explanation, example set) pair."""
+    requests, owners = [], []
+    for k, (explanation, (bins, negatives)) in enumerate(zip(explanations, example_sets)):
+        for b, examples in enumerate(bins + [negatives]):
+            for seq, pos in examples:
+                start, end = window_bounds(pos, tokens.shape[1])
+                requests.append((explanation, model.to_string(tokens[seq, start:end])))
+                owners.append((k, b))
+    scores = detection_scores(tokenizer, llm, requests)
+    n_bins = len(example_sets[0][0])
+    result = t.zeros(len(explanations), n_bins)
+    for k in range(len(explanations)):
+        negative = scores[[i for i, o in enumerate(owners) if o == (k, n_bins)]]
+        for b in range(n_bins):
+            result[k, b] = auroc(scores[[i for i, o in enumerate(owners) if o == (k, b)]], negative)
     return result
 
 
-def run_full_experiment(max_vram_gb: float = 24.0) -> dict[str, object]:
-    return run_gpu_test(max_vram_gb=max_vram_gb)
+if MAIN:
+    tests.test_detection_auroc(detection_auroc, detection_scores, auroc, window_bounds, model, explainer_tok, explainer)
+
+# %%
+
+if MAIN:
+    top_sets = []
+    for j in HUMAN_IDS:
+        _, negatives = detection_examples(score_units[j], t.Generator().manual_seed(j))
+        top_sets.append(([top_activating_examples(score_units[j], 10)], negatives))
+    
+    llm_detection = detection_auroc(model, score_tokens, [explanations[j] for j in HUMAN_IDS], top_sets, explainer_tok, explainer)[:, 0]
+    human_detection = detection_auroc(model, score_tokens, list(HUMAN_EXPLANATIONS.values()), top_sets, explainer_tok, explainer)[:, 0]
+    other_detection = detection_auroc(model, score_tokens, [other_explanations[j] for j in HUMAN_IDS], top_sets, explainer_tok, explainer)[:, 0]
+    
+    print(f"{'':<34}{'detection AUROC':>18}{'simulation score':>18}")
+    print(f"{'LLM explanations':<34}{llm_detection.mean():>18.3f}{own_scores[HUMAN_IDS].mean():>18.3f}")
+    print(f"{'human explanations':<34}{human_detection.mean():>18.3f}{human_scores.mean():>18.3f}")
+    print(f"{'another latent' + chr(39) + 's explanation':<34}{other_detection.mean():>18.3f}{other_scores[HUMAN_IDS].mean():>18.3f}")
+    
+    sem = lambda x: (x.std() / len(x) ** 0.5).item()
+    utils.plot_grouped_bars(
+        ["detection AUROC\n(top-10 excerpts vs 20 silent ones)", "simulation score\n(correlation on 5 top + 5 random)"],
+        {
+            "LLM explanation": [llm_detection.mean().item(), own_scores[HUMAN_IDS].mean().item()],
+            "human explanation": [human_detection.mean().item(), human_scores.mean().item()],
+            "another latent's LLM explanation": [other_detection.mean().item(), other_scores[HUMAN_IDS].mean().item()],
+        },
+        errors={
+            "LLM explanation": [sem(llm_detection), sem(own_scores[HUMAN_IDS])],
+            "human explanation": [sem(human_detection), sem(human_scores)],
+            "another latent's LLM explanation": [sem(other_detection), sem(other_scores[HUMAN_IDS])],
+        },
+        title="Two scores for the same 12 latents (mean ± s.e.m.)",
+        ylabel="score", ylim=(-0.1, 1.1), hline=0.5, hline_label="chance level for AUROC",
+    )
+
+# %%
+
+if MAIN:
+    quantile_sets = [detection_examples(score_units[j], t.Generator().manual_seed(100 + j)) for j in range(N_LATENTS)]
+    own_by_bin = detection_auroc(model, score_tokens, explanations, quantile_sets, explainer_tok, explainer)
+    other_by_bin = detection_auroc(model, score_tokens, other_explanations, quantile_sets, explainer_tok, explainer)
+    
+    print("mean AUROC by quantile bin (bin 1 = strongest activations):")
+    print("  own explanation:    ", own_by_bin.mean(0).numpy().round(3))
+    print("  other explanation:  ", other_by_bin.mean(0).numpy().round(3))
+    
+    utils.plot_lines(
+        list(range(1, 6)),
+        {"own explanation": own_by_bin.mean(0).tolist(), "another latent's explanation": other_by_bin.mean(0).tolist()},
+        errors={"own explanation": (own_by_bin.std(0) / N_LATENTS**0.5).tolist(),
+                "another latent's explanation": (other_by_bin.std(0) / N_LATENTS**0.5).tolist()},
+        title=f"Detection AUROC by activation quantile ({N_LATENTS} latents, mean ± s.e.m.)",
+        xlabel="quantile bin of the activating excerpts", ylabel="AUROC vs silent excerpts",
+        xticklabels=["1 (top 20%)", "2", "3", "4", "5 (weakest 20%)"], hline=0.5, hline_label="chance",
+    )
+
+# %%
+
+if MAIN:
+    neuron_j = NEURONS.index(2307)
+    neuron_acts = neuron_explain_acts[..., neuron_j]
+    neuron_explanation = explain_units(model, explain_tokens, neuron_explain_acts[..., [neuron_j]], explainer_tok, explainer)[0]
+    print(f"Neuron 2307. Explanation: {neuron_explanation!r}\n")
+    max_acts, max_pos = neuron_acts.max(dim=-1)
+    order = max_acts.argsort(descending=True)
+    for name, ranks in [("top", range(0, 4)), ("~1% quantile", range(20, 24)), ("~10% quantile", range(200, 204))]:
+        print(f"{name}:")
+        show_examples(neuron_acts, explain_tokens, [(int(order[r]), int(max_pos[order[r]])) for r in ranks], 0.5 * neuron_acts.max().item())
+
+# %%
+
+FUZZ_TEMPLATE = (
+    'Text: "{text}"\n\nThe tokens marked with << >> are supposed to be examples of {explanation}. '
+    "Is that correct? Answer Yes or No."
+)
 
 
-if __name__ == "__main__":
-    result = run_real_model_signature()
-    print(result["claim"])
-    print(result["metrics"])
-    print(result["intervention"])
+def fuzzing_auroc(
+    model: HookedTransformer,
+    tokens: Int[Tensor, "n_seq seq"],
+    units: list[Float[Tensor, "n_seq seq"]],
+    explanations: list[str],
+    tokenizer,
+    llm,
+    generator: t.Generator,
+    k: int = 10,
+    threshold_frac: float = 0.25,
+) -> Float[Tensor, " n_pairs"]:
+    """AUROC of correctly vs randomly highlighted top-k excerpts, for each (unit, explanation) pair."""
+    requests = []
+    for acts, explanation in zip(units, explanations):
+        threshold = threshold_frac * acts.max().item()
+        for correct in [True, False]:
+            for seq, pos in top_activating_examples(acts, k):
+                str_toks, window_acts = get_window(model, tokens, acts, seq, pos)
+                if correct:
+                    text = format_example(str_toks, window_acts, threshold)
+                else:
+                    active = window_acts > threshold
+                    candidates = (~active).nonzero().squeeze(-1)
+                    fake = t.zeros(len(str_toks))
+                    fake[candidates[t.randperm(len(candidates), generator=generator)[: int(active.sum())]]] = 1.0
+                    text = format_example(str_toks, fake, 0.5)
+                requests.append((explanation, text))
+    scores = detection_scores(tokenizer, llm, requests, template=FUZZ_TEMPLATE).reshape(len(units), 2, k)
+    return t.tensor([auroc(s[0], s[1]) for s in scores])
+
+# %%
+
+if MAIN:
+    fuzz_gen = t.Generator().manual_seed(0)
+    fuzz_own = fuzzing_auroc(model, score_tokens, score_units, explanations, explainer_tok, explainer, fuzz_gen)
+    fuzz_other = fuzzing_auroc(model, score_tokens, score_units, other_explanations, explainer_tok, explainer, fuzz_gen)
+    fuzz_human = fuzzing_auroc(model, score_tokens, [score_units[j] for j in HUMAN_IDS], list(HUMAN_EXPLANATIONS.values()), explainer_tok, explainer, fuzz_gen)
+    print(f"Fuzzing AUROC, all {N_LATENTS} latents: own explanation {fuzz_own.mean():.3f}, another latent's explanation {fuzz_other.mean():.3f}")
+    print(f"Fuzzing AUROC, the 12 latents with human explanations: LLM {fuzz_own[HUMAN_IDS].mean():.3f}, human {fuzz_human.mean():.3f}")
+
+# %%
+
+TEST_SENTENCE_TEMPLATE = (
+    "A feature in a language model responds to {explanation}.\n\n"
+    "Write {n} different, varied sentences that the feature should respond to. Write natural sentences, like ones you "
+    "might find on a web page, not sentences about the feature. Put each sentence on its own line, with no numbering."
+)
+
+
+def parse_sentences(reply: str, n: int) -> list[str]:
+    """Splits a reply into lines, strips bullets/numbering, and keeps the first n lines longer than 10 characters."""
+    lines = [line.strip().lstrip("-*•0123456789.) ").strip() for line in reply.split("\n")]
+    return [line for line in lines if len(line) > 10][:n]
+
+
+def generate_test_sentences(tokenizer, llm, explanations: list[str], n: int = 6) -> list[list[str]]:
+    """For each explanation, n sentences written by the LLM that the explanation says should activate the unit."""
+    conversations = [
+        [{"role": "user", "content": TEST_SENTENCE_TEMPLATE.format(explanation=explanation, n=n)}]
+        for explanation in explanations
+    ]
+    replies = utils.generate_chat(tokenizer, llm, conversations, max_new_tokens=300)
+    return [parse_sentences(reply, n) for reply in replies]
+
+
+def max_activations_on_texts(model: HookedTransformer, texts: list[str], hook_name: str, act_fn) -> Float[Tensor, "n_texts n_units"]:
+    """Max activation of each unit over the token positions of each text."""
+    return t.stack([collect_activations(model, model.to_tokens(text), hook_name, act_fn)[0].max(dim=0).values for text in texts])
+
+
+if MAIN:
+    tests.test_max_activations_on_texts(max_activations_on_texts, model)
+
+# %%
+
+if MAIN:
+    test_sentences = generate_test_sentences(explainer_tok, explainer, explanations)
+    human_test_sentences = generate_test_sentences(explainer_tok, explainer, list(HUMAN_EXPLANATIONS.values()))
+    
+    def hit_rate(j: int, sentences: list[str]) -> tuple[float, Tensor]:
+        """Fraction of sentences on which latent j fires above 10% of its explain-split max, and the activations / max."""
+        acts = max_activations_on_texts(model, sentences, HOOK, partial(sae_latent_acts, sae=sae, latents=[LATENTS[j]]))[:, 0]
+        rel = acts / explain_acts[..., j].max()
+        return (rel > 0.1).float().mean().item(), rel
+    
+    own_hits = [hit_rate(j, test_sentences[j])[0] for j in range(N_LATENTS)]
+    other_hits = [hit_rate(j, test_sentences[(j + 1) % N_LATENTS])[0] for j in range(N_LATENTS)]
+    human_hits = [hit_rate(j, sents)[0] for j, sents in zip(HUMAN_IDS, human_test_sentences)]
+    
+    print(f"Fraction of test sentences that activate the latent (mean over {N_LATENTS} latents):")
+    print(f"  sentences written from the latent's own explanation:  {sum(own_hits) / N_LATENTS:.3f}")
+    print(f"  sentences written from another latent's explanation:  {sum(other_hits) / N_LATENTS:.3f}")
+    print(f"For the 12 latents with human explanations: LLM explanation {sum(own_hits[j] for j in HUMAN_IDS) / 12:.3f}, human explanation {sum(human_hits) / 12:.3f}")
+    
+    utils.plot_score_dots(
+        [str(latent) for latent in LATENTS],
+        {"sentences from own explanation": own_hits, "sentences from another latent's explanation": other_hits},
+        None,
+        title="How often does the latent fire on new sentences written to fit its explanation? (6 sentences per latent)",
+        ylabel="fraction of sentences that activate the latent",
+        xlabel="SAE latent (sorted by the hit rate of sentences from its own explanation)",
+    )
+
+# %%
+
+if MAIN:
+    print("For reference, the top 6 examples of latent 18120 on the explain split:")
+    show_examples(explain_acts[..., LATENTS.index(18120)], explain_tokens, top_activating_examples(explain_acts[..., LATENTS.index(18120)], 6),
+                  0.25 * explain_acts[..., LATENTS.index(18120)].max().item())
+    print()
+    for latent in [4412, 18120, 11803]:
+        j = LATENTS.index(latent)
+        h = HUMAN_IDS.index(j)
+        for name, explanation, sentences in [("LLM", explanations[j], test_sentences[j]), ("human", list(HUMAN_EXPLANATIONS.values())[h], human_test_sentences[h])]:
+            _, rel = hit_rate(j, sentences)
+            print(f"latent {latent}, {name} explanation: {explanation!r}")
+            for sentence, r in zip(sentences, rel.tolist()):
+                print(f"   {r:4.2f} | {sentence}")
+        print()
+
+# %%
+
+def steering_hook(resid: Float[Tensor, "batch seq d_model"], hook, vector: Float[Tensor, " d_model"]) -> Float[Tensor, "batch seq d_model"]:
+    return resid + vector
+
+
+@t.inference_mode()
+def steered_generations(
+    model: HookedTransformer, vector: Float[Tensor, " d_model"], prompt_tokens: Int[Tensor, "n_prompts seq"], max_new_tokens: int = 24
+) -> list[str]:
+    """Greedy continuations of each prompt, while adding `vector` to the residual stream at HOOK."""
+    with model.hooks(fwd_hooks=[(HOOK, partial(steering_hook, vector=vector))]):
+        out = model.generate(prompt_tokens, max_new_tokens=max_new_tokens, do_sample=False, verbose=False, stop_at_eos=False)
+    return [model.to_string(row[prompt_tokens.shape[1] :]) for row in out]
+
+
+if MAIN:
+    tests.test_steered_generations(steered_generations, model, HOOK)
+
+# %%
+
+def intervention_curve(
+    model: HookedTransformer,
+    tokenizer,
+    llm,
+    direction: Float[Tensor, " d_model"],
+    explanations: list[str],
+    coefs: list[float],
+    prompt_tokens: Int[Tensor, "n_prompts seq"],
+) -> tuple[Float[Tensor, "n_explanations n_coefs"], list[list[str]]]:
+    """Mean detection score of each explanation on text generated while steering with c * direction, for each c."""
+    scores = t.zeros(len(explanations), len(coefs))
+    texts_by_coef = []
+    for c, coef in enumerate(coefs):
+        texts = steered_generations(model, coef * direction, prompt_tokens)
+        texts_by_coef.append(texts)
+        requests = [(explanation, text) for explanation in explanations for text in texts]
+        scores[:, c] = detection_scores(tokenizer, llm, requests).reshape(len(explanations), len(texts)).mean(dim=-1)
+    return scores, texts_by_coef
+
+
+if MAIN:
+    tests.test_intervention_curve(intervention_curve, model, explainer_tok, explainer)
+
+# %%
+
+if MAIN:
+    STEERING_PROMPTS = [
+        "I think that the", "The weather today is", "My favourite thing is", "In the beginning there",
+        "She told me that", "Here is what happened", "The best way to", "Yesterday we went to",
+    ]
+    steer_prompt_tokens = model.to_tokens(STEERING_PROMPTS)
+    assert all(len(model.to_tokens(p)[0]) == steer_prompt_tokens.shape[1] for p in STEERING_PROMPTS), "prompts must have equal length"
+    
+    COEFS = [0.0, 1.0, 2.0, 4.0]
+    random_steer_dirs = t.randn(N_LATENTS, model.cfg.d_model, generator=t.Generator().manual_seed(3))
+    random_steer_dirs = (random_steer_dirs / random_steer_dirs.norm(dim=-1, keepdim=True)).to(device)
+    
+    curves = {"latent direction, own explanation": [], "random direction, own explanation": [], "latent direction, another latent's explanation": []}
+    steered_texts = {}
+    for j in tqdm(range(N_LATENTS)):
+        scale = explain_acts[..., j].max().item()
+        latent_scores, steered_texts[j] = intervention_curve(
+            model, explainer_tok, explainer, scale * sae.W_dec[LATENTS[j]], [explanations[j], other_explanations[j]], COEFS, steer_prompt_tokens
+        )
+        random_scores, _ = intervention_curve(
+            model, explainer_tok, explainer, scale * random_steer_dirs[j], [explanations[j]], COEFS, steer_prompt_tokens
+        )
+        curves["latent direction, own explanation"].append(latent_scores[0])
+        curves["latent direction, another latent's explanation"].append(latent_scores[1])
+        curves["random direction, own explanation"].append(random_scores[0])
+    
+    # change relative to no steering (coefficient 0), mean +- s.e.m. over latents
+    changes = {name: t.stack(c) - t.stack(c)[:, :1] for name, c in curves.items()}
+    for name, change in changes.items():
+        print(f"{name:<48} mean change: {change.mean(0).numpy().round(2)}")
+    gap = changes["latent direction, own explanation"][:, 1:] - changes["random direction, own explanation"][:, 1:]
+    print(f"latents where steering raises the judge score more than random steering (at c=1, 2, 4): {(gap > 0).sum(0).tolist()} / {N_LATENTS}")
+    
+    utils.plot_lines(
+        COEFS,
+        {name: change.mean(0).tolist() for name, change in changes.items()},
+        errors={name: (change.std(0) / N_LATENTS**0.5).tolist() for name, change in changes.items()},
+        title=f"Intervention scoring: steer GPT-2 with c x max activation x decoder direction ({N_LATENTS} latents)",
+        xlabel="steering coefficient c", ylabel="change in judge score vs. c = 0\n(logit Yes - logit No)",
+        hline=0.0,
+    )
+
+# %%
+
+if MAIN:
+    for latent in [11803, 10483]:
+        j = LATENTS.index(latent)
+        top_logit_tokens = (sae.W_dec[latent] @ model.W_U).topk(10).indices
+        print(f"latent {latent}. Explanation: {explanations[j]!r}")
+        print(f"  logit lens of decoder direction: {[model.to_string(tok) for tok in top_logit_tokens]}")
+        for c, coef in enumerate(COEFS):
+            print(f"  c = {coef}: {STEERING_PROMPTS[0]}{steered_texts[j][c][0]!r}")
+            print(f"  {'':8}{STEERING_PROMPTS[1]}{steered_texts[j][c][1]!r}")
+        print()
+
+# %%
+
+if MAIN:
+    ts_tokens = utils.load_tinystories_tokens(model, n_sequences=4000, seq_len=64)
+    ts_explain_tokens, ts_score_tokens = ts_tokens[:2000], ts_tokens[2000:]
+    ts_explain_acts = collect_activations(model, ts_explain_tokens, HOOK, latent_fn)
+    ts_score_acts = collect_activations(model, ts_score_tokens, HOOK, latent_fn)
+    
+    strength = ts_explain_acts.amax((0, 1)) / explain_acts.amax((0, 1))
+    print(f"Max activation on TinyStories, as a fraction of max activation on the Pile (median over latents): {strength.median():.2f}")
+    print(f"Latents whose TinyStories max is below 25% of their Pile max: {(strength < 0.25).sum()} / {N_LATENTS}")
+    
+    ts_explanations = explain_units(model, ts_explain_tokens, ts_explain_acts, explainer_tok, explainer)
+
+# %%
+
+def cross_dataset_scores(
+    model: HookedTransformer,
+    datasets: dict[str, tuple[Int[Tensor, "n_seq seq"], Float[Tensor, "n_seq seq n_units"]]],
+    explanation_sets: dict[str, list[str]],
+    tokenizer,
+    llm,
+    seed: int = 0,
+) -> dict[tuple[str, str], Float[Tensor, " n_units"]]:
+    """Simulation scores of each set of explanations on each dataset's score split."""
+    results = {}
+    for data_name, (tokens, acts) in datasets.items():
+        units = [acts[..., j] for j in range(acts.shape[-1])]
+        examples = [scoring_examples(units[j], t.Generator().manual_seed(seed + j)) for j in range(len(units))]
+        for source, explanation_list in explanation_sets.items():
+            results[(source, data_name)] = simulation_scores(model, tokens, units, explanation_list, examples, tokenizer, llm)[0]
+    return results
+
+# %%
+
+if MAIN:
+    cross = cross_dataset_scores(
+        model,
+        {"Pile": (score_tokens, score_acts), "TinyStories": (ts_score_tokens, ts_score_acts)},
+        {"Pile": explanations, "TinyStories": ts_explanations},
+        explainer_tok,
+        explainer,
+    )
+    names = ["Pile", "TinyStories"]
+    cross_matrix = t.tensor([[cross[(source, data)].mean().item() for data in names] for source in names])
+    print(cross_matrix)
+    utils.plot_matrix(
+        cross_matrix, row_labels=[f"explanation written from\n{n} examples" for n in names],
+        col_labels=[f"scored on {n}" for n in names],
+        title=f"Mean simulation score over {N_LATENTS} latents", xlabel="scoring data (held-out split)",
+        ylabel="explanation source", cbar_label="mean simulation score", vmin=0, vmax=0.35, fmt="{:.3f}", figsize=(6, 4.5),
+    )
+
+# %%
+
+if MAIN:
+    drop = cross[("Pile", "Pile")] - cross[("TinyStories", "Pile")]
+    for j in drop.argsort(descending=True)[:5].tolist():
+        seq, pos = top_activating_examples(ts_explain_acts[..., j], 1)[0]
+        str_toks, window_acts = get_window(model, ts_explain_tokens, ts_explain_acts[..., j], seq, pos)
+        print(f"latent {LATENTS[j]} (TinyStories max = {strength[j]:.0%} of Pile max)")
+        print(f"  Pile explanation:        {explanations[j]!r}   (Pile score {cross[('Pile', 'Pile')][j]:.2f})")
+        print(f"  TinyStories explanation: {ts_explanations[j]!r}   (Pile score {cross[('TinyStories', 'Pile')][j]:.2f})")
+        print(f"  top TinyStories example: {format_example(str_toks, window_acts, 0.25 * ts_explain_acts[..., j].max().item())}")
+
+# %%
+
+if MAIN:
+    MY_LATENT = 4412
+    MY_EXPLANATION = 'the word "to" directly after "similar"'
+    
+    my_fn = partial(sae_latent_acts, sae=sae, latents=[MY_LATENT])
+    my_explain_acts = collect_activations(model, explain_tokens, HOOK, my_fn)
+    my_score_acts = collect_activations(model, score_tokens, HOOK, my_fn)[..., 0]
+    print(f"Latent {MY_LATENT}: fires on {(my_explain_acts[:, 1:] > 0).float().mean():.3%} of tokens. Top 5 examples:")
+    show_examples(my_explain_acts[..., 0], explain_tokens, top_activating_examples(my_explain_acts[..., 0], 5), 0.25 * my_explain_acts.max().item())
+    
+    llm_explanation = explain_units(model, explain_tokens, my_explain_acts, explainer_tok, explainer)[0]
+    candidates = {"LLM": llm_explanation, "mine": MY_EXPLANATION}
+    my_examples = scoring_examples(my_score_acts, t.Generator().manual_seed(0))
+    my_sim, _, _ = simulation_scores(model, score_tokens, [my_score_acts] * 2, list(candidates.values()), [my_examples] * 2, explainer_tok, explainer)
+    _, my_negatives = detection_examples(my_score_acts, t.Generator().manual_seed(0))
+    my_det = detection_auroc(model, score_tokens, list(candidates.values()), [([top_activating_examples(my_score_acts, 10)], my_negatives)] * 2, explainer_tok, explainer)[:, 0]
+    print()
+    for (name, explanation), sim, det in zip(candidates.items(), my_sim, my_det):
+        print(f"{name:>5}: simulation {sim:5.2f}   detection AUROC {det:4.2f}   {explanation!r}")
+
+# %%

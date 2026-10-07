@@ -1,44 +1,58 @@
 # [16.7] Data Shapley in One Training Run
 
-This section is a CPU-sized learner lab built around one falsifiable claim: in
-an eight-example logistic-regression game, a checkpoint-gradient estimator
-accumulated during one 40-step full-data run identifies the planted bad label
-and correlates `r=0.995472` with exact Data Shapley from all 256 subset-training
-runs.
+Which training images helped a model learn—and does that tell us which images to
+remove? Start with exact subset retraining, then distinguish that game from
+contribution accounting along one nonlinear SGD trajectory.
 
-The lesson opens with an independently inspectable four-example game. Averaging
-all 24 orderings gives exact values
-`[0.641204, 0.641204, 0.641204, -1.173611]`, verifies efficiency, and shows that
-deleting the planted error improves utility by `0.25` before any approximation
-is introduced.
+The notebook contains twelve exercise groups and 26 student-implemented functions.
+It develops exact and permutation Data Shapley, checkpoint-gradient scores,
+influence and leave-one-out baselines, affine ghost gradient products, exact
+minibatch games, Taylor allocations, and a complete training accountant. Every
+exercise has immediate tests and visible help and solutions.
 
-The exercise notebook keeps the method visible. Students implement coalition
-training and held-out utility, exact Shapley, sampled permutation Shapley,
-checkpoint-gradient scores, leave-one-out, damped influence, and label
-shuffling. Immediate semantic tests check pinned training utilities, exact
-values, efficiency, duplicate symmetry, ordering bias, and deletion behavior.
+Nine figures are generated from the learner's implementations: an exact-retraining
+comparison, gradient-similarity check, Taylor-error sweep, cumulative accounting,
+per-image credit history, actual digit examples, held-out deletion controls,
+measured runtime costs, and a retraining play experiment. The real digit study
+uses three fixed seeds, 128 training images, 48 ranking images and 64 untouched
+test images. All 49 neural training runs take 128 SGD steps. The exact local
+accountant telescopes; the first-order approximation overallocates, and removing
+low-credit examples worsens test loss for one seed. These failures are part of
+the lesson.
 
-The solution notebook generates the signature visualization from those
-implementations. Its controls include random-order budget curves, opposite
-fixed orders, influence and leave-one-out baselines, matched one-row deletions,
-and relocation of the bad label to its duplicate twin. No metric is loaded from
-`verification_report.json`, and the learner result uses no white-noise control.
+Open the exercise notebook in the project Python environment. No GPU or gated
+model is required. The data loader reuses the pinned public UCI digit data and
+splits from 16.9; its existing data-access instructions apply. The first run may
+fetch those small public data files if they are absent from the local cache.
 
-Run the focused CPU checks from the repository root:
-
-```bash
-.venv/bin/python -m pytest -q \
-  chapter16_shapley_attribution_baselines/exercises/part7_data_shapley_in_one_training_run/tests.py
-```
-
-Execute the solution notebook in place from this directory:
+To reconstruct the published solutions from the exercise notebook's own solution
+dropdowns and execute everything into a new directory:
 
 ```bash
-../../../.venv/bin/jupyter nbconvert --to notebook --execute --inplace \
-  --ExecutePreprocessor.timeout=180 \
-  16.7_Data_Shapley_in_One_Training_Run_solutions.ipynb
+CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 \
+.venv/bin/python3 chapter16_shapley_attribution_baselines/exercises/part7_data_shapley_in_one_training_run/build_inrun_notebooks.py \
+  --output /tmp/arena-inrun-primary
 ```
 
-The existing CUDA entry point and verification report remain supplementary
-infrastructure. They are not imported by either learner notebook and are not
-needed for this section's result.
+Use a second new directory for a separate complete execution, then compare both:
+
+```bash
+CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 \
+.venv/bin/python3 chapter16_shapley_attribution_baselines/exercises/part7_data_shapley_in_one_training_run/build_inrun_notebooks.py \
+  --output /tmp/arena-inrun-fresh
+.venv/bin/python3 chapter16_shapley_attribution_baselines/exercises/part7_data_shapley_in_one_training_run/inrun_report.py \
+  --primary /tmp/arena-inrun-primary --fresh /tmp/arena-inrun-fresh \
+  --output /tmp/arena-inrun-comparison
+.venv/bin/python3 -m pytest -q tests/test_inrun_data_shapley.py tests/test_data_shapley.py
+```
+
+The comparison retains every deterministic numeric field, including all fitted
+weights, loss trajectories, per-step credits and deletion choices. It excludes
+only 23 explicitly named wall-clock measurements; both measured timing sets
+remain in the raw payloads. The report assembler fits no models. Old CUDA
+one-step preflight evidence is historical, not certification of this learner.
+
+Ghost products here assume independent examples and separate affine parameters.
+The tiny explicit Hessian illustrates second-order allocation; it is not the
+paper's scalable second-order implementation or a GhostSuite package-parity
+claim. The CPU timing experiment does not establish foundation-model throughput.

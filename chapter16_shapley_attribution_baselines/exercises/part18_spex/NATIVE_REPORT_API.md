@@ -42,6 +42,13 @@ are rejected. Input manifests use the existing `path`, `sha256`, `size_bytes`
 schema with canonical repository-relative paths, even while the exact bytes are
 staged externally. They therefore remain usable after installation.
 
+For an independently approved concurrent run pair, assembly additionally checks
+and binds the completed outer supervisor, prospective scheduling supplement,
+independent scheduling approval and coordinator source. The publisher copies
+those exact four files into each section's supporting evidence. Combined
+resource limits and source stability must pass in the outer receipt even if
+the inner native/comparison receipts report success.
+
 The output contains `verification_report.json`, `artifacts.lock.yml`,
 `verification_report.schema.json`, `native_summary.json`, and
 `report_artifacts.json`. The last file supplies physical artifact records for the

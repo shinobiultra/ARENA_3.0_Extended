@@ -2,10 +2,6 @@
 
 Can a few carefully chosen groups of queries identify a sparse, signed interaction spectrum?
 
-> **Unpublished integration draft.** The analytic exercises have passed execution and independent review.
-> The native cells below require the completed, hash-bound portable score fixture. Native learner execution
-> is pending; the analytic examples do not imply a GPT-2 result.
-
 # Introduction
 
 Suppose a score depends on 31 switches. A switch could represent whether a word is retained in a prompt. You can query the score for any setting, but checking every setting would take more than two billion queries. You suspect only a few groups of switches matter together. How could you find those groups without listing them first?
@@ -572,4 +568,4 @@ Carry those questions into 16.19. A tree proxy offers a different route to a spe
 - [SPEX: Scaling Feature Interaction Explanations for LLMs — ICML 2025](https://proceedings.mlr.press/v267/kang25a.html), especially Appendix A.3–A.4 and Appendix C.
 - [Pinned author implementation](https://github.com/basics-lab/spectral-explain/tree/61400b5388b8ecbf18fe18c4d821ffe3e8a5f9c8).
 - [ProxySPEX — NeurIPS 2025](https://papers.neurips.cc/paper_files/paper/2025/hash/68dced1638d71d4d21598f79ae91262e-Abstract-Conference.html).
-- Repository reference evidence: `docs/arena_salvage/2026-09-08_spex_reference_execution.md`. Analytic evidence supports these exercises; it does not close the shared native requirement.
+- Implementation comparisons and author-code differences: `MODULE_API.md`. The analytical reference runs are documented in `docs/arena_salvage/2026-09-08_spex_reference_execution.md`.

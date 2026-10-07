@@ -1,1372 +1,1267 @@
-"""Reference implementation for [7.4] Mini Natural Language Autoencoders.
+# %%
 
-This lesson is a deliberately small supervised warm-start, not a reproduction
-of paper-scale NLA reinforcement learning. Its activation verbalizer predicts
-GPT-NeoX token sequences. Its activation reconstructor sends those tokens
-through a frozen language model before applying the affine output head used by
-the NLA paper. No phrase ID, factor parser, or activation prototype appears in
-the learned round trip.
-"""
 
-from __future__ import annotations
-
+import copy
+import random
 import sys
-from dataclasses import dataclass
+from collections import Counter
 from pathlib import Path
-from typing import Any, Sequence
 
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 import torch as t
+import torch.nn as nn
 import torch.nn.functional as F
+from IPython.display import display
+from jaxtyping import Bool, Float, Int
+from torch import Tensor
+from tqdm.auto import tqdm
+from transformer_lens import HookedTransformer
 
+device = t.device("mps" if t.backends.mps.is_available() else "cuda" if t.cuda.is_available() else "cpu")
+pd.set_option("display.width", 200)
 
+# Make sure exercises are in the path
 chapter = "chapter7_activation_to_language"
+section = "part4_mini_natural_language_autoencoders"
 root_dir = next(p for p in [Path.cwd(), *Path.cwd().parents] if (p / chapter).exists())
-if str(root_dir) not in sys.path:
-    sys.path.append(str(root_dir))
+exercises_dir = root_dir / chapter / "exercises"
+section_dir = exercises_dir / section
+if str(exercises_dir) not in sys.path:
+    sys.path.append(str(exercises_dir))
+
+import part4_mini_natural_language_autoencoders.tests as tests
+import part4_mini_natural_language_autoencoders.utils as utils
+
+MAIN = __name__ == "__main__"
+
+# %%
+
+if MAIN:
+    model = HookedTransformer.from_pretrained("gpt2-small", device=device)
+    model.requires_grad_(False)
+    
+    print(f"{model.cfg.n_layers} layers, d_model={model.cfg.d_model}")
+
+# %%
+
+NOUNS = [
+    ("key", "keys"), ("book", "books"), ("dog", "dogs"), ("car", "cars"), ("tree", "trees"), ("house", "houses"),
+    ("door", "doors"), ("girl", "girls"), ("boy", "boys"), ("cat", "cats"), ("bird", "birds"), ("table", "tables"),
+    ("chair", "chairs"), ("teacher", "teachers"), ("student", "students"), ("window", "windows"),
+]  # fmt: skip
+TIME_ADVERBS = ["Today", "Now", "Currently", "Yesterday", "Earlier", "Previously"]  # first three present, last three past
+PREPOSITIONS = ["near", "behind", "beside", "with"]
+VERBS = [" is", " are", " was", " were"]
+LAYER = 10  # the layer whose activations we'll verbalise (the residual stream *before* block 10)
 
 
-PYTHIA_MODEL_ID = "EleutherAI/pythia-70m-deduped"
-PYTHIA_REVISION = "e93a9faa9c77e5d09219f6c868bfc7a1bd65593c"
-PYTHIA_HIDDEN_STATE_INDEX = 4
-PYTHIA_PATCH_BLOCK_INDEX = 3
-AGREEMENT_CANDIDATES = (" is", " are", " was", " were")
-FACTOR_STATES = ((1.0, 1.0), (-1.0, 1.0), (1.0, -1.0), (-1.0, -1.0))
-AR_PROMPT = "Summary of the following text: <text>{}</text> <summary>"
+def make_dataset(n: int, seed: int = 0) -> pd.DataFrame:
+    rows = []
+    for time_idx, time_word in enumerate(TIME_ADVERBS):
+        for i, j in [(i, j) for i in range(len(NOUNS)) for j in range(len(NOUNS)) if i != j]:
+            for subject_plural in [0, 1]:
+                for object_plural in [0, 1]:
+                    for prep in PREPOSITIONS:
+                        past = int(time_idx >= 3)
+                        subject, obj = NOUNS[i][subject_plural], NOUNS[j][object_plural]
+                        rows.append(
+                            dict(
+                                sentence=f"{time_word}, the {subject} {prep} the {obj} really",
+                                time_word=time_word.lower(),
+                                tense=["present", "past"][past],
+                                subject=subject,
+                                number=["singular", "plural"][subject_plural],
+                                preposition=prep,
+                                object=obj,
+                                object_number=["singular", "plural"][object_plural],
+                                verb=2 * past + subject_plural,
+                            )
+                        )
+    random.Random(seed).shuffle(rows)
+    return pd.DataFrame(rows[:n])
 
-NOUN_PAIRS = (
-    ("key", "keys"),
-    ("book", "books"),
-    ("car", "cars"),
-    ("tree", "trees"),
-    ("house", "houses"),
-    ("chair", "chairs"),
-    ("table", "tables"),
-    ("door", "doors"),
-    ("apple", "apples"),
-    ("river", "rivers"),
-    ("city", "cities"),
-    ("student", "students"),
-    ("teacher", "teachers"),
-    ("doctor", "doctors"),
-    ("artist", "artists"),
-    ("pilot", "pilots"),
-)
+# %%
 
-TEMPLATE_PAIRS = (
-    ("Today, the {}", "Yesterday, the {}", "plain"),
-    ("Currently, the {}", "Earlier, the {}", "formal"),
-)
+if MAIN:
+    df = make_dataset(5000)
+    N_TRAIN = 4000
+    train_idx, test_idx = t.arange(N_TRAIN), t.arange(N_TRAIN, len(df))
+    
+    tokens = model.to_tokens(df["sentence"].tolist())
+    verb_ids = t.tensor([model.to_single_token(v) for v in VERBS])
+    labels = t.tensor(df["verb"].values)
+    
+    print(f"tokens: {tuple(tokens.shape)}")
+    print([model.to_string(tok) for tok in tokens[0]])
+    display(df.head(6))
 
+# %%
 
-@dataclass(frozen=True)
-class AgreementExample:
-    prompt: str
-    explanation: str
-    factors: tuple[float, float]
-    context_id: int
-    noun_lemma: str
-    style: str
-    held_out_state: tuple[float, float]
-    split: str
-
-
-@dataclass(frozen=True)
-class PythiaNLADataset:
-    train_activations: t.Tensor
-    eval_activations: t.Tensor
-    train_factors: t.Tensor
-    eval_factors: t.Tensor
-    train_examples: tuple[AgreementExample, ...]
-    eval_examples: tuple[AgreementExample, ...]
-    eval_input_ids: t.Tensor
-    eval_attention_mask: t.Tensor
-    eval_positions: t.Tensor
-    candidate_token_ids: t.Tensor
-    original_candidate_logits: t.Tensor
-
-
-@dataclass(frozen=True)
-class ExplanationTokens:
-    token_ids: t.Tensor
-    local_token_ids: t.Tensor
-    attention_mask: t.Tensor
-    vocabulary_token_ids: t.Tensor
-    eos_token_id: int
-
-
-@dataclass(frozen=True)
-class TokenVerbalizer:
-    weight: t.Tensor
-    vocabulary_token_ids: t.Tensor
-    eos_token_id: int
-    sequence_length: int
-
-
-@dataclass(frozen=True)
-class GeneratedExplanations:
-    texts: tuple[str, ...]
-    token_ids: t.Tensor
-    local_token_ids: t.Tensor
-    logits: t.Tensor
-
-
-@dataclass(frozen=True)
-class TokenReconstructor:
-    feature_mean: t.Tensor
-    target_mean: t.Tensor
-    weight: t.Tensor
-    output_norm: float
-
-
-@dataclass(frozen=True)
-class ReconstructionMetrics:
-    fve: float
-    within_factor_fve: float
-    normalized_mse: float
-    mean_cosine: float
-    distinct_rows: int
-
-
-@dataclass(frozen=True)
-class InterventionResult:
-    base_text: str
-    edited_text: str
-    activation_delta_norm: float
-    selected_logit_change: float
-    other_rows_max_logit_change: float
-    original_winner: str
-    intervened_winner: str
-    candidate_logits: t.Tensor
-
-
-@dataclass(frozen=True)
-class MiniNLAReport:
-    train_count: int
-    eval_count: int
-    token_accuracy: float
-    exact_text_accuracy: float
-    reconstruction: ReconstructionMetrics
-    bag_of_tokens: ReconstructionMetrics
-    prompt_only_factor: ReconstructionMetrics
-    direct_factor: ReconstructionMetrics
-    class_mean: ReconstructionMetrics
-    mean_conditioned: ReconstructionMetrics
-    lexical_relabel: ReconstructionMetrics
-    original_task_accuracy: float
-    reconstructed_task_accuracy: float
-    behavior_parity_accuracy: float
-    bag_of_tokens_behavior_parity: float
-    oracle_text_behavior_parity: float
-    omitted_composition_end_to_end_parity: float
-    prompt_only_factor_behavior_parity: float
-    direct_factor_behavior_parity: float
-    class_mean_behavior_parity: float
-    lexical_relabel_behavior_parity: float
-    same_context_token_multiset_fraction: float
-    shuffled_fve_by_seed: tuple[tuple[int, float], ...]
-    shuffled_behavior_parity_by_seed: tuple[tuple[int, float], ...]
-    identity_max_logit_error: float
-    intervention: InterventionResult
-    generated_explanations: tuple[str, ...]
-    rows: tuple[dict[str, Any], ...]
-
-
-@dataclass(frozen=True)
-class MiniNLAExperiment:
-    report: MiniNLAReport
-    verbalizer: TokenVerbalizer
-    reconstructor: TokenReconstructor
-    reconstructed_activations: t.Tensor
-
-
-def natural_language_explanation(
-    noun_lemma: str,
-    style: str,
-    factors: tuple[float, float],
-) -> str:
-    """Write a readable explanation whose factor values are encoded by word order.
-
-    Within one noun/style context, all four factor states have exactly the same
-    token multiset. This makes a bag-of-tokens reconstructor a genuine order-free
-    control for the contextual Pythia reconstructor.
-    """
-
-    if not noun_lemma.isalpha() or not style.isalpha():
-        raise ValueError("noun_lemma and style must be alphabetic words.")
-    if factors not in FACTOR_STATES:
-        raise ValueError("factors must be one of the four precommitted states.")
-    quantity = "one not many" if factors[0] > 0 else "many not one"
-    time = "current not earlier" if factors[1] > 0 else "earlier not current"
-    return (
-        f"The topic is {noun_lemma}. The wording is {style}. "
-        f"Quantity is {quantity}. Time is {time}."
-    )
-
-
-def build_agreement_examples() -> tuple[tuple[AgreementExample, ...], tuple[AgreementExample, ...]]:
-    """Build 32 lexical contexts with one composition withheld in each."""
-
-    train: list[AgreementExample] = []
-    evaluation: list[AgreementExample] = []
-    for noun_index, (singular, plural) in enumerate(NOUN_PAIRS):
-        for template_index, (current_template, earlier_template, style) in enumerate(TEMPLATE_PAIRS):
-            context_id = 2 * noun_index + template_index
-            held_out_state = FACTOR_STATES[context_id % len(FACTOR_STATES)]
-            for number_factor, noun in ((1.0, singular), (-1.0, plural)):
-                for time_factor, template in ((1.0, current_template), (-1.0, earlier_template)):
-                    factors = (number_factor, time_factor)
-                    split = "eval" if factors == held_out_state else "train"
-                    example = AgreementExample(
-                        prompt=template.format(noun),
-                        explanation=natural_language_explanation(singular, style, factors),
-                        factors=factors,
-                        context_id=context_id,
-                        noun_lemma=singular,
-                        style=style,
-                        held_out_state=held_out_state,
-                        split=split,
-                    )
-                    (evaluation if split == "eval" else train).append(example)
-    return tuple(train), tuple(evaluation)
-
-
-def load_pythia(device: str | t.device = "cpu"):
-    """Load the pinned checkpoint from the local cache on an explicit device."""
-
-    from transformers import AutoModelForCausalLM, AutoTokenizer
-
-    tokenizer = AutoTokenizer.from_pretrained(
-        PYTHIA_MODEL_ID,
-        revision=PYTHIA_REVISION,
-        local_files_only=True,
-    )
-    tokenizer.pad_token = tokenizer.eos_token
-    tokenizer.padding_side = "right"
-    model = AutoModelForCausalLM.from_pretrained(
-        PYTHIA_MODEL_ID,
-        revision=PYTHIA_REVISION,
-        local_files_only=True,
-        dtype=t.float32,
-    ).to(device)
-    model.eval()
-    return tokenizer, model
-
-
-def load_pythia_cpu():
-    """Compatibility wrapper used by the fast CPU exercise tests."""
-
-    return load_pythia("cpu")
-
-
-def _require_informative_matrix(values: t.Tensor, name: str) -> t.Tensor:
-    if values.ndim != 2 or len(values) < 2:
-        raise ValueError(f"{name} must be a matrix with at least two rows.")
-    values = values.detach().float()
-    if not bool(t.isfinite(values).all()):
-        raise ValueError(f"{name} must contain only finite values.")
-    if float(values.norm(dim=-1).mean()) <= 1e-8:
-        raise ValueError(f"{name} cannot be zero-filled.")
-    if float((values - values.mean(dim=0)).square().sum()) <= 1e-8:
-        raise ValueError(f"{name} must contain row-level variation.")
-    return values
-
-
-def _batched_final_hidden(
-    tokenizer,
-    model,
-    texts: Sequence[str],
-    *,
-    hidden_state_index: int,
-    batch_size: int = 64,
-) -> t.Tensor:
-    if not texts:
-        raise ValueError("texts must be nonempty.")
-    if batch_size <= 0:
-        raise ValueError("batch_size must be positive.")
-    device = next(model.parameters()).device
-    chunks: list[t.Tensor] = []
-    for start in range(0, len(texts), batch_size):
-        encoded = tokenizer(
-            list(texts[start : start + batch_size]),
-            return_tensors="pt",
-            padding=True,
-            add_special_tokens=False,
-        ).to(device)
-        positions = encoded.attention_mask.sum(dim=1) - 1
-        rows = t.arange(len(positions), device=device)
-        with t.inference_mode():
-            output = model(**encoded, output_hidden_states=True, use_cache=False)
-        chunks.append(
-            output.hidden_states[hidden_state_index][rows, positions].detach().cpu().float()
+if MAIN:
+    with t.inference_mode():
+        clean_verb_logits = t.cat(
+            [model(tokens[i : i + 250].to(device))[:, -1, verb_ids.to(device)].cpu() for i in range(0, len(tokens), 250)]
         )
-    return t.cat(chunks)
+    clean_preds = clean_verb_logits.argmax(-1)
+    print(f"GPT-2 picks the right verb on {(clean_preds == labels).float().mean():.1%} of sentences")
+    for name, mask in [
+        ("subject and object agree in number", df["number"].values == df["object_number"].values),
+        ("subject and object disagree in number", df["number"].values != df["object_number"].values),
+    ]:
+        mask = t.tensor(mask)
+        print(f"  {name:<40}: {(clean_preds[mask] == labels[mask]).float().mean():.1%}")
 
+# %%
 
-def _candidate_indices(factors: t.Tensor) -> t.Tensor:
-    if factors.ndim != 2 or factors.shape[1] != 2:
-        raise ValueError("factors must have shape [batch, 2].")
-    plural_offset = factors[:, 0].lt(0).long()
-    earlier_offset = 2 * factors[:, 1].lt(0).long()
-    return plural_offset + earlier_offset
-
-
-def cache_pythia_nla_dataset(tokenizer, model) -> PythiaNLADataset:
-    """Cache real layer-4 states for the compositional agreement split."""
-
-    train_examples, eval_examples = build_agreement_examples()
-    candidate_ids: list[int] = []
-    for candidate in AGREEMENT_CANDIDATES:
-        encoded = tokenizer.encode(candidate, add_special_tokens=False)
-        if len(encoded) != 1:
-            raise RuntimeError(f"agreement candidate {candidate!r} is not one token.")
-        candidate_ids.append(encoded[0])
-    candidate_token_ids = t.tensor(candidate_ids, dtype=t.long)
-
-    def cache(examples: Sequence[AgreementExample]):
-        texts = [example.prompt for example in examples]
-        device = next(model.parameters()).device
-        encoded = tokenizer(
-            texts, return_tensors="pt", padding=True, add_special_tokens=False
-        ).to(device)
-        positions = encoded.attention_mask.sum(dim=1) - 1
-        rows = t.arange(len(examples), device=device)
-        with t.inference_mode():
-            output = model(**encoded, output_hidden_states=True, use_cache=False)
-        activations = (
-            output.hidden_states[PYTHIA_HIDDEN_STATE_INDEX][rows, positions]
-            .detach()
-            .cpu()
-            .float()
+@t.inference_mode()
+def get_final_activations(
+    model: HookedTransformer, tokens: Int[Tensor, "batch seq"], layers: list[int], batch_size: int = 250
+) -> Float[Tensor, "layer batch d_model"]:
+    """Returns resid_pre at the final position for each layer in `layers`, as a CPU tensor."""
+    names = [f"blocks.{layer}.hook_resid_pre" for layer in layers]
+    chunks = []
+    for start in range(0, len(tokens), batch_size):
+        _, cache = model.run_with_cache(
+            tokens[start : start + batch_size].to(model.cfg.device),
+            names_filter=lambda name: name in names,
+            stop_at_layer=max(layers) + 1,
         )
-        logits = (
-            output.logits[rows, positions][:, candidate_token_ids.to(device)]
-            .detach()
-            .cpu()
-            .float()
-        )
-        return activations, logits, encoded.to("cpu"), positions.to("cpu")
-
-    train_activations, _, _, _ = cache(train_examples)
-    eval_activations, original_logits, eval_encoded, eval_positions = cache(eval_examples)
-    _require_informative_matrix(train_activations, "train_activations")
-    _require_informative_matrix(eval_activations, "eval_activations")
-    return PythiaNLADataset(
-        train_activations=train_activations,
-        eval_activations=eval_activations,
-        train_factors=t.tensor([example.factors for example in train_examples]),
-        eval_factors=t.tensor([example.factors for example in eval_examples]),
-        train_examples=train_examples,
-        eval_examples=eval_examples,
-        eval_input_ids=eval_encoded.input_ids,
-        eval_attention_mask=eval_encoded.attention_mask,
-        eval_positions=eval_positions,
-        candidate_token_ids=candidate_token_ids,
-        original_candidate_logits=original_logits,
-    )
+        chunks.append(t.stack([cache["resid_pre", layer][:, -1] for layer in layers]).cpu())
+    return t.cat(chunks, dim=1)
 
 
-def tokenize_explanations(
-    tokenizer,
-    explanations: Sequence[str],
-    *,
-    vocabulary_token_ids: t.Tensor | None = None,
-) -> ExplanationTokens:
-    """Tokenize complete explanations into a small GPT-NeoX token vocabulary."""
+if MAIN:
+    tests.test_get_final_activations(get_final_activations, model)
 
-    if not explanations or any(not text.strip() for text in explanations):
-        raise ValueError("explanations must be nonempty strings.")
-    eos_token_id = int(tokenizer.eos_token_id)
-    sequences = [tokenizer.encode(text, add_special_tokens=False) + [eos_token_id] for text in explanations]
-    if vocabulary_token_ids is None:
-        vocabulary_token_ids = t.tensor(sorted({token for row in sequences for token in row}), dtype=t.long)
-    else:
-        vocabulary_token_ids = vocabulary_token_ids.detach().long().cpu()
-    if vocabulary_token_ids.ndim != 1 or len(vocabulary_token_ids) < 2:
-        raise ValueError("vocabulary_token_ids must contain at least two token IDs.")
-    if len(t.unique(vocabulary_token_ids)) != len(vocabulary_token_ids):
-        raise ValueError("vocabulary_token_ids cannot contain duplicates.")
+# %%
 
-    sequence_length = max(len(row) for row in sequences)
-    token_ids = t.full((len(sequences), sequence_length), eos_token_id, dtype=t.long)
-    attention_mask = t.zeros_like(token_ids, dtype=t.bool)
-    for row_index, row in enumerate(sequences):
-        token_ids[row_index, : len(row)] = t.tensor(row)
-        attention_mask[row_index, : len(row)] = True
-    matches = token_ids[..., None].eq(vocabulary_token_ids[None, None, :])
-    if not bool(matches.any(dim=-1).all()):
-        missing = t.unique(token_ids[~matches.any(dim=-1)]).tolist()
-        raise ValueError(f"explanation contains token IDs outside the training vocabulary: {missing}")
-    local_token_ids = matches.float().argmax(dim=-1)
-    return ExplanationTokens(
-        token_ids=token_ids,
-        local_token_ids=local_token_ids,
-        attention_mask=attention_mask,
-        vocabulary_token_ids=vocabulary_token_ids,
-        eos_token_id=eos_token_id,
-    )
+if MAIN:
+    ANALYSIS_LAYERS = [2, 4, 6, 8, 10]
+    acts_by_layer = get_final_activations(model, tokens, ANALYSIS_LAYERS)
+    acts = acts_by_layer[ANALYSIS_LAYERS.index(LAYER)]
+    acts_unit = F.normalize(acts, dim=-1)  # unit-norm versions, which is what the NLA will reconstruct
+    act_scale = acts[train_idx].norm(dim=-1).mean().item()  # used to rescale reconstructions before patching
+    
+    for layer, layer_acts in zip(ANALYSIS_LAYERS, acts_by_layer):
+        norms = layer_acts.norm(dim=-1)
+        print(f"layer {layer:>2}: mean norm {norms.mean():6.1f}, std of norm {norms.std():5.1f}")
+
+# %%
+
+def fve(h: Float[Tensor, "batch d_model"], h_hat: Float[Tensor, "batch d_model"]) -> float:
+    """Fraction of variance of the unit-normalised activations `h` explained by the reconstructions `h_hat`."""
+    h_unit = F.normalize(h.float(), dim=-1)
+    h_hat = h_hat.float().to(h_unit.device)
+    residual = (h_unit - h_hat).pow(2).sum()
+    total = (h_unit - h_unit.mean(dim=0)).pow(2).sum()
+    return (1 - residual / total).item()
 
 
-def permute_explanation_tokens(tokens: ExplanationTokens, permutation: t.Tensor) -> ExplanationTokens:
-    """Permute text targets while retaining the same token vocabulary."""
+if MAIN:
+    tests.test_fve(fve)
 
-    if permutation.shape != (len(tokens.token_ids),) or not t.equal(
-        t.sort(permutation).values, t.arange(len(permutation))
-    ):
-        raise ValueError("permutation must contain every row index exactly once.")
-    return ExplanationTokens(
-        token_ids=tokens.token_ids[permutation],
-        local_token_ids=tokens.local_token_ids[permutation],
-        attention_mask=tokens.attention_mask[permutation],
-        vocabulary_token_ids=tokens.vocabulary_token_ids,
-        eos_token_id=tokens.eos_token_id,
-    )
+# %%
 
-
-def fit_token_verbalizer(
-    train_activations: t.Tensor,
-    train_tokens: ExplanationTokens,
-    *,
-    ridge: float = 0.1,
-) -> TokenVerbalizer:
-    """Fit activation-to-token logits at every sequence position."""
-
-    activations = _require_informative_matrix(train_activations, "train_activations")
-    if len(activations) != len(train_tokens.token_ids):
-        raise ValueError("activation and token rows must align.")
-    if ridge <= 0:
-        raise ValueError("ridge must be positive.")
-    vocabulary_size = len(train_tokens.vocabulary_token_ids)
-    targets = F.one_hot(train_tokens.local_token_ids, vocabulary_size).float()
-    features = F.normalize(activations, dim=-1)
-    design = t.cat([t.ones(len(features), 1), features], dim=1)
-    dual = design @ design.T + ridge * t.eye(len(design))
-    weight = design.T @ t.linalg.solve(dual, targets.reshape(len(targets), -1))
-    return TokenVerbalizer(
-        weight=weight,
-        vocabulary_token_ids=train_tokens.vocabulary_token_ids,
-        eos_token_id=train_tokens.eos_token_id,
-        sequence_length=train_tokens.token_ids.shape[1],
-    )
+def class_mean_reconstruction(
+    train_h: Float[Tensor, "n_train d_model"], train_labels: list, test_labels: list
+) -> Float[Tensor, "n_test d_model"]:
+    """Predicts each test activation as the mean unit-normalised training activation with the same label."""
+    train_unit = F.normalize(train_h.float(), dim=-1)
+    groups: dict = {}
+    for i, label in enumerate(train_labels):
+        groups.setdefault(label, []).append(i)
+    means = {label: train_unit[idx].mean(dim=0) for label, idx in groups.items()}
+    fallback = train_unit.mean(dim=0)
+    return t.stack([means.get(label, fallback) for label in test_labels])
 
 
-def generate_token_explanations(
-    tokenizer,
-    activations: t.Tensor,
-    verbalizer: TokenVerbalizer,
-) -> GeneratedExplanations:
-    """Generate natural-language token sequences without phrase lookup."""
+if MAIN:
+    tests.test_class_mean_reconstruction(class_mean_reconstruction)
 
-    if activations.ndim != 2 or activations.shape[1] + 1 != verbalizer.weight.shape[0]:
-        raise ValueError("activations and verbalizer must share d_model.")
-    design = t.cat([t.ones(len(activations), 1), F.normalize(activations.float(), dim=-1)], dim=1)
-    vocabulary_size = len(verbalizer.vocabulary_token_ids)
-    logits = (design @ verbalizer.weight).reshape(
-        len(activations), verbalizer.sequence_length, vocabulary_size
-    )
-    local_token_ids = logits.argmax(dim=-1)
-    token_ids = verbalizer.vocabulary_token_ids[local_token_ids]
-    texts: list[str] = []
-    for row in token_ids.tolist():
-        end = row.index(verbalizer.eos_token_id) if verbalizer.eos_token_id in row else len(row)
-        texts.append(tokenizer.decode(row[:end], clean_up_tokenization_spaces=False))
-    return GeneratedExplanations(
-        texts=tuple(texts),
-        token_ids=token_ids,
-        local_token_ids=local_token_ids,
-        logits=logits,
-    )
+# %%
 
-
-def token_generation_accuracy(
-    generated: GeneratedExplanations,
-    targets: ExplanationTokens,
-) -> tuple[float, float]:
-    """Return masked token accuracy and whole-sequence exact match."""
-
-    if generated.token_ids.shape != targets.token_ids.shape:
-        raise ValueError("generated and target token tensors must have the same shape.")
-    correct = generated.token_ids.eq(targets.token_ids)
-    token_accuracy = correct[targets.attention_mask].float().mean().item()
-    exact_match = (correct | ~targets.attention_mask).all(dim=1).float().mean().item()
-    return token_accuracy, exact_match
-
-
-def encode_reconstructor_text(
-    tokenizer,
-    model,
-    explanations: Sequence[str],
-    *,
-    batch_size: int = 64,
-) -> t.Tensor:
-    """Run explanation tokens through the LM and read its layer-4 final token."""
-
-    wrapped = [AR_PROMPT.format(text) for text in explanations]
-    return _batched_final_hidden(
-        tokenizer,
-        model,
-        wrapped,
-        hidden_state_index=PYTHIA_HIDDEN_STATE_INDEX,
-        batch_size=batch_size,
-    )
-
-
-def bag_of_tokens_features(
-    tokenizer,
-    explanations: Sequence[str],
-    *,
-    vocabulary_token_ids: t.Tensor | None = None,
-) -> tuple[t.Tensor, t.Tensor]:
-    """Count explanation tokens while deliberately discarding their order."""
-
-    if not explanations or any(not text.strip() for text in explanations):
-        raise ValueError("explanations must be nonempty strings.")
-    sequences = [tokenizer.encode(text, add_special_tokens=False) for text in explanations]
-    if vocabulary_token_ids is None:
-        vocabulary_token_ids = t.tensor(
-            sorted({token_id for sequence in sequences for token_id in sequence}),
-            dtype=t.long,
-        )
-    else:
-        vocabulary_token_ids = vocabulary_token_ids.detach().cpu().long()
-    if vocabulary_token_ids.ndim != 1 or len(vocabulary_token_ids) < 2:
-        raise ValueError("vocabulary_token_ids must be a one-dimensional vocabulary.")
-    if len(t.unique(vocabulary_token_ids)) != len(vocabulary_token_ids):
-        raise ValueError("vocabulary_token_ids cannot contain duplicates.")
-
-    token_to_column = {
-        int(token_id): column for column, token_id in enumerate(vocabulary_token_ids)
+if MAIN:
+    DESCRIPTION_KINDS = {
+        "number": ["number"],
+        "tense": ["tense"],
+        "number + tense": ["number", "tense"],
+        "subject": ["subject"],
+        "time word": ["time_word"],
+        "preposition": ["preposition"],
+        "object": ["object"],
+        "subject + time word": ["subject", "time_word"],
     }
-    counts = t.zeros(len(sequences), len(vocabulary_token_ids))
-    for row, sequence in enumerate(sequences):
-        for token_id in sequence:
-            column = token_to_column.get(int(token_id))
-            if column is not None:
-                counts[row, column] += 1
-    return counts, vocabulary_token_ids
-
-
-def fit_token_reconstructor(
-    train_text_features: t.Tensor,
-    train_activations: t.Tensor,
-    *,
-    ridge: float = 1e-3,
-) -> TokenReconstructor:
-    """Fit the affine AR head after contextual token processing."""
-
-    text_features = _require_informative_matrix(train_text_features, "train_text_features")
-    activations = _require_informative_matrix(train_activations, "train_activations")
-    if len(text_features) != len(activations):
-        raise ValueError("text features and activations must have the same batch size.")
-    if ridge <= 0:
-        raise ValueError("ridge must be positive.")
-    features = F.normalize(text_features, dim=-1)
-    targets = F.normalize(activations, dim=-1)
-    feature_mean = features.mean(dim=0)
-    target_mean = targets.mean(dim=0)
-    centered_features = features - feature_mean
-    centered_targets = targets - target_mean
-    dual = centered_features @ centered_features.T + ridge * t.eye(
-        len(features), device=features.device, dtype=features.dtype
-    )
-    weight = centered_features.T @ t.linalg.solve(dual, centered_targets)
-    return TokenReconstructor(
-        feature_mean=feature_mean,
-        target_mean=target_mean,
-        weight=weight,
-        output_norm=float(activations.norm(dim=-1).mean()),
-    )
-
-
-def decode_text_features(text_features: t.Tensor, reconstructor: TokenReconstructor) -> t.Tensor:
-    """Apply the AR head and restore the training-set mean activation norm."""
-
-    if text_features.ndim != 2 or text_features.shape[1] != reconstructor.weight.shape[0]:
-        raise ValueError("text features and reconstructor must share d_model.")
-    features = F.normalize(text_features.float(), dim=-1)
-    reconstructed = (features - reconstructor.feature_mean) @ reconstructor.weight
-    reconstructed = reconstructed + reconstructor.target_mean
-    return F.normalize(reconstructed, dim=-1) * reconstructor.output_norm
-
-
-def reconstruct_from_explanations(
-    tokenizer,
-    model,
-    explanations: Sequence[str],
-    reconstructor: TokenReconstructor,
-) -> t.Tensor:
-    """Run the complete natural-language-token-to-activation path."""
-
-    features = encode_reconstructor_text(tokenizer, model, explanations)
-    return decode_text_features(features, reconstructor)
-
-
-def fraction_variance_explained(original: t.Tensor, reconstructed: t.Tensor) -> float:
-    """Compute the NLA paper's row-normalized held-out FVE."""
-
-    if original.shape != reconstructed.shape or original.ndim != 2:
-        raise ValueError("original and reconstructed must be aligned matrices.")
-    original = F.normalize(original.float(), dim=-1)
-    reconstructed = F.normalize(reconstructed.float(), dim=-1)
-    denominator = (original - original.mean(dim=0)).square().sum()
-    if float(denominator) <= 1e-8:
-        raise ValueError("original activations need nonzero held-out variance.")
-    return float(1 - (reconstructed - original).square().sum() / denominator)
-
-
-def within_factor_fve(original: t.Tensor, reconstructed: t.Tensor, factors: t.Tensor) -> float:
-    """Measure reconstruction after removing each factor combination's mean."""
-
-    if original.shape != reconstructed.shape or factors.shape != (len(original), 2):
-        raise ValueError("original, reconstructed, and factor rows must align.")
-    original = F.normalize(original.float(), dim=-1)
-    reconstructed = F.normalize(reconstructed.float(), dim=-1)
-    factors = factors.to(original.device)
-    original_residuals: list[t.Tensor] = []
-    reconstructed_residuals: list[t.Tensor] = []
-    for state in FACTOR_STATES:
-        mask = factors.eq(
-            t.tensor(state, device=factors.device, dtype=factors.dtype)
-        ).all(dim=1)
-        if int(mask.sum()) < 2:
-            raise ValueError("each factor state needs at least two rows.")
-        original_group = original[mask]
-        reconstructed_group = reconstructed[mask]
-        original_residuals.append(original_group - original_group.mean(dim=0))
-        reconstructed_residuals.append(reconstructed_group - reconstructed_group.mean(dim=0))
-    original_residual = t.cat(original_residuals)
-    reconstructed_residual = t.cat(reconstructed_residuals)
-    denominator = original_residual.square().sum()
-    if float(denominator) <= 1e-8:
-        raise ValueError("within-factor activations need nonzero variance.")
-    return float(1 - (reconstructed_residual - original_residual).square().sum() / denominator)
-
-
-def count_distinct_rows(values: t.Tensor, *, atol: float = 1e-2) -> int:
-    """Count rows up to an explicit Euclidean tolerance."""
-
-    if values.ndim != 2 or atol <= 0:
-        raise ValueError("values must be a matrix and atol must be positive.")
-    representatives: list[t.Tensor] = []
-    for row in values:
-        if not any(float((row - representative).norm()) <= atol for representative in representatives):
-            representatives.append(row)
-    return len(representatives)
-
-
-def reconstruction_metrics(
-    original: t.Tensor,
-    reconstructed: t.Tensor,
-    factors: t.Tensor,
-) -> ReconstructionMetrics:
-    """Score full-vector and within-factor reconstruction on aligned rows."""
-
-    normalized_error = (
-        F.normalize(original, dim=-1) - F.normalize(reconstructed, dim=-1)
-    ).square().sum(dim=-1).mean()
-    return ReconstructionMetrics(
-        fve=fraction_variance_explained(original, reconstructed),
-        within_factor_fve=within_factor_fve(original, reconstructed, factors),
-        normalized_mse=float(normalized_error),
-        mean_cosine=float(F.cosine_similarity(original, reconstructed, dim=-1).mean()),
-        distinct_rows=count_distinct_rows(reconstructed),
-    )
-
-
-def assert_nonprototype_reconstruction(
-    original: t.Tensor,
-    reconstructed: t.Tensor,
-    factors: t.Tensor,
-    *,
-    minimum_within_factor_fve: float = 0.2,
-) -> None:
-    """Reject four-vector prototypes even if they preserve agreement labels."""
-
-    factor_state_count = len(t.unique(factors, dim=0))
-    distinct_rows = count_distinct_rows(reconstructed)
-    if distinct_rows <= factor_state_count:
-        raise AssertionError(
-            f"prototype collapse: found {distinct_rows} rows for {factor_state_count} factor states."
-        )
-    score = within_factor_fve(original, reconstructed, factors)
-    if score <= minimum_within_factor_fve:
-        raise AssertionError(
-            f"within-factor activation variation was not reconstructed: FVE={score:.3f}."
-        )
-
-
-def prompt_only_factor_explanations(examples: Sequence[AgreementExample]) -> tuple[str, ...]:
-    """Hold context fixed while preserving the exact explanation template."""
-
-    return tuple(
-        natural_language_explanation("key", "plain", example.factors)
-        for example in examples
-    )
-
-
-def lexically_relabel_explanations(examples: Sequence[AgreementExample]) -> tuple[str, ...]:
-    """Cycle noun meanings while preserving factor words and sentence shape."""
-
-    if len(examples) < 4:
-        raise ValueError("lexical relabeling needs at least four examples.")
-    offset = 4
-    relabeled = tuple(
-        natural_language_explanation(
-            examples[(index + offset) % len(examples)].noun_lemma,
-            example.style,
-            example.factors,
-        )
-        for index, example in enumerate(examples)
-    )
-    if any(text == example.explanation for text, example in zip(relabeled, examples)):
-        raise AssertionError("lexical relabeling must change every explanation.")
-    return relabeled
-
-
-def factor_prototype_reconstruction(
-    train_activations: t.Tensor,
-    train_factors: t.Tensor,
-    eval_factors: t.Tensor,
-) -> t.Tensor:
-    """Explicit class-mean baseline used only to expose prototype shortcuts."""
-
-    if train_factors.shape != (len(train_activations), 2) or eval_factors.ndim != 2:
-        raise ValueError("activation and factor rows must align.")
-    train_factors = train_factors.to(train_activations.device)
-    eval_factors = eval_factors.to(train_activations.device)
-    rows: list[t.Tensor] = []
-    for factors in eval_factors:
-        mask = train_factors.eq(factors).all(dim=1)
-        if not bool(mask.any()):
-            raise ValueError("every evaluation state needs training rows for the prototype baseline.")
-        rows.append(train_activations[mask].mean(dim=0))
-    return t.stack(rows)
-
-
-def replace_with_factor_prototypes(activations: t.Tensor, factors: t.Tensor) -> t.Tensor:
-    """Replace every row by its factor mean for an adversarial training control."""
-
-    return factor_prototype_reconstruction(activations, factors, factors)
-
-
-def fit_direct_factor_decoder(
-    train_factors: t.Tensor,
-    train_activations: t.Tensor,
-    *,
-    ridge: float = 1e-3,
-) -> t.Tensor:
-    """Fit the forbidden two-scalar shortcut as an explicit negative baseline."""
-
-    activations = _require_informative_matrix(train_activations, "train_activations")
-    if train_factors.shape != (len(activations), 2):
-        raise ValueError("train_factors must align with activations.")
-    train_factors = train_factors.to(activations.device)
-    design = t.cat(
-        [
-            t.ones(
-                len(train_factors),
-                1,
-                device=activations.device,
-                dtype=activations.dtype,
-            ),
-            train_factors.to(dtype=activations.dtype),
-        ],
-        dim=1,
-    )
-    regularizer = ridge * t.eye(
-        design.shape[1], device=design.device, dtype=design.dtype
-    )
-    regularizer[0, 0] = 0
-    return t.linalg.solve(design.T @ design + regularizer, design.T @ activations)
-
-
-def decode_direct_factors(factors: t.Tensor, parameters: t.Tensor) -> t.Tensor:
-    """Apply the two-scalar baseline; never use this in the NLA path."""
-
-    if factors.ndim != 2 or factors.shape[1] != 2 or parameters.shape[0] != 3:
-        raise ValueError("expected factors [batch, 2] and parameters [3, d_model].")
-    factors = factors.to(device=parameters.device, dtype=parameters.dtype)
-    return t.cat(
-        [
-            t.ones(
-                len(factors),
-                1,
-                device=parameters.device,
-                dtype=parameters.dtype,
-            ),
-            factors,
-        ],
-        dim=1,
-    ) @ parameters
-
-
-def patch_pythia_candidate_logits(
-    model,
-    dataset: PythiaNLADataset,
-    replacements: t.Tensor,
-    *,
-    row_indices: Sequence[int] | None = None,
-) -> t.Tensor:
-    """Patch all rows or a declared subset and return every row's candidate logits."""
-
-    device = next(model.parameters()).device
-    if row_indices is None:
-        row_indices = tuple(range(len(dataset.eval_activations)))
-    rows = t.tensor(tuple(row_indices), dtype=t.long)
-    if len(rows) == 0 or len(t.unique(rows)) != len(rows):
-        raise ValueError("row_indices must be nonempty and unique.")
-    if int(rows.min()) < 0 or int(rows.max()) >= len(dataset.eval_activations):
-        raise ValueError("row_indices are outside the evaluation batch.")
-    if replacements.shape != (len(rows), dataset.eval_activations.shape[1]):
-        raise ValueError("replacements must have shape [selected_rows, d_model].")
-    if not bool(t.isfinite(replacements).all()):
-        raise ValueError("replacements must be finite.")
-
-    def replace_selected_rows(_module, _inputs, output):
-        hidden = output[0] if isinstance(output, tuple) else output
-        hidden = hidden.clone()
-        device_rows = rows.to(hidden.device)
-        positions = dataset.eval_positions[rows].to(hidden.device)
-        hidden[device_rows, positions] = replacements.to(hidden)
-        return (hidden, *output[1:]) if isinstance(output, tuple) else hidden
-
-    handle = model.gpt_neox.layers[PYTHIA_PATCH_BLOCK_INDEX].register_forward_hook(
-        replace_selected_rows
-    )
-    all_rows = t.arange(len(dataset.eval_activations), device=device)
-    try:
-        with t.inference_mode():
-            output = model(
-                input_ids=dataset.eval_input_ids.to(device),
-                attention_mask=dataset.eval_attention_mask.to(device),
-                use_cache=False,
-            )
-        logits = output.logits[all_rows, dataset.eval_positions.to(device)]
-        return logits[:, dataset.candidate_token_ids.to(device)].detach().cpu().float()
-    finally:
-        handle.remove()
-
-
-def candidate_accuracy(candidate_logits: t.Tensor, factors: t.Tensor) -> float:
-    """Score the four-way grammatical target without a label lookup table."""
-
-    targets = _candidate_indices(factors).to(candidate_logits.device)
-    return float(candidate_logits.argmax(dim=1).eq(targets).float().mean())
-
-
-def behavior_parity(candidate_logits: t.Tensor, original_candidate_logits: t.Tensor) -> float:
-    """Measure whether a patch preserves the target model's own choices."""
-
-    if candidate_logits.shape != original_candidate_logits.shape:
-        raise ValueError("candidate logit tensors must align.")
-    return float(
-        candidate_logits.argmax(dim=1).eq(original_candidate_logits.argmax(dim=1)).float().mean()
-    )
-
-
-def run_text_edit_intervention(
-    tokenizer,
-    model,
-    dataset: PythiaNLADataset,
-    reconstructor: TokenReconstructor,
-    *,
-    row_index: int,
-    base_text: str,
-    edited_text: str,
-    strength: float = 1.0,
-) -> InterventionResult:
-    """Apply an AR(edit)-AR(base) steering vector to exactly one real row."""
-
-    if not 0 <= row_index < len(dataset.eval_activations):
-        raise ValueError("row_index is outside the evaluation batch.")
-    if not t.isfinite(t.tensor(strength)) or strength == 0:
-        raise ValueError("strength must be finite and nonzero.")
-    reconstructions = reconstruct_from_explanations(
-        tokenizer, model, (base_text, edited_text), reconstructor
-    )
-    delta = strength * (reconstructions[1] - reconstructions[0])
-    replacement = dataset.eval_activations[row_index] + delta
-    patched_logits = patch_pythia_candidate_logits(
-        model,
-        dataset,
-        replacement[None, :],
-        row_indices=(row_index,),
-    )
-    logit_change = (patched_logits - dataset.original_candidate_logits).abs()
-    other_rows = t.arange(len(patched_logits)) != row_index
-    original_winner = AGREEMENT_CANDIDATES[
-        int(dataset.original_candidate_logits[row_index].argmax())
-    ].strip()
-    intervened_winner = AGREEMENT_CANDIDATES[int(patched_logits[row_index].argmax())].strip()
-    return InterventionResult(
-        base_text=base_text,
-        edited_text=edited_text,
-        activation_delta_norm=float(delta.norm()),
-        selected_logit_change=float(logit_change[row_index].max()),
-        other_rows_max_logit_change=float(logit_change[other_rows].max()),
-        original_winner=original_winner,
-        intervened_winner=intervened_winner,
-        candidate_logits=patched_logits[row_index],
-    )
-
-
-def _counterfactual_explanation(example: AgreementExample) -> str:
-    flipped = (-example.factors[0], example.factors[1])
-    return natural_language_explanation(example.noun_lemma, example.style, flipped)
-
-
-def _metrics_for(
-    original: t.Tensor,
-    candidates: dict[str, t.Tensor],
-    factors: t.Tensor,
-) -> dict[str, ReconstructionMetrics]:
-    return {
-        name: reconstruction_metrics(original, reconstructed, factors)
-        for name, reconstructed in candidates.items()
-    }
-
-
-def evaluate_mini_nla(
-    tokenizer,
-    model,
-    dataset: PythiaNLADataset,
-    *,
-    shuffle_seeds: Sequence[int] = tuple(range(8)),
-) -> MiniNLAExperiment:
-    """Run the held-out token NLA and all adversarial controls."""
-
-    train_texts = tuple(example.explanation for example in dataset.train_examples)
-    eval_texts = tuple(example.explanation for example in dataset.eval_examples)
-    train_tokens = tokenize_explanations(tokenizer, train_texts)
-    eval_tokens = tokenize_explanations(
-        tokenizer,
-        eval_texts,
-        vocabulary_token_ids=train_tokens.vocabulary_token_ids,
-    )
-    verbalizer = fit_token_verbalizer(dataset.train_activations, train_tokens)
-    generated = generate_token_explanations(tokenizer, dataset.eval_activations, verbalizer)
-    token_accuracy, exact_text_accuracy = token_generation_accuracy(generated, eval_tokens)
-
-    train_text_features = encode_reconstructor_text(tokenizer, model, train_texts)
-    reconstructor = fit_token_reconstructor(train_text_features, dataset.train_activations)
-    generated_features = encode_reconstructor_text(tokenizer, model, generated.texts)
-    learned = decode_text_features(generated_features, reconstructor)
-    oracle = reconstruct_from_explanations(tokenizer, model, eval_texts, reconstructor)
-
-    train_bag_features, bag_vocabulary = bag_of_tokens_features(tokenizer, train_texts)
-    eval_bag_features, _ = bag_of_tokens_features(
-        tokenizer,
-        eval_texts,
-        vocabulary_token_ids=bag_vocabulary,
-    )
-    train_bag_features = train_bag_features.to(dataset.train_activations.device)
-    eval_bag_features = eval_bag_features.to(dataset.eval_activations.device)
-    bag_reconstructor = fit_token_reconstructor(
-        train_bag_features,
-        dataset.train_activations,
-    )
-    bag_reconstruction = decode_text_features(eval_bag_features, bag_reconstructor)
-
-    factor_texts = prompt_only_factor_explanations(dataset.eval_examples)
-    factor_text_reconstruction = reconstruct_from_explanations(
-        tokenizer, model, factor_texts, reconstructor
-    )
-    lexical_texts = lexically_relabel_explanations(dataset.eval_examples)
-    lexical_reconstruction = reconstruct_from_explanations(
-        tokenizer, model, lexical_texts, reconstructor
-    )
-    class_mean_reconstruction = factor_prototype_reconstruction(
-        dataset.train_activations, dataset.train_factors, dataset.eval_factors
-    )
-    direct_parameters = fit_direct_factor_decoder(
-        dataset.train_factors, dataset.train_activations
-    )
-    direct_reconstruction = decode_direct_factors(dataset.eval_factors, direct_parameters)
-    mean_conditioned_targets = replace_with_factor_prototypes(
-        dataset.train_activations, dataset.train_factors
-    )
-    mean_conditioned_head = fit_token_reconstructor(
-        train_text_features, mean_conditioned_targets
-    )
-    mean_conditioned_reconstruction = decode_text_features(
-        encode_reconstructor_text(tokenizer, model, eval_texts), mean_conditioned_head
-    )
-
-    candidates = {
-        "reconstruction": learned,
-        "bag_of_tokens": bag_reconstruction,
-        "prompt_only_factor": factor_text_reconstruction,
-        "direct_factor": direct_reconstruction,
-        "class_mean": class_mean_reconstruction,
-        "mean_conditioned": mean_conditioned_reconstruction,
-        "lexical_relabel": lexical_reconstruction,
-    }
-    metrics = _metrics_for(dataset.eval_activations, candidates, dataset.eval_factors)
-    assert_nonprototype_reconstruction(
-        dataset.eval_activations, learned, dataset.eval_factors
-    )
-
-    identity_logits = patch_pythia_candidate_logits(
-        model, dataset, dataset.eval_activations
-    )
-    learned_logits = patch_pythia_candidate_logits(model, dataset, learned)
-    bag_logits = patch_pythia_candidate_logits(model, dataset, bag_reconstruction)
-    oracle_logits = patch_pythia_candidate_logits(model, dataset, oracle)
-    factor_logits = patch_pythia_candidate_logits(model, dataset, factor_text_reconstruction)
-    direct_logits = patch_pythia_candidate_logits(model, dataset, direct_reconstruction)
-    class_mean_logits = patch_pythia_candidate_logits(model, dataset, class_mean_reconstruction)
-    lexical_logits = patch_pythia_candidate_logits(model, dataset, lexical_reconstruction)
-
-    shuffled_fve: list[tuple[int, float]] = []
-    shuffled_parity: list[tuple[int, float]] = []
-    for seed in shuffle_seeds:
-        generator = t.Generator().manual_seed(int(seed))
-        permutation = t.randperm(len(train_tokens.token_ids), generator=generator)
-        shuffled_tokens = permute_explanation_tokens(train_tokens, permutation)
-        shuffled_verbalizer = fit_token_verbalizer(
-            dataset.train_activations, shuffled_tokens
-        )
-        shuffled_text = generate_token_explanations(
-            tokenizer, dataset.eval_activations, shuffled_verbalizer
-        )
-        shuffled_reconstruction = reconstruct_from_explanations(
-            tokenizer, model, shuffled_text.texts, reconstructor
-        )
-        shuffled_logits = patch_pythia_candidate_logits(
-            model, dataset, shuffled_reconstruction
-        )
-        shuffled_fve.append(
-            (int(seed), fraction_variance_explained(dataset.eval_activations, shuffled_reconstruction))
-        )
-        shuffled_parity.append(
-            (int(seed), behavior_parity(shuffled_logits, dataset.original_candidate_logits))
-        )
-
-    first_example = dataset.eval_examples[0]
-    intervention = run_text_edit_intervention(
-        tokenizer,
-        model,
-        dataset,
-        reconstructor,
-        row_index=0,
-        base_text=generated.texts[0],
-        edited_text=_counterfactual_explanation(first_example),
-    )
-    if intervention.activation_delta_norm <= 1e-3 or intervention.selected_logit_change <= 1e-3:
-        raise AssertionError("the text edit must have a nonzero activation and causal logit effect.")
-
-    targets = _candidate_indices(dataset.eval_factors)
-    original_winners = dataset.original_candidate_logits.argmax(dim=1)
-    reconstructed_winners = learned_logits.argmax(dim=1)
-    all_examples = (*dataset.train_examples, *dataset.eval_examples)
-    all_bag_features, _ = bag_of_tokens_features(
-        tokenizer,
-        tuple(example.explanation for example in all_examples),
-    )
-    multiset_matches = []
-    for context_id in sorted({example.context_id for example in all_examples}):
-        rows_for_context = [
-            index
-            for index, example in enumerate(all_examples)
-            if example.context_id == context_id
+    
+    
+    def description_labels(df: pd.DataFrame, columns: list[str]) -> list[tuple]:
+        return list(df[columns].itertuples(index=False, name=None))
+    
+    
+    rng = np.random.default_rng(0)
+    random_labels = rng.integers(0, 32, len(df)).tolist()
+    oracle_table = {}
+    for name, columns in DESCRIPTION_KINDS.items():
+        labels_ = description_labels(df, columns)
+        train_labels, test_labels = [labels_[i] for i in train_idx], [labels_[i] for i in test_idx]
+        oracle_table[name] = [
+            fve(layer_acts[test_idx], class_mean_reconstruction(layer_acts[train_idx], train_labels, test_labels))
+            for layer_acts in acts_by_layer
         ]
-        reference = all_bag_features[rows_for_context[0]]
-        multiset_matches.append(
-            all(t.equal(reference, all_bag_features[index]) for index in rows_for_context[1:])
+    oracle_table["control: random labels"] = [
+        fve(
+            layer_acts[test_idx],
+            class_mean_reconstruction(layer_acts[train_idx], random_labels[:N_TRAIN], random_labels[N_TRAIN:]),
         )
-    rows = tuple(
-        {
-            "prompt": example.prompt,
-            "generated explanation": explanation,
-            "target": AGREEMENT_CANDIDATES[int(target)].strip(),
-            "original": AGREEMENT_CANDIDATES[int(original)].strip(),
-            "reconstructed": AGREEMENT_CANDIDATES[int(reconstructed)].strip(),
-            "behavior preserved": bool(original == reconstructed),
-            "row cosine": float(
-                F.cosine_similarity(
-                    dataset.eval_activations[index : index + 1],
-                    learned[index : index + 1],
-                )
-            ),
-        }
-        for index, (example, explanation, target, original, reconstructed) in enumerate(
-            zip(
-                dataset.eval_examples,
-                generated.texts,
-                targets.tolist(),
-                original_winners.tolist(),
-                reconstructed_winners.tolist(),
-            )
+        for layer_acts in acts_by_layer
+    ]
+    oracle_df = pd.DataFrame(oracle_table, index=ANALYSIS_LAYERS).T
+    utils.plot_factor_heatmap(
+        oracle_df,
+        "Description oracles: held-out FVE of the best reconstruction from each kind of description",
+        control_row="control: random labels",
+    )
+
+# %%
+
+@t.inference_mode()
+def patch_final_position(
+    model: HookedTransformer,
+    tokens: Int[Tensor, "batch seq"],
+    vectors: Float[Tensor, "batch d_model"],
+    layer: int,
+    verb_ids: Int[Tensor, " 4"],
+    batch_size: int = 250,
+) -> Float[Tensor, "batch 4"]:
+    """Runs `tokens` with resid_pre[layer][:, -1] replaced by `vectors`; returns the four verb logits."""
+    out = []
+    for start in range(0, len(tokens), batch_size):
+        batch_vectors = vectors[start : start + batch_size].to(model.cfg.device)
+
+        def hook(resid: Float[Tensor, "batch seq d_model"], hook) -> Float[Tensor, "batch seq d_model"]:
+            resid[:, -1] = batch_vectors
+            return resid
+
+        logits = model.run_with_hooks(
+            tokens[start : start + batch_size].to(model.cfg.device),
+            fwd_hooks=[(f"blocks.{layer}.hook_resid_pre", hook)],
         )
+        out.append(logits[:, -1, verb_ids.to(model.cfg.device)].cpu())
+    return t.cat(out)
+
+
+if MAIN:
+    tests.test_patch_final_position(patch_final_position, model, verb_ids)
+
+# %%
+
+if MAIN:
+    mean_vector = acts_unit[train_idx].mean(dim=0)
+    mean_patch = (F.normalize(mean_vector, dim=-1) * act_scale).expand(len(test_idx), -1)
+    in_place_logits = patch_final_position(model, tokens[test_idx], mean_patch, LAYER, verb_ids)
+    print(f"Mean activation spliced into its own sentence: right verb {(in_place_logits.argmax(-1) == labels[test_idx]).float().mean():.1%}")
+
+# %%
+
+if MAIN:
+    source, target = "Yesterday, the keys behind the door really", "Today, the dog near the trees really"
+    source_act = get_final_activations(model, model.to_tokens(source), [LAYER])[0]
+    for name, sentence, patch in [
+        ("source", source, None),
+        ("target", target, None),
+        ("target, with the source's layer-10 activation", target, source_act),
+    ]:
+        sentence_tokens = model.to_tokens(sentence)
+        if patch is None:
+            with t.inference_mode():
+                logits = model(sentence_tokens)[:, -1, verb_ids.to(device)].cpu()
+        else:
+            logits = patch_final_position(model, sentence_tokens, patch, LAYER, verb_ids)
+        probs = logits.softmax(-1)[0]
+        print(f"{name:<46} " + "  ".join(f"{v.strip()}: {p:.2f}" for v, p in zip(VERBS, probs)))
+
+# %%
+
+def make_partners(labels: Int[Tensor, " n"], idx: Int[Tensor, " k"], seed: int = 0) -> Int[Tensor, " k"]:
+    """For each index in `idx`, a random other index in `idx` whose label is different."""
+    generator = t.Generator().manual_seed(seed)
+    partners = []
+    for i in idx.tolist():
+        while True:
+            j = idx[t.randint(0, len(idx), (1,), generator=generator)].item()
+            if labels[j] != labels[i]:
+                partners.append(j)
+                break
+    return t.tensor(partners)
+
+# %%
+
+def transplant_accuracy(
+    model: HookedTransformer,
+    tokens: Int[Tensor, "n seq"],
+    labels: Int[Tensor, " n"],
+    h_hat: Float[Tensor, "k d_model"],
+    src_idx: Int[Tensor, " k"],
+    dst_idx: Int[Tensor, " k"],
+    scale: float,
+    layer: int = LAYER,
+) -> float:
+    """Patches each reconstruction (rescaled) into its partner sentence; returns how often the source's verb wins."""
+    vectors = F.normalize(h_hat.float(), dim=-1) * scale
+    logits = patch_final_position(model, tokens[dst_idx], vectors, layer, verb_ids)
+    return (logits.argmax(dim=-1) == labels[src_idx]).float().mean().item()
+
+
+if MAIN:
+    tests.test_transplant_accuracy(transplant_accuracy, model, verb_ids)
+
+# %%
+
+if MAIN:
+    partners = make_partners(labels, test_idx)
+    shuffled_sources = test_idx[t.randperm(len(test_idx), generator=t.Generator().manual_seed(1))]
+    
+    
+    def transplant(h_hat: Tensor) -> float:
+        return transplant_accuracy(model, tokens, labels, h_hat, test_idx, partners, act_scale)
+    
+    
+    transplant_controls = {
+        "A's own activation": transplant(acts_unit[test_idx]),
+        "mean activation": transplant(mean_vector.expand(len(test_idx), -1)),
+        "another sentence's activation": transplant(acts_unit[shuffled_sources]),
+        "random direction": transplant(t.randn(len(test_idx), model.cfg.d_model, generator=t.Generator().manual_seed(2))),
+    }
+    utils.plot_bars(
+        transplant_controls,
+        "Transplant test at layer 10: patch A's activation into a sentence B with a different verb",
+        ylabel="transplant accuracy\n(model predicts A's verb)",
+        chance=0.25,
     )
 
-    report = MiniNLAReport(
-        train_count=len(dataset.train_examples),
-        eval_count=len(dataset.eval_examples),
-        token_accuracy=token_accuracy,
-        exact_text_accuracy=exact_text_accuracy,
-        reconstruction=metrics["reconstruction"],
-        bag_of_tokens=metrics["bag_of_tokens"],
-        prompt_only_factor=metrics["prompt_only_factor"],
-        direct_factor=metrics["direct_factor"],
-        class_mean=metrics["class_mean"],
-        mean_conditioned=metrics["mean_conditioned"],
-        lexical_relabel=metrics["lexical_relabel"],
-        original_task_accuracy=candidate_accuracy(
-            dataset.original_candidate_logits, dataset.eval_factors
-        ),
-        reconstructed_task_accuracy=candidate_accuracy(learned_logits, dataset.eval_factors),
-        behavior_parity_accuracy=behavior_parity(
-            learned_logits, dataset.original_candidate_logits
-        ),
-        bag_of_tokens_behavior_parity=behavior_parity(
-            bag_logits, dataset.original_candidate_logits
-        ),
-        oracle_text_behavior_parity=behavior_parity(
-            oracle_logits, dataset.original_candidate_logits
-        ),
-        omitted_composition_end_to_end_parity=behavior_parity(
-            learned_logits, dataset.original_candidate_logits
-        ),
-        prompt_only_factor_behavior_parity=behavior_parity(
-            factor_logits, dataset.original_candidate_logits
-        ),
-        direct_factor_behavior_parity=behavior_parity(
-            direct_logits, dataset.original_candidate_logits
-        ),
-        class_mean_behavior_parity=behavior_parity(
-            class_mean_logits, dataset.original_candidate_logits
-        ),
-        lexical_relabel_behavior_parity=behavior_parity(
-            lexical_logits, dataset.original_candidate_logits
-        ),
-        same_context_token_multiset_fraction=sum(multiset_matches) / len(multiset_matches),
-        shuffled_fve_by_seed=tuple(shuffled_fve),
-        shuffled_behavior_parity_by_seed=tuple(shuffled_parity),
-        identity_max_logit_error=float(
-            (identity_logits - dataset.original_candidate_logits).abs().max()
-        ),
-        intervention=intervention,
-        generated_explanations=generated.texts,
-        rows=rows,
-    )
-    return MiniNLAExperiment(
-        report=report,
-        verbalizer=verbalizer,
-        reconstructor=reconstructor,
-        reconstructed_activations=learned,
+# %%
+
+if MAIN:
+    ceiling_by_layer, mean_by_layer = [], []
+    for layer, layer_acts in zip(ANALYSIS_LAYERS, acts_by_layer):
+        scale = layer_acts[train_idx].norm(dim=-1).mean().item()
+        layer_unit = F.normalize(layer_acts, dim=-1)
+        ceiling_by_layer.append(transplant_accuracy(model, tokens, labels, layer_unit[test_idx], test_idx, partners, scale, layer))
+        mean_by_layer.append(transplant_accuracy(model, tokens, labels, layer_unit[train_idx].mean(0).expand(len(test_idx), -1), test_idx, partners, scale, layer))
+    utils.plot_curves(
+        {"A's own activation": (ANALYSIS_LAYERS, ceiling_by_layer), "control: mean activation": (ANALYSIS_LAYERS, mean_by_layer)},
+        "Transplant accuracy by layer: when does the final position decide the verb?",
+        xlabel="layer of the patched activation (residual stream before block)",
+        ylabel="transplant accuracy",
+        hlines={"chance (25%)": 0.25},
+        ylim=(0, 1.02),
     )
 
+# %%
 
-def save_signature_figure(report: MiniNLAReport, path: str | Path) -> Path:
-    """Create the learner-facing result from live report values."""
+if MAIN:
+    oracle_points = {}
+    for name in ["number + tense", "subject", "time word", "subject + time word"]:
+        labels_ = description_labels(df, DESCRIPTION_KINDS[name])
+        h_hat = class_mean_reconstruction(acts[train_idx], [labels_[i] for i in train_idx], [labels_[i] for i in test_idx])
+        oracle_points[name] = (fve(acts[test_idx], h_hat), transplant(h_hat))
+    display(pd.DataFrame(oracle_points, index=["FVE", "transplant accuracy"]).T.round(3))
 
-    import matplotlib.pyplot as plt
+# %%
 
-    path = Path(path)
-    path.parent.mkdir(parents=True, exist_ok=True)
-    figure, axes = plt.subplots(1, 3, figsize=(15, 4.7))
-    labels = ["token NLA", "bag of tokens", "factor text", "direct factors", "class mean", "relabel"]
-    fves = [
-        report.reconstruction.fve,
-        report.bag_of_tokens.fve,
-        report.prompt_only_factor.fve,
-        report.direct_factor.fve,
-        report.class_mean.fve,
-        report.lexical_relabel.fve,
-    ]
-    colors = ["#16837a", "#8172b3", "#6f6f6f", "#b07c26", "#c44e52", "#4c72b0"]
-    axes[0].bar(labels, fves, color=colors)
-    axes[0].axhline(0, color="black", linewidth=0.8)
-    axes[0].set(title="Held-out full-vector FVE", ylabel="fraction variance explained")
-    axes[0].tick_params(axis="x", rotation=32)
-
-    within = [
-        report.reconstruction.within_factor_fve,
-        report.bag_of_tokens.within_factor_fve,
-        report.prompt_only_factor.within_factor_fve,
-        report.direct_factor.within_factor_fve,
-        report.class_mean.within_factor_fve,
-        report.lexical_relabel.within_factor_fve,
-    ]
-    axes[1].bar(labels, within, color=colors)
-    axes[1].axhline(0, color="black", linewidth=0.8)
-    axes[1].set(title="Variation within the same factors", ylabel="within-factor FVE")
-    axes[1].tick_params(axis="x", rotation=32)
-
-    behavior_labels = [
-        "token NLA",
-        "bag of tokens",
-        "factor text",
-        "direct factors",
-        "class mean",
-        "relabel",
-        "shuffled AV",
-    ]
-    shuffle_values = [value for _, value in report.shuffled_behavior_parity_by_seed]
-    behavior = [
-        report.behavior_parity_accuracy,
-        report.bag_of_tokens_behavior_parity,
-        report.prompt_only_factor_behavior_parity,
-        report.direct_factor_behavior_parity,
-        report.class_mean_behavior_parity,
-        report.lexical_relabel_behavior_parity,
-        sum(shuffle_values) / len(shuffle_values),
-    ]
-    axes[2].bar(behavior_labels, behavior, color=[*colors, "#9b9b9b"])
-    axes[2].scatter(
-        [5.82 + 0.05 * index for index in range(len(shuffle_values))],
-        shuffle_values,
-        color="black",
-        s=18,
-        label="shuffled AV seeds",
-        zorder=3,
-    )
-    axes[2].set(
-        ylim=(0, 1.08),
-        title="Causal behavior parity",
-        ylabel="fraction matching original model",
-    )
-    axes[2].tick_params(axis="x", rotation=32)
-    axes[2].legend(frameon=False, fontsize=8)
-    figure.suptitle(
-        "Same words, different order: "
-        f"Pythia AR parity {report.behavior_parity_accuracy:.2f} vs "
-        f"bag-of-tokens {report.bag_of_tokens_behavior_parity:.2f}"
-    )
-    figure.tight_layout()
-    figure.savefig(path, dpi=180, bbox_inches="tight")
-    plt.close(figure)
-    return path
+NOUN_WORDS = [form for pair in NOUNS for form in pair]
+TIME_WORDS = [word.lower() for word in TIME_ADVERBS]
+ABSTRACT_WORDS = ["singular", "plural", "present", "past"]
+WORDS = NOUN_WORDS + TIME_WORDS + ABSTRACT_WORDS + PREPOSITIONS + ["."]
+EOS = WORDS.index(".")
+MAX_WORDS = 4
+FACT_ORDER = ["subject", "number", "tense", "time", "object"]
 
 
-def run_smoke_test(cpu: bool = True) -> dict[str, Any]:
-    """Return structural facts only; scientific acceptance is never report-driven."""
-
-    del cpu
-    train, evaluation = build_agreement_examples()
+def true_facts(row) -> dict[str, list[str]]:
+    """The five true facts about a sentence (a row of the dataset), each as a list of words."""
     return {
-        "notebook_id": "7_4_mini_natural_language_autoencoders",
-        "train_count": len(train),
-        "eval_count": len(evaluation),
-        "contexts": len({example.context_id for example in (*train, *evaluation)}),
-        "eval_factor_counts": {
-            str(state): sum(example.factors == state for example in evaluation)
-            for state in FACTOR_STATES
+        "subject": [row.subject],
+        "number": [row.number],
+        "tense": [row.tense],
+        "time": [row.time_word],
+        "object": [row.preposition, row.object],
+    }
+
+
+def teacher_description(facts: dict[str, list[str]], rng: random.Random, max_words: int = MAX_WORDS) -> list[str]:
+    """A random non-empty subset of the true facts, in canonical order, of at most `max_words` words."""
+    while True:
+        words = [word for fact in FACT_ORDER if rng.random() < 0.5 for word in facts[fact]]
+        if 1 <= len(words) <= max_words:
+            return words
+
+
+def encode_descriptions(descriptions: list[list[str]], max_words: int = MAX_WORDS) -> Int[Tensor, "batch slots"]:
+    """Word lists -> ids, padded with EOS to max_words + 1 slots (so the last slot is always EOS)."""
+    ids = t.full((len(descriptions), max_words + 1), EOS, dtype=t.long)
+    for i, words in enumerate(descriptions):
+        assert len(words) <= max_words, f"description too long: {words}"
+        if words:
+            ids[i, : len(words)] = t.tensor([WORDS.index(word) for word in words])
+    return ids
+
+
+def decode_descriptions(ids: Int[Tensor, "batch slots"]) -> list[str]:
+    """Ids -> strings, stopping at the first EOS."""
+    texts = []
+    for row in ids.tolist():
+        words = []
+        for i in row:
+            if i == EOS:
+                break
+            words.append(WORDS[i])
+        texts.append(" ".join(words))
+    return texts
+
+# %%
+
+if MAIN:
+    facts = [true_facts(row) for row in df.itertuples()]
+    teacher_rng = random.Random(0)
+    print(f"{len(WORDS)} words in the bottleneck vocabulary\n")
+    for i in range(4):
+        examples = [" ".join(teacher_description(facts[i], teacher_rng)) for _ in range(3)]
+        print(f"{df.sentence[i]!r:<52} -> {examples}")
+    print()
+    print(encode_descriptions([["houses", "earlier"], ["plural", "past", "behind", "window"]]))
+
+# %%
+
+class ActivationVerbaliser(nn.Module):
+    def __init__(
+        self, d_act: int = 768, n_words: int = len(WORDS), d_model: int = 128, n_layers: int = 2,
+        n_heads: int = 4, max_words: int = MAX_WORDS,
+    ):  # fmt: skip
+        super().__init__()
+        self.max_words = max_words
+        self.act_in = nn.Linear(d_act, d_model)
+        self.word_embed = nn.Embedding(n_words, d_model)
+        self.pos_embed = nn.Parameter(t.randn(max_words + 1, d_model) * 0.02)
+        block = nn.TransformerEncoderLayer(
+            d_model, n_heads, dim_feedforward=4 * d_model, dropout=0.0, batch_first=True, norm_first=True
+        )
+        self.blocks = nn.TransformerEncoder(block, n_layers, enable_nested_tensor=False)
+        self.unembed = nn.Linear(d_model, n_words)
+
+    def forward(
+        self,
+        h: Float[Tensor, "batch d_act"],
+        prev_ids: Int[Tensor, "batch t"] | None = None,
+        prev_embeds: Float[Tensor, "batch t d_model"] | None = None,
+    ) -> Float[Tensor, "batch t_plus_1 n_words"]:
+        """Logits for the next word at every position: position 0 is the activation, position i > 0 is word i."""
+        if prev_embeds is None:
+            prev_embeds = self.word_embed(prev_ids)
+        x = t.cat([self.act_in(F.normalize(h, dim=-1))[:, None], prev_embeds], dim=1)
+        x = x + self.pos_embed[: x.shape[1]]
+        mask = nn.Transformer.generate_square_subsequent_mask(x.shape[1], device=x.device)
+        return self.unembed(self.blocks(x, mask=mask, is_causal=True))
+
+
+if MAIN:
+    tests.test_verbaliser_forward(ActivationVerbaliser)
+
+# %%
+
+def description_logprobs(
+    av: ActivationVerbaliser, h: Float[Tensor, "batch d_act"], ids: Int[Tensor, "batch slots"]
+) -> tuple[Float[Tensor, "batch slots n_words"], Float[Tensor, "batch slots"]]:
+    """Returns (log-probabilities over the vocabulary at every slot, log-probability of each word in `ids`)."""
+    logprobs = av(h, ids[:, :-1]).log_softmax(dim=-1)
+    token_logprobs = logprobs.gather(dim=-1, index=ids[..., None])[..., 0]
+    return logprobs, token_logprobs
+
+
+def description_mask(ids: Int[Tensor, "batch slots"]) -> Bool[Tensor, "batch slots"]:
+    """True for every slot up to and including the first EOS."""
+    is_eos = (ids == EOS).long()
+    eos_before = is_eos.cumsum(dim=-1) - is_eos  # number of EOS strictly before each slot
+    return eos_before == 0
+
+
+if MAIN:
+    tests.test_description_logprobs(description_logprobs, ActivationVerbaliser)
+    tests.test_description_mask(description_mask, EOS)
+
+# %%
+
+@t.no_grad()
+def sample_descriptions(
+    av: ActivationVerbaliser, h: Float[Tensor, "batch d_act"], greedy: bool = False, temperature: float = 1.0
+) -> Int[Tensor, "batch slots"]:
+    """Autoregressively samples (or greedily decodes) one description per activation."""
+    ids = t.zeros(h.shape[0], 0, dtype=t.long, device=h.device)
+    for _ in range(av.max_words):
+        logits = av(h, ids)[:, -1] / temperature
+        if greedy:
+            next_ids = logits.argmax(dim=-1)
+        else:
+            next_ids = t.distributions.Categorical(logits=logits).sample()
+        ids = t.cat([ids, next_ids[:, None]], dim=1)
+    ids = t.cat([ids, t.full_like(ids[:, :1], EOS)], dim=1)
+    ids[~description_mask(ids)] = EOS
+    return ids
+
+
+if MAIN:
+    tests.test_sample_descriptions(sample_descriptions, ActivationVerbaliser, EOS)
+
+# %%
+
+def train_verbaliser(
+    av: ActivationVerbaliser,
+    h_train: Float[Tensor, "n d_act"],
+    facts_train: list[dict],
+    n_steps: int = 1000,
+    batch_size: int = 256,
+    lr: float = 1e-3,
+    seed: int = 0,
+) -> list[float]:
+    """Supervised warm start: maximise the log-likelihood of random true (teacher) descriptions."""
+    rng = random.Random(seed)
+    generator = t.Generator().manual_seed(seed)
+    optimizer = t.optim.Adam(av.parameters(), lr=lr)
+    device = next(av.parameters()).device
+    losses = []
+    for _ in tqdm(range(n_steps), desc="warm start"):
+        idx = t.randint(0, len(h_train), (batch_size,), generator=generator)
+        descriptions = [teacher_description(facts_train[i], rng, av.max_words) for i in idx.tolist()]
+        ids = encode_descriptions(descriptions, av.max_words).to(device)
+        _, token_logprobs = description_logprobs(av, h_train[idx].to(device), ids)
+        loss = -(token_logprobs * description_mask(ids)).sum(dim=-1).mean()
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+        losses.append(loss.item())
+    return losses
+
+# %%
+
+if MAIN:
+    t.manual_seed(0)
+    facts_train = [facts[i] for i in train_idx]
+    h_train = acts_unit[train_idx].to(device)
+    h_test = acts_unit[test_idx].to(device)
+    
+    av_warm = ActivationVerbaliser().to(device)
+    warm_losses = train_verbaliser(av_warm, h_train, facts_train)
+    print(f"loss: first step {warm_losses[0]:.2f}, last 100 steps {np.mean(warm_losses[-100:]):.2f}")
+
+# %%
+
+if MAIN:
+    t.manual_seed(0)
+    show = test_idx[:8]
+    greedy_texts = decode_descriptions(sample_descriptions(av_warm, acts_unit[show].to(device), greedy=True))
+    sampled = [decode_descriptions(sample_descriptions(av_warm, acts_unit[show].to(device))) for _ in range(3)]
+    display(pd.DataFrame(
+        {"sentence": df.sentence[show.tolist()].values, "greedy": greedy_texts, "samples": [" | ".join(s) for s in zip(*sampled)]}
+    ))
+
+# %%
+
+if MAIN:
+    WORD_TOKEN_IDS = t.tensor([model.to_single_token(" " + word) for word in WORDS[:-1]] + [model.to_single_token(".")])
+    print(f"'houses earlier . . .' as GPT-2 sees it: {model.to_string(t.cat([t.tensor([model.tokenizer.bos_token_id]), WORD_TOKEN_IDS[encode_descriptions([['houses', 'earlier']])[0]]]))!r}")
+
+# %%
+
+@t.no_grad()
+def read_with_gpt2(
+    model: HookedTransformer, gpt2_tokens: Int[Tensor, "batch seq"], layer: int
+) -> Float[Tensor, "batch d_model"]:
+    """resid_pre of block `layer` at the final position."""
+    _, cache = model.run_with_cache(
+        gpt2_tokens.to(model.cfg.device), names_filter=f"blocks.{layer}.hook_resid_pre", stop_at_layer=layer + 1
+    )
+    return cache["resid_pre", layer][:, -1]
+
+
+def text_features(
+    model: HookedTransformer, ids: Int[Tensor, "batch slots"], layer: int = LAYER
+) -> Float[Tensor, "batch d_model"]:
+    """Reads descriptions (ids over WORDS) with GPT-2: BOS, then one token per slot (EOS slots become '.')."""
+    gpt2_tokens = WORD_TOKEN_IDS.to(ids.device)[ids]
+    bos = t.full_like(gpt2_tokens[:, :1], model.tokenizer.bos_token_id)
+    return read_with_gpt2(model, t.cat([bos, gpt2_tokens], dim=1), layer)
+
+
+class ActivationReconstructor(nn.Module):
+    def __init__(self, d_features: int = 768, d_act: int = 768):
+        super().__init__()
+        self.head = nn.Linear(d_features, d_act)
+
+    def forward(self, features: Float[Tensor, "batch d_features"]) -> Float[Tensor, "batch d_act"]:
+        """Affine map applied to the normalised GPT-2 features; returns a prediction of the unit-norm activation."""
+        return self.head(F.normalize(features, dim=-1))
+
+
+if MAIN:
+    tests.test_text_features(text_features, model, WORD_TOKEN_IDS, encode_descriptions)
+    tests.test_reconstructor(ActivationReconstructor)
+
+# %%
+
+def train_reconstructor(
+    ar: ActivationReconstructor,
+    optimizer: t.optim.Optimizer,
+    av: ActivationVerbaliser,
+    h_train: Float[Tensor, "n d_act"],
+    n_steps: int = 400,
+    batch_size: int = 256,
+    seed: int = 0,
+) -> list[float]:
+    """Trains the reconstructor by regression on descriptions sampled from a fixed verbaliser."""
+    generator = t.Generator().manual_seed(seed)
+    losses = []
+    for _ in tqdm(range(n_steps), desc="reconstructor"):
+        idx = t.randint(0, len(h_train), (batch_size,), generator=generator)
+        h = h_train[idx]
+        ids = sample_descriptions(av, h)
+        loss = (ar(text_features(model, ids)) - h).pow(2).sum(dim=-1).mean()
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+        losses.append(loss.item())
+    return losses
+
+# %%
+
+if MAIN:
+    t.manual_seed(0)
+    ar_warm = ActivationReconstructor().to(device)
+    ar_warm_opt = t.optim.Adam(ar_warm.parameters(), lr=1e-3)
+    ar_losses = train_reconstructor(ar_warm, ar_warm_opt, av_warm, h_train)
+    total_variance = (h_train - h_train.mean(0)).pow(2).sum(-1).mean().item()
+    print(f"AR loss: first step {ar_losses[0]:.3f}, last 50 steps {np.mean(ar_losses[-50:]):.4f}")
+    print(f"(total variance of the unit-norm activations, i.e. the loss of predicting the mean: {total_variance:.4f})")
+
+# %%
+
+def claim_accuracy(descriptions: list[str], facts: list[dict[str, list[str]]]) -> tuple[float, float]:
+    """Returns (fraction of claims that are true, mean number of claims per description)."""
+    n_claims, n_true = 0, 0
+    for text, fact in zip(descriptions, facts):
+        words = text.split()
+        k = 0
+        while k < len(words):
+            word = words[k]
+            if word in PREPOSITIONS:
+                n_claims += 1
+                if k + 1 < len(words) and words[k + 1] in NOUN_WORDS:
+                    n_true += [word, words[k + 1]] == fact["object"]
+                    k += 2
+                    continue
+            elif word in NOUN_WORDS:
+                n_claims += 1
+                n_true += word == fact["subject"][0]
+            elif word in ABSTRACT_WORDS[:2]:
+                n_claims += 1
+                n_true += word == fact["number"][0]
+            elif word in ABSTRACT_WORDS[2:]:
+                n_claims += 1
+                n_true += word == fact["tense"][0]
+            elif word in TIME_WORDS:
+                n_claims += 1
+                n_true += word == fact["time"][0]
+            k += 1
+    return n_true / max(n_claims, 1), n_claims / len(descriptions)
+
+
+if MAIN:
+    tests.test_claim_accuracy(claim_accuracy)
+
+# %%
+
+facts_test = None  # set in the main cells below
+
+
+@t.no_grad()
+def evaluate_nla(av: ActivationVerbaliser, ar: ActivationReconstructor, with_behaviour: bool = False) -> dict:
+    ids = sample_descriptions(av, h_test, greedy=True)
+    h_hat = ar(text_features(model, ids)).cpu()
+    texts = decode_descriptions(ids)
+    claims_true, claims_per = claim_accuracy(texts, facts_test)
+    result = dict(fve=fve(acts[test_idx], h_hat), claims_true=claims_true, claims_per_description=claims_per)
+    if with_behaviour:
+        result["transplant"] = transplant(h_hat)
+    return result
+
+# %%
+
+if MAIN:
+    facts_test = [facts[i] for i in test_idx]
+    warm_eval = evaluate_nla(av_warm, ar_warm, with_behaviour=True)
+    print({k: round(v, 3) for k, v in warm_eval.items()})
+
+# %%
+
+if MAIN:
+    def facts_mentioned(text: str) -> str:
+        words = text.split()
+        kinds = []
+        for word, previous in zip(words, [None] + words[:-1]):
+            if word in PREPOSITIONS:
+                kinds.append("object")
+            elif word in NOUN_WORDS and previous not in PREPOSITIONS:
+                kinds.append("subject")
+            elif word in ABSTRACT_WORDS:
+                kinds.append("number" if word in ABSTRACT_WORDS[:2] else "tense")
+            elif word in TIME_WORDS:
+                kinds.append("time")
+        return " + ".join(kind for kind in FACT_ORDER if kind in kinds)
+    
+    
+    t.manual_seed(0)
+    total_var_test = (h_test - h_test.mean(0)).pow(2).sum(-1).mean().item()
+    errors, groups = [], []
+    random_errors, wrong_errors = [], []
+    with t.no_grad():
+        for _ in range(8):
+            ids = sample_descriptions(av_warm, h_test)
+            h_hat = ar_warm(text_features(model, ids))
+            errors.append((h_hat - h_test).pow(2).sum(-1).cpu())
+            groups += [facts_mentioned(text) for text in decode_descriptions(ids)]
+            # controls: random words in the same slots, and the description of a different sentence
+            random_ids = t.where(ids == EOS, ids, t.randint_like(ids, 0, EOS))
+            random_errors.append((ar_warm(text_features(model, random_ids)) - h_test).pow(2).sum(-1).cpu())
+            wrong_errors.append((h_hat.roll(1, dims=0) - h_test).pow(2).sum(-1).cpu())
+    errors = t.cat(errors)
+    group_stats = pd.Series(errors.numpy()).groupby(groups).agg(["mean", "size"])
+    shown = ["subject + time + object", "subject + time", "subject", "time", "object", "number + tense", "tense", "number"]
+    bars = {name: 1 - group_stats.loc[name, "mean"] / total_var_test for name in shown}
+    print(group_stats.loc[shown, "size"].to_dict())
+    bars["control: random words"] = 1 - t.cat(random_errors).mean().item() / total_var_test
+    bars["control: wrong sentence"] = 1 - t.cat(wrong_errors).mean().item() / total_var_test
+    utils.plot_bars(
+        bars,
+        "Warm-started NLA: FVE of sampled descriptions, grouped by which facts they mention (8 samples per sentence)",
+        ylabel="FVE",
+        ylim=(-1.0, 1.0),
+        n_highlight=len(bars) - 2,
+        fmt="{:.2f}",
+    )
+
+# %%
+
+def group_advantages(rewards: Float[Tensor, " n"], group_size: int, eps: float = 1e-6) -> Float[Tensor, " n"]:
+    """Normalises each consecutive group of rewards to zero mean and unit standard deviation."""
+    grouped = rewards.view(-1, group_size)
+    advantages = (grouped - grouped.mean(dim=1, keepdim=True)) / (grouped.std(dim=1, keepdim=True) + eps)
+    return advantages.view(-1)
+
+
+if MAIN:
+    tests.test_group_advantages(group_advantages)
+
+# %%
+
+def kl_to_reference(
+    logprobs: Float[Tensor, "batch slots n_words"],
+    ref_logprobs: Float[Tensor, "batch slots n_words"],
+    mask: Bool[Tensor, "batch slots"],
+) -> Float[Tensor, " batch"]:
+    """Exact KL(policy || reference) summed over the unmasked slots of each description."""
+    per_slot = (logprobs.exp() * (logprobs - ref_logprobs)).sum(dim=-1)
+    return (per_slot * mask).sum(dim=-1)
+
+
+def policy_gradient_loss(
+    token_logprobs: Float[Tensor, "batch slots"], mask: Bool[Tensor, "batch slots"], advantages: Float[Tensor, " batch"]
+) -> Float[Tensor, ""]:
+    """REINFORCE loss: minus the advantage-weighted log-probability of each description, averaged."""
+    return -(advantages * (token_logprobs * mask).sum(dim=-1)).mean()
+
+
+if MAIN:
+    tests.test_kl_to_reference(kl_to_reference)
+    tests.test_policy_gradient_loss(policy_gradient_loss)
+
+# %%
+
+def train_nla(
+    av: ActivationVerbaliser,
+    ar: ActivationReconstructor,
+    ar_optimizer: t.optim.Optimizer,
+    h_train: Float[Tensor, "n d_act"],
+    n_steps: int = 600,
+    batch_size: int = 64,
+    group_size: int = 8,
+    beta: float = 0.05,
+    av_ref: ActivationVerbaliser | None = None,
+    lr_av: float = 3e-4,
+    train_av: bool = True,
+    eval_every: int = 50,
+    seed: int = 0,
+) -> list[dict]:
+    """End-to-end NLA training: GRPO-style policy gradient for the verbaliser, regression for the reconstructor."""
+    generator = t.Generator().manual_seed(seed)
+    av_optimizer = t.optim.Adam(av.parameters(), lr=lr_av)
+    history = []
+    for step in tqdm(range(n_steps), desc="NLA training"):
+        if step % eval_every == 0:
+            history.append({"step": step, **evaluate_nla(av, ar)})
+        idx = t.randint(0, len(h_train), (batch_size,), generator=generator)
+        h = h_train[idx].repeat_interleave(group_size, dim=0)
+        ids = sample_descriptions(av, h)
+        errors = (ar(text_features(model, ids)) - h).pow(2).sum(dim=-1)
+
+        # Reconstructor: one regression step on the sampled descriptions
+        ar_optimizer.zero_grad()
+        errors.mean().backward()
+        ar_optimizer.step()
+
+        # Verbaliser: policy gradient with group baseline, plus KL to the reference
+        if train_av:
+            rewards = -t.log(errors.detach() + 1e-6)
+            advantages = group_advantages(rewards, group_size)
+            logprobs, token_logprobs = description_logprobs(av, h, ids)
+            mask = description_mask(ids)
+            loss = policy_gradient_loss(token_logprobs, mask, advantages)
+            if beta > 0:
+                with t.no_grad():
+                    ref_logprobs, _ = description_logprobs(av_ref, h, ids)
+                loss = loss + beta * kl_to_reference(logprobs, ref_logprobs, mask).mean()
+            av_optimizer.zero_grad()
+            loss.backward()
+            av_optimizer.step()
+    history.append({"step": n_steps, **evaluate_nla(av, ar)})
+    return history
+
+# %%
+
+def clone_reconstructor(
+    ar: ActivationReconstructor, optimizer: t.optim.Optimizer
+) -> tuple[ActivationReconstructor, t.optim.Optimizer]:
+    ar_copy = copy.deepcopy(ar)
+    optimizer_copy = type(optimizer)(ar_copy.parameters(), **optimizer.defaults)
+    optimizer_copy.load_state_dict(optimizer.state_dict())
+    return ar_copy, optimizer_copy
+
+# %%
+
+if MAIN:
+    t.manual_seed(0)
+    av_ref = copy.deepcopy(av_warm).requires_grad_(False)
+    av_rl = copy.deepcopy(av_warm)
+    ar_rl, ar_rl_opt = clone_reconstructor(ar_warm, ar_warm_opt)
+    history_rl = train_nla(av_rl, ar_rl, ar_rl_opt, h_train, av_ref=av_ref)
+    print({k: round(v, 3) for k, v in history_rl[-1].items()})
+
+# %%
+
+if MAIN:
+    with t.no_grad():
+        rl_texts = decode_descriptions(sample_descriptions(av_rl, acts_unit[show].to(device), greedy=True))
+    display(pd.DataFrame({"sentence": df.sentence[show.tolist()].values, "warm start": greedy_texts, "after RL": rl_texts}))
+    
+    rl_test_texts = decode_descriptions(sample_descriptions(av_rl, h_test, greedy=True))
+    print("Most common fact combinations in held-out descriptions after RL:")
+    print(Counter(facts_mentioned(text) for text in rl_test_texts).most_common(4))
+    wrong = [i for i, (text, fact) in enumerate(zip(rl_test_texts, facts_test)) if claim_accuracy([text], [fact])[0] < 1]
+    print(f"\n{len(wrong)} of {len(rl_test_texts)} descriptions contain a false claim, e.g.:")
+    for i in wrong[:5]:
+        print(f"  {df.sentence[int(test_idx[i])]!r:<50} -> {rl_test_texts[i]!r}")
+
+# %%
+
+if MAIN:
+    t.manual_seed(0)
+    ar_only, ar_only_opt = clone_reconstructor(ar_warm, ar_warm_opt)
+    history_ar_only = train_nla(copy.deepcopy(av_warm), ar_only, ar_only_opt, h_train, n_steps=300, train_av=False)
+    
+    t.manual_seed(0)
+    av_cold = ActivationVerbaliser().to(device)
+    ar_cold = ActivationReconstructor().to(device)
+    ar_cold_opt = t.optim.Adam(ar_cold.parameters(), lr=1e-3)
+    history_cold = train_nla(av_cold, ar_cold, ar_cold_opt, h_train, n_steps=300, beta=0.0)
+    with t.no_grad():
+        cold_texts = decode_descriptions(sample_descriptions(av_cold, h_test, greedy=True))
+    print(f"Cold start: {len(set(cold_texts))} distinct descriptions on the test set; most common: {Counter(cold_texts).most_common(2)}")
+
+# %%
+
+def straight_through_gumbel(logits: Float[Tensor, "batch n"], tau: float = 1.0) -> Float[Tensor, "batch n"]:
+    """Hard one-hot sample in the forward pass; gradient of the Gumbel-softmax in the backward pass."""
+    u = t.rand_like(logits).clamp(1e-9, 1 - 1e-9)
+    gumbel = -t.log(-t.log(u))
+    soft = ((logits + gumbel) / tau).softmax(dim=-1)
+    hard = F.one_hot(soft.argmax(dim=-1), logits.shape[-1]).to(soft.dtype)
+    return hard - soft.detach() + soft
+
+
+if MAIN:
+    tests.test_straight_through_gumbel(straight_through_gumbel)
+
+# %%
+
+def gumbel_sample_descriptions(
+    av: ActivationVerbaliser, h: Float[Tensor, "batch d_act"], tau: float = 1.0
+) -> Float[Tensor, "batch slots n_words"]:
+    n_words = av.unembed.out_features
+    eos = F.one_hot(t.tensor(EOS, device=h.device), n_words).float()
+    done = t.zeros(h.shape[0], 1, device=h.device)
+    words = []
+    for _ in range(av.max_words):
+        prev_embeds = t.stack([y @ av.word_embed.weight for y in words], dim=1) if words else h.new_zeros(h.shape[0], 0, av.word_embed.embedding_dim)
+        y = straight_through_gumbel(av(h, prev_embeds=prev_embeds)[:, -1], tau)
+        y = done * eos + (1 - done) * y  # after an EOS, every slot is EOS
+        done = t.maximum(done, y[:, EOS : EOS + 1].detach())
+        words.append(y)
+    words.append(eos.expand(h.shape[0], -1))
+    return t.stack(words, dim=1)
+
+
+def soft_text_features(
+    model: HookedTransformer, word_onehots: Float[Tensor, "batch slots n_words"], layer: int = LAYER
+) -> Float[Tensor, "batch d_model"]:
+    soft_embeds = word_onehots @ model.W_E[WORD_TOKEN_IDS.to(word_onehots.device)]
+    placeholder = t.full((word_onehots.shape[0], word_onehots.shape[1] + 1), model.tokenizer.bos_token_id)
+    store = {}
+
+    def embed_hook(embed: Tensor, hook) -> Tensor:
+        return t.cat([embed[:, :1], soft_embeds], dim=1)  # keep BOS, replace the rest
+
+    def grab_hook(resid: Tensor, hook) -> None:
+        store["resid"] = resid
+
+    model.run_with_hooks(
+        placeholder.to(word_onehots.device),
+        fwd_hooks=[("hook_embed", embed_hook), (f"blocks.{layer}.hook_resid_pre", grab_hook)],
+        stop_at_layer=layer + 1,
+    )
+    return store["resid"][:, -1]
+
+# %%
+
+def train_nla_gumbel(
+    av: ActivationVerbaliser,
+    ar: ActivationReconstructor,
+    ar_optimizer: t.optim.Optimizer,
+    h_train: Float[Tensor, "n d_act"],
+    n_steps: int = 300,
+    batch_size: int = 256,
+    tau: float = 1.0,
+    lr_av: float = 3e-4,
+    eval_every: int = 50,
+    seed: int = 0,
+) -> list[dict]:
+    generator = t.Generator().manual_seed(seed)
+    av_optimizer = t.optim.Adam(av.parameters(), lr=lr_av)
+    history = []
+    for step in tqdm(range(n_steps), desc="Gumbel NLA training"):
+        if step % eval_every == 0:
+            history.append({"step": step, **evaluate_nla(av, ar)})
+        h = h_train[t.randint(0, len(h_train), (batch_size,), generator=generator)]
+        word_onehots = gumbel_sample_descriptions(av, h, tau)
+        loss = (ar(soft_text_features(model, word_onehots)) - h).pow(2).sum(dim=-1).mean()
+        av_optimizer.zero_grad()
+        ar_optimizer.zero_grad()
+        loss.backward()
+        av_optimizer.step()
+        ar_optimizer.step()
+    history.append({"step": n_steps, **evaluate_nla(av, ar)})
+    return history
+
+# %%
+
+if MAIN:
+    t.manual_seed(0)
+    av_gumbel = copy.deepcopy(av_warm)
+    ar_gumbel, ar_gumbel_opt = clone_reconstructor(ar_warm, ar_warm_opt)
+    history_gumbel = train_nla_gumbel(av_gumbel, ar_gumbel, ar_gumbel_opt, h_train)
+    with t.no_grad():
+        gumbel_texts = decode_descriptions(sample_descriptions(av_gumbel, acts_unit[show].to(device), greedy=True))
+    display(pd.DataFrame({"sentence": df.sentence[show.tolist()].values, "REINFORCE": rl_texts, "Gumbel straight-through": gumbel_texts}))
+
+# %%
+
+if MAIN:
+    runs = {
+        "REINFORCE from warm start (β=0.05)": history_rl,
+        "control: reconstructor only": history_ar_only,
+        "control: REINFORCE from cold start": history_cold,
+        "Gumbel straight-through from warm start": history_gumbel,
+    }
+    fig, (ax0, ax1) = plt.subplots(1, 2, figsize=(13, 4.5))
+    for (name, history), style in zip(runs.items(), ["-o", "--s", ":^", "-.v"]):
+        steps = [entry["step"] for entry in history]
+        ax0.plot(steps, [entry["fve"] for entry in history], style, label=name, markersize=4)
+        ax1.plot(steps, [entry["claims_true"] for entry in history], style, label=name, markersize=4)
+    ax0.axhline(oracle_points["subject + time word"][0], color="gray", ls="--", lw=1, label="oracle: subject + time word")
+    ax0.set_ylim(-0.3, 1)
+    ax0.set_ylabel("held-out FVE (greedy descriptions)")
+    ax0.set_title("Reconstruction: what the objective rewards", fontsize=10)
+    ax1.set_ylim(0, 1.05)
+    ax1.set_ylabel("fraction of claims that are true")
+    ax1.set_title("Truthfulness: what the objective doesn't directly reward", fontsize=10)
+    for ax in (ax0, ax1):
+        ax.set_xlabel("training step")
+        ax.grid(alpha=0.3)
+    handles, names = ax0.get_legend_handles_labels()
+    fig.legend(handles, names, loc="lower center", ncol=3, fontsize=9)
+    plt.tight_layout(rect=(0, 0.12, 1, 1))
+    plt.show()
+
+# %%
+
+if MAIN:
+    t.manual_seed(0)
+    av_nokl = copy.deepcopy(av_warm)
+    ar_nokl, ar_nokl_opt = clone_reconstructor(ar_warm, ar_warm_opt)
+    history_nokl = train_nla(av_nokl, ar_nokl, ar_nokl_opt, h_train, beta=0.0, eval_every=600)
+    
+    
+    @t.no_grad()
+    def mean_kl_to_warm_start(av: ActivationVerbaliser) -> float:
+        ids = sample_descriptions(av, h_test)
+        logprobs, _ = description_logprobs(av, h_test, ids)
+        ref_logprobs, _ = description_logprobs(av_ref, h_test, ids)
+        return kl_to_reference(logprobs, ref_logprobs, description_mask(ids)).mean().item()
+    
+    
+    for name, av_, history in [("beta = 0.05", av_rl, history_rl), ("beta = 0", av_nokl, history_nokl), ("Gumbel (no KL)", av_gumbel, history_gumbel)]:
+        final = history[-1]
+        with t.no_grad():
+            examples = decode_descriptions(sample_descriptions(av_, acts_unit[show[:3]].to(device), greedy=True))
+        print(f"{name:<15} FVE {final['fve']:.3f} | claims true {final['claims_true']:.3f} | KL from warm start {mean_kl_to_warm_start(av_):5.2f} nats | {examples}")
+
+# %%
+
+def pca_reconstruction(
+    train_h: Float[Tensor, "n_train d"], test_h: Float[Tensor, "n_test d"], k: int
+) -> Float[Tensor, "n_test d"]:
+    """Projects the unit-normalised test activations onto the top-k principal components of the training set."""
+    train_unit, test_unit = F.normalize(train_h.float(), dim=-1), F.normalize(test_h.float(), dim=-1)
+    mean = train_unit.mean(dim=0)
+    _, _, Vh = t.linalg.svd(train_unit - mean, full_matrices=False)
+    V_k = Vh[:k].T
+    return mean + (test_unit - mean) @ V_k @ V_k.T
+
+
+if MAIN:
+    tests.test_pca_reconstruction(pca_reconstruction)
+
+# %%
+
+if MAIN:
+    def train_full_nla(max_words: int, rl_steps: int = 400, seed: int = 0) -> tuple[ActivationVerbaliser, ActivationReconstructor]:
+        t.manual_seed(seed)
+        av = ActivationVerbaliser(max_words=max_words).to(device)
+        train_verbaliser(av, h_train, facts_train, seed=seed)
+        ar = ActivationReconstructor().to(device)
+        ar_opt = t.optim.Adam(ar.parameters(), lr=1e-3)
+        train_reconstructor(ar, ar_opt, av, h_train, seed=seed)
+        train_nla(av, ar, ar_opt, h_train, n_steps=rl_steps, av_ref=copy.deepcopy(av).requires_grad_(False), eval_every=rl_steps, seed=seed)
+        return av, ar
+    
+    
+    nlas = {1: train_full_nla(1), 2: train_full_nla(2), 4: (av_rl, ar_rl)}
+    nla_results = {k: evaluate_nla(av, ar, with_behaviour=True) for k, (av, ar) in nlas.items()}
+    pca_results = {}
+    for k in [1, 2, 4, 8, 16]:
+        h_hat = pca_reconstruction(acts[train_idx], acts[test_idx], k)
+        pca_results[k] = dict(fve=fve(acts[test_idx], h_hat), transplant=transplant(h_hat))
+    for k, (av, _) in nlas.items():
+        with t.no_grad():
+            texts = decode_descriptions(sample_descriptions(av, acts_unit[show[:3]].to(device), greedy=True))
+        print(f"{k} word(s): FVE {nla_results[k]['fve']:.3f}, transplant {nla_results[k]['transplant']:.3f}, claims true {nla_results[k]['claims_true']:.3f}, e.g. {texts}")
+    for k, result in pca_results.items():
+        print(f"PCA {k:>2} dims: FVE {result['fve']:.3f}, transplant {result['transplant']:.3f}")
+
+# %%
+
+if MAIN:
+    sizes = [1, 2, 4, 8, 16]
+    utils.plot_budget_sweep(
+        sizes,
+        fve_curves={
+            "NLA (k words)": [nla_results[k]["fve"] for k in [1, 2, 4]],
+            "PCA (k dimensions)": [pca_results[k]["fve"] for k in sizes],
         },
+        behaviour_curves={
+            "NLA (k words)": [nla_results[k]["transplant"] for k in [1, 2, 4]],
+            "PCA (k dimensions)": [pca_results[k]["transplant"] for k in sizes],
+            "A's own activation": [transplant_controls["A's own activation"]] * len(sizes),
+        },
+        title="Text bottleneck vs linear bottleneck of the same size (held-out sentences)",
+    )
+
+# %%
+
+if MAIN:
+    LEMMA = {form: pair[0] for pair in NOUNS for form in pair}
+    
+    for name, av in [("warm start", av_warm), ("1 word", nlas[1][0]), ("2 words", nlas[2][0]), ("4 words", av_rl)]:
+        with t.no_grad():
+            texts = decode_descriptions(sample_descriptions(av, h_test, greedy=True))
+        pairs = []  # (true subject, claimed subject)
+        for text, fact in zip(texts, facts_test):
+            words = text.split()
+            pairs += [(fact["subject"][0], w) for j, w in enumerate(words) if w in NOUN_WORDS and (j == 0 or words[j - 1] not in PREPOSITIONS)]
+        number_right = np.mean([(true in NOUN_WORDS[1::2]) == (said in NOUN_WORDS[1::2]) for true, said in pairs])
+        noun_right = np.mean([LEMMA[true] == LEMMA[said] for true, said in pairs])
+        swaps = Counter((LEMMA[true], LEMMA[said]) for true, said in pairs if LEMMA[true] != LEMMA[said])
+        print(f"{name:<10} mentions {dict(Counter(facts_mentioned(x) for x in texts).most_common(2))}")
+        print(f"{'':<10} {len(pairs)} subject claims: number right {number_right:.1%}, noun right {noun_right:.1%}; "
+              f"most common swaps (true → said): {[f'{a} → {b}' for (a, b), _ in swaps.most_common(4)]}")
+
+# %%
+
+def bag_of_words(sentences: list[str], vocab: list[str]) -> Float[Tensor, "n vocab"]:
+    """Word counts (order discarded), over a fixed vocabulary."""
+    index = {word: i for i, word in enumerate(vocab)}
+    counts = t.zeros(len(sentences), len(vocab))
+    for row, sentence in enumerate(sentences):
+        for word in sentence.replace(",", "").split():
+            if word in index:
+                counts[row, index[word]] += 1
+    return counts
+
+
+def fit_ridge(X: Float[Tensor, "n f"], Y: Float[Tensor, "n d"], alpha: float = 1.0):
+    """Closed-form ridge regression with an unpenalised intercept. Returns a prediction function."""
+    X, Y = X.double(), Y.double()
+    mu_X, mu_Y = X.mean(dim=0), Y.mean(dim=0)
+    Xc, Yc = X - mu_X, Y - mu_Y
+    W = t.linalg.solve(Xc.T @ Xc + alpha * t.eye(X.shape[1], dtype=X.dtype), Xc.T @ Yc)
+
+    def predict(X_new: Tensor) -> Tensor:
+        return ((X_new.double() - mu_X) @ W + mu_Y).float()
+
+    return predict
+
+
+if MAIN:
+    tests.test_bag_of_words(bag_of_words)
+    tests.test_fit_ridge(fit_ridge)
+
+# %%
+
+if MAIN:
+    sentences = df.sentence.tolist()
+    input_vocab = sorted({word for s in [sentences[i] for i in train_idx] for word in s.replace(",", "").split()})
+    bow = bag_of_words(sentences, input_vocab)
+    ordered = t.cat(
+        [bag_of_words([s.replace(",", "").split()[p] for s in sentences], input_vocab) for p in range(7)], dim=1
+    )
+    baselines = {}
+    for name, X in [("bag of words of the input", bow), ("ordered words of the input", ordered)]:
+        predict = fit_ridge(X[train_idx], acts_unit[train_idx])
+        h_hat = predict(X[test_idx])
+        baselines[name] = dict(fve=fve(acts[test_idx], h_hat), transplant=transplant(h_hat), h_hat=h_hat)
+        print(f"{name:<28}: {X.shape[1]:>3} features, FVE {baselines[name]['fve']:.3f}, transplant {baselines[name]['transplant']:.3f}")
+
+# %%
+
+if MAIN:
+    same_number = t.tensor((df.number.values == df.object_number.values)[test_idx.numpy()])
+    with t.no_grad():
+        nla4_h_hat = ar_rl(text_features(model, sample_descriptions(av_rl, h_test, greedy=True))).cpu()
+    split_results = {}
+    for name, h_hat in [
+        ("A's own activation", acts_unit[test_idx]),
+        ("NLA, 4 words", nla4_h_hat),
+        ("bag of words of the input", baselines["bag of words of the input"]["h_hat"]),
+        ("ordered words of the input", baselines["ordered words of the input"]["h_hat"]),
+    ]:
+        split_results[name] = {
+            f"subject & object same number": transplant_accuracy(model, tokens, labels, h_hat[same_number], test_idx[same_number], partners[same_number], act_scale),
+            f"subject & object differ": transplant_accuracy(model, tokens, labels, h_hat[~same_number], test_idx[~same_number], partners[~same_number], act_scale),
+        }
+    split_df = pd.DataFrame(split_results)
+    display(split_df.round(3))
+    split_df.T.plot.bar(figsize=(9, 4), rot=0, color=["tab:blue", "tab:orange"])
+    plt.axhline(0.25, color="k", ls=":", lw=1, label="chance")
+    plt.ylabel("transplant accuracy")
+    plt.ylim(0, 1.2)
+    plt.title("Transplant accuracy, split by whether the source's subject and object agree in number", fontsize=10)
+    plt.legend(fontsize=8, loc="upper center", ncol=3)
+    plt.tight_layout()
+    plt.show()
+
+# %%
+
+if MAIN:
+    with t.no_grad():
+        nla_ids = sample_descriptions(av_rl, h_test, greedy=True)
+    nla_texts = decode_descriptions(nla_ids)
+    shuffle_rng = random.Random(0)
+    shuffled_texts = [shuffle_rng.sample(text.split(), len(text.split())) for text in nla_texts]
+    with t.no_grad():
+        shuffled_h_hat = ar_rl(text_features(model, encode_descriptions(shuffled_texts).to(device))).cpu()
+        random_ids = t.where(nla_ids == EOS, nla_ids, t.randint_like(nla_ids, 0, EOS))
+        random_h_hat = ar_rl(text_features(model, random_ids)).cpu()
+    damaged = {
+        "NLA, 4 words": nla4_h_hat,
+        "same words, shuffled": shuffled_h_hat,
+        "another sentence's description": nla4_h_hat[shuffled_sources - N_TRAIN],
+        "random words": random_h_hat,
     }
+    damaged_results = {name: dict(fve=fve(acts[test_idx], h_hat), transplant=transplant(h_hat)) for name, h_hat in damaged.items()}
+    print("e.g.", [f"{a!r} -> {' '.join(b)!r}" for a, b in zip(nla_texts[:3], shuffled_texts[:3])])
+    display(pd.DataFrame(damaged_results).T.round(3))
 
+# %%
 
-def run_cpu_test() -> dict[str, Any]:
-    """Run the complete pinned experiment on CPU and return measured evidence."""
-
-    tokenizer, model = load_pythia_cpu()
-    dataset = cache_pythia_nla_dataset(tokenizer, model)
-    report = evaluate_mini_nla(tokenizer, model, dataset).report
-    return {
-        "model_id": PYTHIA_MODEL_ID,
-        "revision": PYTHIA_REVISION,
-        "device": "cpu",
-        "train_count": report.train_count,
-        "eval_count": report.eval_count,
-        "token_accuracy": report.token_accuracy,
-        "exact_text_accuracy": report.exact_text_accuracy,
-        "fve": report.reconstruction.fve,
-        "bag_of_tokens_fve": report.bag_of_tokens.fve,
-        "within_factor_fve": report.reconstruction.within_factor_fve,
-        "bag_of_tokens_within_factor_fve": report.bag_of_tokens.within_factor_fve,
-        "distinct_rows": report.reconstruction.distinct_rows,
-        "normalized_mse": report.reconstruction.normalized_mse,
-        "mean_cosine": report.reconstruction.mean_cosine,
-        "original_task_accuracy": report.original_task_accuracy,
-        "reconstructed_task_accuracy": report.reconstructed_task_accuracy,
-        "behavior_parity_accuracy": report.behavior_parity_accuracy,
-        "bag_of_tokens_behavior_parity": report.bag_of_tokens_behavior_parity,
-        "same_context_token_multiset_fraction": report.same_context_token_multiset_fraction,
-        "omitted_composition_end_to_end_parity": report.omitted_composition_end_to_end_parity,
-        "prompt_only_factor_fve": report.prompt_only_factor.fve,
-        "direct_factor_fve": report.direct_factor.fve,
-        "class_mean_fve": report.class_mean.fve,
-        "mean_conditioned_fve": report.mean_conditioned.fve,
-        "lexical_relabel_fve": report.lexical_relabel.fve,
-        "lexical_relabel_within_factor_fve": report.lexical_relabel.within_factor_fve,
-        "prompt_only_factor_behavior_parity": report.prompt_only_factor_behavior_parity,
-        "direct_factor_behavior_parity": report.direct_factor_behavior_parity,
-        "class_mean_behavior_parity": report.class_mean_behavior_parity,
-        "lexical_relabel_behavior_parity": report.lexical_relabel_behavior_parity,
-        "identity_max_logit_error": report.identity_max_logit_error,
-        "single_row_other_max_logit_change": report.intervention.other_rows_max_logit_change,
-        "intervention_selected_logit_change": report.intervention.selected_logit_change,
-        "shuffled_fve_by_seed": report.shuffled_fve_by_seed,
-        "shuffled_behavior_parity_by_seed": report.shuffled_behavior_parity_by_seed,
+if MAIN:
+    points = {
+        "NLA, 4 words": (nla_results[4]["fve"], nla_results[4]["transplant"], "nla", (6, -10, "left")),
+        "NLA, 2 words": (nla_results[2]["fve"], nla_results[2]["transplant"], "nla", (-8, -14, "right")),
+        "NLA, 1 word": (nla_results[1]["fve"], nla_results[1]["transplant"], "nla", (6, -12, "left")),
+        "NLA warm start (before RL)": (warm_eval["fve"], warm_eval["transplant"], "nla", (-6, -13, "right")),
+        "oracle: number + tense": (*oracle_points["number + tense"], "oracle"),
+        "oracle: subject": (*oracle_points["subject"], "oracle"),
+        "oracle: subject + time word": (*oracle_points["subject + time word"], "oracle", (-6, 6, "right")),
+        "bag of words of input": (baselines["bag of words of the input"]["fve"], baselines["bag of words of the input"]["transplant"], "baseline"),
+        "ordered words of input": (baselines["ordered words of the input"]["fve"], baselines["ordered words of the input"]["transplant"], "baseline", (7, -3, "left")),
+        "PCA, 4 dims": (pca_results[4]["fve"], pca_results[4]["transplant"], "baseline"),
+        "PCA, 16 dims": (pca_results[16]["fve"], pca_results[16]["transplant"], "baseline", (0, 9, "center")),
+        "NLA words shuffled": (damaged_results["same words, shuffled"]["fve"], damaged_results["same words, shuffled"]["transplant"], "control", (-6, 6, "right")),
+        "another sentence's description": (damaged_results["another sentence's description"]["fve"], damaged_results["another sentence's description"]["transplant"], "control"),
+        "random words": (damaged_results["random words"]["fve"], damaged_results["random words"]["transplant"], "control"),
+        "mean activation": (0.0, transplant_controls["mean activation"], "control"),
     }
+    utils.plot_fve_vs_behaviour(
+        points,
+        "Reconstruction quality (FVE) is not behaviour: GPT-2 Small, layer 10, 1,000 held-out sentences",
+        ceiling=transplant_controls["A's own activation"],
+    )
 
+# %%
 
-def run_gpu_test(max_vram_gb: float = 24.0) -> dict[str, Any]:
-    """Run the full text bottleneck on CUDA with no fallback."""
+if MAIN:
+    def edit_and_patch(description: str, base: int, reference_sentence: str | None = None) -> None:
+        words = description.split()
+        gpt2_tokens = [model.tokenizer.bos_token_id] + [model.to_single_token(" " + w) for w in words]
+        gpt2_tokens += [model.to_single_token(".")] * max(1, MAX_WORDS + 1 - len(words))  # pad with "." like text_features
+        with t.no_grad():
+            h_hat = ar_rl(read_with_gpt2(model, t.tensor([gpt2_tokens]), LAYER)).cpu()
+        base_tokens = tokens[base : base + 1]
+        rows = {"reconstruction from your text": h_hat}
+        if reference_sentence is not None:
+            rows["real activation of the reference"] = get_final_activations(model, model.to_tokens(reference_sentence), [LAYER])[0]
+        print(f"description: {description!r:<34} base sentence: {df.sentence[base]!r}")
+        for name, vector in rows.items():
+            logits = patch_final_position(model, base_tokens, F.normalize(vector, dim=-1) * act_scale, LAYER, verb_ids)
+            probs = logits.softmax(-1)[0]
+            cos = F.cosine_similarity(vector, acts[base : base + 1]).item()
+            print(f"  {name:<34} cos to base activation {cos:+.2f} | " + "  ".join(f"{v.strip()}: {p:.2f}" for v, p in zip(VERBS, probs)))
+    
+    
+    base = int(test_idx[0])
+    print(f"The NLA's own description of the base sentence: {nla_texts[0]!r}\n")
+    edit_and_patch("tables currently with keys", base)
+    edit_and_patch("table currently with keys", base, reference_sentence="Currently, the table with the keys really")
+    edit_and_patch("tables yesterday with keys", base, reference_sentence="Yesterday, the tables with the keys really")
+    edit_and_patch("tables formerly with keys", base)
+    edit_and_patch("singular past", base)
 
-    if max_vram_gb <= 0:
-        raise ValueError("max_vram_gb must be positive.")
-    if not t.cuda.is_available():
-        raise RuntimeError("CUDA is required for 7.4 GPU verification.")
-    t.cuda.reset_peak_memory_stats()
-    tokenizer, model = load_pythia("cuda")
-    dataset = cache_pythia_nla_dataset(tokenizer, model)
-    report = evaluate_mini_nla(tokenizer, model, dataset).report
-    peak_vram_gb = t.cuda.max_memory_allocated() / 2**30
-    if peak_vram_gb > max_vram_gb:
-        raise AssertionError(
-            f"peak VRAM {peak_vram_gb:.3f} GB exceeds {max_vram_gb:.1f} GB"
-        )
-    checks = {
-        "exact_text": report.exact_text_accuracy == 1.0,
-        "normalized_fve": report.reconstruction.fve >= 0.75,
-        "beats_bag_of_tokens_fve": (
-            report.reconstruction.fve > report.bag_of_tokens.fve + 0.1
-        ),
-        "behavior_parity": report.behavior_parity_accuracy == 1.0,
-        "beats_bag_of_tokens_behavior": (
-            report.behavior_parity_accuracy
-            > report.bag_of_tokens_behavior_parity + 0.5
-        ),
-        "same_token_multiset": report.same_context_token_multiset_fraction == 1.0,
-        "identity_patch": report.identity_max_logit_error == 0.0,
-        "single_row_locality": report.intervention.other_rows_max_logit_change == 0.0,
-        "causal_text_edit": report.intervention.selected_logit_change > 1.0,
-    }
-    if not all(checks.values()):
-        failed = [name for name, passed in checks.items() if not passed]
-        raise AssertionError(f"7.4 scientific contract failed: {failed}")
-    return {
-        "accepted": True,
-        "cuda_available": True,
-        "device": "cuda",
-        "gpu_name": t.cuda.get_device_name(),
-        "torch_version": t.__version__,
-        "cuda_version": t.version.cuda,
-        "peak_vram_gb": peak_vram_gb,
-        "within_vram_budget": True,
-        "model_id": PYTHIA_MODEL_ID,
-        "revision": PYTHIA_REVISION,
-        "train_count": report.train_count,
-        "eval_count": report.eval_count,
-        "token_accuracy": report.token_accuracy,
-        "exact_text_accuracy": report.exact_text_accuracy,
-        "held_out_fve": report.reconstruction.fve,
-        "within_factor_fve": report.reconstruction.within_factor_fve,
-        "bag_of_tokens_fve": report.bag_of_tokens.fve,
-        "bag_of_tokens_within_factor_fve": report.bag_of_tokens.within_factor_fve,
-        "behavior_parity": report.behavior_parity_accuracy,
-        "bag_of_tokens_behavior_parity": report.bag_of_tokens_behavior_parity,
-        "same_context_token_multiset_fraction": report.same_context_token_multiset_fraction,
-        "distinct_reconstruction_rows": report.reconstruction.distinct_rows,
-        "identity_max_logit_error": report.identity_max_logit_error,
-        "intervention_selected_logit_change": report.intervention.selected_logit_change,
-        "single_row_other_max_logit_change": report.intervention.other_rows_max_logit_change,
-        "checks": checks,
-    }
-
-
-def run_full_experiment(max_vram_gb: float = 24.0):
-    """Run the complete pinned CUDA experiment."""
-
-    return run_gpu_test(max_vram_gb=max_vram_gb)
+# %%

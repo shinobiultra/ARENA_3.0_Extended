@@ -117,8 +117,7 @@ def build_notebooks():
     assert found_exercises == found_solutions == list(EXERCISES), "Every exercise needs its adjacent own solution"
     metadata = {"kernelspec": {"display_name": "Python 3", "language": "python", "name": "python3"},
                 "language_info": {"name": "python", "version": "3.14"},
-                "arena": {"section": "16.18", "status": "unpublished_integration_draft",
-                          "native_status": "PORTABLE_REPLAY_REQUIRED", "original_chapters_modified": False,
+                "arena": {"section": "16.18", "original_chapters_modified": False,
                           "exercise_groups": len(EXERCISES), "student_functions": sum(len(r["functions"]) for r in EXERCISES.values())}}
     def make(cells):
         return {"nbformat": 4, "nbformat_minor": 5, "metadata": copy.deepcopy(metadata), "cells": cells}
@@ -163,7 +162,7 @@ def execute_own_answers(student, output_dir, *, native_fixture=None):
     kernel_dir = jupyter_root / "kernels" / kernel_name
     kernel_dir.mkdir(parents=True, exist_ok=True)
     (kernel_dir / "kernel.json").write_text(json.dumps({"argv": [sys.executable, "-m", "ipykernel_launcher", "-f", "{connection_file}"],
-        "display_name": "ARENA SPEX analytic draft", "language": "python"}))
+        "display_name": "ARENA SPEX", "language": "python"}))
     old = {key: os.environ.get(key) for key in ("JUPYTER_PATH", "ARENA_SPEX_OUTPUT_DIRECTORY", "MPLBACKEND",
            "OPENBLAS_NUM_THREADS", "OMP_NUM_THREADS", "ARENA_NATIVE_QUERY_FIXTURE")}
     os.environ["JUPYTER_PATH"] = str(jupyter_root) + (os.pathsep + old["JUPYTER_PATH"] if old["JUPYTER_PATH"] else "")
