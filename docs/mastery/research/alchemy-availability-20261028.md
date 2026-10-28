@@ -1,6 +1,6 @@
 # Deep Learning Alchemy availability — 2026-10-28
 
-Research for [decision ticket #5](https://github.com/shinobiultra/ARENA_3.0_Extended/issues/5), under [map #4](https://github.com/shinobiultra/ARENA_3.0_Extended/issues/4). This is a source-availability assessment, not implementation or learner acceptance. Checked the official site, its source tree, and the assignment release branches; no training, installs, tests, or downloads of datasets/checkpoints ran.
+Research for [Which Alchemy materials are published and usable for the remaining companions?](https://github.com/shinobiultra/ARENA_3.0_Extended/issues/5), under [Finish ARENA and the Alchemy mastery hub: decision map](https://github.com/shinobiultra/ARENA_3.0_Extended/issues/4). This is a source-availability assessment, not implementation or learner acceptance. Checked the official site, its source tree, and the assignment release branches; no training, installs, tests, or downloads of datasets/checkpoints ran.
 
 ## Finding
 
