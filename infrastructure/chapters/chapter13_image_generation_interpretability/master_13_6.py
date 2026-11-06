@@ -214,7 +214,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 5–10 minutes on this exercise.
+>
+> You should spend up to 5-10 minutes on this exercise.
 > ```
 
 Return `[grid_h,grid_w,3]` patch means. The encoder compresses within-patch detail before quantization.
@@ -270,7 +271,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 5–10 minutes on this exercise.
+>
+> You should spend up to 5-10 minutes on this exercise.
 > ```
 
 Return the nearest code ID for every vector, preserving all leading axes.
@@ -324,7 +326,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 5–10 minutes on this exercise.
+>
+> You should spend up to 5-10 minutes on this exercise.
 > ```
 
 Decode a2D code grid into constant-color RGB patches.
@@ -451,7 +454,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 5–10 minutes on this exercise.
+>
+> You should spend up to 5-10 minutes on this exercise.
 > ```
 
 Implement the two VQ terms with the correct gradient routes. Inputs are small CPU tensors.
@@ -506,7 +510,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 5–10 minutes on this exercise.
+>
+> You should spend up to 5-10 minutes on this exercise.
 > ```
 
 Return the quantized forward value with identity gradient to the encoder and no gradient to codebook values through this branch.
@@ -559,7 +564,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 5–10 minutes on this exercise.
+>
+> You should spend up to 5-10 minutes on this exercise.
 > ```
 
 Return vocabulary counts and entropy perplexity `exp(H)`. Ignore zero-probability terms in the entropy sum.
@@ -616,7 +622,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 5–10 minutes on this exercise.
+>
+> You should spend up to 5-10 minutes on this exercise.
 > ```
 
 Compute per-entry continuous-vector reconstruction MSE after nearest-code assignment.
@@ -737,7 +744,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 5–10 minutes on this exercise.
+>
+> You should spend up to 5-10 minutes on this exercise.
 > ```
 
 Return outputs and weights for equal-length self-attention. Causal attention includes the current token but excludes all future tokens.
@@ -795,7 +803,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 5–10 minutes on this exercise.
+>
+> You should spend up to 5-10 minutes on this exercise.
 > ```
 
 Use the copy-attention mechanism above to return `[vocabulary]` logits. The+1 source offset accounts for the prefix condition. Background positions emit gray.
@@ -859,7 +868,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 5–10 minutes on this exercise.
+>
+> You should spend up to 5-10 minutes on this exercise.
 > ```
 
 Generate the image in raster order, feeding your own chosen token back each step. Do not use the ground-truth image tokens.
@@ -989,7 +999,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 5–10 minutes on this exercise.
+>
+> You should spend up to 5-10 minutes on this exercise.
 > ```
 
 Force one raster image token to the donor ID, then regenerate the future using the edited prefix.
@@ -1046,7 +1057,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 5–10 minutes on this exercise.
+>
+> You should spend up to 5-10 minutes on this exercise.
 > ```
 
 Read a blue-object segmentation from decoded pixels, then compute IoU. Do not score code IDs directly.
@@ -1102,7 +1114,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 5–10 minutes on this exercise.
+>
+> You should spend up to 5-10 minutes on this exercise.
 > ```
 
 Count changed pixels outside the directly forced token region. This is a downstream influence count, not automatically unwanted damage.

@@ -528,11 +528,12 @@ Prior exposure to source, outputs, page or report: ______
 r'''
 ### Exercise 1 - materialize the planted feature matrix
 
-```yaml
-Difficulty: 🔴
-Importance: 🔵🔵🔵🔵
-You should spend 8 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴⚪⚪⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 8 minutes on this exercise.
+> ```
 
 Implement the only translation from semantic state to internal evidence. Preserve the six declared coordinates and add the tiny context offset only to `helpful_answer` so context
 identity cannot masquerade as a failure feature.
@@ -672,11 +673,12 @@ Prior exposure to source, outputs, page or report: ______
 r'''
 ### Exercise 2 - hold out entire contexts
 
-```yaml
-Difficulty: 🔴
-Importance: 🔵🔵🔵🔵
-You should spend 8 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴⚪⚪⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 8 minutes on this exercise.
+> ```
 
 Split by the record metadata, not by randomly shuffling rows. The monitor must face contexts it never saw during fitting.
 
@@ -823,11 +825,12 @@ Prior exposure to source, outputs, page or report: ______
 r'''
 ### Exercise 3 - fit a mean-difference white-box direction
 
-```yaml
-Difficulty: 🔴🔴
-Importance: 🔵🔵🔵🔵
-You should spend 12 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴⚪⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 12 minutes on this exercise.
+> ```
 
 Compute the clean and failure centroids, normalize their difference, and put the decision threshold halfway between the class-mean projected scores.
 
@@ -990,11 +993,12 @@ Prior exposure to source, outputs, page or report: ______
 r'''
 ### Exercise 4 - score held-out activations and implement AUROC
 
-```yaml
-Difficulty: 🔴🔴
-Importance: 🔵🔵🔵🔵
-You should spend 12 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴⚪⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 12 minutes on this exercise.
+> ```
 
 Subtract the learned threshold from each projection, then compute AUROC as the probability that a positive outranks a negative. Count ties as half a win.
 
@@ -1165,11 +1169,12 @@ Prior exposure to source, outputs, page or report: ______
 r'''
 ### Exercise 5 - sweep thresholds instead of hiding one operating point
 
-```yaml
-Difficulty: 🔴🔴🔴
-Importance: 🔵🔵🔵🔵
-You should spend 15 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15 minutes on this exercise.
+> ```
 
 Implement a vectorized threshold sweep plus the midpoint rule used for the final decision. Return true-positive rate, false-positive rate, and accuracy for every threshold.
 
@@ -1391,11 +1396,12 @@ Prior exposure to source, outputs, page or report: ______
 r'''
 ### Exercise 6 - construct the output-only baseline and find its misses
 
-```yaml
-Difficulty: 🔴🔴
-Importance: 🔵🔵🔵🔵
-You should spend 10 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴⚪⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 10 minutes on this exercise.
+> ```
 
 The black-box baseline receives only the visible-risk score attached to each output. Calibrate it on training records and return the held-out failures caught by white-box but
 missed by black-box.
@@ -1546,11 +1552,12 @@ Prior exposure to source, outputs, page or report: ______
 r'''
 ### Exercise 7 - build auditable dashboard rows
 
-```yaml
-Difficulty: 🔴🔴🔴
-Importance: 🔵🔵🔵🔵
-You should spend 15 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15 minutes on this exercise.
+> ```
 
 Turn scores into review objects. A row must keep the prompt, output, active features, both scores, both decisions, ground truth, and a plain-language note explaining why it needs
 review.
@@ -1752,11 +1759,12 @@ Prior exposure to source, outputs, page or report: ______
 r'''
 ### Exercise 8 - make the controls fail and intervene on one feature
 
-```yaml
-Difficulty: 🔴🔴🔴
-Importance: 🔵🔵🔵🔵
-You should spend 15 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15 minutes on this exercise.
+> ```
 
 Fit the same monitor after a deterministic label shuffle, score along a same-dimensional random direction, and implement a single-feature activation intervention.
 

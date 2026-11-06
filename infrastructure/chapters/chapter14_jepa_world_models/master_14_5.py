@@ -564,11 +564,12 @@ Prior exposure to source, saved outputs or worked solution: ______
 r'''
 ### Exercise 1: Build the Exact BFS Oracle
 
-```yaml
-Difficulty: 🔴🔴🔴
-Importance: 🔵🔵🔵🔵🔵
-You should spend 25 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵🔵
+>
+> You should spend up to 25 minutes on this exercise.
+> ```
 
 Implement legal neighbors, shortest path, a full distance-to-go map, and action labels. Start from the hand-computed maze; do not begin with model training.
 
@@ -906,11 +907,12 @@ Prior exposure to source, saved outputs or worked solution: ______
 r'''
 ### Exercise 2: Generate Disjoint Maze Templates
 
-```yaml
-Difficulty: 🔴🔴🔴
-Importance: 🔵🔵🔵🔵🔵
-You should spend 20 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵🔵
+>
+> You should spend up to 20 minutes on this exercise.
+> ```
 
 Sample solvable mazes, optionally require a route longer than Manhattan distance, and reject wall/start/goal templates already present in another split.
 
@@ -1324,11 +1326,12 @@ Prior exposure to source, saved outputs or worked solution: ______
 r'''
 ### Exercise 3: Tokenize the Entire Maze State
 
-```yaml
-Difficulty: 🔴🔴
-Importance: 🔵🔵🔵🔵🔵
-You should spend 15 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴⚪⚪⚪
+> Importance: 🔵🔵🔵🔵🔵
+>
+> You should spend up to 15 minutes on this exercise.
+> ```
 
 Serialize `[BOS, SIZE, padded row-major grid, QUERY]`. Mark the current and goal cells in the grid itself so the query token can causally attend to the complete state.
 
@@ -1528,11 +1531,12 @@ Prior exposure to source, saved outputs or worked solution: ______
 r'''
 ### Exercise 4: Turn BFS Into Dense Policy Supervision
 
-```yaml
-Difficulty: 🔴🔴🔴
-Importance: 🔵🔵🔵🔵🔵
-You should spend 20 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵🔵
+>
+> You should spend up to 20 minutes on this exercise.
+> ```
 
 For every reachable non-goal cell, select the first legal neighbor whose exact distance is one smaller. Store
 distance and local legal-degree labels for evaluation only. Also record whether the wall-blind template move
@@ -1861,11 +1865,12 @@ Prior exposure to source, saved outputs or worked solution: ______
 r'''
 ### Exercise 5: Implement Causal Attention and an Inspectable Block
 
-```yaml
-Difficulty: 🔴🔴🔴🔴
-Importance: 🔵🔵🔵🔵🔵
-You should spend 30 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴🔴⚪
+> Importance: 🔵🔵🔵🔵🔵
+>
+> You should spend up to 30 minutes on this exercise.
+> ```
 
 Implement multi-head self-attention with an explicit upper-triangular mask. Return attention patterns and per-head values, then cache residual, attention, and MLP contributions in
 each block.
@@ -2145,11 +2150,12 @@ Prior exposure to source, saved outputs or worked solution: ______
 r'''
 ### Exercise 6: Assemble the Decoder and Residual Cache
 
-```yaml
-Difficulty: 🔴🔴🔴🔴
-Importance: 🔵🔵🔵🔵🔵
-You should spend 25 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴🔴⚪
+> Importance: 🔵🔵🔵🔵🔵
+>
+> You should spend up to 25 minutes on this exercise.
+> ```
 
 Add token/position embeddings, causal blocks, final normalization, and a four-action head at QUERY. Support replacing one layer/position residual with an externally supplied
 vector.
@@ -2410,11 +2416,12 @@ Prior exposure to source, saved outputs or worked solution: ______
 r'''
 ### Exercise 7: Train and Preserve Checkpoints
 
-```yaml
-Difficulty: 🔴🔴🔴🔴
-Importance: 🔵🔵🔵🔵🔵
-You should spend 30 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴🔴⚪
+> Importance: 🔵🔵🔵🔵🔵
+>
+> You should spend up to 30 minutes on this exercise.
+> ```
 
 Train with cross-entropy on exact next actions. Record train loss and independent-layout accuracy every epoch, and clone CPU state dictionaries at early, middle, and final
 checkpoints.
@@ -2741,11 +2748,12 @@ Prior exposure to source, saved outputs or worked solution: ______
 r'''
 ### Exercise 8: Roll Out Paths and Score Three Different Claims
 
-```yaml
-Difficulty: 🔴🔴🔴
-Importance: 🔵🔵🔵🔵🔵
-You should spend 25 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵🔵
+>
+> You should spend up to 25 minutes on this exercise.
+> ```
 
 Autoregress by updating the current-cell token after each action. Evaluate raw argmax and legal-action-constrained decoding, plus a wall-blind axis-first template baseline.
 
@@ -3331,11 +3339,12 @@ Prior exposure to source, saved outputs or worked solution: ______
 r'''
 ### Exercise 9: Decode Distance, Legal Degree, and Next Action Across Layers
 
-```yaml
-Difficulty: 🔴🔴🔴🔴
-Importance: 🔵🔵🔵🔵🔵
-You should spend 30 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴🔴⚪
+> Importance: 🔵🔵🔵🔵🔵
+>
+> You should spend up to 30 minutes on this exercise.
+> ```
 
 Cache QUERY representations before any block and after every block. Fit held-out ridge probes for near/medium/far BFS distance, legal-neighbor count, and exact next action.
 
@@ -3779,11 +3788,12 @@ Prior exposure to source, saved outputs or worked solution: ______
 r'''
 ### Exercise 10: Break the Maze-Action Relationship
 
-```yaml
-Difficulty: 🔴🔴🔴
-Importance: 🔵🔵🔵🔵🔵
-You should spend 20 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵🔵
+>
+> You should spend up to 20 minutes on this exercise.
+> ```
 
 Shuffle wall layouts across examples while preserving each current and goal marker. Evaluate all states and those where the wall-blind move is blocked or not shortest.
 
@@ -4118,11 +4128,12 @@ Prior exposure to source, saved outputs or worked solution: ______
 r'''
 ### Exercise 11: Patch Counterfactual Route State
 
-```yaml
-Difficulty: 🔴🔴🔴🔴🔴
-Importance: 🔵🔵🔵🔵🔵
-You should spend 40 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴🔴🔴
+> Importance: 🔵🔵🔵🔵🔵
+>
+> You should spend up to 40 minutes on this exercise.
+> ```
 
 Choose two correctly solved states from the same maze that require different next actions. Patch the donor run's residual into the recipient across layers and positions. Compare a
 middle-layer query patch against wrong-position, random-direction, unrelated-state, and same-action other-maze donors.
@@ -4788,11 +4799,12 @@ Prior exposure to source, saved outputs or worked solution: ______
 r'''
 ### Exercise 12: Run the Complete Controlled Experiment
 
-```yaml
-Difficulty: 🔴🔴🔴🔴
-Importance: 🔵🔵🔵🔵🔵
-You should spend 20 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴🔴⚪
+> Importance: 🔵🔵🔵🔵🔵
+>
+> You should spend up to 20 minutes on this exercise.
+> ```
 
 Combine disjoint datasets, training, checkpoints, rollouts, probes, shuffled mazes, patch controls, and two OOD conditions. Fail loudly when any core claim misses its threshold.
 

@@ -124,7 +124,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Return `(batch,4)`: one-hot dominant mean RGB and the mean of all RGB pixels. A black image has a deterministic first-index colour tie; document it rather than treating it as visual evidence.
@@ -181,7 +182,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Map each full string to its exact vocabulary index and append `len(word)/10`. Return an array with `(len(words),len(vocabulary)+1)` shape; unknown strings raise `ValueError`. Tokenisation is intentionally transparent here.
@@ -291,7 +293,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Implement affine ReLU encoding for arbitrary input and latent widths. Bias is latent-shaped, not example-shaped.
@@ -345,7 +348,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Decode latent rows through a row-per-feature dictionary and add the output-site bias. The output width need not equal the input width.
@@ -399,7 +403,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Return mean per-example sum of squared coordinate errors. Preserve the distinction between coordinate sum and coordinate mean.
@@ -453,7 +458,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Compute the declared target MLP: `relu(x @ weights + bias)`. This is the function whose output the sparse transcoder must predict; it is not the SAE target `x`.
@@ -507,7 +513,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 15–20 minutes on this exercise.
+>
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 Fit a decoder and intercept using centred least squares. For `ridge>0`, solve the regularised normal equations for the centred variables; for zero ridge use `np.linalg.lstsq`. Return `(decoder,intercept)`. Penalise no intercept.
@@ -634,7 +641,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Implement additive two-site encoding followed by one ReLU. `w_x` and `w_y` may have different input widths but must share a latent width. Do not concatenate independent post-ReLU codes.
@@ -688,7 +696,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Sum the two mean per-example squared reconstruction errors and add `alpha * mean(sum(z,axis=1))`. The single sparse code is penalised once, not once per reconstructed modality.
@@ -742,7 +751,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 For each latent, return the Jaccard overlap between its above-threshold image-only and text-only support sets over paired examples. A latent inactive in both sites gets overlap0, not1.
@@ -800,7 +810,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Return a one-row cyclic shift of the text activation array, requiring at least two rows. Every paired row must change, and the original array must stay intact. This control preserves marginal activations while breaking the declared image/text pairing.
@@ -920,7 +931,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Return the source-latent by downstream-latent matrix obtained by multiplying source decoder rows `(source,input_width)` by downstream encoder `(input_width,target)`. Preserve signs.
@@ -974,7 +986,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Return `(batch,source,target)` contributions from source activations, an edge matrix and a downstream answer-contrast readout vector. Sum over source and target to recover the declared linear contrast.
@@ -1028,7 +1041,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Subtract only one latent’s decoded component from the **actual** hidden state. Preserve every other feature and the reconstruction residual. Never mutate the cached original.

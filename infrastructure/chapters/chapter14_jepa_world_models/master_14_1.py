@@ -254,7 +254,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Time: 15 minutes
+>
+> You should spend up to 15 minutes on this exercise.
 > ```
 
 Draw three objects in four locations. Keep the object fully inside its future target block and place a separated class-colour key in visible context. Labels are never used by the self-supervised
@@ -493,7 +494,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Time: 10 minutes
+>
+> You should spend up to 10 minutes on this exercise.
 > ```
 
 Map channel-first images to row-major non-overlapping patch vectors. Start from the hand-computed 4 by 4 oracle.
@@ -620,7 +622,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Time: 12 minutes
+>
+> You should spend up to 12 minutes on this exercise.
 > ```
 
 Implement generic contiguous masks, then the exact object mask used by the signature experiment. The object mask must leave the key patch visible.
@@ -814,7 +817,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵⚪⚪
-> Time: 8 minutes
+>
+> You should spend up to 8 minutes on this exercise.
 > ```
 
 Gather a fixed number of target or visible positions from every batch row without collapsing the batch axis.
@@ -1072,7 +1076,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Time: 25 minutes
+>
+> You should spend up to 25 minutes on this exercise.
 > ```
 
 The encoder sees only visible tokens. The predictor scatters them into a full grid, inserts learned mask tokens, and returns only target positions.
@@ -1300,7 +1305,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Time: 15 minutes
+>
+> You should spend up to 15 minutes on this exercise.
 > ```
 
 Compare unit-normalized latent directions, stop gradients through targets, and implement the target update exactly.
@@ -1443,7 +1449,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Time: 15 minutes
+>
+> You should spend up to 15 minutes on this exercise.
 > ```
 
 Deep-copy the online encoder into a frozen target encoder. Return predicted and target vectors for exactly the masked positions.
@@ -1606,7 +1613,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Time: 15 minutes
+>
+> You should spend up to 15 minutes on this exercise.
 > ```
 
 Measure feature scale, spectral effective rank, and off-diagonal cosine similarity after centering.
@@ -1750,7 +1758,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Time: 20 minutes
+>
+> You should spend up to 20 minutes on this exercise.
 > ```
 
 Fit closed-form ridge probes on pretraining scenes and test on pixel-distinct scenes sharing all twelve object-position templates. Keep random-encoder, shuffled-label, and constant-feature
@@ -2034,7 +2043,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Time: 25 minutes
+>
+> You should spend up to 25 minutes on this exercise.
 > ```
 
 Build target-class centroids from training scenes, predict pixel-distinct target latents, then replace or erase only the visible key patch while preserving every other pixel. Erasure copies
@@ -2483,7 +2493,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Time: 35 minutes
+>
+> You should spend up to 35 minutes on this exercise.
 > ```
 
 Train the real objective, then rerun the same initialization, data order, optimizer, learning rate, epochs, masks, architecture, and loss while replacing stop-gradient/EMA with joint target
@@ -2764,7 +2775,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Time: 25 minutes
+>
+> You should spend up to 25 minutes on this exercise.
 > ```
 
 Train both systems, evaluate prediction and probes on a separately generated scene seed, construct untrained, shuffled-label, zero-context, and constant-feature controls, and validate the

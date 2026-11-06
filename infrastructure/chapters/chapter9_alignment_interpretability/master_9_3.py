@@ -351,6 +351,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 Implement `make_toy_cot_batch`. It should return a batch with shape `(examples, layers, positions,
@@ -553,6 +555,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Implement `prediction_accuracy` and `answer_logit_diff`. The logit difference is `logit(B) -
@@ -688,6 +692,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 Implement a closed-form probe. Compute the mean hidden state for A, the mean hidden state for B,
@@ -848,6 +854,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 Implement `layer_position_probe_heatmap`. For each `(layer, position)`, train the mean-difference
@@ -1075,6 +1083,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 Implement `replace_position_in_layer_output`. It must work whether the hooked module returns a
@@ -1209,6 +1219,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 Implement `toy_forward_patch_answer_logits`. In the toy organism, replacing the final-prompt state
@@ -1345,6 +1357,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 Implement `patch_control_summary`. It receives one tensor of per-example effects and one tensor of
@@ -1758,6 +1772,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Implement `adjudicate_pythia_result`. Compute the target patch's gap over the strongest named

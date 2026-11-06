@@ -508,6 +508,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 >
 > You should spend 15 minutes on this exercise.
@@ -1048,6 +1050,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴⚪⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 5-10 minutes on this exercise.
 > ```
 >
 > You should spend 10 minutes on this exercise.
@@ -1273,6 +1277,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 >
 > You should spend 15 minutes on this exercise.
@@ -1787,6 +1793,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 >
 > You should spend 15 minutes on this exercise.
@@ -2321,6 +2329,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 >
 > You should spend 10 minutes on this exercise.
@@ -2761,6 +2771,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 >
 > You should spend 15 minutes on this exercise.
@@ -3323,6 +3335,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 >
 > You should spend 10 minutes on this exercise.
@@ -3736,6 +3750,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 >
 > You should spend 15 minutes on this exercise.

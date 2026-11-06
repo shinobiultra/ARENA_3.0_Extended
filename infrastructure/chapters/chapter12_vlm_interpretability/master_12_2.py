@@ -124,7 +124,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Implement rowwise L2 normalisation for `(batch,d)` arrays. Leave zero rows at zero using an epsilon denominator; do not add epsilon to every component. Cosine retrieval should not reward a large norm by itself.
@@ -178,7 +179,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Return `(batch,6)`: normalised mean RGB from the upper half, followed by a one-hot word match. `templates` contains the three word regions and optionally a final blank region. Compare mean squared pixel error in the lower half; a blank match contributes zeros to the last three columns.
@@ -240,7 +242,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Compute scaled cosine similarities `scale * norm(images) @ norm(captions).T`. Inputs may have unequal batch sizes. These are retrieval scores, not calibrated probabilities or the CLIP training objective.
@@ -360,7 +363,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Return nonnegative activations from the affine encoder. Preserve batch and latent axes.
@@ -414,7 +418,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Reconstruct the embedding from latent rows and decoder rows. Include the decoder bias even when all latents are zero.
@@ -468,7 +473,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Implement the scalar objective described above. `alpha` is nonnegative; reconstruction and latent sums share the example denominator.
@@ -522,7 +528,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 15–20 minutes on this exercise.
+>
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 Take one full-batch gradient step and return NEW `(w_e,b_e,w_d,b_d)` arrays. Use the old decoder when backpropagating into the encoder. At a ReLU kink use derivative zero. The test compares every parameter with independent central finite differences.
@@ -584,7 +591,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Run a bounded deterministic CPU fit. Initialise the encoder with Gaussian scale 0.2, encoder bias 0.1, the decoder with its transpose, and decoder bias zero. Record the pre-update objective at each step. Return four fitted arrays and the loss list. This is a teaching fit, not hyperparameter selection.
@@ -693,7 +701,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Return the top `k` example indices for one latent, in descending activation order. Break ties by original example index using a stable sort. Never reorder image/annotation pairing.
@@ -747,7 +756,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Return the unit decoder direction of a selected feature. A zero decoder row stays zero. This is a direction in the mixed embedding space, not a pixel mask.
@@ -802,7 +812,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Remove a fraction `strength` of each embedding’s projection onto a unit direction. Return a new array. `strength=0` is identity and `strength=1` removes that projection exactly. This projection intervention differs from zeroing an SAE latent and re-decoding.
@@ -906,7 +917,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Return mean exact-match accuracy from rowwise argmax scores and integer targets. NumPy’s first-index argmax breaks ties. The denominator is the number of cards, not the number of captions.
@@ -960,7 +972,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 For each intervention strength, ablate the direction, compute cosine retrieval and score the fixed targets. Return a NumPy array in the input strength order. All labels and example order remain fixed.

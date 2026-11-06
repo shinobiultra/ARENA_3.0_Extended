@@ -386,11 +386,12 @@ r'''
 r'''
 ### Exercise - Build the Planted Component Circuit
 
-```yaml
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-You should spend 10 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 10 minutes on this exercise.
+> ```
 
 Create the toy circuit. It is deliberately not a position graph: the nodes are named as feature, head, MLP, and logit-like components. Then implement the forward pass through the
 topologically ordered DAG.
@@ -728,11 +729,12 @@ def planted_circuit_metric(
 r'''
 ### Exercise - Exact Edge Effects
 
-```yaml
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-You should spend 10 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 10 minutes on this exercise.
+> ```
 
 Compute the exact causal effect of every edge by ablating that edge and measuring the target metric drop. This is your ground-truth heatmap.
 '''
@@ -875,11 +877,12 @@ r'''
 r'''
 ### Exercise - Integrated-Gradient Edge Attribution
 
-```yaml
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-You should spend 15 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15 minutes on this exercise.
+> ```
 
 Now compute an attribution score without ablating each edge. Put a differentiable gate on every edge, integrate gradients as the gates move from `0` to `1`, and compare the result
 to exact edge effects.
@@ -1031,11 +1034,12 @@ def integrated_edge_attribution_scores(
 r'''
 ### Exercise - Threshold the Graph and Recover the Top Path
 
-```yaml
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-You should spend 15 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15 minutes on this exercise.
+> ```
 
 Turn the dense edge-score matrix into a directed graph. Then search for the highest-scoring path from the country feature to the Paris logit.
 '''
@@ -1422,11 +1426,12 @@ r'''
 r'''
 ### Exercise - Exact Path Patch
 
-```yaml
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-You should spend 15 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15 minutes on this exercise.
+> ```
 
 A path claim needs an intervention. Measure the metric when only the path edges are active, and when the path edges are removed from the full graph.
 
@@ -1709,11 +1714,12 @@ def exact_path_patch_report(
 r'''
 ### Exercise - Same-Size Random and Reversed-Edge Controls
 
-```yaml
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-You should spend 10 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 10 minutes on this exercise.
+> ```
 
 A convincing graph needs a control that has the same budget. Build a random graph with the same number of non-path edges, and build a reversed-edge graph from the selected graph.
 Both should fail.
@@ -1999,11 +2005,12 @@ def graph_control_report(
 r'''
 ### Exercise - Signature Result
 
-```yaml
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-You should spend 10 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 10 minutes on this exercise.
+> ```
 
 Bundle the theorem into one result object that the notebook can plot: exact effects, approximate edge scores, graph edges, top path, threshold sweep, and intervention/control
 metrics.

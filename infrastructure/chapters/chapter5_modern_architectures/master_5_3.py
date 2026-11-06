@@ -326,7 +326,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Suggested time: 12 minutes
+>
+> You should spend up to 12 minutes on this exercise.
 > ```
 
 Implement the stable parameterization and exact scalar zero-order-hold coefficients. This is the continuous-time anchor; Mamba's later selective input update uses a simplified
@@ -453,7 +454,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Suggested time: 10 minutes
+>
+> You should spend up to 10 minutes on this exercise.
 > ```
 
 Implement the recurrence literally and retain every post-update state. A hand-computed three-step fixture prevents a vectorized implementation from hiding an ordering error.
@@ -565,7 +567,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Suggested time: 25 minutes
+>
+> You should spend up to 25 minutes on this exercise.
 > ```
 
 Derive `(a_R,b_R) o (a_L,b_L)` and implement an inclusive Hillis-Steele scan. The tests check the sub-function, all intermediate states, a nonzero initial state, float64 tolerance,
@@ -756,7 +759,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Suggested time: 15 minutes
+>
+> You should spend up to 15 minutes on this exercise.
 > ```
 
 Implement the exact operation used by the Mamba mixer. The test checks two channels against a loop oracle and perturbs the final token by 10,000 to detect future leakage.
@@ -874,7 +878,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Suggested time: 12 minutes
+>
+> You should spend up to 12 minutes on this exercise.
 > ```
 
 Project each convolved token into a low-rank time-step representation and two state vectors. Apply `softplus` only after `dt_proj`. The test perturbs one token and requires all
@@ -1001,7 +1006,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Suggested time: 30 minutes
+>
+> You should spend up to 30 minutes on this exercise.
 > ```
 
 Implement `a_t=exp(delta_t*A)` and `b_t=delta_t*B_t*u_t`, then the explicit recurrent scan. The one-step oracle checks state update, readout, `D` skip, and SiLU gate separately
@@ -1264,7 +1270,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Suggested time: 15 minutes
+>
+> You should spend up to 15 minutes on this exercise.
 > ```
 
 Reuse your affine prefix scan over the discretized tensors, then apply `C`, `D`, and the gate. This path represents parallel training semantics; the recurrent path represents
@@ -1468,7 +1475,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴🔴
 > Importance: 🔵🔵🔵🔵🔵
-> Suggested time: 40 minutes
+>
+> You should spend up to 40 minutes on this exercise.
 > ```
 
 Fill in RMSNorm, the full-sequence mixer forward pass, and the residual block. Parameter construction is provided so the exercise stays on the computation. The semantic test zeros
@@ -1757,7 +1765,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Suggested time: 25 minutes
+>
+> You should spend up to 25 minutes on this exercise.
 > ```
 
 Advance the length-`d_conv` convolution window and the `(d_inner,d_state)` SSM state without recomputing the prefix. The test compares every output of six one-token steps against
@@ -1872,7 +1881,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Suggested time: 30 minutes
+>
+> You should spend up to 30 minutes on this exercise.
 > ```
 
 Build token embeddings, a `ModuleList` of Mamba blocks, final RMSNorm, and a tied LM head. Thread one cache object per layer. Your greedy generator must consume the whole prompt
@@ -2215,7 +2225,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴🔴
 > Importance: 🔵🔵🔵🔵🔵
-> Suggested time: 35 minutes plus CPU run
+>
+> You should spend up to 35 minutes on this exercise.
 > ```
 
 Write a strict key mapper, load every tensor into your implementation, then compare 25 hidden-state checkpoints, final logits, recurrent cache logits, and three generated tokens

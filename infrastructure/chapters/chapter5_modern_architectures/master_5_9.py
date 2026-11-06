@@ -316,7 +316,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Suggested time: 8 minutes
+>
+> You should spend up to 8 minutes on this exercise.
 > ```
 
 Multiply by the attention mask, sum across tokens, and divide by the number of unmasked positions. Reject incompatible shapes.
@@ -442,7 +443,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Suggested time: 15 minutes
+>
+> You should spend up to 15 minutes on this exercise.
 > ```
 
 Implement L2 normalization, all-pairs cosine similarity, one-indexed target ranks, and a report containing top-1 accuracy, MRR, and the positive-minus-hard-negative margin.
@@ -676,7 +678,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Suggested time: 15 minutes
+>
+> You should spend up to 15 minutes on this exercise.
 > ```
 
 Clone the score matrix, mask unavailable tools to negative infinity, find the top two scores, and return `no_call_id` unless both gates pass.
@@ -843,7 +846,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Suggested time: 10 minutes
+>
+> You should spend up to 10 minutes on this exercise.
 > ```
 
 Return overall accuracy, tool-only accuracy, no-call abstention accuracy, and no-call hallucination rate. Require both kinds of example so a missing slice cannot silently become `nan`.
@@ -1203,7 +1207,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Suggested time: 5 minutes
+>
+> You should spend up to 5 minutes on this exercise.
 > ```
 
 Use the existing play cell below. Predict each chosen tool with and without the availability mask. Keep the original threshold and margin first, then change one gate. Explain a false call or abstention using the best-versus-second score gap.

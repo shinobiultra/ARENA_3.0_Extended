@@ -491,7 +491,7 @@ r'''
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
 >
-> Use the original exercise time estimate below.
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 > **Claim tested.** Parse only the queried color, queried shape, and stated prior. The presence label
@@ -620,7 +620,7 @@ r'''
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
 >
-> Use the original exercise time estimate below.
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 > **Claim tested.** Generate all eight color-shape queries in development, validation, and test
@@ -917,7 +917,7 @@ r'''
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
 >
-> Use the original exercise time estimate below.
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 > **Claim tested.** Map boxes to patches and choose two equal-size controls from image geometry
@@ -1369,7 +1369,7 @@ r'''
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
 >
-> Use the original exercise time estimate below.
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 > **Claim tested.** Report accuracy, false-positive hallucinations on absent objects, and misses on
@@ -1691,7 +1691,7 @@ r'''
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
 >
-> Use the original exercise time estimate below.
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 > **Claim tested.** Return logits and all five cache states, from pixel/prompt embeddings through
@@ -1844,7 +1844,7 @@ r'''
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
 >
-> Use the original exercise time estimate below.
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 > **Claim tested.** Clone a recipient state and interpolate donor values into exactly the selected
@@ -1994,7 +1994,7 @@ r'''
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
 >
-> Use the original exercise time estimate below.
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 > **Claim tested.** Patch object, background, random, and full-visual rows at every cache state and
@@ -2303,7 +2303,7 @@ r'''
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
 >
-> Use the original exercise time estimate below.
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 > **Claim tested.** Choose the layer maximizing object directional effect over matched controls using

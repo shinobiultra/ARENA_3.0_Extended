@@ -542,7 +542,7 @@ r'''
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend 10-15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Implement the SAE encode/decode path and the metrics gate. Do not move on to graph attribution until reconstruction error, L0, density, and dead-feature fraction are visible.
@@ -853,7 +853,7 @@ r'''
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend 10-20 minutes on this exercise.
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Implement exact receiver-node patching. The score for a receiver feature is its clean-minus-corrupt activation difference times the readout weight, and patching should replace
@@ -1115,7 +1115,7 @@ r'''
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend 15-25 minutes on this exercise.
+> You should spend up to 15-25 minutes on this exercise.
 > ```
 
 Move from node scores to source-to-receiver edge scores. This is the Sparse Feature Circuits move: edges are no longer head-to-head or layer-to-layer, they are feature-to-feature.
@@ -1433,7 +1433,7 @@ r'''
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend 20-30 minutes on this exercise.
+> You should spend up to 20-30 minutes on this exercise.
 > ```
 
 Implement the attribution comparison. Plain EAP uses a single gradient at the corrupt point. EAP-IG averages gradients along the clean-corrupt activation path.
@@ -1701,7 +1701,7 @@ r'''
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend 10-15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Threshold node and edge scores, then check that the selected graph still recovers the metric. This is where a pretty graph becomes a quantitative claim.
@@ -1959,7 +1959,7 @@ r'''
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend 15-20 minutes on this exercise.
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 Compute the validation curves and the same-size random graph control. Faithfulness asks how much of the full effect the graph preserves; completeness asks what is lost by omitting
@@ -2327,7 +2327,7 @@ r'''
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵⚪⚪
 >
-> You should spend 15-25 minutes on this exercise.
+> You should spend up to 15-25 minutes on this exercise.
 > ```
 
 Run a safe generated-data analogue of SHIFT-style editing. A classifier has learned a target feature and a spurious feature. Suppress the spurious feature and check train accuracy,
@@ -2661,7 +2661,7 @@ r'''
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend 10-15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Assemble the section result: SAE metrics, exact node and edge scores, thresholded graph, validation curves, random controls, and EAP-IG comparison.

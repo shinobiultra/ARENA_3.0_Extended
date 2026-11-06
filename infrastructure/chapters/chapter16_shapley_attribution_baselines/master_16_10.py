@@ -365,12 +365,12 @@ scalar and not an already averaged batch gradient.
 r'''
 ### Exercise 1 — Keep the per-example gradients
 
-```text
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-
-You should spend 15–20 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15-20 minutes on this exercise.
+> ```
 
 Implement losses shaped `[examples]` and gradients shaped `[examples, parameters]`. With `l2=0`,
 return data losses/gradients. With positive `l2`, include $R$ in every example. Do not take a mean
@@ -478,12 +478,12 @@ with another fit would change the experiment.
 r'''
 ### Exercise 2 — Compute the weighted objective and its curvature
 
-```text
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-
-You should spend 20–25 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 20-25 minutes on this exercise.
+> ```
 
 Use `theta [fits, parameters]`, `weights [fits, examples]` and one shared input matrix. Return one
 objective per fit, then gradients `[fits, parameters]` and Hessians `[fits, parameters,
@@ -604,12 +604,12 @@ space. The following operation never needs a `[parameters, parameters]` array.
 r'''
 ### Exercise 3 — Multiply by the Hessian without forming it
 
-```text
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-
-You should spend 10–15 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 10-15 minutes on this exercise.
+> ```
 
 Implement one Hessian-vector product for a single fitted parameter vector. Keep the same normalized weights and regularizer as Exercise 2.
 
@@ -681,12 +681,12 @@ SOLUTION
 r'''
 ### Exercise 4 — Solve a curvature system and check the residual
 
-```text
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-
-You should spend 20–25 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 20-25 minutes on this exercise.
+> ```
 
 Implement conjugate gradients using only a `matvec` function. Return the solution and a
 residual-norm history. Stop only when the actual residual meets `atol + rtol * norm(rhs)`. Reject
@@ -902,12 +902,12 @@ inverse Hessian is discarded.
 r'''
 ### Exercise 5 — Actually refit the counterfactual models
 
-```text
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-
-You should spend 25–35 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 25-35 minutes on this exercise.
+> ```
 
 Implement independent Newton refits from zero for every weight row. Use your weighted objective and
 derivatives, an individual Armijo line search for each fit, and a strict maximum-coordinate gradient
@@ -1085,12 +1085,12 @@ Our queries and counterfactuals below are a new teaching example.
 r'''
 ### Exercise 6 — Compute the signed influence matrix
 
-```text
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-
-You should spend 15–20 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15-20 minutes on this exercise.
+> ```
 
 Return influence shaped `[training examples, queries]`. Solve for the query directions once, then
 dot them with every training gradient. Support nonnegative added damping, but do not claim damping
@@ -1352,12 +1352,12 @@ It does not mean removing the example and retraining must increase that loss.
 r'''
 ### Exercise 7 — Record the optimization path
 
-```text
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-
-You should spend 15–20 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15-20 minutes on this exercise.
+> ```
 
 Implement single-example SGD, preserving the zero initialization, every following state, the exact
 row visitation order and the learning rate for every update. Validate that each epoch is a
@@ -1440,12 +1440,12 @@ SOLUTION
 r'''
 ### Exercise 8 — Attribute actual and first-order loss reductions
 
-```text
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-
-You should spend 20–30 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 20-30 minutes on this exercise.
+> ```
 
 Return exact and first-order scores for every training-row/query pair, plus all per-step values.
 Include the full update gradient in the approximation. Also return a raw-data-gradient-only control.
@@ -1696,12 +1696,12 @@ choices instead of choosing whichever agrees best with final outcomes.
 r'''
 ### Exercise 9 — Compute TracInCP scores
 
-```text
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-
-You should spend 10–15 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 10-15 minutes on this exercise.
+> ```
 
 Take training gradients `[checkpoints, training examples, parameters]`, query gradients with the
 analogous query axis, and a vector of checkpoint learning rates. Return the weighted score for each
@@ -1897,12 +1897,12 @@ must not be applied to it by summing only matching positions.
 r'''
 ### Exercise 10 — Compute the affine gradient product without flattening it
 
-```text
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-
-You should spend 10–15 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 10-15 minutes on this exercise.
+> ```
 
 Return all left-example/right-example gradient dot products using only layer inputs and
 preactivation derivatives. Support bias and bias-free affine layers. This exercise concerns the
@@ -2161,12 +2161,12 @@ CHECKPOINT_CHOICES = {
 r'''
 ### Exercise 11 — Choose removals with the same class balance
 
-```text
-Difficulty: 🔴🔴⚪⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-
-You should spend 10–15 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴⚪⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 10-15 minutes on this exercise.
+> ```
 
 A deletion policy can appear useful just by changing class proportions. Implement
 a matched comparison: remove the lowest helpfulness scores, with exactly half

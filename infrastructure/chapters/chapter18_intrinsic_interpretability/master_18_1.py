@@ -141,7 +141,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Map arbitrary real concept scores to probabilities with the same shape. The endpoints should approach zero and one without overflow; zero maps to 0.5.
@@ -201,7 +202,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Compute the downstream linear scores. Preserve all batch dimensions; `weights` has shape `[concept, output]` and `bias` has shape `[output]`.
@@ -260,7 +262,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Return a copy with one concept coordinate corrected. A scalar broadcasts over the batch; a batch vector supplies one correction per item. Do not mutate the original predictions.
@@ -321,7 +324,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Return the fraction of matching binary decisions (not a percentage). Inputs must have identical shapes in this lesson; downstream cells threshold scores explicitly.
@@ -391,7 +395,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Decode shape solely from the offset in coordinate 0. Subtract 0.9 for blue items and 0.1 for non-blue items; classify a positive residual as round. Coordinate 1 must be ignored.
@@ -518,7 +523,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Scores have shape `[sense, target_position, source_position]`, with equal source and target length. Apply a causal mask and softmax over source positions independently per sense. Future weights must be exactly zero.
@@ -582,7 +588,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Combine token IDs `[position]`, stored senses `[vocabulary,sense,hidden]` and weights `[sense,target,source]` into `[target,hidden]`. Sum source and sense axes, preserving target.
@@ -641,7 +648,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Project every stored sense into output-token logits; preserve the vocabulary and sense axes. This readout is non-contextual.
@@ -700,7 +708,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Add a hidden-space vector `delta` to exactly one stored token/sense vector. Return a copy; all other entries must remain byte-for-byte numerically unchanged.
@@ -761,7 +770,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Predict the output-logit change without recomputing the full representation. Sum the edited sense’s contextual weight over **all occurrences** of the edited token; multiply by `delta @ U`. Return `[target,output]`.
@@ -882,7 +892,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Return the donor component along a unit direction and the base component perpendicular to it. Support a single hidden vector or matching batches. Reject a nonunit direction.
@@ -945,7 +956,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Implement the abstract model after interchanging a. Keep the base’s b. The optional coefficient supports the changed-rule experiment.
@@ -1004,7 +1016,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Enumerate all ordered base/donor pairs in base-major order. Return patched hidden rows `[n*n,hidden]` and abstract targets `[n*n]`. Use the preceding visible functions.
@@ -1069,7 +1082,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Fit a zero-intercept scalar readout by least squares. `features` is `[examples,hidden]`; return `[hidden]`. The zero-zero case justifies omitting an intercept on this exact task.
@@ -1128,7 +1142,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Measure the fraction of scalar counterfactual values equal within absolute tolerance. This is interchange intervention **value** agreement on a regression calculator, not classification IIA on the paper’s tasks.

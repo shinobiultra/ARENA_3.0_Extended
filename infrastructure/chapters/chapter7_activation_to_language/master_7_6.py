@@ -152,7 +152,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 The scene dictionary has exactly `color`, `shape`, `background`, with values red/blue, circle/square, plain/striped. Render a centered 3×3 object; our circle is a five-pixel cross, and the square fills all nine pixels. Stripes occupy the left border only, so they never overwrite the object. Return float pixels in `[0,1]`. Invalid categories must fail rather than being silently coerced into another example.
@@ -215,7 +215,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Return three float indicators. Red is determined by the center pixel. Circle is identified by four absent corners of the central 3×3 region; require a visible center. Stripes are detected on the separate left border. This sensor is valid only for our renderer and must not be described as a general vision feature extractor. A natural-image bridge replaces it with a real cached neuron while keeping the experiment and scoring interfaces.
@@ -275,7 +275,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 `features` is `(examples,3)` in red/circle/stripe order. Support exactly red, circle, red-and-circle and stripes. Return one numeric prediction per example, and reject unknown names. The family is part of the experimental design: adding a hypothesis after seeing evaluation errors changes the benchmark. Natural-language explanations would need a separately frozen simulator or rubric rather than direct string matching.
@@ -335,7 +335,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Require matching nonempty vectors and finite values; return their mean squared difference. Do not discard examples where an explanation is wrong, and do not fit a calibration slope using the evaluation labels. On binary predictions this is also the fraction of errors. A convincing text label with high simulation error remains a failed explanation for this task.
@@ -475,7 +475,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 For activation require exactly `tool,scene`; for ablate add `feature`; for steer add `feature,amount`. Feature is a plain integer in 0..2. Amount is a finite plain number in `[-1,1]`. Reuse `render_scene` to validate categories, not to run a target. Reject extra keys such as code, path or command. Return a copied dictionary, including a copied scene, so a caller cannot mutate the already validated record by changing the original scene later.
@@ -538,7 +538,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Render the scene, extract a new feature vector, then optionally set one feature to zero or add a bounded dose clipped to `[0,1]`. Return `action` and finite scalar `activation`; reject a nonfinite target result. Never mutate an input image/scene or return hidden target parameters. This analytic feature edit is not a natural-image edit, and its off-manifold interpretation is explicit.
@@ -599,7 +599,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Parse exactly one JSON object, rejecting duplicate keys and nonstandard NaN/Infinity constants. Then call `validate_action`. This is the future backend seam: an instruction model may produce a structured proposal, but its text is never passed to `eval` or `exec`. Ordinary prose, Markdown fences and extra fields must fail clearly rather than being executed as a fallback.
@@ -732,7 +732,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 History contains `{scene,activation}` records from unedited activation probes. Evaluate each candidate on all recorded scenes and keep it only if every absolute error is within tolerance. Return candidates in their original order. An empty history preserves all candidates; contradictory history can return an empty list. Do not select only the best-fitting candidate before the observations actually distinguish it.
@@ -792,7 +792,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Return one variance per scene, averaging over hypotheses rather than examples. An empty candidate set has no valid disagreement score and should raise; one candidate gives all zeros. No target calls occur in this function. This separation lets you distinguish computational planning from consuming the experimental budget.
@@ -851,7 +851,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Exclude exact scenes already present in history. Among the remaining scenes, choose the first maximum disagreement, but return None if all candidates predict the same response everywhere. Do not choose a famous positive just because it agrees with the current leading hypothesis. Copy the chosen scene so later records cannot alias the pool.
@@ -911,7 +911,7 @@ r'''
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Start from copied initial observations, filter candidates, then request one informative activation probe per round. Return `history`, `rounds`, `remaining`, `explanation`, `reason` and `calls`. Reasons are identified, contradicted, indistinguishable or budget_exhausted. The initial provided observations do not consume this additional-call budget. Each round records candidates before/after and the actual scene/result. Empty candidates mean no explanation, not permission to invent a new family from evaluation data.
@@ -1051,7 +1051,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Use the same initial observations and candidate ordering as the iterative controller. Return the first survivor or None if all candidates contradict the evidence. This is a controlled one-shot baseline, not a claim about what a real LLM would say. Calling a second experiment inside this function would contaminate the budget comparison.
@@ -1108,7 +1108,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Return baseline minus edited activation. With `amount=None`, ablate the selected sensor; otherwise steer it by the provided bounded amount. Use the same scene in both calls and the validated tool interface. The signed effect distinguishes reducing a relevant feature from increasing it; taking an absolute value would hide that difference.
@@ -1166,7 +1166,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 `explanations` maps method names to candidate names or None. Return a dictionary with shared `scenes`, `observed`, and `methods`, each method retaining its predicted list and MSE; abstentions retain `None` values and `abstained=True`. Do not invent predictions or drop an ambiguous method. Evaluation calls are outside the identification budget and must not be fed back to the controller.

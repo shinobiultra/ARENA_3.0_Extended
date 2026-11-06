@@ -152,7 +152,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Implement the positive feature map used in the linear-transformer paper: $\phi(x)=x+1$ for nonnegative inputs and $e^x$ otherwise. Preserve every axis. Avoid evaluating `exp` on very large positive entries just because `np.where` evaluates both branches. The exact zeros in later one-hot teaching keys are already nonnegative features; they do not need this transformation. Applying ELU+1 to those zeros would change the kernel and introduce cross-key similarities.
@@ -212,7 +212,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 `q,k` have shape `(time, feature)` and `v` `(time, value)`. Form the causal similarity matrix, normalize each row by its sum, then multiply by values. Include the current write. Use zero output for a row with zero mass. This deliberately quadratic implementation is our transparent baseline. Check time/feature shapes and reject negative features, since the denominator convention depends on positivity. Keep the causal mask on similarities, not on the already-averaged output.
@@ -276,7 +276,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Now implement the same map using $S_t=S_{t-1}+k_tv_t^\top$ and $z_t=z_{t-1}+k_t$. Each step writes **before** reading, matching the causal diagonal above. Return `(outputs, S, z)` so the memory is inspectable. Do not store an attention matrix or call the parallel implementation. The fixture oracle enumerates allowed source positions independently. Causality is a semantic property: changing a future value must leave all earlier outputs unchanged.
@@ -341,7 +341,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Implement row-wise softmax of $q_tk_s^\top/\tau$ for $s\leq t$. Subtract the allowed-row maximum before exponentiating and reject nonpositive temperature. Here `temperature` absorbs any dimension scaling: the task uses one-hot keys, so we keep the scale explicit. A repeated identical key receives the same content score at both positions. Softmax can sharpen content similarity, but it cannot choose the latest duplicate without a positional signal.
@@ -477,7 +477,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Inputs are `(time, key)` queries/keys and `(time, value)` values. Materialize the causal decay matrix $D_{ts}=\gamma^{t-s}$ for $s\leq t$ and zero otherwise; return `((q @ k.T) * D) @ v`. Restrict gamma to `[0,1]`. Gamma zero retains only the current write; gamma one is undamped accumulation. Avoid raising zero to negative powers in a masked array. These endpoint tests are better than checking a single random tensor.
@@ -537,7 +537,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Return `(outputs, final_state)`. If an initial `(key,value)` matrix is supplied, copy it so a continuation does not mutate the caller's saved state. Decay the old state, add the current outer product, then read. This ordering gives the diagonal coefficient one. Test a continuation against a hand-enumerated history, not merely against another recurrence. Signed cancellation is valid here because no normalization divides by the query–key sum.
@@ -600,7 +600,7 @@ r'''
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Use chunk-local similarities for within-block writes and a carried state for the prefix. For local index $i$, incoming state contributes $\gamma^{i+1}q_i^\top S_{in}$. The outgoing state is $\gamma^B S_{in}+\sum_j\gamma^{B-1-j}k_jv_j^\top$. Return output and state for arbitrary positive chunk sizes, including a short final chunk. Do not call the recurrent implementation; the purpose is to derive the carry powers independently.
@@ -665,7 +665,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Convert each decay to a readable horizon using $\lceil\log(\epsilon)/\log(\gamma)\rceil$. Gamma zero has horizon one (only the current write survives); gamma one has infinite horizon. This is a coefficient threshold, not an effective language-model context window. A learned key or readout may amplify or cancel the contribution. Keeping this distinction matters when interpreting per-head decay spectra.
@@ -803,7 +803,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Return `mix*x + (1-mix)*previous_x`. `mix` broadcasts over channels; time zero uses a zero previous vector. The shift is causal: `np.roll` alone wraps the last token into the first and leaks future information. Test the two endpoint mixes as well as a nonuniform channel mix. RWKV learns different mixes for key, value and receptance, so this operation is used more than once.
@@ -860,7 +860,7 @@ r'''
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Return the full `(time,channel)` weighted-value sequence. `decay` and `bonus` broadcast over channels. Maintain scaled numerator `a`, denominator `b`, and log scale `p`, initially zero, zero and negative infinity. For the read use `max(p, bonus+k)`; for the update use `max(p+log(decay), k)`. Reject decay outside `(0,1]`. A fixture with keys near 1000 must remain finite. Do not apply the current-token bonus to memory storage.
@@ -927,7 +927,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 `xk,xr` are already shifted/mixed `(time,model)` inputs, `Wk` is `(model,hidden)`, `Wv` `(hidden,model)` and `Wr` `(model,model)`. Compute `sigmoid(xr@Wr) * (relu(xk@Wk)**2 @ Wv)`. Do not square negative preactivations before rectifying: that would turn suppressed features into positive ones. This is a channel transformation, not a time-memory update.
@@ -985,7 +985,7 @@ r'''
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Compose the taught operations with explicit supplied weights. The dictionary contains `mix_k,mix_v,mix_r,mix_ck,mix_cr,decay,bonus,K,V,R,O,CK,CV,CR`. Use featurewise layer normalization with epsilon `1e-5`, then a time-mixing residual, then a newly normalized channel-mixing residual. Learned normalization affine parameters are fixed to identity here; checkpoint parity remains pending. Keep both residual additions visible: a zero output projection must make its branch an identity, regardless of the hidden state.
@@ -1118,7 +1118,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Return a list of dictionaries containing `keys` `(3,2)`, `values` `(3,n_values)`, `query` `(2,)` and integer `answer`. Keys are red, blue, red. For each ordered old/new pair, choose the distractor `(old+1)%n_values`. The target is the newest red value. Require at least two values. This explicit generator lets you inspect every evaluation item rather than relying on an opaque task helper.
@@ -1181,7 +1181,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Copy the input and permute time rows using a local NumPy generator. Preserve each complete value vector, its multiset and the original array. This control can coincidentally keep an answer correct; report its actual value rather than insisting it be zero. A shuffle is not guaranteed to have no fixed points.
@@ -1238,7 +1238,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 `scores` has shape `(episodes,values)` and `answers` `(episodes,)`. Return correct count divided by the number of episodes. Reject an empty cohort or inconsistent axes. `np.argmax` chooses the first maximum; keep this rule fixed. The complete score table will reveal ties, so an apparently successful result cannot hide ambiguity behind a single percentage.

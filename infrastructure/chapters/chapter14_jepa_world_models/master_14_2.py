@@ -782,7 +782,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 A clip key is `(color, direction, start_x, start_y)`. Its physical reverse starts at the original
@@ -1297,7 +1298,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Implement the grid calculation and a strided `Conv3d`. For `(6, 16, 16)` video and `(2, 4, 4)`
@@ -1474,7 +1476,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Sample one contiguous spatial target block and repeat exactly the same block through all temporal
@@ -1769,7 +1772,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Remove target tokens before the online transformer. Then prove masked-pixel invariance: replacing
@@ -2021,7 +2025,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Reinsert learned mask tokens in the predictor, freeze a deep-copied target encoder, and
@@ -2228,7 +2233,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Implement `target = momentum * target + (1 - momentum) * online` and mean absolute error from
@@ -2394,7 +2400,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 This is the P0 method exercise. Implement one optimizer/EMA step and `train_small_vjepa`; do not
@@ -2678,7 +2685,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Average spatial tokens separately at each of three temporal slices, flatten those `3 * 24 = 72`
@@ -2865,7 +2873,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Keep color, direction, and combined state separate. A perfect color probe is not evidence of motion
@@ -2987,7 +2996,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Each query key must occur exactly once in the gallery. Award fractional credit when the true target
@@ -3180,7 +3190,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 The future-only mask is an out-of-distribution diagnostic, not the pretraining mask. Convert the
@@ -3554,7 +3565,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Derive reversed keys from actual start positions and velocities. Reject the run unless reversed
@@ -3749,7 +3761,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Select a balanced, explicit probe-fit subset; fit and score the three probes; then run
@@ -4091,7 +4104,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Use an independently initialized predictor receiving the trained visible context. For every method,
@@ -4315,7 +4329,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 The final evaluator now composes the tested pieces above. The dependency validator checks object
@@ -6956,7 +6971,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Implement a video generator for a red square or blue circle. The action `(dx, dy)` is integrated
@@ -7205,7 +7221,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Implement the image-to-token geometry used by the causal intervention. Select every token whose cell
@@ -7409,7 +7426,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Implement row-wise cosine similarity. Pairing matters: each predicted latent is compared with its
@@ -7562,7 +7580,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Implement a collapse diagnostic using feature variance and the entropy-based effective rank of the
@@ -7807,7 +7826,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Implement the report that converts held-out probe logits into accuracy. The live probe is trained on
@@ -7973,7 +7993,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Implement a rollout gate. A learned transition only passes when its held-out loss beats both copying
@@ -8147,7 +8168,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Implement the object-permanence gate. The occluded latent must remain similar to the visible latent
@@ -8325,7 +8347,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Implement the patch gate. Patching tokens from a right-position object into a left-position object

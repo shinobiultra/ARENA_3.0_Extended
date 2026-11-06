@@ -329,6 +329,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 Implement a game from Harsanyi dividends and an independent oracle that splits each dividend equally among its members. The baseline is zero, so every unit of full-game value
@@ -516,6 +518,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 Implement the finite Shapley kernel
@@ -689,6 +693,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 Solve weighted least squares with the hard efficiency constraint `sum(phi) = v(full) - v(empty)`. Use a direct KKT solve for the complete interior table. Partial coalition designs
@@ -878,6 +884,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 Implement two sampling strategies without replacement. `uniform` samples interior coalitions uniformly. `paired_kernel` samples complement pairs with probability proportional to
@@ -1054,6 +1062,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 A partition must cover every player exactly once. Implement validation, then map group coalitions back to their underlying player coalitions before looking up game values.
@@ -1206,6 +1216,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 For each player, average over which groups precede its group and which players precede it inside that group. This is the exact Owen-value calculation for a fixed partition, the
@@ -1428,6 +1440,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 The declared interactions are entirely inside `((0, 1, 2), (3, 4, 5))`, so that aligned partition matches ordinary Shapley. Test it against the fixed misaligned partition `((0, 3,

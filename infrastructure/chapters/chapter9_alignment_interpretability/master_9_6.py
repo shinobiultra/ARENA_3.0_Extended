@@ -396,11 +396,12 @@ subsequent practice exposed.
 r'''
 ### Exercise 1 - the minimum-norm linear write
 
-```
-Difficulty: 🔴🔴⚪⚪⚪
-Importance: 🔵🔵🔵🔵🔵
-Suggested time: 15 minutes
-```
+> ```yaml
+> Difficulty: 🔴🔴⚪⚪⚪
+> Importance: 🔵🔵🔵🔵🔵
+>
+> You should spend up to 15 minutes on this exercise.
+> ```
 
 Implement the smallest Frobenius-norm update satisfying `key @ (W + delta) = desired`.
 '''
@@ -546,11 +547,12 @@ subsequent practice exposed.
 r'''
 ### Exercise 2 - covariance preconditioning
 
-```
-Difficulty: 🔴🔴🔴🔴⚪
-Importance: 🔵🔵🔵🔵🔵
-Suggested time: 25 minutes
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴🔴⚪
+> Importance: 🔵🔵🔵🔵🔵
+>
+> You should spend up to 25 minutes on this exercise.
+> ```
 
 Use Woodbury to compute `C^-1 key` without forming a 2048 by 2048 inverse.
 '''
@@ -695,11 +697,12 @@ subsequent practice exposed.
 r'''
 ### Exercise 3 - the affine-aware course ROME-like update
 
-```
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵🔵
-Suggested time: 20 minutes
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵🔵
+>
+> You should spend up to 20 minutes on this exercise.
+> ```
 
 
 Pythia's output projection is affine: `module(key) = key @ W + bias`. Implement the
@@ -933,11 +936,12 @@ subsequent practice exposed.
 r'''
 ### Exercise 4 - subject-token localization
 
-```
-Difficulty: 🔴🔴⚪⚪⚪
-Importance: 🔵🔵🔵🔵🔵
-Suggested time: 15 minutes
-```
+> ```yaml
+> Difficulty: 🔴🔴⚪⚪⚪
+> Importance: 🔵🔵🔵🔵🔵
+>
+> You should spend up to 15 minutes on this exercise.
+> ```
 
 Use character-offset overlap so multi-token subjects and varying paraphrase positions are handled
 explicitly.
@@ -1109,11 +1113,12 @@ subsequent practice exposed.
 r'''
 ### Exercise 5 - single-token and multi-token target scoring
 
-```
-Difficulty: 🔴🔴🔴🔴⚪
-Importance: 🔵🔵🔵🔵🔵
-Suggested time: 30 minutes
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴🔴⚪
+> Importance: 🔵🔵🔵🔵🔵
+>
+> You should spend up to 30 minutes on this exercise.
+> ```
 
 
 Implement `target_token_ids` and `continuation_score_table`. Teacher-force every target
@@ -1431,11 +1436,12 @@ subsequent practice exposed.
 r'''
 ### Exercise 6 - capture complete MLP outputs
 
-```
-Difficulty: 🔴🔴⚪⚪⚪
-Importance: 🔵🔵🔵🔵🔵
-Suggested time: 15 minutes
-```
+> ```yaml
+> Difficulty: 🔴🔴⚪⚪⚪
+> Importance: 🔵🔵🔵🔵🔵
+>
+> You should spend up to 15 minutes on this exercise.
+> ```
 
 Register one hook per MLP, clone each complete output, and remove every hook even if the forward
 pass fails.
@@ -1585,11 +1591,12 @@ subsequent practice exposed.
 r'''
 ### Exercise 7 - layer-by-position activation patching over nine independent corruptions
 
-```
-Difficulty: 🔴🔴🔴🔴🔴
-Importance: 🔵🔵🔵🔵🔵
-Suggested time: 45 minutes
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴🔴🔴
+> Importance: 🔵🔵🔵🔵🔵
+>
+> You should spend up to 45 minutes on this exercise.
+> ```
 
 
 Implement one clean/corrupt patching grid, then aggregate three embedding-noise scales
@@ -2134,11 +2141,12 @@ subsequent practice exposed.
 r'''
 ### Exercise 8 - extract post-activation keys and complete values
 
-```
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵🔵
-Suggested time: 20 minutes
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵🔵
+>
+> You should spend up to 20 minutes on this exercise.
+> ```
 
 Hook `dense_h_to_4h`, apply the model activation, and separately capture the complete MLP output.
 '''
@@ -2347,11 +2355,12 @@ subsequent practice exposed.
 r'''
 ### Exercise 9 - optimize a complete target sequence
 
-```
-Difficulty: 🔴🔴🔴🔴🔴
-Importance: 🔵🔵🔵🔵🔵
-Suggested time: 40 minutes
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴🔴🔴
+> Importance: 🔵🔵🔵🔵🔵
+>
+> You should spend up to 40 minutes on this exercise.
+> ```
 
 Append every target prefix token, score every target token, and optimize one MLP-output delta while
 measuring KL on two other Louvre contexts.
@@ -2723,11 +2732,12 @@ subsequent practice exposed.
 r'''
 ### Exercise 10 - temporary edits and matched random updates
 
-```
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵🔵
-Suggested time: 20 minutes
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵🔵
+>
+> You should spend up to 20 minutes on this exercise.
+> ```
 
 Implement exact restoration plus a seeded rank-one matrix with the requested Frobenius norm.
 '''
@@ -2929,11 +2939,12 @@ subsequent practice exposed.
 r'''
 ### Exercise 11 - separate efficacy, qualified retention, and stratified leakage
 
-```
-Difficulty: 🔴🔴🔴🔴⚪
-Importance: 🔵🔵🔵🔵🔵
-Suggested time: 30 minutes
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴🔴⚪
+> Importance: 🔵🔵🔵🔵🔵
+>
+> You should spend up to 30 minutes on this exercise.
+> ```
 
 
 Implement the metric summary. Report `Rome > Paris` only as pairwise preference.
@@ -3312,11 +3323,12 @@ subsequent practice exposed.
 r'''
 ### Exercise 12 - evaluate disjoint held-out suites
 
-```
-Difficulty: 🔴🔴🔴🔴⚪
-Importance: 🔵🔵🔵🔵🔵
-Suggested time: 30 minutes
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴🔴⚪
+> Importance: 🔵🔵🔵🔵🔵
+>
+> You should spend up to 30 minutes on this exercise.
+> ```
 
 
 Expose the complete evaluation path. Covariance uses `COVARIANCE_FACTS`; locality uses
@@ -4052,11 +4064,12 @@ subsequent practice exposed.
 r'''
 ### Exercise 13 - compose the affine write and matched experiment
 
-```
-Difficulty: 🔴🔴🔴🔴🔴
-Importance: 🔵🔵🔵🔵🔵
-Suggested time: 45 minutes
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴🔴🔴
+> Importance: 🔵🔵🔵🔵🔵
+>
+> You should spend up to 45 minutes on this exercise.
+> ```
 
 
 Build the update from optimization keys, a disjoint covariance key bank, the complete

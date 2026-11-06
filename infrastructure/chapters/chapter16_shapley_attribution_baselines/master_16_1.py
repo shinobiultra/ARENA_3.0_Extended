@@ -270,7 +270,7 @@ r'''
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend 10 minutes on this exercise.
+> You should spend up to 10 minutes on this exercise.
 > ```
 
 A game with `n` players needs `2**n` coalition values, including the empty and full coalitions. Implement
@@ -435,7 +435,7 @@ r'''
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend 10 minutes on this exercise.
+> You should spend up to 10 minutes on this exercise.
 > ```
 
 A dividend assigns value to a specific interaction term. Coalition `S` receives every dividend whose player
@@ -627,7 +627,7 @@ r'''
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend 15 minutes on this exercise.
+> You should spend up to 15 minutes on this exercise.
 > ```
 
 For player `i`, enumerate every coalition `S` that excludes `i`. Record the marginal `v(S union {i}) - v(S)`
@@ -829,7 +829,7 @@ r'''
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend 10 minutes on this exercise.
+> You should spend up to 10 minutes on this exercise.
 > ```
 
 Implement efficiency, then test three exact controls: a symmetric three-player conjunction splits `1/3` each;
@@ -982,7 +982,7 @@ r'''
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend 10 minutes on this exercise.
+> You should spend up to 10 minutes on this exercise.
 > ```
 
 Implement a second exact algorithm. For every permutation, start from the empty coalition and record each
@@ -1140,7 +1140,7 @@ r'''
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend 10 minutes on this exercise.
+> You should spend up to 10 minutes on this exercise.
 > ```
 
 Leave-one-out uses only the full-coalition context: `v(N)-v(N minus {i})`. Implement it, then compare its
@@ -1294,7 +1294,7 @@ r'''
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend 15 minutes on this exercise.
+> You should spend up to 15 minutes on this exercise.
 > ```
 
 Hold direct dividends fixed and multiply every pair and triple dividend by a common scale. Return the exact

@@ -227,7 +227,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Return the two means, the population covariance of `x`, and its cross-covariance with `z`. Use denominator `n`, center both arrays, and preserve their dtype and device. For our
@@ -349,7 +349,7 @@ r'''
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Diagonalize a symmetric positive-semidefinite covariance. Return whitening and unwhitening matrices, the numerical rank, eigenvalues and cutoff. By default use `width *
@@ -437,7 +437,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Compute a thin orthonormal basis `Q` for the nonzero left singular space of the cross-covariance. Store the edit as `left=Q`, `right=Q.T`, plus the training mean and rank. This is
@@ -537,7 +537,7 @@ r'''
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend 15–20 minutes on this exercise.
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 Construct `L` and `R` using your moments and whitening function. Use the same explicitly named SVD cutoff throughout. Return both factors and diagnostics, including the covariance
@@ -625,7 +625,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Apply the fitted low-rank factors to new row vectors. Keep the unconditional mean, avoid changing the input tensor, and multiply in an order that uses the thin intermediate rather
@@ -868,7 +868,7 @@ r'''
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend 15–20 minutes on this exercise.
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 Implement the training-only standardization, scalar intercept and stable logistic objective. Only the probe coefficient and intercept belong in LBFGS. Return a coefficient and
@@ -1339,7 +1339,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Implement the equation above using `apply_eraser` to obtain the target
@@ -1417,7 +1417,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Given intervened logits, original logits and target token IDs, return the

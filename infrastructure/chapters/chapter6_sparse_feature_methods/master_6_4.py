@@ -347,7 +347,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 15-20 minutes on this exercise.
+>
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 Implement the complete replacement path. Return pre-activations as well as sparse features so later exercises can see which ReLU gates are open.
@@ -546,7 +547,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Expose one output-space vector per feature. Their sum plus decoder bias must equal the transcoder reconstruction exactly.
@@ -635,7 +637,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵🔵
-> You should spend 20-25 minutes on this exercise.
+>
+> You should spend up to 20-25 minutes on this exercise.
 > ```
 
 Compute each source-to-feature path's signed contribution to the final score. Append encoder bias as a fifth source, apply the fixed ReLU gate, and multiply by each decoder row's
@@ -776,7 +779,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> You should spend 15-20 minutes on this exercise.
+>
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 Rank feature nodes by absolute feature-to-score contribution, then keep every signed incoming edge above the threshold for the selected nodes. Signed negative edges remain
@@ -1050,7 +1054,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 15-20 minutes on this exercise.
+>
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 Check that incoming path attributions equal each feature's outgoing score contribution. Then cyclically shuffle only the targets of incoming edges while preserving the same edge
@@ -1187,7 +1192,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵🔵
-> You should spend 25-30 minutes on this exercise.
+>
+> You should spend up to 25-30 minutes on this exercise.
 > ```
 
 Retain or ablate graph features before the decoder, rerun the score, and normalize against the clean-to-zero gap. Implement a decoder-norm ranking as the reconstruction-only

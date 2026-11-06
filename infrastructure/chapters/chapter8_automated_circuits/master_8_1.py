@@ -366,7 +366,6 @@ r'''
 > Importance: 🔵🔵🔵🔵⚪
 >
 > You should spend up to 5-10 minutes on this exercise.
-> The code is one line; the important part is thinking about what each corruption removes.
 > ```
 
 A corrupted prompt should differ from the clean prompt in exactly the information you want to localise, and in nothing else. Implement `ioi_prompt`, which fills an example's name
@@ -773,7 +772,6 @@ r'''
 > Importance: 🔵🔵🔵🔵🔵
 >
 > You should spend up to 10-15 minutes on this exercise.
-> Everything else in this section is built on this function.
 > ```
 
 In [1.4.1] you wrote a separate hook function for each kind of patch (residual stream by position, head output, head output by position...). They're all the same operation: *at one
@@ -3026,7 +3024,7 @@ r'''
 > Difficulty: 🔴⚪⚪⚪⚪
 > Importance: 🔵🔵🔵⚪⚪
 >
-> You should spend up to 10 minutes on this exercise (mostly on the interpretation).
+> You should spend up to 10 minutes on this exercise.
 > ```
 
 Implement `answer_probability`, the per-prompt probability of the correct answer (`answer_tokens[:, 0]`) at the final position. Then run the cell after it, which repeats the `ABC`

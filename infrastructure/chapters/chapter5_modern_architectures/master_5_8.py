@@ -272,7 +272,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴⚪⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Suggested time: 5-10 minutes
+>
+> You should spend up to 5-10 minutes on this exercise.
 > ```
 
 At timestep `t`, each token is independently replaced by `MASK` with probability `p_t`. Implement the schedule before touching a model.
@@ -413,7 +414,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Suggested time: 10 minutes
+>
+> You should spend up to 10 minutes on this exercise.
 > ```
 
 Draw one Bernoulli decision per token. The test includes the exact zero-noise and all-noise endpoints and a seeded mixed case.
@@ -562,7 +564,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Suggested time: 10 minutes
+>
+> You should spend up to 10 minutes on this exercise.
 > ```
 
 Only corrupted positions contribute to the objective. Visible tokens are context; rewarding the model for copying them would inflate performance.
@@ -624,7 +627,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Suggested time: 10-15 minutes
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Predict every position, rank positions by confidence, and remask the least confident fraction. Implement uniform remasking as a matched mask-budget baseline.
@@ -768,7 +772,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Suggested time: 15-20 minutes
+>
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 Before training, use an oracle denoiser with a known target. This isolates reverse-process bugs from learning failures.
@@ -918,7 +923,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Suggested time: 15 minutes
+>
+> You should spend up to 15 minutes on this exercise.
 > ```
 
 The first visible guess can later be changed. Stable commitment is the earliest row after which a token remains visible and correct for every later row.
@@ -1062,7 +1068,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Suggested time: 10-15 minutes
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Enumerate all 100 digit pairs. The first two tokens are always visible conditions; only the four-token suffix is noised and scored.
@@ -1166,7 +1173,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Suggested time: 10 minutes
+>
+> You should spend up to 10 minutes on this exercise.
 > ```
 
 Add token, position, and timestep embeddings, pass the full corrupted sequence through a Transformer encoder, and unembed every position.
@@ -1280,7 +1288,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Suggested time: 20 minutes
+>
+> You should spend up to 20 minutes on this exercise.
 > ```
 
 Implement the optimizer loop using suffix-only noising and masked loss. Record a compact loss curve so learning is visible rather than inferred from a final scalar.
@@ -1382,7 +1391,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Suggested time: 20-25 minutes
+>
+> You should spend up to 20-25 minutes on this exercise.
 > ```
 
 Implement the sampler used for the signature result. Preserve the two-token prefix, save every suffix state, record entropy, and retain hidden activations for shape checks.
@@ -1835,7 +1845,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Suggested time: 10–15 minutes
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Return `(corrupted, selected)` for integer tokens `(B,L)`, boolean eligibility
@@ -1909,7 +1920,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Suggested time: 25–35 minutes
+>
+> You should spend up to 25-35 minutes on this exercise.
 > ```
 
 For a masked token at step $k$, the exact posterior reveals its clean value
@@ -2038,7 +2050,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Suggested time: 15–25 minutes
+>
+> You should spend up to 15-25 minutes on this exercise.
 > ```
 
 `clean_prediction_probs` removes MASK, then returns a softmax at temperature
@@ -2152,7 +2165,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Suggested time: 15–25 minutes
+>
+> You should spend up to 15-25 minutes on this exercise.
 > ```
 
 Implement Shannon entropy in nats with `0 log 0 = 0`; stable commitment from
@@ -2298,7 +2312,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Suggested time: 30–45 minutes
+>
+> You should spend up to 30-45 minutes on this exercise.
 > ```
 
 Start every eligible slot at MASK. For each block, run the declared number
@@ -2527,7 +2542,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Suggested time: 25–35 minutes
+>
+> You should spend up to 25-35 minutes on this exercise.
 > ```
 
 Implement QKV projections, head reshaping and the full key-validity mask.
@@ -2639,7 +2655,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Suggested time: 15–25 minutes
+>
+> You should spend up to 15-25 minutes on this exercise.
 > ```
 
 Build a pre-LayerNorm attention residual and GELU MLP residual with expansion
@@ -2776,7 +2793,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Suggested time: 10–15 minutes
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 A logit at position `j-1` predicts target token `j`. Exclude MASK from the
@@ -2853,7 +2871,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Suggested time: 25–35 minutes
+>
+> You should spend up to 25-35 minutes on this exercise.
 > ```
 
 Run a full context prefill and then one input token per cached step. Also
@@ -2996,7 +3015,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Suggested time: 15–25 minutes
+>
+> You should spend up to 15-25 minutes on this exercise.
 > ```
 
 Shuffle complete target strings with one full permutation inside each task.
@@ -3138,7 +3158,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Suggested time: 35–50 minutes
+>
+> You should spend up to 35-50 minutes on this exercise.
 > ```
 
 Implement equal-per-task minibatches, AdamW, norm clipping at 1 and checkpoint
@@ -3368,7 +3389,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Suggested time: 15–25 minutes
+>
+> You should spend up to 15-25 minutes on this exercise.
 > ```
 
 Decode tokens before the first generated EOS, keeping any special-token
@@ -3598,7 +3620,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Suggested time: 15–20 minutes
+>
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 Time the same fixed batch after two warmups and keep five repetitions.

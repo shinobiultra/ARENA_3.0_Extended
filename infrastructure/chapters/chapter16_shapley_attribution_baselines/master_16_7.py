@@ -265,7 +265,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Suggested time: 15 minutes
+>
+> You should spend up to 15 minutes on this exercise.
 > ```
 
 Implement coalition enumeration, position-preserving masking, the exact score, and the complete
@@ -477,7 +478,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Suggested time: 25 minutes
+>
+> You should spend up to 25 minutes on this exercise.
 > ```
 
 Implement the factorial-weighted marginal-contribution formula. Validate table completeness first so
@@ -671,7 +673,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Suggested time: 20 minutes
+>
+> You should spend up to 20 minutes on this exercise.
 > ```
 
 Sample player permutations, record each token's marginal contribution when it enters, and average.
@@ -836,7 +839,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Suggested time: 15 minutes
+>
+> You should spend up to 15 minutes on this exercise.
 > ```
 
 Implement full-prompt leave-one-out and a recency-only attribution normalized to the same total
@@ -998,7 +1002,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Suggested time: 15 minutes
+>
+> You should spend up to 15 minutes on this exercise.
 > ```
 
 Implement a context-specific finite second difference. The approve/allow pair has `-2` redundancy
@@ -1158,7 +1163,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Suggested time: 25 minutes
+>
+> You should spend up to 25 minutes on this exercise.
 > ```
 
 Split `transfer` into `trans` and `##fer`, requiring both pieces. Then implement grouped coalitions
@@ -1340,7 +1346,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Suggested time: 25 minutes
+>
+> You should spend up to 25 minutes on this exercise.
 > ```
 
 Compare an OR redundancy game with an AND synergy game when `approve` and `allow` are observed only
@@ -1509,7 +1516,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Suggested time: 20 minutes
+>
+> You should spend up to 20 minutes on this exercise.
 > ```
 
 Return mean and 90th-percentile maximum absolute error for each permutation budget. Then shuffle
@@ -3011,7 +3019,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 > **Difficulty:** medium
@@ -3195,7 +3204,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 > **Difficulty:** hard
@@ -3439,7 +3449,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 > **Difficulty:** medium
@@ -3639,7 +3650,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 > **Difficulty:** medium
@@ -3861,7 +3873,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 > **Difficulty:** medium
@@ -4030,7 +4043,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 > **Difficulty:** medium
@@ -4201,7 +4215,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 > **Difficulty:** medium

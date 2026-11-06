@@ -223,7 +223,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Time: 10-15 minutes
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Implement the planted paired-model dataset. Each example has latent features `z`; model A and model B decode those features through different dictionaries. Shared features decode
@@ -547,7 +548,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Time: 10-15 minutes
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Implement a tied-encoder sparse crosscoder. The same encoder is applied to model-A activations and model-B activations, producing nonnegative latent activations for each model.
@@ -775,7 +777,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Time: 10-15 minutes
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Train the crosscoder on the training split and report held-out reconstruction. This is necessary evidence, not sufficient evidence: an overcomplete model can reconstruct while
@@ -1142,7 +1145,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Time: 15-20 minutes
+>
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 Now test the actual crosscoder claim. A learned latent should not just reconstruct; it should line up with a planted feature and have the right ownership. Use held-out activation
@@ -1446,7 +1450,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Time: 15-20 minutes
+>
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 The model-B-specific latent should predict held-out behavior deltas. Compare it to baselines:
@@ -1908,7 +1913,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Time: 15-20 minutes
+>
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 Prediction is still not enough. Remove the matched model-B-specific latent and measure the positive behavior-delta reduction. Then subtract two controls with the same activation

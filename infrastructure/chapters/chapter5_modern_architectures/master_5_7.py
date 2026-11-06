@@ -154,7 +154,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Compute sigmoid of the recurrence-gate logits and stable softplus of the decay parameter, then exponentiate their negative product. Preserve broadcasting over time and channels. Require positive c. Very positive decay parameters must not overflow inside `log(1+exp(x))`; `np.logaddexp(0,x)` is the stable operation. The output may round to zero or one at extreme logits, which the next step handles explicitly.
@@ -212,7 +212,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Implement the displayed equation. Reject recurrence coefficients outside `[0,1]`; allow the endpoints for analytic controls. The input gate multiplies the current input, not the previous state. With a=0 the state is the gated input; with a=1 it is exactly the old state. Use a nonnegative clipped radicand only to protect endpoint roundoff, not to disguise an invalid coefficient.
@@ -270,7 +270,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Inputs, coefficients and gates all broadcast to `(time,channel)`. Return every state; initialize with zeros. A true reset at time t clears the carry **before** writing x[t]. Copy reset handling into the scan rather than changing the coefficients, so the current-write gain retains its declared meaning. Tests use a hand-expanded recurrence and a reset carrying a new nonzero write.
@@ -332,7 +332,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 For each t, include source indices `max(0,t-window+1)` through t. Return `(time,value)` outputs, with dot products scaled by square root of key width. Reject nonpositive windows. The current token counts toward the window size. Use stable softmax within the allowed slice, so future or expired entries never enter the denominator.
@@ -395,7 +395,7 @@ r'''
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Use `projected=x@W_in`, then a depthwise causal convolution of the projected channels with `conv_kernel` `(kernel_time,expanded_channel)`. Feed the result through the RG-LRU scan. Gate its output by GELU of `x@W_gate`, project with W_out, and add x. Use the tanh GELU approximation explicitly. This isolates the recurrent branch; the full model's RMSNorm, learned grouped gate projections, MLP blocks and stacking schedule are separate native boundaries.
@@ -528,7 +528,7 @@ r'''
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 `state` is `(c,n,m)` in scaled units. Return `(hidden,new_state)`. Compute the new maximum log scale, transformed forget/input weights, then update c and n. Divide c by n where positive and multiply by the supplied output gate. Initialize the stabilizer to negative infinity in the scan. A common additive shift of all sequence input log gates should not change the normalized hidden sequence.
@@ -589,7 +589,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Broadcast log gates and output gates to the `(time,channel)` value array. Initialize c,n to zero and m to negative infinity. Return every hidden value, not the stabilizer. A direct finite-weight oracle enumerates all writes and their intervening forget products. The fixture also shifts every input log gate by 900 to test numerical stability without changing the normalized answer.
@@ -649,7 +649,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 `q,k` are `(key_dim,)`, `v` `(value_dim,)`; C is `(value_dim,key_dim)` and n `(key_dim,)`. Divide k by `sqrt(key_dim)` before updating both C and n. Use supplied nonnegative activated input/forget gates, then return `(hidden,(C,n))`. Negative gates are invalid. The normalizer is `max(abs(n@q),1)`, not a positive-only sum or Euclidean norm.
@@ -709,7 +709,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Return `(outputs,C,n)`. Broadcast scalar gates over time. The final state is necessary to continue decoding later. Keep memory shape value-by-key; using key-by-value can pass square one-dimensional tests but fail non-square fixtures. All default gates here are small and finite, so this is the un-stabilized core rather than the paper's complete native kernel.
@@ -769,7 +769,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 For every `(t,s)` with s≤t, weight the write by input_gate[s] times all forget gates from s+1 through t. Multiply that by the scaled query/key dot product. Normalize each row by `max(abs(row_sum),1)` and apply to values. Return outputs only. Do not divide by the sum of absolute weights: signed cancellation is part of the declared mechanism.
@@ -899,7 +899,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 `x` and `kernel` are `(time,channel)` arrays and their time lengths may differ. Pad to at least `len(x)+len(kernel)-1`, transform along time, multiply channel spectra, invert, and keep the first `len(x)` rows. Return real float output. Do not use an unpadded FFT of length len(x): an impulse at the last token would leak backward by circular wraparound.
@@ -960,7 +960,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Form rows `[t_normalized, cos(pi*t_normalized), sin(pi*t_normalized)]`, multiply by W1, apply sine, then multiply by W2. Apply `exp(-absolute_lag*decay)` per output channel. W1 is `(3,hidden)` and W2 `(hidden,channels)`; no data-dependent filter fitting occurs here. Reject negative decay or nonpositive length. Time normalization determines the sampled shape, so changing sequence length is not automatically a stationary extrapolation.
@@ -1019,7 +1019,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Return `gate2 * conv(gate1 * conv(values,filter1),filter2)`. Shapes of values and gates match; filters match channels but can have different lengths. Keep both gates at their respective position. Moving a time-varying gate through convolution changes the operator. A zero first gate should kill the entire path, whereas a zero at one second-gate position only kills that output position.
@@ -1147,7 +1147,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Compute `h=x+rg_lru_scan(x,...)`, then `h+local_attention(h@Wq,h@Wk,h@Wv,window)`. All matrices preserve channel width. This exposes how a later attention block reads a residual stream already carrying recurrence information. Reject a conceptual shortcut that averages the outputs of two separate models: that is an ensemble, not this sequential hybrid stack.
@@ -1204,7 +1204,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Use the first element as the declared initial response; reject a zero or nonfinite first response rather than choosing a later maximum after inspecting the curve. Return a new array. This normalization separates memory retention from input gain but does not make different mechanisms equivalent. In particular a signed later fraction is a sign reversal, not a negative probability.
@@ -1262,7 +1262,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Require equal nonempty finite one-dimensional arrays and average squared differences. This metric is descriptive for the declared hand-specified readout, not an empirical trained-model comparison. Keep every query position, including sign reversals and zero responses. Dropping late positions because an attention window expired would change the question.

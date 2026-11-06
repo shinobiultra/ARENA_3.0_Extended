@@ -322,7 +322,7 @@ r'''
 > Difficulty: 🔴⚪⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend 5 minutes on this exercise.
+> You should spend up to 5 minutes on this exercise.
 > ```
 
 Implement the exact LoRA update and shape checks. The test includes a one-rank fixture with every number
@@ -442,7 +442,7 @@ r'''
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend 10 minutes on this exercise.
+> You should spend up to 10 minutes on this exercise.
 > ```
 
 Build a report that records declared rank, scaling, update norm, and whether the adapter is nonzero. Then test
@@ -573,7 +573,7 @@ r'''
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend 10 minutes on this exercise.
+> You should spend up to 10 minutes on this exercise.
 > ```
 
 Compute logits through the separate adapter path and through a merged weight. They should agree to numerical
@@ -729,7 +729,7 @@ r'''
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend 10 minutes on this exercise.
+> You should spend up to 10 minutes on this exercise.
 > ```
 
 Normalize each updated row direction, then apply the learned row magnitude. The tests include zero-delta and
@@ -922,7 +922,7 @@ r'''
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend 10 minutes on this exercise.
+> You should spend up to 10 minutes on this exercise.
 > ```
 
 Implement two reports: one for projection onto a monitored direction, and one that requires both task
@@ -1229,7 +1229,7 @@ r'''
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend 10 minutes on this exercise.
+> You should spend up to 10 minutes on this exercise.
 > ```
 
 Generate batches where labels are exactly `1[x0 > 0]`. The OOD option should make the frozen `x1` distractor
@@ -1377,7 +1377,7 @@ r'''
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend 20 minutes on this exercise.
+> You should spend up to 20 minutes on this exercise.
 > ```
 
 Implement the training loop and evaluation report. Record a trace, evaluate held-out accuracy, OOD accuracy,
@@ -1906,7 +1906,7 @@ r'''
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend 20 minutes on this exercise.
+> You should spend up to 20 minutes on this exercise.
 > ```
 
 Train matched LoRA, DoRA, and full-finetune runs. Then add the random-label LoRA and same-norm random-adapter
@@ -2478,7 +2478,7 @@ r'''
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend 15 minutes on this exercise.
+> You should spend up to 15 minutes on this exercise.
 > ```
 
 Collect the trained methods, controls, merge parity, singular values, traces, and example table into one

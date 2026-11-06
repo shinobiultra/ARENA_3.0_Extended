@@ -271,7 +271,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Time: 10-15 minutes
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Implement a unit-norm dictionary and a sampler for sparse nonnegative features. With `noise_std=0`,
@@ -473,7 +474,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Time: 20-30 minutes
+>
+> You should spend up to 20-30 minutes on this exercise.
 > ```
 
 Implement the four encoder rules. ReLU-L1 has an ordinary ReLU forward pass because L1 belongs in
@@ -767,7 +769,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Time: 15-20 minutes
+>
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 Decode with `features @ W_dec + b_dec`, then implement each objective. ReLU-L1 penalizes activation
@@ -978,7 +981,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Time: 20-25 minutes
+>
+> You should spend up to 20-25 minutes on this exercise.
 > ```
 
 Implement L0 and density, true-side dictionary matching, tie-aware ROC AUC, train-split feature
@@ -1310,7 +1314,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Time: 15-20 minutes
+>
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 Match one learned decoder row to planted feature zero. Add that unit direction to negative examples

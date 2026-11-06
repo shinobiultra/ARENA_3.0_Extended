@@ -10,7 +10,7 @@ sys.path.insert(0, str(ROOT / 'infrastructure/extension'))
 import build
 
 
-def test_extension_reference_links_offer_guided_prediction_workbook(tmp_path):
+def test_extension_page_links_carry_colab_links_and_no_practice_banner(tmp_path):
     # Link generation never reads the master; the generated .ipynb is not checked in.
     master_path = tmp_path / 'master_7_1.ipynb'
     master_path.write_text('{}')
@@ -22,9 +22,9 @@ def test_extension_reference_links_offer_guided_prediction_workbook(tmp_path):
         streamlit_page_name='01_[7.1]_Logit_Lens_Tuned_Lens_and_Patchscopes',
     )
     streamlit, notebooks = master.get_page_links()
-    assert any('extension_predictions/exercises.ipynb' in line for line in notebooks)
-    assert any('guided prediction' in line.lower() for line in streamlit)
-    assert any('practice' in line.lower() for line in notebooks)
+    assert any('colab.research.google.com' in line for line in streamlit + notebooks)
+    assert not any('prediction practice' in line.lower() for line in streamlit + notebooks)
+    assert not any('extension_predictions' in line for line in streamlit + notebooks)
 
 
 def test_extension_normalization_preserves_code_evidence_and_validates(tmp_path):

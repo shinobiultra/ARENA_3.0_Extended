@@ -411,10 +411,12 @@ r'''
 r'''
 ### Exercise 1: Measure Attention in a Named Region
 
-```yaml
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15-20 minutes on this exercise.
+> ```
 
 > **Difficulty:** easy
 > **Importance:** high
@@ -640,10 +642,12 @@ where the right answer is known; it does not validate a diffusion model.
 r'''
 ### Exercise 2: Require a Specific Denoising Circuit
 
-```yaml
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15-20 minutes on this exercise.
+> ```
 
 > **Difficulty:** easy
 > **Importance:** high
@@ -812,10 +816,12 @@ def denoising_circuit_report(
 r'''
 ### Exercise 3: Gate a Latent Direction Against Random Directions
 
-```yaml
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15-20 minutes on this exercise.
+> ```
 
 > **Difficulty:** medium
 > **Importance:** medium
@@ -1012,10 +1018,12 @@ def latent_direction_effect_report(
 r'''
 ### Exercise 4: Prompt-Region Causality Needs a Control Edit
 
-```yaml
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15-20 minutes on this exercise.
+> ```
 
 > **Difficulty:** medium
 > **Importance:** high
@@ -1214,10 +1222,12 @@ r'''
 r'''
 ### Exercise 5: Build the Strict Image Controls
 
-```yaml
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15-20 minutes on this exercise.
+> ```
 
 > **Difficulty:** hard
 > **Importance:** high
@@ -1885,10 +1895,12 @@ is why every headline visual result below carries both semantic and image-qualit
 r'''
 ### Exercise 6: Break the Region Labels
 
-```yaml
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15-20 minutes on this exercise.
+> ```
 
 > **Difficulty:** medium
 > **Importance:** high
@@ -2093,10 +2105,12 @@ The two preregistered benign prompts are a red square and a blue circle. This na
 r'''
 ### Exercise 7: Capture Cross-Attention Yourself
 
-```yaml
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15-20 minutes on this exercise.
+> ```
 
 > **Difficulty:** hard
 > **Importance:** very high
@@ -2701,10 +2715,12 @@ What this establishes and leaves unresolved: ______
 r'''
 ### Exercise 8: Construct Same-Seed Prompt Interventions
 
-```yaml
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15-20 minutes on this exercise.
+> ```
 
 > **Difficulty:** medium
 > **Importance:** very high
@@ -2909,10 +2925,12 @@ What this establishes and leaves unresolved: ______
 r'''
 ### Exercise 9: Score One Generated Counterfactual
 
-```yaml
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15-20 minutes on this exercise.
+> ```
 
 > **Difficulty:** hard
 > **Importance:** very high
@@ -3247,10 +3265,12 @@ What this establishes and leaves unresolved: ______
 r'''
 ### Exercise 10: Assemble the Real Experiment
 
-```yaml
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15-20 minutes on this exercise.
+> ```
 
 The function below is the complete scientific path. Read it before running it and trace where each object comes from: checkpoint loaders, your hook installer, your same-seed
 interventions, your case evaluator, and the visible CLIP metric. No report or hidden runner supplies the result.

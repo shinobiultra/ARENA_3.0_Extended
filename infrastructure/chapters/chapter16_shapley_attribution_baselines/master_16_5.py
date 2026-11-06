@@ -264,7 +264,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Suggested time: 12 minutes
+>
+> You should spend up to 12 minutes on this exercise.
 > ```
 
 Enumerate every subset of the player set, normalize coalition keys, and evaluate additive plus higher-order terms on each coalition.
@@ -386,7 +387,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Suggested time: 10 minutes
+>
+> You should spend up to 10 minutes on this exercise.
 > ```
 
 For pair $(i,j)$ in context $S$, compute $v(S\cup\{i,j\})-v(S\cup\{i\})-v(S\cup\{j\})+v(S)$.
@@ -489,7 +491,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Suggested time: 20 minutes
+>
+> You should spend up to 20 minutes on this exercise.
 > ```
 
 Loop over unordered pairs and valid context sizes, apply the factorial weight, and return a symmetric matrix with a zero diagonal.
@@ -582,7 +585,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Suggested time: 15 minutes
+>
+> You should spend up to 15 minutes on this exercise.
 > ```
 
 Implement exact first-order Shapley values on the same complete table, then compare their ranking with the pairwise interaction matrix.
@@ -673,7 +677,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Suggested time: 20 minutes
+>
+> You should spend up to 20 minutes on this exercise.
 > ```
 
 Estimate SII by sampling random permutations of the `n-2` other players plus one merged pair marker. Also shuffle values only within coalition sizes to preserve easy marginals while destroying player identity.
@@ -791,7 +796,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Suggested time: 15 minutes
+>
+> You should spend up to 15 minutes on this exercise.
 > ```
 
 Only now, after deriving the pair-plus-three-way oracle yourself, wrap the same complete value table as a Boolean-mask game, ask pinned `shapiq` for second-order SII with the full `2**n` budget, and extract all pair entries into a matrix.
@@ -893,7 +899,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Suggested time: 10 minutes
+>
+> You should spend up to 10 minutes on this exercise.
 > ```
 
 Summarize the strongest pair, planted-pair rank, planted value, largest off-target magnitude, and mean absolute error over unique pairs.
@@ -1825,6 +1832,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10 minutes on this exercise.
 > ```
 
@@ -2041,6 +2049,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
+>
 > You should spend up to 15 minutes on this exercise.
 > ```
 
@@ -2235,6 +2244,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
+>
 > You should spend up to 15 minutes on this exercise.
 > ```
 
@@ -2461,6 +2471,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵🔵
+>
 > You should spend up to 20 minutes on this exercise.
 > ```
 
@@ -2640,6 +2651,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 20 minutes on this exercise.
 > ```
 
@@ -2842,6 +2854,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
+>
 > You should spend up to 15 minutes on this exercise.
 > ```
 
@@ -3148,6 +3161,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵🔵
+>
 > You should spend up to 20 minutes on this exercise.
 > ```
 
@@ -3353,6 +3367,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
+>
 > You should spend up to 15 minutes on this exercise.
 > ```
 

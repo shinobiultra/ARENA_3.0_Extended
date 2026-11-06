@@ -287,9 +287,10 @@ r'''
 ### Exercise 1 - Build the Finite Model Organism
 
 > ```yaml
-> Difficulty: 🔴🔴⚪⚪⚪ (medium)
-> Importance: 🔵🔵🔵🔵⚪ (high)
-> Expected time: 10 minutes
+> Difficulty: 🔴🔴⚪⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 10 minutes on this exercise.
 > ```
 
 Implement the complete mod-addition dataset and a noiseless exact logit table. This is the ground truth you will use to check the mechanism metric before trusting it on a trained
@@ -488,9 +489,10 @@ r'''
 ### Exercise 2 - Define the Fourier Mechanism Metric
 
 > ```yaml
-> Difficulty: 🔴🔴🔴🔴⚪ (hard)
-> Importance: 🔵🔵🔵🔵⚪ (high)
-> Expected time: 25 minutes
+> Difficulty: 🔴🔴🔴🔴⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 25 minutes on this exercise.
 > ```
 
 The exact rule `c = a + b mod p` has a sparse Fourier signature over the logit cube indexed by `(a, b, c)`. Build the legal-mode mask, a same-size random mask, and a power-fraction
@@ -754,9 +756,10 @@ r'''
 ### Exercise 3 - Make the Mechanism Causal on Exact Ground Truth
 
 > ```yaml
-> Difficulty: 🔴🔴🔴🔴⚪ (hard)
-> Importance: 🔵🔵🔵🔵⚪ (high)
-> Expected time: 20 minutes
+> Difficulty: 🔴🔴🔴🔴⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 20 minutes on this exercise.
 > ```
 
 Now turn the metric into an intervention. Keep only legal Fourier modes, or ablate legal Fourier modes, then invert the FFT and measure table accuracy.
@@ -1022,9 +1025,10 @@ r'''
 ### Exercise 4 - Train, Save, Reload, Then Measure
 
 > ```yaml
-> Difficulty: 🔴🔴🔴🔴⚪ (hard)
-> Importance: 🔵🔵🔵🔵⚪ (high)
-> Expected time: 30 minutes
+> Difficulty: 🔴🔴🔴🔴⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 30 minutes on this exercise.
 > ```
 
 Implement the archaeology loop. You must save real checkpoint files, reload each file into a fresh model, and compute accuracy, loss, the legal Fourier score, and the random-mask
@@ -1294,9 +1298,10 @@ r'''
 ### Exercise 5 - Assemble the Signature Experiment
 
 > ```yaml
-> Difficulty: 🔴🔴🔴🔴⚪ (hard)
-> Importance: 🔵🔵🔵🔵⚪ (high)
-> Expected time: 35 minutes
+> Difficulty: 🔴🔴🔴🔴⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 35 minutes on this exercise.
 > ```
 
 Run the target-label model and the random-label control on the same checkpoint schedule. Summarize the accuracy emergence, Fourier mechanism emergence, random-label failure,
@@ -1672,9 +1677,10 @@ r'''
 ### Exercise 6 - Produce the Three-Panel Signature Figure
 
 > ```yaml
-> Difficulty: 🔴🔴⚪⚪⚪ (medium)
-> Importance: 🔵🔵🔵🔵⚪ (high)
-> Expected time: 15 minutes
+> Difficulty: 🔴🔴⚪⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15 minutes on this exercise.
 > ```
 
 Make the result visible. Your final figure should show training/mechanism trajectories, early/mid/late interventions, and controls. Your metrics table should state thresholds and

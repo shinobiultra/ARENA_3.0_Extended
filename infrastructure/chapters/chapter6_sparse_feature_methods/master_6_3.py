@@ -152,7 +152,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Return an `(n,4)` float array in the exact coordinate order above. Use case-insensitive first letters and exact lowercased equality for apple. The fourth coordinate is zero. Reject empty strings, whose first letter is undefined. This is the visible data-generating mechanism: the task is about first-letter representations, not an unrelated random feature cloud.
@@ -210,7 +210,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Compute `maximum(x @ encoder + bias, 0)`. The encoder is `(input,features)`, while the decoder later has `(features,input)`; they are not transposes by definition. A negative encoder weight can suppress a broad feature when a specific property is present. Preserve example order and do not normalize activations: precision, coverage and intervention magnitudes depend on that scale.
@@ -266,7 +266,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Return `codes @ decoder + bias`. For a single active feature, changing its activation by one should add exactly one decoder row. Keep the decoder bias separate: a feature ablation should not remove the bias. The row-wise convention will also determine the sign and shape of logit effects later.
@@ -322,7 +322,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Use the full `(examples,input)` denominator, not only examples with active features. Reject shape mismatches and empty arrays. Reconstruction error measures what is lost in activation space. It does not certify that the named features cover the concept of interest: a word-specific feature can reconstruct a broad property perfectly.
@@ -464,7 +464,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Return the first `k` indices of a stable descending sort of a one-dimensional activation vector. Reject negative k and cap it at the cohort size. Do not discard zeros silently: a dashboard should say whether it ran out of active examples. Stable ties preserve original example order and make exported panels recoverable.
@@ -522,7 +522,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Treat activations strictly above the threshold as firing. Return `(precision, recall)`; define precision as zero when no feature fires and recall as zero when there are no positives. These are declared descriptive conventions, not confidence intervals. The tests distinguish a feature that never fires from a perfect detector.
@@ -582,7 +582,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 `left` is `(examples,left_features)` and `right` `(examples,right_features)`. Return `(left_features,right_features)` intersection-over-union scores. Define an empty/empty pair as zero so two dead features do not appear meaningfully aligned. This is an activity-based diagnostic; a high overlap can still hide different decoder signs or intervention effects.
@@ -641,7 +641,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Return an example mask of `concept & primary_inactive & any_alternate_active`. `alternatives` has shape `(examples,features)` and may have zero columns. This is a candidate detector only. It cannot know whether the alternate code reconstructs the concept; decoder directions and interventions decide that. Keep the word candidate in the function's interpretation.
@@ -770,7 +770,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 `head_outputs` is `(examples,heads,head_dim)` and `encoder` `(heads*head_dim,features)`. Reshape the encoder to `(heads,head_dim,features)` and sum within each head, returning `(examples,heads,features)`. Summing over heads reproduces the bias-free encoder preactivation. These signed terms are a coordinate decomposition, not attention probabilities.
@@ -827,7 +827,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 `decoder` is `(features,heads*head_dim)`, `W_O` `(heads,head_dim,residual)` and `W_U` `(residual,vocab)`. Return `(features,heads,vocab)`. This is the direct linear effect of adding one unit of a decoder direction, before any later nonlinear computation. It is neither the encoder attribution above nor a full causal language-model prediction.
@@ -884,7 +884,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Return a new activation array with selected feature contributions removed. Require unique, in-range indices so a repeated index cannot double an ablation. An empty set is an identity. The error-preserving convention is `x - codes[:,indices] @ decoder[indices]`; it remains meaningful even when the dictionary reconstructs poorly. Do not silently switch to `(all other codes) @ decoder`.
@@ -943,7 +943,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Return one margin per example, not an already averaged scalar. `logits` is `(examples,2)` and `class_ids` is zero for A, one for B. The A-word ablation plot will use the exact four A words as its denominator, so removing B is an unrelated-feature control there. A score aggregated over all words would answer a different specificity question.
@@ -1079,7 +1079,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Return a dictionary with schema `arena.feature-dashboard.study.v1`, integer `feature`, text `label`, integer `n_examples`, integer `n_active`, and a list `examples` of `{text, activation}` for the stable top-k indices. Convert NumPy scalars to plain Python types. Retain inactive examples if k asks for them; their zeros reveal where the top list stops supporting the label.
@@ -1138,7 +1138,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Require exactly the documented keys and version, nonnegative integer feature/counts, `n_active <= n_examples`, no more exported examples than the cohort, text labels and examples with exactly `text,activation`. Activations must be finite and nonnegative plain numbers; reject booleans as numbers. Return True only after validation. This is an offline shape/data check, not a proof that a feature label is true or a live third-party schema validator.

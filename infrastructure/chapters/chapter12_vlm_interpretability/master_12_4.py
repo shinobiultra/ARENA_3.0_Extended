@@ -124,7 +124,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 For image arrays `(batch,height,width,3)`, return mean red and blue channels per square-grid patch, shape `(batch,grid*grid,2)`, in row-major order. Require both spatial sizes to be divisible by `grid`.
@@ -182,7 +183,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Assemble `(batch,6,6)` from four colour-feature vectors and one queried patch index per example. Put identity spatial codes at visual positions, the queried spatial code at position4 and zeros at answer position5.
@@ -240,7 +242,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Return an immutable tuple of image-token indices after checking uniqueness, bounds and exclusion of the answer position. These are mandatory layout checks for any adapter; do not infer image positions from sequence length alone.
@@ -355,7 +358,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Return attention-weighted values for `(queries,d)`, `(keys,d)`, `(keys,d_value)`. Subtract row maxima before exponentiation for numerical stability.
@@ -412,7 +416,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Given normalised attention rows and a boolean key mask, zero blocked keys and renormalise each row. Reject a row with no remaining probability mass. This function is a standalone attention intervention, used below to inspect the route.
@@ -471,7 +476,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Copy the residual. At layer0 add spatial attention over the four visual colours to the question’s first two coordinates. At layer1 add question colour coordinates to the answer. At layer2 return the unchanged copy. Loop over examples to keep the route visible.
@@ -533,7 +539,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Return independent copies of residuals at boundaries0,1,2,3 in an ordered dictionary. Boundary0 is the input; boundary3 is the final state. This boundary convention will also define intervention timing.
@@ -636,7 +643,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Given `(batch,vocab)` scores and per-example clean/corrupt candidate IDs, return clean-score minus corrupt-score for each example. Do not average until after normalising recoveries.
@@ -691,7 +699,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Copy the corrupted residual `(batch,sequence,d)` and replace all coordinates at the specified positions using the clean donor. Leave both inputs unchanged. Full-sequence patching means every sequence position, including question and answer.
@@ -747,7 +756,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Return `(patched-corrupt)/(clean-corrupt)` elementwise. Require a finite strictly positive clean-minus-corrupt denominator; reject invalid or reversed task contrasts instead of silently averaging them. Values outside `[0,1]` can be meaningful and must not be clipped.
@@ -804,7 +814,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 15–20 minutes on this exercise.
+>
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 For each named position set and each boundary0–3, patch the cached corrupted state from the matching clean boundary, resume transitions from that boundary, and compute mean per-example recovery. Return a dict of four-number lists. Use final answer coordinates0/1 as the candidate logits.
@@ -922,7 +933,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Apply an explicit `(d,vocabulary)` readout to every residual position and return the argmax candidate ID at each position. This simple lens is meaningful only because this organism’s colour readout is declared.
@@ -976,7 +988,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Make a copy of the target prompt’s initial state. Copy **only the first two content coordinates** from one source position into one target visual position, preserving the target’s spatial code. Run the target computation and return its two final answer scores. This is a controlled activation-conditioned decoder, not a learned free-text verbalizer.

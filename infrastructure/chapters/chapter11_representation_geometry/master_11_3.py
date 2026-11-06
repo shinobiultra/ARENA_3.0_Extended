@@ -268,7 +268,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10 minutes on this exercise.
+>
+> You should spend up to 10 minutes on this exercise.
 > ```
 
 Implement the variable replacement and recompute the joint output. Inputs have shape `[examples, 2]`. The `variables` tuple may select neither, either, or both columns. Do not
@@ -393,7 +394,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10 minutes on this exercise.
+>
+> You should spend up to 10 minutes on this exercise.
 > ```
 
 Return a `[width, rank]` orthonormal basis from a full-column-rank floating matrix. Reject dependent or nonfinite columns; handle rank zero. Use reduced QR and make the diagonal of
@@ -459,7 +461,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 15 minutes on this exercise.
+>
+> You should spend up to 15 minutes on this exercise.
 > ```
 
 Implement the derived row-vector formula. Validate dimensions and orthonormality. The tests compare it with an independently computed full rotation, including rank-zero and
@@ -640,7 +643,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 15 minutes on this exercise.
+>
+> You should spend up to 15 minutes on this exercise.
 > ```
 
 Implement stable cross entropy and masked output agreement. Targets are integer output classes. Return NaN for an empty subgroup, since it provides no accuracy evidence. Now check
@@ -896,7 +900,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 20 minutes on this exercise.
+>
+> You should spend up to 20 minutes on this exercise.
 > ```
 
 Initialize a thin trainable matrix with a local seeded generator. At every step, construct Q, patch the training base activations, run the frozen continuation and minimize
@@ -1353,7 +1358,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴⚪⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 5–10 minutes on this exercise.
+>
+> You should spend up to 5-10 minutes on this exercise.
 > ```
 
 Implement `role_interchange_targets`. `base_names` contains two vocabulary token
@@ -1496,7 +1502,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> You should spend 15–25 minutes on this exercise.
+>
+> You should spend up to 15-25 minutes on this exercise.
 > ```
 
 Recomputing the layers before an intervention cannot help optimize its subspace:
@@ -1687,7 +1694,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Fit a centered ridge regression from activations to `2 * R - 1`. Normalize its
@@ -1780,7 +1788,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> You should spend 20–30 minutes on this exercise.
+>
+> You should spend up to 20-30 minutes on this exercise.
 > ```
 
 Adapt the exact model's optimizer to minibatches. Every intervention has a base

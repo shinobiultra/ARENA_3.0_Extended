@@ -229,7 +229,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 20 minutes on this exercise.
+>
+> You should spend up to 20 minutes on this exercise.
 > ```
 
 Return the training mean `[d]`, retained PCA basis `[d, r]`, whitening map
@@ -354,7 +355,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 30 minutes on this exercise.
+>
+> You should spend up to 30 minutes on this exercise.
 > ```
 
 Implement CCA and its held-out evaluation. Use your whitening function for
@@ -768,7 +770,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 15 minutes on this exercise.
+>
+> You should spend up to 15 minutes on this exercise.
 > ```
 
 Fit an orthogonal row-vector transform $Q$ minimizing
@@ -866,7 +869,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 25 minutes on this exercise.
+>
+> You should spend up to 25 minutes on this exercise.
 > ```
 
 Implement the canonical difference map above, allowing rank zero as an exact
@@ -975,7 +979,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10 minutes on this exercise.
+>
+> You should spend up to 10 minutes on this exercise.
 > ```
 
 Return per-example `KL(target || actual)` from aligned `[examples, vocabulary]`
@@ -1958,7 +1963,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> You should spend 10 minutes on this exercise.
+>
+> You should spend up to 10 minutes on this exercise.
 > ```
 
 For each layer pair, compare the correlation and KL figures. Write three

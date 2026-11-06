@@ -293,7 +293,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Suggested time: 18 minutes
+>
+> You should spend up to 18 minutes on this exercise.
 > ```
 
 Return full probabilities, deterministic top-k indices, selected affinities,
@@ -421,7 +422,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Suggested time: 22 minutes
+>
+> You should spend up to 22 minutes on this exercise.
 > ```
 
 For each sequence, allocate `ceil(capacity_factor * active_assignments /
@@ -612,7 +614,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Suggested time: 25 minutes
+>
+> You should spend up to 25 minutes on this exercise.
 > ```
 
 Pack retained token copies into `(experts, capacity, d_model)`, then scatter weighted outputs back. Do not renormalize after overflow.
@@ -814,7 +817,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Suggested time: 12 minutes
+>
+> You should spend up to 12 minutes on this exercise.
 > ```
 
 Build one two-layer GELU MLP per expert and apply expert `e` only to dispatch buffer `e`.
@@ -914,7 +918,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Suggested time: 24 minutes
+>
+> You should spend up to 24 minutes on this exercise.
 > ```
 
 Implement the Switch-style soft-importance times detached hard-load loss, squared log-partition z-loss, and signed effects for the paired 2x2 experiment. A main effect is
@@ -1081,7 +1086,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Suggested time: 30 minutes
+>
+> You should spend up to 30 minutes on this exercise.
 > ```
 
 Compose router, capacity, dispatch, expert computation, combination, auxiliary losses, forced routing, and ablation. Return the full debug surface.
@@ -1308,7 +1314,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Suggested time: 15 minutes
+>
+> You should spend up to 15 minutes on this exercise.
 > ```
 
 Apply supplied causal attention with its residual, then your normalized sparse MoE with a second residual. Return the attention cache and MoE diagnostics.
@@ -1407,7 +1414,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Suggested time: 30 minutes
+>
+> You should spend up to 30 minutes on this exercise.
 > ```
 
 Stack blocks, tie token embeddings, validate every cache, and implement greedy cached generation. Full/chunk parity is required only with unbounded capacity.
@@ -1629,7 +1637,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Suggested time: 22 minutes
+>
+> You should spend up to 22 minutes on this exercise.
 > ```
 
 Generate `BOS, value, operation, next_value, ...` streams where operations can change at every transition. Grade only predictions after operation tokens.
@@ -1781,7 +1790,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Suggested time: 25 minutes
+>
+> You should spend up to 25 minutes on this exercise.
 > ```
 
 Build one row per operation event, preserve its causal prefix, replace the current operation token with `BOS_TOKEN`, and extract the router probabilities at that position. Then fit
@@ -1984,7 +1994,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Suggested time: 12 minutes
+>
+> You should spend up to 12 minutes on this exercise.
 > ```
 
 Deep-copy an MoE and apply the same permutation to router output rows and expert modules.
@@ -2063,7 +2074,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Suggested time: 20 minutes
+>
+> You should spend up to 20 minutes on this exercise.
 > ```
 
 For one trained model and one fixed final stream, score every operation after ablating each expert and after forcing each expert. Preferred experts are selected separately from dev

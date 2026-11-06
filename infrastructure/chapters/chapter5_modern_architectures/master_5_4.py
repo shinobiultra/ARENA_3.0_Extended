@@ -265,7 +265,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Suggested time: 15 minutes
+>
+> You should spend up to 15 minutes on this exercise.
 > ```
 
 Implement `S[t,s] = sum(log_decay[s+1:t+1])`. Use `-inf` above the diagonal so exponentiation enforces causality. Do not compute this as a difference of cumulative sums.
@@ -393,7 +394,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Suggested time: 20 minutes
+>
+> You should spend up to 20 minutes on this exercise.
 > ```
 
 Expand grouped `B/C` parameters over heads, then materialize `M[t,s] = C_t^T B_s exp(S[t,s])`. This is attention-like - `C` behaves like queries, `B` like keys, and `X` like values - but its causal mask is a structured product of scalar transitions.
@@ -563,7 +565,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Suggested time: 20 minutes
+>
+> You should spend up to 20 minutes on this exercise.
 > ```
 
 Implement the recurrence literally with state shape `[batch, heads, head_dim, state_dim]`. Return every output and the final state. Add a `carry_scale` intervention so `0` removes
@@ -737,7 +740,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Suggested time: 15 minutes
+>
+> You should spend up to 15 minutes on this exercise.
 > ```
 
 Use the semiseparable matrix to mix the value sequence with one contraction. Test it against the independently implemented recurrence and perturb a future token by 10,000 to test
@@ -842,7 +846,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴🔴
 > Importance: 🔵🔵🔵🔵🔵
-> Suggested time: 45 minutes
+>
+> You should spend up to 45 minutes on this exercise.
 > ```
 
 Factor the full matrix into diagonal chunk blocks plus low-rank off-diagonal blocks. Compute local outputs, compress writes to chunk-boundary states, scan only those boundaries,
@@ -1209,7 +1214,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴🔴
 > Importance: 🔵🔵🔵🔵🔵
-> Suggested time: 45 minutes
+>
+> You should spend up to 45 minutes on this exercise.
 > ```
 
 Compose one input projection into `z/x/B/C/dt`, a causal depthwise convolution over `x/B/C`, grouped SSD heads, a learned skip `D`, RMS normalization, SiLU gate, output projection,
@@ -1780,7 +1786,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Suggested time: 30 minutes
+>
+> You should spend up to 30 minutes on this exercise.
 > ```
 
 Complete `allocate_cache` and `step` in your block. The convolution cache stores one kernel width of raw `x/B/C` projections; the SSD cache stores `[head, head_dim, state]`.
@@ -2132,7 +2139,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴🔴
 > Importance: 🔵🔵🔵🔵🔵
-> Suggested time: 45 minutes
+>
+> You should spend up to 45 minutes on this exercise.
 > ```
 
 Implement the compact `z/x/B/C/dt` mixer and the optimizer loop. Train the true-label Mamba-2 model, a matched local convolution, and the same Mamba-2 capacity on independently
@@ -2594,7 +2602,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Suggested time: 20 minutes
+>
+> You should spend up to 20 minutes on this exercise.
 > ```
 
 Time all three educational paths on increasing lengths. Also compute the exact bytes occupied by the full `L x L` decay matrix and the chunk-local `L x Q` blocks. Then generate the
@@ -3429,6 +3438,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵🔵
+>
+> You should spend up to 20-30 minutes on this exercise.
 > ```
 > **Purpose:** Finish the architecture rather than stopping at one block. Differentiate all three SSD schedules, stack cached blocks into a token LM, and instantiate real attention
 > and Mamba-1 controls within ten percent of the Mamba-2 block's parameter count.
@@ -3870,6 +3881,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴🔴
 > Importance: 🔵🔵🔵🔵🔵
+>
+> You should spend up to 30-45 minutes on this exercise.
 > ```
 > **Purpose:** Convert the actual pinned release into the learner architecture and compare every layer against an independent Transformers Mamba-2 implementation on two real
 > tokenized prompts.

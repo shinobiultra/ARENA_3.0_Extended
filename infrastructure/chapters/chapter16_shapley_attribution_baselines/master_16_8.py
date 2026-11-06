@@ -325,7 +325,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> You should spend 10-15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Implement the encoder, readout, and cached forward pass. The fifth hidden unit must be `ReLU(RED +
@@ -562,7 +563,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> You should spend 10-15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 A player is meaningful only relative to an activation level. Write one routine which mixes clean and
@@ -763,7 +765,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> You should spend 15-20 minutes on this exercise.
+>
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 Average each player's marginal contribution over every possible predecessor coalition, using the
@@ -986,7 +989,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> You should spend 10-15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Implement noising patching: start from the clean cache, replace one location with its corrupt value,
@@ -1156,7 +1160,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> You should spend 15-20 minutes on this exercise.
+>
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 Implement strict name-based alignment and report magnitude error, cosine similarity, top unit, and
@@ -1442,7 +1447,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> You should spend 15-20 minutes on this exercise.
+>
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 Build a fixed label-shuffle control and 512 matched-L2 random hidden interventions. Keep the known
@@ -1670,7 +1676,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵🔵
-> You should spend 20-25 minutes on this exercise.
+>
+> You should spend up to 20-25 minutes on this exercise.
 > ```
 
 Turn the single example into a falsification curve. For each gate readout strength, recompute token
@@ -2302,7 +2309,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Start by making the finite player set explicit. Every later Shapley or patching calculation assumes
@@ -2454,7 +2462,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Implement the finite circuit `0.25 + 1.2*x0 - 0.7*x1 + 1.6*x2 + 0.9*x3 + 2.2*x0*x2 - 1.5*x1*x3`,
@@ -2878,7 +2887,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Implement the exact Shapley formula directly. Do not call a SHAP package; the point is to understand
@@ -3098,7 +3108,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Now compute a causal intervention on the same task: remove one feature from the full circuit and
@@ -3490,7 +3501,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Convert a ranking into consequences. If the top-ranked feature is meaningful, deleting it should
@@ -3771,7 +3783,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Ordinary Shapley gives zero single-feature credit on XOR. Implement pairwise Shapley interactions to
@@ -4040,7 +4053,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Write the artifact bundle required by the roadmap: agreement matrix, deletion/insertion curves,
@@ -4641,7 +4655,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 The roadmap asks whether data-level attribution and mechanistic methods are comparable. Implement a
@@ -4936,7 +4951,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Combine the agreement case, deletion consequence test, top-k matrix, and pair-interaction diagnosis

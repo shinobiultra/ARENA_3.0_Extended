@@ -271,8 +271,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> 
-> You should spend 10-15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Normalize each residual vector by its root mean square, then apply Gemma's learned offset scale `1 + weight`.
@@ -384,8 +384,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵⚪
-> 
-> You should spend 20-25 minutes on this exercise.
+>
+> You should spend up to 20-25 minutes on this exercise.
 > ```
 
 Implement the quarter-turn helper, build the cosine/sine cache, and apply position-indexed rotations to
@@ -549,8 +549,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵⚪
-> 
-> You should spend 20-25 minutes on this exercise.
+>
+> You should spend up to 20-25 minutes on this exercise.
 > ```
 
 Repeat each key/value head contiguously for its query-head group. Then construct a boolean causal mask from
@@ -694,8 +694,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴⚪⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> 
-> You should spend 5-10 minutes on this exercise.
+>
+> You should spend up to 5-10 minutes on this exercise.
 > ```
 
 Pass one projection through SiLU, multiply it elementwise by the second projection, and project the gated
@@ -803,8 +803,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵⚪
-> 
-> You should spend 35-45 minutes on this exercise.
+>
+> You should spend up to 35-45 minutes on this exercise.
 > ```
 
 Project and reshape Q/K/V, apply RoPE to queries and keys, append cached K/V states, repeat KV heads, mask
@@ -1045,8 +1045,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> 
-> You should spend 15-20 minutes on this exercise.
+>
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 Build a pre-norm attention residual update followed by a pre-norm SwiGLU residual update. Propagate the
@@ -1200,8 +1200,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵⚪
-> 
-> You should spend 35-45 minutes on this exercise.
+>
+> You should spend up to 35-45 minutes on this exercise.
 > ```
 
 Create absolute positions, build one RoPE cache per forward pass, scale token embeddings by
@@ -1496,8 +1496,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> 
-> You should spend 20-25 minutes on this exercise.
+>
+> You should spend up to 20-25 minutes on this exercise.
 > ```
 
 Use forward hooks to capture the scaled embedding, every decoder-layer output, the final normalized residual,
@@ -2051,8 +2051,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴⚪⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> 
-> You should spend 5-10 minutes on this exercise.
+>
+> You should spend up to 5-10 minutes on this exercise.
 > ```
 
 Write a small diagnostic that scans a parity profile in execution order and returns the first stage whose
@@ -2470,8 +2470,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> 
-> You should spend 10-15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 ### Forecast — Projection coordinates
@@ -2560,8 +2560,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> 
-> You should spend 10-15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 ### Forecast — Activation convention

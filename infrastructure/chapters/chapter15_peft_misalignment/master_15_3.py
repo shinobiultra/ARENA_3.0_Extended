@@ -288,7 +288,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 20–30 minutes on this exercise.
+>
+> You should spend up to 20-30 minutes on this exercise.
 > ```
 
 Implement per-block absmax normalization, nearest-code assignment, and
@@ -481,7 +482,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 20–30 minutes on this exercise.
+>
+> You should spend up to 20-30 minutes on this exercise.
 > ```
 
 Reconstruct mean-centered scales, separate the amortized paper formula
@@ -872,7 +874,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 20–30 minutes on this exercise.
+>
+> You should spend up to 20-30 minutes on this exercise.
 > ```
 
 The toy STE makes the gradient path explicit. The real wrapper must accept
@@ -1108,7 +1111,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 20–30 minutes on this exercise.
+>
+> You should spend up to 20-30 minutes on this exercise.
 > ```
 
 Cross every subject and template with both labels. Training subjects recur
@@ -1424,7 +1428,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 20–30 minutes on this exercise.
+>
+> You should spend up to 20-30 minutes on this exercise.
 > ```
 
 The task term selects only the ` red` and ` blue` logits and applies
@@ -1607,7 +1612,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 20–30 minutes on this exercise.
+>
+> You should spend up to 20-30 minutes on this exercise.
 > ```
 
 Report singular values per target matrix rather than concatenating away
@@ -1747,7 +1753,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 20–30 minutes on this exercise.
+>
+> You should spend up to 20-30 minutes on this exercise.
 > ```
 
 Enumerate all attention and MLP projections in every GPT-Neo block. The

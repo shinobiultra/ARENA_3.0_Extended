@@ -286,7 +286,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 15 minutes on this exercise.
+>
+> You should spend up to 15 minutes on this exercise.
 > ```
 
 Return the mean `[d]`, basis `[d, k]` and variance fractions `[k]`. Use reduced SVD. The test includes a huge direction found only in held-out data: your fitted basis must ignore
@@ -400,7 +401,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 15 minutes on this exercise.
+>
+> You should spend up to 15 minutes on this exercise.
 > ```
 
 Implement phase coordinates, nearest-angle decoding and class-balanced template centering. Use `-1` to abstain when both coordinates are exactly zero: the zero vector has no angle.
@@ -619,7 +621,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 15 minutes on this exercise.
+>
+> You should spend up to 15 minutes on this exercise.
 > ```
 
 Return the input mean, weights and target mean. For zero ridge use least squares; for positive ridge solve the regularized normal equations. Then implement joint-coordinate R².
@@ -742,7 +745,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 15 minutes on this exercise.
+>
+> You should spend up to 15 minutes on this exercise.
 > ```
 
 Implement Euclidean kNN with deterministic ties, a distance-correlation statistic, and its supplied class-permutation null. Use every off-diagonal pair exactly once.
@@ -972,7 +976,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 15 minutes on this exercise.
+>
+> You should spend up to 15 minutes on this exercise.
 > ```
 
 Implement both rank-based scores for aligned high- and low-dimensional observations. Restrict `k < n/2`. Neither function may read labels.
@@ -1074,7 +1079,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10 minutes on this exercise.
+>
+> You should spend up to 10 minutes on this exercise.
 > ```
 
 Return the two training means and orthogonal row-vector transform. Keep scale fixed so that an incorrect radius remains observable.
@@ -1190,7 +1196,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 20 minutes on this exercise.
+>
+> You should spend up to 20 minutes on this exercise.
 > ```
 
 Implement the minimum-norm probe edit and donor subspace replacement. Reject non-orthogonal bases and uncontrollable coordinate systems.
@@ -1452,7 +1459,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 20 minutes on this exercise.
+>
+> You should spend up to 20 minutes on this exercise.
 > ```
 
 Implement aligned token reads and a one-forward residual replacement. Return the actual logits so that answer scoring remains visible in the experiment.
@@ -1592,7 +1600,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 15 minutes on this exercise.
+>
+> You should spend up to 15 minutes on this exercise.
 > ```
 
 Implement the affine-centered coordinate clamp and the literal author QR formula. The first can reuse your minimum-norm edit with a receiver equal to the training mean; the second
@@ -1700,7 +1709,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 15 minutes on this exercise.
+>
+> You should spend up to 15 minutes on this exercise.
 > ```
 
 Register temporary pre-hooks at the supplied boundaries, gather the selected semantic token, and return the actual logits and a CPU tensor `[batch, boundaries, width]`. The final
@@ -1849,7 +1859,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> You should spend 15 minutes on this exercise.
+>
+> You should spend up to 15 minutes on this exercise.
 > ```
 
 Implement whole-word span alignment and paired logit scoring. Check that each

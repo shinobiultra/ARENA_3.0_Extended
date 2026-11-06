@@ -339,7 +339,7 @@ r'''
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Return a boolean tensor of shape `[models, training_images]`. Every row must contain exactly `size` true entries. Use a local CPU generator so this function does not change the global random state.
@@ -499,7 +499,7 @@ r'''
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Support logits shaped `[..., queries, classes]` and one integer label per query. Return `[..., queries]`, preserving every model/batch axis. Do not modify the input tensor.
@@ -615,7 +615,7 @@ r'''
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Implement the proximal map of the L1 penalty, allowing a scalar or broadcastable nonnegative threshold. Try deriving it by considering positive, zero and negative solutions separately.
@@ -780,7 +780,7 @@ r'''
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
 >
-> You should spend up to 15–20 minutes on this exercise.
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 Return one objective and one maximum KKT violation per target. `weights` has shape `[training_images, targets]`; each target has its own penalty. For the KKT function, `gram` and `cross` already use centered training rows.
@@ -905,7 +905,7 @@ r'''
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵🔵
 >
-> You should spend up to 30–45 minutes on this exercise.
+> You should spend up to 30-45 minutes on this exercise.
 > ```
 
 Fit centered multi-target Lasso, recover the intercept, and return weights, bias, KKT residuals, step count and a two-column history of checked steps and the largest residual. Use `soft_threshold` and `lasso_kkt`. Stop only when all residuals satisfy `tolerance`; raise an error if the step limit is reached.
@@ -1048,7 +1048,7 @@ r'''
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵🔵
 >
-> You should spend up to 20–30 minutes on this exercise.
+> You should spend up to 20-30 minutes on this exercise.
 > ```
 
 Fit every penalty on the training subset/output pairs, warm-starting from the previous path point. Compute validation MSE per query and select its minimum. Return the complete path as well as the selected weight and bias for each query. The function deliberately has no test-response argument.
@@ -1397,7 +1397,7 @@ r'''
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Treat each target’s weights as an embedding and return a `[targets, targets]` cosine-similarity matrix. Remove each target’s mean coefficient first so the result is invariant to arbitrary common offsets. Give an all-constant vector zero similarity rather than dividing by zero.
@@ -1498,7 +1498,7 @@ r'''
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
 >
-> You should spend up to 15–20 minutes on this exercise.
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 Select the largest `budget` scores with stable source-order ties. Then sample random index sets without replacement, matching the selected set’s count in every observed class. Return sorted indices for easy comparison; do not use the query outcome to choose controls.
@@ -3266,7 +3266,7 @@ r'''
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 `logits` has shape `[models, examples, classes]`. Each corresponding row of
@@ -3358,7 +3358,7 @@ r'''
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
 >
-> You should spend up to 15–20 minutes on this exercise.
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 Implement the assigned-label probability and the three map statistics.
@@ -3617,7 +3617,7 @@ r'''
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Apply each parameter set to its corresponding input tensor. Inputs have shape
@@ -3730,7 +3730,7 @@ r'''
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵🔵
 >
-> You should spend up to 35–45 minutes on this exercise.
+> You should spend up to 35-45 minutes on this exercise.
 > ```
 
 Train fresh models and return final parameters, both `[E, B, N, C]` logit
@@ -3870,7 +3870,7 @@ r'''
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
 >
-> You should spend up to 5–10 minutes on this exercise.
+> You should spend up to 5-10 minutes on this exercise.
 > ```
 
 Return the top `k` canonical example indices. `largest=False` returns the
@@ -3956,7 +3956,7 @@ r'''
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Treat low confidence as an inspection ranking. At each requested budget,
@@ -4048,7 +4048,7 @@ r'''
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
 >
-> You should spend up to 5–10 minutes on this exercise.
+> You should spend up to 5-10 minutes on this exercise.
 > ```
 
 Implement Jaccard overlap: intersection size divided by union size. Ordering
@@ -4922,7 +4922,7 @@ r'''
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Given observed labels, one selected index vector and a fresh seed, draw a
@@ -5017,7 +5017,7 @@ r'''
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
 >
-> You should spend up to 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Evaluate fixed parameter sets on a held-out input matrix. Return logits,

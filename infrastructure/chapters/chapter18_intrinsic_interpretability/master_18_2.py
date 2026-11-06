@@ -143,7 +143,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Return elementwise mean squared error over all examples and outputs. This metric uses no 1/2 factor; the fitting objective above does.
@@ -202,7 +203,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Return pairwise positive costs `[input,output]` for one-dimensional neuron positions. Equal positions still cost 1; distance should penalize long connections without making local connections free.
@@ -261,7 +263,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Implement the elementwise proximal operator of weighted L1: shrink each magnitude by its nonnegative threshold, clip at zero, and preserve sign. Broadcast thresholds.
@@ -320,7 +323,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Fit a zero-intercept multi-output matrix using a gradient step for the squared loss followed by weighted soft thresholding. Initialize zeros; keep the input arrays unchanged. This fixture uses a whitened design with spectral norm of `X.T@X/n` equal to one, so step size 0.5 is safely convergent.
@@ -385,7 +389,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Compute the fraction of total absolute connection mass outside a supplied boolean module mask. Return zero for an all-zero network. This is a chosen-layout diagnostic, not Newman graph modularity.
@@ -532,7 +537,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Evaluate piecewise-linear hat functions on arbitrary-shaped values, returning `values.shape + (K,)`. Include both endpoints correctly, allow nonuniform knots, and reject values outside the interval or repeated knots.
@@ -607,7 +613,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Build the gauge-fixed additive design for inputs `[batch,inputs]`. Subtract the basis at zero, remove the unique zero-knot basis column per feature, flatten in input-major order and prepend an intercept column.
@@ -673,7 +680,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Fit the visible additive edge model by least squares. Return the intercept followed by the gauge-fixed edge coefficients. No optimizer or nonlinear search is necessary for this fixed-basis teaching instance.
@@ -732,7 +740,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Return the separate fitted edge contributions `[batch,inputs]`, excluding the shared intercept. Their sum plus `coefficients[0]` must reproduce the full additive prediction.
@@ -794,7 +803,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Fit `offset + scale * candidate(x)` to sampled learned edge values. Return `[offset,scale]` and MSE. Candidate functions are supplied explicitly; this function does not search an unbounded formula language.
@@ -909,7 +919,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Enumerate all legal one-step splits and return `(feature,threshold,SSE_reduction)`. If no strictly positive gain exists, return `(None,None,0)`. Do not split constant columns or create empty children.
@@ -979,7 +990,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Recursively choose the best immediate split. Accept it only when global mean-SSE reduction exceeds the extra-leaf penalty. Keep the original `root_count` through recursion and stop at depth zero. A root-only tree has one leaf.
@@ -1049,7 +1061,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Evaluate the exact dictionary tree, preserving input order. Use the left child for values equal to a threshold. Empty batches should return empty arrays.
@@ -1115,7 +1128,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Count terminal values recursively. Count leaves, not decision nodes, because the objective above charges for terminal rules.
@@ -1174,7 +1188,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Return a list of `(rule_string,leaf_value)` pairs in left-to-right order. Prefix deeper conditions with `and`. Do not silently drop any branch.

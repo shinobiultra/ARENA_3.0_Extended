@@ -256,7 +256,10 @@ r'''
 ### Exercise 1: Derive the Forward Noising Step
 
 > ```yaml
-> Difficulty: 🔴🔴⚪⚪⚪ | Importance: 🔵🔵🔵🔵⚪ | 15 minutes
+> Difficulty: 🔴🔴⚪⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15 minutes on this exercise.
 > ```
 
 Implement a schedule with an exact clean endpoint and the closed-form sample from $q(x_t\mid x_0)$. Broadcasting must work for a different timestep per image.
@@ -364,7 +367,10 @@ r'''
 ### Exercise 2: Build the Object World and Its Planted Bottleneck
 
 > ```yaml
-> Difficulty: 🔴🔴⚪⚪⚪ | Importance: 🔵🔵🔵🔵⚪ | 15 minutes
+> Difficulty: 🔴🔴⚪⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15 minutes on this exercise.
 > ```
 
 Render the shape mask from integer labels, fill it with the requested RGB concept, then implement the timestep embedding and denoiser whose first concept channels receive that
@@ -593,7 +599,10 @@ r'''
 ### Exercise 3: Cache Activations by Time and Layer
 
 > ```yaml
-> Difficulty: 🔴🔴🔴⚪⚪ | Importance: 🔵🔵🔵🔵🔵 | 15 minutes
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵🔵
+>
+> You should spend up to 15 minutes on this exercise.
 > ```
 
 Register one forward hook per requested denoiser block. Each cache key must contain both the current denoising timestep and the layer name, and cached tensors must be detached
@@ -675,7 +684,10 @@ r'''
 ### Exercise 4: Replace Exactly One Activation Region
 
 > ```yaml
-> Difficulty: 🔴🔴🔴⚪⚪ | Importance: 🔵🔵🔵🔵🔵 | 20 minutes
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵🔵
+>
+> You should spend up to 20 minutes on this exercise.
 > ```
 
 Return a hook that replaces only specified channels and mask locations. The recipient input and donor cache must remain unchanged.
@@ -767,7 +779,10 @@ r'''
 ### Exercise 5: Write the Deterministic Denoising Loop
 
 > ```yaml
-> Difficulty: 🔴🔴🔴🔴⚪ | Importance: 🔵🔵🔵🔵🔵 | 30 minutes
+> Difficulty: 🔴🔴🔴🔴⚪
+> Importance: 🔵🔵🔵🔵🔵
+>
+> You should spend up to 30 minutes on this exercise.
 > ```
 
 Implement the complete reverse trajectory. At each step, optionally install one replacement hook, predict $x_0$, take the deterministic update, and save the next state.
@@ -881,7 +896,10 @@ r'''
 ### Exercise 6: Calibrate Regional Causal Recovery
 
 > ```yaml
-> Difficulty: 🔴🔴⚪⚪⚪ | Importance: 🔵🔵🔵🔵🔵 | 15 minutes
+> Difficulty: 🔴🔴⚪⚪⚪
+> Importance: 🔵🔵🔵🔵🔵
+>
+> You should spend up to 15 minutes on this exercise.
 > ```
 
 Make corrupt output zero and exact clean-region recovery one. Penalize RMS change outside the preregistered target mask.
@@ -974,7 +992,10 @@ r'''
 ### Exercise 7: Sweep the Known Circuit
 
 > ```yaml
-> Difficulty: 🔴🔴🔴🔴🔴 | Importance: 🔵🔵🔵🔵🔵 | 35 minutes
+> Difficulty: 🔴🔴🔴🔴🔴
+> Importance: 🔵🔵🔵🔵🔵
+>
+> You should spend up to 35 minutes on this exercise.
 > ```
 
 Patch every layer and timestep from the clean donor into the corrupt run. Then construct same-size random-channel, displaced-location, wrong-time, shuffled-label, unpatched, and
@@ -1444,7 +1465,10 @@ r'''
 ### Exercise 8: Define a Spatially Isolated Latent Intervention
 
 > ```yaml
-> Difficulty: 🔴🔴🔴⚪⚪ | Importance: 🔵🔵🔵🔵🔵 | 25 minutes
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵🔵
+>
+> You should spend up to 25 minutes on this exercise.
 > ```
 
 Implement a centered preregistered mask, donor replacement, scale-matched random replacement, donor/recipient calibration, and regional transfer metric. The unselected complement
@@ -1670,7 +1694,10 @@ r'''
 ### Exercise 9: Write Stable Diffusion's DDIM Loop
 
 > ```yaml
-> Difficulty: 🔴🔴🔴🔴🔴 | Importance: 🔵🔵🔵🔵🔵 | 40 minutes
+> Difficulty: 🔴🔴🔴🔴🔴
+> Importance: 🔵🔵🔵🔵🔵
+>
+> You should spend up to 40 minutes on this exercise.
 > ```
 
 Encode classifier-free guidance in UNet batch order, prepare the fixed initial latent, execute each scheduler update, and insert one donor state **before** exactly one UNet call.
@@ -1892,7 +1919,10 @@ r'''
 ### Exercise 10: Sweep Time and Falsify the Real Claim
 
 > ```yaml
-> Difficulty: 🔴🔴🔴🔴🔴 | Importance: 🔵🔵🔵🔵🔵 | 45 minutes
+> Difficulty: 🔴🔴🔴🔴🔴
+> Importance: 🔵🔵🔵🔵🔵
+>
+> You should spend up to 45 minutes on this exercise.
 > ```
 
 Decode one donor patch at every denoising call. Select the maximum CLIP donor recovery, then evaluate the same chosen time with a displaced region and a scale-matched random
