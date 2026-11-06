@@ -360,11 +360,12 @@ function render(){
     <p class="small muted">…part 4 of 4…</p>
     <div class="navline">Part <b>4 of 4</b> · <span class="btn">← Previous part</span> <span class="btn">${v.tracks && nextCore.gname!==route[i82].gname ? 'Choose your next track →' : 'Next on the route: '+nextCore.id.replace(/[ab]$/,'')+' →'}</span>
     <div class="small muted">${L[nextCore.id][1]==='orig'? 'An original lesson opens on learn.arena.education; the reader shows "Back to the route" for it.' : 'Same page, next lesson.'} Earlier on the route: ${prevCore? prevCore.id.replace(/[ab]$/,''):'—'}. The URL is the bookmark; nothing is stored.</div></div>`;
-  const chCore = route.filter(p=>/^8\./.test(p.id) && p.core).map(p=>p.id), chPre = [...new Set(route.filter(p=>/^8\./.test(p.id)).flatMap(p=>L[p.id][3]).filter(q=>!/^8\./.test(q)))];
+  const chCore = route.filter(p=>/^8\./.test(p.id) && p.core).map(p=>p.id), chPre = [...new Set(route.filter(p=>/^8\./.test(p.id) && p.core).flatMap(p=>L[p.id][3]).filter(q=>!/^8\./.test(q)))],
+        optPre = route.filter(p=>/^8\./.test(p.id) && !p.core).map(p=>[p.id, L[p.id][3].filter(q=>!/^8\./.test(q))]).filter(x=>x[1].length);
   const lastOf8 = route.map(p=>p.id).lastIndexOf('8.8'); const after = route.slice(lastOf8+1).find(p=>p.core);
   document.getElementById('mockHome').innerHTML = `<b>Chapter 8: Automated Circuits</b> · <span class="small">TLDR</span>
     <ul class="small"><li><b>Before this chapter:</b> ${chPre.map(link).join(', ')}.</li>
-    <li>We recommend ${chCore.map(id=>link(id)).join(' then ')} (${fmt(chCore.reduce((s,id)=>s+days(id),0))} days). The rest are optional, in any order.</li>
+    <li>We recommend ${chCore.map(id=>link(id)).join(' then ')} (${fmt(chCore.reduce((s,id)=>s+days(id),0))} days). The rest are optional, in any order${optPre.length? ' (' + optPre.map(([id,qs])=>`${id} also needs ${qs.join(', ')}`).join('; ') + ')':''}.</li>
     <li><b>After this chapter</b> the route continues with ${after? link(after.id):'—'}${v.tracks?' (or any other track)':''}.</li></ul>`;
   // decisions
   document.getElementById('decisions').innerHTML = '<tr><th>ID</th><th>Choice</th><th>Options</th><th>Why the recommendation</th></tr>' + DECISIONS.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td class="small">${r[3]}</td></tr>`).join('');
