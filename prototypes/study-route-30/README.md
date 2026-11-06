@@ -5,7 +5,7 @@ Throwaway storyboard for [What single route does a learner take through the whol
 **Open `route-storyboard.html` in a browser** (download it, or `xdg-open prototypes/study-route-30/route-storyboard.html` from a checkout of this branch). Flip between the three routes with the black bar or ←/→. `?variant=A|B|C` selects one directly. Click a lesson to see its prerequisites and where they sit on that route. Lessons whose prerequisites come later get a red outline.
 
 The page shows:
-- the route as stages, with core (●) and optional (dashed) lessons, original ARENA lessons (grey), extension lessons (blue), Alchemy companions as side trips (purple), 0.7 as a shelf (yellow) and PRH as a placeholder (red);
+- the route as stages, with core (●) and optional (dashed) lessons, original ARENA lessons (grey), extension lessons (blue), Alchemy companions as side trips (purple), and 0.7 as a shelf (yellow). Chapter 19 (PRH) started as a red placeholder and now holds #235's answer;
 - pacing in days and weeks, plus a check that prerequisites come before the lessons that need them;
 - four mocks of how the next step is shown: the top and the end of an extension page, the reader, and an extension chapter home;
 - what a learner sees first, today and proposed;
@@ -23,11 +23,11 @@ The page shows:
 
 | | A originals first | **B interleaved (recommended)** | C spine + tracks |
 |---|---|---|---|
-| Core route | 46.5 days ≈ 9.3 weeks full-time | same lessons, so same total | same |
-| Everything, optional included | 128 days ≈ 25.6 weeks (Alchemy companions not sized) | same | same |
+| Core route | 49 days ≈ 9.8 weeks full-time | same lessons, so same total | same |
+| Everything, optional included | 130.5 days ≈ 26.1 weeks (Alchemy companions not sized) | same | same |
 | First chapter 5–18 lesson finished | day 25 | **day 9.5** | day 10.5 |
-| Average core days between a prerequisite and the lesson that needs it | 8.8 (max 31.5) | **3.6** (max 20.5) | 2.5 within a track (max 32.5) |
-| Prerequisites that come later on the route | 0 | 0 | 0, but 23 prerequisites sit in another track |
+| Average core days between a prerequisite and the lesson that needs it | 8.6 (max 32.5) | **4.6** (max 22) | 2.9 within a track (max 35) |
+| Prerequisites that come later on the route | 0 | 0 | 0, but 25 prerequisites sit in another track |
 
 The three routes contain the same lessons, so the core size is SR3's question, not SR1's. SR1 is about order.
 
@@ -43,18 +43,24 @@ The three routes contain the same lessons, so the core size is SR3's question, n
 | 6 | Features (1.5.4, 1.3.3 → ch6) | 1.5.4, 1.3.3, 6.1, 6.2 | 6.3–6.5 | — | 5 | 8 |
 | 7 | Circuits (1.4.1 → ch8) | 1.4.1, 8.1, 8.2 | 1.4.2, 8.3–8.8 | — | 3 | 10.5 |
 | 8 | Reading activations (ch7) | 7.1 | 1.3.4, 7.2–7.6 | — | 1 | 7 |
-| 9 | Geometry (1.3.1 → ch11) | 1.3.1, 11.1 | 11.2–11.6 | — | 2 | 7 |
+| 9 | Geometry (1.3.1 → ch11) | 1.3.1, 11.1, 11.2 | 11.3–11.6 | — | 3 | 7 |
 | 10 | Research Practice I (ch10) | 10.1 parts 1️⃣–4️⃣, 10.2 | 10.3 | — | 1.5 | 2 |
 | 11 | RL (original ch2) | 2.1, 2.2, 2.3 | 2.4, 2.5 | — | 3 | 5 |
 | 12 | Evals (original ch3) | 3.1, 3.2, 3.3 | 3.4, 3.5 | — | 3 | 5 |
 | 13 | Alignment (ch4 → 1.3.2 → ch9, ch15) | 4.1, 1.3.2, 4.4, 9.1, 15.1 | 4.2, 4.3, 4.5, 9.2–9.7, 15.2–15.4 | — | 5.5 | 17.5 |
 | 14 | Multimodal (ch12 → ch13) | 12.1, 12.3, 13.1 | 12.2, 12.4–12.7, 15.5, 13.2–13.6 | — | 3 | 14 |
-| 15 | World models (1.5.3 → ch14 → **PRH slot**) | 14.1 | 1.5.3, 14.2–14.7 | — | 1 | 8.5 |
+| 15 | World models and convergence (1.5.3 → ch14 → ch19) | 14.1, 19.1, 19.2 | 1.5.3, 14.2–14.7, 19.3 | — | 2.5 | 11 |
 | 16 | Attribution (ch16) | 16.1, 16.2 | 16.3–16.11 | u06 | 2 | 12.5 |
 | 17 | Dynamics & intrinsic (1.5.2 → ch17, ch18) | 1.5.2, 17.1, 18.1 | 1.5.1, 17.2–17.4, 18.2 | — | 3 | 8 |
 | 18 | Finale | 10.1 part 5️⃣ "Your capstone" | — | u07 | 3 | 3 |
 
-The PRH slot is a placeholder. [Where should the PRH research chapter sit…](https://github.com/shinobiultra/ARENA_3.0_Extended/issues/235) decides it; that ticket's proposed direction is "geometry entry with JEPA-section revisit".
+**Chapter 19 (PRH).** [Where should the PRH research chapter sit…](https://github.com/shinobiultra/ARENA_3.0_Extended/issues/235) closed 12 seconds before this ticket, and this route adopts its answer. PRH is a new chapter 19: 19.1 *Measuring Convergence*, 19.2 *Do Real Models Converge?* and 19.3 *PRH with JEPAs*.
+
+The user chose two things on 2026-11-06:
+- chapter 19 sits as one block after 14.4, the first point where all three sections' prerequisites are met;
+- 19.1 and 19.2 are core and 19.3 is optional. 11.2 joins the core because 19.1 needs its parts 1–2.
+
+19.2 counts as an afternoon, like 10.2. The section times are #235's estimates.
 
 ## Open choices
 
@@ -69,6 +75,6 @@ The PRH slot is a placeholder. [Where should the PRH research chapter sit…](ht
 | SR7 | Alchemy companions | **Optional side trips at their matching stop**: u01–u03 at 0.3, u04 at 1.1, u05 at 5.2, u06 near 16.9, u07 to be placed. MASTERY-HUB.md lists all seven. | one Alchemy block after chapter 0; a parallel "training science" track |
 | SR8 | Pacing | **Days, ARENA-style**, from each lesson's time lines. The route page shows days per stage and core and full totals in weeks. No timer, no tracking, nothing stored. | hours only; no pacing on the route page |
 
-Display only, nothing to decide: 0.7 is a shelf that first uses link into, as #234 settled. PRH is a placeholder slot that adopts #235's answer.
+Display only, nothing to decide: 0.7 is a shelf that first uses link into, as #234 settled. Chapter 19 is placed as described above.
 
 Nothing was run, downloaded or trained.
