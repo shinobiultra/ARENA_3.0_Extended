@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Study route storyboard</title>
+<!--
+  PROTOTYPE, throwaway (wayfinder ticket #30 "What single route does a learner take through the whole course?").
+  Plan: three structurally different single routes (A originals first, B interleaved by prerequisite, C core spine + electives),
+  switchable via ?variant=A|B|C and the floating bar (or the left/right arrow keys).
+  Data: section lists from infrastructure/extension/syllabus.yaml and infrastructure/core/config.yaml (main checkout,
+  integration/extension @ 9527393e, read 2026-11-06). Minutes are the sum of each page's "You should spend up to N minutes"
+  lines. Prerequisite edges are a draft from syllabus briefs, page "Prerequisites:" lines and cited sections.
+  Nothing here is wired to the real reader. Nothing is stored.
+-->
+<style>
+  :root { --bg:#fbfaf7; --fg:#1f2328; --muted:#6a737d; --line:#d0d7de; --orig:#eef1f4; --origb:#8c959f;
+          --ext:#e6f0ff; --extb:#2f6fdb; --alch:#f3e8ff; --alchb:#8250df; --shelf:#fff4d6; --shelfb:#bf8700;
+          --ph:#ffe8e8; --phb:#cf222e; --core:#1a7f37; --card:#ffffff; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#0f1115; --fg:#e6edf3; --muted:#8b949e; --line:#30363d; --orig:#1c2128; --origb:#6e7681;
+            --ext:#0d2240; --extb:#58a6ff; --alch:#2a1846; --alchb:#bc8cff; --shelf:#2e2410; --shelfb:#d29922;
+            --ph:#3a1214; --phb:#ff7b72; --core:#3fb950; --card:#161b22; }
+  }
+  body { background:var(--bg); color:var(--fg); font:15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; margin:0; padding:0 16px 120px; }
+  main { max-width:1180px; margin:0 auto; }
+  h1 { font-size:22px; margin:20px 0 4px; } h2 { font-size:18px; margin:28px 0 8px; } h3 { font-size:15px; margin:14px 0 6px; }
+  .muted { color:var(--muted); } .small { font-size:13px; }
+  .banner { border:1px dashed var(--phb); color:var(--phb); padding:6px 10px; border-radius:6px; font-size:13px; margin:10px 0; }
+  .legend span { display:inline-block; margin:2px 8px 2px 0; }
+  .chip { display:inline-block; border:1.5px solid var(--extb); background:var(--ext); border-radius:6px; padding:2px 7px;
+          margin:3px 4px 3px 0; font-size:13px; cursor:pointer; white-space:nowrap; }
+  .chip.orig { border-color:var(--origb); background:var(--orig); }
+  .chip.alch { border-color:var(--alchb); background:var(--alch); }
+  .chip.shelf { border-color:var(--shelfb); background:var(--shelf); }
+  .chip.ph { border-color:var(--phb); background:var(--ph); }
+  .chip.opt { border-style:dashed; opacity:.85; }
+  .chip.core::before { content:"●"; color:var(--core); margin-right:4px; font-size:10px; vertical-align:1px; }
+  .chip.bad { outline:2px solid var(--phb); outline-offset:1px; }
+  .chip.sel { box-shadow:0 0 0 3px #f2cc60; }
+  .d { color:var(--muted); font-size:12px; margin-left:3px; }
+  .stage { display:grid; grid-template-columns:190px 1fr 90px; gap:10px; border-top:1px solid var(--line); padding:8px 0; }
+  .stage .name b { display:block; } .stage .days { text-align:right; font-variant-numeric:tabular-nums; }
+  .side { border-left:3px solid var(--alchb); padding-left:6px; margin-left:4px; }
+  .tracks { display:grid; grid-template-columns:repeat(auto-fill,minmax(270px,1fr)); gap:10px; margin:8px 0; }
+  .track { border:1px solid var(--line); background:var(--card); border-radius:8px; padding:8px; }
+  .stats { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:8px; margin:10px 0; }
+  .stat { background:var(--card); border:1px solid var(--line); border-radius:8px; padding:8px 10px; }
+  .stat b { font-size:20px; display:block; font-variant-numeric:tabular-nums; }
+  #detail { position:sticky; top:0; background:var(--card); border:1px solid var(--line); border-radius:8px; padding:8px 12px; min-height:44px; z-index:2; }
+  .mock { border:1px solid var(--line); background:var(--card); border-radius:8px; padding:12px 14px; margin:8px 0; }
+  .mockgrid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  @media (max-width:800px) { .mockgrid { grid-template-columns:1fr; } .stage { grid-template-columns:1fr; } .stage .days { text-align:left; } }
+  .sb { display:grid; grid-template-columns:220px 1fr; gap:0; border:1px solid var(--line); border-radius:8px; overflow:hidden; }
+  .sb .left { background:var(--orig); padding:10px; font-size:13px; } .sb .right { padding:10px 14px; }
+  .sb .left .here { font-weight:600; background:var(--shelf); border-radius:4px; padding:0 4px; }
+  .navline { border-top:1px solid var(--line); margin-top:10px; padding-top:8px; font-size:14px; }
+  .btn { display:inline-block; border:1px solid var(--extb); color:var(--extb); border-radius:6px; padding:2px 10px; margin:2px 4px 2px 0; }
+  table { border-collapse:collapse; width:100%; font-size:14px; } td, th { border:1px solid var(--line); padding:6px 8px; vertical-align:top; text-align:left; }
+  th { background:var(--orig); } .rec { color:var(--core); font-weight:600; }
+  #bar { position:fixed; bottom:16px; left:50%; transform:translateX(-50%); background:#111; color:#fff; border-radius:999px;
+         padding:8px 14px; box-shadow:0 4px 18px rgba(0,0,0,.35); display:flex; gap:10px; align-items:center; z-index:9; font-size:14px; }
+  #bar button { background:#333; color:#fff; border:0; border-radius:999px; padding:4px 10px; cursor:pointer; font-size:14px; }
+  #bar .lbl { min-width:280px; text-align:center; }
+  code { font-size:13px; }
+</style>
+</head>
+<body>
+<main>
+<h1>What single route does a learner take through the whole course?</h1>
+<div class="banner">PROTOTYPE, throwaway storyboard for wayfinder ticket #30. Not a learner page. Prerequisite edges and "core" picks are a draft to react to.</div>
+<p class="muted small">Flip routes with the black bar at the bottom (or ← / →). Click any lesson to see its prerequisites and where they sit on this route.
+Chips: <b>●</b> core, dashed = optional. Grey = original ARENA (append-only, linked out), blue = extension, purple = Alchemy companion, yellow = 0.7 shelf, red = placeholder.
+Days use one rough rule: a lesson is one day per 6 h of its "You should spend up to N minutes" lines, rounded to half days, minimum one day. Afternoons are half a day.</p>
+
+<div id="detail" class="small muted">Click a lesson.</div>
+
+<h2 id="vtitle"></h2>
+<p id="vpitch"></p>
+<div class="stats" id="stats"></div>
+<div id="route"></div>
+
+<h2>Where the next step shows</h2>
+<p class="muted small">Same focus lesson in every variant: <b>8.2 Attribution Patching and EAP</b>. "Previous" and "next" come from the route above, so they change as you flip variants.</p>
+<div class="mockgrid">
+  <div>
+    <h3>① Top of an extension page: the Prerequisites line (taste bar item 3, written by hand)</h3>
+    <div class="mock" id="mockTop"></div>
+    <h3>② End of an extension page, after ☆ Bonus</h3>
+    <div class="mock" id="mockEnd"></div>
+  </div>
+  <div>
+    <h3>③ The reader (<code>mastery_hub/read.py</code>): route sidebar and the last part's footer</h3>
+    <div class="sb"><div class="left" id="mockSide"></div><div class="right" id="mockReader"></div></div>
+    <h3>④ Extension chapter home (<code>chapter8_automated_circuits/instructions/Home.py</code>), ARENA-style TLDR</h3>
+    <div class="mock" id="mockHome"></div>
+  </div>
+</div>
+
+<h2>What a learner sees first</h2>
+<div class="mockgrid">
+  <div class="mock"><b>Today</b> (STUDY-GUIDE.md "Pick your first question" and the reader's "Start here"): five entry points.
+    <ul class="small"><li>Small CPU route: 16.1 → 16.2</li><li>Read internal answers: 7.1 after 1.2</li><li>Match images and text: 12.1 → 12.3</li><li>Intervene on a direction: 9.1</li><li>Build foundations: original ARENA</li></ul>
+    <span class="small muted">The guide then carries status and provenance sections (implemented scope, historical evidence scope, 26 CPU study editions, prediction companions).</span></div>
+  <div class="mock"><b>Proposed</b>: one way in.
+    <p class="small"><b>Start here.</b> The course is one route of <span id="nStages"></span> stages. Begin with original <a>0.0 Prerequisites</a>, then <a>0.1 Ray Tracing</a>.
+    Each chapter names its core lessons; the rest are optional, in any order.</p>
+    <p class="small"><b>Already done ARENA chapters 0–1?</b> Start at <span id="skipTo"></span>. If a lesson uses a tool you've forgotten, its intuition block links to <a>0.7 Foundations Toolkit</a>, which opens with "Can you skip this part?" checks.</p>
+    <p class="small muted">Then the stage table, with days per stage. No status, no progress tracking, no timer.</p></div>
+</div>
+
+<h2>Open design choices (recommendations in green)</h2>
+<table id="decisions"></table>
+
+<p class="small muted" style="margin-top:24px">Sources: <code>infrastructure/extension/syllabus.yaml</code>, <code>infrastructure/core/config.yaml</code>, the lesson pages' time lines and "Prerequisites:" lines,
+<code>mastery_hub/STUDY-GUIDE.md</code>, <code>mastery_hub/read.py</code>, <code>mastery_hub/catalog.json</code> (unit titles), original <code>chapter1_transformer_interp/instructions/Home.py</code> ("1.1 and 1.2 are compulsory… the remaining sections are optional"),
+and the resolutions of #234, #243, #245, #246 and #27. Main checkout read only, at <code>integration/extension</code> 9527393e.</p>
+</main>
+
+<div id="bar"><button id="prev" aria-label="previous variant">←</button><span class="lbl" id="barlbl"></span><button id="next" aria-label="next variant">→</button></div>
+
+<script>
+// ---------- lessons: [title, kind, minutes from time lines | null, prerequisites (draft)] ----------
+const O = 'orig', E = 'ext', A = 'alch', S = 'shelf', P = 'ph';
+const L = {
+  '0.0':['Prerequisites',O,110,[]], '0.1':['Ray Tracing',O,195,['0.0']], '0.2':['CNNs & ResNets',O,515,['0.1']],
+  '0.3':['Optimization',O,330,['0.2']], '0.4':['Backpropagation',O,405,['0.3']], '0.5':['VAEs & GANs',O,350,['0.2']],
+  '1.1':['Transformers from Scratch',O,375,['0.3']], '1.2':['Intro to Mech Interp',O,45,['1.1']],
+  '1.3.1':['Linear Probes',O,245,['1.2']], '1.3.2':['Function Vectors & Model Steering',O,335,['1.2']],
+  '1.3.3':['Interpretability with SAEs',O,545,['1.2']], '1.3.4':['Activation Oracles',O,280,['1.2']],
+  '1.4.1':['Indirect Object Identification',O,280,['1.2']], '1.4.2':['SAE Circuits',O,560,['1.3.3']],
+  '1.5.1':['Balanced Bracket Classifier',O,0,['1.2']], '1.5.2':['Grokking & Modular Arithmetic',O,290,['1.2']],
+  '1.5.3':['OthelloGPT',O,265,['1.2']], '1.5.4':['Superposition & SAEs',O,495,['1.1']],
+  '2.1':['Intro to RL',O,290,['0.3']], '2.2':['DQN & VPG',O,305,['2.1']], '2.3':['PPO',O,335,['2.2']], '2.4':['RLHF',O,375,['2.3','1.1']], '2.5':['MCTS & AlphaZero',O,325,['2.1']],
+  '3.1':['Intro to Evals',O,205,[]], '3.2':['Dataset Generation',O,230,['3.1']], '3.3':['Running Evals with Inspect',O,275,['3.2']], '3.4':['LLM Agents',O,285,['3.1']], '3.5':['AI Control',O,305,['3.3']],
+  '4.1':['Emergent Misalignment',O,265,['1.2']], '4.2':['Science of Misalignment',O,240,['4.1']], '4.3':['Interpreting Reasoning Models',O,335,['1.2']],
+  '4.4':['LLM Psychology & Persona Vectors',O,465,['1.3.2']], '4.5':['Investigator Agents',O,320,['3.4']],
+  '0.6':['How to Know When an Interpretability Result Is Fake',E,100,['1.2']], '1.6':['Local Frontier ML Infrastructure',E,100,['1.2']],
+  '0.7':['Foundations Toolkit (new, 5 parts)',S,null,[],'linked into from first uses (#234); not walked through; ≤ 1 day'],
+  '5.1':['Gemma from Scratch',E,250,['1.1']], '5.2':['Mixture of Experts from Scratch',E,255,['5.1']], '5.3':['Mamba from Scratch',E,249,['1.1','0.3']],
+  '5.4':['Mamba-2 and State-Space Duality',E,330,['5.3']], '5.5':['State Tracking in SSMs and Transformers',E,95,['5.3']], '5.6':['Linear Attention, RetNet and RWKV',E,225,['1.1','5.3']],
+  '5.7':['Griffin, xLSTM, Hyena and Hybrid Models',E,240,['5.3','5.6']], '5.8':['Discrete Diffusion Language Models',E,525,['1.1']], '5.9':['Embedding, Function-Calling and Specialist Models',E,53,['1.1']],
+  '6.1':['SAE Variants',E,110,['1.3.3','1.5.4']], '6.2':['Gemma Scope and Feature Steering',E,375,['6.1']], '6.3':['Feature Splitting, Absorption and Dashboards',E,210,['6.1']],
+  '6.4':['Transcoders and Attribution Graphs',E,130,['6.1']], '6.5':['Crosscoders and Model Diffing',E,105,['6.1']],
+  '7.1':['Logit Lens, Tuned Lens and Patchscopes',E,190,['1.2']], '7.2':['Feature Verbalizers',E,240,['7.1','1.3.3']], '7.3':['Mini Activation Oracles',E,185,['1.3.4']],
+  '7.4':['Mini Natural Language Autoencoders',E,235,['7.3']], '7.5':['Predictive Concept Decoders',E,210,['7.3','6.1']], '7.6':['Automated Interpretability Agents',E,210,['7.2','6.3']],
+  '8.1':['Activation Patching Refresher',E,190,['1.4.1']], '8.2':['Attribution Patching and EAP',E,255,['8.1']], '8.3':['AtP* from Scratch',E,180,['8.2']],
+  '8.4':['ACDC and Circuit Metrics',E,160,['8.1']], '8.5':['Causal Scrubbing',E,170,['8.1']], '8.6':['Sparse Feature Circuits and SHIFT',E,165,['8.2','6.1']],
+  '8.7':['Circuit Tracing with Attribution Graphs',E,85,['6.4']], '8.8':['Benchmarking Circuit Discovery on Compiled Transformers',E,80,['8.4']],
+  '9.1':['Refusal Directions and Representation Engineering',E,205,['1.3.1','1.3.2']], '9.2':['Truthfulness Directions and Hallucination Probes',E,130,['1.3.1']],
+  '9.3':['Chain-of-Thought Faithfulness',E,150,['1.2']], '9.4':['Emergent Misalignment Detection',E,220,['4.1']], '9.5':['White-Box Monitors and Red-Teaming with Internals',E,95,['9.1']],
+  '9.6':['Rank-One Model Editing (ROME)',E,350,['8.1']], '9.7':['Unlearning and How to Evaluate It',E,150,['0.3','1.2']],
+  '10.1a':['Capstone Research Sprint, parts 1️⃣–4️⃣',E,null,['0.6','1.4.1'],'≈ 1 day'],
+  '10.2':['Replicate and Critique a Fresh Claim (Hewitt afternoon)',E,240,['0.6','10.1a'],'four hours (#246)'],
+  '10.3':['Micro-Lab ML01: Lyra L22 N2742+ (planned)',E,null,['10.2'],'an afternoon; then the Micro-Lab ladder'],
+  '10.1b':['10.1 part 5️⃣ "Your capstone"',E,null,['10.2','10.3'],'open-ended; counted as 3 days'],
+  '11.1':['PCA, SVD and Geometry Controls',E,170,['1.3.1']], '11.2':['CCA, SVCCA and Representation Alignment',E,110,['11.1']], '11.3':['Causal Abstraction and DAS',E,150,['11.1','8.1']],
+  '11.4':['Concept Erasure',E,130,['11.1']], '11.5':['Contrast-Consistent Search',E,155,['1.3.1']], '11.6':['Feature Manifolds',E,170,['11.1']],
+  '12.1':['CLIP and SigLIP from Scratch',E,270,['0.2','1.1']], '12.2':['Typographic Attacks and SAE Features (toy two-tower)',E,200,['12.1','6.1']], '12.3':['Mini VLM from Scratch',E,320,['12.1']],
+  '12.4':['Visual Token Flow in Real VLMs',E,200,['12.3']], '12.5':['Object Hallucination and Modality Arbitration',E,160,['12.3']], '12.6':['Multimodal SAEs, Transcoders and Crosscoders',E,215,['12.3','6.4']], '12.7':['Dense Vision Features - DINO and SAM',E,195,['12.1']],
+  '13.1':['Diffusion Models and Cross-Attention Attribution',E,200,['0.5','12.1']], '13.2':['Denoising-Time Causal Patching',E,255,['13.1','8.1']], '13.3':['Concept Directions and Diffusion LoRA',E,110,['13.1']],
+  '13.4':['Sparse Autoencoders for Diffusion Models',E,120,['13.1','6.1']], '13.5':['Diffusion Transformers and ConceptAttention',E,110,['13.1']], '13.6':['Autoregressive Image Tokens',E,130,['1.1']],
+  '14.1':['I-JEPA from Scratch',E,220,['0.2','1.1']], '14.2':['V-JEPA and Video World Models',E,460,['14.1']], '14.3':['Action-Conditioned World Models and Latent Planning',E,180,['14.1','2.1']],
+  '14.4':['The JEPA Family',E,195,['14.1']], '14.5':['Maze Transformers and World Models',E,300,['1.5.3']], '14.6':['Sudoku and Constraint World Models',E,195,['1.1','1.3.1']], '14.7':['Recurrent World Models',E,240,['14.3','2.2']],
+  '15.1':['LoRA and DoRA from Scratch',E,110,['1.1']], '15.2':['LoRA vs Full Fine-Tuning',E,200,['15.1']], '15.3':['QLoRA from Scratch',E,210,['15.1']], '15.4':['LoRA Phase Transitions and Misalignment Proxies',E,180,['15.1','4.1']], '15.5':['VLM LoRA',E,210,['15.1','12.3']],
+  '16.1':['Exact Shapley on Ground-Truth Games',E,80,[]], '16.2':['KernelSHAP and PartitionSHAP',E,140,['16.1']], '16.3':['TreeSHAP, DeepSHAP and GradientSHAP (Practice)',E,870,['16.2']],
+  '16.4':['SAGE Global Importance',E,175,['16.1']], '16.5':['Shapley Interactions',E,336,['16.1']], '16.6':['SPEX and ProxySPEX',E,280,['16.5']], '16.7':['TokenSHAP and Region SHAP',E,300,['16.2']],
+  '16.8':['SHAP vs Activation Patching',E,310,['16.2','8.1']], '16.9':['Data Shapley in One Training Run',E,215,['16.1']], '16.10':['Influence Functions and TracIn',E,235,['16.9']], '16.11':['Datamodels and Dataset Cartography',E,335,['16.9']],
+  '17.1':['Checkpoint Archaeology on Modular Addition',E,135,['1.5.2']], '17.2':['Induction Heads in Hand-Built Circuits',E,180,['1.2']], '17.3':['Fine-Tuning Diffs and Capability Emergence',E,180,['17.1']], '17.4':['Training Dynamics Across Architectures',E,180,['17.1']],
+  '18.1':['Concept Bottlenecks, Backpacks and IIT',E,225,['11.3']], '18.2':['Sparse and Modular Training, KANs and Sparse Trees',E,225,['0.3']],
+  'PRH':['PRH chapter — placement pending #235',P,null,['11.1','14.1'],'#235 proposes: enter after Geometry, revisit JEPA after World models; adopt its answer'],
+  'u01':['Alchemy u01 · Basics: tuning and scaling',A,null,['0.3'],'CS 312 companion, ends in a 🎯 Held-out Quiz'],
+  'u02':['Alchemy u02 · Optimization 1 (+ optimizer lab)',A,null,['0.3'],'the M1 companion; the lab is exploration only'],
+  'u03':['Alchemy u03 · Optimization 2: loss landscapes',A,null,['0.3']], 'u04':['Alchemy u04 · Architecture 1: stability across depth/time',A,null,['1.1']],
+  'u05':['Alchemy u05 · Architecture 2: extending capacity',A,null,['5.2']], 'u06':['Alchemy u06 · Generalization (unit out 10 Nov)',A,null,['16.9']], 'u07':['Alchemy u07 · Exotic (TBA)',A,null,[]],
+};
+const DAYS_OVERRIDE = {'10.2':0.5,'10.3':0.5,'10.1a':1,'10.1b':3,'0.7':1,'1.2':1,'1.5.1':1};
+function days(id){ if(id in DAYS_OVERRIDE) return DAYS_OVERRIDE[id]; const m=L[id][2]; if(m==null) return null; return Math.max(1, Math.round(m/360*2)/2); }
+
+// ---------- routes. Item syntax: 'id' core, '~id' optional, '+id' Alchemy/shelf side trip ----------
+const ch = (pre, list, core) => list.map(x => (core.includes(x) ? '' : '~') + pre + x);
+const ORIG1_CORE = ['1.1','1.2'];
+const V = {
+ A: { name:'A · Originals first, then the extension in number order',
+      pitch:'Do original ARENA 0–4 as published, then 0.6/1.6, then chapters 5–18 in order. Easiest to explain; the first new lesson comes late, and the ch1 sets later chapters need become core up front.',
+      stages: [
+   ['Start', ['0.0']],
+   ['Ch0 Fundamentals', ['0.1','0.2','0.3','+u01','+u02','+u03','0.4','~0.5','+0.7']],
+   ['Ch1 Transformer Interp', ['1.1','+u04','1.2','1.3.1','1.3.2','1.3.3','~1.3.4','1.4.1','~1.4.2','~1.5.1','1.5.2','~1.5.3','1.5.4']],
+   ['Ch2 RL', ['2.1','2.2','2.3','~2.4','~2.5']],
+   ['Ch3 Evals', ['3.1','3.2','3.3','~3.4','~3.5']],
+   ['Ch4 Alignment Science', ['4.1','~4.2','~4.3','4.4','~4.5']],
+   ['Addenda 0.6 and 1.6', ['0.6','~1.6']],
+   ['Ch5 Modern Architectures', ['5.1','~5.2','+u05','5.3','~5.4','~5.5','~5.6','~5.7','~5.8','~5.9']],
+   ['Ch6 Sparse Features', ch('6.',['1','2','3','4','5'],['1','2'])],
+   ['Ch7 Activation to Language', ch('7.',['1','2','3','4','5','6'],['1'])],
+   ['Ch8 Automated Circuits', ch('8.',['1','2','3','4','5','6','7','8'],['1','2'])],
+   ['Ch9 Alignment Interp', ch('9.',['1','2','3','4','5','6','7'],['1'])],
+   ['Ch10 Research Practice', ['10.1a','10.2','~10.3','10.1b']],
+   ['Ch11 Geometry', ch('11.',['1','2','3','4','5','6'],['1'])],
+   ['Ch12 VLMs', ch('12.',['1','2','3','4','5','6','7'],['1','3'])],
+   ['Ch13 Image Generation', ch('13.',['1','2','3','4','5','6'],['1'])],
+   ['Ch14 JEPAs & World Models', ['14.1','~14.2','~14.3','~14.4','~14.5','~14.6','~14.7']],
+   ['Ch15 PEFT', ch('15.',['1','2','3','4','5'],['1'])],
+   ['Ch16 Shapley & Attribution', ['16.1','16.2','~16.3','~16.4','~16.5','~16.6','~16.7','~16.8','~16.9','+u06','~16.10','~16.11']],
+   ['Ch17 Training Dynamics', ch('17.',['1','2','3','4'],['1'])],
+   ['Ch18 Intrinsic Interp', ch('18.',['1','2'],['1'])],
+   ['PRH (number unset)', ['PRH','+u07']],
+ ]},
+ B: { name:'B · One route, extension chapters interleaved where their prerequisites are met (recommended)',
+      pitch:'Original chapters stay whole blocks where possible, but the optional ch1 sets move to sit right before the extension chapter that builds on them ("on-ramps"). 0.6 comes straight after 1.2; the first Research Practice afternoon comes after the interpretability core; the capstone is the finale.',
+      stages: [
+   ['Start', ['0.0']],
+   ['Fundamentals (orig ch0)', ['0.1','0.2','0.3','+u01','+u02','+u03','0.4','~0.5','+0.7']],
+   ['Transformers (orig 1.1, 1.2)', ['1.1','+u04','1.2','~1.6']],
+   ['Is it real?', ['0.6']],
+   ['Modern architectures (ch5)', ['5.1','~5.2','+u05','5.3','~5.4','~5.5','~5.6','~5.7','~5.8','~5.9']],
+   ['Features (1.5.4, 1.3.3 → ch6)', ['1.5.4','1.3.3', ...ch('6.',['1','2','3','4','5'],['1','2'])]],
+   ['Circuits (1.4.1 → ch8)', ['1.4.1','~1.4.2', ...ch('8.',['1','2','3','4','5','6','7','8'],['1','2'])]],
+   ['Reading activations (ch7)', ['~1.3.4', ...ch('7.',['1','2','3','4','5','6'],['1'])]],
+   ['Geometry (1.3.1 → ch11)', ['1.3.1', ...ch('11.',['1','2','3','4','5','6'],['1'])]],
+   ['Research Practice I (ch10)', ['10.1a','10.2','~10.3']],
+   ['RL (orig ch2)', ['2.1','2.2','2.3','~2.4','~2.5']],
+   ['Evals (orig ch3)', ['3.1','3.2','3.3','~3.4','~3.5']],
+   ['Alignment (ch4 → 1.3.2 → ch9, ch15)', ['4.1','~4.2','~4.3','1.3.2','4.4','~4.5', ...ch('9.',['1','2','3','4','5','6','7'],['1']), ...ch('15.',['1','2','3','4'],['1'])]],
+   ['Multimodal (ch12 → ch13)', [...ch('12.',['1','2','3','4','5','6','7'],['1','3']), '~15.5', ...ch('13.',['1','2','3','4','5','6'],['1'])]],
+   ['World models (1.5.3 → ch14 → PRH)', ['~1.5.3','14.1','~14.2','~14.3','~14.4','~14.5','~14.6','~14.7','PRH']],
+   ['Attribution (ch16)', ['16.1','16.2','~16.3','~16.4','~16.5','~16.6','~16.7','~16.8','~16.9','+u06','~16.10','~16.11']],
+   ['Dynamics & intrinsic (1.5.2 → ch17, ch18)', ['~1.5.1','1.5.2', ...ch('17.',['1','2','3','4'],['1']), ...ch('18.',['1','2'],['1'])]],
+   ['Finale', ['10.1b','+u07']],
+ ]},
+ C: { name:'C · A short core spine, then elective tracks in any order',
+      pitch:'Everyone walks the same spine (about four weeks), ending in the first Research Practice afternoon. After that each extension chapter is a track that opens with its own on-ramp; pick any, in any order. The capstone is the finale.',
+      spine: [
+   ['Start', ['0.0']],
+   ['Fundamentals', ['0.1','0.2','0.3','0.4','~0.5','+0.7']],
+   ['Transformers', ['1.1','1.2','~1.6']],
+   ['Is it real?', ['0.6']],
+   ['Research Practice I', ['1.4.1','10.1a','10.2','~10.3']],
+ ],
+      tracks: [
+   ['Architectures', ['5.1','~5.2','5.3','~5.4','~5.5','~5.6','~5.7','~5.8','~5.9']],
+   ['Features', ['1.5.4','1.3.3', ...ch('6.',['1','2','3','4','5'],['1','2'])]],
+   ['Circuits', ['~1.4.2', ...ch('8.',['1','2','3','4','5','6','7','8'],['1','2'])]],
+   ['Reading activations', ['~1.3.4', ...ch('7.',['1','2','3','4','5','6'],['1'])]],
+   ['Geometry → PRH', ['1.3.1', ...ch('11.',['1','2','3','4','5','6'],['1']), 'PRH']],
+   ['RL', ['2.1','2.2','2.3','~2.4','~2.5']],
+   ['Evals & alignment', ['3.1','3.2','3.3','~3.4','~3.5','4.1','~4.2','~4.3','1.3.2','4.4','~4.5', ...ch('9.',['1','2','3','4','5','6','7'],['1']), ...ch('15.',['1','2','3','4'],['1'])]],
+   ['Multimodal', [...ch('12.',['1','2','3','4','5','6','7'],['1','3']), '~15.5', ...ch('13.',['1','2','3','4','5','6'],['1'])]],
+   ['World models', ['~1.5.3','14.1','~14.2','~14.3','~14.4','~14.5','~14.6','~14.7']],
+   ['Attribution', ['16.1','16.2','~16.3','~16.4','~16.5','~16.6','~16.7','~16.8','~16.9','~16.10','~16.11']],
+   ['Dynamics & intrinsic', ['~1.5.1','1.5.2', ...ch('17.',['1','2','3','4'],['1']), ...ch('18.',['1','2'],['1'])]],
+   ['Training science (Alchemy)', ['+u01','+u02','+u03','+u04','+u05','+u06','+u07']],
+ ],
+      finale: [['Finale', ['10.1b']]],
+ },
+};
+
+const DECISIONS = [
+ ['SR1','Route shape','A originals first · <span class="rec">B interleaved by prerequisite, one ordered route</span> · C core spine + elective tracks',
+  'B keeps a single "what next" everywhere, reaches the first extension lesson in about two weeks rather than about seven, and puts each optional ch1 set right before the chapter that needs it. Original pages are untouched; only the order differs.'],
+ ['SR2','Where a learner starts','<span class="rec">One "Start here": course home → original 0.0 → 0.1, plus one skip line for ARENA graduates (start at 0.6)</span> · keep several "pick your first question" entries',
+  'Today the guide and the reader offer five entry points. A single start makes "next" well defined. 0.7 skip checks cover the rusty-maths case without a second route.'],
+ ['SR3','Core versus optional','<span class="rec">ARENA convention: each chapter home names its core lessons (like 1.1/1.2); the rest are optional, in any order. ☆ Bonus, Alchemy side trips and 0.7 are always optional</span> · everything core · core = only what chapter 10 needs',
+  'Matches original chapter 1\'s own TLDR. The per-chapter core picks in this storyboard are a draft; the Spec lists them, and walkthroughs can move them.'],
+ ['SR4','How the next step is shown','<span class="rec">Pages: only the hand-written "Prerequisites:" line (②a). Reader: a route sidebar plus "Next on the route →" on a lesson\'s last part. Chapter homes: an ARENA-style TLDR with before/after.</span> · also a "Next on the route" line at the end of every extension page (②b)',
+  'Original 0–4 pages are append-only, so a per-page "next" line could only exist on extension pages and would be inconsistent; it is also one more thing to keep in sync. The reader and homes are generated from one list.'],
+ ['SR5','Where the route lives','<span class="rec">A <code>route:</code> block in syllabus.yaml (stages → section numbers incl. originals, core flag). STUDY-GUIDE.md is rewritten as the route page (start + stage table + days), losing its status/provenance sections; the reader reads the same block.</span> · a separate route.yaml · hand-maintained guide',
+  'One source of truth; sync_config can check every number exists and every prerequisite comes earlier on the route.'],
+ ['SR6','Where chapter 10 sits','<span class="rec">Split: 10.1 parts 1️⃣–4️⃣ + 10.2 after the interpretability core; 10.3 and later Micro-Lab rungs as optional afternoons after later stages; 10.1 part 5️⃣ "Your capstone" is the finale</span> · all of chapter 10 at the end',
+  'Follows #246\'s route note (10.2 needs 0.6 and 10.1 1️⃣–4️⃣; 5️⃣ reads best after 10.2–10.3) and lets the learner use the recipe card on every later chapter.'],
+ ['SR7','Alchemy companions','<span class="rec">Optional side trips at their matching stop (u01–u03 at 0.3, u04 at 1.1, u05 at 5.2, u06 near 16.9, u07 TBA); MASTERY-HUB.md lists all seven</span> · one Alchemy block after chapter 0 · a parallel "training science" track (as in C)',
+  'Each companion ends in its own held-out quiz and runs on its own model organism, so it reads well beside the original lesson it extends. u06/u07 positions wait for their release.'],
+ ['SR8','Pacing','<span class="rec">Days, ARENA-style: each lesson\'s days come from its time lines; the route page shows days per stage and core/full totals in weeks. No timer, no tracking, nothing stored</span> · hours only · no pacing on the route page',
+  'Consistent with AP6 (study modes dropped; pacing comes from the "You should spend up to N minutes" lines).'],
+ ['—','0.7 and PRH (display only)','0.7 is a shelf, linked into from first uses (#234, settled). PRH is a placeholder slot; this ticket adopts #235\'s answer.',''],
+];
+
+// ---------- rendering ----------
+const keys = Object.keys(V); let cur = new URLSearchParams(location.search).get('variant') || 'B'; if(!V[cur]) cur='B';
+let sel = null;
+const parse = s => s[0]==='~' ? {id:s.slice(1), core:false, side:false} : s[0]==='+' ? {id:s.slice(1), core:false, side:true} : {id:s, core:true, side:false};
+function flat(v){ const out=[]; const groups = v.stages || [...v.spine, ...v.tracks, ...v.finale];
+  groups.forEach((g,gi)=> g[1].forEach(s=>{ const p=parse(s); p.group=gi; p.gname=g[0]; p.track = v.tracks && gi>=v.spine.length && gi<v.spine.length+v.tracks.length; out.push(p); })); return out; }
+function check(v){ // prerequisite order: a prerequisite must appear earlier; in C, cross-track links are allowed but counted
+  const f = flat(v), pos = {}; f.forEach((p,i)=>{ if(!(p.id in pos)) pos[p.id]=p; p.i=i; });
+  const issues = {}; let late=0, missing=0, cross=0, lateCore=0;
+  f.forEach(p=>{ (L[p.id][3]||[]).forEach(q=>{
+    const qq = pos[q]; let kind=null;
+    if(!qq) kind='missing'; else if(v.tracks && p.track && qq.track && qq.group!==p.group) kind='cross-track'; else if(qq.i > p.i) kind='later';
+    if(kind){ (issues[p.id] ||= []).push([q,kind]); if(kind==='later'){late++; if(p.core) lateCore++;} else if(kind==='missing') missing++; else cross++; }
+  }); });
+  return {f, pos, issues, late, lateCore, missing, cross};
+}
+const fmt = x => x==null ? '?' : (Number.isInteger(x)? x : x.toFixed(1));
+function chip(p, issues){ const [t,k] = L[p.id]; const d=days(p.id);
+  const cls = ['chip', k==='orig'?'orig':k==='alch'?'alch':k==='shelf'?'shelf':k==='ph'?'ph':'', p.core?'core':'opt', issues[p.id]?'bad':'', sel===p.id?'sel':''].join(' ');
+  const num = p.id.replace(/[ab]$/,'').replace(/^u0/,'u0');
+  return `<span class="${cls}" data-id="${p.id}" title="${t}">${num} ${t.length>34? t.slice(0,32)+'…':t}<span class="d">${d==null?'':fmt(d)+'d'}</span></span>`; }
+function render(){
+  const v = V[cur], c = check(v);
+  document.getElementById('vtitle').textContent = v.name; document.getElementById('vpitch').textContent = v.pitch;
+  document.getElementById('barlbl').textContent = `${cur}  (${v.name.split('·')[1].trim().slice(0,46)}…)`;
+  // stats
+  const core = c.f.filter(p=>p.core && !p.side), all = c.f.filter(p=>!p.side);
+  const sum = a => a.reduce((s,p)=> s + (days(p.id)||0), 0);
+  const coreD = sum(core), allD = sum(all);
+  let acc=0, firstExt=null; for(const p of c.f){ if(!p.core || p.side) continue; acc += days(p.id)||0; if(firstExt==null && /^(5|6|7|8|9|1[0-8])\./.test(p.id)) firstExt=acc; }
+  // on-ramp adjacency: for each core lesson, core-days between the end of each prerequisite and the start of the lesson
+  const start = {}, end = {}; let t=0; for(const p of c.f){ if(!p.core || p.side) continue; start[p.id]=t; t += days(p.id)||0; end[p.id]=t; }
+  const gaps=[]; for(const p of c.f){ if(!p.core || p.side) continue; for(const q of L[p.id][3]){ if(q in end && end[q] <= start[p.id] && !['0.0','0.1','0.2','0.3','1.1','1.2'].includes(q)) gaps.push(start[p.id]-end[q]); } }
+  const meanGap = gaps.length? gaps.reduce((a,b)=>a+b,0)/gaps.length : 0, maxGap = gaps.length? Math.max(...gaps):0;
+  const nStages = (v.stages||[...v.spine,...v.finale]).length + (v.tracks? v.tracks.length:0);
+  document.getElementById('stats').innerHTML = `
+   <div class="stat"><b>${fmt(coreD)} d ≈ ${fmt(coreD/5)} wk</b>core route, full-time (5 d/wk)</div>
+   <div class="stat"><b>≈ ${Math.round(coreD*6/10)} wk</b>core route part-time (10 h/wk, 6 h/day)</div>
+   <div class="stat"><b>${fmt(allD)} d ≈ ${fmt(allD/5)} wk</b>everything incl. optional (Alchemy companions not sized)</div>
+   <div class="stat"><b>day ${fmt(firstExt)}</b>first chapter 5–18 lesson finished, core route</div>
+   <div class="stat"><b>${fmt(meanGap)} d (max ${fmt(maxGap)})</b>average core days between a prerequisite and the lesson that needs it (ignores 0.0–0.3, 1.1, 1.2)</div>
+   <div class="stat"><b>${c.late} later · ${c.missing} missing${v.tracks? ' · '+c.cross+' cross-track':''}</b>prerequisite order (${c.lateCore} on core lessons); red outline = affected</div>`;
+  document.getElementById('nStages').textContent = nStages;
+  const first06 = (v.stages||v.spine).findIndex(g=>g[1].includes('0.6'));
+  document.getElementById('skipTo').innerHTML = `stage ${first06+1}, <a>0.6 How to Know When an Interpretability Result Is Fake</a>`;
+  // route
+  const groups = v.stages || [...v.spine, ...v.finale]; let html=''; let gi=0;
+  const stageRow = (g, idx, label) => { const items = c.f.filter(p=>p.gname===g[0]);
+    const main = items.filter(p=>!p.side).map(p=>chip(p,c.issues)).join(''), side = items.filter(p=>p.side).map(p=>chip(p,c.issues)).join('');
+    const cd = sum(items.filter(p=>p.core && !p.side)), ad = sum(items.filter(p=>!p.side));
+    return `<div class="stage"><div class="name"><b>${label}</b><span class="small muted">${g[0]}</span></div><div>${main}${side? `<span class="side">${side}</span>`:''}</div><div class="days small">${fmt(cd)} d core<br><span class="muted">${fmt(ad)} d all</span></div></div>`; };
+  if(v.stages){ v.stages.forEach((g,i)=> html += stageRow(g,i,`Stage ${i+1}`)); }
+  else {
+    v.spine.forEach((g,i)=> html += stageRow(g,i,`Spine ${i+1}`));
+    html += `<h3>Tracks: pick any, in any order (each opens with its on-ramp)</h3><div class="tracks">` + v.tracks.map(g=>{ const items=c.f.filter(p=>p.gname===g[0]);
+      return `<div class="track"><b>${g[0]}</b> <span class="small muted">${fmt(sum(items.filter(p=>p.core&&!p.side)))} d core</span><br>${items.map(p=>chip(p,c.issues)).join('')}</div>`; }).join('') + `</div>`;
+    v.finale.forEach((g,i)=> html += stageRow(g,i,'Finale'));
+  }
+  document.getElementById('route').innerHTML = html;
+  document.querySelectorAll('.chip').forEach(el=> el.onclick = () => { sel = el.dataset.id; render(); });
+  // detail
+  if(sel && L[sel]){ const [t,k,m,pre,note] = L[sel]; const p = c.pos[sel];
+    const where = q => { const qq=c.pos[q]; if(!qq) return `<b style="color:var(--phb)">${q} (not on this route)</b>`; const later = qq.i > p.i;
+      return `${q} ${L[q][0]} <span class="muted">(${qq.gname}${later? ', <b style="color:var(--phb)">comes later</b>':''})</span>`; };
+    document.getElementById('detail').innerHTML = `<b>${sel.replace(/[ab]$/,'')} ${t}</b> · ${k==='orig'?'original ARENA (page untouched)':k==='alch'?'Alchemy companion':k==='shelf'?'reference shelf':k==='ph'?'placeholder':'extension'} · ${m!=null? m+' min of time lines · ':''}${fmt(days(sel))} d${note? ' · '+note:''}<br>
+      Prerequisites (draft): ${pre.length? pre.map(where).join('; ') : 'none'} · on this route: <b>${p? p.gname : 'not placed'}</b>${p? (p.core?' (core)':' (optional)'):''}`;
+  }
+  // mocks around 8.2
+  const route = c.f.filter(p=>!p.side); const i82 = route.findIndex(p=>p.id==='8.2');
+  const nextCore = route.slice(i82+1).find(p=>p.core) || route[i82+1]; const prevCore = route.slice(0,i82).reverse().find(p=>p.core);
+  const optHere = route.filter(p=>p.gname===route[i82].gname && !p.core && /^8\./.test(p.id)).map(p=>p.id).join(' · ');
+  const link = id => `<a>${id.replace(/[ab]$/,'')} ${L[id][0]}${L[id][1]==='orig'?' ↗':''}</a>`;
+  document.getElementById('mockTop').innerHTML = `<b>[8.2] Attribution Patching and EAP</b><p class="small">…intro with 8.2's own numbers (taste bar)…</p>
+    <p class="small"><b>Prerequisites:</b> ${link('8.1')}; original ${link('1.4.1')}. Uses the gradient from ${link('0.4')}.</p>
+    <p class="small muted">Same on every variant: written by hand per taste-bar item 3. Original pages get nothing.</p>`;
+  document.getElementById('mockEnd').innerHTML = `<p class="small"><b>☆ Bonus</b> … (last content on the page)</p>
+    <p class="small"><b>②a (recommended):</b> nothing more. The page ends like an original ARENA page.</p>
+    <p class="small"><b>②b:</b> <i>Next on the route:</i> ${link(nextCore.id)}${optHere? `. Optional in this chapter: ${optHere}`:''}.</p>`;
+  const stagesList = (v.stages||[...v.spine, ...v.tracks.map(t=>['Track: '+t[0],t[1]]), ...v.finale]).map((g,i)=> `<div class="${g[0]===route[i82].gname || ('Track: '+route[i82].gname)===g[0]?'here':''}">${v.stages? (i+1)+'. ':''}${g[0]}</div>`).join('');
+  document.getElementById('mockSide').innerHTML = `<b>Route</b>${stagesList}<hr><b>Chapter</b> 8 ▾<br><b>Lesson</b> [8.2] ▾<br><b>Part</b> 4. ☆ Bonus ▾`;
+  document.getElementById('mockReader').innerHTML = `<b>[8.2] Attribution Patching and EAP</b> <span class="small muted">— ${route[i82].gname}</span>
+    <p class="small muted">…part 4 of 4…</p>
+    <div class="navline">Part <b>4 of 4</b> · <span class="btn">← Previous part</span> <span class="btn">${v.tracks && nextCore.gname!==route[i82].gname ? 'Choose your next track →' : 'Next on the route: '+nextCore.id.replace(/[ab]$/,'')+' →'}</span>
+    <div class="small muted">${L[nextCore.id][1]==='orig'? 'An original lesson opens on learn.arena.education; the reader shows "Back to the route" for it.' : 'Same page, next lesson.'} Earlier on the route: ${prevCore? prevCore.id.replace(/[ab]$/,''):'—'}. The URL is the bookmark; nothing is stored.</div></div>`;
+  const chCore = route.filter(p=>/^8\./.test(p.id) && p.core).map(p=>p.id), chPre = [...new Set(route.filter(p=>/^8\./.test(p.id)).flatMap(p=>L[p.id][3]).filter(q=>!/^8\./.test(q)))];
+  const lastOf8 = route.map(p=>p.id).lastIndexOf('8.8'); const after = route.slice(lastOf8+1).find(p=>p.core);
+  document.getElementById('mockHome').innerHTML = `<b>Chapter 8: Automated Circuits</b> · <span class="small">TLDR</span>
+    <ul class="small"><li><b>Before this chapter:</b> ${chPre.map(link).join(', ')}.</li>
+    <li>We recommend ${chCore.map(id=>link(id)).join(' then ')} (${fmt(chCore.reduce((s,id)=>s+days(id),0))} days). The rest are optional, in any order.</li>
+    <li><b>After this chapter</b> the route continues with ${after? link(after.id):'—'}${v.tracks?' (or any other track)':''}.</li></ul>`;
+  // decisions
+  document.getElementById('decisions').innerHTML = '<tr><th>ID</th><th>Choice</th><th>Options</th><th>Why the recommendation</th></tr>' + DECISIONS.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td class="small">${r[3]}</td></tr>`).join('');
+}
+function go(dir){ const i=(keys.indexOf(cur)+dir+keys.length)%keys.length; cur=keys[i]; try { const u=new URL(location.href); u.searchParams.set('variant',cur); history.replaceState(null,'',u); } catch(e) {} render(); }
+document.getElementById('prev').onclick=()=>go(-1); document.getElementById('next').onclick=()=>go(1);
+addEventListener('keydown', e=>{ if(e.target.closest('input,textarea,[contenteditable]')) return; if(e.key==='ArrowLeft') go(-1); if(e.key==='ArrowRight') go(1); });
+render();
+</script>
+</body>
+</html>
