@@ -1,0 +1,663 @@
+<title>ARENA Taste Bar</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Source+Code+Pro:wght@400;500&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+<style>
+/* Layout: a working sheet. Chrome in Plex on a cool neutral; the two lesson panes imitate the ARENA Streamlit page (Source Sans on white) so the rewrite is judged in its own clothes. */
+:root {
+  --bg: #eef1f3; --fg: #16191d; --muted: #59626d; --line: #d3d9df;
+  --paper: #ffffff; --paper-fg: #262730; --code: #f2f4f6; --quote: #f7f8fa;
+  --accent: #1d6a85; --accent-soft: #dcebf1;
+  --good: #2c7a4b; --good-soft: #e3f2e8; --bad: #b0442c; --bad-soft: #f8e6e1; --mixed: #8a6400; --mixed-soft: #f6efd9;
+  --trim: #8b939c; --maint: #fbf3f1;
+  --ui: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --lesson: "Source Sans 3", "Source Sans Pro", "Segoe UI", system-ui, sans-serif;
+  --lcode: "Source Code Pro", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #111417; --fg: #e6e9ec; --muted: #9ba4ae; --line: #2a3037;
+  --paper: #191c20; --paper-fg: #e4e6e9; --code: #23272d; --quote: #1f2328;
+  --accent: #74b9d1; --accent-soft: #1d3540;
+  --good: #73c494; --good-soft: #1b3326; --bad: #ee8f77; --bad-soft: #3a221c; --mixed: #e0b955; --mixed-soft: #362d14;
+  --trim: #7d8590; --maint: #2a201e; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #111417; --fg: #e6e9ec; --muted: #9ba4ae; --line: #2a3037;
+  --paper: #191c20; --paper-fg: #e4e6e9; --code: #23272d; --quote: #1f2328;
+  --accent: #74b9d1; --accent-soft: #1d3540;
+  --good: #73c494; --good-soft: #1b3326; --bad: #ee8f77; --bad-soft: #3a221c; --mixed: #e0b955; --mixed-soft: #362d14;
+  --trim: #7d8590; --maint: #2a201e; color-scheme: dark }
+
+body { background: var(--bg); color: var(--fg); font: 15px/1.5 var(--ui); }
+.wrap { max-width: 1480px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 20px 120px; }
+header.top { display: grid; gap: 6px; margin-bottom: 14px; }
+header.top h1 { font-size: 1.55rem; font-weight: 600; margin: 0; letter-spacing: -0.01em; text-wrap: balance; }
+header.top p { margin: 0; color: var(--muted); max-width: 80ch; }
+nav.tabs { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0 16px; }
+nav.tabs a { font: 500 0.9rem var(--ui); color: var(--fg); text-decoration: none; padding: 7px 14px; border: 1px solid var(--line); border-radius: 999px; background: var(--paper); }
+nav.tabs a[aria-current="page"] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* controls */
+.controls { display: flex; flex-wrap: wrap; gap: 10px 20px; align-items: center; margin-bottom: 14px; }
+.seg { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--paper); }
+.seg button { font: 500 0.85rem var(--ui); border: 0; background: none; color: var(--fg); padding: 7px 12px; cursor: pointer; border-right: 1px solid var(--line); }
+.seg button:last-child { border-right: 0; }
+.seg button[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent); }
+.ctl-label { font: 500 0.72rem var(--mono); text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-right: 6px; }
+.howto { color: var(--muted); font-size: 0.88rem; max-width: 110ch; margin: 0 0 14px; }
+
+/* side by side */
+.panes { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+@media (max-width: 1080px) { .panes { grid-template-columns: minmax(0, 1fr); } }
+.pane { min-width: 0; }
+.pane-head { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); padding: 6px 0 8px; display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; }
+.pane-head .k { font: 500 0.72rem var(--mono); text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.pane-head b { font-weight: 600; }
+.pane-head .v { font: 500 0.8rem var(--mono); color: var(--accent); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+
+/* lesson imitation */
+.lesson { background: var(--paper); color: var(--paper-fg); border: 1px solid var(--line); border-radius: 6px; padding: 26px clamp(16px, 3vw, 36px) 30px; font: 16px/1.6 var(--lesson); }
+.lesson h1 { font: 700 2.05rem/1.2 var(--lesson); margin: 0 0 12px; text-wrap: balance; }
+.lesson h2 { font: 700 1.7rem/1.25 var(--lesson); margin: 30px 0 10px; }
+.lesson h3 { font: 600 1.32rem/1.3 var(--lesson); margin: 24px 0 8px; }
+.lesson h4 { font: 600 1.12rem/1.35 var(--lesson); margin: 20px 0 6px; }
+.lesson p { margin: 0 0 12px; }
+.lesson ul { margin: 0 0 12px; padding-left: 1.3em; }
+.lesson li { margin-bottom: 4px; }
+.lesson code { font: 0.86em var(--lcode); background: var(--code); padding: 1px 4px; border-radius: 3px; }
+.lesson pre { font: 0.82rem/1.5 var(--lcode); background: var(--code); padding: 10px 12px; border-radius: 4px; overflow-x: auto; margin: 0 0 12px; white-space: pre; }
+.lesson .colab { font-size: 0.9rem; border-left: 3px solid var(--line); padding-left: 10px; color: var(--muted); }
+.lesson .colab u { color: var(--accent); text-decoration: none; }
+.lesson .lo { background: var(--quote); border-left: 3px solid var(--line); padding: 8px 14px 4px; margin: 0 0 12px; }
+.lesson .lo h5 { font: 600 0.95rem var(--lesson); margin: 2px 0 6px; }
+.lesson .maint { background: var(--maint); border-left: 3px solid var(--bad); padding: 8px 12px; margin: 0 0 6px; font-size: 0.93rem; }
+.lesson .maint p:last-child { margin-bottom: 0; }
+.lesson .trim { color: var(--trim); font-style: italic; font-size: 0.92rem; }
+.lesson .math { text-align: center; font: italic 1.08rem var(--lesson); margin: 6px 0 14px; }
+.lesson .rule { text-align: center; color: var(--trim); font: 500 0.75rem var(--mono); letter-spacing: 0.08em; text-transform: uppercase; margin: 26px 0 8px; display: flex; gap: 10px; align-items: center; }
+.lesson .rule::before, .lesson .rule::after { content: ""; flex: 1; border-top: 1px dashed var(--line); }
+.lesson details { border: 1px solid var(--line); border-radius: 4px; padding: 6px 10px; margin: 0 0 10px; background: var(--paper); }
+.lesson details summary { cursor: pointer; font-weight: 600; }
+.lesson details[open] summary { margin-bottom: 6px; }
+.lesson figure { margin: 4px 0 14px; }
+.lesson figure img { display: block; width: 100%; height: auto; border-radius: 3px; background: #fff; }
+.lesson figcaption, .lesson .cap { font-size: 0.9rem; color: var(--muted); margin-top: 6px; }
+.lesson .paths li b { font-variant-numeric: tabular-nums; }
+.lesson .about { border-top: 1px solid var(--line); margin-top: 26px; padding-top: 12px; font-size: 0.9rem; color: var(--muted); }
+.svgbox { overflow-x: auto; }
+.svgbox svg { width: 100%; max-width: 520px; height: auto; display: block; margin: 0 auto; }
+.svgbox .dot { fill: var(--accent); fill-opacity: 0.55; }
+.svgbox .pc1 { stroke: var(--bad); stroke-width: 3; } .svgbox .pc1-h { fill: var(--bad); }
+.svgbox .pc2 { stroke: var(--good); stroke-width: 3; } .svgbox .pc2-h { fill: var(--good); }
+.svgbox .lab { font: 600 13px var(--ui); } .svgbox .pc1-t { fill: var(--bad); } .svgbox .pc2-t { fill: var(--good); }
+
+/* margin notes */
+.note { font: 0.84rem/1.45 var(--ui); margin: -2px 0 14px; padding: 6px 10px 6px 12px; border-radius: 4px; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 10px; }
+.note::before { font: 500 0.68rem/1.9 var(--mono); text-transform: uppercase; letter-spacing: 0.07em; }
+.note.good { background: var(--good-soft); color: var(--fg); } .note.good::before { content: "works"; color: var(--good); }
+.note.bad { background: var(--bad-soft); color: var(--fg); } .note.bad::before { content: "problem"; color: var(--bad); }
+.note.mixed { background: var(--mixed-soft); color: var(--fg); } .note.mixed::before { content: "mixed"; color: var(--mixed); }
+.hide-notes .note { display: none; }
+
+/* floating variant switcher */
+.switcher { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 20; display: flex; align-items: center; gap: 4px; background: var(--fg); color: var(--bg); border-radius: 999px; padding: 5px; box-shadow: 0 6px 24px rgb(0 0 0 / 0.25); max-width: calc(100vw - 32px); }
+.switcher button { border: 0; background: none; color: inherit; font: 600 1rem var(--ui); width: 36px; height: 36px; border-radius: 50%; cursor: pointer; }
+.switcher button:hover { background: rgb(127 127 127 / 0.25); }
+.switcher span { font: 500 0.82rem var(--mono); padding: 0 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* checklist and decisions */
+.sheet { background: var(--paper); border: 1px solid var(--line); border-radius: 6px; padding: 26px clamp(16px, 4vw, 44px); max-width: 920px; }
+.sheet h2 { font: 600 1.35rem var(--ui); margin: 0 0 4px; }
+.sheet .sub { color: var(--muted); margin: 0 0 18px; max-width: 75ch; }
+.sheet h3 { font: 500 0.75rem var(--mono); text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin: 22px 0 8px; border-bottom: 1px solid var(--line); padding-bottom: 4px; }
+.sheet ol { margin: 0; padding-left: 1.6em; display: grid; gap: 7px; }
+.sheet ol li { padding-left: 4px; max-width: 78ch; }
+.sheet ol li::marker { font: 500 0.85rem var(--mono); color: var(--muted); }
+.sheet ul.plain { margin: 0; padding-left: 1.2em; display: grid; gap: 5px; }
+.chip { display: inline-block; font: 500 0.7rem var(--mono); letter-spacing: 0.04em; color: var(--accent); background: var(--accent-soft); border-radius: 4px; padding: 1px 6px; margin-left: 4px; text-decoration: none; vertical-align: 1px; white-space: nowrap; }
+.sheet code, .card code { font: 0.86em var(--mono); background: var(--code); padding: 1px 4px; border-radius: 3px; }
+.cards { display: grid; gap: 14px; max-width: 980px; }
+.card { background: var(--paper); border: 1px solid var(--line); border-radius: 6px; padding: 18px clamp(14px, 3vw, 26px); scroll-margin-top: 16px; }
+.card h3 { font: 600 1.08rem/1.35 var(--ui); margin: 0 0 8px; text-wrap: balance; }
+.card h3 .id { font: 500 0.78rem var(--mono); color: var(--muted); margin-right: 8px; }
+.card p { margin: 0 0 8px; max-width: 80ch; }
+.card .row { display: grid; grid-template-columns: 8.5em minmax(0, 1fr); gap: 4px 14px; margin-top: 8px; }
+.card .row > div:nth-child(odd) { font: 500 0.72rem/1.9 var(--mono); text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.card .row ul { margin: 0; padding-left: 1.1em; }
+.card .rec { background: var(--accent-soft); border-radius: 4px; padding: 8px 12px; margin-top: 10px; }
+.card .rec b { color: var(--accent); }
+@media (max-width: 560px) { .card .row { grid-template-columns: minmax(0, 1fr); } .card .row > div:nth-child(odd) { margin-top: 6px; } }
+.num { font-variant-numeric: tabular-nums; }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+</style>
+
+<div class="wrap" id="app">
+<header class="top">
+  <h1>ARENA Taste Bar</h1>
+  <p>A throwaway prototype for the ticket “What taste bar must every extension lesson meet to feel like original ARENA?”. One weak lesson’s first screen (11.1 PCA/SVD) rewritten beside the exemplar 12.1, a draft one-page checklist, and the decisions they raise. Nothing here has been applied to the lessons.</p>
+</header>
+<nav class="tabs" aria-label="Views">
+  <a href="#a" data-view="compare">Side by side</a>
+  <a href="#checklist" data-view="checklist">Checklist</a>
+  <a href="#decisions" data-view="decisions">Decisions</a>
+</nav>
+
+<!-- ============================ COMPARE ============================ -->
+<section id="view-compare" data-viewpane="compare">
+  <div class="controls">
+    <div><span class="ctl-label">11.1 shown as</span>
+      <span class="seg" role="group" aria-label="11.1 variant">
+        <button type="button" id="v-now" data-variant="now">Today</button>
+        <button type="button" id="v-a" data-variant="a">A · Numbers first</button>
+        <button type="button" id="v-b" data-variant="b">B · Today we’ll</button>
+        <button type="button" id="v-c" data-variant="c">C · Picture first</button>
+      </span></div>
+    <div><span class="ctl-label">“About this page” note</span>
+      <span class="seg" role="group" aria-label="About this page note">
+        <button type="button" id="about-off" data-about="off">Off</button>
+        <button type="button" id="about-on" data-about="on">On</button>
+      </span></div>
+    <div><span class="ctl-label">Margin notes</span>
+      <span class="seg" role="group" aria-label="Margin notes">
+        <button type="button" id="notes-on" data-notes="on">Show</button>
+        <button type="button" id="notes-off" data-notes="off">Hide</button>
+      </span></div>
+  </div>
+  <p class="howto">Left: 12.1 as it is today. Right: 11.1 as it is today, or its first screen rewritten three ways. Flip with the buttons, the bar at the bottom, or the ← → keys. Grey italic text marks cuts for length. The coloured notes say what works and what doesn’t; hide them to read the page as a learner would. Every number in the rewrites comes from 11.1’s own outputs.</p>
+
+  <div class="panes">
+  <!-- ---------------- LEFT: 12.1 exemplar ---------------- -->
+  <div class="pane">
+    <div class="pane-head"><span class="k">Exemplar</span><b>12.1 CLIP and SigLIP from Scratch</b><span class="v">today</span></div>
+    <article class="lesson">
+      <h1>[12.1] CLIP and SigLIP from Scratch</h1>
+      <p class="colab">Colab: <u>exercises</u> | <u>solutions</u></p>
+      <div class="maint"><b>Guided prediction practice:</b> open <code>mastery_hub/units/extension_predictions/exercises.ipynb</code> in the checkout before viewing the results. Record confidence and reasoning, compare controls, then predict a changed case. Reference results are practice, not an unseen test.</div>
+      <p class="note bad">Maintainer banner. The same text sits on 85 of the 86 extension lessons, exemplars included.</p>
+
+      <h2>Introduction</h2>
+      <p>Here are two pictures. The first is a purple star on a plain background. The second shows a red circle on the left and a blue square on the right.</p>
+      <p>For the first picture we ask a pretrained model which of ninety captions fits best, captions such as <code>"a purple star"</code>, <code>"a purple striped star"</code>, <code>"a purple dotted heart"</code> and <code>"a green star"</code>. For the second picture we ask a much easier-sounding question: which of <em>two</em> captions is correct,</p>
+      <pre>"a red circle and a blue square"     "a blue circle and a red square"</pre>
+      <p>The model we’ll use is <b>SigLIP</b>, and on the test set we’ll build in Part 4 it picks the right caption out of ninety 98% of the time, getting the right colour, the right shape <em>and</em> the right pattern. On the second question, with the same kind of shapes and almost the same words, it does no better than a coin flip (it prefers the right caption in 55% of cases). <b>CLIP</b>, its predecessor, does worse on the first (78%) and just as badly on the second (53%).</p>
+      <p class="note good">Opens on a concrete puzzle with the lesson’s own numbers. You want the answer before you have read a definition.</p>
+      <p>These are the two models we’ll take apart in this section. They are <b>dual encoders</b>: an image tower and a text tower which each map their input to a point in one shared vector space […]. Almost every vision-language system built since 2021 either uses such a model directly […] or contains one as its eyes.</p>
+      <p class="trim">[… two paragraphs on InfoNCE versus the sigmoid loss, and why the checkpoint comparison doesn’t isolate the loss …]</p>
+      <p>In this section you will:</p>
+      <ul>
+        <li>implement both losses from scratch, check them against independent oracles, and work out why one needs a bias term and the other doesn’t;</li>
+        <li>build a <b>tiny CLIP</b> […] and watch an image-caption retrieval matrix go from noise to a clean diagonal. The signature result of the section is that matrix, shown next to its <b>controls</b> […];</li>
+        <li>load the real checkpoints, check your loss functions against the models’ own outputs, and measure zero-shot retrieval with noise-image and shuffled-caption controls;</li>
+        <li>map the <b>geometry</b> of the joint space […] and finally why <b>compositionality</b> (binding a colour to the right object) fails.</li>
+      </ul>
+      <p class="note good">Names the signature result and its controls before any setup.</p>
+      <p>A recurring theme is <b>controls</b>. A retrieval matrix looks convincing whether or not the model has learned anything about the pictures […]. So every result has a baseline which should fail, plotted on the same axes.</p>
+      <p><b>Prerequisites.</b> You should be comfortable with transformers at the level of [1.1] (attention, the residual stream, layernorm) and with a basic PyTorch training loop ([0.3] Optimization). […]</p>
+
+      <h3>Content &amp; Learning Objectives</h3>
+      <h4>1️⃣ Two Ways to Match Images and Text</h4>
+      <p>You’ll implement the two losses that train every dual encoder: the softmax-based InfoNCE loss used by CLIP and the pairwise sigmoid loss used by SigLIP. You’ll work out what each loss gives for random, aligned and mismatched embeddings, what each does to the gradients, and why the sigmoid loss needs a bias term that the softmax loss can do without.</p>
+      <div class="lo"><h5>Learning Objectives</h5><ul>
+        <li>Compute the image-text logit matrix from L2-normalised embeddings, a learned logit scale and an optional bias</li>
+        <li>Implement the symmetric InfoNCE loss and the pairwise sigmoid loss, and test them against brute-force oracles</li>
+        <li>Derive the gradient of each loss with respect to the logits, and understand why softmax is invariant to a global logit shift but sigmoid isn’t</li>
+        <li>Understand false negatives (duplicate captions in a batch) and why the SigLIP bias is initialised at -10</li>
+      </ul></div>
+      <p class="note good">Each part gets a plain paragraph, then objectives that start with a verb.</p>
+      <h4>2️⃣ A Tiny CLIP from Scratch</h4>
+      <p class="trim">[paragraph + 5 objectives]</p>
+      <h4>3️⃣ The Real CLIP and SigLIP</h4>
+      <p class="trim">[paragraph + 4 objectives]</p>
+      <h4>4️⃣ The Geometry of the Joint Space</h4>
+      <p class="trim">[paragraph + 5 objectives]</p>
+      <h4>☆ Bonus</h4>
+      <p>Hard negatives (NegCLIP), the batch-size and temperature dependence of both losses, SigLIP 2, more attributes, probing for binding, and further reading.</p>
+
+      <div class="rule">Setup code</div>
+
+      <h2>1️⃣ Two Ways to Match Images and Text</h2>
+      <h3>The setup: an N×N matrix of pairs</h3>
+      <p>A dual encoder is two functions, <i>f</i><sub>img</sub> and <i>f</i><sub>txt</sub>, which map an image and a piece of text to vectors in the same <i>d</i>-dimensional space. We train them on a batch of <i>N</i> (image, caption) pairs […] such that the <i>i</i>-th image and the <i>i</i>-th caption end up close together and the <i>i</i>-th image and the <i>j</i>-th caption (for <i>j</i> ≠ <i>i</i>) don’t.</p>
+      <p class="note good">Says in plain words what the matrix is for before writing it down.</p>
+      <p class="math">S<sub>ij</sub> = s · û<sub>i</sub> · v̂<sub>j</sub> + b</p>
+      <p class="trim">[… what s and b are, and a two-column table of what each loss asks of a row …]</p>
+      <h4>Exercise - implement <code>similarity_logits</code></h4>
+      <pre>Difficulty: 🔴⚪⚪⚪⚪
+Importance: 🔵🔵🔵🔵🔵
+
+You should spend up to 5-10 minutes on this exercise.</pre>
+      <p>Implement <code>similarity_logits</code>, which takes raw (unnormalised) image embeddings of shape <code>(n_images, d)</code>, raw text embeddings of shape <code>(n_texts, d)</code>, a logit scale <i>s</i> and a bias <i>b</i>, and returns the <code>(n_images, n_texts)</code> matrix.</p>
+      <pre>def similarity_logits(image_emb, text_emb, logit_scale, logit_bias=0.0):
+    raise NotImplementedError()
+
+
+tests.test_similarity_logits(similarity_logits)</pre>
+      <p class="note good">Difficulty, importance and a time budget. The test is called with the function, as in original ARENA.</p>
+      <p class="trim">[… the clip_loss exercise …]</p>
+      <h3>What should the loss be? Aligned, noisy and mismatched embeddings</h3>
+      <p class="trim">[… three hand-built conditions: aligned, noisy-aligned, and a mismatched control …]</p>
+      <p>We sweep the logit scale from 0.1 to 300. <b>Make a prediction first:</b> what does the loss do for each condition as the scale goes to zero, and as it goes to infinity?</p>
+      <p class="note good">A prediction asked exactly where the surprise is, about the plot that comes next, in one sentence.</p>
+    </article>
+  </div>
+
+  <!-- ---------------- RIGHT: 11.1 ---------------- -->
+  <div class="pane">
+    <div class="pane-head"><span class="k">Weak lesson</span><b>11.1 PCA, SVD and Geometry Controls</b><span class="v" id="variant-tag">A · Numbers first</span></div>
+    <article class="lesson">
+
+    <!-- ===== TODAY ===== -->
+    <div data-v="now">
+      <h1>[11.1] PCA, SVD, and Geometry Controls</h1>
+      <p class="colab">Colab: <u>exercises</u> | <u>solutions</u></p>
+      <div class="maint"><b>Guided prediction practice:</b> open <code>mastery_hub/units/extension_predictions/exercises.ipynb</code> in the checkout before viewing the results. […]</div>
+      <p class="note bad">The same maintainer banner.</p>
+      <h2>Introduction</h2>
+      <p>Suppose you can identify every weekday from a model’s activations. Does that mean the model represents the week as a circle? Could it just memorize seven unrelated words? And if you find a circle, does the model use it to compute?</p>
+      <p>We’ll separate these questions. First, you’ll recover a known calendar hidden inside a residual stream and change its answer while preserving another piece of information. Then you’ll examine real language-model activations and ask which parts of that argument survive. The exact-model example gives us a place to debug; it doesn’t tell us what a pretrained model must do.</p>
+      <p class="note mixed">Good questions, but abstract. No example prompt, no picture, no number, and it doesn’t say which model.</p>
+      <h3>Historical reference and execution boundary</h3>
+      <div class="maint">
+        <p>The displayed outputs and the thirteen figures are retained from the published, completed-own-answer Mistral study, with source and figure parity checked during this master migration. They are <b>historical reference results</b>, not a fresh execution of this generated notebook. […] The publication receipt remains in <code>expected_outputs/learner_execution.json</code>; the migration audit is in <code>docs/mastery/migrations/geometry.md</code> at the repository root.</p>
+        <p>This route is guided practice: viewing a reference plot or expected-output dropdown exposes the answer. Before revealing one, write a forecast, confidence and causal reasoning. […]</p>
+      </div>
+      <p class="note bad">Provenance and status before the objectives: “migration”, “receipt”, “parity”, repository paths. About 30 of the 86 lessons have text like this in their introduction.</p>
+      <h3>Content &amp; Learning Objectives</h3>
+      <h4>1️⃣ Find a useful view</h4>
+      <div class="lo"><h5>Learning Objectives</h5><ul>
+        <li>Implement centered PCA from SVD and fit transformations on training data.</li>
+        <li>Explain when removing a prompt-template mean uses the evaluation batch.</li>
+        <li>Compare word identity with chronological order using different controls.</li></ul></div>
+      <h4>2️⃣ Check what the picture preserves</h4>
+      <p class="trim">[3 objectives]</p>
+      <h4>3️⃣ Change the model, then read its answer</h4>
+      <p class="trim">[3 objectives]</p>
+      <h4>4️⃣ Calendar geometry in Mistral</h4>
+      <div class="lo"><h5>Learning Objectives</h5><ul>
+        <li>Align semantic token spans and compare calendar-restricted with full-vocabulary answers.</li>
+        <li>Preserve training, development and final roles, all donors and every random-control draw.</li></ul></div>
+      <h4>5️⃣ Does a nonlinear view preserve useful structure?</h4>
+      <p class="trim">[2 objectives]</p>
+      <h4>6️⃣ Turn the calendar continuously</h4>
+      <p class="trim">[2 objectives]</p>
+      <p class="note bad">Objectives only, with no plain paragraph per part. Some read as protocol rules (“Preserve training, development and final roles, all donors and every random-control draw”).</p>
+      <div class="rule">Setup code</div>
+      <h2>1️⃣ Find a useful view</h2>
+      <h3>PCA: which directions contain variation?</h3>
+      <p>Let <i>X</i> ∈ ℝ<sup><i>n</i>×<i>d</i></sup> contain one activation per row. After subtracting the training mean, write <i>X</i> − <i>x̄</i> = <i>USV</i><sup>⊤</sup>. The columns of <i>V</i> are orthogonal directions in activation space. Projecting onto the first <i>k</i> columns gives <i>Z</i> = (<i>X</i> − <i>x̄</i>)<i>V<sub>k</sub></i>, with shape <code>[examples, k]</code>.</p>
+      <p>The variance along PC <i>i</i> is <i>S<sub>i</sub></i><sup>2</sup>/(<i>n</i>−1). Its fraction of <b>all</b> training variance is <i>S<sub>i</sub></i><sup>2</sup>/Σ<sub><i>j</i></sub><i>S<sub>j</sub></i><sup>2</sup>; don’t normalize using only retained components. […]</p>
+      <p class="note bad">Formula first. This is where the course teaches PCA, and there is no picture of what it looks for or why its answer might not be the one you want. Four earlier lessons already use PCA.</p>
+      <h4>Exercise 1 — Fit PCA on training activations</h4>
+      <pre>Difficulty: 🔴🔴🔴⚪⚪
+Importance: 🔵🔵🔵🔵⚪
+You should spend 15 minutes on this exercise.</pre>
+      <p>Return the mean <code>[d]</code>, basis <code>[d, k]</code> and variance fractions <code>[k]</code>. Use reduced SVD. The test includes a huge direction found only in held-out data: your fitted basis must ignore it.</p>
+      <pre>def fit_pca(x: t.Tensor, components: int):
+    raise NotImplementedError()
+
+
+tests.test_pca_fits_only_training_and_preserves_total_variance(SimpleNamespace(**globals()))</pre>
+      <p class="note mixed">Tags and time are there. The test call passes the whole notebook namespace, which learners can’t read at a glance.</p>
+      <p class="trim">[… Exercise 2: circular coordinates and template centering …]</p>
+      <h3>Forecast before the result — template-offset</h3>
+      <p>For the same seven calendar classes, compare uncentered PCA with balanced per-template centering. Forecast how much variance the first two PCs explain and whether the chronological order survives. Which information does the evaluation batch contribute?</p>
+      <p>Write your expected ranking or numerical range, confidence (0–100%), and causal reason before running or opening the reference output. Record whether you have already seen it.</p>
+      <p class="note bad">A form, headed with an internal slug (“template-offset”). The second paragraph is word-for-word the same across lessons; 12 lessons use these Forecast/Reflect headings.</p>
+    </div>
+
+    <!-- ===== REWRITE: shared title ===== -->
+    <div data-v="a b c">
+      <h1>[11.1] PCA, SVD and Geometry Controls</h1>
+      <p class="colab">Colab: <u>exercises</u> | <u>solutions</u></p>
+    </div>
+
+    <!-- ===== VARIANT A: numbers first ===== -->
+    <div data-v="a">
+      <h2>Introduction</h2>
+      <p>Ask Mistral-7B to finish <code>Two days from Monday is</code> and it will usually say <code>Wednesday</code>. On our 49 weekday questions it gets 32 right, and 128 of 144 month questions. Engels et al. (2024) found that at the word “Monday”, the model’s residual stream puts the seven days on a circle, in order, with Sunday next to Monday. They argued that the model does this arithmetic by turning around that circle.</p>
+      <p>A circle in a PCA plot is easy to believe and easy to get wrong. Here are two numbers you’ll reproduce in this section:</p>
+      <ul>
+        <li>In a toy residual stream with a perfect weekday circle hidden inside it, the first principal component explains <b>99%</b> of the variance, and it isn’t the weekday. It’s which prompt template the example came from, and the circle gets squashed onto a single line. Subtract each template’s mean and the circle comes back.</li>
+        <li>In Mistral, edit only the two circle coordinates to move the start day two places around the week, and the model’s answer moves with it in <b>22%</b> of prompts (7% for months). Paste in the whole activation from a prompt that really does start two days later, and it moves in <b>63%</b> (79% for months).</li>
+      </ul>
+      <p>So the circle is there, and the model clearly reads something from that activation. How much of the arithmetic actually runs through the circle is a harder question, and it’s the one this section is about.</p>
+      <p class="note good">A concrete prompt, a named model and the lesson’s own numbers: two surprises the learner will reproduce.</p>
+      <p>In this section you will:</p>
+      <ul>
+        <li>implement PCA from the SVD and find out what it actually maximises;</li>
+        <li>check what a 2D picture keeps and loses: neighbours, rotations, and the curved islands UMAP can draw even from pure noise;</li>
+        <li>edit the calendar coordinate inside a small model where we know the answer, then inside Mistral, and read off the model’s actual answer;</li>
+        <li>pair every result with a control that should fail: shuffled labels, random planes of the same size, and random edits of the same length.</li>
+      </ul>
+      <p><b>Prerequisites.</b> The residual stream from [1.2] and activation patching from [1.4.1]; eigenvectors and orthogonal matrices at the level of [0.0]. No earlier PCA is assumed.</p>
+    </div>
+
+    <!-- ===== VARIANT B: today we'll ===== -->
+    <div data-v="b">
+      <h2>Introduction</h2>
+      <p>Today we’ll look for a circle inside a language model, and practise not fooling ourselves when we find one.</p>
+      <p>Mistral-7B can complete <code>Two days from Monday is</code> with <code>Wednesday</code>, and researchers have found that its activations lay the seven weekdays out on a ring (Engels et al., 2024). We’ll start with a toy residual stream where we put a ring in ourselves, so we always know the right answer, and use it to build and debug our tools: PCA from the SVD, neighbourhood checks for 2D pictures, and an edit that moves a point around the circle. Then we’ll turn the same tools on Mistral and see which parts of the story survive.</p>
+      <p>We’ll also practise three habits that the rest of chapter 11 relies on:</p>
+      <ul>
+        <li>fit every transformation on training data, then apply it unchanged to new data;</li>
+        <li>show every picture next to a control that should fail;</li>
+        <li>read the model’s actual answer, not just a coordinate that predicts it.</li>
+      </ul>
+      <p>Which sections you do depends on what you want:</p>
+      <ul class="paths">
+        <li>You want PCA and the ways it misleads: <b>1, 2</b></li>
+        <li>You use t-SNE or UMAP and want to know when to trust them: <b>1, 2, 5</b></li>
+        <li>You want to test whether a geometric feature is used by the model: <b>1, 3</b></li>
+        <li>You want the full Mistral replication: <b>1, 3, 4, 6</b></li>
+      </ul>
+      <p class="note good">Short and warm like 0.1, with a route list like 1.4.1. The numbers wait for the sections.</p>
+      <p><b>Prerequisites.</b> The residual stream from [1.2] and activation patching from [1.4.1]; eigenvectors and orthogonal matrices at the level of [0.0].</p>
+    </div>
+
+    <!-- ===== VARIANT C: picture first ===== -->
+    <div data-v="c">
+      <h2>Introduction</h2>
+      <figure><img alt="Two scatter plots of Mistral-7B weekday activations. Left, unsupervised PCA: the days are scattered, and the three prompts for each day are spread far apart horizontally. Right, a supervised circular probe: the seven days sit around a circle in order." src="data:image/webp;base64,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"></figure>
+      <p class="cap">Mistral-7B’s residual stream at the weekday word, for prompts like <code>Two days from Monday is</code>. Left: PCA, with colours added afterwards. Right: a probe trained to output each day’s position on a circle. Dots are training prompts, faint crosses are new wordings.</p>
+      <p>Which of these two plots is evidence that the model represents the week as a circle?</p>
+      <p>The right one looks like a clock face, but we asked for a circle: a probe trained to put each day at its place on a circle can draw one whenever it can tell the days apart. The left one was never told about days, and it doesn’t look much like a clock. Why do the three Monday prompts (dark blue) land so far apart along component 1?</p>
+      <p>By the end of section 4 you’ll be able to answer both questions, and a third: when we edit the circle, does the model’s answer change?</p>
+      <p class="note good">The section’s central question as one picture from the lesson’s own output. It poses the template puzzle without giving away the first prediction.</p>
+      <p>On the way you’ll build PCA from the SVD, learn to check what a 2D picture keeps and throws away, and edit activations to test whether a geometric feature is used: first in a small model where we know the answer, then in Mistral.</p>
+      <p><b>Prerequisites.</b> The residual stream from [1.2] and activation patching from [1.4.1]; eigenvectors and orthogonal matrices at the level of [0.0].</p>
+    </div>
+
+    <!-- ===== REWRITE: shared body ===== -->
+    <div data-v="a b c">
+      <h3>Content &amp; Learning Objectives</h3>
+      <h4>1️⃣ Find a useful view</h4>
+      <p>You’ll implement PCA from the SVD, then hide a weekday circle under a large prompt-template offset and watch PCA find the template instead. You’ll fix it, and see what the fix assumes about your data.</p>
+      <div class="lo"><h5>Learning Objectives</h5><ul>
+        <li>Implement PCA with the SVD, fitting the mean and directions on training data only</li>
+        <li>Understand why PCA finds the direction of largest variance, which need not be the thing you care about</li>
+        <li>Tell apart “the model can tell the days apart” and “the model stores them in order”, with a control for each</li></ul></div>
+      <h4>2️⃣ Check what the picture preserves</h4>
+      <p>Every 2D plot of a 4096-dimensional activation throws information away. You’ll measure what was lost: which neighbours a projection invented or dropped, and whether two plots that look different are just rotations of each other.</p>
+      <div class="lo"><h5>Learning Objectives</h5><ul>
+        <li>Implement trustworthiness and continuity, two scores for invented and lost neighbours</li>
+        <li>Align two representations with Procrustes before comparing them</li>
+        <li>Compare views across random seeds with numbers, not by eye</li></ul></div>
+      <h4>3️⃣ Change the model, then read its answer</h4>
+      <p>Reading a coordinate out of a model isn’t the same as the model using it. You’ll derive the smallest edit that moves a point around the circle, apply it in a small model where we know the answer, and compare it with transplanting the whole activation and with random edits of the same size.</p>
+      <p class="trim">[3 objectives]</p>
+      <h4>4️⃣ Calendar geometry in Mistral</h4>
+      <p>The same tools on Mistral-7B: find the weekday and month circles, check that they hold up on new prompt wordings, and test whether editing them changes what the model says.</p>
+      <div class="lo"><h5>Learning Objectives</h5><ul>
+        <li>Find the weekday or month token from character offsets, not hard-coded positions</li>
+        <li>Score answers both among calendar words and over the whole vocabulary</li>
+        <li>Keep wrong answers and every random control in the comparison</li></ul></div>
+      <h4>5️⃣ Does a nonlinear view preserve useful structure?</h4>
+      <p>t-SNE and UMAP make the prettiest pictures in this section. You’ll run them across seeds and settings next to shuffled labels and pure noise, and find out which of their islands mean anything.</p>
+      <h4>6️⃣ Turn the calendar continuously</h4>
+      <p>Sweep the edit all the way round the circle and in towards its centre, and watch where the model’s answer flips.</p>
+      <h4>☆ Bonus</h4>
+      <p>Anomalies the main sections leave open, the limits of what we showed, and further reading.</p>
+      <p class="note good">A plain paragraph per part; jargon such as “transductive” waits until it is taught. Same six parts and the same exercises as today.</p>
+
+      <div class="rule">Setup code</div>
+      <p>Sections 1–3 run on a CPU in a few minutes. Section 4 loads Mistral-7B, which needs about 14 GB of GPU memory; the full run takes about 7 minutes on an RTX 5090 laptop GPU. If you skip it, the saved outputs below show every Mistral result.</p>
+      <p class="note good">Run facts sit in Setup, as in original ARENA. Nothing about provenance.</p>
+
+      <h2>1️⃣ Find a useful view</h2>
+      <h3>PCA: the direction the cloud is most stretched</h3>
+      <p>Picture each activation as a point, so a batch of prompts is a cloud of points. Move the origin to the middle of the cloud and look for the line through it along which the cloud is most spread out: if you squashed every point onto that line, the squashed points would be as spread out as possible. That line is the first principal component, PC1. PC2 is the most spread-out direction at right angles to PC1, and so on.</p>
+      <figure class="svgbox"><svg viewBox="0 0 520 300" role="img" aria-label="A tilted cloud of points with two arrows: a long one along the cloud (PC1) and a short one at right angles (PC2)">
+<defs>
+<marker id="ah-pc1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="pc1-h"/></marker>
+<marker id="ah-pc2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="pc2-h"/></marker>
+</defs>
+<circle cx="233.6" cy="129.7" r="3.4" class="dot"/><circle cx="362.2" cy="114.9" r="3.4" class="dot"/><circle cx="226.3" cy="187.6" r="3.4" class="dot"/><circle cx="298.3" cy="135.9" r="3.4" class="dot"/><circle cx="335.4" cy="167.4" r="3.4" class="dot"/><circle cx="387.8" cy="89.4" r="3.4" class="dot"/><circle cx="309.1" cy="132.4" r="3.4" class="dot"/><circle cx="207.3" cy="169.3" r="3.4" class="dot"/><circle cx="322.8" cy="127.0" r="3.4" class="dot"/><circle cx="224.9" cy="153.6" r="3.4" class="dot"/><circle cx="186.9" cy="236.8" r="3.4" class="dot"/><circle cx="290.0" cy="157.9" r="3.4" class="dot"/><circle cx="84.8" cy="271.1" r="3.4" class="dot"/><circle cx="219.1" cy="210.5" r="3.4" class="dot"/><circle cx="112.9" cy="231.8" r="3.4" class="dot"/><circle cx="329.6" cy="124.2" r="3.4" class="dot"/><circle cx="175.7" cy="188.4" r="3.4" class="dot"/><circle cx="314.4" cy="134.3" r="3.4" class="dot"/><circle cx="283.0" cy="112.5" r="3.4" class="dot"/><circle cx="237.9" cy="189.7" r="3.4" class="dot"/><circle cx="274.8" cy="139.6" r="3.4" class="dot"/><circle cx="360.1" cy="138.2" r="3.4" class="dot"/><circle cx="197.5" cy="211.8" r="3.4" class="dot"/><circle cx="90.3" cy="241.2" r="3.4" class="dot"/><circle cx="302.6" cy="153.1" r="3.4" class="dot"/><circle cx="360.8" cy="77.5" r="3.4" class="dot"/><circle cx="298.0" cy="122.9" r="3.4" class="dot"/><circle cx="347.9" cy="146.0" r="3.4" class="dot"/><circle cx="294.4" cy="119.0" r="3.4" class="dot"/><circle cx="84.6" cy="237.9" r="3.4" class="dot"/><circle cx="215.0" cy="156.1" r="3.4" class="dot"/><circle cx="207.7" cy="182.9" r="3.4" class="dot"/><circle cx="287.7" cy="165.0" r="3.4" class="dot"/><circle cx="301.4" cy="135.6" r="3.4" class="dot"/><circle cx="296.9" cy="149.9" r="3.4" class="dot"/><circle cx="336.6" cy="96.5" r="3.4" class="dot"/><circle cx="223.3" cy="156.0" r="3.4" class="dot"/><circle cx="338.0" cy="61.8" r="3.4" class="dot"/><circle cx="95.6" cy="216.7" r="3.4" class="dot"/><circle cx="289.4" cy="141.7" r="3.4" class="dot"/><circle cx="141.8" cy="181.4" r="3.4" class="dot"/><circle cx="127.2" cy="208.9" r="3.4" class="dot"/><circle cx="382.0" cy="135.5" r="3.4" class="dot"/><circle cx="235.2" cy="205.3" r="3.4" class="dot"/><circle cx="250.5" cy="116.2" r="3.4" class="dot"/><circle cx="448.6" cy="105.2" r="3.4" class="dot"/><circle cx="187.0" cy="173.3" r="3.4" class="dot"/><circle cx="382.8" cy="77.2" r="3.4" class="dot"/><circle cx="176.5" cy="190.5" r="3.4" class="dot"/><circle cx="247.6" cy="167.0" r="3.4" class="dot"/><circle cx="176.5" cy="187.9" r="3.4" class="dot"/><circle cx="275.3" cy="149.1" r="3.4" class="dot"/><circle cx="242.2" cy="200.9" r="3.4" class="dot"/><circle cx="188.9" cy="157.8" r="3.4" class="dot"/><circle cx="246.8" cy="202.9" r="3.4" class="dot"/><circle cx="359.6" cy="86.4" r="3.4" class="dot"/><circle cx="434.3" cy="60.1" r="3.4" class="dot"/><circle cx="222.7" cy="215.9" r="3.4" class="dot"/><circle cx="334.5" cy="41.4" r="3.4" class="dot"/><circle cx="181.0" cy="215.1" r="3.4" class="dot"/><circle cx="309.8" cy="151.9" r="3.4" class="dot"/><circle cx="226.7" cy="182.3" r="3.4" class="dot"/><circle cx="250.8" cy="128.1" r="3.4" class="dot"/><circle cx="237.8" cy="140.1" r="3.4" class="dot"/><circle cx="205.3" cy="174.3" r="3.4" class="dot"/><circle cx="72.9" cy="295.6" r="3.4" class="dot"/><circle cx="324.8" cy="137.0" r="3.4" class="dot"/><circle cx="292.1" cy="122.0" r="3.4" class="dot"/><circle cx="355.2" cy="80.7" r="3.4" class="dot"/><circle cx="338.9" cy="115.8" r="3.4" class="dot"/>
+<line x1="260.0" y1="156.0" x2="428.8" y2="64.4" class="pc1" marker-end="url(#ah-pc1)"/><text x="278.8" y="52.4" class="lab pc1-t">PC1 · 94% of variance</text>
+<line x1="260.0" y1="156.0" x2="226.8" y2="94.9" class="pc2" marker-end="url(#ah-pc2)"/><text x="186.8" y="84.9" class="lab pc2-t">PC2 · 6% of variance</text>
+</svg><figcaption>An illustration in 2D. PCA rotates the axes to line up with the cloud and tells you how much of the spread each new axis carries.</figcaption></figure>
+      <p>“Most spread out” means largest variance, and that is the catch to keep in mind for the rest of this section: PCA finds whatever varies most, which need not be what you care about. If the wording of the prompt moves an activation further than the weekday does, PC1 will be about wording.</p>
+      <p class="note good">A picture and plain words first, and the catch is stated before the formula.</p>
+      <p>The SVD gives you all of these directions at once. Stack the activations as the rows of <i>X</i> (shape <code>[n, d]</code>), subtract the training mean <i>x̄</i>, and write <i>X</i> − <i>x̄</i> = <i>USV</i><sup>⊤</sup>. The columns of <i>V</i> are the principal directions, in order, and <i>S<sub>i</sub></i><sup>2</sup>/(<i>n</i>−1) is the variance along direction <i>i</i>. To project, multiply: <i>Z</i> = (<i>X</i> − <i>x̄</i>)<i>V<sub>k</sub></i>, shape <code>[n, k]</code>.</p>
+      <p>Two habits matter later. Fit <i>x̄</i> and <i>V</i> on training data and reuse them on new points; fitting a fresh PCA to new data answers a different question. And report each component’s share of <em>all</em> the variance, <i>S<sub>i</sub></i><sup>2</sup>/Σ<sub><i>j</i></sub><i>S<sub>j</sub></i><sup>2</sup>, not just of the components you kept.</p>
+      <h4>Exercise - implement <code>fit_pca</code></h4>
+      <pre>Difficulty: 🔴🔴🔴⚪⚪
+Importance: 🔵🔵🔵🔵⚪
+
+You should spend up to 15 minutes on this exercise.</pre>
+      <p>Return the training mean (shape <code>[d]</code>), the first <i>k</i> directions as columns (shape <code>[d, k]</code>), and each one’s share of the total variance (shape <code>[k]</code>). Use the reduced SVD. The test adds a huge direction that only appears in held-out data; your directions should ignore it.</p>
+      <pre>def fit_pca(x: Float[Tensor, "n d"], components: int) -&gt; tuple[Tensor, Tensor, Tensor]:
+    """Training mean [d], top directions as columns [d, k], share of total variance [k]."""
+    raise NotImplementedError()
+
+
+tests.test_fit_pca(fit_pca)</pre>
+      <details><summary>Hint</summary><p>The right singular vectors are the rows of <code>Vh</code>, so transpose the first <code>k</code> rows. A common bug is returning columns of <code>U</code>, which live in example space, not activation space.</p></details>
+      <details><summary>Solution</summary><pre>mean = x.mean(0)
+_, singular, vh = t.linalg.svd(x - mean, full_matrices=False)
+energy = singular.square()
+return mean, vh[:components].T, energy[:components] / energy.sum()</pre></details>
+      <p class="trim">[… Exercise - implement circular_coordinates and center_template_grid …]</p>
+
+      <h3>A calendar hidden by prompt wording</h3>
+      <p>Now we hide a circle ourselves. We place the seven weekdays on a circle of radius 1, then add a different offset for each of three prompt templates. The offsets are 8 to 13 times longer than the circle’s radius. We fit PCA on the first two templates and project all three.</p>
+      <p><b>Make a prediction first:</b> roughly how much of the variance will PC1 explain? And what will the seven weekdays from one template look like in the PC1–PC2 plane: a circle, a line, or a blob?</p>
+      <p class="note good">The prediction sits where the surprise is and asks about the plot that comes next. It replaces the generic Forecast/Reflect form.</p>
+      <p class="trim">[… code cell: build the grid, fit PCA on templates 0 and 1, plot raw and centred views …]</p>
+      <figure><img alt="Two PCA plots of the toy calendar. Left, raw: PC1 99%, PC2 1%; each template's seven days form a vertical line, at three different PC1 positions. Right, after subtracting each template's mean: PC1 50%, PC2 50%; the seven days form a circle and all three templates overlap." src="data:image/webp;base64,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"></figure>
+      <details><summary>Help - how should I interpret this plot?</summary>
+        <p>PC1 explains 99% of the variance and it is entirely the template: the two training templates sit at opposite ends of PC1, and the held-out template lands between them. The weekday circle only has PC2 left (about 1%). Its two directions tie for second place, PCA keeps one of them, and the circle collapses onto a vertical line.</p>
+        <p>Subtracting each template’s own mean (right) removes the offsets, and the two components split the variance 50/50: the circle is back. That fix uses every example in the batch, including the held-out ones, and it only works because each template contains every weekday exactly once. If a batch had three Mondays and no Sunday, subtracting its mean would shift the calendar too. We’ll keep this batch-centred view separate from ordinary train-fitted centring for the rest of the section.</p>
+      </details>
+    </div>
+
+    <div class="about" data-v="a b c" data-aboutnote>
+      <b>About this page.</b> The outputs shown come from one full solution run on an RTX 5090 laptop GPU (about 7 minutes, 13.7 GiB). Not yet covered: a split that holds out whole weekdays, and a second model (see Further investigations). Found a problem? Open an issue on the repository.
+    </div>
+    <p class="note mixed" data-v="a b c" data-aboutnote>A three-line footer with status-type facts. Compare it with having nothing (the map currently says learner pages carry no status text). The run facts already sit in Setup, and 11.1’s Bonus already lists its limits as teaching, so only the “not yet covered” line is new.</p>
+    </article>
+  </div>
+  </div>
+</section>
+
+<!-- ============================ CHECKLIST ============================ -->
+<section id="view-checklist" data-viewpane="checklist" hidden>
+  <div class="sheet">
+    <h2>Taste bar for every extension lesson</h2>
+    <p class="sub">A draft, one page. It applies to chapters 5–18, 0.6 and 1.6. Blue tags mark items that wait on a decision; the text shows the recommended answer. “Original” means ARENA chapters 0–4.</p>
+
+    <h3>The first screen: title, introduction, objectives, first exercise</h3>
+    <ol>
+      <li>The title names only what the lesson builds. If a part uses a stand-in (a toy encoder instead of CLIP, hand-built checkpoints instead of training), the title says so, or that part moves to the Bonus. <a class="chip" href="#decisions" data-goto="d6">D6</a></li>
+      <li>The introduction opens with something concrete from this lesson: a prompt, a picture or a result the learner will reproduce, with real numbers where the lesson has them. It never opens with “By the end of this notebook, you will have shown that…”. <a class="chip" href="#decisions" data-goto="d1">D1</a></li>
+      <li>It then says which model or toy we study and why it matters, gives an “In this section you will:” list that names the signature result and its controls, and lists prerequisites with section links.</li>
+      <li>Content &amp; Learning Objectives: every part has one plain paragraph, then two to five objectives that start with a verb (implement, understand, compare, measure). Jargon waits until it is taught.</li>
+      <li>Setup says in a sentence or two what hardware and time the lesson needs, when that matters.</li>
+      <li>Nothing for maintainers: no banners, provenance, receipts, “historical”, “migration”, status or acceptance language, requirement or question IDs, <code>GT_TIER</code>, or paths into <code>docs/</code>. <a class="chip" href="#decisions" data-goto="d2">D2</a></li>
+    </ol>
+
+    <h3>Every part</h3>
+    <ol start="7">
+      <li>Intuition before formulas. The first time a lesson uses a tool, it gets a picture, a toy example or a plain-words explanation before its equation, or a one-line link to the place in the course that builds it. <a class="chip" href="#decisions" data-goto="d5">D5</a></li>
+      <li>Every exercise has the block with Difficulty 🔴, Importance 🔵 and “You should spend up to N minutes on this exercise.”, then a short task, a test called with the function, at least one hint, and a Solution dropdown. <a class="chip" href="#decisions" data-goto="d4">D4</a></li>
+      <li>Predictions are asked where the surprise is, about the plot or number that comes next: “<b>Make a prediction first:</b>” and one specific question. The reading of the result follows in a “Help - how should I interpret this?” dropdown. No generic forecast or reflect forms. <a class="chip" href="#decisions" data-goto="d4">D4</a></li>
+      <li>Results come with controls that should fail, on the same axes, named in plain words.</li>
+      <li>Each part ends with a short summary.</li>
+    </ol>
+
+    <h3>The whole lesson</h3>
+    <ol start="12">
+      <li>One signature result: the figure or table that is the lesson’s payoff, built by the learner.</li>
+      <li>At least one place to play: a “Try it yourself” cell where the learner changes an input and sees what happens.</li>
+      <li>A Bonus with open questions, limitations and further reading. Limits of what the lesson shows live here, written as teaching.</li>
+      <li>It ends with the held-out prediction quiz (designed in the quiz ticket).</li>
+      <li>Deep enough: every part has its intuition, exercises, a result and a control. There is no word target. <a class="chip" href="#decisions" data-goto="d3">D3</a></li>
+      <li>Voice: “you” and “we’ll”, plain and friendly, explaining why as well as what. Results that didn’t work are reported as results.</li>
+    </ol>
+
+    <h3>Not a taste problem</h3>
+    <ul class="plain">
+      <li><code>=== NEW CHAPTER ===</code> markers stay. They are the page splitter the original build uses (0.1 has four), not maintainer text. The audits counted them as clutter.</li>
+      <li>The Colab links and the dark-mode line stay; original pages have both.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================ DECISIONS ============================ -->
+<section id="view-decisions" data-viewpane="decisions" hidden>
+  <div class="cards">
+    <p class="howto">Counts are over the 86 lessons in the syllabus, one page each (the page whose title matches), measured on 6 November 2026 with simple text matching. They are rough, and close to the two audits.</p>
+
+    <article class="card" id="d1">
+      <h3><span class="id">D1</span>What does a lesson open with?</h3>
+      <p>Replaces “By the end of this notebook, you will have shown that…”, which opens <span class="num">44</span> of the 86 lessons (<span class="num">28</span> of the 48 in chapters 11–18).</p>
+      <div class="row">
+        <div>Options</div><div><ul>
+          <li><b>A · Numbers first</b> (12.1’s way): a concrete prompt and two or three of the lesson’s own surprising numbers, then “In this section you will:”.</li>
+          <li><b>B · Today we’ll</b> (0.1 and 1.4.1’s way): a short plain goal, the habits it practises, and a route list.</li>
+          <li><b>C · Picture first</b>: one real figure from the lesson that poses its question.</li>
+          <li>Any of A–C, so long as it is concrete; the checklist states the rule, not a template.</li></ul></div>
+      </div>
+      <div class="rec"><b>Recommended:</b> the rule, not a template. Default to A; B suits build-from-scratch lessons (5.x, 14.1); C only when the lesson has one figure that poses its question without spoiling the first prediction.</div>
+    </article>
+
+    <article class="card" id="d2">
+      <h3><span class="id">D2</span>Where does honest status live?</h3>
+      <p>85 of 86 lessons carry the prediction-practice banner; about 30 have provenance or status text in the introduction; 9.6, 5.8, 16.3 and 14.2 have status walls. The map already says learner pages carry no status or provenance text, so a footer would be an exception to that.</p>
+      <div class="row">
+        <div>Options</div><div><ul>
+          <li>Nowhere on the page.</li>
+          <li>A three-line “About this page” note at the bottom (toggle it on the side-by-side view).</li>
+          <li>Maintainer docs only.</li></ul></div>
+      </div>
+      <div class="rec"><b>Recommended:</b> nothing on the page that is status. Run facts (GPU memory, time, saved outputs) go in Setup, as original ARENA does. Limits of what the lesson shows go in the Bonus as teaching, or the title changes (D6). Lesson status lives in the syllabus <code>status</code> field and maintainer docs.</div>
+    </article>
+
+    <article class="card" id="d3">
+      <h3><span class="id">D3</span>How deep must a lesson be, and which skeletons need a full rewrite?</h3>
+      <p>Original lessons run from about 12,600 words (0.1) to 36,300 (1.4.1); 1.2 and 1.5.4 are about 27,500 and 28,400. 26 extension lessons are under 6,000 words: 5.6, 5.7, 5.9, 6.3, 7.6, 9.2, 9.7, 12.2, 12.4, 12.6, 12.7, 13.3–13.6, 14.3, 14.4, 14.6, 14.7, 15.4, 16.1, 17.2–17.4, 18.1 and 18.2.</p>
+      <div class="row">
+        <div>Options</div><div><ul>
+          <li>A word target (for example at least 10,000).</li>
+          <li>No target; a lesson is deep enough when every part has intuition, exercises, a result and a control (checklist item 16).</li>
+          <li>Decide rewrite-or-expand for each skeleton now, from this page.</li></ul></div>
+      </div>
+      <div class="rec"><b>Recommended:</b> no word target; item 16 is the test. Choosing which skeletons get a full rewrite needs each one read against the checklist, so it becomes its own child ticket, after the cleanup.</div>
+    </article>
+
+    <article class="card" id="d4">
+      <h3><span class="id">D4</span>Exercise and prediction conventions</h3>
+      <p>Every exercise already has Difficulty and Importance. 18 lessons have exercises with no “You should spend…” line. 24 lessons never use the “Make a prediction first” style, and 12 use the generic “Forecast before the result / Reflect after the result” headings (11.1 has 14 of them).</p>
+      <div class="row">
+        <div>Options</div><div><ul>
+          <li>🔴/🔵 tags and a time line on every exercise.</li>
+          <li>“Make a prediction first:” prompts written for that spot, replacing the generic forms.</li>
+          <li>Tests called with the function, <code>tests.test_x(x)</code>, as 12.1 and original ARENA do.</li></ul></div>
+      </div>
+      <div class="rec"><b>Recommended:</b> all three. The cleanup can add missing time lines and delete the generic form text; writing a good prompt for each spot is lesson work.</div>
+    </article>
+
+    <article class="card" id="d5">
+      <h3><span class="id">D5</span>Intuition before formulas: how far does the rule reach?</h3>
+      <p>The tool inventory found about 16 tools that lessons use without building intuition first, and with no home in the planned foundations or in original ARENA. The largest: least squares, ridge and logistic fits (about 31 lessons); bootstrap and confidence intervals; covariance and whitening (11); Monte Carlo standard errors (9); effective rank (8); diffusion noising (5–6). PCA is used in four lessons before 11.1 teaches it, and 13.3 and 15.4 claim chapter 0 teaches SVD, which it doesn’t.</p>
+      <div class="row">
+        <div>Options</div><div><ul>
+          <li>Every lesson builds the intuition for each tool it uses, in place.</li>
+          <li>First use in a lesson gets either one to three paragraphs with a picture or toy example before the formula, or a one-line link to where the course builds it.</li>
+          <li>Only the tools in the foundations route.</li></ul></div>
+      </div>
+      <div class="rec"><b>Recommended:</b> the second. The foundations route builds the shared tools; lessons link to it. Lesson-specific tools (Shapley values, InfoNCE, LoRA, EMA teachers) are already built in place and pass.</div>
+    </article>
+
+    <article class="card" id="d6">
+      <h3><span class="id">D6</span>Titles that promise more than the lesson delivers</h3>
+      <p>At least 8 lessons say in their own introduction that part of the title isn’t covered: 6.4, 6.5, 8.6, 9.6, 12.2, 13.1, 17.1 and 17.2 (text matching; I read 9.6, 12.2, 17.1 and 17.2). For example, 17.1 “Checkpoint Archaeology and Grokking” has no held-out split, so no grokking; 12.2’s encoder “is not CLIP or SigLIP”; 17.2 “Induction Head Emergence” uses hand-built checkpoints, “not a measured emergence trajectory”; 9.6 does not implement MEMIT.</p>
+      <div class="row">
+        <div>Options</div><div><ul>
+          <li>Retitle now to what is built (for example “Rank-One Model Editing (ROME)”, “Induction Heads in Hand-Built Circuits”), and restore the bigger title when the content lands.</li>
+          <li>Keep titles as goals and build the missing part.</li>
+          <li>Decide per lesson.</li></ul></div>
+      </div>
+      <div class="rec"><b>Recommended:</b> retitle now in the cleanup; the syllabus number and requirements stay. Restore the bigger title when a lesson repair delivers it.</div>
+    </article>
+
+    <article class="card" id="d7">
+      <h3><span class="id">D7</span>Where does the checklist live?</h3>
+      <p>The resolution changes the new “Taste bar” section of Spec #39. Agents writing lessons read <code>AGENTS.md</code> and the salvage skill, not the spec.</p>
+      <div class="row">
+        <div>Options</div><div><ul>
+          <li>Spec #39 only.</li>
+          <li>Spec #39, plus a short authoring file in the repository that <code>AGENTS.md</code> points to, written when the spec is rewritten.</li></ul></div>
+      </div>
+      <div class="rec"><b>Recommended:</b> the second, written as part of the spec rewrite ticket so there is one wording.</div>
+    </article>
+  </div>
+</section>
+</div>
+
+<div class="switcher" id="switcher" role="group" aria-label="Cycle 11.1 variants">
+  <button type="button" id="sw-prev" aria-label="Previous variant">←</button>
+  <span id="sw-label">A · Numbers first</span>
+  <button type="button" id="sw-next" aria-label="Next variant">→</button>
+</div>
+
+<script>
+(() => {
+  const VARIANTS = ["now", "a", "b", "c"];
+  const NAMES = { now: "Today", a: "A · Numbers first", b: "B · Today we’ll", c: "C · Picture first" };
+  const state = { variant: "a", about: "off", notes: "on" };
+  const store = {
+    get(k) { try { return localStorage.getItem("tastebar-" + k); } catch { return null; } },
+    set(k, v) { try { localStorage.setItem("tastebar-" + k, v); } catch {} },
+  };
+  state.about = store.get("about") || "off";
+  state.notes = store.get("notes") || "on";
+  const app = document.getElementById("app");
+
+  function render() {
+    const h = location.hash.replace("#", "");
+    const view = h === "checklist" || h === "decisions" ? h : "compare";
+    if (VARIANTS.includes(h)) state.variant = h;
+    document.querySelectorAll("[data-viewpane]").forEach(el => el.hidden = el.dataset.viewpane !== view);
+    document.querySelectorAll("nav.tabs a").forEach(a => { if (a.dataset.view === view) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current"); });
+    document.querySelector('nav.tabs a[data-view="compare"]').href = "#" + state.variant;
+    document.getElementById("switcher").hidden = view !== "compare";
+    document.querySelectorAll("[data-v]").forEach(el => {
+      let show = el.dataset.v.split(" ").includes(state.variant);
+      if (el.hasAttribute("data-aboutnote")) show = show && state.about === "on";
+      el.hidden = !show;
+    });
+    document.querySelectorAll("[data-variant]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.variant === state.variant)));
+    document.querySelectorAll("[data-about]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.about === state.about)));
+    document.querySelectorAll("[data-notes]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.notes === state.notes)));
+    app.classList.toggle("hide-notes", state.notes === "off");
+    document.getElementById("sw-label").textContent = NAMES[state.variant];
+    document.getElementById("variant-tag").textContent = NAMES[state.variant];
+  }
+  function setVariant(v) { state.variant = v; if (location.hash !== "#" + v) location.hash = v; else render(); }
+  function step(d) { const i = VARIANTS.indexOf(state.variant); setVariant(VARIANTS[(i + d + VARIANTS.length) % VARIANTS.length]); }
+
+  document.querySelectorAll("[data-variant]").forEach(b => b.addEventListener("click", () => setVariant(b.dataset.variant)));
+  document.querySelectorAll("[data-about]").forEach(b => b.addEventListener("click", () => { state.about = b.dataset.about; store.set("about", state.about); render(); }));
+  document.querySelectorAll("[data-notes]").forEach(b => b.addEventListener("click", () => { state.notes = b.dataset.notes; store.set("notes", state.notes); render(); }));
+  document.getElementById("sw-prev").addEventListener("click", () => step(-1));
+  document.getElementById("sw-next").addEventListener("click", () => step(1));
+  document.addEventListener("keydown", e => {
+    const t = e.target;
+    if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable)) return;
+    if (document.getElementById("view-compare").hidden) return;
+    if (e.key === "ArrowLeft") step(-1);
+    if (e.key === "ArrowRight") step(1);
+  });
+  document.querySelectorAll("[data-goto]").forEach(a => a.addEventListener("click", e => {
+    e.preventDefault();
+    const id = a.dataset.goto;
+    if (location.hash !== "#decisions") location.hash = "decisions";
+    requestAnimationFrame(() => document.getElementById(id)?.scrollIntoView({ block: "start" }));
+  }));
+  window.addEventListener("hashchange", render);
+  render();
+})();
+</script>
