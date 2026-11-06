@@ -54,6 +54,9 @@ talk-animation*
 *export.py
 changes.md
 *master*.md
+# Preserve the two additive mastery-hub planning documents from PR #2.
+!docs/superpowers/specs/2026-10-14-alchemy-mastery-hub-design.md
+!docs/superpowers/plans/2026-10-14-alchemy-mastery-hub.md
 rephrase.py
 
 # Specific Project Directories
@@ -111,9 +114,14 @@ dictionaries_*.zip
 arena_salvage_guidance_pack.zip
 
 # Versioned diffusion-text lesson fixtures (the broad *data rule otherwise hides these).
-!chapter5_modern_architectures/exercises/part5_diffusion_language_models/expected_outputs/text_data/
-!chapter5_modern_architectures/exercises/part5_diffusion_language_models/expected_outputs/text_data/manifest.json
-!chapter5_modern_architectures/exercises/part5_diffusion_language_models/expected_outputs/text_data/*.json.gz
+!chapter5_modern_architectures/exercises/part8_diffusion_language_models/expected_outputs/text_data/
+!chapter5_modern_architectures/exercises/part8_diffusion_language_models/expected_outputs/text_data/manifest.json
+!chapter5_modern_architectures/exercises/part8_diffusion_language_models/expected_outputs/text_data/*.json.gz
+
+# Lesson helper scripts that the broad *generate_*.py rule would otherwise hide.
+!chapter15_peft_misalignment/exercises/part3_qlora_from_scratch/generate_cpu_fixtures.py
+!chapter14_jepa_world_models/exercises/part3_vjepa_from_scratch/regenerate_reference.py
+!chapter14_jepa_world_models/exercises/part4_maze_transformer_world_model/regenerate_reference.py
 
 # Extension master files: the .py master is the source of truth; build.py regenerates the .ipynb copy
 infrastructure/chapters/chapter[5-9]_*/master_*.ipynb
@@ -124,3 +132,13 @@ infrastructure/chapters/chapter1_transformer_interp/master_1_6.ipynb
 
 # Local Claude Code preview config
 .claude/launch.json
+
+# Keep this authored regression test in future source snapshots.
+!tests/test_normal_generate_identity_custody.py
+
+# Local planning receipts and study-repair recovery snapshots.
+/.scratch/arena-39-tickets/
+/.scratch/studiable-20261102/
+
+# Local custody evidence (6.7 GB of run archives); kept on the laptop disk only.
+docs/mastery/evidence/
