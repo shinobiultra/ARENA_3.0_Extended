@@ -87,11 +87,7 @@ r'''
 The default path is a small, deterministic CPU organism with explicit weights and finite
 images. It teaches the named component operations and controls. It is not a trained diffusion
 model, a pretrained checkpoint, or a paper replication. No model download, GPU selection,
-training run or scientific sweep occurs. Published/native parts of the configured brief remain
-pending; the bridge at the end says precisely what would need to be measured.
-
-These are public guided exercises. Write your own prediction and prior solution exposure
-before opening expected outputs. Expected outputs make this seen practice, not unseen mastery.
+training run or scientific sweep occurs.
 '''
 
 # ! CELL TYPE: markdown
@@ -213,7 +209,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 5–10 minutes on this exercise.
+>
+> You should spend up to 5-10 minutes on this exercise.
 > ```
 
 Implement the renderer just specified, including a batch axis for one state.
@@ -271,7 +268,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 5–10 minutes on this exercise.
+>
+> You should spend up to 5-10 minutes on this exercise.
 > ```
 
 Return one score per image: average **red minus blue** over a supplied boolean `[8,8]`
@@ -357,7 +355,7 @@ can point toward a background feature instead. We keep the raw difference magnit
 it would change the meaning of a strength of one.
 
 Before running the grid, predict the score of the starting blue square after adding $d/2$,
-a full $d$, and an equally long background direction. Record confidence and prior exposure.
+a full $d$, and an equally long background direction.
 '''
 
 # ! CELL TYPE: markdown
@@ -370,7 +368,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 5–10 minutes on this exercise.
+>
+> You should spend up to 5-10 minutes on this exercise.
 > ```
 
 Return the mean matched difference from two `[pairs,3]` arrays.
@@ -423,7 +422,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 5–10 minutes on this exercise.
+>
+> You should spend up to 5-10 minutes on this exercise.
 > ```
 
 Add a signed amount of the direction to every state; preserve all axes.
@@ -476,7 +476,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 5–10 minutes on this exercise.
+>
+> You should spend up to 5-10 minutes on this exercise.
 > ```
 
 Subtract each state's projection onto $d$: $h'=h-(h\cdot d)d/(d\cdot d)$.
@@ -604,7 +605,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 5–10 minutes on this exercise.
+>
+> You should spend up to 5-10 minutes on this exercise.
 > ```
 
 Inputs `left=B [out,rank]`, `right=A [rank,in]`; return the `[out,in]` update.
@@ -657,7 +659,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 5–10 minutes on this exercise.
+>
+> You should spend up to 5-10 minutes on this exercise.
 > ```
 
 Apply the base linear map and low-rank branch separately. The batch may be any size.
@@ -710,7 +713,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 5–10 minutes on this exercise.
+>
+> You should spend up to 5-10 minutes on this exercise.
 > ```
 
 With `B=left` fixed, solve for `A` that fits residual targets. Use the minimum-norm least-squares solution. Targets are desired output minus base output, not desired output itself.
@@ -764,7 +768,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 5–10 minutes on this exercise.
+>
+> You should spend up to 5-10 minutes on this exercise.
 > ```
 
 Return the rank-$k$ truncated SVD $U_k\Sigma_kV_k^T$. Keep `rank=0` as an all-zero control.
@@ -890,7 +895,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 5–10 minutes on this exercise.
+>
+> You should spend up to 5-10 minutes on this exercise.
 > ```
 
 Return per-image mean absolute RGB error outside the object mask. Inputs are `[batch,H,W,3]`.
@@ -943,7 +949,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 5–10 minutes on this exercise.
+>
+> You should spend up to 5-10 minutes on this exercise.
 > ```
 
 Construct a rank-one, equal-Frobenius-norm control that maps input color into output background. This is a deterministic nuisance control, not a sampled random adapter.
@@ -1082,8 +1089,7 @@ r'''
 r'''
 ## Limits and the real-model bridge
 
-The configured requirements `image.diffusion_concept_directions` and `image.diffusion_lora`
-remain visible here: the study edition teaches matched directions, projection removal, LoRA
+The study edition teaches matched directions, projection removal, LoRA
 factorization, an exact one-factor fit, SVD and independent image scoring. It does **not** train
 a UNet adapter, discover h-space, reproduce Concept Sliders, or establish safe concept removal.
 

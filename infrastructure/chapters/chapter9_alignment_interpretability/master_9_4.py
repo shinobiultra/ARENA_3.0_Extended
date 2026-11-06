@@ -4,7 +4,7 @@
 
 r'''
 ```python
-[{"title": "Safe proxy drift: exact toy and historical preflight", "icon": "1-circle-fill", "subtitle": ""}]
+[{"title": "Safe proxy drift: exact toy and preflight", "icon": "1-circle-fill", "subtitle": ""}]
 ```
 '''
 
@@ -39,17 +39,9 @@ r'''
 r'''
 Can an internal detector identify a known benign proxy drift before a delayed behavior gate? Build the existing exact toy, inspect its timeline and controls, and measure projection mitigation alongside capability cost.
 
-This canonical 9.4 migration retains all 41 original teaching cells, 15 code cells, 40 notebook functions, four dataclasses, eight exercises, historical
-solution outputs and assets. This is source preparation only: no lesson, model, experiment, training, data loader or numerical test was executed. The fixed toy
+The fixed toy
 has known onset; the pinned Pythia-70M path is safe policy-description hidden-state/next-token preflight, not generated behavior, trained crosscoders, harmful
-fine-tuning, or an emergent-misalignment replication. Expanded brief coverage and human learner acceptance remain open.
-
-Every retained worked solution is labeled Historical solution. Saved displays and report acceptance belong to the original 2026-09-04 identity
-`9_3_emergent_misalignment_detection` at commit `8eab192b`; they do not establish a fresh canonical run. The complete original report contract remains a
-historical appendix. The optional preflight explicitly imports the original legacy helper only when called. Canonical Python guards notebook setup effects and
-demonstrations under MAIN; notebook learner operation remains intact.
-
-Before revealing retained references, write your forecast, confidence, mechanism and prior exposure. These are exposed guided historical exercises; no blank field is a blind assessment.
+fine-tuning, or an emergent-misalignment replication.
 '''
 
 # ! CELL TYPE: markdown
@@ -59,7 +51,7 @@ Before revealing retained references, write your forecast, confidence, mechanism
 r'''
 ## Content & Learning Objectives
 
-### 1️⃣ Safe proxy drift: exact toy and historical preflight
+### 1️⃣ Safe proxy drift: exact toy and preflight
 
 > ##### Learning Objectives
 >
@@ -81,7 +73,7 @@ MAIN = __name__ == "__main__"
 # ! TAGS: []
 
 r'''
-# 1️⃣ Safe proxy drift: exact toy and historical preflight
+# 1️⃣ Safe proxy drift: exact toy and preflight
 '''
 
 # ! CELL TYPE: markdown
@@ -89,9 +81,9 @@ r'''
 # ! TAGS: []
 
 r'''
-## Historical 9.3 curriculum: Emergent Misalignment Detection
+## Emergent Misalignment Detection
 
-> **ARENA extension note.** Original ARENA content is unchanged. This appended section uses safe proxy drift only: safe proxy drift is not a claim about dangerous emergent misalignment.
+> **Note.** This section uses safe proxy drift only: safe proxy drift is not a claim about dangerous emergent misalignment.
 
 By the end of this notebook, you will have shown that a simple activation-difference direction can detect the known onset of a benign proxy-drift model organism
 before a delayed behavior proxy fires, while random-direction and label-shuffled controls fail and projection mitigation has a small capability cost.
@@ -480,21 +472,6 @@ def _require_binary_labels(name: str, labels: t.Tensor, expected_shape: tuple[in
 # ! TAGS: []
 
 r'''
-## Prediction checkpoint 1: before Exercise 1
-
-Write your own entries before opening the historical solution or expected display. Prior published values make this exposed guided practice.
-
-- Prediction and fixed metric/cohort: ______
-- Confidence (0–100%): ______
-- Mechanism and control expected to fail: ______
-- Prior exposure to page, code, outputs or report: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## 1. Safe Proxy-Drift Model Organism
 '''
 
@@ -508,6 +485,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 >
 > You should spend 15 minutes on this exercise.
@@ -875,7 +854,7 @@ Using one neutral row for all drift kinds; hiding the onset step; making a one-c
 </details>
 
 <details>
-<summary>Historical solution</summary>
+<summary>Solution</summary>
 
 ```python
 def safe_proxy_drift_kinds() -> tuple[ProxyDriftKind, ...]:
@@ -1007,34 +986,6 @@ def toy_proxy_drift_timeline() -> dict[str, object]:
 # ! TAGS: []
 
 r'''
-## Reflection checkpoint 1
-
-- Observation with source cell and denominator: ______
-- Prediction error and causal explanation: ______
-- Which control changes the interpretation, and why: ______
-- One remaining limitation or next forecast: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Prediction checkpoint 2: before Exercise 2
-
-Write your own entries before opening the historical solution or expected display. Prior published values make this exposed guided practice.
-
-- Prediction and fixed metric/cohort: ______
-- Confidence (0–100%): ______
-- Mechanism and control expected to fail: ______
-- Prior exposure to page, code, outputs or report: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## 2. Activation-Difference Direction
 '''
 
@@ -1048,6 +999,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴⚪⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 5-10 minutes on this exercise.
 > ```
 >
 > You should spend 10 minutes on this exercise.
@@ -1190,7 +1143,7 @@ Subtracting in the wrong order; forgetting to normalize; accepting zero-norm dir
 </details>
 
 <details>
-<summary>Historical solution</summary>
+<summary>Solution</summary>
 
 ```python
 def activation_difference_direction(
@@ -1232,34 +1185,6 @@ def projection_scores(activations: t.Tensor, direction: t.Tensor) -> t.Tensor:
 # ! TAGS: []
 
 r'''
-## Reflection checkpoint 2
-
-- Observation with source cell and denominator: ______
-- Prediction error and causal explanation: ______
-- Which control changes the interpretation, and why: ______
-- One remaining limitation or next forecast: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Prediction checkpoint 3: before Exercise 3
-
-Write your own entries before opening the historical solution or expected display. Prior published values make this exposed guided practice.
-
-- Prediction and fixed metric/cohort: ______
-- Confidence (0–100%): ______
-- Mechanism and control expected to fail: ______
-- Prior exposure to page, code, outputs or report: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## 3. Held-Out Detector
 '''
 
@@ -1273,6 +1198,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 >
 > You should spend 15 minutes on this exercise.
@@ -1639,7 +1566,7 @@ Fitting on held-out rows; using train accuracy as evidence; ignoring non-finite 
 </details>
 
 <details>
-<summary>Historical solution</summary>
+<summary>Solution</summary>
 
 ```python
 def _prediction_accuracy(logits: t.Tensor, labels: t.Tensor) -> float:
@@ -1746,34 +1673,6 @@ def evaluate_heldout_detector(
 # ! TAGS: []
 
 r'''
-## Reflection checkpoint 3
-
-- Observation with source cell and denominator: ______
-- Prediction error and causal explanation: ______
-- Which control changes the interpretation, and why: ______
-- One remaining limitation or next forecast: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Prediction checkpoint 4: before Exercise 4
-
-Write your own entries before opening the historical solution or expected display. Prior published values make this exposed guided practice.
-
-- Prediction and fixed metric/cohort: ______
-- Confidence (0–100%): ______
-- Mechanism and control expected to fail: ______
-- Prior exposure to page, code, outputs or report: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## 4. Onset and Early Warning
 '''
 
@@ -1787,6 +1686,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 >
 > You should spend 15 minutes on this exercise.
@@ -2151,7 +2052,7 @@ Counting `<=` as early warning; selecting the final checkpoint by hand; using be
 </details>
 
 <details>
-<summary>Historical solution</summary>
+<summary>Solution</summary>
 
 ```python
 def _first_passing_step(rows: list[dict[str, float | bool | int]], key: str) -> int | None:
@@ -2280,34 +2181,6 @@ def timeline_detection_report(
 # ! TAGS: []
 
 r'''
-## Reflection checkpoint 4
-
-- Observation with source cell and denominator: ______
-- Prediction error and causal explanation: ______
-- Which control changes the interpretation, and why: ______
-- One remaining limitation or next forecast: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Prediction checkpoint 5: before Exercise 5
-
-Write your own entries before opening the historical solution or expected display. Prior published values make this exposed guided practice.
-
-- Prediction and fixed metric/cohort: ______
-- Confidence (0–100%): ______
-- Mechanism and control expected to fail: ______
-- Prior exposure to page, code, outputs or report: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## 5. Behavior-Proxy Alignment
 '''
 
@@ -2321,6 +2194,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 >
 > You should spend 10 minutes on this exercise.
@@ -2635,7 +2510,7 @@ Using `abs(correlation)`; accepting constant vectors; forgetting that behavior-p
 </details>
 
 <details>
-<summary>Historical solution</summary>
+<summary>Solution</summary>
 
 ```python
 def _pearson_correlation(left: t.Tensor, right: t.Tensor) -> float:
@@ -2720,34 +2595,6 @@ def behavior_alignment_report(
 # ! TAGS: []
 
 r'''
-## Reflection checkpoint 5
-
-- Observation with source cell and denominator: ______
-- Prediction error and causal explanation: ______
-- Which control changes the interpretation, and why: ______
-- One remaining limitation or next forecast: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Prediction checkpoint 6: before Exercise 6
-
-Write your own entries before opening the historical solution or expected display. Prior published values make this exposed guided practice.
-
-- Prediction and fixed metric/cohort: ______
-- Confidence (0–100%): ______
-- Mechanism and control expected to fail: ______
-- Prior exposure to page, code, outputs or report: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## 6. Projection Mitigation and Capability Cost
 '''
 
@@ -2761,6 +2608,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 >
 > You should spend 15 minutes on this exercise.
@@ -3169,7 +3018,7 @@ Reporting drift reduction but no capability cost; projecting all examples by a f
 </details>
 
 <details>
-<summary>Historical solution</summary>
+<summary>Solution</summary>
 
 ```python
 def drift_mitigation_report(
@@ -3282,34 +3131,6 @@ def mitigation_and_capability_report(
 # ! TAGS: []
 
 r'''
-## Reflection checkpoint 6
-
-- Observation with source cell and denominator: ______
-- Prediction error and causal explanation: ______
-- Which control changes the interpretation, and why: ______
-- One remaining limitation or next forecast: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Prediction checkpoint 7: before Exercise 7
-
-Write your own entries before opening the historical solution or expected display. Prior published values make this exposed guided practice.
-
-- Prediction and fixed metric/cohort: ______
-- Confidence (0–100%): ______
-- Mechanism and control expected to fail: ______
-- Prior exposure to page, code, outputs or report: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## 7. Negative Controls
 '''
 
@@ -3323,6 +3144,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 >
 > You should spend 10 minutes on this exercise.
@@ -3604,7 +3427,7 @@ Sampling many random directions and reporting the lucky one; using the target th
 </details>
 
 <details>
-<summary>Historical solution</summary>
+<summary>Solution</summary>
 
 ```python
 def control_report(
@@ -3695,34 +3518,6 @@ def control_report(
 # ! TAGS: []
 
 r'''
-## Reflection checkpoint 7
-
-- Observation with source cell and denominator: ______
-- Prediction error and causal explanation: ______
-- Which control changes the interpretation, and why: ______
-- One remaining limitation or next forecast: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Prediction checkpoint 8: before Exercise 8
-
-Write your own entries before opening the historical solution or expected display. Prior published values make this exposed guided practice.
-
-- Prediction and fixed metric/cohort: ______
-- Confidence (0–100%): ______
-- Mechanism and control expected to fail: ______
-- Prior exposure to page, code, outputs or report: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## 8. Signature Result
 '''
 
@@ -3736,6 +3531,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 >
 > You should spend 15 minutes on this exercise.
@@ -4140,7 +3937,7 @@ Plotting only the final score; omitting controls; treating mitigation as behavio
 </details>
 
 <details>
-<summary>Historical solution</summary>
+<summary>Solution</summary>
 
 ```python
 def toy_proxy_drift_signature_result() -> dict[str, object]:
@@ -4227,19 +4024,6 @@ def toy_proxy_drift_signature_result() -> dict[str, object]:
 ```
 
 </details>
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflection checkpoint 8
-
-- Observation with source cell and denominator: ______
-- Prediction error and causal explanation: ______
-- Which control changes the interpretation, and why: ______
-- One remaining limitation or next forecast: ______
 '''
 
 # ! CELL TYPE: markdown
@@ -4525,12 +4309,6 @@ All tests in `test_committed_gpu_report_matches_proxy_drift_contract` passed!
 ```
 
 </details>
-
-To regenerate the real report locally, the parent task should run:
-
-```bash
-BNB_CUDA_VERSION=130 uv run python scripts/run_extension_verification_reports.py --section 9.3 --max-vram-gb 24.0
-```
 '''
 
 # ! CELL TYPE: markdown
@@ -4559,20 +4337,5 @@ This section supports a narrow safe proxy-drift measurement pattern, not a broad
 - The behavior proxy uses two next-token logits, so it is much narrower than a behavior benchmark.
 - The mitigation is a projection readout/intervention on activations, not a deployed mitigation method.
 - The result does not claim dangerous emergent misalignment, arbitrary unsafe behavior detection, or trained crosscoder evidence.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Historical report appendix
-
-The following artifact copies retain the original dated identities and bytes: historical_verification_report.json, historical_verification_report.schema.json
-and historical_artifacts.lock.yml. The report-reading code above retains its original contract proof; only its filename points at the explicitly historical
-copy. `accepted: true` describes that historical proxy/preflight contract. It is not acceptance of this migration, expanded syllabus coverage, a new scientific
-result, or a human walkthrough.
-
-The known-onset toy is the visible teaching result. No report field substitutes for implementing, plotting and interpreting it. All canonical forecast/reflection fields remain blank.
 '''
 

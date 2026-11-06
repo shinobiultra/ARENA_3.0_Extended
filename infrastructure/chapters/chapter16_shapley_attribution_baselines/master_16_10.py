@@ -96,31 +96,6 @@ small enough to rerun while exploring.
 # ! TAGS: []
 
 r'''
-## Historical reference and execution boundary
-
-All displayed results and eighteen figures are **retained historical reference results** from the full published
-16.9 Influence Functions and TracIn lesson. This is **not a fresh execution** of canonical 16.10.
-Code/nonblank-line/AST/output parity and original source/receipt/figure hashes justify carrying them forward;
-only the setup semantic-test import changes to a byte-identical canonical copy. The preserved legacy data,
-source manifests, ranking/final splits, reference helpers, `arena16.9/v1` ordering namespace and output-directory
-convention keep their original identities. Python-only root discovery and MAIN guards make module import safe.
-
-The former 16.9 publication is an archival identity for **Influence Functions and TracIn**. Current canonical
-16.9 teaches **Data Shapley**; its checkpoint/metric/experiment identity must never be reused by number.
-The nearby Data Shapley link is explicitly updated to its current route. Full provenance and the exact named
-adaptations live in `docs/mastery/migrations/influence_tracin.md` and its evidence directory at repository root.
-
-This reference-rich route is **guided practice**. Expected outputs, interpretations and figures expose answers.
-Record your numerical forecast, confidence, causal reasoning and prior exposure before viewing them. No learner
-response is fabricated. The 64 final queries are historical and monitored; they do not become untouched TEST.
-The historical 930 reference refits and six 5,120-update paths were not run during this migration.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Content & Learning Objectives
 
 ### 1️⃣ Build curvature and refit
@@ -264,13 +239,8 @@ particular loss, label and model, rather than an intrinsic property of an image.
 # ! TAGS: []
 
 r'''
-## Forecast before the result — query-relative-harm
-
 Before viewing the four source/training-label examples, forecast whether a flipped training label must harm every query. Give opposite-class query scenarios and predicted
 loss-change signs.
-
-Record a numeric forecast or interval, confidence (0–100%), causal reasoning and a possible disconfirming observation. Record whether you have already seen it: unseen, seen, or
-unknown exposure. Leave the learner response blank until commitment.
 
 Changed-condition forecast: Keep the source image fixed and change the query class; forecast the sign of a removal effect.
 '''
@@ -321,19 +291,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — query-relative-harm
-
-Record observed values, units, controls and source IDs where relevant. Distinguish your execution from the retained historical reference. Compare with your immutable forecast and
-explain the discrepancy rather than rewriting it.
-
-Before a separate run: Keep the source image fixed and change the query class; forecast the sign of a removal effect. State what remains fixed and what changed scientifically.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 # 1️⃣ Build curvature and refit
 '''
 
@@ -365,12 +322,12 @@ scalar and not an already averaged batch gradient.
 r'''
 ### Exercise 1 — Keep the per-example gradients
 
-```text
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-
-You should spend 15–20 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15-20 minutes on this exercise.
+> ```
 
 Implement losses shaped `[examples]` and gradients shaped `[examples, parameters]`. With `l2=0`,
 return data losses/gradients. With positive `l2`, include $R$ in every example. Do not take a mean
@@ -478,12 +435,12 @@ with another fit would change the experiment.
 r'''
 ### Exercise 2 — Compute the weighted objective and its curvature
 
-```text
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-
-You should spend 20–25 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 20-25 minutes on this exercise.
+> ```
 
 Use `theta [fits, parameters]`, `weights [fits, examples]` and one shared input matrix. Return one
 objective per fit, then gradients `[fits, parameters]` and Hessians `[fits, parameters,
@@ -604,12 +561,12 @@ space. The following operation never needs a `[parameters, parameters]` array.
 r'''
 ### Exercise 3 — Multiply by the Hessian without forming it
 
-```text
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-
-You should spend 10–15 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 10-15 minutes on this exercise.
+> ```
 
 Implement one Hessian-vector product for a single fitted parameter vector. Keep the same normalized weights and regularizer as Exercise 2.
 
@@ -681,12 +638,12 @@ SOLUTION
 r'''
 ### Exercise 4 — Solve a curvature system and check the residual
 
-```text
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-
-You should spend 20–25 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 20-25 minutes on this exercise.
+> ```
 
 Implement conjugate gradients using only a `matvec` function. Return the solution and a
 residual-norm history. Stop only when the actual residual meets `atol + rtol * norm(rhs)`. Reject
@@ -792,13 +749,8 @@ SOLUTION
 # ! TAGS: []
 
 r'''
-## Forecast before the result — curvature-solve
-
 For the displayed rotated quadratic with eigenvalues .4 and 4, forecast which eigendirection has the larger inverse-curvature response and the checked CG relative residual range.
 Compare a gradient-only direction.
-
-Record a numeric forecast or interval, confidence (0–100%), causal reasoning and a possible disconfirming observation. Record whether you have already seen it: unseen, seen, or
-unknown exposure. Leave the learner response blank until commitment.
 
 Changed-condition forecast: Multiply only the smaller eigenvalue by ten while holding the gradient fixed; forecast the response and residual.
 '''
@@ -870,20 +822,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — curvature-solve
-
-Record observed values, units, controls and source IDs where relevant. Distinguish your execution from the retained historical reference. Compare with your immutable forecast and
-explain the discrepancy rather than rewriting it.
-
-Before a separate run: Multiply only the smaller eigenvalue by ten while holding the gradient fixed; forecast the response and residual. State what remains fixed and what changed
-scientifically.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details><summary>Interpretation — does a small residual prove the scientific approximation?</summary>
 
 It proves that we solved this linear system accurately. It does not prove that
@@ -902,12 +840,12 @@ inverse Hessian is discarded.
 r'''
 ### Exercise 5 — Actually refit the counterfactual models
 
-```text
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-
-You should spend 25–35 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 25-35 minutes on this exercise.
+> ```
 
 Implement independent Newton refits from zero for every weight row. Use your weighted objective and
 derivatives, an individual Armijo line search for each fit, and a strict maximum-coordinate gradient
@@ -1085,12 +1023,12 @@ Our queries and counterfactuals below are a new teaching example.
 r'''
 ### Exercise 6 — Compute the signed influence matrix
 
-```text
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-
-You should spend 15–20 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15-20 minutes on this exercise.
+> ```
 
 Return influence shaped `[training examples, queries]`. Solve for the query directions once, then
 dot them with every training gradient. Support nonnegative added damping, but do not claim damping
@@ -1167,13 +1105,8 @@ SOLUTION
 # ! TAGS: []
 
 r'''
-## Forecast before the result — normalized-upweight
-
 For the five-row logistic fixture, forecast the sign and scale of query-loss change near zero relative weight perturbation, comparing regularized influence, wrong normalization and
 actual refits. Give a numerical derivative interval before the plot.
-
-Record a numeric forecast or interval, confidence (0–100%), causal reasoning and a possible disconfirming observation. Record whether you have already seen it: unseen, seen, or
-unknown exposure. Leave the learner response blank until commitment.
 
 Changed-condition forecast: Keep the same optimum/data/query but change the perturbation size from an infinitesimal value to complete removal; forecast linearization error.
 '''
@@ -1307,20 +1240,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — normalized-upweight
-
-Record observed values, units, controls and source IDs where relevant. Distinguish your execution from the retained historical reference. Compare with your immutable forecast and
-explain the discrepancy rather than rewriting it.
-
-Before a separate run: Keep the same optimum/data/query but change the perturbation size from an infinitesimal value to complete removal; forecast linearization error. State what
-remains fixed and what changed scientifically.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details><summary>Interpretation — why is the orange control different even near zero?</summary>
 
 The solid line refits the normalized weighted objective with the same penalty.
@@ -1352,12 +1271,12 @@ It does not mean removing the example and retraining must increase that loss.
 r'''
 ### Exercise 7 — Record the optimization path
 
-```text
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-
-You should spend 15–20 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15-20 minutes on this exercise.
+> ```
 
 Implement single-example SGD, preserving the zero initialization, every following state, the exact
 row visitation order and the learning rate for every update. Validate that each epoch is a
@@ -1440,12 +1359,12 @@ SOLUTION
 r'''
 ### Exercise 8 — Attribute actual and first-order loss reductions
 
-```text
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-
-You should spend 20–30 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 20-30 minutes on this exercise.
+> ```
 
 Return exact and first-order scores for every training-row/query pair, plus all per-step values.
 Include the full update gradient in the approximation. Also return a raw-data-gradient-only control.
@@ -1577,13 +1496,8 @@ SOLUTION
 # ! TAGS: []
 
 r'''
-## Forecast before the result — exact-path
-
 Forecast the difference between summed exact single-update effects and observed initial-minus-final query loss, and the sign/scale of accumulated first-order error over the
 displayed schedule. Compare the regularizer-omission control.
-
-Record a numeric forecast or interval, confidence (0–100%), causal reasoning and a possible disconfirming observation. Record whether you have already seen it: unseen, seen, or
-unknown exposure. Leave the learner response blank until commitment.
 
 Changed-condition forecast: Keep data/order fixed and double each learning rate; forecast exact conservation and Taylor error separately.
 '''
@@ -1648,20 +1562,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — exact-path
-
-Record observed values, units, controls and source IDs where relevant. Distinguish your execution from the retained historical reference. Compare with your immutable forecast and
-explain the discrepancy rather than rewriting it.
-
-Before a separate run: Keep data/order fixed and double each learning rate; forecast exact conservation and Taylor error separately. State what remains fixed and what changed
-scientifically.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Summary of 2️⃣
 
 Derive signed upweight influence with the correct regularizer convention. Separate observed single-example SGD loss reductions from first-order approximations.
@@ -1696,12 +1596,12 @@ choices instead of choosing whichever agrees best with final outcomes.
 r'''
 ### Exercise 9 — Compute TracInCP scores
 
-```text
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-
-You should spend 10–15 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 10-15 minutes on this exercise.
+> ```
 
 Take training gradients `[checkpoints, training examples, parameters]`, query gradients with the
 analogous query axis, and a vector of checkpoint learning rates. Return the weighted score for each
@@ -1784,13 +1684,8 @@ SOLUTION
 # ! TAGS: []
 
 r'''
-## Forecast before the result — checkpoint-choice
-
 Forecast whether all/early/late/last checkpoint TracInCP scores have the same magnitude, ranking or total as exact observed-path attribution. Give a rank/ordering forecast for the
 displayed five training rows.
-
-Record a numeric forecast or interval, confidence (0–100%), causal reasoning and a possible disconfirming observation. Record whether you have already seen it: unseen, seen, or
-unknown exposure. Leave the learner response blank until commitment.
 
 Changed-condition forecast: Keep states fixed and retain only the last checkpoint; forecast which equality or approximation you expect to lose.
 '''
@@ -1853,20 +1748,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — checkpoint-choice
-
-Record observed values, units, controls and source IDs where relevant. Distinguish your execution from the retained historical reference. Compare with your immutable forecast and
-explain the discrepancy rather than rewriting it.
-
-Before a separate run: Keep states fixed and retain only the last checkpoint; forecast which equality or approximation you expect to lose. State what remains fixed and what changed
-scientifically.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details><summary>Interpretation — why are these not all on the diagonal?</summary>
 
 The checkpoint calculation evaluates a training row at an epoch endpoint instead
@@ -1897,12 +1778,12 @@ must not be applied to it by summing only matching positions.
 r'''
 ### Exercise 10 — Compute the affine gradient product without flattening it
 
-```text
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-
-You should spend 10–15 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 10-15 minutes on this exercise.
+> ```
 
 Return all left-example/right-example gradient dot products using only layer inputs and
 preactivation derivatives. Support bias and bias-free affine layers. This exercise concerns the
@@ -2007,12 +1888,7 @@ helpful: its assigned effect depends on the question asked of the model.
 # ! TAGS: []
 
 r'''
-## Forecast before the result — step-size-play
-
 For rate multiplier 4 versus 1, forecast the absolute cumulative Taylor-error ratio and whether a helpful/harmful sign can change. Keep the actual path as the control.
-
-Record a numeric forecast or interval, confidence (0–100%), causal reasoning and a possible disconfirming observation. Record whether you have already seen it: unseen, seen, or
-unknown exposure. Leave the learner response blank until commitment.
 
 Changed-condition forecast: Change query_row or query_label while keeping both schedules fixed; forecast a changed signed effect.
 '''
@@ -2067,20 +1943,6 @@ if MAIN:
 
 r'''
 <img src="media/attribution_step_size_play.png" width="1050">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — step-size-play
-
-Record observed values, units, controls and source IDs where relevant. Distinguish your execution from the retained historical reference. Compare with your immutable forecast and
-explain the discrepancy rather than rewriting it.
-
-Before a separate run: Change query_row or query_label while keeping both schedules fixed; forecast a changed signed effect. State what remains fixed and what changed
-scientifically.
 '''
 
 # ! CELL TYPE: markdown
@@ -2161,12 +2023,12 @@ CHECKPOINT_CHOICES = {
 r'''
 ### Exercise 11 — Choose removals with the same class balance
 
-```text
-Difficulty: 🔴🔴⚪⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-
-You should spend 10–15 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴⚪⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 10-15 minutes on this exercise.
+> ```
 
 A deletion policy can appear useful just by changing class proportions. Implement
 a matched comparison: remove the lowest helpfulness scores, with exactly half
@@ -2590,14 +2452,9 @@ def prepare_study(data, m, directory, progress=lambda message: None):
 # ! TAGS: []
 
 r'''
-## Forecast before the result — native-deletion
-
 Before the real fits or final evaluation, forecast the corrupted-label influence-selected budget-8 removal effect: mean unregularized final-query BCE after independently refitting
 minus full-data BCE, in nats. Use 128 training rows, 48 ranking queries, 64 final queries, L2=.02 including bias, four removals per observed class and ranking-only selection.
 Compare the full-data, clean-label and 32 class-matched random controls.
-
-Record a numeric forecast or interval, confidence (0–100%), causal reasoning and a possible disconfirming observation. Record whether you have already seen it: unseen, seen, or
-unknown exposure. Leave the learner response blank until commitment.
 
 Changed-condition forecast: Change only removal budget from 8 to 16 while retaining the ranker/data/objective and balanced classes; forecast mean final-loss change and accuracy
 separately.
@@ -2698,13 +2555,8 @@ to fit these models. The untrained model is an explicit reference in both column
 # ! TAGS: []
 
 r'''
-## Forecast before the result — native-training
-
 Forecast whether clean/corrupted converged fits and each SGD path reach the same loss/accuracy. Give a numerical gradient-residual range for the reference optimum; do not equate
 iteration count with convergence.
-
-Record a numeric forecast or interval, confidence (0–100%), causal reasoning and a possible disconfirming observation. Record whether you have already seen it: unseen, seen, or
-unknown exposure. Leave the learner response blank until commitment.
 
 Changed-condition forecast: Keep labels/data fixed and stop optimization earlier; forecast influence derivative error against refits.
 '''
@@ -2760,20 +2612,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — native-training
-
-Record observed values, units, controls and source IDs where relevant. Distinguish your execution from the retained historical reference. Compare with your immutable forecast and
-explain the discrepancy rather than rewriting it.
-
-Before a separate run: Keep labels/data fixed and stop optimization earlier; forecast influence derivative error against refits. State what remains fixed and what changed
-scientifically.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details><summary>Interpretation — why also show loss when accuracy is perfect?</summary>
 
 In the development run, both converged models classified all 48 ranking queries
@@ -2799,13 +2637,8 @@ updates; keep the entire path, rather than showing a favorable short interval.
 # ! TAGS: []
 
 r'''
-## Forecast before the result — digit-path-accounting
-
 Forecast exact-path telescoping error across the six real digit paths and compare cumulative first-order versus regularizer-omitted errors. Give an error-scale interval and a
 training-order contrast.
-
-Record a numeric forecast or interval, confidence (0–100%), causal reasoning and a possible disconfirming observation. Record whether you have already seen it: unseen, seen, or
-unknown exposure. Leave the learner response blank until commitment.
 
 Changed-condition forecast: Keep the same observations but change the learning-rate schedule; forecast which path identity survives and which allocation changes.
 '''
@@ -2853,20 +2686,6 @@ if MAIN:
 
 r'''
 <img src="media/attribution_native_path_accounting.png" width="1050">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — digit-path-accounting
-
-Record observed values, units, controls and source IDs where relevant. Distinguish your execution from the retained historical reference. Compare with your immutable forecast and
-explain the discrepancy rather than rewriting it.
-
-Before a separate run: Keep the same observations but change the learning-rate schedule; forecast which path identity survives and which allocation changes. State what remains
-fixed and what changed scientifically.
 '''
 
 # ! CELL TYPE: markdown
@@ -2942,13 +2761,8 @@ TracIn. The complete set of checkpoint choices follows in the next figure.
 # ! TAGS: []
 
 r'''
-## Forecast before the result — loo-signs
-
 Forecast per-query rank agreement and the number of wrong-sign training/final-query pairs out of 8192 for clean and corrupted labels. Compare undamped influence with gradients,
 pixels and recorded checkpoint scores.
-
-Record a numeric forecast or interval, confidence (0–100%), causal reasoning and a possible disconfirming observation. Record whether you have already seen it: unseen, seen, or
-unknown exposure. Leave the learner response blank until commitment.
 
 Changed-condition forecast: Change the query cohort from one digit class to the other with fitted models fixed; forecast whether individual removal signs must persist.
 '''
@@ -3023,20 +2837,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — loo-signs
-
-Record observed values, units, controls and source IDs where relevant. Distinguish your execution from the retained historical reference. Compare with your immutable forecast and
-explain the discrepancy rather than rewriting it.
-
-Before a separate run: Change the query cohort from one digit class to the other with fitted models fixed; forecast whether individual removal signs must persist. State what
-remains fixed and what changed scientifically.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Does agreement hold for each query?
 
 A pooled correlation can hide a bad ranking for a particular image. Compute
@@ -3055,13 +2855,8 @@ question need not reproduce leave-one-out rankings.
 # ! TAGS: []
 
 r'''
-## Forecast before the result — per-query-agreement
-
 Forecast whether a high pooled or average Spearman value forces every final query and checkpoint choice to agree. Give a worst-query correlation interval and explain constant-score
 missingness.
-
-Record a numeric forecast or interval, confidence (0–100%), causal reasoning and a possible disconfirming observation. Record whether you have already seen it: unseen, seen, or
-unknown exposure. Leave the learner response blank until commitment.
 
 Changed-condition forecast: Retain only early versus late checkpoints without refitting; forecast the per-query ranking contrast.
 '''
@@ -3135,20 +2930,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — per-query-agreement
-
-Record observed values, units, controls and source IDs where relevant. Distinguish your execution from the retained historical reference. Compare with your immutable forecast and
-explain the discrepancy rather than rewriting it.
-
-Before a separate run: Retain only early versus late checkpoints without refitting; forecast the per-query ranking contrast. State what remains fixed and what changed
-scientifically.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details>
 <summary>Interpreting the final scatter and heatmap</summary>
 
@@ -3189,13 +2970,8 @@ different regularization convention.
 # ! TAGS: []
 
 r'''
-## Forecast before the result — stationarity-damping
-
 Forecast median absolute finite-derivative error as optimization converges, then as damping rises through 0/.01/.1/1 at the converged optimum. Compare wrong regularizer
 normalization.
-
-Record a numeric forecast or interval, confidence (0–100%), causal reasoning and a possible disconfirming observation. Record whether you have already seen it: unseen, seen, or
-unknown exposure. Leave the learner response blank until commitment.
 
 Changed-condition forecast: Hold data/optimum fixed but omit regularization from upweighted per-example gradients; forecast derivative disagreement even near zero perturbation.
 '''
@@ -3255,20 +3031,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — stationarity-damping
-
-Record observed values, units, controls and source IDs where relevant. Distinguish your execution from the retained historical reference. Compare with your immutable forecast and
-explain the discrepancy rather than rewriting it.
-
-Before a separate run: Hold data/optimum fixed but omit regularization from upweighted per-example gradients; forecast derivative disagreement even near zero perturbation. State
-what remains fixed and what changed scientifically.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details>
 <summary>Help — why is the final error not exactly zero?</summary>
 
@@ -3299,13 +3061,8 @@ regularizer in the derivative, while the refitted objective still includes it.
 # ! TAGS: []
 
 r'''
-## Forecast before the result — finite-perturbations
-
 Forecast how the infinitesimal influence line diverges from refits at relative weight changes -.01, -.5 and -1 for all prescribed probes. Give a signed discrepancy range; compare
 wrong normalization.
-
-Record a numeric forecast or interval, confidence (0–100%), causal reasoning and a possible disconfirming observation. Record whether you have already seen it: unseen, seen, or
-unknown exposure. Leave the learner response blank until commitment.
 
 Changed-condition forecast: Change only perturbation magnitude toward zero; forecast which error should shrink and which objective-mismatch error can remain.
 '''
@@ -3356,20 +3113,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — finite-perturbations
-
-Record observed values, units, controls and source IDs where relevant. Distinguish your execution from the retained historical reference. Compare with your immutable forecast and
-explain the discrepancy rather than rewriting it.
-
-Before a separate run: Change only perturbation magnitude toward zero; forecast which error should shrink and which objective-mismatch error can remain. State what remains fixed
-and what changed scientifically.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Does removing the lowest-ranked data help new queries?
 
 This is the intervention that a data-cleaning application might actually use.
@@ -3395,13 +3138,8 @@ before an argmax changes, which is why both views matter.
 # ! TAGS: []
 
 r'''
-## Forecast before the result — balanced-group-deletion
-
 Forecast the final-loss change at budget 8 for corrupted-label influence selection against the full spread of 32 class-matched random rankings, while tracking accuracy. Explain why
 summing single-row effects need not predict a group intervention.
-
-Record a numeric forecast or interval, confidence (0–100%), causal reasoning and a possible disconfirming observation. Record whether you have already seen it: unseen, seen, or
-unknown exposure. Leave the learner response blank until commitment.
 
 Changed-condition forecast: Increase only balanced budget to 16; forecast whether lower mean BCE guarantees unchanged argmax accuracy.
 '''
@@ -3500,34 +3238,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — balanced-group-deletion
-
-Record observed values, units, controls and source IDs where relevant. Distinguish your execution from the retained historical reference. Compare with your immutable forecast and
-explain the discrepancy rather than rewriting it.
-
-Before a separate run: Increase only balanced budget to 16; forecast whether lower mean BCE guarantees unchanged argmax accuracy. State what remains fixed and what changed
-scientifically.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — native-deletion
-
-Record observed values, units, controls and source IDs where relevant. Distinguish your execution from the retained historical reference. Compare with your immutable forecast and
-explain the discrepancy rather than rewriting it.
-
-Before a separate run: Change only removal budget from 8 to 16 while retaining the ranker/data/objective and balanced classes; forecast mean final-loss change and accuracy
-separately. State what remains fixed and what changed scientifically.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details>
 <summary>Interpreting the frozen deletion experiment</summary>
 
@@ -3565,13 +3275,8 @@ wrong training label, does not determine the answer by itself.
 # ! TAGS: []
 
 r'''
-## Forecast before the result — actual-image-gallery
-
 Before viewing the fixed first-two-per-class final-query galleries, forecast whether helpful/opponent images have intrinsic signs independent of query. Name a counterexample
 involving source digit, observed training label and query loss.
-
-Record a numeric forecast or interval, confidence (0–100%), causal reasoning and a possible disconfirming observation. Record whether you have already seen it: unseen, seen, or
-unknown exposure. Leave the learner response blank until commitment.
 
 Changed-condition forecast: Keep the candidate training image fixed and switch to the other displayed query class; forecast the removal sign.
 '''
@@ -3641,20 +3346,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — actual-image-gallery
-
-Record observed values, units, controls and source IDs where relevant. Distinguish your execution from the retained historical reference. Compare with your immutable forecast and
-explain the discrepancy rather than rewriting it.
-
-Before a separate run: Keep the candidate training image fixed and switch to the other displayed query class; forecast the removal sign. State what remains fixed and what changed
-scientifically.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details>
 <summary>Interpreting a disagreement in the fixed gallery</summary>
 
@@ -3692,13 +3383,8 @@ residual distribution is preserved.
 # ! TAGS: []
 
 r'''
-## Forecast before the result — ghost-product
-
 Forecast explicit-flattening versus affine ghost-product maximum error for biased and bias-free cases, alongside the deliberately broken factor product. Give a numerical tolerance
 and which controls should differ.
-
-Record a numeric forecast or interval, confidence (0–100%), causal reasoning and a possible disconfirming observation. Record whether you have already seen it: unseen, seen, or
-unknown exposure. Leave the learner response blank until commitment.
 
 Changed-condition forecast: Reuse parameters across token positions rather than one affine invocation; forecast why naive independent-position products may miss cross terms.
 '''
@@ -3772,20 +3458,6 @@ if MAIN:
 
 r'''
 <img src="media/attribution_native_ghost_products.png" width="1050">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — ghost-product
-
-Record observed values, units, controls and source IDs where relevant. Distinguish your execution from the retained historical reference. Compare with your immutable forecast and
-explain the discrepancy rather than rewriting it.
-
-Before a separate run: Reuse parameters across token positions rather than one affine invocation; forecast why naive independent-position products may miss cross terms. State what
-remains fixed and what changed scientifically.
 '''
 
 # ! CELL TYPE: markdown
@@ -3879,13 +3551,8 @@ def query_deletion_play(train, query, fits, m, budget=4, l2=0.02):
 # ! TAGS: []
 
 r'''
-## Forecast before the result — query-cleaning-play
-
 For corrupted condition, ranking query 0 and balanced budget 4, forecast the refitted query-loss change in nats relative to full training and the spread of 32 matched random
 deletions. Compare predicted summed influence and actual refit.
-
-Record a numeric forecast or interval, confidence (0–100%), causal reasoning and a possible disconfirming observation. Record whether you have already seen it: unseen, seen, or
-unknown exposure. Leave the learner response blank until commitment.
 
 Changed-condition forecast: Change only query index within the ranking split, keeping budget and objective fixed; forecast the selected source IDs and signed loss change before
 recomputing.
@@ -3962,20 +3629,6 @@ if MAIN:
 
 r'''
 <img src="media/attribution_native_query_play.png" width="1050">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — query-cleaning-play
-
-Record observed values, units, controls and source IDs where relevant. Distinguish your execution from the retained historical reference. Compare with your immutable forecast and
-explain the discrepancy rather than rewriting it.
-
-Before a separate run: Change only query index within the ranking split, keeping budget and objective fixed; forecast the selected source IDs and signed loss change before
-recomputing. State what remains fixed and what changed scientifically.
 '''
 
 # ! CELL TYPE: markdown

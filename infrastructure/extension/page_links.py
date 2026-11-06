@@ -14,19 +14,7 @@ from pathlib import Path
 
 
 _PAGE_LINKS = {
-    "chapter0_fundamentals/instructions/pages/06_[0.6]_How_to_Know_When_an_Interpretability_Result_Is_Fake_Practice.md": {
-        "expected_outputs/fake_interpretability_signature_result.svg": (
-            "chapter0_fundamentals/exercises/part6_fake_interpretability_results_practice/media/fake_interpretability_signature_result.svg",
-            "994cad5444f744cb8ef05ab14bb17075bf2273f12e1c15a60d3d6a6c01f29d90",
-            "source document",
-        ),
-    },
     "chapter5_modern_architectures/instructions/pages/05_[5.5]_State_Tracking_in_SSMs_and_Transformers.md": {
-        "../part4_mamba_state_tracking/5.4_Mamba_State_Tracking_exercises.ipynb": (
-            "chapter5_modern_architectures/exercises/part4_mamba_state_tracking/5.4_Mamba_State_Tracking_exercises.ipynb",
-            "434a28a646ea0c4854f7ee9dfca1efcf2f8041c732548007c8a58617e2ca64d2",
-            "historical raw notebook",
-        ),
         "../part3_mamba_from_scratch/5.3_Mamba_from_Scratch_exercises.ipynb": (
             "chapter5_modern_architectures/exercises/part3_mamba_from_scratch/5.3_Mamba_from_Scratch_exercises.ipynb",
             "27026a893d5cb7138c83f0a943d3221cfa60d84dfca520f4ea35418d5aae7b81",
@@ -46,12 +34,12 @@ _PAGE_LINKS = {
         ),
     },
     "chapter14_jepa_world_models/instructions/pages/02_[14.2]_V-JEPA_and_Video_World_Models.md": {
-        "14.1_JEPA_and_World_Model_Controls_exercises.ipynb": (
+        "../part1_jepa_world_model_controls/14.1_JEPA_and_World_Model_Controls_exercises.ipynb": (
             "chapter14_jepa_world_models/exercises/part1_jepa_world_model_controls/14.1_JEPA_and_World_Model_Controls_exercises.ipynb",
             "d56188485421e54d6c144305134a6109225a2d83139f4308151d345252153b68",
             "historical raw notebook",
         ),
-        "14.1_JEPA_and_World_Model_Controls_solutions.ipynb": (
+        "../part1_jepa_world_model_controls/14.1_JEPA_and_World_Model_Controls_solutions.ipynb": (
             "chapter14_jepa_world_models/exercises/part1_jepa_world_model_controls/14.1_JEPA_and_World_Model_Controls_solutions.ipynb",
             "3636330f1f1bef5b02cff7d20a57c076ad46970c308287700ef2d02e07039e2e",
             "historical raw notebook",
@@ -86,13 +74,6 @@ _PAGE_LINKS = {
             "chapter16_shapley_attribution_baselines/exercises/part1_exact_shapley_ground_truth_games/16.1_Exact_Shapley_on_Ground_Truth_Games_exercises.ipynb",
             "425e9963d352048a6f9370feb5c9fa255dd72f7ca44f70d00f60980d74e4eaa7",
             "historical raw notebook",
-        ),
-    },
-    "chapter16_shapley_attribution_baselines/instructions/pages/05_[16.5]_Shapley_Interactions.md": {
-        "protocol.md": (
-            "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/protocol.md",
-            "c0d738cf953743f17b74ca5ced74c15330b8b3be7d7d128563ba36096986ee37",
-            "source document",
         ),
     },
     "chapter16_shapley_attribution_baselines/instructions/pages/10_[16.10]_Influence_Functions_and_TracIn.md": {

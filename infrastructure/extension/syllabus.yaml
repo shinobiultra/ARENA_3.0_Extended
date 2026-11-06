@@ -196,7 +196,7 @@ chapters:
           dashboard's story predicts ablation effects. Show how to export to / read from Neuronpedia-style formats and
           sae-vis without depending on network access for the core exercises.
       - number: "6.4"
-        title: Transcoders and Skip Transcoders
+        title: Transcoders and Attribution Graphs
         dir: part4_transcoders
         description: "Implement an exact ordinary-transcoder organism, signed paths and behavioral faithfulness with matched controls and prediction practice. Retain the complete historical study; learner-trained SAE comparison, skip transcoders and the cross-layer virtual-weight study remain unfinished."
         sources: [chapter6_sparse_feature_methods/exercises/part3_transcoders_attribution_graphs, arena_ext/transcoders.py]
@@ -434,7 +434,7 @@ chapters:
           black-box monitors, adversarial robustness of monitors (optimising inputs against the probe), and using internals
           to guide red-teaming (finding inputs that activate a monitored direction). Safe proxies only.
       - number: "9.6"
-        title: Model Editing with ROME and MEMIT
+        title: Rank-One Model Editing (ROME)
         dir: part6_rome_memit
         description: "Implement affine rank-one writes, continuation scoring and controlled localization on the complete historical ROME-like lesson. Inspect negative localization and collateral behavior, then perturb the fixed edit. MEMIT mass editing and official ROME protocol parity remain unfinished."
         sources: [chapter9_alignment_interpretability/exercises/part5_rome_model_editing]
@@ -540,7 +540,7 @@ chapters:
         status: written
         description: "Build CLIP's softmax loss and SigLIP's sigmoid loss from scratch, train a tiny CLIP on coloured shapes with a retrieval heatmap and random-caption controls, then probe the real CLIP and SigLIP: zero-shot retrieval, the modality gap, attribute directions and steering, and why they fail at colour-object binding."
       - number: "12.2"
-        title: CLIP Features, SAEs and Typographic Attacks
+        title: Typographic Attacks and SAE Features in a Toy Two-Tower Model
         dir: part2_clip_saes_typographic
         description: "Implement a small pixel-to-retrieval organism, fit an SAE and measure typography mitigation against clean/OCR controls; native CLIP/SigLIP feature and head evidence remains pending."
         sources: []
@@ -868,13 +868,13 @@ chapters:
     short_description: Developmental interpretability - watching mechanisms form during training.
     sections:
       - number: "17.1"
-        title: Checkpoint Archaeology and Grokking
+        title: Checkpoint Archaeology on Modular Addition
         dir: part1_checkpoint_archaeology
         sources: [chapter17_training_dynamics/exercises/part1_checkpoint_archaeology, arena_ext/training_dynamics.py]
         requirements: [training.checkpoint_archaeology, training.grokking, organisms.modular_addition]
         description: "Track recorded finite-domain modular-addition accuracy and Fourier interventions across checkpoints; grokking and held-out generalization remain separate, unfinished studies."
       - number: "17.2"
-        title: Induction Head Emergence
+        title: Induction Heads in Hand-Built Circuits
         dir: part2_induction_head_emergence
         description: "Build and ablate a fixed induction-copying circuit, measure prefix matching and token-loss trajectories, and specify the pending trained-model/Pythia emergence study."
         sources: []

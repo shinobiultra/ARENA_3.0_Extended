@@ -88,11 +88,7 @@ r'''
 The default path is a small, deterministic CPU organism with explicit weights and finite
 images. It teaches the named component operations and controls. It is not a trained diffusion
 model, a pretrained checkpoint, or a paper replication. No model download, GPU selection,
-training run or scientific sweep occurs. Published/native parts of the configured brief remain
-pending; the bridge at the end says precisely what would need to be measured.
-
-These are public guided exercises. Write your own prediction and prior solution exposure
-before opening expected outputs. Expected outputs make this seen practice, not unseen mastery.
+training run or scientific sweep occurs.
 '''
 
 # ! CELL TYPE: markdown
@@ -212,7 +208,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 5–10 minutes on this exercise.
+>
+> You should spend up to 5-10 minutes on this exercise.
 > ```
 
 Convert one `[H,W,C]` image to row-major patch vectors. Reject nondivisible geometry.
@@ -268,7 +265,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 5–10 minutes on this exercise.
+>
+> You should spend up to 5-10 minutes on this exercise.
 > ```
 
 Invert patchify exactly using the supplied image geometry.
@@ -322,7 +320,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 5–10 minutes on this exercise.
+>
+> You should spend up to 5-10 minutes on this exercise.
 > ```
 
 Implement an analytic contraction $x'=(1-\eta)x+\eta x_*$. It is a transparent
@@ -446,7 +445,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 5–10 minutes on this exercise.
+>
+> You should spend up to 5-10 minutes on this exercise.
 > ```
 
 Normalize along feature width, then apply scale and shift with NumPy broadcasting.
@@ -501,7 +501,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 5–10 minutes on this exercise.
+>
+> You should spend up to 5-10 minutes on this exercise.
 > ```
 
 Return attention outputs and row-normalized weights. Queries and keys share feature width; values may have another width. Use stable softmax.
@@ -557,7 +558,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 5–10 minutes on this exercise.
+>
+> You should spend up to 5-10 minutes on this exercise.
 > ```
 
 Implement one gated self-attention branch using your visible functions. Return token states with the original shape.
@@ -681,7 +683,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 5–10 minutes on this exercise.
+>
+> You should spend up to 5-10 minutes on this exercise.
 > ```
 
 Return both outputs and both attention matrices. Concept keys/values must never enter the image attention call.
@@ -736,7 +739,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 5–10 minutes on this exercise.
+>
+> You should spend up to 5-10 minutes on this exercise.
 > ```
 
 Return `[patches,concepts]` probabilities from attention outputs. Normalize over concepts at each patch.
@@ -791,7 +795,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 5–10 minutes on this exercise.
+>
+> You should spend up to 5-10 minutes on this exercise.
 > ```
 
 Average already-normalized `[layers,patches,concepts]` maps over layers. Do not average logits then softmax.
@@ -844,7 +849,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 5–10 minutes on this exercise.
+>
+> You should spend up to 5-10 minutes on this exercise.
 > ```
 
 Construct a clearly labeled key-space baseline: image-key/concept-query dot products, normalized over concepts per patch for the same segmentation decision. This transposed scoring/normalization is a teaching comparator, not the complete raw cross-attention aggregation used in the paper.
@@ -932,7 +938,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 5–10 minutes on this exercise.
+>
+> You should spend up to 5-10 minutes on this exercise.
 > ```
 
 Compute binary-mask IoU with the empty-union convention above.
@@ -1075,8 +1082,7 @@ r'''
 r'''
 ## Limits and model bridge
 
-Requirements `image.dit_concept_attention`, `image.sdxl_optional` and `image.flux_optional`
-remain explicit. Patchification, adaLN, attention gating, a read-only concept branch,
+Patchification, adaLN, attention gating, a read-only concept branch,
 output-space mapping and mask scoring are taught here. A complete trained DiT, pretrained
 ConceptAttention, SDXL and FLUX experiments remain pending; no such model is loaded.
 

@@ -10,7 +10,7 @@ For each section it runs, in a single pytest call:
    the committed notebooks and `solutions.py` match the master, the solutions
    notebook is one complete fresh-kernel run without errors, the exercises
    notebook has the ARENA shape, the folder is clean, the expected figures exist,
-   and every local file the page links to or shows exists;
+   and every local file the lesson links to or shows exists;
 2. the lesson's own pytest files: `tests/test_lesson_<N>_<M>_*.py`, plus any other
    `tests/test_*.py` that names the lesson's exercise folder.
 

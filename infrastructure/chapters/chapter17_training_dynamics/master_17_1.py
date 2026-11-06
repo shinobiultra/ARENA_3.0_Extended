@@ -35,7 +35,7 @@ r'''
 # ! TAGS: []
 
 r'''
-# [17.1] Checkpoint Archaeology and Grokking
+# [17.1] Checkpoint Archaeology on Modular Addition
 '''
 
 
@@ -84,19 +84,11 @@ reloads every checkpoint and compares legal Fourier modes against random-label a
 # ! TAGS: []
 
 r'''
-## Historical reference and scope boundary
+## Scope
 
-The configured route is titled **Checkpoint Archaeology and Grokking**, but the supported lesson is **finite-domain mechanism emergence**. Training and evaluation both use all 169
-pairs of the complete mod-13 table. There is no held-out split, no OOD arithmetic test and no delayed generalization measurement. Grokking coverage remains missing: the syllabus
-title is not evidence that grokking was demonstrated.
-
-Both displayed PNGs and all fourteen execution counts are retained historical reference results from the published solution notebook and its 2026-09-04 verification report. This
-canonical migration did not execute training, reload a model, use a GPU or run cluster jobs. The notebook code, scientific inputs and output bytes are checked against the archived
-publication, with the explicit setup/import and figure-output-path adaptations described in `docs/mastery/migrations/checkpoint_archaeology.md`. Historical acceptance fields and
-test messages are retained source material, not a new readiness promotion.
-
-Reference plots and expected-output dropdowns reveal the answer. This route is guided practice. Forecast before viewing, record confidence and reasoning, compare the controls and
-explain a discrepancy; no learner observation or answer is prefilled. Tiny independent method fixtures do not reproduce the historical training study.
+This lesson studies **finite-domain mechanism emergence**. Training and evaluation both use all 169 pairs of the
+complete mod-13 table, so there is no held-out split, no OOD arithmetic test and no delayed generalization
+measurement: grokking itself is not demonstrated here.
 '''
 
 
@@ -164,8 +156,7 @@ By the end, you should be able to:
 r'''
 ## Setup code
 
-The visible numerical methods and tiny fixtures run on CPU. Running the full notebook intentionally trains and saves two small models per study; this migration does not run it. The
-historical runtime and GPU metadata in setup belong to the older validation contract, not current hardware requirements. Try the exercises before opening their answers.
+The visible numerical methods and tiny fixtures run on CPU. Running the full notebook intentionally trains and saves two small models per study;  Try the exercises before opening their answers.
 '''
 
 
@@ -287,9 +278,10 @@ r'''
 ### Exercise 1 - Build the Finite Model Organism
 
 > ```yaml
-> Difficulty: 🔴🔴⚪⚪⚪ (medium)
-> Importance: 🔵🔵🔵🔵⚪ (high)
-> Expected time: 10 minutes
+> Difficulty: 🔴🔴⚪⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 10 minutes on this exercise.
 > ```
 
 Implement the complete mod-addition dataset and a noiseless exact logit table. This is the ground truth you will use to check the mechanism metric before trusting it on a trained
@@ -404,12 +396,7 @@ SOLUTION
 # ! TAGS: []
 
 r'''
-## Forecast before the result — finite-table
-
 Before drawing the table, predict the row/column pattern and the output at (7, 11). Which symmetry must hold for every pair?
-
-Write your numeric range or ranking, confidence (0–100%) and causal reasoning. Record whether you have already seen it. Commit before opening the reference outputs or solution
-dropdown. This is guided practice; leave your own answer blank until you make it.
 '''
 
 
@@ -473,24 +460,13 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — finite-table
-
-Check the row/column symmetry against the displayed table. Explain why this exhaustive domain has no untouched TEST rows. Record the observed control, your largest forecast
-discrepancy and a causal explanation. Then predict a changed scientific condition before running it. Keep reference exposure explicit; do not award an unseen score.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise 2 - Define the Fourier Mechanism Metric
 
 > ```yaml
-> Difficulty: 🔴🔴🔴🔴⚪ (hard)
-> Importance: 🔵🔵🔵🔵⚪ (high)
-> Expected time: 25 minutes
+> Difficulty: 🔴🔴🔴🔴⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 25 minutes on this exercise.
 > ```
 
 The exact rule `c = a + b mod p` has a sparse Fourier signature over the logit cube indexed by `(a, b, c)`. Build the legal-mode mask, a same-size random mask, and a power-fraction
@@ -698,12 +674,7 @@ SOLUTION
 # ! TAGS: []
 
 r'''
-## Forecast before the result — exact-fourier
-
 For exact mod-13 logits, forecast the legal Fourier power fraction and same-size random-mask fraction. Explain why removing output-wise means matters.
-
-Write your numeric range or ranking, confidence (0–100%) and causal reasoning. Record whether you have already seen it. Commit before opening the reference outputs or solution
-dropdown. This is guided practice; leave your own answer blank until you make it.
 '''
 
 
@@ -738,25 +709,13 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-## Reflect after the result — exact-fourier
-
-Compare legal and random-mask power. Would multiplying all centered logits change either fraction? Forecast that changed scale before trying it. Record the observed control, your
-largest forecast discrepancy and a causal explanation. Then predict a changed scientific condition before running it. Keep reference exposure explicit; do not award an unseen
-score.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise 3 - Make the Mechanism Causal on Exact Ground Truth
 
 > ```yaml
-> Difficulty: 🔴🔴🔴🔴⚪ (hard)
-> Importance: 🔵🔵🔵🔵⚪ (high)
-> Expected time: 20 minutes
+> Difficulty: 🔴🔴🔴🔴⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 20 minutes on this exercise.
 > ```
 
 Now turn the metric into an intervention. Keep only legal Fourier modes, or ablate legal Fourier modes, then invert the FFT and measure table accuracy.
@@ -913,12 +872,7 @@ SOLUTION
 # ! TAGS: []
 
 r'''
-## Forecast before the result — exact-intervention
-
 Rank full, legal-only, legal-ablated and random-only exact-table accuracy. State which comparison tests sufficiency and which tests necessity in logit-table space.
-
-Write your numeric range or ranking, confidence (0–100%) and causal reasoning. Record whether you have already seen it. Commit before opening the reference outputs or solution
-dropdown. This is guided practice; leave your own answer blank until you make it.
 '''
 
 
@@ -939,19 +893,6 @@ if MAIN:
     for key, value in exact_report.items():
         print(f"{key:>28}: {value:.4f}")
 # END HIDE
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — exact-intervention
-
-Compare necessity and sufficiency using both legal and random-mode interventions. Forecast an additive output-independent logit offset and explain which scores should be invariant.
-Record the observed control, your largest forecast discrepancy and a causal explanation. Then predict a changed scientific condition before running it. Keep reference exposure
-explicit; do not award an unseen score.
-'''
 
 
 # ! CELL TYPE: markdown
@@ -1022,9 +963,10 @@ r'''
 ### Exercise 4 - Train, Save, Reload, Then Measure
 
 > ```yaml
-> Difficulty: 🔴🔴🔴🔴⚪ (hard)
-> Importance: 🔵🔵🔵🔵⚪ (high)
-> Expected time: 30 minutes
+> Difficulty: 🔴🔴🔴🔴⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 30 minutes on this exercise.
 > ```
 
 Implement the archaeology loop. You must save real checkpoint files, reload each file into a fresh model, and compute accuracy, loss, the legal Fourier score, and the random-mask
@@ -1231,12 +1173,7 @@ SOLUTION
 # ! TAGS: []
 
 r'''
-## Forecast before the result — reload-fixture
-
 For the four-step small-run fixture, forecast the number of checkpoint files and what equality after reload would establish. Does it establish a learned mechanism?
-
-Write your numeric range or ranking, confidence (0–100%) and causal reasoning. Record whether you have already seen it. Commit before opening the reference outputs or solution
-dropdown. This is guided practice; leave your own answer blank until you make it.
 '''
 
 
@@ -1278,25 +1215,13 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-## Reflect after the result — reload-fixture
-
-Separate file-count/reload evidence from emergence evidence. Forecast what measuring the live model instead of each saved state could conceal. Record the observed control, your
-largest forecast discrepancy and a causal explanation. Then predict a changed scientific condition before running it. Keep reference exposure explicit; do not award an unseen
-score.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise 5 - Assemble the Signature Experiment
 
 > ```yaml
-> Difficulty: 🔴🔴🔴🔴⚪ (hard)
-> Importance: 🔵🔵🔵🔵⚪ (high)
-> Expected time: 35 minutes
+> Difficulty: 🔴🔴🔴🔴⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 35 minutes on this exercise.
 > ```
 
 Run the target-label model and the random-label control on the same checkpoint schedule. Summarize the accuracy emergence, Fourier mechanism emergence, random-label failure,
@@ -1309,14 +1234,9 @@ same-size random Fourier failure, and early/mid/late interventions.
 # ! TAGS: []
 
 r'''
-## Forecast before the result — learned-checkpoints
-
 At seed 0 with p=13, embedding 32, hidden width 96, learning rate 0.005, 180 steps and the fourteen saved checkpoints, forecast final legal Fourier power in [0,1] and whether
 stable mechanism crossing precedes, matches or follows stable accuracy crossing. Rank late original/legal-only/legal-ablated/random-only accuracy. Predict random-label true-table
 accuracy and same-size random-mask power before the experiment executes.
-
-Write your numeric range or ranking, confidence (0–100%) and causal reasoning. Record whether you have already seen it. Commit before opening the reference outputs or solution
-dropdown. This is guided practice; leave your own answer blank until you make it.
 '''
 
 
@@ -1672,9 +1592,10 @@ r'''
 ### Exercise 6 - Produce the Three-Panel Signature Figure
 
 > ```yaml
-> Difficulty: 🔴🔴⚪⚪⚪ (medium)
-> Importance: 🔵🔵🔵🔵⚪ (high)
-> Expected time: 15 minutes
+> Difficulty: 🔴🔴⚪⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15 minutes on this exercise.
 > ```
 
 Make the result visible. Your final figure should show training/mechanism trajectories, early/mid/late interventions, and controls. Your metrics table should state thresholds and
@@ -1988,19 +1909,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — learned-checkpoints
-
-Read all three panels and the metrics table together: target performance, legal power, intervention accuracies, shuffled-label and random-mask controls. Report both stable
-crossings rather than narrating a single threshold. Explain why the logit intervention does not locate a hidden-unit circuit. Record the observed control, your largest forecast
-discrepancy and a causal explanation. Then predict a changed scientific condition before running it. Keep reference exposure explicit; do not award an unseen score.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details>
 <summary>Expected output</summary>
 
@@ -2008,7 +1916,7 @@ r'''
 Wrote notebook-generated signature figure to .../checkpoint_archaeology_signature_result.png
 ```
 
-The historical figure is prefilled under the plotting cell above.
+The saved figure is shown under the plotting cell above.
 
 </details>
 
@@ -2068,7 +1976,7 @@ solves the finite table, the legal Fourier score becomes large, and the controls
 r'''
 ### Which play controls actually change the experiment?
 
-`PLAY_SEED` is passed to the study. The historical `PLAY_RANDOM_MASK_SEED` and `PLAY_THRESHOLD` names in the next cell are unused; editing them alone changes no measured quantity.
+`PLAY_SEED` is passed to the study. The `PLAY_RANDOM_MASK_SEED` and `PLAY_THRESHOLD` names in the next cell are unused; editing them alone changes no measured quantity.
 To investigate mask choice, call `random_fourier_mask(seed=...)` or `fourier_intervention_report(..., random_seed=...)` explicitly on a saved logit table. To investigate threshold
 sensitivity, apply `mechanism_emergence_report` to the same recorded steps and scores with a new threshold. These are proposed analyses, not retained results. Changing a reporting
 threshold changes the emergence declaration, not the learned model.
@@ -2080,13 +1988,8 @@ threshold changes the emergence declaration, not the learned model.
 # ! TAGS: []
 
 r'''
-## Forecast before the result — seed-play
-
 For PLAY_SEED=1 with the same complete domain, width and training budget, forecast final legal Fourier power, stable mechanism step and late legal-ablation drop. A new seed is
 replication. For a changed scientific condition, separately forecast hidden width 96→32 at fixed data, seed and budget; no outcome for that change is supplied.
-
-Write your numeric range or ranking, confidence (0–100%) and causal reasoning. Record whether you have already seen it. Commit before opening the reference outputs or solution
-dropdown. This is guided practice; leave your own answer blank until you make it.
 '''
 
 
@@ -2150,19 +2053,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-## Reflect after the result — seed-play
-
-Compare the seed-1 observation with your committed range and controls. Before changing width, state your new forecast for legal power and ablation drop. Do not turn a proposed
-width study into an observed result. Record the observed control, your largest forecast discrepancy and a causal explanation. Then predict a changed scientific condition before
-running it. Keep reference exposure explicit; do not award an unseen score.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 # ☆ Bonus
 '''
 
@@ -2209,7 +2099,7 @@ r'''
 ### What remains outside this lesson?
 
 Grokking would require a separately specified training subset, evaluation split and a delayed generalization measurement. Here all 169 pairs are repeatedly evaluated and trained
-upon. Random-label failure against the true addition table is a negative control; it does not create held-out evidence. No new study is accepted by this migration. The student can
+upon. Random-label failure against the true addition table is a negative control; it does not create held-out evidence. The student can
 examine the full finite-domain mechanism while keeping those missing questions open.
 '''
 

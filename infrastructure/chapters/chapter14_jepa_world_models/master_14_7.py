@@ -13,7 +13,7 @@ r'''
 # ! TAGS: []
 
 r'''
-# [14.7] Recurrent World Models - Dreamer TD-MPC2 and IRIS
+# [14.7] Recurrent World Models - Dreamer, TD-MPC2 and IRIS
 '''
 
 # ! CELL TYPE: markdown
@@ -35,7 +35,7 @@ By the end of this notebook, you will have shown that a planner can exploit a re
 
 These are **three separately trained tiny organisms**, not one generic transition table under three model names. We keep their state, objective and training code visible. A fixed CPU recipe fits small modules on public corridor transitions; it does not reproduce Dreamer, TD-MPC2 or IRIS benchmark agents. Actor learning, full image tokenization, native simulator performance and robotics safety remain distinct pending work. We will state every approximation at the point it enters.
 
-Prerequisites: transformer attention (1.1), categorical distributions and autograd, temporal-difference targets, 14.3 planning. No external environment, checkpoint, GPU or network is needed. Tiny fitting/check traces are public teaching fixtures, not independent research TEST.
+Prerequisites: transformer attention (1.1), categorical distributions and autograd, temporal-difference targets, 14.3 planning. No external environment, checkpoint, GPU or network is needed.
 '''
 
 # ! CELL TYPE: markdown
@@ -77,7 +77,7 @@ r'''
 r'''
 ## Setup code
 
-Run from the repository checkout or this section directory. This study edition uses tiny CPU fixtures: no network, pretrained checkpoint, GPU or additional installation. All public outputs are guided practice, not an unseen learner assessment.
+This study edition uses tiny CPU fixtures: no network, pretrained checkpoint, GPU or additional installation.
 '''
 
 # ! CELL TYPE: code
@@ -133,6 +133,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -192,6 +193,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -256,6 +258,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -316,6 +319,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -379,6 +383,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -439,6 +444,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -540,6 +546,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -666,6 +673,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -727,6 +735,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -821,6 +830,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -945,6 +955,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -1005,6 +1016,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -1065,6 +1077,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -1127,6 +1140,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -1189,6 +1203,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -1338,6 +1353,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -1449,12 +1465,12 @@ r'''
 
 The fresh frozen posterior-state probe checks at `1.0`, versus `0.1188` for shuffled fitting labels; this is public-trace decodability, not causal use or unseen generalization. The fixed CPU reference RSSM mean step loss falls `1.94985 → 0.14671`, TD objective `0.77885 → 0.00053`, and state-token CE `1.95091 → 0.00003` with teacher-forced accuracy `1.0`. The RSSM and token transformer match the displayed fixed four-step true path `[0,1,2,1,2]`. The TD latent model separately matches its optimized five-action true path `[0,1,2,3,4,4]` in the planning panel. This selected trace is an example, not an all-rollout success rate. The aligned planner selects five right moves and obtains actual discounted reward `1.6719`; the wall-corrupted planner selects five left moves, imagines `45.2107` and obtains actual reward `0.0`. The stay baseline earns `0.0`, while its learned prediction is slightly pessimistic (`-0.0717`). Separate posterior reconstruction, prior rollout accuracy, teacher-forced token accuracy, optimized return and true executed reward. Any one can look good while another fails. The injected wall bonus is an exact causal demonstration of objective exploitation; it is not an estimate of its frequency in trained world models or robots. The public corridor traces expose all states/actions, so there is no independent task-generalization claim.
 
-## Requirement bridge
+## Bridge to larger systems
 
-- `world.dreamer_lite`: actual recurrent memory, categorical prior/posterior sampling, observation/reward heads, balanced stopped-gradient KL, free nats and lambda returns are implemented. Actor/critic optimization, continuation modeling, multi-categorical latents, symlog/two-hot heads and full DreamerV3 training remain pending.
-- `world.tdmpc2_lite`: actual SimNorm, latent consistency, reward fit, TD target, target-network update and latent action search are implemented. The fixed encoder, scalar MSE heads and discrete exhaustive search deliberately simplify the published method; continuous planning, policy priors and Q ensembles remain pending.
-- `world.iris_lite`: actual nearest-codebook quantization, VQ gradient terms, token/action ordering, causal attention and next-state token training are implemented. The identity codebook bypasses learned image compression; visual autoencoder and imagination-trained actor remain pending.
-- `organisms.tiny_rl_worlds`: the five-room action/reward organism is completely visible and every selected plan is executed in it. `alignment.world_model_safety` and `alignment.robotics_vla_safety` receive a controlled reward-error audit, not a safety certification, robotic trial or VLA evaluation.
+- Dreamer-lite: actual recurrent memory, categorical prior/posterior sampling, observation/reward heads, balanced stopped-gradient KL, free nats and lambda returns are implemented. Actor/critic optimization, continuation modeling, multi-categorical latents, symlog/two-hot heads and full DreamerV3 training remain pending.
+- TD-MPC2-lite: actual SimNorm, latent consistency, reward fit, TD target, target-network update and latent action search are implemented. The fixed encoder, scalar MSE heads and discrete exhaustive search deliberately simplify the published method; continuous planning, policy priors and Q ensembles remain pending.
+- IRIS-lite: actual nearest-codebook quantization, VQ gradient terms, token/action ordering, causal attention and next-state token training are implemented. The identity codebook bypasses learned image compression; visual autoencoder and imagination-trained actor remain pending.
+- Tiny RL worlds: the five-room action/reward organism is completely visible and every selected plan is executed in it. World-model safety and robotics/VLA safety receive a controlled reward-error audit, not a safety certification, robotic trial or VLA evaluation.
 '''
 
 # ! CELL TYPE: markdown

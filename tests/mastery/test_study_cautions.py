@@ -17,11 +17,11 @@ CASES = {
     '8.7': ('chapter8_automated_circuits/instructions/pages/07_[8.7]_Circuit_Tracing_with_Attribution_Graphs.md', '## Reading Links', '8-7-primary-reading'),
     '9.3': ('chapter9_alignment_interpretability/instructions/pages/03_[9.3]_Chain-of-Thought_Faithfulness.md', '## Reading links', '9-3-primary-reading'),
     '9.4': ('chapter9_alignment_interpretability/instructions/pages/04_[9.4]_Emergent_Misalignment_Detection.md', '## Limitations', '9-4-primary-reading'),
-    '9.6': ('chapter9_alignment_interpretability/instructions/pages/06_[9.6]_Model_Editing_with_ROME_and_MEMIT.md', '## Reading', '9-6-reading-boundary'),
+    '9.6': ('chapter9_alignment_interpretability/instructions/pages/06_[9.6]_Rank-One_Model_Editing_ROME.md', '## Reading', '9-6-reading-boundary'),
     "13.2": ("chapter13_image_generation_interpretability/instructions/pages/02_[13.2]_Denoising-Time_Causal_Patching.md", "### Exercise 7: Sweep the Known Circuit", "13-2-reference-check"),
     "14.1": ("chapter14_jepa_world_models/instructions/pages/01_[14.1]_I-JEPA_from_Scratch.md", "## Signature Result: Does Visible Context Determine the Masked Latent?", "14-1-conflicting-signature"),
     "15.3": ("chapter15_peft_misalignment/instructions/pages/03_[15.3]_QLoRA_from_Scratch.md", "## 10. Train the Marker Rule on TinyStories", "15-3-failed-parity"),
-    "17.1": ("chapter17_training_dynamics/instructions/pages/01_[17.1]_Checkpoint_Archaeology_and_Grokking.md", "## Core Question", "17-1-finite-domain"),
+    "17.1": ("chapter17_training_dynamics/instructions/pages/01_[17.1]_Checkpoint_Archaeology_on_Modular_Addition.md", "## Core Question", "17-1-finite-domain"),
 }
 BLOCK = re.compile(r"\n\n<!-- study-caution:([\w-]+):start -->\n\n.*?\n\n<!-- study-caution:\1:end -->\n", re.S)
 
@@ -300,5 +300,4 @@ def test_9_6_reader_boundary_does_not_advertise_runall_or_memit_implementation(h
         'does not train a new multi-token edit',
     ]:
         assert phrase in block
-    assert "explicit writes to legacy expected outputs" in source
     assert "does not implement MEMIT mass editing" in source

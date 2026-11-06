@@ -770,8 +770,8 @@
         "faithfulness_curve",
         "reconstruction_only_ranking"
       ],
-      "exercise_path": "chapter6_sparse_feature_methods/exercises/part4_transcoders/6.4_Transcoders_and_Skip_Transcoders_exercises.ipynb",
-      "solutions_path": "chapter6_sparse_feature_methods/exercises/part4_transcoders/6.4_Transcoders_and_Skip_Transcoders_solutions.ipynb",
+      "exercise_path": "chapter6_sparse_feature_methods/exercises/part4_transcoders/6.4_Transcoders_and_Attribution_Graphs_exercises.ipynb",
+      "solutions_path": "chapter6_sparse_feature_methods/exercises/part4_transcoders/6.4_Transcoders_and_Attribution_Graphs_solutions.ipynb",
       "evidence_class": "analytic_toy",
       "evidence_detail": "Preserved historical execution of exact hand-specified ReLU MLP organism. Optional pinned GELU-1L report is distinct supporting evidence; no fresh execution or result was produced in migration.",
       "data_role": "historical",
@@ -1729,7 +1729,7 @@
         "student_method": "All13original exercise groups, inline implementations/stubs and immediate original tests survive; no taught method moves into a helper. Imported canonical methods require explicit initialize_notebook_plumbing() before use.",
         "metric_and_selection": "Exact negative_localization_result is len(successful_layers)>1 OR wrong_position_success, where each layer and wrong-position success uses pairwise_preference_rate_after>=0.5 on20heldout paraphrases. Layer and wrong-position updates are norm-matched to primary update. Report both branches separately. Pairwise preference, targettop1 and full-target likelihood remain distinct. Retention denominator uses only unedited top1correct candidates; leakage excludes target_generalization/legitimate_rome_target. No postinspection selection or pooled claims.",
         "study_protocol": "Retain exact affine bias, Woodbury covariance solve, subject-offset overlap, full continuation scoring, exception-safe weight restoration, original suites and control construction. Fixed edit is not official ROME and supplies no MEMIT mass editing.",
-        "source_identity": "chapter9_alignment_interpretability/exercises/part5_rome_model_editing/9.5_ROME_Model_Editing_exercises.ipynb SHA256 d57518b640dd4d6972857d749091a91c90a82e807637c08415ebdaec6adf1578; chapter9_alignment_interpretability/exercises/part5_rome_model_editing/9.5_ROME_Model_Editing_solutions.ipynb SHA256 3e5a24db7ea7d930c0a5a1b523c64cc6031381249a443198bfe8aac7967fbe03; chapter9_alignment_interpretability/exercises/part5_rome_model_editing/solutions.py SHA256 d80012e6a68a91fa82aad746186204ebcf14dcdcfd0210dc2c0b1ff2be5ff12a Durable original source: docs/mastery/evidence/lesson_integration_20261021_first3/v2/original_sources.tar.gz SHA256 215ff3714093bd203a807bd57db09852c6d4ca72a4a45f697c4ee62f4668318d; archive member chapter9_alignment_interpretability/exercises/part5_rome_model_editing/9.5_ROME_Model_Editing_solutions.ipynb SHA256 3e5a24db7ea7d930c0a5a1b523c64cc6031381249a443198bfe8aac7967fbe03. Read original zero-based cell 63 (human ordinal 64) in that archived notebook. In the current canonical solutions notebook chapter9_alignment_interpretability/exercises/part6_rome_memit/9.6_Model_Editing_with_ROME_and_MEMIT_solutions.ipynb, the same preserved result cell is zero-based 95 (ordinal 96), cell ID rome-063, located by exact source anchor 'primary_metrics = result[\"metrics\"][\"course_rome_like\"]'. Original indices do not apply to current notebooks after inserted forecasts/chapter headers; use this stable cell ID/anchor. This is retained historical evidence, not a new execution or independent result.",
+        "source_identity": "chapter9_alignment_interpretability/exercises/part5_rome_model_editing/9.5_ROME_Model_Editing_exercises.ipynb SHA256 d57518b640dd4d6972857d749091a91c90a82e807637c08415ebdaec6adf1578; chapter9_alignment_interpretability/exercises/part5_rome_model_editing/9.5_ROME_Model_Editing_solutions.ipynb SHA256 3e5a24db7ea7d930c0a5a1b523c64cc6031381249a443198bfe8aac7967fbe03; chapter9_alignment_interpretability/exercises/part5_rome_model_editing/solutions.py SHA256 d80012e6a68a91fa82aad746186204ebcf14dcdcfd0210dc2c0b1ff2be5ff12a Durable original source: docs/mastery/evidence/lesson_integration_20261021_first3/v2/original_sources.tar.gz SHA256 215ff3714093bd203a807bd57db09852c6d4ca72a4a45f697c4ee62f4668318d; archive member chapter9_alignment_interpretability/exercises/part5_rome_model_editing/9.5_ROME_Model_Editing_solutions.ipynb SHA256 3e5a24db7ea7d930c0a5a1b523c64cc6031381249a443198bfe8aac7967fbe03. Read original zero-based cell 63 (human ordinal 64) in that archived notebook. In the current canonical solutions notebook chapter9_alignment_interpretability/exercises/part6_rome_memit/9.6_Rank-One_Model_Editing_ROME_solutions.ipynb, the same preserved result cell is zero-based 95 (ordinal 96), cell ID rome-063, located by exact source anchor 'primary_metrics = result[\"metrics\"][\"course_rome_like\"]'. Original indices do not apply to current notebooks after inserted forecasts/chapter headers; use this stable cell ID/anchor. This is retained historical evidence, not a new execution or independent result.",
         "native_report_role": "All report/lock/expected material stays unchanged as historical supporting provenance. No fresh scientific report or canonical acceptance identity is generated."
       },
       "controls": [
@@ -1757,10 +1757,10 @@
         "evaluate_weight_edit",
         "build_course_rome_like_update"
       ],
-      "exercise_path": "chapter9_alignment_interpretability/exercises/part6_rome_memit/9.6_Model_Editing_with_ROME_and_MEMIT_exercises.ipynb",
-      "solutions_path": "chapter9_alignment_interpretability/exercises/part6_rome_memit/9.6_Model_Editing_with_ROME_and_MEMIT_solutions.ipynb",
+      "exercise_path": "chapter9_alignment_interpretability/exercises/part6_rome_memit/9.6_Rank-One_Model_Editing_ROME_exercises.ipynb",
+      "solutions_path": "chapter9_alignment_interpretability/exercises/part6_rome_memit/9.6_Rank-One_Model_Editing_ROME_solutions.ipynb",
       "evidence_class": "recorded_real_run",
-      "evidence_detail": "Historical saved solution outputs:19output-bearing cells and3embedded PNG records plus2byte-exact assets. No model or method execution during this migration. Locator clarification: Durable original source: docs/mastery/evidence/lesson_integration_20261021_first3/v2/original_sources.tar.gz SHA256 215ff3714093bd203a807bd57db09852c6d4ca72a4a45f697c4ee62f4668318d; archive member chapter9_alignment_interpretability/exercises/part5_rome_model_editing/9.5_ROME_Model_Editing_solutions.ipynb SHA256 3e5a24db7ea7d930c0a5a1b523c64cc6031381249a443198bfe8aac7967fbe03. Read original zero-based cell 63 (human ordinal 64) in that archived notebook. In the current canonical solutions notebook chapter9_alignment_interpretability/exercises/part6_rome_memit/9.6_Model_Editing_with_ROME_and_MEMIT_solutions.ipynb, the same preserved result cell is zero-based 95 (ordinal 96), cell ID rome-063, located by exact source anchor 'primary_metrics = result[\"metrics\"][\"course_rome_like\"]'. Original indices do not apply to current notebooks after inserted forecasts/chapter headers; use this stable cell ID/anchor. This is retained historical evidence, not a new execution or independent result.",
+      "evidence_detail": "Historical saved solution outputs:19output-bearing cells and3embedded PNG records plus2byte-exact assets. No model or method execution during this migration. Locator clarification: Durable original source: docs/mastery/evidence/lesson_integration_20261021_first3/v2/original_sources.tar.gz SHA256 215ff3714093bd203a807bd57db09852c6d4ca72a4a45f697c4ee62f4668318d; archive member chapter9_alignment_interpretability/exercises/part5_rome_model_editing/9.5_ROME_Model_Editing_solutions.ipynb SHA256 3e5a24db7ea7d930c0a5a1b523c64cc6031381249a443198bfe8aac7967fbe03. Read original zero-based cell 63 (human ordinal 64) in that archived notebook. In the current canonical solutions notebook chapter9_alignment_interpretability/exercises/part6_rome_memit/9.6_Rank-One_Model_Editing_ROME_solutions.ipynb, the same preserved result cell is zero-based 95 (ordinal 96), cell ID rome-063, located by exact source anchor 'primary_metrics = result[\"metrics\"][\"course_rome_like\"]'. Original indices do not apply to current notebooks after inserted forecasts/chapter headers; use this stable cell ID/anchor. This is retained historical evidence, not a new execution or independent result.",
       "data_role": "historical",
       "status": "guided_practice",
       "known_limitations": [
@@ -2202,7 +2202,7 @@
     },
     {
       "section": "12.2",
-      "title": "CLIP Features, SAEs and Typographic Attacks",
+      "title": "Typographic Attacks and SAE Features in a Toy Two-Tower Model",
       "master_path": "infrastructure/chapters/chapter12_vlm_interpretability/master_12_2.py",
       "question": "On the two fixed non-triangle objects labelled triangle, how much does full removal of the selected monitored latent decoder direction change forced-choice object accuracy?",
       "prediction_type": "numeric",
@@ -2236,8 +2236,8 @@
         "forced_choice_accuracy",
         "tradeoff_curve"
       ],
-      "exercise_path": "chapter12_vlm_interpretability/exercises/part2_clip_saes_typographic/12.2_CLIP_Features_SAEs_and_Typographic_Attacks_exercises.ipynb",
-      "solutions_path": "chapter12_vlm_interpretability/exercises/part2_clip_saes_typographic/12.2_CLIP_Features_SAEs_and_Typographic_Attacks_solutions.ipynb",
+      "exercise_path": "chapter12_vlm_interpretability/exercises/part2_clip_saes_typographic/12.2_Typographic_Attacks_and_SAE_Features_in_a_Toy_Two-Tower_Model_exercises.ipynb",
+      "solutions_path": "chapter12_vlm_interpretability/exercises/part2_clip_saes_typographic/12.2_Typographic_Attacks_and_SAE_Features_in_a_Toy_Two-Tower_Model_solutions.ipynb",
       "evidence_class": "analytic_toy",
       "evidence_detail": "Deterministic CPU teaching organism; source and small-fixture QA only. No native pretrained-model execution or independent scientific evaluation.",
       "data_role": "monitored",
@@ -4129,8 +4129,8 @@
         "fourier_intervention_report",
         "train_save_reload_modular_checkpoints"
       ],
-      "exercise_path": "chapter17_training_dynamics/exercises/part1_checkpoint_archaeology/17.1_Checkpoint_Archaeology_and_Grokking_exercises.ipynb",
-      "solutions_path": "chapter17_training_dynamics/exercises/part1_checkpoint_archaeology/17.1_Checkpoint_Archaeology_and_Grokking_solutions.ipynb",
+      "exercise_path": "chapter17_training_dynamics/exercises/part1_checkpoint_archaeology/17.1_Checkpoint_Archaeology_on_Modular_Addition_exercises.ipynb",
+      "solutions_path": "chapter17_training_dynamics/exercises/part1_checkpoint_archaeology/17.1_Checkpoint_Archaeology_on_Modular_Addition_solutions.ipynb",
       "evidence_class": "recorded_real_run",
       "evidence_detail": "Public historical reference outputs; no fresh full lesson execution or independent evaluation is established by this workbook.",
       "data_role": "historical",
@@ -4179,8 +4179,8 @@
         "composition_score",
         "first_crossing"
       ],
-      "exercise_path": "chapter17_training_dynamics/exercises/part2_induction_head_emergence/17.2_Induction_Head_Emergence_exercises.ipynb",
-      "solutions_path": "chapter17_training_dynamics/exercises/part2_induction_head_emergence/17.2_Induction_Head_Emergence_solutions.ipynb",
+      "exercise_path": "chapter17_training_dynamics/exercises/part2_induction_head_emergence/17.2_Induction_Heads_in_Hand-Built_Circuits_exercises.ipynb",
+      "solutions_path": "chapter17_training_dynamics/exercises/part2_induction_head_emergence/17.2_Induction_Heads_in_Hand-Built_Circuits_solutions.ipynb",
       "evidence_class": "analytic_toy",
       "evidence_detail": "Deterministic public CPU constructed checkpoints. No native trained-model emergence or untouched evaluation is established.",
       "data_role": "historical",

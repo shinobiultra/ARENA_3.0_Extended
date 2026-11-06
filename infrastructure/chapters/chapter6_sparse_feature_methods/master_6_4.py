@@ -39,7 +39,7 @@ r'''
 # ! TAGS: []
 
 r'''
-# [6.4] Transcoders and Skip Transcoders
+# [6.4] Transcoders and Attribution Graphs
 '''
 
 # ! CELL TYPE: markdown
@@ -63,13 +63,8 @@ r'''
 # ! TAGS: []
 
 r'''
-**Preserved ordinary-transcoder curriculum; expanded coverage remains open.** The configured title includes skip transcoders, but this complete lesson teaches an exact ordinary
-sparse ReLU transcoder and its signed attribution graph. It does not yet teach a learner-trained SAE comparison, skip-transcoder implementation, or cross-layer virtual-weight
-study. Do not count those syllabus requirements as covered. The optional learned GELU-1L preflight is separate historical supporting evidence.
-
-**Historical exposed guided practice:** all saved text and figures come from legacy 6.3, not a fresh execution of canonical 6.4. Record forecast, confidence, reasoning and prior
-exposure before inspecting them; published answers cannot earn unseen-assessment credit. The original legacy lessons and original ARENA 1.4.2 remain intact. Canonical routing does
-not rename historical experiment identity.
+**Scope.** This lesson teaches an exact ordinary sparse ReLU transcoder and its signed attribution graph.
+Skip transcoders, a learner-trained SAE comparison and cross-layer virtual weights are not covered here.
 '''
 
 # ! CELL TYPE: markdown
@@ -105,7 +100,7 @@ r'''
 
 ### ☆ Bonus
 
-Separate model-organism evidence from the optional historical model preflight.
+Separate model-organism evidence from the optional model preflight.
 '''
 
 # ! CELL TYPE: code
@@ -142,12 +137,7 @@ The input is the exact residual vector `[red=1, blue=0, square=1, circle=0]`. Th
 This is an **exact model organism**, not evidence about a language model. Its purpose is to make every feature, edge, and intervention checkable against ground truth before you
 move to real transcoders.
 
-```yaml
-gt_tier: GT-0 exact model organism; committed GT-1 GELU-1L evidence is supporting context only
-exercise_id: 6_3_transcoders_and_attribution_graphs
-expected_runtime: 75-100 minutes on CPU
-requires_gpu: false for this notebook
-```
+The lesson takes 75-100 minutes on CPU and needs no GPU.
 
 ## What you will implement
 
@@ -347,7 +337,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 15-20 minutes on this exercise.
+>
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 Implement the complete replacement path. Return pre-activations as well as sparse features so later exercises can see which ReLU gates are open.
@@ -369,7 +360,7 @@ feature decoder vectors.
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Worked solution</summary>
 
 ```python
 def encode(
@@ -434,11 +425,7 @@ def transcoder_forward(
 # ! TAGS: []
 
 r'''
-### Forecast
-
 Predict which encoder coordinates remain active and explain why decoder bias must be counted separately.
-
-Record confidence, causal reasoning and prior exposure; leave your observation blank until inspection. This is exposed guided practice.
 '''
 
 # ! CELL TYPE: code
@@ -529,24 +516,13 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect
-
-Compare the independent hand-computed test with your forecast; identify whether a mismatch starts at encoding or decoding.
-
-Write your own observation and explanation; no observation is prefilled.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise - implement `reconstruction_decomposition`
 
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Expose one output-space vector per feature. Their sum plus decoder bias must equal the transcoder reconstruction exactly.
@@ -566,7 +542,7 @@ Broadcast feature activations with a final singleton dimension before multiplyin
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Worked solution</summary>
 
 ```python
 def reconstruction_decomposition(
@@ -635,7 +611,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵🔵
-> You should spend 20-25 minutes on this exercise.
+>
+> You should spend up to 20-25 minutes on this exercise.
 > ```
 
 Compute each source-to-feature path's signed contribution to the final score. Append encoder bias as a fifth source, apply the fixed ReLU gate, and multiply by each decoder row's
@@ -658,7 +635,7 @@ negative bias paths, which breaks exact conservation.
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Worked solution</summary>
 
 ```python
 def feature_edge_attributions(
@@ -696,11 +673,7 @@ def feature_edge_attributions(
 # ! TAGS: []
 
 r'''
-### Forecast
-
 Predict what happens to signed path conservation if encoder-bias contributions are omitted.
-
-Record confidence, causal reasoning and prior exposure; leave your observation blank until inspection. This is exposed guided practice.
 '''
 
 # ! CELL TYPE: code
@@ -759,24 +732,13 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect
-
-Use the bias paths to explain any discrepancy; distinguish a missing signed edge from a reconstruction error.
-
-Write your own observation and explanation; no observation is prefilled.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise - implement `extract_attribution_graph`
 
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> You should spend 15-20 minutes on this exercise.
+>
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 Rank feature nodes by absolute feature-to-score contribution, then keep every signed incoming edge above the threshold for the selected nodes. Signed negative edges remain
@@ -798,7 +760,7 @@ selected feature without its cancelling bias edge.
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Worked solution</summary>
 
 ```python
 def extract_attribution_graph(
@@ -1050,7 +1012,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 15-20 minutes on this exercise.
+>
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 Check that incoming path attributions equal each feature's outgoing score contribution. Then cyclically shuffle only the targets of incoming edges while preserving the same edge
@@ -1072,7 +1035,7 @@ feature-level structure.
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Worked solution</summary>
 
 ```python
 def edge_conservation_score(edges: tuple[AttributionEdge, ...] | list[AttributionEdge], n_features: int) -> float:
@@ -1187,7 +1150,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵🔵
-> You should spend 25-30 minutes on this exercise.
+>
+> You should spend up to 25-30 minutes on this exercise.
 > ```
 
 Retain or ablate graph features before the decoder, rerun the score, and normalize against the clean-to-zero gap. Implement a decoder-norm ranking as the reconstruction-only
@@ -1210,7 +1174,7 @@ attribution sums instead of rerunning `decode` on intervened activations.
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Worked solution</summary>
 
 ```python
 def intervene_features(feature_acts: t.Tensor, feature_ids: list[int] | tuple[int, ...], *, mode: str) -> t.Tensor:
@@ -1295,11 +1259,7 @@ def reconstruction_only_ranking(decoder_weight: t.Tensor) -> tuple[int, ...]:
 # ! TAGS: []
 
 r'''
-### Forecast
-
 Predict whether decoder-norm ranking must retain the features most important for this readout. Identify a control that can falsify your argument.
-
-Record confidence, causal reasoning and prior exposure; leave your observation blank until inspection. This is exposed guided practice.
 '''
 
 # ! CELL TYPE: code
@@ -1415,18 +1375,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect
-
-Compare retention and ablation with each named control separately; do not use reconstruction quality as a substitute for target faithfulness.
-
-Write your own observation and explanation; no observation is prefilled.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Signature Result
 
 This is the primary result. Every curve below is generated from the functions you implemented. The same-size random graph has the same number of feature nodes; shuffled features
@@ -1456,11 +1404,7 @@ preserve list length; shuffled edges preserve edge count and weights; reconstruc
 # ! TAGS: []
 
 r'''
-### Forecast
-
 Before opening the saved panels, forecast which graph/control comparisons can establish signed-edge conservation and which address behavioral preservation.
-
-Record confidence, causal reasoning and prior exposure; leave your observation blank until inspection. This is exposed guided practice.
 '''
 
 # ! CELL TYPE: code
@@ -1597,18 +1541,6 @@ r'''
 # ! TAGS: []
 
 r'''
-### Reflect
-
-Reconcile both panels with your causal explanation and report prior exposure; recorded values remain historical.
-
-Write your own observation and explanation; no observation is prefilled.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Interpreting the result
 
 The one-feature graph already recovers `1.25 / 1.60 = 78.125%` of the score because `red_square` dominates. Adding `red` reaches `90.625%`; adding `square` reaches `100%`. The same
@@ -1643,11 +1575,7 @@ features. This cell is the play surface: inspect how graph size, signs, and fait
 # ! TAGS: []
 
 r'''
-### Forecast
-
 Choose color, shape and graph size before inspecting this play. Predict the direction of the score and whether the retained graph is sufficient.
-
-Record confidence, causal reasoning and prior exposure; leave your observation blank until inspection. This is exposed guided practice.
 '''
 
 # ! CELL TYPE: code
@@ -1707,18 +1635,6 @@ r'''
 # ! TAGS: []
 
 r'''
-### Reflect
-
-Explain changes using gates and signed paths. Any newly executed changed condition is exploratory and needs its own declared scope.
-
-Write your own observation and explanation; no observation is prefilled.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Anomaly hunting: find the missing edge
 
 A graph implementation can preserve node names and still silently drop an inhibitory edge. The cell below removes `bias -> red_square` from the otherwise exact graph. Use the
@@ -1744,11 +1660,7 @@ Incoming and outgoing attribution should match separately at every active featur
 # ! TAGS: []
 
 r'''
-### Forecast
-
 Predict which feature-level check should reveal the missing inhibitory edge before inspecting the anomaly output.
-
-Record confidence, causal reasoning and prior exposure; leave your observation blank until inspection. This is exposed guided practice.
 '''
 
 # ! CELL TYPE: code
@@ -1785,18 +1697,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect
-
-Explain why preserving node names and edge counts alone cannot validate a signed attribution graph.
-
-Write your own observation and explanation; no observation is prefilled.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 # ☆ Bonus
 '''
 
@@ -1811,7 +1711,7 @@ The course repository also contains a committed CUDA preflight for pinned Transf
 one-layer model's MLP output exactly, then trained a small ReLU transcoder on 104 cached activations. This CPU notebook does not rerun that experiment, and the committed run is not
 a replication of a published cross-layer transcoder graph.
 
-The cell below reads a few provenance-bound metrics as secondary context. It does not feed the signature result.
+The cell below reads a few metrics as secondary context. It does not feed the signature result.
 
 <details>
 <summary>Expected output</summary>

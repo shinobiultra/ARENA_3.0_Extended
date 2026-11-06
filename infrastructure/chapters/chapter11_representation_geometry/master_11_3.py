@@ -94,31 +94,6 @@ for arbitrary inputs or interventions.
 # ! TAGS: []
 
 r'''
-## Historical reference and execution boundary
-
-The displayed outputs and all twelve figures are retained historical reference
-results from the published completed-own-answer DAS lesson. This migration checked
-all 32 code cells for AST and nonblank-line parity and preserved their outputs and
-execution counts. They are **not a fresh execution** of this generated notebook.
-The original publication receipt remains in `expected_outputs/learner_execution.json`;
-see `docs/mastery/migrations/das.md` at the repository root for migration provenance.
-The historical pretrained run used the frozen GPT-2 revision and CPU float32 recipe
-below. Its external learner/native cache directories are currently absent, so the
-migration makes no claim to have revalidated their tensors or rerun the model.
-
-This reference-rich route is guided practice. Before viewing a plot, interpretation
-or expected-output dropdown, write your numerical forecast, confidence and causal
-reasoning; record whether you have already seen the result. Afterward, compare the
-observed controls with the forecast, explain discrepancies and predict a changed
-scientific condition. No learner prediction or answer is prefilled. Tiny numerical
-method tests and historical pretrained execution are separate evidence classes.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Content & Learning Objectives
 
 ### 1️⃣ Specify the counterfactual
@@ -268,7 +243,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10 minutes on this exercise.
+>
+> You should spend up to 10 minutes on this exercise.
 > ```
 
 Implement the variable replacement and recompute the joint output. Inputs have shape `[examples, 2]`. The `variables` tuple may select neither, either, or both columns. Do not
@@ -393,7 +369,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10 minutes on this exercise.
+>
+> You should spend up to 10 minutes on this exercise.
 > ```
 
 Return a `[width, rank]` orthonormal basis from a full-column-rank floating matrix. Reject dependent or nonfinite columns; handle rank zero. Use reduced QR and make the diagonal of
@@ -459,7 +436,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 15 minutes on this exercise.
+>
+> You should spend up to 15 minutes on this exercise.
 > ```
 
 Implement the derived row-vector formula. Validate dimensions and orthonormality. The tests compare it with an independently computed full rotation, including rank-zero and
@@ -640,7 +618,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 15 minutes on this exercise.
+>
+> You should spend up to 15 minutes on this exercise.
 > ```
 
 Implement stable cross entropy and masked output agreement. Targets are integer output classes. Return NaN for an empty subgroup, since it provides no accuracy evidence. Now check
@@ -792,12 +771,8 @@ that a trained DAS alignment is needed for this simple organism.
 # ! TAGS: []
 
 r'''
-## Forecast before the result — exact-counterfactual
-
 For the exact (R,S) base/source pair (0,1) → (1,0), forecast the joint output and held-out changed-R IIA of no-op, known-causal, unused-copy, mean-direction and full-donor
 interventions. Also forecast side-variable preservation. Explain why a perfect observational copy can disagree with the requested counterfactual.
-
-Write a numerical range or ranking, confidence (0–100%), and causal reason before running or opening the reference output. Record whether you have already seen it.
 '''
 
 # ! CELL TYPE: code
@@ -858,21 +833,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — exact-counterfactual
-
-Record the observed values and each control before reading the interpretation.
-Compare them with your forecast and explain the largest discrepancy using the
-specific intervention, denominator and metric. Give an alternative explanation
-that the result does not exclude. Forecast a changed scientific condition before
-trying it, state which measurements would distinguish your explanations, and
-retain data roles, output exposure and historical-versus-new execution status.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Learn the intervention rather than the probe
 
 DAS minimizes the disagreement induced by interventions. Here only the thin
@@ -896,7 +856,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 20 minutes on this exercise.
+>
+> You should spend up to 20 minutes on this exercise.
 > ```
 
 Initialize a thin trainable matrix with a local seeded generator. At every step, construct Q, patch the training base activations, run the frozen continuation and minimize
@@ -999,12 +960,8 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-## Forecast before the result — learned-subspace
-
 Before fitting three seeds for 300 updates on the exact model, forecast changed-R IIA for DAS versus shuffled targets and random rank-one subspaces across the 1,024 held-out pairs.
 Predict whether 100% output agreement implies recovery of the unique known-causal coordinate or preservation of S.
-
-Write a numerical range or ranking, confidence (0–100%), and causal reason before running or opening the reference output. Record whether you have already seen it.
 '''
 
 # ! CELL TYPE: code
@@ -1112,21 +1069,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — learned-subspace
-
-Record the observed values and each control before reading the interpretation.
-Compare them with your forecast and explain the largest discrepancy using the
-specific intervention, denominator and metric. Give an alternative explanation
-that the result does not exclude. Forecast a changed scientific condition before
-trying it, state which measurements would distinguish your explanations, and
-retain data roles, output exposure and historical-versus-new execution status.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details><summary>Interpretation — did DAS discover the unique true feature?</summary>
 
 All three learned subspaces reach 100% output agreement in this experiment, as
@@ -1149,12 +1091,8 @@ concluding that a successful optimizer has uniquely identified the mechanism.
 # ! TAGS: []
 
 r'''
-## Forecast before the result — coordinate-versus-specificity
-
 Forecast donor-coordinate error and collateral S-change for the known-causal, unused-copy, mean-direction, full-donor and three learned bases. Specify which metric could
 distinguish a correct joint-output intervention from exact recovery of the designated causal coordinate.
-
-Write a numerical range or ranking, confidence (0–100%), and causal reason before running or opening the reference output. Record whether you have already seen it.
 '''
 
 # ! CELL TYPE: code
@@ -1202,21 +1140,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — coordinate-versus-specificity
-
-Record the observed values and each control before reading the interpretation.
-Compare them with your forecast and explain the largest discrepancy using the
-specific intervention, denominator and metric. Give an alternative explanation
-that the result does not exclude. Forecast a changed scientific condition before
-trying it, state which measurements would distinguish your explanations, and
-retain data roles, output exposure and historical-versus-new execution status.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Try It Yourself — move from an unused feature toward a used one
 
 Vary the angle below. At zero degrees the intervention targets only the unused
@@ -1235,12 +1158,8 @@ routing swap is not the same experiment.
 # ! TAGS: []
 
 r'''
-## Forecast before the result — angle-play
-
 With PLAY_ANGLE_DEGREES = 30, forecast changed-R IIA and donor-coordinate error against no-op, known-causal and unused-copy bases. Before trying 0° and 90°, forecast both endpoints
 and explain why agreement can change abruptly while the basis moves continuously.
-
-Write a numerical range or ranking, confidence (0–100%), and causal reason before running or opening the reference output. Record whether you have already seen it.
 '''
 
 # ! CELL TYPE: code
@@ -1277,21 +1196,6 @@ if MAIN:
 
 r'''
 <img src="media/das_angle_play.png" width="1000">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — angle-play
-
-Record the observed values and each control before reading the interpretation.
-Compare them with your forecast and explain the largest discrepancy using the
-specific intervention, denominator and metric. Give an alternative explanation
-that the result does not exclude. Forecast a changed scientific condition before
-trying it, state which measurements would distinguish your explanations, and
-retain data roles, output exposure and historical-versus-new execution status.
 '''
 
 # ! CELL TYPE: markdown
@@ -1353,7 +1257,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴⚪⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 5–10 minutes on this exercise.
+>
+> You should spend up to 5-10 minutes on this exercise.
 > ```
 
 Implement `role_interchange_targets`. `base_names` contains two vocabulary token
@@ -1496,7 +1401,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> You should spend 15–25 minutes on this exercise.
+>
+> You should spend up to 15-25 minutes on this exercise.
 > ```
 
 Recomputing the layers before an intervention cannot help optimize its subspace:
@@ -1687,7 +1593,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Fit a centered ridge regression from activations to `2 * R - 1`. Normalize its
@@ -1780,7 +1687,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> You should spend 20–30 minutes on this exercise.
+>
+> You should spend up to 20-30 minutes on this exercise.
 > ```
 
 Adapt the exact model's optimizer to minibatches. Every intervention has a base
@@ -2024,12 +1932,8 @@ sites at which nothing useful happens.
 # ! TAGS: []
 
 r'''
-## Forecast before the result — site-selection
-
 On the 48 development prompts, forecast observational role accuracy and unconditional changed cross-name IIA at block inputs 3, 6 and 9, at repeated-subject versus final-token
 positions. Compare ridge role probe, rank-one DAS (seed 0, 120 updates) and whole-position donor; explain why the best probe need not be the best edit.
-
-Write a numerical range or ranking, confidence (0–100%), and causal reason before running or opening the reference output. Record whether you have already seen it.
 '''
 
 # ! CELL TYPE: code
@@ -2158,21 +2062,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — site-selection
-
-Record the observed values and each control before reading the interpretation.
-Compare them with your forecast and explain the largest discrepancy using the
-specific intervention, denominator and metric. Give an alternative explanation
-that the result does not exclude. Forecast a changed scientific condition before
-trying it, state which measurements would distinguish your explanations, and
-retain data roles, output exposure and historical-versus-new execution status.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details><summary>Interpretation — a perfect probe with an ineffective edit</summary>
 
 The repeated-subject probes can predict R perfectly on these development
@@ -2202,12 +2091,8 @@ not change the frozen final-evaluation recipe.
 # ! TAGS: []
 
 r'''
-## Forecast before the result — site-play
-
 For PLAY_LAYER = 6 and PLAY_POSITION = "subject", forecast changed cross-name development IIA after 120 updates with seed 3 and rank 1 against no intervention and whole donor.
 Predict the changed condition of moving the intervention to the end position before running it.
-
-Write a numerical range or ranking, confidence (0–100%), and causal reason before running or opening the reference output. Record whether you have already seen it.
 '''
 
 # ! CELL TYPE: code
@@ -2253,21 +2138,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — site-play
-
-Record the observed values and each control before reading the interpretation.
-Compare them with your forecast and explain the largest discrepancy using the
-specific intervention, denominator and metric. Give an alternative explanation
-that the result does not exclude. Forecast a changed scientific condition before
-trying it, state which measurements would distinguish your explanations, and
-retain data roles, output exposure and historical-versus-new execution status.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## How many dimensions should we copy?
 
 At the selected site, compare ranks 1, 2, 4 and 8 with 240 updates and seed 0.
@@ -2286,12 +2156,8 @@ best possible hyperparameters have been found.
 # ! TAGS: []
 
 r'''
-## Forecast before the result — rank-selection
-
 At the development-selected site, forecast changed cross-name IIA and requested-answer probability for ranks 1, 2, 4 and 8, seed 0 and 240 updates. Compare no intervention and
 state the frozen selection rule: maximize IIA, then target probability, then prefer lower rank.
-
-Write a numerical range or ranking, confidence (0–100%), and causal reason before running or opening the reference output. Record whether you have already seen it.
 '''
 
 # ! CELL TYPE: code
@@ -2355,21 +2221,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — rank-selection
-
-Record the observed values and each control before reading the interpretation.
-Compare them with your forecast and explain the largest discrepancy using the
-specific intervention, denominator and metric. Give an alternative explanation
-that the result does not exclude. Forecast a changed scientific condition before
-trying it, state which measurements would distinguish your explanations, and
-retain data roles, output exposure and historical-versus-new execution status.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Summary of 5️⃣
 
 Select site and rank on development prompts using the intervention objective, then freeze that recipe before final evaluation.
@@ -2409,13 +2260,9 @@ choose another method and still call it untouched evaluation.
 # ! TAGS: []
 
 r'''
-## Forecast before the result — frozen-final-role-transfer
-
 For the frozen block-9-input/end/rank-8 recipe (240 updates, batch 16, learning rate .01, seeds 0/1/2), forecast unconditional full-vocabulary changed cross-name IIA on all 96
 relevant final interventions. Compare no intervention, role probe, mean direction, whole donor, all three shuffled fits and all 32 random subspaces. Separately forecast the
 restricted native-correct denominator; do not substitute it for the primary metric.
-
-Write a numerical range or ranking, confidence (0–100%), and causal reason before running or opening the reference output. Record whether you have already seen it.
 '''
 
 # ! CELL TYPE: code
@@ -2543,21 +2390,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — frozen-final-role-transfer
-
-Record the observed values and each control before reading the interpretation.
-Compare them with your forecast and explain the largest discrepancy using the
-specific intervention, denominator and metric. Give an alternative explanation
-that the result does not exclude. Forecast a changed scientific condition before
-trying it, state which measurements would distinguish your explanations, and
-retain data roles, output exposure and historical-versus-new execution status.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details><summary>Interpretation — which claim does this test support?</summary>
 
 The three learned subspaces get **71/96, 73/96 and 72/96** changed cross-name
@@ -2592,12 +2424,8 @@ or minimal implementation of the role.
 # ! TAGS: []
 
 r'''
-## Forecast before the result — preserve-unchanged-role
-
 Using the same frozen final outputs, forecast IIA on unchanged-role cross-name pairs and mean probability assigned to the donor's own answer on cross-name pairs. Compare no
 intervention, probe, mean direction, whole donor and each DAS seed. Explain why success on unchanged-role pairs alone can be achieved by a no-op.
-
-Write a numerical range or ranking, confidence (0–100%), and causal reason before running or opening the reference output. Record whether you have already seen it.
 '''
 
 # ! CELL TYPE: code
@@ -2652,21 +2480,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — preserve-unchanged-role
-
-Record the observed values and each control before reading the interpretation.
-Compare them with your forecast and explain the largest discrepancy using the
-specific intervention, denominator and metric. Give an alternative explanation
-that the result does not exclude. Forecast a changed scientific condition before
-trying it, state which measurements would distinguish your explanations, and
-retain data roles, output exposure and historical-versus-new execution status.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Inspect where the held-out result transfers
 
 Break down the already frozen final results by template and by whether the
@@ -2682,12 +2495,8 @@ are not statistical confidence intervals.
 # ! TAGS: []
 
 r'''
-## Forecast before the result — template-and-name-transfer
-
 Forecast changed cross-name IIA separately for the Museum, Restaurant and Beach templates, and for bases with training names versus bases containing a new name. Compare DAS seeds
 0/1/2, whole donor and no intervention. State why shared prompts/templates and descriptive seed ranges do not provide independent-sample uncertainty.
-
-Write a numerical range or ranking, confidence (0–100%), and causal reason before running or opening the reference output. Record whether you have already seen it.
 '''
 
 # ! CELL TYPE: code
@@ -2759,21 +2568,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — template-and-name-transfer
-
-Record the observed values and each control before reading the interpretation.
-Compare them with your forecast and explain the largest discrepancy using the
-specific intervention, denominator and metric. Give an alternative explanation
-that the result does not exclude. Forecast a changed scientific condition before
-trying it, state which measurements would distinguish your explanations, and
-retain data roles, output exposure and historical-versus-new execution status.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Signature result: inspect actual next-token distributions
 
 These three examples were chosen by row order before final-model execution:
@@ -2792,12 +2586,8 @@ of a native counterfactual distribution measure different things.
 # ! TAGS: []
 
 r'''
-## Forecast before the result — actual-token-distributions
-
 For the first changed cross-name pair in each final template, forecast the winning whole-vocabulary token and requested-answer probability for no intervention, DAS seed 0, whole
 donor and the explicit counterfactual. Track base names and source names separately; do not equate the source answer with the role-transfer target.
-
-Write a numerical range or ranking, confidence (0–100%), and causal reason before running or opening the reference output. Record whether you have already seen it.
 '''
 
 # ! CELL TYPE: code
@@ -2876,21 +2666,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — actual-token-distributions
-
-Record the observed values and each control before reading the interpretation.
-Compare them with your forecast and explain the largest discrepancy using the
-specific intervention, denominator and metric. Give an alternative explanation
-that the result does not exclude. Forecast a changed scientific condition before
-trying it, state which measurements would distinguish your explanations, and
-retain data roles, output exposure and historical-versus-new execution status.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Try It Yourself — change the donor's role
 
 Choose a base row and a source row, then rerun the native intervention. Keep
@@ -2908,12 +2683,8 @@ the operation, but it does not replace the complete final evaluation above.
 # ! TAGS: []
 
 r'''
-## Forecast before the result — donor-role-play
-
 For development base row 1 and source row 4 with the frozen block-9/end/rank-8 basis, forecast the requested base-name probability and whole-vocabulary winner for DAS seed 0, whole
 donor, random seed 700 and no intervention. Then forecast changing only the source role while preserving the base names.
-
-Write a numerical range or ranking, confidence (0–100%), and causal reason before running or opening the reference output. Record whether you have already seen it.
 '''
 
 # ! CELL TYPE: code
@@ -2962,21 +2733,6 @@ if MAIN:
 
 r'''
 <img src="media/das_native_pair_play.png" width="1000">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — donor-role-play
-
-Record the observed values and each control before reading the interpretation.
-Compare them with your forecast and explain the largest discrepancy using the
-specific intervention, denominator and metric. Give an alternative explanation
-that the result does not exclude. Forecast a changed scientific condition before
-trying it, state which measurements would distinguish your explanations, and
-retain data roles, output exposure and historical-versus-new execution status.
 '''
 
 # ! CELL TYPE: markdown

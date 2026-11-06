@@ -35,7 +35,7 @@ By the end of this notebook, you will have shown that an action-conditioned pred
 
 We use a deliberately transparent organism: two physical coordinates and one nuisance coordinate. A least-squares predictor replaces the large video encoder and predictor. This lets us audit every imagined transition and actually optimize an action sequence on CPU. It is a planning lesson, not a one-step probe labelled planning. It is also **not a V-JEPA 2-AC reproduction**: learned video representations, robot actions and real-world success remain separate qualification work.
 
-Prerequisites: NumPy broadcasting, least squares, state-space models and the latent-target idea in 14.1–14.2. The exact simulator is a teaching oracle available to us; the planner sees only its fitted predictor. All examples are public guided practice.
+Prerequisites: NumPy broadcasting, least squares, state-space models and the latent-target idea in 14.1–14.2. The exact simulator is a teaching oracle available to us; the planner sees only its fitted predictor.
 '''
 
 # ! CELL TYPE: markdown
@@ -77,7 +77,7 @@ r'''
 r'''
 ## Setup code
 
-Run from the repository checkout or this section directory. This study edition uses tiny CPU fixtures: no network, pretrained checkpoint, GPU or additional installation. All public outputs are guided practice, not an unseen learner assessment.
+This study edition uses tiny CPU fixtures: no network, pretrained checkpoint, GPU or additional installation.
 '''
 
 # ! CELL TYPE: code
@@ -133,6 +133,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -194,6 +195,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -254,6 +256,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -312,6 +315,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -420,6 +424,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -484,6 +489,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -543,6 +549,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -604,6 +611,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -749,6 +757,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -812,6 +821,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -922,6 +932,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -985,6 +996,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -1092,11 +1104,11 @@ print("feedback final physical distance:",round(float(physical_error(play_state,
 # ! TAGS: []
 
 r'''
-## Limitations and requirement bridge
+## Limitations and bridge
 
-`jepa.vjepa2_action_conditioned`, `world.latent_planning` and `world.controllable_variables` motivate the visible predictor, planner and interventions here. This finite system establishes their mechanics only; the V-JEPA 2-AC visual representation, action/proprioception interface and robot generalization remain pending. We used exact state latents and a linear supervised predictor rather than self-supervised pretraining or robot video.
+This finite system establishes the mechanics of the visible predictor, planner and interventions only; the V-JEPA 2-AC visual representation, action/proprioception interface and robot generalization remain pending. We used exact state latents and a linear supervised predictor rather than self-supervised pretraining or robot video.
 
-`jepa.jepa_vla`, `jepa.act_jepa` and `world.large_robot_models` are reading/integration boundaries, not implemented model claims. Action-conditioned prediction answers “what would happen under these actions”; a VLA policy additionally maps language and observations to actions. A released robot system also needs embodiment calibration, temporal synchronization, collision constraints and human acceptance. None of these follows from a cart trajectory. Preserve these IDs for subsequent native work.
+JEPA-VLA, ACT-JEPA and large robot models are reading/integration boundaries, not implemented model claims. Action-conditioned prediction answers “what would happen under these actions”; a VLA policy additionally maps language and observations to actions. A released robot system also needs embodiment calibration, temporal synchronization, collision constraints and human acceptance. None of these follows from a cart trajectory.
 
 '''
 
@@ -1123,6 +1135,6 @@ r'''
 - [V-JEPA 2 paper](https://arxiv.org/abs/2506.09985): action-free pretraining and post-training an action-conditioned model for visual-goal planning are distinct stages. The paper supports that bridge, not this cart's success as robot evidence.
 - [Official V-JEPA 2 / 2-AC code](https://github.com/facebookresearch/vjepa2): inspect the action/proprioception interface before proposing a native implementation.
 - [ACT-JEPA](https://arxiv.org/abs/2501.14622): jointly predicts action sequences and latent observation sequences, combining imitation and self-supervised learning. Our cart planner has neither its demonstration objective nor its action-sequence policy.
-- [VLA-JEPA](https://arxiv.org/abs/2602.10098): compare its current-view student and future-view target with action-head fine-tuning. This is a named reading comparison; the configured `jepa.jepa_vla` handle is retained rather than silently renamed to this paper.
+- [VLA-JEPA](https://arxiv.org/abs/2602.10098): compare its current-view student and future-view target with action-head fine-tuning. This is a named reading comparison.
 - [TD-MPC2 paper](https://arxiv.org/abs/2310.16828): decoder-free latent dynamics and local trajectory optimization provide a useful comparison; section 14.7 implements its objective components separately.
 '''

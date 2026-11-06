@@ -63,16 +63,11 @@ r'''
 # ! TAGS: []
 
 r'''
-**Complete planted-DAG lesson; full circuit tracing remains open.** You will preserve a known component graph, exact edge ablations, edge-gate integrated gradients, path recovery
+**Scope.** You will preserve a known component graph, exact edge ablations, edge-gate integrated gradients, path recovery
 and exact interventions. Released-transcoder integration, the circuit-tracer workflow, frozen-attention replacement-model validation, explicit error nodes, and supernode
 construction are missing. This planted theorem does not establish those capabilities.
 
-**Historical exposed guided practice.** Saved outputs and execution metadata belong to legacy 8.4; this canonical 8.7 migration does not rerun the theorem or any model. Before
-inspecting expected answers, record your forecast, confidence, reasoning and prior exposure. Public worked examples are guided practice and cannot be counted as unseen mastery.
-Blank observations remain yours to fill.
-
-**Runtime and device.** The preserved planted DAG is a small CPU exercise. The optional pinned GELU-1L route is a mechanics preflight requiring its legacy environment; no runtime
-or memory claim is newly measured. Keep the preflight separate from a full tracing result.
+**Runtime and device.** The planted DAG is a small CPU exercise. The optional pinned GELU-1L route is a mechanics preflight. Keep the preflight separate from a full tracing result.
 '''
 
 # ! CELL TYPE: markdown
@@ -108,7 +103,7 @@ r'''
 
 ### ☆ Bonus
 
-Challenge the preserved planted theorem and identify the missing released-model validation work.
+Challenge the planted theorem and identify the missing released-model validation work.
 '''
 
 # ! CELL TYPE: markdown
@@ -122,12 +117,7 @@ r'''
 By the end of this notebook, you will have built an attribution graph whose top path predicts and survives exact causal interventions on a meaningful component graph, while
 same-size random and reversed-edge graphs fail.
 
-```python
-GT_TIER = "GT-1"
-EXERCISE_ID = "8_4_circuit_tracing_with_attribution_graphs"
-EXPECTED_RUNTIME = "45-60 minutes for the CPU theorem; minutes on the local GPU preflight"
-REQUIRES_GPU = True  # CPU theorem is runnable now; parent runs the bounded CUDA preflight later
-```
+The CPU theorem takes 45-60 minutes; the local GPU preflight takes minutes and needs a CUDA GPU.
 
 ## Core Question
 
@@ -386,11 +376,12 @@ r'''
 r'''
 ### Exercise - Build the Planted Component Circuit
 
-```yaml
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-You should spend 10 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 10 minutes on this exercise.
+> ```
 
 Create the toy circuit. It is deliberately not a position graph: the nodes are named as feature, head, MLP, and logit-like components. Then implement the forward pass through the
 topologically ordered DAG.
@@ -403,17 +394,7 @@ The clean input activates the country feature. The corrupt input removes it. The
 # ! TAGS: []
 
 r'''
-### Forecast before inspection
-
 Which named node should change when the country input is removed? Predict the direction of the clean-corrupt target gap.
-
-Forecast: ______
-
-Confidence: ______
-
-Reasoning: ______
-
-Prior exposure: ______
 '''
 
 # ! CELL TYPE: code
@@ -564,24 +545,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after inspection
-
-Observed result: ______
-
-Comparison with your forecast and controls: ______
-
-Mechanistic explanation: ______
-
-Changed-case forecast: ______
-
-What this does and does not establish: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details>
 <summary>Expected output</summary>
 
@@ -610,7 +573,7 @@ Attribution graphs are easy to overread. Starting with exact ground truth lets y
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Worked solution</summary>
 
 ```python
 def make_planted_attribution_circuit() -> PlantedAttributionCircuit:
@@ -728,11 +691,12 @@ def planted_circuit_metric(
 r'''
 ### Exercise - Exact Edge Effects
 
-```yaml
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-You should spend 10 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 10 minutes on this exercise.
+> ```
 
 Compute the exact causal effect of every edge by ablating that edge and measuring the target metric drop. This is your ground-truth heatmap.
 '''
@@ -742,17 +706,7 @@ Compute the exact causal effect of every edge by ablating that edge and measurin
 # ! TAGS: []
 
 r'''
-### Forecast before inspection
-
 Which edges should have a large exact ablation effect? Distinguish an edge weight from its effect on the target.
-
-Forecast: ______
-
-Confidence: ______
-
-Reasoning: ______
-
-Prior exposure: ______
 '''
 
 # ! CELL TYPE: code
@@ -792,24 +746,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after inspection
-
-Observed result: ______
-
-Comparison with your forecast and controls: ______
-
-Mechanistic explanation: ______
-
-Changed-case forecast: ______
-
-What this does and does not establish: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details>
 <summary>Expected output</summary>
 
@@ -838,7 +774,7 @@ Here exact means no approximation: set one edge gate to zero, rerun the DAG, and
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Worked solution</summary>
 
 ```python
 def exact_edge_ablation_effects(circuit: PlantedAttributionCircuit) -> t.Tensor:
@@ -875,11 +811,12 @@ r'''
 r'''
 ### Exercise - Integrated-Gradient Edge Attribution
 
-```yaml
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-You should spend 15 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15 minutes on this exercise.
+> ```
 
 Now compute an attribution score without ablating each edge. Put a differentiable gate on every edge, integrate gradients as the gates move from `0` to `1`, and compare the result
 to exact edge effects.
@@ -890,17 +827,7 @@ to exact edge effects.
 # ! TAGS: []
 
 r'''
-### Forecast before inspection
-
 Should edge-gate IG and exact single-edge ablation have equal units? Predict which ranking agreement would matter.
-
-Forecast: ______
-
-Confidence: ______
-
-Reasoning: ______
-
-Prior exposure: ______
 '''
 
 # ! CELL TYPE: code
@@ -954,24 +881,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after inspection
-
-Observed result: ______
-
-Comparison with your forecast and controls: ______
-
-Mechanistic explanation: ______
-
-Changed-case forecast: ______
-
-What this does and does not establish: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details>
 <summary>Expected output</summary>
 
@@ -997,7 +906,7 @@ interpolation path. The ranking and path recovery matter more here than equal ra
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Worked solution</summary>
 
 ```python
 def integrated_edge_attribution_scores(
@@ -1031,11 +940,12 @@ def integrated_edge_attribution_scores(
 r'''
 ### Exercise - Threshold the Graph and Recover the Top Path
 
-```yaml
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-You should spend 15 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15 minutes on this exercise.
+> ```
 
 Turn the dense edge-score matrix into a directed graph. Then search for the highest-scoring path from the country feature to the Paris logit.
 '''
@@ -1045,17 +955,7 @@ Turn the dense edge-score matrix into a directed graph. Then search for the high
 # ! TAGS: []
 
 r'''
-### Forecast before inspection
-
 Before viewing the path, predict what thresholding can establish and what still requires an intervention.
-
-Forecast: ______
-
-Confidence: ______
-
-Reasoning: ______
-
-Prior exposure: ______
 '''
 
 # ! CELL TYPE: code
@@ -1227,24 +1127,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after inspection
-
-Observed result: ______
-
-Comparison with your forecast and controls: ______
-
-Mechanistic explanation: ______
-
-Changed-case forecast: ______
-
-What this does and does not establish: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details>
 <summary>Expected output</summary>
 
@@ -1273,7 +1155,7 @@ Thresholding proposes a graph. It does not validate it. The next exercises test 
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Worked solution</summary>
 
 ```python
 def threshold_attribution_graph(
@@ -1422,11 +1304,12 @@ r'''
 r'''
 ### Exercise - Exact Path Patch
 
-```yaml
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-You should spend 15 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15 minutes on this exercise.
+> ```
 
 A path claim needs an intervention. Measure the metric when only the path edges are active, and when the path edges are removed from the full graph.
 
@@ -1444,17 +1327,7 @@ minimality = min(single_path_edge_drop) / clean_corrupt_gap
 # ! TAGS: []
 
 r'''
-### Forecast before inspection
-
 Predict the relative path-only and path-removed metrics. State the clean-corrupt normalization before inspection.
-
-Forecast: ______
-
-Confidence: ______
-
-Reasoning: ______
-
-Prior exposure: ______
 '''
 
 # ! CELL TYPE: code
@@ -1575,24 +1448,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after inspection
-
-Observed result: ______
-
-Comparison with your forecast and controls: ______
-
-Mechanistic explanation: ______
-
-Changed-case forecast: ______
-
-What this does and does not establish: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details>
 <summary>Expected output</summary>
 
@@ -1622,7 +1477,7 @@ or necessary but not sufficient.
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Worked solution</summary>
 
 ```python
 def graph_edge_mask(
@@ -1709,11 +1564,12 @@ def exact_path_patch_report(
 r'''
 ### Exercise - Same-Size Random and Reversed-Edge Controls
 
-```yaml
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-You should spend 10 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 10 minutes on this exercise.
+> ```
 
 A convincing graph needs a control that has the same budget. Build a random graph with the same number of non-path edges, and build a reversed-edge graph from the selected graph.
 Both should fail.
@@ -1724,17 +1580,7 @@ Both should fail.
 # ! TAGS: []
 
 r'''
-### Forecast before inspection
-
 Predict how a same-size random non-path graph and a reversed-edge graph should compare to the selected graph.
-
-Forecast: ______
-
-Confidence: ______
-
-Reasoning: ______
-
-Prior exposure: ______
 '''
 
 # ! CELL TYPE: code
@@ -1862,24 +1708,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after inspection
-
-Observed result: ______
-
-Comparison with your forecast and controls: ______
-
-Mechanistic explanation: ______
-
-Changed-case forecast: ______
-
-What this does and does not establish: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details>
 <summary>Expected output</summary>
 
@@ -1908,7 +1736,7 @@ Direction is part of a graph claim. If `feature -> head -> MLP -> logit` works, 
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Worked solution</summary>
 
 ```python
 def same_size_random_graph(
@@ -1999,11 +1827,12 @@ def graph_control_report(
 r'''
 ### Exercise - Signature Result
 
-```yaml
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-You should spend 10 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 10 minutes on this exercise.
+> ```
 
 Bundle the theorem into one result object that the notebook can plot: exact effects, approximate edge scores, graph edges, top path, threshold sweep, and intervention/control
 metrics.
@@ -2014,17 +1843,7 @@ metrics.
 # ! TAGS: []
 
 r'''
-### Forecast before inspection
-
 State a falsifiable conjunction of path-survival and both control conditions before opening the signature summary.
-
-Forecast: ______
-
-Confidence: ______
-
-Reasoning: ______
-
-Prior exposure: ______
 '''
 
 # ! CELL TYPE: code
@@ -2166,24 +1985,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after inspection
-
-Observed result: ______
-
-Comparison with your forecast and controls: ______
-
-Mechanistic explanation: ______
-
-Changed-case forecast: ______
-
-What this does and does not establish: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details>
 <summary>Expected output</summary>
 
@@ -2213,7 +2014,7 @@ It combines a graph you can see, an exact-vs-approximation heatmap, and causal i
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Worked solution</summary>
 
 ```python
 def run_planted_graph_signature_result(
@@ -2342,17 +2143,7 @@ Run these after completing the exercises. The plots are the learner-facing resul
 # ! TAGS: []
 
 r'''
-### Forecast before inspection
-
 Forecast what agreement between the graph, heatmap and intervention bars would support; name one unsupported real-model claim.
-
-Forecast: ______
-
-Confidence: ______
-
-Reasoning: ______
-
-Prior exposure: ______
 '''
 
 # ! CELL TYPE: code
@@ -2507,24 +2298,6 @@ r'''
 # ! TAGS: []
 
 r'''
-### Reflect after inspection
-
-Observed result: ______
-
-Comparison with your forecast and controls: ______
-
-Mechanistic explanation: ______
-
-Changed-case forecast: ______
-
-What this does and does not establish: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details>
 <summary>Interpretation</summary>
 
@@ -2550,17 +2323,7 @@ Change the threshold and number of IG steps. You are looking for the point where
 # ! TAGS: []
 
 r'''
-### Forecast before inspection
-
-With the preserved threshold=0.10, ig_steps=4 and random_seed=3, forecast the changes in graph size and recovered path before viewing the output.
-
-Forecast: ______
-
-Confidence: ______
-
-Reasoning: ______
-
-Prior exposure: ______
+With threshold=0.10, ig_steps=4 and random_seed=3, forecast the changes in graph size and recovered path before viewing the output.
 '''
 
 # ! CELL TYPE: code
@@ -2582,24 +2345,6 @@ if MAIN:
     for edge in play_signature["graph_edges"]:
         print(f"  {edge['source']} -> {edge['target']}  score={edge['score']:.4f}")
     print("top path:", " -> ".join(play_signature["top_path"]))
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after inspection
-
-Observed result: ______
-
-Comparison with your forecast and controls: ______
-
-Mechanistic explanation: ______
-
-Changed-case forecast: ______
-
-What this does and does not establish: ______
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -2651,9 +2396,7 @@ The remaining GPU function in `solutions.py`, `run_transformerlens_attribution_g
 graph. That route is useful as a mechanics preflight for CUDA, hooks, caches, and gradients. It is not a full attribution-graph interpretability result because its nodes are
 positions, not meaningful heads, MLPs, transcoders, or sparse features.
 
-The parent process should run that GPU preflight later. This rewrite intentionally runs only CPU tests.
-
-The committed `verification_report.json` preserves that accepted preflight as supporting evidence while this notebook recomputes the planted component-graph theorem.
+This notebook runs only CPU tests.
 
 ## Limitations
 

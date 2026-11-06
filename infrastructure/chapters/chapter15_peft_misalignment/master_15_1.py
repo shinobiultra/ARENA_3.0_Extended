@@ -68,28 +68,8 @@ r'''
 # ! TAGS: []
 
 r'''
-> **Historical reference evidence:** all original code, execution counts and saved outputs are retained with
-> declared setup routing only. This canonical notebook was not freshly executed. The trained safe-proxy plots
-> and CUDA report are historical evidence, not a new model study or learner acceptance.
-
-Record predictions, confidence, causal reasoning and exposure before opening saved reference-rich results.
-This is guided practice, never an unseen mastery score.
-
 **Local-first extension.** This section is a safe-proxy PEFT interpretability lab. The learner trains and
 audits generated adapters; the CUDA report is supporting evidence, not the main lesson.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-> **Mixed execution provenance:** the seventeen original code cells retain their historical outputs and
-> counts. The thirteen added check/play cells were genuinely executed in a separate CPU-only session from
-> their minimum visible definition closure: six tiny fits, 440 optimizer steps, unchanged seeds and
-> thresholds, under a 30-second budget. Their actual kernel counts and per-cell origins are retained. This is
-> not a fresh complete thirty-cell notebook run, a rerun of the historical CUDA signature, or new learner
-> acceptance. See `fresh_subset_protocol.json` and `fresh_subset_execution.json` in the migration evidence.
 '''
 
 # ! CELL TYPE: markdown
@@ -159,7 +139,7 @@ r'''
 
 ### ☆ Bonus
 
-Investigate the preserved anomaly hunt and historical verification hook.
+Investigate the anomaly hunt and the verification hook.
 '''
 
 # ! CELL TYPE: code
@@ -322,7 +302,7 @@ r'''
 > Difficulty: 🔴⚪⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend 5 minutes on this exercise.
+> You should spend up to 5 minutes on this exercise.
 > ```
 
 Implement the exact LoRA update and shape checks. The test includes a one-rank fixture with every number
@@ -356,7 +336,7 @@ matrix.
 </details>
 
 <details>
-<summary>Historical worked formulation</summary>
+<summary>Solution</summary>
 
 ```python
 def lora_delta(lora_a: t.Tensor, lora_b: t.Tensor, *, alpha: float = 1.0) -> t.Tensor:
@@ -380,13 +360,8 @@ def lora_delta(lora_a: t.Tensor, lora_b: t.Tensor, *, alpha: float = 1.0) -> t.T
 # ! TAGS: []
 
 r'''
-### Forecast — Exact update
-
 Predict the visible 2x2 update and its numerical rank. Explain the alpha/rank factor. Changed case: double
 alpha.
-
-Record confidence, causal reasoning and exposure. These reference-rich results are guided practice and earn no
-unseen mastery score.
 '''
 
 # ! CELL TYPE: code
@@ -422,27 +397,13 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect — Exact update
-
-Compare all four entries and the rank with your forecast. Explain why scaling changes norm but cannot increase
-the rank bound. Predict alpha zero.
-
-Record confidence, causal reasoning and exposure. These reference-rich results are guided practice and earn no
-unseen mastery score.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise - summarize rank, norm, and SVD spectrum
 
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend 10 minutes on this exercise.
+> You should spend up to 10 minutes on this exercise.
 > ```
 
 Build a report that records declared rank, scaling, update norm, and whether the adapter is nonzero. Then test
@@ -475,7 +436,7 @@ adapter really learned one dominant direction.
 </details>
 
 <details>
-<summary>Historical worked formulation</summary>
+<summary>Solution</summary>
 
 ```python
 def adapter_delta_report(
@@ -505,12 +466,7 @@ def adapter_delta_report(
 # ! TAGS: []
 
 r'''
-### Forecast — Rank is not behavior
-
 Predict whether a zero update passes the nonzero gate and whether rank one alone proves target learning.
-
-Record confidence, causal reasoning and exposure. These reference-rich results are guided practice and earn no
-unseen mastery score.
 '''
 
 # ! CELL TYPE: code
@@ -553,27 +509,13 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect — Rank is not behavior
-
-Use the zero and degenerate controls separately. Explain what the spectrum cannot establish; predict a nonzero
-protected-only update.
-
-Record confidence, causal reasoning and exposure. These reference-rich results are guided practice and earn no
-unseen mastery score.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise - test merge and unmerge parity
 
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend 10 minutes on this exercise.
+> You should spend up to 10 minutes on this exercise.
 > ```
 
 Compute logits through the separate adapter path and through a merged weight. They should agree to numerical
@@ -607,7 +549,7 @@ train-time and inference-time paths disagree.
 </details>
 
 <details>
-<summary>Historical worked formulation</summary>
+<summary>Solution</summary>
 
 ```python
 def lora_merge_max_abs_diff(
@@ -640,12 +582,7 @@ def lora_merge_max_abs_diff(
 # ! TAGS: []
 
 r'''
-### Forecast — Merge parity
-
 Predict the maximum logit difference when the same delta is merged into W. State whether W should mutate.
-
-Record confidence, causal reasoning and exposure. These reference-rich results are guided practice and earn no
-unseen mastery score.
 '''
 
 # ! CELL TYPE: code
@@ -690,19 +627,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect — Merge parity
-
-Distinguish numerical parity from learned behavior. Predict what a missing alpha/rank scale does to parity.
-
-Record confidence, causal reasoning and exposure. These reference-rich results are guided practice and earn no
-unseen mastery score.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 # 2️⃣ Separate direction and magnitude
 '''
 
@@ -729,7 +653,7 @@ r'''
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend 10 minutes on this exercise.
+> You should spend up to 10 minutes on this exercise.
 > ```
 
 Normalize each updated row direction, then apply the learned row magnitude. The tests include zero-delta and
@@ -763,7 +687,7 @@ norm back into the recomposed weight.
 </details>
 
 <details>
-<summary>Historical worked formulation</summary>
+<summary>Solution</summary>
 
 ```python
 def dora_recompose_weight(
@@ -814,12 +738,7 @@ def dora_weight_report(
 # ! TAGS: []
 
 r'''
-### Forecast — Direction versus magnitude
-
 For W rows [3,4] and [0,2], zero delta and magnitudes [10,5], predict the recomposed rows and row norms.
-
-Record confidence, causal reasoning and exposure. These reference-rich results are guided practice and earn no
-unseen mastery score.
 '''
 
 # ! CELL TYPE: code
@@ -891,20 +810,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect — Direction versus magnitude
-
-Compare row norms and direction cosines. Explain why normalization is required. Predict a nonzero update that
-rotates a row while retaining its requested magnitude.
-
-Record confidence, causal reasoning and exposure. These reference-rich results are guided practice and earn no
-unseen mastery score.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## 3. Mechanism Gates Before Training
 
 Before we train anything, define the safety valves. A PEFT audit should be able to say: the adapter moved
@@ -922,7 +827,7 @@ r'''
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend 10 minutes on this exercise.
+> You should spend up to 10 minutes on this exercise.
 > ```
 
 Implement two reports: one for projection onto a monitored direction, and one that requires both task
@@ -954,7 +859,7 @@ The paired gate makes the acceptance criterion explicit: behavior and mechanism 
 </details>
 
 <details>
-<summary>Historical worked formulation</summary>
+<summary>Solution</summary>
 
 ```python
 def intruder_dimension_report(
@@ -1015,13 +920,8 @@ def adapter_mechanism_report(
 # ! TAGS: []
 
 r'''
-### Forecast — Protected mechanism
-
 Predict projection fractions for an update entirely along x0 when the protected direction is x0 or x1. Does
 better accuracy rescue a damaged mechanism?
-
-Record confidence, causal reasoning and exposure. These reference-rich results are guided practice and earn no
-unseen mastery score.
 '''
 
 # ! CELL TYPE: code
@@ -1094,20 +994,6 @@ def adapter_mechanism_report(
 if MAIN:
     tests.test_intruder_dimension_report_measures_projection_fraction(intruder_dimension_report)
     tests.test_adapter_mechanism_report_requires_accuracy_and_mechanism(adapter_mechanism_report)
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect — Protected mechanism
-
-Compare the positive and orthogonal controls. Explain the conjunction of gates. Predict what changing the
-protected direction changes without changing behavior.
-
-Record confidence, causal reasoning and exposure. These reference-rich results are guided practice and earn no
-unseen mastery score.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -1229,7 +1115,7 @@ r'''
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend 10 minutes on this exercise.
+> You should spend up to 10 minutes on this exercise.
 > ```
 
 Generate batches where labels are exactly `1[x0 > 0]`. The OOD option should make the frozen `x1` distractor
@@ -1261,7 +1147,7 @@ the baseline should fail.
 </details>
 
 <details>
-<summary>Historical worked formulation</summary>
+<summary>Solution</summary>
 
 ```python
 def make_proxy_batch(
@@ -1300,13 +1186,8 @@ def make_proxy_batch(
 # ! TAGS: []
 
 r'''
-### Forecast — Planted labels
-
 Predict frozen-baseline accuracy in the OOD split where x1=.75*(2y-1). Explain the sign of its decision
 margin.
-
-Record confidence, causal reasoning and exposure. These reference-rich results are guided practice and earn no
-unseen mastery score.
 '''
 
 # ! CELL TYPE: code
@@ -1357,27 +1238,13 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect — Planted labels
-
-Compare labels with x0 and the baseline predictions with x1. Explain the conflict. Predict the effect of
-changing only the protected shift.
-
-Record confidence, causal reasoning and exposure. These reference-rich results are guided practice and earn no
-unseen mastery score.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise - train and evaluate a real adapter
 
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend 20 minutes on this exercise.
+> You should spend up to 20 minutes on this exercise.
 > ```
 
 Implement the training loop and evaluation report. Record a trace, evaluate held-out accuracy, OOD accuracy,
@@ -1411,7 +1278,7 @@ rather than just accepting the final loss.
 </details>
 
 <details>
-<summary>Historical worked formulation</summary>
+<summary>Solution</summary>
 
 ```python
 def proxy_trainable_parameter_count(model: nn.Module) -> int:
@@ -1668,13 +1535,7 @@ def _margin_feature_correlation(
 # ! TAGS: []
 
 r'''
-### Forecast — Learned behavior and drift
-
-Before revealing historical results, forecast the target, distractor and protected cosines and margin
-correlations for a successful adapter. State the three learning rates and seeds used by the comparison.
-
-Record confidence, causal reasoning and exposure. These reference-rich results are guided practice and earn no
-unseen mastery score.
+State the three learning rates and seeds used by the comparison.
 '''
 
 # ! CELL TYPE: code
@@ -1855,20 +1716,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect — Learned behavior and drift
-
-Read held-out behavior and mechanism jointly. Explain why a correlation and a weight cosine measure different
-quantities. Predict how too few steps could separate accuracy from alignment.
-
-Record confidence, causal reasoning and exposure. These reference-rich results are guided practice and earn no
-unseen mastery score.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 # 4️⃣ Read controls and signature
 '''
 
@@ -1891,7 +1738,7 @@ update but no training signal. DoRA and full finetuning are matched baselines on
 r'''
 The protocol fixes data generation and step count, but the original full-finetune default learning rate is
 0.05 versus 0.1 for LoRA/DoRA, and method seeds differ. The same-norm random control is a full random matrix,
-not rank-matched. These preserved choices support this proxy comparison, not an equal-hyperparameter or
+not rank-matched. These choices support this proxy comparison, not an equal-hyperparameter or
 general model claim.
 '''
 
@@ -1906,7 +1753,7 @@ r'''
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend 20 minutes on this exercise.
+> You should spend up to 20 minutes on this exercise.
 > ```
 
 Train matched LoRA, DoRA, and full-finetune runs. Then add the random-label LoRA and same-norm random-adapter
@@ -1939,7 +1786,7 @@ This control separates "the adapter norm is large" from "the adapter learned the
 </details>
 
 <details>
-<summary>Historical worked formulation</summary>
+<summary>Solution</summary>
 
 ```python
 def _random_delta_metrics(
@@ -2260,13 +2107,8 @@ def behavior_example_table(
 # ! TAGS: []
 
 r'''
-### Forecast — Matched controls
-
 Predict the random-label and same-norm random-adapter rows. Does matching the Frobenius norm also match rank
 or parameter count?
-
-Record confidence, causal reasoning and exposure. These reference-rich results are guided practice and earn no
-unseen mastery score.
 '''
 
 # ! CELL TYPE: code
@@ -2457,28 +2299,13 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect — Matched controls
-
-Compare both control failures and the full-finetune baseline. Same-norm random matrices are not rank-matched;
-explain that limitation and the different default full-finetune learning rate. Predict a protected-only update
-with the same norm.
-
-Record confidence, causal reasoning and exposure. These reference-rich results are guided practice and earn no
-unseen mastery score.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise - assemble the signature payload
 
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend 15 minutes on this exercise.
+> You should spend up to 15 minutes on this exercise.
 > ```
 
 Collect the trained methods, controls, merge parity, singular values, traces, and example table into one
@@ -2510,7 +2337,7 @@ the learner should reason from.
 </details>
 
 <details>
-<summary>Historical worked formulation</summary>
+<summary>Solution</summary>
 
 ```python
 def build_signature_payload(
@@ -2559,13 +2386,8 @@ def build_signature_payload(
 # ! TAGS: []
 
 r'''
-### Forecast — Conjunctive signature
-
 Predict whether one failed OOD, target alignment, protected, control or merge check should invalidate the
 whole signature.
-
-Record confidence, causal reasoning and exposure. These reference-rich results are guided practice and earn no
-unseen mastery score.
 '''
 
 # ! CELL TYPE: code
@@ -2633,20 +2455,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect — Conjunctive signature
-
-Explain which failed gate would contradict which claim. Predict what happens if learned accuracy passes but
-the random-label control succeeds.
-
-Record confidence, causal reasoning and exposure. These reference-rich results are guided practice and earn no
-unseen mastery score.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## 6. Signature Result
 
 Run this cell after completing the exercises. It generates the panel and behavior table used by the
@@ -2658,13 +2466,7 @@ instruction page. The result is convincing only if you can point to each control
 # ! TAGS: []
 
 r'''
-### Forecast — Read the whole panel
-
-Forecast all six panels and the baseline/adapter predictions on OOD examples. Record forecasts before
-inspecting the saved figure or table.
-
-Record confidence, causal reasoning and exposure. These reference-rich results are guided practice and earn no
-unseen mastery score.
+Forecast all six panels and the baseline/adapter predictions on OOD examples.
 '''
 
 # ! CELL TYPE: code
@@ -2813,20 +2615,6 @@ r'''
 # ! TAGS: []
 
 r'''
-### Reflect — Read the whole panel
-
-Compare the spectrum, ID/OOD rows, direction, activation drift and merge parity separately. Explain a
-discrepancy and predict a stronger distractor conflict.
-
-Record confidence, causal reasoning and exposure. These reference-rich results are guided practice and earn no
-unseen mastery score.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 Expected interpretation:
 
 - LoRA, DoRA, and full finetuning all learn the planted `x0` target direction.
@@ -2871,13 +2659,7 @@ Change one thing at a time. Useful experiments:
 # ! TAGS: []
 
 r'''
-### Forecast — Original training play
-
-Choose rank, alpha, seed and method before an optional training run. Forecast accuracy and protected drift,
-and record your exposure to the reference.
-
-Record confidence, causal reasoning and exposure. These reference-rich results are guided practice and earn no
-unseen mastery score.
+Choose rank, alpha, seed and method before an optional training run.
 '''
 
 # ! CELL TYPE: code
@@ -2937,31 +2719,14 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect — Original training play
-
-Explain the observed learning trajectory and a failed control if you execute this optional study. Change a
-scientific condition, not only a seed, before your next forecast.
-
-Record confidence, causal reasoning and exposure. These reference-rich results are guided practice and earn no
-unseen mastery score.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Try It Yourself — CPU direction and magnitude probe
 
-No training is needed for this exact probe. Keep the full historical trained signature above as the main
+No training is needed for this exact probe. Keep the full trained signature above as the main
 result. Choose `PLAY_UPDATE_SCALE`, `PLAY_PROTECTED_ANGLE_DEG` and `PLAY_MAGNITUDE_SCALE`.
-
-### Forecast — magnitude is not mechanism
 
 At defaults compute and predict both LoRA row norms, both DoRA row norms, the chosen delta protected
 projection and the same-norm protected-control projection. Derive them from W, A, B and magnitudes without
-opening the saved result. Explain what the unnormalized control does. Before running, record confidence and
-exposure. Changed condition: rotate the chosen update by 90 degrees toward the protected coordinate. Will DoRA
+opening the saved result. Explain what the unnormalized control does. Changed condition: rotate the chosen update by 90 degrees toward the protected coordinate. Will DoRA
 still preserve magnitude?
 '''
 
@@ -3024,22 +2789,6 @@ Fresh CPU exact-matrix probe (not trained-model evidence):
 # ! TAGS: []
 
 r'''
-### Reflect — magnitude is not mechanism
-
-At defaults the expected LoRA row norms are `[sqrt(32), sqrt(5)]`, DoRA norms `[10,5]`, chosen protected
-projection zero and protected-control projection one. Compare both panels with your forecast. Explain why DoRA
-can satisfy every row magnitude while a direction remains protected. The projection measures the
-pre-recomposition low-rank delta, not the full DoRA change from W; do not equate them. At zero update both
-projection fractions are zero. Change a scientific condition and forecast again: double magnitudes, halve
-update scale or rotate by 30 degrees. Record discrepancy, explanation, confidence and exposure. This exact
-probe gives guided matrix practice, not new trained-model evidence.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 # ☆ Bonus
 '''
 
@@ -3077,16 +2826,6 @@ run_full_experiment(max_vram_gb=24.0)
 ```
 
 The committed report should still be treated as supporting evidence, not as the learner-facing result.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-The preceding parent-task wording is preserved historical context. This migration makes no GPU request and
-does not execute the release hook. The separate `historical_release` helper delegates only explicitly
-requested release runs to the physically unchanged old implementation.
 '''
 
 # ! CELL TYPE: code

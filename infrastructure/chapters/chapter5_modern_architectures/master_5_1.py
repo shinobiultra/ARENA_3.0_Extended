@@ -55,26 +55,6 @@ r'''
 # ! TAGS: []
 
 r'''
-> **Evidence identity:** the original 16 executed solution cells and every saved output are retained as
-historical reference evidence. This master migration is not a fresh whole-notebook, CUDA or pretrained-model
-execution. A separate exact CPU mask probe has its own receipt.
-
-The historical prose calls the local comparison an independent reference. It is a separately stored regression
-reference whose core decoder code substantially duplicates the learner implementation. The historical Hugging
-Face cell leaves activation and RoPE convention differences unresolved; its preserved result is only a tiny
-random-weight tolerance diagnostic. A new separately recorded CPU extension below implements and tests both
-corrections. Pretrained Gemma 3 and SmolLM2 remain open.
-
-Commit each forecast before opening the expected output or saved plot. Record confidence, causal reasoning and
-prior exposure. The reference-rich notebook is guided practice and earns no unseen mastery credit. The added
-cache-mask probe runs on CPU without a model.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Core Question
 
 Can seven transparent Gemma primitives reproduce an independent reference decoder at every residual-stream
@@ -84,16 +64,9 @@ stage, not merely return a tensor of the right shape?
 exactly across embeddings, both decoder blocks, final normalization, and logits. Three deliberate architecture
 mistakes will diverge at the stage where their missing convention first matters.
 
-## Section Metadata
+## Setup
 
-| Release field | Value |
-| --- | --- |
-| Exercise | `EXERCISE_ID = "5_1_gemma_from_scratch"` |
-| Ground-truth tier | `GT_TIER = "GT-0"` |
-| Difficulty | `DIFFICULTY = 4` |
-| Importance | `IMPORTANCE = 5` |
-| Expected runtime | `EXPECTED_RUNTIME = "seconds on toy contract; minutes on local real-model path"` |
-| GPU Contract | `REQUIRES_GPU = True` for the optional release verification; the learner exercises and exact signature result run on CPU. |
+The exercises and the signature result run on CPU; the toy contract takes seconds and the local real-model path takes minutes. The optional release verification needs a CUDA GPU.
 
 ## What you will implement
 
@@ -148,7 +121,7 @@ r'''
 
 ### ☆ Bonus
 
-Inspect preserved release entry points without executing them.
+Inspect the release entry points without executing them.
 '''
 
 # ! CELL TYPE: code
@@ -271,8 +244,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> 
-> You should spend 10-15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Normalize each residual vector by its root mean square, then apply Gemma's learned offset scale `1 + weight`.
@@ -300,7 +273,7 @@ parity catches that semantic error.
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 class GemmaRMSNorm(nn.Module):
@@ -325,13 +298,8 @@ class GemmaRMSNorm(nn.Module):
 # ! TAGS: []
 
 r'''
-### Forecast — RMS scale
-
 For [1,2,3,4] and zero offset weight, forecast the RMS-normalized vector and whether subtracting the mean is
 correct.
-
-Write confidence, causal reasoning and exposure before revealing results. This is guided practice, not an
-unseen score.
 '''
 
 # ! CELL TYPE: code
@@ -365,27 +333,13 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect — RMS scale
-
-Compare the exact oracle and learned-offset check. Explain the 1+weight convention; predict doubling the input
-and the effect of epsilon.
-
-Record the observed discrepancy and confidence. Make one changed-condition forecast before the next reveal;
-retain seen or unknown exposure.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise - implement interleaved RoPE
 
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵⚪
-> 
-> You should spend 20-25 minutes on this exercise.
+>
+> You should spend up to 20-25 minutes on this exercise.
 > ```
 
 Implement the quarter-turn helper, build the cosine/sine cache, and apply position-indexed rotations to
@@ -415,7 +369,7 @@ every attention score. Later layer parity detects that error.
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 def rotate_half_interleaved(x: t.Tensor) -> t.Tensor:
@@ -458,13 +412,8 @@ def apply_rope(
 # ! TAGS: []
 
 r'''
-### Forecast — Rotations
-
 Predict rotate_half_interleaved([1,2,3,4]), the position-zero output, and whether a nonzero-position rotation
 changes vector norm.
-
-Write confidence, causal reasoning and exposure before revealing results. This is guided practice, not an
-unseen score.
 '''
 
 # ! CELL TYPE: code
@@ -530,27 +479,13 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect — Rotations
-
-Compare the pair signs and norm invariant. Explain why a reversed pair order can preserve norm but break
-reference parity; predict position one.
-
-Record the observed discrepancy and confidence. Make one changed-condition forecast before the next reveal;
-retain seen or unknown exposure.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise - repeat KV heads and build a cache-aware mask
 
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵⚪
-> 
-> You should spend 20-25 minutes on this exercise.
+>
+> You should spend up to 20-25 minutes on this exercise.
 > ```
 
 Repeat each key/value head contiguously for its query-head group. Then construct a boolean causal mask from
@@ -579,7 +514,7 @@ only work for an uncached square attention matrix.
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 def repeat_kv(hidden_states: t.Tensor, repeats: int) -> t.Tensor:
@@ -616,13 +551,8 @@ def build_causal_attention_mask(
 # ! TAGS: []
 
 r'''
-### Forecast — Cache positions
-
 With query_length=2, key_length=5, past_length=3 and window=3, write both allowed-key rows before opening the
 expected mask. Predict contiguous KV head replication versus alternating heads.
-
-Write confidence, causal reasoning and exposure before revealing results. This is guided practice, not an
-unseen score.
 '''
 
 # ! CELL TYPE: code
@@ -675,27 +605,13 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect — Cache positions
-
-Compare every mask bit and head identity, not just shape. Predict a window of one and explain why cached
-queries use absolute positions.
-
-Record the observed discrepancy and confidence. Make one changed-condition forecast before the next reveal;
-retain seen or unknown exposure.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise - implement the SwiGLU MLP
 
 > ```yaml
 > Difficulty: 🔴⚪⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> 
-> You should spend 5-10 minutes on this exercise.
+>
+> You should spend up to 5-10 minutes on this exercise.
 > ```
 
 Pass one projection through SiLU, multiply it elementwise by the second projection, and project the gated
@@ -723,7 +639,7 @@ output shape but represents a different architecture.
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 class GemmaMLP(nn.Module):
@@ -746,13 +662,8 @@ class GemmaMLP(nn.Module):
 # ! TAGS: []
 
 r'''
-### Forecast — SwiGLU
-
 Predict whether the gated output equals down_proj(up_proj(x)) when gate_proj(x)=0. Explain which nonlinearity
-the present historical subset implements.
-
-Write confidence, causal reasoning and exposure before revealing results. This is guided practice, not an
-unseen score.
+the present subset implements.
 '''
 
 # ! CELL TYPE: code
@@ -784,27 +695,13 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect — SwiGLU
-
-Compare the explicit formula test. Explain why a correct shape cannot distinguish SwiGLU from a different
-Gemma generation's activation.
-
-Record the observed discrepancy and confidence. Make one changed-condition forecast before the next reveal;
-retain seen or unknown exposure.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise - implement grouped-query attention with a KV cache
 
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵⚪
-> 
-> You should spend 35-45 minutes on this exercise.
+>
+> You should spend up to 35-45 minutes on this exercise.
 > ```
 
 Project and reshape Q/K/V, apply RoPE to queries and keys, append cached K/V states, repeat KV heads, mask
@@ -832,7 +729,7 @@ tests dataflow, not only tensor shape.
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 class GemmaAttention(nn.Module):
@@ -915,13 +812,8 @@ class GemmaAttention(nn.Module):
 # ! TAGS: []
 
 r'''
-### Forecast — Attention and cache
-
 Predict key/value cache shapes after a three-token prompt and one additional token, then predict which keys
 the new query may read.
-
-Write confidence, causal reasoning and exposure before revealing results. This is guided practice, not an
-unseen score.
 '''
 
 # ! CELL TYPE: code
@@ -1018,20 +910,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect — Attention and cache
-
-Compare cache lengths, mask semantics and output dimensions. Predict how a local window changes allowed keys
-without changing cache tensor shape.
-
-Record the observed discrepancy and confidence. Make one changed-condition forecast before the next reveal;
-retain seen or unknown exposure.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 # 2️⃣ Assemble and trace the decoder
 '''
 
@@ -1045,8 +923,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> 
-> You should spend 15-20 minutes on this exercise.
+>
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 Build a pre-norm attention residual update followed by a pre-norm SwiGLU residual update. Propagate the
@@ -1074,7 +952,7 @@ state-dict parity.
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 class GemmaDecoderLayer(nn.Module):
@@ -1120,13 +998,8 @@ class GemmaDecoderLayer(nn.Module):
 # ! TAGS: []
 
 r'''
-### Forecast — Residual stages
-
 Predict where an incorrect pre-attention normalization first changes the decoder residual and whether a
 passing shape test is sufficient.
-
-Write confidence, causal reasoning and exposure before revealing results. This is guided practice, not an
-unseen score.
 '''
 
 # ! CELL TYPE: code
@@ -1181,27 +1054,13 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect — Residual stages
-
-Explain residual additions and the second normalization. Predict which later trace stages must be rechecked
-after a local error.
-
-Record the observed discrepancy and confidence. Make one changed-condition forecast before the next reveal;
-retain seen or unknown exposure.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise - build the complete causal LM
 
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵⚪
-> 
-> You should spend 35-45 minutes on this exercise.
+>
+> You should spend up to 35-45 minutes on this exercise.
 > ```
 
 Create absolute positions, build one RoPE cache per forward pass, scale token embeddings by
@@ -1231,7 +1090,7 @@ positions, and cached decoding against an independent implementation.
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 class GemmaModel(nn.Module):
@@ -1342,13 +1201,8 @@ def make_tiny_gemma(seed: int = 0, sliding_window: int | None = None) -> GemmaFo
 # ! TAGS: []
 
 r'''
-### Forecast — Complete decoder
-
 Predict whether full-context and cached decoding agree for the same tokens. State what this random-weight test
 can and cannot establish about language ability.
-
-Write confidence, causal reasoning and exposure before revealing results. This is guided practice, not an
-unseen score.
 '''
 
 # ! CELL TYPE: code
@@ -1477,27 +1331,13 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect — Complete decoder
-
-Compare cache and reference checks. Explain tied weights and embedding scaling; predict which first trace
-changes if the scale is omitted.
-
-Record the observed discrepancy and confidence. Make one changed-condition forecast before the next reveal;
-retain seen or unknown exposure.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise - trace activations and compare stages
 
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> 
-> You should spend 20-25 minutes on this exercise.
+>
+> You should spend up to 20-25 minutes on this exercise.
 > ```
 
 Use forward hooks to capture the scaled embedding, every decoder-layer output, the final normalized residual,
@@ -1526,7 +1366,7 @@ which convention to inspect.
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 @t.inference_mode()
@@ -1585,13 +1425,8 @@ def compare_gemma_traces(
 # ! TAGS: []
 
 r'''
-### Forecast — Trace localization
-
 Before reading the control panel, predict the first changed trace stage for missing embedding scaling, missing
 RoPE and wrong GQA order.
-
-Write confidence, causal reasoning and exposure before revealing results. This is guided practice, not an
-unseen score.
 '''
 
 # ! CELL TYPE: code
@@ -1664,20 +1499,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect — Trace localization
-
-Compare the captured keys and hook cleanup. Explain why the separate local reference is a regression oracle
-and reserve independent-implementation language for the HF check.
-
-Record the observed discrepancy and confidence. Make one changed-condition forecast before the next reveal;
-retain seen or unknown exposure.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 # 3️⃣ Read controls and parity
 '''
 
@@ -1708,13 +1529,7 @@ monkey-patching.
 # ! TAGS: []
 
 r'''
-### Forecast — Architecture controls
-
-Commit a first-divergence stage and qualitative final-logit error for each of the three controls. Record
-confidence before inspecting saved results.
-
-Write confidence, causal reasoning and exposure before revealing results. This is guided practice, not an
-unseen score.
+Commit a first-divergence stage and qualitative final-logit error for each of the three controls.
 '''
 
 # ! CELL TYPE: code
@@ -1776,20 +1591,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect — Architecture controls
-
-Explain why every control can have valid shapes yet fail numerically. Predict whether changing only input
-token IDs can make all controls generally equivalent.
-
-Record the observed discrepancy and confidence. Make one changed-condition forecast before the next reveal;
-retain seen or unknown exposure.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Signature result: exact parity and visible control failure
 
 Run the next cell to generate the result from the implementation currently in memory. The left panel localizes
@@ -1802,13 +1603,8 @@ errors across activations; the right panel compares final logits. The exact line
 # ! TAGS: []
 
 r'''
-### Forecast — Whole signature
-
-Forecast the exact line, each control's first divergence, and the ordering of final errors. Use ranges,
-confidence and causal reasons before viewing the historical plot.
-
-Write confidence, causal reasoning and exposure before revealing results. This is guided practice, not an
-unseen score.
+Forecast the exact line, each control's first divergence, and the ordering of final errors. Use ranges
+before viewing the plot.
 '''
 
 # ! CELL TYPE: code
@@ -1898,20 +1694,6 @@ r'''
 # ! TAGS: []
 
 r'''
-### Reflect — Whole signature
-
-Compare predictions with every panel, not only the final scalar. A mismatch is a debugging clue. Predict the
-consequences of a deliberately incorrect LM head after otherwise matching traces.
-
-Record the observed discrepancy and confidence. Make one changed-condition forecast before the next reveal;
-retain seen or unknown exposure.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details><summary>Expected output</summary>
 
 ```text
@@ -1948,7 +1730,7 @@ match through `final_norm` but logits differ, inspect weight tying and the LM he
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 The completed solution notebook should report zero maximum absolute error at every exact stage. Use the first
 nonzero stage rather than changing tolerances: a tolerance increase cannot repair a wrong convention.
@@ -1981,13 +1763,7 @@ for every valid input.
 # ! TAGS: []
 
 r'''
-### Forecast — Changed inputs
-
-Choose new token IDs in [0,30], forecast the exact-line error and the three control errors, and record prior
-exposure to the historical reference.
-
-Write confidence, causal reasoning and exposure before revealing results. This is guided practice, not an
-unseen score.
+Choose new token IDs in [0,30], forecast the exact-line error and the three control errors.
 '''
 
 # ! CELL TYPE: code
@@ -2032,27 +1808,13 @@ r'''
 # ! TAGS: []
 
 r'''
-### Reflect — Changed inputs
-
-Distinguish reference parity from input-specific error magnitude. Predict a different sequence length before
-running another optional model-organism check.
-
-Record the observed discrepancy and confidence. Make one changed-condition forecast before the next reveal;
-retain seen or unknown exposure.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise - bonus anomaly hunt: find the first divergent stage
 
 > ```yaml
 > Difficulty: 🔴⚪⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> 
-> You should spend 5-10 minutes on this exercise.
+>
+> You should spend up to 5-10 minutes on this exercise.
 > ```
 
 Write a small diagnostic that scans a parity profile in execution order and returns the first stage whose
@@ -2079,7 +1841,7 @@ contract, before later residual updates propagate the difference.
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 def first_divergent_stage(
@@ -2101,13 +1863,8 @@ def first_divergent_stage(
 # ! TAGS: []
 
 r'''
-### Forecast — First divergent stage
-
 Predict the returned stage for a profile that is exact through layer_0 but first exceeds tolerance at layer_1.
 Explain strict greater-than behavior at the threshold.
-
-Write confidence, causal reasoning and exposure before revealing results. This is guided practice, not an
-unseen score.
 '''
 
 # ! CELL TYPE: code
@@ -2152,31 +1909,14 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect — First divergent stage
-
-Compare the bonus assertion and the earlier forecast. Predict a profile whose only mismatch is in logits; do
-not relax the tolerance to hide a wrong method.
-
-Record the observed discrepancy and confidence. Make one changed-condition forecast before the next reveal;
-retain seen or unknown exposure.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Try It Yourself — exact CPU cache-mask probe
 
 This additional exercise isolates the same taught mask function without constructing or running a model. Keep
-the full historical decoder signature above. Change only `PLAY_WINDOW` or `PLAY_PAST_LENGTH` for the next
+the full decoder signature above. Change only `PLAY_WINDOW` or `PLAY_PAST_LENGTH` for the next
 comparison.
 
-### Forecast — local keys at absolute positions
-
 For defaults past=3, queries=2 and window=3, write both correct allowed-key sets and predict how many bits
-differ from the wrong zero-origin mask. Predict the global baseline too. Record confidence and whether you
-have seen these values. Changed condition: window=1; forecast every row before running.
+differ from the wrong zero-origin mask. Predict the global baseline too. Changed condition: window=1; forecast every row before running.
 '''
 
 # ! CELL TYPE: code
@@ -2237,17 +1977,12 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-Fresh exact CPU subset figure, separately recorded; the historical notebook was not rerun:
-
 <img src="media/gemma_cpu_cache_mask.png" width="1100">
-
-### Reflect — cache origin is part of the method
 
 At defaults the correct allowed-key sets are {1,2,3} and {2,3,4}; both counts are 3. The global baseline
 counts are 4 and 5. The wrong origin gives {0} and {0,1}, with 9 differing bits. Explain why shape tests alone
 miss this error. With window=1, predict {3} and {4} and compare against the observation. Change the past
-length next and explain which absolute positions move. Record discrepancy, confidence and exposure; these
-published answers are guided practice.
+length next and explain which absolute positions move.
 '''
 
 # ! CELL TYPE: markdown
@@ -2271,10 +2006,10 @@ r'''
 ### Architecture-equivalence caveat
 
 A static audit of the installed official HF implementation finds `hidden_act=gelu_pytorch_tanh` and split-half
-rotary coordinates (`cat(freqs,freqs)` and `[-x_second_half,x_first_half]`). This preserved learner instead
-uses `F.silu` and interleaved even/odd rotations. The historical cell copies Q/K weights directly, without the
+rotary coordinates (`cat(freqs,freqs)` and `[-x_second_half,x_first_half]`). This learner instead
+uses `F.silu` and interleaved even/odd rotations. The cell copies Q/K weights directly, without the
 coordinate permutation or activation alignment needed to reconcile those conventions. Its small error under
-one tiny random initialization is a tolerance diagnostic, not proof of equivalent architecture. The historical
+one tiny random initialization is a tolerance diagnostic, not proof of equivalent architecture. The
 explanation attributing residual error only to kernels is therefore not established. Keep the original code
 and outputs as evidence of that limited diagnostic; do not promote them to pretrained or convention-correct
 parity.
@@ -2285,14 +2020,9 @@ parity.
 # ! TAGS: []
 
 r'''
-### Forecast — Independent implementation
-
-The HF code uses GELU and split-half RoPE, while this preserved learner uses SiLU and interleaved RoPE with
+The HF code uses GELU and split-half RoPE, while this learner uses SiLU and interleaved RoPE with
 directly copied weights. Predict whether a small numerical error at this one random initialization proves
-equivalent architecture. State the declared tolerance before inspecting the historical output.
-
-Write confidence, causal reasoning and exposure before revealing results. This is guided practice, not an
-unseen score.
+equivalent architecture. State the declared tolerance before inspecting the output.
 '''
 
 # ! CELL TYPE: code
@@ -2368,22 +2098,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect — Independent implementation
-
-Read the saved HF result as a tiny random-weight tolerance diagnostic. Matching 21 state-dict keys does not
-resolve activation or Q/K coordinate conventions. Explain why those differences, not merely kernels, can
-contribute to the error. This historical cell has no convention-correct parity proof; the separately labeled
-additive extension below tests the correction.
-
-Record the observed discrepancy and confidence. Make one changed-condition forecast before the next reveal;
-retain seen or unknown exposure.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details><summary>Expected output</summary>
 
 ```text
@@ -2411,8 +2125,12 @@ than language ability.
 architecture details outside this section.
 - The Hugging Face comparison instantiates the real public class but does not download or claim a gated
 pretrained Gemma checkpoint.
-- CPU execution does not validate CUDA kernels or memory use; the parent verification pass handles serialized
-GPU checks.
+- CPU execution does not validate CUDA kernels or memory use.
+- The local reference reuses much of the same decoder code as your implementation, so agreeing with it is a
+regression check rather than an independent one.
+- The Hugging Face comparison uses tiny random weights and leaves activation and RoPE convention differences
+unresolved; the extension at the end of this notebook implements and tests both corrections. Comparisons with
+pretrained Gemma 3 and SmolLM2 are left open.
 
 ## Reading links
 
@@ -2435,10 +2153,9 @@ r'''
 
 Gemma3-270m and SmolLM2 pretrained weight loading, layer-wise local/global alternation, later-generation
 activation and logit-soft-capping variants, and BOS/sink or attention-distance analyses remain outside this
-preserved lesson. The broader syllabus describes intended coverage, not results established here. The
-historical parent GPU-pass wording above is not an execution promise or new acceptance.
+lesson. The broader syllabus describes intended coverage, not results established here.
 
-The figure's exact line is drawn at 1e-8 on a log axis although the reported historical error is zero; use the
+The figure's exact line is drawn at 1e-8 on a log axis although the reported error is zero; use the
 printed numeric errors for exact parity.
 '''
 
@@ -2449,7 +2166,7 @@ printed numeric errors for exact parity.
 r'''
 ## Additive extension — reconcile conventions before claiming parity
 
-Keep the historical diagnostic above unchanged. This new comparison explicitly matches the public HF default
+This comparison explicitly matches the public HF default
 GELU(tanh) gate and converts each Q/K projection from split-half rotary coordinates into the learner's
 interleaved coordinates. It is a fixed tiny random-weight CPU probe, with no pretrained checkpoint, training
 or cache check. Gemma3 and SmolLM2 coverage remain open.
@@ -2470,17 +2187,13 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> 
-> You should spend 10-15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
-
-### Forecast — Projection coordinates
 
 Implement `hf_split_to_interleaved_projection`. At head dimension eight, predict the row order and explain why
 Q heads and KV heads must keep their identities. The dimension-four permutation happens to be self-inverse; do
 not infer that property for dimension eight.
-
-Record confidence, causal reasoning and exposure before opening the solution.
 
 <details><summary>Help</summary>
 
@@ -2544,32 +2257,17 @@ The independent formula/row assertions must pass unchanged.
 # ! TAGS: []
 
 r'''
-### Reflect — Projection coordinates
-
-Compare the dimension-eight row oracle for two and four heads. Explain P R_half = R_pair P and why permuting V
-would change the model rather than simply its Q/K basis.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise - activation convention
 
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> 
-> You should spend 10-15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
-
-### Forecast — Activation convention
 
 Implement `gemma_tanh_gelu_gate` using the public Gemma configuration's tanh-approximate GELU. Predict where
 SiLU and GELU differ on [-2,-1,0,1,2], even though both preserve tensor shape.
-
-Record confidence, causal reasoning and exposure before opening the solution.
 
 <details><summary>Help</summary>
 
@@ -2636,23 +2334,8 @@ The independent formula/row assertions must pass unchanged.
 # ! TAGS: []
 
 r'''
-### Reflect — Activation convention
-
-Compare the independent scalar GELU formula and SiLU control. Explain why copying identical projection weights
-cannot repair an activation mismatch.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Forecast — Relative-position oracle
-
 For q=[1,2,3,4], k=[2,-1,.5,3], query position 2 and key position 1, predict whether correctly converted
 rotary scores agree with the split-half score and whether the unconverted control agrees.
-
-Record confidence, causal reasoning and exposure before revealing the result.
 '''
 
 # ! CELL TYPE: code
@@ -2710,28 +2393,12 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect — Relative-position oracle
-
-The independently derived split-half score is 7.362465991603378; conversion preserves it within 1e-12, while
-the wrong-coordinate score is 9.361968914924665. Explain why using equal positions could conceal the
-convention error.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Forecast — Fixed independent parity
-
 Before viewing the new result, forecast the four maximum logit errors: unmatched conventions, GELU only, Q/K
 basis only, and both matched. Use exactly seed5101, the four original seven-token sequences, std.02 and eager
 float32 CPU. The both-correct gate is max_abs<=5e-6 and MSE<=1e-12 over 868 logits. Wrong full variants are
 reported without promising they cross the gate at this small initialization. The unmatched row uses the old
 SiLU/interleaved conventions on fresh current-library weights; it does not reproduce the saved
 Transformers5.12.1 output.
-
-Record confidence, causal reasoning and exposure before revealing the result.
 '''
 
 # ! CELL TYPE: code
@@ -2858,25 +2525,11 @@ r'''
 # ! TAGS: []
 
 r'''
-### Reflect — Fixed independent parity
-
-Compare all four rows and the two independent component controls. Keep failures if the corrected fixed gate
-fails; do not relax tolerances or choose a different seed. A passing corrected result establishes this
-architecture subset at one fixed random initialization, not pretrained language ability, cache behavior,
-Gemma3 or SmolLM2. Expected numbers and outputs make this guided practice; record exposure.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 The separately recorded fixed CPU result has maximum errors of approximately 9.00924e-5 (unmatched),
 8.44859e-5 (GELU only), 4.96022e-5 (basis only), and 1.86265e-9 (both matched). The corrected MSE is
 3.99706e-21. All four rows have ordered top-five agreement 1.0: that token-ranking check alone misses every
 convention error here. These are the observed numbers for this one fixed fixture, not expected guarantees for
-other weights or inputs. The three-panel figure and exact per-cell receipt retain their fresh origin; the
-earlier 16-cell reference remains historical.
+other weights or inputs.
 '''
 
 # ! CELL TYPE: markdown
@@ -2892,11 +2545,10 @@ r'''
 # ! TAGS: []
 
 r'''
-## Release Verification Surface
+## GPU entry points
 
-The exercises and signature result above are the CPU learner path. The two stable entry points below delegate
-to the section's pinned release harness; neither runs automatically. Call them only in the CUDA environment
-described by the section metadata, then compare the returned metrics with `verification_report.json`.
+The exercises and signature result above are the CPU learner path. The two entry points below run the GPU check and
+the full path; neither runs automatically. Call them only on a CUDA GPU.
 
 `run_gpu_test(max_vram_gb=24.0)` runs the bounded GPU check. `run_full_experiment(max_vram_gb=24.0)` runs the
 same validated full path.

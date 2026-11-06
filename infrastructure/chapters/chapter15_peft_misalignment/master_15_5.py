@@ -45,9 +45,9 @@ This is a transparent, untrained **one-answer-token VLM fixture**, not a regress
 
 Section 12.3 connects SigLIP patch features through a trainable projector into GPT-2. We preserve that vision → projector → language decomposition but replace its pretrained encoders and multi-layer language model with explicit RGB means and a one-step decoder. The code here does **not** run the trained 12.3 checkpoint, nor does it establish results for a real VLM. The source-grounded bridge at the end states which tensors and controls transfer.
 
-Prerequisites: 12.1 for modality controls, 12.3 for visual-token assembly and patching, and 15.1 for LoRA. All default examples run on CPU in float64 without a download or optimizer. The configured requirement `peft.vlm_lora` remains an empirical extension target beyond this study fixture.
+Prerequisites: 12.1 for modality controls, 12.3 for visual-token assembly and patching, and 15.1 for LoRA. All default examples run on CPU in float64 without a download or optimizer.
 
-Before viewing the signature figure, predict: if projector and language adapters both reach perfect VQA, will both pass a language-only color-identity check? State the mechanism rather than treating VQA accuracy as a complete grounding metric. Public outputs below make this guided practice.
+Before viewing the signature figure, predict: if projector and language adapters both reach perfect VQA, will both pass a language-only color-identity check? State the mechanism rather than treating VQA accuracy as a complete grounding metric.
 '''
 
 # ! CELL TYPE: markdown
@@ -159,6 +159,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -221,6 +222,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -290,6 +292,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -400,6 +403,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -457,6 +461,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -573,6 +578,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -633,6 +639,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -704,6 +711,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -761,6 +769,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -882,6 +891,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -958,6 +968,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -1072,6 +1083,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -1133,6 +1145,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -1190,6 +1203,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -1418,7 +1432,7 @@ r'''
 r'''
 <details><summary>Expected output</summary>
 
-For camera swap False and strength 6, base / projector / language VQA is `[1.0,0.0,0.0]`. Both fixed adapters now apply an unnecessary reversal. Projector LoRA still leaves the text-only identity probe unchanged because it never modifies the text pathway. If you already saw this output, mark the changed-domain outcome as exposed guided practice.
+For camera swap False and strength 6, base / projector / language VQA is `[1.0,0.0,0.0]`. Both fixed adapters now apply an unnecessary reversal. Projector LoRA still leaves the text-only identity probe unchanged because it never modifies the text pathway.
 
 </details>
 
@@ -1434,7 +1448,7 @@ A correct answer plus failed text-only and shuffled controls supports use of vis
 
 To transfer this exercise, retain paired images, question tokens and target answers; cache **the same pretrained visual features** for every site condition; inject LoRA into named projector linear layers versus named language-model projections; freeze and verify all other parameters; and compare visual-token changes, object/background patch effects, text-only/image-only/shuffled controls and a prespecified language-preservation set. Record factor scaling, target-module paths, trainable counts and data roles. The language update here is a single residual value map, not a replication of LoRA across GPT-2 attention/MLP modules.
 
-The default notebook intentionally has no real-model run cell: there is no qualified checkpoint/configuration or authorized training budget in this authoring pass. Native validation, trained 12.3 adapter comparison and any empirical promotion of `peft.vlm_lora` remain pending.
+The default notebook intentionally has no real-model run cell.
 
 ## Limitations
 
@@ -1470,6 +1484,6 @@ r'''
 - [LoRA: Low-Rank Adaptation of Large Language Models](https://arxiv.org/abs/2106.09685): frozen-weight adaptation, factor scaling and low-rank updates.
 - [Visual Instruction Tuning](https://arxiv.org/abs/2304.08485): the visual-encoder/projector/language-model architecture and instruction-training connection.
 - [LLaVA official implementation](https://github.com/haotian-liu/LLaVA): inspect actual projector and language-module definitions before selecting adapter targets.
-- Section 12.3, *Mini VLM from Scratch*: the local pretrained-model bridge; retain its recorded execution and acceptance boundaries.
+- Section 12.3, *Mini VLM from Scratch*: the local pretrained-model bridge.
 '''
 

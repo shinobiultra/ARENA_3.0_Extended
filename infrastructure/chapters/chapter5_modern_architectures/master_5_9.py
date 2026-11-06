@@ -50,16 +50,8 @@ r'''
 # ! TAGS: []
 
 r'''
-**Historical exposed guided practice.** Preserve the complete legacy 5.6 embedding-router lesson: exact English requests, student-built pooling/similarity/ranks, availability-aware abstention,
-separate call/no-call metrics, all historical text outputs, controls, play, anomaly hunt and optional pinned BGE connection. This migration does not run a lesson, load a model, generate a plot,
-or compute a case answer.
-
-**Canonical scope remains incomplete.** The exact three-axis lexicon is a transparent teaching construction. The optional four-pair BGE retrieval is not a directional interpretation study. This
-lesson does not establish EmbeddingGemma internal geometry, FunctionGemma internal representation/probing/steering, or a MedGemma-style domain-specialist evaluation. Existing serialized CUDA
-reports retain their legacy supporting role and are not the primary lesson result.
-
-**Saved figure boundary.** The historical solution notebook contains nine output-bearing cells and no embedded PNG. Its plot-generating code and byte-exact separately saved signature PNG are
-preserved. The saved text outputs and widget metadata are historical; no new figure or model execution is claimed. Commit forecasts and prior exposure before opening historical worked solutions.
+**Scope.** The exact three-axis lexicon is a transparent teaching construction. The optional four-pair BGE retrieval is not a directional interpretation study. This
+lesson does not establish EmbeddingGemma internal geometry, FunctionGemma internal representation/probing/steering, or a MedGemma-style domain-specialist evaluation.
 '''
 
 # ! CELL TYPE: markdown
@@ -316,7 +308,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Suggested time: 8 minutes
+>
+> You should spend up to 8 minutes on this exercise.
 > ```
 
 Multiply by the attention mask, sum across tokens, and divide by the number of unmasked positions. Reject incompatible shapes.
@@ -339,7 +332,7 @@ The test places `[100, 100]` in a padded position. If that sentinel changes the 
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Worked solution</summary>
 
 ```python
 def mean_pool_embeddings(token_embeddings: t.Tensor, attention_mask: t.Tensor) -> t.Tensor:
@@ -361,17 +354,7 @@ def mean_pool_embeddings(token_embeddings: t.Tensor, attention_mask: t.Tensor) -
 # ! TAGS: []
 
 r'''
-## Forecast before running — EMB-6
-
 What should the padded sentinel contribute to pooled evidence?
-
-Forecast / signed contrast / ordering: ______
-Confidence (0–100%): ______
-Mechanism and contradicting control: ______
-Denominator and prior exposure (unseen / seen / unknown): ______
-
-This is exposed guided practice. Keep toy16requests, tool12rows/no-call4rows, optional BGE4pairs, native32call rows and play3requests separate. Leave observations blank until inspection; no
-answer is computed by migration.
 '''
 
 # ! CELL TYPE: code
@@ -407,21 +390,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-## Reflect after inspection — EMB-6
-
-Observed values and exact source/cell: ______
-Control comparison and denominator: ______
-Forecast discrepancy and changed-condition forecast: ______
-Historical output or your separately authorized execution: ______
-
-Do not pool toy, BGE, native generation and play cohorts or relabel public examples as untouched TEST.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## 2. Turn embeddings into retrieval evidence
 
 For request embedding $q_i$ and tool-schema embedding $s_j$,
@@ -442,7 +410,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Suggested time: 15 minutes
+>
+> You should spend up to 15 minutes on this exercise.
 > ```
 
 Implement L2 normalization, all-pairs cosine similarity, one-indexed target ranks, and a report containing top-1 accuracy, MRR, and the positive-minus-hard-negative margin.
@@ -466,7 +435,7 @@ Sort each similarity row in descending order. The target rank is where the paire
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Worked solution</summary>
 
 ```python
 def l2_normalize(x: t.Tensor, *, eps: float = 1e-12) -> t.Tensor:
@@ -525,17 +494,7 @@ def embedding_retrieval_report(
 # ! TAGS: []
 
 r'''
-## Forecast before running — EMB-9
-
 How should normalized retrieval ranks expose the hard negative?
-
-Forecast / signed contrast / ordering: ______
-Confidence (0–100%): ______
-Mechanism and contradicting control: ______
-Denominator and prior exposure (unseen / seen / unknown): ______
-
-This is exposed guided practice. Keep toy16requests, tool12rows/no-call4rows, optional BGE4pairs, native32call rows and play3requests separate. Leave observations blank until inspection; no
-answer is computed by migration.
 '''
 
 # ! CELL TYPE: code
@@ -635,21 +594,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-## Reflect after inspection — EMB-9
-
-Observed values and exact source/cell: ______
-Control comparison and denominator: ______
-Forecast discrepancy and changed-condition forecast: ______
-Historical output or your separately authorized execution: ______
-
-Do not pool toy, BGE, native generation and play cohorts or relabel public examples as untouched TEST.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 # 3️⃣ Route or abstain
 '''
 
@@ -676,7 +620,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Suggested time: 15 minutes
+>
+> You should spend up to 15 minutes on this exercise.
 > ```
 
 Clone the score matrix, mask unavailable tools to negative infinity, find the top two scores, and return `no_call_id` unless both gates pass.
@@ -699,7 +644,7 @@ The confidence threshold catches rows with no evidence. The margin catches rows 
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Worked solution</summary>
 
 ```python
 def route_with_abstention(
@@ -740,17 +685,7 @@ def route_with_abstention(
 # ! TAGS: []
 
 r'''
-## Forecast before running — EMB-12
-
 How do confidence, margin and tool availability each reject a call?
-
-Forecast / signed contrast / ordering: ______
-Confidence (0–100%): ______
-Mechanism and contradicting control: ______
-Denominator and prior exposure (unseen / seen / unknown): ______
-
-This is exposed guided practice. Keep toy16requests, tool12rows/no-call4rows, optional BGE4pairs, native32call rows and play3requests separate. Leave observations blank until inspection; no
-answer is computed by migration.
 '''
 
 # ! CELL TYPE: code
@@ -812,21 +747,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-## Reflect after inspection — EMB-12
-
-Observed values and exact source/cell: ______
-Control comparison and denominator: ______
-Forecast discrepancy and changed-condition forecast: ______
-Historical output or your separately authorized execution: ______
-
-Do not pool toy, BGE, native generation and play cohorts or relabel public examples as untouched TEST.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## 4. Measure calls and abstentions separately
 
 Overall accuracy can hide a router that handles tools well but calls them on every irrelevant request. Split labels into tool-required and no-call subsets. On the latter, hallucination rate is `1
@@ -843,7 +763,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> Suggested time: 10 minutes
+>
+> You should spend up to 10 minutes on this exercise.
 > ```
 
 Return overall accuracy, tool-only accuracy, no-call abstention accuracy, and no-call hallucination rate. Require both kinds of example so a missing slice cannot silently become `nan`.
@@ -866,7 +787,7 @@ Build masks from the ground-truth labels, not the predictions. Otherwise a route
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Worked solution</summary>
 
 ```python
 def routing_report(
@@ -899,17 +820,7 @@ def routing_report(
 # ! TAGS: []
 
 r'''
-## Forecast before running — EMB-15
-
 Which rows belong in tool accuracy versus no-call hallucination?
-
-Forecast / signed contrast / ordering: ______
-Confidence (0–100%): ______
-Mechanism and contradicting control: ______
-Denominator and prior exposure (unseen / seen / unknown): ______
-
-This is exposed guided practice. Keep toy16requests, tool12rows/no-call4rows, optional BGE4pairs, native32call rows and play3requests separate. Leave observations blank until inspection; no
-answer is computed by migration.
 '''
 
 # ! CELL TYPE: code
@@ -961,21 +872,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-## Reflect after inspection — EMB-15
-
-Observed values and exact source/cell: ______
-Control comparison and denominator: ______
-Forecast discrepancy and changed-condition forecast: ______
-Historical output or your separately authorized execution: ______
-
-Do not pool toy, BGE, native generation and play cohorts or relabel public examples as untouched TEST.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 # 4️⃣ Inspect controls and escalation
 '''
 
@@ -984,15 +880,7 @@ r'''
 # ! TAGS: []
 
 r'''
-## Forecast before running — EMB-17
-
-Before viewing the retained historical figure, forecast the router, rotated-schema control and always-call baseline with separate12tool-row and4no-call-row denominators.
-
-Forecast / control comparison: ______
-Confidence (0–100%) and prior exposure: ______
-Mechanism and possible falsifier: ______
-
-This is exposed guided practice; no answer is computed during migration.
+Before viewing the figure, forecast the router, rotated-schema control and always-call baseline with separate12tool-row and4no-call-row denominators.
 '''
 
 # ! CELL TYPE: markdown
@@ -1013,9 +901,8 @@ schema meaning matters, and abstention prevents unsupported calls.
 # ! TAGS: []
 
 r'''
-**Historical figure reading.** Schema accuracy uses12tool-required requests. The no-call panel uses4no-call requests: router abstention accuracy1 is desirable, while always-call hallucination
-rate1 is undesirable. Both bars can reach height1 while representing different metrics with opposite desirable directions; compare metric labels and denominators, not bar height alone. This is
-the retained original asset, not a newly generated figure.
+**Figure reading.** Schema accuracy uses12tool-required requests. The no-call panel uses4no-call requests: router abstention accuracy1 is desirable, while always-call hallucination
+rate1 is undesirable. Both bars can reach height1 while representing different metrics with opposite desirable directions; compare metric labels and denominators, not bar height alone.
 '''
 
 # ! CELL TYPE: code
@@ -1155,21 +1042,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-## Reflect after inspection — EMB-17
-
-Observed values and exact source/cell: ______
-Control comparison and denominator: ______
-Forecast discrepancy and changed-condition forecast: ______
-Historical output or your separately authorized execution: ______
-
-Do not pool toy, BGE, native generation and play cohorts or relabel public examples as untouched TEST.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details>
 <summary>Interpreting the signature result</summary>
 
@@ -1203,22 +1075,13 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Suggested time: 5 minutes
+>
+> You should spend up to 5 minutes on this exercise.
 > ```
 
 Use the existing play cell below. Predict each chosen tool with and without the availability mask. Keep the original threshold and margin first, then change one gate. Explain a false call or abstention using the best-versus-second score gap.
 
-## Forecast before running — EMB-20
-
 Forecast all three play requests before changing the allowed-tools mask.
-
-Forecast / signed contrast / ordering: ______
-Confidence (0–100%): ______
-Mechanism and contradicting control: ______
-Denominator and prior exposure (unseen / seen / unknown): ______
-
-This is exposed guided practice. Keep toy16requests, tool12rows/no-call4rows, optional BGE4pairs, native32call rows and play3requests separate. Leave observations blank until inspection; no
-answer is computed by migration.
 '''
 
 # ! CELL TYPE: code
@@ -1265,21 +1128,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-## Reflect after inspection — EMB-20
-
-Observed values and exact source/cell: ______
-Control comparison and denominator: ______
-Forecast discrepancy and changed-condition forecast: ______
-Historical output or your separately authorized execution: ______
-
-Do not pool toy, BGE, native generation and play cohorts or relabel public examples as untouched TEST.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Anomaly hunting
 
 The exact construction makes failures legible. Look for false abstention from missing synonyms, multi-intent requests whose repeated words create a false winner, and implicit requests that use
@@ -1291,17 +1139,7 @@ none of the hand-built trigger words.
 # ! TAGS: []
 
 r'''
-## Forecast before running — EMB-22
-
 Predict which lexical or multi-intent anomaly can fool the exact rule.
-
-Forecast / signed contrast / ordering: ______
-Confidence (0–100%): ______
-Mechanism and contradicting control: ______
-Denominator and prior exposure (unseen / seen / unknown): ______
-
-This is exposed guided practice. Keep toy16requests, tool12rows/no-call4rows, optional BGE4pairs, native32call rows and play3requests separate. Leave observations blank until inspection; no
-answer is computed by migration.
 '''
 
 # ! CELL TYPE: code
@@ -1346,21 +1184,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-## Reflect after inspection — EMB-22
-
-Observed values and exact source/cell: ______
-Control comparison and denominator: ______
-Forecast discrepancy and changed-condition forecast: ______
-Historical output or your separately authorized execution: ______
-
-Do not pool toy, BGE, native generation and play cohorts or relabel public examples as untouched TEST.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details>
 <summary>Help - what should count as an anomaly?</summary>
 
@@ -1390,17 +1213,7 @@ abstention controls.
 # ! TAGS: []
 
 r'''
-## Forecast before running — EMB-25
-
 Forecast paired versus permuted retrieval on four pinned BGE pairs; this optional model call requires separate runtime authority.
-
-Forecast / signed contrast / ordering: ______
-Confidence (0–100%): ______
-Mechanism and contradicting control: ______
-Denominator and prior exposure (unseen / seen / unknown): ______
-
-This is exposed guided practice. Keep toy16requests, tool12rows/no-call4rows, optional BGE4pairs, native32call rows and play3requests separate. Leave observations blank until inspection; no
-answer is computed by migration.
 '''
 
 # ! CELL TYPE: code
@@ -1483,25 +1296,9 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-## Reflect after inspection — EMB-25
+## CUDA checks
 
-Observed values and exact source/cell: ______
-Control comparison and denominator: ______
-Forecast discrepancy and changed-condition forecast: ______
-Historical output or your separately authorized execution: ______
-
-Do not pool toy, BGE, native generation and play cohorts or relabel public examples as untouched TEST.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## CUDA verification contract
-
-The course release also keeps authenticated EmbeddingGemma retrieval and FunctionGemma generation checks. They write supporting evidence to `verification_report.json`; they do not generate the
-signature result above. Run them only in the serialized CUDA verification job.
+Authenticated EmbeddingGemma retrieval and FunctionGemma generation checks need a CUDA GPU; they do not generate the signature result above.
 '''
 
 # ! CELL TYPE: code

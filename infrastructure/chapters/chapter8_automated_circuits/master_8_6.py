@@ -63,16 +63,11 @@ r'''
 # ! TAGS: []
 
 r'''
-**Complete planted sparse-feature curriculum; broader coverage remains open.** This lesson preserves exact node and edge patching, nonlinear attribution versus EAP-IG, graph
+**Scope.** This lesson preserves exact node and edge patching, nonlinear attribution versus EAP-IG, graph
 thresholding and causal metrics, plus a toy SHIFT-style editing exercise. It does not implement or validate the complete SHIFT method or a released-SAE feature-circuit replication.
-The historical released-artifact and optional GPU routes remain separate escalation/preflight context, not canonical scientific acceptance.
+The released-artifact and optional GPU routes are separate escalation context.
 
-**Historical exposed guided practice.** Saved results, output objects and execution metadata belong to legacy 8.5. Canonical 8.6 source migration performs no new numerical study.
-Record your forecast, confidence, reasoning and prior exposure before opening worked results. Leave observations and explanations blank until your own inspection; public examples
-cannot count as unseen mastery.
-
-**Runtime and device.** The planted fixtures and editing exercise are small CPU teaching examples. Optional released-artifact routes require the unchanged legacy environment;
-runtime and memory are not newly measured here. No model or artifact acquisition is performed by this migration.
+**Runtime and device.** The planted fixtures and editing exercise are small CPU teaching examples.
 '''
 
 # ! CELL TYPE: markdown
@@ -125,23 +120,16 @@ r'''
 # ! TAGS: []
 
 r'''
-**Historical lesson title:** [8.5] Sparse Feature Circuits
-
 By the end of this notebook, you will have recovered an exact planted sparse-feature circuit, because exact node patching, exact edge patching, EAP-IG, thresholded graph metrics,
 and same-size random controls all identify the same sparse graph.
 
-```python
-GT_TIER = "GT-0"
-EXERCISE_ID = "8_5_sparse_feature_circuits"
-EXPECTED_RUNTIME = "seconds on toy contract; minutes on local real-model path"
-REQUIRES_GPU = True  # the planted learner theorem runs on CPU; full verification includes CUDA
-```
+The planted learner theorem runs on CPU in seconds; the local real-model path takes minutes, and full verification includes CUDA.
 
 ## Core Question
 
 Can we discover a causal graph over interpretable SAE features, rather than over opaque residual dimensions, and know when the graph is faithful enough to trust?
 
-This notebook is intentionally local-first. The main result is a GT-0 exact planted sparse-feature graph. The released Pythia-70M / official Sparse Feature Circuits artifact
+This notebook is intentionally local-first. The main result is an exact planted sparse-feature graph. The released Pythia-70M / official Sparse Feature Circuits artifact
 evidence is discussed at the end as a separate escalation path, and this CPU pass does not download or execute those artifacts.
 
 <details>
@@ -158,17 +146,10 @@ reversing the graph and invalidating the causal interpretation.
 # ! TAGS: []
 
 r'''
-**Historical lesson title:** [8.5] Sparse Feature Circuits - Solutions
-
 By the end of this notebook, you will have recovered an exact planted sparse-feature circuit, because exact node patching, exact edge patching, EAP-IG, thresholded graph metrics,
 and same-size random controls all identify the same sparse graph.
 
-```python
-GT_TIER = "GT-0"
-EXERCISE_ID = "8_5_sparse_feature_circuits"
-EXPECTED_RUNTIME = "seconds on toy contract; minutes on local real-model path"
-REQUIRES_GPU = True  # the planted learner theorem runs on CPU; full verification includes CUDA
-```
+The planted learner theorem runs on CPU in seconds; the local real-model path takes minutes, and full verification includes CUDA.
 
 ## Core Question
 
@@ -191,9 +172,8 @@ reversing the graph and invalidating the causal interpretation.
 # ! TAGS: []
 
 r'''
-**Source-convention correction.** The preserved historical Common bug dropdown says `[receiver_feature, source_feature]`. The actual exact edge-score function, threshold selection
-and graph plot consistently index `[source_feature, receiver_feature]`. Use the implementation convention to interpret these preserved results. The original wording remains visible
-for source fidelity; no edge calculation or historical output has been changed.
+**Source-convention correction.** The Common bug dropdown says `[receiver_feature, source_feature]`. The actual exact edge-score function, threshold selection
+and graph plot consistently index `[source_feature, receiver_feature]`. Use the implementation convention.
 '''
 
 # ! CELL TYPE: markdown
@@ -416,17 +396,7 @@ def _fraction(numerator: float, denominator: float) -> float:
 # ! TAGS: []
 
 r'''
-### Forecast before inspection
-
 Predict which source and receiver features should differ for clean and corrupt inputs; distinguish feature identities from edge orientation.
-
-Forecast: ______
-
-Confidence: ______
-
-Reasoning: ______
-
-Prior exposure: ______
 '''
 
 # ! CELL TYPE: code
@@ -492,24 +462,6 @@ if MAIN:
     print("\nGround-truth receiver nodes:", fixture["ground_truth_node_ids"])
     print("Ground-truth source->receiver edges:", fixture["ground_truth_edges"])
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after inspection
-
-Observed result: ______
-
-Comparison with your forecast and controls: ______
-
-Mechanistic explanation: ______
-
-Changed-case forecast: ______
-
-What this establishes and leaves open: ______
-'''
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: []
@@ -542,7 +494,7 @@ r'''
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend 10-15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Implement the SAE encode/decode path and the metrics gate. Do not move on to graph attribution until reconstruction error, L0, density, and dead-feature fraction are visible.
@@ -572,7 +524,7 @@ feature density before trusting any circuit.
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Worked solution</summary>
 
 ```python
 def toy_sae_encode(
@@ -673,17 +625,7 @@ tests.test_toy_sae_encode_decode_metrics_on_planted_fixture(
 # ! TAGS: []
 
 r'''
-### Forecast before inspection
-
 Forecast reconstruction error, density and dead-feature behavior for the fixed identity SAE before inspecting the checks.
-
-Forecast: ______
-
-Confidence: ______
-
-Reasoning: ______
-
-Prior exposure: ______
 '''
 
 # ! CELL TYPE: code
@@ -821,24 +763,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after inspection
-
-Observed result: ______
-
-Comparison with your forecast and controls: ______
-
-Mechanistic explanation: ______
-
-Changed-case forecast: ______
-
-What this establishes and leaves open: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 # 2️⃣ Patch nodes and edges
 '''
 
@@ -853,7 +777,7 @@ r'''
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend 10-20 minutes on this exercise.
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Implement exact receiver-node patching. The score for a receiver feature is its clean-minus-corrupt activation difference times the readout weight, and patching should replace
@@ -885,7 +809,7 @@ The plural and singular relay nodes recover more than 98% of the full effect. Sm
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Worked solution</summary>
 
 ```python
 def exact_feature_node_patching_report(
@@ -965,17 +889,7 @@ tests.test_exact_planted_node_patch_scores_identify_known_nodes(
 # ! TAGS: []
 
 r'''
-### Forecast before inspection
-
 Predict which receiver-node patches should recover the signed clean-corrupt metric gap.
-
-Forecast: ______
-
-Confidence: ______
-
-Reasoning: ______
-
-Prior exposure: ______
 '''
 
 # ! CELL TYPE: code
@@ -1091,31 +1005,13 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after inspection
-
-Observed result: ______
-
-Comparison with your forecast and controls: ______
-
-Mechanistic explanation: ______
-
-Changed-case forecast: ______
-
-What this establishes and leaves open: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise - implement `exact_planted_edge_patch_scores`
 
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend 15-25 minutes on this exercise.
+> You should spend up to 15-25 minutes on this exercise.
 > ```
 
 Move from node scores to source-to-receiver edge scores. This is the Sparse Feature Circuits move: edges are no longer head-to-head or layer-to-layer, they are feature-to-feature.
@@ -1146,7 +1042,7 @@ nodes.
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Worked solution</summary>
 
 ```python
 def exact_feature_edge_patching_report(
@@ -1249,18 +1145,8 @@ tests.test_exact_planted_edge_patch_scores_identify_known_edges(
 # ! TAGS: []
 
 r'''
-### Forecast before inspection
-
-Predict the source-to-receiver edges before inspecting exact patch scores; state the implemented [source, receiver] score convention and identify the conflicting preserved
+Predict the source-to-receiver edges before inspecting exact patch scores; state the implemented [source, receiver] score convention and identify the conflicting
 introductory sentence.
-
-Forecast: ______
-
-Confidence: ______
-
-Reasoning: ______
-
-Prior exposure: ______
 '''
 
 # ! CELL TYPE: code
@@ -1401,24 +1287,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after inspection
-
-Observed result: ______
-
-Comparison with your forecast and controls: ______
-
-Mechanistic explanation: ______
-
-Changed-case forecast: ______
-
-What this establishes and leaves open: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 # 3️⃣ Approximate and threshold
 '''
 
@@ -1433,7 +1301,7 @@ r'''
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend 20-30 minutes on this exercise.
+> You should spend up to 20-30 minutes on this exercise.
 > ```
 
 Implement the attribution comparison. Plain EAP uses a single gradient at the corrupt point. EAP-IG averages gradients along the clean-corrupt activation path.
@@ -1463,7 +1331,7 @@ Plain EAP is fast but wrong when the readout is saturated. EAP-IG is slower but 
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Worked solution</summary>
 
 ```python
 def eap_ig_comparison_report(
@@ -1551,17 +1419,7 @@ tests.test_nonlinear_eap_ig_beats_plain_attribution_patching(
 # ! TAGS: []
 
 r'''
-### Forecast before inspection
-
 Predict whether a one-gradient approximation or integrated gradients will better allocate the nonlinear endpoint effect; identify the interpolation and dtype first.
-
-Forecast: ______
-
-Confidence: ______
-
-Reasoning: ______
-
-Prior exposure: ______
 '''
 
 # ! CELL TYPE: code
@@ -1677,31 +1535,13 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after inspection
-
-Observed result: ______
-
-Comparison with your forecast and controls: ______
-
-Mechanistic explanation: ______
-
-Changed-case forecast: ______
-
-What this establishes and leaves open: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise - implement `threshold_sparse_feature_graph`
 
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend 10-15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Threshold node and edge scores, then check that the selected graph still recovers the metric. This is where a pretty graph becomes a quantitative claim.
@@ -1731,7 +1571,7 @@ At the default threshold, the graph is exactly the two planted nodes and two pla
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Worked solution</summary>
 
 ```python
 def threshold_feature_graph_report(
@@ -1814,17 +1654,7 @@ tests.test_threshold_graph_metrics_and_random_controls(threshold_sparse_feature_
 # ! TAGS: []
 
 r'''
-### Forecast before inspection
-
 Predict what the unchanged .10 node/edge thresholds retain; distinguish a graph proposal from a causal validation.
-
-Forecast: ______
-
-Confidence: ______
-
-Reasoning: ______
-
-Prior exposure: ______
 '''
 
 # ! CELL TYPE: code
@@ -1935,31 +1765,13 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after inspection
-
-Observed result: ______
-
-Comparison with your forecast and controls: ______
-
-Mechanistic explanation: ______
-
-Changed-case forecast: ______
-
-What this establishes and leaves open: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise - implement `faithfulness_minimality_completeness_report`
 
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend 15-20 minutes on this exercise.
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 Compute the validation curves and the same-size random graph control. Faithfulness asks how much of the full effect the graph preserves; completeness asks what is lost by omitting
@@ -1991,7 +1803,7 @@ decoration.
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Worked solution</summary>
 
 ```python
 def random_feature_graph_control_report(
@@ -2119,17 +1931,7 @@ tests.test_threshold_graph_metrics_and_random_controls(None, faithfulness_minima
 # ! TAGS: []
 
 r'''
-### Forecast before inspection
-
 State the node-score denominator and predict how a same-size fixed nuisance graph compares before reading causal metric curves.
-
-Forecast: ______
-
-Confidence: ______
-
-Reasoning: ______
-
-Prior exposure: ______
 '''
 
 # ! CELL TYPE: code
@@ -2295,24 +2097,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after inspection
-
-Observed result: ______
-
-Comparison with your forecast and controls: ______
-
-Mechanistic explanation: ______
-
-Changed-case forecast: ______
-
-What this establishes and leaves open: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 # 4️⃣ Edit and inspect the signature
 '''
 
@@ -2327,7 +2111,7 @@ r'''
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵⚪⚪
 >
-> You should spend 15-25 minutes on this exercise.
+> You should spend up to 15-25 minutes on this exercise.
 > ```
 
 Run a safe generated-data analogue of SHIFT-style editing. A classifier has learned a target feature and a spurious feature. Suppress the spurious feature and check train accuracy,
@@ -2357,7 +2141,7 @@ The unedited classifier is perfect on train and fails OOD. The sparse-feature ed
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Worked solution</summary>
 
 ```python
 def _binary_accuracy(logits: t.Tensor, labels: t.Tensor) -> float:
@@ -2481,17 +2265,7 @@ tests.test_shift_style_sparse_feature_editing_report_removes_spurious_feature(
 # ! TAGS: []
 
 r'''
-### Forecast before inspection
-
 Predict toy train/OOD changes after target, spurious and random feature edits. State why this fixture does not validate the complete SHIFT method.
-
-Forecast: ______
-
-Confidence: ______
-
-Reasoning: ______
-
-Prior exposure: ______
 '''
 
 # ! CELL TYPE: code
@@ -2637,31 +2411,13 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after inspection
-
-Observed result: ______
-
-Comparison with your forecast and controls: ______
-
-Mechanistic explanation: ______
-
-Changed-case forecast: ______
-
-What this establishes and leaves open: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise - implement `run_planted_sparse_feature_signature`
 
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend 10-15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Assemble the section result: SAE metrics, exact node and edge scores, thresholded graph, validation curves, random controls, and EAP-IG comparison.
@@ -2678,7 +2434,7 @@ All tests in `test_planted_sparse_feature_signature_result_is_visual_ready` pass
 <details>
 <summary>Help - first things to check</summary>
 
-This function should not read `verification_report.json`. It should recompute the toy theorem from the functions you wrote above.
+It should recompute the toy theorem from the functions you wrote above.
 
 </details>
 
@@ -2690,7 +2446,7 @@ The signature result is convincing because it is both visible and falsifiable: t
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Worked solution</summary>
 
 ```python
 def run_planted_sparse_feature_signature() -> dict[str, object]:
@@ -2763,17 +2519,7 @@ tests.test_planted_sparse_feature_signature_result_is_visual_ready(
 # ! TAGS: []
 
 r'''
-### Forecast before inspection
-
-Forecast the conjunction of signature gates before inspecting the historical summary; name one control that could falsify it.
-
-Forecast: ______
-
-Confidence: ______
-
-Reasoning: ______
-
-Prior exposure: ______
+Forecast the conjunction of signature gates before inspecting the summary; name one control that could falsify it.
 '''
 
 # ! CELL TYPE: code
@@ -2854,27 +2600,9 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after inspection
-
-Observed result: ______
-
-Comparison with your forecast and controls: ______
-
-Mechanistic explanation: ______
-
-Changed-case forecast: ______
-
-What this establishes and leaves open: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Signature Result
 
-The two figures below are the notebook's main evidence. They are generated from your implementation, not loaded from `verification_report.json`.
+The two figures below are the notebook's main evidence. They are generated from your implementation.
 
 - `sparse_feature_circuits_planted_graph.png` shows the exact planted sparse-feature graph, with nuisance edges left visible and downweighted.
 - `sparse_feature_circuits_metric_curves.png` shows the threshold curves, random-graph failure, and plain-EAP vs EAP-IG comparison.
@@ -2885,17 +2613,7 @@ The two figures below are the notebook's main evidence. They are generated from 
 # ! TAGS: []
 
 r'''
-### Forecast before inspection
-
 Predict how the visible graph and threshold curves should agree with the exact patching evidence.
-
-Forecast: ______
-
-Confidence: ______
-
-Reasoning: ______
-
-Prior exposure: ______
 '''
 
 # ! CELL TYPE: code
@@ -3009,24 +2727,6 @@ r'''
 # ! TAGS: []
 
 r'''
-### Reflect after inspection
-
-Observed result: ______
-
-Comparison with your forecast and controls: ______
-
-Mechanistic explanation: ______
-
-Changed-case forecast: ______
-
-What this establishes and leaves open: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Try It Yourself
 
 Change the threshold and watch the graph fail. The interesting failure is `node_threshold = 1.0`: it keeps the plural relay but drops the singular relay, so the graph still looks
@@ -3038,17 +2738,7 @@ plausible but fails the faithfulness gate.
 # ! TAGS: []
 
 r'''
-### Forecast before inspection
-
-Forecast the original node_threshold=.10 and edge_threshold=.10 play outcome before inspecting its exposed historical output.
-
-Forecast: ______
-
-Confidence: ______
-
-Reasoning: ______
-
-Prior exposure: ______
+Forecast the original node_threshold=.10 and edge_threshold=.10 play outcome before inspecting its output.
 '''
 
 # ! CELL TYPE: code
@@ -3092,24 +2782,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after inspection
-
-Observed result: ______
-
-Comparison with your forecast and controls: ______
-
-Mechanistic explanation: ______
-
-Changed-case forecast: ______
-
-What this establishes and leaves open: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 # ☆ Bonus
 '''
 
@@ -3137,17 +2809,7 @@ treats exact patching as ground truth on the toy graph and EAP-IG as a better ap
 # ! TAGS: []
 
 r'''
-### Forecast before inspection
-
 Forecast what multiplying readout weights by the original scale=3 changes about exact, plain-EAP and EAP-IG totals and errors.
-
-Forecast: ______
-
-Confidence: ______
-
-Reasoning: ______
-
-Prior exposure: ______
 '''
 
 # ! CELL TYPE: code
@@ -3180,32 +2842,11 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after inspection
-
-Observed result: ______
-
-Comparison with your forecast and controls: ______
-
-Mechanistic explanation: ______
-
-Changed-case forecast: ______
-
-What this establishes and leaves open: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Released-artifact boundary
 
-The exact result above is GT-0: every node, edge, and control is known. The Pythia-70M / released SAE path is GT-2 evidence and must be verified separately by the parent
-CUDA/external-artifact pass.
+The exact result above is exact: every node, edge, and control is known. The Pythia-70M / released SAE path is separate evidence that must be verified separately.
 
-This CPU notebook does not download `saprmarks/feature-circuits`, does not download the multi-GB Pythia SAE zip, and does not claim that the student has replicated the paper. The
-section-local `artifacts.lock.yml` and committed verification report record the released-artifact contract: Pythia-70M subject-verb preflight, official SAE state-dict checks,
-one-layer SAE attribution, official saved graph artifact inspection, held-out faithfulness, and SHIFT-style editing evidence. Those are supporting evidence, not the toy theorem.
+This CPU notebook does not download `saprmarks/feature-circuits`, does not download the multi-GB Pythia SAE zip, and does not claim that the student has replicated the paper. The released-artifact path covers a Pythia-70M subject-verb preflight, official SAE state-dict checks, one-layer SAE attribution, official saved graph artifact inspection, held-out faithfulness, and SHIFT-style editing evidence. Those are supporting evidence, not the toy theorem.
 '''
 
 # ! CELL TYPE: markdown

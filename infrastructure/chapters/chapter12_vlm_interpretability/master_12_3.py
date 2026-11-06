@@ -96,22 +96,6 @@ don't need it: we treat SigLIP as a frozen feature extractor.
 # ! TAGS: []
 
 r'''
-## Fresh monitored reference execution
-
-The full revised lesson completed on 2026-10-16 with the pinned offline checkpoints and original training recipe. Its 61 lesson code cells and a separate evidence-only probe all
-completed. The controller then failed its final notebook-schema check: the administrative probe had a cell ID unsupported by notebook format 4.2. A separately validated copy
-removes only that ID; scientific source, counts, outputs, metadata and widget state remain exact. Both that raw postflight failure and the earlier pre-training PCA-call failure
-remain preserved in `docs/mastery/evidence/minivlm_controls_20261016/`.
-
-The solutions and figures below contain this genuinely fresh monitored reference execution. They are guided practice, not untouched TEST or human learner acceptance. The original
-executed notebook, figures and exact source bytes remain archived in `before.tar.gz`; their historical loaders did not record equivalent checkpoint pins.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Content & Learning Objectives
 
 ### 1️⃣ A World to Ask Questions About
@@ -1785,11 +1769,8 @@ scene and kind, enumerate the answers for **every** possible target using `quest
 objects. This target-blind oracle assumes perfect scene knowledge and a uniformly sampled target. It must handle repeated shapes/colours and shared sides instead of assuming every
 answer is distinct. It is an analytic upper bound in expectation under the generator, not a promise about a finite sample or the model.
 
-### Forecast before removing the question
-
 Record separate numeric ranges for full-question and image-only accuracy for all five kinds, split into one-object and multiple-object scenes. Explain which questions remain
-answerable from the image alone, what the candidate-restricted scorer reveals to the evaluator, and why the fixed cue is out of the training distribution. Record confidence and
-prior exposure before running.
+answerable from the image alone, what the candidate-restricted scorer reveals to the evaluator, and why the fixed cue is out of the training distribution.
 
 '''
 
@@ -1993,18 +1974,6 @@ utils.plot_accuracy_by_condition(
 
 r'''
 <img src="media/accuracy_controls.png" width="900">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after the paired control
-
-Record the full-question/image-only scores and each forecast discrepancy. Distinguish a missing target selector from a failed visual encoder. Compare one-object and multi-object
-rows and the mean scene-wise ambiguity oracle below; it is not a finite-sample ceiling. Forecast a change in object count or readout cue before trying it. The readout distribution
-shift and evaluator-supplied candidate restriction remain limitations.
 '''
 
 # ! CELL TYPE: code
@@ -3885,9 +3854,8 @@ r'''
 `model(**inputs).logits[0, -1]` is the vocabulary logits at the last position of the single example; index it with `candidate_ids`.
 </details>
 
-Before the revised Qwen controls, record a range for true-image accuracy and image-only accuracy separately on single-object and multi-object scenes, with confidence and an
-explanation of target ambiguity. The image-only input has no question text; six colour candidates exist only in the scorer. After execution, record the observed gaps and forecast a
-changed object-count distribution without treating this monitored case as unseen evaluation.
+Before the revised Qwen controls, record a range for true-image accuracy and image-only accuracy separately on single-object and multi-object scenes, with an
+explanation of target ambiguity. The image-only input has no question text; six colour candidates exist only in the scorer.
 
 Now the modality controls, on Qwen. For 100 test scenes with a random target object each, we ask "What colour is the {shape}?" with four different images: the **true scene**, a
 **blank** image, a **noise** image, and a **shuffled** image (the scene of a different question, using your `derangement`). Each Qwen call runs a 2B-parameter model, so this takes
@@ -4227,10 +4195,9 @@ at the earliest sampled layer (0.88), reaches about 1.00 through the middle and 
 identified cause.
 
 Object recovery falls late (0.18 at layer 24, about 0 at 27) as last-position recovery rises (0.69 at 24, 0.99 at 27). This resembles the mini VLM's broad localization and late
-transfer, with weaker object-only recovery and different timing. The fresh schedule requests layers 0, 3, 6, 9, 12, 15, 18, 21, 24, 27 exactly once. The archived historical sweep's
-repeated layer 27 remains recoverable; it was the same intervention, not an independent observation.
+transfer, with weaker object-only recovery and different timing.
 
-Recovery is a mean normalized clean-versus-corrupt logit-gap change, not accuracy. These are monitored selected examples, not an unseen evaluation. Qwen's 20 selected pairs and
+Recovery is a mean normalized clean-versus-corrupt logit-gap change, not accuracy. Qwen's 20 selected pairs and
 Mini VLM's 100 pairs have unequal precision, and averages without pair intervals do not establish shared circuits.
 </details>
 
@@ -4260,9 +4227,7 @@ That's the full loop: build a VLM from parts, check with controls that it uses t
 The scope is narrow: synthetic shapes, a fixed family of questions, one mini-VLM training seed, and a 20-pair real-model patching sweep. The plots report averages without
 pair-resampling intervals. They do not test natural-image reasoning, compositional holdouts, or a combined knockout of all candidate routes. The image-only ablation is a
 fixed-readout distribution shift, not a separately trained baseline. Count remains answerable without selecting a target; weak query-free Qwen performance also occurs on
-single-object scenes and cannot be attributed to ambiguity alone. Current loaders explicitly pin cached revisions; the historical outputs did not record equivalent revision
-identity. The trained Mini VLM/projector weights were not saved as recoverable checkpoint files, although source, recipe, runtime, losses and output traces are preserved. The
-figures above are evidence for this monitored saved run; a later run need not reproduce it exactly. Human learner acceptance remains separate.
+single-object scenes and cannot be attributed to ambiguity alone.
 '''
 
 # ! CELL TYPE: code

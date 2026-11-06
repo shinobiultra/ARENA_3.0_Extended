@@ -75,7 +75,7 @@ r'''
 r'''
 ## Setup code
 
-This study edition uses NumPy, Matplotlib and Pillow already installed in the course environment. All arrays are CPU float64, all examples are deterministic, and no model or network access occurs. Work in the full local checkout. Ordinary mathematical fixtures are guided practice, with no untouched evaluation split implied.
+This study edition uses NumPy, Matplotlib and Pillow already installed in the course environment. All arrays are CPU float64, all examples are deterministic, and no model or network access occurs.
 '''
 
 # ! CELL TYPE: code
@@ -124,7 +124,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Average non-overlapping square patches of an RGB image into `(grid_height,grid_width,3)`. Reject sizes not divisible by the patch width. Preserve row-major spatial order.
@@ -181,7 +182,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Compute cross-entropy from a centred, temperature-scaled teacher distribution to a separately temperature-scaled student distribution. Inputs are `(examples,prototypes)`. Use stable log-softmax; average example losses. This is the numerical objective component, not full DINO/DINOv2 training.
@@ -305,7 +307,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Return the source feature mean and the first `k` right singular vectors as rows. For deterministic display, flip each component so its largest absolute loading is positive. Require `1 <= k <= min(n_examples,width)`.
@@ -367,7 +370,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Project using the supplied source mean and components. Keep all example rows. Do not whiten or refit; those would be different representations.
@@ -421,7 +425,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Return best target indices and cosine scores for each source row. Zero vectors remain zero after an epsilon-safe norm division; ties choose the first target index. Never compare unnormalised dot products here.
@@ -479,7 +484,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Given source→target indices and target→source indices, return a boolean source mask whose mapping returns to the same source index. Do not assume the two images have the same number of patches.
@@ -533,7 +539,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Score the part labels of predicted target matches for the selected source rows. `source_labels`/`target_labels` are flattened; `source_mask` specifies the denominator, normally source foreground. Reject an empty denominator.
@@ -654,7 +661,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Mark rows whose L2 norm exceeds `multiplier * median(norms)`. Use a strict comparison. This robust descriptive rule is fixed before inspecting the injected example; it is not a scientific model-selection threshold.
@@ -709,7 +717,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Return a stable softmax over key dot products with one query, scaled by `sqrt(width)`. The output is a one-dimensional probability distribution.
@@ -824,7 +833,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Average feature rows selected by a boolean region mask. Reject an empty selected region. We will use one-click masks and larger regions with the same function.
@@ -880,7 +890,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Return `(mask,scores)` from positive-minus-negative cosine affinity and a strict `scores>margin` threshold. Normalise patch rows and both prototypes separately with epsilon-safe denominators.
@@ -938,7 +949,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Return intersection divided by union for boolean masks. If both are empty, define IoU1 explicitly. Do not divide by the size of the image or the target alone.
@@ -994,7 +1006,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Copy a target feature matrix and replace rows under a boolean region mask with the corresponding clean-donor rows. Shapes and spatial alignment must already agree. Keep both original inputs unchanged.
@@ -1121,8 +1134,6 @@ r'''
 ## Limitations
 
 RGB means give appearance correspondence, not learned DINO features or semantic object understanding. Constant part colours make exact point matching ambiguous. The PCA task has three input coordinates, so its three-component view loses no information; this is a basis/geometry exercise, not dimensionality-reduction evidence. The norm artifact is injected. The teacher/student objective omits networks, optimisation, momentum updates, crops and DINOv2’s complete objectives. The prompt decoder is a cosine affinity rule, not SAM. Native pretrained-model patch features, learned register comparisons, mask-decoder patching and natural-image results remain pending.
-
-The configured requirement IDs remain visible: `vlm.dino_dense_features`, `vlm.sam_segmentation_features`. Teaching implementations and CPU fixtures do not promote requirement status, establish a native model result, or confer direct learner acceptance.
 '''
 
 # ! CELL TYPE: markdown
@@ -1138,7 +1149,7 @@ r'''
 # ! TAGS: []
 
 r'''
-Before changing the recipe, write one prediction about the sign and size of a control difference. After running it, explain a mismatch. A public play outcome is exposed guided practice; changing a seed does not make it an unseen transfer test.
+Before changing the recipe, write one prediction about the sign and size of a control difference. After running it, explain a mismatch.
 
 ## Further reading
 

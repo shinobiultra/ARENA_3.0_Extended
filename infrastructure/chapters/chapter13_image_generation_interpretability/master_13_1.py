@@ -16,7 +16,7 @@ r'''
         "subtitle": ""
     },
     {
-        "title": "Interpret the historical signature",
+        "title": "Interpret the signature",
         "icon": "3-circle-fill",
         "subtitle": ""
     },
@@ -58,25 +58,13 @@ r'''
 # ! TAGS: []
 
 r'''
-**Historical exposed guided practice.** Every saved output and image below belongs to the complete legacy 13.1 publication. This canonical migration runs no model, test of the
-taught method, training, checkpoint download or GPU study. Preserve the two named shape prompts and all failed controls as a fixed historical cohort; these public worked answers
-cannot be counted as unseen mastery.
-
-**Constructor compatibility repair.** The archived original notebook omitted `@dataclass` from `CrossAttentionCaptureStore` although `for_groups` calls its keyword constructor. The
-canonical code now adds that single missing decorator, matching the unchanged legacy module. Independent source review and an exact decorator-inverse check cover this narrow
-repair; all original fields, methods, tests, historical output objects and scientific calculations are retained. The old notebook and old notices remain archived. No taught
-function or model ran to validate the repair, and the historical outputs do not prove current top-to-bottom execution.
-
-**Visual quality boundary.** The saved red example is a tilted placard with a white hole, and the blue example is a patterned disc. The historical color/attention gates pass on
-those pictures; they do not establish clean solid-shape prompt fidelity, human perceptual quality or broad generation success. Inspect the complete images before accepting the old
+**Visual quality boundary.** The saved red example is a tilted placard with a white hole, and the blue example is a patterned disc. The color/attention gates pass on
+those pictures; they do not establish clean solid-shape prompt fidelity, human perceptual quality or broad generation success. Inspect the complete images before accepting the
 headline.
 
 **Scope and runtime.** The existing lesson implements cross-attention capture, same-seed prompt edits and quality/region controls. It does not implement explicit diffusion
-scheduler updates or denoising-time activation patching. Those gaps are not filled by a renamed title; 13.2 is a separate lesson. The historical GPU route is pinned SD1.5/CLIP, six
-512px generations, 20 steps and 24GB cap. Timing and memory statements in retained prose are historical, not newly measured. Small tensor exercises can use CPU.
-
-Before opening each historical answer, write your numerical forecast, confidence, reasoning and prior exposure. Leave observations blank until inspection. Explain every control and
-forecast a changed condition afterward.
+scheduler updates or denoising-time activation patching. The GPU route is pinned SD1.5/CLIP, six
+512px generations, 20 steps and 24GB cap. Small tensor exercises can use CPU.
 '''
 
 # ! CELL TYPE: markdown
@@ -98,11 +86,11 @@ r'''
 >
 > - Implement every cross-attention processor, aggregation, same-seed intervention and per-case score.
 
-### 3️⃣ Interpret the historical signature
+### 3️⃣ Interpret the signature
 
 > ##### Learning Objectives
 >
-> - Compare target and control attention with both matched image edits; separate historical evidence, broad generalization and unseen mastery.
+> - Compare target and control attention with both matched image edits; separate this evidence from broad generalization.
 
 ### ☆ Bonus
 
@@ -193,7 +181,7 @@ if MAIN:
 r'''
 ### Exposed CLIP retrieval metric
 
-The exact historical paired-retrieval metric is shown here. It was previously imported; it does not generate images or replace cross-attention and intervention evidence.
+The paired-retrieval metric is shown here. It does not generate images or replace cross-attention and intervention evidence.
 '''
 
 # ! CELL TYPE: code
@@ -411,10 +399,12 @@ r'''
 r'''
 ### Exercise 1: Measure Attention in a Named Region
 
-```yaml
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15-20 minutes on this exercise.
+> ```
 
 > **Difficulty:** easy
 > **Importance:** high
@@ -428,17 +418,7 @@ Clamp negative attention, normalize the map to unit mass, and report how much fa
 # ! TAGS: []
 
 r'''
-### Forecast before inspection
-
 Predict the normalized target mass and its complement; specify what a zero/empty mask should do.
-
-Forecast: ______
-
-Confidence: ______
-
-Reasoning: ______
-
-Prior exposure: ______
 '''
 
 # ! CELL TYPE: code
@@ -495,24 +475,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after inspection
-
-Observed result: ______
-
-Comparison with forecast and all controls: ______
-
-Mechanistic explanation: ______
-
-Changed-condition forecast: ______
-
-What this establishes and leaves unresolved: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details>
 <summary>Expected output</summary>
 
@@ -548,7 +510,7 @@ selectively.
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Solution</summary>
 
 ```python
 def attention_region_report(
@@ -640,10 +602,12 @@ where the right answer is known; it does not validate a diffusion model.
 r'''
 ### Exercise 2: Require a Specific Denoising Circuit
 
-```yaml
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15-20 minutes on this exercise.
+> ```
 
 > **Difficulty:** easy
 > **Importance:** high
@@ -657,17 +621,7 @@ Ablating any large set of denoising components may hurt loss. Require the propos
 # ! TAGS: []
 
 r'''
-### Forecast before inspection
-
 Forecast the target and same-size random ablation loss deltas before comparing specificity.
-
-Forecast: ______
-
-Confidence: ______
-
-Reasoning: ______
-
-Prior exposure: ______
 '''
 
 # ! CELL TYPE: code
@@ -721,24 +675,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after inspection
-
-Observed result: ______
-
-Comparison with forecast and all controls: ______
-
-Mechanistic explanation: ______
-
-Changed-condition forecast: ______
-
-What this establishes and leaves unresolved: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details>
 <summary>Expected output</summary>
 
@@ -773,7 +709,7 @@ circuit.
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Solution</summary>
 
 ```python
 def denoising_circuit_report(
@@ -812,10 +748,12 @@ def denoising_circuit_report(
 r'''
 ### Exercise 3: Gate a Latent Direction Against Random Directions
 
-```yaml
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15-20 minutes on this exercise.
+> ```
 
 > **Difficulty:** medium
 > **Importance:** medium
@@ -829,17 +767,7 @@ Use paired examples and require the effect to have the requested sign, sufficien
 # ! TAGS: []
 
 r'''
-### Forecast before inspection
-
 Forecast a paired directional-effect margin against random directions.
-
-Forecast: ______
-
-Confidence: ______
-
-Reasoning: ______
-
-Prior exposure: ______
 '''
 
 # ! CELL TYPE: code
@@ -908,24 +836,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after inspection
-
-Observed result: ______
-
-Comparison with forecast and all controls: ______
-
-Mechanistic explanation: ______
-
-Changed-condition forecast: ______
-
-What this establishes and leaves unresolved: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details>
 <summary>Expected output</summary>
 
@@ -959,7 +869,7 @@ This function tests the logic of a latent steering claim. No real latent steerin
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Solution</summary>
 
 ```python
 def latent_direction_effect_report(
@@ -1012,10 +922,12 @@ def latent_direction_effect_report(
 r'''
 ### Exercise 4: Prompt-Region Causality Needs a Control Edit
 
-```yaml
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15-20 minutes on this exercise.
+> ```
 
 > **Difficulty:** medium
 > **Importance:** high
@@ -1029,17 +941,7 @@ Measure target-region scores for the original image, a target-token ablation, an
 # ! TAGS: []
 
 r'''
-### Forecast before inspection
-
 Forecast target-token color-area drop versus the same-seed control edit.
-
-Forecast: ______
-
-Confidence: ______
-
-Reasoning: ______
-
-Prior exposure: ______
 '''
 
 # ! CELL TYPE: code
@@ -1093,24 +995,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after inspection
-
-Observed result: ______
-
-Comparison with forecast and all controls: ______
-
-Mechanistic explanation: ______
-
-Changed-condition forecast: ______
-
-What this establishes and leaves unresolved: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details>
 <summary>Expected output</summary>
 
@@ -1144,7 +1028,7 @@ The control edit tells you whether the measured region is specifically tied to t
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Solution</summary>
 
 ```python
 def prompt_region_causal_report(
@@ -1214,10 +1098,12 @@ r'''
 r'''
 ### Exercise 5: Build the Strict Image Controls
 
-```yaml
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15-20 minutes on this exercise.
+> ```
 
 > **Difficulty:** hard
 > **Importance:** high
@@ -1238,17 +1124,7 @@ Implement the report stack used by the real model:
 # ! TAGS: []
 
 r'''
-### Forecast before inspection
-
 Write a falsifiable conjunction of attention locality, matched-edit specificity, image quality and noise rejection.
-
-Forecast: ______
-
-Confidence: ______
-
-Reasoning: ______
-
-Prior exposure: ______
 '''
 
 # ! CELL TYPE: code
@@ -1560,24 +1436,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after inspection
-
-Observed result: ______
-
-Comparison with forecast and all controls: ______
-
-Mechanistic explanation: ______
-
-Changed-condition forecast: ______
-
-What this establishes and leaves unresolved: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details>
 <summary>Expected output</summary>
 
@@ -1613,7 +1471,7 @@ No single scalar certifies image quality or mechanism. The strict aggregate is i
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Solution</summary>
 
 ```python
 def _as_hwc_rgb(image: t.Tensor) -> t.Tensor:
@@ -1885,10 +1743,12 @@ is why every headline visual result below carries both semantic and image-qualit
 r'''
 ### Exercise 6: Break the Region Labels
 
-```yaml
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15-20 minutes on this exercise.
+> ```
 
 > **Difficulty:** medium
 > **Importance:** high
@@ -1920,7 +1780,7 @@ to the proposed region identity.
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Solution</summary>
 
 ```python
 def shuffled_region_label_control(
@@ -1971,17 +1831,7 @@ def shuffled_region_label_control(
 # ! TAGS: []
 
 r'''
-### Forecast before inspection
-
 Forecast matched minus shuffled map-region mass; explain why region-mask area matters.
-
-Forecast: ______
-
-Confidence: ______
-
-Reasoning: ______
-
-Prior exposure: ______
 '''
 
 # ! CELL TYPE: code
@@ -2051,24 +1901,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after inspection
-
-Observed result: ______
-
-Comparison with forecast and all controls: ______
-
-Mechanistic explanation: ______
-
-Changed-condition forecast: ______
-
-What this establishes and leaves unresolved: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 # 2️⃣ Capture cross-attention and match edits
 '''
 
@@ -2093,10 +1925,12 @@ The two preregistered benign prompts are a red square and a blue circle. This na
 r'''
 ### Exercise 7: Capture Cross-Attention Yourself
 
-```yaml
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15-20 minutes on this exercise.
+> ```
 
 > **Difficulty:** hard
 > **Importance:** very high
@@ -2128,7 +1962,7 @@ Capturing target-token attention makes the measurement inspectable. It does not 
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Solution</summary>
 
 ```python
 class CrossAttentionCaptureStore:
@@ -2326,17 +2160,7 @@ def aggregate_attention_maps(maps: list[t.Tensor], *, output_size: int = 64) -> 
 # ! TAGS: []
 
 r'''
-### Forecast before inspection
-
 Forecast tensor axes reduced in token-group attention and which UNet processors should be captured.
-
-Forecast: ______
-
-Confidence: ______
-
-Reasoning: ______
-
-Prior exposure: ______
 '''
 
 # ! CELL TYPE: code
@@ -2681,30 +2505,14 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after inspection
-
-Observed result: ______
-
-Comparison with forecast and all controls: ______
-
-Mechanistic explanation: ______
-
-Changed-condition forecast: ______
-
-What this establishes and leaves unresolved: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise 8: Construct Same-Seed Prompt Interventions
 
-```yaml
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15-20 minutes on this exercise.
+> ```
 
 > **Difficulty:** medium
 > **Importance:** very high
@@ -2736,7 +2544,7 @@ because any prompt edit perturbs the diffusion trajectory.
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Solution</summary>
 
 ```python
 def build_same_seed_prompt_interventions(case: dict) -> dict[str, dict[str, int | str]]:
@@ -2793,17 +2601,7 @@ def generate_same_seed_prompt_interventions(
 # ! TAGS: []
 
 r'''
-### Forecast before inspection
-
 Write which generation conditions must share seed, dimensions, guidance and step count.
-
-Forecast: ______
-
-Confidence: ______
-
-Reasoning: ______
-
-Prior exposure: ______
 '''
 
 # ! CELL TYPE: code
@@ -2889,30 +2687,14 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after inspection
-
-Observed result: ______
-
-Comparison with forecast and all controls: ______
-
-Mechanistic explanation: ______
-
-Changed-condition forecast: ______
-
-What this establishes and leaves unresolved: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise 9: Score One Generated Counterfactual
 
-```yaml
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15-20 minutes on this exercise.
+> ```
 
 > **Difficulty:** hard
 > **Importance:** very high
@@ -2944,7 +2726,7 @@ attractive score would hide which link failed.
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Solution</summary>
 
 ```python
 def evaluate_sd15_case(
@@ -3065,24 +2847,6 @@ def evaluate_sd15_case(
     }
 ```
 </details>
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Forecast before inspection
-
-Forecast what independent color masks and identical-noise control edits jointly test.
-
-Forecast: ______
-
-Confidence: ______
-
-Reasoning: ______
-
-Prior exposure: ______
 '''
 
 # ! CELL TYPE: code
@@ -3227,30 +2991,14 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after inspection
-
-Observed result: ______
-
-Comparison with forecast and all controls: ______
-
-Mechanistic explanation: ______
-
-Changed-condition forecast: ______
-
-What this establishes and leaves unresolved: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise 10: Assemble the Real Experiment
 
-```yaml
-Difficulty: 🔴🔴🔴⚪⚪
-Importance: 🔵🔵🔵🔵⚪
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15-20 minutes on this exercise.
+> ```
 
 The function below is the complete scientific path. Read it before running it and trace where each object comes from: checkpoint loaders, your hook installer, your same-seed
 interventions, your case evaluator, and the visible CLIP metric. No report or hidden runner supplies the result.
@@ -3382,17 +3130,7 @@ def run_visible_sd15_experiment(max_vram_gb: float = 24.0) -> dict:
 # ! TAGS: []
 
 r'''
-### Forecast before inspection
-
 Before inspecting saved results, record expected target/control gaps and the narrow model/cohort claim.
-
-Forecast: ______
-
-Confidence: ______
-
-Reasoning: ______
-
-Prior exposure: ______
 '''
 
 # ! CELL TYPE: code
@@ -3407,24 +3145,6 @@ if MAIN:
         f"CUDA {t.version.cuda} | peak allocated VRAM "
         f"{signature_result['peak_vram_gb']:.3f} GB"
     )
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after inspection
-
-Observed result: ______
-
-Comparison with forecast and all controls: ______
-
-Mechanistic explanation: ______
-
-Changed-condition forecast: ______
-
-What this establishes and leaves unresolved: ______
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -3453,7 +3173,7 @@ those objects, not a replacement for them.
 # ! TAGS: []
 
 r'''
-# 3️⃣ Interpret the historical signature
+# 3️⃣ Interpret the signature
 '''
 
 # ! CELL TYPE: markdown
@@ -3472,17 +3192,7 @@ Read each row left to right. A target heatmap should concentrate on the independ
 # ! TAGS: []
 
 r'''
-### Forecast before inspection
-
 Forecast how each of the six grid columns should differ and name a failure a plausible heatmap cannot exclude.
-
-Forecast: ______
-
-Confidence: ______
-
-Reasoning: ______
-
-Prior exposure: ______
 '''
 
 # ! CELL TYPE: code
@@ -3529,24 +3239,6 @@ if MAIN:
     signature_path = assets_dir / "diffusion_image_generation_signature.png"
     fig.savefig(signature_path, dpi=140, bbox_inches="tight")
     plt.show()
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after inspection
-
-Observed result: ______
-
-Comparison with forecast and all controls: ______
-
-Mechanistic explanation: ______
-
-Changed-condition forecast: ______
-
-What this establishes and leaves unresolved: ______
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -3654,17 +3346,7 @@ counterfactual. A convincing interpretation should collapse under the wrong toke
 # ! TAGS: []
 
 r'''
-### Forecast before inspection
-
 For the unchanged play values, forecast how shifting the region affects target/control mass. Then predict one changed setting.
-
-Forecast: ______
-
-Confidence: ______
-
-Reasoning: ______
-
-Prior exposure: ______
 '''
 
 # ! CELL TYPE: code
@@ -3695,24 +3377,6 @@ if MAIN:
     for ax in axes: ax.axis("off")
     plt.show()
     play_report
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after inspection
-
-Observed result: ______
-
-Comparison with forecast and all controls: ______
-
-Mechanistic explanation: ______
-
-Changed-condition forecast: ______
-
-What this establishes and leaves unresolved: ______
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []

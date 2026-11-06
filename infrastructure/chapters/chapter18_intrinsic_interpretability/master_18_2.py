@@ -41,7 +41,7 @@ You want to explain a calculator: `output = first_input² + 0.5 × second_input`
 
 By the end of this notebook, you will have shown a concrete accuracy–interpretability tradeoff on the **same known additive regression task**: distance-weighted sparse fitting removes a designed nuisance at a shrinkage cost; a fitted piecewise-linear edge model exposes the square/linear decomposition; a leaf-penalized tree trades smooth accuracy for short rules. Exact oracles, irrelevant-feature controls and a linear baseline accompany the plots.
 
-This study edition fits tiny ordinary CPU arrays. It teaches the mathematical components behind `intrinsic.sparse_modular_training` and `intrinsic.kans_sparse_trees`. The edge model is a one-layer, degree-one B-spline additive special case of a KAN, **not** the released multilayer pykan pipeline. The sparse linear fit illustrates distance-weighted L1 regularization, without BIMT neuron swapping. The tree is a transparent greedy baseline, without an OSDT global-optimality claim. Large/native model training and released-method qualification remain pending.
+This study edition fits tiny ordinary CPU arrays. It teaches the mathematical components behind sparse modular training and KAN/sparse trees. The edge model is a one-layer, degree-one B-spline additive special case of a KAN, **not** the released multilayer pykan pipeline. The sparse linear fit illustrates distance-weighted L1 regularization, without BIMT neuron swapping. The tree is a transparent greedy baseline, without an OSDT global-optimality claim. Large/native model training and released-method qualification remain pending.
 
 Prerequisites: matrix calculus, least squares, basic optimization (0.3), and the distinction between observational fit and intervention evidence from 18.1. No model downloads or GPU are needed.
 '''
@@ -143,7 +143,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Return elementwise mean squared error over all examples and outputs. This metric uses no 1/2 factor; the fitting objective above does.
@@ -202,7 +203,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Return pairwise positive costs `[input,output]` for one-dimensional neuron positions. Equal positions still cost 1; distance should penalize long connections without making local connections free.
@@ -261,7 +263,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Implement the elementwise proximal operator of weighted L1: shrink each magnitude by its nonnegative threshold, clip at zero, and preserve sign. Broadcast thresholds.
@@ -320,7 +323,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Fit a zero-intercept multi-output matrix using a gradient step for the squared loss followed by weighted soft thresholding. Initialize zeros; keep the input arrays unchanged. This fixture uses a whitened design with spectral norm of `X.T@X/n` equal to one, so step size 0.5 is safely convergent.
@@ -385,7 +389,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Compute the fraction of total absolute connection mass outside a supplied boolean module mask. Return zero for an all-zero network. This is a chosen-layout diagnostic, not Newman graph modularity.
@@ -532,7 +537,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Evaluate piecewise-linear hat functions on arbitrary-shaped values, returning `values.shape + (K,)`. Include both endpoints correctly, allow nonuniform knots, and reject values outside the interval or repeated knots.
@@ -607,7 +613,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Build the gauge-fixed additive design for inputs `[batch,inputs]`. Subtract the basis at zero, remove the unique zero-knot basis column per feature, flatten in input-major order and prepend an intercept column.
@@ -673,7 +680,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Fit the visible additive edge model by least squares. Return the intercept followed by the gauge-fixed edge coefficients. No optimizer or nonlinear search is necessary for this fixed-basis teaching instance.
@@ -732,7 +740,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Return the separate fitted edge contributions `[batch,inputs]`, excluding the shared intercept. Their sum plus `coefficients[0]` must reproduce the full additive prediction.
@@ -794,7 +803,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Fit `offset + scale * candidate(x)` to sampled learned edge values. Return `[offset,scale]` and MSE. Candidate functions are supplied explicitly; this function does not search an unbounded formula language.
@@ -909,7 +919,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Enumerate all legal one-step splits and return `(feature,threshold,SSE_reduction)`. If no strictly positive gain exists, return `(None,None,0)`. Do not split constant columns or create empty children.
@@ -979,7 +990,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Recursively choose the best immediate split. Accept it only when global mean-SSE reduction exceeds the extra-leaf penalty. Keep the original `root_count` through recursion and stop at depth zero. A root-only tree has one leaf.
@@ -1049,7 +1061,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Evaluate the exact dictionary tree, preserving input order. Use the left child for values equal to a threshold. Empty batches should return empty arrays.
@@ -1115,7 +1128,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Count terminal values recursively. Count leaves, not decision nodes, because the objective above charges for terminal rules.
@@ -1174,7 +1188,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend up to 10–15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Return a list of `(rule_string,leaf_value)` pairs in left-to-right order. Prefix deeper conditions with `and`. Do not silently drop any branch.
@@ -1365,7 +1380,7 @@ The comparison does not establish that a KAN is generally more interpretable or 
 
 ## Try it yourself
 
-The original function is additive. Change it to include `interaction * x0*x1` with coefficient 1. Before running, predict why even an infinitely fine one-layer additive spline cannot represent the new term. Its mixed finite difference is zero, while the target’s mixed finite difference is not. The known polynomial oracle is a baseline with the interaction explicitly included. This is seen guided practice, not a blind transfer score.
+The original function is additive. Change it to include `interaction * x0*x1` with coefficient 1. Before running, predict why even an infinitely fine one-layer additive spline cannot represent the new term. Its mixed finite difference is zero, while the target’s mixed finite difference is not. The known polynomial oracle is a baseline with the interaction explicitly included.
 '''
 
 # ! CELL TYPE: code

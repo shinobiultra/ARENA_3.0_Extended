@@ -60,26 +60,6 @@ readouts and behavior, not a single “erasure score”.
 # ! TAGS: []
 
 r'''
-## Historical reference and execution boundary
-
-All displayed model outputs and twelve figures are retained **historical reference results**, not a fresh execution of this generated lesson. The complete published lesson, source
-files, instruction page, assets and immutable receipts were archived before migration. Canonical scientific code has the same AST and nonblank lines as the published code; the
-historical outputs and execution counts are preserved on that basis. Migration provenance is in `docs/mastery/migrations/erasure.md` at the repository root.
-
-The unchanged learner receipt records an older `lesson.md` hash. The unchanged fresh-reproduction receipt records thirteen current source hashes. The current lesson independently
-completes to the exact published cells; neither receipt is rewritten to certify this migration. External execution caches named in those old receipts are absent. This migration
-runs only tiny CPU mathematical checks and does not reload GPT-2 or the external author package.
-
-This is guided practice. Expected outputs, figures and interpretations expose answers. Record whether you have already seen them; this exposure is not scored as unseen mastery.
-Before the result, write a forecast, confidence and causal reason; afterward compare controls, explain discrepancies and predict a changed scientific condition. No learner
-forecast, answer, confidence or observation is filled in. The historical final sets are monitored and do not become untouched TEST through migration.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Content & Learning Objectives
 
 ### 1️⃣ Specify what “removed” means
@@ -227,7 +207,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Return the two means, the population covariance of `x`, and its cross-covariance with `z`. Use denominator `n`, center both arrays, and preserve their dtype and device. For our
@@ -349,7 +329,7 @@ r'''
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Diagonalize a symmetric positive-semidefinite covariance. Return whitening and unwhitening matrices, the numerical rank, eigenvalues and cutoff. By default use `width *
@@ -437,7 +417,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Compute a thin orthonormal basis `Q` for the nonzero left singular space of the cross-covariance. Store the edit as `left=Q`, `right=Q.T`, plus the training mean and rank. This is
@@ -537,7 +517,7 @@ r'''
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend 15–20 minutes on this exercise.
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 Construct `L` and `R` using your moments and whitening function. Use the same explicitly named SVD cutoff throughout. Return both factors and diagnostics, including the covariance
@@ -625,7 +605,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Apply the fitted low-rank factors to new row vectors. Keep the unconditional mean, avoid changing the input tensor, and multiply in an order that uses the thin intermediate rather
@@ -708,14 +688,9 @@ markers coincide; an orange dot lies directly over a blue one.
 # ! TAGS: []
 
 r'''
-## Forecast before the result — affine-optimum
-
 For the equally weighted four points X=(U,U+Z), U∈{-2,2}, Z∈{-1,1}, forecast mean squared displacement and signed-label cross-covariance norm after no intervention, old-probe
 removal, orthogonal covariance erasure and empirical LEACE. Rank displacement among maps satisfying the erasure constraint. Explain why minimum distance to one nullspace need not
 minimize distance among all erasers.
-
-Record your forecast, confidence (0–100%), and causal reasoning. Record whether you have already seen it in a figure, expected output or interpretation; seen or unknown exposure
-remains guided practice.
 
 Changed-condition forecast: Change the side-variable scale while keeping the concept contribution fixed; forecast which displacement curves move.
 '''
@@ -776,21 +751,6 @@ plt.show()
 
 r'''
 <img src="media/erasure_constraint_and_distortion.png" width="1000">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — affine-optimum
-
-Record the observed quantities and controls from your run or identify them explicitly as the retained historical reference. Compare them with your committed ranges or ordering;
-explain a discrepancy using the fitted map, reader, distribution or native model. State what the comparison does and does not establish. Revisit your confidence without replacing
-the original forecast.
-
-Transfer: Change the side-variable scale while keeping the concept contribution fixed; forecast which displacement curves move. Give a new forecast, confidence and causal reason
-before measuring this changed condition. A new seed alone is replication, not transfer.
 '''
 
 # ! CELL TYPE: markdown
@@ -868,7 +828,7 @@ r'''
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend 15–20 minutes on this exercise.
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 Implement the training-only standardization, scalar intercept and stable logistic objective. Only the probe coefficient and intercept belong in LBFGS. Return a coefficient and
@@ -972,13 +932,8 @@ SOLUTION
 # ! TAGS: []
 
 r'''
-## Forecast before the result — reader-refit
-
 For the four-point controls, forecast the old-reader and newly fitted reader log losses relative to log(2). Which transformation can disable the original subtraction yet leave
 recoverable linear signal? Predict the comparison before opening the probe figure.
-
-Record your forecast, confidence (0–100%), and causal reasoning. Record whether you have already seen it in a figure, expected output or interpretation; seen or unknown exposure
-remains guided practice.
 
 Changed-condition forecast: Replace the signed labels with a nonlinear function of the remaining coordinate; predict which guarantee changes.
 '''
@@ -1015,21 +970,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — reader-refit
-
-Record the observed quantities and controls from your run or identify them explicitly as the retained historical reference. Compare them with your committed ranges or ordering;
-explain a discrepancy using the fitted map, reader, distribution or native model. State what the comparison does and does not establish. Revisit your confidence without replacing
-the original forecast.
-
-Transfer: Replace the signed labels with a nonlinear function of the remaining coordinate; predict which guarantee changes. Give a new forecast, confidence and causal reason before
-measuring this changed condition. A new seed alone is replication, not transfer.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## A guarantee can hold while information survives
 
 Consider representations at `-2, +2` for class 1 and `-1, +1` for class 0.
@@ -1047,13 +987,8 @@ them. Inspect both panels before deciding what “chance performance” means.
 # ! TAGS: []
 
 r'''
-## Forecast before the result — nonlinear-boundary
-
 For class 1 at x=−2,+2 and class 0 at x=−1,+1, forecast linear logistic loss versus a constant reader, quadratic-reader accuracy and the best single-threshold accuracy. State
 precisely which loss and predictor class the centroid guarantee constrains.
-
-Record your forecast, confidence (0–100%), and causal reasoning. Record whether you have already seen it in a figure, expected output or interpretation; seen or unknown exposure
-remains guided practice.
 
 Changed-condition forecast: Give the outer and inner classes different means; forecast whether the fitted affine eraser remains the identity.
 '''
@@ -1098,21 +1033,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — nonlinear-boundary
-
-Record the observed quantities and controls from your run or identify them explicitly as the retained historical reference. Compare them with your committed ranges or ordering;
-explain a discrepancy using the fitted map, reader, distribution or native model. State what the comparison does and does not establish. Revisit your confidence without replacing
-the original forecast.
-
-Transfer: Give the outer and inner classes different means; forecast whether the fitted affine eraser remains the identity. Give a new forecast, confidence and causal reason before
-measuring this changed condition. A new seed alone is replication, not transfer.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Try It Yourself — change the predictable side contribution
 
 Change `SIDE_SCALE` and `COUPLING`. Predict how the orthogonal baseline's
@@ -1128,13 +1048,8 @@ affine eraser preserves it without trying to invert its zero variance.
 # ! TAGS: []
 
 r'''
-## Forecast before the result — covariance-play
-
 With SIDE_SCALE=2 and COUPLING=1.5 in the visible play cell, forecast the ordering and relative change of old-probe, orthogonal-covariance and LEACE squared displacement as
 coupling changes. Predict the covariance constraint separately from edit magnitude.
-
-Record your forecast, confidence (0–100%), and causal reasoning. Record whether you have already seen it in a figure, expected output or interpretation; seen or unknown exposure
-remains guided practice.
 
 Changed-condition forecast: Set COUPLING=0 while preserving SIDE_SCALE and forecast which erasers coincide.
 '''
@@ -1169,21 +1084,6 @@ plt.show()
 
 r'''
 <img src="media/erasure_covariance_play.png" width="1000">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — covariance-play
-
-Record the observed quantities and controls from your run or identify them explicitly as the retained historical reference. Compare them with your committed ranges or ordering;
-explain a discrepancy using the fitted map, reader, distribution or native model. State what the comparison does and does not establish. Revisit your confidence without replacing
-the original forecast.
-
-Transfer: Set COUPLING=0 while preserving SIDE_SCALE and forecast which erasers coincide. Give a new forecast, confidence and causal reason before measuring this changed condition.
-A new seed alone is replication, not transfer.
 '''
 
 # ! CELL TYPE: markdown
@@ -1339,7 +1239,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Implement the equation above using `apply_eraser` to obtain the target
@@ -1417,7 +1317,7 @@ r'''
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
 >
-> You should spend 10–15 minutes on this exercise.
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Given intervened logits, original logits and target token IDs, return the
@@ -1522,13 +1422,8 @@ reader before final evaluation.
 # ! TAGS: []
 
 r'''
-## Forecast before the result — native-generalization
-
 At sites 6/subject and 9/end, forecast whether zero fitting cross-covariance implies zero development cross-covariance or chance refitted-reader accuracy. Rank empirical versus
 .01-shrinkage LEACE on new-input displacement and object damage; keep no intervention and matched random controls explicit.
-
-Record your forecast, confidence (0–100%), and causal reasoning. Record whether you have already seen it in a figure, expected output or interpretation; seen or unknown exposure
-remains guided practice.
 
 Changed-condition forecast: Increase eraser-fitting rows with the independent probe-fitting set held fixed; forecast a direction for empirical rank and transfer distortion.
 '''
@@ -1687,29 +1582,9 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — native-generalization
-
-Record the observed quantities and controls from your run or identify them explicitly as the retained historical reference. Compare them with your committed ranges or ordering;
-explain a discrepancy using the fitted map, reader, distribution or native model. State what the comparison does and does not establish. Revisit your confidence without replacing
-the original forecast.
-
-Transfer: Increase eraser-fitting rows with the independent probe-fitting set held fixed; forecast a direction for empirical rank and transfer distortion. Give a new forecast,
-confidence and causal reason before measuring this changed condition. A new seed alone is replication, not transfer.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Forecast before the result — final-behavior
-
 For every frozen condition at 6/subject and 9/end, forecast recipient correct counts out of 288, object correct counts out of 384, independent-reader accuracy and log loss. Give
 numeric ranges for no intervention, empirical LEACE and .01-shrinkage LEACE, and rank the empirical effect against the sixteen magnitude-matched controls. Predict whether chance
 threshold accuracy alone will support an information-removal claim.
-
-Record your forecast, confidence (0–100%), and causal reasoning. Record whether you have already seen it in a figure, expected output or interpretation; seen or unknown exposure
-remains guided practice.
 
 Changed-condition forecast: Move erasure from the final token to the repeated subject with training and probes independently refitted; predict how task damage and recoverability
 can separate.
@@ -2063,21 +1938,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — final-behavior
-
-Record the observed quantities and controls from your run or identify them explicitly as the retained historical reference. Compare them with your committed ranges or ordering;
-explain a discrepancy using the fitted map, reader, distribution or native model. State what the comparison does and does not establish. Revisit your confidence without replacing
-the original forecast.
-
-Transfer: Move erasure from the final token to the repeated subject with training and probes independently refitted; predict how task damage and recoverability can separate. Give a
-new forecast, confidence and causal reason before measuring this changed condition. A new seed alone is replication, not transfer.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Try It Yourself — follow the intervention continuously
 
 Choose a development example and one of the two fitted sites. Before running,
@@ -2097,11 +1957,7 @@ play uses development sentences and leaves the fitted maps unchanged.
 # ! TAGS: []
 
 r'''
-## Forecast before the result — native-strength
-
 For PLAY_ROW=0, PLAY_SITE=(9,"end"), PLAY_METHOD="LEACE empirical" and strengths 0 to 1.5, forecast whether target probability at strength .5 equals the midpoint of strengths 0 and 1. Predict native and magnitude-matched random curves separately, and distinguish a changed winner from a newly wrong answer.
-
-Record your forecast, confidence (0–100%), and causal reasoning. Record whether you have already seen it in a figure, expected output or interpretation; seen or unknown exposure remains guided practice.
 
 Changed-condition forecast: Choose a development sentence the native model gets wrong, keeping the fitted maps fixed; forecast how the interpretation of winner changes differs.
 '''
@@ -2150,21 +2006,6 @@ assert weight_digest(model) == weights_before
 
 r'''
 <img src="media/erasure_native_strength_play.png" width="1000">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — native-strength
-
-Record the observed quantities and controls from your run or identify them explicitly as the retained historical reference. Compare them with your committed ranges or ordering;
-explain a discrepancy using the fitted map, reader, distribution or native model. State what the comparison does and does not establish. Revisit your confidence without replacing
-the original forecast.
-
-Transfer: Choose a development sentence the native model gets wrong, keeping the fitted maps fixed; forecast how the interpretation of winner changes differs. Give a new forecast,
-confidence and causal reason before measuring this changed condition. A new seed alone is replication, not transfer.
 '''
 
 # ! CELL TYPE: markdown

@@ -64,14 +64,6 @@ r'''
 # ! TAGS: []
 
 r'''
-> **Historical reference evidence:** all 43 recorded code-cell outputs and counts, 14 inline PNGs and widget outputs are retained from the legacy TinyStories progression. Setup routing and import guards are migration changes; the full canonical notebook has not been freshly executed. Twelve fits, 126 generation conditions, 78 timing conditions and nine saved text-play results remain historical. QA failures and weak story language remain visible. Reference-rich guided practice is already exposed and earns no unseen score. No training, GPU work, corpus reads or downloads were performed for this migration. Historical widget views may lack backing state; they are preserved, not repaired. See `docs/mastery/evidence/diffusion_lm_master_migration/20261019`.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 # 1️⃣ Exact copy grammar
 '''
 
@@ -272,7 +264,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴⚪⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Suggested time: 5-10 minutes
+>
+> You should spend up to 5-10 minutes on this exercise.
 > ```
 
 At timestep `t`, each token is independently replaced by `MASK` with probability `p_t`. Implement the schedule before touching a model.
@@ -291,7 +284,7 @@ All tests in `test_linear_mask_schedule_and_expected_fraction` passed!
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 def linear_mask_schedule(
@@ -413,7 +406,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Suggested time: 10 minutes
+>
+> You should spend up to 10 minutes on this exercise.
 > ```
 
 Draw one Bernoulli decision per token. The test includes the exact zero-noise and all-noise endpoints and a seeded mixed case.
@@ -434,7 +428,7 @@ All tests in `test_forward_noising_extremes_and_seeded_masks` passed!
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 def apply_forward_noising(
@@ -562,7 +556,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Suggested time: 10 minutes
+>
+> You should spend up to 10 minutes on this exercise.
 > ```
 
 Only corrupted positions contribute to the objective. Visible tokens are context; rewarding the model for copying them would inflate performance.
@@ -581,7 +576,7 @@ All tests in `test_masked_denoising_loss_uses_only_masked_positions` passed!
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 def masked_denoising_loss(logits: t.Tensor, target_ids: t.Tensor, mask: t.Tensor) -> t.Tensor:
@@ -624,7 +619,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Suggested time: 10-15 minutes
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Predict every position, rank positions by confidence, and remask the least confident fraction. Implement uniform remasking as a matched mask-budget baseline.
@@ -643,7 +639,7 @@ All tests in `test_confidence_remask_entropy_and_uniform_control` passed!
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 def token_entropy(logits: t.Tensor) -> t.Tensor:
@@ -768,7 +764,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Suggested time: 15-20 minutes
+>
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 Before training, use an oracle denoiser with a known target. This isolates reverse-process bugs from learning failures.
@@ -787,7 +784,7 @@ All tests in `test_oracle_diffusion_sampler_recovers_target` passed!
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 def diffusion_sampler(
@@ -918,7 +915,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Suggested time: 15 minutes
+>
+> You should spend up to 15 minutes on this exercise.
 > ```
 
 The first visible guess can later be changed. Stable commitment is the earliest row after which a token remains visible and correct for every later row.
@@ -937,7 +935,7 @@ All tests in `test_commitment_edit_distance_and_activation_trajectory` passed!
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 def commitment_times(tokens_over_steps: t.Tensor, mask_token_id: int) -> t.Tensor:
@@ -1062,7 +1060,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Suggested time: 10-15 minutes
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Enumerate all 100 digit pairs. The first two tokens are always visible conditions; only the four-token suffix is noised and scored.
@@ -1081,7 +1080,7 @@ All tests in `test_copy_pair_dataset_and_conditional_suffix_noising` passed!
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 def copy_pair_dataset(device: t.device) -> t.Tensor:
@@ -1166,7 +1165,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Suggested time: 10 minutes
+>
+> You should spend up to 10 minutes on this exercise.
 > ```
 
 Add token, position, and timestep embeddings, pass the full corrupted sequence through a Transformer encoder, and unembed every position.
@@ -1185,7 +1185,7 @@ All tests in `test_tiny_conditional_diffusion_lm_forward_shape` passed!
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 class TinyConditionalDiffusionLM(nn.Module):
@@ -1280,7 +1280,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Suggested time: 20 minutes
+>
+> You should spend up to 20 minutes on this exercise.
 > ```
 
 Implement the optimizer loop using suffix-only noising and masked loss. Record a compact loss curve so learning is visible rather than inferred from a final scalar.
@@ -1299,7 +1300,7 @@ All tests in `test_tiny_training_loop_learns_copy_pair_batch` passed!
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 def train_tiny_diffusion_model(
@@ -1382,7 +1383,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Suggested time: 20-25 minutes
+>
+> You should spend up to 20-25 minutes on this exercise.
 > ```
 
 Implement the sampler used for the signature result. Preserve the two-token prefix, save every suffix state, record entropy, and retain hidden activations for shape checks.
@@ -1401,7 +1403,7 @@ All tests in `test_conditional_diffusion_sample_preserves_prefix_and_records_ste
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 def conditional_diffusion_sample(
@@ -1835,7 +1837,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Suggested time: 10–15 minutes
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Return `(corrupted, selected)` for integer tokens `(B,L)`, boolean eligibility
@@ -1856,7 +1859,7 @@ The zero/all-mask endpoints, seeded frequency check and conditioning-preservatio
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 def mask_targets(tokens: t.Tensor, eligible: t.Tensor, probability: t.Tensor,
@@ -1909,7 +1912,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Suggested time: 25–35 minutes
+>
+> You should spend up to 25-35 minutes on this exercise.
 > ```
 
 For a masked token at step $k$, the exact posterior reveals its clean value
@@ -1942,7 +1946,7 @@ The independent forward-chain bound and gradient agree in float64; a no-mask dra
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 def finite_diffusion_loss(logits: t.Tensor, clean: t.Tensor, corrupted: t.Tensor,
@@ -2038,7 +2042,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Suggested time: 15–25 minutes
+>
+> You should spend up to 15-25 minutes on this exercise.
 > ```
 
 `clean_prediction_probs` removes MASK, then returns a softmax at temperature
@@ -2061,7 +2066,7 @@ Greedy/soft draws exclude MASK; the reverse distribution matches the independent
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 def clean_prediction_probs(logits: t.Tensor, mask_id: int, temperature: float):
@@ -2152,7 +2157,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Suggested time: 15–25 minutes
+>
+> You should spend up to 15-25 minutes on this exercise.
 > ```
 
 Implement Shannon entropy in nats with `0 log 0 = 0`; stable commitment from
@@ -2176,7 +2182,7 @@ running balance and fail at its first negative value.
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 def entropy_from_probs(probs: t.Tensor):
@@ -2298,7 +2304,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Suggested time: 30–45 minutes
+>
+> You should spend up to 30-45 minutes on this exercise.
 > ```
 
 Start every eligible slot at MASK. For each block, run the declared number
@@ -2331,7 +2338,7 @@ All three finish without MASK, preserve context/earlier blocks, obey seeded sche
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 @t.no_grad()
@@ -2527,7 +2534,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Suggested time: 25–35 minutes
+>
+> You should spend up to 25-35 minutes on this exercise.
 > ```
 
 Implement QKV projections, head reshaping and the full key-validity mask.
@@ -2552,7 +2560,7 @@ Both masks agree with explicit per-head sums and independent gradients in float6
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 class TextAttention(nn.Module):
@@ -2639,7 +2647,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Suggested time: 15–25 minutes
+>
+> You should spend up to 15-25 minutes on this exercise.
 > ```
 
 Build a pre-LayerNorm attention residual and GELU MLP residual with expansion
@@ -2663,7 +2672,7 @@ Cached chunks match a full causal pass; changing a future token leaves earlier c
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 class TextBlock(nn.Module):
@@ -2776,7 +2785,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Suggested time: 10–15 minutes
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 A logit at position `j-1` predicts target token `j`. Exclude MASK from the
@@ -2798,7 +2808,7 @@ Shifted values and gradients match the explicit position-by-position objective.
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 def autoregressive_target_loss(logits, sequence, eligible, mask_id: int):
@@ -2853,7 +2863,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Suggested time: 25–35 minutes
+>
+> You should spend up to 25-35 minutes on this exercise.
 > ```
 
 Run a full context prefill and then one input token per cached step. Also
@@ -2877,7 +2888,7 @@ Cached/uncached tokens match, the cache reduces input work, different EOS times 
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 @t.no_grad()
@@ -2996,7 +3007,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Suggested time: 15–25 minutes
+>
+> You should spend up to 15-25 minutes on this exercise.
 > ```
 
 Shuffle complete target strings with one full permutation inside each task.
@@ -3019,7 +3031,7 @@ Complete target multisets remain intact within each task; development draws matc
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 def permute_targets_within_task(sequence, eligible, task_ids, *, generator):
@@ -3138,7 +3150,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Suggested time: 35–50 minutes
+>
+> You should spend up to 35-50 minutes on this exercise.
 > ```
 
 Implement equal-per-task minibatches, AdamW, norm clipping at 1 and checkpoint
@@ -3167,7 +3180,7 @@ Both optimizers match the independent two-update oracle; all four modes share in
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 def fit_text_model(factory, training, development, *, kind: str, shuffled: bool,
@@ -3368,7 +3381,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Suggested time: 15–25 minutes
+>
+> You should spend up to 15-25 minutes on this exercise.
 > ```
 
 Decode tokens before the first generated EOS, keeping any special-token
@@ -3392,7 +3406,7 @@ An alternate balanced string is valid despite nonzero edit distance; PAD/MASK mi
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 def score_generated_text(row, generated_ids, tokenizer):
@@ -3598,7 +3612,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Suggested time: 15–20 minutes
+>
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 Time the same fixed batch after two warmups and keep five repetitions.
@@ -3622,7 +3637,7 @@ The timer retains every replicate and rejects both changing outputs and trace ov
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 def measure_generation_latency(generate_fn, *, device, repeats: int = 5, warmups: int = 2):

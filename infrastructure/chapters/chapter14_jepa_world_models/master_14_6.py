@@ -35,7 +35,7 @@ By the end of this notebook, you will have shown that a visible candidate repres
 
 The default organism is small enough to inspect: uniform attention over Sudoku peers, clue-value features, and a learned four-output candidate head. The peer graph is **given as an architectural prior**. We do not claim it discovered row/column/box rules. A short, fixed CPU readout fit is ordinary lesson execution, not a native large-model experiment. It trains candidate prediction, then uses a visible naked-single policy. Solving arbitrary Sudoku with an unconstrained learned transformer remains pending.
 
-Prerequisites: attention from 1.1, probes and causal interventions from chapter 1/11, and Boolean broadcasting. Zeros denote blanks; digits are 1–4. No downloads or GPU are used. Every public board is guided practice.
+Prerequisites: attention from 1.1, probes and causal interventions from chapter 1/11, and Boolean broadcasting. Zeros denote blanks; digits are 1–4. No downloads or GPU are used.
 '''
 
 # ! CELL TYPE: markdown
@@ -77,7 +77,7 @@ r'''
 r'''
 ## Setup code
 
-Run from the repository checkout or this section directory. This study edition uses tiny CPU fixtures: no network, pretrained checkpoint, GPU or additional installation. All public outputs are guided practice, not an unseen learner assessment.
+This study edition uses tiny CPU fixtures: no network, pretrained checkpoint, GPU or additional installation.
 '''
 
 # ! CELL TYPE: code
@@ -131,6 +131,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -193,6 +194,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -253,6 +255,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -318,6 +321,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -420,6 +424,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -482,6 +487,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -542,6 +548,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -685,6 +692,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -749,6 +757,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -812,6 +821,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -880,6 +890,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -1007,6 +1018,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -1068,6 +1080,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -1175,9 +1188,9 @@ r'''
 
 The fixed CPU fit reduces BCE from `0.693147` to `0.050784`; candidate-bit and exact-set check accuracies are both `1.0` on the public changed-mask orbit. The fitted head fills all eight blanks in the cold-open puzzle; the untrained control leaves eight. The clean forced move is digit 2. The donor candidate edit forces digit 1 and violates the original puzzle. A patch to a filled wrong cell is ignored by the move policy. These outcomes locate the causal dependence at the visible candidate-to-move interface. Exact candidate-set accuracy is stricter than bit accuracy; inspect both before describing the learned readout as correct.
 
-## Limitations and requirement bridge
+## Limitations
 
-`world.sudoku_transformers` is preserved. This study edition implements 4×4 constraint tokenization, masked attention, a learned candidate readout, naked-single rollouts, candidate probes, causal edits and independent legality/search checks. It does **not** establish unconstrained transformer discovery of Sudoku, arbitrary multi-step search, transfer to 9×9 or a naturally emergent naked-single circuit. The geometry is supplied, readout labels come from the visible local-rule oracle, and the finite digit-permutation fitting/check orbit is public. Full small-transformer solving and circuit discovery remain pending native work.
+This study edition implements 4×4 constraint tokenization, masked attention, a learned candidate readout, naked-single rollouts, candidate probes, causal edits and independent legality/search checks. It does **not** establish unconstrained transformer discovery of Sudoku, arbitrary multi-step search, transfer to 9×9 or a naturally emergent naked-single circuit. The geometry is supplied, readout labels come from the visible local-rule oracle, and the finite digit-permutation fitting/check orbit is public. Full small-transformer solving and circuit discovery remain pending native work.
 '''
 
 # ! CELL TYPE: markdown

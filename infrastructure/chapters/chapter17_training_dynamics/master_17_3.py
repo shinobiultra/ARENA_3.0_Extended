@@ -69,7 +69,7 @@ Here is a small capability puzzle. An input contains three signs, $(a,b,c)\in\{-
 
 We will inspect every one of the eight inputs, so this is an **exhaustive finite-domain analytic study**, with no train/test claim. Checkpoints are specified by an interpolation coefficient, not obtained by fine-tuning. That controlled setting makes the causal question exactly answerable while exposing traps that matter when comparing real Pythia checkpoints or before/after a fine-tune.
 
-The configured requirements `training.finetuning_diffs` and `training.capability_emergence` include native Pythia and fine-tuning studies. Those experiments remain pending. Here you build the diffing, paired sparse-coding and patching tools that a pinned native study must supply with real arrays. Prerequisites: matrix multiplication, least squares, [1.2] activation patching. Allow 90–120 minutes.
+Here you build the diffing, paired sparse-coding and patching tools that a pinned native study must supply with real arrays. Prerequisites: matrix multiplication, least squares, [1.2] activation patching. Allow 90–120 minutes.
 '''
 
 # ! CELL TYPE: markdown
@@ -111,7 +111,7 @@ r'''
 r'''
 ## Setup code
 
-Use the repository environment. This study edition needs only NumPy and Matplotlib, runs on CPU, and downloads nothing. The default fixtures are public guided practice; write your prediction before opening the expected outputs.
+Use the repository environment. This study edition needs only NumPy and Matplotlib, runs on CPU, and downloads nothing.
 '''
 
 # ! CELL TYPE: code
@@ -1000,9 +1000,7 @@ Use the same label vector and tie rule in clean and patched conditions.
 # ! TAGS: []
 
 r'''
-### Forecast before running
-
-Which of the four columns will have the largest necessity effect at g=1? Will its activation-difference norm or its weight difference alone give the same causal answer? Commit a component name and an accuracy drop before opening the output.
+Which of the four columns will have the largest necessity effect at g=1? Will its activation-difference norm or its weight difference alone give the same causal answer?
 '''
 
 # ! CELL TYPE: code

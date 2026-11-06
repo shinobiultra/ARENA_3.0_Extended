@@ -35,7 +35,7 @@ By the end of this notebook, you will have shown why latent prediction needs bot
 
 The family resemblance is a question in embedding space: infer the representation of a target from a context. The exact encoders, masks, teacher updates, objectives and inference behavior differ substantially. An EMA teacher is useful in I-JEPA-like constructions but is **not a definition of every JEPA**. We test an EMA core as one organism, then fit small linear predictors with a fixed teacher to make the multi-modality comparison interpretable. These are tiny task-matched fixtures, not implementations or benchmark reproductions of all named papers.
 
-Prerequisites: 14.1, matrix least squares, Fourier magnitude, simple gradient descent, and linear probes from chapter 11. Everything runs on CPU without downloads. All examples and outputs are exposed guided practice.
+Prerequisites: 14.1, matrix least squares, Fourier magnitude, simple gradient descent, and linear probes from chapter 11. Everything runs on CPU without downloads.
 '''
 
 # ! CELL TYPE: markdown
@@ -77,7 +77,7 @@ r'''
 r'''
 ## Setup code
 
-Run from the repository checkout or this section directory. This study edition uses tiny CPU fixtures: no network, pretrained checkpoint, GPU or additional installation. All public outputs are guided practice, not an unseen learner assessment.
+This study edition uses tiny CPU fixtures: no network, pretrained checkpoint, GPU or additional installation.
 '''
 
 # ! CELL TYPE: code
@@ -133,6 +133,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -195,6 +196,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -253,6 +255,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -315,6 +318,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -424,6 +428,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -484,6 +489,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -548,6 +554,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -609,6 +616,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -670,6 +678,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -789,6 +798,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -848,6 +858,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -999,6 +1010,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -1059,6 +1071,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10-15 minutes on this exercise.
 > ```
 
@@ -1170,22 +1183,22 @@ The actual vision-answer retrieval is `1.0`, versus `0.0` under cyclic answer pe
 
 ## Named-method bridge and reading-only variants
 
-| Configured requirement | What is implemented here | What remains reading/native work |
+| Method | What is implemented here | What remains reading/native work |
 |---|---|---|
-| `jepa.time_series_jepa` | Causal future-view time-series prediction | Time-series encoder training and downstream tasks. “T-JEPA” is ambiguous: [TS-JEPA / Joint Embeddings Go Temporal](https://openreview.net/pdf?id=FIdbozebmy) is distinct from the [2026 temporal remote-sensing T-JEPA](https://arxiv.org/abs/2610.05731). Neither name is silently identified with this four-value adapter. |
-| `jepa.audio_jepa` | Fourier-magnitude paired views and target loss | [A-JEPA](https://arxiv.org/abs/2311.15830) uses visible spectrogram patches, an EMA target and curriculum masking; no mel encoder or audio benchmark runs here. |
-| `jepa.mc_jepa` | Separate content and displacement interventions | [MC-JEPA](https://arxiv.org/abs/2307.12698) combines optical-flow and self-supervised content objectives; that joint training is pending. |
-| `jepa.llm_jepa` | A paired-text count analogue | [LLM-JEPA](https://arxiv.org/abs/2509.14252) adds embedding-space learning to language training. Our detached-MSE EMA organism is not a claim that its target-update/objective design is identical. |
-| `jepa.vljepa` | Image features predict an answer embedding; retrieval | [VL-JEPA](https://arxiv.org/abs/2512.10942) predicts continuous target-text embeddings and can selectively decode text; no pretrained visual/text encoder or decoder is executed here. |
+| Time-series JEPA | Causal future-view time-series prediction | Time-series encoder training and downstream tasks. “T-JEPA” is ambiguous: [TS-JEPA / Joint Embeddings Go Temporal](https://openreview.net/pdf?id=FIdbozebmy) is distinct from the [2026 temporal remote-sensing T-JEPA](https://arxiv.org/abs/2610.05731). Neither name is silently identified with this four-value adapter. |
+| Audio JEPA | Fourier-magnitude paired views and target loss | [A-JEPA](https://arxiv.org/abs/2311.15830) uses visible spectrogram patches, an EMA target and curriculum masking; no mel encoder or audio benchmark runs here. |
+| MC-JEPA | Separate content and displacement interventions | [MC-JEPA](https://arxiv.org/abs/2307.12698) combines optical-flow and self-supervised content objectives; that joint training is pending. |
+| LLM-JEPA | A paired-text count analogue | [LLM-JEPA](https://arxiv.org/abs/2509.14252) adds embedding-space learning to language training. Our detached-MSE EMA organism is not a claim that its target-update/objective design is identical. |
+| VL-JEPA | Image features predict an answer embedding; retrieval | [VL-JEPA](https://arxiv.org/abs/2512.10942) predicts continuous target-text embeddings and can selectively decode text; no pretrained visual/text encoder or decoder is executed here. |
 
-The remaining configured IDs are **reading-only**, not extra implementations:
+The remaining methods are **reading-only**, not extra implementations:
 
-- `jepa.3d_jepa`: [3D-JEPA](https://arxiv.org/abs/2409.15803) moves latent prediction to 3D representations; inspect spatial grouping and target definition before porting masks.
-- `jepa.us_jepa`: [US-JEPA](https://arxiv.org/abs/2602.19322) concerns medical ultrasound. Its SALT objective uses a frozen domain-specific teacher rather than an EMA teacher; our EMA default is not universal or clinical evidence.
-- `jepa.bijepa`: [BiJEPA](https://arxiv.org/abs/2603.00049) studies bidirectional symmetric representation learning. Directionality of view prediction is a design choice, not a cosmetic rename.
-- `jepa.mjepa`: [MJEPA](https://arxiv.org/abs/2606.25225) concerns audio-visual learning. Cross-modal synchronization and missing-modality controls would be additional requirements.
-- `jepa.demo_jepa`: [Demo-JEPA official repository](https://github.com/banban3forever/Demo-JEPA) describes one-shot cross-embodiment imitation; its world-model and demonstration interfaces are not replaced by our paired scalars.
-- `jepa.sparse_jepa`: [SparseJEPA](https://arxiv.org/abs/2504.16140) adds sparse representation learning to JEPA. A sparsity penalty and grouping analysis require a separate implementation and control; a low effective rank alone is not evidence for its mechanism.
+- [3D-JEPA](https://arxiv.org/abs/2409.15803) moves latent prediction to 3D representations; inspect spatial grouping and target definition before porting masks.
+- [US-JEPA](https://arxiv.org/abs/2602.19322) concerns medical ultrasound. Its SALT objective uses a frozen domain-specific teacher rather than an EMA teacher; our EMA default is not universal or clinical evidence.
+- [BiJEPA](https://arxiv.org/abs/2603.00049) studies bidirectional symmetric representation learning. Directionality of view prediction is a design choice, not a cosmetic rename.
+- [MJEPA](https://arxiv.org/abs/2606.25225) concerns audio-visual learning. Cross-modal synchronization and missing-modality controls would be additional requirements.
+- [Demo-JEPA official repository](https://github.com/banban3forever/Demo-JEPA) describes one-shot cross-embodiment imitation; its world-model and demonstration interfaces are not replaced by our paired scalars.
+- [SparseJEPA](https://arxiv.org/abs/2504.16140) adds sparse representation learning to JEPA. A sparsity penalty and grouping analysis require a separate implementation and control; a low effective rank alone is not evidence for its mechanism.
 '''
 
 # ! CELL TYPE: markdown

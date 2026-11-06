@@ -37,17 +37,7 @@ r'''
 # ! TAGS: []
 
 r'''
-## Historical reference and prediction practice
-
-All retained outputs and the four-panel figure are **historical reference evidence**, carried from the published 2026-09-04 notebook and report after checking source, code and
-figure identity. They are **not a fresh execution** of this canonical notebook. The bounded CPU reference cell historically used two updates; the separate historical CUDA report
-used 96 updates. Keep those executions distinct. The archive and exact route/setup corrections are recorded in `docs/mastery/migrations/lora.md` and
-`docs/mastery/evidence/lora_master_migration/output_parity.json` at the repository root. The original notebooks, page, report and assets remain unchanged; their old reference
-module is archived.
-
-This reference-rich lesson is guided practice. Before opening results, record your forecast, confidence, causal reasoning and exposure status. Afterward record observed controls,
-explain the discrepancy and forecast a changed scientific condition. No answer or confidence is prefilled. Historical monitored held-out data are not untouched TEST. Shared
-training objectives and budgets coexist with method-specific learning rates: LoRA uses 0.02; full finetuning uses 0.00005. This lesson does not establish broad PEFT equivalence.
+Shared training objectives and budgets coexist with method-specific learning rates: LoRA uses 0.02; full finetuning uses 0.00005. This lesson does not establish broad PEFT equivalence.
 '''
 
 # ! CELL TYPE: markdown
@@ -298,6 +288,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 > Difficulty: easy  
@@ -327,7 +319,7 @@ The update must have the same `(out, in)` shape as the frozen weight. Only `B @ 
 <details>
 <summary>Interpretation</summary>
 
-This establishes GT-0 for the algebra before a pretrained checkpoint enters the lesson.
+This establishes the algebra before a pretrained checkpoint enters the lesson.
 
 </details>
 '''
@@ -337,12 +329,7 @@ This establishes GT-0 for the algebra before a pretrained checkpoint enters the 
 # ! TAGS: []
 
 r'''
-### Forecast — scaled-update
-
-For the displayed rank-one A and B, forecast update shape, numerical rank and the effect of doubling alpha. State a numeric forecast, confidence, causal reasoning and exposure
-status; distinguish rank from scale.
-
-Commit your forecast before continuing.
+For the displayed rank-one A and B, forecast update shape, numerical rank and the effect of doubling alpha.
 '''
 
 # ! CELL TYPE: code
@@ -394,18 +381,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect — scaled-update
-
-Record observed values and controls, distinguish historical references from anything you executed, compare with the forecast and explain the largest discrepancy. Forecast the
-changed scientific condition above with confidence and a causal reason. For printed play settings, record that no changed-condition result exists until the stated call is actually
-rerun.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Summary of 1
 
 The scaled B@A update has the frozen weight shape; rank constrains a matrix factorization, while alpha changes its scale.
@@ -440,6 +415,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 > Difficulty: medium  
@@ -480,12 +457,7 @@ A visible wrapper lets you inspect exactly which pretrained weights changed and 
 # ! TAGS: []
 
 r'''
-### Forecast — no-op-and-budget
-
-Before running the wrapper tests, forecast whether zero-initialized B makes the adapter exactly equal to the base and which factors receive first-step gradients. State confidence,
-causal reasoning and exposure status. What changes if B starts nonzero?
-
-Commit your forecast before continuing.
+Before running the wrapper tests, forecast whether zero-initialized B makes the adapter exactly equal to the base and which factors receive first-step gradients. What changes if B starts nonzero?
 '''
 
 # ! CELL TYPE: code
@@ -576,18 +548,6 @@ if MAIN:
 if MAIN:
     print('LoRA no-op initialization passed.')
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect — no-op-and-budget
-
-Record observed values and controls, distinguish historical references from anything you executed, compare with the forecast and explain the largest discrepancy. Forecast the
-changed scientific condition above with confidence and a causal reason. For printed play settings, record that no changed-condition result exists until the stated call is actually
-rerun.
-'''
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: []
@@ -609,6 +569,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 > Difficulty: hard  
@@ -728,6 +690,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 > Difficulty: medium  
@@ -767,12 +731,7 @@ A behavioral result is not deployable evidence unless the merged inference path 
 # ! TAGS: []
 
 r'''
-### Forecast — merge-parity
-
-Forecast the merged/unmerged maximum output difference and base-weight restoration error. State a numeric range, confidence, causal reasoning and exposure status. What happens if
-the adapter branch remains active after adding B@A to the base?
-
-Commit your forecast before continuing.
+Forecast the merged/unmerged maximum output difference and base-weight restoration error. What happens if the adapter branch remains active after adding B@A to the base?
 '''
 
 # ! CELL TYPE: code
@@ -827,18 +786,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect — merge-parity
-
-Record observed values and controls, distinguish historical references from anything you executed, compare with the forecast and explain the largest discrepancy. Forecast the
-changed scientific condition above with confidence and a causal reason. For printed play settings, record that no changed-condition result exists until the stated call is actually
-rerun.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Summary of 2
 
 Initial B=0 gives exact base parity. Only adapter factors train, and merging must not add the adapter twice.
@@ -873,6 +820,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 > Difficulty: medium  
@@ -1084,6 +1033,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 > Difficulty: hard  
@@ -1117,19 +1068,6 @@ vocabulary.
 A shared loop makes differences attributable to trainable parameterization, with learning rate left as an explicit experimental choice.
 
 </details>
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Forecast — matched-objective
-
-Before the exact-organism test, forecast whether this loop learns the two-marker rule and how protected replay changes the optimized objective. Freeze steps, batch size, seed,
-learning rate and replay weight; state confidence, causal reasoning and exposure status.
-
-Commit your forecast before continuing.
 '''
 
 # ! CELL TYPE: code
@@ -1265,18 +1203,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect — matched-objective
-
-Record observed values and controls, distinguish historical references from anything you executed, compare with the forecast and explain the largest discrepancy. Forecast the
-changed scientific condition above with confidence and a causal reason. For printed play settings, record that no changed-condition result exists until the stated call is actually
-rerun.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Summary of 4
 
 Use one task/replay objective and retain method-specific learning rates and batching seeds when comparing parameterizations.
@@ -1311,6 +1237,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 > Difficulty: hard  
@@ -1350,12 +1278,7 @@ Declared adapter rank is an architectural limit. The measured spectrum tells you
 # ! TAGS: []
 
 r'''
-### Forecast — update-spectrum
-
-Forecast stable/effective rank for the planted rank-one versus identity update, with confidence, causal reasoning and exposure status. What changes when two separate rank-one
-module updates are vertically concatenated?
-
-Commit your forecast before continuing.
+What changes when two separate rank-one module updates are vertically concatenated?
 '''
 
 # ! CELL TYPE: code
@@ -1448,18 +1371,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect — update-spectrum
-
-Record observed values and controls, distinguish historical references from anything you executed, compare with the forecast and explain the largest discrepancy. Forecast the
-changed scientific condition above with confidence and a causal reason. For printed play settings, record that no changed-condition result exists until the stated call is actually
-rerun.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Summary of 5
 
 Measure the actual stacked projection updates. Their stable/effective rank need not equal each individual adapter rank.
@@ -1501,6 +1412,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 > Difficulty: hard  
@@ -1540,12 +1453,7 @@ This asks whether adaptation is activation-low-dimensional, which need not follo
 # ! TAGS: []
 
 r'''
-### Forecast — activation-drift
-
-Forecast the dominant direction and uncentered drift-energy fraction in the planted-direction fixture. State confidence, causal reasoning and exposure status. Does a rank-one
-weight update alone force rank-one activation drift after nonlinear layers?
-
-Commit your forecast before continuing.
+Forecast the dominant direction and uncentered drift-energy fraction in the planted-direction fixture. Does a rank-one weight update alone force rank-one activation drift after nonlinear layers?
 '''
 
 # ! CELL TYPE: code
@@ -1635,18 +1543,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect — activation-drift
-
-Record observed values and controls, distinguish historical references from anything you executed, compare with the forecast and explain the largest discrepancy. Forecast the
-changed scientific condition above with confidence and a causal reason. For printed play settings, record that no changed-condition result exists until the stated call is actually
-rerun.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Summary of 6
 
 SVD of uncentered tuned-minus-base activations measures dominant drift energy; weight rank does not force one-dimensional nonlinear drift.
@@ -1681,6 +1577,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 > Difficulty: hard  
@@ -1713,19 +1611,6 @@ Ablate `(h_tuned - h_base)`, not all of `h_tuned`. Otherwise you confound adapta
 The direction becomes mechanistic evidence only if removing it changes the held-out behavior more than the control intervention.
 
 </details>
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Forecast — causal-ablation
-
-Before the exact intervention test, forecast the target-probability effect of removing the planted adaptation component versus an orthogonal direction. State confidence, causal
-reasoning and exposure status, specifying the block and token position.
-
-Commit your forecast before continuing.
 '''
 
 # ! CELL TYPE: code
@@ -1800,18 +1685,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect — causal-ablation
-
-Record observed values and controls, distinguish historical references from anything you executed, compare with the forecast and explain the largest discrepancy. Forecast the
-changed scientific condition above with confidence and a causal reason. For printed play settings, record that no changed-condition result exists until the stated call is actually
-rerun.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Summary of 7
 
 Project only the last-token adaptation difference relative to the corresponding base state. Compare the dominant direction with the seeded random direction.
@@ -1846,6 +1719,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 > Difficulty: hard  
@@ -1885,12 +1760,7 @@ If this control solves the task, update size rather than learned structure expla
 # ! TAGS: []
 
 r'''
-### Forecast — same-norm-control
-
-Forecast whether matching a random adapter Frobenius norm also matches its rank, learned alignment and behavior. Freeze rank, alpha and random seed; give confidence, causal
-reasoning and exposure status. Which evidence would distinguish scale from learned alignment?
-
-Commit your forecast before continuing.
+Forecast whether matching a random adapter Frobenius norm also matches its rank, learned alignment and behavior. Which evidence would distinguish scale from learned alignment?
 '''
 
 # ! CELL TYPE: code
@@ -1952,18 +1822,6 @@ if MAIN:
 
 if MAIN:
     print('Same-norm random adapter oracle passed.')
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect — same-norm-control
-
-Record observed values and controls, distinguish historical references from anything you executed, compare with the forecast and explain the largest discrepancy. Forecast the
-changed scientific condition above with confidence and a causal reason. For printed play settings, record that no changed-condition result exists until the stated call is actually
-rerun.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -2270,13 +2128,7 @@ presenting an undertrained CPU run as the headline result. The full CUDA cell be
 # ! TAGS: []
 
 r'''
-### Forecast — bounded-versus-full
-
-Before the two-update CPU reference, forecast held-out accuracy for base, rank 1 / rank 4 LoRA, full finetuning, random labels and same-norm random adapter. Record the two-update
-budget, batch size 4, seed 0, the method-specific learning rates, numeric ranges, confidence, causal reasoning and exposure status. Explain why it cannot substitute for the
-96-update CUDA reference.
-
-Commit your forecast before continuing.
+Before the two-update CPU reference, forecast held-out accuracy for base, rank 1 / rank 4 LoRA, full finetuning, random labels and same-norm random adapter. Explain why it cannot substitute for the 96-update CUDA reference.
 '''
 
 # ! CELL TYPE: code
@@ -2298,18 +2150,6 @@ if MAIN:
         print("Pipeline preflight only: run the CUDA cell for the trained signature result.")
     else:
         print("Set RUN_BOUNDED_CPU=True after completing the exercises.")
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect — bounded-versus-full
-
-Record observed values and controls, distinguish historical references from anything you executed, compare with the forecast and explain the largest discrepancy. Forecast the
-changed scientific condition above with confidence and a causal reason. For printed play settings, record that no changed-condition result exists until the stated call is actually
-rerun.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -2365,14 +2205,7 @@ probability than a matched random direction. Full finetuning solves the task thr
 # ! TAGS: []
 
 r'''
-### Forecast — native-causal-margin
-
-Before inspecting the historical four-panel figure, forecast for rank 4 LoRA the target-probability drop under dominant-drift ablation minus the drop under the seeded random
-direction. Define the mean over the 20 held-out prompts at layer 6, post-training direction estimated on those same prompts, 96 updates, batch size 16 and seed 0. The score
-normalizes only over the red/blue answer tokens. State a numeric range, confidence, causal reasoning and exposure status; compare base/full/random-label/same-norm conditions.
-Forecast changing protected replay weight while holding the task and adaptation sites fixed.
-
-Commit your forecast before continuing.
+Define the mean over the 20 held-out prompts at layer 6, post-training direction estimated on those same prompts, 96 updates, batch size 16 and seed 0. The score normalizes only over the red/blue answer tokens. Forecast changing protected replay weight while holding the task and adaptation sites fixed.
 '''
 
 # ! CELL TYPE: code
@@ -2495,18 +2328,6 @@ r'''
 <img src="media/lora_full_signature_panel.png" width="1000">
 '''
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect — native-causal-margin
-
-Record observed values and controls, distinguish historical references from anything you executed, compare with the forecast and explain the largest discrepancy. Forecast the
-changed scientific condition above with confidence and a causal reason. For printed play settings, record that no changed-condition result exists until the stated call is actually
-rerun.
-'''
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: []
@@ -2545,13 +2366,7 @@ Do not tune on the held-out templates. Create a validation template if you need 
 # ! TAGS: []
 
 r'''
-### Forecast — changed-condition-play
-
-Freeze the proposed new rank, intervention layer or protected replay weight, changing exactly one condition. Forecast customer codebook accuracy, protected next-token NLL and
-dominant-minus-random direction probability drop with confidence, causal reasoning and exposure status. Record which fitting/capture/intervention call actually consumes the changed
-value before rerunning; printing these settings is not an experiment.
-
-Commit your forecast before continuing.
+Freeze the proposed new rank, intervention layer or protected replay weight, changing exactly one condition. Record which fitting/capture/intervention call actually consumes the changed value before rerunning; printing these settings is not an experiment.
 '''
 
 # ! CELL TYPE: code
@@ -2577,18 +2392,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect — changed-condition-play
-
-Record observed values and controls, distinguish historical references from anything you executed, compare with the forecast and explain the largest discrepancy. Forecast the
-changed scientific condition above with confidence and a causal reason. For printed play settings, record that no changed-condition result exists until the stated call is actually
-rerun.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Summary of 9
 
 Keep the two-update CPU reference distinct from the 96-update CUDA reference. Interpret behavior, spectra, drift, intervention and protected task together.
@@ -2601,17 +2404,15 @@ Keep the two-update CPU reference distinct from the 96-update CUDA reference. In
 r'''
 ## Try It Yourself — an exact CPU matrix adaptation
 
-The historical play settings above are retained, but printing them does not change a model. This additional runnable play uses the visible LoRA methods on an **analytic matrix
+Printing the play settings above does not change a model. This additional runnable play uses the visible LoRA methods on an **analytic matrix
 fixture**. It loads no checkpoint and runs no optimizer. Its synthetic site is not a measured transformer layer.
 
 For a prescribed target matrix, minimize `||D-target||² + λ||D||²` with rank at most `r`. The second term penalizes moving away from the base; it is a **replay displacement
 proxy**, not protected language-model NLL. The two sites prescribe different singular spectra. The exact solution keeps the leading `r` singular components and shrinks them by
 `1/(1+λ)`. You can inspect the forward-path identity, same-norm random control and hand-worked diagonal oracle directly below.
 
-### Forecast — exact-matrix-play
-
 Before running, set the rank, synthetic site and replay penalty. Forecast which singular values remain, the rank-constrained versus same-norm random task error, and how raising the
-replay penalty changes task error and replay displacement. Record numeric ranges, confidence, causal reasoning and exposure status. Change one scientific condition at a time; a new
+replay penalty changes task error and replay displacement. Change one scientific condition at a time; a new
 random seed alone is replication. Predict switching site 0 to site 1 with rank and replay penalty fixed.
 '''
 
@@ -2724,18 +2525,6 @@ if MAIN:
 
 r'''
 <img src="media/lora_matrix_play.png" width="1000">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect — exact-matrix-play
-
-Record the measured spectrum, matrix task error, replay displacement and all four control objectives. Explain the largest forecast discrepancy. Forecast a changed rank, site or
-replay penalty, then rerun the cell and compare. Keep this exact CPU fixture separate from the historical TinyStories result: its replay proxy does not measure next-token NLL,
-nonlinear transformer drift or transfer to new text. The independent diagonal check should pass after every knob change.
 '''
 
 # ! CELL TYPE: markdown

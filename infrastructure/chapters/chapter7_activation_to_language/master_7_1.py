@@ -42,17 +42,6 @@ r'''
 # ! TAGS: []
 
 r'''
-> **Fresh execution provenance (2026-10-16):** all 40 solution code cells completed in a fresh CUDA kernel on the RTX 5090 Laptop GPU. The published 300-step GPU recipe completed,
-> including all four new semantic checks. Saved outputs and figures come from that run. The pre-repair historical references and the failed busy-GPU admission remain preserved
-> separately. This is a reproduction on the existing evaluation cases, not an independent untouched TEST or learner acceptance. See
-> `docs/mastery/evidence/pilot_fresh_execution_20261016/` in the checkout for the pinned inputs, partials and execution receipts.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 If you give GPT-2 Small the prompt
 
 ```
@@ -139,6 +128,8 @@ fails, and the papers that extend these methods.
 
 r'''
 ## Setup code
+
+The saved outputs and figures below were produced on a CUDA GPU.
 '''
 
 # ! CELL TYPE: code

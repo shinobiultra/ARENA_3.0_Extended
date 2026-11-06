@@ -38,24 +38,9 @@ r'''
 r'''
 ## Predict what would distinguish a world model from a similarity shortcut
 
-Before opening either historical lesson, predict which evidence would separate learned dynamics from
+Before opening either lesson, predict which evidence would separate learned dynamics from
 a representation that preserves clip identity. First fix the scratch lab's spatial tube pretraining
 and future-mask stress test; then separately fix the frozen V-JEPA 2 generated world.
-
-| Before inspecting expected outputs, hints or figures | Your commitment |
-| --- | --- |
-| Forecast for V-JEPA versus copy-last-frame and blank-future controls | ______ |
-| Forecast for frozen-latent occluded versus absent-object comparison | ______ |
-| Confidence from 0 to 1, with causal reasoning | ______ |
-| An observation that would change your mind | ______ |
-| Prior exposure: seen / unknown / unexposed, with source | ______ |
-| Exact source/configuration fingerprint | ______ |
-
-Both complete curricula follow. Their saved outputs, expected answers, solution dropdowns and
-figures reveal public historical results. Treat these as guided practice with honest exposure; no
-unseen learner score follows from inspecting them. This migration executes no taught method, model,
-numerical test, tensor constructor, training, download or GPU job. Every displayed result is a
-retained historical reference, separate from anything you may later run yourself.
 '''
 
 
@@ -94,10 +79,6 @@ These sources do not implement a controlled object-permanence comparison between
 released V-JEPA 2. The scratch world has no occlusion. The released-model source does not establish
 V-JEPA 2-AC action-token control, dense V-JEPA 2.1 features, real-video permanence, planning, or
 superiority to other model families. Those broader syllabus claims remain gaps.
-
-All original modules, pages, cells, outputs, metadata, reports and locks are archived exactly. The
-master exposes the frozen reference methods alongside its original exercises. Legacy test helpers
-retain their original fallbacks; callback tests do not prove every dependency is isolated.
 '''
 
 
@@ -651,7 +632,7 @@ context even when every future pixel is erased.
 # ! TAGS: []
 
 r'''
-## Legacy learning goals
+## Learning goals
 
 You will be able to:
 
@@ -754,21 +735,8 @@ r'''
 # ! TAGS: []
 
 r'''
-### Predict before inspection — scratch-4
-
 Will excluding forward clip keys also exclude their physical reverses? Predict a failure of key-only
 splitting.
-
-| Method-specific commitment | Your answer |
-| --- | --- |
-| Forecast and matched control | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning and falsifying observation | ______ |
-| Prior exposure and exact source/configuration identity | ______ |
-| One changed-condition forecast, confidence and reasoning | ______ |
-
-Leave observations blank until you inspect or execute the case. A historical output is reference
-material; an unexecuted transfer remains unobserved.
 '''
 
 
@@ -782,7 +750,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 A clip key is `(color, direction, start_x, start_y)`. Its physical reverse starts at the original
@@ -1207,20 +1176,6 @@ if MAIN:
 # END SOLUTION
 
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after testing — scratch-5
-
-Record what you actually ran, the matched control outcome and your largest forecasting error.
-Explain the mechanism behind that error, then update confidence and causal reasoning for the changed
-condition. Record exposure and exact configuration. Distinguish your observed output from the
-retained historical reference; leave unexecuted observations blank.
-'''
-
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: [keep-main]
@@ -1246,20 +1201,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after testing — scratch-6
-
-Record what you actually ran, the matched control outcome and your largest forecasting error.
-Explain the mechanism behind that error, then update confidence and causal reasoning for the changed
-condition. Record exposure and exact configuration. Distinguish your observed output from the
-retained historical reference; leave unexecuted observations blank.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <img src="../../exercises/part2_vjepa/media/vjepa_from_scratch_world.png" alt="Expected exact video world" width="950">
 '''
 
@@ -1269,21 +1210,8 @@ r'''
 # ! TAGS: []
 
 r'''
-### Predict before inspection — scratch-8
-
 Predict the token count and axis ordering for the stated tubelet shape, and an invalid shape to
 reject.
-
-| Method-specific commitment | Your answer |
-| --- | --- |
-| Forecast and matched control | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning and falsifying observation | ______ |
-| Prior exposure and exact source/configuration identity | ______ |
-| One changed-condition forecast, confidence and reasoning | ______ |
-
-Leave observations blank until you inspect or execute the case. A historical output is reference
-material; an unexecuted transfer remains unobserved.
 '''
 
 
@@ -1297,7 +1225,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Implement the grid calculation and a strided `Conv3d`. For `(6, 16, 16)` video and `(2, 4, 4)`
@@ -1432,35 +1361,8 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after testing — scratch-9
-
-Record what you actually ran, the matched control outcome and your largest forecasting error.
-Explain the mechanism behind that error, then update confidence and causal reasoning for the changed
-condition. Record exposure and exact configuration. Distinguish your observed output from the
-retained historical reference; leave unexecuted observations blank.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Predict before inspection — scratch-10
-
 Predict whether a spatial tube mask repeats through time and whether a future-only mask has the same
 distribution.
-
-| Method-specific commitment | Your answer |
-| --- | --- |
-| Forecast and matched control | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning and falsifying observation | ______ |
-| Prior exposure and exact source/configuration identity | ______ |
-| One changed-condition forecast, confidence and reasoning | ______ |
-
-Leave observations blank until you inspect or execute the case. A historical output is reference
-material; an unexecuted transfer remains unobserved.
 '''
 
 
@@ -1474,7 +1376,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Sample one contiguous spatial target block and repeat exactly the same block through all temporal
@@ -1728,34 +1631,7 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after testing — scratch-11
-
-Record what you actually ran, the matched control outcome and your largest forecasting error.
-Explain the mechanism behind that error, then update confidence and causal reasoning for the changed
-condition. Record exposure and exact configuration. Distinguish your observed output from the
-retained historical reference; leave unexecuted observations blank.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Predict before inspection — scratch-12
-
 Predict whether changing only masked pixels can change visible context tokens.
-
-| Method-specific commitment | Your answer |
-| --- | --- |
-| Forecast and matched control | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning and falsifying observation | ______ |
-| Prior exposure and exact source/configuration identity | ______ |
-| One changed-condition forecast, confidence and reasoning | ______ |
-
-Leave observations blank until you inspect or execute the case. A historical output is reference
-material; an unexecuted transfer remains unobserved.
 '''
 
 
@@ -1769,7 +1645,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Remove target tokens before the online transformer. Then prove masked-pixel invariance: replacing
@@ -1980,34 +1857,7 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after testing — scratch-13
-
-Record what you actually ran, the matched control outcome and your largest forecasting error.
-Explain the mechanism behind that error, then update confidence and causal reasoning for the changed
-condition. Record exposure and exact configuration. Distinguish your observed output from the
-retained historical reference; leave unexecuted observations blank.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Predict before inspection — scratch-14
-
 Predict which target parameters can receive gradients and which are updated by EMA.
-
-| Method-specific commitment | Your answer |
-| --- | --- |
-| Forecast and matched control | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning and falsifying observation | ______ |
-| Prior exposure and exact source/configuration identity | ______ |
-| One changed-condition forecast, confidence and reasoning | ______ |
-
-Leave observations blank until you inspect or execute the case. A historical output is reference
-material; an unexecuted transfer remains unobserved.
 '''
 
 
@@ -2021,7 +1871,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Reinsert learned mask tokens in the predictor, freeze a deep-copied target encoder, and
@@ -2187,34 +2038,7 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after testing — scratch-15
-
-Record what you actually ran, the matched control outcome and your largest forecasting error.
-Explain the mechanism behind that error, then update confidence and causal reasoning for the changed
-condition. Record exposure and exact configuration. Distinguish your observed output from the
-retained historical reference; leave unexecuted observations blank.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Predict before inspection — scratch-16
-
 Predict the exact teacher update and whether L1 should backpropagate into the target.
-
-| Method-specific commitment | Your answer |
-| --- | --- |
-| Forecast and matched control | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning and falsifying observation | ______ |
-| Prior exposure and exact source/configuration identity | ______ |
-| One changed-condition forecast, confidence and reasoning | ______ |
-
-Leave observations blank until you inspect or execute the case. A historical output is reference
-material; an unexecuted transfer remains unobserved.
 '''
 
 
@@ -2228,7 +2052,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Implement `target = momentum * target + (1 - momentum) * online` and mean absolute error from
@@ -2353,34 +2178,7 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after testing — scratch-17
-
-Record what you actually ran, the matched control outcome and your largest forecasting error.
-Explain the mechanism behind that error, then update confidence and causal reasoning for the changed
-condition. Record exposure and exact configuration. Distinguish your observed output from the
-retained historical reference; leave unexecuted observations blank.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Predict before inspection — scratch-18
-
 Predict which online and target weights can change during one training step.
-
-| Method-specific commitment | Your answer |
-| --- | --- |
-| Forecast and matched control | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning and falsifying observation | ______ |
-| Prior exposure and exact source/configuration identity | ______ |
-| One changed-condition forecast, confidence and reasoning | ______ |
-
-Leave observations blank until you inspect or execute the case. A historical output is reference
-material; an unexecuted transfer remains unobserved.
 '''
 
 
@@ -2394,7 +2192,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 This is the P0 method exercise. Implement one optimizer/EMA step and `train_small_vjepa`; do not
@@ -2637,34 +2436,7 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after testing — scratch-19
-
-Record what you actually ran, the matched control outcome and your largest forecasting error.
-Explain the mechanism behind that error, then update confidence and causal reasoning for the changed
-condition. Record exposure and exact configuration. Distinguish your observed output from the
-retained historical reference; leave unexecuted observations blank.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Predict before inspection — scratch-20
-
 Predict why the 96-column summary cannot attain rank 96 and what all-zero features should show.
-
-| Method-specific commitment | Your answer |
-| --- | --- |
-| Forecast and matched control | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning and falsifying observation | ______ |
-| Prior exposure and exact source/configuration identity | ______ |
-| One changed-condition forecast, confidence and reasoning | ______ |
-
-Leave observations blank until you inspect or execute the case. A historical output is reference
-material; an unexecuted transfer remains unobserved.
 '''
 
 
@@ -2678,7 +2450,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Average spatial tokens separately at each of three temporal slices, flatten those `3 * 24 = 72`
@@ -2824,34 +2597,7 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after testing — scratch-21
-
-Record what you actually ran, the matched control outcome and your largest forecasting error.
-Explain the mechanism behind that error, then update confidence and causal reasoning for the changed
-condition. Record exposure and exact configuration. Distinguish your observed output from the
-retained historical reference; leave unexecuted observations blank.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Predict before inspection — scratch-22
-
 Predict the role of shuffled training labels when scoring held-out probes.
-
-| Method-specific commitment | Your answer |
-| --- | --- |
-| Forecast and matched control | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning and falsifying observation | ______ |
-| Prior exposure and exact source/configuration identity | ______ |
-| One changed-condition forecast, confidence and reasoning | ______ |
-
-Leave observations blank until you inspect or execute the case. A historical output is reference
-material; an unexecuted transfer remains unobserved.
 '''
 
 
@@ -2865,7 +2611,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Keep color, direction, and combined state separate. A perfect color probe is not evidence of motion
@@ -2946,34 +2693,7 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after testing — scratch-23
-
-Record what you actually ran, the matched control outcome and your largest forecasting error.
-Explain the mechanism behind that error, then update confidence and causal reasoning for the changed
-condition. Record exposure and exact configuration. Distinguish your observed output from the
-retained historical reference; leave unexecuted observations blank.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Predict before inspection — scratch-24
-
 Predict how a representation tie differs from a duplicated physical clip key.
-
-| Method-specific commitment | Your answer |
-| --- | --- |
-| Forecast and matched control | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning and falsifying observation | ______ |
-| Prior exposure and exact source/configuration identity | ______ |
-| One changed-condition forecast, confidence and reasoning | ______ |
-
-Leave observations blank until you inspect or execute the case. A historical output is reference
-material; an unexecuted transfer remains unobserved.
 '''
 
 
@@ -2987,7 +2707,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Each query key must occur exactly once in the gallery. Award fractional credit when the true target
@@ -3130,20 +2851,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after testing — scratch-25
-
-Record what you actually ran, the matched control outcome and your largest forecasting error.
-Explain the mechanism behind that error, then update confidence and causal reasoning for the changed
-condition. Record exposure and exact configuration. Distinguish your observed output from the
-retained historical reference; leave unexecuted observations blank.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Part 2: Falsify the Dynamics Claim
 '''
 
@@ -3153,20 +2860,7 @@ r'''
 # ! TAGS: []
 
 r'''
-### Predict before inspection — scratch-27
-
 Predict whether blank-future and copy-last-frame can retain identity in the teacher target space.
-
-| Method-specific commitment | Your answer |
-| --- | --- |
-| Forecast and matched control | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning and falsifying observation | ______ |
-| Prior exposure and exact source/configuration identity | ______ |
-| One changed-condition forecast, confidence and reasoning | ______ |
-
-Leave observations blank until you inspect or execute the case. A historical output is reference
-material; an unexecuted transfer remains unobserved.
 '''
 
 
@@ -3180,7 +2874,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 The future-only mask is an out-of-distribution diagnostic, not the pretraining mask. Convert the
@@ -3513,34 +3208,7 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after testing — scratch-28
-
-Record what you actually ran, the matched control outcome and your largest forecasting error.
-Explain the mechanism behind that error, then update confidence and causal reasoning for the changed
-condition. Record exposure and exact configuration. Distinguish your observed output from the
-retained historical reference; leave unexecuted observations blank.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Predict before inspection — scratch-29
-
 Predict which label direction changes on physical reversal, and which collision sets matter.
-
-| Method-specific commitment | Your answer |
-| --- | --- |
-| Forecast and matched control | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning and falsifying observation | ______ |
-| Prior exposure and exact source/configuration identity | ______ |
-| One changed-condition forecast, confidence and reasoning | ______ |
-
-Leave observations blank until you inspect or execute the case. A historical output is reference
-material; an unexecuted transfer remains unobserved.
 '''
 
 
@@ -3554,7 +3222,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Derive reversed keys from actual start positions and velocities. Reject the run unless reversed
@@ -3708,34 +3377,7 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after testing — scratch-30
-
-Record what you actually ran, the matched control outcome and your largest forecasting error.
-Explain the mechanism behind that error, then update confidence and causal reasoning for the changed
-condition. Record exposure and exact configuration. Distinguish your observed output from the
-retained historical reference; leave unexecuted observations blank.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Predict before inspection — scratch-31
-
 Predict which probe outcomes a random encoder can achieve without learned dynamics.
-
-| Method-specific commitment | Your answer |
-| --- | --- |
-| Forecast and matched control | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning and falsifying observation | ______ |
-| Prior exposure and exact source/configuration identity | ______ |
-| One changed-condition forecast, confidence and reasoning | ______ |
-
-Leave observations blank until you inspect or execute the case. A historical output is reference
-material; an unexecuted transfer remains unobserved.
 '''
 
 
@@ -3749,7 +3391,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Select a balanced, explicit probe-fit subset; fit and score the three probes; then run
@@ -4050,34 +3693,7 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after testing — scratch-32
-
-Record what you actually ran, the matched control outcome and your largest forecasting error.
-Explain the mechanism behind that error, then update confidence and causal reasoning for the changed
-condition. Record exposure and exact configuration. Distinguish your observed output from the
-retained historical reference; leave unexecuted observations blank.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Predict before inspection — scratch-33
-
 Predict which predictor controls must share teacher space and gallery for a fair comparison.
-
-| Method-specific commitment | Your answer |
-| --- | --- |
-| Forecast and matched control | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning and falsifying observation | ______ |
-| Prior exposure and exact source/configuration identity | ______ |
-| One changed-condition forecast, confidence and reasoning | ______ |
-
-Leave observations blank until you inspect or execute the case. A historical output is reference
-material; an unexecuted transfer remains unobserved.
 '''
 
 
@@ -4091,7 +3707,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Use an independently initialized predictor receiving the trained visible context. For every method,
@@ -4274,34 +3891,7 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after testing — scratch-34
-
-Record what you actually ran, the matched control outcome and your largest forecasting error.
-Explain the mechanism behind that error, then update confidence and causal reasoning for the changed
-condition. Record exposure and exact configuration. Distinguish your observed output from the
-retained historical reference; leave unexecuted observations blank.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Predict before inspection — scratch-35
-
 Predict whether the combined evaluator can accept a hidden reference fallback.
-
-| Method-specific commitment | Your answer |
-| --- | --- |
-| Forecast and matched control | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning and falsifying observation | ______ |
-| Prior exposure and exact source/configuration identity | ______ |
-| One changed-condition forecast, confidence and reasoning | ______ |
-
-Leave observations blank until you inspect or execute the case. A historical output is reference
-material; an unexecuted transfer remains unobserved.
 '''
 
 
@@ -4315,7 +3905,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 The final evaluator now composes the tested pieces above. The dependency validator checks object
@@ -4757,43 +4348,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after testing — scratch-36
-
-Record what you actually ran, the matched control outcome and your largest forecasting error.
-Explain the mechanism behind that error, then update confidence and causal reasoning for the changed
-condition. Record exposure and exact configuration. Distinguish your observed output from the
-retained historical reference; leave unexecuted observations blank.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Predict before inspection — scratch-37
-
-Commit the ordering of future V-JEPA, blank future, persistence, exact dynamics and random retrieval
-before the historical panel.
-
-| Method-specific commitment | Your answer |
-| --- | --- |
-| Forecast and matched control | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning and falsifying observation | ______ |
-| Prior exposure and exact source/configuration identity | ______ |
-| One changed-condition forecast, confidence and reasoning | ______ |
-
-Leave observations blank until you inspect or execute the case. A historical output is reference
-material; an unexecuted transfer remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Signature Result: The Persistence-Shortcut Stress Test
 
 Run three complete CPU seeds. The image row selects the worst seed-0 future-mask retrieval by true
@@ -5127,20 +4681,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after testing — scratch-39
-
-Record what you actually ran, the matched control outcome and your largest forecasting error.
-Explain the mechanism behind that error, then update confidence and causal reasoning for the changed
-condition. Record exposure and exact configuration. Distinguish your observed output from the
-retained historical reference; leave unexecuted observations blank.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <img src="../../exercises/part2_vjepa/media/vjepa_from_scratch_signature.png" alt="Expected V-JEPA signature result" width="950">
 '''
 
@@ -5179,21 +4719,8 @@ contexts; improving these clip-level metrics alone does not establish dynamics.
 # ! TAGS: []
 
 r'''
-### Predict before inspection — scratch-42
-
 Choose tube or future mask, block shape and a query before the play cell; predict retrieval, ties
 and control differences.
-
-| Method-specific commitment | Your answer |
-| --- | --- |
-| Forecast and matched control | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning and falsifying observation | ______ |
-| Prior exposure and exact source/configuration identity | ______ |
-| One changed-condition forecast, confidence and reasoning | ______ |
-
-Leave observations blank until you inspect or execute the case. A historical output is reference
-material; an unexecuted transfer remains unobserved.
 '''
 
 
@@ -5302,20 +4829,6 @@ if MAIN:
             axes[row, offset].axis("off")
 if MAIN:
     plt.show()
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after testing — scratch-43
-
-Record what you actually ran, the matched control outcome and your largest forecasting error.
-Explain the mechanism behind that error, then update confidence and causal reasoning for the changed
-condition. Record exposure and exact configuration. Distinguish your observed output from the
-retained historical reference; leave unexecuted observations blank.
-'''
 
 
 # ! CELL TYPE: markdown
@@ -6767,21 +6280,8 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Predict before inspection — controls-0
-
 Predict what frozen-latent evidence would distinguish usable state from nearby-clip similarity
 before reading the claims.
-
-| Method-specific commitment | Your answer |
-| --- | --- |
-| Forecast and matched control | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning and falsifying observation | ______ |
-| Prior exposure and exact source/configuration identity | ______ |
-| One changed-condition forecast, confidence and reasoning | ______ |
-
-Leave observations blank until you inspect or execute the case. A historical output is reference
-material; an unexecuted transfer remains unobserved.
 '''
 
 
@@ -6792,7 +6292,7 @@ material; an unexecuted transfer remains unobserved.
 r'''
 ### [14.1] JEPA and World-Model Controls
 
-> **Notebooks: [exercises](14.1_JEPA_and_World_Model_Controls_exercises.ipynb) | [solutions](14.1_JEPA_and_World_Model_Controls_solutions.ipynb)**
+> **Notebooks: [exercises](../part1_jepa_world_model_controls/14.1_JEPA_and_World_Model_Controls_exercises.ipynb) | [solutions](../part1_jepa_world_model_controls/14.1_JEPA_and_World_Model_Controls_solutions.ipynb)**
 
 By the end of this notebook, you will have shown that frozen V-JEPA 2 latents on a controlled
 200-video world carry usable state: they support masked-target prediction, held-out object and
@@ -6864,20 +6364,7 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Predict before inspection — controls-2
-
 Predict which visible/occluded/absent comparison rules out an occluder or background shortcut.
-
-| Method-specific commitment | Your answer |
-| --- | --- |
-| Forecast and matched control | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning and falsifying observation | ______ |
-| Prior exposure and exact source/configuration identity | ______ |
-| One changed-condition forecast, confidence and reasoning | ______ |
-
-Leave observations blank until you inspect or execute the case. A historical output is reference
-material; an unexecuted transfer remains unobserved.
 '''
 
 
@@ -6886,7 +6373,7 @@ material; an unexecuted transfer remains unobserved.
 # ! TAGS: []
 
 r'''
-## Legacy learning goals
+## Learning goals
 
 You will be able to:
 
@@ -6929,20 +6416,7 @@ r'''
 # ! TAGS: []
 
 r'''
-### Predict before inspection — controls-4
-
 Predict how the smooth action changes each frame and what remains in an absent scene.
-
-| Method-specific commitment | Your answer |
-| --- | --- |
-| Forecast and matched control | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning and falsifying observation | ______ |
-| Prior exposure and exact source/configuration identity | ______ |
-| One changed-condition forecast, confidence and reasoning | ______ |
-
-Leave observations blank until you inspect or execute the case. A historical output is reference
-material; an unexecuted transfer remains unobserved.
 '''
 
 
@@ -6956,7 +6430,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Implement a video generator for a red square or blue circle. The action `(dx, dy)` is integrated
@@ -7112,20 +6587,6 @@ if MAIN:
 # END SOLUTION
 
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after testing — controls-5
-
-Record what you actually ran, the matched control outcome and your largest forecasting error.
-Explain the mechanism behind that error, then update confidence and causal reasoning for the changed
-condition. Record exposure and exact configuration. Distinguish your observed output from the
-retained historical reference; leave unexecuted observations blank.
-'''
-
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: [keep-main]
@@ -7155,20 +6616,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after testing — controls-6
-
-Record what you actually ran, the matched control outcome and your largest forecasting error.
-Explain the mechanism behind that error, then update confidence and causal reasoning for the changed
-condition. Record exposure and exact configuration. Distinguish your observed output from the
-retained historical reference; leave unexecuted observations blank.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <img src="../../exercises/part2_vjepa/media/jepa_world_model_toy_video.png" alt="Expected deterministic video strip" width="950">
 '''
 
@@ -7178,20 +6625,7 @@ r'''
 # ! TAGS: []
 
 r'''
-### Predict before inspection — controls-8
-
 Predict how padding changes token count and patch specificity.
-
-| Method-specific commitment | Your answer |
-| --- | --- |
-| Forecast and matched control | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning and falsifying observation | ______ |
-| Prior exposure and exact source/configuration identity | ______ |
-| One changed-condition forecast, confidence and reasoning | ______ |
-
-Leave observations blank until you inspect or execute the case. A historical output is reference
-material; an unexecuted transfer remains unobserved.
 '''
 
 
@@ -7205,7 +6639,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Implement the image-to-token geometry used by the causal intervention. Select every token whose cell
@@ -7324,20 +6759,6 @@ if MAIN:
 # END SOLUTION
 
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after testing — controls-9
-
-Record what you actually ran, the matched control outcome and your largest forecasting error.
-Explain the mechanism behind that error, then update confidence and causal reasoning for the changed
-condition. Record exposure and exact configuration. Distinguish your observed output from the
-retained historical reference; leave unexecuted observations blank.
-'''
-
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: [keep-main]
@@ -7382,20 +6803,7 @@ r'''
 # ! TAGS: []
 
 r'''
-### Predict before inspection — controls-12
-
 Predict a paired-cosine input with a shape error and a high-similarity background shortcut.
-
-| Method-specific commitment | Your answer |
-| --- | --- |
-| Forecast and matched control | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning and falsifying observation | ______ |
-| Prior exposure and exact source/configuration identity | ______ |
-| One changed-condition forecast, confidence and reasoning | ______ |
-
-Leave observations blank until you inspect or execute the case. A historical output is reference
-material; an unexecuted transfer remains unobserved.
 '''
 
 
@@ -7409,7 +6817,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Implement row-wise cosine similarity. Pairing matters: each predicted latent is compared with its
@@ -7521,34 +6930,7 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after testing — controls-13
-
-Record what you actually ran, the matched control outcome and your largest forecasting error.
-Explain the mechanism behind that error, then update confidence and causal reasoning for the changed
-condition. Record exposure and exact configuration. Distinguish your observed output from the
-retained historical reference; leave unexecuted observations blank.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Predict before inspection — controls-14
-
 Predict how identical features can have high cosine while failing rank and variance checks.
-
-| Method-specific commitment | Your answer |
-| --- | --- |
-| Forecast and matched control | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning and falsifying observation | ______ |
-| Prior exposure and exact source/configuration identity | ______ |
-| One changed-condition forecast, confidence and reasoning | ______ |
-
-Leave observations blank until you inspect or execute the case. A historical output is reference
-material; an unexecuted transfer remains unobserved.
 '''
 
 
@@ -7562,7 +6944,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Implement a collapse diagnostic using feature variance and the entropy-based effective rank of the
@@ -7700,20 +7083,6 @@ if MAIN:
 # END SOLUTION
 
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after testing — controls-15
-
-Record what you actually ran, the matched control outcome and your largest forecasting error.
-Explain the mechanism behind that error, then update confidence and causal reasoning for the changed
-condition. Record exposure and exact configuration. Distinguish your observed output from the
-retained historical reference; leave unexecuted observations blank.
-'''
-
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: [keep-main]
@@ -7757,20 +7126,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after testing — controls-16
-
-Record what you actually ran, the matched control outcome and your largest forecasting error.
-Explain the mechanism behind that error, then update confidence and causal reasoning for the changed
-condition. Record exposure and exact configuration. Distinguish your observed output from the
-retained historical reference; leave unexecuted observations blank.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <img src="../../exercises/part2_vjepa/media/jepa_world_model_collapse_control.png" alt="Expected collapse control" width="950">
 '''
 
@@ -7780,20 +7135,7 @@ r'''
 # ! TAGS: []
 
 r'''
-### Predict before inspection — controls-18
-
 Predict the shuffled-label held-out baseline before state decoding.
-
-| Method-specific commitment | Your answer |
-| --- | --- |
-| Forecast and matched control | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning and falsifying observation | ______ |
-| Prior exposure and exact source/configuration identity | ______ |
-| One changed-condition forecast, confidence and reasoning | ______ |
-
-Leave observations blank until you inspect or execute the case. A historical output is reference
-material; an unexecuted transfer remains unobserved.
 '''
 
 
@@ -7807,7 +7149,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Implement the report that converts held-out probe logits into accuracy. The live probe is trained on
@@ -7932,34 +7275,7 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after testing — controls-19
-
-Record what you actually ran, the matched control outcome and your largest forecasting error.
-Explain the mechanism behind that error, then update confidence and causal reasoning for the changed
-condition. Record exposure and exact configuration. Distinguish your observed output from the
-retained historical reference; leave unexecuted observations blank.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Predict before inspection — controls-20
-
 Predict what happens when actions are shuffled in a predictor that ignores action.
-
-| Method-specific commitment | Your answer |
-| --- | --- |
-| Forecast and matched control | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning and falsifying observation | ______ |
-| Prior exposure and exact source/configuration identity | ______ |
-| One changed-condition forecast, confidence and reasoning | ______ |
-
-Leave observations blank until you inspect or execute the case. A historical output is reference
-material; an unexecuted transfer remains unobserved.
 '''
 
 
@@ -7973,7 +7289,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Implement a rollout gate. A learned transition only passes when its held-out loss beats both copying
@@ -8106,34 +7423,7 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after testing — controls-21
-
-Record what you actually ran, the matched control outcome and your largest forecasting error.
-Explain the mechanism behind that error, then update confidence and causal reasoning for the changed
-condition. Record exposure and exact configuration. Distinguish your observed output from the
-retained historical reference; leave unexecuted observations blank.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Predict before inspection — controls-22
-
 Predict which two conditions a persistence gate must satisfy.
-
-| Method-specific commitment | Your answer |
-| --- | --- |
-| Forecast and matched control | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning and falsifying observation | ______ |
-| Prior exposure and exact source/configuration identity | ______ |
-| One changed-condition forecast, confidence and reasoning | ______ |
-
-Leave observations blank until you inspect or execute the case. A historical output is reference
-material; an unexecuted transfer remains unobserved.
 '''
 
 
@@ -8147,7 +7437,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Implement the object-permanence gate. The occluded latent must remain similar to the visible latent
@@ -8284,34 +7575,7 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after testing — controls-23
-
-Record what you actually ran, the matched control outcome and your largest forecasting error.
-Explain the mechanism behind that error, then update confidence and causal reasoning for the changed
-condition. Record exposure and exact configuration. Distinguish your observed output from the
-retained historical reference; leave unexecuted observations blank.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Predict before inspection — controls-24
-
 Predict why a targeted patch needs a same-size random patch control.
-
-| Method-specific commitment | Your answer |
-| --- | --- |
-| Forecast and matched control | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning and falsifying observation | ______ |
-| Prior exposure and exact source/configuration identity | ______ |
-| One changed-condition forecast, confidence and reasoning | ______ |
-
-Leave observations blank until you inspect or execute the case. A historical output is reference
-material; an unexecuted transfer remains unobserved.
 '''
 
 
@@ -8325,7 +7589,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Implement the patch gate. Patching tokens from a right-position object into a left-position object
@@ -8456,35 +7721,8 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after testing — controls-25
-
-Record what you actually ran, the matched control outcome and your largest forecasting error.
-Explain the mechanism behind that error, then update confidence and causal reasoning for the changed
-condition. Record exposure and exact configuration. Distinguish your observed output from the
-retained historical reference; leave unexecuted observations blank.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Predict before inspection — controls-26
-
 Predict which frozen-model result could falsify the world-state interpretation before reading
 expected CUDA output.
-
-| Method-specific commitment | Your answer |
-| --- | --- |
-| Forecast and matched control | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning and falsifying observation | ______ |
-| Prior exposure and exact source/configuration identity | ______ |
-| One changed-condition forecast, confidence and reasoning | ______ |
-
-Leave observations blank until you inspect or execute the case. A historical output is reference
-material; an unexecuted transfer remains unobserved.
 '''
 
 
@@ -8525,20 +7763,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after testing — controls-27
-
-Record what you actually ran, the matched control outcome and your largest forecasting error.
-Explain the mechanism behind that error, then update confidence and causal reasoning for the changed
-condition. Record exposure and exact configuration. Distinguish your observed output from the
-retained historical reference; leave unexecuted observations blank.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details>
 <summary>Expected output</summary>
 
@@ -8556,28 +7780,6 @@ Only checkpoint loading, batched feature extraction, and repetitive training loo
 labels, learned-latent outputs, baselines, and interventions are returned and visualized below.
 
 </details>
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Predict before inspection — controls-29
-
-Forecast each historical panel against its control before opening the saved figure.
-
-| Method-specific commitment | Your answer |
-| --- | --- |
-| Forecast and matched control | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning and falsifying observation | ______ |
-| Prior exposure and exact source/configuration identity | ______ |
-| One changed-condition forecast, confidence and reasoning | ______ |
-
-Leave observations blank until you inspect or execute the case. A historical output is reference
-material; an unexecuted transfer remains unobserved.
 '''
 
 
@@ -8766,20 +7968,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after testing — controls-32
-
-Record what you actually ran, the matched control outcome and your largest forecasting error.
-Explain the mechanism behind that error, then update confidence and causal reasoning for the changed
-condition. Record exposure and exact configuration. Distinguish your observed output from the
-retained historical reference; leave unexecuted observations blank.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <img src="../../exercises/part2_vjepa/media/jepa_world_model_live_signature.png" alt="Expected V-JEPA 2 world-state evidence" width="950">
 
 <details>
@@ -8800,20 +7988,7 @@ world.
 # ! TAGS: []
 
 r'''
-### Predict before inspection — controls-34
-
 Commit case, condition, frame and padding before revealing the selected token overlay.
-
-| Method-specific commitment | Your answer |
-| --- | --- |
-| Forecast and matched control | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning and falsifying observation | ______ |
-| Prior exposure and exact source/configuration identity | ______ |
-| One changed-condition forecast, confidence and reasoning | ______ |
-
-Leave observations blank until you inspect or execute the case. A historical output is reference
-material; an unexecuted transfer remains unobserved.
 '''
 
 
@@ -8866,20 +8041,6 @@ if MAIN:
     axis.set_xticks([]); axis.set_yticks([])
 if MAIN:
     plt.show()
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after testing — controls-35
-
-Record what you actually ran, the matched control outcome and your largest forecasting error.
-Explain the mechanism behind that error, then update confidence and causal reasoning for the changed
-condition. Record exposure and exact configuration. Distinguish your observed output from the
-retained historical reference; leave unexecuted observations blank.
-'''
-
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -8990,260 +8151,11 @@ r'''
 # ! TAGS: []
 
 r'''
-## Retained historical figure shelf
-
-Commit your forecasts before inspecting these public references. The master keeps every source
-instruction asset and every embedded PNG/SVG output, including separately retained versions. Their
-exact bytes, source paths and hashes appear in the migration media map. The complete notebooks
-retain every original output object, execution count and metadata through an explicit inverse. None
-of these images was regenerated by this migration.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical reference figure 1
-
-Source: `chapter14_jepa_world_models/instructions/assets/vjepa_from_scratch_signature.png`.
-
-<img src="../../exercises/part2_vjepa/media/vjepa_from_scratch_signature.png" alt="Retained historical V-JEPA figure 1" width="950">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical reference figure 2
-
-Source: `chapter14_jepa_world_models/instructions/assets/vjepa_from_scratch_world.png`.
-
-<img src="../../exercises/part2_vjepa/media/vjepa_from_scratch_world.png" alt="Retained historical V-JEPA figure 2" width="950">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical reference figure 3
-
-Source:
-`chapter14_jepa_world_models/exercises/part3_vjepa_from_scratch/14.3_V_JEPA_from_Scratch_solutions.ipynb#cell=6,output=0,image/png`.
-
-<img src="../../exercises/part2_vjepa/media/scratch_solutions_cell_6_output_0.png" alt="Retained historical V-JEPA figure 3" width="950">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical reference figure 4
-
-Source:
-`chapter14_jepa_world_models/exercises/part3_vjepa_from_scratch/14.3_V_JEPA_from_Scratch_solutions.ipynb#cell=39,output=3,image/png`.
-
-<img src="../../exercises/part2_vjepa/media/scratch_solutions_cell_39_output_3.png" alt="Retained historical V-JEPA figure 4" width="950">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical reference figure 5
-
-Source:
-`chapter14_jepa_world_models/exercises/part3_vjepa_from_scratch/14.3_V_JEPA_from_Scratch_solutions.ipynb#cell=43,output=0,image/png`.
-
-<img src="../../exercises/part2_vjepa/media/scratch_solutions_cell_43_output_0.png" alt="Retained historical V-JEPA figure 5" width="950">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical reference figure 6
-
-Source:
-`chapter14_jepa_world_models/exercises/part3_vjepa_from_scratch/14.3_V_JEPA_from_Scratch_solutions.ipynb#cell=43,output=1,image/png`.
-
-<img src="../../exercises/part2_vjepa/media/scratch_solutions_cell_43_output_1.png" alt="Retained historical V-JEPA figure 6" width="950">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical reference figure 7
-
-Source: `chapter14_jepa_world_models/instructions/assets/jepa_world_model_collapse_control.png`.
-
-<img src="../../exercises/part2_vjepa/media/jepa_world_model_collapse_control.png" alt="Retained historical V-JEPA figure 7" width="950">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical reference figure 8
-
-Source: `chapter14_jepa_world_models/instructions/assets/jepa_world_model_live_signature.png`.
-
-<img src="../../exercises/part2_vjepa/media/jepa_world_model_live_signature.png" alt="Retained historical V-JEPA figure 8" width="950">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical reference figure 9
-
-Source: `chapter14_jepa_world_models/instructions/assets/jepa_world_model_live_video_strip.png`.
-
-<img src="../../exercises/part2_vjepa/media/jepa_world_model_live_video_strip.png" alt="Retained historical V-JEPA figure 9" width="950">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical reference figure 10
-
-Source: `chapter14_jepa_world_models/instructions/assets/jepa_world_model_signature_result.svg`.
-
-<img src="../../exercises/part2_vjepa/media/jepa_world_model_signature_result.svg" alt="Retained historical V-JEPA figure 10" width="950">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical reference figure 11
-
-Source: `chapter14_jepa_world_models/instructions/assets/jepa_world_model_token_grid.png`.
-
-<img src="../../exercises/part2_vjepa/media/jepa_world_model_token_grid.png" alt="Retained historical V-JEPA figure 11" width="950">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical reference figure 12
-
-Source: `chapter14_jepa_world_models/instructions/assets/jepa_world_model_toy_video.png`.
-
-<img src="../../exercises/part2_vjepa/media/jepa_world_model_toy_video.png" alt="Retained historical V-JEPA figure 12" width="950">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical reference figure 13
-
-Source: `chapter14_jepa_world_models/instructions/assets/jepa_world_model_validation_loop.svg`.
-
-<img src="../../exercises/part2_vjepa/media/jepa_world_model_validation_loop.svg" alt="Retained historical V-JEPA figure 13" width="950">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical reference figure 14
-
-Source:
-`chapter14_jepa_world_models/exercises/part1_jepa_world_model_controls/14.1_JEPA_and_World_Model_Controls_solutions.ipynb#cell=6,output=0,image/png`.
-
-<img src="../../exercises/part2_vjepa/media/controls_solutions_cell_6_output_0.png" alt="Retained historical V-JEPA figure 14" width="950">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical reference figure 15
-
-Source:
-`chapter14_jepa_world_models/exercises/part1_jepa_world_model_controls/14.1_JEPA_and_World_Model_Controls_solutions.ipynb#cell=10,output=0,image/png`.
-
-<img src="../../exercises/part2_vjepa/media/controls_solutions_cell_10_output_0.png" alt="Retained historical V-JEPA figure 15" width="950">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical reference figure 16
-
-Source:
-`chapter14_jepa_world_models/exercises/part1_jepa_world_model_controls/14.1_JEPA_and_World_Model_Controls_solutions.ipynb#cell=16,output=0,image/png`.
-
-<img src="../../exercises/part2_vjepa/media/controls_solutions_cell_16_output_0.png" alt="Retained historical V-JEPA figure 16" width="950">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Keep the claims separate when you explain the result
 
-Compare your initial forecast with each original signature and its matched controls. Explain why
+Compare your initial forecast with each signature result and its matched controls. Explain why
 future-mask retrieval can retain clip identity without establishing predictive dynamics. Then
 separately explain what an occluded-minus-absent gap and a targeted-minus-random token intervention
 support in the pinned frozen-model world. Preserve the original negative findings and limitations.
-
-Both original play cells and anomaly hunts remain intact. A proposed changed condition is an
-unexecuted exploratory follow-up, not a result. Scientific reproduction, a human learner
-walkthrough, real-video object permanence, and the unimplemented cross-model comparisons remain
-open. Static conversion, inert imports and DEV recorder checks establish engineering properties.
-
-## Explicit Python module setup
-
-Plain module import defines pure methods and typed records; it does not mutate legacy tests. Call
-`initialize_vjepa_runtime()` to bind the original runtime paths, original direction tensors and
-explicit setup; this also calls `initialize_vjepa_decorators()` to bind original `@t.no_grad()`
-definitions with their unchanged signatures. Decorated callbacks are available only after explicit
-setup. Notebook definitions keep ordinary visible setup and decorators. This preparation never calls
-either initializer with real tensors or real decorators. Explicit setup uses qualified original
-legacy scratch imports, then restores the original test fallback with `scratch_tests.solutions =
-scratch_reference`. This preserves original test `__file__` and its historical book/report fixture
-paths, even when this library is imported as unqualified `solutions`. Both initializers are
-idempotent; failures leave their completion flag unset. Original input/report paths remain original;
-only figure output paths point at the canonical `part2_vjepa/media` directory.
 '''
 

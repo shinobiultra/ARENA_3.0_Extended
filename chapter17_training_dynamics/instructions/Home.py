@@ -12,7 +12,7 @@ INTRO = (
     '\n'
     '**Prerequisites:** [1.2] Intro to Mech Interp and [1.5.2] Grokking & Modular Arithmetic.\n'
     '\n'
-    '- **17.1 Checkpoint Archaeology and Grokking** and **17.2 Induction Head Emergence** are the core.\n'
+    '- **17.1 Checkpoint Archaeology on Modular Addition** and **17.2 Induction Heads in Hand-Built Circuits** are the core.\n'
     '- 17.3 (fine-tuning diffs and capability emergence) and 17.4 (comparing architectures) build on them.\n'
     '\n'
     '## Description of material\n'

@@ -44,7 +44,7 @@ conversion_map:
     streamlit_page: 03_[6.3]_Feature_Splitting_Absorption_and_Dashboards
     exercise_dir: part3_sae_pathologies_dashboards
   '6.4':
-    streamlit_page: 04_[6.4]_Transcoders_and_Skip_Transcoders
+    streamlit_page: 04_[6.4]_Transcoders_and_Attribution_Graphs
     exercise_dir: part4_transcoders
   '6.5':
     streamlit_page: 05_[6.5]_Crosscoders_and_Model_Diffing
@@ -107,7 +107,7 @@ conversion_map:
     streamlit_page: 05_[9.5]_White-Box_Monitors_and_Red-Teaming_with_Internals
     exercise_dir: part5_white_box_monitors
   '9.6':
-    streamlit_page: 06_[9.6]_Model_Editing_with_ROME_and_MEMIT
+    streamlit_page: 06_[9.6]_Rank-One_Model_Editing_ROME
     exercise_dir: part6_rome_memit
   '9.7':
     streamlit_page: 07_[9.7]_Unlearning_and_How_to_Evaluate_It
@@ -137,7 +137,7 @@ conversion_map:
     streamlit_page: 01_[12.1]_CLIP_and_SigLIP_from_Scratch
     exercise_dir: part1_clip_siglip
   '12.2':
-    streamlit_page: 02_[12.2]_CLIP_Features_SAEs_and_Typographic_Attacks
+    streamlit_page: 02_[12.2]_Typographic_Attacks_and_SAE_Features_in_a_Toy_Two-Tower_Model
     exercise_dir: part2_clip_saes_typographic
   '12.3':
     streamlit_page: 03_[12.3]_Mini_VLM_from_Scratch
@@ -242,10 +242,10 @@ conversion_map:
     streamlit_page: 11_[16.11]_Datamodels_and_Dataset_Cartography
     exercise_dir: part11_datamodels_cartography
   '17.1':
-    streamlit_page: 01_[17.1]_Checkpoint_Archaeology_and_Grokking
+    streamlit_page: 01_[17.1]_Checkpoint_Archaeology_on_Modular_Addition
     exercise_dir: part1_checkpoint_archaeology
   '17.2':
-    streamlit_page: 02_[17.2]_Induction_Head_Emergence
+    streamlit_page: 02_[17.2]_Induction_Heads_in_Hand-Built_Circuits
     exercise_dir: part2_induction_head_emergence
   '17.3':
     streamlit_page: 03_[17.3]_Fine-Tuning_Diffs_and_Capability_Emergence
@@ -426,9 +426,9 @@ chapters:
       streamlit_description_short: Audit feature splitting and absorption on exact first-letter dictionaries, attribute head contributions and build an ablation-checked offline dashboard; trained SAEs and live sae-vis/Neuronpedia integration remain pending
     - id: 4_transcoders
       number: '6.4'
-      title: Transcoders and Skip Transcoders
+      title: Transcoders and Attribution Graphs
       exercise_dir: part4_transcoders
-      page_file: 04_[6.4]_Transcoders_and_Skip_Transcoders.md
+      page_file: 04_[6.4]_Transcoders_and_Attribution_Graphs.md
       header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-13-2.png
       streamlit_description: Implement an exact ordinary-transcoder organism, signed paths and behavioral faithfulness with matched controls and prediction practice. Retain the complete historical study; learner-trained SAE comparison, skip transcoders and the cross-layer virtual-weight study remain unfinished.
       streamlit_description_short: Implement an exact ordinary-transcoder organism, signed paths and behavioral faithfulness with matched controls and prediction practice
@@ -621,9 +621,9 @@ chapters:
       streamlit_description_short: Implement and perturb a white-box activation monitor on held-out planted contexts, comparing visible-output, random-direction and shuffled-label baselines
     - id: 6_rome_memit
       number: '9.6'
-      title: Model Editing with ROME and MEMIT
+      title: Rank-One Model Editing (ROME)
       exercise_dir: part6_rome_memit
-      page_file: 06_[9.6]_Model_Editing_with_ROME_and_MEMIT.md
+      page_file: 06_[9.6]_Rank-One_Model_Editing_ROME.md
       header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-14-1.png
       streamlit_description: Implement affine rank-one writes, continuation scoring and controlled localization on the complete historical ROME-like lesson. Inspect negative localization and collateral behavior, then perturb the fixed edit. MEMIT mass editing and official ROME protocol parity remain unfinished.
       streamlit_description_short: Implement affine rank-one writes, continuation scoring and controlled localization on the complete historical ROME-like lesson
@@ -728,9 +728,9 @@ chapters:
       streamlit_description_short: 'Build CLIP''s softmax loss and SigLIP''s sigmoid loss from scratch, train a tiny CLIP on coloured shapes with a retrieval heatmap and random-caption controls, then probe the real CLIP and SigLIP: zero-shot retrieval, the modality gap, attribute directions and steering, and why they fail at colour-object binding'
     - id: 2_clip_saes_typographic
       number: '12.2'
-      title: CLIP Features, SAEs and Typographic Attacks
+      title: Typographic Attacks and SAE Features in a Toy Two-Tower Model
       exercise_dir: part2_clip_saes_typographic
-      page_file: 02_[12.2]_CLIP_Features_SAEs_and_Typographic_Attacks.md
+      page_file: 02_[12.2]_Typographic_Attacks_and_SAE_Features_in_a_Toy_Two-Tower_Model.md
       header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-15-3.png
       streamlit_description: Implement a small pixel-to-retrieval organism, fit an SAE and measure typography mitigation against clean/OCR controls; native CLIP/SigLIP feature and head evidence remains pending.
       streamlit_description_short: Implement a small pixel-to-retrieval organism, fit an SAE and measure typography mitigation against clean/OCR controls; native CLIP/SigLIP feature and head evidence remains pending
@@ -1053,17 +1053,17 @@ chapters:
     sections:
     - id: 1_checkpoint_archaeology
       number: '17.1'
-      title: Checkpoint Archaeology and Grokking
+      title: Checkpoint Archaeology on Modular Addition
       exercise_dir: part1_checkpoint_archaeology
-      page_file: 01_[17.1]_Checkpoint_Archaeology_and_Grokking.md
+      page_file: 01_[17.1]_Checkpoint_Archaeology_on_Modular_Addition.md
       header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-15-2.png
       streamlit_description: Track recorded finite-domain modular-addition accuracy and Fourier interventions across checkpoints; grokking and held-out generalization remain separate, unfinished studies.
       streamlit_description_short: Track recorded finite-domain modular-addition accuracy and Fourier interventions across checkpoints; grokking and held-out generalization remain separate, unfinished studies
     - id: 2_induction_head_emergence
       number: '17.2'
-      title: Induction Head Emergence
+      title: Induction Heads in Hand-Built Circuits
       exercise_dir: part2_induction_head_emergence
-      page_file: 02_[17.2]_Induction_Head_Emergence.md
+      page_file: 02_[17.2]_Induction_Heads_in_Hand-Built_Circuits.md
       header_image: https://raw.githubusercontent.com/info-arena/ARENA_img/main/misc/headers/header-15-2.png
       streamlit_description: Build and ablate a fixed induction-copying circuit, measure prefix matching and token-loss trajectories, and specify the pending trained-model/Pythia emergence study.
       streamlit_description_short: Build and ablate a fixed induction-copying circuit, measure prefix matching and token-loss trajectories, and specify the pending trained-model/Pythia emergence study

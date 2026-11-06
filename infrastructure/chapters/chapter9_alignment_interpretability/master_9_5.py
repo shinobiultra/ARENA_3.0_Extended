@@ -40,16 +40,11 @@ r'''
 When the visible response stays identical, can a planted internal feature reveal the hidden failure? Implement the existing monitor, compare held-out rankings and inspect
 named-feature interventions.
 
-**Complete retained toy lesson; expanded red-teaming remains open.** This section preserves six planted features, thirty training records in five contexts, and twenty-four held-out
+**Scope.** This section preserves six planted features, thirty training records in five contexts, and twenty-four held-out
 records in four disjoint contexts. Adversarial input optimization, red-teaming with internals, general monitor benchmarks and generated-completion evaluation remain missing. Pythia
-hidden-state/next-token evidence is a separate historical preflight.
+hidden-state/next-token evidence is a separate preflight.
 
-**Historical exposed guided practice.** The retained report is `9_4_white_box_evals_and_monitors`, dated 2026-09-04T08:40:31Z at commit b115d47a. All saved solution displays and
-expected-output dropdowns are historical, not a fresh canonical run or unseen mastery. Record forecast, confidence, mechanism and prior exposure before inspecting them; leave your
-own observations blank until inspection. Human learner walkthrough and adoption remain pending.
-
-**Runtime.** The planted organism is CPU-sized. Only explicitly calling the legacy optional Pythia wrapper starts a CUDA path; no runtime, numerical correctness or memory
-measurement is newly established by this source-only migration.
+**Runtime.** The planted organism is CPU-sized. Only explicitly calling the optional Pythia wrapper starts a CUDA path.
 '''
 
 # ! CELL TYPE: markdown
@@ -90,7 +85,7 @@ r'''
 # ! TAGS: []
 
 r'''
-## Historical 9.4 lesson: White-box Evals and Monitors
+## White-box Evals and Monitors
 
 > **By the end of this notebook, you will have shown that a mean-difference monitor fitted to exact internal features catches held-out CoT-unfaithfulness that an output-only
 > baseline cannot see, because the white-box score separates all failures while shuffled-label and random-direction controls do not.**
@@ -508,31 +503,14 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Prediction checkpoint 1
-
-Before opening the historical worked solution or saved display, write your own entries. This public reference is exposed guided practice.
-
-Forecast with metric/cohort: ______
-
-Confidence (0–100%): ______
-
-Mechanism and control expected to fail: ______
-
-Prior exposure to source, outputs, page or report: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise 1 - materialize the planted feature matrix
 
-```yaml
-Difficulty: 🔴
-Importance: 🔵🔵🔵🔵
-You should spend 8 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴⚪⚪⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 8 minutes on this exercise.
+> ```
 
 Implement the only translation from semantic state to internal evidence. Preserve the six declared coordinates and add the tiny context offset only to `helpful_answer` so context
 identity cannot masquerade as a failure feature.
@@ -561,7 +539,7 @@ A passing test establishes exact feature identity. It does not yet establish tha
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Worked solution</summary>
 
 ```python
 def activation_matrix(records: list[MonitorRecord]) -> t.Tensor:
@@ -636,47 +614,14 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflection checkpoint 1
-
-Observed result and source cell: ______
-
-Denominator and comparison with forecast: ______
-
-Mechanistic explanation and control interpretation: ______
-
-Changed-case forecast and limitation: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Prediction checkpoint 2
-
-Before opening the historical worked solution or saved display, write your own entries. This public reference is exposed guided practice.
-
-Forecast with metric/cohort: ______
-
-Confidence (0–100%): ______
-
-Mechanism and control expected to fail: ______
-
-Prior exposure to source, outputs, page or report: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise 2 - hold out entire contexts
 
-```yaml
-Difficulty: 🔴
-Importance: 🔵🔵🔵🔵
-You should spend 8 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴⚪⚪⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 8 minutes on this exercise.
+> ```
 
 Split by the record metadata, not by randomly shuffling rows. The monitor must face contexts it never saw during fitting.
 
@@ -704,7 +649,7 @@ A context-held-out split blocks the easiest leakage path: memorizing context-spe
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Worked solution</summary>
 
 ```python
 def split_train_heldout(records, activations, labels):
@@ -787,47 +732,14 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflection checkpoint 2
-
-Observed result and source cell: ______
-
-Denominator and comparison with forecast: ______
-
-Mechanistic explanation and control interpretation: ______
-
-Changed-case forecast and limitation: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Prediction checkpoint 3
-
-Before opening the historical worked solution or saved display, write your own entries. This public reference is exposed guided practice.
-
-Forecast with metric/cohort: ______
-
-Confidence (0–100%): ______
-
-Mechanism and control expected to fail: ______
-
-Prior exposure to source, outputs, page or report: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise 3 - fit a mean-difference white-box direction
 
-```yaml
-Difficulty: 🔴🔴
-Importance: 🔵🔵🔵🔵
-You should spend 12 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴⚪⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 12 minutes on this exercise.
+> ```
 
 Compute the clean and failure centroids, normalize their difference, and put the decision threshold halfway between the class-mean projected scores.
 
@@ -855,7 +767,7 @@ The sign and norm are testable mechanistic commitments. The planted CoT feature 
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Worked solution</summary>
 
 ```python
 def fit_white_box_monitor(train_activations: t.Tensor, train_labels: t.Tensor) -> MonitorDirection:
@@ -954,47 +866,14 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflection checkpoint 3
-
-Observed result and source cell: ______
-
-Denominator and comparison with forecast: ______
-
-Mechanistic explanation and control interpretation: ______
-
-Changed-case forecast and limitation: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Prediction checkpoint 4
-
-Before opening the historical worked solution or saved display, write your own entries. This public reference is exposed guided practice.
-
-Forecast with metric/cohort: ______
-
-Confidence (0–100%): ______
-
-Mechanism and control expected to fail: ______
-
-Prior exposure to source, outputs, page or report: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise 4 - score held-out activations and implement AUROC
 
-```yaml
-Difficulty: 🔴🔴
-Importance: 🔵🔵🔵🔵
-You should spend 12 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴⚪⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 12 minutes on this exercise.
+> ```
 
 Subtract the learned threshold from each projection, then compute AUROC as the probability that a positive outranks a negative. Count ties as half a win.
 
@@ -1022,7 +901,7 @@ Perfect held-out AUROC means exact ranking on this organism. It is not probabili
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Worked solution</summary>
 
 ```python
 def score_white_box_monitor(monitor: MonitorDirection, activations: t.Tensor) -> t.Tensor:
@@ -1129,47 +1008,14 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflection checkpoint 4
-
-Observed result and source cell: ______
-
-Denominator and comparison with forecast: ______
-
-Mechanistic explanation and control interpretation: ______
-
-Changed-case forecast and limitation: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Prediction checkpoint 5
-
-Before opening the historical worked solution or saved display, write your own entries. This public reference is exposed guided practice.
-
-Forecast with metric/cohort: ______
-
-Confidence (0–100%): ______
-
-Mechanism and control expected to fail: ______
-
-Prior exposure to source, outputs, page or report: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise 5 - sweep thresholds instead of hiding one operating point
 
-```yaml
-Difficulty: 🔴🔴🔴
-Importance: 🔵🔵🔵🔵
-You should spend 15 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15 minutes on this exercise.
+> ```
 
 Implement a vectorized threshold sweep plus the midpoint rule used for the final decision. Return true-positive rate, false-positive rate, and accuracy for every threshold.
 
@@ -1197,7 +1043,7 @@ A monitor is an operating policy, not just an AUROC. The sweep exposes what reca
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Worked solution</summary>
 
 ```python
 def threshold_sweep(scores: t.Tensor, labels: t.Tensor, thresholds: t.Tensor) -> dict[str, t.Tensor]:
@@ -1355,47 +1201,14 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflection checkpoint 5
-
-Observed result and source cell: ______
-
-Denominator and comparison with forecast: ______
-
-Mechanistic explanation and control interpretation: ______
-
-Changed-case forecast and limitation: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Prediction checkpoint 6
-
-Before opening the historical worked solution or saved display, write your own entries. This public reference is exposed guided practice.
-
-Forecast with metric/cohort: ______
-
-Confidence (0–100%): ______
-
-Mechanism and control expected to fail: ______
-
-Prior exposure to source, outputs, page or report: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise 6 - construct the output-only baseline and find its misses
 
-```yaml
-Difficulty: 🔴🔴
-Importance: 🔵🔵🔵🔵
-You should spend 10 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴⚪⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 10 minutes on this exercise.
+> ```
 
 The black-box baseline receives only the visible-risk score attached to each output. Calibrate it on training records and return the held-out failures caught by white-box but
 missed by black-box.
@@ -1424,7 +1237,7 @@ Every white-box-only catch should be `cot_unfaithful`, because those outputs are
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Worked solution</summary>
 
 ```python
 def surface_risk_scores(records: list[MonitorRecord]) -> t.Tensor:
@@ -1510,47 +1323,14 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflection checkpoint 6
-
-Observed result and source cell: ______
-
-Denominator and comparison with forecast: ______
-
-Mechanistic explanation and control interpretation: ______
-
-Changed-case forecast and limitation: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Prediction checkpoint 7
-
-Before opening the historical worked solution or saved display, write your own entries. This public reference is exposed guided practice.
-
-Forecast with metric/cohort: ______
-
-Confidence (0–100%): ______
-
-Mechanism and control expected to fail: ______
-
-Prior exposure to source, outputs, page or report: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise 7 - build auditable dashboard rows
 
-```yaml
-Difficulty: 🔴🔴🔴
-Importance: 🔵🔵🔵🔵
-You should spend 15 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15 minutes on this exercise.
+> ```
 
 Turn scores into review objects. A row must keep the prompt, output, active features, both scores, both decisions, ground truth, and a plain-language note explaining why it needs
 review.
@@ -1579,7 +1359,7 @@ Feature names are hypotheses attached to a row, not proof. Keeping behavior and 
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Worked solution</summary>
 
 ```python
 def active_features(activation_row: t.Tensor, threshold: float = 0.60) -> tuple[str, ...]:
@@ -1716,47 +1496,14 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflection checkpoint 7
-
-Observed result and source cell: ______
-
-Denominator and comparison with forecast: ______
-
-Mechanistic explanation and control interpretation: ______
-
-Changed-case forecast and limitation: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Prediction checkpoint 8
-
-Before opening the historical worked solution or saved display, write your own entries. This public reference is exposed guided practice.
-
-Forecast with metric/cohort: ______
-
-Confidence (0–100%): ______
-
-Mechanism and control expected to fail: ______
-
-Prior exposure to source, outputs, page or report: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise 8 - make the controls fail and intervene on one feature
 
-```yaml
-Difficulty: 🔴🔴🔴
-Importance: 🔵🔵🔵🔵
-You should spend 15 minutes on this exercise.
-```
+> ```yaml
+> Difficulty: 🔴🔴🔴⚪⚪
+> Importance: 🔵🔵🔵🔵⚪
+>
+> You should spend up to 15 minutes on this exercise.
+> ```
 
 Fit the same monitor after a deterministic label shuffle, score along a same-dimensional random direction, and implement a single-feature activation intervention.
 
@@ -1784,7 +1531,7 @@ The controls must lose held-out ranking, while adding `cot_unfaithful` to a clea
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Worked solution</summary>
 
 ```python
 def shuffled_label_control_scores(train_activations, train_labels, heldout_activations):
@@ -1896,40 +1643,6 @@ tests.test_controls_fail_and_feature_perturbation_moves_score(shuffled_label_con
 
 if MAIN:
     tests.test_controls_fail_and_feature_perturbation_moves_score(shuffled_label_control_scores, random_direction_control_scores, perturb_activation, score_white_box_monitor, binary_auroc)
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflection checkpoint 8
-
-Observed result and source cell: ______
-
-Denominator and comparison with forecast: ______
-
-Mechanistic explanation and control interpretation: ______
-
-Changed-case forecast and limitation: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Prediction checkpoint 9
-
-Before opening the historical worked solution or saved display, write your own entries. This public reference is exposed guided practice.
-
-Forecast with metric/cohort: ______
-
-Confidence (0–100%): ______
-
-Mechanism and control expected to fail: ______
-
-Prior exposure to source, outputs, page or report: ______
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -2307,8 +2020,6 @@ if MAIN:
 
 r'''
 <img src="../../../chapter9_alignment_interpretability/exercises/part5_white_box_monitors/media/white_box_legacy_cell_30_output_0.png" width="1100">
-
-Historical display from legacy solution cell 30; exact PNG SHA-256 `28c4edc32582d0057f255978115c4970e120a059a281fc3b296300b1da5ec35e`. It was not regenerated.
 '''
 
 # ! CELL TYPE: markdown
@@ -2326,40 +2037,6 @@ The headline result is not merely `AUROC = 1`. The interpretable evidence is the
 
 The output-only monitor is weaker by construction, not by luck. That is appropriate for an exact theorem, and precisely why the real-model result below must be described only as a
 preflight.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflection checkpoint 9
-
-Observed result and source cell: ______
-
-Denominator and comparison with forecast: ______
-
-Mechanistic explanation and control interpretation: ______
-
-Changed-case forecast and limitation: ______
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Prediction checkpoint 10
-
-Before opening the historical worked solution or saved display, write your own entries. This public reference is exposed guided practice.
-
-Forecast with metric/cohort: ______
-
-Confidence (0–100%): ______
-
-Mechanism and control expected to fail: ______
-
-Prior exposure to source, outputs, page or report: ______
 '''
 
 # ! CELL TYPE: markdown
@@ -2471,29 +2148,11 @@ if MAIN:
     plt.show()
 
 # ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflection checkpoint 10
-
-Observed result and source cell: ______
-
-Denominator and comparison with forecast: ______
-
-Mechanistic explanation and control interpretation: ______
-
-Changed-case forecast and limitation: ______
-'''
-
-# ! CELL TYPE: markdown
 # ! FILTERS: [streamlit]
 # ! TAGS: []
 
 r'''
 <img src="../../../chapter9_alignment_interpretability/exercises/part5_white_box_monitors/media/white_box_legacy_cell_33_output_1.png" width="1100">
-
-Historical display from legacy solution cell 33; exact PNG SHA-256 `5222162333896f35621ecde17782cef10b975c6dee061e1645648c4ae3e2336c`. It was not regenerated.
 '''
 
 # ! CELL TYPE: markdown
@@ -2503,8 +2162,7 @@ Historical display from legacy solution cell 33; exact PNG SHA-256 `522216233389
 r'''
 ## Notebook Contract
 
-The signature result above is recomputed from the visible learner functions. The committed `verification_report.json` is a separate evidence surface for the pinned real-model
-preflight. Reading it is CPU-only; calling either function below deliberately starts the CUDA path.
+The signature result above is recomputed from the visible learner functions. Calling either function below deliberately starts the CUDA path.
 '''
 
 # ! CELL TYPE: code
@@ -2917,280 +2575,4 @@ if MAIN:
 
 if MAIN:
     tests.test_solution_notebook_exposes_taught_implementations()
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Test-only aggregation: inspect the complete assembly
-
-This exact legacy reporting adapter calls the canonical inline functions. It is generated-Python support for the original integrity test; this appendix never executes it. All
-reporting dependencies are shown below.
-
-<details>
-<summary>Exact historical aggregation source and reporting dependencies</summary>
-
-```python
-@dataclass(frozen=True)
-class MissedFailureReport:
-    caught_failure_indices: tuple[int, ...]
-    num_caught_failures: int
-    catches_black_box_miss: bool
-```
-
-```python
-@dataclass(frozen=True)
-class FalsePositiveDocumentationReport:
-    false_positive_indices: tuple[int, ...]
-    num_false_positives: int
-    documented: bool
-```
-
-```python
-@dataclass(frozen=True)
-class FeatureExplanationValidationReport:
-    heldout_accuracy: float
-    explanations_validated: bool
-```
-
-```python
-@dataclass(frozen=True)
-class MonitorComparisonReport:
-    white_box_auroc: float
-    black_box_auroc: float
-    white_box_accuracy: float
-    black_box_accuracy: float
-    white_box_only_catches: tuple[int, ...]
-    false_positive_indices: tuple[int, ...]
-```
-
-```python
-def _require_finite_scalar(name: str, value: float) -> None:
-    value_tensor = t.tensor(value, dtype=t.float32)
-    if not t.isfinite(value_tensor):
-        raise ValueError(f"{name} must be finite.")
-```
-
-```python
-def _require_unit_interval(name: str, value: float) -> None:
-    _require_finite_scalar(name, value)
-    if not 0.0 <= value <= 1.0:
-        raise ValueError(f"{name} must be between 0 and 1.")
-```
-
-```python
-def missed_failure_report(
-    white_box_predictions: t.Tensor,
-    black_box_predictions: t.Tensor,
-    failure_labels: t.Tensor,
-) -> MissedFailureReport:
-    """Find failures caught by white-box monitor but missed by black-box baseline."""
-
-    white = white_box_predictions.flatten()
-    black = black_box_predictions.flatten()
-    labels = failure_labels.flatten()
-    _require_binary_tensor("white_box_predictions", white)
-    _require_binary_tensor("black_box_predictions", black)
-    _require_binary_tensor("failure_labels", labels)
-    if white.shape != black.shape or white.shape != labels.shape:
-        raise ValueError("prediction and label tensors must have matching shape.")
-    white = white.bool()
-    black = black.bool()
-    labels = labels.bool()
-    caught_mask = labels & white & ~black
-    indices = tuple(int(index.item()) for index in caught_mask.nonzero().flatten())
-    return MissedFailureReport(
-        caught_failure_indices=indices,
-        num_caught_failures=len(indices),
-        catches_black_box_miss=len(indices) > 0,
-    )
-```
-
-```python
-def false_positive_documentation_report(
-    monitor_predictions: t.Tensor,
-    failure_labels: t.Tensor,
-    documentation: dict[int, str] | None = None,
-) -> FalsePositiveDocumentationReport:
-    """Check whether monitor false positives have written notes."""
-
-    predictions = monitor_predictions.flatten()
-    labels = failure_labels.flatten()
-    _require_binary_tensor("monitor_predictions", predictions)
-    _require_binary_tensor("failure_labels", labels)
-    if predictions.shape != labels.shape:
-        raise ValueError("predictions and labels must have matching shape.")
-    predictions = predictions.bool()
-    labels = labels.bool()
-    false_positive_mask = predictions & ~labels
-    indices = tuple(int(index.item()) for index in false_positive_mask.nonzero().flatten())
-    documentation = documentation or {}
-    documented = all(bool(documentation.get(index, "").strip()) for index in indices)
-    return FalsePositiveDocumentationReport(
-        false_positive_indices=indices,
-        num_false_positives=len(indices),
-        documented=documented,
-    )
-```
-
-```python
-def feature_explanation_predictions(activations: t.Tensor, threshold: float = 0.75) -> t.Tensor:
-    """Predict failures from named failure features, independent of the monitor score."""
-
-    _require_finite_tensor("activations", activations)
-    _require_finite_scalar("threshold", threshold)
-    if activations.ndim != 2 or activations.shape[1] != len(FEATURE_NAMES):
-        raise ValueError("activations must have shape [batch, n_features].")
-    failure_feature_values = activations[:, 1:]
-    return failure_feature_values.amax(dim=1) > threshold
-```
-
-```python
-def feature_explanation_validation_report(
-    explanation_predictions: t.Tensor,
-    heldout_labels: t.Tensor,
-    *,
-    min_accuracy: float = 0.8,
-) -> FeatureExplanationValidationReport:
-    """Validate feature explanations on held-out prompts."""
-
-    _require_unit_interval("min_accuracy", min_accuracy)
-    predictions = explanation_predictions.flatten()
-    labels = heldout_labels.flatten()
-    _require_binary_tensor("explanation_predictions", predictions)
-    _require_binary_tensor("heldout_labels", labels)
-    if predictions.shape != labels.shape:
-        raise ValueError("predictions and labels must have matching shape.")
-    predictions = predictions.bool()
-    labels = labels.bool()
-    accuracy = predictions.eq(labels).float().mean().item()
-    return FeatureExplanationValidationReport(
-        heldout_accuracy=accuracy,
-        explanations_validated=accuracy >= min_accuracy,
-    )
-```
-
-```python
-def compare_monitors(
-    white_box_scores: t.Tensor,
-    black_box_scores: t.Tensor,
-    white_box_predictions: t.Tensor,
-    black_box_predictions: t.Tensor,
-    labels: t.Tensor,
-) -> MonitorComparisonReport:
-    """Compare white-box and black-box monitors on the same held-out labels."""
-
-    white = white_box_predictions.flatten()
-    black = black_box_predictions.flatten()
-    labels = labels.flatten()
-    _require_binary_tensor("white_box_predictions", white)
-    _require_binary_tensor("black_box_predictions", black)
-    _require_binary_tensor("labels", labels)
-    if white.shape != black.shape or white.shape != labels.shape:
-        raise ValueError("predictions and labels must have matching shape.")
-    missed = missed_failure_report(white, black, labels)
-    false_positive = false_positive_documentation_report(white, labels)
-    return MonitorComparisonReport(
-        white_box_auroc=binary_auroc(white_box_scores, labels),
-        black_box_auroc=binary_auroc(black_box_scores, labels),
-        white_box_accuracy=float(white.eq(labels.bool()).float().mean().item()),
-        black_box_accuracy=float(black.eq(labels.bool()).float().mean().item()),
-        white_box_only_catches=missed.caught_failure_indices,
-        false_positive_indices=false_positive.false_positive_indices,
-    )
-```
-
-```python
-def run_toy_monitor_experiment() -> dict[str, object]:
-    """Run the full exact toy monitor experiment used by the 9.4 notebooks."""
-
-    records = build_monitor_records()
-    activations = activation_matrix(records)
-    labels = ground_truth_failure_labels(records)
-    train_acts, train_labels, heldout_acts, heldout_labels, train_records, heldout_records = (
-        split_train_heldout(records, activations, labels)
-    )
-    monitor = fit_white_box_monitor(train_acts, train_labels)
-    white_scores = score_white_box_monitor(monitor, heldout_acts)
-    white_predictions = predict_from_scores(white_scores)
-
-    train_surface = surface_risk_scores(train_records)
-    heldout_surface = surface_risk_scores(heldout_records)
-    surface_threshold = midpoint_threshold(train_surface, train_labels)
-    black_box_predictions = predict_from_scores(heldout_surface, surface_threshold)
-    black_box_scores = heldout_surface - surface_threshold
-    comparison = compare_monitors(
-        white_scores,
-        black_box_scores,
-        white_predictions,
-        black_box_predictions,
-        heldout_labels,
-    )
-    shuffled_scores = shuffled_label_control_scores(train_acts, train_labels, heldout_acts)
-    random_scores = random_direction_control_scores(
-        train_acts,
-        train_labels,
-        heldout_acts,
-        seed=0,
-    )
-    explanation_predictions = feature_explanation_predictions(heldout_acts)
-    explanation_report = feature_explanation_validation_report(
-        explanation_predictions,
-        heldout_labels,
-        min_accuracy=1.0,
-    )
-    dashboard = build_dashboard_entries(
-        heldout_records,
-        heldout_acts,
-        white_scores,
-        black_box_scores,
-        white_predictions,
-        black_box_predictions,
-        heldout_labels,
-    )
-    return {
-        "records": records,
-        "heldout_records": heldout_records,
-        "activations": activations,
-        "heldout_activations": heldout_acts,
-        "heldout_labels": heldout_labels,
-        "white_box_scores": white_scores,
-        "black_box_scores": black_box_scores,
-        "white_box_predictions": white_predictions,
-        "black_box_predictions": black_box_predictions,
-        "white_box_auroc": comparison.white_box_auroc,
-        "black_box_auroc": comparison.black_box_auroc,
-        "white_box_accuracy": comparison.white_box_accuracy,
-        "black_box_accuracy": comparison.black_box_accuracy,
-        "white_box_only_catches": comparison.white_box_only_catches,
-        "shuffled_label_auroc": binary_auroc(shuffled_scores, heldout_labels),
-        "random_direction_auroc": binary_auroc(random_scores, heldout_labels),
-        "explanation_accuracy": explanation_report.heldout_accuracy,
-        "dashboard": dashboard,
-        "monitor": monitor,
-        "surface_threshold": surface_threshold,
-    }
-```
-
-</details>
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Historical evidence and open coverage
-
-The signature result is the preserved feature heatmap, signed score comparison, control-ranking chart and four auditable hidden catches. The second historical figure is the
-named-coordinate intervention. Every original solution output and execution count is retained byte-for-object; no answer was recalculated.
-
-Original report, schema, pinned protocol and expected-output files carry `historical_` filenames. Their acceptance fields describe the legacy toy/preflight contract only. The
-report is supporting evidence, never the method or headline result. Adversarial optimization, broader red-teaming, general benchmarks and generated-completion evaluation remain
-open. Human walkthrough is deferred.
-
-The generated Python includes an explicitly documented test-only aggregation adapter, extracted exactly from the original reference with its reporting dependencies. Its shared
-method names resolve to the inline notebook functions, so tests exercise canonical implementations. It is never called automatically at import.
-'''
 

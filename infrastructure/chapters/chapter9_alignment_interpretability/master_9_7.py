@@ -72,12 +72,12 @@ deterministic NumPy float64 CPU teaching fixture. Four binary facts, 32 memory u
 eight readout updates are the complete default numerical budget; there is no pretrained
 model, network, GPU, scientific sweep or external unlearning dataset.
 
-`alignment.unlearning` includes gradient ascent, NPO, RMU-style representation misdirection,
+The lesson covers gradient ascent, NPO, RMU-style representation misdirection,
 feature interventions and attacks. You will implement their mathematical cores, while
 keeping parameter scope explicit. GA/NPO update **only a two-parameter output head** here;
 RMU updates four small memory vectors; the feature dictionary is analytically specified,
 not an SAE trained on an LLM. Those restricted organisms are not full native unlearning
-algorithms or validated removal claims. Pretrained fine-tuning and native evaluation remain pending.
+algorithms or validated removal claims. Pretrained fine-tuning and native evaluation are not covered here.
 '''
 
 # ! CELL TYPE: markdown
@@ -219,6 +219,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10 minutes on this exercise.
 > ```
 
@@ -293,6 +294,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10 minutes on this exercise.
 > ```
 
@@ -366,6 +368,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10 minutes on this exercise.
 > ```
 
@@ -441,6 +444,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10 minutes on this exercise.
 > ```
 
@@ -559,6 +563,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10 minutes on this exercise.
 > ```
 
@@ -640,6 +645,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10 minutes on this exercise.
 > ```
 
@@ -718,6 +724,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10 minutes on this exercise.
 > ```
 
@@ -852,6 +859,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10 minutes on this exercise.
 > ```
 
@@ -927,6 +935,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10 minutes on this exercise.
 > ```
 
@@ -1009,6 +1018,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10 minutes on this exercise.
 > ```
 
@@ -1087,6 +1097,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10 minutes on this exercise.
 > ```
 
@@ -1211,6 +1222,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10 minutes on this exercise.
 > ```
 
@@ -1285,6 +1297,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10 minutes on this exercise.
 > ```
 
@@ -1361,6 +1374,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10 minutes on this exercise.
 > ```
 
@@ -1443,6 +1457,7 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
+>
 > You should spend up to 10 minutes on this exercise.
 > ```
 
@@ -1502,8 +1517,6 @@ An attack that receives the answer can reconstruct knowledge that truly disappea
 # ! TAGS: []
 
 r'''
-## Forecast the signature result
-
 Before executing, record five forecasts: normal forget accuracy, normal retain accuracy,
 frozen-backup forget accuracy, head-relearn forget accuracy and memory-relearn forget
 accuracy. Use the same two facts and tie rule for every row. Predict which low-forget-score
@@ -1646,8 +1659,8 @@ readout-only adaptation and labeled relearning are different grants of informati
 
 Do not score answer-containing attack training rows as untouched generalization. A new
 prompt around the same four one-hot identities in this notebook is not a natural-language
-paraphrase test. Native training, independent datasets, model-native feature ablation,
-retraining-based reference comparisons and human learner acceptance remain pending.
+paraphrase test. Native training, independent datasets, model-native feature ablation and
+retraining-based reference comparisons are not covered here.
 
 ## Limitations
 
@@ -1693,8 +1706,5 @@ would make that separation meaningful? What would a retrain-without-forget refer
   misdirection with retained-representation preservation. No WMDP content is used here.
 - [Farrell et al., SAE unlearning](https://arxiv.org/abs/2410.19278): zero-ablation limitations,
   negative feature scaling and side effects in native models.
-
-Record your original forecasts, confidence, prior exposure and changed-redundancy prediction.
-The visible reference answers make this guided public Practice, not an unseen mastery score.
 '''
 

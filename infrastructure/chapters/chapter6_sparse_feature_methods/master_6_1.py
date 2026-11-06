@@ -50,21 +50,12 @@ r'''
 # ! TAGS: []
 
 r'''
-**Historical exposed guided practice.** This master restores the complete existing four-way planted
-SAE lesson: every original student stub, solution, test, saved output and metadata remains
-preserved. The six-panel historical figure separates reconstruction, sparsity, dictionary recovery,
-train-selected held-out AUC, steering and ablation. No training, model loading, figure generation or
-scientific rerun occurred during this source migration.
-
 **Scope boundary.** The syllabus requests five variants including BatchTopK and a real
 residual-stream sparsity–fidelity frontier. BatchTopK is absent here. Four-way toy training plus one
 optional TopK Pythia preflight does not establish a five-way real residual benchmark, CE-loss
-recovery, interpretability spot checks or frontier-scale SAE training. The historical train-selected
+recovery, interpretability spot checks or frontier-scale SAE training. The train-selected
 Pythia feature fails the held-out semantic criterion; preserve that negative result.
 
-**Before reveal.** Forecast first, with confidence, mechanism and prior exposure recorded. Existing
-expected-output prose, solution dropdowns, embedded historical output and the source asset are
-exposed references, not unseen assessment. Inspecting them is observation, not a fresh experiment.
 Original [1.5.4] Toy Models of Superposition & SAEs supplies the prerequisite arc; [1.3.3] and
 [1.4.2] connect released dictionaries to practical interpretation.
 
@@ -110,18 +101,8 @@ r'''
 # ! TAGS: []
 
 r'''
-## Forecast before running — SAE-0
-
 Will the lowest held-out reconstruction error necessarily identify the best planted recovery?
 Distinguish this logical question from predicting a particular trained ranking.
-
-Forecast / expected control contrast: ______
-Confidence (0–100%): ______
-Mechanism and a result that would contradict it: ______
-Exact inputs / denominator / prior exposure (unseen / seen / unknown): ______
-
-Keep observations blank. This is exposed historical guided practice; no experiment is authorized by
-migration.
 '''
 
 # ! CELL TYPE: markdown
@@ -132,12 +113,7 @@ r'''
 By the end of this notebook, you will have trained four sparse autoencoder variants on the same
 exact planted dictionary and shown why reconstruction alone is not enough to claim feature recovery.
 
-```yaml
-gt_tier: GT-1 real-model preflight with GT-0 exact planted controls
-exercise_id: 6_1_sae_variants
-expected_runtime: 60-90 minutes; solved CPU signature run takes about 4 seconds
-requires_gpu: false for the lesson; the parent runner owns the optional Pythia CUDA path
-```
+The lesson takes 60-90 minutes and needs no GPU; the solved CPU signature run takes about 4 seconds. The optional Pythia path needs a CUDA GPU.
 
 ## Core Question
 
@@ -163,23 +139,6 @@ All four SAEs can reconstruct this six-dimensional cloud. Only the planted dicti
 whether a learned row corresponds to one of the eight causes. In the final figure, look for the
 deliberate anomaly: the variant with the lowest reconstruction error does not have the best feature
 recovery.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after inspection — SAE-0
-
-Observed values or argument, exact original cell/output or asset: ______
-Named control and its denominator: ______
-Forecast discrepancy / revised mechanism: ______
-Changed-condition forecast before another reveal: ______
-Historical source reading or separately authorized execution (record which): ______
-
-Do not pool the planted study, optional Pythia preflight and play cohorts, or describe reference
-exposure as untouched TEST.
 '''
 
 # ! CELL TYPE: code
@@ -247,18 +206,8 @@ r'''
 # ! TAGS: []
 
 r'''
-## Forecast before running — SAE-1
-
 What changes if train and held-out samples use different dictionaries, even when their code
 distributions are identical?
-
-Forecast / expected control contrast: ______
-Confidence (0–100%): ______
-Mechanism and a result that would contradict it: ______
-Exact inputs / denominator / prior exposure (unseen / seen / unknown): ______
-
-Keep observations blank. This is exposed historical guided practice; no experiment is authorized by
-migration.
 '''
 
 # ! CELL TYPE: markdown
@@ -271,7 +220,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Time: 10-15 minutes
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Implement a unit-norm dictionary and a sampler for sparse nonnegative features. With `noise_std=0`,
@@ -424,23 +374,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-## Reflect after inspection — SAE-1
-
-Observed values or argument, exact original cell/output or asset: ______
-Named control and its denominator: ______
-Forecast discrepancy / revised mechanism: ______
-Changed-condition forecast before another reveal: ______
-Historical source reading or separately authorized execution (record which): ______
-
-Do not pool the planted study, optional Pythia preflight and play cohorts, or describe reference
-exposure as untouched TEST.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 # 2️⃣ Implement sparsity rules
 '''
 
@@ -449,18 +382,8 @@ r'''
 # ! TAGS: []
 
 r'''
-## Forecast before running — SAE-2
-
 For a fixed signed activation row, how will ReLU, TopK, gated and JumpReLU supports differ? At an
 exact threshold, should a unit fire?
-
-Forecast / expected control contrast: ______
-Confidence (0–100%): ______
-Mechanism and a result that would contradict it: ______
-Exact inputs / denominator / prior exposure (unseen / seen / unknown): ______
-
-Keep observations blank. This is exposed historical guided practice; no experiment is authorized by
-migration.
 '''
 
 # ! CELL TYPE: markdown
@@ -473,7 +396,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Time: 20-30 minutes
+>
+> You should spend up to 20-30 minutes on this exercise.
 > ```
 
 Implement the four encoder rules. ReLU-L1 has an ordinary ReLU forward pass because L1 belongs in
@@ -590,12 +514,12 @@ tests.test_encoder_rules_and_jumprelu_gradient(
 # ! TAGS: []
 
 r'''
-**TopK clarification.** The historical common-bug sentence above overstates the difference. For
+**TopK clarification.** The common-bug sentence above overstates the difference. For
 ordinary TopK followed by clamping, positive ordering and final numerical values agree with clamping
 first, apart from identities chosen among zero ties. Count strictly positive outputs: realized L0
 can be below k under either ordering when fewer than k positive values exist. The selected index
-budget, positive support, and zero-tie policy are distinct. The implementation retained here clamps
-before selecting; the historical sentence remains preserved for provenance.
+budget, positive support, and zero-tie policy are distinct. The implementation here clamps
+before selecting.
 '''
 
 # ! CELL TYPE: code
@@ -726,35 +650,8 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-## Reflect after inspection — SAE-2
-
-Observed values or argument, exact original cell/output or asset: ______
-Named control and its denominator: ______
-Forecast discrepancy / revised mechanism: ______
-Changed-condition forecast before another reveal: ______
-Historical source reading or separately authorized execution (record which): ______
-
-Do not pool the planted study, optional Pythia preflight and play cohorts, or describe reference
-exposure as untouched TEST.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Forecast before running — SAE-3
-
 Which objective terms train each variant, and why does equal numerical penalty not imply equal
 sparsity?
-
-Forecast / expected control contrast: ______
-Confidence (0–100%): ______
-Mechanism and a result that would contradict it: ______
-Exact inputs / denominator / prior exposure (unseen / seen / unknown): ______
-
-Keep observations blank. This is exposed historical guided practice; no experiment is authorized by
-migration.
 '''
 
 # ! CELL TYPE: markdown
@@ -767,7 +664,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Time: 15-20 minutes
+>
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 Decode with `features @ W_dec + b_dec`, then implement each objective. ReLU-L1 penalizes activation
@@ -929,23 +827,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-## Reflect after inspection — SAE-3
-
-Observed values or argument, exact original cell/output or asset: ______
-Named control and its denominator: ______
-Forecast discrepancy / revised mechanism: ______
-Changed-condition forecast before another reveal: ______
-Historical source reading or separately authorized execution (record which): ______
-
-Do not pool the planted study, optional Pythia preflight and play cohorts, or describe reference
-exposure as untouched TEST.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 # 3️⃣ Recover and predict
 '''
 
@@ -954,18 +835,8 @@ r'''
 # ! TAGS: []
 
 r'''
-## Forecast before running — SAE-4
-
 If two learned decoder rows recover the same planted direction, can perfect reconstruction certify
 complete recovery? What choices must freeze before held-out labels?
-
-Forecast / expected control contrast: ______
-Confidence (0–100%): ______
-Mechanism and a result that would contradict it: ______
-Exact inputs / denominator / prior exposure (unseen / seen / unknown): ______
-
-Keep observations blank. This is exposed historical guided practice; no experiment is authorized by
-migration.
 '''
 
 # ! CELL TYPE: markdown
@@ -978,7 +849,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Time: 20-25 minutes
+>
+> You should spend up to 20-25 minutes on this exercise.
 > ```
 
 Implement L0 and density, true-side dictionary matching, tie-aware ROC AUC, train-split feature
@@ -1245,23 +1117,6 @@ if MAIN:
     )
 # END SOLUTION
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after inspection — SAE-4
-
-Observed values or argument, exact original cell/output or asset: ______
-Named control and its denominator: ______
-Forecast discrepancy / revised mechanism: ______
-Changed-condition forecast before another reveal: ______
-Historical source reading or separately authorized execution (record which): ______
-
-Do not pool the planted study, optional Pythia preflight and play cohorts, or describe reference
-exposure as untouched TEST.
-'''
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: []
@@ -1286,18 +1141,8 @@ r'''
 # ! TAGS: []
 
 r'''
-## Forecast before running — SAE-5
-
 For matched and orthogonal interventions with equal coefficients, which target projection should
 change? What causal claim would still be unsupported?
-
-Forecast / expected control contrast: ______
-Confidence (0–100%): ______
-Mechanism and a result that would contradict it: ______
-Exact inputs / denominator / prior exposure (unseen / seen / unknown): ______
-
-Keep observations blank. This is exposed historical guided practice; no experiment is authorized by
-migration.
 '''
 
 # ! CELL TYPE: markdown
@@ -1310,7 +1155,8 @@ r'''
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> Time: 15-20 minutes
+>
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 Match one learned decoder row to planted feature zero. Add that unit direction to negative examples
@@ -1467,35 +1313,8 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-## Reflect after inspection — SAE-5
-
-Observed values or argument, exact original cell/output or asset: ______
-Named control and its denominator: ______
-Forecast discrepancy / revised mechanism: ______
-Changed-condition forecast before another reveal: ______
-Historical source reading or separately authorized execution (record which): ______
-
-Do not pool the planted study, optional Pythia preflight and play cohorts, or describe reference
-exposure as untouched TEST.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Forecast before running — SAE-6
-
 Forecast the relationship between reconstruction, recovery and held-out AUC across four variants.
 Name the distinct control for each of six panels.
-
-Forecast / expected control contrast: ______
-Confidence (0–100%): ______
-Mechanism and a result that would contradict it: ______
-Exact inputs / denominator / prior exposure (unseen / seen / unknown): ______
-
-Keep observations blank. This is exposed historical guided practice; no experiment is authorized by
-migration.
 '''
 
 # ! CELL TYPE: markdown
@@ -1533,15 +1352,14 @@ planted directions, while gated can reconstruct extremely well and still recover
 
 r'''
 <details>
-<summary>Historical signature asset — open after recording SAE-6</summary>
+<summary>Signature result</summary>
 
-<img src="../../exercises/part1_sae_variants/media/sae_variants_signature_result.png" alt="Historical six-panel four-variant planted SAE comparison with controls" width="1100">
+<img src="../../exercises/part1_sae_variants/media/sae_variants_signature_result.png" alt="Six-panel four-variant planted SAE comparison with controls" width="1100">
 
-<img src="../../exercises/part1_sae_variants/media/sae_variant_validation_ladder.svg" alt="Historical SAE validation ladder separating planted controls and real-model preflight" width="1100">
+<img src="../../exercises/part1_sae_variants/media/sae_variant_validation_ladder.svg" alt="SAE validation ladder separating planted controls and real-model preflight" width="1100">
 
-This is the byte-exact historical asset. The main notebook retains its generating code and
-historical output. The dashed train-mean reconstruction baseline is distinct from the real
-preflight's literal-zero control. No new result was generated during this migration.
+The dashed train-mean reconstruction baseline is distinct from the real
+preflight's literal-zero control.
 
 </details>
 '''
@@ -1698,35 +1516,8 @@ concept.
 # ! TAGS: []
 
 r'''
-## Reflect after inspection — SAE-6
-
-Observed values or argument, exact original cell/output or asset: ______
-Named control and its denominator: ______
-Forecast discrepancy / revised mechanism: ______
-Changed-condition forecast before another reveal: ______
-Historical source reading or separately authorized execution (record which): ______
-
-Do not pool the planted study, optional Pythia preflight and play cohorts, or describe reference
-exposure as untouched TEST.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Forecast before running — SAE-7
-
 At fixed data seed, will changing k from two to one increase the architectural activation budget?
 Predict separately what remains uncertain about recovery and reconstruction.
-
-Forecast / expected control contrast: ______
-Confidence (0–100%): ______
-Mechanism and a result that would contradict it: ______
-Exact inputs / denominator / prior exposure (unseen / seen / unknown): ______
-
-Keep observations blank. This is exposed historical guided practice; no experiment is authorized by
-migration.
 '''
 
 # ! CELL TYPE: markdown
@@ -1777,35 +1568,8 @@ claim failed.
 # ! TAGS: []
 
 r'''
-## Reflect after inspection — SAE-7
-
-Observed values or argument, exact original cell/output or asset: ______
-Named control and its denominator: ______
-Forecast discrepancy / revised mechanism: ______
-Changed-condition forecast before another reveal: ______
-Historical source reading or separately authorized execution (record which): ______
-
-Do not pool the planted study, optional Pythia preflight and play cohorts, or describe reference
-exposure as untouched TEST.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Forecast before running — SAE-8
-
 Can low held-out reconstruction and a decoder logit effect coexist with failure of the frozen
 semantic feature? What does a single TopK preflight establish?
-
-Forecast / expected control contrast: ______
-Confidence (0–100%): ______
-Mechanism and a result that would contradict it: ______
-Exact inputs / denominator / prior exposure (unseen / seen / unknown): ______
-
-Keep observations blank. This is exposed historical guided practice; no experiment is authorized by
-migration.
 '''
 
 # ! CELL TYPE: markdown
@@ -1824,9 +1588,7 @@ train labels before held-out AUC, and checks decoder-direction and vocabulary-lo
 pinned run deliberately records the train-selected feature's held-out failure as a negative result;
 it does not turn training-set separation into a semantic-feature claim.
 
-The parent runner owns CUDA execution. The CPU notebook does not load `verification_report.json` as
-its result and does not substitute synthetic values for this path. A refreshed report remains
-supporting evidence only.
+The CPU notebook does not substitute synthetic values for this path.
 
 ```bash
 .venv/bin/python -c "from chapter6_sparse_feature_methods.exercises.part1_sae_variants.solutions import run_gpu_test; print(run_gpu_test())"
@@ -1851,23 +1613,6 @@ if MAIN:
     }
 if MAIN:
     display(pd.DataFrame([real_model_config]).T.rename(columns={0: "value"}))
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after inspection — SAE-8
-
-Observed values or argument, exact original cell/output or asset: ______
-Named control and its denominator: ______
-Forecast discrepancy / revised mechanism: ______
-Changed-condition forecast before another reveal: ______
-Historical source reading or separately authorized execution (record which): ______
-
-Do not pool the planted study, optional Pythia preflight and play cohorts, or describe reference
-exposure as untouched TEST.
-'''
 
 # ! CELL TYPE: code
 # ! FILTERS: []

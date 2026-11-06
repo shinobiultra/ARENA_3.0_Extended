@@ -55,24 +55,13 @@ r'''
 # ! TAGS: []
 
 r'''
-> **Historical reference evidence:** all fourteen original scientific code cells and their saved
-> outputs/counts are retained with declared setup routing only. This canonical notebook has not been freshly
-> executed. The learned Mamba plots, longer-length play and release report are historical references; new
-> static/CPU primitive checks are separate engineering evidence. The original lesson remains intact at [legacy
-> 5.4](../part4_mamba_state_tracking/5.4_Mamba_State_Tracking_exercises.ipynb).
-
 **Scope of the canonical title.** This learner lesson studies the existing one-layer Mamba bracket-depth
-organism. It does not teach or establish an expanded Transformer/Mamba-3 comparison. The separate old release
-report contains a tiny Transformer baseline and a pinned 130M hidden-state extraction preflight; those are
-supporting historical evidence, not this notebook's visible state-transplant result or a new execution.
+organism. It does not teach or establish an expanded Transformer/Mamba-3 comparison.
 
 The existing [5.3 Mamba from Scratch
 lesson](../part3_mamba_from_scratch/5.3_Mamba_from_Scratch_exercises.ipynb) is the architecture background.
-The supplied backbone here is the exact `arena_ext/mamba.py` dependency used by the historical state-tracking
-notebook, preserved in `mamba_backbone.py` with exact-definition provenance; it is not substituted with a
-newer implementation from 5.3. You implement the state-tracking methods here, not a new backbone. Record
-confidence, reasoning and exposure before opening reference results; this is guided practice, not an unseen
-score.
+The supplied backbone here is the `arena_ext/mamba.py` dependency; it is not substituted with a
+newer implementation from 5.3. You implement the state-tracking methods here, not a new backbone.
 '''
 
 # ! CELL TYPE: markdown
@@ -92,17 +81,6 @@ random edit fails.
 
 <img src="media/mamba_state_tracking_signature.png" width="1000">
 
-## Section Metadata
-
-| Release field | Value |
-| --- | --- |
-| Exercise | `EXERCISE_ID = "5_4_mamba_state_tracking"` |
-| Ground-truth tier | `GT_TIER = "GT-1"` |
-| Difficulty | `DIFFICULTY = 4` |
-| Importance | `IMPORTANCE = 4` |
-| Expected runtime | `EXPECTED_RUNTIME = "seconds on toy contract; minutes on local real-model path"` |
-| GPU Contract | `REQUIRES_GPU = True` for the optional release verification; learner training, probing, and the signature result run on CPU. |
-
 ## What you will implement
 
 By the end of this notebook, you will be able to:
@@ -115,7 +93,7 @@ By the end of this notebook, you will be able to:
 - hunt confident OOD failures instead of hiding them in an average.
 
 The entire learner path runs on CPU. Expect roughly 60-90 minutes including exercises;
-the completed training cells take seconds on a typical laptop CPU.
+the completed training cells take seconds on a typical laptop CPU. A CUDA GPU is needed only for the optional release verification.
 '''
 
 # ! CELL TYPE: markdown
@@ -151,7 +129,7 @@ r'''
 
 ### ☆ Bonus
 
-Find confident errors, preserve limitations and inspect the optional historical release surface.
+Find confident errors, preserve limitations and inspect the optional release surface.
 '''
 
 # ! CELL TYPE: code
@@ -267,7 +245,7 @@ model predictions, or a hidden implementation. Every later claim is measured aga
 visible trajectory.
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
         def generate_bracket_depth_task(
@@ -356,14 +334,8 @@ def generate_bracket_depth_task(
 # ! TAGS: []
 
 r'''
-### Forecast — Boundary actions
-
 For batch 1/length 24/max_depth=3/seed 7, predict which boundary depths force the next token. Explain why
 clipping the state after sampling an invalid token breaks the recurrence.
-
-Record your prediction, confidence, causal reasoning and prior exposure before opening saved results. After
-observation record the discrepancy and a changed-condition forecast. Reference-rich material is guided
-practice; seen or unknown exposure earns no unseen score.
 '''
 
 # ! CELL TYPE: code
@@ -435,21 +407,6 @@ r'''
 # ! TAGS: []
 
 r'''
-### Reflect — Boundary actions
-
-Compare every token with cumulative depth; use the upper and lower boundary controls. Predict what max_depth=2
-changes while preserving the recurrence.
-
-Record your prediction, confidence, causal reasoning and prior exposure before opening saved results. After
-observation record the discrepancy and a changed-condition forecast. Reference-rich material is guided
-practice; seen or unknown exposure earns no unseen score.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## 2. Train the existing tiny Mamba path
 
 We reuse `MambaConfig` and `TinyMambaModel` from section 5.3. The embedding, causal
@@ -498,7 +455,7 @@ whether accuracy comes from predicting the most common bounded-walk state. This 
 establishes behavior; it does not yet locate the state in the recurrence.
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
         class TinyMambaStateClassifier(nn.Module):
@@ -696,14 +653,8 @@ def train_state_tracker_cpu(
 # ! TAGS: []
 
 r'''
-### Forecast — Behavior across length
-
 Before viewing the saved training curve, predict ID length 16, OOD length 32 and final-eight token accuracy
 relative to the majority-depth baseline. State which failure would indicate accumulated drift.
-
-Record your prediction, confidence, causal reasoning and prior exposure before opening saved results. After
-observation record the discrepancy and a changed-condition forecast. Reference-rich material is guided
-practice; seen or unknown exposure earns no unseen score.
 '''
 
 # ! CELL TYPE: code
@@ -799,21 +750,6 @@ r'''
 # ! TAGS: []
 
 r'''
-### Reflect — Behavior across length
-
-Compare the position curve with the majority control. The last-eight metric and full-sequence metric have
-different denominators. Forecast length 48 before the existing play.
-
-Record your prediction, confidence, causal reasoning and prior exposure before opening saved results. After
-observation record the discrepancy and a changed-condition forecast. Reference-rich material is guided
-practice; seen or unknown exposure earns no unseen score.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 # 2️⃣ Decode the recurrent cache
 '''
 
@@ -873,7 +809,7 @@ late OOD positions is evidence against claiming a perfectly stable state code. T
 intervention in the next section asks the stronger causal question.
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
         @dataclass(frozen=True)
@@ -1106,14 +1042,8 @@ def state_probe_accuracy(
 # ! TAGS: []
 
 r'''
-### Forecast — What the cache makes linearly accessible
-
 Predict held-out ID probe accuracy, OOD-all and OOD-late accuracy versus shuffled labels. Freeze 96 sequences
 per split, lengths 16/16/32, seeds 4000/4001/4002, ridge .01 and shuffled seed 77.
-
-Record your prediction, confidence, causal reasoning and prior exposure before opening saved results. After
-observation record the discrepancy and a changed-condition forecast. Reference-rich material is guided
-practice; seen or unknown exposure earns no unseen score.
 '''
 
 # ! CELL TYPE: code
@@ -1167,22 +1097,6 @@ if MAIN:
 if MAIN:
     for name, value in probe_metrics.items():
         print(f"{name:>13}: {value:.3f}")
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect — What the cache makes linearly accessible
-
-Compare the standardized probe with its shuffled-label control and with model behavior. OOD-late uses
-positions 16 through 31; it is not the behavioral final-eight metric. Forecast a different sequence length
-without claiming causality from decoding.
-
-Record your prediction, confidence, causal reasoning and prior exposure before opening saved results. After
-observation record the discrepancy and a changed-condition forecast. Reference-rich material is guided
-practice; seen or unknown exposure earns no unseen score.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -1247,7 +1161,7 @@ accurate donor trajectory connects that state equality to the exact depth task. 
 not identify a single human-readable SSM coordinate.
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
         @t.inference_mode()
@@ -1593,15 +1507,9 @@ def run_state_transplant(
 # ! TAGS: []
 
 r'''
-### Forecast — A controlled cache transplant
-
 The declared source and donor differ in depth at position 5 but share the convolutional history and all eight
 suffix tokens. Predict donor-trajectory match for source, targeted SSM transplant and equal-norm random edit.
 Explain which cache component stays fixed.
-
-Record your prediction, confidence, causal reasoning and prior exposure before opening saved results. After
-observation record the discrepancy and a changed-condition forecast. Reference-rich material is guided
-practice; seen or unknown exposure earns no unseen score.
 '''
 
 # ! CELL TYPE: code
@@ -1634,22 +1542,6 @@ if MAIN:
     print(f"targeted mean donor-state probability: {transplant['patched_target_probability']:.3f}")
 if MAIN:
     print(f"random mean donor-state probability: {transplant['random_target_probability']:.6f}")
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect — A controlled cache transplant
-
-Compare all eight continuation predictions and donor-logit parity. Full-state sufficiency under matched
-history does not isolate a sparse or native depth direction. Forecast breaking the shared
-convolutional-history condition: should the validation reject before scoring?
-
-Record your prediction, confidence, causal reasoning and prior exposure before opening saved results. After
-observation record the discrepancy and a changed-condition forecast. Reference-rich material is guided
-practice; seen or unknown exposure earns no unseen score.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -1692,14 +1584,8 @@ the scoped model-organism claim stated at the top.
 # ! TAGS: []
 
 r'''
-### Forecast — Read the evidence together
-
 Predict which panel establishes exact task labels, behavioral extrapolation, linear accessibility and causal
 cache sufficiency. Explain why none proves pretrained Mamba depth tracking.
-
-Record your prediction, confidence, causal reasoning and prior exposure before opening saved results. After
-observation record the discrepancy and a changed-condition forecast. Reference-rich material is guided
-practice; seen or unknown exposure earns no unseen score.
 '''
 
 # ! CELL TYPE: code
@@ -1814,21 +1700,6 @@ r'''
 # ! TAGS: []
 
 r'''
-### Reflect — Read the evidence together
-
-Explain disagreements between high behavior accuracy and weaker OOD-late probe accuracy. Identify the separate
-controls and the limits of one initialization and one task distribution.
-
-Record your prediction, confidence, causal reasoning and prior exposure before opening saved results. After
-observation record the discrepancy and a changed-condition forecast. Reference-rich material is guided
-practice; seen or unknown exposure earns no unseen score.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Try It Yourself
 
 Change `PLAY_SEQ_LEN` to `48` or `64`, and change `PLAY_SEED`. Look for the position where
@@ -1842,15 +1713,9 @@ hold? It should; the learned task accuracy may not.
 # ! TAGS: []
 
 r'''
-### Forecast — Predict the longer play
-
 Before revealing length 48/seed 3100, forecast overall accuracy, final-eight accuracy and the first position
 whose batch accuracy falls below .8. Then propose changing length 48 to64 while keeping the trained model and
 data seed fixed.
-
-Record your prediction, confidence, causal reasoning and prior exposure before opening saved results. After
-observation record the discrepancy and a changed-condition forecast. Reference-rich material is guided
-practice; seen or unknown exposure earns no unseen score.
 '''
 
 # ! CELL TYPE: code
@@ -1910,21 +1775,6 @@ r'''
 # ! TAGS: []
 
 r'''
-### Reflect — Predict the longer play
-
-Read the position curve as 128 sequence outcomes at each position; identify the first crossing and late
-errors. Length64 is an unexecuted changed-condition proposal here, not an already validated transfer.
-
-Record your prediction, confidence, causal reasoning and prior exposure before opening saved results. After
-observation record the discrepancy and a changed-condition forecast. Reference-rich material is guided
-practice; seen or unknown exposure earns no unseen score.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 # ☆ Bonus
 '''
 
@@ -1974,7 +1824,7 @@ Repeated off-by-one errors late in long sequences suggest accumulated state drif
 than random guessing. Use the prefix and heatmap to propose a narrower follow-up test.
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
         def find_confident_errors(
@@ -2075,14 +1925,8 @@ def find_confident_errors(
 # ! TAGS: []
 
 r'''
-### Forecast — Confident errors
-
 Predict whether the highest-confidence wrong tokens cluster by true depth and late position. Explain why
 correct high-confidence predictions must be excluded.
-
-Record your prediction, confidence, causal reasoning and prior exposure before opening saved results. After
-observation record the discrepancy and a changed-condition forecast. Reference-rich material is guided
-practice; seen or unknown exposure earns no unseen score.
 '''
 
 # ! CELL TYPE: code
@@ -2162,21 +2006,6 @@ r'''
 # ! TAGS: []
 
 r'''
-### Reflect — Confident errors
-
-Inspect exact prefixes and the depth/position heatmap. State how many tokens each bin contains and propose a
-targeted diagnostic without silently selecting a new primary outcome.
-
-Record your prediction, confidence, causal reasoning and prior exposure before opening saved results. After
-observation record the discrepancy and a changed-condition forecast. Reference-rich material is guided
-practice; seen or unknown exposure earns no unseen score.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Limitations
 
 - This is an exact generated task and a trained one-layer model organism, not evidence that
@@ -2202,11 +2031,10 @@ r'''
 # ! TAGS: []
 
 r'''
-## Release Verification Surface
+## GPU entry points
 
-The exercises and signature result above are the CPU learner path. The two stable entry points below delegate
-to the section's pinned release harness; neither runs automatically. Call them only in the CUDA environment
-described by the section metadata, then compare the returned metrics with `verification_report.json`.
+The exercises and signature result above are the CPU learner path. The two entry points below run the GPU check and
+the full path; neither runs automatically. Call them only on a CUDA GPU.
 
 `run_gpu_test(max_vram_gb=24.0)` runs the bounded GPU check. `run_full_experiment(max_vram_gb=24.0)` runs the
 same validated full path.
@@ -2239,17 +2067,9 @@ def run_full_experiment(max_vram_gb: float = 24.0) -> dict:
 # ! TAGS: []
 
 r'''
-## Migration scope and reproducibility
+## Reproducibility
 
-The original student generator default is `max_depth=3` while its historical solution default is `4`; both
-published signatures are preserved. Every measured call fixes `max_depth=3` explicitly. Use the declared
-argument rather than assuming the defaults coincide. The old metadata identifier `5_4_mamba_state_tracking`
-belongs to the retained release record, not current canonical 5.4 (Mamba-2/SSD).
-
-The optional release functions still resolve the physically unchanged legacy module. Its `accepted` field is
-historical metadata, not canonical migration or learner acceptance. Neither the original 160-step learner
-training, 12-step training test, probe fits on real model states, 48-token play nor any
-CUDA/pretrained/release path was rerun for this migration. Fresh bounded primitive checks, if authorized and
-run, are identified separately in the migration evidence.
+The student generator default is `max_depth=3` while the solution default is `4`. Every measured call fixes `max_depth=3` explicitly. Use the declared
+argument rather than assuming the defaults coincide.
 '''
 

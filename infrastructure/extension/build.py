@@ -30,7 +30,6 @@ from __future__ import annotations
 import argparse
 import base64
 import fnmatch
-import json
 import os
 import re
 import sys
@@ -94,22 +93,6 @@ class ExtensionMasterFile(MasterFileData):
             "If you want to change to dark mode, you can do this by clicking the three horizontal lines in the "
             "top-right, then navigating to Settings → Theme.",
         ]
-        checkpoint_path = ROOT / "mastery_hub" / "extension_checkpoints.json"
-        if checkpoint_path.exists():
-            checkpoints = json.loads(checkpoint_path.read_text(encoding="utf-8"))["checkpoints"]
-            section = self.colab_name.split("_", 1)[0]
-            if any(checkpoint["section"] == section for checkpoint in checkpoints):
-                anchor = "section-" + section.replace(".", "-")
-                workbook = "../../../mastery_hub/units/extension_predictions/exercises.ipynb"
-                colab_lines[2:2] = [
-                    f"> **Prediction practice: [start the guided workbook]({workbook}#{anchor}) before viewing this lesson's results.**",
-                    "> Record a forecast, confidence and reasoning, then compare controls and predict a changed case. These reference-rich lessons support guided practice; prior exposure is not scored as unseen mastery.",
-                    "",
-                ]
-                streamlit_lines[2:2] = [
-                    "> **Guided prediction practice:** open `mastery_hub/units/extension_predictions/exercises.ipynb` in the checkout before viewing the results. Record confidence and reasoning, compare controls, then predict a changed case. Reference results are practice, not an unseen test.",
-                    "",
-                ]
         # Keep long paired links and guidance readable without splitting URLs.
         def readable_quotes(lines):
             result = []
@@ -292,7 +275,9 @@ def rewrite_page_media(master: ExtensionMasterFile) -> None:
     page = master.instructions_dir / f"{master.streamlit_page_name}.md"
     rel = f"../../exercises/{master.exercise_dir_name}/media/"
     text = page.read_text(encoding="utf-8")
-    page.write_text(re.sub(r"""src=(["'])media/""", rf"src=\1{rel}", text), encoding="utf-8")
+    text = re.sub(r"""src=(["'])media/""", rf"src=\1{rel}", text)
+    # The converter writes empty quote lines as "> "; drop the trailing space (renders the same).
+    page.write_text(re.sub(r"(?m)^> $", ">", text), encoding="utf-8")
 
 
 def prepare_instruction_page(page: Path) -> None:

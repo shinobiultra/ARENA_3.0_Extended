@@ -36,27 +36,11 @@ r'''
 # ! TAGS: []
 
 r'''
-## Commit a prediction before opening the historical reference
-
 Two methods can agree on the most important player while disagreeing about credit. Before reading
 the worked claims, predict what an interaction does to the sum of single-location noising losses
 compared with the clean-minus-corrupt change. Then predict whether moving from input players to
 separate post-nonlinearity units must change that comparison.
 
-| Before revealing either complete legacy lesson | Your commitment |
-| --- | --- |
-| Forecast for interaction credit and the sum of patch losses | ______ |
-| Forecast after changing the attribution unit | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning and a condition that would change your mind | ______ |
-| Prior exposure: seen / unknown / unexposed, with source | ______ |
-| Exact source/configuration fingerprint | ______ |
-
-The complete two curricula follow. Saved outputs, expected answers, public figures and solution
-hints expose their results. This is guided practice with seen or unknown exposure; it does not earn
-an unseen mastery score. No learner answer is filled in. The source migration performs no taught
-method, model, training or new target measurement. All displayed results are retained historical
-references, with their original scientific limitations and report identities.
 '''
 
 
@@ -83,38 +67,13 @@ r'''
 > - Compare rankings through deletion and insertion consequences rather than correlation alone.
 > - Keep the separate training-example utility and its gradient-dot proxy distinct from a circuit.
 
-### Scientific scope and runtime plumbing
+### Scientific scope
 
 The first game fixes clean and corrupt activation vectors. The second game fixes a finite feature
 coalition utility with an intercept; it does not introduce an observational conditional-background
 SHAP distribution. Its data-player bridge instead changes the selected training examples and the
 mean used by one gradient step. These games are not interchangeable.
-
-The notebook keeps ordinary visible default tensors and function definitions. Importing the Python
-module allocates no lesson tensors and executes no demonstrations. Explicitly call
-`initialize_lesson_plumbing()` to bind original source/report directories and canonical output
-destinations; then initialize defaults before retrieving its three default-dependent finite-circuit
-callbacks, explicitly call `initialize_agreement_defaults()`. That initializer builds the original
-float64 tensor once and binds the original three signatures and bodies to the same tensor and
-pair-weight mapping. Other pure core callbacks are available before initialization. Explicit global
-bindings preserve those three functions' `__qualname__`, keep their closures empty, and retain the
-original scientific signature and body. Path-dependent plot/report callbacks require the plumbing
-initializer or the visible notebook setup. The script entry point initializes plumbing before
-defaults. Only this section's `media` and `artifacts` directories are output destinations; legacy
-input/report paths remain original. Legacy test modules remain complete: they forward learner
-callbacks where supported and retain their original helper fallbacks, so they do not establish that
-every helper dependency is isolated to inline code.
-
-Runtime test aliases bind the original legacy modules and preserve their `__file__` resource
-identity. The canonical `relu_tests.py` and `agreement_tests.py` are exact custody copies only.
-Historical report and notebook-surface checks inspect the original legacy report and old notebook
-filenames. They do not validate the new canonical lesson or confer current acceptance.
-
-Canonical syllabus identity is `part8_shap_vs_patching`. Historical section paths, reports, locks,
-expected outputs and optional CUDA entry points retain their original identities. Existing source
-folders remain available. No current execution or acceptance is inferred from an old report.
 '''
-
 
 # ! CELL TYPE: code
 # ! FILTERS: []
@@ -139,8 +98,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Legacy ReLU token and hidden curriculum
-
 ### [16.6] SHAP vs Activation Patching - Solutions
 
 > **Falsifiable claim.** By the end of this notebook, you will have shown that, in an exact ReLU
@@ -192,9 +149,8 @@ Before calculating anything, predict: if you remove `RED` from the full prompt, 
 r'''
 ## Setup
 
-The primary result is generated from the code in this notebook. No verification report is loaded.
-The optional repository CUDA preflight is supporting release evidence, not part of the learner
-argument.
+The primary result is generated from the code in this notebook. No verification report is loaded. The toy contract runs in seconds; the local real-model path takes minutes and needs a GPU.
+
 
 <details><summary>Expected output</summary>
 
@@ -293,39 +249,13 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Predict before inspection — relu-3
-
-> ```yaml
-> Difficulty: 🔴🔴⚪⚪⚪
-> Importance: 🔵🔵🔵🔵⚪
-> You should spend 2-3 minutes committing this prediction.
-> ```
-
-Record a forecast for the next implementation and its control before opening expected output, hints,
-solutions or saved figures. Treat prior exposure honestly and change one scientific condition when
-you formulate the transfer prediction.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Forecast and a control that should fail | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning | ______ |
-| Prior exposure and exact implementation fingerprint | ______ |
-| Changed-condition forecast, confidence and reasoning | ______ |
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise 1 - build the exact ReLU model
 
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> You should spend 10-15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Implement the encoder, readout, and cached forward pass. The fifth hidden unit must be `ReLU(RED +
@@ -516,53 +446,13 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after testing — relu-4
-
-Record what you actually ran and which visible controls failed. Compare your observations with the
-committed prediction, explain the largest discrepancy, and update the changed-condition forecast
-with confidence and causal reasoning. An unexecuted transfer remains unobserved. Retained historical
-output is reference material, separate from a result you generated.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Predict before inspection — relu-5
-
-> ```yaml
-> Difficulty: 🔴🔴⚪⚪⚪
-> Importance: 🔵🔵🔵🔵⚪
-> You should spend 2-3 minutes committing this prediction.
-> ```
-
-Record a forecast for the next implementation and its control before opening expected output, hints,
-solutions or saved figures. Treat prior exposure honestly and change one scientific condition when
-you formulate the transfer prediction.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Forecast and a control that should fail | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning | ______ |
-| Prior exposure and exact implementation fingerprint | ______ |
-| Changed-condition forecast, confidence and reasoning | ______ |
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise 2 - construct a coalition table from interventions
 
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> You should spend 10-15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 A player is meaningful only relative to an activation level. Write one routine which mixes clean and
@@ -717,53 +607,13 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after testing — relu-6
-
-Record what you actually ran and which visible controls failed. Compare your observations with the
-committed prediction, explain the largest discrepancy, and update the changed-condition forecast
-with confidence and causal reasoning. An unexecuted transfer remains unobserved. Retained historical
-output is reference material, separate from a result you generated.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Predict before inspection — relu-7
-
-> ```yaml
-> Difficulty: 🔴🔴⚪⚪⚪
-> Importance: 🔵🔵🔵🔵⚪
-> You should spend 2-3 minutes committing this prediction.
-> ```
-
-Record a forecast for the next implementation and its control before opening expected output, hints,
-solutions or saved figures. Treat prior exposure honestly and change one scientific condition when
-you formulate the transfer prediction.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Forecast and a control that should fail | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning | ______ |
-| Prior exposure and exact implementation fingerprint | ______ |
-| Changed-condition forecast, confidence and reasoning | ______ |
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise 3 - implement exact Shapley values
 
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> You should spend 15-20 minutes on this exercise.
+>
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 Average each player's marginal contribution over every possible predecessor coalition, using the
@@ -940,53 +790,13 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after testing — relu-8
-
-Record what you actually ran and which visible controls failed. Compare your observations with the
-committed prediction, explain the largest discrepancy, and update the changed-condition forecast
-with confidence and causal reasoning. An unexecuted transfer remains unobserved. Retained historical
-output is reference material, separate from a result you generated.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Predict before inspection — relu-9
-
-> ```yaml
-> Difficulty: 🔴🔴⚪⚪⚪
-> Importance: 🔵🔵🔵🔵⚪
-> You should spend 2-3 minutes committing this prediction.
-> ```
-
-Record a forecast for the next implementation and its control before opening expected output, hints,
-solutions or saved figures. Treat prior exposure honestly and change one scientific condition when
-you formulate the transfer prediction.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Forecast and a control that should fail | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning | ______ |
-| Prior exposure and exact implementation fingerprint | ______ |
-| Changed-condition forecast, confidence and reasoning | ______ |
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise 4 - patch one activation location
 
 > ```yaml
 > Difficulty: 🔴🔴⚪⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> You should spend 10-15 minutes on this exercise.
+>
+> You should spend up to 10-15 minutes on this exercise.
 > ```
 
 Implement noising patching: start from the clean cache, replace one location with its corrupt value,
@@ -1110,53 +920,13 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after testing — relu-10
-
-Record what you actually ran and which visible controls failed. Compare your observations with the
-committed prediction, explain the largest discrepancy, and update the changed-condition forecast
-with confidence and causal reasoning. An unexecuted transfer remains unobserved. Retained historical
-output is reference material, separate from a result you generated.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Predict before inspection — relu-11
-
-> ```yaml
-> Difficulty: 🔴🔴⚪⚪⚪
-> Importance: 🔵🔵🔵🔵⚪
-> You should spend 2-3 minutes committing this prediction.
-> ```
-
-Record a forecast for the next implementation and its control before opening expected output, hints,
-solutions or saved figures. Treat prior exposure honestly and change one scientific condition when
-you formulate the transfer prediction.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Forecast and a control that should fail | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning | ______ |
-| Prior exposure and exact implementation fingerprint | ______ |
-| Changed-condition forecast, confidence and reasoning | ______ |
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise 5 - align attribution units before comparing
 
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> You should spend 15-20 minutes on this exercise.
+>
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 Implement strict name-based alignment and report magnitude error, cosine similarity, top unit, and
@@ -1396,53 +1166,13 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after testing — relu-12
-
-Record what you actually ran and which visible controls failed. Compare your observations with the
-committed prediction, explain the largest discrepancy, and update the changed-condition forecast
-with confidence and causal reasoning. An unexecuted transfer remains unobserved. Retained historical
-output is reference material, separate from a result you generated.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Predict before inspection — relu-13
-
-> ```yaml
-> Difficulty: 🔴🔴⚪⚪⚪
-> Importance: 🔵🔵🔵🔵⚪
-> You should spend 2-3 minutes committing this prediction.
-> ```
-
-Record a forecast for the next implementation and its control before opening expected output, hints,
-solutions or saved figures. Treat prior exposure honestly and change one scientific condition when
-you formulate the transfer prediction.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Forecast and a control that should fail | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning | ______ |
-| Prior exposure and exact implementation fingerprint | ______ |
-| Changed-condition forecast, confidence and reasoning | ______ |
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise 6 - make the controls fail
 
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵🔵
-> You should spend 15-20 minutes on this exercise.
+>
+> You should spend up to 15-20 minutes on this exercise.
 > ```
 
 Build a fixed label-shuffle control and 512 matched-L2 random hidden interventions. Keep the known
@@ -1624,53 +1354,13 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after testing — relu-14
-
-Record what you actually ran and which visible controls failed. Compare your observations with the
-committed prediction, explain the largest discrepancy, and update the changed-condition forecast
-with confidence and causal reasoning. An unexecuted transfer remains unobserved. Retained historical
-output is reference material, separate from a result you generated.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Predict before inspection — relu-15
-
-> ```yaml
-> Difficulty: 🔴🔴⚪⚪⚪
-> Importance: 🔵🔵🔵🔵⚪
-> You should spend 2-3 minutes committing this prediction.
-> ```
-
-Record a forecast for the next implementation and its control before opening expected output, hints,
-solutions or saved figures. Treat prior exposure honestly and change one scientific condition when
-you formulate the transfer prediction.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Forecast and a control that should fail | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning | ______ |
-| Prior exposure and exact implementation fingerprint | ______ |
-| Changed-condition forecast, confidence and reasoning | ______ |
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise 7 - sweep the interaction strength
 
 > ```yaml
 > Difficulty: 🔴🔴🔴🔴⚪
 > Importance: 🔵🔵🔵🔵🔵
-> You should spend 20-25 minutes on this exercise.
+>
+> You should spend up to 20-25 minutes on this exercise.
 > ```
 
 Turn the single example into a falsification curve. For each gate readout strength, recompute token
@@ -1822,20 +1512,6 @@ if MAIN:
 # END HIDE
 
 # END SOLUTION
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after testing — relu-16
-
-Record what you actually ran and which visible controls failed. Compare your observations with the
-committed prediction, explain the largest discrepancy, and update the changed-condition forecast
-with confidence and causal reasoning. An unexecuted transfer remains unobserved. Retained historical
-output is reference material, separate from a result you generated.
-'''
 
 
 # ! CELL TYPE: markdown
@@ -2122,8 +1798,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Legacy finite circuit and data-player curriculum
-
 ### [16.8] Do SHAPley and Mechanistic Interpretability Agree?
 
 By the end of this notebook, you will have shown that SHAP-style input attribution and mechanistic
@@ -2139,15 +1813,6 @@ The claim here is intentionally narrow. We start with exact finite games where t
 known, then treat a tiny trained finite model report as supporting evidence. The signature result is
 a visible agreement matrix plus deletion/insertion and pair-interaction plots, not a report
 dictionary.
-
-```python
-EXERCISE_ID = "16_8_do_shapley_and_mechanistic_interpretability_agree"
-GT_TIER = "GT-0"
-DIFFICULTY = 4
-IMPORTANCE = 4
-EXPECTED_RUNTIME = "seconds on toy contract; minutes on local real-model path"
-REQUIRES_GPU = True
-```
 '''
 
 
@@ -2270,39 +1935,13 @@ MAIN = __name__ == "__main__"
 # ! TAGS: []
 
 r'''
-### Predict before inspection — agreement-5
-
-> ```yaml
-> Difficulty: 🔴🔴⚪⚪⚪
-> Importance: 🔵🔵🔵🔵⚪
-> You should spend 2-3 minutes committing this prediction.
-> ```
-
-Record a forecast for the next implementation and its control before opening expected output, hints,
-solutions or saved figures. Treat prior exposure honestly and change one scientific condition when
-you formulate the transfer prediction.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Forecast and a control that should fail | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning | ______ |
-| Prior exposure and exact implementation fingerprint | ______ |
-| Changed-condition forecast, confidence and reasoning | ______ |
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise - Enumerate Coalitions
 
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Start by making the finite player set explicit. Every later Shapley or patching calculation assumes
@@ -2350,20 +1989,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after testing — agreement-6
-
-Record what you actually ran and which visible controls failed. Compare your observations with the
-committed prediction, explain the largest discrepancy, and update the changed-condition forecast
-with confidence and causal reasoning. An unexecuted transfer remains unobserved. Retained historical
-output is reference material, separate from a result you generated.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details>
 <summary>Expected output</summary>
 
@@ -2381,7 +2006,7 @@ Use `itertools.combinations` for each coalition size from 0 to `num_players`.
 <details>
 <summary>Interpreting the result</summary>
 
-This is the GT-0 guardrail. If your coalition table is incomplete, every later attribution number
+This is the guardrail. If your coalition table is incomplete, every later attribution number
 can look plausible while being wrong.
 
 </details>
@@ -2422,39 +2047,13 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Predict before inspection — agreement-8
-
-> ```yaml
-> Difficulty: 🔴🔴⚪⚪⚪
-> Importance: 🔵🔵🔵🔵⚪
-> You should spend 2-3 minutes committing this prediction.
-> ```
-
-Record a forecast for the next implementation and its control before opening expected output, hints,
-solutions or saved figures. Treat prior exposure honestly and change one scientific condition when
-you formulate the transfer prediction.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Forecast and a control that should fail | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning | ______ |
-| Prior exposure and exact implementation fingerprint | ______ |
-| Changed-condition forecast, confidence and reasoning | ______ |
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise - Build the Ground-Truth Circuit
 
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Implement the finite circuit `0.25 + 1.2*x0 - 0.7*x1 + 1.6*x2 + 0.9*x3 + 2.2*x0*x2 - 1.5*x1*x3`,
@@ -2710,20 +2309,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after testing — agreement-9
-
-Record what you actually ran and which visible controls failed. Compare your observations with the
-committed prediction, explain the largest discrepancy, and update the changed-condition forecast
-with confidence and causal reasoning. An unexecuted transfer remains unobserved. Retained historical
-output is reference material, separate from a result you generated.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details>
 <summary>Expected output</summary>
 
@@ -2846,39 +2431,13 @@ print(mechanistic_pair_matrix())
 # ! TAGS: []
 
 r'''
-### Predict before inspection — agreement-11
-
-> ```yaml
-> Difficulty: 🔴🔴⚪⚪⚪
-> Importance: 🔵🔵🔵🔵⚪
-> You should spend 2-3 minutes committing this prediction.
-> ```
-
-Record a forecast for the next implementation and its control before opening expected output, hints,
-solutions or saved figures. Treat prior exposure honestly and change one scientific condition when
-you formulate the transfer prediction.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Forecast and a control that should fail | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning | ______ |
-| Prior exposure and exact implementation fingerprint | ______ |
-| Changed-condition forecast, confidence and reasoning | ______ |
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise - Exact Shapley from Weighted Marginals
 
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Implement the exact Shapley formula directly. Do not call a SHAP package; the point is to understand
@@ -2970,20 +2529,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after testing — agreement-12
-
-Record what you actually ran and which visible controls failed. Compare your observations with the
-committed prediction, explain the largest discrepancy, and update the changed-condition forecast
-with confidence and causal reasoning. An unexecuted transfer remains unobserved. Retained historical
-output is reference material, separate from a result you generated.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details>
 <summary>Expected output</summary>
 
@@ -3066,39 +2611,13 @@ print("Known mechanism:     ", mechanistic_endpoint_scores().tolist())
 # ! TAGS: []
 
 r'''
-### Predict before inspection — agreement-14
-
-> ```yaml
-> Difficulty: 🔴🔴⚪⚪⚪
-> Importance: 🔵🔵🔵🔵⚪
-> You should spend 2-3 minutes committing this prediction.
-> ```
-
-Record a forecast for the next implementation and its control before opening expected output, hints,
-solutions or saved figures. Treat prior exposure honestly and change one scientific condition when
-you formulate the transfer prediction.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Forecast and a control that should fail | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning | ______ |
-| Prior exposure and exact implementation fingerprint | ______ |
-| Changed-condition forecast, confidence and reasoning | ______ |
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise - Causal Patching and Agreement Metrics
 
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Now compute a causal intervention on the same task: remove one feature from the full circuit and
@@ -3290,20 +2809,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after testing — agreement-15
-
-Record what you actually ran and which visible controls failed. Compare your observations with the
-committed prediction, explain the largest discrepancy, and update the changed-condition forecast
-with confidence and causal reasoning. An unexecuted transfer remains unobserved. Retained historical
-output is reference material, separate from a result you generated.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details>
 <summary>Expected output</summary>
 
@@ -3458,39 +2963,13 @@ agreement_utils.print_report(
 # ! TAGS: []
 
 r'''
-### Predict before inspection — agreement-17
-
-> ```yaml
-> Difficulty: 🔴🔴⚪⚪⚪
-> Importance: 🔵🔵🔵🔵⚪
-> You should spend 2-3 minutes committing this prediction.
-> ```
-
-Record a forecast for the next implementation and its control before opening expected output, hints,
-solutions or saved figures. Treat prior exposure honestly and change one scientific condition when
-you formulate the transfer prediction.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Forecast and a control that should fail | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning | ______ |
-| Prior exposure and exact implementation fingerprint | ______ |
-| Changed-condition forecast, confidence and reasoning | ______ |
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise - Deletion and Insertion Curves
 
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Convert a ranking into consequences. If the top-ranked feature is meaningful, deleting it should
@@ -3638,20 +3117,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after testing — agreement-18
-
-Record what you actually ran and which visible controls failed. Compare your observations with the
-committed prediction, explain the largest discrepancy, and update the changed-condition forecast
-with confidence and causal reasoning. An unexecuted transfer remains unobserved. Retained historical
-output is reference material, separate from a result you generated.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details>
 <summary>Expected output</summary>
 
@@ -3739,39 +3204,13 @@ display(Image(filename=str(curve_path)))
 # ! TAGS: []
 
 r'''
-### Predict before inspection — agreement-20
-
-> ```yaml
-> Difficulty: 🔴🔴⚪⚪⚪
-> Importance: 🔵🔵🔵🔵⚪
-> You should spend 2-3 minutes committing this prediction.
-> ```
-
-Record a forecast for the next implementation and its control before opening expected output, hints,
-solutions or saved figures. Treat prior exposure honestly and change one scientific condition when
-you formulate the transfer prediction.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Forecast and a control that should fail | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning | ______ |
-| Prior exposure and exact implementation fingerprint | ______ |
-| Changed-condition forecast, confidence and reasoning | ______ |
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise - Diagnose XOR with Pair Interactions
 
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Ordinary Shapley gives zero single-feature credit on XOR. Implement pairwise Shapley interactions to
@@ -3887,20 +3326,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after testing — agreement-21
-
-Record what you actually ran and which visible controls failed. Compare your observations with the
-committed prediction, explain the largest discrepancy, and update the changed-condition forecast
-with confidence and causal reasoning. An unexecuted transfer remains unobserved. Retained historical
-output is reference material, separate from a result you generated.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details>
 <summary>Expected output</summary>
 
@@ -4008,39 +3433,13 @@ agreement_utils.print_report("XOR disagreement diagnosis", xor_disagreement_smok
 # ! TAGS: []
 
 r'''
-### Predict before inspection — agreement-23
-
-> ```yaml
-> Difficulty: 🔴🔴⚪⚪⚪
-> Importance: 🔵🔵🔵🔵⚪
-> You should spend 2-3 minutes committing this prediction.
-> ```
-
-Record a forecast for the next implementation and its control before opening expected output, hints,
-solutions or saved figures. Treat prior exposure honestly and change one scientific condition when
-you formulate the transfer prediction.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Forecast and a control that should fail | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning | ______ |
-| Prior exposure and exact implementation fingerprint | ______ |
-| Changed-condition forecast, confidence and reasoning | ______ |
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise - Controls and the Agreement Matrix
 
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Write the artifact bundle required by the roadmap: agreement matrix, deletion/insertion curves,
@@ -4345,20 +3744,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after testing — agreement-24
-
-Record what you actually ran and which visible controls failed. Compare your observations with the
-committed prediction, explain the largest discrepancy, and update the changed-condition forecast
-with confidence and causal reasoning. An unexecuted transfer remains unobserved. Retained historical
-output is reference material, separate from a result you generated.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details>
 <summary>Expected output</summary>
 
@@ -4609,39 +3994,13 @@ display(Image(filename=str(artifact_dir / "topk_overlap_heatmap.png")))
 # ! TAGS: []
 
 r'''
-### Predict before inspection — agreement-26
-
-> ```yaml
-> Difficulty: 🔴🔴⚪⚪⚪
-> Importance: 🔵🔵🔵🔵⚪
-> You should spend 2-3 minutes committing this prediction.
-> ```
-
-Record a forecast for the next implementation and its control before opening expected output, hints,
-solutions or saved figures. Treat prior exposure honestly and change one scientific condition when
-you formulate the transfer prediction.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Forecast and a control that should fail | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning | ______ |
-| Prior exposure and exact implementation fingerprint | ______ |
-| Changed-condition forecast, confidence and reasoning | ______ |
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise - Bridge to Data Players
 
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 The roadmap asks whether data-level attribution and mechanistic methods are comparable. Implement a
@@ -4778,20 +4137,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after testing — agreement-27
-
-Record what you actually ran and which visible controls failed. Compare your observations with the
-committed prediction, explain the largest discrepancy, and update the changed-condition forecast
-with confidence and causal reasoning. An unexecuted transfer remains unobserved. Retained historical
-output is reference material, separate from a result you generated.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details>
 <summary>Expected output</summary>
 
@@ -4904,39 +4249,13 @@ agreement_utils.print_report("Data-player bridge", data_player_bridge_report())
 # ! TAGS: []
 
 r'''
-### Predict before inspection — agreement-29
-
-> ```yaml
-> Difficulty: 🔴🔴⚪⚪⚪
-> Importance: 🔵🔵🔵🔵⚪
-> You should spend 2-3 minutes committing this prediction.
-> ```
-
-Record a forecast for the next implementation and its control before opening expected output, hints,
-solutions or saved figures. Treat prior exposure honestly and change one scientific condition when
-you formulate the transfer prediction.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Forecast and a control that should fail | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning | ______ |
-| Prior exposure and exact implementation fingerprint | ______ |
-| Changed-condition forecast, confidence and reasoning | ______ |
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise - Build the Signature Result
 
 > ```yaml
 > Difficulty: 🔴🔴🔴⚪⚪
 > Importance: 🔵🔵🔵🔵⚪
-> You should spend 10-20 minutes on this exercise.
+>
+> You should spend up to 10-20 minutes on this exercise.
 > ```
 
 Combine the agreement case, deletion consequence test, top-k matrix, and pair-interaction diagnosis
@@ -5065,20 +4384,6 @@ if MAIN:
 # END HIDE
 
 # END SOLUTION
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after testing — agreement-30
-
-Record what you actually ran and which visible controls failed. Compare your observations with the
-committed prediction, explain the largest discrepancy, and update the changed-condition forecast
-with confidence and causal reasoning. An unexecuted transfer remains unobserved. Retained historical
-output is reference material, separate from a result you generated.
-'''
 
 
 # ! CELL TYPE: markdown
@@ -5222,7 +4527,7 @@ This is the result you should be able to explain without opening any report file
 Shapley and causal patching agree with the known endpoint mechanism on the planted circuit, the
 shuffled control fails top-k agreement, and the XOR disagreement is repaired by pair interactions.
 
-<img src="../../exercises/part8_shap_vs_patching/media/shapley_mech_agreement_signature_result.png" alt="Historical SHAPley mechanistic agreement" width="950">
+<img src="../../exercises/part8_shap_vs_patching/media/shapley_mech_agreement_signature_result.png" alt="SHAPley mechanistic agreement" width="950">
 
 <details>
 <summary>Interpreting the result</summary>
@@ -5314,22 +4619,6 @@ the same player-space bridge.
 The committed `verification_report.json` is supporting evidence only. It records the earlier CUDA
 finite-game preflight so the parent task can serialize GPU reruns later; it is not the signature
 result of this notebook.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical fixture checks keep their original inputs
-
-The two final legacy checks below resolve the original report and original exercise/solution
-notebook filenames through the original test module's `__file__`. Their original assertions remain
-unchanged. These are historical source/report checks, separate from the canonical source-migration
-checks and any current scientific or human acceptance. The V2 engineering regression records their
-paths with a raising report sentinel and explicit DEV surface text; it reads no historical report
-or notebook contents and runs no model or numerical method.
 '''
 
 
@@ -5448,176 +4737,7 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after testing — agreement-36
-
-Record what you actually ran and which visible controls failed. Compare your observations with the
-committed prediction, explain the largest discrepancy, and update the changed-condition forecast
-with confidence and causal reasoning. An unexecuted transfer remains unobserved. Retained historical
-output is reference material, separate from a result you generated.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 # Bonus
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Historical figure shelf
-
-Commit the forecasts above before inspecting these public references. This shelf preserves every
-related instruction asset, artifact PNG and embedded output image, including distinct historical
-versions. The older SVGs and later PNGs are different source artifacts; matching a filename or a
-visual story does not establish one shared execution. Full notebooks retain every original output
-object and its execution count. This source-only migration computes no new figure or metric.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Retained historical figure 1
-
-Source:
-`chapter16_shapley_attribution_baselines/instructions/assets/shap_vs_activation_patching_exact_signature.png`.
-
-<img src="../../exercises/part8_shap_vs_patching/media/shap_vs_activation_patching_exact_signature.png" alt="Retained historical attribution figure 1" width="950">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Retained historical figure 2
-
-Source:
-`chapter16_shapley_attribution_baselines/instructions/assets/shapley_mech_agreement_signature_result.png`.
-
-<img src="../../exercises/part8_shap_vs_patching/media/shapley_mech_agreement_signature_result.png" alt="Retained historical attribution figure 2" width="950">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Retained historical figure 3
-
-Source:
-`chapter16_shapley_attribution_baselines/instructions/assets/shapley_mech_agreement_signature_result.svg`.
-
-<img src="../../exercises/part8_shap_vs_patching/media/shapley_mech_agreement_signature_result.svg" alt="Retained historical attribution figure 3" width="950">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Retained historical figure 4
-
-Source:
-`chapter16_shapley_attribution_baselines/instructions/assets/shapley_mech_agreement_validation_loop.svg`.
-
-<img src="../../exercises/part8_shap_vs_patching/media/shapley_mech_agreement_validation_loop.svg" alt="Retained historical attribution figure 4" width="950">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Retained historical figure 5
-
-Source:
-`chapter16_shapley_attribution_baselines/exercises/part8_shapley_mechinterp_agreement/artifacts/deletion_curves.png`.
-
-<img src="../../exercises/part8_shap_vs_patching/media/agreement_artifact_deletion_curves.png" alt="Retained historical attribution figure 5" width="950">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Retained historical figure 6
-
-Source:
-`chapter16_shapley_attribution_baselines/exercises/part8_shapley_mechinterp_agreement/artifacts/insertion_curves.png`.
-
-<img src="../../exercises/part8_shap_vs_patching/media/agreement_artifact_insertion_curves.png" alt="Retained historical attribution figure 6" width="950">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Retained historical figure 7
-
-Source:
-`chapter16_shapley_attribution_baselines/exercises/part8_shapley_mechinterp_agreement/artifacts/topk_overlap_heatmap.png`.
-
-<img src="../../exercises/part8_shap_vs_patching/media/agreement_artifact_topk_overlap_heatmap.png" alt="Retained historical attribution figure 7" width="950">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Retained historical figure 8
-
-Source:
-`chapter16_shapley_attribution_baselines/exercises/part8_shapley_mechinterp_agreement/16.8_Do_SHAPley_and_Mechanistic_Interpretability_Agree_solutions.ipynb#cell=18,output=1,image/png`.
-
-<img src="../../exercises/part8_shap_vs_patching/media/agreement_legacy_cell_18_output_1.png" alt="Retained historical attribution figure 8" width="950">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Retained historical figure 9
-
-Source:
-`chapter16_shapley_attribution_baselines/exercises/part8_shapley_mechinterp_agreement/16.8_Do_SHAPley_and_Mechanistic_Interpretability_Agree_solutions.ipynb#cell=24,output=3,image/png`.
-
-<img src="../../exercises/part8_shap_vs_patching/media/agreement_legacy_cell_24_output_3.png" alt="Retained historical attribution figure 9" width="950">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Retained historical figure 10
-
-Source:
-`chapter16_shapley_attribution_baselines/exercises/part8_shapley_mechinterp_agreement/16.8_Do_SHAPley_and_Mechanistic_Interpretability_Agree_solutions.ipynb#cell=30,output=2,image/png`.
-
-<img src="../../exercises/part8_shap_vs_patching/media/agreement_legacy_cell_30_output_2.png" alt="Retained historical attribution figure 10" width="950">
 '''
 
 
@@ -5630,11 +4750,6 @@ r'''
 
 Explain which players, utility, baseline and intervention direction each result concerns. Give a
 case where rank agreement hides unequal magnitudes and a case where changing the player set repairs
-a disagreement. Keep the one-step data-player bridge separate. Both original anomaly hunts and play
-cells remain above; they are proposed changes to try, not newly executed experiments.
-
-Human learner walkthrough and scientific reproduction remain deferred. Static source conversion,
-schema checks and an inert Python import cannot establish learner understanding, original-paper
-replication, or current real-model agreement.
+a disagreement. Keep the one-step data-player bridge separate. The anomaly hunts and play cells above are proposed changes to try.
 '''
 
