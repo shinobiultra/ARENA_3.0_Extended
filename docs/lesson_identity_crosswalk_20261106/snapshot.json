@@ -1,0 +1,24 @@
+{
+  "taken_at": "2026-11-06 14:46:51 JST",
+  "checkout": "/home/bitwise/Documents/ARENA_3.0_Extended",
+  "branch": "codex/arena-frontier-lab-extension",
+  "head": "dec028ec8ed8accb40bf0d0a7315bb72f0c1fcc6",
+  "head_subject": "Rebuild extension sections on ARENA master files",
+  "worktree_status_entry_counts": {
+    " M": 149,
+    " D": 60,
+    "D ": 255,
+    "??": 7881
+  },
+  "source_sha256": {
+    "infrastructure/extension/syllabus.yaml": "15eed0bc208b5956d5e0bd625d486abc647e57ee3c999125f93901d9f60f4524",
+    "infrastructure/core/config_extension.yaml": "718f1dcdf8cf51139e983f471602bcb25d833ae4f65cd898d0ca70de0236f6f8",
+    "infrastructure/core/config.yaml": "9dfe080a5825e4461954ef20ed32227396177a5c31d272a39166fe949ffc08dc",
+    "docs/roadmap_requirement_registry.yml": "da8201c79b90e30045630be59300aa3914383ba89cd8d6e4366502dd3d9534cf",
+    "docs/arena_style_rewrite_status.yml": "2dbb0710930cf527b2dfb5c5e6eec3be52a3e4c258e811a7d30a75163093ff58",
+    "mastery_hub/extension_checkpoints.json": "9f09b467fc1f4fa5dd2d8ff9dec054486e737ff6f071407f5e5b38506a1f5725",
+    "docs/mastery/migrations/roadmap_evidence_repair.md": "e7fc7aa1aab5cf4cf77a85a4c3cc812b9aa5ff5441730d90205a4388c35e66e0",
+    "docs/mastery/evidence/quality_20261103/requirement_crosswalk.tsv": "3b42b69e54164482f01baf6415b56a05913e44c8748733d0ecac6ff2b0d7a9ed",
+    "docs/mastery/evidence/quality_20261103/audit_index.json": "c45dfa7c20cdcf76fb35e74cfa6b9afd7a3bfc04bb1d94091b302d76150f37fd"
+  }
+}
