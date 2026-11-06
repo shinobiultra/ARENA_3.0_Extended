@@ -12,7 +12,7 @@ executed notebook. It has four questions on the tiny CLIP: one Easy, two Medium 
 | --- | --- |
 | [`12.1_heldout_quiz.md`](12.1_heldout_quiz.md) | The quiz chapter as it would appear on the 12.1 page. Read this first; it renders on GitHub, dropdowns included. |
 | [`12.1_heldout_quiz.ipynb`](12.1_heldout_quiz.ipynb) | The same chapter as a notebook, executed with an example learner's answers so that the score table and reveals show. |
-| [`quiz_12_1.py`](quiz_12_1.py) | The key, the run table and a local scorer (about 100 lines). |
+| [`quiz_12_1.py`](quiz_12_1.py) | The key, the run table and a local scorer (about 130 lines). |
 | [`build_notebook.py`](build_notebook.py) | Builds the notebook from the markdown. |
 | `media/quiz_reveal.png` | The reveal figure. |
 
