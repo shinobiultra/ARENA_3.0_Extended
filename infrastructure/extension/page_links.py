@@ -95,25 +95,6 @@ _PAGE_LINKS = {
             "source document",
         ),
     },
-    "chapter7_activation_to_language/instructions/pages/01_[7.1]_Logit_Lens_Tuned_Lens_and_Patchscopes.md": {
-        "../../../docs/mastery/pilot_reader_notes_20261023.md": (
-            "docs/mastery/pilot_reader_notes_20261023.md",
-            "68aa08ac199d56e712c02eb74e50cc7e275e816db0f8750b3390a1ef35413de1",
-            "reading notes",
-        ),
-    },
-    "chapter12_vlm_interpretability/instructions/pages/03_[12.3]_Mini_VLM_from_Scratch.md": {
-        "../../../docs/mastery/pilot_reader_notes_20261023.md": (
-            "docs/mastery/pilot_reader_notes_20261023.md",
-            "68aa08ac199d56e712c02eb74e50cc7e275e816db0f8750b3390a1ef35413de1",
-            "reading notes",
-        ),
-        "../../../mastery_hub/practice_addons/mini_vlm_checked_recovery/exercises.ipynb": (
-            "mastery_hub/practice_addons/mini_vlm_checked_recovery/exercises.ipynb",
-            "fa34480ae62f6e0d4201b151beed72c2ab1e07880accaafb620cd93376aba163",
-            "checked recovery practice notebook",
-        ),
-    },
 }
 _LINK = re.compile(r"(?P<image>!)?\[(?P<label>[^\[\]]*)\]\((?P<target>[^)\s]+)\)")
 _INLINE_CODE = re.compile(r"(`+).*?\1", re.S)

@@ -2,7 +2,6 @@
 
 import base64
 import importlib.util
-import os
 import re
 import shutil
 from pathlib import Path
@@ -141,7 +140,6 @@ def test_missing_exact_target_fails_without_selecting_a_nearby_alternative(local
         page_links.rewrite_page_links(f"![control]({old})", page)
 
 
-
 def test_symlink_target_cannot_escape_chapter_or_change_approved_identity(local_figure, tmp_path):
     page, old, destination = local_figure
     outside = tmp_path / "outside.svg"
@@ -177,42 +175,3 @@ def test_actual_complete_pages_replace_every_audited_link_without_changing_code_
             assert f"]({old})" not in rendered
     assert re.findall(r"```.*?```", rendered, re.S) == re.findall(r"```.*?```", source, re.S)
     assert path.read_text(encoding="utf-8") == source
-
-
-@pytest.mark.parametrize("page,target", [
-    (
-        "chapter7_activation_to_language/instructions/pages/01_[7.1]_Logit_Lens_Tuned_Lens_and_Patchscopes.md",
-        "docs/mastery/pilot_reader_notes_20261023.md",
-    ),
-    (
-        "chapter12_vlm_interpretability/instructions/pages/03_[12.3]_Mini_VLM_from_Scratch.md",
-        "docs/mastery/pilot_reader_notes_20261023.md",
-    ),
-    (
-        "chapter12_vlm_interpretability/instructions/pages/03_[12.3]_Mini_VLM_from_Scratch.md",
-        "mastery_hub/practice_addons/mini_vlm_checked_recovery/exercises.ipynb",
-    ),
-])
-def test_reader_notes_and_checked_practice_download_exact_bytes(tmp_path, page, target):
-    source = ROOT / target
-    if target.startswith("docs/"):
-        # Candidate-only runs point at the reviewed, not-yet-adopted note payload.
-        source = Path(os.environ.get("ARENA_TEST_READER_NOTES", str(source)))
-    target_path = tmp_path / target
-    target_path.parent.mkdir(parents=True)
-    shutil.copyfile(source, target_path)
-    page_path = tmp_path / page
-    page_path.parent.mkdir(parents=True)
-    link = f"[Download checked material](../../../{target})"
-    rendered = page_links.rewrite_page_links(link, page_path)
-    match = re.search(r";base64,([A-Za-z0-9+/=]+)", rendered)
-    assert match is not None
-    assert base64.b64decode(match[1]) == source.read_bytes()
-    assert f'download="{source.name}"' in rendered
-    assert "historical" not in rendered
-
-
-def test_addon_download_is_not_enabled_for_other_pilot_pages():
-    page = ROOT / "chapter7_activation_to_language/instructions/pages/01_[7.1]_Logit_Lens_Tuned_Lens_and_Patchscopes.md"
-    link = "[practice](../../../mastery_hub/practice_addons/mini_vlm_checked_recovery/exercises.ipynb)"
-    assert page_links.rewrite_page_links(link, page) == link

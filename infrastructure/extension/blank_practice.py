@@ -11,7 +11,6 @@ import hashlib
 import importlib.util
 import json
 import os
-import posixpath
 import stat
 from pathlib import Path, PurePosixPath
 import re
@@ -21,7 +20,6 @@ _CONFIG = ('infrastructure/extension/syllabus.yaml', 'infrastructure/core/config
 
 _PROVIDER_ROOT = Path(__file__).absolute().parents[2]
 _PROVIDER_PATH = 'mastery_hub/practice_addons/foundation_live_signatures/lesson.py'
-_STUDY_CAUTIONS = 'docs/mastery/study_cautions_20261023.md'
 _FOUNDATIONS = {
     'chapter0_fundamentals/exercises/part6_fake_interpretability_results_practice/0.6_How_to_Know_When_an_Interpretability_Result_Is_Fake_Practice_exercises.ipynb': {
         'section': '0.6',
@@ -244,14 +242,11 @@ def project_download(raw: bytes, relative: str, authority: dict[str, str]) -> by
     result = _load(project(raw, relative, authority))
     provenance = result['metadata'][_KEY]
     provenance['download_feature_version'] = 2
-    provenance['study_cautions_path'] = _STUDY_CAUTIONS
-    cautions_link = posixpath.relpath(_STUDY_CAUTIONS, posixpath.dirname(relative))
     result['cells'][0]['source'] = [
         '# PUBLIC Practice — start here\n',
         f'\nSave this blank copy beside `{PurePosixPath(relative).name}` in its original exercise directory. '
         'Then work through the cells and their immediate tests.\n',
         '\nHints and solutions are in the notebook as usual. Code outputs and execution counts are cleared.\n',
-        f'\nRead the [study cautions and route notes]({cautions_link}) before choosing an exercise route.\n',
     ]
     if relative in _FOUNDATIONS:
         cells, live_provenance = _foundation_cells(relative)
@@ -275,7 +270,7 @@ def restore_download(projected: bytes, raw: bytes, relative: str, authority: dic
     if relative in _FOUNDATIONS:
         del restored['cells'][-6:]
         del restored['metadata'][_KEY]['foundation_live']
-    for field in ('download_feature_version', 'study_cautions_path'):
+    for field in ('download_feature_version',):
         del restored['metadata'][_KEY][field]
     restored['cells'][0] = deepcopy(baseline['cells'][0])
     return restore((json.dumps(restored, ensure_ascii=False, allow_nan=False) + '\n').encode('utf-8'),
