@@ -121,27 +121,6 @@ studying.
 # ! TAGS: []
 
 r'''
-## Historical reference and execution boundary
-
-All displayed results and eighteen figures are **retained historical reference results** from the published
-completed-own-answer SAGE lesson. This migration checks source, AST, nonblank-line, output and figure parity;
-it is **not a fresh execution** of the canonical notebook. Only the setup test-import route changes from the
-preserved `part12_sage_global_importance.sage_methods_tests` to its byte-identical canonical copy `part4_sage.tests`.
-All frozen data, split, protocol, author-parity and diagnostic helper identities remain in the preserved legacy
-directory. The canonical module's Python-only root/MAIN guards make import safe without changing notebook calculations.
-See `docs/mastery/migrations/sage.md` and its migration evidence at the repository root. The old receipt continues
-to certify the old 16.12 publication; it is not relabeled as execution of 16.4.
-
-This is **guided practice**. Reference figures, expected-output dropdowns and interpretations expose answers.
-Before viewing them, record your forecast, confidence, reasoning and prior exposure. No learner response is filled
-in for you. The 119 audit rows remain historical and monitored; migration does not make them untouched TEST.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Content & Learning Objectives
 
 ### 1️⃣ Define the game before allocating credit
@@ -194,7 +173,7 @@ r'''
 
 ### ☆ Bonus
 
-Use the preserved anomalies to design a discriminating follow-up.
+Use the anomalies to design a discriminating follow-up.
 '''
 
 # ! CELL TYPE: markdown
@@ -204,7 +183,7 @@ Use the preserved anomalies to design a discriminating follow-up.
 r'''
 ## Setup code
 
-Run the setup from the repository or either section directory. This lesson uses CPU and the exact frozen historical inputs. The data helpers verify source bytes and split
+This lesson uses CPU and the exact frozen inputs. The data helpers verify source bytes and split
 membership before use; do not replace them silently.
 '''
 
@@ -547,12 +526,7 @@ SOLUTION
 # ! TAGS: []
 
 r'''
-## Forecast before the result — nonlinear-average
-
-For Z equally likely -2 or +2, f(z)=z² and no retained inputs, predict E[f(Z)] and f(E[Z]) numerically. Explain which is marginal_predict and why a nonlinear model separates them.
-
-Record a numeric forecast or interval, confidence (0–100%), and a causal explanation. Record whether you have already seen it: unseen, seen, or unknown exposure. Leave your
-response blank until you commit it.
+Explain which is marginal_predict and why a nonlinear model separates them.
 
 Changed-condition forecast: Change the donor distribution to {-1,+3}; forecast both quantities before recomputing.
 '''
@@ -596,20 +570,6 @@ if MAIN:
 
 r'''
 <img src="media/sage_averaging.png" width="1050">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — nonlinear-average
-
-Record the observed values, units and controls from your execution, and identify whether these are your observations or retained historical references. Compare with your committed
-forecast and explain the discrepancy; do not rewrite it.
-
-Before another run: Change the donor distribution to {-1,+3}; forecast both quantities before recomputing. State what stays fixed, which scientific condition changes and what would
-disconfirm your explanation.
 '''
 
 # ! CELL TYPE: markdown
@@ -835,13 +795,8 @@ possible to read feature importance from one privileged coalition.
 # ! TAGS: []
 
 r'''
-## Forecast before the result — xor-allocation
-
 For game [0,0,0,.25] with bit 0 least significant, forecast both SAGE values and the sums of singleton and leave-one-out scores. Which summary conserves full-minus-empty
 improvement?
-
-Record a numeric forecast or interval, confidence (0–100%), and a causal explanation. Record whether you have already seen it: unseen, seen, or unknown exposure. Leave your
-response blank until you commit it.
 
 Changed-condition forecast: Change the full-coalition utility to .5 with zero singleton utilities; forecast every allocation.
 '''
@@ -899,20 +854,6 @@ if MAIN:
 
 r'''
 <img src="media/sage_xor.png" width="1050">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — xor-allocation
-
-Record the observed values, units and controls from your execution, and identify whether these are your observations or retained historical references. Compare with your committed
-forecast and explain the discrepancy; do not rewrite it.
-
-Before another run: Change the full-coalition utility to .5 with zero singleton utilities; forecast every allocation. State what stays fixed, which scientific condition changes and
-what would disconfirm your explanation.
 '''
 
 # ! CELL TYPE: markdown
@@ -1081,13 +1022,8 @@ SOLUTION
 # ! TAGS: []
 
 r'''
-## Forecast before the result — conditional-correlation
-
 Use the zero-mean two-input Gaussian with unit variances, truth=model=[1,0] and squared loss. At rho=.8, forecast the SAGE of the unused second input under conditional and marginal
 restriction, with a numeric difference. Explain whether model non-use forces zero conditional information.
-
-Record a numeric forecast or interval, confidence (0–100%), and a causal explanation. Record whether you have already seen it: unseen, seen, or unknown exposure. Leave your
-response blank until you commit it.
 
 Changed-condition forecast: Keep covariance/truth fixed but change the model to [1,2]; forecast the sign and ranking of both allocations under each restriction.
 '''
@@ -1130,20 +1066,6 @@ if MAIN:
 
 r'''
 <img src="media/sage_correlation.png" width="1050">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — conditional-correlation
-
-Record the observed values, units and controls from your execution, and identify whether these are your observations or retained historical references. Compare with your committed
-forecast and explain the discrepancy; do not rewrite it.
-
-Before another run: Keep covariance/truth fixed but change the model to [1,2]; forecast the sign and ranking of both allocations under each restriction. State what stays fixed,
-which scientific condition changes and what would disconfirm your explanation.
 '''
 
 # ! CELL TYPE: markdown
@@ -1202,12 +1124,7 @@ coefficient? Compare the fixed model with the optimal model under the same covar
 # ! TAGS: []
 
 r'''
-## Forecast before the result — misleading-gaussian-play
-
 At the displayed rho=0 and model weights [1,2] with truth=[1,0], forecast the sign and magnitude of each conditional/marginal SAGE value and the optimal-model control.
-
-Record a numeric forecast or interval, confidence (0–100%), and a causal explanation. Record whether you have already seen it: unseen, seen, or unknown exposure. Leave your
-response blank until you commit it.
 
 Changed-condition forecast: Change correlation to .8 while retaining the misleading model; forecast whether the harmful-input sign survives.
 '''
@@ -1262,20 +1179,6 @@ if MAIN:
 
 r'''
 <img src="media/sage_gaussian_play.png" width="1050">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — misleading-gaussian-play
-
-Record the observed values, units and controls from your execution, and identify whether these are your observations or retained historical references. Compare with your committed
-forecast and explain the discrepancy; do not rewrite it.
-
-Before another run: Change correlation to .8 while retaining the misleading model; forecast whether the harmful-input sign survives. State what stays fixed, which scientific
-condition changes and what would disconfirm your explanation.
 '''
 
 # ! CELL TYPE: markdown
@@ -1912,14 +1815,7 @@ features and lets us inspect what a global mean conceals.
 # ! TAGS: []
 
 r'''
-## Forecast before the result — native-global
-
-Before the fits and audit run, forecast the primary seed-0 network Cement SAGE on the 153 explanation rows in MPa², its rank among eight inputs, and a range for clean versus
-shuffled-target audit MSE. Use 758 training rows, 64 frozen donors, 800 Adam steps, exact 256-coalition marginal squared-loss game and all seven retained fits. Explain the
-training-mean and ridge controls.
-
-Record a numeric forecast or interval, confidence (0–100%), and a causal explanation. Record whether you have already seen it: unseen, seen, or unknown exposure. Leave your
-response blank until you commit it.
+Before the fits and audit run, forecast the primary seed-0 network Cement SAGE on the 153 explanation rows in MPa², its rank among eight inputs, and a range for clean versus shuffled-target audit MSE. Explain the training-mean and ridge controls.
 
 Changed-condition forecast: Hold training/model/background fixed and change equal-row explanation weighting to equal-recipe weighting; forecast the change in Cement SAGE and its
 rank.
@@ -2029,13 +1925,8 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-## Forecast before the result — training-control
-
 Forecast whether 800 full-batch Adam steps reduce training MSE for both clean-target and shuffled-target networks; give a range relative to training target variance. Does that
 forecast establish audit usefulness?
-
-Record a numeric forecast or interval, confidence (0–100%), and a causal explanation. Record whether you have already seen it: unseen, seen, or unknown exposure. Leave your
-response blank until you commit it.
 
 Changed-condition forecast: Keep update budget fixed and change to permuted targets; forecast training and audit behavior separately.
 '''
@@ -2076,20 +1967,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — training-control
-
-Record the observed values, units and controls from your execution, and identify whether these are your observations or retained historical references. Compare with your committed
-forecast and explain the discrepancy; do not rewrite it.
-
-Before another run: Keep update budget fixed and change to permuted targets; forecast training and audit behavior separately. State what stays fixed, which scientific condition
-changes and what would disconfirm your explanation.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 A falling training loss doesn't establish predictive usefulness. The shuffled-target networks also fit their
 training assignments. The audit split supplies new recipes and their original targets, so it can expose this
 control failure.
@@ -2103,13 +1980,8 @@ background, then applies the previously saved rankings and the same 100 random o
 # ! TAGS: []
 
 r'''
-## Forecast before the result — audit-model-control
-
 Before loading audit results, predict a numeric range for primary clean-network audit MSE (MPa²) and its ordering against training mean, ridge and three shuffled-target networks.
 The audit has 119 recipe-disjoint rows and never selects a fit.
-
-Record a numeric forecast or interval, confidence (0–100%), and a causal explanation. Record whether you have already seen it: unseen, seen, or unknown exposure. Leave your
-response blank until you commit it.
 
 Changed-condition forecast: Predict how the ranking could change if targets are permuted only at evaluation, holding all predictions fixed.
 '''
@@ -2216,20 +2088,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — audit-model-control
-
-Record the observed values, units and controls from your execution, and identify whether these are your observations or retained historical references. Compare with your committed
-forecast and explain the discrepancy; do not rewrite it.
-
-Before another run: Predict how the ranking could change if targets are permuted only at evaluation, holding all predictions fixed. State what stays fixed, which scientific
-condition changes and what would disconfirm your explanation.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 The clean networks have audit MSE around 32–37 MPa², compared with about 100 for ridge and 245 for the
 training-mean target. The shuffled-target networks are substantially worse than the constant baseline. These
 are results for the fixed recipe split, rather than an estimate over repeated random train/test splits.
@@ -2296,20 +2154,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — native-global
-
-Record the observed values, units and controls from your execution, and identify whether these are your observations or retained historical references. Compare with your committed
-forecast and explain the discrepancy; do not rewrite it.
-
-Before another run: Hold training/model/background fixed and change equal-row explanation weighting to equal-recipe weighting; forecast the change in Cement SAGE and its rank.
-State what stays fixed, which scientific condition changes and what would disconfirm your explanation.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 Cement and age make the largest positive contributions for the primary network. Several other inputs have
 negative values on the explanation split. A negative value says that, averaged over Shapley contexts,
 revealing that input increases the fixed model's loss under this marginal convention. It does **not** say that
@@ -2358,13 +2202,8 @@ the first 24 explanation rows in source order, rather than selecting unusually a
 # ! TAGS: []
 
 r'''
-## Forecast before the result — local-prediction-loss
-
 For the fixed primary network and displayed rows, forecast whether a positive Cement prediction contribution in MPa must have positive local-loss contribution in MPa². Give a
 concrete overprediction scenario and predicted signs.
-
-Record a numeric forecast or interval, confidence (0–100%), and a causal explanation. Record whether you have already seen it: unseen, seen, or unknown exposure. Leave your
-response blank until you commit it.
 
 Changed-condition forecast: Keep model/input/background fixed and change the target; forecast which heatmap can change.
 '''
@@ -2413,20 +2252,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — local-prediction-loss
-
-Record the observed values, units and controls from your execution, and identify whether these are your observations or retained historical references. Compare with your committed
-forecast and explain the discrepancy; do not rewrite it.
-
-Before another run: Keep model/input/background fixed and change the target; forecast which heatmap can change. State what stays fixed, which scientific condition changes and what
-would disconfirm your explanation.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 The two heatmaps intentionally have different units and color scales. A positive prediction contribution means
 "raises the prediction"; a positive performance contribution means "reduces squared error." There is no
 general agreement of their signs.
@@ -2441,13 +2266,8 @@ performance allocation.
 # ! TAGS: []
 
 r'''
-## Forecast before the result — local-global-linearity
-
 Forecast maximum numerical disagreement in MPa² between global SAGE and the mean of signed local-loss Shapley values on the same rows/background; contrast mean prediction and mean
 absolute prediction attribution.
-
-Record a numeric forecast or interval, confidence (0–100%), and a causal explanation. Record whether you have already seen it: unseen, seen, or unknown exposure. Leave your
-response blank until you commit it.
 
 Changed-condition forecast: Replace equal row weights by declared nonnegative recipe weights; forecast the identity and what averaging absolute contributions changes.
 '''
@@ -2512,20 +2332,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — local-global-linearity
-
-Record the observed values, units and controls from your execution, and identify whether these are your observations or retained historical references. Compare with your committed
-forecast and explain the discrepancy; do not rewrite it.
-
-Before another run: Replace equal row weights by declared nonnegative recipe weights; forecast the identity and what averaging absolute contributions changes. State what stays
-fixed, which scientific condition changes and what would disconfirm your explanation.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details><summary>Interpretation - can changing only the targets change the ranking?</summary>
 
 Yes. Keep the trained model, input rows and background fixed, and permute the evaluation targets. Every local
@@ -2564,13 +2370,8 @@ error, or to yield the best restricted-model prefix at every size.
 # ! TAGS: []
 
 r'''
-## Forecast before the result — additive-summary
-
 Forecast whether summing eight SAGE values reproduces all 256 coalition utilities or only the full-minus-empty endpoint. Compare singleton and leave-one-out summaries using the XOR
 control.
-
-Record a numeric forecast or interval, confidence (0–100%), and a causal explanation. Record whether you have already seen it: unseen, seen, or unknown exposure. Leave your
-response blank until you commit it.
 
 Changed-condition forecast: Change the game to a purely additive game; forecast the three summaries and scatter residuals.
 '''
@@ -2613,20 +2414,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — additive-summary
-
-Record the observed values, units and controls from your execution, and identify whether these are your observations or retained historical references. Compare with your committed
-forecast and explain the discrepancy; do not rewrite it.
-
-Before another run: Change the game to a purely additive game; forecast the three summaries and scatter residuals. State what stays fixed, which scientific condition changes and
-what would disconfirm your explanation.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Summary of 5️⃣
 
 Connect local loss explanations to global SAGE using linearity. The next part tests how that explanation changes under a controlled comparison.
@@ -2659,13 +2446,8 @@ targets and recipe weighting. These are different questions from running the sam
 # ! TAGS: []
 
 r'''
-## Forecast before the result — sampling-and-choices
-
 Before diagnostics, forecast the RMSE ratio when independent outer paths grow fourfold, agreement between direct model and cached-table paths, and the ignored ninth-input control.
 Give a numeric scale/range and explain what reported SE conditions on.
-
-Record a numeric forecast or interval, confidence (0–100%), and a causal explanation. Record whether you have already seen it: unseen, seen, or unknown exposure. Leave your
-response blank until you commit it.
 
 Changed-condition forecast: Keep path budget fixed and change donor count from 64 to 16; forecast which uncertainty the path SE can and cannot capture.
 '''
@@ -2845,20 +2627,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — sampling-and-choices
-
-Record the observed values, units and controls from your execution, and identify whether these are your observations or retained historical references. Compare with your committed
-forecast and explain the discrepancy; do not rewrite it.
-
-Before another run: Keep path budget fixed and change donor count from 64 to 16; forecast which uncertainty the path SE can and cannot capture. State what stays fixed, which
-scientific condition changes and what would disconfirm your explanation.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 The repeated schedules show the expected decline in outer Monte Carlo error. The error bars on the right use a
 normal approximation for the mean of independent paths. They aren't simultaneous guarantees for all features,
 and the exact reference was computed from this same finite model/data/background game.
@@ -2876,13 +2644,8 @@ background-sampling differences on a shared heatmap scale.
 # ! TAGS: []
 
 r'''
-## Forecast before the result — background-targets
-
 For the same fitted model, forecast the direction/range of Cement SAGE changes across 16/64/128 donors and a disjoint 64-donor set; then predict whether permuting outcomes leaves
 prediction explanations fixed and changes performance explanations.
-
-Record a numeric forecast or interval, confidence (0–100%), and a causal explanation. Record whether you have already seen it: unseen, seen, or unknown exposure. Leave your
-response blank until you commit it.
 
 Changed-condition forecast: Hold donors fixed and change the target association; forecast which part of the loss game moves.
 '''
@@ -2959,20 +2722,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — background-targets
-
-Record the observed values, units and controls from your execution, and identify whether these are your observations or retained historical references. Compare with your committed
-forecast and explain the discrepancy; do not rewrite it.
-
-Before another run: Hold donors fixed and change the target association; forecast which part of the loss game moves. State what stays fixed, which scientific condition changes and
-what would disconfirm your explanation.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Mean imputation is a different restriction
 
 Compare predicting at the mean of the missing coordinates with averaging the network's predictions over
@@ -2986,13 +2735,8 @@ in both calculations.
 # ! TAGS: []
 
 r'''
-## Forecast before the result — mean-imputation
-
 Forecast whether averaging 64 nonlinear-network donor predictions equals evaluating once at mean missing inputs. Give a signed or interval forecast for Cement SAGE difference and
 identify the prediction-level diagonal control.
-
-Record a numeric forecast or interval, confidence (0–100%), and a causal explanation. Record whether you have already seen it: unseen, seen, or unknown exposure. Leave your
-response blank until you commit it.
 
 Changed-condition forecast: Replace the network with an affine predictor under the same donors; forecast equality or discrepancy.
 '''
@@ -3063,20 +2807,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — mean-imputation
-
-Record the observed values, units and controls from your execution, and identify whether these are your observations or retained historical references. Compare with your committed
-forecast and explain the discrepancy; do not rewrite it.
-
-Before another run: Replace the network with an affine predictor under the same donors; forecast equality or discrepancy. State what stays fixed, which scientific condition changes
-and what would disconfirm your explanation.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### A second sampling layer can introduce bias
 
 Suppose the exact restricted prediction is $\mu$, but we estimate it by averaging $m$ independent hybrid
@@ -3101,13 +2831,8 @@ The simple experiment below isolates inner-sampling bias. Each hybrid prediction
 # ! TAGS: []
 
 r'''
-## Forecast before the result — inner-sampling-bias
-
 For donor predictions 1 or 3 equally likely, target zero and m in [1,4,16,64], forecast expected squared loss at m=1 and m=64 and its difference from loss of the exact mean
 prediction.
-
-Record a numeric forecast or interval, confidence (0–100%), and a causal explanation. Record whether you have already seen it: unseen, seen, or unknown exposure. Leave your
-response blank until you commit it.
 
 Changed-condition forecast: Keep m fixed but increase the number of outer repetitions; forecast which bias and which error bar change.
 '''
@@ -3175,20 +2900,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — inner-sampling-bias
-
-Record the observed values, units and controls from your execution, and identify whether these are your observations or retained historical references. Compare with your committed
-forecast and explain the discrepancy; do not rewrite it.
-
-Before another run: Keep m fixed but increase the number of outer repetitions; forecast which bias and which error bar change. State what stays fixed, which scientific condition
-changes and what would disconfirm your explanation.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Does a hybrid look like a recipe?
 
 A whole donor row contains a real combination of missing ingredients. Combining it with retained ingredients
@@ -3205,13 +2916,8 @@ replacement operation, with real explanation rows as its reference.
 # ! TAGS: []
 
 r'''
-## Forecast before the result — hybrid-distance
-
 Forecast whether independently replacing missing ingredients produces standardized nearest-training distances like observed rows or unusually distant hybrids. Compare the
 joint-donor and observed-input controls without claiming physical causality.
-
-Record a numeric forecast or interval, confidence (0–100%), and a causal explanation. Record whether you have already seen it: unseen, seen, or unknown exposure. Leave your
-response blank until you commit it.
 
 Changed-condition forecast: Retain more coordinates while keeping donor rows fixed; forecast which correlations remain broken.
 '''
@@ -3271,20 +2977,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — hybrid-distance
-
-Record the observed values, units and controls from your execution, and identify whether these are your observations or retained historical references. Compare with your committed
-forecast and explain the discrepancy; do not rewrite it.
-
-Before another run: Retain more coordinates while keeping donor rows fixed; forecast which correlations remain broken. State what stays fixed, which scientific condition changes
-and what would disconfirm your explanation.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Change the population weighting, then the evaluation split
 
 Row weighting asks about an average recorded measurement. Equal recipe weighting asks about an average recipe,
@@ -3300,13 +2992,8 @@ change is data variation, rather than outer Monte Carlo error. Some small featur
 # ! TAGS: []
 
 r'''
-## Forecast before the result — weighting-and-audit
-
 Forecast the sign/range of Cement SAGE change when explanation rows are weighted equally per recipe, and separately when the fixed model/background is evaluated on the 119 audit
 rows. Distinguish changed population from a new estimator seed.
-
-Record a numeric forecast or interval, confidence (0–100%), and a causal explanation. Record whether you have already seen it: unseen, seen, or unknown exposure. Leave your
-response blank until you commit it.
 
 Changed-condition forecast: Choose one predeclared population-weight change and predict a feature ranking reversal that could distinguish it from Monte Carlo fluctuation.
 '''
@@ -3355,20 +3042,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — weighting-and-audit
-
-Record the observed values, units and controls from your execution, and identify whether these are your observations or retained historical references. Compare with your committed
-forecast and explain the discrepancy; do not rewrite it.
-
-Before another run: Choose one predeclared population-weight change and predict a feature ranking reversal that could distinguish it from Monte Carlo fluctuation. State what stays
-fixed, which scientific condition changes and what would disconfirm your explanation.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Summary of 6️⃣
 
 Compare backgrounds, target associations, mean imputation and inner-sampling bias. The next part tests how that explanation changes under a controlled comparison.
@@ -3401,13 +3074,7 @@ worsen its prediction. Neither monotone improvement nor a win for SAGE at every 
 # ! TAGS: []
 
 r'''
-## Forecast before the result — audit-prefixes
-
-For primary seed 0 at k=3 retained inputs, forecast top-SAGE audit utility minus the median of 100 random ordering utilities in MPa², using explanation-derived rankings and
-unchanged 64-donor restriction. Predict shared endpoints and compare reversed/LOO rankings.
-
-Record a numeric forecast or interval, confidence (0–100%), and a causal explanation. Record whether you have already seen it: unseen, seen, or unknown exposure. Leave your
-response blank until you commit it.
+Predict shared endpoints and compare reversed/LOO rankings.
 
 Changed-condition forecast: Keep rankings/model/donors fixed and change the evaluation recipe cohort; forecast the same k=3 contrast before evaluating.
 '''
@@ -3461,20 +3128,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — audit-prefixes
-
-Record the observed values, units and controls from your execution, and identify whether these are your observations or retained historical references. Compare with your committed
-forecast and explain the discrepancy; do not rewrite it.
-
-Before another run: Keep rankings/model/donors fixed and change the evaluation recipe cohort; forecast the same k=3 contrast before evaluating. State what stays fixed, which
-scientific condition changes and what would disconfirm your explanation.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 Read the intermediate points as particular coalitions, not as "the performance of the best $k$ inputs." The
 eight-feature endpoint is the unchanged original model. The zero-feature endpoint is its background-mean
 prediction. All rankings were fixed before looking at these curves.
@@ -3499,13 +3152,8 @@ doesn't retrain the model or establish a causal material effect.
 # ! TAGS: []
 
 r'''
-## Forecast before the result — native-recipe-play
-
 For row_index=0, feature=0 and background_size=64, forecast the donor-prediction range in MPa and whether Cement local prediction and local loss contributions share a sign. Explain
 the full-prediction and observed-target controls.
-
-Record a numeric forecast or interval, confidence (0–100%), and a causal explanation. Record whether you have already seen it: unseen, seen, or unknown exposure. Leave your
-response blank until you commit it.
 
 Changed-condition forecast: Change only feature from 0 (Cement) to 7 (Age), keeping the row/model/background fixed; forecast the histogram and both signed attributions.
 '''
@@ -3591,20 +3239,6 @@ if MAIN:
 
 r'''
 <img src="media/sage_native_play.png" width="1050">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — native-recipe-play
-
-Record the observed values, units and controls from your execution, and identify whether these are your observations or retained historical references. Compare with your committed
-forecast and explain the discrepancy; do not rewrite it.
-
-Before another run: Change only feature from 0 (Cement) to 7 (Age), keeping the row/model/background fixed; forecast the histogram and both signed attributions. State what stays
-fixed, which scientific condition changes and what would disconfirm your explanation.
 '''
 
 # ! CELL TYPE: markdown

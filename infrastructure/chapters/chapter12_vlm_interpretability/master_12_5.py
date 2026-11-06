@@ -39,32 +39,6 @@ r'''
 `A previous caption claims a red square is present. Is there a red square in the image? Answer with exactly one word: yes or no.`
 Which answer will the joint organism give, and which cache state would still let a donor image
 change it?
-
-Start with this question before scrolling. The worked cold open and saved outputs below expose
-reference answers. This is **guided practice with seen or unknown exposure**; it cannot earn an
-unseen score. Record your forecast and prior exposure now, even if you have already seen the
-historical figures.
-
-| Before opening the preserved cold open | Your commitment |
-| --- | --- |
-| Joint yes/no forecast | ______ |
-| Image + question only yes/no forecast | ______ |
-| Confidence (0–1) | ______ |
-| Causal reasoning: pixel evidence, stated prior, readout | ______ |
-| Prior exposure: seen / unknown / unexposed, with source | ______ |
-| Exact implementation/configuration fingerprint | ______ |
-
-The complete existing lesson follows: renderer, transparent model, nine student-implemented core
-functions across eight exercises, immediate tests, all saved figures, controls, play and optional
-real-VLM code. All original teaching cells, output objects, execution counts and metadata are
-preserved. No lesson execution or new target result was computed for this migration.
-
-**Canonical path and history.** This is syllabus section 12.5 in `part5_object_hallucination`. Exact
-historical cells retain references to their source folder `part2_object_hallucination_arbitration`;
-the legacy source remains available. Run from the repository checkout so those preserved imports
-resolve. Historical budget estimates and the word “untouched” in old captions describe the original
-protocol, not a newly measured runtime or independent current TEST. Saved/rendered public cases are
-exposed practice today.
 '''
 
 # ! CELL TYPE: markdown
@@ -122,7 +96,7 @@ r'''
 **When a multimodal model says an object is present, did the answer come from pixels or from a
 stated textual prior?**
 
-### Historical learning aims
+### Learning aims
 
 1. Build a full color x shape factorial without placing answer labels in model inputs.
 2. Define true background from image geometry outside target and distractor boxes.
@@ -142,11 +116,9 @@ stated textual prior?**
 
 ## Scope and runtime
 
-The chapter plan numbers this topic **12.5**. The folder retains its historical
-`part2_object_hallucination_arbitration` path only to avoid changing shared chapter configuration.
 The CPU ground-truth lab takes about 4-6 hours for a learner and seconds to execute solved. The
 optional pinned-Qwen release run is budgeted at **12-25 minutes on CUDA** and may take up to 40
-minutes before the acceptance timeout; this notebook never silently falls back to CPU.
+minutes; this notebook never silently falls back to CPU.
 
 The organism is deliberately analytic: it measures target-color occupancy from pixels, compares 2x2
 regions with square/circle geometry from the prompt, routes the prompt's stated prior separately,
@@ -159,9 +131,8 @@ natural-image VLMs.
 # ! TAGS: []
 
 r'''
-**Historical cold-open figure.** The pixels and prompt are the original worked example. Its joint
-answer and image-question baseline are reference outputs, shown after your cold commitment. No figure
-or model run was refreshed for this migration.
+**Cold-open figure.** The pixels and prompt are the original worked example. Its joint
+answer and image-question baseline are reference outputs.
 '''
 
 # ! CELL TYPE: code
@@ -455,29 +426,9 @@ answer.
 # ! TAGS: []
 
 r'''
-## Commit before reveal: Input forecast
-
 Before reading the prompt-encoder solution, write which fields are inputs and which are
 evaluation-only. Would changing `object_present` metadata without changing image or prompt change
 inference?
-
-Forecast: ______
-
-Confidence (0–1): ______
-
-Causal reasoning: ______
-
-Prior exposure: ______
-
-Frozen inputs / method fingerprint / selection rule: ______
-
-After you commit and inspect the reference or execute your authorized experiment:
-
-Observed result and control results: ______
-
-Discrepancy and alternative explanation: ______
-
-Changed-condition forecast before another execution: ______
 '''
 
 # ! CELL TYPE: markdown
@@ -585,28 +536,8 @@ print('passed')
 # ! TAGS: []
 
 r'''
-## Commit before reveal: Factorial forecast
-
 Before inspecting the factorial builder, forecast how many rows and positive labels occur in each
 split. State why a split missing one color-shape combination would admit a shortcut.
-
-Forecast: ______
-
-Confidence (0–1): ______
-
-Causal reasoning: ______
-
-Prior exposure: ______
-
-Frozen inputs / method fingerprint / selection rule: ______
-
-After you commit and inspect the reference or execute your authorized experiment:
-
-Observed result and control results: ______
-
-Discrepancy and alternative explanation: ______
-
-Changed-condition forecast before another execution: ______
 '''
 
 # ! CELL TYPE: markdown
@@ -882,28 +813,8 @@ print(f"{len(examples)} examples; labels per split:", {
 # ! TAGS: []
 
 r'''
-## Commit before reveal: Control forecast
-
 For a 32 × 32 target on the 6 × 6 patch grid, forecast the patch count and the overlap allowed
 between object, background and random regions. Explain why the distractor box must also be excluded.
-
-Forecast: ______
-
-Confidence (0–1): ______
-
-Causal reasoning: ______
-
-Prior exposure: ______
-
-Frozen inputs / method fingerprint / selection rule: ______
-
-After you commit and inspect the reference or execute your authorized experiment:
-
-Observed result and control results: ______
-
-Discrepancy and alternative explanation: ______
-
-Changed-condition forecast before another execution: ______
 '''
 
 # ! CELL TYPE: markdown
@@ -1333,29 +1244,9 @@ r'''
 # ! TAGS: []
 
 r'''
-## Commit before reveal: Behavior forecast
-
 Before reading metrics or saved baseline output, forecast joint accuracy, conflict accuracy and
 absent-object hallucination rate separately. Rank joint, image-question only, text only and shuffled
 images; state the denominator for each rate.
-
-Forecast: ______
-
-Confidence (0–1): ______
-
-Causal reasoning: ______
-
-Prior exposure: ______
-
-Frozen inputs / method fingerprint / selection rule: ______
-
-After you commit and inspect the reference or execute your authorized experiment:
-
-Observed result and control results: ______
-
-Discrepancy and alternative explanation: ______
-
-Changed-condition forecast before another execution: ______
 '''
 
 # ! CELL TYPE: markdown
@@ -1655,29 +1546,9 @@ display(baselines)
 # ! TAGS: []
 
 r'''
-## Commit before reveal: Cache forecast
-
 Before reading the cache solution, forecast the leading cache dimension and identify the state
 before visual routing versus the state after prior routing. Which token rows hold evidence at each
 point?
-
-Forecast: ______
-
-Confidence (0–1): ______
-
-Causal reasoning: ______
-
-Prior exposure: ______
-
-Frozen inputs / method fingerprint / selection rule: ______
-
-After you commit and inspect the reference or execute your authorized experiment:
-
-Observed result and control results: ______
-
-Discrepancy and alternative explanation: ______
-
-Changed-condition forecast before another execution: ______
 '''
 
 # ! CELL TYPE: markdown
@@ -1809,28 +1680,8 @@ print('passed')
 # ! TAGS: []
 
 r'''
-## Commit before reveal: Replacement forecast
-
 Forecast the exact effect of strength 0, 0.5 and 1 on two selected token rows. State which recipient
 rows must remain byte-equal and whether the original tensor may change.
-
-Forecast: ______
-
-Confidence (0–1): ______
-
-Causal reasoning: ______
-
-Prior exposure: ______
-
-Frozen inputs / method fingerprint / selection rule: ______
-
-After you commit and inspect the reference or execute your authorized experiment:
-
-Observed result and control results: ______
-
-Discrepancy and alternative explanation: ______
-
-Changed-condition forecast before another execution: ______
 '''
 
 # ! CELL TYPE: markdown
@@ -1958,29 +1809,9 @@ print('passed')
 # ! TAGS: []
 
 r'''
-## Commit before reveal: Patch forecast
-
 Before the sweep solution or saved heatmap, forecast which of cache layers 0–4 can still change the
 answer when only visual rows are replaced. Predict object, background, same-size-random and
 full-visual effects separately, with a causal reason for each.
-
-Forecast: ______
-
-Confidence (0–1): ______
-
-Causal reasoning: ______
-
-Prior exposure: ______
-
-Frozen inputs / method fingerprint / selection rule: ______
-
-After you commit and inspect the reference or execute your authorized experiment:
-
-Observed result and control results: ______
-
-Discrepancy and alternative explanation: ______
-
-Changed-condition forecast before another execution: ______
 '''
 
 # ! CELL TYPE: markdown
@@ -2267,29 +2098,7 @@ print('passed')
 # ! TAGS: []
 
 r'''
-## Commit before reveal: Selection forecast
-
-Freeze candidate layers 0–4 and select the maximum validation object directional effect minus the
-larger absolute control effect; ties choose the smallest layer. Forecast the selected layer before
-the solution. Why must test rows be rejected by selection?
-
-Forecast: ______
-
-Confidence (0–1): ______
-
-Causal reasoning: ______
-
-Prior exposure: ______
-
-Frozen inputs / method fingerprint / selection rule: ______
-
-After you commit and inspect the reference or execute your authorized experiment:
-
-Observed result and control results: ______
-
-Discrepancy and alternative explanation: ______
-
-Changed-condition forecast before another execution: ______
+Freeze candidate layers 0–4 and select the maximum validation object directional effect minus the larger absolute control effect; ties choose the smallest layer. Forecast the selected layer before the solution.
 '''
 
 # ! CELL TYPE: markdown
@@ -2703,30 +2512,7 @@ r'''
 # ! TAGS: []
 
 r'''
-## Commit before reveal: Signature forecast
-
-Before inspecting saved figures, commit a numeric forecast for the mean donor-directed object margin
-effect on the eight original test pairs at the validation-selected layer. Also forecast both
-disjoint control magnitudes and full-visual effect. These historical public cases have unknown or
-seen exposure; they are not a new untouched TEST.
-
-Forecast: ______
-
-Confidence (0–1): ______
-
-Causal reasoning: ______
-
-Prior exposure: ______
-
-Frozen inputs / method fingerprint / selection rule: ______
-
-After you commit and inspect the reference or execute your authorized experiment:
-
-Observed result and control results: ______
-
-Discrepancy and alternative explanation: ______
-
-Changed-condition forecast before another execution: ______
+Also forecast both disjoint control magnitudes and full-visual effect.
 '''
 
 # ! CELL TYPE: markdown
@@ -2932,13 +2718,12 @@ print("accepted pixel/prompt ground-truth result:", signature["accepted"])
 
 r'''
 <img src="../../exercises/part5_object_hallucination/media/vlm_hallucination_signature.png"
-     alt="Historical modality baselines, validation layer selection and controlled test-pair effects"
+     alt="Modality baselines, validation layer selection and controlled test-pair effects"
      width="1100">
 
-**Historical signature.** The modality panels compare joint, image-question, text-only and shuffled
+**Signature.** The modality panels compare joint, image-question, text-only and shuffled
 image inputs. Validation chooses the intervention layer; the final panel compares object and
-full-visual patches with two distinct, equal-size background controls. These saved public renders are
-exposed guided practice. Their original test labels do not establish a new independent TEST.
+full-visual patches with two distinct, equal-size background controls.
 '''
 
 # ! CELL TYPE: markdown
@@ -2947,13 +2732,13 @@ exposed guided practice. Their original test labels do not establish a new indep
 
 r'''
 <img src="../../exercises/part5_object_hallucination/media/vlm_hallucination_layer_interventions.png"
-     alt="Historical layer-by-region donor-directed margin effects with matched region controls"
+     alt="Layer-by-region donor-directed margin effects with matched region controls"
      width="950">
 
-**Historical layer-by-region result.** Each row is a patch region and each column is a cached state.
+**Layer-by-region result.** Each row is a patch region and each column is a cached state.
 Read the object and full-visual rows against the distinct background and random rows. This measures
 visual transfer for neutral-prior donor pairs in the analytic organism; it does not show repair of
-wrong-prior hallucinations in a natural-image VLM. Commit your signature forecast before this reveal.
+wrong-prior hallucinations in a natural-image VLM.
 '''
 
 # ! CELL TYPE: markdown
@@ -2961,31 +2746,7 @@ wrong-prior hallucinations in a natural-image VLM. Commit your signature forecas
 # ! TAGS: []
 
 r'''
-## Commit before reveal: Play forecast
-
-Before the exposed play output, change only strength from 1.0 to 0.25 with blue/circle, layer 0 and
-object region fixed. Forecast whether the answer still flips relative to its recipient. Freeze all
-other values and record this as an unmeasured changed-condition prediction. The original unchanged
-play cell below is preserved; edit a copy only after committing. Reusing the same test renders is
-guided practice, never independent evaluation.
-
-Forecast: ______
-
-Confidence (0–1): ______
-
-Causal reasoning: ______
-
-Prior exposure: ______
-
-Frozen inputs / method fingerprint / selection rule: ______
-
-After you commit and inspect the reference or execute your authorized experiment:
-
-Observed result and control results: ______
-
-Discrepancy and alternative explanation: ______
-
-Changed-condition forecast before another execution: ______
+Before the exposed play output, change only strength from 1.0 to 0.25 with blue/circle, layer 0 and object region fixed. Forecast whether the answer still flips relative to its recipient. Freeze all other values and record this as an unmeasured changed-condition prediction.
 '''
 
 # ! CELL TYPE: markdown
@@ -3027,29 +2788,7 @@ print(intervention_playground(
 # ! TAGS: []
 
 r'''
-## Commit before reveal: Escalation boundary
-
-Before reading the optional real-VLM code, name an observation that would show neutral-prior visual
-transfer but fail to show conflict-case hallucination repair. The real-VLM route remains unexecuted.
-Do not change `RUN_CUDA_RELEASE = False` as part of this migration.
-
-Forecast: ______
-
-Confidence (0–1): ______
-
-Causal reasoning: ______
-
-Prior exposure: ______
-
-Frozen inputs / method fingerprint / selection rule: ______
-
-After you commit and inspect the reference or execute your authorized experiment:
-
-Observed result and control results: ______
-
-Discrepancy and alternative explanation: ______
-
-Changed-condition forecast before another execution: ______
+Before reading the optional real-VLM code, name an observation that would show neutral-prior visual transfer but fail to show conflict-case hallucination repair.
 '''
 
 # ! CELL TYPE: markdown
@@ -3825,7 +3564,7 @@ print(json.dumps(smoke, indent=2))
 # ! TAGS: []
 
 r'''
-## What the historical signature establishes
+## What the signature establishes
 
 The saved layer × region heatmap shows a large donor-directed effect before evidence leaves visual
 rows and inert matched background controls. The full signature places the modality baselines beside
@@ -3840,12 +3579,12 @@ The toy prior-routing rule is programmed and visible. The retained Qwen prefligh
 acceptance code are an unexecuted extension, not a new empirical claim.
 
 The original play reuses public test renders. Treat subsequent layer/region/strength changes as
-exploratory guided practice. If choosing a mitigation or layer, use validation only and freeze the
+exploratory. If choosing a mitigation or layer, use validation only and freeze the
 rule first; repeatedly inspected data cannot become independent TEST by renaming it. Preserve failed
 control results and the exact settings alongside successful ones.
 
-**Reading connection.** The preserved POPE, middle-layer VLM and visual-contrastive-decoding
+**Reading connection.** The POPE, middle-layer VLM and visual-contrastive-decoding
 readings motivate the object-question and intervention questions. This small renderer is not their
-natural-image benchmark, and the migration does not claim to reproduce those papers.
+natural-image benchmark, and does not reproduce those papers.
 '''
 

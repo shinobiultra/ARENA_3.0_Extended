@@ -37,9 +37,7 @@ The organism is deliberately explicit. Word properties are known, the decoder is
 
 Prerequisites: [6.1] sparse encoding/decoding and [1.2] residual-stream interventions. For the attention-output part, remember that concatenated head outputs precede `W_O`. A feature can mix several heads, and an encoder-direction attribution is not a causal claim about a head.
 
-**Study edition:** the default examples are deterministic CPU teaching fixtures. No pretrained model is loaded, no network is used, and no trained-model benchmark or native qualification is claimed. Save a personal copy. Public expected answers make this guided, exposed practice.
-
-**Configured requirements:** `sparse.feature_splitting_absorption`, `sparse.attention_output_sae`, `sparse.feature_dashboards`, `ui.sae_vis`, `ui.neuronpedia`. The final bridge ledger distinguishes the implemented core from pending native evidence.
+**Study edition:** the default examples are deterministic CPU teaching fixtures. No pretrained model is loaded, no network is used, and no trained-model benchmark or native qualification is claimed. Save a personal copy.
 '''
 
 # ! CELL TYPE: markdown
@@ -1266,14 +1264,14 @@ r'''
 
 The label was not wholly wrong: every active example began with A. It was incomplete, and a width-three reconstruction hid that incompleteness behind an apple-specific direction. Causal group ablation recovers the broad task contribution. This is a representation counterexample, not a demonstration that increasing trained dictionary width always worsens interpretability.
 
-## Limitations and native bridge ledger
+## Limitations
 
-| Requirement | Taught here | Pending evidence |
+| Topic | Taught here | Not covered here |
 | --- | --- | --- |
-| `sparse.feature_splitting_absorption` | Exact first-letter splitting/absorption candidate, precision/recall, overlap and causal group removal | Learned dictionaries across width/sparsity, matched training and a language-model first-letter cohort |
-| `sparse.attention_output_sae` | Concatenated-head encoder contributions and decoder effects through `W_O` and `W_U` | Actual attention-output SAE hook/cache parity, residual normalization and downstream nonlinear effects |
-| `sparse.feature_dashboards` | Histogram, top words, label audit, direct task effect and falsifying ablation | A trained-feature case with independent held-out simulation |
-| `ui.neuronpedia`, `ui.sae_vis` | Offline JSON-compatible record and explicit consumer mapping boundary | Version-pinned Neuronpedia import/export and sae-vis renderer integration; no live service or format parity claimed |
+| Feature splitting and absorption | Exact first-letter splitting/absorption candidate, precision/recall, overlap and causal group removal | Learned dictionaries across width/sparsity, matched training and a language-model first-letter cohort |
+| Attention-output SAE | Concatenated-head encoder contributions and decoder effects through `W_O` and `W_U` | Actual attention-output SAE hook/cache parity, residual normalization and downstream nonlinear effects |
+| Feature dashboards | Histogram, top words, label audit, direct task effect and falsifying ablation | A trained-feature case with independent held-out simulation |
+| Neuronpedia and sae-vis | Offline JSON-compatible record and explicit consumer mapping boundary | Version-pinned Neuronpedia import/export and sae-vis renderer integration; no live service or format parity claimed |
 
 An attention-output SAE may target concatenated `hook_z`, projected attention outputs or another site. Record the exact site, normalization, head ordering and decoder convention before transferring formulas. A direct logit effect does not include later layers. Error-preserving ablation can still create off-manifold inputs.
 '''

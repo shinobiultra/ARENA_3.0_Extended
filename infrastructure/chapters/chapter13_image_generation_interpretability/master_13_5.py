@@ -88,11 +88,7 @@ r'''
 The default path is a small, deterministic CPU organism with explicit weights and finite
 images. It teaches the named component operations and controls. It is not a trained diffusion
 model, a pretrained checkpoint, or a paper replication. No model download, GPU selection,
-training run or scientific sweep occurs. Published/native parts of the configured brief remain
-pending; the bridge at the end says precisely what would need to be measured.
-
-These are public guided exercises. Write your own prediction and prior solution exposure
-before opening expected outputs. Expected outputs make this seen practice, not unseen mastery.
+training run or scientific sweep occurs.
 '''
 
 # ! CELL TYPE: markdown
@@ -1086,8 +1082,7 @@ r'''
 r'''
 ## Limits and model bridge
 
-Requirements `image.dit_concept_attention`, `image.sdxl_optional` and `image.flux_optional`
-remain explicit. Patchification, adaLN, attention gating, a read-only concept branch,
+Patchification, adaLN, attention gating, a read-only concept branch,
 output-space mapping and mask scoring are taught here. A complete trained DiT, pretrained
 ConceptAttention, SDXL and FLUX experiments remain pending; no such model is loaded.
 

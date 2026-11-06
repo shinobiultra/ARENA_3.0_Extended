@@ -63,20 +63,6 @@ r'''
 # ! TAGS: []
 
 r'''
-> **Historical reference evidence:** saved execution counts, text and image outputs are retained from the
-> exact pre-migration lesson, with setup routing adapted to this directory. They are not a fresh execution of
-> the canonical notebook. The CUDA neural-game report remains historical supporting evidence; no training,
-> model download or CUDA run was performed for this migration. See `docs/mastery/migrations/exact_shapley.md`.
-
-This is guided prediction practice. Record forecasts, confidence, causal reasoning and exposure before looking
-at the reference-rich results. These visible answers cannot be scored as unseen mastery.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 **Core question:** when interactions make a player's contribution depend on context, does exact Shapley
 recover the known dividend allocation while leave-one-out fails conservation?
 
@@ -145,8 +131,7 @@ r'''
 ## Setup code
 
 The exact finite game and its local independent tests run on CPU. Keep the complete table and all declared
-dividends fixed while reproducing the reference. The separate historical CUDA release path is optional and is
-not run by this lesson's setup.
+dividends fixed while reproducing the reference.
 '''
 
 # ! CELL TYPE: code
@@ -283,7 +268,7 @@ dictionary keys. During normalization, compare the actual key set with the compl
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Solution</summary>
 
 ```python
 def all_coalitions(num_players):
@@ -332,14 +317,9 @@ silently changes both the baseline and interaction structure.
 # ! TAGS: []
 
 r'''
-### Forecast — Complete coalition table
-
 For four players, predict the number of required entries and whether removing the empty coalition should raise
 an error. Explain why treating a missing entry as zero changes the game. Changed case: predict the entry count
 for five players.
-
-Record your confidence, causal reasoning and exposure status. Saved expected outputs make this guided
-practice; prior exposure does not earn an unseen score.
 '''
 
 # ! CELL TYPE: code
@@ -414,21 +394,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect — Complete coalition table
-
-Check the enumeration and missing-table tests. Did your forecast include both the empty and full coalitions?
-Use the power-set argument to explain a discrepancy; then predict what happens if an extra out-of-range
-coalition is supplied.
-
-Record your confidence, causal reasoning and exposure status. Saved expected outputs make this guided
-practice; prior exposure does not earn an unseen score.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise - build an exact dividend game
 
 > ```yaml
@@ -449,7 +414,7 @@ len(term)` to every player in that term. Reject empty terms because the baseline
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Solution</summary>
 
 ```python
 def game_from_dividends(num_players, dividends, baseline=0.0):
@@ -494,13 +459,8 @@ between them is therefore meaningful parity, not the same algorithm called twice
 # ! TAGS: []
 
 r'''
-### Forecast — Dividend credit versus baseline
-
 Before the oracle is printed, predict whether increasing the baseline from 0.3 to 2.3 changes player credit or
 full-minus-empty value. Use the declared direct, pair and triple dividends to predict player 1's allocation.
-
-Record your confidence, causal reasoning and exposure status. Saved expected outputs make this guided
-practice; prior exposure does not earn an unseen score.
 '''
 
 # ! CELL TYPE: code
@@ -598,21 +558,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect — Dividend credit versus baseline
-
-Compare all four oracle entries with the displayed coalition table. Explain why a baseline shift contributes
-no marginal credit. Changed case: predict how adding 0.2 only to player 3's singleton dividend changes the
-oracle.
-
-Record your confidence, causal reasoning and exposure status. Saved expected outputs make this guided
-practice; prior exposure does not earn an unseen score.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 # 2️⃣ Average over contexts
 '''
 
@@ -645,7 +590,7 @@ uniformly: coalition sizes occur with different multiplicities in permutations.
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Solution</summary>
 
 ```python
 def marginal_contribution_rows(values, *, num_players, player):
@@ -693,14 +638,9 @@ coalitions, not the marginal in the empty or full context alone.
 # ! TAGS: []
 
 r'''
-### Forecast — Weighted predecessor contexts
-
 For player 1, predict whether a uniform average over its eight predecessor sets equals the
 permutation-weighted average. Explain how many orderings give a particular set of size zero, one, two or
 three. Predict the sign of any discrepancy.
-
-Record your confidence, causal reasoning and exposure status. Saved expected outputs make this guided
-practice; prior exposure does not earn an unseen score.
 '''
 
 # ! CELL TYPE: code
@@ -786,21 +726,6 @@ if MAIN:
     exact_values = exact_shapley_values(organism_values, num_players=4)
     print("Exact Shapley =", [round(value, 3) for value in exact_values.tolist()])
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect — Weighted predecessor contexts
-
-Use the weighted context table to distinguish a context-uniform average from a random-ordering average.
-Compare your predicted discrepancy with the exact vector. Changed case: remove all interactions and predict
-whether the two averages still disagree.
-
-Record your confidence, causal reasoning and exposure status. Saved expected outputs make this guided
-practice; prior exposure does not earn an unseen score.
-'''
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: []
@@ -844,7 +769,7 @@ to any term.
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Solution</summary>
 
 ```python
 def conjunction_game(num_players):
@@ -885,13 +810,8 @@ leaked credit, and efficiency catches failure to conserve total game value.
 # ! TAGS: []
 
 r'''
-### Forecast — Efficiency, symmetry and a dummy
-
 Predict the three-player conjunction allocation, the fifth dummy player's credit, and the four-player
 efficiency error. State which separate failure each control can detect.
-
-Record your confidence, causal reasoning and exposure status. Saved expected outputs make this guided
-practice; prior exposure does not earn an unseen score.
 '''
 
 # ! CELL TYPE: code
@@ -961,21 +881,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect — Efficiency, symmetry and a dummy
-
-Compare symmetry, dummy and efficiency checks separately. If only one failed, identify the likely bug rather
-than inferring that every axiom failed. Changed case: give the dummy a 0.2 singleton dividend and predict its
-credit.
-
-Record your confidence, causal reasoning and exposure status. Saved expected outputs make this guided
-practice; prior exposure does not earn an unseen score.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise - reproduce Shapley by permutation averaging
 
 > ```yaml
@@ -995,7 +900,7 @@ contributions by `math.factorial(num_players)`.
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Solution</summary>
 
 ```python
 def permutation_shapley_values(values, *, num_players):
@@ -1033,13 +938,8 @@ implementation mistakes. Their agreement is a reference-parity control.
 # ! TAGS: []
 
 r'''
-### Forecast — Every ordering as a second oracle
-
 Predict how many orderings the four-player parity check visits and whether permuting player labels can change
 the total allocated credit. Explain why a last-player marginal alone is insufficient.
-
-Record your confidence, causal reasoning and exposure status. Saved expected outputs make this guided
-practice; prior exposure does not earn an unseen score.
 '''
 
 # ! CELL TYPE: code
@@ -1111,21 +1011,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect — Every ordering as a second oracle
-
-Compare the independently enumerated ordering average with the weighted-subset implementation. Explain the
-relationship between 24 orderings and eight predecessor sets for each player. Changed case: predict the number
-of orderings for five players.
-
-Record your confidence, causal reasoning and exposure status. Saved expected outputs make this guided
-practice; prior exposure does not earn an unseen score.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 # 3️⃣ Conserve interaction credit
 '''
 
@@ -1154,7 +1039,7 @@ value.
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Solution</summary>
 
 ```python
 def leave_one_out_values(values, *, num_players):
@@ -1194,13 +1079,8 @@ once for every participating player. Negative interactions can instead cause und
 # ! TAGS: []
 
 r'''
-### Forecast — Full-context leave-one-out
-
 Predict Shapley's total, leave-one-out's total and their difference at scale 1. Count how often a pair
 dividend and a triple dividend appear in the summed leave-one-out scores.
-
-Record your confidence, causal reasoning and exposure status. Saved expected outputs make this guided
-practice; prior exposure does not earn an unseen score.
 '''
 
 # ! CELL TYPE: code
@@ -1273,21 +1153,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect — Full-context leave-one-out
-
-Compare the observed surplus with your dividend-count argument. Distinguish a conservation failure from an
-implementation error: leave-one-out answers a different context question. Changed case: negate all interaction
-dividends and predict the surplus sign.
-
-Record your confidence, causal reasoning and exposure status. Saved expected outputs make this guided
-practice; prior exposure does not earn an unseen score.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise - sweep interaction strength
 
 > ```yaml
@@ -1307,7 +1172,7 @@ match Shapley. At scale `1`, the known overcount is `4.5`; at scale `2`, it is `
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Solution</summary>
 
 ```python
 def interaction_scale_sweep(scales):
@@ -1350,14 +1215,9 @@ scores.
 # ! TAGS: []
 
 r'''
-### Forecast — An interaction-strength law
-
 Predict the leave-one-out surplus at scales 0, 0.5, 1 and 2, alongside the efficiency and dividend-oracle
 errors. Derive the slope by counting each term's extra allocations. Changed case: predict the surplus at scale
 -0.5.
-
-Record your confidence, causal reasoning and exposure status. Saved expected outputs make this guided
-practice; prior exposure does not earn an unseen score.
 '''
 
 # ! CELL TYPE: code
@@ -1415,21 +1275,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect — An interaction-strength law
-
-Check the additive point and the whole sweep, rather than selecting a favorable scale. Explain why oracle
-agreement and efficiency persist when the surplus changes sign. Predict the player-1 attribution sign on
-either side of scale 0.25.
-
-Record your confidence, causal reasoning and exposure status. Saved expected outputs make this guided
-practice; prior exposure does not earn an unseen score.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Signature Result
 
 Generate all three panels from your implementations. The analytic dividend oracle and permutation result are
@@ -1442,14 +1287,9 @@ leave-one-out failure.
 # ! TAGS: []
 
 r'''
-### Forecast — Read all three panels together
-
 Before inspecting the saved reference, forecast which bars coincide, which curve stays at numerical zero, and
 which marginal contexts vary. Explain how the additive controls distinguish an interaction effect from a
 baseline shift.
-
-Record your confidence, causal reasoning and exposure status. Saved expected outputs make this guided
-practice; prior exposure does not earn an unseen score.
 '''
 
 # ! CELL TYPE: code
@@ -1563,21 +1403,6 @@ r'''
 # ! TAGS: []
 
 r'''
-### Reflect — Read all three panels together
-
-Use each panel to test one part of your forecast. Record the control result and a causal explanation for any
-discrepancy. Changed case: predict how negative scale changes the surplus without changing Shapley's
-efficiency.
-
-Record your confidence, causal reasoning and exposure status. Saved expected outputs make this guided
-practice; prior exposure does not earn an unseen score.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details><summary>Interpreting the signature result</summary>
 
 The oracle and exact bars coincide, including negative credit. Leave-one-out uses the largest-context marginal
@@ -1594,7 +1419,7 @@ players arrived first, and Shapley's weighted average is `1.9`.
 # ! TAGS: []
 
 r'''
-In the reference scale-1 plot, all four Shapley bars are positive. The historical phrase "including negative
+In the reference scale-1 plot, all four Shapley bars are positive. The phrase "including negative
 credit" above describes the signed-credit setting, not a negative bar in this particular panel. Use the
 negative-scale play to check an actual negative allocation.
 '''
@@ -1624,14 +1449,9 @@ dividends.
 # ! TAGS: []
 
 r'''
-### Forecast — Change the finite game
-
 Choose PLAY_INTERACTION_SCALE and PLAY_PLAYER before running the play cell. Predict that player's Shapley
 credit, full-context marginal and marginal range. Include a negative scale or bracket player 1's sign
 crossing. Keep the dividend oracle check active.
-
-Record your confidence, causal reasoning and exposure status. Saved expected outputs make this guided
-practice; prior exposure does not earn an unseen score.
 '''
 
 # ! CELL TYPE: code
@@ -1659,21 +1479,6 @@ if MAIN:
         "Context marginals:",
         [round(marginal, 3) for _, marginal, _ in play_rows],
     )
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect — Change the finite game
-
-Record the observed oracle check, attribution and context values. Explain which dividend terms account for the
-discrepancy from your forecast. Then change one scientific condition, not merely a seed, and make a new
-forecast before rerunning.
-
-Record your confidence, causal reasoning and exposure status. Saved expected outputs make this guided
-practice; prior exposure does not earn an unseen score.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -1717,23 +1522,6 @@ Values](https://christophm.github.io/interpretable-ml-book/shapley.html)
 - [The Shapley Value and Harsanyi Dividends](https://doi.org/10.1016/0022-0531(88)90049-6)
 - [Original ARENA toy-model
 exercises](../../../chapter1_transformer_interp/exercises/part54_toy_models_of_superposition_and_saes/1.5.4_Toy_Models_of_Superposition_&_SAEs_exercises.ipynb)
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Full CUDA verification
-
-The exact learner result above is the course evidence. For release verification, the same section also trains
-a neural coalition game on all 16 coalitions, computes exact Shapley values from CUDA model ablations, and
-rejects a shuffled-label attribution. The committed machine-readable evidence is `verification_report.json`.
-
-
-This preserved release wrapper delegates to the unchanged historical neural-game implementation. It is not the
-finite-game method taught above and is not invoked by CPU practice. Its archived report retains the original
-source identities.
 '''
 
 # ! CELL TYPE: code

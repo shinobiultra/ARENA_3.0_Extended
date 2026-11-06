@@ -78,27 +78,7 @@ LoRA, DoRA, subspace, and intruder-dimension material in the roadmap.
 # ! TAGS: []
 
 r'''
-## Historical reference and execution boundary
-
-All displayed results and four PNG outputs are retained historical reference
-evidence from the full published QLoRA companion. They are **not a fresh execution**
-of this canonical notebook. The September 5 comparison remains **unreleased**:
-the unchanged .01 BF16 parity gate fails at .03125, although its behavior and
-resident-state checks pass. No accepted verification report is registered.
-
-The migration preserves every scientific method and all 21 code cells, outputs
-and execution counts, with explicitly declared setup import routing to an exact
-`legacy_reference.py` copy of the old helper module. The old receipt and eight
-source hashes remain unchanged; exact publication bytes and parity evidence are
-in `docs/mastery/migrations/qlora.md`. No quantization/backend threshold, precision,
-model revision or scientific recipe was upgraded. No model or training run occurs
-when the module is imported or the notebook is generated.
-
-This reference-rich route is guided practice. Before viewing a result, record a
-numerical forecast, confidence, causal reason and whether you have already seen
-it. Compare the actual controls, explain a discrepancy and forecast a changed
-scientific condition. No learner answers or observations are prefilled; historical
-or monitored results cannot become unseen independent evidence by relabeling them.
+The BF16 comparison's .01 parity gate fails at .03125, although its behavior and resident-state checks pass.
 '''
 
 # ! CELL TYPE: markdown
@@ -142,9 +122,9 @@ Change one scientific condition and register a discriminating forecast.
 
 ## Setup code
 
-The tensor mechanics and prompt inspections are small CPU exercises. The preserved
+The tensor mechanics and prompt inspections are small CPU exercises. The
 pretrained comparison and precision probe require deliberate CUDA execution and
-their pinned historical dependencies; generation executes neither.
+their pinned dependencies.
 '''
 
 # ! CELL TYPE: code
@@ -796,12 +776,8 @@ Check your implementation with the next test cell, and retain its complete feedb
 # ! TAGS: []
 
 r'''
-## Forecast before the result — nested-storage-audit
-
 For 1,048,579 weights, NF4 blocks of 64 and nested scale blocks of 256, forecast the ordering and numerical range of paper-amortized bits, tail-aware logical bytes and actual small
 Linear4bit storage including both lookup tables. Predict which corrupt-state changes must fail closed; do not confuse the uniform-int8 derivation with the real dynamic codebook.
-
-Write a numerical range or ranking, confidence (0–100%), and causal reason before running or opening the reference output. Record whether you have already seen it.
 '''
 
 # ! CELL TYPE: code
@@ -822,21 +798,6 @@ if MAIN:
         print("Corrupt codebook rejected:", error)
     else:
         raise AssertionError("A changed NF4 codebook value must be rejected")
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — nested-storage-audit
-
-Record the measured values and every relevant control, then compare them with
-your forecast. Explain the largest discrepancy using the precise loss, cohort,
-storage denominator or arithmetic dtype. Give an alternative explanation and
-forecast one changed scientific condition before trying it. Keep historical
-execution, prior exposure and seed-versus-data uncertainty explicit; retain
-failed gates without weakening their thresholds.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -1362,13 +1323,7 @@ Check your implementation with the next test cell, and retain its complete feedb
 # ! TAGS: []
 
 r'''
-## Forecast before the result — crossed-marker-controls
-
-Forecast train/template-transfer/unseen-subject counts and name-only accuracy for the complete subject×template×label design. For a fixed subject/template, predict whether swapping
-dax↔wug flips the target and whether marker removal leaves identical inputs with contradictory paired labels. State why neither name frequency nor template identity should solve
-the rule.
-
-Write a numerical range or ranking, confidence (0–100%), and causal reason before running or opening the reference output. Record whether you have already seen it.
+For a fixed subject/template, predict whether swapping dax↔wug flips the target and whether marker removal leaves identical inputs with contradictory paired labels. State why neither name frequency nor template identity should solve the rule.
 '''
 
 # ! CELL TYPE: code
@@ -1394,21 +1349,6 @@ if MAIN:
         "marker_swap": controls["marker_swap"][0],
         "marker_removed": controls["marker_removed"][0],
     })
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — crossed-marker-controls
-
-Record the measured values and every relevant control, then compare them with
-your forecast. Explain the largest discrepancy using the precise loss, cohort,
-storage denominator or arithmetic dtype. Give an alternative explanation and
-forecast one changed scientific condition before trying it. Keep historical
-execution, prior exposure and seed-versus-data uncertainty explicit; retain
-failed gates without weakening their thresholds.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -1702,12 +1642,8 @@ Check your implementation with the next test cell, and retain its complete feedb
 # ! TAGS: []
 
 r'''
-## Forecast before the result — outlier-block-coupling
-
 With seed 0 and one raw weight set to 12, forecast non-outlier MSE for NF4 block sizes 8, 32, 64 and 128 versus the matched clean weights. Explain why a shared absmax can damage
 neighboring weights without changing the nominal four-bit index cost.
-
-Write a numerical range or ranking, confidence (0–100%), and causal reason before running or opening the reference output. Record whether you have already seen it.
 '''
 
 # ! CELL TYPE: code
@@ -1719,21 +1655,6 @@ if MAIN:
     tests.check_outlier_stress(quantization_stress_test)
     stress = quantization_stress_test(seed=0)
     display({size: stress["outlier"][size]["non_outlier_mse"] for size in ("8", "32", "64", "128")})
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — outlier-block-coupling
-
-Record the measured values and every relevant control, then compare them with
-your forecast. Explain the largest discrepancy using the precise loss, cohort,
-storage denominator or arithmetic dtype. Give an alternative explanation and
-forecast one changed scientific condition before trying it. Keep historical
-execution, prior exposure and seed-versus-data uncertainty explicit; retain
-failed gates without weakening their thresholds.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -1933,18 +1854,6 @@ r'''
 # 3️⃣ Measured comparison and play
 '''
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## 8. Assemble the Learner Provenance Bundle
-
-This bundle is the dependency of both release APIs. The strict audit records
-a qualified name and executable SHA-256 fingerprint for every callback and
-rejects any callback object silently taken from `solutions.py`.
-'''
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: []
@@ -1999,12 +1908,8 @@ from those same callbacks.
 # ! TAGS: []
 
 r'''
-## Forecast before the result — quantization-and-resident-storage
-
 Before the CPU signature, forecast the reconstruction error/zero-block behavior, nested-scale saving and actual storage ordering. Compare paper bits per weight, tail-aware layout,
 materialized codebook bytes and full training-state components; explain why none alone predicts eightfold end-to-end savings.
-
-Write a numerical range or ranking, confidence (0–100%), and causal reason before running or opening the reference output. Record whether you have already seen it.
 '''
 
 # ! CELL TYPE: code
@@ -2041,21 +1946,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — quantization-and-resident-storage
-
-Record the measured values and every relevant control, then compare them with
-your forecast. Explain the largest discrepancy using the precise loss, cohort,
-storage denominator or arithmetic dtype. Give an alternative explanation and
-forecast one changed scientific condition before trying it. Keep historical
-execution, prior exposure and seed-versus-data uncertainty explicit; retain
-failed gates without weakening their thresholds.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## 10. Train the Marker Rule on TinyStories
 
 Each method result carries its seed. Acceptance extracts exactly three
@@ -2082,14 +1972,10 @@ mandatory.
 # ! TAGS: []
 
 r'''
-## Forecast before the result — pretrained-rule-and-memory
-
 For frozen TinyStories-1M revision 77f1b168e219585646439073245fe87e56b3023e, layer6 q/v adapters, seeds0/1/2,32updates and batch12, forecast template-transfer and narrow
 name/template-OOD accuracy for QLoRA rank8, BF16 LoRA rank8, full BF16, random labels and same-norm random adapters. Forecast marker-removal/name-only controls, paired swap
 behavior, resident training-state savings and whether the unchanged .01 BF16 dequantized-matmul gate passes. Explain what the three-seed Student-t interval does and does not
 measure.
-
-Write a numerical range or ranking, confidence (0–100%), and causal reason before running or opening the reference output. Record whether you have already seen it.
 '''
 
 # ! CELL TYPE: code
@@ -2124,21 +2010,6 @@ if MAIN:
 
 r'''
 <img src="media/qlora_real_signature_panel.png" width="1000">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — pretrained-rule-and-memory
-
-Record the measured values and every relevant control, then compare them with
-your forecast. Explain the largest discrepancy using the precise loss, cohort,
-storage denominator or arithmetic dtype. Give an alternative explanation and
-forecast one changed scientific condition before trying it. Keep historical
-execution, prior exposure and seed-versus-data uncertainty explicit; retain
-failed gates without weakening their thresholds.
 '''
 
 # ! CELL TYPE: markdown
@@ -2190,12 +2061,8 @@ r'''
 # ! TAGS: []
 
 r'''
-## Forecast before the result — outlier-play
-
 For block size32, raw outlier6 and weight seed7, forecast non-outlier MSE versus removing only the outlier. Before changing the block size to8 with all weights fixed, predict the
 MSE ordering and how far along the weight index the disturbance should extend.
-
-Write a numerical range or ranking, confidence (0–100%), and causal reason before running or opening the reference output. Record whether you have already seen it.
 '''
 
 # ! CELL TYPE: code
@@ -2241,27 +2108,8 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — outlier-play
-
-Record the measured values and every relevant control, then compare them with
-your forecast. Explain the largest discrepancy using the precise loss, cohort,
-storage denominator or arithmetic dtype. Give an alternative explanation and
-forecast one changed scientific condition before trying it. Keep historical
-execution, prior exposure and seed-versus-data uncertainty explicit; retain
-failed gates without weakening their thresholds.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Forecast before the result — paired-prompt-play
-
 For template-transfer row0, forecast the canonical and marker-swap target labels and whether marker removal changes the subject/template. State whether the removed prompt alone can
 distinguish both paired targets; do not infer trained-model behavior from this input-only inspection.
-
-Write a numerical range or ranking, confidence (0–100%), and causal reason before running or opening the reference output. Record whether you have already seen it.
 '''
 
 # ! CELL TYPE: code
@@ -2284,27 +2132,8 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-## Reflect after the result — paired-prompt-play
-
-Record the measured values and every relevant control, then compare them with
-your forecast. Explain the largest discrepancy using the precise loss, cohort,
-storage denominator or arithmetic dtype. Give an alternative explanation and
-forecast one changed scientific condition before trying it. Keep historical
-execution, prior exposure and seed-versus-data uncertainty explicit; retain
-failed gates without weakening their thresholds.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Forecast before the result — precision-and-buffer-play
-
 At the first layer6 target, input scale1 and seed1, forecast BF16 versus FP32 maximum absolute output error relative to the .01 gate. Compare parameter bytes with the eight
 2048×2048 boolean attention buffers. Before changing only input scale, forecast which error should change and why a smaller diagnostic error cannot erase the original failed gate.
-
-Write a numerical range or ranking, confidence (0–100%), and causal reason before running or opening the reference output. Record whether you have already seen it.
 '''
 
 # ! CELL TYPE: markdown
@@ -2384,21 +2213,6 @@ if MAIN:
 
 r'''
 <img src="media/qlora_precision_play.png" width="1000">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — precision-and-buffer-play
-
-Record the measured values and every relevant control, then compare them with
-your forecast. Explain the largest discrepancy using the precise loss, cohort,
-storage denominator or arithmetic dtype. Give an alternative explanation and
-forecast one changed scientific condition before trying it. Keep historical
-execution, prior exposure and seed-versus-data uncertainty explicit; retain
-failed gates without weakening their thresholds.
 '''
 
 # ! CELL TYPE: markdown

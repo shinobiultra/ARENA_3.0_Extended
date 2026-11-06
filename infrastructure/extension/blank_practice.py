@@ -254,9 +254,10 @@ def project_download(raw: bytes, relative: str, authority: dict[str, str]) -> by
         f'\nRead the [study cautions and route notes]({cautions_link}) before choosing an exercise route.\n',
     ]
     if relative in _FOUNDATIONS:
-        if result['nbformat_minor'] != 5:
-            raise ValueError('Reviewed foundation notebook schema changed')
         cells, live_provenance = _foundation_cells(relative)
+        if result['nbformat_minor'] < 5:
+            # Cell IDs exist only from nbformat 4.5; older generated notebooks omit them.
+            cells = [{key: value for key, value in cell.items() if key != 'id'} for cell in cells]
         result['cells'].extend(cells)
         provenance['foundation_live'] = live_provenance
     _validate(result)

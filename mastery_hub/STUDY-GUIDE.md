@@ -182,7 +182,7 @@ gaps. The chapter tables retain the earlier 60 routes; the 26 new CPU study edit
 | --- | --- | --- |
 | **6.1 SAE Variants** | Sparsity/reconstruction/recovery and intervention panel. | [exercises][study-059] · [reference][study-060] · [reading][study-061] · [source][study-062] |
 | **6.2 Gemma Scope and Feature Steering** | Exact feature steering and confound panels in two organisms. | [exercises][study-063] · [reference][study-064] · [reading][study-065] · [source][study-066] |
-| **6.4 Transcoders and Skip Transcoders** | Signed transcoder graph and behavioral faithfulness. | [exercises][study-067] · [reference][study-068] · [reading][study-069] · [source][study-070] |
+| **6.4 Transcoders and Attribution Graphs** | Signed transcoder graph and behavioral faithfulness. | [exercises][study-067] · [reference][study-068] · [reading][study-069] · [source][study-070] |
 | **6.5 Crosscoders and Model Diffing** | Crosscoder ownership and intervention curves. | [exercises][study-071] · [reference][study-072] · [reading][study-073] · [source][study-074] |
 
 ### 7. Activation to language
@@ -216,7 +216,7 @@ gaps. The chapter tables retain the earlier 60 routes; the 26 new CPU study edit
 | **9.3 Chain-of-Thought Faithfulness** | Layer/position decodability and answer-patching heatmaps. | [exercises][study-127] · [reference][study-128] · [reading][study-129] · [source][study-130] |
 | **9.4 Emergent Misalignment Detection** | Known-onset drift and mitigation-versus-capability curves. | [exercises][study-131] · [reference][study-132] · [reading][study-133] · [source][study-134] |
 | **9.5 White-Box Monitors and Red-Teaming with Internals** | Threshold/AUROC monitor dashboard and output-only misses. | [exercises][study-135] · [reference][study-136] · [reading][study-137] · [source][study-138] |
-| **9.6 Model Editing with ROME and MEMIT** | Localization heatmap, target continuation and collateral edit table. | [exercises][study-139] · [reference][study-140] · [reading][study-141] · [source][study-142] |
+| **9.6 Rank-One Model Editing (ROME)** | Localization heatmap, target continuation and collateral edit table. | [exercises][study-139] · [reference][study-140] · [reading][study-141] · [source][study-142] |
 
 ### 10. Research capstone
 
@@ -285,7 +285,7 @@ gaps. The chapter tables retain the earlier 60 routes; the 26 new CPU study edit
 
 | Lesson | Result to inspect | Open |
 | --- | --- | --- |
-| **17.1 Checkpoint Archaeology and Grokking** | Finite-domain checkpoint/Fourier emergence and intervention panels. | [exercises][study-251] · [reference][study-252] · [reading][study-253] · [source][study-254] |
+| **17.1 Checkpoint Archaeology on Modular Addition** | Finite-domain checkpoint/Fourier emergence and intervention panels. | [exercises][study-251] · [reference][study-252] · [reading][study-253] · [source][study-254] |
 
 ## Keep the question within the implemented scope
 
@@ -375,7 +375,7 @@ Read each lesson's precise boundary before treating its title as a claim about a
 | **9.2 Truthfulness Directions and Hallucination Probes** | [exercises][study-290] · [reference][study-291] · [reading][study-292] · [source][study-293] |
 | **9.7 Unlearning and How to Evaluate It** | [exercises][study-294] · [reference][study-295] · [reading][study-296] · [source][study-297] |
 | **11.6 Feature Manifolds - Days, Months, Space and Time** | [exercises][study-298] · [reference][study-299] · [reading][study-300] · [source][study-301] |
-| **12.2 CLIP Features, SAEs and Typographic Attacks** | [exercises][study-302] · [reference][study-303] · [reading][study-304] · [source][study-305] |
+| **12.2 Typographic Attacks and SAE Features in a Toy Two-Tower Model** | [exercises][study-302] · [reference][study-303] · [reading][study-304] · [source][study-305] |
 | **12.4 Visual Token Flow in Real VLMs** | [exercises][study-306] · [reference][study-307] · [reading][study-308] · [source][study-309] |
 | **12.6 Multimodal SAEs, Transcoders and Crosscoders** | [exercises][study-310] · [reference][study-311] · [reading][study-312] · [source][study-313] |
 | **12.7 Dense Vision Features - DINO and SAM** | [exercises][study-314] · [reference][study-315] · [reading][study-316] · [source][study-317] |
@@ -389,7 +389,7 @@ Read each lesson's precise boundary before treating its title as a claim about a
 | **14.7 Recurrent World Models - Dreamer, TD-MPC2 and IRIS** | [exercises][study-346] · [reference][study-347] · [reading][study-348] · [source][study-349] |
 | **15.4 LoRA Phase Transitions and Misalignment Proxies** | [exercises][study-350] · [reference][study-351] · [reading][study-352] · [source][study-353] |
 | **15.5 VLM LoRA** | [exercises][study-354] · [reference][study-355] · [reading][study-356] · [source][study-357] |
-| **17.2 Induction Head Emergence** | [exercises][study-358] · [reference][study-359] · [reading][study-360] · [source][study-361] |
+| **17.2 Induction Heads in Hand-Built Circuits** | [exercises][study-358] · [reference][study-359] · [reading][study-360] · [source][study-361] |
 | **17.3 Fine-Tuning Diffs and Capability Emergence** | [exercises][study-362] · [reference][study-363] · [reading][study-364] · [source][study-365] |
 | **17.4 Training Dynamics Across Architectures** | [exercises][study-366] · [reference][study-367] · [reading][study-368] · [source][study-369] |
 | **18.1 Concept Bottlenecks, Backpacks and Interchange Intervention Training** | [exercises][study-370] · [reference][study-371] · [reading][study-372] · [source][study-373] |
@@ -465,8 +465,8 @@ later model bridge or a planned topic remains unfinished.
 [study-064]: ../chapter6_sparse_feature_methods/exercises/part2_gemma_scope/6.2_Gemma_Scope_and_Feature_Steering_solutions.ipynb
 [study-065]: ../chapter6_sparse_feature_methods/instructions/pages/02_%5B6.2%5D_Gemma_Scope_and_Feature_Steering.md
 [study-066]: ../infrastructure/chapters/chapter6_sparse_feature_methods/master_6_2.py
-[study-067]: ../chapter6_sparse_feature_methods/exercises/part4_transcoders/6.4_Transcoders_and_Skip_Transcoders_exercises.ipynb
-[study-068]: ../chapter6_sparse_feature_methods/exercises/part4_transcoders/6.4_Transcoders_and_Skip_Transcoders_solutions.ipynb
+[study-067]: ../chapter6_sparse_feature_methods/exercises/part4_transcoders/6.4_Transcoders_and_Attribution_Graphs_exercises.ipynb
+[study-068]: ../chapter6_sparse_feature_methods/exercises/part4_transcoders/6.4_Transcoders_and_Attribution_Graphs_solutions.ipynb
 [study-069]: ../chapter6_sparse_feature_methods/instructions/pages/04_%5B6.4%5D_Transcoders_and_Skip_Transcoders.md
 [study-070]: ../infrastructure/chapters/chapter6_sparse_feature_methods/master_6_4.py
 [study-071]: ../chapter6_sparse_feature_methods/exercises/part5_crosscoders/6.5_Crosscoders_and_Model_Diffing_exercises.ipynb
@@ -537,8 +537,8 @@ later model bridge or a planned topic remains unfinished.
 [study-136]: ../chapter9_alignment_interpretability/exercises/part5_white_box_monitors/9.5_White-Box_Monitors_and_Red-Teaming_with_Internals_solutions.ipynb
 [study-137]: ../chapter9_alignment_interpretability/instructions/pages/05_%5B9.5%5D_White-Box_Monitors_and_Red-Teaming_with_Internals.md
 [study-138]: ../infrastructure/chapters/chapter9_alignment_interpretability/master_9_5.py
-[study-139]: ../chapter9_alignment_interpretability/exercises/part6_rome_memit/9.6_Model_Editing_with_ROME_and_MEMIT_exercises.ipynb
-[study-140]: ../chapter9_alignment_interpretability/exercises/part6_rome_memit/9.6_Model_Editing_with_ROME_and_MEMIT_solutions.ipynb
+[study-139]: ../chapter9_alignment_interpretability/exercises/part6_rome_memit/9.6_Rank-One_Model_Editing_ROME_exercises.ipynb
+[study-140]: ../chapter9_alignment_interpretability/exercises/part6_rome_memit/9.6_Rank-One_Model_Editing_ROME_solutions.ipynb
 [study-141]: ../chapter9_alignment_interpretability/instructions/pages/06_%5B9.6%5D_Model_Editing_with_ROME_and_MEMIT.md
 [study-142]: ../infrastructure/chapters/chapter9_alignment_interpretability/master_9_6.py
 [study-143]: ../chapter10_capstone_research_sprint/exercises/part1_capstone_research_sprint/10.1_Capstone_Research_Sprint_exercises.ipynb
@@ -649,8 +649,8 @@ later model bridge or a planned topic remains unfinished.
 [study-248]: ../chapter16_shapley_attribution_baselines/exercises/part11_datamodels_cartography/16.11_Datamodels_and_Dataset_Cartography_solutions.ipynb
 [study-249]: ../chapter16_shapley_attribution_baselines/instructions/pages/11_%5B16.11%5D_Datamodels_and_Dataset_Cartography.md
 [study-250]: ../infrastructure/chapters/chapter16_shapley_attribution_baselines/master_16_11.py
-[study-251]: ../chapter17_training_dynamics/exercises/part1_checkpoint_archaeology/17.1_Checkpoint_Archaeology_and_Grokking_exercises.ipynb
-[study-252]: ../chapter17_training_dynamics/exercises/part1_checkpoint_archaeology/17.1_Checkpoint_Archaeology_and_Grokking_solutions.ipynb
+[study-251]: ../chapter17_training_dynamics/exercises/part1_checkpoint_archaeology/17.1_Checkpoint_Archaeology_on_Modular_Addition_exercises.ipynb
+[study-252]: ../chapter17_training_dynamics/exercises/part1_checkpoint_archaeology/17.1_Checkpoint_Archaeology_on_Modular_Addition_solutions.ipynb
 [study-253]: ../chapter17_training_dynamics/instructions/pages/01_%5B17.1%5D_Checkpoint_Archaeology_and_Grokking.md
 [study-254]: ../infrastructure/chapters/chapter17_training_dynamics/master_17_1.py
 [study-255]: ../chapter1_transformer_interp/exercises/part52_grokking_and_modular_arithmetic/1.5.2_Grokking_%26_Modular_Arithmetic_exercises.ipynb
@@ -713,8 +713,8 @@ tolerances are **UNSET** and must be resolved before that model run. Reference a
 [study-299]: ../chapter11_representation_geometry/exercises/part6_feature_manifolds/11.6_Feature_Manifolds_Days_Months_Space_and_Time_solutions.ipynb
 [study-300]: ../chapter11_representation_geometry/instructions/pages/06_%5B11.6%5D_Feature_Manifolds_Days_Months_Space_and_Time.md
 [study-301]: ../infrastructure/chapters/chapter11_representation_geometry/master_11_6.py
-[study-302]: ../chapter12_vlm_interpretability/exercises/part2_clip_saes_typographic/12.2_CLIP_Features_SAEs_and_Typographic_Attacks_exercises.ipynb
-[study-303]: ../chapter12_vlm_interpretability/exercises/part2_clip_saes_typographic/12.2_CLIP_Features_SAEs_and_Typographic_Attacks_solutions.ipynb
+[study-302]: ../chapter12_vlm_interpretability/exercises/part2_clip_saes_typographic/12.2_Typographic_Attacks_and_SAE_Features_in_a_Toy_Two-Tower_Model_exercises.ipynb
+[study-303]: ../chapter12_vlm_interpretability/exercises/part2_clip_saes_typographic/12.2_Typographic_Attacks_and_SAE_Features_in_a_Toy_Two-Tower_Model_solutions.ipynb
 [study-304]: ../chapter12_vlm_interpretability/instructions/pages/02_%5B12.2%5D_CLIP_Features_SAEs_and_Typographic_Attacks.md
 [study-305]: ../infrastructure/chapters/chapter12_vlm_interpretability/master_12_2.py
 [study-306]: ../chapter12_vlm_interpretability/exercises/part4_visual_token_flow/12.4_Visual_Token_Flow_in_Real_VLMs_exercises.ipynb
@@ -769,8 +769,8 @@ tolerances are **UNSET** and must be resolved before that model run. Reference a
 [study-355]: ../chapter15_peft_misalignment/exercises/part5_vlm_lora/15.5_VLM_LoRA_solutions.ipynb
 [study-356]: ../chapter15_peft_misalignment/instructions/pages/05_%5B15.5%5D_VLM_LoRA.md
 [study-357]: ../infrastructure/chapters/chapter15_peft_misalignment/master_15_5.py
-[study-358]: ../chapter17_training_dynamics/exercises/part2_induction_head_emergence/17.2_Induction_Head_Emergence_exercises.ipynb
-[study-359]: ../chapter17_training_dynamics/exercises/part2_induction_head_emergence/17.2_Induction_Head_Emergence_solutions.ipynb
+[study-358]: ../chapter17_training_dynamics/exercises/part2_induction_head_emergence/17.2_Induction_Heads_in_Hand-Built_Circuits_exercises.ipynb
+[study-359]: ../chapter17_training_dynamics/exercises/part2_induction_head_emergence/17.2_Induction_Heads_in_Hand-Built_Circuits_solutions.ipynb
 [study-360]: ../chapter17_training_dynamics/instructions/pages/02_%5B17.2%5D_Induction_Head_Emergence.md
 [study-361]: ../infrastructure/chapters/chapter17_training_dynamics/master_17_2.py
 [study-362]: ../chapter17_training_dynamics/exercises/part3_finetuning_diffs_emergence/17.3_Fine-Tuning_Diffs_and_Capability_Emergence_exercises.ipynb

@@ -75,7 +75,7 @@ wrong-region edit. The visible result is an image grid, spatial token grid and c
 Prerequisites: causal attention from chapter1, vector quantization and array indexing. We use
 a known RGB codebook and a fixed attention program, not a trained VQ-VAE or autoregressive
 transformer. The VQ loss and straight-through gradients are implemented and checked without
-running an optimizer. Native learned tokenizer/generator experiments remain pending.
+running an optimizer.
 '''
 
 # ! CELL TYPE: markdown
@@ -88,11 +88,7 @@ r'''
 The default path is a small, deterministic CPU organism with explicit weights and finite
 images. It teaches the named component operations and controls. It is not a trained diffusion
 model, a pretrained checkpoint, or a paper replication. No model download, GPU selection,
-training run or scientific sweep occurs. Published/native parts of the configured brief remain
-pending; the bridge at the end says precisely what would need to be measured.
-
-These are public guided exercises. Write your own prediction and prior solution exposure
-before opening expected outputs. Expected outputs make this seen practice, not unseen mastery.
+training run or scientific sweep occurs.
 '''
 
 # ! CELL TYPE: markdown
@@ -984,7 +980,7 @@ Score the resulting images with an independent blue-pixel mask: blue minus red g
 The target mask is the supplied square repeated to pixel resolution. Report intersection over
 union with this target and count changed pixels outside the forced token's2x2 region.
 
-Forecast before the result: which intervention changes the entire square? Will a blue donor
+**Make a prediction first:** which intervention changes the entire square? Will a blue donor
 placed in the last background token improve the blue-square IoU? A colored patch outside the
 object should fail the task even though it is visibly blue.
 '''
@@ -1244,9 +1240,9 @@ r'''
 # ! TAGS: []
 
 r'''
-## Limits and the configured model bridge
+## Limits and the model bridge
 
-Requirement `image.autoregressive_image_tokens` is preserved. This study edition teaches
+This study edition teaches
 quantization, decoding, VQ gradient routes, codebook usage, causal attention, autoregressive
 feedback and image-token interventions with pixel-level scoring. Training a neural VQ-VAE
 and an autoregressive transformer remains pending. No optimizer, learned checkpoint, tokenizer

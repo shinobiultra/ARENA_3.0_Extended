@@ -37,9 +37,7 @@ The task is deliberately small enough to calculate by hand. You will also implem
 
 Prerequisites: [1.1] matrix attention and broadcasting, [0.3] numerical stability, and the recurrence/state perspective of [5.3]. Read the equations before optimizing them. All arrays below are CPU float64, with time first and channels last. No `torch.compile` is useful for these few dozen arithmetic operations.
 
-**Study edition:** the default examples are deterministic CPU teaching fixtures. No pretrained model is loaded, no network is used, and no trained-model benchmark or native qualification is claimed. Save a personal copy. Public expected answers make this guided, exposed practice.
-
-**Configured requirements:** `modern.linear_attention`, `modern.retnet`, `modern.rwkv`. The final bridge ledger distinguishes the implemented core from pending native evidence.
+**Study edition:** the default examples are deterministic CPU teaching fixtures. No pretrained model is loaded, no network is used, and no trained-model benchmark or native qualification is claimed. Save a personal copy.
 '''
 
 # ! CELL TYPE: markdown
@@ -1103,8 +1101,6 @@ r'''
 Now return to the overwrite puzzle. We freeze twelve three-write episodes: old red value A, B, C or D; a blue distractor; and a different new red value. All ordered unequal old/new value pairs occur once, so tie-breaking cannot favor the newest value systematically. Keys are exact one-hot tags. Each episode is a deterministic unit illustration, not a training/test benchmark.
 
 Compare four readouts on the same writes and query: undamped normalized kernel attention, retention with gamma 0.5, softmax content attention with temperature 0.1 and retention after shuffling the values. Decode by `argmax`, with NumPy's first-index tie rule. We care about both the token and the underlying coefficients: an answer can be correct because of a tie rule. Shuffled values are a broken-binding control, not another memory architecture.
-
-Before running, write your forecast and reason. Have you already seen an expected answer? Record that exposure. Complete the methods and their tests first; then freeze this exact question, inputs, gamma, temperature, tie rule and source hashes before a selected new attempt. A later changed query or gap is a new condition, not an unseen score merely because it has a new seed.
 '''
 
 # ! CELL TYPE: markdown
@@ -1353,7 +1349,7 @@ Fixed-state memory size and successful recall are different questions. Query/key
 r'''
 ## Try it yourself
 
-Predict what changing only retention gamma from 0.5 to 1 will do to the overwrite advantage. Keep the cohort, tie rule and value ordering fixed. Separately try a query for blue: does forgetting help when its only write is older? Record whether the public equations or plots already exposed your prediction.
+Predict what changing only retention gamma from 0.5 to 1 will do to the overwrite advantage. Keep the cohort, tie rule and value ordering fixed. Separately try a query for blue: does forgetting help when its only write is older?
 '''
 
 # ! CELL TYPE: code
@@ -1371,13 +1367,13 @@ display(pd.DataFrame({"retention":retention_parallel(q,e["keys"],e["values"],pla
 # ! TAGS: []
 
 r'''
-## Limitations and native bridge ledger
+## Limitations
 
-| Requirement | Taught here | Still pending |
+| Topic | Taught here | Not covered here |
 | --- | --- | --- |
-| `modern.linear_attention` | Positive feature map, normalized parallel/recurrent equality, causal softmax comparison and exact recall task | Trained recall capacity across dimensions/lengths and measured performance |
-| `modern.retnet` | Real retention parallel/recurrent/chunkwise forms; independent heads can use separate decays; coefficient spectrum | Complex positional rotations, complete learned multi-scale gated RetNet stack, training and released parity |
-| `modern.rwkv` | Token shift, stable channelwise WKV, receptance, squared-ReLU channel mixing and a supplied-weight RWKV-4-style residual block | Load the explicitly versioned `RWKV/rwkv-4-169m-pile` tokenizer/checkpoint, map every parameter, compare full/prefill/token-state outputs and generation to the official implementation |
+| Linear attention | Positive feature map, normalized parallel/recurrent equality, causal softmax comparison and exact recall task | Trained recall capacity across dimensions/lengths and measured performance |
+| RetNet | Real retention parallel/recurrent/chunkwise forms; independent heads can use separate decays; coefficient spectrum | Complex positional rotations, complete learned multi-scale gated RetNet stack, training and released parity |
+| RWKV | Token shift, stable channelwise WKV, receptance, squared-ReLU channel mixing and a supplied-weight RWKV-4-style residual block | Load the explicitly versioned `RWKV/rwkv-4-169m-pile` tokenizer/checkpoint, map every parameter, compare full/prefill/token-state outputs and generation to the official implementation |
 
 The bridge is an implementation boundary, not a call to download weights. Record exact revision, dtype, normalization and cache/reset rules before a later native parity run. No such budget is allocated here. NumPy reference arithmetic is not fused-kernel performance evidence.
 '''

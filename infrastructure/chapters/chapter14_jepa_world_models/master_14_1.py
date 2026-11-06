@@ -50,19 +50,9 @@ r'''
 # ! TAGS: []
 
 r'''
-**Historical exposed guided practice.** This canonical 14.1 migration preserves the entire legacy 14.2 learner and solution surfaces. Saved outputs, figure, execution counts and report identities
-are historical; no model, training, GPU, dataset or evaluation was run during migration.
-
 The source is an exact generated 32-by-32 scene world with twelve shared object-position templates and pixel-distinct evaluation backgrounds. It teaches latent prediction, structured masking,
 stop-gradient, EMA, collapse controls and key-only interventions. It does not establish ImageNet scale, pretrained I-JEPA checkpoint parity, general visual understanding, or independent
 semantic-template generalization.
-
-Forecast before opening a historical worked answer or saved output. Record exposure honestly; these reference-rich results are guided practice. Keep blank observations until inspection. Broader
-canonical 14.1 scope is limited to this complete preserved generated-world mechanism; no additional method or dataset was added.
-
-The exact legacy plot formatter is now visible inline and uses your local scene/mask methods. Typed records and dictionary formatting are the only extracted plumbing; every taught computation
-remains below. Optional test calls lazily use the unchanged legacy test module with the original learner-function arguments. Historical report acceptance fields retain only their legacy identity;
-they do not accept this migration.
 '''
 
 # ! CELL TYPE: markdown
@@ -94,7 +84,7 @@ r'''
 
 > ##### Learning Objectives
 >
-> - Inspect all three historical seeds and commit a changed-key play forecast.
+> - Inspect all three seeds and commit a changed-key play forecast.
 '''
 
 # ! CELL TYPE: markdown
@@ -348,18 +338,7 @@ def build_scene_dataset(
 # ! TAGS: []
 
 r'''
-## Forecast before running — IJ-5
-
 Will any class-coloured object pixel remain outside the target mask and key?
-
-Forecast / interval / ordering: ______
-Confidence (0–100%): ______
-Mechanistic reasoning and contradicting control: ______
-Prior exposure (unseen / seen / unknown): ______
-Denominator and unit (scene, template, seed, probe or epoch): ______
-
-This is exposed guided practice. Exact backgrounds differ while all twelve semantic templates overlap. Do not count epochs or reused templates as independent semantic generalization. Leave these
-answers blank until you commit.
 '''
 
 # ! CELL TYPE: code
@@ -368,22 +347,6 @@ answers blank until you commit.
 
 if MAIN:
     tests.test_build_scene_dataset(build_scene_dataset)
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after inspection — IJ-5
-
-Observed values and source/cell identity: ______
-Control comparison and denominator: ______
-Forecast discrepancy and possible mechanism: ______
-Changed-condition forecast before trying it: ______
-Your execution or retained historical output: ______
-
-Leave observations blank until inspection. A changed play setting remains exploratory and does not add an untouched evaluation cohort.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -405,7 +368,7 @@ Generate in semantic order: object, position, example. Use deterministic per-sce
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Solution</summary>
 
 ```python
 def _draw_scene(object_id: int, position_id: int, *, jitter: int, seed: int) -> Tensor:
@@ -528,18 +491,7 @@ def patchify(images: Tensor, patch_size: int = PATCH_SIZE) -> Tensor:
 # ! TAGS: []
 
 r'''
-## Forecast before running — IJ-9
-
 What row-major patch vectors should the exact small image produce?
-
-Forecast / interval / ordering: ______
-Confidence (0–100%): ______
-Mechanistic reasoning and contradicting control: ______
-Prior exposure (unseen / seen / unknown): ______
-Denominator and unit (scene, template, seed, probe or epoch): ______
-
-This is exposed guided practice. Exact backgrounds differ while all twelve semantic templates overlap. Do not count epochs or reused templates as independent semantic generalization. Leave these
-answers blank until you commit.
 '''
 
 # ! CELL TYPE: code
@@ -549,22 +501,6 @@ answers blank until you commit.
 if MAIN:
     tests.test_patchify_hand_computed(patchify)
     tests.test_patchify_rejects_bad_shape(patchify)
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after inspection — IJ-9
-
-Observed values and source/cell identity: ______
-Control comparison and denominator: ______
-Forecast discrepancy and possible mechanism: ______
-Changed-condition forecast before trying it: ______
-Your execution or retained historical output: ______
-
-Leave observations blank until inspection. A changed play setting remains exploratory and does not add an untouched evaluation cohort.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -586,7 +522,7 @@ Use two `unfold` operations, move patch-grid axes before channel and within-patc
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Solution</summary>
 
 ```python
 def patchify(images: Tensor, patch_size: int = PATCH_SIZE) -> Tensor:
@@ -694,18 +630,7 @@ def object_target_masks(
 # ! TAGS: []
 
 r'''
-## Forecast before running — IJ-13
-
 Which patch must stay visible, and how many patches are in each target?
-
-Forecast / interval / ordering: ______
-Confidence (0–100%): ______
-Mechanistic reasoning and contradicting control: ______
-Prior exposure (unseen / seen / unknown): ______
-Denominator and unit (scene, template, seed, probe or epoch): ______
-
-This is exposed guided practice. Exact backgrounds differ while all twelve semantic templates overlap. Do not count epochs or reused templates as independent semantic generalization. Leave these
-answers blank until you commit.
 '''
 
 # ! CELL TYPE: code
@@ -715,22 +640,6 @@ answers blank until you commit.
 if MAIN:
     tests.test_sample_block_masks(sample_block_masks)
     tests.test_object_target_masks(object_target_masks)
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after inspection — IJ-13
-
-Observed values and source/cell identity: ______
-Control comparison and denominator: ______
-Forecast discrepancy and possible mechanism: ______
-Changed-condition forecast before trying it: ______
-Your execution or retained historical output: ______
-
-Leave observations blank until inspection. A changed play setting remains exploratory and does not add an untouched evaluation cohort.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -752,7 +661,7 @@ Represent a mask as `[batch, 8, 8]` while constructing it, then flatten. The fou
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Solution</summary>
 
 ```python
 def sample_block_masks(
@@ -849,18 +758,7 @@ def gather_masked_tokens(tokens: Tensor, mask: Tensor) -> Tensor:
 # ! TAGS: []
 
 r'''
-## Forecast before running — IJ-17
-
 How should row order survive masked gathering?
-
-Forecast / interval / ordering: ______
-Confidence (0–100%): ______
-Mechanistic reasoning and contradicting control: ______
-Prior exposure (unseen / seen / unknown): ______
-Denominator and unit (scene, template, seed, probe or epoch): ______
-
-This is exposed guided practice. Exact backgrounds differ while all twelve semantic templates overlap. Do not count epochs or reused templates as independent semantic generalization. Leave these
-answers blank until you commit.
 '''
 
 # ! CELL TYPE: code
@@ -869,22 +767,6 @@ answers blank until you commit.
 
 if MAIN:
     tests.test_gather_masked_tokens(gather_masked_tokens)
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after inspection — IJ-17
-
-Observed values and source/cell identity: ______
-Control comparison and denominator: ______
-Forecast discrepancy and possible mechanism: ______
-Changed-condition forecast before trying it: ______
-Your execution or retained historical output: ______
-
-Leave observations blank until inspection. A changed play setting remains exploratory and does not add an untouched evaluation cohort.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -906,7 +788,7 @@ Boolean indexing flattens the first two axes. Validate equal row counts, index o
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Solution</summary>
 
 ```python
 def gather_masked_tokens(tokens: Tensor, mask: Tensor) -> Tensor:
@@ -1167,18 +1049,7 @@ class LatentPredictor(nn.Module):
 # ! TAGS: []
 
 r'''
-## Forecast before running — IJ-22
-
 How should scattering visible tokens preserve their patch positions?
-
-Forecast / interval / ordering: ______
-Confidence (0–100%): ______
-Mechanistic reasoning and contradicting control: ______
-Prior exposure (unseen / seen / unknown): ______
-Denominator and unit (scene, template, seed, probe or epoch): ______
-
-This is exposed guided practice. Exact backgrounds differ while all twelve semantic templates overlap. Do not count epochs or reused templates as independent semantic generalization. Leave these
-answers blank until you commit.
 '''
 
 # ! CELL TYPE: code
@@ -1187,22 +1058,6 @@ answers blank until you commit.
 
 if MAIN:
     tests.test_encoder_and_predictor_semantics(PatchTransformerEncoder, LatentPredictor)
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after inspection — IJ-22
-
-Observed values and source/cell identity: ______
-Control comparison and denominator: ______
-Forecast discrepancy and possible mechanism: ______
-Changed-condition forecast before trying it: ______
-Your execution or retained historical output: ______
-
-Leave observations blank until inspection. A changed play setting remains exploratory and does not add an untouched evaluation cohort.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -1225,7 +1080,7 @@ Give both modules positional embeddings. In the predictor, initialize the full s
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Solution</summary>
 
 ```python
 class PatchTransformerEncoder(nn.Module):
@@ -1349,18 +1204,7 @@ def update_target_encoder(online: nn.Module, target: nn.Module, ema_decay: float
 # ! TAGS: []
 
 r'''
-## Forecast before running — IJ-26
-
 Which branch can receive gradients, and what should one EMA step do?
-
-Forecast / interval / ordering: ______
-Confidence (0–100%): ______
-Mechanistic reasoning and contradicting control: ______
-Prior exposure (unseen / seen / unknown): ______
-Denominator and unit (scene, template, seed, probe or epoch): ______
-
-This is exposed guided practice. Exact backgrounds differ while all twelve semantic templates overlap. Do not count epochs or reused templates as independent semantic generalization. Leave these
-answers blank until you commit.
 '''
 
 # ! CELL TYPE: code
@@ -1370,22 +1214,6 @@ answers blank until you commit.
 if MAIN:
     tests.test_normalized_prediction_loss(normalized_prediction_loss)
     tests.test_update_target_encoder(update_target_encoder)
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after inspection — IJ-26
-
-Observed values and source/cell identity: ______
-Control comparison and denominator: ______
-Forecast discrepancy and possible mechanism: ______
-Changed-condition forecast before trying it: ______
-Your execution or retained historical output: ______
-
-Leave observations blank until inspection. A changed play setting remains exploratory and does not add an untouched evaluation cohort.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -1407,7 +1235,7 @@ Normalize over the final axis. Detach the target before subtraction. `Tensor.ler
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Solution</summary>
 
 ```python
 def normalized_prediction_loss(predicted: Tensor, target: Tensor) -> Tensor:
@@ -1501,18 +1329,7 @@ class IJEPAModel(nn.Module):
 # ! TAGS: []
 
 r'''
-## Forecast before running — IJ-30
-
 Which parameters should change after one optimization step?
-
-Forecast / interval / ordering: ______
-Confidence (0–100%): ______
-Mechanistic reasoning and contradicting control: ______
-Prior exposure (unseen / seen / unknown): ______
-Denominator and unit (scene, template, seed, probe or epoch): ______
-
-This is exposed guided practice. Exact backgrounds differ while all twelve semantic templates overlap. Do not count epochs or reused templates as independent semantic generalization. Leave these
-answers blank until you commit.
 '''
 
 # ! CELL TYPE: code
@@ -1522,22 +1339,6 @@ answers blank until you commit.
 if MAIN:
     tests.test_ijepa_gradient_boundary(IJEPAModel)
     tests.test_one_real_optimization_step(IJEPAModel)
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after inspection — IJ-30
-
-Observed values and source/cell identity: ______
-Control comparison and denominator: ______
-Forecast discrepancy and possible mechanism: ______
-Changed-condition forecast before trying it: ______
-Your execution or retained historical output: ______
-
-Leave observations blank until inspection. A changed play setting remains exploratory and does not add an untouched evaluation cohort.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -1560,7 +1361,7 @@ Freeze the copied target with `requires_grad_(False)` and evaluate it under `no_
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Solution</summary>
 
 ```python
 class IJEPAModel(nn.Module):
@@ -1656,18 +1457,7 @@ def collapse_diagnostics(features: Tensor) -> CollapseDiagnostics:
 # ! TAGS: []
 
 r'''
-## Forecast before running — IJ-34
-
 Can constant features have low prediction loss while their spread collapses?
-
-Forecast / interval / ordering: ______
-Confidence (0–100%): ______
-Mechanistic reasoning and contradicting control: ______
-Prior exposure (unseen / seen / unknown): ______
-Denominator and unit (scene, template, seed, probe or epoch): ______
-
-This is exposed guided practice. Exact backgrounds differ while all twelve semantic templates overlap. Do not count epochs or reused templates as independent semantic generalization. Leave these
-answers blank until you commit.
 '''
 
 # ! CELL TYPE: code
@@ -1676,22 +1466,6 @@ answers blank until you commit.
 
 if MAIN:
     tests.test_collapse_diagnostics(collapse_diagnostics)
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after inspection — IJ-34
-
-Observed values and source/cell identity: ______
-Control comparison and denominator: ______
-Forecast discrepancy and possible mechanism: ______
-Changed-condition forecast before trying it: ______
-Your execution or retained historical output: ______
-
-Leave observations blank until inspection. A changed play setting remains exploratory and does not add an untouched evaluation cohort.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -1713,7 +1487,7 @@ Square singular values to obtain a covariance spectrum, normalize it, and expone
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Solution</summary>
 
 ```python
 def collapse_diagnostics(features: Tensor) -> CollapseDiagnostics:
@@ -1879,18 +1653,7 @@ def evaluate_transfer_probes(
 # ! TAGS: []
 
 r'''
-## Forecast before running — IJ-38
-
 Why might random encoder probes already perform strongly?
-
-Forecast / interval / ordering: ______
-Confidence (0–100%): ______
-Mechanistic reasoning and contradicting control: ______
-Prior exposure (unseen / seen / unknown): ______
-Denominator and unit (scene, template, seed, probe or epoch): ______
-
-This is exposed guided practice. Exact backgrounds differ while all twelve semantic templates overlap. Do not count epochs or reused templates as independent semantic generalization. Leave these
-answers blank until you commit.
 '''
 
 # ! CELL TYPE: code
@@ -1900,22 +1663,6 @@ answers blank until you commit.
 if MAIN:
     tests.test_ridge_probe_toy_oracle(evaluate_probes)
     tests.test_transfer_probe_toy_oracle(evaluate_transfer_probes)
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after inspection — IJ-38
-
-Observed values and source/cell identity: ______
-Control comparison and denominator: ______
-Forecast discrepancy and possible mechanism: ______
-Changed-condition forecast before trying it: ______
-Your execution or retained historical output: ______
-
-Leave observations blank until inspection. A changed play setting remains exploratory and does not add an untouched evaluation cohort.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -1938,7 +1685,7 @@ Append a bias column, solve regularized normal equations, and leave the bias unr
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Solution</summary>
 
 ```python
 def fit_ridge_classifier(
@@ -2244,18 +1991,7 @@ def evaluate_prediction(
 # ! TAGS: []
 
 r'''
-## Forecast before running — IJ-42
-
 What should change under a key-only swap while every non-key pixel is fixed?
-
-Forecast / interval / ordering: ______
-Confidence (0–100%): ______
-Mechanistic reasoning and contradicting control: ______
-Prior exposure (unseen / seen / unknown): ______
-Denominator and unit (scene, template, seed, probe or epoch): ______
-
-This is exposed guided practice. Exact backgrounds differ while all twelve semantic templates overlap. Do not count epochs or reused templates as independent semantic generalization. Leave these
-answers blank until you commit.
 '''
 
 # ! CELL TYPE: code
@@ -2267,22 +2003,6 @@ if MAIN:
     tests.test_replace_scene_keys(replace_scene_keys)
     tests.test_erase_scene_keys(erase_scene_keys)
     tests.test_evaluate_prediction_exact_oracle(evaluate_prediction)
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after inspection — IJ-42
-
-Observed values and source/cell identity: ______
-Control comparison and denominator: ______
-Forecast discrepancy and possible mechanism: ______
-Changed-condition forecast before trying it: ______
-Your execution or retained historical output: ______
-
-Leave observations blank until inspection. A changed play setting remains exploratory and does not add an untouched evaluation cohort.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -2306,7 +2026,7 @@ while keeping the original target latent.
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Solution</summary>
 
 ```python
 def cyclic_object_mismatch_indices(
@@ -2606,18 +2326,7 @@ def _train_model(
 # ! TAGS: []
 
 r'''
-## Forecast before running — IJ-46
-
 Does the matched first update isolate a single cause of collapse?
-
-Forecast / interval / ordering: ______
-Confidence (0–100%): ______
-Mechanistic reasoning and contradicting control: ______
-Prior exposure (unseen / seen / unknown): ______
-Denominator and unit (scene, template, seed, probe or epoch): ______
-
-This is exposed guided practice. Exact backgrounds differ while all twelve semantic templates overlap. Do not count epochs or reused templates as independent semantic generalization. Leave these
-answers blank until you commit.
 '''
 
 # ! CELL TYPE: code
@@ -2627,22 +2336,6 @@ answers blank until you commit.
 if MAIN:
     tests.test_training_loop_one_epoch(_train_model)
     tests.test_matched_joint_target_first_shared_update(_train_model)
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after inspection — IJ-46
-
-Observed values and source/cell identity: ______
-Control comparison and denominator: ______
-Forecast discrepancy and possible mechanism: ______
-Changed-condition forecast before trying it: ______
-Your execution or retained historical output: ______
-
-Leave observations blank until inspection. A changed play setting remains exploratory and does not add an untouched evaluation cohort.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -2666,7 +2359,7 @@ condition.
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Solution</summary>
 
 ```python
 def _extract_features(model: IJEPAModel, patches: Tensor, batch_size: int = 96) -> Tensor:
@@ -3034,18 +2727,7 @@ def validate_run(run: IJEPARun, *, require_cuda: bool = False, max_vram_gb: floa
 # ! TAGS: []
 
 r'''
-## Forecast before running — IJ-50
-
 How many exact images and semantic templates are shared across train and evaluation?
-
-Forecast / interval / ordering: ______
-Confidence (0–100%): ______
-Mechanistic reasoning and contradicting control: ______
-Prior exposure (unseen / seen / unknown): ______
-Denominator and unit (scene, template, seed, probe or epoch): ______
-
-This is exposed guided practice. Exact backgrounds differ while all twelve semantic templates overlap. Do not count epochs or reused templates as independent semantic generalization. Leave these
-answers blank until you commit.
 '''
 
 # ! CELL TYPE: code
@@ -3055,22 +2737,6 @@ answers blank until you commit.
 if MAIN:
     tests.test_run_experiment_structure(run_experiment)
     tests.test_validate_run_contract(validate_run)
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after inspection — IJ-50
-
-Observed values and source/cell identity: ______
-Control comparison and denominator: ______
-Forecast discrepancy and possible mechanism: ______
-Changed-condition forecast before trying it: ______
-Your execution or retained historical output: ______
-
-Leave observations blank until inspection. A changed play setting remains exploratory and does not add an untouched evaluation cohort.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -3094,7 +2760,7 @@ names.
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Solution</summary>
 
 ```python
 def run_experiment(
@@ -3367,17 +3033,6 @@ A convincing run must show all of the following together:
 <img src="../../../chapter14_jepa_world_models/exercises/part1_ijepa_from_scratch/media/ijepa_signature_result.png" alt="I-JEPA signature result" width="1100">
 '''
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-**Historical asset context.** Both retained figures—the source PNG shown above and the notebook's embedded PNG—are historical artifacts. Their key-swap bars disagree with the exact per-seed table
-and nearby expected-output prose. Their byte identities differ; this does not establish different numerical results between the two figures. Preserve both figures and the table without
-reconciliation. No fresh run resolves the disagreement. Use the exact retained per-seed table, with its seed IDs and column names, as the guided case evidence. Do not read a case answer from
-either PNG or silently harmonize the artifacts.
-'''
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: []
@@ -3604,18 +3259,7 @@ def plot_signature_result(run: IJEPARun, output_path: str | Path | None = None):
 # ! TAGS: []
 
 r'''
-## Forecast before running — IJ-54
-
 Forecast correct-context versus key-swap accuracy, latent loss and feature spread; which control could falsify the claim?
-
-Forecast / interval / ordering: ______
-Confidence (0–100%): ______
-Mechanistic reasoning and contradicting control: ______
-Prior exposure (unseen / seen / unknown): ______
-Denominator and unit (scene, template, seed, probe or epoch): ______
-
-This is exposed guided practice. Exact backgrounds differ while all twelve semantic templates overlap. Do not count epochs or reused templates as independent semantic generalization. Leave these
-answers blank until you commit.
 '''
 
 # ! CELL TYPE: code
@@ -3661,22 +3305,6 @@ if MAIN:
     plot_signature_result(run)
     print("SIGNATURE PASSED for all three declared seeds.")
     plt.show()
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after inspection — IJ-54
-
-Observed values and source/cell identity: ______
-Control comparison and denominator: ______
-Forecast discrepancy and possible mechanism: ______
-Changed-condition forecast before trying it: ______
-Your execution or retained historical output: ______
-
-Leave observations blank until inspection. A changed play setting remains exploratory and does not add an untouched evaluation cohort.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -3732,18 +3360,7 @@ Set `MISMATCH_SHIFT` to `1` or `2`. Both interventions preserve every non-key pi
 # ! TAGS: []
 
 r'''
-## Forecast before running — IJ-57
-
 Choose a key shift and seed; predict original-class versus alternate-key recovery before training.
-
-Forecast / interval / ordering: ______
-Confidence (0–100%): ______
-Mechanistic reasoning and contradicting control: ______
-Prior exposure (unseen / seen / unknown): ______
-Denominator and unit (scene, template, seed, probe or epoch): ______
-
-This is exposed guided practice. Exact backgrounds differ while all twelve semantic templates overlap. Do not count epochs or reused templates as independent semantic generalization. Leave these
-answers blank until you commit.
 '''
 
 # ! CELL TYPE: code
@@ -3787,22 +3404,6 @@ if MAIN:
         f"non-key diff={play.non_key_pixel_max_abs_diff:.1f}, "
         f"loss ratio={play.mismatched_context_loss / play.latent_loss:.2f}x"
     )
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after inspection — IJ-57
-
-Observed values and source/cell identity: ______
-Control comparison and denominator: ______
-Forecast discrepancy and possible mechanism: ______
-Changed-condition forecast before trying it: ______
-Your execution or retained historical output: ______
-
-Leave observations blank until inspection. A changed play setting remains exploratory and does not add an untouched evaluation cohort.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []

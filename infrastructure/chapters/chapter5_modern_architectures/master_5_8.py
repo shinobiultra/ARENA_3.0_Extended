@@ -64,14 +64,6 @@ r'''
 # ! TAGS: []
 
 r'''
-> **Historical reference evidence:** all 43 recorded code-cell outputs and counts, 14 inline PNGs and widget outputs are retained from the legacy TinyStories progression. Setup routing and import guards are migration changes; the full canonical notebook has not been freshly executed. Twelve fits, 126 generation conditions, 78 timing conditions and nine saved text-play results remain historical. QA failures and weak story language remain visible. Reference-rich guided practice is already exposed and earns no unseen score. No training, GPU work, corpus reads or downloads were performed for this migration. Historical widget views may lack backing state; they are preserved, not repaired. See `docs/mastery/evidence/diffusion_lm_master_migration/20261019`.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 # 1️⃣ Exact copy grammar
 '''
 
@@ -292,7 +284,7 @@ All tests in `test_linear_mask_schedule_and_expected_fraction` passed!
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 def linear_mask_schedule(
@@ -436,7 +428,7 @@ All tests in `test_forward_noising_extremes_and_seeded_masks` passed!
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 def apply_forward_noising(
@@ -584,7 +576,7 @@ All tests in `test_masked_denoising_loss_uses_only_masked_positions` passed!
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 def masked_denoising_loss(logits: t.Tensor, target_ids: t.Tensor, mask: t.Tensor) -> t.Tensor:
@@ -647,7 +639,7 @@ All tests in `test_confidence_remask_entropy_and_uniform_control` passed!
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 def token_entropy(logits: t.Tensor) -> t.Tensor:
@@ -792,7 +784,7 @@ All tests in `test_oracle_diffusion_sampler_recovers_target` passed!
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 def diffusion_sampler(
@@ -943,7 +935,7 @@ All tests in `test_commitment_edit_distance_and_activation_trajectory` passed!
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 def commitment_times(tokens_over_steps: t.Tensor, mask_token_id: int) -> t.Tensor:
@@ -1088,7 +1080,7 @@ All tests in `test_copy_pair_dataset_and_conditional_suffix_noising` passed!
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 def copy_pair_dataset(device: t.device) -> t.Tensor:
@@ -1193,7 +1185,7 @@ All tests in `test_tiny_conditional_diffusion_lm_forward_shape` passed!
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 class TinyConditionalDiffusionLM(nn.Module):
@@ -1308,7 +1300,7 @@ All tests in `test_tiny_training_loop_learns_copy_pair_batch` passed!
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 def train_tiny_diffusion_model(
@@ -1411,7 +1403,7 @@ All tests in `test_conditional_diffusion_sample_preserves_prefix_and_records_ste
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 def conditional_diffusion_sample(
@@ -1867,7 +1859,7 @@ The zero/all-mask endpoints, seeded frequency check and conditioning-preservatio
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 def mask_targets(tokens: t.Tensor, eligible: t.Tensor, probability: t.Tensor,
@@ -1954,7 +1946,7 @@ The independent forward-chain bound and gradient agree in float64; a no-mask dra
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 def finite_diffusion_loss(logits: t.Tensor, clean: t.Tensor, corrupted: t.Tensor,
@@ -2074,7 +2066,7 @@ Greedy/soft draws exclude MASK; the reverse distribution matches the independent
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 def clean_prediction_probs(logits: t.Tensor, mask_id: int, temperature: float):
@@ -2190,7 +2182,7 @@ running balance and fail at its first negative value.
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 def entropy_from_probs(probs: t.Tensor):
@@ -2346,7 +2338,7 @@ All three finish without MASK, preserve context/earlier blocks, obey seeded sche
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 @t.no_grad()
@@ -2568,7 +2560,7 @@ Both masks agree with explicit per-head sums and independent gradients in float6
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 class TextAttention(nn.Module):
@@ -2680,7 +2672,7 @@ Cached chunks match a full causal pass; changing a future token leaves earlier c
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 class TextBlock(nn.Module):
@@ -2816,7 +2808,7 @@ Shifted values and gradients match the explicit position-by-position objective.
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 def autoregressive_target_loss(logits, sequence, eligible, mask_id: int):
@@ -2896,7 +2888,7 @@ Cached/uncached tokens match, the cache reduces input work, different EOS times 
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 @t.no_grad()
@@ -3039,7 +3031,7 @@ Complete target multisets remain intact within each task; development draws matc
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 def permute_targets_within_task(sequence, eligible, task_ids, *, generator):
@@ -3188,7 +3180,7 @@ Both optimizers match the independent two-update oracle; all four modes share in
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 def fit_text_model(factory, training, development, *, kind: str, shuffled: bool,
@@ -3414,7 +3406,7 @@ An alternate balanced string is valid despite nonzero edit distance; PAD/MASK mi
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 def score_generated_text(row, generated_ids, tokenizer):
@@ -3645,7 +3637,7 @@ The timer retains every replicate and rejects both changing outputs and trace ov
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 def measure_generation_latency(generate_fn, *, device, repeats: int = 5, warmups: int = 2):

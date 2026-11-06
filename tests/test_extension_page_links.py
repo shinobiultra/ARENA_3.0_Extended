@@ -19,16 +19,6 @@ ROOT = Path.cwd()
 # Independently supplied breadth-audit target identities; no target discovery.
 CASES = [
     (
-        "chapter0_fundamentals/instructions/pages/06_[0.6]_How_to_Know_When_an_Interpretability_Result_Is_Fake_Practice.md",
-        "expected_outputs/fake_interpretability_signature_result.svg",
-        "chapter0_fundamentals/exercises/part6_fake_interpretability_results_practice/media/fake_interpretability_signature_result.svg",
-    ),
-    (
-        "chapter5_modern_architectures/instructions/pages/05_[5.5]_State_Tracking_in_SSMs_and_Transformers.md",
-        "../part4_mamba_state_tracking/5.4_Mamba_State_Tracking_exercises.ipynb",
-        "chapter5_modern_architectures/exercises/part4_mamba_state_tracking/5.4_Mamba_State_Tracking_exercises.ipynb",
-    ),
-    (
         "chapter5_modern_architectures/instructions/pages/05_[5.5]_State_Tracking_in_SSMs_and_Transformers.md",
         "../part3_mamba_from_scratch/5.3_Mamba_from_Scratch_exercises.ipynb",
         "chapter5_modern_architectures/exercises/part3_mamba_from_scratch/5.3_Mamba_from_Scratch_exercises.ipynb",
@@ -45,12 +35,12 @@ CASES = [
     ),
     (
         "chapter14_jepa_world_models/instructions/pages/02_[14.2]_V-JEPA_and_Video_World_Models.md",
-        "14.1_JEPA_and_World_Model_Controls_exercises.ipynb",
+        "../part1_jepa_world_model_controls/14.1_JEPA_and_World_Model_Controls_exercises.ipynb",
         "chapter14_jepa_world_models/exercises/part1_jepa_world_model_controls/14.1_JEPA_and_World_Model_Controls_exercises.ipynb",
     ),
     (
         "chapter14_jepa_world_models/instructions/pages/02_[14.2]_V-JEPA_and_Video_World_Models.md",
-        "14.1_JEPA_and_World_Model_Controls_solutions.ipynb",
+        "../part1_jepa_world_model_controls/14.1_JEPA_and_World_Model_Controls_solutions.ipynb",
         "chapter14_jepa_world_models/exercises/part1_jepa_world_model_controls/14.1_JEPA_and_World_Model_Controls_solutions.ipynb",
     ),
     (
@@ -77,11 +67,6 @@ CASES = [
         "chapter16_shapley_attribution_baselines/instructions/pages/04_[16.4]_SAGE_Global_Importance.md",
         "../part1_exact_shapley_ground_truth_games/16.1_Exact_Shapley_on_Ground_Truth_Games_exercises.ipynb",
         "chapter16_shapley_attribution_baselines/exercises/part1_exact_shapley_ground_truth_games/16.1_Exact_Shapley_on_Ground_Truth_Games_exercises.ipynb",
-    ),
-    (
-        "chapter16_shapley_attribution_baselines/instructions/pages/05_[16.5]_Shapley_Interactions.md",
-        "protocol.md",
-        "chapter16_shapley_attribution_baselines/exercises/part16_shapley_taylor_faith_shap/protocol.md",
     ),
     (
         "chapter16_shapley_attribution_baselines/instructions/pages/10_[16.10]_Influence_Functions_and_TracIn.md",
@@ -121,7 +106,7 @@ def test_audited_destinations_download_or_embed_exact_canonical_bytes(page, old,
 
 @pytest.fixture
 def local_figure(tmp_path):
-    page, old, target = CASES[7]
+    page, old, target = next(case for case in CASES if case[2].endswith(".svg"))
     destination = tmp_path / target
     destination.parent.mkdir(parents=True)
     shutil.copyfile(ROOT / target, destination)
@@ -167,7 +152,7 @@ def test_symlink_target_cannot_escape_chapter_or_change_approved_identity(local_
 
 
 def test_html_download_labels_escape_markup_and_keep_exact_filename():
-    page, old, target = CASES[5]
+    page, old, target = next(case for case in CASES if case[2].endswith(".ipynb"))
     rendered = page_links.rewrite_page_links(f'[unsafe <script> & "label"]({old})', ROOT / page)
     assert '<script>' not in rendered
     assert '&lt;script&gt; &amp; &quot;label&quot;' in rendered

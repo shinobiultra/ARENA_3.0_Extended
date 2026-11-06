@@ -75,7 +75,7 @@ r'''
 r'''
 ## Setup code
 
-This study edition uses NumPy, Matplotlib and Pillow already installed in the course environment. All arrays are CPU float64, all examples are deterministic, and no model or network access occurs. Work in the full local checkout. Ordinary mathematical fixtures are guided practice, with no untouched evaluation split implied.
+This study edition uses NumPy, Matplotlib and Pillow already installed in the course environment. All arrays are CPU float64, all examples are deterministic, and no model or network access occurs.
 '''
 
 # ! CELL TYPE: code
@@ -1145,8 +1145,6 @@ r'''
 ## Limitations
 
 The pixel/word features, dictionaries and readout are specified. Fitting a decoder on six monitored pairs does not identify an unsupervised decomposition. Colour, shape and word identity are confounded, and word length correlates with class. The exact linear edge product does not capture nonlinear gating outside this organism. Native VLM SAEs/transcoders/crosscoders, feature discovery, residual/error accounting in real patching, natural images and real sparse circuits remain pending.
-
-The configured requirement IDs remain visible: `vlm.multimodal_saes`, `vlm.multimodal_transcoders`, `vlm.multimodal_crosscoders`, `circuits.vlm_sparse_feature_circuits`. Teaching implementations and CPU fixtures do not promote requirement status, establish a native model result, or confer direct learner acceptance.
 '''
 
 # ! CELL TYPE: markdown
@@ -1162,7 +1160,7 @@ r'''
 # ! TAGS: []
 
 r'''
-Before changing the recipe, write one prediction about the sign and size of a control difference. After running it, explain a mismatch. A public play outcome is exposed guided practice; changing a seed does not make it an unseen transfer test.
+Before changing the recipe, write one prediction about the sign and size of a control difference. After running it, explain a mismatch.
 
 ## Further reading
 

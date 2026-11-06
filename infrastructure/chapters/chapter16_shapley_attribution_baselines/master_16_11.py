@@ -55,13 +55,7 @@ r'''
 r'''
 Two questions about training data need two different experiments: can subset membership predict a classifier response, and can a training history guide selection? Implement and compare both complete studies below.
 
-## Historical reference and execution boundary
-
-All 35 figures and retained solution outputs are historical reference results, not a fresh execution. Historical Datamodels 16.10 and Cartography 16.11 retain their original cohort hashes, protocols, source IDs, helpers and output-directory conventions. Current canonical 16.10 teaches Influence Functions and TracIn. Do not substitute section numbers for experiment identity.
-
-These reference-rich pages are guided practice. Commit numerical forecasts, confidence, causal reasoning and prior exposure before opening expected results. No learner response or acceptance is fabricated. The original training subsets, seeds, queries, noise labels and evaluation images are repeatedly reused across figures; counts of pairs, images, fits, seeds and epochs are different denominators. Repeated inspection does not create independent TEST.
-
-Full reproduction requires the original pinned data and external caches, which are not established by the archived review bundles. The complete original loading, training and retraining code remains visible and runs when you execute the notebook. Module import guards prevent accidental execution. This migration did not load data, train models or execute either study or play.
+The training subsets, seeds, queries, noise labels and evaluation images are reused across figures; counts of pairs, images, fits, seeds and epochs are different denominators.
 
 ## Content & Learning Objectives
 
@@ -130,20 +124,6 @@ training path; here we learn from many complete training runs.
 Allow several hours to work through the derivations and experiments. The full
 reference study runs on CPU, including every retraining. The initial data
 download needs an internet connection; subsequent runs use checked source bytes.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Forecast before running — dm-1
-
-Identify the next figure axes and forecast the ordering of the method and its negative control; explain which repeated source examples contribute to both.
-
-Before viewing this result, predict a numerical interval, ordering or signed contrast for the next check or figure. Explain the mechanism and which displayed control could contradict you. State the denominator: subset models, fixed query images or deletion replicates. Record confidence (0–100%) and prior exposure (unseen/seen/unknown); leave your response blank until commitment.
-
-For this study, regularization is selected on validation subset responses before held-out subset responses are opened; query images are regression targets, not independent subset fits.
 '''
 
 # ! CELL TYPE: code
@@ -228,16 +208,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-## Reflect after the result — dm-1
-
-Record observed values, units, source IDs and control differences. Distinguish your execution from the retained historical reference. Compare your committed forecast with the observation, explain a discrepancy, and forecast one changed condition before trying it. Reusing these examples makes the next comparison exploratory; it does not increase the independent evaluation denominator.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## A prediction depends on which images taught the classifier
 
 These are actual UCI digits, with the source labels shown. We use 128 training
@@ -253,20 +223,6 @@ are unavailable. There are no exact duplicate pixel images between our two split
 The query's label is needed to measure its correct-class margin. It is never
 included in classifier training, but its margin **will** be used to fit the
 datamodel. Keep those two learning problems separate.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Forecast before running — dm-3
-
-Identify the next figure axes and forecast the ordering of the method and its negative control; explain which repeated source examples contribute to both.
-
-Before viewing this result, predict a numerical interval, ordering or signed contrast for the next check or figure. Explain the mechanism and which displayed control could contradict you. State the denominator: subset models, fixed query images or deletion replicates. Record confidence (0–100%) and prior exposure (unseen/seen/unknown); leave your response blank until commitment.
-
-For this study, regularization is selected on validation subset responses before held-out subset responses are opened; query images are regression targets, not independent subset fits.
 '''
 
 # ! CELL TYPE: code
@@ -296,16 +252,6 @@ if MAIN:
 
 r'''
 <img src="media/dm_3_0.png" width="1050">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — dm-3
-
-Record observed values, units, source IDs and control differences. Distinguish your execution from the retained historical reference. Compare your committed forecast with the observation, explain a discrepancy, and forecast one changed condition before trying it. Reusing these examples makes the next comparison exploratory; it does not increase the independent evaluation denominator.
 '''
 
 # ! CELL TYPE: markdown
@@ -350,13 +296,7 @@ Return a boolean tensor of shape `[models, training_images]`. Every row must con
 # ! TAGS: []
 
 r'''
-## Forecast before running — dm-6
-
 Predict how many memberships each row and each image column should have; which quantity is fixed and which varies?
-
-Before viewing this result, predict a numerical interval, ordering or signed contrast for the next check or figure. Explain the mechanism and which displayed control could contradict you. State the denominator: subset models, fixed query images or deletion replicates. Record confidence (0–100%) and prior exposure (unseen/seen/unknown); leave your response blank until commitment.
-
-For this study, regularization is selected on validation subset responses before held-out subset responses are opened; query images are regression targets, not independent subset fits.
 '''
 
 # ! CELL TYPE: code
@@ -390,16 +330,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-## Reflect after the result — dm-6
-
-Record observed values, units, source IDs and control differences. Distinguish your execution from the retained historical reference. Compare your committed forecast with the observation, explain a discrepancy, and forecast one changed condition before trying it. Reusing these examples makes the next comparison exploratory; it does not increase the independent evaluation denominator.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details>
 <summary>Help - where should I start?</summary>
 
@@ -413,20 +343,6 @@ The first `size` positions of a uniformly random permutation form a uniform subs
 The test checks all twenty possible size-three subsets of six items, their approximate frequencies, and exact reproducibility for a fixed seed.
 
 </details>
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Forecast before running — dm-8
-
-Identify the next figure axes and forecast the ordering of the method and its negative control; explain which repeated source examples contribute to both.
-
-Before viewing this result, predict a numerical interval, ordering or signed contrast for the next check or figure. Explain the mechanism and which displayed control could contradict you. State the denominator: subset models, fixed query images or deletion replicates. Record confidence (0–100%) and prior exposure (unseen/seen/unknown); leave your response blank until commitment.
-
-For this study, regularization is selected on validation subset responses before held-out subset responses are opened; query images are regression targets, not independent subset fits.
 '''
 
 # ! CELL TYPE: code
@@ -458,16 +374,6 @@ if MAIN:
 
 r'''
 <img src="media/dm_8_0.png" width="1050">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — dm-8
-
-Record observed values, units, source IDs and control differences. Distinguish your execution from the retained historical reference. Compare your committed forecast with the observation, explain a discrepancy, and forecast one changed condition before trying it. Reusing these examples makes the next comparison exploratory; it does not increase the independent evaluation denominator.
 '''
 
 # ! CELL TYPE: markdown
@@ -510,13 +416,7 @@ Support logits shaped `[..., queries, classes]` and one integer label per query.
 # ! TAGS: []
 
 r'''
-## Forecast before running — dm-11
-
 Predict the correct-class margin when the correct logit ties the largest competitor. How should leading batch axes survive?
-
-Before viewing this result, predict a numerical interval, ordering or signed contrast for the next check or figure. Explain the mechanism and which displayed control could contradict you. State the denominator: subset models, fixed query images or deletion replicates. Record confidence (0–100%) and prior exposure (unseen/seen/unknown); leave your response blank until commitment.
-
-For this study, regularization is selected on validation subset responses before held-out subset responses are opened; query images are regression targets, not independent subset fits.
 '''
 
 # ! CELL TYPE: code
@@ -544,16 +444,6 @@ def correct_class_margins(logits: dm_Tensor, labels: dm_Tensor) -> dm_Tensor:
 
 if MAIN:
     dm_tests.test_correct_class_margins(correct_class_margins)
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — dm-11
-
-Record observed values, units, source IDs and control differences. Distinguish your execution from the retained historical reference. Compare your committed forecast with the observation, explain a discrepancy, and forecast one changed condition before trying it. Reusing these examples makes the next comparison exploratory; it does not increase the independent evaluation denominator.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -626,13 +516,7 @@ Implement the proximal map of the L1 penalty, allowing a scalar or broadcastable
 # ! TAGS: []
 
 r'''
-## Forecast before running — dm-15
-
 Sketch the soft-threshold curve for two penalties and predict its zero interval.
-
-Before viewing this result, predict a numerical interval, ordering or signed contrast for the next check or figure. Explain the mechanism and which displayed control could contradict you. State the denominator: subset models, fixed query images or deletion replicates. Record confidence (0–100%) and prior exposure (unseen/seen/unknown); leave your response blank until commitment.
-
-For this study, regularization is selected on validation subset responses before held-out subset responses are opened; query images are regression targets, not independent subset fits.
 '''
 
 # ! CELL TYPE: code
@@ -662,16 +546,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-## Reflect after the result — dm-15
-
-Record observed values, units, source IDs and control differences. Distinguish your execution from the retained historical reference. Compare your committed forecast with the observation, explain a discrepancy, and forecast one changed condition before trying it. Reusing these examples makes the next comparison exploratory; it does not increase the independent evaluation denominator.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details>
 <summary>Help - where should I start?</summary>
 
@@ -685,20 +559,6 @@ The scalar minimizer of $(u-v)^2/2+\tau|u|$ is $\operatorname{sign}(v)\max(|v|-\
 At threshold one, `[-3, -1, 0, 1, 3]` becomes `[-2, 0, 0, 0, 2]`. An independent grid search checks the scalar minimizer.
 
 </details>
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Forecast before running — dm-17
-
-Identify the next figure axes and forecast the ordering of the method and its negative control; explain which repeated source examples contribute to both.
-
-Before viewing this result, predict a numerical interval, ordering or signed contrast for the next check or figure. Explain the mechanism and which displayed control could contradict you. State the denominator: subset models, fixed query images or deletion replicates. Record confidence (0–100%) and prior exposure (unseen/seen/unknown); leave your response blank until commitment.
-
-For this study, regularization is selected on validation subset responses before held-out subset responses are opened; query images are regression targets, not independent subset fits.
 '''
 
 # ! CELL TYPE: code
@@ -746,16 +606,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — dm-17
-
-Record observed values, units, source IDs and control differences. Distinguish your execution from the retained historical reference. Compare your committed forecast with the observation, explain a discrepancy, and forecast one changed condition before trying it. Reusing these examples makes the next comparison exploratory; it does not increase the independent evaluation denominator.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### How do we know the solver has finished?
 
 With centered inputs, define $G=X_c^TX_c/M$, $C=X_c^TY_c/M$ and
@@ -791,13 +641,7 @@ Return one objective and one maximum KKT violation per target. `weights` has sha
 # ! TAGS: []
 
 r'''
-## Forecast before running — dm-20
-
 Predict the KKT violation for a zero versus nonzero coefficient with the same gradient.
-
-Before viewing this result, predict a numerical interval, ordering or signed contrast for the next check or figure. Explain the mechanism and which displayed control could contradict you. State the denominator: subset models, fixed query images or deletion replicates. Record confidence (0–100%) and prior exposure (unseen/seen/unknown); leave your response blank until commitment.
-
-For this study, regularization is selected on validation subset responses before held-out subset responses are opened; query images are regression targets, not independent subset fits.
 '''
 
 # ! CELL TYPE: code
@@ -837,16 +681,6 @@ if MAIN:
 
 if MAIN:
     dm_tests.test_lasso_kkt(lasso_kkt)
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — dm-20
-
-Record observed values, units, source IDs and control differences. Distinguish your execution from the retained historical reference. Compare your committed forecast with the observation, explain a discrepancy, and forecast one changed condition before trying it. Reusing these examples makes the next comparison exploratory; it does not increase the independent evaluation denominator.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -916,13 +750,7 @@ Fit centered multi-target Lasso, recover the intercept, and return weights, bias
 # ! TAGS: []
 
 r'''
-## Forecast before running — dm-24
-
 Forecast how the objective and maximum KKT residual should evolve; distinguish convergence from predictive usefulness.
-
-Before viewing this result, predict a numerical interval, ordering or signed contrast for the next check or figure. Explain the mechanism and which displayed control could contradict you. State the denominator: subset models, fixed query images or deletion replicates. Record confidence (0–100%) and prior exposure (unseen/seen/unknown); leave your response blank until commitment.
-
-For this study, regularization is selected on validation subset responses before held-out subset responses are opened; query images are regression targets, not independent subset fits.
 '''
 
 # ! CELL TYPE: code
@@ -991,16 +819,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-## Reflect after the result — dm-24
-
-Record observed values, units, source IDs and control differences. Distinguish your execution from the retained historical reference. Compare your committed forecast with the observation, explain a discrepancy, and forecast one changed condition before trying it. Reusing these examples makes the next comparison exploratory; it does not increase the independent evaluation denominator.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details>
 <summary>Help - where should I start?</summary>
 
@@ -1059,13 +877,7 @@ Fit every penalty on the training subset/output pairs, warm-starting from the pr
 # ! TAGS: []
 
 r'''
-## Forecast before running — dm-28
-
 Which penalty wins validation, and what information must remain unopened? Predict how correlated membership columns affect coefficients.
-
-Before viewing this result, predict a numerical interval, ordering or signed contrast for the next check or figure. Explain the mechanism and which displayed control could contradict you. State the denominator: subset models, fixed query images or deletion replicates. Record confidence (0–100%) and prior exposure (unseen/seen/unknown); leave your response blank until commitment.
-
-For this study, regularization is selected on validation subset responses before held-out subset responses are opened; query images are regression targets, not independent subset fits.
 '''
 
 # ! CELL TYPE: code
@@ -1117,16 +929,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-## Reflect after the result — dm-28
-
-Record observed values, units, source IDs and control differences. Distinguish your execution from the retained historical reference. Compare your committed forecast with the observation, explain a discrepancy, and forecast one changed condition before trying it. Reusing these examples makes the next comparison exploratory; it does not increase the independent evaluation denominator.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details>
 <summary>Help - where should I start?</summary>
 
@@ -1164,13 +966,7 @@ by driving the Lasso optimization residual closer to zero.
 # ! TAGS: []
 
 r'''
-## Forecast before running — dm-31
-
 Forecast held-out error before increasing the interaction while keeping the linear solver fixed.
-
-Before viewing this result, predict a numerical interval, ordering or signed contrast for the next check or figure. Explain the mechanism and which displayed control could contradict you. State the denominator: subset models, fixed query images or deletion replicates. Record confidence (0–100%) and prior exposure (unseen/seen/unknown); leave your response blank until commitment.
-
-For this study, regularization is selected on validation subset responses before held-out subset responses are opened; query images are regression targets, not independent subset fits.
 '''
 
 # ! CELL TYPE: code
@@ -1260,16 +1056,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — dm-31
-
-Record observed values, units, source IDs and control differences. Distinguish your execution from the retained historical reference. Compare your committed forecast with the observation, explain a discrepancy, and forecast one changed condition before trying it. Reusing these examples makes the next comparison exploratory; it does not increase the independent evaluation denominator.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## 5️⃣ A coefficient offset you cannot identify
 
 Every fixed-size mask obeys $m^T\mathbf{1}=k$. Consequently,
@@ -1285,20 +1071,6 @@ Try deriving the difference for removing $r$ images from the full pool: the
 predicted change shifts by $-rc$. Rankings are unchanged. A method can therefore
 agree about **which** images to remove while disagreeing about **how much** the
 margin should change.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Forecast before running — dm-33
-
-Identify the next figure axes and forecast the ordering of the method and its negative control; explain which repeated source examples contribute to both.
-
-Before viewing this result, predict a numerical interval, ordering or signed contrast for the next check or figure. Explain the mechanism and which displayed control could contradict you. State the denominator: subset models, fixed query images or deletion replicates. Record confidence (0–100%) and prior exposure (unseen/seen/unknown); leave your response blank until commitment.
-
-For this study, regularization is selected on validation subset responses before held-out subset responses are opened; query images are regression targets, not independent subset fits.
 '''
 
 # ! CELL TYPE: code
@@ -1381,16 +1153,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — dm-33
-
-Record observed values, units, source IDs and control differences. Distinguish your execution from the retained historical reference. Compare your committed forecast with the observation, explain a discrepancy, and forecast one changed condition before trying it. Reusing these examples makes the next comparison exploratory; it does not increase the independent evaluation denominator.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise - compare datamodel directions
 
 > ```yaml
@@ -1408,13 +1170,7 @@ Treat each target’s weights as an embedding and return a `[targets, targets]` 
 # ! TAGS: []
 
 r'''
-## Forecast before running — dm-35
-
 Predict whether adding a constant to every training-image coefficient changes centered similarity or same-size subset predictions.
-
-Before viewing this result, predict a numerical interval, ordering or signed contrast for the next check or figure. Explain the mechanism and which displayed control could contradict you. State the denominator: subset models, fixed query images or deletion replicates. Record confidence (0–100%) and prior exposure (unseen/seen/unknown); leave your response blank until commitment.
-
-For this study, regularization is selected on validation subset responses before held-out subset responses are opened; query images are regression targets, not independent subset fits.
 '''
 
 # ! CELL TYPE: code
@@ -1438,16 +1194,6 @@ def centered_weight_similarity(weights: dm_Tensor) -> dm_Tensor:
 
 if MAIN:
     dm_tests.test_centered_weight_similarity(centered_weight_similarity)
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — dm-35
-
-Record observed values, units, source IDs and control differences. Distinguish your execution from the retained historical reference. Compare your committed forecast with the observation, explain a discrepancy, and forecast one changed condition before trying it. Reusing these examples makes the next comparison exploratory; it does not increase the independent evaluation denominator.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -1509,13 +1255,7 @@ Select the largest `budget` scores with stable source-order ties. Then sample ra
 # ! TAGS: []
 
 r'''
-## Forecast before running — dm-39
-
 Which source IDs win a tie, and what class counts must every random removal preserve?
-
-Before viewing this result, predict a numerical interval, ordering or signed contrast for the next check or figure. Explain the mechanism and which displayed control could contradict you. State the denominator: subset models, fixed query images or deletion replicates. Record confidence (0–100%) and prior exposure (unseen/seen/unknown); leave your response blank until commitment.
-
-For this study, regularization is selected on validation subset responses before held-out subset responses are opened; query images are regression targets, not independent subset fits.
 '''
 
 # ! CELL TYPE: code
@@ -1569,16 +1309,6 @@ if MAIN:
 
 if MAIN:
     dm_tests.test_matched_random_removals(matched_random_removals)
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — dm-39
-
-Record observed values, units, source IDs and control differences. Distinguish your execution from the retained historical reference. Compare your committed forecast with the observation, explain a discrepancy, and forecast one changed condition before trying it. Reusing these examples makes the next comparison exploratory; it does not increase the independent evaluation denominator.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -1703,20 +1433,6 @@ sixteen class-matched random controls. We construct all 6,528 masks before
 reading their outcomes.
 '''
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Forecast before running — dm-45
-
-Identify the next figure axes and forecast the ordering of the method and its negative control; explain which repeated source examples contribute to both.
-
-Before viewing this result, predict a numerical interval, ordering or signed contrast for the next check or figure. Explain the mechanism and which displayed control could contradict you. State the denominator: subset models, fixed query images or deletion replicates. Record confidence (0–100%) and prior exposure (unseen/seen/unknown); leave your response blank until commitment.
-
-For this study, regularization is selected on validation subset responses before held-out subset responses are opened; query images are regression targets, not independent subset fits.
-'''
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: []
@@ -1781,23 +1497,7 @@ def prepare_study(train: dict, query: dict, designs: dict, methods, directory: d
 # ! TAGS: []
 
 r'''
-## Reflect after the result — dm-45
-
-Record observed values, units, source IDs and control differences. Distinguish your execution from the retained historical reference. Compare your committed forecast with the observation, explain a discrepancy, and forecast one changed condition before trying it. Reusing these examples makes the next comparison exploratory; it does not increase the independent evaluation denominator.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Forecast before running — dm-46
-
-Before model fitting, forecast relative held-out performance of Lasso, least squares, mean-only and permuted-response controls. Name the validation/test boundary.
-
-Before viewing this result, predict a numerical interval, ordering or signed contrast for the next check or figure. Explain the mechanism and which displayed control could contradict you. State the denominator: subset models, fixed query images or deletion replicates. Record confidence (0–100%) and prior exposure (unseen/seen/unknown); leave your response blank until commitment.
-
-For this study, regularization is selected on validation subset responses before held-out subset responses are opened; query images are regression targets, not independent subset fits.
+Before model fitting, forecast relative held-out performance of Lasso, least squares, mean-only and permuted-response controls.
 '''
 
 # ! CELL TYPE: code
@@ -1833,16 +1533,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-## Reflect after the result — dm-46
-
-Record observed values, units, source IDs and control differences. Distinguish your execution from the retained historical reference. Compare your committed forecast with the observation, explain a discrepancy, and forecast one changed condition before trying it. Reusing these examples makes the next comparison exploratory; it does not increase the independent evaluation denominator.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Inspect the validation path before opening the test responses
 
 The left plot shows validation error relative to the mean-only baseline. The
@@ -1861,13 +1551,7 @@ does not make a sparse explanation appropriate for every learning algorithm.
 # ! TAGS: []
 
 r'''
-## Forecast before running — dm-48
-
 Predict whether the least validation error requires the sparsest solution; compare objectives and KKT residuals.
-
-Before viewing this result, predict a numerical interval, ordering or signed contrast for the next check or figure. Explain the mechanism and which displayed control could contradict you. State the denominator: subset models, fixed query images or deletion replicates. Record confidence (0–100%) and prior exposure (unseen/seen/unknown); leave your response blank until commitment.
-
-For this study, regularization is selected on validation subset responses before held-out subset responses are opened; query images are regression targets, not independent subset fits.
 '''
 
 # ! CELL TYPE: code
@@ -1916,16 +1600,6 @@ if MAIN:
 
 r'''
 <img src="media/dm_48_0.png" width="1050">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — dm-48
-
-Record observed values, units, source IDs and control differences. Distinguish your execution from the retained historical reference. Compare your committed forecast with the observation, explain a discrepancy, and forecast one changed condition before trying it. Reusing these examples makes the next comparison exploratory; it does not increase the independent evaluation denominator.
 '''
 
 # ! CELL TYPE: markdown
@@ -2002,13 +1676,7 @@ def dm_evaluate_study(prepared: dict, train: dict, query: dict, methods, directo
 # ! TAGS: []
 
 r'''
-## Forecast before running — dm-51
-
 Forecast the Lasso-versus-permuted identity-line scatter separately for each subset fraction.
-
-Before viewing this result, predict a numerical interval, ordering or signed contrast for the next check or figure. Explain the mechanism and which displayed control could contradict you. State the denominator: subset models, fixed query images or deletion replicates. Record confidence (0–100%) and prior exposure (unseen/seen/unknown); leave your response blank until commitment.
-
-For this study, regularization is selected on validation subset responses before held-out subset responses are opened; query images are regression targets, not independent subset fits.
 '''
 
 # ! CELL TYPE: code
@@ -2054,16 +1722,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — dm-51
-
-Record observed values, units, source IDs and control differences. Distinguish your execution from the retained historical reference. Compare your committed forecast with the observation, explain a discrepancy, and forecast one changed condition before trying it. Reusing these examples makes the next comparison exploratory; it does not increase the independent evaluation denominator.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 The blue density follows the identity line; the permuted-response control mostly
 predicts each query's average. But how well does this hold for the individual
 queries? The next plot gives every query its own $R^2$:
@@ -2085,13 +1743,7 @@ strong predictions.
 # ! TAGS: []
 
 r'''
-## Forecast before running — dm-53
-
 Predict whether every query benefits equally from the surrogate; distinguish query averages from independent subset models.
-
-Before viewing this result, predict a numerical interval, ordering or signed contrast for the next check or figure. Explain the mechanism and which displayed control could contradict you. State the denominator: subset models, fixed query images or deletion replicates. Record confidence (0–100%) and prior exposure (unseen/seen/unknown); leave your response blank until commitment.
-
-For this study, regularization is selected on validation subset responses before held-out subset responses are opened; query images are regression targets, not independent subset fits.
 '''
 
 # ! CELL TYPE: code
@@ -2138,16 +1790,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — dm-53
-
-Record observed values, units, source IDs and control differences. Distinguish your execution from the retained historical reference. Compare your committed forecast with the observation, explain a discrepancy, and forecast one changed condition before trying it. Reusing these examples makes the next comparison exploratory; it does not increase the independent evaluation denominator.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### What did the extra training runs buy?
 
 Keep the test set fixed and vary the number of subset/response pairs used for
@@ -2169,13 +1811,7 @@ fit; it is not evidence that the optimizer failed to solve least squares.
 # ! TAGS: []
 
 r'''
-## Forecast before running — dm-55
-
 Forecast marginal error reduction as more fit subsets are supplied, keeping held-out subsets fixed.
-
-Before viewing this result, predict a numerical interval, ordering or signed contrast for the next check or figure. Explain the mechanism and which displayed control could contradict you. State the denominator: subset models, fixed query images or deletion replicates. Record confidence (0–100%) and prior exposure (unseen/seen/unknown); leave your response blank until commitment.
-
-For this study, regularization is selected on validation subset responses before held-out subset responses are opened; query images are regression targets, not independent subset fits.
 '''
 
 # ! CELL TYPE: code
@@ -2264,16 +1900,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — dm-55
-
-Record observed values, units, source IDs and control differences. Distinguish your execution from the retained historical reference. Compare your committed forecast with the observation, explain a discrepancy, and forecast one changed condition before trying it. Reusing these examples makes the next comparison exploratory; it does not increase the independent evaluation denominator.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Change the subset size
 
 Apply every fitted datamodel to every test subset size. Diagonal cells use the
@@ -2286,20 +1912,6 @@ The difference is large: the datamodel fitted at $\alpha=0.25$ has MSE about
 offset ambiguity explains why same-size success alone cannot establish a
 unique extension to other sizes. Nonlinearity of the learning algorithm creates
 another reason for the extension to fail.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Forecast before running — dm-57
-
-Predict diagonal versus off-diagonal error when training and test subset fractions differ.
-
-Before viewing this result, predict a numerical interval, ordering or signed contrast for the next check or figure. Explain the mechanism and which displayed control could contradict you. State the denominator: subset models, fixed query images or deletion replicates. Record confidence (0–100%) and prior exposure (unseen/seen/unknown); leave your response blank until commitment.
-
-For this study, regularization is selected on validation subset responses before held-out subset responses are opened; query images are regression targets, not independent subset fits.
 '''
 
 # ! CELL TYPE: code
@@ -2344,16 +1956,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — dm-57
-
-Record observed values, units, source IDs and control differences. Distinguish your execution from the retained historical reference. Compare your committed forecast with the observation, explain a discrepancy, and forecast one changed condition before trying it. Reusing these examples makes the next comparison exploratory; it does not increase the independent evaluation denominator.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## 9️⃣ Read coefficients as images, then confront them with retraining
 
 The following gallery always uses the first two source-ordered queries of each
@@ -2372,13 +1974,7 @@ hypotheses. The deletion experiment below tests them.
 # ! TAGS: []
 
 r'''
-## Forecast before running — dm-59
-
 Forecast the coefficient sign for same-class and opposite-class images; explain a plausible counterexample.
-
-Before viewing this result, predict a numerical interval, ordering or signed contrast for the next check or figure. Explain the mechanism and which displayed control could contradict you. State the denominator: subset models, fixed query images or deletion replicates. Record confidence (0–100%) and prior exposure (unseen/seen/unknown); leave your response blank until commitment.
-
-For this study, regularization is selected on validation subset responses before held-out subset responses are opened; query images are regression targets, not independent subset fits.
 '''
 
 # ! CELL TYPE: code
@@ -2429,16 +2025,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — dm-59
-
-Record observed values, units, source IDs and control differences. Distinguish your execution from the retained historical reference. Compare your committed forecast with the observation, explain a discrepancy, and forecast one changed condition before trying it. Reusing these examples makes the next comparison exploratory; it does not increase the independent evaluation denominator.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Similarity between target-specific datamodels
 
 Use your centered-weight cosine function to compare the queries' directions in
@@ -2457,13 +2043,7 @@ checking provenance, as we did for exact pixel duplicates at the start.
 # ! TAGS: []
 
 r'''
-## Forecast before running — dm-61
-
 Predict how independent coefficient shuffles affect target-direction similarity.
-
-Before viewing this result, predict a numerical interval, ordering or signed contrast for the next check or figure. Explain the mechanism and which displayed control could contradict you. State the denominator: subset models, fixed query images or deletion replicates. Record confidence (0–100%) and prior exposure (unseen/seen/unknown); leave your response blank until commitment.
-
-For this study, regularization is selected on validation subset responses before held-out subset responses are opened; query images are regression targets, not independent subset fits.
 '''
 
 # ! CELL TYPE: code
@@ -2514,16 +2094,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — dm-61
-
-Record observed values, units, source IDs and control differences. Distinguish your execution from the retained historical reference. Compare your committed forecast with the observation, explain a discrepancy, and forecast one changed condition before trying it. Reusing these examples makes the next comparison exploratory; it does not increase the independent evaluation denominator.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Did removing supportive images actually hurt the margin?
 
 For each method and budget, the solid line is the mean observed margin change
@@ -2542,13 +2112,7 @@ right, so a later negative margin is an actual correct-to-incorrect transition.
 # ! TAGS: []
 
 r'''
-## Forecast before running — dm-63
-
 Predict observed deletion-margin changes relative to class-matched random removal and pixel similarity; separate ranking from calibration.
-
-Before viewing this result, predict a numerical interval, ordering or signed contrast for the next check or figure. Explain the mechanism and which displayed control could contradict you. State the denominator: subset models, fixed query images or deletion replicates. Record confidence (0–100%) and prior exposure (unseen/seen/unknown); leave your response blank until commitment.
-
-For this study, regularization is selected on validation subset responses before held-out subset responses are opened; query images are regression targets, not independent subset fits.
 '''
 
 # ! CELL TYPE: code
@@ -2605,16 +2169,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — dm-63
-
-Record observed values, units, source IDs and control differences. Distinguish your execution from the retained historical reference. Compare your committed forecast with the observation, explain a discrepancy, and forecast one changed condition before trying it. Reusing these examples makes the next comparison exploratory; it does not increase the independent evaluation denominator.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 The rankings find consequential images, but calibration depends strongly on the
 fitted fraction. At budget 32 the $\alpha=0.25$ datamodel predicts a mean change
 of about −3.52; actual retraining gives −1.68. For $\alpha=0.75$, the prediction
@@ -2637,13 +2191,7 @@ the budget-32 cohorts flip between zero and one of the 24 queries.
 # ! TAGS: []
 
 r'''
-## Forecast before running — dm-65
-
 Forecast whether a large deletion preserves single-image additivity across subset fractions.
-
-Before viewing this result, predict a numerical interval, ordering or signed contrast for the next check or figure. Explain the mechanism and which displayed control could contradict you. State the denominator: subset models, fixed query images or deletion replicates. Record confidence (0–100%) and prior exposure (unseen/seen/unknown); leave your response blank until commitment.
-
-For this study, regularization is selected on validation subset responses before held-out subset responses are opened; query images are regression targets, not independent subset fits.
 '''
 
 # ! CELL TYPE: code
@@ -2714,16 +2262,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — dm-65
-
-Record observed values, units, source IDs and control differences. Distinguish your execution from the retained historical reference. Compare your committed forecast with the observation, explain a discrepancy, and forecast one changed condition before trying it. Reusing these examples makes the next comparison exploratory; it does not increase the independent evaluation denominator.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Try It Yourself — choose a query and retrain its counterfactual
 
 Change `QUERY_INDEX`, `SUBSET_FRACTION` or `REMOVAL_BUDGET`. The function fits a
@@ -2735,20 +2273,6 @@ Try a query whose margin stayed positive in the reference study, then one close
 to the decision boundary. Compare the two fractions that over- and underpredicted
 the average effect. These explorations are additional experiments; they do not
 replace any point in the frozen reference study.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Forecast before running — dm-67
-
-Identify the next figure axes and forecast the ordering of the method and its negative control; explain which repeated source examples contribute to both.
-
-Before viewing this result, predict a numerical interval, ordering or signed contrast for the next check or figure. Explain the mechanism and which displayed control could contradict you. State the denominator: subset models, fixed query images or deletion replicates. Record confidence (0–100%) and prior exposure (unseen/seen/unknown); leave your response blank until commitment.
-
-For this study, regularization is selected on validation subset responses before held-out subset responses are opened; query images are regression targets, not independent subset fits.
 '''
 
 # ! CELL TYPE: code
@@ -2776,23 +2300,7 @@ def deletion_play(prepared: dict, train: dict, query: dict, methods, query_index
 # ! TAGS: []
 
 r'''
-## Reflect after the result — dm-67
-
-Record observed values, units, source IDs and control differences. Distinguish your execution from the retained historical reference. Compare your committed forecast with the observation, explain a discrepancy, and forecast one changed condition before trying it. Reusing these examples makes the next comparison exploratory; it does not increase the independent evaluation denominator.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Forecast before running — dm-68
-
 Choose the query and budget before seeing its retrained result; predict the selected-versus-random signed margin contrast.
-
-Before viewing this result, predict a numerical interval, ordering or signed contrast for the next check or figure. Explain the mechanism and which displayed control could contradict you. State the denominator: subset models, fixed query images or deletion replicates. Record confidence (0–100%) and prior exposure (unseen/seen/unknown); leave your response blank until commitment.
-
-For this study, regularization is selected on validation subset responses before held-out subset responses are opened; query images are regression targets, not independent subset fits.
 '''
 
 # ! CELL TYPE: code
@@ -2883,16 +2391,6 @@ if MAIN:
 
 r'''
 <img src="media/dm_68_0.png" width="1050">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — dm-68
-
-Record observed values, units, source IDs and control differences. Distinguish your execution from the retained historical reference. Compare your committed forecast with the observation, explain a discrepancy, and forecast one changed condition before trying it. Reusing these examples makes the next comparison exploratory; it does not increase the independent evaluation denominator.
 '''
 
 # ! CELL TYPE: markdown
@@ -3044,20 +2542,6 @@ source bytes locally.
 ## Setup
 '''
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Forecast before running — cart-1
-
-Identify the next figure axes and forecast the ordering of the method and its negative control; explain which repeated source examples contribute to both.
-
-Before viewing this result, predict a numerical interval, ordering or signed contrast for the next check or figure. Explain the mechanism and which displayed control could contradict you. State the denominator: training images, trajectories, seeds, epochs or evaluation images. Record confidence (0–100%) and prior exposure (unseen/seen/unknown); leave your response blank until commitment.
-
-For this study, training histories determine selections before held-out evaluation; repeated windows and seeds reuse the same training images.
-'''
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: []
@@ -3141,16 +2625,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-## Reflect after the result — cart-1
-
-Record observed values, units, source IDs and control differences. Distinguish your execution from the retained historical reference. Compare your committed forecast with the observation, explain a discrepancy, and forecast one changed condition before trying it. Reusing these examples makes the next comparison exploratory; it does not increase the independent evaluation denominator.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### A label is an assertion you can inspect
 
 The source contains 8×8 images of ten handwritten digits. We use 3,000 images
@@ -3167,20 +2641,6 @@ an untouched source example has an annotation error.
 
 Look at the images below. For each changed label, predict what will happen to
 the probability of its **assigned** label during training.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Forecast before running — cart-3
-
-Predict assigned-label confidence for an injected error versus its original class, before viewing the gallery.
-
-Before viewing this result, predict a numerical interval, ordering or signed contrast for the next check or figure. Explain the mechanism and which displayed control could contradict you. State the denominator: training images, trajectories, seeds, epochs or evaluation images. Record confidence (0–100%) and prior exposure (unseen/seen/unknown); leave your response blank until commitment.
-
-For this study, training histories determine selections before held-out evaluation; repeated windows and seeds reuse the same training images.
 '''
 
 # ! CELL TYPE: code
@@ -3215,16 +2675,6 @@ if MAIN:
 
 r'''
 <img src="media/cart_3_0.png" width="1050">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — cart-3
-
-Record observed values, units, source IDs and control differences. Distinguish your execution from the retained historical reference. Compare your committed forecast with the observation, explain a discrepancy, and forecast one changed condition before trying it. Reusing these examples makes the next comparison exploratory; it does not increase the independent evaluation denominator.
 '''
 
 # ! CELL TYPE: markdown
@@ -3280,13 +2730,7 @@ models may visit examples in different orders.
 # ! TAGS: []
 
 r'''
-## Forecast before running — cart-6
-
 Predict how permuting visitation order affects raw versus ID-aligned histories.
-
-Before viewing this result, predict a numerical interval, ordering or signed contrast for the next check or figure. Explain the mechanism and which displayed control could contradict you. State the denominator: training images, trajectories, seeds, epochs or evaluation images. Record confidence (0–100%) and prior exposure (unseen/seen/unknown); leave your response blank until commitment.
-
-For this study, training histories determine selections before held-out evaluation; repeated windows and seeds reuse the same training images.
 '''
 
 # ! CELL TYPE: code
@@ -3312,16 +2756,6 @@ def align_epoch(logits: cart_Tensor, visited_ids: cart_Tensor) -> cart_Tensor:
 
 if MAIN:
     cart_tests.test_align_epoch(align_epoch)
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — cart-6
-
-Record observed values, units, source IDs and control differences. Distinguish your execution from the retained historical reference. Compare your committed forecast with the observation, explain a discrepancy, and forecast one changed condition before trying it. Reusing these examples makes the next comparison exploratory; it does not increase the independent evaluation denominator.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -3367,20 +2801,6 @@ have shape `[models, examples]`. Preserve model and example axes. Use population
 standard deviation and the first class index for an argmax tie.
 '''
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Forecast before running — cart-9
-
-Contrast a constant 0.5 history with alternating 0 and 1: predict confidence, population variability and correctness.
-
-Before viewing this result, predict a numerical interval, ordering or signed contrast for the next check or figure. Explain the mechanism and which displayed control could contradict you. State the denominator: training images, trajectories, seeds, epochs or evaluation images. Record confidence (0–100%) and prior exposure (unseen/seen/unknown); leave your response blank until commitment.
-
-For this study, training histories determine selections before held-out evaluation; repeated windows and seeds reuse the same training images.
-'''
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: []
@@ -3419,16 +2839,6 @@ def training_statistics(logits: cart_Tensor, labels: cart_Tensor) -> dict[str, c
 
 if MAIN:
     cart_tests.test_training_statistics(training_statistics)
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — cart-9
-
-Record observed values, units, source IDs and control differences. Distinguish your execution from the retained historical reference. Compare your committed forecast with the observation, explain a discrepancy, and forecast one changed condition before trying it. Reusing these examples makes the next comparison exploratory; it does not increase the independent evaluation denominator.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -3497,13 +2907,7 @@ not outputs from the digit classifier.
 # ! TAGS: []
 
 r'''
-## Forecast before running — cart-12
-
 Predict the largest possible variability at fixed mean and a history that approaches it.
-
-Before viewing this result, predict a numerical interval, ordering or signed contrast for the next check or figure. Explain the mechanism and which displayed control could contradict you. State the denominator: training images, trajectories, seeds, epochs or evaluation images. Record confidence (0–100%) and prior exposure (unseen/seen/unknown); leave your response blank until commitment.
-
-For this study, training histories determine selections before held-out evaluation; repeated windows and seeds reuse the same training images.
 '''
 
 # ! CELL TYPE: code
@@ -3557,16 +2961,6 @@ if MAIN:
 
 r'''
 <img src="media/cart_12_0.png" width="1050">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — cart-12
-
-Record observed values, units, source IDs and control differences. Distinguish your execution from the retained historical reference. Compare your committed forecast with the observation, explain a discrepancy, and forecast one changed condition before trying it. Reusing these examples makes the next comparison exploratory; it does not increase the independent evaluation denominator.
 '''
 
 # ! CELL TYPE: markdown
@@ -3631,13 +3025,7 @@ Return `[B, N, C]` logits. Keep the model axis intact.
 # ! TAGS: []
 
 r'''
-## Forecast before running — cart-16
-
 Predict whether changing one ensemble member changes another member logits.
-
-Before viewing this result, predict a numerical interval, ordering or signed contrast for the next check or figure. Explain the mechanism and which displayed control could contradict you. State the denominator: training images, trajectories, seeds, epochs or evaluation images. Record confidence (0–100%) and prior exposure (unseen/seen/unknown); leave your response blank until commitment.
-
-For this study, training histories determine selections before held-out evaluation; repeated windows and seeds reuse the same training images.
 '''
 
 # ! CELL TYPE: code
@@ -3661,16 +3049,6 @@ def batched_logits(parameters: dict[str, cart_Tensor], x: cart_Tensor) -> cart_T
 
 if MAIN:
     cart_tests.test_batched_logits(batched_logits)
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — cart-16
-
-Record observed values, units, source IDs and control differences. Distinguish your execution from the retained historical reference. Compare your committed forecast with the observation, explain a discrepancy, and forecast one changed condition before trying it. Reusing these examples makes the next comparison exploratory; it does not increase the independent evaluation denominator.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -3747,13 +3125,7 @@ logit traces; this saves memory for the later pruning experiments.
 # ! TAGS: []
 
 r'''
-## Forecast before running — cart-20
-
 Predict how online pre-update logits differ from full epoch-end logits even with identical seeds.
-
-Before viewing this result, predict a numerical interval, ordering or signed contrast for the next check or figure. Explain the mechanism and which displayed control could contradict you. State the denominator: training images, trajectories, seeds, epochs or evaluation images. Record confidence (0–100%) and prior exposure (unseen/seen/unknown); leave your response blank until commitment.
-
-For this study, training histories determine selections before held-out evaluation; repeated windows and seeds reuse the same training images.
 '''
 
 # ! CELL TYPE: code
@@ -3807,16 +3179,6 @@ def train_ensemble(x: cart_Tensor, labels: cart_Tensor, seeds: list[int], width:
 
 if MAIN:
     cart_tests.test_train_ensemble(train_ensemble)
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — cart-20
-
-Record observed values, units, source IDs and control differences. Distinguish your execution from the retained historical reference. Compare your committed forecast with the observation, explain a discrepancy, and forecast one changed condition before trying it. Reusing these examples makes the next comparison exploratory; it does not increase the independent evaluation denominator.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -3883,13 +3245,7 @@ Validate finite scores and a legal retained size.
 # ! TAGS: []
 
 r'''
-## Forecast before running — cart-24
-
 Predict which source index wins a tied score; explain why hard/easy/ambiguous rankings need not partition the dataset.
-
-Before viewing this result, predict a numerical interval, ordering or signed contrast for the next check or figure. Explain the mechanism and which displayed control could contradict you. State the denominator: training images, trajectories, seeds, epochs or evaluation images. Record confidence (0–100%) and prior exposure (unseen/seen/unknown); leave your response blank until commitment.
-
-For this study, training histories determine selections before held-out evaluation; repeated windows and seeds reuse the same training images.
 '''
 
 # ! CELL TYPE: code
@@ -3912,16 +3268,6 @@ def select_indices(score: cart_Tensor, k: int, largest: bool=True) -> cart_Tenso
 
 if MAIN:
     cart_tests.test_select_indices(select_indices)
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — cart-24
-
-Record observed values, units, source IDs and control differences. Distinguish your execution from the retained historical reference. Compare your committed forecast with the observation, explain a discrepancy, and forecast one changed condition before trying it. Reusing these examples makes the next comparison exploratory; it does not increase the independent evaluation denominator.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -3970,13 +3316,7 @@ the ranking, never for choosing its order.
 # ! TAGS: []
 
 r'''
-## Forecast before running — cart-27
-
 Predict noise-retrieval precision at random selection and distinguish it from recall.
-
-Before viewing this result, predict a numerical interval, ordering or signed contrast for the next check or figure. Explain the mechanism and which displayed control could contradict you. State the denominator: training images, trajectories, seeds, epochs or evaluation images. Record confidence (0–100%) and prior exposure (unseen/seen/unknown); leave your response blank until commitment.
-
-For this study, training histories determine selections before held-out evaluation; repeated windows and seeds reuse the same training images.
 '''
 
 # ! CELL TYPE: code
@@ -4003,16 +3343,6 @@ def retrieval_curve(score: cart_Tensor, changed: cart_Tensor, budgets: cart_Tens
 
 if MAIN:
     cart_tests.test_retrieval_curve(retrieval_curve)
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — cart-27
-
-Record observed values, units, source IDs and control differences. Distinguish your execution from the retained historical reference. Compare your committed forecast with the observation, explain a discrepancy, and forecast one changed condition before trying it. Reusing these examples makes the next comparison exploratory; it does not increase the independent evaluation denominator.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -4061,13 +3391,7 @@ inputs. We will use this to compare high-variability selections across seeds.
 # ! TAGS: []
 
 r'''
-## Forecast before running — cart-30
-
 Predict Jaccard overlap for identical, disjoint and independently drawn selections.
-
-Before viewing this result, predict a numerical interval, ordering or signed contrast for the next check or figure. Explain the mechanism and which displayed control could contradict you. State the denominator: training images, trajectories, seeds, epochs or evaluation images. Record confidence (0–100%) and prior exposure (unseen/seen/unknown); leave your response blank until commitment.
-
-For this study, training histories determine selections before held-out evaluation; repeated windows and seeds reuse the same training images.
 '''
 
 # ! CELL TYPE: code
@@ -4092,16 +3416,6 @@ def selection_overlap(left: cart_Tensor, right: cart_Tensor) -> cart_Tensor:
 
 if MAIN:
     cart_tests.test_selection_overlap(selection_overlap)
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — cart-30
-
-Record observed values, units, source IDs and control differences. Distinguish your execution from the retained historical reference. Compare your committed forecast with the observation, explain a discrepancy, and forecast one changed condition before trying it. Reusing these examples makes the next comparison exploratory; it does not increase the independent evaluation denominator.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -4148,13 +3462,7 @@ noise-detection scores only. Holdout model predictions remain unopened.
 # ! TAGS: []
 
 r'''
-## Forecast before running — cart-33
-
 Before mapping, forecast clean-versus-shuffled history coordinates, and explain why shuffled labels can eventually be fitted.
-
-Before viewing this result, predict a numerical interval, ordering or signed contrast for the next check or figure. Explain the mechanism and which displayed control could contradict you. State the denominator: training images, trajectories, seeds, epochs or evaluation images. Record confidence (0–100%) and prior exposure (unseen/seen/unknown); leave your response blank until commitment.
-
-For this study, training histories determine selections before held-out evaluation; repeated windows and seeds reuse the same training images.
 '''
 
 # ! CELL TYPE: code
@@ -4205,23 +3513,7 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-## Reflect after the result — cart-33
-
-Record observed values, units, source IDs and control differences. Distinguish your execution from the retained historical reference. Compare your committed forecast with the observation, explain a discrepancy, and forecast one changed condition before trying it. Reusing these examples makes the next comparison exploratory; it does not increase the independent evaluation denominator.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Forecast before running — cart-34
-
 Forecast relative clean/noisy map positions without treating region names as intrinsic labels.
-
-Before viewing this result, predict a numerical interval, ordering or signed contrast for the next check or figure. Explain the mechanism and which displayed control could contradict you. State the denominator: training images, trajectories, seeds, epochs or evaluation images. Record confidence (0–100%) and prior exposure (unseen/seen/unknown); leave your response blank until commitment.
-
-For this study, training histories determine selections before held-out evaluation; repeated windows and seeds reuse the same training images.
 '''
 
 # ! CELL TYPE: code
@@ -4261,16 +3553,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — cart-34
-
-Record observed values, units, source IDs and control differences. Distinguish your execution from the retained historical reference. Compare your committed forecast with the observation, explain a discrepancy, and forecast one changed condition before trying it. Reusing these examples makes the next comparison exploratory; it does not increase the independent evaluation denominator.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Read a point before naming a region
 
 At the upper left, the assigned label receives high probability throughout the
@@ -4285,20 +3567,6 @@ structured map alone cannot establish that its regions are useful. Check the
 training curves, then later its held-out predictions against original labels.
 The linear comparison changes the learner while keeping data and optimizer
 settings fixed.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Forecast before running — cart-36
-
-Predict confidence/variability patterns after replacing every history by its final snapshot.
-
-Before viewing this result, predict a numerical interval, ordering or signed contrast for the next check or figure. Explain the mechanism and which displayed control could contradict you. State the denominator: training images, trajectories, seeds, epochs or evaluation images. Record confidence (0–100%) and prior exposure (unseen/seen/unknown); leave your response blank until commitment.
-
-For this study, training histories determine selections before held-out evaluation; repeated windows and seeds reuse the same training images.
 '''
 
 # ! CELL TYPE: code
@@ -4353,16 +3621,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — cart-36
-
-Record observed values, units, source IDs and control differences. Distinguish your execution from the retained historical reference. Compare your committed forecast with the observation, explain a discrepancy, and forecast one changed condition before trying it. Reusing these examples makes the next comparison exploratory; it does not increase the independent evaluation denominator.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### When was the measurement taken?
 
 The next plots compare the two logging conventions for the same clean model.
@@ -4377,13 +3635,7 @@ and its variability is zero, even for an incorrectly classified image.
 # ! TAGS: []
 
 r'''
-## Forecast before running — cart-38
-
 Forecast variation across seeds without choosing the most attractive map.
-
-Before viewing this result, predict a numerical interval, ordering or signed contrast for the next check or figure. Explain the mechanism and which displayed control could contradict you. State the denominator: training images, trajectories, seeds, epochs or evaluation images. Record confidence (0–100%) and prior exposure (unseen/seen/unknown); leave your response blank until commitment.
-
-For this study, training histories determine selections before held-out evaluation; repeated windows and seeds reuse the same training images.
 '''
 
 # ! CELL TYPE: code
@@ -4437,16 +3689,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — cart-38
-
-Record observed values, units, source IDs and control differences. Distinguish your execution from the retained historical reference. Compare your committed forecast with the observation, explain a discrepancy, and forecast one changed condition before trying it. Reusing these examples makes the next comparison exploratory; it does not increase the independent evaluation denominator.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details><summary>Interpretation - what changed most?</summary>
 
 In the reference run, online and epoch-end confidence correlate at about 0.997,
@@ -4474,13 +3716,7 @@ intersection near $N/9$, giving a large-$N$ Jaccard reference near $1/5$.
 # ! TAGS: []
 
 r'''
-## Forecast before running — cart-40
-
 Predict how early and late windows change variability for a slowly learned image.
-
-Before viewing this result, predict a numerical interval, ordering or signed contrast for the next check or figure. Explain the mechanism and which displayed control could contradict you. State the denominator: training images, trajectories, seeds, epochs or evaluation images. Record confidence (0–100%) and prior exposure (unseen/seen/unknown); leave your response blank until commitment.
-
-For this study, training histories determine selections before held-out evaluation; repeated windows and seeds reuse the same training images.
 '''
 
 # ! CELL TYPE: code
@@ -4546,16 +3782,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — cart-40
-
-Record observed values, units, source IDs and control differences. Distinguish your execution from the retained historical reference. Compare your committed forecast with the observation, explain a discrepancy, and forecast one changed condition before trying it. Reusing these examples makes the next comparison exploratory; it does not increase the independent evaluation denominator.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Does a different measurement select the same data?
 
 The next comparison changes one measurement choice while keeping the underlying
@@ -4576,13 +3802,7 @@ selection that has no temporal information behind it.
 # ! TAGS: []
 
 r'''
-## Forecast before running — cart-42
-
 Predict agreement across logging conventions, architecture and seeds; identify which comparisons reuse the same images.
-
-Before viewing this result, predict a numerical interval, ordering or signed contrast for the next check or figure. Explain the mechanism and which displayed control could contradict you. State the denominator: training images, trajectories, seeds, epochs or evaluation images. Record confidence (0–100%) and prior exposure (unseen/seen/unknown); leave your response blank until commitment.
-
-For this study, training histories determine selections before held-out evaluation; repeated windows and seeds reuse the same training images.
 '''
 
 # ! CELL TYPE: code
@@ -4659,16 +3879,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — cart-42
-
-Record observed values, units, source IDs and control differences. Distinguish your execution from the retained historical reference. Compare your committed forecast with the observation, explain a discrepancy, and forecast one changed condition before trying it. Reusing these examples makes the next comparison exploratory; it does not increase the independent evaluation denominator.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Find the images behind the coordinates
 
 Inspect the first four images in each ranking. The fourth row is a fixed random
@@ -4686,13 +3896,7 @@ sample of the entire retained set.
 # ! TAGS: []
 
 r'''
-## Forecast before running — cart-44
-
 Forecast class counts and image appearances behind each ranked region.
-
-Before viewing this result, predict a numerical interval, ordering or signed contrast for the next check or figure. Explain the mechanism and which displayed control could contradict you. State the denominator: training images, trajectories, seeds, epochs or evaluation images. Record confidence (0–100%) and prior exposure (unseen/seen/unknown); leave your response blank until commitment.
-
-For this study, training histories determine selections before held-out evaluation; repeated windows and seeds reuse the same training images.
 '''
 
 # ! CELL TYPE: code
@@ -4761,16 +3965,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — cart-44
-
-Record observed values, units, source IDs and control differences. Distinguish your execution from the retained historical reference. Compare your committed forecast with the observation, explain a discrepancy, and forecast one changed condition before trying it. Reusing these examples makes the next comparison exploratory; it does not increase the independent evaluation denominator.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Diagnose the controlled errors
 
 Each noisy model starts from the same initialization and uses the same example
@@ -4789,13 +3983,7 @@ alone does not tell you whether the label, the image or the learner is at fault.
 # ! TAGS: []
 
 r'''
-## Forecast before running — cart-46
-
 Predict injected-noise retrieval against random selection; distinguish known synthetic errors from natural annotation errors.
-
-Before viewing this result, predict a numerical interval, ordering or signed contrast for the next check or figure. Explain the mechanism and which displayed control could contradict you. State the denominator: training images, trajectories, seeds, epochs or evaluation images. Record confidence (0–100%) and prior exposure (unseen/seen/unknown); leave your response blank until commitment.
-
-For this study, training histories determine selections before held-out evaluation; repeated windows and seeds reuse the same training images.
 '''
 
 # ! CELL TYPE: code
@@ -4871,16 +4059,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — cart-46
-
-Record observed values, units, source IDs and control differences. Distinguish your execution from the retained historical reference. Compare your committed forecast with the observation, explain a discrepancy, and forecast one changed condition before trying it. Reusing these examples makes the next comparison exploratory; it does not increase the independent evaluation denominator.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details><summary>Expected output and interpretation</summary>
 
 At an inspection budget of 300, the five noisy-run rankings have precision
@@ -4936,13 +4114,7 @@ labels; it does not consult model scores or held-out performance.
 # ! TAGS: []
 
 r'''
-## Forecast before running — cart-49
-
 Predict which class-count equality must hold exactly under matched random selection.
-
-Before viewing this result, predict a numerical interval, ordering or signed contrast for the next check or figure. Explain the mechanism and which displayed control could contradict you. State the denominator: training images, trajectories, seeds, epochs or evaluation images. Record confidence (0–100%) and prior exposure (unseen/seen/unknown); leave your response blank until commitment.
-
-For this study, training histories determine selections before held-out evaluation; repeated windows and seeds reuse the same training images.
 '''
 
 # ! CELL TYPE: code
@@ -4972,16 +4144,6 @@ def matched_random_indices(labels: cart_Tensor, selected: cart_Tensor, seed: int
 
 if MAIN:
     cart_tests.test_matched_random_indices(matched_random_indices)
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — cart-49
-
-Record observed values, units, source IDs and control differences. Distinguish your execution from the retained historical reference. Compare your committed forecast with the observation, explain a discrepancy, and forecast one changed condition before trying it. Reusing these examples makes the next comparison exploratory; it does not increase the independent evaluation denominator.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -5031,13 +4193,7 @@ Classwise means assume each evaluated class is represented in the holdout.
 # ! TAGS: []
 
 r'''
-## Forecast before running — cart-52
-
 Predict why evaluation batch shape must preserve separate ensemble models and image denominators.
-
-Before viewing this result, predict a numerical interval, ordering or signed contrast for the next check or figure. Explain the mechanism and which displayed control could contradict you. State the denominator: training images, trajectories, seeds, epochs or evaluation images. Record confidence (0–100%) and prior exposure (unseen/seen/unknown); leave your response blank until commitment.
-
-For this study, training histories determine selections before held-out evaluation; repeated windows and seeds reuse the same training images.
 '''
 
 # ! CELL TYPE: code
@@ -5065,16 +4221,6 @@ def evaluate_models(parameters: dict[str, cart_Tensor], x: cart_Tensor, labels: 
 
 if MAIN:
     cart_tests.test_evaluate_models(evaluate_models)
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — cart-52
-
-Record observed values, units, source IDs and control differences. Distinguish your execution from the retained historical reference. Compare your committed forecast with the observation, explain a discrepancy, and forecast one changed condition before trying it. Reusing these examples makes the next comparison exploratory; it does not increase the independent evaluation denominator.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -5175,20 +4321,6 @@ if MAIN:
 if MAIN:
     print('All selections and 120 fresh refits saved. Holdout predictions have not been computed.')
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Forecast before running — cart-56
-
-Predict whether selecting globally for variability preserves class balance at every retained size.
-
-Before viewing this result, predict a numerical interval, ordering or signed contrast for the next check or figure. Explain the mechanism and which displayed control could contradict you. State the denominator: training images, trajectories, seeds, epochs or evaluation images. Record confidence (0–100%) and prior exposure (unseen/seen/unknown); leave your response blank until commitment.
-
-For this study, training histories determine selections before held-out evaluation; repeated windows and seeds reuse the same training images.
-'''
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: []
@@ -5219,16 +4351,6 @@ if MAIN:
 
 r'''
 <img src="media/cart_56_0.png" width="1050">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — cart-56
-
-Record observed values, units, source IDs and control differences. Distinguish your execution from the retained historical reference. Compare your committed forecast with the observation, explain a discrepancy, and forecast one changed condition before trying it. Reusing these examples makes the next comparison exploratory; it does not increase the independent evaluation denominator.
 '''
 
 # ! CELL TYPE: markdown
@@ -5288,13 +4410,7 @@ not merely cosmetic changes to a scatter plot.
 # ! TAGS: []
 
 r'''
-## Forecast before running — cart-60
-
 Forecast which classes lose accuracy under region selection and whether class matching explains the difference.
-
-Before viewing this result, predict a numerical interval, ordering or signed contrast for the next check or figure. Explain the mechanism and which displayed control could contradict you. State the denominator: training images, trajectories, seeds, epochs or evaluation images. Record confidence (0–100%) and prior exposure (unseen/seen/unknown); leave your response blank until commitment.
-
-For this study, training histories determine selections before held-out evaluation; repeated windows and seeds reuse the same training images.
 '''
 
 # ! CELL TYPE: code
@@ -5335,16 +4451,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — cart-60
-
-Record observed values, units, source IDs and control differences. Distinguish your execution from the retained historical reference. Compare your committed forecast with the observation, explain a discrepancy, and forecast one changed condition before trying it. Reusing these examples makes the next comparison exploratory; it does not increase the independent evaluation denominator.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Read all seeds, not just the winner
 
 Each curve below shows the mean of five retraining runs, with the full range
@@ -5356,20 +4462,6 @@ path. The horizontal full-pool baseline uses all 3,000 images.
 
 The second set of curves uses cross entropy. Accuracy can stay unchanged while
 confidence on correct or incorrect predictions changes substantially.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Forecast before running — cart-62
-
-Predict selection accuracy and loss jointly at each retained size without selecting a winning seed.
-
-Before viewing this result, predict a numerical interval, ordering or signed contrast for the next check or figure. Explain the mechanism and which displayed control could contradict you. State the denominator: training images, trajectories, seeds, epochs or evaluation images. Record confidence (0–100%) and prior exposure (unseen/seen/unknown); leave your response blank until commitment.
-
-For this study, training histories determine selections before held-out evaluation; repeated windows and seeds reuse the same training images.
 '''
 
 # ! CELL TYPE: code
@@ -5417,16 +4509,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — cart-62
-
-Record observed values, units, source IDs and control differences. Distinguish your execution from the retained historical reference. Compare your committed forecast with the observation, explain a discrepancy, and forecast one changed condition before trying it. Reusing these examples makes the next comparison exploratory; it does not increase the independent evaluation denominator.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details><summary>Interpretation - did ambiguity win?</summary>
 
 At 1,000 retained images, the separate-writer accuracy averages about **86.3%**
@@ -5457,13 +4539,7 @@ run, but it does not reverse their ordering.
 # ! TAGS: []
 
 r'''
-## Forecast before running — cart-64
-
 Forecast what changes when equal epochs become equal optimizer updates; identify the budget confound.
-
-Before viewing this result, predict a numerical interval, ordering or signed contrast for the next check or figure. Explain the mechanism and which displayed control could contradict you. State the denominator: training images, trajectories, seeds, epochs or evaluation images. Record confidence (0–100%) and prior exposure (unseen/seen/unknown); leave your response blank until commitment.
-
-For this study, training histories determine selections before held-out evaluation; repeated windows and seeds reuse the same training images.
 '''
 
 # ! CELL TYPE: code
@@ -5508,16 +4584,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — cart-64
-
-Record observed values, units, source IDs and control differences. Distinguish your execution from the retained historical reference. Compare your committed forecast with the observation, explain a discrepancy, and forecast one changed condition before trying it. Reusing these examples makes the next comparison exploratory; it does not increase the independent evaluation denominator.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Which classes and examples changed?
 
 An average can hide a class that has nearly disappeared from the training set.
@@ -5533,13 +4599,7 @@ are excluded, so the two counts need not sum to the test-set size.
 # ! TAGS: []
 
 r'''
-## Forecast before running — cart-66
-
 Predict paired correctness transitions rather than counting all repeated model/image predictions as independent images.
-
-Before viewing this result, predict a numerical interval, ordering or signed contrast for the next check or figure. Explain the mechanism and which displayed control could contradict you. State the denominator: training images, trajectories, seeds, epochs or evaluation images. Record confidence (0–100%) and prior exposure (unseen/seen/unknown); leave your response blank until commitment.
-
-For this study, training histories determine selections before held-out evaluation; repeated windows and seeds reuse the same training images.
 '''
 
 # ! CELL TYPE: code
@@ -5621,16 +4681,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — cart-66
-
-Record observed values, units, source IDs and control differences. Distinguish your execution from the retained historical reference. Compare your committed forecast with the observation, explain a discrepancy, and forecast one changed condition before trying it. Reusing these examples makes the next comparison exploratory; it does not increase the independent evaluation denominator.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Try It Yourself - choose a region and actually retrain
 
 Change `region`, `retained`, `seed` or `epochs` below. Before running, inspect
@@ -5649,13 +4699,7 @@ setting into the frozen experiment above.
 # ! TAGS: []
 
 r'''
-## Forecast before running — cart-68
-
 Commit the region, size, seed and epochs, then forecast its freshly retrained performance against its paired class-matched random control.
-
-Before viewing this result, predict a numerical interval, ordering or signed contrast for the next check or figure. Explain the mechanism and which displayed control could contradict you. State the denominator: training images, trajectories, seeds, epochs or evaluation images. Record confidence (0–100%) and prior exposure (unseen/seen/unknown); leave your response blank until commitment.
-
-For this study, training histories determine selections before held-out evaluation; repeated windows and seeds reuse the same training images.
 '''
 
 # ! CELL TYPE: code
@@ -5730,16 +4774,6 @@ if MAIN:
 
 r'''
 <img src="media/cart_68_0.png" width="1050">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — cart-68
-
-Record observed values, units, source IDs and control differences. Distinguish your execution from the retained historical reference. Compare your committed forecast with the observation, explain a discrepancy, and forecast one changed condition before trying it. Reusing these examples makes the next comparison exploratory; it does not increase the independent evaluation denominator.
 '''
 
 # ! CELL TYPE: markdown

@@ -29,22 +29,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Historical reference and prediction practice
-
-The outputs and fifteen figures below are **retained historical reference results** from the published completed-own-answer CCS lesson. This canonical migration checks source AST,
-nonblank-line and figure parity. They are **not a fresh execution** of this notebook. See `docs/mastery/migrations/ccs.md` and
-`docs/mastery/evidence/ccs_master_migration/output_parity.json` at the repository root. The unchanged publication receipt remains `expected_outputs/learner_execution.json`.
-
-This reference-rich lesson is guided practice. Expected-output dropdowns, interpretations and figures expose answers; record whether you have seen them. Forecast before revealing
-the result, record confidence and causal reasoning, then compare controls, explain discrepancies and forecast a changed scientific condition. No learner answer or confidence is
-prefilled. Historical monitored final reviews remain historical and monitored, never untouched TEST.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 # Introduction
 '''
 
@@ -245,12 +229,7 @@ centering, matching the default of the original demonstration code.
 # ! TAGS: []
 
 r'''
-### Forecast — branch-centering
-
-For the eight fixed (Y,S,U) combinations and answer offset ±8, forecast the separate branch means and which coordinate a pooled mean fails to remove. Give a numeric range,
-confidence, causal reasoning and exposure status. How would a held-out +4 shift change the training-centered output?
-
-Write your forecast before continuing.
+For the eight fixed (Y,S,U) combinations and answer offset ±8, forecast the separate branch means and which coordinate a pooled mean fails to remove. How would a held-out +4 shift change the training-centered output?
 '''
 
 # ! CELL TYPE: code
@@ -421,17 +400,6 @@ r'''
 # ! TAGS: []
 
 r'''
-### Reflect — branch-centering
-
-Record the observed values and controls after running the experiment and inspecting its interpretation. Compare with your committed forecast, explain the largest discrepancy, and
-forecast the changed condition above with confidence and a causal reason. Distinguish retained reference evidence from anything you executed yourself.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details>
 <summary>Interpretation — why do only four points appear on the right?</summary>
 
@@ -569,19 +537,6 @@ SOLUTION
 </details>
 '''
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Forecast — asymmetric-loss
-
-Before drawing the loss landscape, forecast the consistency and confidence terms at (p+,p−)=(0.5,0.5), (1,0) and (1,1), and whether complementing arbitrary soft scores preserves
-this objective. State confidence, causal reasoning and exposure status. Which result changes if confidence uses min(1−p+,1−p−) instead?
-
-Write your forecast before continuing.
-'''
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: []
@@ -621,17 +576,6 @@ if MAIN:
 
 r'''
 <img src="media/ccs_loss_landscape.png" width="900">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect — asymmetric-loss
-
-Record the observed values and controls after running the experiment and inspecting its interpretation. Compare with your committed forecast, explain the largest discrepancy, and
-forecast the changed condition above with confidence and a causal reason. Distinguish retained reference evidence from anything you executed yourself.
 '''
 
 # ! CELL TYPE: markdown
@@ -748,12 +692,7 @@ SOLUTION
 # ! TAGS: []
 
 r'''
-### Forecast — competing-feature
-
-For the fixed independent target/distractor pairs, compare the target and distractor reporter losses and target accuracies before viewing the bars. Forecast ranges, confidence,
-causal reasoning and exposure status. How would increasing distractor strength with a fixed weight change each term?
-
-Write your forecast before continuing.
+For the fixed independent target/distractor pairs, compare the target and distractor reporter losses and target accuracies before viewing the bars. How would increasing distractor strength with a fixed weight change each term?
 '''
 
 # ! CELL TYPE: code
@@ -820,17 +759,6 @@ if MAIN:
 
 r'''
 <img src="media/ccs_exact_counterexample.png" width="900">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect — competing-feature
-
-Record the observed values and controls after running the experiment and inspecting its interpretation. Compare with your committed forecast, explain the largest discrepancy, and
-forecast the changed condition above with confidence and a causal reason. Distinguish retained reference evidence from anything you executed yourself.
 '''
 
 # ! CELL TYPE: markdown
@@ -1051,12 +979,7 @@ SOLUTION
 # ! TAGS: []
 
 r'''
-### Forecast — restart-selection
-
-For ten independently initialized reporters, forecast whether minimum unlabelled training loss must select maximum target accuracy. Give ranges for target and distractor agreement,
-confidence, causal reasoning and exposure status. What changes if the distractor feature is removed?
-
-Write your forecast before continuing.
+For ten independently initialized reporters, forecast whether minimum unlabelled training loss must select maximum target accuracy. What changes if the distractor feature is removed?
 '''
 
 # ! CELL TYPE: code
@@ -1144,17 +1067,6 @@ if MAIN:
 
 r'''
 <img src="media/ccs_restart_outcomes.png" width="900">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect — restart-selection
-
-Record the observed values and controls after running the experiment and inspecting its interpretation. Compare with your committed forecast, explain the largest discrepancy, and
-forecast the changed condition above with confidence and a causal reason. Distinguish retained reference evidence from anything you executed yourself.
 '''
 
 # ! CELL TYPE: markdown
@@ -1303,12 +1215,7 @@ SOLUTION
 # ! TAGS: []
 
 r'''
-### Forecast — orientation
-
-Before seeing the orientation comparison, forecast raw, calibration-oriented and final-oracle accuracies and the effect of evaluation labels deliberately shifted relative to
-calibration. Give numeric ranges, confidence, causal reasoning and exposure status. What changes when calibration and evaluation target associations differ?
-
-Write your forecast before continuing.
+Before seeing the orientation comparison, forecast raw, calibration-oriented and final-oracle accuracies and the effect of evaluation labels deliberately shifted relative to calibration. What changes when calibration and evaluation target associations differ?
 '''
 
 # ! CELL TYPE: code
@@ -1370,17 +1277,6 @@ if MAIN:
 
 r'''
 <img src="media/ccs_orientation_control.png" width="900">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect — orientation
-
-Record the observed values and controls after running the experiment and inspecting its interpretation. Compare with your committed forecast, explain the largest discrepancy, and
-forecast the changed condition above with confidence and a causal reason. Distinguish retained reference evidence from anything you executed yourself.
 '''
 
 # ! CELL TYPE: markdown
@@ -1598,12 +1494,7 @@ selected by unlabelled loss; every faint point is one retained restart.
 # ! TAGS: []
 
 r'''
-### Forecast — distractor-transfer
-
-Before the strength sweep, forecast how paired PCA and selected CCS target accuracy change as the independent distractor magnitude changes. State ranges, confidence, causal
-reasoning and exposure status. Name what is held fixed and why a new seed alone is replication rather than transfer.
-
-Write your forecast before continuing.
+Before the strength sweep, forecast how paired PCA and selected CCS target accuracy change as the independent distractor magnitude changes. Name what is held fixed and why a new seed alone is replication rather than transfer.
 '''
 
 # ! CELL TYPE: code
@@ -1674,17 +1565,6 @@ if MAIN:
 
 r'''
 <img src="media/ccs_distractor_strength_play.png" width="900">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect — distractor-transfer
-
-Record the observed values and controls after running the experiment and inspecting its interpretation. Compare with your committed forecast, explain the largest discrepancy, and
-forecast the changed condition above with confidence and a causal reason. Distinguish retained reference evidence from anything you executed yourself.
 '''
 
 # ! CELL TYPE: markdown
@@ -2379,13 +2259,7 @@ def summarize_native_outputs(cache):
 # ! TAGS: []
 
 r'''
-### Forecast — native-development
-
-Before fitting the full native study, forecast customer accuracy versus distractor accuracy for centered, raw and shuffled-pair CCS at layers 4, 8 and 12. Record ranges,
-confidence, causal reasoning and exposure status, using customer/quoted-review wrappers and the prescribed train/calibration/development roles. How would reversing only the other
-reader opinion affect a frozen reporter?
-
-Write your forecast before continuing.
+Before fitting the full native study, forecast customer accuracy versus distractor accuracy for centered, raw and shuffled-pair CCS at layers 4, 8 and 12. How would reversing only the other reader opinion affect a frozen reporter?
 '''
 
 # ! CELL TYPE: code
@@ -2509,17 +2383,6 @@ r'''
 # ! TAGS: []
 
 r'''
-### Reflect — native-development
-
-Record the observed values and controls after running the experiment and inspecting its interpretation. Compare with your committed forecast, explain the largest discrepancy, and
-forecast the changed condition above with confidence and a causal reason. Distinguish retained reference evidence from anything you executed yourself.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details>
 <summary>Interpretation — what would a low CCS score with a good supervised probe mean?</summary>
 
@@ -2571,13 +2434,7 @@ across arbitrary domains.
 # ! TAGS: []
 
 r'''
-### Forecast — native-final
-
-Before opening the final reviews, forecast calibration-oriented customer accuracy and opinion-change prediction-flip fraction for selected centered CCS versus PCA, supervised and
-norm-matched random controls. Specify distracting_reader/customer/layer12 and the other prescribed cases separately, confidence, causal reasoning and exposure status. Predict
-changing the wrapper to quoted_review without choosing a new layer or sign.
-
-Write your forecast before continuing.
+Before opening the final reviews, forecast calibration-oriented customer accuracy and opinion-change prediction-flip fraction for selected centered CCS versus PCA, supervised and norm-matched random controls. Predict changing the wrapper to quoted_review without choosing a new layer or sign.
 '''
 
 # ! CELL TYPE: code
@@ -2822,17 +2679,6 @@ r'''
 # ! TAGS: []
 
 r'''
-### Reflect — native-final
-
-Record the observed values and controls after running the experiment and inspecting its interpretation. Compare with your committed forecast, explain the largest discrepancy, and
-forecast the changed condition above with confidence and a causal reason. Distinguish retained reference evidence from anything you executed yourself.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details>
 <summary>Interpretation — does identifying the distractor require choosing its orientation?</summary>
 
@@ -2918,12 +2764,7 @@ score does not imply that GPT-2 will say that answer when asked.
 # ! TAGS: []
 
 r'''
-### Forecast — native-vocabulary
-
-Before viewing native outputs, forecast whether the two-candidate restricted accuracy equals whole-vocabulary winning-token accuracy, and the candidate probability mass. Give
-ranges, confidence, causal reasoning and exposure status. What changes if a third vocabulary token wins?
-
-Write your forecast before continuing.
+Before viewing native outputs, forecast whether the two-candidate restricted accuracy equals whole-vocabulary winning-token accuracy, and the candidate probability mass. What changes if a third vocabulary token wins?
 '''
 
 # ! CELL TYPE: code
@@ -2967,17 +2808,6 @@ if MAIN:
 
 r'''
 <img src="media/ccs_native_output_baselines.png" width="900">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect — native-vocabulary
-
-Record the observed values and controls after running the experiment and inspecting its interpretation. Compare with your committed forecast, explain the largest discrepancy, and
-forecast the changed condition above with confidence and a causal reason. Distinguish retained reference evidence from anything you executed yourself.
 '''
 
 # ! CELL TYPE: markdown
@@ -3094,12 +2924,7 @@ input change, not a guarantee that the feature has a unique interpretation.
 # ! TAGS: []
 
 r'''
-### Forecast — fixed-review-play
-
-Before running the fixed-reporter review edit, forecast the score ordering and prediction flips when changing the customer review versus only the other reader opinion. Name the
-fixed wrapper/layer/reporter/orientation and changed text, confidence, causal reasoning and exposure status. How would an unseen wrapper test a different transfer condition?
-
-Write your forecast before continuing.
+Before running the fixed-reporter review edit, forecast the score ordering and prediction flips when changing the customer review versus only the other reader opinion.
 '''
 
 # ! CELL TYPE: code
@@ -3181,17 +3006,6 @@ if MAIN:
 
 r'''
 <img src="media/ccs_native_review_play.png" width="900">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect — fixed-review-play
-
-Record the observed values and controls after running the experiment and inspecting its interpretation. Compare with your committed forecast, explain the largest discrepancy, and
-forecast the changed condition above with confidence and a causal reason. Distinguish retained reference evidence from anything you executed yourself.
 '''
 
 # ! CELL TYPE: markdown

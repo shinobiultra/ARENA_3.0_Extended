@@ -60,15 +60,7 @@ r'''
 r'''
 What does an interaction score mean, and how much evidence does it cost to estimate it? Work through three complete studies: pair SII in a known game, allocation of omitted high-order credit, and shared-query estimators. Each retains its own definition, protocol, controls and exploration.
 
-## Historical reference and execution boundary
-
-The 79 actual solution output records and 22 figures are retained historical reference material. This is not a fresh scientific execution. Historical 16.3, 16.16 and16.17 remain exact source identities; canonical 16.5 combines their complete curricula. Original source trees, protocols, source IDs, seeds, model/checkpoint identities, output paths and review records remain preserved.
-
-One toy signature was originally saved only as an asset. Its new expected display is explicitly separate from the 79 historical output records. Exercises have unexecuted stubs and expected HTML figures only; historical actual counts/outputs belong to solutions. Commit numerical forecasts, confidence, mechanism and prior exposure before reading reference results. No learner responses or acceptance are fabricated.
-
 Known Concrete predictors and the same 758 training, 153 explanation and 119 audit rows recur across native definition and estimator studies. They are not independent model discoveries or new evaluation cohorts. Pair indices, masks, donors, contexts, seeds and sampling replicates have different denominators. Preserve recipe-group weighting and every audit boundary. Background changes alter the game; conditional sampling SE is not uncertainty about training or a population.
-
-External model/data/tensor cache availability is unprobed. Full reproduction requires the original pinned source data and complete retained source-visible computations; a JSON report or source hash is not a replacement for numerical arrays. Executing the notebooks still runs their original loading, training, package-reference and study code. Import-safe generated Python guards do not disable notebook work. This migration did not run any loader, model, estimator, study, retraining play, GPU or download.
 
 ## Content & Learning Objectives
 
@@ -109,13 +101,6 @@ r'''
 ## [16.3] Shapley Interactions with shapiq - Solutions
 
 > **Claim.** By the end of this notebook, you will have shown that exact second-order Shapley interaction indices recover a planted pair that individual Shapley rankings miss, expose how a three-way dividend enters pairwise scores, return zero for a matched additive game, converge under permutation sampling, and match pinned `shapiq` on the same complete coalition table.
-
-```yaml
-GT_TIER = "GT-0"
-EXERCISE_ID = "16_3_shapley_interactions_with_shapiq"
-expected_runtime: 75-105 minutes on CPU
-requires_gpu: false for the lesson; true only for the separate release preflight
-```
 
 ## Core Question
 
@@ -302,11 +287,7 @@ The empty coalition fixes the baseline. The full table includes a literal pair t
 # ! TAGS: []
 
 r'''
-## Forecast before running — toy-4
-
 Before enumerating, predict the number of coalition rows and which dividends survive in each row.
-
-Commit a numeric interval, sign or ordering, confidence (0–100%), mechanism and possible disconfirming control. Record prior exposure (unseen/seen/unknown) before opening the reference result. Distinguish masks, donor predictions, recipe groups, contexts and sampling replicates; repeated views do not create independent examples. Leave the learner response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -372,16 +353,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-## Reflect after the result — toy-4
-
-Record observations with units, denominator, control values and exact source IDs/receipt where available. Distinguish your execution from the retained historical reference. Compare with your committed forecast, explain a discrepancy and forecast one changed condition before trying it. State what changed in the game/protocol. Historical reuse is guided exploration, not untouched evaluation.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise 2 - implement `discrete_second_difference`
 
 > ```yaml
@@ -426,11 +397,7 @@ Additive terms cancel exactly. The jump from `3.0` to `5.0` when player 2 enters
 # ! TAGS: []
 
 r'''
-## Forecast before running — toy-6
-
 Predict the pair derivative with no context and with the missing member of the triple present.
-
-Commit a numeric interval, sign or ordering, confidence (0–100%), mechanism and possible disconfirming control. Record prior exposure (unseen/seen/unknown) before opening the reference result. Distinguish masks, donor predictions, recipe groups, contexts and sampling replicates; repeated views do not create independent examples. Leave the learner response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -458,16 +425,6 @@ def discrete_second_difference(coalition_values: toy_Mapping[Coalition | tuple[i
 
 if MAIN:
     toy_tests.test_discrete_second_difference_isolates_synergy_from_additive_effects(polynomial_game, discrete_second_difference)
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — toy-6
-
-Record observations with units, denominator, control values and exact source IDs/receipt where available. Distinguish your execution from the retained historical reference. Compare with your committed forecast, explain a discrepancy and forecast one changed condition before trying it. State what changed in the game/protocol. Historical reuse is guided exploration, not untouched evaluation.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -529,11 +486,7 @@ The target is strongest at `4.0`: its literal pair dividend contributes `3.0`, a
 # ! TAGS: []
 
 r'''
-## Forecast before running — toy-9
-
 Forecast pair ranking relative to large individual main effects; which additive control should give zero?
-
-Commit a numeric interval, sign or ordering, confidence (0–100%), mechanism and possible disconfirming control. Record prior exposure (unseen/seen/unknown) before opening the reference result. Distinguish masks, donor predictions, recipe groups, contexts and sampling replicates; repeated views do not create independent examples. Leave the learner response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -564,16 +517,6 @@ def pairwise_shapley_interactions(coalition_values: toy_Mapping[Coalition | tupl
 
 if MAIN:
     toy_tests.test_pairwise_sii_recovers_pair_hidden_by_large_additive_effects(polynomial_game, pairwise_shapley_interactions)
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — toy-9
-
-Record observations with units, denominator, control values and exact source IDs/receipt where available. Distinguish your execution from the retained historical reference. Compare with your committed forecast, explain a discrepancy and forecast one changed condition before trying it. State what changed in the game/protocol. Historical reuse is guided exploration, not untouched evaluation.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -623,11 +566,7 @@ Individual credit is not pair identification. The pair and triple dividends are 
 # ! TAGS: []
 
 r'''
-## Forecast before running — toy-11
-
 Predict which individual Shapley ranks disagree with the planted-pair membership.
-
-Commit a numeric interval, sign or ordering, confidence (0–100%), mechanism and possible disconfirming control. Record prior exposure (unseen/seen/unknown) before opening the reference result. Distinguish masks, donor predictions, recipe groups, contexts and sampling replicates; repeated views do not create independent examples. Leave the learner response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -656,16 +595,6 @@ def exact_shapley_values(coalition_values: toy_Mapping[Coalition | tuple[int, ..
 
 if MAIN:
     toy_tests.test_exact_shapley_values_make_main_effect_ranking_misleading(polynomial_game, exact_shapley_values)
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — toy-11
-
-Record observations with units, denominator, control values and exact source IDs/receipt where available. Distinguish your execution from the retained historical reference. Compare with your committed forecast, explain a discrepancy and forecast one changed condition before trying it. State what changed in the game/protocol. Historical reuse is guided exploration, not untouched evaluation.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -716,11 +645,7 @@ Sampling error should shrink with budget. A within-size permutation keeps the di
 # ! TAGS: []
 
 r'''
-## Forecast before running — toy-13
-
 Forecast how sampling error and the within-size shuffled-label control change with budget; count permutations, not independent games.
-
-Commit a numeric interval, sign or ordering, confidence (0–100%), mechanism and possible disconfirming control. Record prior exposure (unseen/seen/unknown) before opening the reference result. Distinguish masks, donor predictions, recipe groups, contexts and sampling replicates; repeated views do not create independent examples. Leave the learner response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -781,16 +706,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-## Reflect after the result — toy-13
-
-Record observations with units, denominator, control values and exact source IDs/receipt where available. Distinguish your execution from the retained historical reference. Compare with your committed forecast, explain a discrepancy and forecast one changed condition before trying it. State what changed in the game/protocol. Historical reuse is guided exploration, not untouched evaluation.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise 6 - implement `shapiq_pairwise_interactions`
 
 > ```yaml
@@ -834,11 +749,7 @@ Library parity checks the implementation and index convention on this finite tab
 # ! TAGS: []
 
 r'''
-## Forecast before running — toy-15
-
 Predict parity with the pinned package under the same pair-SII convention.
-
-Commit a numeric interval, sign or ordering, confidence (0–100%), mechanism and possible disconfirming control. Record prior exposure (unseen/seen/unknown) before opening the reference result. Distinguish masks, donor predictions, recipe groups, contexts and sampling replicates; repeated views do not create independent examples. Leave the learner response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -878,16 +789,6 @@ def shapiq_pairwise_interactions(coalition_values: toy_Mapping[Coalition | tuple
 
 if MAIN:
     toy_tests.test_shapiq_pairwise_matrix_matches_student_exact_sii(polynomial_game, pairwise_shapley_interactions, shapiq_pairwise_interactions)
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — toy-15
-
-Record observations with units, denominator, control values and exact source IDs/receipt where available. Distinguish your execution from the retained historical reference. Compare with your committed forecast, explain a discrepancy and forecast one changed condition before trying it. State what changed in the game/protocol. Historical reuse is guided exploration, not untouched evaluation.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -937,11 +838,7 @@ A target value alone is insufficient. Rank and off-target magnitude reveal wheth
 # ! TAGS: []
 
 r'''
-## Forecast before running — toy-17
-
 Predict what recovery rank and off-target error can and cannot say when higher-order dividends are present.
-
-Commit a numeric interval, sign or ordering, confidence (0–100%), mechanism and possible disconfirming control. Record prior exposure (unseen/seen/unknown) before opening the reference result. Distinguish masks, donor predictions, recipe groups, contexts and sampling replicates; repeated views do not create independent examples. Leave the learner response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -979,16 +876,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-## Reflect after the result — toy-17
-
-Record observations with units, denominator, control values and exact source IDs/receipt where available. Distinguish your execution from the retained historical reference. Compare with your committed forecast, explain a discrepancy and forecast one changed condition before trying it. State what changed in the game/protocol. Historical reuse is guided exploration, not untouched evaluation.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Signature result
 
 The top row compares the exact pair-plus-three-way interaction matrix with its matched additive control. The lower-left panel shows why individual Shapley values are a misleading pair detector. The lower-right panel reports mean absolute target-pair error across 40 seeds, with 10th-90th percentile bands, exact enumeration, and a within-size value permutation control.
@@ -1001,11 +888,7 @@ The top row compares the exact pair-plus-three-way interaction matrix with its m
 # ! TAGS: []
 
 r'''
-## Forecast before running — toy-19
-
 Before the full figure, forecast method/control contrasts in all four panels and the40-seed error band.
-
-Commit a numeric interval, sign or ordering, confidence (0–100%), mechanism and possible disconfirming control. Record prior exposure (unseen/seen/unknown) before opening the reference result. Distinguish masks, donor predictions, recipe groups, contexts and sampling replicates; repeated views do not create independent examples. Leave the learner response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -1212,24 +1095,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — toy-19
-
-Record observations with units, denominator, control values and exact source IDs/receipt where available. Distinguish your execution from the retained historical reference. Compare with your committed forecast, explain a discrepancy and forecast one changed condition before trying it. State what changed in the game/protocol. Historical reuse is guided exploration, not untouched evaluation.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-The signature above is an expected display from the original saved-only asset. The original toy notebook did not emit a PNG display here; its actual fourteen historical output records are retained separately in solutions.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details>
 <summary>Interpretation - what the four panels establish</summary>
 
@@ -1255,11 +1120,7 @@ Change the pair, pair weight, additive weights, triple interaction, sampling bud
 # ! TAGS: []
 
 r'''
-## Forecast before running — toy-22
-
 Commit changed polynomial coefficients and sampling budget, then predict exact versus sampled target behavior.
-
-Commit a numeric interval, sign or ordering, confidence (0–100%), mechanism and possible disconfirming control. Record prior exposure (unseen/seen/unknown) before opening the reference result. Distinguish masks, donor predictions, recipe groups, contexts and sampling replicates; repeated views do not create independent examples. Leave the learner response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -1320,16 +1181,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-## Reflect after the result — toy-22
-
-Record observations with units, denominator, control values and exact source IDs/receipt where available. Distinguish your execution from the retained historical reference. Compare with your committed forecast, explain a discrepancy and forecast one changed condition before trying it. State what changed in the game/protocol. Historical reuse is guided exploration, not untouched evaluation.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Anomaly hunt - when a pairwise index contains higher-order structure
 
 The primary game includes `2 * x0 * x1 * x2`. No explicit `(0,2)` or `(1,2)` pair term exists, yet their pairwise SII values become `1.0`. Inspect local second differences to see why: the apparent pair interaction switches on only when the third feature is present.
@@ -1340,11 +1191,7 @@ The primary game includes `2 * x0 * x1 * x2`. No explicit `(0,2)` or `(1,2)` pai
 # ! TAGS: []
 
 r'''
-## Forecast before running — toy-24
-
 Predict why pairs without a planted pair dividend can have nonzero contextual SII.
-
-Commit a numeric interval, sign or ordering, confidence (0–100%), mechanism and possible disconfirming control. Record prior exposure (unseen/seen/unknown) before opening the reference result. Distinguish masks, donor predictions, recipe groups, contexts and sampling replicates; repeated views do not create independent examples. Leave the learner response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -1367,16 +1214,6 @@ if MAIN:
 
 if MAIN:
     display(toy_pd.DataFrame(anomaly_rows))
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — toy-24
-
-Record observations with units, denominator, control values and exact source IDs/receipt where available. Distinguish your execution from the retained historical reference. Compare with your committed forecast, explain a discrepancy and forecast one changed condition before trying it. State what changed in the game/protocol. Historical reuse is guided exploration, not untouched evaluation.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -1406,11 +1243,7 @@ The release preflight trains a four-input MLP on all 16 binary rows of a differe
 # ! TAGS: []
 
 r'''
-## Forecast before running — toy-27
-
 Predict signs of both planted neural-target pairs without treating this truth table as a new trained model.
-
-Commit a numeric interval, sign or ordering, confidence (0–100%), mechanism and possible disconfirming control. Record prior exposure (unseen/seen/unknown) before opening the reference result. Distinguish masks, donor predictions, recipe groups, contexts and sampling replicates; repeated views do not create independent examples. Leave the learner response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -1425,16 +1258,6 @@ if MAIN:
 
 if MAIN:
     display(toy_pd.DataFrame([{'pair': pair, 'exact target SII': float(neural_target_sii[pair])} for pair in toy_itertools.combinations(range(4), 2)]))
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — toy-27
-
-Record observations with units, denominator, control values and exact source IDs/receipt where available. Distinguish your execution from the retained historical reference. Compare with your committed forecast, explain a discrepancy and forecast one changed condition before trying it. State what changed in the game/protocol. Historical reuse is guided exploration, not untouched evaluation.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -1587,11 +1410,7 @@ The disagreement is the result we will explain.
 # ! TAGS: []
 
 r'''
-## Forecast before running — allocation-3
-
 Forecast whether an efficient singleton-plus-pair representation can assign negative singleton credit to a positive four-way mechanism.
-
-Commit a numeric interval, sign or ordering, confidence (0–100%), mechanism and possible disconfirming control. Record prior exposure (unseen/seen/unknown) before opening the reference result. Distinguish masks, donor predictions, recipe groups, contexts and sampling replicates; repeated views do not create independent examples. Leave the learner response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -1612,16 +1431,6 @@ if MAIN:
 
 if MAIN:
     print('Faith efficient:', 4 * cold_open['Faith-Shap'][0] + 6 * cold_open['Faith-Shap'][1])
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — allocation-3
-
-Record observations with units, denominator, control values and exact source IDs/receipt where available. Distinguish your execution from the retained historical reference. Compare with your committed forecast, explain a discrepancy and forecast one changed condition before trying it. State what changed in the game/protocol. Historical reuse is guided exploration, not untouched evaluation.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -1677,6 +1486,8 @@ closed form is its deliberately independent cross-check.
 
 r'''
 ## Setup
+
+The lesson takes about 75-105 minutes on CPU and needs no GPU.
 
 The public methods operate on CPU `float64` tensors. The final axis is a complete coalition table in
 ascending integer-mask order: bit `i` says feature `i` is present. Entry zero in every coefficient
@@ -1845,11 +1656,7 @@ removed from every mask that contains `i`.
 # ! TAGS: []
 
 r'''
-## Forecast before running — allocation-11
-
 Predict the nonzero Möbius dividends and reconstruct one coalition from its subsets.
-
-Commit a numeric interval, sign or ordering, confidence (0–100%), mechanism and possible disconfirming control. Record prior exposure (unseen/seen/unknown) before opening the reference result. Distinguish masks, donor predictions, recipe groups, contexts and sampling replicates; repeated views do not create independent examples. Leave the learner response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -1878,16 +1685,6 @@ def mobius_transform(game_values: allocation_Tensor, *, n_players: int) -> alloc
 
 if MAIN:
     allocation_tests.test_mobius_transform(fn=mobius_transform)
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — allocation-11
-
-Record observations with units, denominator, control values and exact source IDs/receipt where available. Distinguish your execution from the retained historical reference. Compare with your committed forecast, explain a discrepancy and forecast one changed condition before trying it. State what changed in the game/protocol. Historical reuse is guided exploration, not untouched evaluation.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -2062,11 +1859,7 @@ requested order and collect its share from every superset.
 # ! TAGS: []
 
 r'''
-## Forecast before running — allocation-22
-
 Predict where a high-order dividend goes at order two versus full order.
-
-Commit a numeric interval, sign or ordering, confidence (0–100%), mechanism and possible disconfirming control. Record prior exposure (unseen/seen/unknown) before opening the reference result. Distinguish masks, donor predictions, recipe groups, contexts and sampling replicates; repeated views do not create independent examples. Leave the learner response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -2101,16 +1894,6 @@ def shapley_taylor_interactions(mobius: allocation_Tensor, *, n_players: int, or
 
 if MAIN:
     allocation_tests.test_shapley_taylor_interactions(fn=shapley_taylor_interactions)
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — allocation-22
-
-Record observations with units, denominator, control values and exact source IDs/receipt where available. Distinguish your execution from the retained historical reference. Compare with your committed forecast, explain a discrepancy and forecast one changed condition before trying it. State what changed in the game/protocol. Historical reuse is guided exploration, not untouched evaluation.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -2258,11 +2041,7 @@ finite interior weights to sum to one.
 # ! TAGS: []
 
 r'''
-## Forecast before running — allocation-31
-
 Predict which design columns and finite kernel weights apply, and separate endpoint constraints from finite penalties.
-
-Commit a numeric interval, sign or ordering, confidence (0–100%), mechanism and possible disconfirming control. Record prior exposure (unseen/seen/unknown) before opening the reference result. Distinguish masks, donor predictions, recipe groups, contexts and sampling replicates; repeated views do not create independent examples. Leave the learner response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -2309,16 +2088,6 @@ if MAIN:
 
 if MAIN:
     allocation_tests.test_faith_kernel_weights(fn=faith_kernel_weights)
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — allocation-31
-
-Record observations with units, denominator, control values and exact source IDs/receipt where available. Distinguish your execution from the retained historical reference. Compare with your committed forecast, explain a discrepancy and forecast one changed condition before trying it. State what changed in the game/protocol. Historical reuse is guided exploration, not untouched evaluation.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -2490,11 +2259,7 @@ conditioning of a much larger KKT system. Use the constrained solve for truncate
 # ! TAGS: []
 
 r'''
-## Forecast before running — allocation-39
-
 Forecast the exact constrained optimum on a high-order unanimity game; distinguish weighted error from coefficient sign.
-
-Commit a numeric interval, sign or ordering, confidence (0–100%), mechanism and possible disconfirming control. Record prior exposure (unseen/seen/unknown) before opening the reference result. Distinguish masks, donor predictions, recipe groups, contexts and sampling replicates; repeated views do not create independent examples. Leave the learner response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -2535,16 +2300,6 @@ def faith_shap_interactions(game_values: allocation_Tensor, *, n_players: int, m
 
 if MAIN:
     allocation_tests.test_faith_shap_interactions(fn=faith_shap_interactions)
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — allocation-39
-
-Record observations with units, denominator, control values and exact source IDs/receipt where available. Distinguish your execution from the retained historical reference. Compare with your committed forecast, explain a discrepancy and forecast one changed condition before trying it. State what changed in the game/protocol. Historical reuse is guided exploration, not untouched evaluation.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -2664,11 +2419,7 @@ order is above `max_order`, multiply by the signed combinatorial scale, and add 
 # ! TAGS: []
 
 r'''
-## Forecast before running — allocation-47
-
 Forecast equality of the independent closed form and constrained solve, including empty/full handling.
-
-Commit a numeric interval, sign or ordering, confidence (0–100%), mechanism and possible disconfirming control. Record prior exposure (unseen/seen/unknown) before opening the reference result. Distinguish masks, donor predictions, recipe groups, contexts and sampling replicates; repeated views do not create independent examples. Leave the learner response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -2705,16 +2456,6 @@ def faith_shap_closed_form(mobius: allocation_Tensor, *, n_players: int, max_ord
 
 if MAIN:
     allocation_tests.test_faith_shap_closed_form(fn=faith_shap_closed_form)
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — allocation-47
-
-Record observations with units, denominator, control values and exact source IDs/receipt where available. Distinguish your execution from the retained historical reference. Compare with your committed forecast, explain a discrepancy and forecast one changed condition before trying it. State what changed in the game/protocol. Historical reuse is guided exploration, not untouched evaluation.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -2867,11 +2608,7 @@ one feature bit. Then compute the normalized kernel-weighted squared residual on
 # ! TAGS: []
 
 r'''
-## Forecast before running — allocation-56
-
 Forecast whether efficiency implies exact reconstruction or optimal unweighted error.
-
-Commit a numeric interval, sign or ordering, confidence (0–100%), mechanism and possible disconfirming control. Record prior exposure (unseen/seen/unknown) before opening the reference result. Distinguish masks, donor predictions, recipe groups, contexts and sampling replicates; repeated views do not create independent examples. Leave the learner response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -2922,16 +2659,6 @@ if MAIN:
 
 if MAIN:
     allocation_tests.test_faithfulness_error(fn=faithfulness_error)
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — allocation-56
-
-Record observations with units, denominator, control values and exact source IDs/receipt where available. Distinguish your execution from the retained historical reference. Compare with your committed forecast, explain a discrepancy and forecast one changed condition before trying it. State what changed in the game/protocol. Historical reuse is guided exploration, not untouched evaluation.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -3018,11 +2745,7 @@ def diagnose_reconstruction(diagnostic: dict[str, allocation_Any], reconstruct_g
 # ! TAGS: []
 
 r'''
-## Forecast before running — allocation-61
-
 Commit singleton/pair allocations for each exact control before viewing the ledger.
-
-Commit a numeric interval, sign or ordering, confidence (0–100%), mechanism and possible disconfirming control. Record prior exposure (unseen/seen/unknown) before opening the reference result. Distinguish masks, donor predictions, recipe groups, contexts and sampling replicates; repeated views do not create independent examples. Leave the learner response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -3051,16 +2774,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — allocation-61
-
-Record observations with units, denominator, control values and exact source IDs/receipt where available. Distinguish your execution from the retained historical reference. Compare with your committed forecast, explain a discrepancy and forecast one changed condition before trying it. State what changed in the game/protocol. Historical reuse is guided exploration, not untouched evaluation.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 The first figure keeps SII physically separate from the two efficient decompositions. Its singleton
 and pair strips are valid indices, but adding them would manufacture a total that SII never claims.
 '''
@@ -3070,11 +2783,7 @@ and pair strips are valid indices, but adding them would manufacture a total tha
 # ! TAGS: []
 
 r'''
-## Forecast before running — allocation-63
-
 Predict why minimizing the kernel objective can move singleton coefficients while preserving efficiency.
-
-Commit a numeric interval, sign or ordering, confidence (0–100%), mechanism and possible disconfirming control. Record prior exposure (unseen/seen/unknown) before opening the reference result. Distinguish masks, donor predictions, recipe groups, contexts and sampling replicates; repeated views do not create independent examples. Leave the learner response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -3093,16 +2802,6 @@ if MAIN:
 
 r'''
 <img src="media/allocation_63_0.png" width="1050">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — allocation-63
-
-Record observations with units, denominator, control values and exact source IDs/receipt where available. Distinguish your execution from the retained historical reference. Compare with your committed forecast, explain a discrepancy and forecast one changed condition before trying it. State what changed in the game/protocol. Historical reuse is guided exploration, not untouched evaluation.
 '''
 
 # ! CELL TYPE: markdown
@@ -3183,11 +2882,7 @@ context handles chunk indices and restores model/RNG state on exit.
 # ! TAGS: []
 
 r'''
-## Forecast before running — allocation-68
-
 Forecast how changing an intact donor bank changes the replacement game, not merely sampling error.
-
-Commit a numeric interval, sign or ordering, confidence (0–100%), mechanism and possible disconfirming control. Record prior exposure (unseen/seen/unknown) before opening the reference result. Distinguish masks, donor predictions, recipe groups, contexts and sampling replicates; repeated views do not create independent examples. Leave the learner response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -3216,16 +2911,6 @@ def masked_model_game(model: nn.Module, x: allocation_Tensor, reference: allocat
 
 if MAIN:
     allocation_tests.test_masked_model_game(fn=masked_model_game)
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — allocation-68
-
-Record observations with units, denominator, control values and exact source IDs/receipt where available. Distinguish your execution from the retained historical reference. Compare with your committed forecast, explain a discrepancy and forecast one changed condition before trying it. State what changed in the game/protocol. Historical reuse is guided exploration, not untouched evaluation.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -3380,11 +3065,7 @@ provided contexts. Index the four masks without a Python loop over leading batch
 # ! TAGS: []
 
 r'''
-## Forecast before running — allocation-77
-
 Predict a pair intervention in two contexts, and distinguish a contextual derivative from averaged SII.
-
-Commit a numeric interval, sign or ordering, confidence (0–100%), mechanism and possible disconfirming control. Record prior exposure (unseen/seen/unknown) before opening the reference result. Distinguish masks, donor predictions, recipe groups, contexts and sampling replicates; repeated views do not create independent examples. Leave the learner response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -3433,16 +3114,6 @@ def contextual_pair_synergy(game_values: allocation_Tensor, pair: tuple[int, int
 
 if MAIN:
     allocation_tests.test_contextual_pair_synergy(fn=contextual_pair_synergy)
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — allocation-77
-
-Record observations with units, denominator, control values and exact source IDs/receipt where available. Distinguish your execution from the retained historical reference. Compare with your committed forecast, explain a discrepancy and forecast one changed condition before trying it. State what changed in the game/protocol. Historical reuse is guided exploration, not untouched evaluation.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -3602,18 +3273,6 @@ The earlier exact play remains in memory. This figure places its Shapley-Taylor,
 allocations beside the same-game reconstruction errors.
 '''
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Forecast before running — allocation-88
-
-Commit a changed dividend and forecast both efficient decompositions before the exploratory plot.
-
-Commit a numeric interval, sign or ordering, confidence (0–100%), mechanism and possible disconfirming control. Record prior exposure (unseen/seen/unknown) before opening the reference result. Distinguish masks, donor predictions, recipe groups, contexts and sampling replicates; repeated views do not create independent examples. Leave the learner response blank until commitment.
-'''
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: []
@@ -3630,16 +3289,6 @@ if MAIN:
 
 r'''
 <img src="media/allocation_88_0.png" width="1050">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — allocation-88
-
-Record observations with units, denominator, control values and exact source IDs/receipt where available. Distinguish your execution from the retained historical reference. Compare with your committed forecast, explain a discrepancy and forecast one changed condition before trying it. State what changed in the game/protocol. Historical reuse is guided exploration, not untouched evaluation.
 '''
 
 # ! CELL TYPE: markdown
@@ -3768,10 +3417,6 @@ and the explanation files are sealed before loading the audit split. Four additi
 games per row retain their own donor predictions. Full method outputs, reference comparisons, and
 controls stay available in the evidence, including signs, zero denominators, and unfavorable results.
 
-The execution cell checks the frozen protocol and recorded review disposition before loading data or
-fitting a model. A development run with independent review still pending cannot be published as a
-completed section. [The protocol](protocol.md) records the full counts, seeds, and acceptance rules.
-
 </details>
 '''
 
@@ -3874,11 +3519,7 @@ The next visible source group contains the known-model training recipe, raw-unit
 # ! TAGS: []
 
 r'''
-## Forecast before running — allocation-98
-
 Before any model refit, distinguish21 known state checks from independent predictive replication.
-
-Commit a numeric interval, sign or ordering, confidence (0–100%), mechanism and possible disconfirming control. Record prior exposure (unseen/seen/unknown) before opening the reference result. Distinguish masks, donor predictions, recipe groups, contexts and sampling replicates; repeated views do not create independent examples. Leave the learner response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -3941,16 +3582,6 @@ def verify_known_reproduction(fitted: allocation_Mapping[str, allocation_Any], m
     if mismatches:
         raise AssertionError('Known-model reproduction mismatch: ' + ', '.join(mismatches))
     return {'status': 'PASS', 'known_section': '16.14/16.15', 'model_state_hashes': observed, 'expected_model_state_hashes': expected, 'mismatches': (), 'state_comparisons': 21, 'training_recipe_match': True, 'train_ids_match': True, 'non_independent_replication': True}
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — allocation-98
-
-Record observations with units, denominator, control values and exact source IDs/receipt where available. Distinguish your execution from the retained historical reference. Compare with your committed forecast, explain a discrepancy and forecast one changed condition before trying it. State what changed in the game/protocol. Historical reuse is guided exploration, not untouched evaluation.
-'''
 
 # ! CELL TYPE: code
 # ! FILTERS: []
@@ -4158,11 +3789,7 @@ donor shard before the audit split is loaded.
 # ! TAGS: []
 
 r'''
-## Forecast before running — allocation-108
-
 Before audit access, forecast explanation-derived pair rankings and their random-order control; state group weights.
-
-Commit a numeric interval, sign or ordering, confidence (0–100%), mechanism and possible disconfirming control. Record prior exposure (unseen/seen/unknown) before opening the reference result. Distinguish masks, donor predictions, recipe groups, contexts and sampling replicates; repeated views do not create independent examples. Leave the learner response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -4223,16 +3850,6 @@ def prepare_study(fitted: allocation_Mapping[str, allocation_Any], train: alloca
     design_contract['kernel_weights'] = _float_tensor(methods.faith_kernel_weights(n_players=FEATURES), 'kernel_weights', 1)
     return {'phase': 'prepared_before_audit', 'audit_used_for_selection': False, 'reproduction': reproduction, 'feature_names': FEATURE_NAMES, 'feature_units': FEATURE_UNITS, 'target_name': TARGET_NAME, 'target_unit': TARGET_UNIT, 'model_keys': MODEL_KEYS, 'method_keys': METHOD_KEYS, 'mask_ids': allocation_t.arange(2 ** FEATURES, dtype=allocation_t.int64), 'coalition_masks': coalition_masks(FEATURES), 'coalition_sizes': coalition_masks(FEATURES).sum(-1).to(allocation_t.int64), 'pair_indices': pair_indices(FEATURES), 'context_masks': primary['context_masks'], 'design_contract': design_contract, 'train_ids': train_ids, 'train_recipe_group_ids': train_groups, 'explain_source_ids': explain_ids, 'explain_recipe_group_ids': explain_groups, 'explain_x_raw': explain_x, 'explain_targets': explain_y, 'backgrounds': backgrounds, 'exact_games': _exact_suite(methods, reference), 'primary64': primary, 'background_variants': variants, 'direct_full_context': direct, 'references': {'exact_suite_checked_in_preparation': reference is not None, 'empirical': _empirical_reference_plan('prepared_before_audit')}, 'rankings': rankings, 'random_pair_orders': fixed_random_pair_orders(), 'fixed_play_defaults': dict(DEFAULT_PLAY), 'source_provenance': dict(manifest.get('source_provenance', {})), 'storage_plan': _storage_plan(manifest, 'prepared_before_audit')}
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — allocation-108
-
-Record observations with units, denominator, control values and exact source IDs/receipt where available. Distinguish your execution from the retained historical reference. Compare with your committed forecast, explain a discrepancy and forecast one changed condition before trying it. State what changed in the game/protocol. Historical reuse is guided exploration, not untouched evaluation.
-'''
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: []
@@ -4280,11 +3897,7 @@ in the payload.
 # ! TAGS: []
 
 r'''
-## Forecast before running — allocation-113
-
 Forecast audit capture versus all256 random orders and explain the zero-denominator convention.
-
-Commit a numeric interval, sign or ordering, confidence (0–100%), mechanism and possible disconfirming control. Record prior exposure (unseen/seen/unknown) before opening the reference result. Distinguish masks, donor predictions, recipe groups, contexts and sampling replicates; repeated views do not create independent examples. Leave the learner response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -4377,16 +3990,6 @@ def evaluate_study(fitted: allocation_Mapping[str, allocation_Any], prepared: al
     support = nearest_training_diagnostics(fitted['train_x_raw'], fitted['train_ids'], all_x, backgrounds['primary64']['x_raw'][:SUPPORT_DONORS], fitted['normalization'])
     row_split = allocation_t.cat([allocation_t.zeros(len(prepared['explain_source_ids']), dtype=allocation_t.int64), allocation_t.ones(len(audit_ids), dtype=allocation_t.int64)])
     return {'phase': 'evaluated_after_audit', 'audit_used_for_selection': False, 'reproduction': reproduction, 'feature_names': FEATURE_NAMES, 'feature_units': FEATURE_UNITS, 'target_name': TARGET_NAME, 'target_unit': TARGET_UNIT, 'model_keys': MODEL_KEYS, 'method_keys': METHOD_KEYS, 'source_ids': all_ids, 'row_split': row_split, 'split_labels': ('explanation', 'audit'), 'recipe_group_ids': all_groups, 'audit_source_ids': audit_ids, 'audit_recipe_group_ids': audit_groups, 'audit_x_raw': audit_x, 'audit_targets': audit_y, 'primary64_audit': primary_audit, 'background_variants_audit': variants_audit, 'all_rows': {'primary64': primary_all, 'background_variants': variants_all}, 'direct_full_context': direct_all, 'performance': {'explanation': _performance(fitted, prepared['explain_x_raw'], prepared['explain_targets']), 'audit': _performance(fitted, audit_x, audit_y)}, 'rankings': prepared['rankings'], 'pair_capture': {**curves, 'random_pair_orders': random_orders, 'method_keys': METHOD_KEYS}, 'random_controls': {'within_size': null}, 'background_sensitivity': background_sensitivity(variants_all), 'support': support, 'references': {'prepared': prepared['references'], 'empirical': _empirical_reference_plan('evaluated_after_audit'), 'adapter_supplied': reference is not None}, 'fixed_play_defaults': dict(DEFAULT_PLAY), 'source_provenance': dict(prepared.get('source_provenance', {})), 'storage_plan': _storage_plan(manifest, 'evaluated_after_audit')}
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — allocation-113
-
-Record observations with units, denominator, control values and exact source IDs/receipt where available. Distinguish your execution from the retained historical reference. Compare with your committed forecast, explain a discrepancy and forecast one changed condition before trying it. State what changed in the game/protocol. Historical reuse is guided exploration, not untouched evaluation.
-'''
 
 # ! CELL TYPE: code
 # ! FILTERS: []
@@ -4580,11 +4183,7 @@ winner across axioms.
 # ! TAGS: []
 
 r'''
-## Forecast before running — allocation-122
-
 Forecast ridge and shuffled-model controls without assuming shuffled predictors have zero interactions.
-
-Commit a numeric interval, sign or ordering, confidence (0–100%), mechanism and possible disconfirming control. Record prior exposure (unseen/seen/unknown) before opening the reference result. Distinguish masks, donor predictions, recipe groups, contexts and sampling replicates; repeated views do not create independent examples. Leave the learner response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -4603,16 +4202,6 @@ if MAIN:
 
 r'''
 <img src="media/allocation_122_0.png" width="1050">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — allocation-122
-
-Record observations with units, denominator, control values and exact source IDs/receipt where available. Distinguish your execution from the retained historical reference. Compare with your committed forecast, explain a discrepancy and forecast one changed condition before trying it. State what changed in the game/protocol. Historical reuse is guided exploration, not untouched evaluation.
 '''
 
 # ! CELL TYPE: markdown
@@ -4640,11 +4229,7 @@ then ask how each rule describes that particular fitted model.
 # ! TAGS: []
 
 r'''
-## Forecast before running — allocation-124
-
 Forecast signs and magnitudes at the fixed row; explain why an interaction graph is not a causal mechanism.
-
-Commit a numeric interval, sign or ordering, confidence (0–100%), mechanism and possible disconfirming control. Record prior exposure (unseen/seen/unknown) before opening the reference result. Distinguish masks, donor predictions, recipe groups, contexts and sampling replicates; repeated views do not create independent examples. Leave the learner response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -4670,16 +4255,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — allocation-124
-
-Record observations with units, denominator, control values and exact source IDs/receipt where available. Distinguish your execution from the retained historical reference. Compare with your committed forecast, explain a discrepancy and forecast one changed condition before trying it. State what changed in the game/protocol. Historical reuse is guided exploration, not untouched evaluation.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 Node color is singleton credit; edge color and width are signed and absolute pair credit. The two
 methods share node positions and scales. A complete term-difference strip prevents graph thresholds
 from silently hiding small or zero terms.
@@ -4690,11 +4265,7 @@ from silently hiding small or zero terms.
 # ! TAGS: []
 
 r'''
-## Forecast before running — allocation-126
-
 Predict variation across all rows/models without selecting a favorable row.
-
-Commit a numeric interval, sign or ordering, confidence (0–100%), mechanism and possible disconfirming control. Record prior exposure (unseen/seen/unknown) before opening the reference result. Distinguish masks, donor predictions, recipe groups, contexts and sampling replicates; repeated views do not create independent examples. Leave the learner response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -4720,16 +4291,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — allocation-126
-
-Record observations with units, denominator, control values and exact source IDs/receipt where available. Distinguish your execution from the retained historical reference. Compare with your committed forecast, explain a discrepancy and forecast one changed condition before trying it. State what changed in the game/protocol. Historical reuse is guided exploration, not untouched evaluation.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 These matrices summarize all 119 audit rows by recipe group and preserve each model seed. Signed mean
 and mean absolute magnitude are separate because cancellation is itself part of the interpretation.
 SII is labeled `pair SII only`.
@@ -4740,11 +4301,7 @@ SII is labeled `pair SII only`.
 # ! TAGS: []
 
 r'''
-## Forecast before running — allocation-128
-
 Predict audit-group capture relative to explanation rankings and random orders.
-
-Commit a numeric interval, sign or ordering, confidence (0–100%), mechanism and possible disconfirming control. Record prior exposure (unseen/seen/unknown) before opening the reference result. Distinguish masks, donor predictions, recipe groups, contexts and sampling replicates; repeated views do not create independent examples. Leave the learner response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -4763,16 +4320,6 @@ if MAIN:
 
 r'''
 <img src="media/allocation_128_0.png" width="1050">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — allocation-128
-
-Record observations with units, denominator, control values and exact source IDs/receipt where available. Distinguish your execution from the retained historical reference. Compare with your committed forecast, explain a discrepancy and forecast one changed condition before trying it. State what changed in the game/protocol. Historical reuse is guided exploration, not untouched evaluation.
 '''
 
 # ! CELL TYPE: markdown
@@ -4805,11 +4352,7 @@ any one interaction index. Compare the curve with the signed heatmaps and recons
 # ! TAGS: []
 
 r'''
-## Forecast before running — allocation-130
-
 Contrast efficiency, weighted reconstruction and unweighted residuals.
-
-Commit a numeric interval, sign or ordering, confidence (0–100%), mechanism and possible disconfirming control. Record prior exposure (unseen/seen/unknown) before opening the reference result. Distinguish masks, donor predictions, recipe groups, contexts and sampling replicates; repeated views do not create independent examples. Leave the learner response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -4835,16 +4378,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — allocation-130
-
-Record observations with units, denominator, control values and exact source IDs/receipt where available. Distinguish your execution from the retained historical reference. Compare with your committed forecast, explain a discrepancy and forecast one changed condition before trying it. State what changed in the game/protocol. Historical reuse is guided exploration, not untouched evaluation.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 Faith-Shap may be labeled the optimum for its normalized kernel error because that is its definition.
 The coalition-size residuals show where each order-two reconstruction misses. Empty and full
 constraints hold to float64 solver precision, and the degree-two and ridge controls should expose implementation drift.
@@ -4855,11 +4388,7 @@ constraints hold to float64 solver precision, and the degree-two and ridge contr
 # ! TAGS: []
 
 r'''
-## Forecast before running — allocation-132
-
 Predict background sensitivity while recognizing each donor change as an altered estimand.
-
-Commit a numeric interval, sign or ordering, confidence (0–100%), mechanism and possible disconfirming control. Record prior exposure (unseen/seen/unknown) before opening the reference result. Distinguish masks, donor predictions, recipe groups, contexts and sampling replicates; repeated views do not create independent examples. Leave the learner response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -4885,16 +4414,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — allocation-132
-
-Record observations with units, denominator, control values and exact source IDs/receipt where available. Distinguish your execution from the retained historical reference. Compare with your committed forecast, explain a discrepancy and forecast one changed condition before trying it. State what changed in the game/protocol. Historical reuse is guided exploration, not untouched evaluation.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 `nested16` and `nested128` are related prefixes; `independent64_a` and `independent64_b` are alternate
 finite supports. Their spread is not a standard error. Moving the background changes the coalition
 game before either interaction rule is applied.
@@ -4905,11 +4424,7 @@ game before either interaction rule is applied.
 # ! TAGS: []
 
 r'''
-## Forecast before running — allocation-134
-
 Predict agreement and disagreement between full-context interventions and each interaction definition.
-
-Commit a numeric interval, sign or ordering, confidence (0–100%), mechanism and possible disconfirming control. Record prior exposure (unseen/seen/unknown) before opening the reference result. Distinguish masks, donor predictions, recipe groups, contexts and sampling replicates; repeated views do not create independent examples. Leave the learner response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -4928,16 +4443,6 @@ if MAIN:
 
 r'''
 <img src="media/allocation_134_0.png" width="1050">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — allocation-134
-
-Record observations with units, denominator, control values and exact source IDs/receipt where available. Distinguish your execution from the retained historical reference. Compare with your committed forecast, explain a discrepancy and forecast one changed condition before trying it. State what changed in the game/protocol. Historical reuse is guided exploration, not untouched evaluation.
 '''
 
 # ! CELL TYPE: markdown
@@ -4968,11 +4473,7 @@ study figure has already been computed.
 # ! TAGS: []
 
 r'''
-## Forecast before running — allocation-137
-
 Commit donor/context/pair edits before viewing their signed consequences.
-
-Commit a numeric interval, sign or ordering, confidence (0–100%), mechanism and possible disconfirming control. Record prior exposure (unseen/seen/unknown) before opening the reference result. Distinguish masks, donor predictions, recipe groups, contexts and sampling replicates; repeated views do not create independent examples. Leave the learner response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -5012,16 +4513,6 @@ if MAIN:
 
 r'''
 <img src="media/allocation_137_0.png" width="1050">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — allocation-137
-
-Record observations with units, denominator, control values and exact source IDs/receipt where available. Distinguish your execution from the retained historical reference. Compare with your committed forecast, explain a discrepancy and forecast one changed condition before trying it. State what changed in the game/protocol. Historical reuse is guided exploration, not untouched evaluation.
 '''
 
 # ! CELL TYPE: markdown
@@ -5271,11 +4762,7 @@ It cannot identify that pair by itself. It can contribute one signed term to an 
 # ! TAGS: []
 
 r'''
-## Forecast before running — estimator-3
-
 Predict how one coalition can update multiple pair estimates with different signs.
-
-Commit a numeric interval, sign or ordering, confidence (0–100%), mechanism and possible disconfirming control. Record prior exposure (unseen/seen/unknown) before opening the reference result. Distinguish masks, donor predictions, recipe groups, contexts and sampling replicates; repeated views do not create independent examples. Leave the learner response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -5296,16 +4783,6 @@ if MAIN:
 
 if MAIN:
     print('Query {A,B}:', game_rows[3]['value'])
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — estimator-3
-
-Record observations with units, denominator, control values and exact source IDs/receipt where available. Distinguish your execution from the retained historical reference. Compare with your committed forecast, explain a discrepancy and forecast one changed condition before trying it. State what changed in the game/protocol. Historical reuse is guided exploration, not untouched evaluation.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -5341,11 +4818,7 @@ Use a vector of feature bits and a broadcast bitwise AND. Preserve repeated inpu
 # ! TAGS: []
 
 r'''
-## Forecast before running — estimator-5
-
 Forecast each coalition-design row and feature-axis shape.
-
-Commit a numeric interval, sign or ordering, confidence (0–100%), mechanism and possible disconfirming control. Record prior exposure (unseen/seen/unknown) before opening the reference result. Distinguish masks, donor predictions, recipe groups, contexts and sampling replicates; repeated views do not create independent examples. Leave the learner response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -5369,16 +4842,6 @@ def coalition_design(masks: estimator_Tensor, *, n_players: int) -> estimator_Te
 
 if MAIN:
     estimator_tests.test_coalition_design(fn=coalition_design)
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — estimator-5
-
-Record observations with units, denominator, control values and exact source IDs/receipt where available. Distinguish your execution from the retained historical reference. Compare with your committed forecast, explain a discrepancy and forecast one changed condition before trying it. State what changed in the game/protocol. Historical reuse is guided exploration, not untouched evaluation.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -5447,11 +4910,7 @@ Return one gamma row for each query and one column for each interaction of the r
 # ! TAGS: []
 
 r'''
-## Forecast before running — estimator-8
-
 Predict the shared SII query weights of present and absent pairs.
-
-Commit a numeric interval, sign or ordering, confidence (0–100%), mechanism and possible disconfirming control. Record prior exposure (unseen/seen/unknown) before opening the reference result. Distinguish masks, donor predictions, recipe groups, contexts and sampling replicates; repeated views do not create independent examples. Leave the learner response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -5494,16 +4953,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-## Reflect after the result — estimator-8
-
-Record observations with units, denominator, control values and exact source IDs/receipt where available. Distinguish your execution from the retained historical reference. Compare with your committed forecast, explain a discrepancy and forecast one changed condition before trying it. State what changed in the game/protocol. Historical reuse is guided exploration, not untouched evaluation.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details>
 <summary>Expected output</summary>
 
@@ -5528,11 +4977,7 @@ If `Z` contains query designs and `A` contains interaction designs, `Z @ A.T` gi
 # ! TAGS: []
 
 r'''
-## Forecast before running — estimator-10
-
 Forecast all six signed updates for a fixed query before viewing the shared-query display.
-
-Commit a numeric interval, sign or ordering, confidence (0–100%), mechanism and possible disconfirming control. Record prior exposure (unseen/seen/unknown) before opening the reference result. Distinguish masks, donor predictions, recipe groups, contexts and sampling replicates; repeated views do not create independent examples. Leave the learner response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -5561,16 +5006,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — estimator-10
-
-Record observations with units, denominator, control values and exact source IDs/receipt where available. Distinguish your execution from the retained historical reference. Compare with your committed forecast, explain a discrepancy and forecast one changed condition before trying it. State what changed in the game/protocol. Historical reuse is guided exploration, not untouched evaluation.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details>
 <summary>Interpretation - why does the absent pair receive a positive update?</summary>
 
@@ -5581,18 +5016,6 @@ The update is a term in an algebraic sum, not a claim that the absent pair cause
 ## Try It Yourself: follow one query
 
 Change the coalition mask below. Predict which pair columns become negative before running it. Then remove the interaction terms while retaining the additive weights.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Forecast before running — estimator-12
-
-Commit a query mask and game, then predict which pair estimates change sign.
-
-Commit a numeric interval, sign or ordering, confidence (0–100%), mechanism and possible disconfirming control. Record prior exposure (unseen/seen/unknown) before opening the reference result. Distinguish masks, donor predictions, recipe groups, contexts and sampling replicates; repeated views do not create independent examples. Leave the learner response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -5617,16 +5040,6 @@ if MAIN:
 
 r'''
 <img src="media/estimator_12_0.png" width="1050">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — estimator-12
-
-Record observations with units, denominator, control values and exact source IDs/receipt where available. Distinguish your execution from the retained historical reference. Compare with your committed forecast, explain a discrepancy and forecast one changed condition before trying it. State what changed in the game/protocol. Historical reuse is guided exploration, not untouched evaluation.
 '''
 
 # ! CELL TYPE: markdown
@@ -5673,11 +5086,7 @@ Create a local seeded generator. Draw a size from the appropriate distribution, 
 # ! TAGS: []
 
 r'''
-## Forecast before running — estimator-14
-
 Predict per-set probabilities versus cardinality probabilities without enumerating the power set.
-
-Commit a numeric interval, sign or ordering, confidence (0–100%), mechanism and possible disconfirming control. Record prior exposure (unseen/seen/unknown) before opening the reference result. Distinguish masks, donor predictions, recipe groups, contexts and sampling replicates; repeated views do not create independent examples. Leave the learner response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -5733,16 +5142,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-## Reflect after the result — estimator-14
-
-Record observations with units, denominator, control values and exact source IDs/receipt where available. Distinguish your execution from the retained historical reference. Compare with your committed forecast, explain a discrepancy and forecast one changed condition before trying it. State what changed in the game/protocol. Historical reuse is guided exploration, not untouched evaluation.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details>
 <summary>Expected output</summary>
 
@@ -5763,11 +5162,7 @@ Draw a `[draws, n_players]` matrix of independent continuous random scores and a
 # ! TAGS: []
 
 r'''
-## Forecast before running — estimator-16
-
 Forecast draws, duplicates, nominal requests and unique queries separately.
-
-Commit a numeric interval, sign or ordering, confidence (0–100%), mechanism and possible disconfirming control. Record prior exposure (unseen/seen/unknown) before opening the reference result. Distinguish masks, donor predictions, recipe groups, contexts and sampling replicates; repeated views do not create independent examples. Leave the learner response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -5786,16 +5181,6 @@ if MAIN:
 
 r'''
 <img src="media/estimator_16_0.png" width="1050">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — estimator-16
-
-Record observations with units, denominator, control values and exact source IDs/receipt where available. Distinguish your execution from the retained historical reference. Compare with your committed forecast, explain a discrepancy and forecast one changed condition before trying it. State what changed in the game/protocol. Historical reuse is guided exploration, not untouched evaluation.
 '''
 
 # ! CELL TYPE: markdown
@@ -5839,11 +5224,7 @@ The first boundary value is the empty coalition. Center both boundary and sample
 # ! TAGS: []
 
 r'''
-## Forecast before running — estimator-18
-
 Predict importance weighting and finite-sample SE, including a noisy additive control.
-
-Commit a numeric interval, sign or ordering, confidence (0–100%), mechanism and possible disconfirming control. Record prior exposure (unseen/seen/unknown) before opening the reference result. Distinguish masks, donor predictions, recipe groups, contexts and sampling replicates; repeated views do not create independent examples. Leave the learner response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -5882,16 +5263,6 @@ def shapiq_estimate(boundary_values: estimator_Tensor, sampled_values: estimator
 
 if MAIN:
     estimator_tests.test_shapiq_estimate(fn=shapiq_estimate)
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — estimator-18
-
-Record observations with units, denominator, control values and exact source IDs/receipt where available. Distinguish your execution from the retained historical reference. Compare with your committed forecast, explain a discrepancy and forecast one changed condition before trying it. State what changed in the game/protocol. Historical reuse is guided exploration, not untouched evaluation.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -5943,11 +5314,7 @@ Concatenate boundary and sampled masks, query each unique mask once, then use an
 # ! TAGS: []
 
 r'''
-## Forecast before running — estimator-21
-
 Predict the oracle receipt when draws repeat, and distinguish queried masks from Monte Carlo multiplicity.
-
-Commit a numeric interval, sign or ordering, confidence (0–100%), mechanism and possible disconfirming control. Record prior exposure (unseen/seen/unknown) before opening the reference result. Distinguish masks, donor predictions, recipe groups, contexts and sampling replicates; repeated views do not create independent examples. Leave the learner response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -5976,16 +5343,6 @@ def query_sampled_game(game: Callable[[estimator_Tensor], estimator_Tensor], sam
 
 if MAIN:
     estimator_tests.test_query_sampled_game(fn=query_sampled_game)
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — estimator-21
-
-Record observations with units, denominator, control values and exact source IDs/receipt where available. Distinguish your execution from the retained historical reference. Compare with your committed forecast, explain a discrepancy and forecast one changed condition before trying it. State what changed in the game/protocol. Historical reuse is guided exploration, not untouched evaluation.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -6051,11 +5408,7 @@ Compare small singular values with `rtol` times the spectral norm of the **origi
 # ! TAGS: []
 
 r'''
-## Forecast before running — estimator-24
-
 Predict the constrained optimum and remaining nullspace rank without adding regularization.
-
-Commit a numeric interval, sign or ordering, confidence (0–100%), mechanism and possible disconfirming control. Record prior exposure (unseen/seen/unknown) before opening the reference result. Distinguish masks, donor predictions, recipe groups, contexts and sampling replicates; repeated views do not create independent examples. Leave the learner response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -6121,16 +5474,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-## Reflect after the result — estimator-24
-
-Record observations with units, denominator, control values and exact source IDs/receipt where available. Distinguish your execution from the retained historical reference. Compare with your committed forecast, explain a discrepancy and forecast one changed condition before trying it. State what changed in the game/protocol. Historical reuse is guided exploration, not untouched evaluation.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details>
 <summary>Expected output</summary>
 
@@ -6190,11 +5533,7 @@ Implement the pair formula and the two finite kernels. Return zero weight outsid
 # ! TAGS: []
 
 r'''
-## Forecast before running — estimator-27
-
 Predict why residual design and kernel weighting are separate operations.
-
-Commit a numeric interval, sign or ordering, confidence (0–100%), mechanism and possible disconfirming control. Record prior exposure (unseen/seen/unknown) before opening the reference result. Distinguish masks, donor predictions, recipe groups, contexts and sampling replicates; repeated views do not create independent examples. Leave the learner response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -6237,16 +5576,6 @@ if MAIN:
 
 if MAIN:
     estimator_tests.test_kernel_weights(fn=kernel_weights)
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — estimator-27
-
-Record observations with units, denominator, control values and exact source IDs/receipt where available. Distinguish your execution from the retained historical reference. Compare with your committed forecast, explain a discrepancy and forecast one changed condition before trying it. State what changed in the game/protocol. Historical reuse is guided exploration, not untouched evaluation.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -6319,11 +5648,7 @@ Center at the empty value. Fit main effects with the first kernel and endpoint s
 # ! TAGS: []
 
 r'''
-## Forecast before running — estimator-30
-
 Predict the pairwise boundary limit; must every boundary residual be zero?
-
-Commit a numeric interval, sign or ordering, confidence (0–100%), mechanism and possible disconfirming control. Record prior exposure (unseen/seen/unknown) before opening the reference result. Distinguish masks, donor predictions, recipe groups, contexts and sampling replicates; repeated views do not create independent examples. Leave the learner response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -6380,16 +5705,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-## Reflect after the result — estimator-30
-
-Record observations with units, denominator, control values and exact source IDs/receipt where available. Distinguish your execution from the retained historical reference. Compare with your committed forecast, explain a discrepancy and forecast one changed condition before trying it. State what changed in the game/protocol. Historical reuse is guided exploration, not untouched evaluation.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details>
 <summary>Expected output</summary>
 
@@ -6410,11 +5725,7 @@ The first target is the single full-minus-empty value. The second target has one
 # ! TAGS: []
 
 r'''
-## Forecast before running — estimator-32
-
 Forecast finite-penalty convergence and the nonzero residual boundary example.
-
-Commit a numeric interval, sign or ordering, confidence (0–100%), mechanism and possible disconfirming control. Record prior exposure (unseen/seen/unknown) before opening the reference result. Distinguish masks, donor predictions, recipe groups, contexts and sampling replicates; repeated views do not create independent examples. Leave the learner response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -6433,16 +5744,6 @@ if MAIN:
 
 r'''
 <img src="media/estimator_32_0.png" width="1050">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — estimator-32
-
-Record observations with units, denominator, control values and exact source IDs/receipt where available. Distinguish your execution from the retained historical reference. Compare with your committed forecast, explain a discrepancy and forecast one changed condition before trying it. State what changed in the game/protocol. Historical reuse is guided exploration, not untouched evaluation.
 '''
 
 # ! CELL TYPE: markdown
@@ -6484,11 +5785,7 @@ The reference must be able to measure all 28 errors even when a method queried o
 # ! TAGS: []
 
 r'''
-## Forecast before running — estimator-34
-
 Before native model/game construction, forecast both estimators under both proposals and keep audit outcomes unopened.
-
-Commit a numeric interval, sign or ordering, confidence (0–100%), mechanism and possible disconfirming control. Record prior exposure (unseen/seen/unknown) before opening the reference result. Distinguish masks, donor predictions, recipe groups, contexts and sampling replicates; repeated views do not create independent examples. Leave the learner response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -6503,21 +5800,7 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-## Reflect after the result — estimator-34
-
-Record observations with units, denominator, control values and exact source IDs/receipt where available. Distinguish your execution from the retained historical reference. Compare with your committed forecast, explain a discrepancy and forecast one changed condition before trying it. State what changed in the game/protocol. Historical reuse is guided exploration, not untouched evaluation.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Forecast before running — estimator-35
-
 Commit sampling-budget comparisons; distinguish reference construction from logical oracle query counts.
-
-Commit a numeric interval, sign or ordering, confidence (0–100%), mechanism and possible disconfirming control. Record prior exposure (unseen/seen/unknown) before opening the reference result. Distinguish masks, donor predictions, recipe groups, contexts and sampling replicates; repeated views do not create independent examples. Leave the learner response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -6550,16 +5833,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-## Reflect after the result — estimator-35
-
-Record observations with units, denominator, control values and exact source IDs/receipt where available. Distinguish your execution from the retained historical reference. Compare with your committed forecast, explain a discrepancy and forecast one changed condition before trying it. State what changed in the game/protocol. Historical reuse is guided exploration, not untouched evaluation.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Read model quality before explanation size
 '''
 
@@ -6568,11 +5841,7 @@ r'''
 # ! TAGS: []
 
 r'''
-## Forecast before running — estimator-37
-
 Forecast model quality/ridge/shuffled controls without selecting models on audit outcomes.
-
-Commit a numeric interval, sign or ordering, confidence (0–100%), mechanism and possible disconfirming control. Record prior exposure (unseen/seen/unknown) before opening the reference result. Distinguish masks, donor predictions, recipe groups, contexts and sampling replicates; repeated views do not create independent examples. Leave the learner response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -6598,16 +5867,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — estimator-37
-
-Record observations with units, denominator, control values and exact source IDs/receipt where available. Distinguish your execution from the retained historical reference. Compare with your committed forecast, explain a discrepancy and forecast one changed condition before trying it. State what changed in the game/protocol. Historical reuse is guided exploration, not untouched evaluation.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 The shuffled-label predictors are controls for learning useful predictive structure. They can still have nonzero interactions. Ridge is an additive model and its exact pair SII should be near rounding error. Finite SHAP-IQ may estimate nonzero ridge interactions because its sampled cancellation is imperfect; that is part of the comparison.
 
 ## How much error remains at each budget?
@@ -6618,11 +5877,7 @@ The shuffled-label predictors are controls for learning useful predictive struct
 # ! TAGS: []
 
 r'''
-## Forecast before running — estimator-39
-
 Forecast all four error-budget curves and identify32 paired sampling replicates, not independent row replicates.
-
-Commit a numeric interval, sign or ordering, confidence (0–100%), mechanism and possible disconfirming control. Record prior exposure (unseen/seen/unknown) before opening the reference result. Distinguish masks, donor predictions, recipe groups, contexts and sampling replicates; repeated views do not create independent examples. Leave the learner response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -6648,16 +5903,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — estimator-39
-
-Record observations with units, denominator, control values and exact source IDs/receipt where available. Distinguish your execution from the retained historical reference. Compare with your committed forecast, explain a discrepancy and forecast one changed condition before trying it. State what changed in the game/protocol. Historical reuse is guided exploration, not untouched evaluation.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 Every line uses all rows of its indicated held-out split, weighting recipe groups equally before
 averaging pair errors. Replicate variation comes from the 32 sampling streams. Those streams are
 shared across rows, so rows are not counted as independent Monte Carlo replicates. All model
@@ -6672,11 +5917,7 @@ doing no interaction estimation at all.
 # ! TAGS: []
 
 r'''
-## Forecast before running — estimator-41
-
 Predict all28 signed pair values at the fixed source/model/replicate/budget, including near-zero pairs.
-
-Commit a numeric interval, sign or ordering, confidence (0–100%), mechanism and possible disconfirming control. Record prior exposure (unseen/seen/unknown) before opening the reference result. Distinguish masks, donor predictions, recipe groups, contexts and sampling replicates; repeated views do not create independent examples. Leave the learner response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -6702,16 +5943,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — estimator-41
-
-Record observations with units, denominator, control values and exact source IDs/receipt where available. Distinguish your execution from the retained historical reference. Compare with your committed forecast, explain a discrepancy and forecast one changed condition before trying it. State what changed in the game/protocol. Historical reuse is guided exploration, not untouched evaluation.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 This view fixes the model, source row, replicate and budget before looking at results. Read the signed estimate alongside its error. An accurate mean across many pairs can conceal a wrong sign on one pair, while a single noisy replicate can look much worse than the aggregate curve.
 
 ## Does the reported sampling uncertainty mean what we think?
@@ -6722,11 +5953,7 @@ This view fixes the model, source row, replicate and budget before looking at re
 # ! TAGS: []
 
 r'''
-## Forecast before running — estimator-43
-
 Compare exact variance/K, estimated SE squared and observed replicate errors before viewing them.
-
-Commit a numeric interval, sign or ordering, confidence (0–100%), mechanism and possible disconfirming control. Record prior exposure (unseen/seen/unknown) before opening the reference result. Distinguish masks, donor predictions, recipe groups, contexts and sampling replicates; repeated views do not create independent examples. Leave the learner response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -6752,16 +5979,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — estimator-43
-
-Record observations with units, denominator, control values and exact source IDs/receipt where available. Distinguish your execution from the retained historical reference. Compare with your committed forecast, explain a discrepancy and forecast one changed condition before trying it. State what changed in the game/protocol. Historical reuse is guided exploration, not untouched evaluation.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 Because this game is finite, we can enumerate the exact one-draw variance under each proposal and divide by `K`. Compare that prediction with average estimated SE squared and observed replicate squared errors. Their agreement is a sampling diagnostic. It does not give a confidence interval for concrete chemistry or for future model fits.
 
 ## Draws, unique queries and identified directions
@@ -6772,11 +5989,7 @@ Because this game is finite, we can enumerate the exact one-draw variance under 
 # ! TAGS: []
 
 r'''
-## Forecast before running — estimator-45
-
 Predict when more draws add few unique queries and how this affects free rank.
-
-Commit a numeric interval, sign or ordering, confidence (0–100%), mechanism and possible disconfirming control. Record prior exposure (unseen/seen/unknown) before opening the reference result. Distinguish masks, donor predictions, recipe groups, contexts and sampling replicates; repeated views do not create independent examples. Leave the learner response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -6802,16 +6015,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — estimator-45
-
-Record observations with units, denominator, control values and exact source IDs/receipt where available. Distinguish your execution from the retained historical reference. Compare with your committed forecast, explain a discrepancy and forecast one changed condition before trying it. State what changed in the game/protocol. Historical reuse is guided exploration, not untouched evaluation.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 Drawing a coalition twice increases the Monte Carlo sample count while the cache pays for its
 model evaluation once. Keep both counts. After enough draws, the logical unique-query count
 approaches 256; complete enumeration is then a serious alternative. The pair fit has twenty free
@@ -6828,11 +6031,7 @@ Change the recipe, model, proposal, seed or number of draws below. Predict which
 # ! TAGS: []
 
 r'''
-## Forecast before running — estimator-47
-
 Commit model/source/proposal/seed/budget edits and forecast signed error, cost and rank before exploratory reuse.
-
-Commit a numeric interval, sign or ordering, confidence (0–100%), mechanism and possible disconfirming control. Record prior exposure (unseen/seen/unknown) before opening the reference result. Distinguish masks, donor predictions, recipe groups, contexts and sampling replicates; repeated views do not create independent examples. Leave the learner response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -6879,16 +6078,6 @@ if MAIN:
 
 r'''
 <img src="media/estimator_47_1.png" width="1050">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — estimator-47
-
-Record observations with units, denominator, control values and exact source IDs/receipt where available. Distinguish your execution from the retained historical reference. Compare with your committed forecast, explain a discrepancy and forecast one changed condition before trying it. State what changed in the game/protocol. Historical reuse is guided exploration, not untouched evaluation.
 '''
 
 # ! CELL TYPE: markdown
@@ -6945,6 +6134,6 @@ r'''
 r'''
 ## Design a comparison before changing the experiment
 
-Compare a contextual derivative, an efficient allocation and a sampling estimate of pair SII. Explain which differences reflect the target game/definition and which reflect sampling error. Propose a single changed condition with a falsifiable forecast. All historical controls, unfavorable results and complete study scopes remain part of the lesson.
+Compare a contextual derivative, an efficient allocation and a sampling estimate of pair SII. Explain which differences reflect the target game/definition and which reflect sampling error. Propose a single changed condition with a falsifiable forecast.
 '''
 

@@ -36,27 +36,12 @@ r'''
 # ! TAGS: []
 
 r'''
-## Commit a prediction before inspecting the historical results
-
 A prompt score and an image-caption score both admit Shapley explanations. Predict which facts an
 attribution can establish only after the players, replacement intervention and utility are fixed.
 For the token game, forecast whether deleting either member of a redundant pair from the full prompt
 must reveal the pair's shared credit. For the separate region game, forecast which control would
 make an attractive attribution unconvincing.
 
-| Before opening either complete reference lesson | Your commitment |
-| --- | --- |
-| Token redundancy forecast and a control that should fail | ______ |
-| Region/caption forecast and a control that should fail | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning and a condition that would change your mind | ______ |
-| Prior exposure: seen / unknown / unexposed, with source | ______ |
-| Exact source/configuration fingerprint | ______ |
-
-Both public legacy curricula follow in full. Their saved outputs, expected answers, hints, solution
-cells and figures expose the results. This is historical guided practice with seen or unknown
-exposure; it earns no unseen mastery score. All forecast and reflection fields remain blank. This
-migration executes no taught method, model, target tensor, training or new target measurement.
 '''
 
 
@@ -83,34 +68,13 @@ r'''
 > - Keep modality replacement and object/background/OCR replacement as separate estimands.
 > - Inspect every rendered coalition and caption control before interpreting the pinned CLIP result.
 
-### Scope and visible reference code
+### Scope
 
 Token players are fixed prompt positions replaced by `[MASK]`. The modality game replaces a whole
 image and caption against explicit distractor/neutral inputs. Region players toggle rendered object,
 background and OCR components while holding the target caption fixed. Each game has its own utility
 and empty-coalition baseline; their player spaces and attribution units are not aligned or pooled.
-The exact toy games and pinned historical CLIP result support different claims. The separate
-four-token neural release preflight is preserved with its original identity, not substituted for the
-five-token analytic learner game.
-
-Every original student stub, solution, immediate test, expected output, control, play cell and
-limitation remains below. Complete original reference scientific definitions are also shown inline
-before use with independent prefixes. Their independent reference library driver flags are
-explicitly false, preserving the original imported-library behavior when embedded in Jupyter.
-Original notebook setup and demonstrations retain their explicit MAIN behavior. Static
-`token_reference` and `region_reference` namespaces bind those visible callbacks; no hidden
-reference method supplies the model result. The active test imports use original legacy package
-paths, preserving their original __file__ and report-input identity. Byte-exact canonical helper
-copies are custody references. The legacy test modules remain byte-exact and retain their original
-helper fallbacks, including the VLM independent reference. A callback test does not establish
-isolation of every inline helper dependency.
-
-The Python module imports without runtime setup, target tensors, model constructors, RNG mutation,
-path discovery, display, data/report/cache access, downloads or writes. Ordinary frozen dataclass
-and torch module type declarations are retained. Explicit `initialize_lesson_plumbing()` binds
-original source/report inputs and canonical figure outputs for path-dependent callbacks. Visible
-notebook setup remains explicit. Historical results do not establish a fresh execution, paper
-reproduction, human walkthrough or course acceptance.
+The exact toy games and pinned CLIP result support different claims.
 '''
 
 
@@ -139,8 +103,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Complete legacy token-position masking lesson
-
 ### [16.4] TokenSHAP and TokenShapley
 
 ## Core Question
@@ -227,32 +189,6 @@ class CorrelatedPairAudit:
     synergy_shapley: t.Tensor
     attribution_max_abs_difference: float
     identified_from_observed_support: bool
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Predict before inspection — token-2
-
-> ```yaml
-> Difficulty: 🔴🔴⚪⚪⚪
-> Importance: 🔵🔵🔵🔵⚪
-> You should spend 2-3 minutes committing this prediction.
-> ```
-
-Commit a forecast before expected outputs, hints, solutions or saved figures. Keep the player set,
-utility, baseline and control explicit. Predict a changed condition before trying it.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Forecast and a control that should fail | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning | ______ |
-| Prior exposure and exact implementation fingerprint | ______ |
-| Changed-condition forecast, confidence and reasoning | ______ |
-'''
 
 
 # ! CELL TYPE: markdown
@@ -428,51 +364,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after testing — token-3
-
-| After testing and observing the controls | Your record |
-| --- | --- |
-| What you actually ran and exact source/configuration | ______ |
-| Observation and controls that failed visibly | ______ |
-| Difference from your committed forecast and explanation | ______ |
-| Updated changed-condition forecast, confidence and reasoning | ______ |
-
-Retained outputs are historical references. An unexecuted transfer remains unobserved; static
-conversion and import checks are separate from a result you generated.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Predict before inspection — token-4
-
-> ```yaml
-> Difficulty: 🔴🔴⚪⚪⚪
-> Importance: 🔵🔵🔵🔵⚪
-> You should spend 2-3 minutes committing this prediction.
-> ```
-
-Commit a forecast before expected outputs, hints, solutions or saved figures. Keep the player set,
-utility, baseline and control explicit. Predict a changed condition before trying it.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Forecast and a control that should fail | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning | ______ |
-| Prior exposure and exact implementation fingerprint | ______ |
-| Changed-condition forecast, confidence and reasoning | ______ |
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise 2 - compute exact token Shapley values
 
 > ```yaml
@@ -623,51 +514,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after testing — token-5
-
-| After testing and observing the controls | Your record |
-| --- | --- |
-| What you actually ran and exact source/configuration | ______ |
-| Observation and controls that failed visibly | ______ |
-| Difference from your committed forecast and explanation | ______ |
-| Updated changed-condition forecast, confidence and reasoning | ______ |
-
-Retained outputs are historical references. An unexecuted transfer remains unobserved; static
-conversion and import checks are separate from a result you generated.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Predict before inspection — token-6
-
-> ```yaml
-> Difficulty: 🔴🔴⚪⚪⚪
-> Importance: 🔵🔵🔵🔵⚪
-> You should spend 2-3 minutes committing this prediction.
-> ```
-
-Commit a forecast before expected outputs, hints, solutions or saved figures. Keep the player set,
-utility, baseline and control explicit. Predict a changed condition before trying it.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Forecast and a control that should fail | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning | ______ |
-| Prior exposure and exact implementation fingerprint | ______ |
-| Changed-condition forecast, confidence and reasoning | ______ |
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise 3 - estimate TokenSHAP from random orderings
 
 > ```yaml
@@ -782,51 +628,6 @@ if MAIN:
 # END HIDE
 
 # END SOLUTION
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after testing — token-7
-
-| After testing and observing the controls | Your record |
-| --- | --- |
-| What you actually ran and exact source/configuration | ______ |
-| Observation and controls that failed visibly | ______ |
-| Difference from your committed forecast and explanation | ______ |
-| Updated changed-condition forecast, confidence and reasoning | ______ |
-
-Retained outputs are historical references. An unexecuted transfer remains unobserved; static
-conversion and import checks are separate from a result you generated.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Predict before inspection — token-8
-
-> ```yaml
-> Difficulty: 🔴🔴⚪⚪⚪
-> Importance: 🔵🔵🔵🔵⚪
-> You should spend 2-3 minutes committing this prediction.
-> ```
-
-Commit a forecast before expected outputs, hints, solutions or saved figures. Keep the player set,
-utility, baseline and control explicit. Predict a changed condition before trying it.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Forecast and a control that should fail | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning | ______ |
-| Prior exposure and exact implementation fingerprint | ______ |
-| Changed-condition forecast, confidence and reasoning | ______ |
-'''
 
 
 # ! CELL TYPE: markdown
@@ -952,51 +753,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after testing — token-9
-
-| After testing and observing the controls | Your record |
-| --- | --- |
-| What you actually ran and exact source/configuration | ______ |
-| Observation and controls that failed visibly | ______ |
-| Difference from your committed forecast and explanation | ______ |
-| Updated changed-condition forecast, confidence and reasoning | ______ |
-
-Retained outputs are historical references. An unexecuted transfer remains unobserved; static
-conversion and import checks are separate from a result you generated.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Predict before inspection — token-10
-
-> ```yaml
-> Difficulty: 🔴🔴⚪⚪⚪
-> Importance: 🔵🔵🔵🔵⚪
-> You should spend 2-3 minutes committing this prediction.
-> ```
-
-Commit a forecast before expected outputs, hints, solutions or saved figures. Keep the player set,
-utility, baseline and control explicit. Predict a changed condition before trying it.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Forecast and a control that should fail | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning | ______ |
-| Prior exposure and exact implementation fingerprint | ______ |
-| Changed-condition forecast, confidence and reasoning | ______ |
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise 5 - separate redundancy from synergy
 
 > ```yaml
@@ -1106,51 +862,6 @@ if MAIN:
 # END HIDE
 
 # END SOLUTION
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after testing — token-11
-
-| After testing and observing the controls | Your record |
-| --- | --- |
-| What you actually ran and exact source/configuration | ______ |
-| Observation and controls that failed visibly | ______ |
-| Difference from your committed forecast and explanation | ______ |
-| Updated changed-condition forecast, confidence and reasoning | ______ |
-
-Retained outputs are historical references. An unexecuted transfer remains unobserved; static
-conversion and import checks are separate from a result you generated.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Predict before inspection — token-12
-
-> ```yaml
-> Difficulty: 🔴🔴⚪⚪⚪
-> Importance: 🔵🔵🔵🔵⚪
-> You should spend 2-3 minutes committing this prediction.
-> ```
-
-Commit a forecast before expected outputs, hints, solutions or saved figures. Keep the player set,
-utility, baseline and control explicit. Predict a changed condition before trying it.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Forecast and a control that should fail | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning | ______ |
-| Prior exposure and exact implementation fingerprint | ______ |
-| Changed-condition forecast, confidence and reasoning | ______ |
-'''
 
 
 # ! CELL TYPE: markdown
@@ -1296,51 +1007,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after testing — token-13
-
-| After testing and observing the controls | Your record |
-| --- | --- |
-| What you actually ran and exact source/configuration | ______ |
-| Observation and controls that failed visibly | ______ |
-| Difference from your committed forecast and explanation | ______ |
-| Updated changed-condition forecast, confidence and reasoning | ______ |
-
-Retained outputs are historical references. An unexecuted transfer remains unobserved; static
-conversion and import checks are separate from a result you generated.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Predict before inspection — token-14
-
-> ```yaml
-> Difficulty: 🔴🔴⚪⚪⚪
-> Importance: 🔵🔵🔵🔵⚪
-> You should spend 2-3 minutes committing this prediction.
-> ```
-
-Commit a forecast before expected outputs, hints, solutions or saved figures. Keep the player set,
-utility, baseline and control explicit. Predict a changed condition before trying it.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Forecast and a control that should fail | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning | ______ |
-| Prior exposure and exact implementation fingerprint | ______ |
-| Changed-condition forecast, confidence and reasoning | ______ |
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise 7 - audit a perfectly correlated token pair
 
 > ```yaml
@@ -1459,51 +1125,6 @@ if MAIN:
 # END HIDE
 
 # END SOLUTION
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after testing — token-15
-
-| After testing and observing the controls | Your record |
-| --- | --- |
-| What you actually ran and exact source/configuration | ______ |
-| Observation and controls that failed visibly | ______ |
-| Difference from your committed forecast and explanation | ______ |
-| Updated changed-condition forecast, confidence and reasoning | ______ |
-
-Retained outputs are historical references. An unexecuted transfer remains unobserved; static
-conversion and import checks are separate from a result you generated.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Predict before inspection — token-16
-
-> ```yaml
-> Difficulty: 🔴🔴⚪⚪⚪
-> Importance: 🔵🔵🔵🔵⚪
-> You should spend 2-3 minutes committing this prediction.
-> ```
-
-Commit a forecast before expected outputs, hints, solutions or saved figures. Keep the player set,
-utility, baseline and control explicit. Predict a changed condition before trying it.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Forecast and a control that should fail | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning | ______ |
-| Prior exposure and exact implementation fingerprint | ______ |
-| Changed-condition forecast, confidence and reasoning | ______ |
-'''
 
 
 # ! CELL TYPE: markdown
@@ -1704,25 +1325,6 @@ if MAIN:
 # END HIDE
 
 # END SOLUTION
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after testing — token-17
-
-| After testing and observing the controls | Your record |
-| --- | --- |
-| What you actually ran and exact source/configuration | ______ |
-| Observation and controls that failed visibly | ______ |
-| Difference from your committed forecast and explanation | ______ |
-| Updated changed-condition forecast, confidence and reasoning | ______ |
-
-Retained outputs are historical references. An unexecuted transfer remains unobserved; static
-conversion and import checks are separate from a result you generated.
-'''
 
 
 # ! CELL TYPE: markdown
@@ -2067,34 +1669,6 @@ models, report the masking operator, score, tokenizer, grouping, and sensitivity
 alternatives.
 
 </details>
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Release verification boundary
-
-The CPU learner result above is complete without a trained model. Course release tooling also
-retains a separate CUDA preflight that trains a tiny scorer on all 16 coalitions of the older
-four-token compatibility game. The definitions below do not execute it or read its report. That
-preflight checks implementation plumbing only and is not evidence that token attribution is faithful
-for a language model.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Visible complete token reference definitions
-
-This is the complete original scientific reference source with independent global names. Read and
-modify the method here before using its callback. Runtime setup and demonstrations are explicit;
-none was executed during migration.
 '''
 
 
@@ -2830,8 +2404,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Complete legacy modality and region replacement lesson
-
 ### [16.5] VLM Modality and Region SHAP
 
 ## Core Question
@@ -2845,15 +2417,6 @@ positive image-text interaction survives an explicit target-vs-distractor check.
 
 You will answer it twice: first on games where the answer is known exactly, then on all rendered
 coalitions scored by a real pinned CLIP checkpoint.
-
-```python
-EXERCISE_ID = "16_5_vlm_modality_and_region_shap"
-GT_TIER = "GT-0"
-DIFFICULTY = 3
-IMPORTANCE = 4
-EXPECTED_RUNTIME = "about 20 minutes for exercises; under a minute for cached CLIP on CUDA"
-REQUIRES_GPU = True
-```
 '''
 
 
@@ -2888,6 +2451,8 @@ Shapley average each player’s marginal effect over every context.
 
 r'''
 ## Setup
+
+The token-position exercises run on CPU. The CLIP signature needs a CUDA GPU: the exercises take about 20 minutes, and scoring the cached CLIP coalitions takes under a minute.
 '''
 
 
@@ -2980,32 +2545,6 @@ r'''
 For players $N=\{0,\ldots,n-1\}$, a game assigns a value $v(S)$ to every coalition $S\subseteq N$.
 Exact Shapley attribution is only meaningful here if the table really contains all $2^n$ coalitions.
 This gives us a cheap first checkpoint before any model is loaded.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Predict before inspection — region-6
-
-> ```yaml
-> Difficulty: 🔴🔴⚪⚪⚪
-> Importance: 🔵🔵🔵🔵⚪
-> You should spend 2-3 minutes committing this prediction.
-> ```
-
-Commit a forecast before expected outputs, hints, solutions or saved figures. Keep the player set,
-utility, baseline and control explicit. Predict a changed condition before trying it.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Forecast and a control that should fail | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning | ______ |
-| Prior exposure and exact implementation fingerprint | ______ |
-| Changed-condition forecast, confidence and reasoning | ______ |
 '''
 
 
@@ -3147,51 +2686,6 @@ if MAIN:
 # END HIDE
 
 # END SOLUTION
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after testing — region-7
-
-| After testing and observing the controls | Your record |
-| --- | --- |
-| What you actually ran and exact source/configuration | ______ |
-| Observation and controls that failed visibly | ______ |
-| Difference from your committed forecast and explanation | ______ |
-| Updated changed-condition forecast, confidence and reasoning | ______ |
-
-Retained outputs are historical references. An unexecuted transfer remains unobserved; static
-conversion and import checks are separate from a result you generated.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Predict before inspection — region-8
-
-> ```yaml
-> Difficulty: 🔴🔴⚪⚪⚪
-> Importance: 🔵🔵🔵🔵⚪
-> You should spend 2-3 minutes committing this prediction.
-> ```
-
-Commit a forecast before expected outputs, hints, solutions or saved figures. Keep the player set,
-utility, baseline and control explicit. Predict a changed condition before trying it.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Forecast and a control that should fail | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning | ______ |
-| Prior exposure and exact implementation fingerprint | ______ |
-| Changed-condition forecast, confidence and reasoning | ______ |
-'''
 
 
 # ! CELL TYPE: markdown
@@ -3385,57 +2879,12 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after testing — region-9
-
-| After testing and observing the controls | Your record |
-| --- | --- |
-| What you actually ran and exact source/configuration | ______ |
-| Observation and controls that failed visibly | ______ |
-| Difference from your committed forecast and explanation | ______ |
-| Updated changed-condition forecast, confidence and reasoning | ______ |
-
-Retained outputs are historical references. An unexecuted transfer remains unobserved; static
-conversion and import checks are separate from a result you generated.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## 2. Toy modality game: can two weak cues become strong together?
 
 Player `0` is an image replacement and player `1` is a text replacement. On the toy game, image
 evidence contributes `1.0`, text evidence contributes `0.5`, and their joint presence contributes
 another `2.0`. Because Shapley averages over orderings, each modality receives half of this
 interaction.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Predict before inspection — region-11
-
-> ```yaml
-> Difficulty: 🔴🔴⚪⚪⚪
-> Importance: 🔵🔵🔵🔵⚪
-> You should spend 2-3 minutes committing this prediction.
-> ```
-
-Commit a forecast before expected outputs, hints, solutions or saved figures. Keep the player set,
-utility, baseline and control explicit. Predict a changed condition before trying it.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Forecast and a control that should fail | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning | ______ |
-| Prior exposure and exact implementation fingerprint | ______ |
-| Changed-condition forecast, confidence and reasoning | ______ |
 '''
 
 
@@ -3593,51 +3042,6 @@ if MAIN:
 # END HIDE
 
 # END SOLUTION
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after testing — region-12
-
-| After testing and observing the controls | Your record |
-| --- | --- |
-| What you actually ran and exact source/configuration | ______ |
-| Observation and controls that failed visibly | ______ |
-| Difference from your committed forecast and explanation | ______ |
-| Updated changed-condition forecast, confidence and reasoning | ______ |
-
-Retained outputs are historical references. An unexecuted transfer remains unobserved; static
-conversion and import checks are separate from a result you generated.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Predict before inspection — region-13
-
-> ```yaml
-> Difficulty: 🔴🔴⚪⚪⚪
-> Importance: 🔵🔵🔵🔵⚪
-> You should spend 2-3 minutes committing this prediction.
-> ```
-
-Commit a forecast before expected outputs, hints, solutions or saved figures. Keep the player set,
-utility, baseline and control explicit. Predict a changed condition before trying it.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Forecast and a control that should fail | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning | ______ |
-| Prior exposure and exact implementation fingerprint | ______ |
-| Changed-condition forecast, confidence and reasoning | ______ |
-'''
 
 
 # ! CELL TYPE: markdown
@@ -3803,25 +3207,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after testing — region-14
-
-| After testing and observing the controls | Your record |
-| --- | --- |
-| What you actually ran and exact source/configuration | ______ |
-| Observation and controls that failed visibly | ______ |
-| Difference from your committed forecast and explanation | ______ |
-| Updated changed-condition forecast, confidence and reasoning | ______ |
-
-Retained outputs are historical references. An unexecuted transfer remains unobserved; static
-conversion and import checks are separate from a result you generated.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## 3. Region game: make the interventions inspectable
 
 We now use three players with fixed semantic roles:
@@ -3834,32 +3219,6 @@ We now use three players with fixed semantic roles:
 
 The background is deliberately uninformative in the toy oracle. The OCR cue is useful but not the
 target region. This lets us distinguish object localization from shortcut use before asking CLIP.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Predict before inspection — region-16
-
-> ```yaml
-> Difficulty: 🔴🔴⚪⚪⚪
-> Importance: 🔵🔵🔵🔵⚪
-> You should spend 2-3 minutes committing this prediction.
-> ```
-
-Commit a forecast before expected outputs, hints, solutions or saved figures. Keep the player set,
-utility, baseline and control explicit. Predict a changed condition before trying it.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Forecast and a control that should fail | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning | ______ |
-| Prior exposure and exact implementation fingerprint | ______ |
-| Changed-condition forecast, confidence and reasoning | ______ |
 '''
 
 
@@ -3993,51 +3352,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after testing — region-17
-
-| After testing and observing the controls | Your record |
-| --- | --- |
-| What you actually ran and exact source/configuration | ______ |
-| Observation and controls that failed visibly | ______ |
-| Difference from your committed forecast and explanation | ______ |
-| Updated changed-condition forecast, confidence and reasoning | ______ |
-
-Retained outputs are historical references. An unexecuted transfer remains unobserved; static
-conversion and import checks are separate from a result you generated.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Predict before inspection — region-18
-
-> ```yaml
-> Difficulty: 🔴🔴⚪⚪⚪
-> Importance: 🔵🔵🔵🔵⚪
-> You should spend 2-3 minutes committing this prediction.
-> ```
-
-Commit a forecast before expected outputs, hints, solutions or saved figures. Keep the player set,
-utility, baseline and control explicit. Predict a changed condition before trying it.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Forecast and a control that should fail | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning | ______ |
-| Prior exposure and exact implementation fingerprint | ______ |
-| Changed-condition forecast, confidence and reasoning | ______ |
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise - encode the object/OCR ground-truth game
 
 > ```yaml
@@ -4158,51 +3472,6 @@ if MAIN:
 # END HIDE
 
 # END SOLUTION
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after testing — region-19
-
-| After testing and observing the controls | Your record |
-| --- | --- |
-| What you actually ran and exact source/configuration | ______ |
-| Observation and controls that failed visibly | ______ |
-| Difference from your committed forecast and explanation | ______ |
-| Updated changed-condition forecast, confidence and reasoning | ______ |
-
-Retained outputs are historical references. An unexecuted transfer remains unobserved; static
-conversion and import checks are separate from a result you generated.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Predict before inspection — region-20
-
-> ```yaml
-> Difficulty: 🔴🔴⚪⚪⚪
-> Importance: 🔵🔵🔵🔵⚪
-> You should spend 2-3 minutes committing this prediction.
-> ```
-
-Commit a forecast before expected outputs, hints, solutions or saved figures. Keep the player set,
-utility, baseline and control explicit. Predict a changed condition before trying it.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Forecast and a control that should fail | ______ |
-| Confidence from 0 to 1 | ______ |
-| Causal reasoning | ______ |
-| Prior exposure and exact implementation fingerprint | ______ |
-| Changed-condition forecast, confidence and reasoning | ______ |
-'''
 
 
 # ! CELL TYPE: markdown
@@ -4367,25 +3636,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after testing — region-21
-
-| After testing and observing the controls | Your record |
-| --- | --- |
-| What you actually ran and exact source/configuration | ______ |
-| Observation and controls that failed visibly | ______ |
-| Difference from your committed forecast and explanation | ______ |
-| Updated changed-condition forecast, confidence and reasoning | ______ |
-
-Retained outputs are historical references. An unexecuted transfer remains unobserved; static
-conversion and import checks are separate from a result you generated.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Toy Ground Truth - inspect the oracle before the model
 '''
 
@@ -4487,19 +3737,6 @@ The modality game uses counterfactual replacements, not literal absence:
 The region game renders all eight combinations of object, gray background, and OCR text, always
 scored against “a red square”. The target-vs-distractor control separately checks that the full
 red-square image scores above “a blue circle”.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Visible complete region reference definitions
-
-This is the complete original scientific reference source with independent global names. Read and
-modify the method here before using its callback. Runtime setup and demonstrations are explicit;
-none was executed during migration.
 '''
 
 
@@ -5401,25 +4638,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after testing — region-38
-
-| After testing and observing the controls | Your record |
-| --- | --- |
-| What you actually ran and exact source/configuration | ______ |
-| Observation and controls that failed visibly | ______ |
-| Difference from your committed forecast and explanation | ______ |
-| Updated changed-condition forecast, confidence and reasoning | ______ |
-
-Retained outputs are historical references. An unexecuted transfer remains unobserved; static
-conversion and import checks are separate from a result you generated.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 The committed `verification_report.json` records the same pinned CUDA run for automated regression
 checks. It is supporting evidence; the images, coalition table, controls, and interpretation above
 are the lesson.
@@ -5464,135 +4682,11 @@ r'''
 # ! TAGS: []
 
 r'''
-## Historical figure shelf
-
-Commit your predictions first. Every related instruction asset and embedded output image follows,
-including historical PNG and SVG versions. These are separate saved artifacts, not proof of one
-current execution. Full notebooks retain every original output object and execution count.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Retained historical figure 1
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/tokenshap_exact_signature.png`.
-
-<img src="../../exercises/part7_token_region_shap/media/tokenshap_exact_signature.png" alt="Historical token or region attribution figure 1" width="950">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Retained historical figure 2
-
-Source:
-`chapter16_shapley_attribution_baselines/instructions/assets/tokenshap_signature_result.svg`.
-
-<img src="../../exercises/part7_token_region_shap/media/tokenshap_signature_result.svg" alt="Historical token or region attribution figure 2" width="950">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Retained historical figure 3
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/tokenshap_validation_loop.svg`.
-
-<img src="../../exercises/part7_token_region_shap/media/tokenshap_validation_loop.svg" alt="Historical token or region attribution figure 3" width="950">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Retained historical figure 4
-
-Source:
-`chapter16_shapley_attribution_baselines/instructions/assets/vlm_modality_region_live_signature.png`.
-
-<img src="../../exercises/part7_token_region_shap/media/vlm_modality_region_live_signature.png" alt="Historical token or region attribution figure 4" width="950">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Retained historical figure 5
-
-Source:
-`chapter16_shapley_attribution_baselines/instructions/assets/vlm_modality_region_signature_result.svg`.
-
-<img src="../../exercises/part7_token_region_shap/media/vlm_modality_region_signature_result.svg" alt="Historical token or region attribution figure 5" width="950">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Retained historical figure 6
-
-Source:
-`chapter16_shapley_attribution_baselines/instructions/assets/vlm_modality_region_toy_ground_truth.png`.
-
-<img src="../../exercises/part7_token_region_shap/media/vlm_modality_region_toy_ground_truth.png" alt="Historical token or region attribution figure 6" width="950">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Retained historical figure 7
-
-Source:
-`chapter16_shapley_attribution_baselines/instructions/assets/vlm_modality_region_validation_loop.svg`.
-
-<img src="../../exercises/part7_token_region_shap/media/vlm_modality_region_validation_loop.svg" alt="Historical token or region attribution figure 7" width="950">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Retained historical figure 8
-
-Source:
-`chapter16_shapley_attribution_baselines/instructions/assets/vlm_region_clip_coalitions.png`.
-
-<img src="../../exercises/part7_token_region_shap/media/vlm_region_clip_coalitions.png" alt="Historical token or region attribution figure 8" width="950">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Finish the comparison
 
 State the players, exact replacement intervention, utility units and empty-coalition baseline for
 each explanation. Describe why credit can change with token grouping or unobserved correlated
 coalitions, and why a pinned rendered-image result does not identify a VLM's internal mechanism.
-Keep both original play cells and anomaly hunts as exploratory changes to try. Human learner
-walkthrough, scientific reproduction and acceptance remain deferred.
+Keep both play cells and anomaly hunts as exploratory changes to try.
 '''
 

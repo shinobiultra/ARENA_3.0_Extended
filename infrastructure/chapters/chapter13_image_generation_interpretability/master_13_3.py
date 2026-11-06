@@ -87,11 +87,7 @@ r'''
 The default path is a small, deterministic CPU organism with explicit weights and finite
 images. It teaches the named component operations and controls. It is not a trained diffusion
 model, a pretrained checkpoint, or a paper replication. No model download, GPU selection,
-training run or scientific sweep occurs. Published/native parts of the configured brief remain
-pending; the bridge at the end says precisely what would need to be measured.
-
-These are public guided exercises. Write your own prediction and prior solution exposure
-before opening expected outputs. Expected outputs make this seen practice, not unseen mastery.
+training run or scientific sweep occurs.
 '''
 
 # ! CELL TYPE: markdown
@@ -359,7 +355,7 @@ can point toward a background feature instead. We keep the raw difference magnit
 it would change the meaning of a strength of one.
 
 Before running the grid, predict the score of the starting blue square after adding $d/2$,
-a full $d$, and an equally long background direction. Record confidence and prior exposure.
+a full $d$, and an equally long background direction.
 '''
 
 # ! CELL TYPE: markdown
@@ -1093,8 +1089,7 @@ r'''
 r'''
 ## Limits and the real-model bridge
 
-The configured requirements `image.diffusion_concept_directions` and `image.diffusion_lora`
-remain visible here: the study edition teaches matched directions, projection removal, LoRA
+The study edition teaches matched directions, projection removal, LoRA
 factorization, an exact one-factor fit, SVD and independent image scoring. It does **not** train
 a UNet adapter, discover h-space, reproduce Concept Sliders, or establish safe concept removal.
 

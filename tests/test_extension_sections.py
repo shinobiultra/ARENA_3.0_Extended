@@ -410,12 +410,17 @@ def local_references(markdown: str) -> list[str]:
 
 
 @pytest.mark.parametrize("chapter_name,number,section", SECTIONS, ids=IDS)
-def test_page_references_exist(chapter_name, number, section):
-    """Every local file the lesson page links to or shows exists."""
-    page = ROOT / chapter_name / "instructions" / "pages" / f"{CONFIG['conversion_map'][number]['streamlit_page']}.md"
-    missing = sorted({target for target in local_references(page.read_text(encoding="utf-8"))
-                      if not (page.parent / target).exists()})
-    assert not missing, f"{page.relative_to(ROOT)} references missing files: {missing}"
+def test_referenced_files_exist(chapter_name, number, section):
+    """Every local file the lesson links to or shows exists, seen from its exercises notebook.
+
+    Masters write relative links from the exercise folder (where Jupyter resolves them);
+    the build rewrites figure paths for the instruction page.
+    """
+    exercise_dir, colab_name = section_paths(chapter_name, number)
+    notebook = nbformat.read(exercise_dir / f"{colab_name}_exercises.ipynb", as_version=4)
+    markdown = "\n".join(cell.source for cell in notebook.cells if cell.cell_type == "markdown")
+    missing = sorted({target for target in local_references(markdown) if not (exercise_dir / target).exists()})
+    assert not missing, f"{colab_name}_exercises.ipynb references missing files: {missing}"
 
 
 def test_every_syllabus_section_is_in_the_config():

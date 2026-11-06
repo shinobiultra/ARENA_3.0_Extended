@@ -33,7 +33,7 @@ Look at a four-patch image with a red object at the top left and a blue distract
 
 By the end of this notebook, you will have shown exactly why full-sequence and last-position interventions differ in a visible image-question residual-flow organism, using a layer-by-position recovery heatmap with object and background controls. Then you will map that intervention contract to the real Qwen2.5-VL, PaliGemma, LLaVA-OneVision and Molmo families without pretending a source-level map qualifies their hooks.
 
-The executed model here is a small specified attention route, not pretrained weights or a transformer trained to reason. Its point is that we can calculate the correct result independently. [12.3] supplies the fuller MiniVLM/GPT-2/Qwen reference; [1.2] hooks and [8.1] patching are prerequisites. Native adapter runs, checkpoints and real-model mechanism claims remain pending.
+The executed model here is a small specified attention route, not pretrained weights or a transformer trained to reason. Its point is that we can calculate the correct result independently. [12.3] supplies the fuller MiniVLM/GPT-2/Qwen reference; [1.2] hooks and [8.1] patching are prerequisites.
 '''
 
 # ! CELL TYPE: markdown
@@ -75,7 +75,7 @@ r'''
 r'''
 ## Setup code
 
-This study edition uses NumPy, Matplotlib and Pillow already installed in the course environment. All arrays are CPU float64, all examples are deterministic, and no model or network access occurs. Work in the full local checkout. Ordinary mathematical fixtures are guided practice, with no untouched evaluation split implied.
+This study edition uses NumPy, Matplotlib and Pillow already installed in the course environment. All arrays are CPU float64, all examples are deterministic, and no model or network access occurs.
 '''
 
 # ! CELL TYPE: code
@@ -1098,8 +1098,6 @@ r'''
 ## Limitations
 
 The visual encoder is mean pixel colour and the attention route is specified. Its layer0/1 timing is not a measurement of a released VLM. The lens uses known feature coordinates and its zero-state argmax is an arbitrary tie. The two rendered counterfactuals alter a distractor as well as the target; candidate margins and object-only controls show how the known route handles that difference. Native full-sequence hooks/adapters, natural-image evaluation, real Patchscopes/verbalizers and architecture-specific masking/caching remain pending.
-
-The configured requirement IDs remain visible: `vlm.visual_token_flow`, `vlm.full_sequence_patching`, `vlm.qwen25_vl_adapter`, `vlm.paligemma_adapter`, `vlm.llava_onevision_adapter`, `vlm.molmo_adapter`, `vlm.patchscopes_and_verbalizers`. Teaching implementations and CPU fixtures do not promote requirement status, establish a native model result, or confer direct learner acceptance.
 '''
 
 # ! CELL TYPE: markdown
@@ -1115,7 +1113,7 @@ r'''
 # ! TAGS: []
 
 r'''
-Before changing the recipe, write one prediction about the sign and size of a control difference. After running it, explain a mismatch. A public play outcome is exposed guided practice; changing a seed does not make it an unseen transfer test.
+Before changing the recipe, write one prediction about the sign and size of a control difference. After running it, explain a mismatch.
 
 ## Further reading
 

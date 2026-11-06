@@ -71,10 +71,10 @@ Prerequisites: original ARENA 1.2 (residual streams and hooks), 0.3 (gradient de
 needed. This organism deliberately *constructs* truth and recognition variables. It is not a
 claim that an LLM has the same coordinates, knows these facts, or has a universal truth neuron.
 
-The study edition covers `alignment.truthfulness_directions` and
-`alignment.hallucination_probes` through visible implementations and a source-grounded native
+The study edition covers truthfulness directions and
+hallucination probes through visible implementations and a source-grounded native
 bridge. Pretrained cross-dataset extraction, head selection, ITI truthfulness/helpfulness
-measurement and real entity-direction interventions remain pending.
+measurement and real entity-direction interventions are not covered here.
 '''
 
 # ! CELL TYPE: markdown
@@ -972,8 +972,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-## Forecast before the figure
-
 Which vector will be best on the tag-reversed domain? Which vector will change the organism's
 answer most per unit norm? Give two forecasts, with confidence and an explanation. They need
 not name the same vector. The spare tag predicts TRAIN labels exactly, but the answer margin
@@ -1471,8 +1469,7 @@ selection out of the final evaluated domain. Entity familiarity is not general s
 All representations here were constructed from known labels. They demonstrate identifiable
 failure modes and exact causal arithmetic, not truth representations learned from text.
 There is no released-model activation extraction, native ITI run, language-generation
-truthfulness rubric or entity-recognition SAE fit. The complete configured methods are
-therefore study-edition coverage with native evidence pending, not scientific completion.
+truthfulness rubric or entity-recognition SAE fit.
 
 ## Summary of 4️⃣
 
@@ -1508,7 +1505,5 @@ quantities are coordinate-dependent, and which downstream intervention predictio
   directions and knowledge-awareness interventions, with SAE discovery in real models.
 
 The publications motivate the distinctions, not the numerical outcomes of this fixture.
-Record your forecast, confidence, exposure to these public answers, observations and the
-changed-readout prediction. All examples remain guided public Practice.
 '''
 

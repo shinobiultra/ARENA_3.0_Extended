@@ -18,7 +18,7 @@ _TARGETS = {
     'chapter9_alignment_interpretability/instructions/pages/04_[9.4]_Emergent_Misalignment_Detection.md': (
         '9-4-primary-reading', '## Limitations',
     ),
-    'chapter9_alignment_interpretability/instructions/pages/06_[9.6]_Model_Editing_with_ROME_and_MEMIT.md': (
+    'chapter9_alignment_interpretability/instructions/pages/06_[9.6]_Rank-One_Model_Editing_ROME.md': (
         '9-6-reading-boundary', '## Reading',
     ),
     "chapter13_image_generation_interpretability/instructions/pages/02_[13.2]_Denoising-Time_Causal_Patching.md": (
@@ -30,7 +30,7 @@ _TARGETS = {
     "chapter15_peft_misalignment/instructions/pages/03_[15.3]_QLoRA_from_Scratch.md": (
         "15-3-failed-parity", "## 10. Train the Marker Rule on TinyStories",
     ),
-    "chapter17_training_dynamics/instructions/pages/01_[17.1]_Checkpoint_Archaeology_and_Grokking.md": (
+    "chapter17_training_dynamics/instructions/pages/01_[17.1]_Checkpoint_Archaeology_on_Modular_Addition.md": (
         "17-1-finite-domain", "## Core Question",
     ),
 }

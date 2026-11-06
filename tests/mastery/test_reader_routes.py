@@ -129,11 +129,11 @@ def test_missing_configured_route_is_actionable_before_reading_page(rows, tmp_pa
     assert not missing_page.exists()
 
 
-def test_acdc_route_points_to_prerequisites_and_marks_historical_main():
+def test_acdc_route_points_to_prerequisites():
     at = app({"section": "8.4", "part": "1"})
     assert not at.exception
     text = markdown_text(at)
-    for phrase in ("1.2", "8.1", "8.2", "historical"):
+    for phrase in ("1.2", "8.1", "8.2"):
         assert phrase in text
 
 

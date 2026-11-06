@@ -15,7 +15,7 @@ metadata = [
     {'title': 'TreeSHAP', 'icon': '1-circle-fill', 'subtitle': '30%'},
     {'title': 'DeepSHAP', 'icon': '2-circle-fill', 'subtitle': '35%'},
     {'title': 'Expected Gradients', 'icon': '3-circle-fill', 'subtitle': '35%'},
-    {'title': 'Historical figure shelf', 'icon': 'star', 'subtitle': 'reference'},
+    {'title': 'Bonus', 'icon': 'star', 'subtitle': ''},
 ]
 chapter_name = 'chapter16_shapley_attribution_baselines'
 chapter_name_long = 'Chapter 16 - Shapley Attribution Baselines'

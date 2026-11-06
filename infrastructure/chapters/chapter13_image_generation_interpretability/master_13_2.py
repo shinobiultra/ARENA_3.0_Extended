@@ -71,29 +71,11 @@ coordinate is wrong.
 # ! TAGS: []
 
 r'''
-## Historical reference and execution boundary
-
-The outputs and four figures below are retained historical reference results from
-the complete published lesson and its September 4, 2026 report. They are **not a fresh
-execution** of this canonical notebook. Migration checks preserve every scientific
-code cell, output and execution count, with one explicit import-route adaptation:
-`reference` now names a byte-preserved `legacy_reference.py` copy of the old module
-so canonical `solutions.py` can contain the visible student methods without a
-self-import. The old report retains its original hashes; exact original publication
-bytes and migration parity are recorded in `docs/mastery/migrations/denoising.md`.
-
 There are two separate claims: an exact trained toy bottleneck, and two scoped
 SD1.5 latent-state color transfers. The real result does not localize channels or
-a circuit inside the UNet. The retained real images include patterned backgrounds
+a circuit inside the UNet. The real images include patterned backgrounds
 and non-geometric details: inspect those pixels alongside the contrast scores;
 passing the color-transfer metric does not establish prompt or shape fidelity.
-No model, training or CUDA study ran during migration.
-
-This reference-rich route is guided practice. Write a numerical forecast,
-confidence and causal reason before viewing the corresponding reference result.
-Record previous exposure, compare every observed control, explain discrepancies
-and forecast a changed scientific condition. No learner values or answers are
-prefilled, and a reference result does not earn an unseen score.
 '''
 
 # ! CELL TYPE: markdown
@@ -129,9 +111,9 @@ Use disagreement between metrics to design a discriminating next intervention.
 
 ## Setup code
 
-The small tensor exercises run on CPU. The preserved trained toy and pinned
-SD1.5 experiment cells require deliberate execution and their historical dependencies;
-the real-model route explicitly requires CUDA. Generating this notebook runs neither.
+The small tensor exercises run on CPU. The trained toy and pinned
+SD1.5 experiment cells require deliberate execution; the real-model route
+explicitly requires CUDA.
 '''
 
 # ! CELL TYPE: code
@@ -1242,13 +1224,9 @@ r'''
 # ! TAGS: []
 
 r'''
-## Forecast before the result — toy-bottleneck
-
 For the red-square clean labels [0,0,0,0] and blue-circle corrupt labels [1,2,1,1], shared noise seed 2026, eight diffusion steps and 350 training updates at seed 0, forecast the
 best layer/time, regional recovery and selectivity. Compare matched-seed no-op, equal-size random channels/location, wrong-time, shuffled-label, untrained and pixel-copy controls.
 Separate the known planted mechanism from a claim about pretrained diffusion.
-
-Write a numerical range or ranking, confidence (0–100%), and causal reason before running or opening the reference output. Record whether you have already seen it.
 '''
 
 # ! CELL TYPE: code
@@ -1296,21 +1274,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — toy-bottleneck
-
-Record the actual result and every available control, then compare them with
-your forecast. Explain the largest discrepancy using the selected time/region,
-metric denominator and calibration. Separate a visual impression from a measured
-CLIP or pixel score. Give an alternative explanation, forecast a changed scientific
-condition before running it, and state which control would discriminate the two.
-Record exposure and historical-versus-new execution status explicitly.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Signature Result 1: The Method Finds the Planted Circuit
 
 ![Expected exact toy causal-patching result](../../instructions/assets/denoising_time_toy_signature.png)
@@ -1348,12 +1311,8 @@ Change the layer, timestep, channels, or spatial mask. Your explanation should p
 # ! TAGS: []
 
 r'''
-## Forecast before the result — toy-play
-
 At layer concept, timestep 1, all planted concept channels and zero mask shift, forecast regional recovery, outside change and selectivity against the unpatched recipient and exact
 donor-region copy. Before changing to an early layer, earlier time or shifted mask, forecast which coordinate should fail and why.
-
-Write a numerical range or ranking, confidence (0–100%), and causal reason before running or opening the reference output. Record whether you have already seen it.
 '''
 
 # ! CELL TYPE: code
@@ -1409,21 +1368,6 @@ if MAIN:
 
 r'''
 <img src="media/denoising_time_toy_play.png" width="1000">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — toy-play
-
-Record the actual result and every available control, then compare them with
-your forecast. Explain the largest discrepancy using the selected time/region,
-metric denominator and calibration. Separate a visual impression from a measured
-CLIP or pixel score. Give an alternative explanation, forecast a changed scientific
-condition before running it, and state which control would discriminate the two.
-Record exposure and historical-versus-new execution status explicitly.
 '''
 
 # ! CELL TYPE: markdown
@@ -2180,13 +2124,9 @@ r'''
 # ! TAGS: []
 
 r'''
-## Forecast before the result — sd15-time-sweep
-
 For the two pinned SD1.5 color pairs (red into blue square, seed 4; blue into red circle, seed 2), twenty DDIM calls, guidance 9 and centered half-width/half-height patch, forecast
 best noninitial call index and calibrated CLIP recovery for each case. Also forecast regional selectivity and margin over unpatched, wrong-time, wrong-region and scale-matched
 random-latent controls. Explain why selecting the maximum over nineteen calls is descriptive selection, not independent held-out validation.
-
-Write a numerical range or ranking, confidence (0–100%), and causal reason before running or opening the reference output. Record whether you have already seen it.
 '''
 
 # ! CELL TYPE: markdown
@@ -2278,21 +2218,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — sd15-time-sweep
-
-Record the actual result and every available control, then compare them with
-your forecast. Explain the largest discrepancy using the selected time/region,
-metric denominator and calibration. Separate a visual impression from a measured
-CLIP or pixel score. Give an alternative explanation, forecast a changed scientific
-condition before running it, and state which control would discriminate the two.
-Record exposure and historical-versus-new execution status explicitly.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details>
 <summary>Expected output and acceptance gate</summary>
 
@@ -2323,13 +2248,9 @@ not tune the main acceptance result from this cell.
 # ! TAGS: []
 
 r'''
-## Forecast before the result — sd15-play
-
 For case index 0, donor/recipient seed 4, call index 12, centered patch fraction .35 and donor mix .75, forecast the color change and its spatial extent compared with no patch,
 fraction .5 and mix 1. Before changing fraction or mix, predict whether CLIP recovery and off-region selectivity should agree. The displayed image alone does not supply those
 numeric measurements.
-
-Write a numerical range or ranking, confidence (0–100%), and causal reason before running or opening the reference output. Record whether you have already seen it.
 '''
 
 # ! CELL TYPE: code
@@ -2368,21 +2289,6 @@ if MAIN:
 
 r'''
 <img src="media/denoising_time_sd15_play.png" width="1000">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — sd15-play
-
-Record the actual result and every available control, then compare them with
-your forecast. Explain the largest discrepancy using the selected time/region,
-metric denominator and calibration. Separate a visual impression from a measured
-CLIP or pixel score. Give an alternative explanation, forecast a changed scientific
-condition before running it, and state which control would discriminate the two.
-Record exposure and historical-versus-new execution status explicitly.
 '''
 
 # ! CELL TYPE: markdown

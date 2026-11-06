@@ -8,7 +8,7 @@ r'''
  {"title": "TreeSHAP", "icon": "1-circle-fill", "subtitle": "30%"},
  {"title": "DeepSHAP", "icon": "2-circle-fill", "subtitle": "35%"},
  {"title": "Expected Gradients", "icon": "3-circle-fill", "subtitle": "35%"},
- {"title": "Historical figure shelf", "icon": "star", "subtitle": "reference"}
+ {"title": "Bonus", "icon": "star", "subtitle": ""}
 ]
 ```
 '''
@@ -37,56 +37,14 @@ r'''
 # ! TAGS: []
 
 r'''
-## Predict before reading the historical answers
-
 An exact tree algorithm, a complete modified backward pass, and a converging path estimator can
-answer three different attribution questions. Before opening the retained cold opens, expected
-outputs, solutions or figures, commit a forecast for each question below.
+answer three different attribution questions. Consider each question below before you read on.
 
-| Method and fixed question | Your forecast, confidence and causal reason |
-| --- | --- |
-| TreeSHAP: can root ordering change the cover-weighted path game for an unchanged prediction function? | ______ |
-| DeepSHAP: does reconstructing the prediction difference establish exact discrete feature credit? | ______ |
-| Expected Gradients: does changing Gaussian query noise preserve the clean prediction-difference target? | ______ |
-| Prior exposure: seen / unknown / unexposed, with source and exact configuration identity | ______ |
-
-This is public historical guided practice. The complete three source curricula and every retained
-output object follow, with their original denominators, baselines, failure cases and limitations.
-Public answers and figures expose results; no unseen learner score follows from them. The source
-migration runs no taught method, target tensor constructor, data loader, model, training, network,
-GPU or cluster job. A newly generated page is engineering evidence, separate from scientific
-reproduction and human learner acceptance.
-
-### Practice copies and intact originals
-
-This public guided Practice exercise copy starts with empty code outputs and execution counts.
-Its historical solutions retain the original observations. Foundation historical appendix code
-is shown read-only, so running the active exercises does not overwrite learner callbacks with
-old reference imports or stubs. Section 16.3 keeps its original teaching code executable.
-All mathematical methods, controls and visible implementation work remain in the active lesson.
-
-Open the intact original source books below. Their original directories, modules, helpers, data
-locators and setup code are unchanged; open a book in its own original directory and use its
-existing setup cells and declared environment. No original setup or numerical method was run
-for this migration, so these are static replay paths rather than a fresh execution guarantee.
-The links resolve from the generated Practice book and lesson page; exact repository paths are
-shown for master/source readers.
-
-- [Intact original: 16.13_TreeSHAP_from_First_Principles_exercises.ipynb](../../exercises/part13_treeshap/16.13_TreeSHAP_from_First_Principles_exercises.ipynb) — `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/16.13_TreeSHAP_from_First_Principles_exercises.ipynb`
-- [Intact original: 16.13_TreeSHAP_from_First_Principles_solutions.ipynb](../../exercises/part13_treeshap/16.13_TreeSHAP_from_First_Principles_solutions.ipynb) — `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/16.13_TreeSHAP_from_First_Principles_solutions.ipynb`
-- [Intact original: 16.14_DeepSHAP_When_Does_Fast_Attribution_Match_Exact_SHAP_exercises.ipynb](../../exercises/part14_deepshap/16.14_DeepSHAP_When_Does_Fast_Attribution_Match_Exact_SHAP_exercises.ipynb) — `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/16.14_DeepSHAP_When_Does_Fast_Attribution_Match_Exact_SHAP_exercises.ipynb`
-- [Intact original: 16.14_DeepSHAP_When_Does_Fast_Attribution_Match_Exact_SHAP_solutions.ipynb](../../exercises/part14_deepshap/16.14_DeepSHAP_When_Does_Fast_Attribution_Match_Exact_SHAP_solutions.ipynb) — `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/16.14_DeepSHAP_When_Does_Fast_Attribution_Match_Exact_SHAP_solutions.ipynb`
-- [Intact original: 16.15_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate_exercises.ipynb](../../exercises/part15_gradientshap/16.15_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate_exercises.ipynb) — `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/16.15_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate_exercises.ipynb`
-- [Intact original: 16.15_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate_solutions.ipynb](../../exercises/part15_gradientshap/16.15_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate_solutions.ipynb) — `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/16.15_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate_solutions.ipynb`
-
-The prior combined migration reference books also remain intact alongside this Practice pair.
-They preserve historical outputs and execution metadata and are read-only provenance copies,
-not a fresh execution or blind assessment.
-
-- [Intact combined exercises reference](../../exercises/part3_model_specific_shap/16.3_TreeSHAP_DeepSHAP_and_GradientSHAP_exercises.ipynb)
-- [Intact combined solutions reference](../../exercises/part3_model_specific_shap/16.3_TreeSHAP_DeepSHAP_and_GradientSHAP_solutions.ipynb)
-
+- TreeSHAP: can root ordering change the cover-weighted path game for an unchanged prediction function?
+- DeepSHAP: does reconstructing the prediction difference establish exact discrete feature credit?
+- Expected Gradients: does changing Gaussian query noise preserve the clean prediction-difference target?
 '''
+
 
 
 # ! CELL TYPE: markdown
@@ -119,22 +77,6 @@ r'''
 > - Implement reproducible path schedules, gradients, sampled contributions and standard errors.
 > - Compare quadrature and Monte Carlo estimates without equating paths with discrete Shapley.
 > - Track target changes under noise, background choices and distance diagnostics.
-
-### Reading the combined source
-
-All original cells, stubs, solution dropdowns, immediate tests and play cells remain. Canonical
-function names carry a curriculum prefix to keep different games separate. Original scientific
-helper imports are expanded into visible source before their first use. The exact original bytes
-and source inverses accompany this draft. Local plotting and data-loading files contain plumbing;
-original data/report inputs keep their historical locations. Canonical media is the output path.
-
-The generated Python module is inert on import. Its function definitions are visible immediately;
-imports and runtime setup occur only when the lesson is explicitly run. Decorated definitions have
-explicit initializers containing their original decorators, signatures, defaults and bodies. Run
-those initializers in source order after dependencies are bound before retrieving decorated
-callbacks. No decorator, context manager, model or tensor allocation occurs during ordinary import.
-The notebook keeps the same explicit initialization order. Full source still contains long
-scientific code lines; this migration reflows ordinary prose, without claiming a code-format audit.
 '''
 
 
@@ -721,31 +663,7 @@ r'''
 # ! TAGS: []
 
 r'''
-### Commit before the next tree reference — source cell 0
-
-Before viewing the next expected output, solution, saved figure or result, state the missing-feature game, query, covers and root order. Predict
-path-cover versus intact-donor or population-conditional credit; repeated-feature unwinding and Saabas controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only root order, covers, donor background or one query feature; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Historical [16.13] TreeSHAP from First Principles
+## TreeSHAP from First Principles
 
 > **Claim.** TreeSHAP can compute exact Shapley values for a precisely specified tree
 missing-feature game without enumerating every coalition; exact computation does not make the game
@@ -787,30 +705,6 @@ read the solutions to 4–5, and implement Exercise 6 yourself.
 
 Run this notebook from the repository environment. The full lab runs on CPU. The data loader
 downloads the byte-pinned UCI CSV on first use, and every estimator uses one worker.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next tree reference — source cell 1
-
-Before viewing the next expected output, solution, saved figure or result, state the missing-feature game, query, covers and root order. Predict
-path-cover versus intact-donor or population-conditional credit; repeated-feature unwinding and Saabas controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only root order, covers, donor background or one query feature; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
 '''
 
 
@@ -908,20 +802,6 @@ def tree_show_figure(fig, stem):
 # ! TAGS: []
 
 r'''
-### Reflect after the tree reference — source cell 1
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## 1️⃣ What game are we explaining?
 
 A Shapley value starts with a set function $v(S)$: the value of knowing the features in coalition
@@ -952,30 +832,6 @@ mind whenever the word “exact” appears later.
 '''
 
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next tree reference — source cell 3
-
-Before viewing the next expected output, solution, saved figure or result, state the missing-feature game, query, covers and root order. Predict
-path-cover versus intact-donor or population-conditional credit; repeated-feature unwinding and Saabas controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only root order, covers, donor background or one query feature; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: [keep-main]
@@ -987,44 +843,6 @@ if MAIN:
 if MAIN:
     refresh_tree_default_methods()
     tree_show_figure(tree_plots.plot_missing_feature_games(), "01_missing_feature_games")
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after the tree reference — source cell 3
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next tree reference — source cell 4
-
-Before viewing the next expected output, solution, saved figure or result, state the missing-feature game, query, covers and root order. Predict
-path-cover versus intact-donor or population-conditional credit; repeated-feature unwinding and Saabas controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only root order, covers, donor background or one query feature; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
 
 
 # ! CELL TYPE: markdown
@@ -1061,30 +879,6 @@ node until every row reaches a leaf. First round `x` through `float32`, as sciki
 internally, then store that rounded value in `float64` before comparing it with the tree's float64
 threshold. The second cast prevents NumPy 1.26 from narrowing an array–scalar comparison back to
 float32. Both details matter close to a learned split boundary.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next tree reference — source cell 5
-
-Before viewing the next expected output, solution, saved figure or result, state the missing-feature game, query, covers and root order. Predict
-path-cover versus intact-donor or population-conditional credit; repeated-feature unwinding and Saabas controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only root order, covers, donor background or one query feature; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
 '''
 
 
@@ -1126,44 +920,6 @@ if MAIN:
 # END HIDE
 
 # END SOLUTION
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after the tree reference — source cell 5
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next tree reference — source cell 6
-
-Before viewing the next expected output, solution, saved figure or result, state the missing-feature game, query, covers and root order. Predict
-path-cover versus intact-donor or population-conditional credit; repeated-feature unwinding and Saabas controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only root order, covers, donor background or one query feature; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
 
 
 # ! CELL TYPE: markdown
@@ -1238,30 +994,6 @@ def tree_predict(tree: dict, x: np.ndarray) -> np.ndarray:
 # ! TAGS: []
 
 r'''
-### Commit before the next tree reference — source cell 7
-
-Before viewing the next expected output, solution, saved figure or result, state the missing-feature game, query, covers and root order. Predict
-path-cover versus intact-donor or population-conditional credit; repeated-feature unwinding and Saabas controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only root order, covers, donor background or one query feature; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise 2 — evaluate the path-dependent game
 
 > ```yaml
@@ -1280,30 +1012,6 @@ and `cover[right] / cover[node]`.
 
 The same feature can occur more than once on a path. Coalition membership is still a single Boolean
 decision: if feature $j$ is present, it controls every split on $j$.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next tree reference — source cell 8
-
-Before viewing the next expected output, solution, saved figure or result, state the missing-feature game, query, covers and root order. Predict
-path-cover versus intact-donor or population-conditional credit; repeated-feature unwinding and Saabas controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only root order, covers, donor background or one query feature; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
 '''
 
 
@@ -1353,44 +1061,6 @@ if MAIN:
 # END HIDE
 
 # END SOLUTION
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after the tree reference — source cell 8
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next tree reference — source cell 9
-
-Before viewing the next expected output, solution, saved figure or result, state the missing-feature game, query, covers and root order. Predict
-path-cover versus intact-donor or population-conditional credit; repeated-feature unwinding and Saabas controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only root order, covers, donor background or one query feature; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
 
 
 # ! CELL TYPE: markdown
@@ -1458,30 +1128,6 @@ def tree_path_game(tree: dict, x: np.ndarray, masks: np.ndarray) -> np.ndarray:
 # ! TAGS: []
 
 r'''
-### Commit before the next tree reference — source cell 10
-
-Before viewing the next expected output, solution, saved figure or result, state the missing-feature game, query, covers and root order. Predict
-path-cover versus intact-donor or population-conditional credit; repeated-feature unwinding and Saabas controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only root order, covers, donor background or one query feature; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise 3 — contract an exhaustive game into Shapley values
 
 > ```yaml
@@ -1500,30 +1146,6 @@ $$
 Since $\binom{d-1}{|S|}$ subsets have the same size, the coefficient is equivalently
 $1/[d\binom{d-1}{|S|}]$. Implement `exact_shapley(values)`, where the final axis stores every
 coalition and feature zero is the least-significant bit. Preserve any leading batch axes.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next tree reference — source cell 11
-
-Before viewing the next expected output, solution, saved figure or result, state the missing-feature game, query, covers and root order. Predict
-path-cover versus intact-donor or population-conditional credit; repeated-feature unwinding and Saabas controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only root order, covers, donor background or one query feature; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
 '''
 
 
@@ -1567,44 +1189,6 @@ if MAIN:
 # END HIDE
 
 # END SOLUTION
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after the tree reference — source cell 11
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next tree reference — source cell 12
-
-Before viewing the next expected output, solution, saved figure or result, state the missing-feature game, query, covers and root order. Predict
-path-cover versus intact-donor or population-conditional credit; repeated-feature unwinding and Saabas controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only root order, covers, donor background or one query feature; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
 
 
 # ! CELL TYPE: markdown
@@ -1661,30 +1245,6 @@ def tree_exact_shapley(values: np.ndarray) -> np.ndarray:
 '''
 
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next tree reference — source cell 13
-
-Before viewing the next expected output, solution, saved figure or result, state the missing-feature game, query, covers and root order. Predict
-path-cover versus intact-donor or population-conditional credit; repeated-feature unwinding and Saabas controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only root order, covers, donor background or one query feature; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: [keep-main]
@@ -1715,44 +1275,6 @@ if MAIN:
 if MAIN:
     refresh_tree_default_methods()
     print("exact SHAP:      ", tiny_phi[0].tolist())
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after the tree reference — source cell 13
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next tree reference — source cell 14
-
-Before viewing the next expected output, solution, saved figure or result, state the missing-feature game, query, covers and root order. Predict
-path-cover versus intact-donor or population-conditional credit; repeated-feature unwinding and Saabas controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only root order, covers, donor background or one query feature; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
 
 
 # ! CELL TYPE: markdown
@@ -1824,30 +1346,6 @@ the input.
 '''
 
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next tree reference — source cell 15
-
-Before viewing the next expected output, solution, saved figure or result, state the missing-feature game, query, covers and root order. Predict
-path-cover versus intact-donor or population-conditional credit; repeated-feature unwinding and Saabas controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only root order, covers, donor background or one query feature; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: [keep-main]
@@ -1885,44 +1383,6 @@ if MAIN:
 # END HIDE
 
 # END SOLUTION
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after the tree reference — source cell 15
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next tree reference — source cell 16
-
-Before viewing the next expected output, solution, saved figure or result, state the missing-feature game, query, covers and root order. Predict
-path-cover versus intact-donor or population-conditional credit; repeated-feature unwinding and Saabas controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only root order, covers, donor background or one query feature; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
 
 
 # ! CELL TYPE: markdown
@@ -1981,30 +1441,6 @@ def extend_path(weights: np.ndarray, zero: np.ndarray, one: np.ndarray) -> np.nd
 # ! TAGS: []
 
 r'''
-### Commit before the next tree reference — source cell 17
-
-Before viewing the next expected output, solution, saved figure or result, state the missing-feature game, query, covers and root order. Predict
-path-cover versus intact-donor or population-conditional credit; repeated-feature unwinding and Saabas controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only root order, covers, donor background or one query feature; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise 5 — unwind an earlier feature
 
 > ```yaml
@@ -2029,30 +1465,6 @@ with out-of-range terms equal to zero. Implement the inverse `unwind_path(weight
 backward from the final cardinality. Where `one != 0`, recover the preceding value from the present
 term; where `one == 0`, recover it from the absent term. Reject a dead path with both fractions zero
 and do not mutate `weights`.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next tree reference — source cell 18
-
-Before viewing the next expected output, solution, saved figure or result, state the missing-feature game, query, covers and root order. Predict
-path-cover versus intact-donor or population-conditional credit; repeated-feature unwinding and Saabas controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only root order, covers, donor background or one query feature; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
 '''
 
 
@@ -2103,44 +1515,6 @@ if MAIN:
 # END HIDE
 
 # END SOLUTION
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after the tree reference — source cell 18
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next tree reference — source cell 19
-
-Before viewing the next expected output, solution, saved figure or result, state the missing-feature game, query, covers and root order. Predict
-path-cover versus intact-donor or population-conditional credit; repeated-feature unwinding and Saabas controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only root order, covers, donor background or one query feature; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
 
 
 # ! CELL TYPE: markdown
@@ -2209,30 +1583,6 @@ def unwind_path(weights: np.ndarray, zero: np.ndarray, one: np.ndarray) -> np.nd
 # ! TAGS: []
 
 r'''
-### Commit before the next tree reference — source cell 20
-
-Before viewing the next expected output, solution, saved figure or result, state the missing-feature game, query, covers and root order. Predict
-path-cover versus intact-donor or population-conditional credit; repeated-feature unwinding and Saabas controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only root order, covers, donor background or one query feature; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise 6 — implement recursive TreeSHAP
 
 > ```yaml
@@ -2268,30 +1618,6 @@ $$
 
 to $\phi_j$. Summing this term over reachable leaves reconstructs the exact weighted marginal
 contribution of $j$ without listing the coalitions individually.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next tree reference — source cell 21
-
-Before viewing the next expected output, solution, saved figure or result, state the missing-feature game, query, covers and root order. Predict
-path-cover versus intact-donor or population-conditional credit; repeated-feature unwinding and Saabas controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only root order, covers, donor background or one query feature; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
 '''
 
 
@@ -2415,44 +1741,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after the tree reference — source cell 21
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next tree reference — source cell 22
-
-Before viewing the next expected output, solution, saved figure or result, state the missing-feature game, query, covers and root order. Predict
-path-cover versus intact-donor or population-conditional credit; repeated-feature unwinding and Saabas controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only root order, covers, donor background or one query feature; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details><summary>Help - recursive state</summary>
 
 Start with every row at node zero, empty feature/fraction lists, and weights `np.ones((N,1))`. For
@@ -2553,17 +1841,6 @@ def tree_shap(tree: dict, x: np.ndarray, donor: np.ndarray | None = None) -> np.
 '''
 
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-The builder inserts the readable diagnostic source in short, coherent cells. We will execute its
-aggregator after all nine taught methods exist, so every diagnostic resolves to your current
-notebook definitions.
-'''
-
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: [keep-main]
@@ -2656,30 +1933,6 @@ def _repeated_threshold_tree():
         "value": np.array([20.0, 10.0, 80 / 3, 20.0, 30.0]),
         "cover": np.array([100.0, 40.0, 60.0, 20.0, 40.0]),
     }
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next tree reference — source cell 27
-
-Before viewing the next expected output, solution, saved figure or result, state the missing-feature game, query, covers and root order. Predict
-path-cover versus intact-donor or population-conditional credit; repeated-feature unwinding and Saabas controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only root order, covers, donor background or one query feature; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
 
 
 # ! CELL TYPE: markdown
@@ -3094,30 +2347,6 @@ def tree_run_diagnostics(methods=None, include_timing=True):
 # ! TAGS: []
 
 r'''
-### Commit before the next tree reference — source cell 42
-
-Before viewing the next expected output, solution, saved figure or result, state the missing-feature game, query, covers and root order. Predict
-path-cover versus intact-donor or population-conditional credit; repeated-feature unwinding and Saabas controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only root order, covers, donor background or one query feature; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## 4️⃣ Ensembles and empirical interventional backgrounds
 
 Tree ensembles are sums of trees plus an offset. Shapley values are linear in the game:
@@ -3151,30 +2380,6 @@ Implement `ensemble_shap(ensemble, x, background=None)`. In path mode, explain e
 compute its empty value from the all-absent path game. In interventional mode, pair every query with
 every intact background row, run your donor TreeSHAP, reshape, and average across donors. Return a
 base value for each query and an `(N,D)` contribution matrix.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next tree reference — source cell 43
-
-Before viewing the next expected output, solution, saved figure or result, state the missing-feature game, query, covers and root order. Predict
-path-cover versus intact-donor or population-conditional credit; repeated-feature unwinding and Saabas controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only root order, covers, donor background or one query feature; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
 '''
 
 
@@ -3231,44 +2436,6 @@ if MAIN:
 # END HIDE
 
 # END SOLUTION
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after the tree reference — source cell 43
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next tree reference — source cell 44
-
-Before viewing the next expected output, solution, saved figure or result, state the missing-feature game, query, covers and root order. Predict
-path-cover versus intact-donor or population-conditional credit; repeated-feature unwinding and Saabas controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only root order, covers, donor background or one query feature; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
 
 
 # ! CELL TYPE: markdown
@@ -3341,30 +2508,6 @@ def ensemble_shap(
 # ! TAGS: []
 
 r'''
-### Commit before the next tree reference — source cell 45
-
-Before viewing the next expected output, solution, saved figure or result, state the missing-feature game, query, covers and root order. Predict
-path-cover versus intact-donor or population-conditional credit; repeated-feature unwinding and Saabas controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only root order, covers, donor background or one query feature; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise 8 — construct the empirical interventional oracle
 
 > ```yaml
@@ -3381,30 +2524,6 @@ predictions over donors only after evaluating every hybrid.
 Do not replace the background by its mean. For nonlinear trees, $f(\mathbb E[B])\neq\mathbb
 E[f(B)]$. Do not draw a different donor independently for each missing feature either; that would
 define another game.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next tree reference — source cell 46
-
-Before viewing the next expected output, solution, saved figure or result, state the missing-feature game, query, covers and root order. Predict
-path-cover versus intact-donor or population-conditional credit; repeated-feature unwinding and Saabas controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only root order, covers, donor background or one query feature; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
 '''
 
 
@@ -3454,44 +2573,6 @@ if MAIN:
 # END HIDE
 
 # END SOLUTION
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after the tree reference — source cell 46
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next tree reference — source cell 47
-
-Before viewing the next expected output, solution, saved figure or result, state the missing-feature game, query, covers and root order. Predict
-path-cover versus intact-donor or population-conditional credit; repeated-feature unwinding and Saabas controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only root order, covers, donor background or one query feature; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
 
 
 # ! CELL TYPE: markdown
@@ -3556,30 +2637,6 @@ def interventional_game(
 # ! TAGS: []
 
 r'''
-### Commit before the next tree reference — source cell 48
-
-Before viewing the next expected output, solution, saved figure or result, state the missing-feature game, query, covers and root order. Predict
-path-cover versus intact-donor or population-conditional credit; repeated-feature unwinding and Saabas controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only root order, covers, donor background or one query feature; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## 5️⃣ A fast allocation can conserve the total and still be wrong
 
 Saabas attribution follows only the query's decision path. At each visited split it gives that
@@ -3607,30 +2664,6 @@ r'''
 First compute every node's cover-weighted expected leaf value. Then route each query down one path
 and assign `expected[child] - expected[parent]` to the split feature. Accumulate repeated
 appearances of the same feature. Return the root expectation and contribution matrix.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next tree reference — source cell 49
-
-Before viewing the next expected output, solution, saved figure or result, state the missing-feature game, query, covers and root order. Predict
-path-cover versus intact-donor or population-conditional credit; repeated-feature unwinding and Saabas controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only root order, covers, donor background or one query feature; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
 '''
 
 
@@ -3691,44 +2724,6 @@ if MAIN:
 # END HIDE
 
 # END SOLUTION
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after the tree reference — source cell 49
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next tree reference — source cell 50
-
-Before viewing the next expected output, solution, saved figure or result, state the missing-feature game, query, covers and root order. Predict
-path-cover versus intact-donor or population-conditional credit; repeated-feature unwinding and Saabas controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only root order, covers, donor background or one query feature; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
 
 
 # ! CELL TYPE: markdown
@@ -3801,30 +2796,6 @@ def saabas(tree: dict, x: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
 '''
 
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next tree reference — source cell 51
-
-Before viewing the next expected output, solution, saved figure or result, state the missing-feature game, query, covers and root order. Predict
-path-cover versus intact-donor or population-conditional credit; repeated-feature unwinding and Saabas controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only root order, covers, donor background or one query feature; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: [keep-main]
@@ -3854,44 +2825,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after the tree reference — source cell 51
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next tree reference — source cell 52
-
-Before viewing the next expected output, solution, saved figure or result, state the missing-feature game, query, covers and root order. Predict
-path-cover versus intact-donor or population-conditional credit; repeated-feature unwinding and Saabas controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only root order, covers, donor background or one query feature; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 These figures expose the mechanism rather than treating the recurrence as a black box. The
 cardinality panel compares dynamic weights with literal subset enumeration. The repeated-feature
 panel shows why the second split must update the same player.
@@ -3903,30 +2836,6 @@ whether increasing the cover of the *other* branch will raise or lower the empty
 Then compare exhaustive and dynamic contributions.
 
 This play is deliberately tiny: you can inspect every branch rather than trusting a polished plot.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next tree reference — source cell 53
-
-Before viewing the next expected output, solution, saved figure or result, state the missing-feature game, query, covers and root order. Predict
-path-cover versus intact-donor or population-conditional credit; repeated-feature unwinding and Saabas controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only root order, covers, donor background or one query feature; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
 '''
 
 
@@ -3947,20 +2856,6 @@ if MAIN:
 if MAIN:
     refresh_tree_default_methods()
     tree_show_figure(tree_plots.plot_tiny_tree_play(tree_tiny_play), "15_tiny_tree_play")
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after the tree reference — source cell 53
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
 
 
 # ! CELL TYPE: markdown
@@ -4313,34 +3208,7 @@ audit load appears only in the following cell.
 # ! TAGS: []
 
 r'''
-### Commit before the next tree reference — source cell 65
-
-Before viewing the next expected output, solution, saved figure or result, state the missing-feature game, query, covers and root order. Predict
-path-cover versus intact-donor or population-conditional credit; repeated-feature unwinding and Saabas controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only root order, covers, donor background or one query feature; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Visible supporting scientific function: `DETERMINISTIC_ARTIFACTS`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -4364,9 +3232,6 @@ tree_helper_run_native_DETERMINISTIC_ARTIFACTS = (
 
 r'''
 ### Visible supporting scientific function: `TIMING_ARTIFACT`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -4383,9 +3248,6 @@ tree_helper_run_native_TIMING_ARTIFACT = "timings.pt"
 
 r'''
 ### Visible supporting scientific function: `digest`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -4408,9 +3270,6 @@ def tree_helper_run_native_digest(path: Path) -> str:
 
 r'''
 ### Visible supporting scientific function: `_without_sklearn`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -4442,9 +3301,6 @@ def tree_helper_run_native__without_sklearn(value: Any) -> Any:
 
 r'''
 ### Visible supporting scientific function: `serializable_fitted`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -4463,9 +3319,6 @@ def tree_helper_run_native_serializable_fitted(fitted: dict) -> dict:
 
 r'''
 ### Visible supporting scientific function: `save_payload`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -4498,9 +3351,6 @@ def tree_helper_run_native_save_payload(directory: Path, name: str, value: Any) 
 
 r'''
 ### Visible supporting scientific function: `_reference_scalars`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -4530,9 +3380,6 @@ def tree_helper_run_native__reference_scalars(value: Any, prefix: str = "") -> d
 
 r'''
 ### Visible supporting scientific function: `summarize`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -4593,9 +3440,6 @@ def tree_helper_run_native_summarize(
 
 r'''
 ### Visible supporting scientific function: `persist_completed`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -4651,9 +3495,6 @@ def tree_helper_run_native_persist_completed(
 
 r'''
 ### Visible supporting scientific function: `write_before_audit`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -4703,9 +3544,6 @@ def tree_helper_run_native_write_before_audit(directory: Path, prepared: dict) -
 
 r'''
 ### Visible supporting scientific function: `write_notebook_summary`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -4728,30 +3566,6 @@ def tree_helper_run_native_write_notebook_summary(output_root: Path, native_dire
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(payload, indent=2) + "\n")
     return path
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next tree reference — source cell 65
-
-Before viewing the next expected output, solution, saved figure or result, state the missing-feature game, query, covers and root order. Predict
-path-cover versus intact-donor or population-conditional credit; repeated-feature unwinding and Saabas controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only root order, covers, donor background or one query feature; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
 
 
 # ! CELL TYPE: code
@@ -4814,71 +3628,9 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after the tree reference — source cell 65
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next tree reference — source cell 66
-
-Before viewing the next expected output, solution, saved figure or result, state the missing-feature game, query, covers and root order. Predict
-path-cover versus intact-donor or population-conditional credit; repeated-feature unwinding and Saabas controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only root order, covers, donor background or one query feature; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 Expected: `Prepared rankings saved before audit load: True`. This ordering does not make the audit
 set magically unbiased for every later question. It means only that the predeclared rankings and
 primary background were fixed without using audit rows or labels.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next tree reference — source cell 67
-
-Before viewing the next expected output, solution, saved figure or result, state the missing-feature game, query, covers and root order. Predict
-path-cover versus intact-donor or population-conditional credit; repeated-feature unwinding and Saabas controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only root order, covers, donor background or one query feature; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
 '''
 
 
@@ -4905,71 +3657,9 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after the tree reference — source cell 67
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next tree reference — source cell 68
-
-Before viewing the next expected output, solution, saved figure or result, state the missing-feature game, query, covers and root order. Predict
-path-cover versus intact-donor or population-conditional credit; repeated-feature unwinding and Saabas controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only root order, covers, donor background or one query feature; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 Expected: 18 models and 119 audit rows. Before interpreting feature values, inspect the predictive
 control. Shuffled-target models should fail on held-out recipes; if they do not, attribution plots
 from the clean models are not the first thing to debug.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next tree reference — source cell 69
-
-Before viewing the next expected output, solution, saved figure or result, state the missing-feature game, query, covers and root order. Predict
-path-cover versus intact-donor or population-conditional credit; repeated-feature unwinding and Saabas controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only root order, covers, donor background or one query feature; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
 '''
 
 
@@ -4987,44 +3677,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after the tree reference — source cell 69
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next tree reference — source cell 70
-
-Before viewing the next expected output, solution, saved figure or result, state the missing-feature game, query, covers and root order. Predict
-path-cover versus intact-donor or population-conditional credit; repeated-feature unwinding and Saabas controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only root order, covers, donor background or one query feature; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 On the frozen run, the training-mean baseline had audit MSE **244.68 MPa²**. Clean decision trees
 scored **86.38**, clean forests **53.74–55.68**, and clean boosted ensembles **58.19**. The
 shuffled-target controls scored **244.30–277.88**, failing to improve reliably on the constant
@@ -5034,30 +3686,6 @@ The three clean decision-tree fits and three clean boosted fits make identical f
 here; these algorithms have no effective stochastic choice under the frozen settings and data. Their
 repeated seeds are reproducibility checks, not three independent uncertainty estimates. The
 bootstrapped forests do vary across seeds.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next tree reference — source cell 71
-
-Before viewing the next expected output, solution, saved figure or result, state the missing-feature game, query, covers and root order. Predict
-path-cover versus intact-donor or population-conditional credit; repeated-feature unwinding and Saabas controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only root order, covers, donor background or one query feature; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
 '''
 
 
@@ -5104,34 +3732,7 @@ remains part of the result.
 # ! TAGS: []
 
 r'''
-### Commit before the next tree reference — source cell 72
-
-Before viewing the next expected output, solution, saved figure or result, state the missing-feature game, query, covers and root order. Predict
-path-cover versus intact-donor or population-conditional credit; repeated-feature unwinding and Saabas controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only root order, covers, donor background or one query feature; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Visible supporting scientific function: `COMPILED_INTERVENTIONAL_ATOL`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -5148,9 +3749,6 @@ tree_helper_treeshap_reference_COMPILED_INTERVENTIONAL_ATOL = 2e-5
 
 r'''
 ### Visible supporting scientific function: `COMPILED_INTERVENTIONAL_RTOL`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -5167,9 +3765,6 @@ tree_helper_treeshap_reference_COMPILED_INTERVENTIONAL_RTOL = 2e-6
 
 r'''
 ### Visible supporting scientific function: `EXACT_KEYS`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -5187,9 +3782,6 @@ if MAIN:
 
 r'''
 ### Visible supporting scientific function: `MODEL_KEYS`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -5212,9 +3804,6 @@ if MAIN:
 
 r'''
 ### Visible supporting scientific function: `_interventional_game_reference`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -5251,9 +3840,6 @@ def tree_helper_treeshap_reference__interventional_game_reference(predict, x, ba
 
 r'''
 ### Visible supporting scientific function: `_model_hash`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -5276,9 +3862,6 @@ def tree_helper_treeshap_reference__model_hash(model) -> str:
 
 r'''
 ### Visible supporting scientific function: `ATOL`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -5295,9 +3878,6 @@ tree_helper_treeshap_reference_ATOL = tree_helper_treeshap_reference_RTOL = 1e-8
 
 r'''
 ### Visible supporting scientific function: `_max_abs`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -5321,9 +3901,6 @@ def tree_helper_treeshap_reference__max_abs(actual: np.ndarray, expected: np.nda
 
 r'''
 ### Visible supporting scientific function: `_require_close`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -5349,9 +3926,6 @@ def tree_helper_treeshap_reference__require_close(name, actual, expected, *, ato
 
 r'''
 ### Visible supporting scientific function: `_floor_float32_thresholds`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -5378,9 +3952,6 @@ def tree_helper_treeshap_reference__floor_float32_thresholds(original: np.ndarra
 
 r'''
 ### Visible supporting scientific function: `_threshold_copies`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -5489,9 +4060,6 @@ def tree_helper_treeshap_reference__threshold_copies(raw_explainer, sklearn_mode
 
 r'''
 ### Visible supporting scientific function: `_compiled_reference`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -5586,9 +4154,6 @@ def tree_helper_treeshap_reference__compiled_reference(model, all_x, background,
 
 r'''
 ### Visible supporting scientific function: `_isclose_rows`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -5610,9 +4175,6 @@ def tree_helper_treeshap_reference__isclose_rows(actual, expected, *, atol, rtol
 
 r'''
 ### Visible supporting scientific function: `ADDENDUM_SHA256`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -5629,9 +4191,6 @@ tree_helper_treeshap_reference_ADDENDUM_SHA256 = "2e639c56060d45131a093caeb838a8
 
 r'''
 ### Visible supporting scientific function: `CACHE`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -5652,9 +4211,6 @@ if MAIN:
 
 r'''
 ### Visible supporting scientific function: `HERE`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -5675,9 +4231,6 @@ if MAIN:
 
 r'''
 ### Visible supporting scientific function: `_sha256`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -5700,9 +4253,6 @@ def tree_helper_treeshap_reference__sha256(path: Path) -> str:
 
 r'''
 ### Visible supporting scientific function: `_reference_environment`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -5768,9 +4318,6 @@ def tree_helper_treeshap_reference__reference_environment() -> dict:
 
 r'''
 ### Visible supporting scientific function: `_validate_block`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -5811,9 +4358,6 @@ def tree_helper_treeshap_reference__validate_block(name, block, rows):
 
 r'''
 ### Visible supporting scientific function: `_background_indices`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -5844,9 +4388,6 @@ def tree_helper_treeshap_reference__background_indices(train_ids: np.ndarray) ->
 
 r'''
 ### Visible supporting scientific function: `_frozen_identity`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -5877,9 +4418,6 @@ def tree_helper_treeshap_reference__frozen_identity():
 
 r'''
 ### Visible supporting scientific function: `_validate_identity`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -5939,9 +4477,6 @@ def tree_helper_treeshap_reference__validate_identity(fitted, prepared, evaluate
 
 r'''
 ### Visible supporting scientific function: `subset_reference`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -5980,9 +4515,6 @@ def tree_helper_treeshap_reference_subset_reference(game: np.ndarray) -> np.ndar
 
 r'''
 ### Visible supporting scientific function: `check_reference`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/treeshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -6349,30 +4881,6 @@ def tree_helper_treeshap_reference_check_reference(fitted, prepared, evaluated, 
     }
 
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next tree reference — source cell 72
-
-Before viewing the next expected output, solution, saved figure or result, state the missing-feature game, query, covers and root order. Predict
-path-cover versus intact-donor or population-conditional credit; repeated-feature unwinding and Saabas controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only root order, covers, donor background or one query feature; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: [keep-main]
@@ -6406,44 +4914,6 @@ if MAIN:
 if MAIN:
     refresh_tree_default_methods()
     tree_show_figure(tree_plots.plot_reference_parity(tree_reference), "17_reference_parity")
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after the tree reference — source cell 72
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next tree reference — source cell 73
-
-Before viewing the next expected output, solution, saved figure or result, state the missing-feature game, query, covers and root order. Predict
-path-cover versus intact-donor or population-conditional credit; repeated-feature unwinding and Saabas controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only root order, covers, donor background or one query feature; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
 
 
 # ! CELL TYPE: markdown
@@ -6488,30 +4958,6 @@ notebook for the full post-freeze account.
 # ! TAGS: []
 
 r'''
-### Commit before the next tree reference — source cell 74
-
-Before viewing the next expected output, solution, saved figure or result, state the missing-feature game, query, covers and root order. Predict
-path-cover versus intact-donor or population-conditional credit; repeated-feature unwinding and Saabas controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only root order, covers, donor background or one query feature; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Signature result — one prediction, then the whole held-out block
 
 A waterfall answers a local accounting question: relative to the chosen base, which coordinates move
@@ -6521,30 +4967,6 @@ across rows, and for features whose sign or magnitude changes between games.
 
 The path and interventional columns need not agree. Their disagreement is evidence that the
 missing-feature definition matters, not evidence that one implementation is approximate.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next tree reference — source cell 75
-
-Before viewing the next expected output, solution, saved figure or result, state the missing-feature game, query, covers and root order. Predict
-path-cover versus intact-donor or population-conditional credit; repeated-feature unwinding and Saabas controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only root order, covers, donor background or one query feature; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
 '''
 
 
@@ -6578,20 +5000,6 @@ if MAIN:
         ),
         "09_attribution_heatmaps",
     )
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after the tree reference — source cell 75
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
 
 
 # ! CELL TYPE: markdown
@@ -6636,30 +5044,6 @@ is more useful than the cheaper Saabas ordering on this model and dataset.
 '''
 
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next tree reference — source cell 78
-
-Before viewing the next expected output, solution, saved figure or result, state the missing-feature game, query, covers and root order. Predict
-path-cover versus intact-donor or population-conditional credit; repeated-feature unwinding and Saabas controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only root order, covers, donor background or one query feature; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: [keep-main]
@@ -6689,20 +5073,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after the tree reference — source cell 78
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Runtime: the exponential axis and the path-depth axis
 
 The first timing control holds a depth-three tree fixed while supplying 3, 6, 9, 12 and 15 features.
@@ -6717,30 +5087,6 @@ polynomial algorithm has larger Python constant factors at these small dimension
 depth-three dummy sweep, it wins only once enumeration is forced to pay for 12 and 15 supplied
 features. The diagnostic stores all three timings and plots their medians. Algorithmic scaling does
 not promise that this teaching implementation is faster on every small tree.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next tree reference — source cell 80
-
-Before viewing the next expected output, solution, saved figure or result, state the missing-feature game, query, covers and root order. Predict
-path-cover versus intact-donor or population-conditional credit; repeated-feature unwinding and Saabas controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only root order, covers, donor background or one query feature; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
 '''
 
 
@@ -6767,44 +5113,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after the tree reference — source cell 80
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next tree reference — source cell 81
-
-Before viewing the next expected output, solution, saved figure or result, state the missing-feature game, query, covers and root order. Predict
-path-cover versus intact-donor or population-conditional credit; repeated-feature unwinding and Saabas controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only root order, covers, donor background or one query feature; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Try It Yourself 2 — explain another recipe and another game
 
 Change any four settings. `row` selects a held-out recipe; `model_key` can use `tree`, `forest`, or
@@ -6815,30 +5123,6 @@ Before running, predict what should remain invariant. The full model prediction 
 chosen model and row. The base and individual contributions can move with the game or background.
 This cell deliberately reuses audit rows after evaluation and is exploratory only. Choices made here
 after seeing audit results cannot support a new confirmatory audit claim.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next tree reference — source cell 82
-
-Before viewing the next expected output, solution, saved figure or result, state the missing-feature game, query, covers and root order. Predict
-path-cover versus intact-donor or population-conditional credit; repeated-feature unwinding and Saabas controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only root order, covers, donor background or one query feature; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
 '''
 
 
@@ -6867,20 +5151,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after the tree reference — source cell 82
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Interpreting the study
 
 Use the figures in this order.
@@ -6902,30 +5172,6 @@ strength for this recipe relative to the specified missing-feature reference. It
 the effect of adding cement while holding a physically feasible recipe constant. Ingredient
 quantities co-vary, duplicated recipes have conflicting outcomes, and laboratory identity is
 unavailable.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next tree reference — source cell 84
-
-Before viewing the next expected output, solution, saved figure or result, state the missing-feature game, query, covers and root order. Predict
-path-cover versus intact-donor or population-conditional credit; repeated-feature unwinding and Saabas controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only root order, covers, donor background or one query feature; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
 '''
 
 
@@ -6990,34 +5236,6 @@ current library's explicit perturbation modes and output choices.
 - I-Cheng Yeh, [UCI Concrete Compressive
 Strength](https://archive.ics.uci.edu/dataset/165/concrete+compressive+strength), for the source
 data and measurement description.
-
-The frozen source-row membership, hashes, model settings, background ordering and evaluation
-decisions are recorded in `protocol.md`, `protocol_freeze.json`, `data_manifest.json` and
-`author_reference.json` beside this lesson.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next tree reference — source cell 86
-
-Before viewing the next expected output, solution, saved figure or result, state the missing-feature game, query, covers and root order. Predict
-path-cover versus intact-donor or population-conditional credit; repeated-feature unwinding and Saabas controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only root order, covers, donor background or one query feature; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
 '''
 
 
@@ -7044,20 +5262,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after the tree reference — source cell 86
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 # 2️⃣ DeepSHAP
 '''
 
@@ -7067,31 +5271,7 @@ r'''
 # ! TAGS: []
 
 r'''
-### Commit before the next deep reference — source cell 0
-
-Before viewing the next expected output, solution, saved figure or result, fix the scalar affine/ReLU graph, query, intact donors and epsilon. Predict
-finite-change credit and completeness versus exact coalition credit; affine, ordinary-gradient, epsilon or cancellation controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only epsilon, one threshold, donor set or a raw-unit query coordinate; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Historical [16.14] DeepSHAP: When Does Fast Attribution Match Exact SHAP?
+## DeepSHAP: When Does Fast Attribution Match Exact SHAP?
 
 > **Claim.** A DeepSHAP explanation can reconstruct a prediction exactly while assigning different
 feature credit from exact Shapley values for the same empirical background game.
@@ -7138,30 +5318,6 @@ The taught method supports an exact `nn.Sequential` chain containing distinct, n
 modified backward rule visible. Real DeepSHAP libraries support more operators through
 backend-specific handlers; an unsupported module here raises an error rather than silently using an
 ordinary gradient.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next deep reference — source cell 1
-
-Before viewing the next expected output, solution, saved figure or result, fix the scalar affine/ReLU graph, query, intact donors and epsilon. Predict
-finite-change credit and completeness versus exact coalition credit; affine, ordinary-gradient, epsilon or cancellation controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only epsilon, one threshold, donor set or a raw-unit query coordinate; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
 '''
 
 
@@ -7248,44 +5404,6 @@ def deep_show_figure(fig, stem):
 # ! TAGS: []
 
 r'''
-### Reflect after the deep reference — source cell 1
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next deep reference — source cell 2
-
-Before viewing the next expected output, solution, saved figure or result, fix the scalar affine/ReLU graph, query, intact donors and epsilon. Predict
-finite-change credit and completeness versus exact coalition credit; affine, ordinary-gradient, epsilon or cancellation controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only epsilon, one threshold, donor set or a raw-unit query coordinate; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 The validators below are provided plumbing. Exact module types matter because a subclass can change
 its forward computation, and repeated module objects would make saved states ambiguous. The nine
 attribution functions remain in the exercises, where you can read and edit them.
@@ -7298,9 +5416,6 @@ attribution functions remain in the exercises, where you can read and edit them.
 
 r'''
 ### Visible supporting scientific function: `_check_widths`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_methods.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -7329,9 +5444,6 @@ def deep_helper_deepshap_methods__check_widths(layers: list[nn.Module], n_featur
 
 r'''
 ### Visible supporting scientific function: `_epsilon`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_methods.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -7357,9 +5469,6 @@ def deep_helper_deepshap_methods__epsilon(value: float) -> float:
 
 r'''
 ### Visible supporting scientific function: `_layers`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_methods.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -7407,9 +5516,6 @@ def deep_helper_deepshap_methods__layers(model: nn.Sequential) -> list[nn.Module
 
 r'''
 ### Visible supporting scientific function: `_method_tensor`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_methods.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -7443,9 +5549,6 @@ def deep_helper_deepshap_methods__method_tensor(name: str, value: Tensor, ndim: 
 
 r'''
 ### Visible supporting scientific function: `_model_output`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_methods.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -7499,9 +5602,6 @@ already written. They contain no attribution implementation.
 
 r'''
 ### Visible supporting scientific function: `DTYPE`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_diagnostics.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -7522,9 +5622,6 @@ if MAIN:
 
 r'''
 ### Visible supporting scientific function: `_linear`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_diagnostics.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -7554,9 +5651,6 @@ def deep_helper_deepshap_diagnostics__linear(weight, bias):
 
 r'''
 ### Visible supporting scientific function: `_max_abs`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_diagnostics.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -7578,9 +5672,6 @@ def deep_helper_deepshap_diagnostics__max_abs(left, right):
 
 r'''
 ### Visible supporting scientific function: `_method`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_diagnostics.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -7608,9 +5699,6 @@ def deep_helper_deepshap_diagnostics__method(methods, name):
 
 r'''
 ### Visible supporting scientific function: `_prediction`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_diagnostics.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -7647,30 +5735,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Commit before the next deep reference — source cell 6
-
-Before viewing the next expected output, solution, saved figure or result, fix the scalar affine/ReLU graph, query, intact donors and epsilon. Predict
-finite-change credit and completeness versus exact coalition credit; affine, ordinary-gradient, epsilon or cancellation controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only epsilon, one threshold, donor set or a raw-unit query coordinate; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## 1️⃣ Save paired forward states
 
 DeepSHAP compares a real input `x` with a reference `b`. The backward rule for a ReLU needs both
@@ -7696,30 +5760,6 @@ r'''
 
 Return `(x_states, b_states)`. Do not combine the batches or pair their rows: `x` has shape `(N,D)`
 and `background` has shape `(B,D)`.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next deep reference — source cell 7
-
-Before viewing the next expected output, solution, saved figure or result, fix the scalar affine/ReLU graph, query, intact donors and epsilon. Predict
-finite-change credit and completeness versus exact coalition credit; affine, ordinary-gradient, epsilon or cancellation controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only epsilon, one threshold, donor set or a raw-unit query coordinate; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
 '''
 
 
@@ -7771,44 +5811,6 @@ if MAIN:
 # END HIDE
 
 # END SOLUTION
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after the deep reference — source cell 7
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next deep reference — source cell 8
-
-Before viewing the next expected output, solution, saved figure or result, fix the scalar affine/ReLU graph, query, intact donors and epsilon. Predict
-finite-change credit and completeness versus exact coalition credit; affine, ordinary-gradient, epsilon or cancellation controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only epsilon, one threshold, donor set or a raw-unit query coordinate; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
 
 
 # ! CELL TYPE: markdown
@@ -7875,30 +5877,6 @@ def paired_forward(
 # ! TAGS: []
 
 r'''
-### Commit before the next deep reference — source cell 9
-
-Before viewing the next expected output, solution, saved figure or result, fix the scalar affine/ReLU graph, query, intact donors and epsilon. Predict
-finite-change credit and completeness versus exact coalition credit; affine, ordinary-gradient, epsilon or cancellation controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only epsilon, one threshold, donor set or a raw-unit query coordinate; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## 2️⃣ Replace a ReLU derivative with a secant
 
 For a unary activation $g$, Rescale assigns the finite-change multiplier
@@ -7931,30 +5909,6 @@ r'''
 
 Implement broadcast-compatible ReLU secants. Guard the denominator *before* division; computing an
 invalid quotient and masking it later can still introduce `nan` values or warnings.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next deep reference — source cell 10
-
-Before viewing the next expected output, solution, saved figure or result, fix the scalar affine/ReLU graph, query, intact donors and epsilon. Predict
-finite-change credit and completeness versus exact coalition credit; affine, ordinary-gradient, epsilon or cancellation controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only epsilon, one threshold, donor set or a raw-unit query coordinate; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
 '''
 
 
@@ -7998,44 +5952,6 @@ if MAIN:
 # END HIDE
 
 # END SOLUTION
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after the deep reference — source cell 10
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next deep reference — source cell 11
-
-Before viewing the next expected output, solution, saved figure or result, fix the scalar affine/ReLU graph, query, intact donors and epsilon. Predict
-finite-change credit and completeness versus exact coalition credit; affine, ordinary-gradient, epsilon or cancellation controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only epsilon, one threshold, donor set or a raw-unit query coordinate; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
 
 
 # ! CELL TYPE: markdown
@@ -8142,30 +6058,6 @@ def diagnose_rescale_limits(methods):
     }
 
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next deep reference — source cell 14
-
-Before viewing the next expected output, solution, saved figure or result, fix the scalar affine/ReLU graph, query, intact donors and epsilon. Predict
-finite-change credit and completeness versus exact coalition credit; affine, ordinary-gradient, epsilon or cancellation controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only epsilon, one threshold, donor set or a raw-unit query coordinate; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: [keep-main]
@@ -8174,44 +6066,6 @@ if MAIN:
     rescale_limits = diagnose_rescale_limits(deep_curriculum_namespace())
 if MAIN:
     deep_show_figure(deep_plots.plot_rescale_limits(rescale_limits), "01_rescale_limits")
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after the deep reference — source cell 14
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next deep reference — source cell 15
-
-Before viewing the next expected output, solution, saved figure or result, fix the scalar affine/ReLU graph, query, intact donors and epsilon. Predict
-finite-change credit and completeness versus exact coalition credit; affine, ordinary-gradient, epsilon or cancellation controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only epsilon, one threshold, donor set or a raw-unit query coordinate; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
 
 
 # ! CELL TYPE: markdown
@@ -8257,30 +6111,6 @@ r'''
 > ```
 
 Return one output-to-input multiplier for every input/reference pair, shape `(N,B,D)`.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next deep reference — source cell 16
-
-Before viewing the next expected output, solution, saved figure or result, fix the scalar affine/ReLU graph, query, intact donors and epsilon. Predict
-finite-change credit and completeness versus exact coalition credit; affine, ordinary-gradient, epsilon or cancellation controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only epsilon, one threshold, donor set or a raw-unit query coordinate; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
 '''
 
 
@@ -8350,44 +6180,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after the deep reference — source cell 16
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next deep reference — source cell 17
-
-Before viewing the next expected output, solution, saved figure or result, fix the scalar affine/ReLU graph, query, intact donors and epsilon. Predict
-finite-change credit and completeness versus exact coalition credit; affine, ordinary-gradient, epsilon or cancellation controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only epsilon, one threshold, donor set or a raw-unit query coordinate; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details><summary>Help - reverse the saved states</summary>
 
 Call `paired_forward`. Initialize `multiplier` to ones with shape `(N,B,1)`. For layer index `i` in
@@ -8450,30 +6242,6 @@ def rescale_multipliers(
 # ! TAGS: []
 
 r'''
-### Commit before the next deep reference — source cell 18
-
-Before viewing the next expected output, solution, saved figure or result, fix the scalar affine/ReLU graph, query, intact donors and epsilon. Predict
-finite-change credit and completeness versus exact coalition credit; affine, ordinary-gradient, epsilon or cancellation controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only epsilon, one threshold, donor set or a raw-unit query coordinate; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## 4️⃣ Turn multipliers into single-reference contributions
 
 For one reference $b$, Rescale contributions are
@@ -8510,30 +6278,6 @@ r'''
 > ```
 
 Accept a one-dimensional reference and return `(N,D)` contributions.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next deep reference — source cell 19
-
-Before viewing the next expected output, solution, saved figure or result, fix the scalar affine/ReLU graph, query, intact donors and epsilon. Predict
-finite-change credit and completeness versus exact coalition credit; affine, ordinary-gradient, epsilon or cancellation controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only epsilon, one threshold, donor set or a raw-unit query coordinate; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
 '''
 
 
@@ -8585,44 +6329,6 @@ if MAIN:
 # END HIDE
 
 # END SOLUTION
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after the deep reference — source cell 19
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next deep reference — source cell 20
-
-Before viewing the next expected output, solution, saved figure or result, fix the scalar affine/ReLU graph, query, intact donors and epsilon. Predict
-finite-change credit and completeness versus exact coalition credit; affine, ordinary-gradient, epsilon or cancellation controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only epsilon, one threshold, donor set or a raw-unit query coordinate; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
 
 
 # ! CELL TYPE: markdown
@@ -8741,30 +6447,6 @@ def diagnose_near_zero(methods):
     }
 
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next deep reference — source cell 23
-
-Before viewing the next expected output, solution, saved figure or result, fix the scalar affine/ReLU graph, query, intact donors and epsilon. Predict
-finite-change credit and completeness versus exact coalition credit; affine, ordinary-gradient, epsilon or cancellation controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only epsilon, one threshold, donor set or a raw-unit query coordinate; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: [keep-main]
@@ -8773,20 +6455,6 @@ if MAIN:
     near_zero = diagnose_near_zero(deep_curriculum_namespace())
 if MAIN:
     deep_show_figure(deep_plots.plot_near_zero(near_zero), "02_near_zero_epsilon")
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after the deep reference — source cell 23
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
 
 
 # ! CELL TYPE: markdown
@@ -8869,30 +6537,6 @@ def diagnose_affine_controls(methods):
     return answer
 
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next deep reference — source cell 27
-
-Before viewing the next expected output, solution, saved figure or result, fix the scalar affine/ReLU graph, query, intact donors and epsilon. Predict
-finite-change credit and completeness versus exact coalition credit; affine, ordinary-gradient, epsilon or cancellation controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only epsilon, one threshold, donor set or a raw-unit query coordinate; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: [keep-main]
@@ -8908,46 +6552,8 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after the deep reference — source cell 27
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 An affine network is the exactness control: modified multipliers, ordinary gradients and exact
 Shapley must coincide, while a zero-weight dummy input must receive zero credit.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next deep reference — source cell 29
-
-Before viewing the next expected output, solution, saved figure or result, fix the scalar affine/ReLU graph, query, intact donors and epsilon. Predict
-finite-change credit and completeness versus exact coalition credit; affine, ordinary-gradient, epsilon or cancellation controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only epsilon, one threshold, donor set or a raw-unit query coordinate; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
 '''
 
 
@@ -9001,30 +6607,6 @@ Return `(base, phi)`, where `base` is a scalar tensor and `phi` has shape `(N,D)
 '''
 
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next deep reference — source cell 30
-
-Before viewing the next expected output, solution, saved figure or result, fix the scalar affine/ReLU graph, query, intact donors and epsilon. Predict
-finite-change credit and completeness versus exact coalition credit; affine, ordinary-gradient, epsilon or cancellation controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only epsilon, one threshold, donor set or a raw-unit query coordinate; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: [keep-main]
@@ -9072,44 +6654,6 @@ if MAIN:
 # END HIDE
 
 # END SOLUTION
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after the deep reference — source cell 30
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next deep reference — source cell 31
-
-Before viewing the next expected output, solution, saved figure or result, fix the scalar affine/ReLU graph, query, intact donors and epsilon. Predict
-finite-change credit and completeness versus exact coalition credit; affine, ordinary-gradient, epsilon or cancellation controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only epsilon, one threshold, donor set or a raw-unit query coordinate; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
 
 
 # ! CELL TYPE: markdown
@@ -9239,30 +6783,6 @@ def deep_diagnose_background_average(methods):
     }
 
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next deep reference — source cell 34
-
-Before viewing the next expected output, solution, saved figure or result, fix the scalar affine/ReLU graph, query, intact donors and epsilon. Predict
-finite-change credit and completeness versus exact coalition credit; affine, ordinary-gradient, epsilon or cancellation controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only epsilon, one threshold, donor set or a raw-unit query coordinate; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: [keep-main]
@@ -9271,20 +6791,6 @@ if MAIN:
     background_average = deep_diagnose_background_average(deep_curriculum_namespace())
 if MAIN:
     deep_show_figure(deep_plots.plot_background_average(background_average), "04_background_average")
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after the deep reference — source cell 34
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
 
 
 # ! CELL TYPE: markdown
@@ -9342,30 +6848,6 @@ def deep_coalition_masks(d: int) -> Tensor:
 # ! TAGS: []
 
 r'''
-### Commit before the next deep reference — source cell 38
-
-Before viewing the next expected output, solution, saved figure or result, fix the scalar affine/ReLU graph, query, intact donors and epsilon. Predict
-finite-change credit and completeness versus exact coalition credit; affine, ordinary-gradient, epsilon or cancellation controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only epsilon, one threshold, donor set or a raw-unit query coordinate; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise 6 — `coalition_values`
 
 > ```yaml
@@ -9377,30 +6859,6 @@ r'''
 
 Return `(N,K)` coalition values for masks `(K,D)`. Batch both source rows and flattened model
 forwards. Never average donor inputs before the model call.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next deep reference — source cell 39
-
-Before viewing the next expected output, solution, saved figure or result, fix the scalar affine/ReLU graph, query, intact donors and epsilon. Predict
-finite-change credit and completeness versus exact coalition credit; affine, ordinary-gradient, epsilon or cancellation controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only epsilon, one threshold, donor set or a raw-unit query coordinate; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
 '''
 
 
@@ -9472,44 +6930,6 @@ if MAIN:
 # END HIDE
 
 # END SOLUTION
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after the deep reference — source cell 39
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next deep reference — source cell 40
-
-Before viewing the next expected output, solution, saved figure or result, fix the scalar affine/ReLU graph, query, intact donors and epsilon. Predict
-finite-change credit and completeness versus exact coalition credit; affine, ordinary-gradient, epsilon or cancellation controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only epsilon, one threshold, donor set or a raw-unit query coordinate; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
 
 
 # ! CELL TYPE: markdown
@@ -9600,30 +7020,6 @@ def coalition_values(
 # ! TAGS: []
 
 r'''
-### Commit before the next deep reference — source cell 41
-
-Before viewing the next expected output, solution, saved figure or result, fix the scalar affine/ReLU graph, query, intact donors and epsilon. Predict
-finite-change credit and completeness versus exact coalition credit; affine, ordinary-gradient, epsilon or cancellation controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only epsilon, one threshold, donor set or a raw-unit query coordinate; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## 7️⃣ Contract every coalition into exact Shapley values
 
 For $D$ features and feature $i$, exact Shapley is
@@ -9654,30 +7050,6 @@ r'''
 > ```
 
 Accept any leading batch shape and require the last dimension to be a power of two in bit order.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next deep reference — source cell 42
-
-Before viewing the next expected output, solution, saved figure or result, fix the scalar affine/ReLU graph, query, intact donors and epsilon. Predict
-finite-change credit and completeness versus exact coalition credit; affine, ordinary-gradient, epsilon or cancellation controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only epsilon, one threshold, donor set or a raw-unit query coordinate; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
 '''
 
 
@@ -9727,44 +7099,6 @@ if MAIN:
 # END HIDE
 
 # END SOLUTION
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after the deep reference — source cell 42
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next deep reference — source cell 43
-
-Before viewing the next expected output, solution, saved figure or result, fix the scalar affine/ReLU graph, query, intact donors and epsilon. Predict
-finite-change credit and completeness versus exact coalition credit; affine, ordinary-gradient, epsilon or cancellation controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only epsilon, one threshold, donor set or a raw-unit query coordinate; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
 
 
 # ! CELL TYPE: markdown
@@ -9833,30 +7167,6 @@ def deep_exact_shapley(values: Tensor) -> Tensor:
 # ! TAGS: []
 
 r'''
-### Commit before the next deep reference — source cell 44
-
-Before viewing the next expected output, solution, saved figure or result, fix the scalar affine/ReLU graph, query, intact donors and epsilon. Predict
-finite-change credit and completeness versus exact coalition credit; affine, ordinary-gradient, epsilon or cancellation controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only epsilon, one threshold, donor set or a raw-unit query coordinate; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 Before recomputing the threshold example, we need one ordinary-gradient baseline. We provide it
 because it is a control rather than a DeepSHAP rule:
 
@@ -9892,74 +7202,12 @@ def gradient_delta(model: nn.Sequential, x: Tensor, background: Tensor) -> Tenso
     return (gradient * (query - background.mean(dim=0))).detach()
 
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next deep reference — source cell 46
-
-Before viewing the next expected output, solution, saved figure or result, fix the scalar affine/ReLU graph, query, intact donors and epsilon. Predict
-finite-change credit and completeness versus exact coalition credit; affine, ordinary-gradient, epsilon or cancellation controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only epsilon, one threshold, donor set or a raw-unit query coordinate; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: [keep-main]
 
 if MAIN:
     deep_tests.test_gradient_delta(gradient_delta)
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after the deep reference — source cell 46
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next deep reference — source cell 47
-
-Before viewing the next expected output, solution, saved figure or result, fix the scalar affine/ReLU graph, query, intact donors and epsilon. Predict
-finite-change credit and completeness versus exact coalition credit; affine, ordinary-gradient, epsilon or cancellation controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only epsilon, one threshold, donor set or a raw-unit query coordinate; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
 
 
 # ! CELL TYPE: markdown
@@ -10058,30 +7306,6 @@ def diagnose_threshold(methods):
     }
 
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next deep reference — source cell 50
-
-Before viewing the next expected output, solution, saved figure or result, fix the scalar affine/ReLU graph, query, intact donors and epsilon. Predict
-finite-change credit and completeness versus exact coalition credit; affine, ordinary-gradient, epsilon or cancellation controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only epsilon, one threshold, donor set or a raw-unit query coordinate; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: [keep-main]
@@ -10097,46 +7321,8 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after the deep reference — source cell 50
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 This is the cold-open result recomputed from your own methods. Exact and DeepSHAP share the same
 endpoint and both satisfy completeness, but their individual feature bars disagree.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next deep reference — source cell 52
-
-Before viewing the next expected output, solution, saved figure or result, fix the scalar affine/ReLU graph, query, intact donors and epsilon. Predict
-finite-change credit and completeness versus exact coalition credit; affine, ordinary-gradient, epsilon or cancellation controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only epsilon, one threshold, donor set or a raw-unit query coordinate; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
 '''
 
 
@@ -10184,30 +7370,6 @@ r'''
 > ```
 
 Implement the two grouped allocations for a broadcast-compatible unary activation.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next deep reference — source cell 53
-
-Before viewing the next expected output, solution, saved figure or result, fix the scalar affine/ReLU graph, query, intact donors and epsilon. Predict
-finite-change credit and completeness versus exact coalition credit; affine, ordinary-gradient, epsilon or cancellation controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only epsilon, one threshold, donor set or a raw-unit query coordinate; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
 '''
 
 
@@ -10271,44 +7433,6 @@ if MAIN:
 # END HIDE
 
 # END SOLUTION
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after the deep reference — source cell 53
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next deep reference — source cell 54
-
-Before viewing the next expected output, solution, saved figure or result, fix the scalar affine/ReLU graph, query, intact donors and epsilon. Predict
-finite-change credit and completeness versus exact coalition credit; affine, ordinary-gradient, epsilon or cancellation controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only epsilon, one threshold, donor set or a raw-unit query coordinate; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
 
 
 # ! CELL TYPE: markdown
@@ -10474,30 +7598,6 @@ def diagnose_cancellation(methods):
     }
 
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next deep reference — source cell 57
-
-Before viewing the next expected output, solution, saved figure or result, fix the scalar affine/ReLU graph, query, intact donors and epsilon. Predict
-finite-change credit and completeness versus exact coalition credit; affine, ordinary-gradient, epsilon or cancellation controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only epsilon, one threshold, donor set or a raw-unit query coordinate; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: [keep-main]
@@ -10516,46 +7616,8 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after the deep reference — source cell 57
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 The mirrored `min` implementations are a representation control. A feature attribution method that
 follows hidden computational paths can change even when the tested input/output function does not.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next deep reference — source cell 59
-
-Before viewing the next expected output, solution, saved figure or result, fix the scalar affine/ReLU graph, query, intact donors and epsilon. Predict
-finite-change credit and completeness versus exact coalition credit; affine, ordinary-gradient, epsilon or cancellation controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only epsilon, one threshold, donor set or a raw-unit query coordinate; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
 '''
 
 
@@ -10595,30 +7657,6 @@ r'''
 Return a dictionary with `orders`, integer `insertion_masks` and `deletion_masks`, plus the
 corresponding raw prediction values. Optional supplied orders must contain an exact permutation on
 every row.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next deep reference — source cell 60
-
-Before viewing the next expected output, solution, saved figure or result, fix the scalar affine/ReLU graph, query, intact donors and epsilon. Predict
-finite-change credit and completeness versus exact coalition credit; affine, ordinary-gradient, epsilon or cancellation controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only epsilon, one threshold, donor set or a raw-unit query coordinate; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
 '''
 
 
@@ -10686,44 +7724,6 @@ if MAIN:
 # END HIDE
 
 # END SOLUTION
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after the deep reference — source cell 60
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next deep reference — source cell 61
-
-Before viewing the next expected output, solution, saved figure or result, fix the scalar affine/ReLU graph, query, intact donors and epsilon. Predict
-finite-change credit and completeness versus exact coalition credit; affine, ordinary-gradient, epsilon or cancellation controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only epsilon, one threshold, donor set or a raw-unit query coordinate; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
 
 
 # ! CELL TYPE: markdown
@@ -10853,30 +7853,6 @@ def diagnose_replacement_control(methods):
     }
 
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next deep reference — source cell 64
-
-Before viewing the next expected output, solution, saved figure or result, fix the scalar affine/ReLU graph, query, intact donors and epsilon. Predict
-finite-change credit and completeness versus exact coalition credit; affine, ordinary-gradient, epsilon or cancellation controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only epsilon, one threshold, donor set or a raw-unit query coordinate; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: [keep-main]
@@ -10885,20 +7861,6 @@ if MAIN:
     replacement_control = diagnose_replacement_control(deep_curriculum_namespace())
 if MAIN:
     deep_show_figure(deep_plots.plot_replacement_control(replacement_control), "07_replacement_fixture")
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after the deep reference — source cell 64
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
 
 
 # ! CELL TYPE: markdown
@@ -10931,30 +7893,6 @@ if MAIN:
         coalition_masks=deep_coalition_masks,
         gradient_delta=gradient_delta,
     )
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next deep reference — source cell 67
-
-Before viewing the next expected output, solution, saved figure or result, fix the scalar affine/ReLU graph, query, intact donors and epsilon. Predict
-finite-change credit and completeness versus exact coalition credit; affine, ordinary-gradient, epsilon or cancellation controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only epsilon, one threshold, donor set or a raw-unit query coordinate; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
 
 
 # ! CELL TYPE: markdown
@@ -11060,30 +7998,6 @@ def deep_run_diagnostics(methods=None, include_timing=True):
     return {"mechanism": detach_tree(mechanism), "timing": {} if include_timing else {}}
 
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next deep reference — source cell 70
-
-Before viewing the next expected output, solution, saved figure or result, fix the scalar affine/ReLU graph, query, intact donors and epsilon. Predict
-finite-change credit and completeness versus exact coalition credit; affine, ordinary-gradient, epsilon or cancellation controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only epsilon, one threshold, donor set or a raw-unit query coordinate; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: [keep-main]
@@ -11099,20 +8013,6 @@ if MAIN:
     )
 if MAIN:
     deep_show_figure(deep_plots.plot_threshold_play(deep_tiny_play), "16_threshold_play")
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after the deep reference — source cell 70
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
 
 
 # ! CELL TYPE: markdown
@@ -11260,9 +8160,6 @@ deep_UNITS = {
 
 r'''
 ### Visible supporting scientific function: `_clone_state`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_study.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -11296,9 +8193,6 @@ def deep_helper_deepshap_study__clone_state(state: Mapping[str, t.Tensor]) -> di
 
 r'''
 ### Visible supporting scientific function: `_clone_tree`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_study.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -11331,9 +8225,6 @@ def deep_helper_deepshap_study__clone_tree(value: Any) -> Any:
 
 r'''
 ### Visible supporting scientific function: `_combine_explanations`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_study.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -11373,9 +8264,6 @@ def deep_helper_deepshap_study__combine_explanations(
 
 r'''
 ### Visible supporting scientific function: `_combine_row_blocks`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_study.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -11409,9 +8297,6 @@ def deep_helper_deepshap_study__combine_row_blocks(rows: Mapping[str, t.Tensor])
 
 r'''
 ### Visible supporting scientific function: `_float_tensor`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_study.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -11439,9 +8324,6 @@ def deep_helper_deepshap_study__float_tensor(value: Any, name: str, dimensions: 
 
 r'''
 ### Visible supporting scientific function: `_ids_tensor`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_study.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -11469,9 +8351,6 @@ def deep_helper_deepshap_study__ids_tensor(value: Any, rows: int, name: str) -> 
 
 r'''
 ### Visible supporting scientific function: `FEATURES`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_study.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -11488,9 +8367,6 @@ deep_helper_deepshap_study_FEATURES = 8
 
 r'''
 ### Visible supporting scientific function: `_normalization_tensors`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_study.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -11525,9 +8401,6 @@ def deep_helper_deepshap_study__normalization_tensors(normalization: Mapping[str
 
 r'''
 ### Visible supporting scientific function: `_output_tensor`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_study.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -11556,9 +8429,6 @@ def deep_helper_deepshap_study__output_tensor(value: Any, shape: tuple[int, ...]
 
 r'''
 ### Visible supporting scientific function: `_require_disjoint_ids`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_study.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -11588,9 +8458,6 @@ def deep_helper_deepshap_study__require_disjoint_ids(**splits: t.Tensor) -> None
 
 r'''
 ### Visible supporting scientific function: `METHOD_NAMES`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_study.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -11615,9 +8482,6 @@ deep_helper_deepshap_study_METHOD_NAMES = (
 
 r'''
 ### Visible supporting scientific function: `_require_methods`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_study.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -11640,9 +8504,6 @@ def deep_helper_deepshap_study__require_methods(methods: Any) -> None:
 
 r'''
 ### Visible supporting scientific function: `_rows`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_study.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -11674,9 +8535,6 @@ def deep_helper_deepshap_study__rows(rows: Mapping[str, Any], name: str) -> tupl
 
 r'''
 ### Visible supporting scientific function: `HIDDEN`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_study.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -11693,9 +8551,6 @@ deep_helper_deepshap_study_HIDDEN = 32
 
 r'''
 ### Visible supporting scientific function: `_state_shapes`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_study.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -11724,9 +8579,6 @@ def deep_helper_deepshap_study__state_shapes(kind: str) -> dict[str, tuple[int, 
 
 r'''
 ### Visible supporting scientific function: `MODEL_KEYS`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_study.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -11748,9 +8600,6 @@ if MAIN:
 
 r'''
 ### Visible supporting scientific function: `_validate_fitted`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_study.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -11788,9 +8637,6 @@ def deep_helper_deepshap_study__validate_fitted(fitted: Mapping[str, Any]) -> No
 
 r'''
 ### Visible supporting scientific function: `_validate_rankings`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_study.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -11828,9 +8674,6 @@ def deep_helper_deepshap_study__validate_rankings(rankings: Any) -> None:
 
 r'''
 ### Visible supporting scientific function: `_validate_evaluation_inputs`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_study.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -12416,34 +9259,7 @@ hashes before the following literal audit load. No audit outcome can affect thos
 # ! TAGS: []
 
 r'''
-### Commit before the next deep reference — source cell 90
-
-Before viewing the next expected output, solution, saved figure or result, fix the scalar affine/ReLU graph, query, intact donors and epsilon. Predict
-finite-change credit and completeness versus exact coalition credit; affine, ordinary-gradient, epsilon or cancellation controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only epsilon, one threshold, donor set or a raw-unit query coordinate; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Visible supporting scientific function: `_serializable`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -12481,9 +9297,6 @@ def deep_helper_run_native__serializable(value: Any) -> Any:
 
 r'''
 ### Visible supporting scientific function: `serializable_fitted`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -12502,9 +9315,6 @@ def deep_helper_run_native_serializable_fitted(fitted: dict) -> dict:
 
 r'''
 ### Visible supporting scientific function: `save_payload`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -12537,9 +9347,6 @@ def deep_helper_run_native_save_payload(directory: Path, name: str, value: Any) 
 
 r'''
 ### Visible supporting scientific function: `digest`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -12562,9 +9369,6 @@ def deep_helper_run_native_digest(path: Path) -> str:
 
 r'''
 ### Visible supporting scientific function: `write_before_audit`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -12608,30 +9412,6 @@ def deep_helper_run_native_write_before_audit(directory: Path, prepared: dict) -
     return boundary
 
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next deep reference — source cell 90
-
-Before viewing the next expected output, solution, saved figure or result, fix the scalar affine/ReLU graph, query, intact donors and epsilon. Predict
-finite-change credit and completeness versus exact coalition credit; affine, ordinary-gradient, epsilon or cancellation controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only epsilon, one threshold, donor set or a raw-unit query coordinate; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: [keep-main]
@@ -12651,20 +9431,6 @@ if MAIN:
     deep_save_payload(native_dir, "prepared.pt", deep_prepared)
 if MAIN:
     deep_write_before_audit(native_dir, deep_prepared)
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after the deep reference — source cell 90
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
 
 
 # ! CELL TYPE: code
@@ -12974,34 +9740,7 @@ checks every one of the 1,904 model-row games.
 # ! TAGS: []
 
 r'''
-### Commit before the next deep reference — source cell 102
-
-Before viewing the next expected output, solution, saved figure or result, fix the scalar affine/ReLU graph, query, intact donors and epsilon. Predict
-finite-change credit and completeness versus exact coalition credit; affine, ordinary-gradient, epsilon or cancellation controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only epsilon, one threshold, donor set or a raw-unit query coordinate; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Visible supporting scientific function: `DETERMINISTIC_ARTIFACTS`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -13025,9 +9764,6 @@ deep_helper_run_native_DETERMINISTIC_ARTIFACTS = (
 
 r'''
 ### Visible supporting scientific function: `TIMING_ARTIFACT`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -13044,9 +9780,6 @@ deep_helper_run_native_TIMING_ARTIFACT = "timings.pt"
 
 r'''
 ### Visible supporting scientific function: `_loss_trace`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -13071,9 +9804,6 @@ def deep_helper_run_native__loss_trace(item: dict) -> Any:
 
 r'''
 ### Visible supporting scientific function: `_reference_scalars`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -13103,9 +9833,6 @@ def deep_helper_run_native__reference_scalars(value: Any, prefix: str = "") -> d
 
 r'''
 ### Visible supporting scientific function: `summarize`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -13178,9 +9905,6 @@ def deep_helper_run_native_summarize(
 
 r'''
 ### Visible supporting scientific function: `persist_completed`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -13236,9 +9960,6 @@ def deep_helper_run_native_persist_completed(
 
 r'''
 ### Visible supporting scientific function: `write_notebook_summary`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -13269,9 +9990,6 @@ def deep_helper_run_native_write_notebook_summary(output_root: Path, native_dire
 
 r'''
 ### Visible supporting scientific function: `AUTHOR_ATOL`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -13288,9 +10006,6 @@ deep_helper_deepshap_reference_AUTHOR_ATOL = 1e-7
 
 r'''
 ### Visible supporting scientific function: `AUTHOR_RTOL`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -13307,9 +10022,6 @@ deep_helper_deepshap_reference_AUTHOR_RTOL = 1e-8
 
 r'''
 ### Visible supporting scientific function: `BACKGROUND_ROWS`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -13326,9 +10038,6 @@ deep_helper_deepshap_reference_BACKGROUND_ROWS = 64
 
 r'''
 ### Visible supporting scientific function: `EXACT_ATOL`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -13345,9 +10054,6 @@ deep_helper_deepshap_reference_EXACT_ATOL = 1e-10
 
 r'''
 ### Visible supporting scientific function: `EXACT_RTOL`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -13364,9 +10070,6 @@ deep_helper_deepshap_reference_EXACT_RTOL = 1e-10
 
 r'''
 ### Visible supporting scientific function: `MODEL_KEYS`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -13391,9 +10094,6 @@ deep_helper_deepshap_reference_MODEL_KEYS = (
 
 r'''
 ### Visible supporting scientific function: `_array`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -13420,9 +10120,6 @@ def deep_helper_deepshap_reference__array(value: Any) -> np.ndarray:
 
 r'''
 ### Visible supporting scientific function: `_state_hash`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -13467,9 +10164,6 @@ def deep_helper_deepshap_reference__state_hash(state: Mapping[str, Any]) -> str:
 
 r'''
 ### Visible supporting scientific function: `_model_hash`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -13490,9 +10184,6 @@ def deep_helper_deepshap_reference__model_hash(model: t.nn.Module) -> str:
 
 r'''
 ### Visible supporting scientific function: `_max_abs`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -13516,9 +10207,6 @@ def deep_helper_deepshap_reference__max_abs(actual: Any, expected: Any) -> float
 
 r'''
 ### Visible supporting scientific function: `_require_close`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -13557,9 +10245,6 @@ def deep_helper_deepshap_reference__require_close(
 
 r'''
 ### Visible supporting scientific function: `_validate_reference_model`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -13606,9 +10291,6 @@ def deep_helper_deepshap_reference__validate_reference_model(model: t.nn.Module)
 
 r'''
 ### Visible supporting scientific function: `_author_deep`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -13674,9 +10356,6 @@ def deep_helper_deepshap_reference__author_deep(
 
 r'''
 ### Visible supporting scientific function: `_bounded_pair_author`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -13722,9 +10401,6 @@ def deep_helper_deepshap_reference__bounded_pair_author(
 
 r'''
 ### Visible supporting scientific function: `FEATURES`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -13741,9 +10417,6 @@ deep_helper_deepshap_reference_FEATURES = 8
 
 r'''
 ### Visible supporting scientific function: `HIDDEN`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -13760,9 +10433,6 @@ deep_helper_deepshap_reference_HIDDEN = 32
 
 r'''
 ### Visible supporting scientific function: `_model_from_item`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -13824,9 +10494,6 @@ def deep_helper_deepshap_reference__model_from_item(item: Mapping[str, Any]) -> 
 
 r'''
 ### Visible supporting scientific function: `HERE`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -13847,9 +10514,6 @@ if MAIN:
 
 r'''
 ### Visible supporting scientific function: `_sha256`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -13876,9 +10540,6 @@ def deep_helper_deepshap_reference__sha256(path: Path) -> str:
 
 r'''
 ### Visible supporting scientific function: `_reference_environment`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -13975,9 +10636,6 @@ def deep_helper_deepshap_reference__reference_environment() -> dict[str, Any]:
 
 r'''
 ### Visible supporting scientific function: `_float64_array`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -14010,9 +10668,6 @@ def deep_helper_deepshap_reference__float64_array(value: Any, shape: tuple[int, 
 
 r'''
 ### Visible supporting scientific function: `_validate_block`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -14058,9 +10713,6 @@ def deep_helper_deepshap_reference__validate_block(name: str, block: Any, rows: 
 
 r'''
 ### Visible supporting scientific function: `PRIMARY_BACKGROUND_SEED`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -14077,9 +10729,6 @@ deep_helper_deepshap_reference_PRIMARY_BACKGROUND_SEED = 161460
 
 r'''
 ### Visible supporting scientific function: `_background_indices`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -14110,9 +10759,6 @@ def deep_helper_deepshap_reference__background_indices(train_ids: np.ndarray) ->
 
 r'''
 ### Visible supporting scientific function: `_frozen_identity`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -14149,9 +10795,6 @@ def deep_helper_deepshap_reference__frozen_identity() -> tuple[np.ndarray, dict[
 
 r'''
 ### Visible supporting scientific function: `_int64_array`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -14182,9 +10825,6 @@ def deep_helper_deepshap_reference__int64_array(value: Any, shape: tuple[int, ..
 
 r'''
 ### Visible supporting scientific function: `_validate_rows`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -14217,9 +10857,6 @@ def deep_helper_deepshap_reference__validate_rows(name: str, supplied: Mapping[s
 
 r'''
 ### Visible supporting scientific function: `_validate_identity`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -14339,9 +10976,6 @@ def deep_helper_deepshap_reference__validate_identity(
 
 r'''
 ### Visible supporting scientific function: `_coalition_game`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -14374,9 +11008,6 @@ def deep_helper_deepshap_reference__coalition_game(model: t.nn.Sequential, x: np
 
 r'''
 ### Visible supporting scientific function: `_linear_model`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -14402,9 +11033,6 @@ def deep_helper_deepshap_reference__linear_model(weight: list[list[float]], bias
 
 r'''
 ### Visible supporting scientific function: `_relu_model`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -14438,9 +11066,6 @@ def deep_helper_deepshap_reference__relu_model(
 
 r'''
 ### Visible supporting scientific function: `permutation_reference`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -14487,9 +11112,6 @@ def deep_helper_deepshap_reference_permutation_reference(values: Any) -> tuple[n
 
 r'''
 ### Visible supporting scientific function: `ridge_closed_form`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -14529,9 +11151,6 @@ def deep_helper_deepshap_reference_ridge_closed_form(
 
 r'''
 ### Visible supporting scientific function: `known_diagnostics`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -14693,9 +11312,6 @@ def deep_helper_deepshap_reference_known_diagnostics() -> dict[str, Any]:
 
 r'''
 ### Visible supporting scientific function: `subset_reference`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -14740,9 +11356,6 @@ def deep_helper_deepshap_reference_subset_reference(values: Any) -> np.ndarray:
 
 r'''
 ### Visible supporting scientific function: `validate_reference`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/deepshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -15086,30 +11699,6 @@ def deep_helper_deepshap_reference_validate_reference(
     }
 
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next deep reference — source cell 102
-
-Before viewing the next expected output, solution, saved figure or result, fix the scalar affine/ReLU graph, query, intact donors and epsilon. Predict
-finite-change credit and completeness versus exact coalition credit; affine, ordinary-gradient, epsilon or cancellation controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only epsilon, one threshold, donor set or a raw-unit query coordinate; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: [keep-main]
@@ -15155,44 +11744,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after the deep reference — source cell 102
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next deep reference — source cell 103
-
-Before viewing the next expected output, solution, saved figure or result, fix the scalar affine/ReLU graph, query, intact donors and epsilon. Predict
-finite-change credit and completeness versus exact coalition credit; affine, ordinary-gradient, epsilon or cancellation controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only epsilon, one threshold, donor set or a raw-unit query coordinate; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Signature result: fast, complete, and measurably approximate
 
 The first panel establishes that predictive skill belongs to the clean models rather than the
@@ -15222,30 +11773,6 @@ gap.
 '''
 
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next deep reference — source cell 104
-
-Before viewing the next expected output, solution, saved figure or result, fix the scalar affine/ReLU graph, query, intact donors and epsilon. Predict
-finite-change credit and completeness versus exact coalition credit; affine, ordinary-gradient, epsilon or cancellation controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only epsilon, one threshold, donor set or a raw-unit query coordinate; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: [keep-main]
@@ -15254,44 +11781,6 @@ if MAIN:
     deep_show_figure(deep_plots.plot_performance(deep_prepared, deep_evaluated), "08_performance_controls")
 if MAIN:
     deep_show_figure(deep_plots.plot_signed_parity(deep_prepared, deep_evaluated), "09_signed_parity_all_rows")
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after the deep reference — source cell 104
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next deep reference — source cell 105
-
-Before viewing the next expected output, solution, saved figure or result, fix the scalar affine/ReLU graph, query, intact donors and epsilon. Predict
-finite-change credit and completeness versus exact coalition credit; affine, ordinary-gradient, epsilon or cancellation controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only epsilon, one threshold, donor set or a raw-unit query coordinate; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
 
 
 # ! CELL TYPE: code
@@ -15305,44 +11794,6 @@ if MAIN:
         deep_plots.plot_fixed_waterfall(deep_fixed_play, feature_names=deep_FEATURE_NAMES),
         "11_fixed_waterfall",
     )
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after the deep reference — source cell 105
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next deep reference — source cell 106
-
-Before viewing the next expected output, solution, saved figure or result, fix the scalar affine/ReLU graph, query, intact donors and epsilon. Predict
-finite-change credit and completeness versus exact coalition credit; affine, ordinary-gradient, epsilon or cancellation controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only epsilon, one threshold, donor set or a raw-unit query coordinate; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
 
 
 # ! CELL TYPE: code
@@ -15359,20 +11810,6 @@ if MAIN:
         deep_plots.plot_completeness_vs_exact(deep_prepared, deep_evaluated),
         "13_completeness_vs_exact",
     )
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after the deep reference — source cell 106
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
 
 
 # ! CELL TYPE: markdown
@@ -15421,30 +11858,6 @@ evidence that an attribution vector is closer to exact Shapley.
 '''
 
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next deep reference — source cell 109
-
-Before viewing the next expected output, solution, saved figure or result, fix the scalar affine/ReLU graph, query, intact donors and epsilon. Predict
-finite-change credit and completeness versus exact coalition credit; affine, ordinary-gradient, epsilon or cancellation controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only epsilon, one threshold, donor set or a raw-unit query coordinate; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: [keep-main]
@@ -15460,44 +11873,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after the deep reference — source cell 109
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next deep reference — source cell 110
-
-Before viewing the next expected output, solution, saved figure or result, fix the scalar affine/ReLU graph, query, intact donors and epsilon. Predict
-finite-change credit and completeness versus exact coalition credit; affine, ordinary-gradient, epsilon or cancellation controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only epsilon, one threshold, donor set or a raw-unit query coordinate; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Try It Yourself 2 — choose a recipe, model and background
 
 The canonical first run uses `clean_0`, audit row 0 (source row 1) and the frozen 64-row background.
@@ -15505,30 +11880,6 @@ After reproducing that result, edit the arguments. The play recomputes the appro
 exact game and replacement curves rather than slicing a cached chart. Its curves use the local
 per-row ordering from Exercise 9, oriented by `sign(f(x)-base)`. They are exploratory and distinct
 from the primary experiment's frozen global explanation-split rankings.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next deep reference — source cell 111
-
-Before viewing the next expected output, solution, saved figure or result, fix the scalar affine/ReLU graph, query, intact donors and epsilon. Predict
-finite-change credit and completeness versus exact coalition credit; affine, ordinary-gradient, epsilon or cancellation controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only epsilon, one threshold, donor set or a raw-unit query coordinate; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
 '''
 
 
@@ -15558,44 +11909,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after the deep reference — source cell 111
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next deep reference — source cell 112
-
-Before viewing the next expected output, solution, saved figure or result, fix the scalar affine/ReLU graph, query, intact donors and epsilon. Predict
-finite-change credit and completeness versus exact coalition credit; affine, ordinary-gradient, epsilon or cancellation controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only epsilon, one threshold, donor set or a raw-unit query coordinate; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details><summary>Ideas to try</summary>
 
 - Compare `clean_0`, `clean_1`, `clean_2`, `shuffled_0` and `ridge` on the same source row.
@@ -15608,30 +11921,6 @@ These choices occur after audit evaluation. They are exploratory diagnostics and
 new confirmatory audit claim.
 
 </details>
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next deep reference — source cell 113
-
-Before viewing the next expected output, solution, saved figure or result, fix the scalar affine/ReLU graph, query, intact donors and epsilon. Predict
-finite-change credit and completeness versus exact coalition credit; affine, ordinary-gradient, epsilon or cancellation controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only epsilon, one threshold, donor set or a raw-unit query coordinate; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
 '''
 
 
@@ -15718,31 +12007,7 @@ r'''
 # ! TAGS: []
 
 r'''
-### Commit before the next gradient reference — source cell 0
-
-Before viewing the next expected output, solution, saved figure or result, fix the donor distribution, row IDs, path schedule, draw budget and noise scale. Predict
-path contribution mean and ordinary Monte Carlo standard error versus quadrature, clean-gradient or discrete-coalition controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only draw budget, a donor set, one threshold or Gaussian query noise; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Historical [16.15] Expected Gradients: Which Expectation Does GradientSHAP Estimate?
+## Expected Gradients: Which Expectation Does GradientSHAP Estimate?
 
 > **Claim.** Expected Gradients can converge to a complete continuous-path attribution while
 > disagreeing with exact Shapley values for the same finite background. Gaussian query noise changes
@@ -15799,30 +12064,6 @@ exploratory plays.
 The student implementation supports deterministic scalar-output PyTorch models that act
 independently on each row. Tensors and model parameters use CPU float64. Explicit schedules make
 sampling semantics reviewable and allow smaller budgets to be literal prefixes of larger ones.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next gradient reference — source cell 1
-
-Before viewing the next expected output, solution, saved figure or result, fix the donor distribution, row IDs, path schedule, draw budget and noise scale. Predict
-path contribution mean and ordinary Monte Carlo standard error versus quadrature, clean-gradient or discrete-coalition controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only draw budget, a donor set, one threshold or Gaussian query noise; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
 '''
 
 
@@ -15918,44 +12159,6 @@ def gradient_show_figure(fig, stem):
 # ! TAGS: []
 
 r'''
-### Reflect after the gradient reference — source cell 1
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next gradient reference — source cell 2
-
-Before viewing the next expected output, solution, saved figure or result, fix the donor distribution, row IDs, path schedule, draw budget and noise scale. Predict
-path contribution mean and ordinary Monte Carlo standard error versus quadrature, clean-gradient or discrete-coalition controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only draw budget, a donor set, one threshold or Gaussian query noise; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 The named helpers below are mechanical tensor, model, schedule, and state validators. They check the
 lesson's declared boundary but do not implement any attribution operation. Every Expected Gradients
 method remains in the exercises.
@@ -15968,9 +12171,6 @@ method remains in the exercises.
 
 r'''
 ### Visible supporting scientific function: `_eg_float_tensor`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_methods.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -16004,9 +12204,6 @@ def gradient_helper_gradientshap_methods__eg_float_tensor(name: str, value: Tens
 
 r'''
 ### Visible supporting scientific function: `_eg_index_tensor`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_methods.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -16038,9 +12235,6 @@ def gradient_helper_gradientshap_methods__eg_index_tensor(name: str, value: Tens
 
 r'''
 ### Visible supporting scientific function: `_eg_model`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_methods.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -16079,9 +12273,6 @@ def gradient_helper_gradientshap_methods__eg_model(model: nn.Module) -> nn.Modul
 
 r'''
 ### Visible supporting scientific function: `_eg_model_output`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_methods.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -16116,9 +12307,6 @@ def gradient_helper_gradientshap_methods__eg_model_output(model: nn.Module, inpu
 
 r'''
 ### Visible supporting scientific function: `_eg_positive_int`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_methods.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -16138,9 +12326,6 @@ def gradient_helper_gradientshap_methods__eg_positive_int(name: str, value: int)
 
 r'''
 ### Visible supporting scientific function: `_eg_preserve_execution_state`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_methods.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -16211,9 +12396,6 @@ if MAIN:
 
 r'''
 ### Visible supporting scientific function: `_eg_seed_words`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_methods.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -16236,9 +12418,6 @@ def gradient_helper_gradientshap_methods__eg_seed_words(seed: int, source_id: in
 
 r'''
 ### Visible supporting scientific function: `_eg_validate_paths`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_methods.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -16376,30 +12555,6 @@ def _two_feature_shapley(values):
 # ! TAGS: []
 
 r'''
-### Commit before the next gradient reference — source cell 6
-
-Before viewing the next expected output, solution, saved figure or result, fix the donor distribution, row IDs, path schedule, draw budget and noise scale. Predict
-path contribution mean and ordinary Monte Carlo standard error versus quadrature, clean-gradient or discrete-coalition controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only draw budget, a donor set, one threshold or Gaussian query noise; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## From Integrated Gradients to an expectation
 
 For a differentiable scalar function $f:\mathbb R^D\to\mathbb R$, query $x$, and fixed baseline $b$,
@@ -16470,30 +12625,6 @@ source ID, and stream name. Never alter NumPy's global RNG.
 '''
 
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next gradient reference — source cell 7
-
-Before viewing the next expected output, solution, saved figure or result, fix the donor distribution, row IDs, path schedule, draw budget and noise scale. Predict
-path contribution mean and ordinary Monte Carlo standard error versus quadrature, clean-gradient or discrete-coalition controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only draw budget, a donor set, one threshold or Gaussian query noise; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: [keep-main]
@@ -16548,44 +12679,6 @@ if MAIN:
 # END HIDE
 
 # END SOLUTION
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after the gradient reference — source cell 7
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next gradient reference — source cell 8
-
-Before viewing the next expected output, solution, saved figure or result, fix the donor distribution, row IDs, path schedule, draw budget and noise scale. Predict
-path contribution mean and ordinary Monte Carlo standard error versus quadrature, clean-gradient or discrete-coalition controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only draw budget, a donor set, one threshold or Gaussian query noise; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
 
 
 # ! CELL TYPE: markdown
@@ -16720,30 +12813,6 @@ def diagnose_schedule(sample_path_schedule_fn):
     }
 
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next gradient reference — source cell 11
-
-Before viewing the next expected output, solution, saved figure or result, fix the donor distribution, row IDs, path schedule, draw budget and noise scale. Predict
-path contribution mean and ordinary Monte Carlo standard error versus quadrature, clean-gradient or discrete-coalition controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only draw budget, a donor set, one threshold or Gaussian query noise; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: [keep-main]
@@ -16752,44 +12821,6 @@ if MAIN:
     schedule_check = diagnose_schedule(sample_path_schedule)
 if MAIN:
     gradient_show_figure(gradient_plots.plot_schedule_prefix(schedule_check), "01_schedule_prefix")
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after the gradient reference — source cell 11
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next gradient reference — source cell 12
-
-Before viewing the next expected output, solution, saved figure or result, fix the donor distribution, row IDs, path schedule, draw budget and noise scale. Predict
-path contribution mean and ordinary Monte Carlo standard error versus quadrature, clean-gradient or discrete-coalition controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only draw budget, a donor set, one threshold or Gaussian query noise; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
 
 
 # ! CELL TYPE: markdown
@@ -16834,30 +12865,6 @@ random numbers.
 '''
 
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next gradient reference — source cell 13
-
-Before viewing the next expected output, solution, saved figure or result, fix the donor distribution, row IDs, path schedule, draw budget and noise scale. Predict
-path contribution mean and ordinary Monte Carlo standard error versus quadrature, clean-gradient or discrete-coalition controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only draw budget, a donor set, one threshold or Gaussian query noise; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: [keep-main]
@@ -16897,44 +12904,6 @@ if MAIN:
 # END HIDE
 
 # END SOLUTION
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after the gradient reference — source cell 13
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next gradient reference — source cell 14
-
-Before viewing the next expected output, solution, saved figure or result, fix the donor distribution, row IDs, path schedule, draw budget and noise scale. Predict
-path contribution mean and ordinary Monte Carlo standard error versus quadrature, clean-gradient or discrete-coalition controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only draw budget, a donor set, one threshold or Gaussian query noise; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
 
 
 # ! CELL TYPE: markdown
@@ -17029,30 +12998,6 @@ def diagnose_interpolation(interpolate_paths_fn):
     }
 
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next gradient reference — source cell 17
-
-Before viewing the next expected output, solution, saved figure or result, fix the donor distribution, row IDs, path schedule, draw budget and noise scale. Predict
-path contribution mean and ordinary Monte Carlo standard error versus quadrature, clean-gradient or discrete-coalition controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only draw budget, a donor set, one threshold or Gaussian query noise; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: [keep-main]
@@ -17061,44 +13006,6 @@ if MAIN:
     path_check = diagnose_interpolation(interpolate_paths)
 if MAIN:
     gradient_show_figure(gradient_plots.plot_path_interpolation(path_check), "02_path_interpolation")
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after the gradient reference — source cell 17
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next gradient reference — source cell 18
-
-Before viewing the next expected output, solution, saved figure or result, fix the donor distribution, row IDs, path schedule, draw budget and noise scale. Predict
-path contribution mean and ordinary Monte Carlo standard error versus quadrature, clean-gradient or discrete-coalition controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only draw budget, a donor set, one threshold or Gaussian query noise; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
 
 
 # ! CELL TYPE: markdown
@@ -17144,30 +13051,6 @@ r'''
 Differentiate the model in bounded `forward_batch` chunks and restore its original mode. Do not use
 `loss.backward()`, which accumulates parameter gradients. Use `torch.autograd.grad` with respect to
 a fresh point tensor.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next gradient reference — source cell 19
-
-Before viewing the next expected output, solution, saved figure or result, fix the donor distribution, row IDs, path schedule, draw budget and noise scale. Predict
-path contribution mean and ordinary Monte Carlo standard error versus quadrature, clean-gradient or discrete-coalition controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only draw budget, a donor set, one threshold or Gaussian query noise; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
 '''
 
 
@@ -17229,44 +13112,6 @@ if MAIN:
 # END HIDE
 
 # END SOLUTION
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after the gradient reference — source cell 19
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next gradient reference — source cell 20
-
-Before viewing the next expected output, solution, saved figure or result, fix the donor distribution, row IDs, path schedule, draw budget and noise scale. Predict
-path contribution mean and ordinary Monte Carlo standard error versus quadrature, clean-gradient or discrete-coalition controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only draw budget, a donor set, one threshold or Gaussian query noise; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
 
 
 # ! CELL TYPE: markdown
@@ -17393,30 +13238,6 @@ def diagnose_gradients(input_gradients_fn):
     }
 
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next gradient reference — source cell 23
-
-Before viewing the next expected output, solution, saved figure or result, fix the donor distribution, row IDs, path schedule, draw budget and noise scale. Predict
-path contribution mean and ordinary Monte Carlo standard error versus quadrature, clean-gradient or discrete-coalition controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only draw budget, a donor set, one threshold or Gaussian query noise; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: [keep-main]
@@ -17425,44 +13246,6 @@ if MAIN:
     gradient_check = diagnose_gradients(input_gradients)
 if MAIN:
     gradient_show_figure(gradient_plots.plot_gradient_controls(gradient_check), "03_gradient_controls")
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after the gradient reference — source cell 23
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next gradient reference — source cell 24
-
-Before viewing the next expected output, solution, saved figure or result, fix the donor distribution, row IDs, path schedule, draw budget and noise scale. Predict
-path contribution mean and ordinary Monte Carlo standard error versus quadrature, clean-gradient or discrete-coalition controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only draw budget, a donor set, one threshold or Gaussian query noise; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
 
 
 # ! CELL TYPE: markdown
@@ -17506,30 +13289,6 @@ r'''
 
 Compose `interpolate_paths` and `input_gradients`, then multiply gradients by displacements.
 Preserve all draws and return fresh storage.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next gradient reference — source cell 25
-
-Before viewing the next expected output, solution, saved figure or result, fix the donor distribution, row IDs, path schedule, draw budget and noise scale. Predict
-path contribution mean and ordinary Monte Carlo standard error versus quadrature, clean-gradient or discrete-coalition controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only draw budget, a donor set, one threshold or Gaussian query noise; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
 '''
 
 
@@ -17577,44 +13336,6 @@ if MAIN:
 # END HIDE
 
 # END SOLUTION
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after the gradient reference — source cell 25
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next gradient reference — source cell 26
-
-Before viewing the next expected output, solution, saved figure or result, fix the donor distribution, row IDs, path schedule, draw budget and noise scale. Predict
-path contribution mean and ordinary Monte Carlo standard error versus quadrature, clean-gradient or discrete-coalition controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only draw budget, a donor set, one threshold or Gaussian query noise; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
 
 
 # ! CELL TYPE: markdown
@@ -17733,30 +13454,6 @@ def diagnose_expected_gradient_samples(
     }
 
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next gradient reference — source cell 29
-
-Before viewing the next expected output, solution, saved figure or result, fix the donor distribution, row IDs, path schedule, draw budget and noise scale. Predict
-path contribution mean and ordinary Monte Carlo standard error versus quadrature, clean-gradient or discrete-coalition controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only draw budget, a donor set, one threshold or Gaussian query noise; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: [keep-main]
@@ -17768,44 +13465,6 @@ if MAIN:
     )
 if MAIN:
     gradient_show_figure(gradient_plots.plot_relu_samples(sample_check), "04_relu_samples")
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after the gradient reference — source cell 29
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next gradient reference — source cell 30
-
-Before viewing the next expected output, solution, saved figure or result, fix the donor distribution, row IDs, path schedule, draw budget and noise scale. Predict
-path contribution mean and ordinary Monte Carlo standard error versus quadrature, clean-gradient or discrete-coalition controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only draw budget, a donor set, one threshold or Gaussian query noise; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
 
 
 # ! CELL TYPE: markdown
@@ -17856,30 +13515,6 @@ we will inspect its different formula later.
 '''
 
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next gradient reference — source cell 31
-
-Before viewing the next expected output, solution, saved figure or result, fix the donor distribution, row IDs, path schedule, draw budget and noise scale. Predict
-path contribution mean and ordinary Monte Carlo standard error versus quadrature, clean-gradient or discrete-coalition controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only draw budget, a donor set, one threshold or Gaussian query noise; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: [keep-main]
@@ -17926,44 +13561,6 @@ if MAIN:
 # END HIDE
 
 # END SOLUTION
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after the gradient reference — source cell 31
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next gradient reference — source cell 32
-
-Before viewing the next expected output, solution, saved figure or result, fix the donor distribution, row IDs, path schedule, draw budget and noise scale. Predict
-path contribution mean and ordinary Monte Carlo standard error versus quadrature, clean-gradient or discrete-coalition controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only draw budget, a donor set, one threshold or Gaussian query noise; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
 
 
 # ! CELL TYPE: markdown
@@ -18070,30 +13667,6 @@ def diagnose_convergence(
     }
 
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next gradient reference — source cell 34
-
-Before viewing the next expected output, solution, saved figure or result, fix the donor distribution, row IDs, path schedule, draw budget and noise scale. Predict
-path contribution mean and ordinary Monte Carlo standard error versus quadrature, clean-gradient or discrete-coalition controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only draw budget, a donor set, one threshold or Gaussian query noise; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: [keep-main]
@@ -18113,48 +13686,10 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after the gradient reference — source cell 34
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 The running estimate should wander between the two possible ReLU contributions before stabilizing
 near one. The band is labeled **ordinary Monte Carlo SE** because that is the only uncertainty it
 represents. Erion et al. found 100–200 samples adequate on their benchmarks; that empirical result
 is not a universal stopping rule for this model or dataset.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next gradient reference — source cell 36
-
-Before viewing the next expected output, solution, saved figure or result, fix the donor distribution, row IDs, path schedule, draw budget and noise scale. Predict
-path contribution mean and ordinary Monte Carlo standard error versus quadrature, clean-gradient or discrete-coalition controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only draw budget, a donor set, one threshold or Gaussian query noise; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
 '''
 
 
@@ -18204,30 +13739,6 @@ r'''
 Compose your per-draw estimator, average the draw axis, compute the ordinary SE, and evaluate the
 model on every supplied background row for the base. Return all declared fields without mutating the
 inputs or the supported model execution state.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next gradient reference — source cell 37
-
-Before viewing the next expected output, solution, saved figure or result, fix the donor distribution, row IDs, path schedule, draw budget and noise scale. Predict
-path contribution mean and ordinary Monte Carlo standard error versus quadrature, clean-gradient or discrete-coalition controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only draw budget, a donor set, one threshold or Gaussian query noise; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
 '''
 
 
@@ -18285,44 +13796,6 @@ if MAIN:
 # END HIDE
 
 # END SOLUTION
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after the gradient reference — source cell 37
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next gradient reference — source cell 38
-
-Before viewing the next expected output, solution, saved figure or result, fix the donor distribution, row IDs, path schedule, draw budget and noise scale. Predict
-path contribution mean and ordinary Monte Carlo standard error versus quadrature, clean-gradient or discrete-coalition controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only draw budget, a donor set, one threshold or Gaussian query noise; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
 
 
 # ! CELL TYPE: markdown
@@ -18500,30 +13973,6 @@ def diagnose_expected_gradients(expected_gradients_fn, sample_path_schedule_fn):
     }
 
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next gradient reference — source cell 41
-
-Before viewing the next expected output, solution, saved figure or result, fix the donor distribution, row IDs, path schedule, draw budget and noise scale. Predict
-path contribution mean and ordinary Monte Carlo standard error versus quadrature, clean-gradient or discrete-coalition controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only draw budget, a donor set, one threshold or Gaussian query noise; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: [keep-main]
@@ -18535,44 +13984,6 @@ if MAIN:
     )
 if MAIN:
     gradient_show_figure(gradient_plots.plot_estimator_controls(estimator_check), "06_estimator_controls")
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after the gradient reference — source cell 41
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next gradient reference — source cell 42
-
-Before viewing the next expected output, solution, saved figure or result, fix the donor distribution, row IDs, path schedule, draw budget and noise scale. Predict
-path contribution mean and ordinary Monte Carlo standard error versus quadrature, clean-gradient or discrete-coalition controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only draw budget, a donor set, one threshold or Gaussian query noise; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
 
 
 # ! CELL TYPE: markdown
@@ -18625,30 +14036,6 @@ r'''
 
 Construct nodes with NumPy, map them to `[0,1]`, and evaluate all query/donor paths in bounded row
 and forward batches. Multiply the weighted average gradient by each query-minus-donor displacement.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next gradient reference — source cell 43
-
-Before viewing the next expected output, solution, saved figure or result, fix the donor distribution, row IDs, path schedule, draw budget and noise scale. Predict
-path contribution mean and ordinary Monte Carlo standard error versus quadrature, clean-gradient or discrete-coalition controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only draw budget, a donor set, one threshold or Gaussian query noise; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
 '''
 
 
@@ -18720,44 +14107,6 @@ if MAIN:
 # END HIDE
 
 # END SOLUTION
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after the gradient reference — source cell 43
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next gradient reference — source cell 44
-
-Before viewing the next expected output, solution, saved figure or result, fix the donor distribution, row IDs, path schedule, draw budget and noise scale. Predict
-path contribution mean and ordinary Monte Carlo standard error versus quadrature, clean-gradient or discrete-coalition controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only draw budget, a donor set, one threshold or Gaussian query noise; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
 
 
 # ! CELL TYPE: markdown
@@ -18898,30 +14247,6 @@ def diagnose_quadrature(gauss_legendre_pairs_fn, input_gradients_fn):
     }
 
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next gradient reference — source cell 47
-
-Before viewing the next expected output, solution, saved figure or result, fix the donor distribution, row IDs, path schedule, draw budget and noise scale. Predict
-path contribution mean and ordinary Monte Carlo standard error versus quadrature, clean-gradient or discrete-coalition controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only draw budget, a donor set, one threshold or Gaussian query noise; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: [keep-main]
@@ -18933,20 +14258,6 @@ if MAIN:
     )
 if MAIN:
     gradient_show_figure(gradient_plots.plot_quadrature_doubling(quadrature_check), "07_quadrature_doubling")
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after the gradient reference — source cell 47
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
 
 
 # ! CELL TYPE: markdown
@@ -18995,30 +14306,6 @@ def gradient_diagnose_background_average(gauss_legendre_pairs_fn):
     }
 
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next gradient reference — source cell 50
-
-Before viewing the next expected output, solution, saved figure or result, fix the donor distribution, row IDs, path schedule, draw budget and noise scale. Predict
-path contribution mean and ordinary Monte Carlo standard error versus quadrature, clean-gradient or discrete-coalition controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only draw budget, a donor set, one threshold or Gaussian query noise; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: [keep-main]
@@ -19027,44 +14314,6 @@ if MAIN:
     background_check = gradient_diagnose_background_average(gauss_legendre_pairs)
 if MAIN:
     gradient_show_figure(gradient_plots.plot_background_average(background_check), "08_background_average")
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after the gradient reference — source cell 50
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next gradient reference — source cell 51
-
-Before viewing the next expected output, solution, saved figure or result, fix the donor distribution, row IDs, path schedule, draw budget and noise scale. Predict
-path contribution mean and ordinary Monte Carlo standard error versus quadrature, clean-gradient or discrete-coalition controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only draw budget, a donor set, one threshold or Gaussian query noise; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
 
 
 # ! CELL TYPE: markdown
@@ -19128,30 +14377,6 @@ bitwise under the same schedule.
 '''
 
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next gradient reference — source cell 52
-
-Before viewing the next expected output, solution, saved figure or result, fix the donor distribution, row IDs, path schedule, draw budget and noise scale. Predict
-path contribution mean and ordinary Monte Carlo standard error versus quadrature, clean-gradient or discrete-coalition controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only draw budget, a donor set, one threshold or Gaussian query noise; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: [keep-main]
@@ -19198,44 +14423,6 @@ if MAIN:
 # END HIDE
 
 # END SOLUTION
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after the gradient reference — source cell 52
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next gradient reference — source cell 53
-
-Before viewing the next expected output, solution, saved figure or result, fix the donor distribution, row IDs, path schedule, draw budget and noise scale. Predict
-path contribution mean and ordinary Monte Carlo standard error versus quadrature, clean-gradient or discrete-coalition controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only draw budget, a donor set, one threshold or Gaussian query noise; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
 
 
 # ! CELL TYPE: markdown
@@ -19359,30 +14546,6 @@ def diagnose_noise_target(
     }
 
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next gradient reference — source cell 56
-
-Before viewing the next expected output, solution, saved figure or result, fix the donor distribution, row IDs, path schedule, draw budget and noise scale. Predict
-path contribution mean and ordinary Monte Carlo standard error versus quadrature, clean-gradient or discrete-coalition controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only draw budget, a donor set, one threshold or Gaussian query noise; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: [keep-main]
@@ -19395,44 +14558,6 @@ if MAIN:
     )
 if MAIN:
     gradient_show_figure(gradient_plots.plot_noise_target(noise_check), "09_gaussian_target_shift")
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after the gradient reference — source cell 56
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next gradient reference — source cell 57
-
-Before viewing the next expected output, solution, saved figure or result, fix the donor distribution, row IDs, path schedule, draw budget and noise scale. Predict
-path contribution mean and ordinary Monte Carlo standard error versus quadrature, clean-gradient or discrete-coalition controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only draw budget, a donor set, one threshold or Gaussian query noise; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
 
 
 # ! CELL TYPE: markdown
@@ -19478,30 +14603,6 @@ r'''
 Return raw insertion and deletion values, their integer masks, and the feature order. Validate an
 explicit order as a row-wise permutation. If `orders=None`, derive the local signed order with a
 stable feature-index tie break.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next gradient reference — source cell 58
-
-Before viewing the next expected output, solution, saved figure or result, fix the donor distribution, row IDs, path schedule, draw budget and noise scale. Predict
-path contribution mean and ordinary Monte Carlo standard error versus quadrature, clean-gradient or discrete-coalition controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only draw budget, a donor set, one threshold or Gaussian query noise; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
 '''
 
 
@@ -19568,44 +14669,6 @@ if MAIN:
 # END HIDE
 
 # END SOLUTION
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after the gradient reference — source cell 58
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next gradient reference — source cell 59
-
-Before viewing the next expected output, solution, saved figure or result, fix the donor distribution, row IDs, path schedule, draw budget and noise scale. Predict
-path contribution mean and ordinary Monte Carlo standard error versus quadrature, clean-gradient or discrete-coalition controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only draw budget, a donor set, one threshold or Gaussian query noise; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
 
 
 # ! CELL TYPE: markdown
@@ -19819,30 +14882,6 @@ def diagnose_path_vs_coalition(gauss_legendre_pairs_fn, ranked_coalition_curves_
     }
 
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next gradient reference — source cell 64
-
-Before viewing the next expected output, solution, saved figure or result, fix the donor distribution, row IDs, path schedule, draw budget and noise scale. Predict
-path contribution mean and ordinary Monte Carlo standard error versus quadrature, clean-gradient or discrete-coalition controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only draw budget, a donor set, one threshold or Gaussian query noise; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: [keep-main]
@@ -19867,44 +14906,6 @@ if MAIN:
         gradient_plots.plot_replacement_fixture(game_check),
         "12_replacement_fixture",
     )
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after the gradient reference — source cell 64
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next gradient reference — source cell 65
-
-Before viewing the next expected output, solution, saved figure or result, fix the donor distribution, row IDs, path schedule, draw budget and noise scale. Predict
-path contribution mean and ordinary Monte Carlo standard error versus quadrature, clean-gradient or discrete-coalition controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only draw budget, a donor set, one threshold or Gaussian query noise; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
 
 
 # ! CELL TYPE: markdown
@@ -19960,30 +14961,6 @@ if MAIN:
         noisy_expected_gradient_samples=noisy_expected_gradient_samples,
         ranked_coalition_curves=ranked_coalition_curves,
     )
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next gradient reference — source cell 67
-
-Before viewing the next expected output, solution, saved figure or result, fix the donor distribution, row IDs, path schedule, draw budget and noise scale. Predict
-path contribution mean and ordinary Monte Carlo standard error versus quadrature, clean-gradient or discrete-coalition controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only draw budget, a donor set, one threshold or Gaussian query noise; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
 
 
 # ! CELL TYPE: markdown
@@ -20112,30 +15089,6 @@ def gradient_run_diagnostics(methods=None):
     }
 
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next gradient reference — source cell 69
-
-Before viewing the next expected output, solution, saved figure or result, fix the donor distribution, row IDs, path schedule, draw budget and noise scale. Predict
-path contribution mean and ordinary Monte Carlo standard error versus quadrature, clean-gradient or discrete-coalition controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only draw budget, a donor set, one threshold or Gaussian query noise; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: [keep-main]
@@ -20152,20 +15105,6 @@ if MAIN:
     )
 if MAIN:
     gradient_show_figure(gradient_plots.plot_threshold_play(gradient_tiny_play), "13_threshold_play")
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after the gradient reference — source cell 69
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
 
 
 # ! CELL TYPE: markdown
@@ -20192,8 +15131,7 @@ convention.
 r'''
 ## The frozen-design real study
 
-> **Execution boundary.** The independently reviewed zero-run freeze binds `protocol.md`, the
-> manifest, and the data implementation before fitting. The cells below reproduce all 21 section
+> **Execution boundary.** The cells below reproduce all 21 section
 > 16.14 state hashes, persist the fitted and prepared study before the literal audit load, and then
 > evaluate every held-out recipe. This ordering keeps explanation-side choices separate from the
 > audit evidence.
@@ -20236,9 +15174,6 @@ transformation must remain visible.
 
 r'''
 ### Visible supporting scientific function: `FEATURES`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_study.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -20255,9 +15190,6 @@ gradient_helper_gradientshap_study_FEATURES = 8
 
 r'''
 ### Visible supporting scientific function: `FORWARD_BATCH`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_study.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -20274,9 +15206,6 @@ gradient_helper_gradientshap_study_FORWARD_BATCH = 32_768
 
 r'''
 ### Visible supporting scientific function: `_batched_prediction`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_study.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -20305,9 +15234,6 @@ def gradient_helper_gradientshap_study__batched_prediction(model: t.nn.Module, v
 
 r'''
 ### Visible supporting scientific function: `_output_tensor`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_study.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -20336,9 +15262,6 @@ def gradient_helper_gradientshap_study__output_tensor(value: Any, shape: tuple[i
 
 r'''
 ### Visible supporting scientific function: `_checked_curves`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_study.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -20385,9 +15308,6 @@ def gradient_helper_gradientshap_study__checked_curves(
 
 r'''
 ### Visible supporting scientific function: `_clone_state`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_study.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -20421,9 +15341,6 @@ def gradient_helper_gradientshap_study__clone_state(state: Mapping[str, t.Tensor
 
 r'''
 ### Visible supporting scientific function: `_combine_baselines`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_study.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -20456,9 +15373,6 @@ def gradient_helper_gradientshap_study__combine_baselines(
 
 r'''
 ### Visible supporting scientific function: `_combine_mc`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_study.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -20512,9 +15426,6 @@ def gradient_helper_gradientshap_study__combine_mc(
 
 r'''
 ### Visible supporting scientific function: `MODEL_KEYS`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_study.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -20539,9 +15450,6 @@ gradient_helper_gradientshap_study_MODEL_KEYS = (
 
 r'''
 ### Visible supporting scientific function: `_combine_quadrature`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_study.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -20569,9 +15477,6 @@ def gradient_helper_gradientshap_study__combine_quadrature(
 
 r'''
 ### Visible supporting scientific function: `_combine_primary`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_study.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -20609,9 +15514,6 @@ def gradient_helper_gradientshap_study__combine_primary(
 
 r'''
 ### Visible supporting scientific function: `RANDOM_ORDER_SEED`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_study.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -20628,9 +15530,6 @@ gradient_helper_gradientshap_study_RANDOM_ORDER_SEED = 161480
 
 r'''
 ### Visible supporting scientific function: `_fixed_random_orders`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_study.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -20654,9 +15553,6 @@ def gradient_helper_gradientshap_study__fixed_random_orders() -> t.Tensor:
 
 r'''
 ### Visible supporting scientific function: `_float_tensor`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_study.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -20684,9 +15580,6 @@ def gradient_helper_gradientshap_study__float_tensor(value: Any, name: str, dime
 
 r'''
 ### Visible supporting scientific function: `_normalization_tensors`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_study.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -20721,9 +15614,6 @@ def gradient_helper_gradientshap_study__normalization_tensors(normalization: Map
 
 r'''
 ### Visible supporting scientific function: `_folding_error`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_study.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -20760,9 +15650,6 @@ def gradient_helper_gradientshap_study__folding_error(
 
 r'''
 ### Visible supporting scientific function: `_identity_hash`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_study.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -20785,9 +15672,6 @@ def gradient_helper_gradientshap_study__identity_hash(**arrays: Any) -> str:
 
 r'''
 ### Visible supporting scientific function: `_ids_tensor`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_study.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -20815,9 +15699,6 @@ def gradient_helper_gradientshap_study__ids_tensor(value: Any, rows: int, name: 
 
 r'''
 ### Visible supporting scientific function: `_require_disjoint_ids`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_study.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -20844,9 +15725,6 @@ def gradient_helper_gradientshap_study__require_disjoint_ids(**splits: t.Tensor)
 
 r'''
 ### Visible supporting scientific function: `_require_namespace`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_study.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -20869,9 +15747,6 @@ def gradient_helper_gradientshap_study__require_namespace(namespace: Any, names:
 
 r'''
 ### Visible supporting scientific function: `_rows`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_study.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -20903,9 +15778,6 @@ def gradient_helper_gradientshap_study__rows(rows: Mapping[str, Any], name: str)
 
 r'''
 ### Visible supporting scientific function: `_seed_words`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_study.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -20927,9 +15799,6 @@ def gradient_helper_gradientshap_study__seed_words(seed: int, source_id: int, st
 
 r'''
 ### Visible supporting scientific function: `HIDDEN`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_study.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -20946,9 +15815,6 @@ gradient_helper_gradientshap_study_HIDDEN = 32
 
 r'''
 ### Visible supporting scientific function: `_state_shapes`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_study.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -20977,9 +15843,6 @@ def gradient_helper_gradientshap_study__state_shapes(kind: str) -> dict[str, tup
 
 r'''
 ### Visible supporting scientific function: `_validate_fitted`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_study.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -21018,9 +15881,6 @@ def gradient_helper_gradientshap_study__validate_fitted(fitted: Mapping[str, Any
 
 r'''
 ### Visible supporting scientific function: `_validate_evaluation_inputs`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_study.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -21935,30 +16795,6 @@ def _comparison_baselines(
 # ! TAGS: []
 
 r'''
-### Commit before the next gradient reference — source cell 95
-
-Before viewing the next expected output, solution, saved figure or result, fix the donor distribution, row IDs, path schedule, draw budget and noise scale. Predict
-path contribution mean and ordinary Monte Carlo standard error versus quadrature, clean-gradient or discrete-coalition controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only draw budget, a donor set, one threshold or Gaussian query noise; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 Global rankings are fixed by mean absolute attribution over all 153 explanation rows. This happens
 before the audit split is loaded and separately for exact Shapley, DeepSHAP, endpoint gradient,
 K=2048 Expected Gradients, and 512-node quadrature.
@@ -22093,34 +16929,7 @@ choices but may not revise them.
 # ! TAGS: []
 
 r'''
-### Commit before the next gradient reference — source cell 99
-
-Before viewing the next expected output, solution, saved figure or result, fix the donor distribution, row IDs, path schedule, draw budget and noise scale. Predict
-path contribution mean and ordinary Monte Carlo standard error versus quadrature, clean-gradient or discrete-coalition controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only draw budget, a donor set, one threshold or Gaussian query noise; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Visible supporting scientific function: `EXTERNAL_DETERMINISTIC_ARTIFACT`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -22137,9 +16946,6 @@ gradient_helper_run_native_EXTERNAL_DETERMINISTIC_ARTIFACT = "replicate_samples.
 
 r'''
 ### Visible supporting scientific function: `SMALL_DETERMINISTIC_ARTIFACTS`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -22163,9 +16969,6 @@ gradient_helper_run_native_SMALL_DETERMINISTIC_ARTIFACTS = (
 
 r'''
 ### Visible supporting scientific function: `DETERMINISTIC_ARTIFACTS`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -22185,9 +16988,6 @@ if MAIN:
 
 r'''
 ### Visible supporting scientific function: `REPLICATE_SHAPE`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -22204,9 +17004,6 @@ gradient_helper_run_native_REPLICATE_SHAPE = (64, 3, 64, 2048, 8)
 
 r'''
 ### Visible supporting scientific function: `REPLICATE_ELEMENTS`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -22227,9 +17024,6 @@ if MAIN:
 
 r'''
 ### Visible supporting scientific function: `TIMING_ARTIFACT`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -22246,9 +17040,6 @@ gradient_helper_run_native_TIMING_ARTIFACT = "timings.pt"
 
 r'''
 ### Visible supporting scientific function: `_array`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -22287,9 +17078,6 @@ def gradient_helper_run_native__array(value: Any) -> tuple[np.ndarray, str]:
 
 r'''
 ### Visible supporting scientific function: `HASH_CHUNK_BYTES`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -22307,9 +17095,6 @@ if MAIN:
 
 r'''
 ### Visible supporting scientific function: `_array_value_sha256`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -22338,9 +17123,6 @@ def gradient_helper_run_native__array_value_sha256(value: Any) -> str:
 
 r'''
 ### Visible supporting scientific function: `_array_identity`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -22368,9 +17150,6 @@ def gradient_helper_run_native__array_identity(value: Any) -> dict[str, Any]:
 
 r'''
 ### Visible supporting scientific function: `manifest_path`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -22391,9 +17170,6 @@ def gradient_helper_run_native_manifest_path(artifact: Path) -> Path:
 
 r'''
 ### Visible supporting scientific function: `_external_reference`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -22425,9 +17201,6 @@ def gradient_helper_run_native__external_reference(samples: Any, manifest: dict[
 
 r'''
 ### Visible supporting scientific function: `_persisted_evaluated`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -22453,9 +17226,6 @@ def gradient_helper_run_native__persisted_evaluated(evaluated: dict[str, Any], r
 
 r'''
 ### Visible supporting scientific function: `BUDGETS`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -22472,9 +17242,6 @@ gradient_helper_run_native_BUDGETS = (8, 32, 128, 512, 2048)
 
 r'''
 ### Visible supporting scientific function: `REPLICATE_MODELS`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -22491,9 +17258,6 @@ gradient_helper_run_native_REPLICATE_MODELS = ("clean_0", "shuffled_0", "ridge")
 
 r'''
 ### Visible supporting scientific function: `_require_array`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -22518,9 +17282,6 @@ def gradient_helper_run_native__require_array(value: Any, shape: tuple[int, ...]
 
 r'''
 ### Visible supporting scientific function: `_validate_replicate_branch`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -22588,9 +17349,6 @@ def gradient_helper_run_native__validate_replicate_branch(replicates: dict[str, 
 
 r'''
 ### Visible supporting scientific function: `digest`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -22618,9 +17376,6 @@ def gradient_helper_run_native_digest(path: Path) -> str:
 
 r'''
 ### Visible supporting scientific function: `_verify_boundary`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -22658,9 +17413,6 @@ def gradient_helper_run_native__verify_boundary(directory: Path) -> dict[str, An
 
 r'''
 ### Visible supporting scientific function: `_path`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -22682,9 +17434,6 @@ def gradient_helper_run_native__path(parent: str, item: Any) -> str:
 
 r'''
 ### Visible supporting scientific function: `_reject_live_modules`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -22714,9 +17463,6 @@ def gradient_helper_run_native__reject_live_modules(value: Any, path: str = "/")
 
 r'''
 ### Visible supporting scientific function: `_write_manifest`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -22742,9 +17488,6 @@ def gradient_helper_run_native__write_manifest(path: Path, manifest: dict[str, A
 
 r'''
 ### Visible supporting scientific function: `_scalar_record`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -22791,9 +17534,6 @@ def gradient_helper_run_native__scalar_record(value: Any) -> dict[str, Any]:
 
 r'''
 ### Visible supporting scientific function: `_manifest_records`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -22855,9 +17595,6 @@ def gradient_helper_run_native__manifest_records(value: Any, path: str = "") -> 
 
 r'''
 ### Visible supporting scientific function: `payload_manifest`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -22894,9 +17631,6 @@ def gradient_helper_run_native_payload_manifest(value: Any, artifact: Path) -> d
 
 r'''
 ### Visible supporting scientific function: `save_payload`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -22930,9 +17664,6 @@ def gradient_helper_run_native_save_payload(directory: Path, name: str, value: A
 
 r'''
 ### Visible supporting scientific function: `_sample_count`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -22962,9 +17693,6 @@ def gradient_helper_run_native__sample_count(blocks: dict[str, Any]) -> int:
 
 r'''
 ### Visible supporting scientific function: `summarize`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -23031,9 +17759,6 @@ def gradient_helper_run_native_summarize(
 
 r'''
 ### Visible supporting scientific function: `persist_completed`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -23129,9 +17854,6 @@ def gradient_helper_run_native_persist_completed(
 
 r'''
 ### Visible supporting scientific function: `_primary_background_ids`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -23161,9 +17883,6 @@ def gradient_helper_run_native__primary_background_ids(prepared: dict[str, Any])
 
 r'''
 ### Visible supporting scientific function: `_require_reproduction_gate`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -23196,9 +17915,6 @@ def gradient_helper_run_native__require_reproduction_gate(prepared: dict[str, An
 
 r'''
 ### Visible supporting scientific function: `write_before_audit`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -23251,9 +17967,6 @@ def gradient_helper_run_native_write_before_audit(directory: Path, prepared: dic
 
 r'''
 ### Visible supporting scientific function: `persist_prepared`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -23280,9 +17993,6 @@ def gradient_helper_run_native_persist_prepared(directory: Path, fitted: dict, p
 
 r'''
 ### Visible supporting scientific function: `write_notebook_summary`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/run_native.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -23304,30 +18014,6 @@ def gradient_helper_run_native_write_notebook_summary(output_root: Path, native_
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(payload, indent=2) + "\n")
     return path
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next gradient reference — source cell 99
-
-Before viewing the next expected output, solution, saved figure or result, fix the donor distribution, row IDs, path schedule, draw budget and noise scale. Predict
-path contribution mean and ordinary Monte Carlo standard error versus quadrature, clean-gradient or discrete-coalition controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only draw budget, a donor set, one threshold or Gaussian query noise; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
 
 
 # ! CELL TYPE: code
@@ -23377,20 +18063,6 @@ if MAIN:
     print("Prepared phase:", gradient_prepared["phase"])
 if MAIN:
     print("Audit loaded at this boundary:", before_audit["audit_loaded"])
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after the gradient reference — source cell 99
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
 
 
 # ! CELL TYPE: code
@@ -24115,30 +18787,6 @@ def gradient_native_play(
 # ! TAGS: []
 
 r'''
-### Commit before the next gradient reference — source cell 114
-
-Before viewing the next expected output, solution, saved figure or result, fix the donor distribution, row IDs, path schedule, draw budget and noise scale. Predict
-path contribution mean and ordinary Monte Carlo standard error versus quadrature, clean-gradient or discrete-coalition controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only draw budget, a donor set, one threshold or Gaussian query noise; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Package references answer a narrower question
 
 Installed `shap.GradientExplainer` and `captum.attr.GradientShap` are implementation references, not
@@ -24167,9 +18815,6 @@ model mode, buffers, and existing parameter gradients even when the author call 
 
 r'''
 ### Visible supporting scientific function: `REFERENCE_SAMPLES`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -24186,9 +18831,6 @@ gradient_helper_gradientshap_reference_REFERENCE_SAMPLES = 128
 
 r'''
 ### Visible supporting scientific function: `ALL_ROWS`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -24205,9 +18847,6 @@ gradient_helper_gradientshap_reference_ALL_ROWS = 272
 
 r'''
 ### Visible supporting scientific function: `AUTHOR_ATOL`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -24224,9 +18863,6 @@ gradient_helper_gradientshap_reference_AUTHOR_ATOL = 1e-10
 
 r'''
 ### Visible supporting scientific function: `AUTHOR_RTOL`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -24243,9 +18879,6 @@ gradient_helper_gradientshap_reference_AUTHOR_RTOL = 1e-10
 
 r'''
 ### Visible supporting scientific function: `BACKGROUND_ROWS`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -24262,9 +18895,6 @@ gradient_helper_gradientshap_reference_BACKGROUND_ROWS = 64
 
 r'''
 ### Visible supporting scientific function: `CAPTUM_NUMPY_SEED`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -24281,9 +18911,6 @@ gradient_helper_gradientshap_reference_CAPTUM_NUMPY_SEED = 161514
 
 r'''
 ### Visible supporting scientific function: `CAPTUM_TORCH_SEED`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -24300,9 +18927,6 @@ gradient_helper_gradientshap_reference_CAPTUM_TORCH_SEED = 161515
 
 r'''
 ### Visible supporting scientific function: `CAPTUM_WARNINGS`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -24324,9 +18948,6 @@ gradient_helper_gradientshap_reference_CAPTUM_WARNINGS = (
 
 r'''
 ### Visible supporting scientific function: `EXPECTED_VERSIONS`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -24348,9 +18969,6 @@ gradient_helper_gradientshap_reference_EXPECTED_VERSIONS = {
 
 r'''
 ### Visible supporting scientific function: `FEATURES`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -24367,9 +18985,6 @@ gradient_helper_gradientshap_reference_FEATURES = 8
 
 r'''
 ### Visible supporting scientific function: `MODEL_KEYS`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -24394,9 +19009,6 @@ gradient_helper_gradientshap_reference_MODEL_KEYS = (
 
 r'''
 ### Visible supporting scientific function: `SHAP_BATCH_SIZE`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -24413,9 +19025,6 @@ gradient_helper_gradientshap_reference_SHAP_BATCH_SIZE = 128
 
 r'''
 ### Visible supporting scientific function: `SHAP_NUMPY_SEED`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -24432,9 +19041,6 @@ gradient_helper_gradientshap_reference_SHAP_NUMPY_SEED = 161513
 
 r'''
 ### Visible supporting scientific function: `SHAP_TORCH_SEED`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -24451,9 +19057,6 @@ gradient_helper_gradientshap_reference_SHAP_TORCH_SEED = 161515
 
 r'''
 ### Visible supporting scientific function: `SHAP_WARNINGS`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -24476,9 +19079,6 @@ gradient_helper_gradientshap_reference_SHAP_WARNINGS = (
 
 r'''
 ### Visible supporting scientific function: `_numpy`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -24505,9 +19105,6 @@ def gradient_helper_gradientshap_reference__numpy(value: Any) -> np.ndarray:
 
 r'''
 ### Visible supporting scientific function: `_array_sha256`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -24540,9 +19137,6 @@ def gradient_helper_gradientshap_reference__array_sha256(value: Any) -> str:
 
 r'''
 ### Visible supporting scientific function: `_compact_model_result`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -24592,9 +19186,6 @@ def gradient_helper_gradientshap_reference__compact_model_result(result: Mapping
 
 r'''
 ### Visible supporting scientific function: `_float64_tensor`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -24625,9 +19216,6 @@ def gradient_helper_gradientshap_reference__float64_tensor(name: str, value: Ten
 
 r'''
 ### Visible supporting scientific function: `_source_ids`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -24659,9 +19247,6 @@ def gradient_helper_gradientshap_reference__source_ids(value: Tensor | np.ndarra
 
 r'''
 ### Visible supporting scientific function: `_validate_model`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -24700,9 +19285,6 @@ def gradient_helper_gradientshap_reference__validate_model(model: nn.Module, fea
 
 r'''
 ### Visible supporting scientific function: `FORWARD_BATCH`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -24719,9 +19301,6 @@ gradient_helper_gradientshap_reference_FORWARD_BATCH = 32_768
 
 r'''
 ### Visible supporting scientific function: `_close`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -24755,9 +19334,6 @@ def gradient_helper_gradientshap_reference__close(actual: Any, expected: Any) ->
 
 r'''
 ### Visible supporting scientific function: `_model_state_sha256`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -24784,9 +19360,6 @@ def gradient_helper_gradientshap_reference__model_state_sha256(model: nn.Module)
 
 r'''
 ### Visible supporting scientific function: `_model_structure_sha256`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -24825,9 +19398,6 @@ def gradient_helper_gradientshap_reference__model_structure_sha256(model: nn.Mod
 
 r'''
 ### Visible supporting scientific function: `_identity`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -24877,9 +19447,6 @@ def gradient_helper_gradientshap_reference__identity(
 
 r'''
 ### Visible supporting scientific function: `_max_abs`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -24908,9 +19475,6 @@ def gradient_helper_gradientshap_reference__max_abs(actual: Any, expected: Any) 
 
 r'''
 ### Visible supporting scientific function: `_model_output`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -24940,9 +19504,6 @@ def gradient_helper_gradientshap_reference__model_output(model: nn.Module, input
 
 r'''
 ### Visible supporting scientific function: `_positive_int`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -24962,9 +19523,6 @@ def gradient_helper_gradientshap_reference__positive_int(name: str, value: int) 
 
 r'''
 ### Visible supporting scientific function: `_preserve_execution_state`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -25041,9 +19599,6 @@ if MAIN:
 
 r'''
 ### Visible supporting scientific function: `_seed`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -25063,9 +19618,6 @@ def gradient_helper_gradientshap_reference__seed(name: str, value: int) -> int:
 
 r'''
 ### Visible supporting scientific function: `_state_restoring_adapter`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -25101,9 +19653,6 @@ def gradient_helper_gradientshap_reference__state_restoring_adapter(function: Ca
 
 r'''
 ### Visible supporting scientific function: `_validate_inputs`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -25135,9 +19684,6 @@ def gradient_helper_gradientshap_reference__validate_inputs(
 
 r'''
 ### Visible supporting scientific function: `captum_draw_table`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -25196,9 +19742,6 @@ def gradient_helper_gradientshap_reference_captum_draw_table(
 
 r'''
 ### Visible supporting scientific function: `EXPECTED_SOURCE_SHA256`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -25220,9 +19763,6 @@ gradient_helper_gradientshap_reference_EXPECTED_SOURCE_SHA256 = {
 
 r'''
 ### Visible supporting scientific function: `REFERENCE_CACHE`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -25243,9 +19783,6 @@ if MAIN:
 
 r'''
 ### Visible supporting scientific function: `_sha256`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -25272,9 +19809,6 @@ def gradient_helper_gradientshap_reference__sha256(path: Path) -> str:
 
 r'''
 ### Visible supporting scientific function: `reference_environment`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -25339,9 +19873,6 @@ def gradient_helper_gradientshap_reference_reference_environment() -> dict[str, 
 
 r'''
 ### Visible supporting scientific function: `_method`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -25369,9 +19900,6 @@ def gradient_helper_gradientshap_reference__method(methods: Any, name: str) -> C
 
 r'''
 ### Visible supporting scientific function: `_model_values`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -25398,9 +19926,6 @@ def gradient_helper_gradientshap_reference__model_values(model: nn.Module, input
 
 r'''
 ### Visible supporting scientific function: `_validate_draw_table`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -25448,9 +19973,6 @@ def gradient_helper_gradientshap_reference__validate_draw_table(
 
 r'''
 ### Visible supporting scientific function: `replay_draw_table`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -25572,9 +20094,6 @@ if MAIN:
 
 r'''
 ### Visible supporting scientific function: `captum_same_draw_reference`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -25711,9 +20230,6 @@ if MAIN:
 
 r'''
 ### Visible supporting scientific function: `_smoothed_relu`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -25744,9 +20260,6 @@ def gradient_helper_gradientshap_reference__smoothed_relu() -> nn.Sequential:
 
 r'''
 ### Visible supporting scientific function: `shap_draw_table`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -25816,9 +20329,6 @@ def gradient_helper_gradientshap_reference_shap_draw_table(
 
 r'''
 ### Visible supporting scientific function: `shap_same_draw_reference`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -25971,9 +20481,6 @@ if MAIN:
 
 r'''
 ### Visible supporting scientific function: `positive_noise_reference`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -26064,9 +20571,6 @@ def gradient_helper_gradientshap_reference_positive_noise_reference(methods: Any
 
 r'''
 ### Visible supporting scientific function: `validate_reference`
-
-This definition preserves the original `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/gradientshap_reference.py` contract. Its scientific body
-and literal values remain visible; names are scoped to this curriculum to prevent shadowing.
 '''
 
 
@@ -26280,30 +20784,6 @@ def reference_check(
 # ! TAGS: []
 
 r'''
-### Commit before the next gradient reference — source cell 117
-
-Before viewing the next expected output, solution, saved figure or result, fix the donor distribution, row IDs, path schedule, draw budget and noise scale. Predict
-path contribution mean and ordinary Monte Carlo standard error versus quadrature, clean-gradient or discrete-coalition controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only draw budget, a donor set, one threshold or Gaussian query noise; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Signature result: convergence, target movement, and a different game
 
 The completed notebook generates these visible figures from its fresh own-answer run. Use the
@@ -26326,30 +20806,6 @@ gate for attribution exactness.
 6. **Path geometry.** Compare nearest-training-row distances of interpolation points, coalition
 hybrids, and observed endpoints after train-only standardization. This is an OOD distance
 diagnostic, not a density estimate or causal validity proof.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next gradient reference — source cell 118
-
-Before viewing the next expected output, solution, saved figure or result, fix the donor distribution, row IDs, path schedule, draw budget and noise scale. Predict
-path contribution mean and ordinary Monte Carlo standard error versus quadrature, clean-gradient or discrete-coalition controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only draw budget, a donor set, one threshold or Gaussian query noise; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
 '''
 
 
@@ -26417,44 +20873,6 @@ if MAIN:
     print("Audit used for selection:", gradient_summary["audit_used_for_selection"])
 
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after the gradient reference — source cell 118
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next gradient reference — source cell 119
-
-Before viewing the next expected output, solution, saved figure or result, fix the donor distribution, row IDs, path schedule, draw budget and noise scale. Predict
-path contribution mean and ordinary Monte Carlo standard error versus quadrature, clean-gradient or discrete-coalition controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only draw budget, a donor set, one threshold or Gaussian query noise; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: [keep-main]
@@ -26471,44 +20889,6 @@ if MAIN:
     )
 
 
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after the gradient reference — source cell 119
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next gradient reference — source cell 120
-
-Before viewing the next expected output, solution, saved figure or result, fix the donor distribution, row IDs, path schedule, draw budget and noise scale. Predict
-path contribution mean and ordinary Monte Carlo standard error versus quadrature, clean-gradient or discrete-coalition controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only draw budget, a donor set, one threshold or Gaussian query noise; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
 # ! CELL TYPE: code
 # ! FILTERS: []
 # ! TAGS: [keep-main]
@@ -26523,44 +20903,6 @@ if MAIN:
         gradient_plots.plot_background_and_noise(gradient_evaluated),
         "17_background_and_noise",
     )
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect after the gradient reference — source cell 120
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next gradient reference — source cell 121
-
-Before viewing the next expected output, solution, saved figure or result, fix the donor distribution, row IDs, path schedule, draw budget and noise scale. Predict
-path contribution mean and ordinary Monte Carlo standard error versus quadrature, clean-gradient or discrete-coalition controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only draw budget, a donor set, one threshold or Gaussian query noise; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
 
 
 # ! CELL TYPE: code
@@ -26584,44 +20926,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after the gradient reference — source cell 121
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next gradient reference — source cell 122
-
-Before viewing the next expected output, solution, saved figure or result, fix the donor distribution, row IDs, path schedule, draw budget and noise scale. Predict
-path contribution mean and ordinary Monte Carlo standard error versus quadrature, clean-gradient or discrete-coalition controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only draw budget, a donor set, one threshold or Gaussian query noise; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Try It Yourself 2 — choose a recipe, background, budget, and noise scale
 
 The canonical first run must use the first audit recipe, `clean_0`, the primary 64-row background,
@@ -26629,30 +20933,6 @@ K=2048, and sigma zero. After reproducing that fixed display, edit the model, an
 row, one of the five background designs, a nested K budget, or a predeclared sigma. Recompute the
 clean/noisy samples, quadrature control, exact feature game, and local replacement curves rather
 than slicing cached arrays.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next gradient reference — source cell 123
-
-Before viewing the next expected output, solution, saved figure or result, fix the donor distribution, row IDs, path schedule, draw budget and noise scale. Predict
-path contribution mean and ordinary Monte Carlo standard error versus quadrature, clean-gradient or discrete-coalition controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only draw budget, a donor set, one threshold or Gaussian query noise; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
 '''
 
 
@@ -26689,20 +20969,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect after the gradient reference — source cell 123
-
-Record the actual observation and control, the largest discrepancy from your forecast, and whether
-you inspected a historical reference or ran code yourself. Explain which game, players and
-background the result answers. Update your changed-condition forecast, confidence and causal reason
-before revealing another result. An unexecuted changed condition remains unobserved.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details><summary>Ideas to try</summary>
 
 - Hold model and row fixed while moving from nested 16 to primary 64 to nested 128 donors.
@@ -26716,30 +20982,6 @@ These choices occur after audit evaluation. They are exploratory diagnostics and
 new confirmatory audit claim.
 
 </details>
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Commit before the next gradient reference — source cell 125
-
-Before viewing the next expected output, solution, saved figure or result, fix the donor distribution, row IDs, path schedule, draw budget and noise scale. Predict
-path contribution mean and ordinary Monte Carlo standard error versus quadrature, clean-gradient or discrete-coalition controls. Keep its original metric, units, cohort and denominator; do not replace it with the
-metric of a different curriculum.
-
-| Prediction record | Your commitment |
-| --- | --- |
-| Direction or numerical range for this exact result and named control | ______ |
-| Confidence from 0 to 1 and causal reasoning | ______ |
-| Exact source/configuration fingerprint and prior exposure | ______ |
-| Observation, actual controls and discrepancy after inspection | ______ |
-| Changed-condition forecast: change only draw budget, a donor set, one threshold or Gaussian query noise; confidence and reason | ______ |
-
-Historical reference inspection and your own execution are separate observations. Leave the
-changed condition unobserved until it is separately run. No answer is prefilled.
 '''
 
 
@@ -26827,2134 +21069,12 @@ r'''
 # ! TAGS: []
 
 r'''
-## Complete historical figure shelf
-
-Make the method-specific commitments above before opening these figures. All related instruction
-assets, artifact images and embedded output images remain separate byte-exact historical records.
-Repeated-looking panels can belong to different executions; filenames do not establish one shared
-run. The paired notebooks retain the complete original output objects, metadata and execution
-counts. This migration creates no new scientific image or metric.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 1
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/deepshap_01_rescale_limits.png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/deepshap_01_rescale_limits.png" alt="Historical model-specific attribution reference 1" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 2
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/deepshap_02_near_zero_epsilon.png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/deepshap_02_near_zero_epsilon.png" alt="Historical model-specific attribution reference 2" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 3
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/deepshap_03_affine_controls.png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/deepshap_03_affine_controls.png" alt="Historical model-specific attribution reference 3" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 4
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/deepshap_04_background_average.png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/deepshap_04_background_average.png" alt="Historical model-specific attribution reference 4" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 5
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/deepshap_05_threshold_complete_not_exact.png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/deepshap_05_threshold_complete_not_exact.png" alt="Historical model-specific attribution reference 5" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 6
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/deepshap_06_cancellation_implementation_dependence.png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/deepshap_06_cancellation_implementation_dependence.png" alt="Historical model-specific attribution reference 6" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 7
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/deepshap_07_replacement_fixture.png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/deepshap_07_replacement_fixture.png" alt="Historical model-specific attribution reference 7" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 8
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/deepshap_08_performance_controls.png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/deepshap_08_performance_controls.png" alt="Historical model-specific attribution reference 8" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 9
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/deepshap_09_signed_parity_all_rows.png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/deepshap_09_signed_parity_all_rows.png" alt="Historical model-specific attribution reference 9" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 10
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/deepshap_10_error_heatmaps_all_rows.png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/deepshap_10_error_heatmaps_all_rows.png" alt="Historical model-specific attribution reference 10" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 11
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/deepshap_11_fixed_waterfall.png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/deepshap_11_fixed_waterfall.png" alt="Historical model-specific attribution reference 11" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 12
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/deepshap_12_fixed_attribution_comparison.png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/deepshap_12_fixed_attribution_comparison.png" alt="Historical model-specific attribution reference 12" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 13
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/deepshap_13_completeness_vs_exact.png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/deepshap_13_completeness_vs_exact.png" alt="Historical model-specific attribution reference 13" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 14
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/deepshap_14_background_sensitivity.png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/deepshap_14_background_sensitivity.png" alt="Historical model-specific attribution reference 14" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 15
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/deepshap_15_replacement_curves.png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/deepshap_15_replacement_curves.png" alt="Historical model-specific attribution reference 15" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 16
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/deepshap_16_threshold_play.png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/deepshap_16_threshold_play.png" alt="Historical model-specific attribution reference 16" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 17
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/deepshap_17_real_recipe_play.png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/deepshap_17_real_recipe_play.png" alt="Historical model-specific attribution reference 17" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 18
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/gradientshap_01_schedule_prefix.png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradientshap_01_schedule_prefix.png" alt="Historical model-specific attribution reference 18" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 19
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/gradientshap_02_path_interpolation.png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradientshap_02_path_interpolation.png" alt="Historical model-specific attribution reference 19" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 20
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/gradientshap_03_gradient_controls.png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradientshap_03_gradient_controls.png" alt="Historical model-specific attribution reference 20" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 21
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/gradientshap_04_relu_samples.png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradientshap_04_relu_samples.png" alt="Historical model-specific attribution reference 21" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 22
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/gradientshap_05_mc_convergence.png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradientshap_05_mc_convergence.png" alt="Historical model-specific attribution reference 22" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 23
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/gradientshap_06_estimator_controls.png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradientshap_06_estimator_controls.png" alt="Historical model-specific attribution reference 23" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 24
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/gradientshap_07_quadrature_doubling.png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradientshap_07_quadrature_doubling.png" alt="Historical model-specific attribution reference 24" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 25
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/gradientshap_08_background_average.png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradientshap_08_background_average.png" alt="Historical model-specific attribution reference 25" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 26
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/gradientshap_09_gaussian_target_shift.png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradientshap_09_gaussian_target_shift.png" alt="Historical model-specific attribution reference 26" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 27
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/gradientshap_10_path_vs_coalition.png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradientshap_10_path_vs_coalition.png" alt="Historical model-specific attribution reference 27" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 28
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/gradientshap_11_kink_representation.png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradientshap_11_kink_representation.png" alt="Historical model-specific attribution reference 28" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 29
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/gradientshap_12_replacement_fixture.png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradientshap_12_replacement_fixture.png" alt="Historical model-specific attribution reference 29" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 30
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/gradientshap_13_threshold_play.png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradientshap_13_threshold_play.png" alt="Historical model-specific attribution reference 30" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 31
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/gradientshap_14_native_overview.png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradientshap_14_native_overview.png" alt="Historical model-specific attribution reference 31" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 32
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/gradientshap_15_allrow_method_map.png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradientshap_15_allrow_method_map.png" alt="Historical model-specific attribution reference 32" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 33
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/gradientshap_16_fixed_waterfall.png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradientshap_16_fixed_waterfall.png" alt="Historical model-specific attribution reference 33" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 34
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/gradientshap_17_background_and_noise.png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradientshap_17_background_and_noise.png" alt="Historical model-specific attribution reference 34" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 35
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/gradientshap_18_replicates_and_distance.png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradientshap_18_replicates_and_distance.png" alt="Historical model-specific attribution reference 35" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 36
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/gradientshap_19_replacement_curves.png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradientshap_19_replacement_curves.png" alt="Historical model-specific attribution reference 36" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 37
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/gradientshap_20_real_recipe_play.png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradientshap_20_real_recipe_play.png" alt="Historical model-specific attribution reference 37" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 38
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/treeshap_01_missing_feature_games.png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/treeshap_01_missing_feature_games.png" alt="Historical model-specific attribution reference 38" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 39
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/treeshap_02_tiny_tree.png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/treeshap_02_tiny_tree.png" alt="Historical model-specific attribution reference 39" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 40
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/treeshap_03_cardinality_weights.png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/treeshap_03_cardinality_weights.png" alt="Historical model-specific attribution reference 40" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 41
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/treeshap_04_correlated_games.png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/treeshap_04_correlated_games.png" alt="Historical model-specific attribution reference 41" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 42
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/treeshap_05_repeated_feature.png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/treeshap_05_repeated_feature.png" alt="Historical model-specific attribution reference 42" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 43
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/treeshap_06_saabas_control.png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/treeshap_06_saabas_control.png" alt="Historical model-specific attribution reference 43" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 44
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/treeshap_07_audit_performance.png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/treeshap_07_audit_performance.png" alt="Historical model-specific attribution reference 44" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 45
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/treeshap_08_prediction_waterfall.png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/treeshap_08_prediction_waterfall.png" alt="Historical model-specific attribution reference 45" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 46
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/treeshap_09_attribution_heatmaps.png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/treeshap_09_attribution_heatmaps.png" alt="Historical model-specific attribution reference 46" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 47
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/treeshap_10_model_seed_variation.png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/treeshap_10_model_seed_variation.png" alt="Historical model-specific attribution reference 47" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 48
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/treeshap_11_background_sensitivity.png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/treeshap_11_background_sensitivity.png" alt="Historical model-specific attribution reference 48" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 49
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/treeshap_12_deletion_curves.png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/treeshap_12_deletion_curves.png" alt="Historical model-specific attribution reference 49" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 50
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/treeshap_13_runtime_dummy_features.png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/treeshap_13_runtime_dummy_features.png" alt="Historical model-specific attribution reference 50" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 51
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/treeshap_14_runtime_depth.png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/treeshap_14_runtime_depth.png" alt="Historical model-specific attribution reference 51" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 52
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/treeshap_15_tiny_tree_play.png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/treeshap_15_tiny_tree_play.png" alt="Historical model-specific attribution reference 52" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 53
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/treeshap_16_real_recipe_play.png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/treeshap_16_real_recipe_play.png" alt="Historical model-specific attribution reference 53" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 54
-
-Source: `chapter16_shapley_attribution_baselines/instructions/assets/treeshap_17_reference_parity.png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/treeshap_17_reference_parity.png" alt="Historical model-specific attribution reference 54" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 55
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/16.13_TreeSHAP_from_First_Principles_exercises.ipynb#cell=3,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/tree_exercises_cell_3_output_0.png" alt="Historical model-specific attribution reference 55" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 56
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/16.13_TreeSHAP_from_First_Principles_exercises.ipynb#cell=51,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/tree_exercises_cell_51_output_0.png" alt="Historical model-specific attribution reference 56" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 57
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/16.13_TreeSHAP_from_First_Principles_exercises.ipynb#cell=51,output=1,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/tree_exercises_cell_51_output_1.png" alt="Historical model-specific attribution reference 57" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 58
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/16.13_TreeSHAP_from_First_Principles_exercises.ipynb#cell=51,output=2,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/tree_exercises_cell_51_output_2.png" alt="Historical model-specific attribution reference 58" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 59
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/16.13_TreeSHAP_from_First_Principles_exercises.ipynb#cell=51,output=3,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/tree_exercises_cell_51_output_3.png" alt="Historical model-specific attribution reference 59" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 60
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/16.13_TreeSHAP_from_First_Principles_exercises.ipynb#cell=51,output=4,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/tree_exercises_cell_51_output_4.png" alt="Historical model-specific attribution reference 60" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 61
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/16.13_TreeSHAP_from_First_Principles_exercises.ipynb#cell=53,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/tree_exercises_cell_53_output_0.png" alt="Historical model-specific attribution reference 61" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 62
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/16.13_TreeSHAP_from_First_Principles_exercises.ipynb#cell=69,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/tree_exercises_cell_69_output_0.png" alt="Historical model-specific attribution reference 62" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 63
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/16.13_TreeSHAP_from_First_Principles_exercises.ipynb#cell=72,output=1,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/tree_exercises_cell_72_output_1.png" alt="Historical model-specific attribution reference 63" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 64
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/16.13_TreeSHAP_from_First_Principles_exercises.ipynb#cell=75,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/tree_exercises_cell_75_output_0.png" alt="Historical model-specific attribution reference 64" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 65
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/16.13_TreeSHAP_from_First_Principles_exercises.ipynb#cell=75,output=1,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/tree_exercises_cell_75_output_1.png" alt="Historical model-specific attribution reference 65" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 66
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/16.13_TreeSHAP_from_First_Principles_exercises.ipynb#cell=78,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/tree_exercises_cell_78_output_0.png" alt="Historical model-specific attribution reference 66" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 67
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/16.13_TreeSHAP_from_First_Principles_exercises.ipynb#cell=78,output=1,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/tree_exercises_cell_78_output_1.png" alt="Historical model-specific attribution reference 67" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 68
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/16.13_TreeSHAP_from_First_Principles_exercises.ipynb#cell=78,output=2,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/tree_exercises_cell_78_output_2.png" alt="Historical model-specific attribution reference 68" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 69
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/16.13_TreeSHAP_from_First_Principles_exercises.ipynb#cell=80,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/tree_exercises_cell_80_output_0.png" alt="Historical model-specific attribution reference 69" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 70
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/16.13_TreeSHAP_from_First_Principles_exercises.ipynb#cell=80,output=1,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/tree_exercises_cell_80_output_1.png" alt="Historical model-specific attribution reference 70" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 71
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/16.13_TreeSHAP_from_First_Principles_exercises.ipynb#cell=82,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/tree_exercises_cell_82_output_0.png" alt="Historical model-specific attribution reference 71" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 72
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/16.13_TreeSHAP_from_First_Principles_solutions.ipynb#cell=3,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/tree_solutions_cell_3_output_0.png" alt="Historical model-specific attribution reference 72" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 73
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/16.13_TreeSHAP_from_First_Principles_solutions.ipynb#cell=51,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/tree_solutions_cell_51_output_0.png" alt="Historical model-specific attribution reference 73" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 74
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/16.13_TreeSHAP_from_First_Principles_solutions.ipynb#cell=51,output=1,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/tree_solutions_cell_51_output_1.png" alt="Historical model-specific attribution reference 74" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 75
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/16.13_TreeSHAP_from_First_Principles_solutions.ipynb#cell=51,output=2,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/tree_solutions_cell_51_output_2.png" alt="Historical model-specific attribution reference 75" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 76
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/16.13_TreeSHAP_from_First_Principles_solutions.ipynb#cell=51,output=3,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/tree_solutions_cell_51_output_3.png" alt="Historical model-specific attribution reference 76" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 77
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/16.13_TreeSHAP_from_First_Principles_solutions.ipynb#cell=51,output=4,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/tree_solutions_cell_51_output_4.png" alt="Historical model-specific attribution reference 77" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 78
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/16.13_TreeSHAP_from_First_Principles_solutions.ipynb#cell=53,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/tree_solutions_cell_53_output_0.png" alt="Historical model-specific attribution reference 78" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 79
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/16.13_TreeSHAP_from_First_Principles_solutions.ipynb#cell=69,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/tree_solutions_cell_69_output_0.png" alt="Historical model-specific attribution reference 79" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 80
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/16.13_TreeSHAP_from_First_Principles_solutions.ipynb#cell=72,output=1,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/tree_solutions_cell_72_output_1.png" alt="Historical model-specific attribution reference 80" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 81
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/16.13_TreeSHAP_from_First_Principles_solutions.ipynb#cell=75,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/tree_solutions_cell_75_output_0.png" alt="Historical model-specific attribution reference 81" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 82
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/16.13_TreeSHAP_from_First_Principles_solutions.ipynb#cell=75,output=1,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/tree_solutions_cell_75_output_1.png" alt="Historical model-specific attribution reference 82" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 83
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/16.13_TreeSHAP_from_First_Principles_solutions.ipynb#cell=78,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/tree_solutions_cell_78_output_0.png" alt="Historical model-specific attribution reference 83" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 84
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/16.13_TreeSHAP_from_First_Principles_solutions.ipynb#cell=78,output=1,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/tree_solutions_cell_78_output_1.png" alt="Historical model-specific attribution reference 84" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 85
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/16.13_TreeSHAP_from_First_Principles_solutions.ipynb#cell=78,output=2,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/tree_solutions_cell_78_output_2.png" alt="Historical model-specific attribution reference 85" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 86
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/16.13_TreeSHAP_from_First_Principles_solutions.ipynb#cell=80,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/tree_solutions_cell_80_output_0.png" alt="Historical model-specific attribution reference 86" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 87
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/16.13_TreeSHAP_from_First_Principles_solutions.ipynb#cell=80,output=1,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/tree_solutions_cell_80_output_1.png" alt="Historical model-specific attribution reference 87" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 88
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part13_treeshap/16.13_TreeSHAP_from_First_Principles_solutions.ipynb#cell=82,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/tree_solutions_cell_82_output_0.png" alt="Historical model-specific attribution reference 88" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 89
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/16.14_DeepSHAP_When_Does_Fast_Attribution_Match_Exact_SHAP_exercises.ipynb#cell=14,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/deep_exercises_cell_14_output_0.png" alt="Historical model-specific attribution reference 89" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 90
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/16.14_DeepSHAP_When_Does_Fast_Attribution_Match_Exact_SHAP_exercises.ipynb#cell=23,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/deep_exercises_cell_23_output_0.png" alt="Historical model-specific attribution reference 90" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 91
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/16.14_DeepSHAP_When_Does_Fast_Attribution_Match_Exact_SHAP_exercises.ipynb#cell=27,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/deep_exercises_cell_27_output_0.png" alt="Historical model-specific attribution reference 91" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 92
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/16.14_DeepSHAP_When_Does_Fast_Attribution_Match_Exact_SHAP_exercises.ipynb#cell=34,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/deep_exercises_cell_34_output_0.png" alt="Historical model-specific attribution reference 92" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 93
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/16.14_DeepSHAP_When_Does_Fast_Attribution_Match_Exact_SHAP_exercises.ipynb#cell=50,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/deep_exercises_cell_50_output_0.png" alt="Historical model-specific attribution reference 93" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 94
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/16.14_DeepSHAP_When_Does_Fast_Attribution_Match_Exact_SHAP_exercises.ipynb#cell=57,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/deep_exercises_cell_57_output_0.png" alt="Historical model-specific attribution reference 94" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 95
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/16.14_DeepSHAP_When_Does_Fast_Attribution_Match_Exact_SHAP_exercises.ipynb#cell=64,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/deep_exercises_cell_64_output_0.png" alt="Historical model-specific attribution reference 95" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 96
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/16.14_DeepSHAP_When_Does_Fast_Attribution_Match_Exact_SHAP_exercises.ipynb#cell=70,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/deep_exercises_cell_70_output_0.png" alt="Historical model-specific attribution reference 96" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 97
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/16.14_DeepSHAP_When_Does_Fast_Attribution_Match_Exact_SHAP_exercises.ipynb#cell=104,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/deep_exercises_cell_104_output_0.png" alt="Historical model-specific attribution reference 97" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 98
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/16.14_DeepSHAP_When_Does_Fast_Attribution_Match_Exact_SHAP_exercises.ipynb#cell=104,output=1,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/deep_exercises_cell_104_output_1.png" alt="Historical model-specific attribution reference 98" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 99
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/16.14_DeepSHAP_When_Does_Fast_Attribution_Match_Exact_SHAP_exercises.ipynb#cell=105,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/deep_exercises_cell_105_output_0.png" alt="Historical model-specific attribution reference 99" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 100
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/16.14_DeepSHAP_When_Does_Fast_Attribution_Match_Exact_SHAP_exercises.ipynb#cell=105,output=1,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/deep_exercises_cell_105_output_1.png" alt="Historical model-specific attribution reference 100" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 101
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/16.14_DeepSHAP_When_Does_Fast_Attribution_Match_Exact_SHAP_exercises.ipynb#cell=106,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/deep_exercises_cell_106_output_0.png" alt="Historical model-specific attribution reference 101" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 102
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/16.14_DeepSHAP_When_Does_Fast_Attribution_Match_Exact_SHAP_exercises.ipynb#cell=106,output=1,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/deep_exercises_cell_106_output_1.png" alt="Historical model-specific attribution reference 102" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 103
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/16.14_DeepSHAP_When_Does_Fast_Attribution_Match_Exact_SHAP_exercises.ipynb#cell=109,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/deep_exercises_cell_109_output_0.png" alt="Historical model-specific attribution reference 103" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 104
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/16.14_DeepSHAP_When_Does_Fast_Attribution_Match_Exact_SHAP_exercises.ipynb#cell=109,output=1,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/deep_exercises_cell_109_output_1.png" alt="Historical model-specific attribution reference 104" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 105
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/16.14_DeepSHAP_When_Does_Fast_Attribution_Match_Exact_SHAP_exercises.ipynb#cell=111,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/deep_exercises_cell_111_output_0.png" alt="Historical model-specific attribution reference 105" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 106
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/16.14_DeepSHAP_When_Does_Fast_Attribution_Match_Exact_SHAP_solutions.ipynb#cell=14,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/deep_solutions_cell_14_output_0.png" alt="Historical model-specific attribution reference 106" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 107
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/16.14_DeepSHAP_When_Does_Fast_Attribution_Match_Exact_SHAP_solutions.ipynb#cell=23,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/deep_solutions_cell_23_output_0.png" alt="Historical model-specific attribution reference 107" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 108
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/16.14_DeepSHAP_When_Does_Fast_Attribution_Match_Exact_SHAP_solutions.ipynb#cell=27,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/deep_solutions_cell_27_output_0.png" alt="Historical model-specific attribution reference 108" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 109
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/16.14_DeepSHAP_When_Does_Fast_Attribution_Match_Exact_SHAP_solutions.ipynb#cell=34,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/deep_solutions_cell_34_output_0.png" alt="Historical model-specific attribution reference 109" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 110
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/16.14_DeepSHAP_When_Does_Fast_Attribution_Match_Exact_SHAP_solutions.ipynb#cell=50,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/deep_solutions_cell_50_output_0.png" alt="Historical model-specific attribution reference 110" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 111
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/16.14_DeepSHAP_When_Does_Fast_Attribution_Match_Exact_SHAP_solutions.ipynb#cell=57,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/deep_solutions_cell_57_output_0.png" alt="Historical model-specific attribution reference 111" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 112
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/16.14_DeepSHAP_When_Does_Fast_Attribution_Match_Exact_SHAP_solutions.ipynb#cell=64,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/deep_solutions_cell_64_output_0.png" alt="Historical model-specific attribution reference 112" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 113
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/16.14_DeepSHAP_When_Does_Fast_Attribution_Match_Exact_SHAP_solutions.ipynb#cell=70,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/deep_solutions_cell_70_output_0.png" alt="Historical model-specific attribution reference 113" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 114
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/16.14_DeepSHAP_When_Does_Fast_Attribution_Match_Exact_SHAP_solutions.ipynb#cell=104,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/deep_solutions_cell_104_output_0.png" alt="Historical model-specific attribution reference 114" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 115
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/16.14_DeepSHAP_When_Does_Fast_Attribution_Match_Exact_SHAP_solutions.ipynb#cell=104,output=1,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/deep_solutions_cell_104_output_1.png" alt="Historical model-specific attribution reference 115" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 116
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/16.14_DeepSHAP_When_Does_Fast_Attribution_Match_Exact_SHAP_solutions.ipynb#cell=105,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/deep_solutions_cell_105_output_0.png" alt="Historical model-specific attribution reference 116" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 117
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/16.14_DeepSHAP_When_Does_Fast_Attribution_Match_Exact_SHAP_solutions.ipynb#cell=105,output=1,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/deep_solutions_cell_105_output_1.png" alt="Historical model-specific attribution reference 117" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 118
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/16.14_DeepSHAP_When_Does_Fast_Attribution_Match_Exact_SHAP_solutions.ipynb#cell=106,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/deep_solutions_cell_106_output_0.png" alt="Historical model-specific attribution reference 118" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 119
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/16.14_DeepSHAP_When_Does_Fast_Attribution_Match_Exact_SHAP_solutions.ipynb#cell=106,output=1,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/deep_solutions_cell_106_output_1.png" alt="Historical model-specific attribution reference 119" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 120
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/16.14_DeepSHAP_When_Does_Fast_Attribution_Match_Exact_SHAP_solutions.ipynb#cell=109,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/deep_solutions_cell_109_output_0.png" alt="Historical model-specific attribution reference 120" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 121
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/16.14_DeepSHAP_When_Does_Fast_Attribution_Match_Exact_SHAP_solutions.ipynb#cell=109,output=1,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/deep_solutions_cell_109_output_1.png" alt="Historical model-specific attribution reference 121" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 122
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part14_deepshap/16.14_DeepSHAP_When_Does_Fast_Attribution_Match_Exact_SHAP_solutions.ipynb#cell=111,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/deep_solutions_cell_111_output_0.png" alt="Historical model-specific attribution reference 122" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 123
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/16.15_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate_exercises.ipynb#cell=11,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradient_exercises_cell_11_output_0.png" alt="Historical model-specific attribution reference 123" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 124
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/16.15_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate_exercises.ipynb#cell=17,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradient_exercises_cell_17_output_0.png" alt="Historical model-specific attribution reference 124" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 125
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/16.15_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate_exercises.ipynb#cell=23,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradient_exercises_cell_23_output_0.png" alt="Historical model-specific attribution reference 125" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 126
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/16.15_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate_exercises.ipynb#cell=29,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradient_exercises_cell_29_output_0.png" alt="Historical model-specific attribution reference 126" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 127
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/16.15_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate_exercises.ipynb#cell=34,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradient_exercises_cell_34_output_0.png" alt="Historical model-specific attribution reference 127" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 128
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/16.15_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate_exercises.ipynb#cell=41,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradient_exercises_cell_41_output_0.png" alt="Historical model-specific attribution reference 128" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 129
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/16.15_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate_exercises.ipynb#cell=47,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradient_exercises_cell_47_output_0.png" alt="Historical model-specific attribution reference 129" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 130
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/16.15_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate_exercises.ipynb#cell=50,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradient_exercises_cell_50_output_0.png" alt="Historical model-specific attribution reference 130" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 131
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/16.15_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate_exercises.ipynb#cell=56,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradient_exercises_cell_56_output_0.png" alt="Historical model-specific attribution reference 131" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 132
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/16.15_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate_exercises.ipynb#cell=64,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradient_exercises_cell_64_output_0.png" alt="Historical model-specific attribution reference 132" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 133
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/16.15_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate_exercises.ipynb#cell=64,output=1,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradient_exercises_cell_64_output_1.png" alt="Historical model-specific attribution reference 133" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 134
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/16.15_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate_exercises.ipynb#cell=64,output=2,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradient_exercises_cell_64_output_2.png" alt="Historical model-specific attribution reference 134" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 135
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/16.15_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate_exercises.ipynb#cell=69,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradient_exercises_cell_69_output_0.png" alt="Historical model-specific attribution reference 135" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 136
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/16.15_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate_exercises.ipynb#cell=119,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradient_exercises_cell_119_output_0.png" alt="Historical model-specific attribution reference 136" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 137
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/16.15_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate_exercises.ipynb#cell=119,output=1,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradient_exercises_cell_119_output_1.png" alt="Historical model-specific attribution reference 137" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 138
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/16.15_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate_exercises.ipynb#cell=120,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradient_exercises_cell_120_output_0.png" alt="Historical model-specific attribution reference 138" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 139
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/16.15_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate_exercises.ipynb#cell=120,output=1,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradient_exercises_cell_120_output_1.png" alt="Historical model-specific attribution reference 139" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 140
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/16.15_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate_exercises.ipynb#cell=121,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradient_exercises_cell_121_output_0.png" alt="Historical model-specific attribution reference 140" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 141
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/16.15_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate_exercises.ipynb#cell=121,output=1,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradient_exercises_cell_121_output_1.png" alt="Historical model-specific attribution reference 141" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 142
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/16.15_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate_exercises.ipynb#cell=123,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradient_exercises_cell_123_output_0.png" alt="Historical model-specific attribution reference 142" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 143
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/16.15_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate_solutions.ipynb#cell=11,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradient_solutions_cell_11_output_0.png" alt="Historical model-specific attribution reference 143" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 144
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/16.15_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate_solutions.ipynb#cell=17,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradient_solutions_cell_17_output_0.png" alt="Historical model-specific attribution reference 144" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 145
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/16.15_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate_solutions.ipynb#cell=23,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradient_solutions_cell_23_output_0.png" alt="Historical model-specific attribution reference 145" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 146
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/16.15_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate_solutions.ipynb#cell=29,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradient_solutions_cell_29_output_0.png" alt="Historical model-specific attribution reference 146" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 147
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/16.15_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate_solutions.ipynb#cell=34,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradient_solutions_cell_34_output_0.png" alt="Historical model-specific attribution reference 147" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 148
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/16.15_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate_solutions.ipynb#cell=41,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradient_solutions_cell_41_output_0.png" alt="Historical model-specific attribution reference 148" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 149
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/16.15_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate_solutions.ipynb#cell=47,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradient_solutions_cell_47_output_0.png" alt="Historical model-specific attribution reference 149" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 150
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/16.15_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate_solutions.ipynb#cell=50,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradient_solutions_cell_50_output_0.png" alt="Historical model-specific attribution reference 150" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 151
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/16.15_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate_solutions.ipynb#cell=56,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradient_solutions_cell_56_output_0.png" alt="Historical model-specific attribution reference 151" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 152
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/16.15_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate_solutions.ipynb#cell=64,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradient_solutions_cell_64_output_0.png" alt="Historical model-specific attribution reference 152" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 153
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/16.15_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate_solutions.ipynb#cell=64,output=1,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradient_solutions_cell_64_output_1.png" alt="Historical model-specific attribution reference 153" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 154
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/16.15_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate_solutions.ipynb#cell=64,output=2,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradient_solutions_cell_64_output_2.png" alt="Historical model-specific attribution reference 154" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 155
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/16.15_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate_solutions.ipynb#cell=69,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradient_solutions_cell_69_output_0.png" alt="Historical model-specific attribution reference 155" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 156
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/16.15_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate_solutions.ipynb#cell=119,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradient_solutions_cell_119_output_0.png" alt="Historical model-specific attribution reference 156" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 157
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/16.15_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate_solutions.ipynb#cell=119,output=1,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradient_solutions_cell_119_output_1.png" alt="Historical model-specific attribution reference 157" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 158
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/16.15_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate_solutions.ipynb#cell=120,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradient_solutions_cell_120_output_0.png" alt="Historical model-specific attribution reference 158" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 159
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/16.15_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate_solutions.ipynb#cell=120,output=1,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradient_solutions_cell_120_output_1.png" alt="Historical model-specific attribution reference 159" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 160
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/16.15_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate_solutions.ipynb#cell=121,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradient_solutions_cell_121_output_0.png" alt="Historical model-specific attribution reference 160" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 161
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/16.15_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate_solutions.ipynb#cell=121,output=1,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradient_solutions_cell_121_output_1.png" alt="Historical model-specific attribution reference 161" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Historical figure 162
-
-Source: `chapter16_shapley_attribution_baselines/exercises/part15_gradientshap/16.15_Expected_Gradients_Which_Expectation_Does_GradientSHAP_Estimate_solutions.ipynb#cell=123,output=0,image/png`.
-
-<img src="../../exercises/part3_model_specific_shap/media/gradient_solutions_cell_123_output_0.png" alt="Historical model-specific attribution reference 162" width="960">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Finish the comparison
 
 For each method, state the player set, scalar output, missingness or path distribution, background,
 comparison metric and denominator. Explain how a complete attribution, an exact coalition allocation
 and a converged path expectation differ. Keep every original limitation, negative result and
-predeclared audit boundary above. Public historical practice, static engineering validation,
-scientific reproduction and human learner acceptance remain separate evidence layers.
+predeclared audit boundary above.
 '''
 
 

@@ -14,7 +14,7 @@ import streamlit_antd_components as sac
 metadata = [
     {'title': 'Measure named regions and falsify controls', 'icon': '1-circle-fill', 'subtitle': ''},
     {'title': 'Capture cross-attention and match edits', 'icon': '2-circle-fill', 'subtitle': ''},
-    {'title': 'Interpret the historical signature', 'icon': '3-circle-fill', 'subtitle': ''},
+    {'title': 'Interpret the signature', 'icon': '3-circle-fill', 'subtitle': ''},
     {'title': 'Bonus', 'icon': 'star', 'subtitle': ''},
 ]
 chapter_name = 'chapter13_image_generation_interpretability'

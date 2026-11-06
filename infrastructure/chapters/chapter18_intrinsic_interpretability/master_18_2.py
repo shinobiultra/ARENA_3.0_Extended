@@ -41,7 +41,7 @@ You want to explain a calculator: `output = first_input² + 0.5 × second_input`
 
 By the end of this notebook, you will have shown a concrete accuracy–interpretability tradeoff on the **same known additive regression task**: distance-weighted sparse fitting removes a designed nuisance at a shrinkage cost; a fitted piecewise-linear edge model exposes the square/linear decomposition; a leaf-penalized tree trades smooth accuracy for short rules. Exact oracles, irrelevant-feature controls and a linear baseline accompany the plots.
 
-This study edition fits tiny ordinary CPU arrays. It teaches the mathematical components behind `intrinsic.sparse_modular_training` and `intrinsic.kans_sparse_trees`. The edge model is a one-layer, degree-one B-spline additive special case of a KAN, **not** the released multilayer pykan pipeline. The sparse linear fit illustrates distance-weighted L1 regularization, without BIMT neuron swapping. The tree is a transparent greedy baseline, without an OSDT global-optimality claim. Large/native model training and released-method qualification remain pending.
+This study edition fits tiny ordinary CPU arrays. It teaches the mathematical components behind sparse modular training and KAN/sparse trees. The edge model is a one-layer, degree-one B-spline additive special case of a KAN, **not** the released multilayer pykan pipeline. The sparse linear fit illustrates distance-weighted L1 regularization, without BIMT neuron swapping. The tree is a transparent greedy baseline, without an OSDT global-optimality claim. Large/native model training and released-method qualification remain pending.
 
 Prerequisites: matrix calculus, least squares, basic optimization (0.3), and the distinction between observational fit and intervention evidence from 18.1. No model downloads or GPU are needed.
 '''
@@ -1380,7 +1380,7 @@ The comparison does not establish that a KAN is generally more interpretable or 
 
 ## Try it yourself
 
-The original function is additive. Change it to include `interaction * x0*x1` with coefficient 1. Before running, predict why even an infinitely fine one-layer additive spline cannot represent the new term. Its mixed finite difference is zero, while the target’s mixed finite difference is not. The known polynomial oracle is a baseline with the interaction explicitly included. This is seen guided practice, not a blind transfer score.
+The original function is additive. Change it to include `interaction * x0*x1` with coefficient 1. Before running, predict why even an infinitely fine one-layer additive spline cannot represent the new term. Its mixed finite difference is zero, while the target’s mixed finite difference is not. The known polynomial oracle is a baseline with the interaction explicitly included.
 '''
 
 # ! CELL TYPE: code

@@ -45,17 +45,9 @@ r'''
 # ! TAGS: []
 
 r'''
-Two complete historical curricula are retained in sequence: legacy 5.2 studies feature discovery and
-residual-space steering, then legacy 6.2 studies dictionary normalization, confounding, density and
-direct-logit hypotheses. You implement every original core function beside immediate tests and
-inspect all saved examples and figures.
+Two complete curricula follow in sequence: feature discovery and residual-space steering, then dictionary normalization, confounding, density and direct-logit hypotheses. You implement every core function beside immediate tests and inspect all saved examples and figures.
 
-All stored outputs are historical exposed guided practice. This source migration runs no taught
-method or model and supplies no fresh scientific result. Before opening any expected answer, record
-your forecast, confidence, causal reasoning and whether you have seen the source. Human learner
-walkthrough Q001 remains deferred.
-
-The preserved residual-space `ablate_feature(residual, feature_acts, decoder_vectors, feature_id,
+The residual-space `ablate_feature(residual, feature_acts, decoder_vectors, feature_id,
 fraction=1.0)` subtracts a decoded contribution. The distinct
 `deep_dive_ablate_feature(feature_acts, feature_id)` zeros one latent coordinate before
 reconstruction. Neither overwrites the other. Only colliding module bindings in the second
@@ -63,10 +55,8 @@ curriculum receive the declared `deep_dive_` prefix; local arguments and keyword
 unchanged.
 
 The first AUC implementation groups exactly equal ties; the second, `roc_auc_binary`, uses its
-original tolerance-based tie comparison. Keep both numerical policies. Both CUDA wrappers retain
-their distinct legacy module and evidence identities. The deep-dive real-model table remains
-correlational and uses its original report path; the first curriculum includes its separate
-historical intervention probe.
+original tolerance-based tie comparison. Keep both numerical policies. The deep-dive real-model table remains
+correlational; the first curriculum includes its separate intervention probe.
 '''
 
 # ! CELL TYPE: markdown
@@ -90,7 +80,7 @@ r'''
 
 ### ☆ Bonus
 
-Retain historical limitations and optional release contracts.
+Inspect the limitations and optional release contracts.
 '''
 
 # ! CELL TYPE: code
@@ -112,16 +102,8 @@ r'''
 # ! TAGS: []
 
 r'''
-### Forecast — legacy 5.2, source cell 0
-
 State how held-out correlation differs from causal steering, and name a control that could reject
 each claim.
-
-- Forecast: ______
-- Confidence: ______
-- Mechanism: ______
-- Prior exposure (seen / unseen / unknown): ______
-- Changed-condition prediction: ______
 '''
 
 # ! CELL TYPE: markdown
@@ -129,7 +111,7 @@ each claim.
 # ! TAGS: []
 
 r'''
-## Legacy: [5.2] Gemma Scope and Feature Steering - Solutions
+## Gemma Scope and Feature Steering
 
 ## Core Question
 
@@ -141,18 +123,11 @@ The exact organism supports a causal claim because its sparse code and readout a
 
 <img src="../../exercises/part2_gemma_scope/media/gemma_scope_exact_organism_signature.png" width="980">
 
-## Section Metadata
+## Setup
 
-| Release field | Value |
-| --- | --- |
-| Exercise | `EXERCISE_ID = "5_2_gemma_scope_and_feature_steering"` |
-| Ground-truth tier | `GT_TIER = "GT-3"` |
-| Difficulty | `DIFFICULTY = 3` |
-| Importance | `IMPORTANCE = 4` |
-| Expected runtime | `EXPECTED_RUNTIME = "seconds on toy contract; minutes on local real-model path"` |
-| GPU Contract | `REQUIRES_GPU = True` for the optional release verification; the exact organism and released-SAE tensor checks run on CPU. |
+The exact organism and released-SAE tensor checks run on CPU: seconds on the toy contract and minutes on the local real-model path. A CUDA GPU is needed only for the optional release verification.
 
-## Historical learning objectives
+## Objectives
 
 By the end of this notebook, you should be able to:
 
@@ -163,7 +138,7 @@ By the end of this notebook, you should be able to:
 - compare against random features, shuffled labels, and a norm-matched random direction;
 - load the pinned Gemma Scope tensors and intervene at `model.layers.13.output`.
 
-The visible results are generated in this notebook. `verification_report.json` is separate release evidence and is not used below.
+The visible results are generated in this notebook.
 '''
 
 # ! CELL TYPE: code
@@ -360,16 +335,8 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Forecast — legacy 5.2, source cell 5
-
 For a preactivation exactly at the JumpReLU threshold, predict whether its decoded contribution
 survives; explain which matrix dimensions must contract.
-
-- Forecast: ______
-- Confidence: ______
-- Mechanism: ______
-- Prior exposure (seen / unseen / unknown): ______
-- Changed-condition prediction: ______
 '''
 
 # ! CELL TYPE: markdown
@@ -400,7 +367,7 @@ The strict `>` matters at the threshold boundary.
 
 </details>
 
-<details><summary>Historical solution</summary>
+<details><summary>Solution</summary>
 
 ```python
 def jumprelu_encode(x, *, w_enc, b_enc, b_dec, threshold):
@@ -504,16 +471,8 @@ It established that the equations and intervention basis are correct for this or
 # ! TAGS: []
 
 r'''
-### Forecast — legacy 5.2, source cell 8
-
 Predict how selecting a feature only on discovery rows differs from selecting it on all rows. State
 how tied positive/negative scores contribute to AUC.
-
-- Forecast: ______
-- Confidence: ______
-- Mechanism: ______
-- Prior exposure (seen / unseen / unknown): ______
-- Changed-condition prediction: ______
 '''
 
 # ! CELL TYPE: markdown
@@ -546,7 +505,7 @@ Sort scores in ascending order, assign average 1-indexed ranks to tied groups, a
 
 </details>
 
-<details><summary>Historical solution</summary>
+<details><summary>Solution</summary>
 
 ```python
 def select_feature_by_mean_difference(scores, labels, discovery_mask):
@@ -738,16 +697,8 @@ The examples make the proposed meaning legible, but the held-out AUC is the test
 # ! TAGS: []
 
 r'''
-### Forecast — legacy 5.2, source cell 12
-
 Predict the sign of the known target readout after positive decoder-direction steering, and how
 partial ablation compares with a random feature.
-
-- Forecast: ______
-- Confidence: ______
-- Mechanism: ______
-- Prior exposure (seen / unseen / unknown): ______
-- Changed-condition prediction: ______
 '''
 
 # ! CELL TYPE: markdown
@@ -780,7 +731,7 @@ The decoded contribution of feature `i` is `feature_acts[..., i, None] * W_dec[i
 
 </details>
 
-<details><summary>Historical solution</summary>
+<details><summary>Solution</summary>
 
 ```python
 def steer_residual(residual, direction, coefficient):
@@ -871,16 +822,8 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Forecast — legacy 5.2, source cell 14
-
 Forecast the qualitative ordering of target versus random-feature and random-direction curves and
 the shuffled-label control. Explain which panel tests representation and which tests function.
-
-- Forecast: ______
-- Confidence: ______
-- Mechanism: ______
-- Prior exposure (seen / unseen / unknown): ______
-- Changed-condition prediction: ______
 '''
 
 # ! CELL TYPE: markdown
@@ -1076,16 +1019,8 @@ These are exact causal facts about the organism because the sparse code, decoder
 # ! TAGS: []
 
 r'''
-### Forecast — legacy 5.2, source cell 17
-
 Choose a changed coefficient, feature or row, forecast its readout change and compare it with the
 unchanged control.
-
-- Forecast: ______
-- Confidence: ______
-- Mechanism: ______
-- Prior exposure (seen / unseen / unknown): ______
-- Changed-condition prediction: ______
 '''
 
 # ! CELL TYPE: markdown
@@ -1127,16 +1062,8 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Forecast — legacy 5.2, source cell 19
-
 Forecast which artifact fields must match the base model and hook, and why correct tensor shapes
 alone cannot validate a semantic interpretation.
-
-- Forecast: ______
-- Confidence: ______
-- Mechanism: ______
-- Prior exposure (seen / unseen / unknown): ______
-- Changed-condition prediction: ______
 '''
 
 # ! CELL TYPE: markdown
@@ -1171,7 +1098,7 @@ Use `hf_hub_download` twice with the pinned repository, revision, and artifact-r
 
 </details>
 
-<details><summary>Historical solution</summary>
+<details><summary>Solution</summary>
 
 ```python
 def load_released_gemma_scope_sae(repo_id, revision, artifact_path):
@@ -1429,16 +1356,8 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Forecast — legacy 5.2, source cell 24
-
 Predict how the steering hook should preserve tuple outputs and how the ablation hook uses clean
 scores without mutating its input.
-
-- Forecast: ______
-- Confidence: ______
-- Mechanism: ______
-- Prior exposure (seen / unseen / unknown): ______
-- Changed-condition prediction: ______
 '''
 
 # ! CELL TYPE: markdown
@@ -1463,7 +1382,7 @@ Extract the hidden state with `hidden_from_layer_output`, modify it, then rebuil
 
 </details>
 
-<details><summary>Historical solution</summary>
+<details><summary>Solution</summary>
 
 ```python
 def make_steering_hook(direction, coefficient):
@@ -1557,16 +1476,8 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Forecast — legacy 5.2, source cell 26
-
 Forecast whether the selected feature will outperform each matched control in steering and ablation.
 Distinguish this tiny cohort from a general semantic claim.
-
-- Forecast: ______
-- Confidence: ______
-- Mechanism: ______
-- Prior exposure (seen / unseen / unknown): ______
-- Changed-condition prediction: ______
 '''
 
 # ! CELL TYPE: markdown
@@ -1851,16 +1762,8 @@ The activation examples support a narrow technical-versus-narrative representati
 # ! TAGS: []
 
 r'''
-### Forecast — legacy 5.2, source cell 29
-
-Write a new prompt and predict selected-versus-control activation before opening its historical
+Write a new prompt and predict selected-versus-control activation before opening its
 example output.
-
-- Forecast: ______
-- Confidence: ______
-- Mechanism: ______
-- Prior exposure (seen / unseen / unknown): ______
-- Changed-condition prediction: ______
 '''
 
 # ! CELL TYPE: markdown
@@ -1927,9 +1830,9 @@ The held-out narrative examples about friends listening to music and lanterns at
 # ! TAGS: []
 
 r'''
-## Release Verification Surface
+## GPU entry points
 
-The exercises and signature result above are the CPU learner path. The two stable entry points below delegate to the section's pinned release harness; neither runs automatically. Call them only in the CUDA environment described by the section metadata, then compare the returned metrics with `verification_report.json`.
+The exercises and signature result above are the CPU learner path. The two entry points below run the GPU check and the full path; neither runs automatically. Call them only on a CUDA GPU.
 
 `run_gpu_test(max_vram_gb=24.0)` runs the bounded GPU check. `run_full_experiment(max_vram_gb=24.0)` runs the same validated full path.
 '''
@@ -1969,16 +1872,8 @@ r'''
 # ! TAGS: []
 
 r'''
-### Forecast — legacy 6.2, source cell 0
-
 Predict why a train-only formatting confound can look semantic on discovery examples but fail on
 held-out text.
-
-- Forecast: ______
-- Confidence: ______
-- Mechanism: ______
-- Prior exposure (seen / unseen / unknown): ______
-- Changed-condition prediction: ______
 '''
 
 # ! CELL TYPE: markdown
@@ -1986,22 +1881,17 @@ held-out text.
 # ! TAGS: []
 
 r'''
-## Legacy: [6.2] Gemma Scope Deep Dive - Solutions
+## Gemma Scope Deep Dive
 
 > **Core question:** when a released SAE feature looks semantic, what evidence shows that the coordinate is measured correctly, generalizes beyond selected examples, and has a feature-specific causal effect?
 
 **By the end of this notebook, you will have shown that one known sparse feature is recovered exactly, separates 24 held-out examples, and causally controls a known readout while random-feature, shuffled-label, decoder-norm, density, and matched-direction controls fail. You will then compare that standard with one pinned Gemma Scope 2 result.**
 
-```yaml
-gt_tier: GT-0 exact organism followed by pinned GT-1 real-model evidence
-exercise_id: 6_2_gemma_scope_deep_dive
-expected_runtime: 75-100 minutes on CPU
-requires_gpu: false for this notebook; CUDA is only needed to refresh the pinned real-model evidence
-```
+This notebook runs on CPU and takes 75-100 minutes. CUDA is only needed to refresh the pinned real-model evidence.
 
-## Legacy: Introduction
+## Introduction
 
-## Historical learning objectives
+## Objectives
 
 By the end, you should be able to:
 
@@ -2130,16 +2020,8 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Forecast — legacy 6.2, source cell 4
-
 Predict how encoder columns, encoder bias and JumpReLU threshold must change when each decoder row
 is normalized, while reconstruction stays fixed.
-
-- Forecast: ______
-- Confidence: ______
-- Mechanism: ______
-- Prior exposure (seen / unseen / unknown): ______
-- Changed-condition prediction: ______
 '''
 
 # ! CELL TYPE: markdown
@@ -2198,7 +2080,7 @@ The JumpReLU gate compares preactivation with a threshold. Scaling only the enco
 Common bug: normalizing `W_dec` alone. That changes reconstruction amplitudes and makes every later comparison invalid.
 
 <details>
-<summary>Historical solution</summary>
+<summary>Solution</summary>
 
 ```python
 def load_normalized_sae(
@@ -2313,16 +2195,8 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Forecast — legacy 6.2, source cell 6
-
 Predict the strict-threshold boundary result and explain which reconstruction statistic changes if
 all residuals receive a common offset.
-
-- Forecast: ______
-- Confidence: ______
-- Mechanism: ______
-- Prior exposure (seen / unseen / unknown): ______
-- Changed-condition prediction: ______
 '''
 
 # ! CELL TYPE: markdown
@@ -2378,7 +2252,7 @@ If an artifact cannot reconstruct activations at the claimed hook, its feature c
 Common bug: applying ReLU after thresholding a differently scaled preactivation, or forgetting to subtract and restore `b_dec`.
 
 <details>
-<summary>Historical solution</summary>
+<summary>Solution</summary>
 
 ```python
 def encode_jump_relu(residuals: t.Tensor, sae: SparseAutoencoder) -> t.Tensor:
@@ -2509,16 +2383,8 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Forecast — legacy 6.2, source cell 9
-
 Predict how max, mean and last-token pooling can rank examples differently; describe target,
 random-feature and shuffled-label AUC behavior.
-
-- Forecast: ______
-- Confidence: ______
-- Mechanism: ______
-- Prior exposure (seen / unseen / unknown): ______
-- Changed-condition prediction: ______
 '''
 
 # ! CELL TYPE: markdown
@@ -2568,7 +2434,7 @@ AUC is the probability that a random positive outranks a random negative, with a
 Common bug: selecting a feature and reporting AUC on the same examples. That measures selection luck, not generalization.
 
 <details>
-<summary>Historical solution</summary>
+<summary>Solution</summary>
 
 ```python
 def feature_score_vector(
@@ -2815,16 +2681,8 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Forecast — legacy 6.2, source cell 12
-
 Predict how a rare feature and a dead feature differ in density, and which sampling failure can make
 them look identical.
-
-- Forecast: ______
-- Confidence: ______
-- Mechanism: ______
-- Prior exposure (seen / unseen / unknown): ______
-- Changed-condition prediction: ______
 '''
 
 # ! CELL TYPE: markdown
@@ -2874,7 +2732,7 @@ Ten compelling examples mean something different for a feature that fires 10 tim
 Common bug: calculating density only over non-zero rows, which guarantees every retained feature looks alive.
 
 <details>
-<summary>Historical solution</summary>
+<summary>Solution</summary>
 
 ```python
 def activation_density(feature_acts: t.Tensor) -> tuple[t.Tensor, t.Tensor]:
@@ -2915,16 +2773,8 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Forecast — legacy 6.2, source cell 14
-
 Predict why latent-coordinate ablation differs from subtracting a residual direction, and why the
 steering direction must be normalized for equal-L2 controls.
-
-- Forecast: ______
-- Confidence: ______
-- Mechanism: ______
-- Prior exposure (seen / unseen / unknown): ______
-- Changed-condition prediction: ______
 '''
 
 # ! CELL TYPE: markdown
@@ -2974,7 +2824,7 @@ A random direction is not a useful control if its norm is smaller. Normalize bot
 Common bug: editing cached activations in place. Later baselines then contain the intervention and silently shrink the measured effect.
 
 <details>
-<summary>Historical solution</summary>
+<summary>Solution</summary>
 
 ```python
 def deep_dive_ablate_feature(feature_acts: t.Tensor, feature_id: int) -> t.Tensor:
@@ -3063,16 +2913,8 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Forecast — legacy 6.2, source cell 16
-
 Predict the DLA matrix shape and what a positive decoder-to-token projection does and does not
 establish about a later model output.
-
-- Forecast: ______
-- Confidence: ______
-- Mechanism: ______
-- Prior exposure (seen / unseen / unknown): ______
-- Changed-condition prediction: ______
 '''
 
 # ! CELL TYPE: markdown
@@ -3122,7 +2964,7 @@ The decoder-to-unembedding product describes a direct linear route. LayerNorm, l
 Common bug: comparing DLA magnitudes before normalizing decoder rows. Raw decoder norm then masquerades as token relevance.
 
 <details>
-<summary>Historical solution</summary>
+<summary>Solution</summary>
 
 ```python
 def direct_logit_attribution(
@@ -3177,16 +3019,8 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Forecast — legacy 6.2, source cell 18
-
 Forecast target-versus-control held-out AUC, decoder norms, dead-feature density and intervention
-curve slopes before inspecting the four historical panels.
-
-- Forecast: ______
-- Confidence: ______
-- Mechanism: ______
-- Prior exposure (seen / unseen / unknown): ______
-- Changed-condition prediction: ______
+curve slopes before inspecting the four panels.
 '''
 
 # ! CELL TYPE: markdown
@@ -3407,16 +3241,8 @@ r'''
 # ! TAGS: []
 
 r'''
-### Forecast — legacy 6.2, source cell 20
-
 Choose a feature and predict its training-versus-held-out performance, including the
 formatting-confound alternative.
-
-- Forecast: ______
-- Confidence: ______
-- Mechanism: ______
-- Prior exposure (seen / unseen / unknown): ______
-- Changed-condition prediction: ______
 '''
 
 # ! CELL TYPE: markdown
@@ -3453,16 +3279,8 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Forecast — legacy 6.2, source cell 22
-
 Choose a changed direction or strength and forecast the target and matched-control readout curves at
 the same L2 intervention size.
-
-- Forecast: ______
-- Confidence: ______
-- Mechanism: ______
-- Prior exposure (seen / unseen / unknown): ______
-- Changed-condition prediction: ______
 '''
 
 # ! CELL TYPE: markdown
@@ -3601,12 +3419,9 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-## Optional CUDA Refresh Contract
+## Optional CUDA entry points
 
-`verification_report.json` is a historical record of the pinned CUDA run. It is
-supporting evidence, not the signature result. Maintainers with the exact gated
-model access can refresh it through these entry points; the learner notebook
-never calls them automatically.
+The entry points below refresh the pinned CUDA run and need exact gated model access; the learner notebook never calls them automatically.
 '''
 
 # ! CELL TYPE: code
@@ -3666,11 +3481,10 @@ r'''
 # ! TAGS: []
 
 r'''
-## Historical scope and source identities
+## Scope
 
-Read the retained limitations in both curricula. The exact organisms have designed labels and known
+Read the limitations in both curricula. The exact organisms have designed labels and known
 readouts; the small pinned-model cohorts and downstream scoring do not establish general semantic
-validity. Saved CUDA records remain separate supporting evidence. No new model family or study is
-added by this migration.
+validity.
 '''
 

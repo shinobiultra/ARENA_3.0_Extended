@@ -4,7 +4,7 @@
 
 r'''
 ```python
-[{"title": "CoT faithfulness: exact toy and historical Pythia", "icon": "1-circle-fill", "subtitle": ""}, {"title": "Bonus", "icon": "star", "subtitle": ""}]
+[{"title": "CoT faithfulness: exact toy and Pythia", "icon": "1-circle-fill", "subtitle": ""}, {"title": "Bonus", "icon": "star", "subtitle": ""}]
 ```
 '''
 
@@ -39,30 +39,13 @@ r'''
 r'''
 Can a hidden-answer probe establish that a visible rationale caused an answer? Build an exact toy,
 inspect its layer-position heatmap, then intervene with matched controls. Compare that validated
-measurement pipeline with a historical Pythia result that does not establish the causal claim.
-
-This lesson retains the complete historical 9.2 curriculum under canonical 9.3: all 47 original
-teaching cells, 15 code cells, eight student exercises, 14 historical output records and three
-byte-distinct visuals. Historical outputs belong to the solutions; exercise figures are labeled
-expected displays. Original identities, thresholds, controls and default optional GPU flag remain
-intact. This migration generated sources only and ran no taught method, model, data loader, native
-helper, GPU or download.
+measurement pipeline with a Pythia result that does not establish the causal claim.
 
 The scope is the exact A/B toy and pinned base Pythia prompt organism. Small instruct models,
 arithmetic word problems, generated CoT, truncation, inserted mistakes and paraphrase interventions
-are absent. Those broader current brief items remain unimplemented; this is not full coverage of
-that brief. Historical report acceptance is acceptance of the recorded toy/negative-result contract,
-not evidence of a fresh canonical run.
+are absent. Those broader items are not covered here.
 
-The optional real-model helper is preserved in full as 1,029 lines of provided historical
-orchestration. It is not a replacement for your eight visible implementations. The notebook keeps
-its historical execution-root requirement. Python imports defer that cwd-sensitive helper until
-explicitly requested by run_gpu_test; optional execution still requires the historical
-repository-root working directory and original pinned external resources. External
-weights/data/cache availability is unprobed.
-
-Before results, commit a forecast, confidence, mechanism and prior exposure. Retained references are
-guided historical practice, not an unseen assessment.
+The optional real-model path (`run_gpu_test`) needs a CUDA GPU, the repository-root working directory and the pinned external resources.
 '''
 
 # ! CELL TYPE: markdown
@@ -72,7 +55,7 @@ guided historical practice, not an unseen assessment.
 r'''
 ## Content & Learning Objectives
 
-### 1️⃣ CoT faithfulness: exact toy and historical Pythia
+### 1️⃣ CoT faithfulness: exact toy and Pythia
 
 > ##### Learning Objectives
 >
@@ -110,7 +93,7 @@ reference_solutions = _HistoricalReference()
 # ! TAGS: []
 
 r'''
-# 1️⃣ CoT faithfulness: exact toy and historical Pythia
+# 1️⃣ CoT faithfulness: exact toy and Pythia
 '''
 
 # ! CELL TYPE: markdown
@@ -118,7 +101,7 @@ r'''
 # ! TAGS: []
 
 r'''
-## Historical 9.2 curriculum
+## Overview
 
 By the end of this notebook, you will have shown that an exact CoT-style model organism carries a
 hidden answer before the final token and that patching its known causal residual state beats five
@@ -131,9 +114,7 @@ experiment used here.
 can moving that hidden state change the model's final answer behavior?
 
 The first half is exact toy ground truth. The second half exposes the pinned Pythia-70M prompts,
-token positions, layer-position heatmap, and hook-patching controls used by the parent CUDA
-verification run. The real-model cells do not load the committed `verification_report.json` as the
-lesson; they generate the heatmap, bars, and prompt table live when CUDA is available.
+token positions, layer-position heatmap, and hook-patching controls used by the real-model cells. They generate the heatmap, bars, and prompt table live when CUDA is available.
 '''
 
 # ! CELL TYPE: markdown
@@ -372,12 +353,7 @@ The key ground-truth facts are:
 # ! TAGS: []
 
 r'''
-## Forecast before running
-
 Predict which hidden coordinate carries the private answer when the visible rationale disagrees.
-Record a numeric interval, ordering or binary forecast, confidence, mechanism and prior exposure.
-Use the original row/donor/condition denominators; repeated views do not create new samples. Keep
-your response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -568,11 +544,7 @@ logit(A)`, so positive values favor B.
 # ! TAGS: []
 
 r'''
-## Forecast before running
-
-Forecast accuracy and signed A/B logit differences separately. Record a numeric interval, ordering
-or binary forecast, confidence, mechanism and prior exposure. Use the original row/donor/condition
-denominators; repeated views do not create new samples. Keep your response blank until commitment.
+Forecast accuracy and signed A/B logit differences separately.
 '''
 
 # ! CELL TYPE: code
@@ -705,12 +677,7 @@ normalize the difference, and choose a threshold halfway between the two class-m
 # ! TAGS: []
 
 r'''
-## Forecast before running
-
 Predict true versus rolled-label probe accuracy; explain why readout alone is not intervention.
-Record a numeric interval, ordering or binary forecast, confidence, mechanism and prior exposure.
-Use the original row/donor/condition denominators; repeated views do not create new samples. Keep
-your response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -867,11 +834,7 @@ probe on the training half and evaluate hidden-answer accuracy on held-out examp
 # ! TAGS: []
 
 r'''
-## Forecast before running
-
-Predict the layer-position ranking on heldout toy rows. Record a numeric interval, ordering or
-binary forecast, confidence, mechanism and prior exposure. Use the original row/donor/condition
-denominators; repeated views do not create new samples. Keep your response blank until commitment.
+Predict the layer-position ranking on heldout toy rows.
 '''
 
 # ! CELL TYPE: code
@@ -986,12 +949,7 @@ def layer_position_probe_heatmap(
 # ! TAGS: []
 
 r'''
-## Forecast before running
-
 Commit the heatmap location and contrast with the label-shuffled control before viewing the image.
-Record a numeric interval, ordering or binary forecast, confidence, mechanism and prior exposure.
-Use the original row/donor/condition denominators; repeated views do not create new samples. Keep
-your response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -1045,20 +1003,7 @@ if MAIN:
 # ! TAGS: [html]
 
 r'''
-<img alt="Expected historical toy display; no fresh execution" src="media/historical_cell_21_0.png" width="1000">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect and transfer
-
-Compare your committed forecast with observations and controls. Record exact layer, position, row,
-donor and denominator; distinguish your run from the historical reference. Explain one discrepancy,
-then predict a single changed condition before trying it. Do not select a favorable layer or treat
-repeated prompts as independent models.
+<img alt="Expected toy display" src="media/historical_cell_21_0.png" width="1000">
 '''
 
 # ! CELL TYPE: markdown
@@ -1096,12 +1041,7 @@ tensor or a tuple whose first element is hidden states. Clone before editing.
 # ! TAGS: []
 
 r'''
-## Forecast before running
-
 Predict which tuple element and semantic position a hook may change, and what must remain identical.
-Record a numeric interval, ordering or binary forecast, confidence, mechanism and prior exposure.
-Use the original row/donor/condition denominators; repeated views do not create new samples. Keep
-your response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -1232,12 +1172,7 @@ at layer 2 or 3 transfers the donor answer; replacing the rationale position sho
 # ! TAGS: []
 
 r'''
-## Forecast before running
-
 Forecast target versus zero, random-direction, irrelevant-position and named random-donor effects.
-Record a numeric interval, ordering or binary forecast, confidence, mechanism and prior exposure.
-Use the original row/donor/condition denominators; repeated views do not create new samples. Keep
-your response blank until commitment.
 '''
 
 # ! CELL TYPE: code
@@ -1371,12 +1306,8 @@ whether the target patch beats it by the required gap.
 # ! TAGS: []
 
 r'''
-## Forecast before running
-
 Predict whether the control gap passes its threshold, keeping target effects and strongest controls
-separate. Record a numeric interval, ordering or binary forecast, confidence, mechanism and prior
-exposure. Use the original row/donor/condition denominators; repeated views do not create new
-samples. Keep your response blank until commitment.
+separate.
 '''
 
 # ! CELL TYPE: code
@@ -1526,12 +1457,7 @@ def patch_control_summary(
 # ! TAGS: []
 
 r'''
-## Forecast before running
-
-Forecast all toy panels and state what the exact organism can validate. Record a numeric interval,
-ordering or binary forecast, confidence, mechanism and prior exposure. Use the original
-row/donor/condition denominators; repeated views do not create new samples. Keep your response blank
-until commitment.
+Forecast all toy panels and state what the exact organism can validate.
 '''
 
 # ! CELL TYPE: code
@@ -1710,20 +1636,7 @@ if MAIN:
 # ! TAGS: [html]
 
 r'''
-<img alt="Expected historical toy display; no fresh execution" src="media/historical_cell_33_1.png" width="1000">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect and transfer
-
-Compare your committed forecast with observations and controls. Record exact layer, position, row,
-donor and denominator; distinguish your run from the historical reference. Explain one discrepancy,
-then predict a single changed condition before trying it. Do not select a favorable layer or treat
-repeated prompts as independent models.
+<img alt="Expected toy display" src="media/historical_cell_33_1.png" width="1000">
 '''
 
 # ! CELL TYPE: markdown
@@ -1791,12 +1704,8 @@ and repeated hook plumbing; your job here is to decide what its evidence permits
 # ! TAGS: []
 
 r'''
-## Forecast before running
-
 Before the pinned history, predict the adjudicator verdict from its frozen inputs and strict
-boundaries; leave the verdict blank. Record a numeric interval, ordering or binary forecast,
-confidence, mechanism and prior exposure. Use the original row/donor/condition denominators;
-repeated views do not create new samples. Keep your response blank until commitment.
+boundaries; leave the verdict blank.
 '''
 
 # ! CELL TYPE: code
@@ -1888,19 +1797,6 @@ def run_full_experiment(max_vram_gb: float=24.0) -> dict[str, Any]:
 
 if MAIN:
     tests.test_notebook_contract(run_smoke_test)
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect and transfer
-
-Compare your committed forecast with observations and controls. Record exact layer, position, row,
-donor and denominator; distinguish your run from the historical reference. Explain one discrepancy,
-then predict a single changed condition before trying it. Do not select a favorable layer or treat
-repeated prompts as independent models.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -2006,12 +1902,7 @@ predeclared controls.
 # ! TAGS: []
 
 r'''
-## Forecast before running
-
-Forecast what evidence an optional rerun would need; the saved notebook skipped CUDA. Record a
-numeric interval, ordering or binary forecast, confidence, mechanism and prior exposure. Use the
-original row/donor/condition denominators; repeated views do not create new samples. Keep your
-response blank until commitment.
+Forecast what evidence an optional rerun would need; the saved notebook skipped CUDA.
 '''
 
 # ! CELL TYPE: code
@@ -2114,12 +2005,7 @@ remains separate because its current result is negative and requires serialized 
 # ! TAGS: []
 
 r'''
-## Forecast before running
-
-Choose a changed layer or donor and predict the signed answer effect before running the play. Record
-a numeric interval, ordering or binary forecast, confidence, mechanism and prior exposure. Use the
-original row/donor/condition denominators; repeated views do not create new samples. Keep your
-response blank until commitment.
+Choose a changed layer or donor and predict the signed answer effect before running the play.
 '''
 
 # ! CELL TYPE: code
@@ -2175,19 +2061,6 @@ if MAIN:
 
 if MAIN:
     print(f'clean={labels[int(play_clean_logits.argmax(dim=-1).item())]}, patched={labels[int(play_patched_logits.argmax(dim=-1).item())]}, donor-margin effect={float(play_effect.item()):.3f}')
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect and transfer
-
-Compare your committed forecast with observations and controls. Record exact layer, position, row,
-donor and denominator; distinguish your run from the historical reference. Explain one discrepancy,
-then predict a single changed condition before trying it. Do not select a favorable layer or treat
-repeated prompts as independent models.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -2251,7 +2124,7 @@ r'''
 r'''
 ## Complete the evidence chain
 
-Explain why a successful hidden probe and an accepted historical verification contract do not
+Explain why a successful hidden probe does not
 establish rationale causality. Preserve the negative Pythia finding and distinguish the exact toy
 controls from real-model matched donors and deterministic donor controls. Propose one prospective
 protocol change without filling its answer or importing broader unimplemented topics.

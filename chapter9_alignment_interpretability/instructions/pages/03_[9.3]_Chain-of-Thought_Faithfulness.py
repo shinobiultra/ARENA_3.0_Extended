@@ -11,7 +11,7 @@ import streamlit_antd_components as sac
 #     {"title": "Bonus", "icon": "star", "subtitle": "(1%)"},
 #     ...
 # ]
-metadata = [{'title': 'CoT faithfulness: exact toy and historical Pythia', 'icon': '1-circle-fill', 'subtitle': ''}, {'title': 'Bonus', 'icon': 'star', 'subtitle': ''}]
+metadata = [{'title': 'CoT faithfulness: exact toy and Pythia', 'icon': '1-circle-fill', 'subtitle': ''}, {'title': 'Bonus', 'icon': 'star', 'subtitle': ''}]
 chapter_name = 'chapter9_alignment_interpretability'
 chapter_name_long = 'Chapter 9 - Alignment Interpretability'
 section_title = '[9.3] Chain-of-Thought Faithfulness'

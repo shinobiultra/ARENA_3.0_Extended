@@ -37,9 +37,7 @@ These are supplied-weight computational organisms. There is no architecture lead
 
 Prerequisites: [5.3] recurrent states, [5.6] parallel/recurrent key–value memory and [1.1] causal attention. CPU float64 is intentional for hand calculations and independent oracles. Do not use a bigger model to resolve a shape or normalization error you can catch on a two-step sequence.
 
-**Study edition:** the default examples are deterministic CPU teaching fixtures. No pretrained model is loaded, no network is used, and no trained-model benchmark or native qualification is claimed. Save a personal copy. Public expected answers make this guided, exposed practice.
-
-**Configured requirements:** `modern.recurrent_gemma_griffin`, `modern.xlstm`, `modern.hyena`, `modern.hybrid_attention_ssm_rnn`. The final bridge ledger distinguishes the implemented core from pending native evidence.
+**Study edition:** the default examples are deterministic CPU teaching fixtures. No pretrained model is loaded, no network is used, and no trained-model benchmark or native qualification is claimed. Save a personal copy.
 '''
 
 # ! CELL TYPE: markdown
@@ -1398,16 +1396,16 @@ print("new raw final",play[-1])
 # ! TAGS: []
 
 r'''
-## Limitations and native bridge ledger
+## Limitations
 
-| Requirement | Taught here | Still pending |
+| Topic | Taught here | Not covered here |
 | --- | --- | --- |
-| `modern.recurrent_gemma_griffin` | Stable RG-LRU coefficients, variance-scaled recurrence, resets, recurrent branch and local attention | Full learned Griffin/RecurrentGemma normalization/gate/MLP layout, training and optional released-checkpoint parity |
-| `modern.xlstm` | Stabilized exponential scalar memory; value-by-key mLSTM state, signed normalizer and recurrent/parallel core equality | Learned sLSTM recurrent memory mixing, complete xLSTM blocks, stabilized native mLSTM and trained task suite |
-| `modern.hyena` | Positional sine-MLP filter with decay, causal FFT oracle parity and order-two gated operator | Full positional/modulation/short-convolution stack, learned filters and native model comparison |
-| `modern.hybrid_attention_ssm_rnn` | A sequential recurrence-residual/local-attention-residual stack and its inspectable trace | A matched trained recall/state-tracking suite across families, resource/performance measurement and broad generalization |
+| Griffin / RecurrentGemma | Stable RG-LRU coefficients, variance-scaled recurrence, resets, recurrent branch and local attention | Full learned Griffin/RecurrentGemma normalization/gate/MLP layout, training and optional released-checkpoint parity |
+| xLSTM | Stabilized exponential scalar memory; value-by-key mLSTM state, signed normalizer and recurrent/parallel core equality | Learned sLSTM recurrent memory mixing, complete xLSTM blocks, stabilized native mLSTM and trained task suite |
+| Hyena | Positional sine-MLP filter with decay, causal FFT oracle parity and order-two gated operator | Full positional/modulation/short-convolution stack, learned filters and native model comparison |
+| Hybrid attention / recurrence stack | A sequential recurrence-residual/local-attention-residual stack and its inspectable trace | A matched trained recall/state-tracking suite across families, resource/performance measurement and broad generalization |
 
-For a trained comparison, freeze a common synthetic task definition and exact train/development/evaluation examples, comparable parameter/optimization budgets, stopping and selection rules, all failures and seed aggregation before selecting a model. Preserve monitored development roles. Record actual recurrence state, conv cache and local KV reset behavior for a native bridge. No native budget is allocated here; no RecurrentGemma weights are downloaded by default.
+For a trained comparison, freeze a common synthetic task definition and exact train/development/evaluation examples, comparable parameter/optimization budgets, stopping and selection rules, all failures and seed aggregation before selecting a model. Record actual recurrence state, conv cache and local KV reset behavior for a native bridge. No native budget is allocated here; no RecurrentGemma weights are downloaded by default.
 '''
 
 # ! CELL TYPE: markdown

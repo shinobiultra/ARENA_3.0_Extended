@@ -43,7 +43,7 @@ By the end of this notebook, you will have shown that a concept intervention, a 
 
 This is a CPU study edition. The bottleneck and Backpack computations are faithful small mathematical components with supplied parameters, **not trained image or language models**. The IIT component fits a two-parameter readout to a tiny analytic counterfactual dataset; it is not the paper’s neural benchmark or a DAS validation. You can inspect every number. The open question is when these components remain meaningful after learning them at scale.
 
-Prerequisites: array broadcasting, matrix multiplication, least squares and activation patching (1.2); causal abstraction and rotated subspaces (11.3) help with the final part. Requirements retained: `intrinsic.concept_bottleneck_models`, `intrinsic.backpack_language_models`, `intrinsic.interchange_intervention_training`.
+Prerequisites: array broadcasting, matrix multiplication, least squares and activation patching (1.2); causal abstraction and rotated subspaces (11.3) help with the final part.
 '''
 
 # ! CELL TYPE: markdown
@@ -1241,7 +1241,6 @@ r'''
 # ! TAGS: []
 
 r'''
-### Predict before plotting
 For all 16 base/donor pairs, predict which rows will fail for the observational readout. Its prediction is `1.5 * donor_a + 1.5 * base_b`; the target is `2 * donor_a + base_b`. The error is therefore `0.5 * (base_b - donor_a)`. Write the agreement fraction and the signs of the two off-diagonal errors.
 
 The three-panel dashboard below is the section’s primary signature result. Its color scales are shared across the two heatmaps. The third panel checks the Backpack edit formula and shows the wrong-sense control on the same axes.
@@ -1297,7 +1296,7 @@ A surprising result is the leaky bottleneck’s perfect concept accuracy in part
 
 ## Try it yourself
 
-Change only the high-level coefficient from 2 to 4. Before running, predict the observational minimum-norm coefficients and its all-pair agreement. Will it improve because the two supplied training labels become larger? Keep the hidden rotation fixed. This is public guided practice; seeing this cell or its output is exposure, not an unseen test.
+Change only the high-level coefficient from 2 to 4. Before running, predict the observational minimum-norm coefficients and its all-pair agreement. Will it improve because the two supplied training labels become larger? Keep the hidden rotation fixed.
 '''
 
 # ! CELL TYPE: code

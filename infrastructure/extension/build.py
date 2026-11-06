@@ -275,7 +275,9 @@ def rewrite_page_media(master: ExtensionMasterFile) -> None:
     page = master.instructions_dir / f"{master.streamlit_page_name}.md"
     rel = f"../../exercises/{master.exercise_dir_name}/media/"
     text = page.read_text(encoding="utf-8")
-    page.write_text(re.sub(r"""src=(["'])media/""", rf"src=\1{rel}", text), encoding="utf-8")
+    text = re.sub(r"""src=(["'])media/""", rf"src=\1{rel}", text)
+    # The converter writes empty quote lines as "> "; drop the trailing space (renders the same).
+    page.write_text(re.sub(r"(?m)^> $", ">", text), encoding="utf-8")
 
 
 def prepare_instruction_page(page: Path) -> None:

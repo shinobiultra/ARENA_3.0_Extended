@@ -73,9 +73,8 @@ induction task as [8.4].
 r'''
 **Runtime and device.** The setup runs on CPU when neither MPS nor CUDA is available. Begin with the small resampling toy; the transformer sections load the two-layer
 attention-only model. An accelerator is recommended for the per-position resampling sweeps, whose intermediate work grows with both batch size and sequence length. The saved plots
-are historical reference outputs; a full CPU runtime and minimum accelerator memory have not been measured here. Freeze any smaller batch or sequence before comparing hypotheses,
+are reference outputs. Freeze any smaller batch or sequence before comparing hypotheses,
 and record that changed configuration.
-
 '''
 
 # ! CELL TYPE: markdown

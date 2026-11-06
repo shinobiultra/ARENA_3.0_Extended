@@ -11,7 +11,7 @@ import streamlit_antd_components as sac
 #     {"title": "Bonus", "icon": "star", "subtitle": "(1%)"},
 #     ...
 # ]
-metadata = [{'title': 'Safe proxy drift: exact toy and historical preflight', 'icon': '1-circle-fill', 'subtitle': ''}]
+metadata = [{'title': 'Safe proxy drift: exact toy and preflight', 'icon': '1-circle-fill', 'subtitle': ''}]
 chapter_name = 'chapter9_alignment_interpretability'
 chapter_name_long = 'Chapter 9 - Alignment Interpretability'
 section_title = '[9.4] Emergent Misalignment Detection'

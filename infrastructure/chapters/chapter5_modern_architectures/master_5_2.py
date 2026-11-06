@@ -102,36 +102,6 @@ ordinary plumbing from the transformer chapter. Every MoE mechanism and every CP
 # ! TAGS: []
 
 r'''
-## Historical negative result and execution boundary
-
-The stored outputs and six-panel figure are **retained historical reference results** from the original
-5.8 Mixture of Experts CPU candidate. This is **not a fresh full execution** of canonical 5.2. The rejected
-preferred-expert ablation hypothesis and unchanged positive-specialization release predicate remain visible.
-Canonical publication does not turn the rejected candidate into accepted positive specialization evidence.
-No released MoE checkpoint, GPU result or real-model routing extension is added here.
-
-All forty-nine visible definitions match the original current `solutions.py` AST, and migration checks retain
-scientific source, outputs and counts after explicitly named test/import and figure-output-route adaptations.
-There is no independent source-hashed full-own-answer execution archive for this source: the historical
-notebook, reference-metric JSON and smoke evidence are preserved as recorded, with that provenance limit.
-The separately labeled bounded CPU method-cell check, when available, excludes both scientific training
-cells and is not a full-notebook run. See `docs/mastery/migrations/moe.md` and its evidence at repository root.
-
-Canonical 5.2 is this MoE lesson. Its old `5_8_mixture_of_experts_from_scratch` strings remain explicit archival
-API/report identities; current canonical 5.8 teaches diffusion language models and must not inherit this case.
-Provided immutable configuration/dataclass/attention plumbing stays imported from the preserved old module;
-all taught routing, experts, decoder, probe, intervention and synthetic experiment methods remain visible.
-
-This is **guided practice**. Reference prose, expected outputs and figures expose results. Record numerical
-forecasts, confidence, reasoning and prior exposure before viewing them. No learner response is fabricated.
-Historical final-test streams remain monitored; the name does not make them untouched TEST after migration.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Content & Learning Objectives
 
 ### 1️⃣ Route and admit tokens causally
@@ -327,13 +297,8 @@ makes the selected expert's contribution depend on router confidence.
 # ! TAGS: []
 
 r'''
-## Forecast before the result — top1-gradient
-
 For probabilities [.6,.3,.1], predict the top-1 selected gate, top-2 normalized gates and whether task loss supplies a nonzero router gradient. Compare a unit-valued top-1 gate and
 the equal-logit tie rule.
-
-Record a numeric range or predicted contrast, confidence (0–100%), causal reasoning and a disconfirming observation. Record whether you have already seen it: unseen, seen, or
-unknown exposure. Leave your response blank until commitment.
 
 Changed-condition forecast: Change only selected expert count from one to two and forecast the gate scaling and gradient.
 '''
@@ -404,19 +369,6 @@ SOLUTION
 # ! TAGS: []
 
 r'''
-## Reflect after the result — top1-gradient
-
-Record actual values and controls with units and source provenance. Separate retained historical output from your own execution. Explain the discrepancy without rewriting the
-forecast; failed hypotheses remain evidence.
-
-Before another run: Change only selected expert count from one to two and forecast the gate scaling and gradient. Identify the scientific change and what stays fixed.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise 2 - allocate a causal capacity ledger
 
 > ```yaml
@@ -462,13 +414,8 @@ policy differs from production batch-level expert dispatch.
 # ! TAGS: []
 
 r'''
-## Forecast before the result — causal-capacity
-
 For one sequence requesting expert0 at three successive active positions with three experts, top_k=1 and capacity_factor=1, predict capacity, kept positions and drops. Explain how
 a later higher affinity, a masked suffix or another batch row should affect earlier admissions.
-
-Record a numeric range or predicted contrast, confidence (0–100%), causal reasoning and a disconfirming observation. Record whether you have already seen it: unseen, seen, or
-unknown exposure. Leave your response blank until commitment.
 
 Changed-condition forecast: Keep requested experts fixed and double capacity_factor; forecast counts and slot indices.
 '''
@@ -596,19 +543,6 @@ SOLUTION
 # ! TAGS: []
 
 r'''
-## Reflect after the result — causal-capacity
-
-Record actual values and controls with units and source provenance. Separate retained historical output from your own execution. Explain the discrepancy without rewriting the
-forecast; failed hypotheses remain evidence.
-
-Before another run: Keep requested experts fixed and double capacity_factor; forecast counts and slot indices. Identify the scientific change and what stays fixed.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise 3 - dispatch tokens and combine expert outputs
 
 > ```yaml
@@ -649,13 +583,8 @@ or gate path.
 # ! TAGS: []
 
 r'''
-## Forecast before the result — dispatch-gradients
-
 Predict the manual dispatch/combine output and whether gradients reach both selected gates and input activations. State what happens to a fully dropped token and compare unbounded
 brute-force expert calls.
-
-Record a numeric range or predicted contrast, confidence (0–100%), causal reasoning and a disconfirming observation. Record whether you have already seen it: unseen, seen, or
-unknown exposure. Leave your response blank until commitment.
 
 Changed-condition forecast: Retain the same activations/experts but change the capacity mask; forecast which contribution and gradient disappear.
 '''
@@ -772,20 +701,6 @@ r'''
 SOLUTION
 ```
 </details>
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — dispatch-gradients
-
-Record actual values and controls with units and source provenance. Separate retained historical output from your own execution. Explain the discrepancy without rewriting the
-forecast; failed hypotheses remain evidence.
-
-Before another run: Retain the same activations/experts but change the capacity mask; forecast which contribution and gradient disappear. Identify the scientific change and what
-stays fixed.
 '''
 
 # ! CELL TYPE: markdown
@@ -956,13 +871,8 @@ signature reports both paired effects directly.
 # ! TAGS: []
 
 r'''
-## Forecast before the result — router-objectives
-
 Forecast balanced-versus-collapsed load-balancing loss, uniform-logit shifts under z-loss and the sign convention of aux/z factorial effects. Give a numeric hand-worked contrast
 for the separate semantic fixture.
-
-Record a numeric range or predicted contrast, confidence (0–100%), causal reasoning and a disconfirming observation. Record whether you have already seen it: unseen, seen, or
-unknown exposure. Leave your response blank until commitment.
 
 Changed-condition forecast: Add one constant to every expert logit while preserving softmax routing; forecast which loss changes.
 '''
@@ -1068,19 +978,6 @@ SOLUTION
 # ! TAGS: []
 
 r'''
-## Reflect after the result — router-objectives
-
-Record actual values and controls with units and source provenance. Separate retained historical output from your own execution. Explain the discrepancy without rewriting the
-forecast; failed hypotheses remain evidence.
-
-Before another run: Add one constant to every expert logit while preserving softmax routing; forecast which loss changes. Identify the scientific change and what stays fixed.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise 6 - assemble the sparse MoE layer
 
 > ```yaml
@@ -1124,13 +1021,8 @@ After your implementation passes, the code cell prints one complete overflow led
 # ! TAGS: []
 
 r'''
-## Forecast before the result — overflow
-
 For the displayed biased top-1 sparse layer with two six-position sequences and capacity_factor1, forecast requested/kept counts, dropped fraction and zero combined weights.
 Contrast the unbounded brute-force path.
-
-Record a numeric range or predicted contrast, confidence (0–100%), causal reasoning and a disconfirming observation. Record whether you have already seen it: unseen, seen, or
-unknown exposure. Leave your response blank until commitment.
 
 Changed-condition forecast: Keep all weights/inputs fixed but increase capacity; forecast admission and task-path gradients.
 '''
@@ -1271,19 +1163,6 @@ r'''
 SOLUTION
 ```
 </details>
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — overflow
-
-Record actual values and controls with units and source provenance. Separate retained historical output from your own execution. Explain the discrepancy without rewriting the
-forecast; failed hypotheses remain evidence.
-
-Before another run: Keep all weights/inputs fixed but increase capacity; forecast admission and task-path gradients. Identify the scientific change and what stays fixed.
 '''
 
 # ! CELL TYPE: markdown
@@ -1451,13 +1330,8 @@ parity is not a valid invariant.
 # ! TAGS: []
 
 r'''
-## Forecast before the result — cache-boundary
-
 Forecast full-versus-cached logits with unbounded capacity and describe the different finite-capacity chunk quota. Predict whether prefix and unrelated batch changes can alter
 earlier logits under fixed structural masks.
-
-Record a numeric range or predicted contrast, confidence (0–100%), causal reasoning and a disconfirming observation. Record whether you have already seen it: unseen, seen, or
-unknown exposure. Leave your response blank until commitment.
 
 Changed-condition forecast: Change only chunk boundary with finite capacity; forecast which exact cache equality is unsupported.
 '''
@@ -1612,19 +1486,6 @@ r'''
 SOLUTION
 ```
 </details>
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — cache-boundary
-
-Record actual values and controls with units and source provenance. Separate retained historical output from your own execution. Explain the discrepancy without rewriting the
-forecast; failed hypotheses remain evidence.
-
-Before another run: Change only chunk boundary with finite capacity; forecast which exact cache equality is unsupported. Identify the scientific change and what stays fixed.
 '''
 
 # ! CELL TYPE: markdown
@@ -1827,13 +1688,8 @@ predicts the independently assigned current operation. Direct routes by operatio
 # ! TAGS: []
 
 r'''
-## Forecast before the result — delexicalized-probe
-
 Before the demo, forecast whether three prefixes differing only at the current operation token produce identical delexicalized features. Compare actual and shuffled probe labels
 without interpreting decoding as expert necessity.
-
-Record a numeric range or predicted contrast, confidence (0–100%), causal reasoning and a disconfirming observation. Record whether you have already seen it: unseen, seen, or
-unknown exposure. Leave your response blank until commitment.
 
 Changed-condition forecast: Change the causal operation schedule to make the next operation predictable from context; forecast whether a valid probe can rise above chance.
 '''
@@ -1975,20 +1831,6 @@ SOLUTION
 # ! TAGS: []
 
 r'''
-## Reflect after the result — delexicalized-probe
-
-Record actual values and controls with units and source provenance. Separate retained historical output from your own execution. Explain the discrepancy without rewriting the
-forecast; failed hypotheses remain evidence.
-
-Before another run: Change the causal operation schedule to make the next operation predictable from context; forecast whether a valid probe can rise above chance. Identify the
-scientific change and what stays fixed.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise 11 - test expert-label symmetry
 
 > ```yaml
@@ -2110,13 +1952,8 @@ causes damage. Expert numbers remain permutation-symmetric, and preferred-expert
 # ! TAGS: []
 
 r'''
-## Forecast before the result — all-expert-interventions
-
 Forecast the shapes of intact, every-expert ablation and every-expert forcing accuracy tables, and whether preferred route frequency requires a larger preferred-ablation drop.
 State the expert-permutation control.
-
-Record a numeric range or predicted contrast, confidence (0–100%), causal reasoning and a disconfirming observation. Record whether you have already seen it: unseen, seen, or
-unknown exposure. Leave your response blank until commitment.
 
 Changed-condition forecast: Keep one model and stream fixed but switch from ablation to forced routing; forecast why damage need not answer the same question.
 '''
@@ -2219,20 +2056,6 @@ r'''
 SOLUTION
 ```
 </details>
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — all-expert-interventions
-
-Record actual values and controls with units and source provenance. Separate retained historical output from your own execution. Explain the discrepancy without rewriting the
-forecast; failed hypotheses remain evidence.
-
-Before another run: Keep one model and stream fixed but switch from ablation to forced routing; forecast why damage need not answer the same question. Identify the scientific
-change and what stays fixed.
 '''
 
 # ! CELL TYPE: markdown
@@ -3318,14 +3141,9 @@ A failed rule is a result to explain, not a reason to change its threshold.
 # ! TAGS: []
 
 r'''
-## Forecast before the result — paired-negative-study
-
 Before running the full three-seed study, forecast aux+z and neither final accuracy, hard-load entropy and drop fraction; give numerical intervals. Separately forecast
 preferred-minus-nonpreferred ablation drop, forcing drops and context-only probe versus shuffled1/3 chance. Use seeds7/19/31,180steps, paired aux×z initialization/batches,
 per-sequence top-1 capacity and full15-logit evaluation; preserve the original release predicate.
-
-Record a numeric range or predicted contrast, confidence (0–100%), causal reasoning and a disconfirming observation. Record whether you have already seen it: unseen, seen, or
-unknown exposure. Leave your response blank until commitment.
 
 Changed-condition forecast: Keep data/seed protocol fixed and change only one regularizer coefficient; forecast signed within-seed routing-health and scale effects, separately from
 causal necessity.
@@ -3439,20 +3257,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — paired-negative-study
-
-Record actual values and controls with units and source provenance. Separate retained historical output from your own execution. Explain the discrepancy without rewriting the
-forecast; failed hypotheses remain evidence.
-
-Before another run: Keep data/seed protocol fixed and change only one regularizer coefficient; forecast signed within-seed routing-health and scale effects, separately from causal
-necessity. Identify the scientific change and what stays fixed.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Interpreting the Result
 
 - **Panel A:** all models are scored over the evaluator's full 15-logit prediction support, so uniform chance is `1/15`. The five data tokens are the only targets, but the evaluator does not suppress the other ten logits.
@@ -3475,7 +3279,7 @@ r'''
 ## Try It Yourself
 
 Change `play_aux`, `play_z`, or `play_capacity`, then inspect the training trace, requested/kept expert counts, dev and final route tables, and every final intervention. This
-60-step run is exploratory and is not used by signature acceptance checks.
+60-step run is exploratory.
 '''
 
 # ! CELL TYPE: markdown
@@ -3483,13 +3287,8 @@ Change `play_aux`, `play_z`, or `play_capacity`, then inspect the training trace
 # ! TAGS: []
 
 r'''
-## Forecast before the result — capacity-regularizer-play
-
 For original seed43,60steps, aux=.2,z=0,capacity=.75, forecast final accuracy, hard-load entropy and overflow; give intervals and compare requested/kept counts, dev route
 preferences and all final interventions.
-
-Record a numeric range or predicted contrast, confidence (0–100%), causal reasoning and a disconfirming observation. Record whether you have already seen it: unseen, seen, or
-unknown exposure. Leave your response blank until commitment.
 
 Changed-condition forecast: Change only capacity from .75 to1, keeping all other play settings fixed, and forecast counts, drop fraction and accuracy before a separate exploratory
 run.
@@ -3570,20 +3369,6 @@ if MAIN:
     print("all-expert ablated accuracy:\n", play_intervention.ablated_accuracy)
 if MAIN:
     print("all-expert forced accuracy:\n", play_intervention.forced_accuracy)
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — capacity-regularizer-play
-
-Record actual values and controls with units and source provenance. Separate retained historical output from your own execution. Explain the discrepancy without rewriting the
-forecast; failed hypotheses remain evidence.
-
-Before another run: Change only capacity from .75 to1, keeping all other play settings fixed, and forecast counts, drop fraction and accuracy before a separate exploratory run.
-Identify the scientific change and what stays fixed.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []

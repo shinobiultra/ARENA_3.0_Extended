@@ -87,11 +87,7 @@ r'''
 The default path is a small, deterministic CPU organism with explicit weights and finite
 images. It teaches the named component operations and controls. It is not a trained diffusion
 model, a pretrained checkpoint, or a paper replication. No model download, GPU selection,
-training run or scientific sweep occurs. Published/native parts of the configured brief remain
-pending; the bridge at the end says precisely what would need to be measured.
-
-These are public guided exercises. Write your own prediction and prior solution exposure
-before opening expected outputs. Expected outputs make this seen practice, not unseen mastery.
+training run or scientific sweep occurs.
 '''
 
 # ! CELL TYPE: markdown
@@ -1171,7 +1167,7 @@ r'''
 r'''
 ## Limits and source connection
 
-Requirement `image.diffusion_saes_difflens` is preserved. This study edition implements SAE
+This study edition implements SAE
 forward equations, normalized objective, decoder gradients, sparsity diagnostics, association
 and feature steering on explicit image-generating activations. Training SAEs on native UNet
 or DiT activations, collecting timestep-conditioned features and validating diffusion bias

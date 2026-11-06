@@ -73,29 +73,6 @@ we will inspect and intervene on actual language-model layers.
 # ! TAGS: []
 
 r'''
-## Historical reference and execution boundary
-
-The displayed outputs and nine figures are **retained historical reference
-results** from the published completed-own-answer GPT-2 alignment study. This
-master migration checked source, notebook-code and figure parity before carrying
-them forward. They are **not a fresh execution** of the generated notebook.
-The unchanged publication receipt is `expected_outputs/learner_execution.json`;
-full migration provenance is in `docs/mastery/migrations/alignment.md` at the
-repository root. Small CPU mathematical tests are separate from the real-model study.
-
-This is guided practice. Expected-output dropdowns, interpretations and reference
-figures expose answers. Before opening them, record a forecast, confidence, causal
-reasoning and whether you have already seen the output. Afterward, record the
-controls, explain the discrepancy and forecast a changed scientific condition.
-No learner answer, observation or confidence is fabricated for you. The final
-prompts are historical and monitored; they do not become untouched TEST here.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Content & Learning Objectives
 
 ### 1️⃣ Find common coordinates
@@ -511,12 +488,8 @@ Predict which spectrum should transfer to them.
 # ! TAGS: []
 
 r'''
-## Forecast before the result — known-correlations
-
 For 500 training and 1000 new paired examples with population canonical correlations [0.95, 0.60, 0.10], forecast the signed held-out spectrum for the paired fit, shuffled-training
 correspondence and independent-view fit. Explain which controls preserve shared latent information.
-
-Write a numerical range or ranking, confidence (0–100%), and causal reason before running or opening the reference output. Record whether you have already seen it.
 '''
 
 # ! CELL TYPE: code
@@ -599,21 +572,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — known-correlations
-
-Record the observed metric and every control, then compare them with your forecast.
-Explain your largest discrepancy and distinguish a failure of the fitted map from
-a failure of the metric to answer the question you intended. State an alternative
-explanation and forecast a changed scientific condition before trying it. Keep
-data roles, output exposure and historical-versus-new execution evidence explicit.
-Use the interpretation below only after writing your own observation.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 <details><summary>Interpreting the signed control</summary>
 
 A shuffled training correspondence can produce negative correlations on new,
@@ -676,12 +634,8 @@ sample space, a stronger condition than needing three intersecting directions.
 # ! TAGS: []
 
 r'''
-## Forecast before the result — noise-overfit
-
 For 24 independent training examples and widths [4, 8, 16, 24, 40, 64] in the first view (second-view width is first width +3), forecast the mean first-three training and new-row
 canonical correlations across all five seeds. Explain the sample-subspace intersection threshold and distinguish it from full centered-row-space spanning.
-
-Write a numerical range or ranking, confidence (0–100%), and causal reason before running or opening the reference output. Record whether you have already seen it.
 '''
 
 # ! CELL TYPE: code
@@ -743,21 +697,6 @@ if MAIN:
 
 r'''
 <img src="media/alignment_noise_overfit.png" width="1000">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — noise-overfit
-
-Record the observed metric and every control, then compare them with your forecast.
-Explain your largest discrepancy and distinguish a failure of the fitted map from
-a failure of the metric to answer the question you intended. State an alternative
-explanation and forecast a changed scientific condition before trying it. Keep
-data roles, output exposure and historical-versus-new execution evidence explicit.
-Use the interpretation below only after writing your own observation.
 '''
 
 # ! CELL TYPE: markdown
@@ -1061,12 +1000,7 @@ it completely. The unedited target and zero-rank map are explicit controls.
 # ! TAGS: []
 
 r'''
-## Forecast before the result — variance-causal-feature
-
-With causal_scale=0.01 and a 99% retained-variance cutoff, forecast the target output probability for full CCA, variance cutoff, zero-rank and actual-donor changes. Explain why
-total explained variance may disagree with preserving the task and predict a changed cutoff before trying it.
-
-Write a numerical range or ranking, confidence (0–100%), and causal reason before running or opening the reference output. Record whether you have already seen it.
+Explain why total explained variance may disagree with preserving the task and predict a changed cutoff before trying it.
 '''
 
 # ! CELL TYPE: code
@@ -1130,21 +1064,6 @@ if MAIN:
 
 r'''
 <img src="media/alignment_variance_causal_failure.png" width="1000">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — variance-causal-feature
-
-Record the observed metric and every control, then compare them with your forecast.
-Explain your largest discrepancy and distinguish a failure of the fitted map from
-a failure of the metric to answer the question you intended. State an alternative
-explanation and forecast a changed scientific condition before trying it. Keep
-data roles, output exposure and historical-versus-new execution evidence explicit.
-Use the interpretation below only after writing your own observation.
 '''
 
 # ! CELL TYPE: markdown
@@ -1721,13 +1640,9 @@ def run_alignment_study(model, tokenizer, protocol, output_directory):
 # ! TAGS: []
 
 r'''
-## Forecast before the result — native-donor-reproduction
-
 Before running the frozen study, forecast mean full-vocabulary KL(native donor || transported) in nats for cca_rank16 at layer inputs 6 → 10 on all 96 final prompts. Forecast its
 relationship to unchanged/no-op, svcca_rank16, procrustes_rank16, ridge_0.1, shuffled_cca_rank16 and all sixteen same-norm random draws. Use the 72 training rows only for fitting,
 48 development rows for frozen selection, and retain all final failures. Explain why even low donor KL need not recover the changed name.
-
-Write a numerical range or ranking, confidence (0–100%), and causal reason before running or opening the reference output. Record whether you have already seen it.
 '''
 
 # ! CELL TYPE: code
@@ -1765,12 +1680,8 @@ separate choices: our CCA input cap is 32, while the transported ranks vary belo
 # ! TAGS: []
 
 r'''
-## Forecast before the result — fixed-coordinate-spectrum
-
 Forecast the signed final correlations of the fixed training CCA, SVCCA and shuffled-CCA axes at 2 → 6, 4 → 8 and 6 → 10. Explain how variance cutoffs and nearly degenerate axes
 affect the spectrum, and why sign reversals must remain visible.
-
-Write a numerical range or ranking, confidence (0–100%), and causal reason before running or opening the reference output. Record whether you have already seen it.
 '''
 
 # ! CELL TYPE: code
@@ -1817,21 +1728,6 @@ if MAIN:
 
 r'''
 <img src="media/alignment_real_correlations.png" width="1000">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — fixed-coordinate-spectrum
-
-Record the observed metric and every control, then compare them with your forecast.
-Explain your largest discrepancy and distinguish a failure of the fitted map from
-a failure of the metric to answer the question you intended. State an alternative
-explanation and forecast a changed scientific condition before trying it. Keep
-data roles, output exposure and historical-versus-new execution evidence explicit.
-Use the interpretation below only after writing your own observation.
 '''
 
 # ! CELL TYPE: markdown
@@ -1943,21 +1839,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — native-donor-reproduction
-
-Record the observed metric and every control, then compare them with your forecast.
-Explain your largest discrepancy and distinguish a failure of the fitted map from
-a failure of the metric to answer the question you intended. State an alternative
-explanation and forecast a changed scientific condition before trying it. Keep
-data roles, output exposure and historical-versus-new execution evidence explicit.
-Use the interpretation below only after writing your own observation.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise 6 — Separate similarity, reproduction and correctness
 
 > ```yaml
@@ -2004,12 +1885,8 @@ count, including the 30 rows containing new names.
 # ! TAGS: []
 
 r'''
-## Forecast before the result — correct-name-versus-donor
-
 Forecast the full-vocabulary changed-recipient top-token rate over all 96 final prompts for CCA, ridge, native donor, unchanged/no-op, shuffled CCA and matched random edits.
 Distinguish this metric from agreement with a donor that can itself be wrong, and from KL reproduction.
-
-Write a numerical range or ranking, confidence (0–100%), and causal reason before running or opening the reference output. Record whether you have already seen it.
 '''
 
 # ! CELL TYPE: code
@@ -2072,21 +1949,6 @@ if MAIN:
 
 r'''
 <img src="media/alignment_real_name_changes.png" width="1000">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — correct-name-versus-donor
-
-Record the observed metric and every control, then compare them with your forecast.
-Explain your largest discrepancy and distinguish a failure of the fitted map from
-a failure of the metric to answer the question you intended. State an alternative
-explanation and forecast a changed scientific condition before trying it. Keep
-data roles, output exposure and historical-versus-new execution evidence explicit.
-Use the interpretation below only after writing your own observation.
 '''
 
 # ! CELL TYPE: markdown
@@ -2180,12 +2042,7 @@ as a descriptive comparison, not a confidence interval or a causal estimate of
 # ! TAGS: []
 
 r'''
-## Forecast before the result — name-distribution-shift
-
-For frozen 6 → 10 maps, forecast mean donor KL separately on the 66 final prompts using training names and the 30 including unseen names. Compare CCA, SVCCA, Procrustes, ridge,
-shuffled CCA and all sixteen norm-matched draws. Explain why these related, unequal cohorts do not justify an independent-samples causal claim.
-
-Write a numerical range or ranking, confidence (0–100%), and causal reason before running or opening the reference output. Record whether you have already seen it.
+Compare CCA, SVCCA, Procrustes, ridge, shuffled CCA and all sixteen norm-matched draws. Explain why these related, unequal cohorts do not justify an independent-samples causal claim.
 '''
 
 # ! CELL TYPE: code
@@ -2245,21 +2102,6 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after the result — name-distribution-shift
-
-Record the observed metric and every control, then compare them with your forecast.
-Explain your largest discrepancy and distinguish a failure of the fitted map from
-a failure of the metric to answer the question you intended. State an alternative
-explanation and forecast a changed scientific condition before trying it. Keep
-data roles, output exposure and historical-versus-new execution evidence explicit.
-Use the interpretation below only after writing your own observation.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Try It Yourself — turn the transport rank and inspect a real distribution
 
 Choose a final row, a layer pair and a rank (zero is allowed). This cell performs
@@ -2280,12 +2122,8 @@ Every run includes a random edit with the same norm as your proposed edit.
 # ! TAGS: []
 
 r'''
-## Forecast before the result — single-row-rank-play
-
 For final row 0, layer inputs 6 → 10 and CCA rank 8, forecast whether the whole-vocabulary winning token changes and how its probability compares with native donor, unchanged and
 same-norm random edit. Forecast rank zero as a changed condition before running it.
-
-Write a numerical range or ranking, confidence (0–100%), and causal reason before running or opening the reference output. Record whether you have already seen it.
 '''
 
 # ! CELL TYPE: code
@@ -2368,21 +2206,6 @@ if MAIN:
 
 r'''
 <img src="media/alignment_real_play.png" width="1000">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — single-row-rank-play
-
-Record the observed metric and every control, then compare them with your forecast.
-Explain your largest discrepancy and distinguish a failure of the fitted map from
-a failure of the metric to answer the question you intended. State an alternative
-explanation and forecast a changed scientific condition before trying it. Keep
-data roles, output exposure and historical-versus-new execution evidence explicit.
-Use the interpretation below only after writing your own observation.
 '''
 
 # ! CELL TYPE: markdown

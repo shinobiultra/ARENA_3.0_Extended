@@ -13,7 +13,7 @@ r'''
 # ! TAGS: []
 
 r'''
-# [9.6] Model Editing with ROME and MEMIT
+# [9.6] Rank-One Model Editing (ROME)
 '''
 
 # ! CELL TYPE: markdown
@@ -33,27 +33,13 @@ Can an exact affine rank-one write change one factual continuation while the con
 nonselective behavior? Preserve this question throughout the lesson: an algebraically exact write
 and a selective knowledge edit require different evidence.
 
-**Historical exposed guided practice.** The complete existing 9.5 course ROME-like lesson follows,
-including every original teaching cell, student/solution difference, saved output and metadata. The
-old 9.5 title is a historical identity; canonical 9.5 now covers monitors. Commit a forecast,
-confidence, causal mechanism and prior exposure before viewing the retained first figure or any
-expected-output/solution dropdown. Saved displays are historical reference material, not newly
-computed observations or unseen assessment.
-
-**Scope gap remains open.** The canonical title includes MEMIT; the retained source
+**Scope.** This lesson implements rank-one editing (ROME); it
 does not implement MEMIT mass editing across layers. It also does not supply
 official ROME protocol parity, Wikipedia covariance, random-prefix contexts, released
 value-objective parity, GPT-2 small/medium coverage, or unique factual storage. The small Pythia
-counterfactual preserves negative localization evidence. No new method or model experiment is
-introduced here.
+counterfactual gives a negative localization result.
 
-**Runtime and custody.** This migration runs no taught method, model, training, plotting, cache/data
-access or GPU work. The preserved execution path runs on CPU and loads a pinned model and includes
-explicit writes to legacy expected outputs; do not execute it to inspect the retained results.
-Canonical media are byte-exact copies. All 19 output-bearing solution cells and three embedded PNG
-records remain intact. Human learner walkthrough and scientific acceptance remain open.
-
-
+**Runtime.** The lesson runs on CPU and loads a pinned model.
 '''
 
 # ! CELL TYPE: markdown
@@ -77,8 +63,7 @@ r'''
 > - Separate held-out rewrite, base-qualified factual retention and leakage strata.
 >
 > - Compare norm-matched layers, wrong-position, shuffled-city and random rank-one controls.
-> - Inspect the historical signature, forecast scoring-only play and retain failed explanations.
-
+> - Inspect the signature, forecast scoring-only play and retain failed explanations.
 '''
 
 # ! CELL TYPE: code
@@ -191,23 +176,9 @@ r'''
 # ! TAGS: []
 
 r'''
-## Forecast before inspection — ROME-OPEN
-
-Before viewing the first retained figure or cold-open table, what observations would distinguish an
+Before viewing the first figure or cold-open table, what observations would distinguish an
 exact affine write from a selective knowledge edit? Predict a contrast between the fixed edit and a
-norm-matched wrong-position or random-rank-one control. Do not use the original opening caption as
-an unseen prediction.
-
-Forecast / signed contrast / ordering: ______
-Confidence (0–100%): ______
-Causal mechanism and contradicting control: ______
-Metric denominator / condition: ______
-Prior exposure (unseen / seen / unknown): ______
-
-Keep observations blank until inspection. These are public historical examples; source preparation
-computes no answer. Opening a retained expected-output, help interpretation or worked solution makes
-subsequent practice exposed.
-
+norm-matched wrong-position or random-rank-one control.
 '''
 
 # ! CELL TYPE: markdown
@@ -215,7 +186,7 @@ subsequent practice exposed.
 # ! TAGS: []
 
 r'''
-## Historical 9.5: Course ROME-like Model Editing
+## Course ROME-like Model Editing
 
 > **Falsifiable claim:** On one pinned 70M decoder and one harmless Louvre counterfactual,
 > a course ROME-like covariance-aware rank-one edit can be written exactly into a real affine
@@ -372,21 +343,8 @@ r'''
 # ! TAGS: []
 
 r'''
-## Forecast before inspection — ROME-E1
-
 For a nonzero key, which directions in the update can affect the requested output? Predict what
 happens to write error and matrix rank, and explain why a zero key needs rejection.
-
-Forecast / signed contrast / ordering: ______
-Confidence (0–100%): ______
-Causal mechanism and contradicting control: ______
-Metric denominator / condition: ______
-Prior exposure (unseen / seen / unknown): ______
-
-Keep observations blank until inspection. These are public historical examples; source preparation
-computes no answer. Opening a retained expected-output, help interpretation or worked solution makes
-subsequent practice exposed.
-
 '''
 
 # ! CELL TYPE: markdown
@@ -505,39 +463,8 @@ def minimum_norm_rank_one_update(
 # ! TAGS: []
 
 r'''
-## Reflect after inspection — ROME-E1
-
-Retained output/source identity and condition inspected: ______
-Observed contrast and denominator: ______
-Did the control contradict your mechanism? ______
-What would distinguish a failed implementation from failed localization/selectivity? ______
-Which uncertainty remains, and what changed-case prediction would you commit next? ______
-
-Historical output reading is guided practice. A new model run would be a separate experiment; leave
-missing observations unresolved.
-
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Forecast before inspection — ROME-E2
-
 Predict whether Woodbury and dense covariance solves agree when ridge is positive. What mathematical
 property makes the small solve valid, and what changes as ridge approaches zero?
-
-Forecast / signed contrast / ordering: ______
-Confidence (0–100%): ______
-Causal mechanism and contradicting control: ______
-Metric denominator / condition: ______
-Prior exposure (unseen / seen / unknown): ______
-
-Keep observations blank until inspection. These are public historical examples; source preparation
-computes no answer. Opening a retained expected-output, help interpretation or worked solution makes
-subsequent practice exposed.
-
 '''
 
 # ! CELL TYPE: markdown
@@ -655,39 +582,8 @@ def covariance_preconditioned_key(
 # ! TAGS: []
 
 r'''
-## Reflect after inspection — ROME-E2
-
-Retained output/source identity and condition inspected: ______
-Observed contrast and denominator: ______
-Did the control contradict your mechanism? ______
-What would distinguish a failed implementation from failed localization/selectivity? ______
-Which uncertainty remains, and what changed-case prediction would you commit next? ______
-
-Historical output reading is guided practice. A new model run would be a separate experiment; leave
-missing observations unresolved.
-
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Forecast before inspection — ROME-E3
-
 Predict the sign of the output residual if the complete affine bias is omitted. Would an exact
 linear write still hit the actual biased module output?
-
-Forecast / signed contrast / ordering: ______
-Confidence (0–100%): ______
-Causal mechanism and contradicting control: ______
-Metric denominator / condition: ______
-Prior exposure (unseen / seen / unknown): ______
-
-Keep observations blank until inspection. These are public historical examples; source preparation
-computes no answer. Opening a retained expected-output, help interpretation or worked solution makes
-subsequent practice exposed.
-
 '''
 
 # ! CELL TYPE: markdown
@@ -871,32 +767,13 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-## Historical affine-write control figure
+## Affine-write control figure
 
-This byte-exact source asset shows the existing toy rank-one oracle. It checks the algebraic write
+This figure shows the existing toy rank-one oracle. It checks the algebraic write
 in the exact constructed geometry; it does not establish real-model selectivity or a privileged
-factual layer. Commit the E3 forecast before inspecting it.
+factual layer.
 
-<img src="../../exercises/part6_rome_memit/media/rome_rank_one_toy_oracle.png" alt="Historical rank-one toy oracle" width="900">
-
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after inspection — ROME-E3
-
-Retained output/source identity and condition inspected: ______
-Observed contrast and denominator: ______
-Did the control contradict your mechanism? ______
-What would distinguish a failed implementation from failed localization/selectivity? ______
-Which uncertainty remains, and what changed-case prediction would you commit next? ______
-
-Historical output reading is guided practice. A new model run would be a separate experiment; leave
-missing observations unresolved.
-
+<img src="../../exercises/part6_rome_memit/media/rome_rank_one_toy_oracle.png" alt="Rank-one toy oracle" width="900">
 '''
 
 # ! CELL TYPE: markdown
@@ -912,21 +789,8 @@ r'''
 # ! TAGS: []
 
 r'''
-## Forecast before inspection — ROME-E4
-
 Predict which tokens overlap a multi-token subject when token spans only partially cross either
 subject boundary. Explain why a fixed global token index is a poor control.
-
-Forecast / signed contrast / ordering: ______
-Confidence (0–100%): ______
-Causal mechanism and contradicting control: ______
-Metric denominator / condition: ______
-Prior exposure (unseen / seen / unknown): ______
-
-Keep observations blank until inspection. These are public historical examples; source preparation
-computes no answer. Opening a retained expected-output, help interpretation or worked solution makes
-subsequent practice exposed.
-
 '''
 
 # ! CELL TYPE: markdown
@@ -1071,39 +935,8 @@ def locate_subject_tokens(tokenizer: Any, prompt: str, subject: str) -> list[int
 # ! TAGS: []
 
 r'''
-## Reflect after inspection — ROME-E4
-
-Retained output/source identity and condition inspected: ______
-Observed contrast and denominator: ______
-Did the control contradict your mechanism? ______
-What would distinguish a failed implementation from failed localization/selectivity? ______
-Which uncertainty remains, and what changed-case prediction would you commit next? ______
-
-Historical output reading is guided practice. A new model run would be a separate experiment; leave
-missing observations unresolved.
-
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Forecast before inspection — ROME-E5
-
 Can a target win its first-token pairwise comparison while its full continuation remains unlikely or
 incorrect? Forecast the difference between first-token rank and complete-target greedy match.
-
-Forecast / signed contrast / ordering: ______
-Confidence (0–100%): ______
-Causal mechanism and contradicting control: ______
-Metric denominator / condition: ______
-Prior exposure (unseen / seen / unknown): ______
-
-Keep observations blank until inspection. These are public historical examples; source preparation
-computes no answer. Opening a retained expected-output, help interpretation or worked solution makes
-subsequent practice exposed.
-
 '''
 
 # ! CELL TYPE: markdown
@@ -1386,24 +1219,6 @@ def continuation_score_table(
 # ! TAGS: []
 
 r'''
-## Reflect after inspection — ROME-E5
-
-Retained output/source identity and condition inspected: ______
-Observed contrast and denominator: ______
-Did the control contradict your mechanism? ______
-What would distinguish a failed implementation from failed localization/selectivity? ______
-Which uncertainty remains, and what changed-case prediction would you commit next? ______
-
-Historical output reading is guided practice. A new model run would be a separate experiment; leave
-missing observations unresolved.
-
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## 3. Activation patching under independent corruptions
 '''
 
@@ -1412,21 +1227,8 @@ r'''
 # ! TAGS: []
 
 r'''
-## Forecast before inspection — ROME-E6
-
 What shape should every captured MLP output have? Predict how a leaked hook after an exception would
 contaminate a later trace, and name the cleanup control.
-
-Forecast / signed contrast / ordering: ______
-Confidence (0–100%): ______
-Causal mechanism and contradicting control: ______
-Metric denominator / condition: ______
-Prior exposure (unseen / seen / unknown): ______
-
-Keep observations blank until inspection. These are public historical examples; source preparation
-computes no answer. Opening a retained expected-output, help interpretation or worked solution makes
-subsequent practice exposed.
-
 '''
 
 # ! CELL TYPE: markdown
@@ -1548,40 +1350,9 @@ def capture_mlp_outputs(model: Any, tokenizer: Any, prompt: str) -> list[Tensor]
 # ! TAGS: []
 
 r'''
-## Reflect after inspection — ROME-E6
-
-Retained output/source identity and condition inspected: ______
-Observed contrast and denominator: ______
-Did the control contradict your mechanism? ______
-What would distinguish a failed implementation from failed localization/selectivity? ______
-Which uncertainty remains, and what changed-case prediction would you commit next? ______
-
-Historical output reading is guided practice. A new model run would be a separate experiment; leave
-missing observations unresolved.
-
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Forecast before inspection — ROME-E7
-
 Will a winning activation-patching layer remain identical across independent directions? Commit a
 mechanism and a possible falsifying layer-by-position pattern before inspecting the nine-condition
 maps.
-
-Forecast / signed contrast / ordering: ______
-Confidence (0–100%): ______
-Causal mechanism and contradicting control: ______
-Metric denominator / condition: ______
-Prior exposure (unseen / seen / unknown): ______
-
-Keep observations blank until inspection. These are public historical examples; source preparation
-computes no answer. Opening a retained expected-output, help interpretation or worked solution makes
-subsequent practice exposed.
-
 '''
 
 # ! CELL TYPE: markdown
@@ -2091,24 +1862,6 @@ def activation_patching_sweep(
 # ! TAGS: []
 
 r'''
-## Reflect after inspection — ROME-E7
-
-Retained output/source identity and condition inspected: ______
-Observed contrast and denominator: ______
-Did the control contradict your mechanism? ______
-What would distinguish a failed implementation from failed localization/selectivity? ______
-Which uncertainty remains, and what changed-case prediction would you commit next? ______
-
-Historical output reading is guided practice. A new model run would be a separate experiment; leave
-missing observations unresolved.
-
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## 4. Keys, values, and the applied weight edit
 '''
 
@@ -2117,21 +1870,8 @@ r'''
 # ! TAGS: []
 
 r'''
-## Forecast before inspection — ROME-E8
-
 Predict the difference between a post-activation key and a complete affine output. How would
 capturing only an output projection term bias the later write residual?
-
-Forecast / signed contrast / ordering: ______
-Confidence (0–100%): ______
-Causal mechanism and contradicting control: ______
-Metric denominator / condition: ______
-Prior exposure (unseen / seen / unknown): ______
-
-Keep observations blank until inspection. These are public historical examples; source preparation
-computes no answer. Opening a retained expected-output, help interpretation or worked solution makes
-subsequent practice exposed.
-
 '''
 
 # ! CELL TYPE: markdown
@@ -2313,39 +2053,8 @@ def extract_mlp_keys_and_values(
 # ! TAGS: []
 
 r'''
-## Reflect after inspection — ROME-E8
-
-Retained output/source identity and condition inspected: ______
-Observed contrast and denominator: ______
-Did the control contradict your mechanism? ______
-What would distinguish a failed implementation from failed localization/selectivity? ______
-Which uncertainty remains, and what changed-case prediction would you commit next? ______
-
-Historical output reading is guided practice. A new model run would be a separate experiment; leave
-missing observations unresolved.
-
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Forecast before inspection — ROME-E9
-
 Predict the relationship between target NLL and preservation KL as the value delta is optimized. Can
 improving target NLL alone establish selective factual editing?
-
-Forecast / signed contrast / ordering: ______
-Confidence (0–100%): ______
-Causal mechanism and contradicting control: ______
-Metric denominator / condition: ______
-Prior exposure (unseen / seen / unknown): ______
-
-Keep observations blank until inspection. These are public historical examples; source preparation
-computes no answer. Opening a retained expected-output, help interpretation or worked solution makes
-subsequent practice exposed.
-
 '''
 
 # ! CELL TYPE: markdown
@@ -2690,39 +2399,8 @@ def optimize_value_delta(
 # ! TAGS: []
 
 r'''
-## Reflect after inspection — ROME-E9
-
-Retained output/source identity and condition inspected: ______
-Observed contrast and denominator: ______
-Did the control contradict your mechanism? ______
-What would distinguish a failed implementation from failed localization/selectivity? ______
-Which uncertainty remains, and what changed-case prediction would you commit next? ______
-
-Historical output reading is guided practice. A new model run would be a separate experiment; leave
-missing observations unresolved.
-
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Forecast before inspection — ROME-E10
-
 Predict what an exception inside the temporary edit should leave behind. What should remain equal
 across five random rank-one controls, and what must differ?
-
-Forecast / signed contrast / ordering: ______
-Confidence (0–100%): ______
-Causal mechanism and contradicting control: ______
-Metric denominator / condition: ______
-Prior exposure (unseen / seen / unknown): ______
-
-Keep observations blank until inspection. These are public historical examples; source preparation
-computes no answer. Opening a retained expected-output, help interpretation or worked solution makes
-subsequent practice exposed.
-
 '''
 
 # ! CELL TYPE: markdown
@@ -2888,24 +2566,6 @@ def temporary_mlp_weight_edit(model: Any, layer: int, delta_row_weight: Tensor) 
 # ! TAGS: []
 
 r'''
-## Reflect after inspection — ROME-E10
-
-Retained output/source identity and condition inspected: ______
-Observed contrast and denominator: ______
-Did the control contradict your mechanism? ______
-What would distinguish a failed implementation from failed localization/selectivity? ______
-Which uncertainty remains, and what changed-case prediction would you commit next? ______
-
-Historical output reading is guided practice. A new model run would be a separate experiment; leave
-missing observations unresolved.
-
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## 5. Labeled evaluation and experiment composition
 '''
 
@@ -2914,22 +2574,9 @@ r'''
 # ! TAGS: []
 
 r'''
-## Forecast before inspection — ROME-E11
-
 If Rome outranks Paris on every row but is top-1 on only some rows, what changes in the efficacy
 claim? Predict how including base-incorrect facts or legitimate Rome targets would distort the
 retention/leakage denominators.
-
-Forecast / signed contrast / ordering: ______
-Confidence (0–100%): ______
-Causal mechanism and contradicting control: ______
-Metric denominator / condition: ______
-Prior exposure (unseen / seen / unknown): ______
-
-Keep observations blank until inspection. These are public historical examples; source preparation
-computes no answer. Opening a retained expected-output, help interpretation or worked solution makes
-subsequent practice exposed.
-
 '''
 
 # ! CELL TYPE: markdown
@@ -3281,39 +2928,8 @@ def summarize_edit_metrics(
 # ! TAGS: []
 
 r'''
-## Reflect after inspection — ROME-E11
-
-Retained output/source identity and condition inspected: ______
-Observed contrast and denominator: ______
-Did the control contradict your mechanism? ______
-What would distinguish a failed implementation from failed localization/selectivity? ______
-Which uncertainty remains, and what changed-case prediction would you commit next? ______
-
-Historical output reading is guided practice. A new model run would be a separate experiment; leave
-missing observations unresolved.
-
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Forecast before inspection — ROME-E12
-
 For a zero edit, forecast qualified retention, unrelated KL and perplexity ratio. Which disjoint
 inputs may estimate covariance, and which may enter factual locality?
-
-Forecast / signed contrast / ordering: ______
-Confidence (0–100%): ______
-Causal mechanism and contradicting control: ______
-Metric denominator / condition: ______
-Prior exposure (unseen / seen / unknown): ______
-
-Keep observations blank until inspection. These are public historical examples; source preparation
-computes no answer. Opening a retained expected-output, help interpretation or worked solution makes
-subsequent practice exposed.
-
 '''
 
 # ! CELL TYPE: markdown
@@ -4022,39 +3638,8 @@ def evaluate_weight_edit(
 # ! TAGS: []
 
 r'''
-## Reflect after inspection — ROME-E12
-
-Retained output/source identity and condition inspected: ______
-Observed contrast and denominator: ______
-Did the control contradict your mechanism? ______
-What would distinguish a failed implementation from failed localization/selectivity? ______
-Which uncertainty remains, and what changed-case prediction would you commit next? ______
-
-Historical output reading is guided practice. A new model run would be a separate experiment; leave
-missing observations unresolved.
-
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Forecast before inspection — ROME-E13
-
 Does a numerically exact affine write require one privileged layer? Predict the ordering among
 selected-layer, wrong-position, shuffled-city and random controls under matched update norms.
-
-Forecast / signed contrast / ordering: ______
-Confidence (0–100%): ______
-Causal mechanism and contradicting control: ______
-Metric denominator / condition: ______
-Prior exposure (unseen / seen / unknown): ______
-
-Keep observations blank until inspection. These are public historical examples; source preparation
-computes no answer. Opening a retained expected-output, help interpretation or worked solution makes
-subsequent practice exposed.
-
 '''
 
 # ! CELL TYPE: markdown
@@ -4745,40 +4330,9 @@ def run_course_rome_like_experiment(
 # ! TAGS: []
 
 r'''
-## Reflect after inspection — ROME-E13
-
-Retained output/source identity and condition inspected: ______
-Observed contrast and denominator: ______
-Did the control contradict your mechanism? ______
-What would distinguish a failed implementation from failed localization/selectivity? ______
-Which uncertainty remains, and what changed-case prediction would you commit next? ______
-
-Historical output reading is guided practice. A new model run would be a separate experiment; leave
-missing observations unresolved.
-
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Forecast before inspection — ROME-SIGNATURE
-
-Before viewing the retained multi-panel signature, predict whether the fixed edit uniquely beats
+Before viewing the multi-panel signature, predict whether the fixed edit uniquely beats
 wrong-position and other norm-matched layers. State separate expectations for pairwise preference,
 target top-1, qualified retention, leakage and preservation KL.
-
-Forecast / signed contrast / ordering: ______
-Confidence (0–100%): ______
-Causal mechanism and contradicting control: ______
-Metric denominator / condition: ______
-Prior exposure (unseen / seen / unknown): ______
-
-Keep observations blank until inspection. These are public historical examples; source preparation
-computes no answer. Opening a retained expected-output, help interpretation or worked solution makes
-subsequent practice exposed.
-
 '''
 
 # ! CELL TYPE: markdown
@@ -4945,40 +4499,9 @@ r'''
 # ! TAGS: []
 
 r'''
-## Reflect after inspection — ROME-SIGNATURE
-
-Retained output/source identity and condition inspected: ______
-Observed contrast and denominator: ______
-Did the control contradict your mechanism? ______
-What would distinguish a failed implementation from failed localization/selectivity? ______
-Which uncertainty remains, and what changed-case prediction would you commit next? ______
-
-Historical output reading is guided practice. A new model run would be a separate experiment; leave
-missing observations unresolved.
-
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Forecast before inspection — ROME-PLAY
-
 Before viewing the scoring-only play output, predict the direction of likelihood change as the fixed
 Louvre-to-Rome matrix is scaled. If target=" New York" is passed, does that train a new edit or only
 change the evaluator? Keep those two claims separate.
-
-Forecast / signed contrast / ordering: ______
-Confidence (0–100%): ______
-Causal mechanism and contradicting control: ______
-Metric denominator / condition: ______
-Prior exposure (unseen / seen / unknown): ______
-
-Keep observations blank until inspection. These are public historical examples; source preparation
-computes no answer. Opening a retained expected-output, help interpretation or worked solution makes
-subsequent practice exposed.
-
 '''
 
 # ! CELL TYPE: markdown
@@ -5041,24 +4564,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-## Reflect after inspection — ROME-PLAY
-
-Retained output/source identity and condition inspected: ______
-Observed contrast and denominator: ______
-Did the control contradict your mechanism? ______
-What would distinguish a failed implementation from failed localization/selectivity? ______
-Which uncertainty remains, and what changed-case prediction would you commit next? ______
-
-Historical output reading is guided practice. A new model run would be a separate experiment; leave
-missing observations unresolved.
-
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Further research / anomaly hunting
 
 - Add more harmless counterfactuals and report a distribution, not another anecdote.
@@ -5109,17 +4614,11 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-## Canonical scope reflection
+## Scope
 
-The historical cells above retain their original 9.5 identity and citations. Their signature exposes
-negative localization and collateral behavior in a small Pythia study. The retained source
+The signature exposes negative localization and collateral behavior in a small Pythia study. The source
 does not implement MEMIT mass editing; no official ROME, GPT-2, repeated-edit safety or durable
 knowledge-change claim follows. The playground scores the same fixed matrix and does not train a new
 multi-token edit.
-
-Your final causal explanation: ______
-A result that would contradict it: ______
-Your prior exposure and the limits it places on mastery evidence: ______
-
 '''
 

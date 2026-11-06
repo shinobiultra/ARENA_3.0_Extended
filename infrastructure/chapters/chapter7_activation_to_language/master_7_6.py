@@ -37,9 +37,7 @@ This is the experimental structure of a MAIA/OpenMAIA-style agent, implemented l
 
 Prerequisites: [7.2] explanation/simulation, [6.3] feature dashboards and causal checks, and basic Python dictionaries. An articulate explanation is a hypothesis, not evidence. Our examples are public analytic fixtures; “held out” below means withheld from the controller's observation history, not unknown to a learner reading the complete notebook.
 
-**Study edition:** the default examples are deterministic CPU teaching fixtures. No pretrained model is loaded, no network is used, and no trained-model benchmark or native qualification is claimed. Save a personal copy. Public expected answers make this guided, exposed practice.
-
-**Configured requirements:** `activation.maia`, `activation.openmaia`. The final bridge ledger distinguishes the implemented core from pending native evidence.
+**Study edition:** the default examples are deterministic CPU teaching fixtures. No pretrained model is loaded, no network is used, and no trained-model benchmark or native qualification is claimed. Save a personal copy.
 '''
 
 # ! CELL TYPE: markdown
@@ -1323,12 +1321,12 @@ The changed-target loop stops after one probe with `identified red`. The predecl
 # ! TAGS: []
 
 r'''
-## Limitations and native bridge ledger
+## Limitations
 
-| Requirement | Taught here | Pending native component |
+| Topic | Taught here | Not covered here |
 | --- | --- | --- |
-| `activation.maia` | Actual image probes, explicit hypothesis/simulator, tool trace, disagreement policy, bounded target calls, one-shot/random controls and causal edits | Trained natural-image feature/neuron, free-form multimodal hypothesis generation, broad held-out simulator/human evaluation |
-| `activation.openmaia` | Open local tool boundary and a JSON backend-action adapter; caller controls schema, budget and observation flow | A pinned local instruction/multimodal backend, installed tokenizer/chat template, model/tool revisions, resource qualification and native behavior |
+| MAIA | Actual image probes, explicit hypothesis/simulator, tool trace, disagreement policy, bounded target calls, one-shot/random controls and causal edits | Trained natural-image feature/neuron, free-form multimodal hypothesis generation, broad held-out simulator/human evaluation |
+| OpenMAIA | Open local tool boundary and a JSON backend-action adapter; caller controls schema, budget and observation flow | A pinned local instruction/multimodal backend, installed tokenizer/chat template, model/tool revisions, resource qualification and native behavior |
 
 The source OpenMAIA study uses much larger multimodal backbones than this finite controller. Do not call a small text-only stand-in a reproduction of its results. An instruction backend would receive an explicit observation summary and return one `tool` action in the schema above; the caller validates it, executes at most one approved local tool and appends the actual observation. No fallback executes arbitrary text. An actual host still needs principal/consent/privacy/approval gates and process isolation.
 

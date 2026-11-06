@@ -13,7 +13,7 @@ r'''
 # ! TAGS: []
 
 r'''
-# [12.2] CLIP Features, SAEs and Typographic Attacks
+# [12.2] Typographic Attacks and SAE Features in a Toy Two-Tower Model
 '''
 
 # ! CELL TYPE: markdown
@@ -75,7 +75,7 @@ r'''
 r'''
 ## Setup code
 
-This study edition uses NumPy, Matplotlib and Pillow already installed in the course environment. All arrays are CPU float64, all examples are deterministic, and no model or network access occurs. Work in the full local checkout. Ordinary mathematical fixtures are guided practice, with no untouched evaluation split implied.
+This study edition uses NumPy, Matplotlib and Pillow already installed in the course environment. All arrays are CPU float64, all examples are deterministic, and no model or network access occurs.
 '''
 
 # ! CELL TYPE: code
@@ -1022,7 +1022,7 @@ The immediate independent fixture prints `All tests in test_tradeoff_curve passe
 # ! TAGS: []
 
 r'''
-Before running the panel, predict whether removing one selected decoder direction can improve the misleading-label cases **without** hurting the text-only cases. Record confidence. Then predict whether the direction with smallest label correlation should work as well. You have already inspected the gallery, so this is guided practice.
+Before running the panel, predict whether removing one selected decoder direction can improve the misleading-label cases **without** hurting the text-only cases. Then predict whether the direction with smallest label correlation should work as well. You have already inspected the gallery, so this is guided practice.
 '''
 
 # ! CELL TYPE: code
@@ -1088,8 +1088,6 @@ r'''
 ## Limitations
 
 The organism’s template reader, palette and fixed mixing are specified, not learned CLIP/SigLIP vision towers. The SAE fits twelve monitored examples and has no independent concept or causal benchmark. Projection removal is not a surgical deletion of one real neuron/head. Clean object accuracy alone would hide damage to legitimate OCR. Native CLIP/SigLIP activation collection, real SAE training, exact image preprocessing/checkpoint identity and head/feature mitigation remain pending. The intervention methods and tests are the transportable part.
-
-The configured requirement IDs remain visible: `vlm.clip_siglip_saes`, `vlm.typographic_attack_mechanisms`. Teaching implementations and CPU fixtures do not promote requirement status, establish a native model result, or confer direct learner acceptance.
 '''
 
 # ! CELL TYPE: markdown
@@ -1105,7 +1103,7 @@ r'''
 # ! TAGS: []
 
 r'''
-Before changing the recipe, write one prediction about the sign and size of a control difference. After running it, explain a mismatch. A public play outcome is exposed guided practice; changing a seed does not make it an unseen transfer test.
+Before changing the recipe, write one prediction about the sign and size of a control difference. After running it, explain a mismatch.
 
 ## Further reading
 

@@ -69,7 +69,7 @@ A sequence has six binary tokens. The downstream question is always: **what was 
 
 Before running that expensive comparison, we need implementations and controls that cannot be fooled by units, a changed feature basis, mismatched example order or an ever-larger probe. You will build the core causal attention and selective recurrence calculations, the two different objective reductions, and the checkpoint metrics. Then you will inspect fixed **constructed representation checkpoints** of the same task. Their coordinate is a chosen signal amplitude; it is not measured training time.
 
-Requirement `training.cross_architecture_dynamics` calls for training small AR transformer, Mamba, masked-diffusion LM and JEPA models on a common suite. That full four-architecture experiment is pending. The study edition supplies runnable metric and objective tooling without mislabeling a diagonal recurrence as native Mamba, a masked CE slice as a full diffusion ELBO, or latent MSE as a full JEPA training recipe.
+A full study would call for training small AR transformer, Mamba, masked-diffusion LM and JEPA models on a common suite. That full four-architecture experiment is pending. The study edition supplies runnable metric and objective tooling without mislabeling a diagonal recurrence as native Mamba, a masked CE slice as a full diffusion ELBO, or latent MSE as a full JEPA training recipe.
 
 Prerequisites: attention, recurrence, SVD, least squares and [11.1] representation geometry. Allow 100–140 minutes. All default examples are deterministic CPU arrays with no downloads.
 '''
@@ -113,7 +113,7 @@ r'''
 r'''
 ## Setup code
 
-Use the repository environment. This study edition needs only NumPy and Matplotlib, runs on CPU, and downloads nothing. The default fixtures are public guided practice; write your prediction before opening the expected outputs.
+Use the repository environment. This study edition needs only NumPy and Matplotlib, runs on CPU, and downloads nothing.
 '''
 
 # ! CELL TYPE: code
@@ -840,8 +840,6 @@ Keep the scoring tie rule fixed across architectures and checkpoints.
 # ! TAGS: []
 
 r'''
-### Forecast before running
-
 If we rotate every feature vector by the same orthogonal matrix, will CKA or effective rank change? If we permute example rows at only one checkpoint, what breaks? Will a small-amplitude answer feature reduce probe accuracy even when the feature is mathematically present? Record values or directions before inspecting the output.
 '''
 

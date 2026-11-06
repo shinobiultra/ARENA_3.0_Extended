@@ -84,10 +84,8 @@ autograd. Section [8.1] covers noising vs denoising and patching metrics in more
 
 r'''
 **Runtime and device.** The setup runs on CPU when neither MPS nor CUDA is available. An accelerator is recommended for the full GPT-2 Small lesson: exact head/edge interventions,
-backward passes and integration-path sweeps repeat model computation. The saved plots are historical reference outputs; this prose update does not establish a full CPU walltime or
-minimum accelerator memory. Inspect the existing batch sizes and sweep lengths before running, and record any reductions as a changed experiment rather than comparing them silently
+backward passes and integration-path sweeps repeat model computation. The saved plots are reference outputs. Inspect the existing batch sizes and sweep lengths before running, and record any reductions as a changed experiment rather than comparing them silently
 with the reference.
-
 '''
 
 # ! CELL TYPE: markdown

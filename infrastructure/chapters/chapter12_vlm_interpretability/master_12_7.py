@@ -75,7 +75,7 @@ r'''
 r'''
 ## Setup code
 
-This study edition uses NumPy, Matplotlib and Pillow already installed in the course environment. All arrays are CPU float64, all examples are deterministic, and no model or network access occurs. Work in the full local checkout. Ordinary mathematical fixtures are guided practice, with no untouched evaluation split implied.
+This study edition uses NumPy, Matplotlib and Pillow already installed in the course environment. All arrays are CPU float64, all examples are deterministic, and no model or network access occurs.
 '''
 
 # ! CELL TYPE: code
@@ -1134,8 +1134,6 @@ r'''
 ## Limitations
 
 RGB means give appearance correspondence, not learned DINO features or semantic object understanding. Constant part colours make exact point matching ambiguous. The PCA task has three input coordinates, so its three-component view loses no information; this is a basis/geometry exercise, not dimensionality-reduction evidence. The norm artifact is injected. The teacher/student objective omits networks, optimisation, momentum updates, crops and DINOv2’s complete objectives. The prompt decoder is a cosine affinity rule, not SAM. Native pretrained-model patch features, learned register comparisons, mask-decoder patching and natural-image results remain pending.
-
-The configured requirement IDs remain visible: `vlm.dino_dense_features`, `vlm.sam_segmentation_features`. Teaching implementations and CPU fixtures do not promote requirement status, establish a native model result, or confer direct learner acceptance.
 '''
 
 # ! CELL TYPE: markdown
@@ -1151,7 +1149,7 @@ r'''
 # ! TAGS: []
 
 r'''
-Before changing the recipe, write one prediction about the sign and size of a control difference. After running it, explain a mismatch. A public play outcome is exposed guided practice; changing a seed does not make it an unseen transfer test.
+Before changing the recipe, write one prediction about the sign and size of a control difference. After running it, explain a mismatch.
 
 ## Further reading
 

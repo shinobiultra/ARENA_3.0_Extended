@@ -55,14 +55,7 @@ r'''
 # ! TAGS: []
 
 r'''
-> **Historical reference evidence:** the 17 original solution code cells retain their methods, runtime statements, outputs, counts and widget state, with declared output-path and
-> lazy release-import routing only. This full canonical notebook is not freshly executed. Exactly six new check/play cells completed in a fresh one-thread CPU subset on 2026-10-16,
-> with genuine outputs/counts and a separate receipt. All 17 prior complete code-cell objects remain unchanged. The pinned 130M and CUDA records remain historical; no model study,
-> training, checkpoint download or GPU run is part of this migration.
-
-Record confidence, causal reasoning and seen/unknown reference exposure before inspecting results. This is guided practice and earns no unseen mastery score. The exact
-WRITE/HOLD/READ/ERASE mechanism is an analytic organism, not a learned behavior claim. The original pre-canonical notebooks/module/tests/page are archived exactly; the old release
-module is also preserved byte-for-byte as `historical_release.py`. Historical report input hashes refer to that original snapshot, not these generated current files.
+The exact WRITE/HOLD/READ/ERASE mechanism is an analytic organism, not a learned behavior claim.
 '''
 
 # ! CELL TYPE: markdown
@@ -80,16 +73,9 @@ behavior, and greedy tokens.
 
 <img src="media/mamba_from_scratch_signature.png" width="980">
 
-## Section Metadata
+## Setup
 
-| Field | Value |
-| --- | --- |
-| `EXERCISE_ID` | `5_3_mamba_from_scratch` |
-| `GT_TIER` | `GT-1` |
-| `DIFFICULTY` | `4` |
-| `IMPORTANCE` | `5` |
-| `EXPECTED_RUNTIME` | `about 3 minutes CPU including cached Mamba-130M parity` |
-| `REQUIRES_GPU` | `True` for release evidence; this notebook executes its complete scientific path on CPU. |
+This lesson runs on CPU and takes about 3 minutes, including the cached Mamba-130M parity check. A CUDA GPU is needed only for the release verification entry points.
 '''
 
 # ! CELL TYPE: markdown
@@ -121,11 +107,11 @@ r'''
 
 > ##### Learning Objectives
 >
-> - Interpret strict historical checkpoint parity and exact memory/attention/convolution/intervention controls.
+> - Interpret strict checkpoint parity and exact memory/attention/convolution/intervention controls.
 
 ### ☆ Bonus
 
-Investigate rounding and altered memory conditions without relabeling historical evidence.
+Investigate rounding and altered memory conditions.
 '''
 
 # ! CELL TYPE: code
@@ -347,7 +333,7 @@ The transition is `A=-exp(A_log)`. Integrate the scalar ODE over one constant-in
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 def stable_continuous_A(A_log: t.Tensor) -> t.Tensor:
@@ -378,11 +364,7 @@ def discretize_scalar_ssm_exact(
 # ! TAGS: []
 
 r'''
-### Forecast — Stable continuous dynamics
-
 For A=-2, B=3 and delta=.5, forecast the exact transition/input coefficients, their signs and the decay bound.
-
-Record confidence, causal reasoning and exposure before reading the saved results.
 '''
 
 # ! CELL TYPE: code
@@ -437,18 +419,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect — Stable continuous dynamics
-
-Compare both coefficients, explain the ZOH integral and predict a smaller delta. Keep the simplified selective input update distinct from exact ZOH.
-
-Record observed controls, discrepancy, explanation and a prediction for the changed scientific condition. Keep exposure explicit.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise 2 - write the sequential affine oracle
 
 > ```yaml
@@ -474,7 +444,7 @@ Sequence is axis 1. Initialize with `b[:, 0]`'s shape, update once per position,
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 def sequential_affine_scan(
@@ -502,11 +472,7 @@ def sequential_affine_scan(
 # ! TAGS: []
 
 r'''
-### Forecast — Chronological states
-
 Forecast all states for a=[.5,.25,1], b=[1,-1,3], initial state2.
-
-Record confidence, causal reasoning and exposure before reading the saved results.
 '''
 
 # ! CELL TYPE: code
@@ -550,18 +516,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect — Chronological states
-
-Explain any off-by-one difference and predict the same writes from zero initial state.
-
-Record observed controls, discrepancy, explanation and a prediction for the changed scientific condition. Keep exposure explicit.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise 3 - parallelize the recurrence with associative composition
 
 > ```yaml
@@ -590,7 +544,7 @@ Clone the whole prefix pair before each offset. The right transform acts after t
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 def compose_affine_updates(
@@ -638,11 +592,7 @@ def parallel_affine_scan(
 # ! TAGS: []
 
 r'''
-### Forecast — Parallel composition
-
 Forecast whether reversing affine composition preserves the answer and whether parallel gradients should remain finite.
-
-Record confidence, causal reasoning and exposure before reading the saved results.
 '''
 
 # ! CELL TYPE: code
@@ -723,18 +673,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect — Parallel composition
-
-Compare every intermediate state and gradient with the ordered oracle; predict a non-power-of-two length and nonzero initial state.
-
-Record observed controls, discrepancy, explanation and a prediction for the changed scientific condition. Keep exposure explicit.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 # 2️⃣ Local and selective paths
 '''
 
@@ -779,7 +717,7 @@ Transpose to `(batch, channels, seq)`, use `groups=x.shape[-1]`, pad only the ef
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 def causal_depthwise_conv1d(
@@ -810,11 +748,7 @@ def causal_depthwise_conv1d(
 # ! TAGS: []
 
 r'''
-### Forecast — Causal local context
-
 Forecast the two-channel convolution and what changing only the last token can affect.
-
-Record confidence, causal reasoning and exposure before reading the saved results.
 '''
 
 # ! CELL TYPE: code
@@ -861,18 +795,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect — Causal local context
-
-Use the loop and no-future controls; predict a kernel of width1 without changing the input.
-
-Record observed controls, discrepancy, explanation and a prediction for the changed scientific condition. Keep exposure explicit.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise 5 - make delta, B, and C token-dependent
 
 > ```yaml
@@ -899,7 +821,7 @@ Split `x_proj(x)` into sizes `[dt_proj.in_features, d_state, d_state]`; only the
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 def project_selective_parameters(
@@ -928,11 +850,7 @@ def project_selective_parameters(
 # ! TAGS: []
 
 r'''
-### Forecast — Selective parameters
-
 Forecast which token positions change delta/B/C when only one convolved representation is perturbed.
-
-Record confidence, causal reasoning and exposure before reading the saved results.
 '''
 
 # ! CELL TYPE: code
@@ -978,18 +896,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect — Selective parameters
-
-Explain why the parameters are selected locally; predict zeroing dt_proj weights while retaining its bias.
-
-Record observed controls, discrepancy, explanation and a prediction for the changed scientific condition. Keep exposure explicit.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## The selective state-space path
 
 Mamba keeps `A` and `D` fixed per channel but lets every token choose `delta_t`, `B_t`, and `C_t`. In the readable PyTorch path, the state is float32 and has shape `(batch,
@@ -1028,7 +934,7 @@ Expand rank-3 B across `d_inner`. Keep the recurrent state in float32. For rank-
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 def _expand_bc(param: t.Tensor, d_inner: int) -> t.Tensor:
@@ -1113,11 +1019,7 @@ def selective_scan_recurrent(
 # ! TAGS: []
 
 r'''
-### Forecast — State, skip and gate
-
 Forecast the one-step state, C readout, D skip and SiLU gate in the supplied hand fixture.
-
-Record confidence, causal reasoning and exposure before reading the saved results.
 '''
 
 # ! CELL TYPE: code
@@ -1253,18 +1155,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect — State, skip and gate
-
-Compare each quantity and predict a nonzero initial cache. Explain which tensors remain float32.
-
-Record observed controls, discrepancy, explanation and a prediction for the changed scientific condition. Keep exposure explicit.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise 7 - run the same selective scan in parallel
 
 > ```yaml
@@ -1291,7 +1181,7 @@ The associative scan returns all states. Apply the readout only after scanning; 
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 def selective_scan_parallel(
@@ -1327,11 +1217,7 @@ def selective_scan_parallel(
 # ! TAGS: []
 
 r'''
-### Forecast — One operator, two schedules
-
 Forecast recurrent/parallel errors, including the returned final state.
-
-Record confidence, causal reasoning and exposure before reading the saved results.
 '''
 
 # ! CELL TYPE: code
@@ -1384,18 +1270,6 @@ def selective_scan_parallel(
 
 if MAIN:
     tests.test_recurrent_parallel_selective_scan_parity(selective_scan_recurrent, selective_scan_parallel)
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect — One operator, two schedules
-
-Separate numerical order effects from a semantic mismatch; predict doubled length and float64 affine coefficients.
-
-Record observed controls, discrepancy, explanation and a prediction for the changed scientific condition. Keep exposure explicit.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -1497,7 +1371,7 @@ block.
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 class MambaRMSNorm(nn.Module):
@@ -1584,11 +1458,7 @@ tests.test_mamba_block_has_norm_residual_and_gate(MambaBlockFromScratch)
 # ! TAGS: []
 
 r'''
-### Forecast — Mixer versus residual block
-
 Forecast output when out_proj is zero and identify the local convolution, gate and residual routes.
-
-Record confidence, causal reasoning and exposure before reading the saved results.
 '''
 
 # ! CELL TYPE: code
@@ -1748,18 +1618,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect — Mixer versus residual block
-
-Compare the identity control and independent mixer arithmetic. Predict what applying the gate before the SSM state update would change.
-
-Record observed controls, discrepancy, explanation and a prediction for the changed scientific condition. Keep exposure explicit.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise 9 - implement one-token recurrent inference
 
 > ```yaml
@@ -1787,7 +1645,7 @@ SSM state.
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 def mamba_recurrent_step(self, hidden_states, inference_state):
@@ -1820,11 +1678,7 @@ tests.test_mamba_block_recurrent_step_parity(MambaBlockFromScratch)
 # ! TAGS: []
 
 r'''
-### Forecast — Cache update
-
 Forecast full-versus-step parity and both cache shapes. State when the current token enters the convolution window.
-
-Record confidence, causal reasoning and exposure before reading the saved results.
 '''
 
 # ! CELL TYPE: code
@@ -1864,18 +1718,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect — Cache update
-
-Compare every output and explain any one-token shift. Predict a sequence shorter than the convolution width.
-
-Record observed controls, discrepancy, explanation and a prediction for the changed scientific condition. Keep exposure explicit.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise 10 - stack blocks into a tiny causal LM
 
 > ```yaml
@@ -1903,7 +1745,7 @@ Parameter object, not by copying data.
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 class MambaModelFromScratch(nn.Module):
@@ -2017,11 +1859,7 @@ tests.test_tiny_stacked_mamba_lm_and_cache(MambaForCausalLMFromScratch)
 # ! TAGS: []
 
 r'''
-### Forecast — Stacked cached LM
-
 Forecast the number of caches/hidden states, tied parameter identity and full/cache logits.
-
-Record confidence, causal reasoning and exposure before reading the saved results.
 '''
 
 # ! CELL TYPE: code
@@ -2186,18 +2024,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect — Stacked cached LM
-
-Separate tied storage from copied values. Predict whether a greedy generator should reprocess the full prompt at every step.
-
-Record observed controls, discrepancy, explanation and a prediction for the changed scientific condition. Keep exposure explicit.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 # 4️⃣ Pinned parity and causal controls
 '''
 
@@ -2254,7 +2080,7 @@ bug, not an invitation to relax loading.
 
 </details>
 
-<details><summary>Historical worked formulation</summary>
+<details><summary>Worked formulation</summary>
 
 ```python
 def hf_to_local_key(hf_key: str) -> str:
@@ -2407,11 +2233,7 @@ gc.collect()
 # ! TAGS: []
 
 r'''
-### Forecast — Historical pinned parity
-
-Before reading the historical reference, forecast mapping coverage, all-layer/logit/cache tolerances and greedy-token agreement for the exact pinned prompt.
-
-Record confidence, causal reasoning and exposure before reading the saved results.
+Before reading the reference, forecast mapping coverage, all-layer/logit/cache tolerances and greedy-token agreement for the exact pinned prompt.
 '''
 
 # ! CELL TYPE: code
@@ -2613,18 +2435,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect — Historical pinned parity
-
-Read each metric separately. Strict loading and one prompt support architecture/parity coverage, not general task competence. Predict a skipped checkpoint key or an untied head.
-
-Record observed controls, discrepancy, explanation and a prediction for the changed scientific condition. Keep exposure explicit.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Signature Result: what does selective memory buy?
 
 We now return to exact ground truth and vary the distance from one `WRITE` to one `READ`. Three genuine computations receive the same write impulse:
@@ -2660,11 +2470,7 @@ persistent recurrent state, rather than a plotting artifact or lucky short-conte
 # ! TAGS: []
 
 r'''
-### Forecast — Exact memory mechanism
-
 Forecast delay-error curves and state-ablation bars for selective memory, all-context attention and finite K=8 convolution before inspecting the saved figure.
-
-Record confidence, causal reasoning and exposure before reading the saved results.
 '''
 
 # ! CELL TYPE: code
@@ -2943,18 +2749,6 @@ r'''
 # ! TAGS: []
 
 r'''
-### Reflect — Exact memory mechanism
-
-Explain the first convolution failure and the state intervention. This is analytically specified gating, not evidence that the pretrained model learned WRITE/READ.
-
-Record observed controls, discrepancy, explanation and a prediction for the changed scientific condition. Keep exposure explicit.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Try It Yourself
 
 Change `PLAY_DISTANCES` and `PLAY_CONV_KERNEL` before running. Predict the first distance at which the convolution fails. Then edit `causal_attention_memory`'s `logit_gap`: as the
@@ -2966,11 +2760,7 @@ score gap shrinks and the number of distractors grows, attention begins to dilut
 # ! TAGS: []
 
 r'''
-### Forecast — Original horizon play
-
 Choose WRITE-to-READ distances and convolution width; forecast the first failure before running or inspecting saved results.
-
-Record confidence, causal reasoning and exposure before reading the saved results.
 '''
 
 # ! CELL TYPE: code
@@ -2998,20 +2788,8 @@ r'''
 # ! TAGS: []
 
 r'''
-**Read the historical play axes literally.** This preserved play uses maximum distance 64 and convolution width 16. Its fixed panel-A title still says 32 tokens; the x-axis and
-input code give the actual 64-token horizon. The original figure bytes and experiment code are retained, rather than silently relabelled as a new result.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect — Original horizon play
-
-Compare the changed finite horizon with the constant selective trace. Predict the effect of weakening the attention score gap while adding distractors.
-
-Record observed controls, discrepancy, explanation and a prediction for the changed scientific condition. Keep exposure explicit.
+**Read the play axes literally.** This play uses maximum distance 64 and convolution width 16. Its fixed panel-A title still says 32 tokens; the x-axis and
+input code give the actual 64-token horizon.
 '''
 
 # ! CELL TYPE: markdown
@@ -3021,11 +2799,8 @@ Record observed controls, discrepancy, explanation and a prediction for the chan
 r'''
 ## Try It Yourself — exact hold versus erase
 
-### Forecast — a stale-memory control
-
 For the declared seven-event WRITE/HOLD/READ/HOLD/ERASE/HOLD/READ sequence, choose the written value, convolution width and intervention position. Predict both READs for selective
-state, intervention, finite convolution and the existing WRITE-key attention head. Explain whether a head that selects WRITE knows about a later ERASE. Record confidence, causal
-reasoning and exposure before running. This tiny CPU play trains no model and loads no checkpoint.
+state, intervention, finite convolution and the existing WRITE-key attention head. Explain whether a head that selects WRITE knows about a later ERASE. This tiny CPU play trains no model and loads no checkpoint.
 '''
 
 # ! CELL TYPE: code
@@ -3076,19 +2851,6 @@ r'''
 # ! TAGS: []
 
 r'''
-### Reflect — a stale-memory control
-
-Compare the pre- and post-ERASE READs, and separate the finite horizon from intervention and reset semantics. WRITE-key attention is a valid ceiling for the original
-single-WRITE/HOLD/READ task; here a later ERASE tests a different condition, so attention can retain stale content. This is an exact counterexample under the displayed score rule,
-not a trained-attention limitation. Forecast a kernel one token wider or intervention after the first READ, holding the other inputs fixed. The displayed default play output is
-from the bounded fresh CPU subset; changed settings require a new explicitly invoked run. This subset does not refresh the historical checkpoint or CUDA evidence.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 # ☆ Bonus
 '''
 
@@ -3108,11 +2870,7 @@ transition values near one, and update scale. Find the first case above `1e-5`, 
 # ! TAGS: []
 
 r'''
-### Forecast — Associativity and precision
-
 Forecast whether longer float32 scans must be bitwise equal to sequential accumulation.
-
-Record confidence, causal reasoning and exposure before reading the saved results.
 '''
 
 # ! CELL TYPE: code
@@ -3136,18 +2894,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect — Associativity and precision
-
-Use the preserved float32/float64 sweep to distinguish rounding from chronological-order bugs. Predict a transition closer to one or larger updates.
-
-Record observed controls, discrepancy, explanation and a prediction for the changed scientific condition. Keep exposure explicit.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## What you proved
 
 1. Stable continuous modes discretize into bounded decays.
@@ -3164,7 +2910,7 @@ r'''
 - The signature task is an exact model organism with analytically specified event gates. It proves mechanism semantics, not that Mamba-130M learned symbolic `WRITE` and `READ` events.
 - The all-context attention control is an analytic single-head retrieval ceiling, not a trained Transformer benchmark.
 - The readable prefix scan is `O(L log L)` work and the recurrent reference is `O(L)` serial depth. Neither reproduces the official fused kernel's hardware efficiency.
-- CPU parity validates architecture and weight mapping. This run does not refresh CUDA kernel, throughput, or VRAM evidence; the repository's separate release harness owns those claims.
+- CPU parity validates architecture and weight mapping. This run does not measure CUDA kernel, throughput, or VRAM behavior.
 - Mamba-2's SSD formulation and Mamba-3 state-tracking changes belong to later sections.
 
 ## Reading
@@ -3180,13 +2926,9 @@ r'''
 # ! TAGS: []
 
 r'''
-## Release Verification Surface
+## GPU entry points
 
-The CPU notebook above is complete and does not call CUDA. The checked-in `verification_report.json` records the repository's separate post-rewrite CUDA 13.2 release verification.
-These stable entry points remain for reproducing that evidence. Calling them is an explicit GPU action and is outside this notebook execution.
-
-The original paragraph describes its historical execution. This migration executes neither the historical CPU/checkpoint path nor CUDA. Explicit release calls delegate lazily to
-the exact archived original implementation; absence of current verification is not a newly passing release gate.
+The CPU notebook above is complete and does not call CUDA. The entry points below run the CUDA release verification; calling them is an explicit GPU action.
 '''
 
 # ! CELL TYPE: code

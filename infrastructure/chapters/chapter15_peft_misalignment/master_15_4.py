@@ -43,9 +43,9 @@ By the end of this notebook, you will have shown that **a smooth, planted low-ra
 
 Our concrete proxy is deliberately harmless: a linear readout chooses **amber** when its margin is positive and **teal** otherwise. A second readout predicts a number on the narrow task. These labels are not judgments of alignment, and this matrix is not an LLM. The trajectory is authored explicitly; there is no optimizer and no claim that training discovered a phase transition. This makes every causal claim in the small example checkable before you face the much harder problem of measuring behavior in a pretrained model.
 
-Prerequisites: matrix multiplication and SVD from 0.1; the $BA$ convention and scaling from 15.1; the distinction between weight-space and behavioral measurements in 15.2. NumPy operations use float64 on CPU. Nothing in the default route downloads or loads a pretrained model. The configured requirements `training.lora_phase_transitions` and `peft.safe_lora_misalignment_proxy` motivate this study exercise; their trained-model replication remains pending.
+Prerequisites: matrix multiplication and SVD from 0.1; the $BA$ convention and scaling from 15.1; the distinction between weight-space and behavioral measurements in 15.2. NumPy operations use float64 on CPU. Nothing in the default route downloads or loads a pretrained model.
 
-Before opening the reference plots, write down your forecast: on our nine checkpoints, will the first 50% proxy-flip checkpoint coincide with the first checkpoint where the proxy mode becomes the largest singular mode? Explain why these two events might differ. These public reference outputs make this guided practice, not an unseen assessment.
+Before opening the reference plots, write down your forecast: on our nine checkpoints, will the first 50% proxy-flip checkpoint coincide with the first checkpoint where the proxy mode becomes the largest singular mode? Explain why these two events might differ.
 '''
 
 # ! CELL TYPE: markdown
@@ -528,7 +528,7 @@ Our proxy has 24 contexts, all with input $x=e_1$, but each with a different con
 
 $$m_i=x_i^\top W^\top q-\tau_i,\qquad c_i=\mathbb 1[m_i>0].$$
 
-A positive margin chooses amber. Zero and negative margins choose teal. The zero base matrix $W_0$ chooses teal in every context. Context thresholds model a fixed downstream offset, not independent training examples. Count each of the 24 contexts once: no averaging over coordinates, no cherry-picked examples and no relabeling these public examples as untouched TEST.
+A positive margin chooses amber. Zero and negative margins choose teal. The zero base matrix $W_0$ chooses teal in every context. Context thresholds model a fixed downstream offset, not independent training examples. Count each of the 24 contexts once: no averaging over coordinates, and no cherry-picked examples.
 
 A proxy flip means only that an amber/teal label changed relative to the base. It is not an unsafe answer. Because the thresholds are spread out, a single continuous score produces a stepped label-fraction curve.
 '''
@@ -1151,7 +1151,7 @@ r'''
 r'''
 <details><summary>Expected output and interpretation</summary>
 
-At threshold shift +0.3, the first sampled 50% crossing is 0.875 rather than 0.75. All adapter singular values are unchanged. This result was obtained by changing the behavioral measurement conditions, not by training a different adapter. If you already viewed it before forecasting, mark the outcome as exposed guided practice.
+At threshold shift +0.3, the first sampled 50% crossing is 0.875 rather than 0.75. All adapter singular values are unchanged. This result was obtained by changing the behavioral measurement conditions, not by training a different adapter.
 
 </details>
 
@@ -1201,6 +1201,6 @@ r'''
 - [LoRA: Low-Rank Adaptation of Large Language Models](https://arxiv.org/abs/2106.09685): frozen weights and trainable low-rank factors.
 - [Convergent Linear Representations of Emergent Misalignment](https://arxiv.org/abs/2506.11618): rank-1 adapter model organism, activation directions and adapter interpretation.
 - [Emergent Misalignment: Narrow finetuning can produce broadly misaligned LLMs](https://arxiv.org/abs/2502.17424): the behavioral phenomenon that this benign proxy does not replicate.
-- Return to 15.1 for factor/merge algebra and 15.2 for an actual adaptation comparison; retain their execution provenance and limitations.
+- Return to 15.1 for factor/merge algebra and 15.2 for an actual adaptation comparison.
 '''
 

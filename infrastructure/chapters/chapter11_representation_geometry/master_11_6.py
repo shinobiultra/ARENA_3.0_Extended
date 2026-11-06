@@ -72,11 +72,8 @@ NumPy float64 CPU arrays; it fits small linear probes but loads no model or toke
 The calendar and place/date representations are *constructed*, so their known geometry
 provides ground truth rather than evidence of a learned LLM world model.
 
-We keep all configured families visible: `representation.feature_manifolds`,
-`representation.days_months_space_time` and `world.microscope_ai`. Here a “microscope”
+Here a “microscope”
 means using a probe residual to propose and test a hypothesis about a known small organism.
-Native weekday/month interventions, place/date activation extraction, feature irreducibility
-tests on pretrained models and novel scientific concept discovery remain pending.
 '''
 
 # ! CELL TYPE: markdown
@@ -966,8 +963,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-## Forecast before intervening
-
 The two views in the forthcoming figure are both exact rings. Predict which one retains
 its cyclic neighbors in the full state space. Then predict whether a single translation
 that maps Tuesday to Thursday will advance every other weekday by two days. Include a
@@ -1817,7 +1812,7 @@ coordinate units; fit centers/projections/probes only on TRAIN; retain failed vi
 shuffled-label baselines. Compare full-space and projected distances, subspace stability
 across prompt families, frozen decoding and matched-size interventions evaluated through
 actual answer logits. The shape of a plot cannot decide which layer, prompt or hypothesis
-should have been selected. Native evidence and human learner acceptance remain pending.
+should have been selected.
 
 ## Summary of 4️⃣
 
@@ -1855,8 +1850,5 @@ distinguish an irreducible circular feature from a mixture of unrelated token fe
   the row/column conventions used by the PCA implementation.
 - [NumPy least squares documentation](https://numpy.org/doc/stable/reference/generated/numpy.linalg.lstsq.html):
   the numerical oracle behind the small affine probe.
-
-Record forecasts, confidence, prior exposure and the changed-readout prediction before
-opening the public reference answers. This remains guided Practice rather than an unseen score.
 '''
 

@@ -39,7 +39,7 @@ r'''
 # ! TAGS: []
 
 r'''
-# [17.2] Induction Head Emergence
+# [17.2] Induction Heads in Hand-Built Circuits
 '''
 
 # ! CELL TYPE: markdown
@@ -69,7 +69,7 @@ By the end of this notebook, you will have shown that a two-stage attention circ
 
 In a two-layer attention-only transformer, an earlier previous-token head can write the previous token into each position. A later head can match its current token against that stored key: at the first `D`, the stored previous token is `C`. You will implement this circuit and make it fail in two different ways.
 
-The checkpoint coordinate in this notebook is an **explicitly chosen circuit strength**, not optimizer time. These are deterministic constructed checkpoints, not a measured emergence trajectory. This distinction lets us test mechanism and measurement without inventing training evidence. The syllabus requirement `training.induction_head_emergence` also calls for a trained two-layer model, phase-change analysis, training-time freezing, and public Pythia checkpoints; those native experiments remain pending.
+The checkpoint coordinate in this notebook is an **explicitly chosen circuit strength**, not optimizer time. These are deterministic constructed checkpoints, not a measured emergence trajectory. This distinction lets us test mechanism and measurement without inventing training evidence. A native study also calls for a trained two-layer model, phase-change analysis, training-time freezing, and public Pythia checkpoints; those native experiments remain pending.
 
 Prerequisites: [1.2] induction heads, attention matrix axes, NumPy matrix multiplication, and cross-entropy. Budget: roughly 90–120 minutes; the reference computation takes seconds on CPU.
 '''
@@ -113,7 +113,7 @@ r'''
 r'''
 ## Setup code
 
-Use the repository environment. This study edition needs only NumPy and Matplotlib, runs on CPU, and downloads nothing. The default fixtures are public guided practice; write your prediction before opening the expected outputs.
+Use the repository environment. This study edition needs only NumPy and Matplotlib, runs on CPU, and downloads nothing.
 '''
 
 # ! CELL TYPE: code
@@ -917,9 +917,7 @@ A crossing in a deterministic parameter sweep is a measurement threshold, not op
 # ! TAGS: []
 
 r'''
-### Forecast before running
-
-At strength 1, will zeroing previous-token keys reduce prefix score below .3? Will rotating only the value IDs preserve prefix matching while damaging repeated-block loss? Record both predictions, confidence, and a causal reason. The reference plots below reveal the answers; this route is guided practice.
+At strength 1, will zeroing previous-token keys reduce prefix score below .3? Will rotating only the value IDs preserve prefix matching while damaging repeated-block loss?
 '''
 
 # ! CELL TYPE: code

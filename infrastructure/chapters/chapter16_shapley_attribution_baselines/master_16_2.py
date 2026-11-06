@@ -37,21 +37,7 @@ r'''
 # ! TAGS: []
 
 r'''
-## Historical reference and prediction practice
-
-The opening preview and original publication remain **retained historical analytic references**. The current solutions outputs and signature plots below are a **fresh complete CPU
-execution** after a declared numerical repair. The archived original figure is also retained as `media/kernelshap_partition_controls_signature_historical.png`. The historical
-verification report concerns a separate four-player CUDA-trained neural game; it was not rerun or rewritten. The main lesson instead uses an exact six-player dividend game. No
-pretrained model, training, GPU work or download was used.
-
-A rank-deficient regression exposed an intermittent default-driver failure: the intended minimum-norm KKT solution could lose rank and violate the constraints. The partial-design
-solver now explicitly uses CPU SVD (`gelsd`) and returns coefficients to the original device; the full-table direct solve is unchanged. Original sources, outputs, the failed
-regression and both complete successful CPU runs remain recorded in `docs/mastery/evidence/kernelshap_master_migration/`. See `docs/mastery/migrations/kernelshap.md` for exact
-scope and runtime.
-
-This reference-rich lesson is guided practice. Expected outputs, the introductory historical figure and interpretations expose answers. Forecast before opening them, recording
-confidence, causal reasoning and exposure status; afterward record controls, discrepancies and a changed scientific condition. No learner answer is prefilled. Current corrected CPU
-evidence is separate from the archived publication and legacy CUDA preflight. The entire legacy source directory and its original page remain unchanged.
+The exact six-player dividend game runs in seconds on CPU; the local real-model path takes minutes.
 '''
 
 # ! CELL TYPE: markdown
@@ -103,15 +89,6 @@ When exact Shapley is known, which sampling and partition choices preserve the a
 partial budgets; and exact Owen values match Shapley for the declared interaction-aligned partition but shift by up to `0.300` for a fixed misaligned partition.
 
 <img src="../../instructions/assets/kernelshap_partition_controls_signature.png" width="980">
-
-```python
-EXERCISE_ID = "16_2_kernelshap_and_partitionshap_controls"
-GT_TIER = "GT-0"
-DIFFICULTY = 4
-IMPORTANCE = 4
-EXPECTED_RUNTIME = "seconds on toy contract; minutes on local real-model path"
-REQUIRES_GPU = True
-```
 
 ## Learning goals
 
@@ -364,12 +341,7 @@ The oracle does not use KernelSHAP or partition orderings. It is the fixed targe
 # ! TAGS: []
 
 r'''
-### Forecast — dividend-oracle
-
-Before evaluating all 64 coalitions, forecast the six player credits and grand-coalition total from the eight declared dividends. State numeric ranges, confidence, causal reasoning
-and exposure status. What changes if a new interaction connects the two previously separate triples?
-
-Commit your forecast before continuing.
+Before evaluating all 64 coalitions, forecast the six player credits and grand-coalition total from the eight declared dividends. What changes if a new interaction connects the two previously separate triples?
 '''
 
 # ! CELL TYPE: code
@@ -484,17 +456,6 @@ SOLUTION
 # ! TAGS: []
 
 r'''
-### Reflect — dividend-oracle
-
-Record observed values and all controls, identify your largest forecast discrepancy and explain its cause. Forecast a changed scientific condition with confidence and causal
-reasoning. Distinguish retained reference outputs from what you ran; leave any unexecuted transfer explicitly unobserved.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Summary of 1
 
 An independent dividend oracle fixes each player credit. Baseline and grand total alone cannot identify the attribution vector.
@@ -557,12 +518,7 @@ The kernel upweights extreme coalition sizes because they constrain individual m
 # ! TAGS: []
 
 r'''
-### Forecast — finite-kernel
-
-Forecast the relative singleton versus size-three weights and the 62-row mask/design shapes. Explain why the endpoints are excluded from the finite kernel; record confidence,
-causal reasoning and exposure status. Would uniform weights solve the same regression?
-
-Commit your forecast before continuing.
+Forecast the relative singleton versus size-three weights and the 62-row mask/design shapes. Would uniform weights solve the same regression?
 '''
 
 # ! CELL TYPE: code
@@ -677,17 +633,6 @@ SOLUTION
 # ! TAGS: []
 
 r'''
-### Reflect — finite-kernel
-
-Record observed values and all controls, identify your largest forecast discrepancy and explain its cause. Forecast a changed scientific condition with confidence and causal
-reasoning. Distinguish retained reference outputs from what you ran; leave any unexecuted transfer explicitly unobserved.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise 3 - solve constrained KernelSHAP
 
 > ```yaml
@@ -728,12 +673,7 @@ Full-table KernelSHAP is a parity check, not an approximation win: it has used a
 # ! TAGS: []
 
 r'''
-### Forecast — constrained-regression
-
-Forecast full-table maximum player error and efficiency residual separately. Give ranges, confidence, causal reasoning and exposure status. Explain why efficiency alone cannot
-establish exact attribution, and what changes for a rank-deficient partial design.
-
-Commit your forecast before continuing.
+Forecast full-table maximum player error and efficiency residual separately. Explain why efficiency alone cannot establish exact attribution, and what changes for a rank-deficient partial design.
 '''
 
 # ! CELL TYPE: code
@@ -868,17 +808,6 @@ SOLUTION
 # ! TAGS: []
 
 r'''
-### Reflect — constrained-regression
-
-Record observed values and all controls, identify your largest forecast discrepancy and explain its cause. Forecast a changed scientific condition with confidence and causal
-reasoning. Distinguish retained reference outputs from what you ran; leave any unexecuted transfer explicitly unobserved.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise 4 - sample coalitions with controls
 
 > ```yaml
@@ -921,12 +850,7 @@ coalition budgets.
 # ! TAGS: []
 
 r'''
-### Forecast — paired-sampling
-
-At budget 24 and seeds 0–11, forecast the average maximum absolute player error for complement-paired kernel sampling versus uniform sampling. Freeze the same game,
-distinct-coalition budget and KKT estimator. State ranges, confidence, causal reasoning and exposure status; distinguish a mean comparison from a per-seed guarantee.
-
-Commit your forecast before continuing.
+At budget 24 and seeds 0–11, forecast the average maximum absolute player error for complement-paired kernel sampling versus uniform sampling. Freeze the same game, distinct-coalition budget and KKT estimator.
 '''
 
 # ! CELL TYPE: code
@@ -1028,17 +952,6 @@ SOLUTION
 # ! TAGS: []
 
 r'''
-### Reflect — paired-sampling
-
-Record observed values and all controls, identify your largest forecast discrepancy and explain its cause. Forecast a changed scientific condition with confidence and causal
-reasoning. Distinguish retained reference outputs from what you ran; leave any unexecuted transfer explicitly unobserved.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Summary of 2
 
 Finite kernel weights and the hard efficiency constraint define the regression. Compare distinct coalition budgets and retain every sampling seed.
@@ -1095,12 +1008,7 @@ A group index is not a player index. Mixing these spaces can produce plausible t
 # ! TAGS: []
 
 r'''
-### Forecast — group-lookup
-
-Forecast the group-coalition table for the additive four-player example, and which overlapping or incomplete partitions fail validation. State confidence, causal reasoning and
-exposure status. Which space does a group index refer to?
-
-Commit your forecast before continuing.
+Forecast the group-coalition table for the additive four-player example, and which overlapping or incomplete partitions fail validation. Which space does a group index refer to?
 '''
 
 # ! CELL TYPE: code
@@ -1200,17 +1108,6 @@ SOLUTION
 # ! TAGS: []
 
 r'''
-### Reflect — group-lookup
-
-Record observed values and all controls, identify your largest forecast discrepancy and explain its cause. Forecast a changed scientific condition with confidence and causal
-reasoning. Distinguish retained reference outputs from what you ran; leave any unexecuted transfer explicitly unobserved.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise 6 - implement exact Owen values
 
 > ```yaml
@@ -1251,12 +1148,7 @@ Owen values are exact for the game with a priori unions. They need not equal ord
 # ! TAGS: []
 
 r'''
-### Forecast — owen-orderings
-
-Forecast singleton and one-group Owen parity, and the credit of the irrelevant grouped player in the cross-group conjunction fixture. Give numeric ranges, confidence, causal
-reasoning and exposure status. Explain when restricted orderings can change ordinary Shapley credit.
-
-Commit your forecast before continuing.
+Forecast singleton and one-group Owen parity, and the credit of the irrelevant grouped player in the cross-group conjunction fixture. Explain when restricted orderings can change ordinary Shapley credit.
 '''
 
 # ! CELL TYPE: code
@@ -1424,17 +1316,6 @@ SOLUTION
 # ! TAGS: []
 
 r'''
-### Reflect — owen-orderings
-
-Record observed values and all controls, identify your largest forecast discrepancy and explain its cause. Forecast a changed scientific condition with confidence and causal
-reasoning. Distinguish retained reference outputs from what you ran; leave any unexecuted transfer explicitly unobserved.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise 7 - test aligned and random partitions
 
 > ```yaml
@@ -1493,12 +1374,7 @@ according to how its members are split across groups.
 # ! TAGS: []
 
 r'''
-### Forecast — partition-alignment
-
-For the original two three-way interactions, forecast aligned and fixed-misaligned maximum player error and the number of nonexact random balanced partitions among seeds 0–99.
-State confidence, causal reasoning and exposure status. Retain efficiency as a distinct diagnostic.
-
-Commit your forecast before continuing.
+For the original two three-way interactions, forecast aligned and fixed-misaligned maximum player error and the number of nonexact random balanced partitions among seeds 0–99. Retain efficiency as a distinct diagnostic.
 '''
 
 # ! CELL TYPE: code
@@ -1572,17 +1448,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect — partition-alignment
-
-Record observed values and all controls, identify your largest forecast discrepancy and explain its cause. Forecast a changed scientific condition with confidence and causal
-reasoning. Distinguish retained reference outputs from what you ran; leave any unexecuted transfer explicitly unobserved.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Summary of 3
 
 A priori unions restrict predecessor orderings. Exact Owen credit can differ from ordinary Shapley while satisfying efficiency.
@@ -1614,14 +1479,7 @@ The partition panels compare ordinary exact Shapley with aligned, singleton, mis
 # ! TAGS: []
 
 r'''
-### Forecast — equal-budget-signature
-
-At budget 24, forecast paired_kernel mean maximum player error minus uniform mean maximum player error over seeds 0–49, in attribution units. Give a range, confidence, causal
-reasoning and exposure status. Also forecast the endpoint-preserving shuffled-value control and partition controls. The plotted bands are seed standard deviations, not confidence
-intervals. For transfer, add a new four-way dividend on {0,1,2,3} of +0.8, freeze all other dividends/budgets/masks/seeds/groupings, and forecast the same gap and formerly aligned
-Owen error before running that new game.
-
-Commit your forecast before continuing.
+At budget 24, forecast paired_kernel mean maximum player error minus uniform mean maximum player error over seeds 0–49, in attribution units. Also forecast the endpoint-preserving shuffled-value control and partition controls. For transfer, add a new four-way dividend on {0,1,2,3} of +0.8, freeze all other dividends/budgets/masks/seeds/groupings, and forecast the same gap and formerly aligned Owen error before running that new game.
 '''
 
 # ! CELL TYPE: code
@@ -1845,17 +1703,6 @@ r'''
 # ! TAGS: []
 
 r'''
-### Reflect — equal-budget-signature
-
-Record observed values and all controls, identify your largest forecast discrepancy and explain its cause. Forecast a changed scientific condition with confidence and causal
-reasoning. Distinguish retained reference outputs from what you ran; leave any unexecuted transfer explicitly unobserved.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Corrected current CPU reference
 
 The current controlled figure is generated by the corrected CPU SVD solver. Its fixed budget-24 means are approximately 0.242120109 (paired design) and 0.477168479 (uniform
@@ -1905,13 +1752,7 @@ Set the three parameters before inspecting the answer. Compare both samplers at 
 # ! TAGS: []
 
 r'''
-### Forecast — budget-and-group-play
-
-Freeze the budget, seed, strategy and explicit groups before rerunning the play. Forecast the six attribution values and maximum oracle error, with confidence, causal reasoning and
-exposure status. Compare the same-budget alternative sampler and full-table control; changing a seed alone is replication, whereas changing the game or grouping changes the
-scientific condition.
-
-Commit your forecast before continuing.
+Freeze the budget, seed, strategy and explicit groups before rerunning the play. Compare the same-budget alternative sampler and full-table control; changing a seed alone is replication, whereas changing the game or grouping changes the scientific condition.
 '''
 
 # ! CELL TYPE: code
@@ -1974,17 +1815,6 @@ if MAIN:
         "Partition max error:",
         round((play_partition - exact_oracle).abs().max().item(), 3),
     )
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect — budget-and-group-play
-
-Record observed values and all controls, identify your largest forecast discrepancy and explain its cause. Forecast a changed scientific condition with confidence and causal
-reasoning. Distinguish retained reference outputs from what you ran; leave any unexecuted transfer explicitly unobserved.
-'''
 
 # ! CELL TYPE: markdown
 # ! FILTERS: []
@@ -2078,14 +1908,11 @@ if MAIN:
 r'''
 ## Try It Yourself — plot the changed estimate
 
-The original live printout above is preserved. This additional CPU play recomputes both samplers, full-table regression and requested/aligned/singleton Owen controls from explicit
-knobs, then plots every attribution and maximum oracle error. It uses the same six-player dividend game; it is fresh analytic play, separate from the retained fifty-seed signature
-and historical CUDA preflight.
-
-### Forecast — live-plot-play
+This additional CPU play recomputes both samplers, full-table regression and requested/aligned/singleton Owen controls from explicit
+knobs, then plots every attribution and maximum oracle error. It uses the same six-player dividend game.
 
 Set the coalition budget, seed, highlighted sampler and explicit partition before running. Forecast the player-wise credit deviations and which controls have zero maximum error.
-Record confidence, causal reasoning and exposure status. Change one condition, rerun this cell and explain the discrepancy. Switching seeds is replication; changing the declared
+ Change one condition, rerun this cell and explain the discrepancy. Switching seeds is replication; changing the declared
 groups changes the ordering game. The new four-way-dividend transfer proposed above remains unexecuted until you commit its separate forecast.
 '''
 
@@ -2172,17 +1999,5 @@ if MAIN:
 
 r'''
 <img src="media/kernelshap_live_play.png" width="1000">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect — live-plot-play
-
-Record all displayed maximum errors and at least one player whose sampled or Owen credit differs from the exact oracle. Explain whether the discrepancy comes from sampled design
-rows or restricted predecessor orderings. Forecast a changed grouping or game with confidence and causal reasoning, and preserve both the exact target and every control. Mark the
-result as fresh CPU analytic play; it does not reproduce the historical trained-neural-game report.
 '''
 

@@ -63,13 +63,9 @@ r'''
 # ! TAGS: []
 
 r'''
-**Complete planted learned-crosscoder curriculum; broader coverage remains open.** This lesson retains the full synthetic paired-activation study, including student-built
+**Scope.** This lesson retains the full synthetic paired-activation study, including student-built
 crosscoder training, planted-feature matching, behavior baselines and targeted interventions. It does not establish acausal across-layer or real base/chat crosscoders, BatchTopK,
-complete-shrinkage/latent-decoupling studies, or a real base/fine-tuned learned-crosscoder replication. The separate pinned GELU-1L/SoLU-1L preflight remains historical context.
-
-**Historical exposed guided practice:** saved outputs and execution metadata belong to legacy 6.4. Canonical 6.5 migration performs no training or new numerical study. Commit
-forecasts, confidence, reasoning and prior exposure before opening saved results. Leave observations blank until your own inspection; public figures cannot be scored as unseen
-assessment. The original curriculum and legacy report identities remain intact.
+complete-shrinkage/latent-decoupling studies, or a real base/fine-tuned learned-crosscoder replication. The separate pinned GELU-1L/SoLU-1L preflight is separate context.
 '''
 
 # ! CELL TYPE: markdown
@@ -105,7 +101,7 @@ r'''
 
 ### ☆ Bonus
 
-Keep optional real-model context separate and investigate the preserved anomaly prompts.
+Keep optional real-model context separate and investigate the anomaly prompts.
 '''
 
 # ! CELL TYPE: markdown
@@ -116,12 +112,7 @@ r'''
 By the end of this notebook, you will have shown that a small learned sparse crosscoder can recover planted shared and model-specific features from paired activations, predict
 held-out model-behavior deltas, and pass a targeted ablation test that same-norm random and orthogonal controls fail.
 
-```yaml
-gt_tier: GT-3 planted paired-model mechanism plus optional real paired-model preflight
-exercise_id: 6_4_crosscoders_and_model_diffing
-expected_runtime: 60-90 minutes; CPU signature run takes about 5-15 seconds
-requires_gpu: false for this notebook; parent runner owns the optional TransformerLens CUDA preflight
-```
+The lesson takes 60-90 minutes and needs no GPU; the CPU signature run takes about 5-15 seconds. The optional TransformerLens preflight needs a CUDA GPU.
 
 ## Core Question
 
@@ -250,7 +241,7 @@ row to zero for model A. Add noise only after the clean activations are built.
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Worked solution</summary>
 
 ```python
 def make_train_heldout_split(
@@ -574,7 +565,7 @@ Use `nn.Linear(d_model, n_latents)` for the tied encoder, `decoder_a` and `decod
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Worked solution</summary>
 
 ```python
 class SparseCrosscoder(nn.Module):
@@ -646,11 +637,7 @@ def sparse_crosscoder_loss(
 # ! TAGS: []
 
 r'''
-### Forecast
-
 Predict what information each encoder sees and what the two decoders must reconstruct; identify how a shared latent can differ from a model-specific latent.
-
-Record confidence, reasoning and exposure. This is historical exposed guided practice; no observation is prefilled.
 '''
 
 # ! CELL TYPE: code
@@ -760,18 +747,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect
-
-Use the shape/loss checks to locate a mismatch. Explain why reconstruction alone does not establish ownership.
-
-Write your own observation and explanation after inspection.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ### Exercise - Train the Crosscoder and Check Held-Out Reconstruction
 
 > ```yaml
@@ -802,7 +777,7 @@ zero-baseline MSE, and L0 for both models.
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Worked solution</summary>
 
 ```python
 def evaluate_sparse_crosscoder_reconstruction(
@@ -1172,7 +1147,7 @@ activations. Use absolute correlation because dictionary features can be represe
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Worked solution</summary>
 
 ```python
 def latent_ownership_table(
@@ -1277,11 +1252,7 @@ def match_learned_to_planted_features(
 # ! TAGS: []
 
 r'''
-### Forecast
-
 Predict whether good reconstruction forces correct latent ownership. State which planted-oracle comparison could falsify that implication.
-
-Record confidence, reasoning and exposure. This is historical exposed guided practice; no observation is prefilled.
 '''
 
 # ! CELL TYPE: code
@@ -1425,18 +1396,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect
-
-Compare ownership and correlation separately; note that the same held-out examples supply matching and inspection, rather than claiming untouched independent evaluation.
-
-Write your own observation and explanation after inspection.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 # 3️⃣ Test behavior and intervention
 '''
 
@@ -1481,7 +1440,7 @@ avoids fitting the baseline on the test labels.
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Worked solution</summary>
 
 ```python
 def signed_auc_binary(scores: t.Tensor, labels: t.Tensor) -> float:
@@ -1938,7 +1897,7 @@ harder to interpret.
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Worked solution</summary>
 
 ```python
 def crosscoder_intervention_report(
@@ -2087,11 +2046,7 @@ def top_activating_examples(
 # ! TAGS: []
 
 r'''
-### Forecast
-
 Predict whether target-latent ablation should exceed both norm-matched controls by the declared margin on the positive held-out subset. Define the denominator before inspection.
-
-Record confidence, reasoning and exposure. This is historical exposed guided practice; no observation is prefilled.
 '''
 
 # ! CELL TYPE: code
@@ -2277,18 +2232,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect
-
-Compare each control separately using the implemented positive-subset mean absolute behavior delta. Record the historical source identity and your own observation.
-
-Write your own observation and explanation after inspection.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 # 4️⃣ Inspect the full evidence ladder
 '''
 
@@ -2319,7 +2262,7 @@ is predictive but not causal for this readout. Only the conjunction earns the se
 </details>
 
 <details>
-<summary>Historical worked solution</summary>
+<summary>Worked solution</summary>
 
 ```python
 def run_crosscoder_signature_result(
@@ -2406,7 +2349,7 @@ def run_crosscoder_signature_result(
 # ! TAGS: []
 
 r'''
-### Preserved student contract reminder
+### Contract reminder
 
 ```python
 # Uncomment after you have completed the previous exercises.
@@ -2588,11 +2531,7 @@ This table and heatmap compare every matched learned latent with the independent
 # ! TAGS: []
 
 r'''
-### Forecast
-
 Before opening the saved ownership heatmap, predict how splitting a planted feature across learned latents could affect ownership and reconstruction differently.
-
-Record confidence, reasoning and exposure. This is historical exposed guided practice; no observation is prefilled.
 '''
 
 # ! CELL TYPE: code
@@ -2638,18 +2577,6 @@ if MAIN:
 
 r'''
 <img src="media/crosscoder_legacy_cell_20_output_1.png" width="1100">
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-### Reflect
-
-Explain the match and ownership display without treating low reconstruction error as proof of causal necessity.
-
-Write your own observation and explanation after inspection.
 '''
 
 # ! CELL TYPE: markdown
@@ -2727,11 +2654,7 @@ Targeted ablation must reduce the behavior delta more than same-norm random and 
 # ! TAGS: []
 
 r'''
-### Forecast
-
-Forecast the target-versus-control predicate for the published main-study cohort before inspecting the intervention bars. State prior exposure.
-
-Record confidence, reasoning and exposure. This is historical exposed guided practice; no observation is prefilled.
+Forecast the target-versus-control predicate for the published main-study cohort before inspecting the intervention bars.
 '''
 
 # ! CELL TYPE: code
@@ -2773,18 +2696,6 @@ r'''
 # ! TAGS: []
 
 r'''
-### Reflect
-
-Use both absolute-delta and reduction panels; distinguish norm matching from matching a causal direction.
-
-Write your own observation and explanation after inspection.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Try It Yourself
 
 After the signature result passes, change exactly one of these and rerun:
@@ -2801,7 +2712,7 @@ Watch for the failure modes: dense reconstruction with weak ownership, high AUC 
 # ! TAGS: []
 
 r'''
-### Preserved original student play suggestion
+### Play suggestion
 
 This commented alternative uses the original main-study-sized cohort and training budget. It is a distinct exploratory suggestion from the recorded play below, not an additional
 executed result.
@@ -2829,12 +2740,8 @@ executed result.
 # ! TAGS: []
 
 r'''
-### Forecast
-
 Choose one existing play knob before inspecting its output. Predict how changing sparsity pressure or latent count might alter ownership versus reconstruction; do not select a
 favorable seed after inspection.
-
-Record confidence, reasoning and exposure. This is historical exposed guided practice; no observation is prefilled.
 '''
 
 # ! CELL TYPE: code
@@ -2873,18 +2780,6 @@ if MAIN:
 # ! TAGS: []
 
 r'''
-### Reflect
-
-Explain the preserved play result and its controls in your own words. A new run or changed condition is exploratory work requiring separate authority.
-
-Write your own observation and explanation after inspection.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 # ☆ Bonus
 '''
 
@@ -2893,13 +2788,9 @@ r'''
 # ! TAGS: []
 
 r'''
-## Parent GPU Contract
+## GPU entry points
 
-These wrappers are intentionally not executed in the learner notebook. They let the parent verification runner refresh the optional pinned TransformerLens preflight without turning
-that report into the signature result.
-
-When the parent runner refreshes CUDA evidence, it writes `verification_report.json`; that file is supporting evidence only and must not replace the visible learned-crosscoder
-result above.
+These wrappers are not executed in the learner notebook. They refresh the optional pinned TransformerLens preflight, which does not replace the visible learned-crosscoder result above.
 '''
 
 # ! CELL TYPE: code
@@ -2935,7 +2826,7 @@ Try to produce one negative result and explain it. Good targets:
 
 ## Optional Real Paired-Model Evidence
 
-The parent runner owns GPU jobs for this repo. The existing `solutions.run_gpu_test(max_vram_gb=24.0)` path loads pinned TransformerLens `gelu-1l` and `solu-1l` checkpoints and
+The existing `solutions.run_gpu_test(max_vram_gb=24.0)` path loads pinned TransformerLens `gelu-1l` and `solu-1l` checkpoints and
 runs a bounded paired residual-delta preflight. Treat that as real-model context, not the signature result of this notebook. The signature result above is the learned sparse
 crosscoder with exact planted ground truth.
 

@@ -43,17 +43,6 @@ r'''
 # ! TAGS: []
 
 r'''
-> **Fresh execution provenance (2026-10-16):** all 41 solution code cells completed in a fresh CUDA kernel on the RTX 5090 Laptop GPU. The published task, seed and threshold
-> settings completed, including all five new semantic checks. Saved outputs and figures come from that run. The pre-repair historical references and the failed busy-GPU admission
-> remain preserved separately. This is a reproduction on the existing evaluation cases, not an independent untouched TEST or learner acceptance. See
-> `docs/mastery/evidence/pilot_fresh_execution_20261016/` in the checkout for the pinned inputs, partials and execution receipts.
-'''
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 In [1.2] you reverse-engineered the induction circuit of a two-layer attention-only transformer by hand. You looked at attention patterns, found a previous-token head in layer 0
 (head 0.7), found induction heads in layer 1 (1.4 and 1.10), and showed with weight-based analysis that they're connected by **K-composition**: the induction heads' keys are built
 from the previous-token head's output. That took you a few hours, and a lot of it relied on knowing roughly what you were looking for.
@@ -136,6 +125,8 @@ Edge order and threshold sensitivity, ACDC with a task metric instead of KL, hea
 
 r'''
 ## Setup code
+
+The saved outputs and figures below were produced on a CUDA GPU.
 '''
 
 # ! CELL TYPE: code

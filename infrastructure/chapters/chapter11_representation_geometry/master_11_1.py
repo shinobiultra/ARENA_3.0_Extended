@@ -96,30 +96,6 @@ to debug; it doesn't tell us what a pretrained model must do.
 # ! TAGS: []
 
 r'''
-## Historical reference and execution boundary
-
-The displayed outputs and the thirteen figures are retained from the published,
-completed-own-answer Mistral study, with source and figure parity checked during
-this master migration. They are **historical reference results**, not a fresh
-execution of this generated notebook. The recorded full study took about seven
-minutes and 13.7 GiB of CUDA memory on its tested system; that is a historical
-measurement, not a promise for your machine. The publication receipt remains in
-`expected_outputs/learner_execution.json`; the migration audit is in
-`docs/mastery/migrations/geometry.md` at the repository root.
-
-This route is guided practice: viewing a reference plot or expected-output dropdown
-exposes the answer. Before revealing one, write a forecast, confidence and causal
-reasoning. Afterward, record the controls, explain your largest discrepancy and
-predict a changed condition. No forecast, observation or learner answer is filled
-in for you. Tiny numerical tests are separate from rerunning the pretrained model.
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
 ## Content & Learning Objectives
 
 ### 1️⃣ Find a useful view
@@ -507,12 +483,8 @@ SOLUTION
 # ! TAGS: []
 
 r'''
-## Forecast before the result — template-offset
-
 For the same seven calendar classes, compare uncentered PCA with balanced per-template centering. Forecast how much variance the first two PCs explain and whether the chronological
 order survives. Which information does the evaluation batch contribute?
-
-Write your expected ranking or numerical range, confidence (0–100%), and causal reason before running or opening the reference output. Record whether you have already seen it.
 '''
 
 
@@ -572,21 +544,6 @@ if MAIN:
 
 r'''
 <img src="media/geometry_template_offsets.png" width="1000">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — template-offset
-
-Record the observed result and each control, then compare with your committed forecast.
-Which discrepancy most changes your explanation? State a plausible alternative and a
-specific condition under which it predicts a different outcome. Forecast that changed
-condition before trying it; keep the scientific data roles and your prior output
-exposure explicit. Use the expected-result discussion below only after recording this.
 '''
 
 
@@ -864,12 +821,8 @@ SOLUTION
 # ! TAGS: []
 
 r'''
-## Forecast before the result — chronological-order
-
 Forecast the chronological-distance correlation and the class-order permutation null. Explain why a perfect identity classifier could remain perfect after the order statistic
 fails.
-
-Write your expected ranking or numerical range, confidence (0–100%), and causal reason before running or opening the reference output. Record whether you have already seen it.
 '''
 
 
@@ -907,21 +860,6 @@ if MAIN:
 
 r'''
 <img src="media/geometry_calendar_order_null.png" width="1000">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — chronological-order
-
-Record the observed result and each control, then compare with your committed forecast.
-Which discrepancy most changes your explanation? State a plausible alternative and a
-specific condition under which it predicts a different outcome. Forecast that changed
-condition before trying it; keep the scientific data roles and your prior output
-exposure explicit. Use the expected-result discussion below only after recording this.
 '''
 
 
@@ -1295,12 +1233,8 @@ SOLUTION
 # ! TAGS: []
 
 r'''
-## Forecast before the result — causal-plane
-
 Forecast the answer shift and the unrelated scalar for the discovered plane and the orthogonal rank-two donor control. State what would falsify the claim that the fitted coordinate
 controls this exact model.
-
-Write your expected ranking or numerical range, confidence (0–100%), and causal reason before running or opening the reference output. Record whether you have already seen it.
 '''
 
 
@@ -1351,21 +1285,6 @@ if MAIN:
 
 r'''
 <img src="media/geometry_plane_intervention.png" width="1000">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — causal-plane
-
-Record the observed result and each control, then compare with your committed forecast.
-Which discrepancy most changes your explanation? State a plausible alternative and a
-specific condition under which it predicts a different outcome. Forecast that changed
-condition before trying it; keep the scientific data roles and your prior output
-exposure explicit. Use the expected-result discussion below only after recording this.
 '''
 
 
@@ -2715,12 +2634,8 @@ panel after running the cell.
 # ! TAGS: []
 
 r'''
-## Forecast before the result — decoding-transfer
-
 Using only your implemented training PCA and circular probe, forecast which new-template family has stronger coordinate R² and which layers permit causal answer transfer. Contrast
 unsupervised PCs with supervised phase coordinates.
-
-Write your expected ranking or numerical range, confidence (0–100%), and causal reason before running or opening the reference output. Record whether you have already seen it.
 '''
 
 
@@ -2773,21 +2688,6 @@ if MAIN:
 r'''
 <img src="media/geometry_mistral_projections.png" width="1000">
 <img src="media/geometry_mistral_layer_sweep.png" width="1000">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — decoding-transfer
-
-Record the observed result and each control, then compare with your committed forecast.
-Which discrepancy most changes your explanation? State a plausible alternative and a
-specific condition under which it predicts a different outcome. Forecast that changed
-condition before trying it; keep the scientific data roles and your prior output
-exposure explicit. Use the expected-result discussion below only after recording this.
 '''
 
 
@@ -2852,12 +2752,8 @@ that the effect transfers to arbitrary language tasks.
 # ! TAGS: []
 
 r'''
-## Forecast before the result — causal-controls
-
 For the frozen +2 donor shift at the development-selected layers, forecast full-vocabulary desired-answer accuracy for pure coordinate edit, author plane plus mean, full donor,
 same-rank random plane and equal-norm random edit. Explain the denominators and why good decoding need not make the pure edit succeed.
-
-Write your expected ranking or numerical range, confidence (0–100%), and causal reason before running or opening the reference output. Record whether you have already seen it.
 '''
 
 
@@ -2902,21 +2798,6 @@ r'''
 <img src="media/geometry_mistral_final_controls.png" width="1000">
 <img src="media/geometry_mistral_all_donors.png" width="1000">
 <img src="media/geometry_mistral_actual_answers.png" width="1000">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — causal-controls
-
-Record the observed result and each control, then compare with your committed forecast.
-Which discrepancy most changes your explanation? State a plausible alternative and a
-specific condition under which it predicts a different outcome. Forecast that changed
-condition before trying it; keep the scientific data roles and your prior output
-exposure explicit. Use the expected-result discussion below only after recording this.
 '''
 
 
@@ -3127,12 +3008,8 @@ def run_geometry_projection_sweep(study_tensors, protocol, output_directory):
 # ! TAGS: []
 
 r'''
-## Forecast before the result — nonlinear-generalization
-
 For the fixed training/development/final inputs, forecast held-out 3-NN accuracy, trustworthiness and continuity across UMAP/t-SNE seeds and settings. Predict the independent-noise
 and shuffled-label controls and explain the inductive/transductive distinction.
-
-Write your expected ranking or numerical range, confidence (0–100%), and causal reason before running or opening the reference output. Record whether you have already seen it.
 '''
 
 
@@ -3156,21 +3033,6 @@ if MAIN:
 
 r'''
 <img src="media/geometry_projection_stability.png" width="1000">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — nonlinear-generalization
-
-Record the observed result and each control, then compare with your committed forecast.
-Which discrepancy most changes your explanation? State a plausible alternative and a
-specific condition under which it predicts a different outcome. Forecast that changed
-condition before trying it; keep the scientific data roles and your prior output
-exposure explicit. Use the expected-result discussion below only after recording this.
 '''
 
 
@@ -3368,12 +3230,7 @@ def run_calendar_angle_play(model, tokenizer, study_tensors, protocol, output_di
 # ! TAGS: []
 
 r'''
-## Forecast before the result — angle-radius
-
-For the fixed real source prompt, forecast the answer regions across off-grid angles and radii for pure coordinate edit versus author plane plus mean. Explain what radius zero and
-the mean-only control test.
-
-Write your expected ranking or numerical range, confidence (0–100%), and causal reason before running or opening the reference output. Record whether you have already seen it.
+For the fixed real source prompt, forecast the answer regions across off-grid angles and radii for pure coordinate edit versus author plane plus mean.
 '''
 
 
@@ -3394,21 +3251,6 @@ if MAIN:
 
 r'''
 <img src="media/geometry_mistral_angle_radius.png" width="1000">
-'''
-
-
-# ! CELL TYPE: markdown
-# ! FILTERS: []
-# ! TAGS: []
-
-r'''
-## Reflect after the result — angle-radius
-
-Record the observed result and each control, then compare with your committed forecast.
-Which discrepancy most changes your explanation? State a plausible alternative and a
-specific condition under which it predicts a different outcome. Forecast that changed
-condition before trying it; keep the scientific data roles and your prior output
-exposure explicit. Use the expected-result discussion below only after recording this.
 '''
 
 
